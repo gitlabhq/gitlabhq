@@ -190,7 +190,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           it_behaves_like 'project issues statistics'
         end
 
-        context 'sort does not affect statistics ' do
+        context 'sort does not affect statistics' do
           let(:params) { { state: :opened, order_by: 'updated_at' } }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
 
@@ -599,7 +599,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         it_behaves_like 'project issues statistics'
       end
 
-      context 'sort does not affect statistics ' do
+      context 'sort does not affect statistics' do
         let(:params) { { state: :opened, order_by: 'updated_at' } }
         let(:counts) { { all: 3, closed: 1, opened: 2 } }
 
@@ -869,7 +869,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     def create_explicitly_related_mr(project, issue, overrides = {})
       create(:merge_request, { source_project: project, target_project: project }.merge(overrides)).tap do |merge_request|
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
       end
     end
@@ -950,7 +950,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns a merge request that is both referenced and explicitly related only once' do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue, merge_request: related_mr, link_type: :related, from_mr_description: false)
 
       get_related_merge_requests(project.id, issue.iid, user)
@@ -1077,6 +1077,26 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           expect(participant_ids).to match_array([issue.author_id, note.author_id])
         end
       end
+    end
+  end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of get_issue' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_issue').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'issue_iid' => {
+            type: 'integer',
+            description: 'Internal ID of the issue.'
+          }
+        },
+        required: %w[id issue_iid],
+        additionalProperties: false
+      })
     end
   end
 end

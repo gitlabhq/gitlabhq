@@ -1,0 +1,10 @@
+---
+name: oauth_lookups_use_load_balancer_sticking
+description: Look OAuth tokens, refresh tokens and authorization codes up through a replica that has caught up to the write that issued them, or the primary
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579378
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257390
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/632808
+milestone: '19.5'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

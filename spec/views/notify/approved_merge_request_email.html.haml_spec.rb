@@ -4,10 +4,10 @@ require 'spec_helper'
 require 'email_spec'
 
 RSpec.describe 'notify/approved_merge_request_email.html.haml' do
-  let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request) }
-  let(:group) { create(:group) }
-  let(:project) { create(:project, group: group) }
+  let(:user) { build_stubbed(:user) }
+  let(:merge_request) { build_stubbed(:merge_request) }
+  let(:group) { build_stubbed(:group) }
+  let(:project) { build_stubbed(:project, group: group) }
 
   before do
     allow(view).to receive(:message) { instance_double(Mail::Message, subject: 'Subject') }

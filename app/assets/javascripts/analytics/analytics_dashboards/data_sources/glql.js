@@ -1,31 +1,27 @@
 import { s__ } from '~/locale';
-import { millisecondsPerDay, nDaysBefore, toISODateFormat } from '~/lib/utils/datetime_utility';
-import { resolveDateRangeFilter } from '~/explore/analytics_dashboards/components/utils';
+import { nDaysBefore, toISODateFormat } from '~/lib/utils/datetime_utility';
+import {
+  dateRangeDayCount,
+  dateRangeGranularity,
+  resolveDateRangeFilter,
+} from '~/explore/analytics_dashboards/components/utils';
 import { DATE_RANGE_OPTION_LAST_30_DAYS } from '~/explore/analytics_dashboards/components/constants';
 
 // A GLQL query names its own date field (`timestamp` here, `merged` there), so the panel
 // declares where the dashboard's date range goes instead of this source guessing:
 //   query: type = AiUsageEvent and timestamp >= "%{startDate}" and timestamp <= "%{endDate}"
-const dateRangeVariables = ({ startDate, endDate }) => ({
+export const dateRangeVariables = ({ startDate, endDate }) => ({
   startDate: toISODateFormat(startDate, true),
   endDate: toISODateFormat(endDate, true),
 });
 
-// Counted in UTC days like the shift and formatting below: a local-day count gains or loses
-// a day when a DST change falls inside the window.
-const utcDayDifference = (startDate, endDate) => {
-  const utcDay = (date) => Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-
-  return (utcDay(endDate) - utcDay(startDate)) / millisecondsPerDay;
-};
-
 // A preset carries its previous window already; only a custom range derives one. GLQL reads
 // both bounds as whole days, so the length counts both ends and the previous window closes
 // the day before this one opens.
-const previousDateRange = ({ startDate, endDate, previousRange }) => {
+export const previousDateRange = ({ startDate, endDate, previousRange }) => {
   if (previousRange) return previousRange;
 
-  const length = utcDayDifference(startDate, endDate) + 1;
+  const length = dateRangeDayCount({ startDate, endDate });
 
   return {
     startDate: nDaysBefore(startDate, length, { utc: true }),
@@ -35,7 +31,7 @@ const previousDateRange = ({ startDate, endDate, previousRange }) => {
 
 // Only the names given are substituted, so any other `%{...}` the query holds reaches the
 // GLQL compiler as the author wrote it.
-const interpolate = (glql, variables) =>
+export const interpolate = (glql, variables) =>
   Object.entries(variables).reduce(
     (query, [name, value]) => query.replaceAll(`%{${name}}`, value),
     glql,
@@ -61,12 +57,25 @@ const usesWholeDateRange = (glql, variables) =>
  * A query with no placeholders is returned untouched, so GLQL panels on dashboards
  * without a date range filter keep the window their own query sets.
  *
+ * `%{dynamicGranularity}` resolves to the time bucket size the selected range
+ * warrants - `daily`, `weekly` or `monthly` - for panels that bucket by date:
+ *   dimensions: created(%{dynamicGranularity})
+ * A panel that does not ask for it, such as a stat, is unaffected.
+ *
+ * `%{rangeDays}` and `%{previousStartDate}` fold the whole range into one bucket and pull
+ * in the one right before it, since a window metric compares against what came before.
+ * Neither one reaches the comparison query, so they can't combine with `showTrends`.
+ *
+ * The visualization's own `data.query.dateRange` is the window used when the dashboard
+ * has no date range filter. The dashboard filter wins when both are set, matching the
+ * precedence the other analytics data sources already apply to a panel date range.
+ *
  * With `showTrends` in the visualization options, the same query over the window
  * immediately before the selected one is handed down as the `comparisonQuery`
  * visualization option, which the stat display renders as a trend.
  */
 export default function fetch({
-  query: { glql = '' } = {},
+  query: { glql = '', dateRange: panelDateRange } = {},
   filters = {},
   visualizationOptions: { showTrends = false } = {},
   setVisualizationOverrides = () => {},
@@ -75,16 +84,32 @@ export default function fetch({
     throw new Error(s__('Glql|GLQL query must be a string.'));
   }
 
-  const dateRange = resolveDateRangeFilter(filters, DATE_RANGE_OPTION_LAST_30_DAYS);
-  const variables = dateRangeVariables(dateRange);
+  const dateRange = resolveDateRangeFilter(
+    { ...filters, dateRangeOption: filters.dateRangeOption || panelDateRange },
+    DATE_RANGE_OPTION_LAST_30_DAYS,
+  );
+  const dateVariables = dateRangeVariables(dateRange);
+  const dynamicGranularity = dateRangeGranularity(dateRange);
+  const rangeDays = dateRangeDayCount(dateRange);
+  const previousStartDate = toISODateFormat(previousDateRange(dateRange).startDate, true);
 
-  if (showTrends && usesWholeDateRange(glql, variables)) {
+  // Checked against the date variables alone: a stat carries no granularity placeholder,
+  // requiring one here would cost every trend stat its comparison query.
+  if (showTrends && usesWholeDateRange(glql, dateVariables)) {
     setVisualizationOverrides({
       visualizationOptionOverrides: {
-        comparisonQuery: interpolate(glql, dateRangeVariables(previousDateRange(dateRange))),
+        comparisonQuery: interpolate(glql, {
+          ...dateRangeVariables(previousDateRange(dateRange)),
+          dynamicGranularity,
+        }),
       },
     });
   }
 
-  return interpolate(glql, variables);
+  return interpolate(glql, {
+    ...dateVariables,
+    dynamicGranularity,
+    rangeDays,
+    previousStartDate,
+  });
 }

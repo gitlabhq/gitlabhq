@@ -31,11 +31,20 @@ RSpec.describe Import::Offline::Imports::Projects::Stage, feature_category: :imp
           stage: 1
         }),
         hash_including({
+          pipeline: Import::Offline::Projects::Pipelines::MembersPipeline,
+          stage: 1
+        }),
+        hash_including({
           pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
           stage: 2
         }),
         hash_including({
           pipeline: BulkImports::Common::Pipelines::MilestonesPipeline,
+          stage: 2
+        }),
+        hash_including({
+          pipeline: Import::Offline::Projects::Pipelines::BadgesPipeline,
+          minimum_source_version: '19.5.0',
           stage: 2
         }),
         hash_including({

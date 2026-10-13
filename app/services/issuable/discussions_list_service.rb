@@ -32,7 +32,7 @@ module Issuable
                 end
       end
 
-      if params[:notes_filter] != UserPreference::NOTES_FILTERS[:only_comments]
+      if include_synthetic_notes? && params[:notes_filter] != UserPreference::NOTES_FILTERS[:only_comments]
         notes = ResourceEvents::MergeIntoNotesService.new(
           issuable, current_user, paginated_notes: paginated_discussions_by_type
         ).execute(notes)
@@ -63,9 +63,17 @@ module Issuable
         per_page = Kaminari.config.default_per_page if per_page <= 0
 
         issuable
-          .discussion_root_note_ids(notes_filter: params[:notes_filter], sort: params[:sort])
+          .discussion_root_note_ids(
+            notes_filter: params[:notes_filter],
+            sort: params[:sort],
+            include_synthetic_notes: include_synthetic_notes?
+          )
           .keyset_paginate(cursor: params[:cursor], per_page: per_page)
       end
+    end
+
+    def include_synthetic_notes?
+      params.fetch(:include_synthetic_notes, true)
     end
 
     def can_read_issuable_notes?

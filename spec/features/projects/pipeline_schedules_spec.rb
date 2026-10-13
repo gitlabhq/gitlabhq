@@ -5,20 +5,23 @@ require 'spec_helper'
 RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integration do
   include Spec::Support::Helpers::ModalHelpers
 
-  let!(:project) { create(:project, :repository) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
-  let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule, project: project) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule, project: project) }
   let(:scope) { nil }
-  let!(:user) { create(:user) }
-  let!(:maintainer) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
 
-  before do
+  before_all do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
   end
 
   context 'when logged in as the pipeline schedule owner' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       pipeline_schedule.update!(owner: user)
       sign_in(user)
     end
@@ -100,8 +103,11 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
   end
 
   context 'when logged in as a project maintainer' do
-    before do
+    before_all do
       project.add_maintainer(user)
+    end
+
+    before do
       pipeline_schedule.update!(owner: maintainer)
       sign_in(user)
     end

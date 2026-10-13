@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::BootsnapCacheStore, feature_category: :observability do
   # This is a process-wide singleton fed by the live Bootsnap.instrumentation

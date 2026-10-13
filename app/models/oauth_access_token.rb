@@ -3,6 +3,7 @@
 class OauthAccessToken < Doorkeeper::AccessToken
   include Gitlab::Utils::StrongMemoize
   include Doorkeeper::Concerns::TokenFallback
+  include Authz::GranularTokenInterface
 
   belongs_to :application, class_name: 'Authn::OauthApplication'
   belongs_to :organization, class_name: 'Organizations::Organization'
@@ -32,4 +33,21 @@ class OauthAccessToken < Doorkeeper::AccessToken
     ::User.find_by_id(user_id)
   end
   strong_memoize_attr :scope_user
+
+  def granular?
+    includes_scope?(Gitlab::Auth::GRANULAR_SCOPE)
+  end
+
+  def subject_to_granular_enforcement?
+    false
+  end
+
+  def granular_scopes
+    consent_grant ? consent_grant.granular_scopes : Authz::GranularScope.none
+  end
+
+  def consent_grant
+    Authz::OauthConsentGrant.authorized.not_duo_session.find_by(user_id: resource_owner_id, application_id: application_id)
+  end
+  strong_memoize_attr :consent_grant
 end

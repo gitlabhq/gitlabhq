@@ -64,6 +64,29 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       expect(snowplow_context.to_json[:data].keys).to include(*standard_properties)
     end
 
+    context 'client identity' do
+      it 'defaults to system without a request lineage' do
+        expect(snowplow_context.to_json[:data]).to include(client_type: 'system', client_name: 'gitlab-rails')
+      end
+
+      it 'reads the application context' do
+        context = { client_type: 'mobile', client_name: 'gitlab-mobile-ios', client_version: '1.2.0' }
+
+        Gitlab::ApplicationContext.with_context(context) do
+          expect(snowplow_context.to_json[:data])
+            .to include(client_type: 'mobile', client_name: 'gitlab-mobile-ios', client_version: '1.2.0')
+        end
+      end
+
+      it 'omits the name and version when the client has none' do
+        Gitlab::ApplicationContext.with_context(client_type: 'api') do
+          expect(snowplow_context.to_json[:data]).to include(client_type: 'api')
+          expect(snowplow_context.to_json[:data]).not_to have_key(:client_name)
+          expect(snowplow_context.to_json[:data]).not_to have_key(:client_version)
+        end
+      end
+    end
+
     context 'with standard properties' do
       let(:user) { build_stubbed(:user, user_type: 'human') }
       let(:top_level_group) { create(:group) }

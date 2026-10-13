@@ -44,6 +44,7 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 |----------------------------|--------------|--------------|
 | `macos-15-xcode-16`        | `GA`         | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-15-xcode-16/) |
 | `macos-26-xcode-26`        | `GA`         | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-26-xcode-26/) |
+| `macos-27-xcode-27`        | `beta`       | [Preinstalled Software](https://gitlab-org.gitlab.io/ci-cd/shared-runners/images/macos-image-inventory/macos-27-xcode-27/) |
 
 If no image is specified, the macOS runner uses `macos-26-xcode-26`.
 
@@ -118,7 +119,7 @@ variables:
 
 If you use CocoaPods in a project, you should consider the following optimizations to improve CI performance.
 
-**CocoaPods CDN**
+### Enable CDN access
 
 You can use content delivery network (CDN) access to download packages from the CDN instead of having to clone an entire
 project repository. CDN access is available in CocoaPods 1.8 or later and is supported by all GitLab hosted runners on macOS.
@@ -129,7 +130,7 @@ To enable CDN access, ensure your Podfile starts with:
 source 'https://cdn.cocoapods.org/'
 ```
 
-**Use GitLab caching**
+### Use GitLab caching
 
 Use caching in CocoaPods packages in GitLab to only run `pod install`
 when pods change, which can improve build performance.
@@ -154,7 +155,7 @@ To [configure caching](../../caching/_index.md) for your project:
    bundle exec pod check || bundle exec pod install
    ```
 
-**Include pods in source control**
+### Include pods in source control
 
 You can also [include the pods directory in source control](https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control). This eliminates the need to install pods as part of the CI job,
 but it does increase the overall size of your project's repository.

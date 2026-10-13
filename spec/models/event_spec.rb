@@ -15,7 +15,6 @@ RSpec.describe Event, feature_category: :user_profile do
     it { is_expected.to respond_to(:author_email) }
     it { is_expected.to respond_to(:issue_title) }
     it { is_expected.to respond_to(:merge_request_title) }
-    it { is_expected.to respond_to(:design_title) }
   end
 
   describe 'Callbacks' do
@@ -105,6 +104,78 @@ RSpec.describe Event, feature_category: :user_profile do
 
           specify { expect(event.valid?).to eq(valid) }
         end
+      end
+    end
+
+    describe 'sharding key' do
+      let_it_be(:author) { create(:user) }
+      let_it_be(:group) { create(:group) }
+
+      it 'is valid with only project_id set' do
+        event = build(:event, project: project, group: nil, author: author)
+
+        expect(event).to be_valid
+      end
+
+      it 'is valid with only group_id set' do
+        event = build(:event, :created, project: nil, group: group, author: author)
+
+        expect(event).to be_valid
+      end
+
+      it 'is valid with only personal_namespace_id set' do
+        event = build(:event, :joined, project: nil, group: nil,
+          personal_namespace: author.namespace, author: author)
+
+        expect(event).to be_valid
+      end
+
+      it 'is invalid when more than one sharding key is set', :aggregate_failures do
+        event = build(:event, :joined, project: nil, group: group, author: author)
+        event.personal_namespace_id = author.namespace_id
+
+        expect(event).not_to be_valid
+        expect(event.errors[:base]).to include(
+          _('must have exactly one of group_id, project_id, or personal_namespace_id')
+        )
+      end
+
+      it 'sets personal_namespace_id from author when no sharding key is provided', :aggregate_failures do
+        event = build(:event, :joined, project: nil, group: nil, author: author)
+        event.personal_namespace_id = nil
+
+        event.valid?
+
+        expect(event.personal_namespace_id).to eq(author.namespace_id)
+        expect(event).to be_valid
+      end
+
+      it 'reports a missing author instead of raising when no sharding key is provided', :aggregate_failures do
+        event = build(:event, :joined, project: nil, group: nil, author: nil)
+        event.personal_namespace_id = nil
+
+        expect(event).not_to be_valid
+        expect(event.errors[:author_id]).to include("can't be blank")
+      end
+
+      it 'still saves an existing record that has more than one sharding key', :aggregate_failures do
+        event = create(:event, project: project, group: nil, author: author)
+        event.update_column(:personal_namespace_id, author.namespace_id)
+        event.reload
+
+        expect(event.update(action: :updated)).to be(true)
+        expect(event.reload.action).to eq('updated')
+        expect(event.personal_namespace_id).to eq(author.namespace_id)
+        expect(event.project_id).to eq(project.id)
+      end
+
+      it 'keeps a single sharding key when the project is not saved yet', :aggregate_failures do
+        event = build(:event, author: author)
+
+        expect(event.project).not_to be_persisted
+        expect(event.save).to be(true)
+        expect(event.reload.personal_namespace_id).to be_nil
+        expect(event.project_id).to be_present
       end
     end
   end
@@ -1152,6 +1223,32 @@ RSpec.describe Event, feature_category: :user_profile do
       subject { described_class.limit_recent(1) }
 
       it { is_expected.to eq([event2]) }
+    end
+  end
+
+  describe '.paginate_by_created_at' do
+    let_it_be(:older, freeze: false) { create(:closed_issue_event, created_at: 2.days.ago) }
+    let_it_be(:newer, freeze: false) { create(:closed_issue_event, created_at: 1.day.ago) }
+
+    it 'orders by created_at descending' do
+      expect(described_class.paginate_by_created_at(10, 0)).to eq([newer, older])
+    end
+
+    it 'applies limit and offset without overlap' do
+      expect(described_class.paginate_by_created_at(1, 0)).to eq([newer])
+      expect(described_class.paginate_by_created_at(1, 1)).to eq([older])
+    end
+
+    context 'when events share a created_at' do
+      let_it_be(:same_time) { 1.day.ago }
+      let_it_be(:first, freeze: false) { create(:closed_issue_event, created_at: same_time) }
+      let_it_be(:second, freeze: false) { create(:closed_issue_event, created_at: same_time) }
+
+      it 'breaks ties by id descending so pages are deterministic' do
+        page = described_class.where(created_at: same_time).paginate_by_created_at(10, 0)
+
+        expect(page).to eq([second, first])
+      end
     end
   end
 

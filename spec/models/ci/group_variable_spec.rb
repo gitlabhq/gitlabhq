@@ -23,8 +23,8 @@ RSpec.describe Ci::GroupVariable, feature_category: :pipeline_composition do
   end
 
   describe '.by_environment_scope' do
-    let!(:matching_variable) { create(:ci_group_variable, environment_scope: 'production ') }
-    let!(:non_matching_variable) { create(:ci_group_variable, environment_scope: 'staging') }
+    let!(:matching_variable) { create(:ci_group_variable, group: group, environment_scope: 'production ') }
+    let!(:non_matching_variable) { create(:ci_group_variable, group: group, environment_scope: 'staging') }
 
     subject { described_class.by_environment_scope('production') }
 
@@ -36,7 +36,7 @@ RSpec.describe Ci::GroupVariable, feature_category: :pipeline_composition do
 
     context 'when variable is protected' do
       before do
-        create(:ci_group_variable, :protected)
+        create(:ci_group_variable, :protected, group: group)
       end
 
       it 'returns nothing' do
@@ -45,7 +45,7 @@ RSpec.describe Ci::GroupVariable, feature_category: :pipeline_composition do
     end
 
     context 'when variable is not protected' do
-      let(:variable) { create(:ci_group_variable, protected: false) }
+      let(:variable) { create(:ci_group_variable, protected: false, group: group) }
 
       it 'returns the variable' do
         is_expected.to contain_exactly(variable)
@@ -54,45 +54,40 @@ RSpec.describe Ci::GroupVariable, feature_category: :pipeline_composition do
   end
 
   describe '.for_groups' do
-    let_it_be(:group) { create(:group) }
     let_it_be(:group_variable) { create(:ci_group_variable, group: group) }
     let_it_be(:other_variable) { create(:ci_group_variable) }
 
     it { expect(described_class.for_groups([group.id])).to eq([group_variable]) }
   end
 
-  describe '.for_environment_scope_like' do
-    let_it_be(:group) { create(:group) }
+  context 'with environment scope variables' do
     let_it_be(:variable1_on_staging1) { create(:ci_group_variable, group: group, environment_scope: 'staging1') }
     let_it_be(:variable2_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
     let_it_be(:variable3_on_production) { create(:ci_group_variable, group: group, environment_scope: 'production') }
 
-    it do
-      expect(described_class.for_environment_scope_like('staging'))
-        .to match_array([variable1_on_staging1, variable2_on_staging2])
+    describe '.for_environment_scope_like' do
+      it do
+        expect(described_class.for_environment_scope_like('staging'))
+          .to match_array([variable1_on_staging1, variable2_on_staging2])
+      end
+
+      it do
+        expect(described_class.for_environment_scope_like('production'))
+          .to match_array([variable3_on_production])
+      end
     end
 
-    it do
-      expect(described_class.for_environment_scope_like('production'))
-        .to match_array([variable3_on_production])
-    end
-  end
+    describe '.environment_scope_names' do
+      let_it_be(:variable4_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
 
-  describe '.environment_scope_names' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:variable1_on_staging1) { create(:ci_group_variable, group: group, environment_scope: 'staging1') }
-    let_it_be(:variable2_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
-    let_it_be(:variable3_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
-    let_it_be(:variable4_on_production) { create(:ci_group_variable, group: group, environment_scope: 'production') }
-
-    it 'groups and orders' do
-      expect(described_class.environment_scope_names)
-        .to match_array(%w[production staging1 staging2])
+      it 'groups and orders' do
+        expect(described_class.environment_scope_names)
+          .to match_array(%w[production staging1 staging2])
+      end
     end
   end
 
   describe 'sort_by_attribute' do
-    let_it_be(:group) { create(:group) }
     let_it_be(:environment_scope) { 'env_scope' }
     let_it_be(:variable1) { create(:ci_group_variable, key: 'd_var', group: group, environment_scope: environment_scope, created_at: 4.days.ago) }
     let_it_be(:variable2) { create(:ci_group_variable, key: 'a_var', group: group, environment_scope: environment_scope, created_at: 3.days.ago) }

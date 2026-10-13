@@ -31,40 +31,83 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
   end
 
   describe '#input_schema' do
-    let(:schema) { service.input_schema }
-
-    it 'exposes the expected input schema', unless: Gitlab.ee? do
-      expect(schema).to match(
+    it 'locks the full input schema for version 0.1.0', unless: Gitlab.ee? do
+      expect(service.input_schema).to eq({
         type: 'object',
-        additionalProperties: false,
-        required: %w[scope search],
         properties: {
           scope: {
             type: 'string',
-            description: a_string_including(
-              'GitLab instance: projects, groups, work_items, merge_requests, milestones, users, snippet_titles',
-              'Group: projects, groups, work_items, merge_requests, milestones, users',
-              'Project: blobs, work_items, merge_requests, wiki_blobs, commits, notes, milestones, users',
-              'Use "work_items" to search for issues, tasks, epics, and other work items'
-            )
+            enum: %w[projects groups work_items merge_requests milestones users snippet_titles
+              blobs wiki_blobs commits notes],
+            description: 'Specify the type of content to search for. Available content types vary by search ' \
+              "context:\n" \
+              "\n" \
+              '- GitLab instance: projects, groups, work_items, merge_requests, milestones, users, ' \
+              "snippet_titles\n" \
+              "- Group: projects, groups, work_items, merge_requests, milestones, users\n" \
+              '- Project: blobs, work_items, merge_requests, wiki_blobs, commits, notes, milestones, ' \
+              "users\n" \
+              "\n" \
+              "Examples:\n" \
+              "- Use \"work_items\" to search for issues, tasks, epics, and other work items\n" \
+              "- Use \"merge_requests\" to search for merge requests\n" \
+              "- Use \"blobs\" to search code files\n" \
+              "- Use \"notes\" to search comments across different content\n" \
+              '- Use "commits" to search commit messages'
           },
-          search: { type: 'string', description: 'The term to search for' },
-          group_id: { type: 'string', description: a_string_including('within a group') },
-          project_id: { type: 'string', description: a_string_including('within a project') },
+          search: {
+            type: 'string',
+            description: 'The term to search for'
+          },
+          group_id: {
+            type: 'string',
+            description: 'Provide to search within a group. The ID or full path of the group'
+          },
+          project_id: {
+            type: 'string',
+            description: 'Provide to search within a project. The ID or full path of the project'
+          },
           state: {
             type: 'string',
-            description: a_string_including(
-              'Work items:',
+            description: "Filter results by state. Available states:\n" \
+              "- Work items: opened, closed\n" \
+              "- Merge requests: opened, closed, merged, locked\n" \
+              "\n" \
               'Only applies to work_items and merge_requests scopes.'
-            )
           },
-          confidential: { type: 'boolean', description: a_string_including('confidentiality') },
-          order_by: { type: 'string', description: a_string_including('created_at') },
-          sort: { type: 'string', description: a_string_including('asc, desc') },
-          per_page: { type: 'integer', minimum: 1, description: a_string_including('per page') },
-          page: { type: 'integer', minimum: 1, description: a_string_including('Page number') }
-        }
-      )
+          confidential: {
+            type: 'boolean',
+            description: 'Filter results by confidentiality. Available for work_items scope; other scopes are ' \
+              'ignored.'
+          },
+          order_by: {
+            type: 'string',
+            description: "Specify how to order search results.\n" \
+              "- Allowed values: created_at only\n" \
+              "- Default behavior:\n  " \
+              "* Basic search: sorted by created_at descending\n  " \
+              '* Advanced search: sorted by relevance'
+          },
+          sort: {
+            type: 'string',
+            description: "Specify the sort direction for results. Works with order_by parameter\n" \
+              "- Allowed values: asc, desc\n" \
+              '- Default: desc'
+          },
+          per_page: {
+            type: 'integer',
+            description: 'Number of items to list per page. (default: 20)',
+            minimum: 1
+          },
+          page: {
+            type: 'integer',
+            description: 'Page number to retrieve. (default: 1)',
+            minimum: 1
+          }
+        },
+        required: %w[scope search],
+        additionalProperties: false
+      })
     end
   end
 
@@ -74,7 +117,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     let(:mock_response) { { content: [{ type: 'text', text: 'Success' }], isError: false } }
 
     context 'with global search arguments' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
 
       it 'selects the global search tool' do
         expect(mock_tool_global).to receive(:execute).with(request: request, params: params).and_return(mock_response)
@@ -86,7 +129,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'with group search arguments' do
-      let(:arguments) { { scope: 'issues', search: 'test query', group_id: 'test-group' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query', group_id: 'test-group' } }
       let(:transformed_params) { { arguments: arguments.merge(id: 'test-group') } }
 
       it 'selects the group search tool and transforms arguments' do
@@ -100,7 +143,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'with project search arguments' do
-      let(:arguments) { { scope: 'issues', search: 'test query', project_id: 'test-project' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query', project_id: 'test-project' } }
       let(:transformed_params) { { arguments: arguments.merge(id: 'test-project') } }
 
       it 'selects the project search tool and transforms arguments' do
@@ -114,7 +157,10 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'with both group_id and project_id' do
-      let(:arguments) { { scope: 'issues', search: 'test query', group_id: 'test-group', project_id: 'test-project' } }
+      let(:arguments) do
+        { scope: 'work_items', search: 'test query', group_id: 'test-group', project_id: 'test-project' }
+      end
+
       let(:transformed_params) { { arguments: arguments.merge(id: 'test-project') } }
 
       it 'prioritizes project search over group search' do
@@ -128,7 +174,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'when tool is not found' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
       let(:service_with_empty_tools) { described_class.new(tools: []) }
 
       it 'returns error response' do
@@ -136,7 +182,8 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
 
         expect(result[:isError]).to be true
 
-        expected_text = "Tool execution failed: Tool 'search' not found."
+        expected_text = "Tool execution failed: search is not available on this GitLab instance " \
+          "due to a server configuration problem."
         expect(result[:content].first[:text]).to eq(expected_text)
       end
     end
@@ -153,7 +200,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'when tool execution fails' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
 
       before do
         allow(mock_tool_global).to receive(:execute).and_raise(StandardError, 'Tool failed')
@@ -168,7 +215,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'when search_level is not supported' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
 
       it 'raises an ArgumentError' do
         mock_level = instance_double(Search::Level, as_sym: :unsupported_value)

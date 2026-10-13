@@ -59,6 +59,19 @@
       "uniqueItems": true,
       "maxItems": 100
     },
+    "showEmptyGroups": {
+      "description": "Whether groups with no work items are shown. Defaults to true when absent",
+      "type": "boolean"
+    },
+    "groupSort": {
+      "description": "How groups (for example board columns) are ordered: ascending or descending by their natural order, or manually via groupOrder",
+      "type": "string",
+      "enum": [
+        "asc",
+        "desc",
+        "manual"
+      ]
+    },
     "viewMode": {
       "description": "Which view mode (list, board or table) the saved view should open in",
       "type": "string",

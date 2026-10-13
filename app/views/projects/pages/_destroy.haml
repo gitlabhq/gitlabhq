@@ -9,7 +9,7 @@
         = render Pajamas::ButtonComponent.new(href: project_pages_path(@project),
           variant: :danger,
           method: :delete,
-          button_options: { data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger' }, "aria-label": s_('GitLabPages|Remove pages') }) do
+          button_options: { data: { confirm: s_('GitLabPages|Are you sure?'), title: s_('GitLabPages|Delete Pages'), 'confirm-btn-variant': 'danger' }, "aria-label": s_('GitLabPages|Delete Pages') }) do
           = s_('GitLabPages|Delete Pages')
       - else
         = s_('GitLabPages|Only project maintainers can remove pages.')

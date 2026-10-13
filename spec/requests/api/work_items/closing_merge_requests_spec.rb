@@ -11,11 +11,11 @@ RSpec.describe API::WorkItems::ClosingMergeRequests, feature_category: :portfoli
   let_it_be(:other_merge_request) { create(:merge_request, source_project: project, source_branch: 'other') }
 
   let_it_be(:closing_mr) do
-    create(:merge_requests_closing_issues, issue: work_item, merge_request: merge_request, from_mr_description: true)
+    create(:merge_request_issue, issue: work_item, merge_request: merge_request, from_mr_description: true)
   end
 
   let_it_be(:other_closing_mr) do
-    create(:merge_requests_closing_issues, issue: work_item, merge_request: other_merge_request,
+    create(:merge_request_issue, issue: work_item, merge_request: other_merge_request,
       from_mr_description: false)
   end
 
@@ -32,7 +32,7 @@ RSpec.describe API::WorkItems::ClosingMergeRequests, feature_category: :portfoli
   # the collection does not add per-row queries.
   def add_development_feature_record
     extra_mr = create(:merge_request, source_project: project, source_branch: "extra-#{SecureRandom.hex(4)}")
-    create(:merge_requests_closing_issues, issue: work_item, merge_request: extra_mr)
+    create(:merge_request_issue, issue: work_item, merge_request: extra_mr)
   end
 
   shared_examples 'closing_merge_requests endpoint' do
@@ -58,7 +58,7 @@ RSpec.describe API::WorkItems::ClosingMergeRequests, feature_category: :portfoli
       inaccessible_project = create(:project, :repository, :private)
       inaccessible_project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
       inaccessible_mr = create(:merge_request, source_project: inaccessible_project)
-      create(:merge_requests_closing_issues, issue: work_item, merge_request: inaccessible_mr)
+      create(:merge_request_issue, issue: work_item, merge_request: inaccessible_mr)
 
       get api(api_request_path, user)
 
@@ -72,7 +72,7 @@ RSpec.describe API::WorkItems::ClosingMergeRequests, feature_category: :portfoli
     it 'includes cross-project closing merge requests the user can read' do
       other_project = create(:project, :repository, :private, reporters: user)
       cross_project_mr = create(:merge_request, source_project: other_project)
-      cross_project_closing_mr = create(:merge_requests_closing_issues, issue: work_item,
+      cross_project_closing_mr = create(:merge_request_issue, issue: work_item,
         merge_request: cross_project_mr)
 
       get api(api_request_path, user)

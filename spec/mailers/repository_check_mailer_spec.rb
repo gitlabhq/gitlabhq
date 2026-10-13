@@ -7,7 +7,7 @@ RSpec.describe RepositoryCheckMailer do
 
   describe '.notify' do
     it 'delivers to the given recipient' do
-      admin = create(:admin)
+      admin = build_stubbed(:admin)
 
       mail = described_class.notify(1, admin.email)
 

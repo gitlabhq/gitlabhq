@@ -937,7 +937,7 @@ When you believe you've fixed the cause of the failure:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Search**.
 1. Expand **Advanced search**.
-1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
+1. Inside the **Advanced search migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
 
 If you cannot get the migration to succeed, you may
 consider the
@@ -959,6 +959,32 @@ If you upgrade GitLab before all pending advanced search migrations are complete
 any pending migrations that have been removed in the new version cannot be executed or retried.
 In this case, you must
 [re-create your index from scratch](../elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index).
+
+The `gitlab:check` Rake task includes a check named
+`All migrations must be finished before doing a major upgrade`.
+When advanced search indexing is turned on, the check reports `yes` when no migrations are pending.
+When migrations are pending, the check reports `no` and the number of pending migrations.
+When indexing is turned off, the check is skipped.
+
+The check:
+
+- Reports status only.
+- Does not stop, pause, or roll back an upgrade.
+- Runs only when you run the `gitlab:check` or `gitlab:app:check` Rake task.
+
+The Rake task exits with status `0` even when the check reports `no`,
+so you cannot use the exit code to gate an upgrade.
+
+The pending migration count includes migrations that have not started, are in progress, or are halted,
+but not [skippable migrations](#skippable-migrations).
+Neither the check nor the `gitlab:elastic:list_pending_migrations` Rake task
+identifies which pending migrations are halted.
+The `gitlab:elastic:info` Rake task reports whether the current migration is halted,
+but it reports on the current migration only.
+You can try to [identify and retry a halted migration](#retry-a-halted-migration).
+
+If a migration stays pending and `gitlab:elastic:list_pending_migrations` marks it `[Obsolete]`,
+you must re-create your index instead of waiting for the migration to complete.
 
 ### Skippable migrations
 
@@ -986,7 +1012,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Resumes indexing for advanced search. |
 | [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Validates cluster connectivity, index, and search operations for all indices. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664) in GitLab 18.3. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created. |
-| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Invokes `gitlab:elastic:index_work_items` and `gitlab:elastic:index_group_wikis`. |
+| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Invokes `gitlab:elastic:index_work_items` and `gitlab:elastic:index_group_wikis`, and indexes group milestones. |
 | [`sudo gitlab-rake gitlab:elastic:index_work_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Indexes all work items from the groups where Elasticsearch is enabled. |
 | [`sudo gitlab-rake gitlab:elastic:index_namespaces`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                  | Indexes all root namespaces. |
 | [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                 | Indexes all wikis from the groups where Elasticsearch is enabled. |

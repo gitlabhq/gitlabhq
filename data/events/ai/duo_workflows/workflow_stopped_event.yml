@@ -1,0 +1,9 @@
+---
+event: Ai::DuoWorkflows::WorkflowStoppedEvent
+description: Published when a user cancels a Duo agent session. Nothing publishes or
+  subscribes to it until
+  [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256963);
+  the class ships first so that every node can read it before any node queues one.
+  Deferred via run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

@@ -41,6 +41,10 @@ module Gitlab
 
           attr_reader :structure_sql, :database
 
+          def partition_index_matcher
+            @partition_index_matcher ||= PartitionIndexMatcher.new(structure_sql, database)
+          end
+
           def build_inconsistency(validator_class, structure_sql_object, database_object, details: {})
             Inconsistency.new(validator_class, structure_sql_object, database_object, details: details)
           end

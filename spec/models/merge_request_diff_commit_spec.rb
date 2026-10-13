@@ -439,6 +439,81 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
     end
   end
 
+  describe '.archived_table_exists?' do
+    it 'is false when the archived table is absent' do
+      expect(described_class.archived_table_exists?).to be(false)
+    end
+
+    context 'with the archived table' do
+      include_context 'with archived merge_request_diff_commits'
+
+      it 'is true' do
+        expect(described_class.archived_table_exists?).to be(true)
+      end
+    end
+  end
+
+  describe '.restore_from_archived' do
+    include_context 'with archived merge_request_diff_commits'
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    let(:merge_request_diff) { merge_request.merge_request_diff }
+    let!(:original_shas) { merge_request_diff.commit_shas }
+
+    def restored_shas
+      merge_request_diff.reset.commit_shas(mode: :force_metadata)
+    end
+
+    before do
+      archive_diff_commits(merge_request_diff)
+    end
+
+    it 'copies the rows back in their original order', :aggregate_failures do
+      expect(merge_request_diff.merge_request_diff_commits).to be_empty
+
+      expect(described_class.restore_from_archived(merge_request_diff.id)).to eq(original_shas.size)
+      expect(restored_shas).to eq(original_shas)
+    end
+
+    it 'inserts nothing on a second run' do
+      described_class.restore_from_archived(merge_request_diff.id)
+
+      expect(described_class.restore_from_archived(merge_request_diff.id)).to eq(0)
+    end
+
+    it 'takes project_id from the diff rather than the archived row' do
+      connection.execute(<<~SQL)
+        UPDATE merge_request_diff_commits_archived SET project_id = NULL
+        WHERE merge_request_diff_id = #{merge_request_diff.id}
+      SQL
+
+      described_class.restore_from_archived(merge_request_diff.id)
+
+      project_ids = described_class.where(merge_request_diff_id: merge_request_diff.id).distinct.pluck(:project_id)
+      expect(project_ids).to eq([project.id])
+    end
+
+    it 'skips archived rows without a metadata pointer' do
+      connection.execute(<<~SQL)
+        UPDATE merge_request_diff_commits_archived SET merge_request_commits_metadata_id = NULL
+        WHERE merge_request_diff_id = #{merge_request_diff.id} AND relative_order = 0
+      SQL
+
+      expect(described_class.restore_from_archived(merge_request_diff.id)).to eq(original_shas.size - 1)
+    end
+
+    it 'leaves other diffs alone' do
+      other_diff = create(:merge_request, source_project: project, target_project: project, source_branch: 'fix').merge_request_diff
+      archive_diff_commits(other_diff)
+
+      described_class.restore_from_archived(merge_request_diff.id)
+
+      expect(other_diff.reset.merge_request_diff_commits).to be_empty
+    end
+  end
+
   describe '.create_bulk' do
     def create_bulk(merge_request_diff_id)
       described_class.create_bulk(

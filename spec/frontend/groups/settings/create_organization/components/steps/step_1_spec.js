@@ -14,6 +14,7 @@ describe('ReconciliationStep1', () => {
     wrapper = shallowMountExtended(Step1, {
       propsData: {
         organization: mockNewOrganization,
+        shouldCreateNewOrganization: true,
         ...props,
       },
       stubs: {
@@ -53,7 +54,20 @@ describe('ReconciliationStep1', () => {
 
     it('renders a single organization card for the organization to be created', () => {
       expect(findOrganizationCards()).toHaveLength(1);
-      expect(findOrganizationCards().at(0).props('organization')).toEqual(mockNewOrganization);
+      expect(findOrganizationCards().at(0).props()).toEqual({
+        organization: mockNewOrganization,
+        allowEditMode: true,
+      });
+    });
+
+    describe('when organization card emits update event', () => {
+      beforeEach(() => {
+        findOrganizationCards().at(0).vm.$emit('update', mockNewOrganization);
+      });
+
+      it('emits update-organization event', () => {
+        expect(wrapper.emitted('update-organization')).toEqual([[mockNewOrganization]]);
+      });
     });
 
     it('renders group stats for the organization group', () => {

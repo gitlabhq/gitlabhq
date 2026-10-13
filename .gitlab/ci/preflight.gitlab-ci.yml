@@ -11,6 +11,8 @@ rails-boot:
     - .ruby-cache
     - .use-pg17
     - .preflight:rules:rails-production-server-boot
+  variables:
+    GIT_DEPTH: "1"
   needs:
     - job: cache:ruby-gems
       optional: true
@@ -20,6 +22,7 @@ rails-boot:
 ruby_syntax:
   extends:
     - .preflight-job-base
+    - .repo-from-artifacts
     - .preflight:rules:ruby_syntax
   before_script:
     - source scripts/utils.sh
@@ -33,6 +36,7 @@ ruby_syntax:
 no-ee-check:
   extends:
     - .preflight-job-base
+    - .repo-from-artifacts
     - .preflight:rules:no-ee-check
   script:
     - scripts/no-dir-check ee
@@ -40,6 +44,7 @@ no-ee-check:
 no-jh-check:
   extends:
     - .preflight-job-base
+    - .repo-from-artifacts
     - .preflight:rules:no-jh-check
   script:
     - scripts/no-dir-check jh
@@ -47,6 +52,7 @@ no-jh-check:
 unique-by-index-check:
   extends:
     - .preflight-job-base
+    - .repo-from-artifacts
     - .preflight:rules:unique-by-index-check
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION_DEFAULT}
   allow_failure: true

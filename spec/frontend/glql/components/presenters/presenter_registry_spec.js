@@ -6,8 +6,9 @@ import CiItemPresenter from '~/glql/components/presenters/ci_item.vue';
 import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
 import CodePresenter from '~/glql/components/presenters/code.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
+import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
+import TierBandPresenter from '~/glql/components/presenters/tier_band.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
-import DurationMsPresenter from '~/glql/components/presenters/duration_ms.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
@@ -16,6 +17,7 @@ import MilestonePresenter from '~/glql/components/presenters/milestone.vue';
 import NamedTextPresenter from '~/glql/components/presenters/named_text.vue';
 import NullPresenter from '~/glql/components/presenters/null.vue';
 import NumberPresenter from '~/glql/components/presenters/number.vue';
+import CreditsPresenter from '~/glql/components/presenters/credits.vue';
 import PercentagePresenter from '~/glql/components/presenters/percentage.vue';
 import ProjectPresenter from '~/glql/components/presenters/project.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -37,6 +39,7 @@ import {
   MOCK_CI_STAGE,
   MOCK_DIMENSIONS,
   MOCK_DUO_USAGE_EVENTS_DIMENSIONS,
+  MOCK_DUO_MODEL,
   MOCK_EPIC,
   MOCK_GROUP,
   MOCK_ISSUE,
@@ -90,6 +93,7 @@ describe('presenter_registry', () => {
         ${'stage'}     | ${MOCK_CI_STAGE}        | ${NamedTextPresenter}
         ${'project'}   | ${MOCK_PROJECT}         | ${ProjectPresenter}
         ${'group'}     | ${MOCK_GROUP}           | ${LinkPresenter}
+        ${'model'}     | ${MOCK_DUO_MODEL}       | ${NamedTextPresenter}
       `('resolves $dataType to the matching presenter', ({ field, presenter }) => {
         expect(presenterFor({ key: field }, 'key')).toBe(presenter);
       });
@@ -124,7 +128,11 @@ describe('presenter_registry', () => {
         ${'returningUsersCount'}      | ${12}            | ${NumberPresenter}
         ${'previousPeriodUsersCount'} | ${8}             | ${NumberPresenter}
         ${'durationQuantile'}         | ${3661}          | ${DurationPresenter}
-        ${'timeToMergeQuantile'}      | ${250000}        | ${DurationMsPresenter}
+        ${'timeToMergeQuantile'}      | ${250}           | ${DurationPresenter}
+        ${'timeToMergeMean'}          | ${90}            | ${DurationPresenter}
+        ${'timeToMergeMin'}           | ${30}            | ${DurationPresenter}
+        ${'timeToMergeMax'}           | ${3600}          | ${DurationPresenter}
+        ${'timeToMergeSum'}           | ${3661}          | ${DurationPresenter}
         ${'queuedDuration'}           | ${90}            | ${DurationPresenter}
         ${'completionRate'}           | ${0.6}           | ${PercentagePresenter}
         ${'finishedCount'}            | ${789}           | ${NumberPresenter}
@@ -132,6 +140,36 @@ describe('presenter_registry', () => {
         ${'durationMin'}              | ${30}            | ${DurationPresenter}
         ${'durationMax'}              | ${3600}          | ${DurationPresenter}
         ${'durationSum'}              | ${3661}          | ${DurationPresenter}
+        ${'projectsCount'}            | ${5}             | ${NumberPresenter}
+        ${'creditsUsedMin'}           | ${0.25}          | ${CreditsPresenter}
+        ${'creditsUsedMax'}           | ${41.36}         | ${CreditsPresenter}
+        ${'creditsUsedMean'}          | ${18.456}        | ${CreditsPresenter}
+        ${'creditsUsedSum'}           | ${2214.77}       | ${CreditsPresenter}
+        ${'creditsUsedQuantile'}      | ${19.12}         | ${CreditsPresenter}
+        ${'creditsPerMergedMrRatio'}  | ${543.35}        | ${CreditsPresenter}
+        ${'flowTypesCount'}           | ${3}             | ${NumberPresenter}
+        ${'joinedUsersCount'}         | ${6}             | ${NumberPresenter}
+        ${'churnedUsersCount'}        | ${3}             | ${NumberPresenter}
+        ${'createdMrCountMin'}        | ${0}             | ${NumberPresenter}
+        ${'createdMrCountMax'}        | ${4}             | ${NumberPresenter}
+        ${'createdMrCountMean'}       | ${1.5}           | ${NumberPresenter}
+        ${'createdMrCountSum'}        | ${37}            | ${NumberPresenter}
+        ${'createdMrCountQuantile'}   | ${2}             | ${NumberPresenter}
+        ${'mergedMrCountMin'}         | ${0}             | ${NumberPresenter}
+        ${'mergedMrCountMax'}         | ${4}             | ${NumberPresenter}
+        ${'mergedMrCountMean'}        | ${1.5}           | ${NumberPresenter}
+        ${'mergedMrCountSum'}         | ${37}            | ${NumberPresenter}
+        ${'mergedMrCountQuantile'}    | ${2}             | ${NumberPresenter}
+        ${'closedMrCountMin'}         | ${0}             | ${NumberPresenter}
+        ${'closedMrCountMax'}         | ${4}             | ${NumberPresenter}
+        ${'closedMrCountMean'}        | ${1.5}           | ${NumberPresenter}
+        ${'closedMrCountSum'}         | ${37}            | ${NumberPresenter}
+        ${'closedMrCountQuantile'}    | ${2}             | ${NumberPresenter}
+        ${'openMrCountMin'}           | ${0}             | ${NumberPresenter}
+        ${'openMrCountMax'}           | ${4}             | ${NumberPresenter}
+        ${'openMrCountMean'}          | ${1.5}           | ${NumberPresenter}
+        ${'openMrCountSum'}           | ${37}            | ${NumberPresenter}
+        ${'openMrCountQuantile'}      | ${2}             | ${NumberPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {
@@ -168,6 +206,15 @@ describe('presenter_registry', () => {
         );
       });
 
+      it('renders status on Duo workflows dimensions as plain text', () => {
+        expect(
+          presenterFor(
+            { __typename: 'DuoWorkflowsAggregationResponseDimensions', status: 'finished' },
+            'status',
+          ),
+        ).toBe(TextPresenter);
+      });
+
       it('resolves user on analytics dimensions to UserAvatarPresenter', () => {
         expect(presenterFor({ ...MOCK_DIMENSIONS, user: MOCK_USER }, 'user')).toBe(
           UserAvatarPresenter,
@@ -182,6 +229,15 @@ describe('presenter_registry', () => {
         expect(
           presenterFor(
             { __typename: 'AgentPlatformSessionsAggregationResponseDimensions', user: MOCK_USER },
+            'user',
+          ),
+        ).toBe(UserAvatarPresenter);
+      });
+
+      it('resolves user on Duo workflows dimensions to UserAvatarPresenter', () => {
+        expect(
+          presenterFor(
+            { __typename: 'DuoWorkflowsAggregationResponseDimensions', user: MOCK_USER },
             'user',
           ),
         ).toBe(UserAvatarPresenter);
@@ -247,6 +303,73 @@ describe('presenter_registry', () => {
       });
     });
 
+    describe('date bucket dispatch', () => {
+      const monthly = { parameters: { granularity: 'monthly' } };
+
+      it('routes a bucket-shaped value on a field with a granularity to DateBucketPresenter', () => {
+        expect(presenterFor({ created: '2026-06-01' }, 'created', monthly)).toBe(
+          DateBucketPresenter,
+        );
+      });
+
+      it('routes an aliased bucket dimension to DateBucketPresenter', () => {
+        expect(
+          presenterFor({ Monthly: '2026-06-01' }, 'Monthly', {
+            presenterKey: 'created',
+            ...monthly,
+          }),
+        ).toBe(DateBucketPresenter);
+      });
+
+      it('keeps relative time for date strings without a granularity', () => {
+        expect(presenterFor({ created: '2026-06-01' }, 'created')).toBe(TimePresenter);
+      });
+
+      it('routes any string on a field with a granularity to DateBucketPresenter', () => {
+        expect(presenterFor({ size: 'large' }, 'size', monthly)).toBe(DateBucketPresenter);
+      });
+
+      it('falls through to regular dispatch for non-string values', () => {
+        expect(presenterFor({ size: 42 }, 'size', monthly)).toBe(TextPresenter);
+        expect(presenterFor({ user: MOCK_USER }, 'user', monthly)).toBe(UserPresenter);
+      });
+
+      it('routes a bucket dimension aliased as the title field by its own value', () => {
+        expect(
+          presenterFor({ __typename: 'Issue', title: '2026-06-01' }, 'title', {
+            presenterKey: 'created',
+            ...monthly,
+          }),
+        ).toBe(DateBucketPresenter);
+      });
+
+      it('returns NullPresenter when the bucket value is null', () => {
+        expect(presenterFor({ created: null }, 'created', monthly)).toBe(NullPresenter);
+      });
+    });
+
+    describe('tier band dispatch', () => {
+      const tiers = { parameters: { thresholds: ['5', '25', '100'] } };
+
+      it('routes a tier value on a field with thresholds to TierBandPresenter', () => {
+        expect(presenterFor({ userTier: 'tier_0' }, 'userTier', tiers)).toBe(TierBandPresenter);
+      });
+
+      it('routes an aliased tier dimension to TierBandPresenter', () => {
+        expect(
+          presenterFor({ Tier: 'tier_0' }, 'Tier', { presenterKey: 'userTier', ...tiers }),
+        ).toBe(TierBandPresenter);
+      });
+
+      it('keeps regular dispatch for tier values without thresholds', () => {
+        expect(presenterFor({ userTier: 'tier_0' }, 'userTier')).toBe(TextPresenter);
+      });
+
+      it('returns NullPresenter when the tier value is null', () => {
+        expect(presenterFor({ userTier: null }, 'userTier', tiers)).toBe(NullPresenter);
+      });
+    });
+
     describe('title-aliased field keys', () => {
       it('routes a Project item by its `name` field through ProjectPresenter', () => {
         expect(presenterFor(MOCK_PROJECT, 'name')).toBe(ProjectPresenter);
@@ -270,6 +393,17 @@ describe('presenter_registry', () => {
 
     it('returns the field value for non-title field keys', () => {
       expect(dataForField({ key: 'value' }, 'key')).toBe('value');
+    });
+
+    it('returns the field value when only the alias matches the title field', () => {
+      expect(dataForField({ ...MOCK_ISSUE, title: '2026-06-01' }, 'title', 'created')).toBe(
+        '2026-06-01',
+      );
+    });
+
+    it('returns the item when the base field is the title field under an alias', () => {
+      const item = { ...MOCK_ISSUE, Name: 'x' };
+      expect(dataForField(item, 'Name', 'title')).toBe(item);
     });
   });
 

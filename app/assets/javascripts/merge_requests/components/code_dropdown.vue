@@ -36,6 +36,11 @@ export default {
       type: String,
       required: true,
     },
+    size: {
+      type: String,
+      required: false,
+      default: 'medium',
+    },
   },
   computed: {
     items() {
@@ -94,8 +99,9 @@ export default {
   <gl-disclosure-dropdown
     :toggle-text="__('Code')"
     :items="items"
+    :size="size"
     placement="bottom-end"
-    class="gl-w-full gl-align-top gl-leading-normal"
+    class="gl-self-start gl-leading-normal"
     toggle-class="gl-w-full @sm/panel:gl-w-auto"
     data-testid="mr-code-dropdown"
   />

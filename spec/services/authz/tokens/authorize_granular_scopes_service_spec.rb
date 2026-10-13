@@ -106,7 +106,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     end
 
     context 'when the token does not support fine-grained permissions' do
-      let(:token) { build(:oauth_access_token) }
+      let(:token) { build(:deploy_token) }
 
       it_behaves_like 'successful response'
     end
@@ -134,21 +134,53 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
           'Access denied: This operation requires a fine-grained personal access token ' \
             'with the following group permissions: [Member Role: Create].'
 
-        it 'does not have N+1 queries' do
-          control = ActiveRecord::QueryRecorder.new do
-            service.execute
+        context 'when the token belongs to a bot user' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:user_type) { %i[project_bot service_account] }
+
+          with_them do
+            let(:token) { build(:personal_access_token, user: build(:user, user_type: user_type)) }
+
+            it_behaves_like 'successful response'
+          end
+        end
+
+        # Both boundaries are projects in separate root namespaces, which is the shape
+        # an endpoint can actually declare: nothing guarantees they share an ancestor.
+        # Enforcing on both roots keeps the two runs on the same branch, so they differ
+        # only by one boundary rather than by whether authorization runs at all.
+        context 'with boundaries in separate root namespaces' do
+          let_it_be(:other_group, freeze: false) { create(:group) }
+          let_it_be(:project_a, freeze: false) { create(:project, group: group) }
+          let_it_be(:project_b, freeze: false) { create(:project, group: other_group) }
+
+          before do
+            stub_feature_flags(granular_personal_access_tokens_enforcement_saas: [group, other_group])
+
+            other_group.namespace_settings.update!(
+              enforce_granular_tokens: true,
+              granular_tokens_enforced_after: Date.current
+            )
           end
 
-          expect do
-            described_class.new(
-              boundaries: [
-                Authz::Boundary.for(group.reload),
-                Authz::Boundary.for(project.reload)
-              ],
-              permissions: permissions,
-              token: token
-            ).execute
-          end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency.or_fewer
+          it 'does not have N+1 queries', :request_store do
+            control = ActiveRecord::QueryRecorder.new do
+              described_class.new(
+                boundaries: [Authz::Boundary.for(project_a)],
+                permissions: permissions,
+                token: token
+              ).execute
+            end
+
+            expect do
+              described_class.new(
+                boundaries: [Authz::Boundary.for(project_a), Authz::Boundary.for(project_b)],
+                permissions: permissions,
+                token: token
+              ).execute
+            end.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency.or_fewer
+          end
         end
 
         context 'when the `granular_personal_access_tokens` feature flag is disabled' do
@@ -188,6 +220,79 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       end
     end
 
+    context 'when the token is a legacy OAuth access token' do
+      let_it_be(:token, freeze: false) { create(:oauth_access_token) }
+
+      it_behaves_like 'successful response'
+
+      context 'when the namespace requires granular tokens' do
+        let_it_be(:group, freeze: false) { create(:group) }
+        let_it_be(:boundary, freeze: false) { Authz::Boundary.for(group) }
+
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement_saas: group)
+
+          group.namespace_settings.update!(
+            enforce_granular_tokens: true,
+            granular_tokens_enforced_after: Date.current
+          )
+        end
+
+        it_behaves_like 'successful response'
+
+        it 'does not evaluate namespace enforcement' do
+          expect(Authz::Tokens::EnforcementCache).not_to receive(:new)
+
+          service.execute
+        end
+      end
+    end
+
+    context 'when the token is a granular OAuth access token' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:application) { create(:oauth_application) }
+      let_it_be_with_reload(:consent_grant) do
+        create(:oauth_consent_grant, user: user, application: application, boundary: boundary,
+          permissions: :create_member_role)
+      end
+
+      let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+      it_behaves_like 'successful response'
+
+      context 'when the `granular_oauth_tokens` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_oauth_tokens: false)
+        end
+
+        it_behaves_like 'error response', 'Access denied: Fine-grained oauth access tokens are not yet supported.'
+      end
+
+      context 'when the `granular_personal_access_tokens` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens: false)
+        end
+
+        it_behaves_like 'successful response'
+      end
+
+      context 'when the consent grant does not include the required permission' do
+        let(:permissions) { :read_member_role }
+
+        it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained oauth access token ' \
+          'with the following instance permissions: [Member Role: Read].'
+      end
+
+      context 'when the consent grant is revoked' do
+        before do
+          consent_grant.revoked!
+        end
+
+        it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained oauth access token ' \
+          'with the following instance permissions: [Member Role: Create].'
+      end
+    end
+
     context 'when the token does not have the required permissions' do
       let_it_be(:granular_pat, freeze: false) do
         create(:granular_pat, boundary: boundary, permissions: :read_work_item)
@@ -224,6 +329,41 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         end
 
         it 'returns an access_denied error response' do
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.reason).to be_nil
+          expect(result.message).to start_with('Access denied:')
+        end
+      end
+
+      context 'when the token is scoped to the hidden boundary' do
+        let_it_be(:token, freeze: false) do
+          create(:granular_pat, boundary: Authz::Boundary.for(private_project), permissions: :read_code)
+        end
+
+        # 404 masking only runs on the denial path, so an in-scope token short-circuits
+        # it. The non-member is denied afterwards by the endpoint's own authorization.
+        it 'returns success and leaves the user-level denial to the endpoint' do
+          expect(service.execute).to be_success
+        end
+      end
+
+      # Reading the boundary is no longer the same question as being a member of it.
+      # A user who reaches a private group through a descendant project can be told
+      # which permissions are missing instead of being given a bare 404.
+      context 'when the user can read the boundary without being a member' do
+        let_it_be(:private_group, freeze: false) { create(:group, :private) }
+        let_it_be(:project_in_group, freeze: false) { create(:project, :private, group: private_group) }
+        let_it_be(:boundary, freeze: false) { Authz::Boundary.for(private_group) }
+        let_it_be(:permissions) { :read_work_item }
+        let_it_be(:token, freeze: false) { create(:granular_pat) }
+
+        before_all do
+          project_in_group.add_developer(token.user)
+        end
+
+        it 'returns access_denied rather than masking the boundary' do
           result = service.execute
 
           expect(result).to be_error
@@ -299,7 +439,6 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         let_it_be(:permissions) { :delete_member_role }
 
         it 'authorizes based on boundary priority order' do
-          allow(token).to receive(:can?).with(:read_boundary, anything).and_call_original
           expect(token).to receive(:can?).with(:delete_member_role, project_boundary).and_call_original.ordered
           expect(token).to receive(:can?).with(:delete_member_role, group_boundary).and_call_original.ordered
           expect(token).to receive(:can?).with(:delete_member_role, user_boundary).and_call_original.ordered

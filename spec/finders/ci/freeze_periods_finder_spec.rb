@@ -11,7 +11,7 @@ RSpec.describe Ci::FreezePeriodsFinder, feature_category: :release_orchestration
   let!(:freeze_period_2) { create(:ci_freeze_period, project: project, created_at: 1.day.ago) }
 
   shared_examples_for 'returns nothing' do
-    specify do
+    it 'returns nothing' do
       is_expected.to be_empty
     end
   end

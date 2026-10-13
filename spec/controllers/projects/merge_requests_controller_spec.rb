@@ -1163,7 +1163,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: [] } }
       let(:job_options) { {} }
 
@@ -1299,7 +1299,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: [] } }
 
       context 'while signed out' do
@@ -1420,7 +1420,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     context 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: { 'files' => {} } } }
 
       context 'while signed out' do
@@ -1524,7 +1524,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: [] } }
 
       context 'while signed out' do
@@ -1655,7 +1655,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
 
       context 'while signed out' do
@@ -2491,7 +2491,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
       end
 
-      context do
+      context 'with discussions on the merge request' do
         it_behaves_like 'discussions provider' do
           let!(:author) { create(:user) }
           let_it_be_with_refind(:project) { create(:project) }

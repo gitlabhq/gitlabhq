@@ -8,8 +8,8 @@ description: 포괄적인 로깅 및 모니터링 기능에 액세스합니다.
 
 {{< details >}}
 
-- 계층:  Free, Premium, Ultimate
-- 제공:  GitLab Self-Managed
+- 티어:  Free, Premium, Ultimate
+- 제공 서비스: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -87,31 +87,31 @@ GITLAB_LOG_LEVEL=info
 - [`svlogd`에 의해 관리되는](https://docs.gitlab.com/omnibus/settings/logs/#runit-logs) 로그는 `current`이라는 파일에 기록됩니다. 보관된 버전은 `@<hexadecimal-ID>.s` 파일로 압축됩니다.
 - GitLab에 내장된 `logrotate` 서비스는 [다른 모든 로그를 관리합니다](https://docs.gitlab.com/omnibus/settings/logs/#logrotate). 보관된 버전은 `<original-name>.<number>.gz` 파일로 압축됩니다.
 
-| 로그 유형                                        | logrotate로 관리됨    | svlogd/runit로 관리됨 |
-|:------------------------------------------------|:------------------------|:------------------------|
-| [Alertmanager 로그](#alertmanager-logs)         | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Consul 로그](#consul-logs)                     | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [crond 로그](#crond-logs)                       | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Gitaly](#gitaly-logs)                          | {{< icon name="check-circle" >}} 예  | {{< icon name="check-circle" >}} 예  |
-| [Linux 패키지 설치용 GitLab Exporter](#gitlab-exporter-logs) | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [GitLab Pages 로그](#pages-logs)                | {{< icon name="check-circle" >}} 예  | {{< icon name="check-circle" >}} 예  |
-| GitLab Rails                                    | {{< icon name="check-circle" >}} 예  | {{< icon name="dotted-circle" >}} 아니오  |
-| [GitLab Shell 로그](#gitlab-shelllog)           | {{< icon name="check-circle" >}} 예  | {{< icon name="dotted-circle" >}} 아니오  |
-| [Grafana 로그](#grafana-logs)                   | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [LogRotate 로그](#logrotate-logs)               | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Mailroom](#mail_room_jsonlog-default)          | {{< icon name="check-circle" >}} 예  | {{< icon name="check-circle" >}} 예  |
-| [NGINX](#nginx-logs)                            | {{< icon name="check-circle" >}} 예  | {{< icon name="check-circle" >}} 예  |
-| [Patroni 로그](#patroni-logs)                   | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [PgBouncer 로그](#pgbouncer-logs)               | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [PostgreSQL 로그](#postgresql-logs)             | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Praefect 로그](#praefect-logs)                 | {{< icon name="dotted-circle" >}} 예 | {{< icon name="check-circle" >}} 예  |
-| [Prometheus 로그](#prometheus-logs)             | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Puma](#puma-logs)                              | {{< icon name="check-circle" >}} 예  | {{< icon name="check-circle" >}} 예  |
-| [Redis 로그](#redis-logs)                       | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [레지스트리 로그](#registry-logs)                 | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Sentinel 로그](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Sidekiq 로그](#sidekiq-logs)                   | {{< icon name="dotted-circle" >}} 아니오  | {{< icon name="check-circle" >}} 예  |
-| [Workhorse 로그](#workhorse-logs)               | {{< icon name="check-circle" >}} 예  | {{< icon name="check-circle" >}} 예  |
+| 로그 유형                                                                 | logrotate로 관리됨 | svlogd/runit로 관리됨 |
+|:-------------------------------------------------------------------------|:---------------------|:------------------------|
+| [Alertmanager 로그](#alertmanager-logs)                                  | {{< no >}}           | {{< yes >}} |
+| [Consul 로그](#consul-logs)                                              | {{< no >}}           | {{< yes >}} |
+| [crond 로그](#crond-logs)                                                | {{< no >}}           | {{< yes >}} |
+| [Gitaly](#gitaly-logs)                                                   | {{< yes >}}          | {{< yes >}} |
+| [Linux 패키지 설치용 GitLab Exporter](#gitlab-exporter-logs) | {{< no >}}           | {{< yes >}} |
+| [GitLab Pages 로그](#pages-logs)                                         | {{< yes >}}          | {{< yes >}} |
+| GitLab Rails                                                             | {{< yes >}}          | {{< no >}}  |
+| [GitLab Shell 로그](#gitlab-shelllog)                                    | {{< yes >}}          | {{< no >}}  |
+| [Grafana 로그](#grafana-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [LogRotate 로그](#logrotate-logs)                                        | {{< no >}}           | {{< yes >}} |
+| [Mailroom](#mail_room_jsonlog-default)                                   | {{< yes >}}          | {{< yes >}} |
+| [NGINX](#nginx-logs)                                                     | {{< yes >}}          | {{< yes >}} |
+| [Patroni 로그](#patroni-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [PgBouncer 로그](#pgbouncer-logs)                                        | {{< no >}}           | {{< yes >}} |
+| [PostgreSQL 로그](#postgresql-logs)                                      | {{< no >}}           | {{< yes >}} |
+| [Praefect 로그](#praefect-logs)                                          | {{< yes >}}          | {{< yes >}} |
+| [Prometheus 로그](#prometheus-logs)                                      | {{< no >}}           | {{< yes >}} |
+| [Puma](#puma-logs)                                                       | {{< yes >}}          | {{< yes >}} |
+| [Redis 로그](#redis-logs)                                                | {{< no >}}           | {{< yes >}} |
+| [레지스트리 로그](#registry-logs)                                          | {{< no >}}           | {{< yes >}} |
+| [Sentinel 로그](#sentinel-logs)                                          | {{< no >}}           | {{< yes >}} |
+| [Sidekiq 로그](#sidekiq-logs)                                            | {{< no >}}           | {{< yes >}} |
+| [Workhorse 로그](#workhorse-logs)                                        | {{< yes >}}          | {{< yes >}} |
 
 이러한 로그를 생성하는 서비스에 대한 자세한 내용은 [GitLab 아키텍처 개요](../../development/architecture.md)를 참조하세요.
 
@@ -197,37 +197,47 @@ Kubernetes 문제 해결 명령에 대한 자세한 내용은 [Kubernetes 치트
 
 이 예제는 특정 이슈에 대한 GET 요청이었습니다. 각 줄에는 성능 데이터도 포함되어 있으며, 시간은 초 단위입니다:
 
-- `duration_s`:  요청을 검색하는 데 걸린 총 시간
-- `queue_duration_s`:  GitLab Workhorse 내에 요청이 대기열에 있던 총 시간
-- `view_duration_s`:  Rails 뷰 내에 있던 총 시간
-- `db_duration_s`:  PostgreSQL에서 데이터를 검색하는 데 걸린 총 시간
-- `cpu_s`:  CPU에 소비된 총 시간
-- `gitaly_duration_s`:  Gitaly 호출의 총 시간
-- `gitaly_calls`:  Gitaly에 수행된 호출의 총 개수
-- `redis_calls`:  Redis에 수행된 호출의 총 개수
-- `redis_cross_slot_calls`:  Redis에 수행된 교차 슬롯 호출의 총 개수
-- `redis_allowed_cross_slot_calls`:  Redis에 수행된 허용된 교차 슬롯 호출의 총 개수
-- `redis_duration_s`:  Redis에서 데이터를 검색하는 데 걸린 총 시간
-- `redis_read_bytes`:  Redis에서 읽은 총 바이트
-- `redis_write_bytes`:  Redis에 쓴 총 바이트
-- `redis_<instance>_calls`:  Redis 인스턴스에 수행된 호출의 총 개수
-- `redis_<instance>_cross_slot_calls`:  Redis 인스턴스에 수행된 교차 슬롯 호출의 총 개수
-- `redis_<instance>_allowed_cross_slot_calls`:  Redis 인스턴스에 수행된 허용된 교차 슬롯 호출의 총 개수
-- `redis_<instance>_duration_s`:  Redis 인스턴스에서 데이터를 검색하는 데 걸린 총 시간
-- `redis_<instance>_read_bytes`:  Redis 인스턴스에서 읽은 총 바이트
-- `redis_<instance>_write_bytes`:  Redis 인스턴스에 쓴 총 바이트
-- `pid`:  워커의 Linux 프로세스 ID(워커가 다시 시작되면 변경됨)
-- `worker_id`:  워커의 논리적 ID(워커가 다시 시작되어도 변경되지 않음)
+- `duration_s`: 요청을 검색하는 데 걸린 총 시간
+- `queue_duration_s`: GitLab Workhorse 내에 요청이 대기열에 있던 총 시간
+- `view_duration_s`: Rails 뷰 내에 있던 총 시간
+- `db_duration_s`: PostgreSQL에서 데이터를 검색하는 데 걸린 총 시간
+- `cpu_s`: CPU에 소비된 총 시간
+- `gitaly_duration_s`: Gitaly 호출의 총 시간
+- `gitaly_calls`: Gitaly에 수행된 호출의 총 개수
+- `redis_calls`: Redis에 수행된 호출의 총 개수
+- `redis_cross_slot_calls`: Redis에 수행된 교차 슬롯 호출의 총 개수
+- `redis_allowed_cross_slot_calls`: Redis에 수행된 허용된 교차 슬롯 호출의 총 개수
+- `redis_duration_s`: Redis에서 데이터를 검색하는 데 걸린 총 시간
+- `redis_read_bytes`: Redis에서 읽은 총 바이트
+- `redis_write_bytes`: Redis에 쓴 총 바이트
+- `redis_<instance>_calls`: Redis 인스턴스에 수행된 호출의 총 개수
+- `redis_<instance>_cross_slot_calls`: Redis 인스턴스에 수행된 교차 슬롯 호출의 총 개수
+- `redis_<instance>_allowed_cross_slot_calls`: Redis 인스턴스에 수행된 허용된 교차 슬롯 호출의 총 개수
+- `redis_<instance>_duration_s`: Redis 인스턴스에서 데이터를 검색하는 데 걸린 총 시간
+- `redis_<instance>_read_bytes`: Redis 인스턴스에서 읽은 총 바이트
+- `redis_<instance>_write_bytes`: Redis 인스턴스에 쓴 총 바이트
+- `pid`: 워커의 Linux 프로세스 ID(워커가 다시 시작되면 변경됨)
+- `worker_id`: 워커의 논리적 ID(워커가 다시 시작되어도 변경되지 않음)
 
 HTTP 전송을 사용한 사용자 복제 및 페치 활동은 로그에 `action: git_upload_pack`로 표시됩니다.
 
-또한 로그에는 원본 IP 주소(`remote_ip`), 사용자의 ID(`user_id`) 및 사용자 이름(`username`)이 포함되어 있습니다.
+또한 로그에는 발신 IP 주소(`remote_ip`), 사용자 ID(`user_id`), 사용자 이름(`username`)이 포함됩니다.
 
-`/search`과 같은 일부 엔드포인트는 [고급 검색](../../user/search/advanced_search.md)을 사용하는 경우 Elasticsearch에 요청을 수행할 수 있습니다. 이들은 추가로 `elasticsearch_calls` 및 `elasticsearch_call_duration_s`를 기록하며, 이는 다음과 같습니다:
+`/search`과 같은 일부 엔드포인트는 [고급 검색](../../user/search/advanced_search.md)을 사용하는 경우 Elasticsearch에 요청을 수행할 수 있습니다. 추가로 `elasticsearch_calls` 및 `elasticsearch_duration_s`를 기록하며, 이는 다음에 해당합니다:
 
-- `elasticsearch_calls`:  Elasticsearch에 대한 호출의 총 개수
-- `elasticsearch_duration_s`:  Elasticsearch 호출이 소요된 총 시간
-- `elasticsearch_timed_out_count`:  시간 초과되고 따라서 부분 결과를 반환한 Elasticsearch에 대한 호출의 총 개수
+- `elasticsearch_calls`: Elasticsearch에 대한 호출의 총 개수
+- `elasticsearch_duration_s`: Elasticsearch 호출이 소요된 총 시간
+- `elasticsearch_timed_out_count`: 시간 초과되고 따라서 부분 결과를 반환한 Elasticsearch에 대한 호출의 총 개수
+
+검색 요청은 단일 검색 요청을 식별하는 UUID인 `meta.search.request_id`도 기록합니다. 동일한 값은 `perform_search` 및 `click_search_result` 이벤트의 `property`로 전송되므로 결과 클릭을 반환한 검색에 속할 수 있습니다. `meta.search.request_id`를 기록하지 않은 요청은 `perform_search` 이벤트를 내보내지 않습니다.
+
+> [!flag]
+> `meta.search.request_id`의 가용성은 `search_relevancy_join_key` 기능 플래그로 제어됩니다. 이 플래그는 기본적으로 비활성화되어 있습니다.
+
+[GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)로 비밀을 읽거나 쓰는 요청은 추가로 `openbao_calls` 및 `openbao_duration_s`를 기록하며, 이는 다음에 해당합니다:
+
+- `openbao_calls`: OpenBao에 대한 총 호출 수
+- `openbao_duration_s`: OpenBao 호출로 소요된 총 시간
 
 ActionCable 연결 및 구독 이벤트도 이 파일에 기록되며, 이전 형식을 따릅니다. `method`, `path` 및 `format` 필드는 적용할 수 없으며 항상 비어 있습니다. ActionCable 연결 또는 채널 클래스는 `controller`로 사용됩니다.
 
@@ -363,12 +373,12 @@ API에 직접 수행된 요청을 볼 수 있습니다. 예를 들어:
 
 이 항목은 관련 SSH 키가 `git fetch` 또는 `git clone`를 사용하여 문제의 프로젝트를 다운로드할 수 있는지 확인하기 위해 액세스된 내부 엔드포인트를 보여줍니다. 이 예제에서 우리는 다음을 봅니다:
 
-- `duration`:  요청을 검색하는 데 걸린 총 시간(밀리초)
-- `queue_duration`:  GitLab Workhorse 내에 요청이 대기열에 있던 총 시간(밀리초)
-- `method`:  요청을 수행하는 데 사용된 HTTP 메서드
-- `path`:  쿼리의 상대 경로
-- `params`:  쿼리 문자열 또는 HTTP 본문에 전달된 키-값 쌍(비밀번호 및 토큰과 같은 민감한 매개변수는 필터링됨)
-- `ua`:  요청자의 사용자 에이전트
+- `duration`: 요청을 검색하는 데 걸린 총 시간(밀리초)
+- `queue_duration`: GitLab Workhorse 내에 요청이 대기열에 있던 총 시간(밀리초)
+- `method`: 요청을 수행하는 데 사용된 HTTP 메서드
+- `path`: 쿼리의 상대 경로
+- `params`: 쿼리 문자열 또는 HTTP 본문에 전달된 키-값 쌍(비밀번호 및 토큰과 같은 민감한 매개변수는 필터링됨)
+- `ua`: 요청자의 사용자 에이전트
 
 > [!note]
 > [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4에서 `view_duration_s`는 [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119)에 의해 계산됩니다. 따라서 `view_duration_s`는 Redis 또는 외부 HTTP의 읽기/쓰기 프로세스와 같은 다양한 요인뿐만 아니라 직렬화 프로세스에만 의해 영향을 받을 수 있습니다.
@@ -457,7 +467,7 @@ Jira, Asana 및 irker 서비스와 같은 [통합](../../user/project/integratio
 
 {{< history >}}
 
-- GitLab 14.5에서 [더 이상 사용되지 않습니다](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+- GitLab 14.5에서 [더 이상 사용되지 않음](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8).
 
 {{< /history >}}
 
@@ -492,8 +502,8 @@ GitLab은 Git 리포지토리와 상호 작용해야 하지만 드문 경우이�
 
 {{< details >}}
 
-- 계층:  Free, Premium, Ultimate
-- 제공:  GitLab Self-Managed, GitLab Dedicated
+- 티어:  Free, Premium, Ultimate
+- 제공 서비스: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -531,16 +541,12 @@ Linux 패키지 설치의 경우 일부 Sidekiq 로그는 `/var/log/gitlab/sidek
 
 ### `sidekiq.log` {#sidekiqlog}
 
-{{< history >}}
-
-- Helm 차트 설치의 기본 로그 형식이 GitLab 16.0 이상에서 [`text`에서 `json`로 변경되었습니다](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169).
-
-{{< /history >}}
-
 이 로그는 다음 위치에 있습니다:
 
 - Linux 패키지 설치의 `/var/log/gitlab/sidekiq/current` 파일에 있습니다.
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/sidekiq.log` 파일에 있습니다.
+
+GitLab Helm 차트 설치의 기본 로그 형식은 `json`입니다.
 
 GitLab은 오랜 시간이 걸릴 수 있는 을 처리하기 위해 백그라운드 을 사용합니다. 이러한 처리에 대한 모든 정보가 이 파일에 기록됩니다. 예를 들어:
 
@@ -748,12 +754,6 @@ GitLab 개발에서 의 수정 이벤트가 이 파일에 기록됩니다. 예�
 
 ## `ci_resource_groups_json.log` {#ci_resource_groups_jsonlog}
 
-{{< history >}}
-
-- GitLab 15.9에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/issues/384180).
-
-{{< /history >}}
-
 이 로그는 다음 위치에 있습니다:
 
 - Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/ci_resource_groups_json.log` 파일에 있습니다.
@@ -821,12 +821,6 @@ GraphQL 쿼리가 파일에 기록됩니다. 예를 들어:
 
 ## `clickhouse.log` {#clickhouselog}
 
-{{< history >}}
-
-- GitLab 16.5에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371).
-
-{{< /history >}}
-
 이 로그는 다음 위치에 있습니다:
 
 - Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/clickhouse.log` 파일에 있습니다.
@@ -855,19 +849,13 @@ GraphQL 쿼리가 파일에 기록됩니다. 예를 들어:
 
 ## `web_hooks.log` {#web_hookslog}
 
-{{< history >}}
-
-- GitLab 16.3에서 도입되었습니다.
-
-{{< /history >}}
-
 이 로그는 다음 위치에 있습니다:
 
 - Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/web_hooks.log` 파일에 있습니다.
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/web_hooks.log` 파일에 있습니다.
 - Helm 차트 설치의 Sidekiq 포드 아래 `subcomponent="web_hooks"` 키 아래에 있습니다.
 
-Webhook의 백오프, 비활성화 및 재활성화 이벤트가 이 파일에 기록됩니다. 예를 들어:
+웹후크의 백오프, 비활성화 및 재활성화 이벤트가 이 파일에 기록됩니다. 예를 들어:
 
 ```json
 {"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"backoff","disabled_until":"2020-11-24T04:30:59.860Z","recent_failures":2}
@@ -879,7 +867,7 @@ Webhook의 백오프, 비활성화 및 재활성화 이벤트가 이 파일에 �
 
 재구성 로그 파일은 Linux 패키지 설치의 `/var/log/gitlab/reconfigure`에 있습니다. 자체 컴파일된 설치에는 재구성 로그가 없습니다. `gitlab-ctl reconfigure`를 수동으로 실행하거나 업그레이드의 일부로 실행할 때마다 재구성 로그가 채워집니다.
 
-재구성 로그 파일은 재구성이 시작된 시간의 UNIX 타임스탬프에 따라 이름이 지정되며, 예: `1509705644.log`
+재구성 로그 파일은 재구성이 시작된 UNIX 타임스탬프에 따라 명명되며, 예를 들어 `1509705644.log`
 
 ## `sidekiq_exporter.log` 및 `web_exporter.log` {#sidekiq_exporterlog-and-web_exporterlog}
 
@@ -902,8 +890,8 @@ Prometheus 메트릭 및 웹 Exporter가 모두 활성화된 경우 Puma는 웹 
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab Self-Managed
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -919,16 +907,10 @@ GitLab [로드 밸런싱](../postgresql/database_load_balancing.md)의 세부 �
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab Self-Managed
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab Self-Managed
 
 {{< /details >}}
-
-{{< history >}}
-
-- GitLab 15.9에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980).
-
-{{< /history >}}
 
 이 파일은 [정확한 코드 검색](../../user/search/exact_code_search.md)과 관련된 정보를 기록합니다.
 
@@ -938,12 +920,50 @@ GitLab [로드 밸런싱](../postgresql/database_load_balancing.md)의 세부 �
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/zoekt.log` 파일에 있습니다.
 - Helm 차트 설치의 Sidekiq 및 Webservice 포드 아래 `subcomponent="zoekt"` 키 아래에 있습니다.
 
+### `zoekt.log` 필드 {#zoektlog-fields}
+
+정기적인 메트릭 크론 작업의 항목은 `metric` 필드(`node_metrics` 또는 `indices_metrics`)로 구분됩니다. 요청당 로그 항목은 `metric` 필드를 포함하지 않으며, 대신 캡처된 Rails 요청 또는 Sidekiq 작업 로그 라인에 아래에 설명된 Zoekt 필드를 추가합니다.
+
+#### 노드 메트릭 항목(`metric: node_metrics`) {#node-metrics-entries-metric-node_metrics}
+
+이러한 항목은 정기적인 메트릭 크론 작업에 의해 온라인 Zoekt 노드마다 한 번씩 내보내집니다.
+
+| 필드 | 형식 | 설명 |
+|:------|:-----|:------------|
+| `enabled_namespaces_count` | 정수 | 이 노드에서 정확한 코드 검색을 위해 활성화된 네임스페이스의 수 |
+| `indices_count` | 정수 | 이 노드의 리포지토리 인덱스 수 |
+| `task_count_pending` | 정수 | `pending` 상태의 인덱싱 작업 수 |
+| `task_count_failed` | 정수 | `failed` 상태의 인덱싱 작업 수 |
+| `task_count_processing_queue` | 정수 | 처리할 준비가 된 인덱싱 작업의 수(상태는 `pending` 또는 `processing`이며 `perform_at <= now`) |
+| `task_count_orphaned` | 정수 | `orphaned` 상태의 인덱싱 작업 수 |
+| `task_count_done` | 정수 | `done` 상태의 인덱싱 작업 수 |
+| `meta` | 개체 | 노드 ID 및 URL을 포함한 노드 메타데이터 |
+
+#### 인덱스 메트릭 항목(`metric: indices_metrics`) {#indices-metrics-entries-metric-indices_metrics}
+
+이러한 항목은 메트릭 수집 주기마다 한 번씩 내보내집니다.
+
+`meta.zoekt.with_stale_used_storage_bytes_updated_at` 키는 중첩된 객체 경로가 아닌 점이 있는 리터럴 평면 키 이름입니다.
+
+| 필드 | 형식 | 설명 |
+|:------|:-----|:------------|
+| `meta.zoekt.with_stale_used_storage_bytes_updated_at` | 정수 | `used_storage_bytes` 값이 최근에 업데이트되지 않은 Zoekt 인덱스의 수 |
+
+#### 요청당 필드 {#per-request-fields}
+
+이러한 필드는 GitLab Rails에서 Zoekt 노드로의 각 HTTP 요청에 대해 내보낸 로그 항목에 나타납니다.
+
+| 필드 | 형식 | 설명 |
+|:------|:-----|:------------|
+| `zoekt_calls` | 정수 | 이 Rails 요청 중에 수행된 Zoekt HTTP 요청의 수 |
+| `zoekt_duration_s` | 부동소수점 | 이 Rails 요청 중에 Zoekt 응답을 기다리는 데 소요된 총 시간(초) |
+
 ## `elasticsearch.log` {#elasticsearchlog}
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab Self-Managed
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -1020,8 +1040,8 @@ GitLab [로드 밸런싱](../postgresql/database_load_balancing.md)의 세부 �
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab Self-Managed
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -1067,16 +1087,10 @@ GitLab [로드 밸런싱](../postgresql/database_load_balancing.md)의 세부 �
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- GitLab 16.0에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506).
-
-{{< /history >}}
 
 `llm.log` 파일은 [AI 기능](../../user/gitlab_duo/_index.md)과 관련된 정보를 기록합니다. 로깅에는 AI 이벤트에 대한 정보가 포함됩니다.
 
@@ -1084,12 +1098,12 @@ GitLab [로드 밸런싱](../postgresql/database_load_balancing.md)의 세부 �
 
 {{< history >}}
 
-- GitLab 17.2에서 [도입되었으며](https://gitlab.com/groups/gitlab-org/-/epics/13401) [플래그](../feature_flags/_index.md) `expanded_ai_logging`라는 이름의 이름을 가지고 있습니다. 기본적으로 비활성화됨.
+- GitLab 17.2에서 [도입되었으며](https://gitlab.com/groups/gitlab-org/-/work_items/13401) [기능 플래그](../feature_flags/_index.md)(`expanded_ai_logging`)와 함께 제공됩니다. 기본적으로 비활성화됨.
 
 {{< /history >}}
 
 > [!flag]
-> 이 기능의 가용성은 플래그에 의해 제어됩니다. 자세한 내용은 기록을 참조하세요. 이 기능은 테스트용으로 사용 가능하지만 프로덕션 사용을 위한 준비가 되어 있지 않습니다.
+> 이 기능의 사용 가능성은 기능 플래그로 제어합니다. 자세한 내용은 기록을 참조하세요. 이 기능은 테스트용으로 사용 가능하지만 프로덕션 사용을 위한 준비가 되어 있지 않습니다.
 
 LLM 프롬프트 입력 및 응답 출력을 기록하려면 `expanded_ai_logging` 플래그를 활성화합니다. 이 플래그는 GitLab Self-Managed 인스턴스가 아닌 GitLab.com에서만 사용하기 위한 것입니다.
 
@@ -1105,20 +1119,31 @@ LLM 프롬프트 입력 및 응답 출력을 기록하려면 `expanded_ai_loggin
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/llm.log` 파일에 있습니다.
 - Helm 차트 설치의 Webservice 포드 아래 `subcomponent="llm"` 키 아래에 있습니다.
 
+## `mcp.log` {#mcplog}
+
+{{< details >}}
+
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+`mcp.log` 파일은 [GitLab MCP 서버](../../user/gitlab_duo/model_context_protocol/mcp_server.md)와 관련된 정보를 기록합니다. 로깅에는 MCP 서버 가용성 거부가 포함되며, 요청이 거부된 이유를 설명하는 `denial_reason` 필드가 있습니다.
+
+로그 파일은 다음 위치에 있습니다:
+
+- Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/mcp.log` 파일에 있습니다.
+- 자체 컴파일된 설치의 `/home/git/gitlab/log/mcp.log` 파일에 있습니다.
+- Helm 차트 설치의 Webservice 포드의 `subcomponent="mcp"` 키 아래에 있습니다.
+
 ## `epic_work_item_sync.log` {#epic_work_item_synclog}
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- GitLab 16.9에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506).
-
-{{< /history >}}
 
 `epic_work_item_sync.log` 파일은 을 항목으로 동기화 및 마이그레이션하는 것과 관련된 정보를 기록합니다.
 
@@ -1132,31 +1157,25 @@ LLM 프롬프트 입력 및 응답 출력을 기록하려면 `expanded_ai_loggin
 
 {{< details >}}
 
-- 계층:  Ultimate
-- 제공:  GitLab.com, GitLab Dedicated
+- 티어:  Ultimate
+- 제공 서비스: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
 
-{{< history >}}
-
-- GitLab 16.7에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812).
-
-{{< /history >}}
-
-`secret_push_protection.log` 파일은 [비밀 푸시 보호](../../user/application_security/secret_detection/secret_push_protection/_index.md) 과 관련된 정보를 기록합니다.
+`secret_push_protection.log` 파일은 [비밀 푸시 보호](../../user/application_security/secret_detection/secret_push_protection/_index.md) 기능과 관련된 정보를 기록합니다.
 
 이 로그는 다음 위치에 있습니다:
 
 - Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/secret_push_protection.log` 파일에 있습니다.
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/secret_push_protection.log` 파일에 있습니다.
-- Helm 차트 설치의 Webservice 포드 아래 `subcomponent="secret_push_protection"` 키 아래에 있습니다.
+- Helm 차트 설치의 Webservice 포드의 `subcomponent="secret_push_protection"` 키 아래에 있습니다.
 
 ## `active_context.log` {#active_contextlog}
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab.com, GitLab Self-Managed
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
@@ -1180,8 +1199,8 @@ GitLab은 `ActiveContext` 코드 임베딩을 지원합니다. 이 은 코드 �
 
 {{< details >}}
 
-- 계층:  Premium, Ultimate
-- 제공:  GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- 티어:  Premium, Ultimate
+- 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -1205,9 +1224,9 @@ GitLab은 `ActiveContext` 코드 임베딩을 지원합니다. 이 은 코드 �
 
 - Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/user_experience_slis.log` 파일에 있습니다.
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/user_experience_slis.log` 파일에 있습니다.
-- Helm 차트 설치의 Webservice 포드 아래 `subcomponent="user_experience_slis"` 키 아래에 있습니다.
+- Helm 차트 설치의 Webservice 포드의 `subcomponent="user_experience_slis"` 키 아래에 있습니다.
 
-사용자 경험 SLI와 일치하는 사용자 경험 SLI에 대한 JSON 구조화 로그를 포함합니다.
+메트릭과 일치하는 사용자 경험 SLI에 대한 JSON 구조화 로그가 포함되어 있습니다.
 
 각 줄에는 Elasticsearch와 같은 서비스에서 수집할 수 있는 JSON이 포함되어 있습니다.
 
@@ -1259,14 +1278,14 @@ Linux 패키지 설치의 경우 로그는 `/var/log/gitlab/registry/current`에
 
 Linux 패키지 설치의 경우 NGINX 로그는 다음에 있습니다:
 
-- `/var/log/gitlab/nginx/gitlab_access.log`:  GitLab에 수행된 요청의 로그
-- `/var/log/gitlab/nginx/gitlab_error.log`:  GitLab의 NGINX 오류 로그
-- `/var/log/gitlab/nginx/gitlab_pages_access.log`:  Pages 정적 사이트에 대한 요청 로그
-- `/var/log/gitlab/nginx/gitlab_pages_error.log`:  Pages 정적 사이트의 NGINX 오류 로그
-- `/var/log/gitlab/nginx/gitlab_registry_access.log`:  컨테이너 레지스트리에 대한 요청 로그
-- `/var/log/gitlab/nginx/gitlab_registry_error.log`:  컨테이너 레지스트리의 NGINX 오류 로그
-- `/var/log/gitlab/nginx/gitlab_mattermost_access.log`:  Mattermost에 대한 요청 로그
-- `/var/log/gitlab/nginx/gitlab_mattermost_error.log`:  Mattermost의 NGINX 오류 로그
+- `/var/log/gitlab/nginx/gitlab_access.log`: GitLab에 수행된 요청의 로그
+- `/var/log/gitlab/nginx/gitlab_error.log`: GitLab의 NGINX 오류 로그
+- `/var/log/gitlab/nginx/gitlab_pages_access.log`: Pages 정적 사이트에 대한 요청 로그
+- `/var/log/gitlab/nginx/gitlab_pages_error.log`: Pages 정적 사이트의 NGINX 오류 로그
+- `/var/log/gitlab/nginx/gitlab_registry_access.log`: 컨테이너 레지스트리에 대한 요청 로그
+- `/var/log/gitlab/nginx/gitlab_registry_error.log`: 컨테이너 레지스트리의 NGINX 오류 로그
+- `/var/log/gitlab/nginx/gitlab_mattermost_access.log`: Mattermost에 대한 요청 로그
+- `/var/log/gitlab/nginx/gitlab_mattermost_error.log`: Mattermost의 NGINX 오류 로그
 
 다음은 기본 GitLab NGINX 액세스 로그 형식입니다:
 
@@ -1308,7 +1327,7 @@ Linux 패키지 설치의 경우 Pages 로그는 `/var/log/gitlab/gitlab-pages/c
 ## 제품 사용 데이터 로그 {#product-usage-data-log}
 
 > [!note]
-> 데이터 품질이 아직 정확성으로 인증되지 않았으므로 기능 사용 분석을 위해 원본 로그를 사용하지 않는 것이 좋습니다.
+> 데이터 품질이 아직 정확성에 대해 인증되지 않았으므로 기능 사용 분석을 위해 원본 로그를 사용하지 않는 것이 좋습니다.
 >
 > 이벤트 목록은 새로운 기능이나 기존 기능의 변경에 따라 각 버전에서 변경될 수 있습니다. 인증된 제품 내 채택 보고서는 분석 준비가 완료된 후 사용할 수 있습니다.
 
@@ -1316,7 +1335,7 @@ Linux 패키지 설치의 경우 Pages 로그는 `/var/log/gitlab/gitlab-pages/c
 
 - Linux 패키지 설치의 `/var/log/gitlab/gitlab-rails/product_usage_data.log` 파일에 있습니다.
 - 자체 컴파일된 설치의 `/home/git/gitlab/log/product_usage_data.log` 파일에 있습니다.
-- Helm 차트 설치의 Webservice 포드 아래 `subcomponent="product_usage_data"` 키 아래에 있습니다.
+- Helm 차트 설치의 Webservice 포드의 `subcomponent="product_usage_data"` 키 아래에 있습니다.
 
 Snowplow를 통해 추적된 제품 사용 이벤트의 JSON 형식 로그를 포함합니다. 파일의 각 줄에는 Elasticsearch 또는 Splunk 같은 서비스로 수집할 수 있는 별도의 JSON 항목이 포함됩니다. 읽기 쉽도록 줄 바꿈이 예제에 추가되었습니다:
 
@@ -1455,7 +1474,7 @@ Helm 차트 설치의 경우 백업 로그는 Toolbox 포드의 `/var/log/gitlab
 {"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"query_type": "active-record"}
 ```
 
-이 통계는 .com에서만 기록되며 자체 배포에서는 비활성화됩니다.
+이러한 통계는 .com에만 기록되며 자체 배포에서는 비활성화됩니다.
 
 ## 로그 수집 {#gathering-logs}
 

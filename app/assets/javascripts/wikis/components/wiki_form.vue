@@ -1,6 +1,7 @@
 <script>
 import jsYaml from 'js-yaml';
 import { isEmpty } from 'lodash-es';
+import { markRaw } from 'vue';
 import {
   GlForm,
   GlButton,
@@ -20,9 +21,14 @@ import { getDraft, clearDraft, updateDraft, getLockVersion } from '~/lib/utils/a
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getInitialEditingMode } from '~/vue_shared/components/markdown/utils';
+import { EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
+import { ActionCableProvider } from '~/collaborative_editing';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
+import CollaboratorsIndicator from '~/collaborative_editing/components/collaborators_indicator.vue';
 import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -121,6 +127,9 @@ export default {
     },
     template: {
       label: __('Template'),
+      collaborating: s__(
+        'WikiPage|Templates cannot be applied while others are editing this page.',
+      ),
     },
     content: {
       label: s__('WikiPage|Content'),
@@ -164,12 +173,13 @@ export default {
     GlFormTextarea,
     GlDisclosureDropdown,
     GlToggle,
+    CollaboratorsIndicator,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
-  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading', 'wikiUrl'],
+  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'wikiUrl'],
   emits: ['is-editing'],
   saveOptions: [
     {
@@ -217,6 +227,8 @@ export default {
       commitMessageModalOpen: false,
       isTemplateUrl: isTemplateUrl(),
       isSubmitting: false,
+      collaborationProvider: null,
+      plainTextStartContent: this.pageInfo.content || '',
     };
   },
   apollo: {
@@ -228,6 +240,12 @@ export default {
     },
   },
   computed: {
+    isCollaborating() {
+      return Boolean(this.collaborationProvider);
+    },
+    templateDescription() {
+      return this.isCollaborating ? this.$options.i18n.template.collaborating : null;
+    },
     isTemplatePath() {
       return this.path.startsWith(`${WIKI_TEMPLATES_DIR}/`);
     },
@@ -298,13 +316,23 @@ export default {
       return {
         primary: {
           text: this.submitButtonText,
-          attributes: { 'data-testid': 'wiki-confirm-message' },
+          attributes: {
+            variant: 'confirm',
+            'data-testid': 'wiki-confirm-message',
+          },
         },
         cancel: { text: this.$options.i18n.cancel },
       };
     },
     saveMessageMode() {
       return this.useAutoCommitMessage ? SAVE_MESSAGE.AUTO : SAVE_MESSAGE.CUSTOM;
+    },
+    collaborativeEditingEnabled() {
+      return Boolean(
+        this.glFeatures.wikiCollaborativeEditing &&
+        this.isMarkdownFormat &&
+        this.pageInfo.persisted,
+      );
     },
   },
   watch: {
@@ -324,6 +352,11 @@ export default {
       }
     },
   },
+  created() {
+    if (getInitialEditingMode() === EDITING_MODE_CONTENT_EDITOR) {
+      this.startCollaborativeEditing();
+    }
+  },
   mounted() {
     this.initializeTitlePlaceholder();
 
@@ -336,8 +369,31 @@ export default {
   },
   destroyed() {
     window.removeEventListener('beforeunload', this.onPageUnload);
+    this.stopCollaborativeEditing();
   },
   methods: {
+    startCollaborativeEditing() {
+      if (!this.collaborativeEditingEnabled || this.collaborationProvider) return;
+
+      const provider = markRaw(
+        new ActionCableProvider({
+          channel: 'CollaborativeEditing::WikiPageChannel',
+          channelParams: {
+            container_full_path: this.pageInfo.containerFullPath,
+            slug: this.pageInfo.slug,
+          },
+        }),
+      );
+
+      provider.connect();
+      this.collaborationProvider = provider;
+    },
+
+    stopCollaborativeEditing() {
+      this.collaborationProvider?.destroy();
+      this.collaborationProvider = null;
+    },
+
     async submitForm() {
       this.setMissingFields();
 
@@ -424,10 +480,36 @@ export default {
     notifyContentEditorActive() {
       this.isContentEditorActive = true;
       this.trackContentEditorLoaded();
+      this.startCollaborativeEditing();
     },
 
     notifyContentEditorInactive() {
+      const wasContentEditorActive = this.isContentEditorActive;
       this.isContentEditorActive = false;
+      this.stopCollaborativeEditing();
+      if (wasContentEditorActive && this.collaborativeEditingEnabled) {
+        this.plainTextStartContent = this.content;
+      }
+    },
+    async beforeContentEditor(markdown) {
+      if (!this.collaborativeEditingEnabled || markdown === this.plainTextStartContent) return true;
+
+      const discard = await confirmAction(
+        s__('WikiPage|Switching to rich text will discard changes made in plain text. Continue?'),
+        {
+          title: s__('WikiPage|Discard plain text changes?'),
+          primaryBtnText: s__('WikiPage|Discard changes and switch'),
+          cancelBtnText: s__('WikiPage|Keep editing in plain text'),
+        },
+      );
+
+      if (discard) {
+        this.content = this.plainTextStartContent;
+        // Let MarkdownEditor receive the restored content before it mounts rich text.
+        await this.$nextTick();
+      }
+
+      return discard;
     },
 
     trackFormSubmit() {
@@ -662,6 +744,8 @@ export default {
             :drawio-enabled="drawioEnabled"
             supports-table-of-contents
             :disable-attachments="isTemplate"
+            :collaboration-provider="collaborationProvider"
+            :before-content-editor="beforeContentEditor"
             immersive
             @content-editor="notifyContentEditorActive"
             @markdown-field="notifyContentEditorInactive"
@@ -765,12 +849,14 @@ export default {
                       <gl-form-group
                         v-if="!isTemplate"
                         :label="$options.i18n.template.label"
+                        :description="templateDescription"
                         label-for="wiki_template"
                         class="gl-mb-0"
                       >
                         <wiki-template
                           :format="format"
                           :templates="templates"
+                          :disabled="isCollaborating"
                           @input="setTemplate"
                         />
                       </gl-form-group>
@@ -778,7 +864,11 @@ export default {
                   </gl-disclosure-dropdown>
                 </div>
                 <div class="gl-grow"></div>
-                <div class="gl-my-3 gl-flex gl-shrink-0 gl-gap-3">
+                <div class="gl-my-3 gl-flex gl-shrink-0 gl-items-center gl-gap-3">
+                  <collaborators-indicator
+                    v-if="isCollaborating"
+                    :provider="collaborationProvider"
+                  />
                   <gl-button-group>
                     <gl-button
                       variant="confirm"

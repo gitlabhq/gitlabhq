@@ -10,28 +10,21 @@ module Keeps
     LIMIT_FIXES = 20
     RUBOCOP_TODO_DIR_PATTERN = ".rubocop_todo/**/*.yml"
 
-    def initialize(
-      logger: nil,
-      filter_identifiers: nil,
-      limit_fixes: LIMIT_FIXES
-    )
-      super(logger: logger, filter_identifiers: filter_identifiers)
-      @limit_fixes = limit_fixes
-      @config_helper = ::Keeps::Helpers::RubocopFixer::ConfigHelper.new
-      @file_helper = ::Keeps::Helpers::RubocopFixer::FileHelper.new
+    def recreate_when_closed?
+      true
     end
 
     def each_identified_change
       each_allowed_rubocop_rule do |rule, rule_file_path, violating_files|
         logger.puts "RubopCop rule #{rule}"
 
-        limited_violating_files = if violating_files.count > limit_fixes
-                                    violating_files.first(limit_fixes)
+        limited_violating_files = if violating_files.count > LIMIT_FIXES
+                                    violating_files.first(LIMIT_FIXES)
                                   else
                                     violating_files
                                   end
 
-        remove_allow_rule = violating_files.count <= limit_fixes
+        remove_allow_rule = violating_files.count <= LIMIT_FIXES
 
         change = ::Gitlab::Housekeeper::Change.new
         change.identifiers = [self.class.name, rule]
@@ -57,6 +50,14 @@ module Keeps
         Fixes the #{violating_files.count} violations for the rubocop rule `#{rule}`
         that were previously excluded in `#{rule_file_path}`.
         The exclusions have now been removed.
+
+        ## Stopping this MR from being recreated
+
+        This MR is regenerated on every run, so closing it will not prevent it from coming back.
+        If you find this cop's autocorrect is not safe or not desirable, add `AutoCorrect: false`
+        (or `SafeAutoCorrect: false`) under this cop in
+        [`.rubocop.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.rubocop.yml).
+        Housekeeper will then stop recreating this MR on the next run.
       MARKDOWN
 
       if remove_allow_rule
@@ -78,7 +79,13 @@ module Keeps
 
     private
 
-    attr_reader :config_helper, :file_helper, :limit_fixes
+    def config_helper
+      @config_helper ||= ::Keeps::Helpers::RubocopFixer::ConfigHelper.new
+    end
+
+    def file_helper
+      @file_helper ||= ::Keeps::Helpers::RubocopFixer::FileHelper.new
+    end
 
     def each_allowed_rubocop_rule
       Dir.glob(RUBOCOP_TODO_DIR_PATTERN).each do |file|

@@ -20,12 +20,14 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
     let(:logger_params) { { category: 'custom_email_verification' } }
 
     before do
+      allow(Notify).to receive_messages(
+        service_desk_verification_triggered_email: message_delivery,
+        service_desk_custom_email_verification_email: message
+      )
       allow(message_delivery).to receive(:deliver_later)
-      allow(Notify).to receive(:service_desk_verification_triggered_email).and_return(message_delivery)
 
       # We send verification email directly
       allow(message).to receive(:deliver)
-      allow(Notify).to receive(:service_desk_custom_email_verification_email).and_return(message)
     end
 
     shared_examples 'a verification process that exits early' do

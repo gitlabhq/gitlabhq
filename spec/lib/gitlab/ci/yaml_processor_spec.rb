@@ -636,6 +636,24 @@ module Gitlab
           end
         end
 
+        context 'when a job uses a deprecated `retry:when` value' do
+          let(:config) do
+            <<-YAML
+            rspec:
+              script: echo
+              retry:
+                max: 2
+                when: stuck_or_timeout_failure
+            YAML
+          end
+
+          it 'is propagated all the way up to the processor' do
+            expect(subject.warnings).to contain_exactly(
+              /retry uses deprecated `when` value\(s\): stuck_or_timeout_failure/
+            )
+          end
+        end
+
         context 'when a warning is raised together with errors' do
           let(:config) do
             <<-YAML
@@ -2140,6 +2158,21 @@ module Gitlab
             ])
         end
 
+        it 'returns cache files when ten files are given' do
+          files = Array.new(10) { |i| "file#{i}" }
+          config = YAML.dump(
+            rspec: {
+              cache: { paths: ['binaries/'], key: { files: files } },
+              script: 'rspec'
+            }
+          )
+
+          config_processor = described_class.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
+
+          expect(rspec_build[:cache].first[:key]).to eq({ files: files })
+        end
+
         it 'returns cache files with prefix' do
           config = YAML.dump(
             rspec: {
@@ -3068,12 +3101,12 @@ module Gitlab
             YAML
           end
 
-          it 'returns a valid configuration and sets artifacts: true by default' do
+          it 'returns a valid configuration and sets artifacts: true and optional: false by default' do
             expect(subject).to be_valid
 
             rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
             expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
-              [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true }]
+              [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true, optional: false }]
             )
           end
 
@@ -3089,12 +3122,35 @@ module Gitlab
               YAML
             end
 
-            it 'returns a valid configuration and sets artifacts: true by default' do
+            it 'returns a valid configuration and sets artifacts: true and optional: false by default' do
               expect(subject).to be_valid
 
               rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
               expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
-                [{ pipeline: '123', job: 'dependency-job', artifacts: true }]
+                [{ pipeline: '123', job: 'dependency-job', artifacts: true, optional: false }]
+              )
+            end
+          end
+
+          context 'when optional: true is set' do
+            let(:config) do
+              <<~YAML
+              rspec:
+                stage: test
+                script: rspec
+                needs:
+                  - pipeline: $THE_PIPELINE_ID
+                    job: dependency-job
+                    optional: true
+              YAML
+            end
+
+            it 'returns a valid configuration and sets optional: true' do
+              expect(subject).to be_valid
+
+              rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
+              expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
+                [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true, optional: true }]
               )
             end
           end
@@ -3546,6 +3602,34 @@ module Gitlab
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config requires at least 1 item'
         end
 
+        context 'returns errors if job cache:key:files has more than ten items' do
+          let(:files) { Array.new(11) { |i| "file#{i}" } }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: files } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config has too many items (maximum is 10)'
+        end
+
+        context 'returns errors if job cache:key:files has more than two items and the flag is disabled' do
+          let(:files) { Array.new(3) { |i| "file#{i}" } }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: files } } } }) }
+
+          before do
+            stub_feature_flags(increase_ci_cache_key_files_limit: false)
+          end
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config has too many items (maximum is 2)'
+        end
+
+        context 'returns errors if job cache:key:files_commits has more than two items' do
+          let(:files) { Array.new(3) { |i| "file#{i}" } }
+          let(:config) do
+            YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files_commits: files } } } })
+          end
+
+          it_behaves_like 'returns errors',
+            'jobs:rspec:cache:key:files_commits config has too many items (maximum is 2)'
+        end
+
         context 'returns errors if job uses both cache:key:files and cache:key:files_commits' do
           let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: ['yarn.lock'], files_commits: ['package.json'] } } } }) }
 
@@ -3741,9 +3825,25 @@ module Gitlab
         context 'when the YAML could not be parsed' do
           let(:content) { YAML.dump('invalid: yaml: test') }
 
-          it 'returns errors and empty configuration' do
+          it 'returns errors and empty configuration', :aggregate_failures do
             expect(subject.valid?).to be(false)
+            expect(subject.timed_out?).to be(false)
             expect(subject.errors).to eq(['Invalid configuration format'])
+          end
+        end
+
+        context 'when resolving includes times out' do
+          let(:content) { YAML.dump(include: 'other.yml') }
+
+          before do
+            allow(Gitlab::Ci::Config).to receive(:new)
+              .and_raise(Gitlab::Ci::Config::TimeoutError, Gitlab::Ci::Config::TIMEOUT_MESSAGE)
+          end
+
+          it 'returns an invalid result flagged as timed out', :aggregate_failures do
+            expect(subject.valid?).to be(false)
+            expect(subject.timed_out?).to be(true)
+            expect(subject.errors).to eq([Gitlab::Ci::Config::TIMEOUT_MESSAGE])
           end
         end
 

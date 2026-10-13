@@ -7,3 +7,5 @@ available_for:
   - granular_access_token
 permissions:
   - create_knowledge_graph_enabled_namespace
+assignable_when:
+  - condition: admin

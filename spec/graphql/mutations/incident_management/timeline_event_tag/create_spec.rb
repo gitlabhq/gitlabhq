@@ -11,7 +11,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEventTag::Create, feature_
   let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
   let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: current_user }) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_incident_management_timeline_event_tag) }
+  specify { expect(described_class).to require_graphql_authorizations(:create_timeline_event_tag) }
 
   describe '#resolve' do
     subject(:resolve) { mutation_for(project, current_user).resolve(project_path: project.full_path, **args) }

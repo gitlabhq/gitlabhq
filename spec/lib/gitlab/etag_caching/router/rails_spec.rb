@@ -24,6 +24,13 @@ RSpec.describe Gitlab::EtagCaching::Router::Rails do
     expect(result.name).to eq 'issue_title'
   end
 
+  it 'matches an organization-scoped issue title endpoint' do
+    result = match_route('/o/my-org/my-group/my-project/-/issues/123/realtime_changes')
+
+    expect(result).to be_present
+    expect(result.name).to eq 'issue_title'
+  end
+
   it 'matches project pipelines endpoint' do
     result = match_route('/my-group/my-project/-/pipelines.json')
 
@@ -130,6 +137,16 @@ RSpec.describe Gitlab::EtagCaching::Router::Rails do
 
     it 'uses request path as cache key' do
       is_expected.to eq '/my-group/my-project/builds/234.json'
+    end
+
+    context 'when the request is organization-scoped' do
+      subject do
+        described_class.cache_key(double(path: '/o/my-org/my-group/my-project/builds/234.json'))
+      end
+
+      it 'uses the unscoped path, shared with the unscoped request' do
+        is_expected.to eq '/my-group/my-project/builds/234.json'
+      end
     end
   end
 end

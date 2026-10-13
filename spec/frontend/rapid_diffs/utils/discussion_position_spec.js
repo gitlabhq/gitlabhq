@@ -139,10 +139,15 @@ describe('discussion_position utils', () => {
         { original_position: pos(), position: pos(otherRefs) },
         true,
       ],
+      ['matches via positions array', { position: pos(otherRefs), positions: [pos()] }, true],
       ['rejects wrong SHAs', { position: pos(otherRefs) }, false],
       ['rejects wrong line', { position: pos({ old_line: 99 }) }, false],
     ])('%s', (_, discussion, expected) => {
       expect(discussionMatchesLinePosition(discussion, linePos, diffRefs)).toBe(expected);
+    });
+
+    it('ignores SHAs when no diffRefs are given', () => {
+      expect(discussionMatchesLinePosition({ position: pos(otherRefs) }, linePos)).toBe(true);
     });
   });
 });

@@ -15,8 +15,6 @@ module Gitlab
         MAX_PARTITION_SIZE = 150.gigabytes
         DETACH_DEFERRAL_GRACE = 2.weeks
 
-        UnableToDetachPartition = Class.new(StandardError)
-
         def initialize(model, connection: nil)
           @model = model
           @connection = connection || model.connection
@@ -27,17 +25,22 @@ module Gitlab
           @connection.execute(sql)
         end
 
-        def sync_partitions(analyze: true)
+        # @param analyze_tables_with_default_interval [Boolean] whether tables relying on DEFAULT_ANALYZE_INTERVAL
+        #   get the whole-table ANALYZE. Only PartitionManagementWorker enables it, so the db:migrate
+        #   path does not ANALYZE every never-analyzed default table synchronously.
+        def sync_partitions(analyze: true, analyze_tables_with_default_interval: false)
           partitions_to_create = []
           partitions_to_detach = []
-          @detach_error_messages = []
 
           return skip_syncing_partitions unless table_partitioned?
 
-          Gitlab::AppLogger.info(log_payload(message: 'Checking state of dynamic postgres partitions'))
+          Gitlab::AppLogger.info(log_payload(
+            message: 'Checking state of dynamic postgres partitions',
+            replica_mode: logical_replication_subscriber?
+          ))
 
           only_with_exclusive_lease(model, lease_key: MANAGEMENT_LEASE_KEY) do
-            model.partitioning_strategy.validate_and_fix
+            model.partitioning_strategy.validate_and_fix unless logical_replication_subscriber?
 
             partitions_to_create = missing_partitions
             partitions_to_detach = extra_partitions
@@ -45,11 +48,9 @@ module Gitlab
             create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
 
-            run_analyze(partitions_to_create) if analyze
-
-            raise_unable_to_detach_partition if @detach_error_messages.any?
+            run_analyze(partitions_to_create, analyze_tables_with_default_interval) if analyze
           end
-        rescue ArgumentError, UnableToDetachPartition => e
+        rescue ArgumentError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         rescue StandardError => e
           Gitlab::AppLogger.error(
@@ -97,9 +98,15 @@ module Gitlab
         end
 
         def extra_partitions
+          return [] if logical_replication_subscriber?
           return [] unless connection.table_exists?(model.table_name)
 
           model.partitioning_strategy.extra_partitions
+        end
+
+        # Overridden in EE
+        def logical_replication_subscriber?
+          false
         end
 
         def only_with_exclusive_lease(model, lease_key:)
@@ -117,7 +124,7 @@ module Gitlab
               create_partition_tables(partitions)
               attach_partition_tables(partitions)
 
-              model.partitioning_strategy.after_adding_partitions
+              model.partitioning_strategy.after_adding_partitions unless logical_replication_subscriber?
             end
           end
         end
@@ -159,7 +166,7 @@ module Gitlab
           return true if check.detachable?
 
           log_detach_blocker(partition, check.blocker)
-          escalate_long_detach_deferral(partition, check.blocker)
+          log_long_detach_deferral(partition, check.blocker)
           false
         rescue ActiveRecord::StatementInvalid => e
           log_detach_blocker(partition, DetachEligibility::Blocker.new(
@@ -181,27 +188,25 @@ module Gitlab
             Gitlab::AppLogger.warn(payload)
           when :error
             Gitlab::AppLogger.error(payload)
-            @detach_error_messages << "#{partition.partition_name} (#{blocker.reason})"
           else
             Gitlab::AppLogger.info(payload)
           end
         end
 
-        # If a detach has been deferred for too long, we escalate it to an error.
-        def escalate_long_detach_deferral(partition, blocker)
+        # A long detach deferral signals that a referencing table may not be
+        # configured to detach its own partitions, which nothing else reports.
+        def log_long_detach_deferral(partition, blocker)
           return if blocker.level == :error
 
           duration = deferral_duration(partition)
           return unless duration && duration > max_detach_deferral
 
-          Gitlab::AppLogger.error(log_payload(
+          Gitlab::AppLogger.warn(log_payload(
             message: 'Detach deferred for too long',
             partition_name: partition.partition_name,
             blocker_reason: blocker.reason,
             deferral_duration_s: duration
           ))
-
-          @detach_error_messages << "#{partition.partition_name} (deferred too long)"
         end
 
         def deferral_duration(partition)
@@ -216,13 +221,6 @@ module Gitlab
         # so DETACH_DEFERRAL_GRACE must account for this timing.
         def max_detach_deferral
           detached_partition_retention_period + DETACH_DEFERRAL_GRACE
-        end
-
-        # An :error blocker is a misconfigured table or a database error in the eligibility check, and it must
-        # reach error tracking. We raise after the run finishes, so the other partitions still get detached.
-        def raise_unable_to_detach_partition
-          raise UnableToDetachPartition,
-            "Unable to detach partitions of #{model.table_name}: #{@detach_error_messages.join(', ')}"
         end
 
         def log_payload(**params)
@@ -254,9 +252,9 @@ module Gitlab
 
         # Rescued separately so an ANALYZE failure is not logged as a partition
         # create/detach failure: by this point those already committed.
-        def run_analyze(created_partitions)
+        def run_analyze(created_partitions, analyze_tables_with_default_interval)
           analyzed = with_analyze_error_handling('Failed to run ANALYZE on partitioned table') do
-            run_analyze_on_partitioned_table
+            run_analyze_on_partitioned_table(analyze_tables_with_default_interval)
           end
 
           # The whole-table ANALYZE recurses into every leaf, so the per-partition
@@ -282,7 +280,8 @@ module Gitlab
           false
         end
 
-        def run_analyze_on_partitioned_table
+        def run_analyze_on_partitioned_table(analyze_tables_with_default_interval)
+          return false if skip_default_interval_analyze?(analyze_tables_with_default_interval)
           return false if ineligible_for_analyzing?
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
@@ -291,6 +290,15 @@ module Gitlab
           end
 
           true
+        end
+
+        # Checked before ineligible_for_analyzing? to avoid its primary queries. Never applies to
+        # tables with an explicit analyze_interval.
+        def skip_default_interval_analyze?(analyze_tables_with_default_interval)
+          return false unless model.partitioning_strategy.default_analyze_interval?
+
+          !analyze_tables_with_default_interval ||
+            Feature.disabled?(:analyze_partitioned_tables_with_default_interval, type: :ops)
         end
 
         # A just-created partition has no planner statistics, which can produce
@@ -328,14 +336,9 @@ module Gitlab
         end
 
         def last_analyzed_at_within_interval?
-          table_to_query = first_model_partition.identifier
-
           primary_transaction do
-            # We don't need to get the last_analyze_time from partitioned table,
-            # because it's not supported and always returns NULL for PG version below 14
-            # Therefore, we can always get the last_analyze_time from the first partition
             last_analyzed_at = connection.select_value(
-              "SELECT pg_stat_get_last_analyze_time('#{table_to_query}'::regclass)"
+              "SELECT pg_stat_get_last_analyze_time(#{connection.quote(model.table_name)}::regclass)"
             )
             last_analyzed_at.present? && last_analyzed_at >= ::Time.current - analyze_interval
           end
@@ -359,6 +362,7 @@ module Gitlab
                 connection.execute(
                   format("SET LOCAL statement_timeout TO '%ds'", statement_timeout)
                 )
+                Gitlab::Database::TransactionTimeout.set(connection, statement_timeout, local: true)
               end
 
               yield
@@ -400,16 +404,21 @@ module Gitlab
           identifier = identifier(partition)
           retention = detached_partition_retention_period
 
-          if above_threshold?(identifier)
-            Postgresql::DetachedPartition.create!(
-              table_name: partition.partition_name,
-              drop_after: retention.from_now.next_occurring(:saturday)
-            )
-          else
-            Postgresql::DetachedPartition.create!(
-              table_name: partition.partition_name,
-              drop_after: retention.from_now
-            )
+          connection.transaction do
+            # A failed concurrent detach keeps its row, so we clean them up before adding a new one
+            Postgresql::DetachedPartition.where(table_name: partition.partition_name).delete_all
+
+            if above_threshold?(identifier)
+              Postgresql::DetachedPartition.create!(
+                table_name: partition.partition_name,
+                drop_after: retention.from_now.next_occurring(:saturday)
+              )
+            else
+              Postgresql::DetachedPartition.create!(
+                table_name: partition.partition_name,
+                drop_after: retention.from_now
+              )
+            end
           end
         end
 
@@ -433,3 +442,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Database::Partitioning::PartitionManager.prepend_mod

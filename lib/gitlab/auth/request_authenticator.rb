@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def find_authenticated_requester(request_formats)
-        deploy_token_from_request || user(request_formats)
+        deploy_token_from_request || dependency_proxy_deploy_token || user(request_formats)
       end
 
       def user(request_formats)
@@ -99,6 +99,11 @@ module Gitlab
 
       private
 
+      def dependency_proxy_deploy_token
+        user_or_deploy_token = dependency_proxy_requester
+        user_or_deploy_token if user_or_deploy_token.is_a?(::DeployToken)
+      end
+
       # Use a minimal subset of find_user_from_any_authentication_method
       # so only token types allowed for GraphQL can authenticate users.
       # CI_JOB_TOKENs are not allowed for now, since their access is too broad.
@@ -116,6 +121,7 @@ module Gitlab
 
       def find_user_from_any_authentication_method(request_format)
         find_user_from_dependency_proxy_token ||
+          find_user_from_job_bearer_token ||
           find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
           find_user_from_feed_token(request_format) ||
           find_user_from_static_object_token(request_format) ||
@@ -141,7 +147,7 @@ module Gitlab
 
       def route_authentication_setting
         @route_authentication_setting ||= {
-          job_token_allowed: api_request?,
+          job_token_allowed: api_request? ? %i[request basic_auth] : false,
           basic_auth_personal_access_token: api_request? || git_request?,
           deploy_token_allowed: api_request? || git_request?
         }

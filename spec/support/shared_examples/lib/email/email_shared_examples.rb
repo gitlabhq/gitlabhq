@@ -96,8 +96,7 @@ RSpec.shared_examples_for 'supports_issue_creation? method for email' do
 
   with_them do
     before do
-      allow(described_class).to receive(:enabled?).and_return(enabled_value)
-      allow(described_class).to receive(:supports_wildcard?).and_return(supports_wildcard_value)
+      allow(described_class).to receive_messages(enabled?: enabled_value, supports_wildcard?: supports_wildcard_value)
     end
 
     it { is_expected.to eq result }

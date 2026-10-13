@@ -386,4 +386,17 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
       end
     end
   end
+
+  describe 'session persistence' do
+    # Asserted through the request options rather than a Set-Cookie or Redis side effect: an
+    # unchanged session is also left alone by write throttling, so an observable effect would
+    # not distinguish the two. Telemetry beacons must not refresh the session, or a page
+    # pinging on a heartbeat would keep it alive and defeat inactivity-based session expiry.
+    it 'forwards events without committing (extending) the session', :aggregate_failures do
+      post event_forwarding_path, params: payload, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(request.session_options[:skip]).to be(true)
+    end
+  end
 end

@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   include UploadHelpers
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   describe '#avatar_icon_for' do
-    let!(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
-    let(:email) { 'foo@example.com' }
-    let!(:another_user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path), email: email) }
+    let_it_be(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
+    let_it_be(:email) { 'foo@example.com' }
+    let_it_be(:another_user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path), email: email) }
 
     it 'prefers the user to retrieve the avatar_url' do
       expect(helper.avatar_icon_for(user, email).to_s)
@@ -24,7 +24,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   end
 
   describe '#avatar_icon_for_email', :clean_gitlab_redis_cache do
-    let(:user) { create(:user, :public_email, :commit_email, avatar: File.open(uploaded_image_temp_path)) }
+    let_it_be(:user) { create(:user, :public_email, :commit_email, avatar: File.open(uploaded_image_temp_path)) }
 
     subject { helper.avatar_icon_for_email(user.email).to_s }
 
@@ -91,11 +91,11 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   end
 
   describe '#avatar_icon_for_user' do
-    let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
+    let_it_be_with_reload(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
     shared_examples 'blocked or unconfirmed user with avatar' do
       context 'when the viewer is not an admin' do
-        let!(:viewing_user) { create(:user) }
+        let(:viewing_user) { build_stubbed(:user) }
 
         it 'returns the default avatar' do
           expect(helper.avatar_icon_for_user(user, current_user: viewing_user).to_s)
@@ -104,7 +104,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       end
 
       context 'when the viewer is an admin', :enable_admin_mode do
-        let!(:viewing_user) { create(:user, :admin) }
+        let(:viewing_user) { build_stubbed(:user, :admin) }
 
         it 'returns the default avatar when the user is not passed' do
           expect(helper.avatar_icon_for_user(user).to_s)
@@ -361,7 +361,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     end
 
     context 'with only_path parameter set to false' do
-      let(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
+      let_it_be(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
 
       context 'with user parameter' do
         let(:options) { { user: user_with_avatar, only_path: false } }
@@ -401,50 +401,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#avatar_without_link' do
-    let(:options) { { size: 32 } }
-
-    subject { helper.avatar_without_link(resource, options) }
-
-    context 'with users' do
-      let(:resource) { user.namespace }
-
-      it 'displays user avatar' do
-        is_expected.to eq tag.img(
-          alt: "#{user.name}'s avatar",
-          src: avatar_icon_for_user(user, 32),
-          data: { container: 'body' },
-          class: 'avatar s32 has-tooltip',
-          title: user.name
-        )
-      end
-    end
-
-    context 'with groups' do
-      let(:resource) { build_stubbed(:group, name: 'foo') }
-
-      it 'displays group avatar' do
-        expected_pattern = %r{
-          <div\s+
-          aria-hidden="true"\s+
-          class="gl-avatar\s+
-          gl-avatar-s32\s+
-          gl-avatar-circle\s+
-          gl-mr-3\s+
-          gl-avatar-identicon\s+
-          gl-avatar-identicon-bg\d+"\s*>
-          \s*F\s*
-          </div>
-        }x
-
-        is_expected.to match(expected_pattern)
-      end
-    end
-  end
-
   describe "#author_avatar", :clean_gitlab_redis_cache do
-    let_it_be(:user) { create(:user) }
-
     let(:commit_or_event) do
       # This argument is an unverified type, so we need to match
       # against a generic double to validate it.

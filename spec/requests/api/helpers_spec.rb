@@ -540,6 +540,14 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
         expect(Current.organization).to eq(header_organization)
       end
+
+      it 'stores the resolver so URL helpers can scope paths by the header' do
+        request.env["HTTP_X_GITLAB_ORGANIZATION_ID"] = header_organization.id.to_s
+
+        set_current_organization(user: user)
+
+        expect(Current.organization_resolver.from_headers).to eq(header_organization)
+      end
     end
   end
 
@@ -779,6 +787,19 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       end
 
       it_behaves_like 'sudo'
+    end
+
+    context 'using a granular OAuth token' do
+      let(:token) { create(:oauth_access_token, :granular, resource_owner: admin) }
+
+      before do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token.plaintext_token}"
+        set_param(API::Helpers::SUDO_PARAM, user.id.to_s)
+      end
+
+      it 'is forbidden' do
+        expect { current_user }.to raise_error(/Fine-grained OAuth tokens cannot be used with sudo/)
+      end
     end
 
     context 'using a personal access token' do

@@ -23,7 +23,7 @@ RSpec.shared_examples 'a permitted attribute' do |relation_sym, permitted_attrib
 
   if described_class.new.permitted_attributes_defined?(relation_sym)
     it 'contains only attributes that are defined as permitted in the import/export config' do
-      expect(permitted_hash.keys).to contain_exactly(*permitted_attributes.map(&:to_s))
+      expect(permitted_hash.keys).to match_array(permitted_attributes.map(&:to_s))
     end
 
     it 'does not contain attributes that would be cleaned with AttributeCleaner' do

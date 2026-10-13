@@ -3,9 +3,7 @@
 module Notes
   class DestroyService < ::Notes::BaseService
     def execute(note, old_note_body: nil) # rubocop:disable Lint/UnusedMethodArgument -- used in EE override
-      TodoService.new.destroy_target(note) do |note|
-        note.destroy
-      end
+      TodoService.new.destroy_target(note, &:destroy)
 
       if note.for_merge_request?
         track_note_removal_usage_for_merge_requests(note)

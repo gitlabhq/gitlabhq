@@ -13,7 +13,7 @@ import {
 import { isEmpty } from 'lodash-es';
 import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
 import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
-import { fetchPolicies } from '~/lib/graphql';
+import { fetchPolicies, ERROR_POLICY_NONE } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__, sprintf } from '~/locale';
@@ -65,6 +65,7 @@ export default {
   apollo: {
     canCreateSnippet: {
       fetchPolicy: fetchPolicies.NO_CACHE,
+      errorPolicy: ERROR_POLICY_NONE,
       query() {
         return this.snippet.project ? CanCreateProjectSnippet : CanCreatePersonalSnippet;
       },
@@ -75,7 +76,7 @@ export default {
       },
       update(data) {
         return this.snippet.project
-          ? data.project.userPermissions.createSnippet
+          ? data.project?.userPermissions.createSnippet
           : data.currentUser?.userPermissions.createSnippet;
       },
     },
@@ -144,10 +145,10 @@ export default {
       };
     },
     hasAdminSnippetPermission() {
-      return this.snippet.userPermissions.adminSnippet;
+      return Boolean(this.snippet.userPermissions?.adminSnippet);
     },
     hasUpdateSnippetPermission() {
-      return this.snippet.userPermissions.updateSnippet;
+      return Boolean(this.snippet.userPermissions?.updateSnippet);
     },
     showActionDropdown() {
       return (

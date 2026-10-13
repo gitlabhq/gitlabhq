@@ -37,14 +37,13 @@ module Resolvers
       private
 
       # When we are at project level we return the project itself to fetch the description templates.
-      # When we are at group level we fetch first found file_template_project_id from the namespace or its ancestors
+      # When we are at group level we fetch first found file template project from the namespace or its ancestors
 
       def fetch_root_templates_project(namespace)
         if namespace.is_a?(::Namespaces::ProjectNamespace)
           namespace.project
-        elsif namespace.is_a?(::Group) && namespace.respond_to?(:file_template_project_id)
-          template_project_id = namespace.file_template_project_id
-          Project.find(template_project_id) if template_project_id
+        elsif namespace.is_a?(::Group) && namespace.respond_to?(:namespace_template_setting)
+          namespace.namespace_template_setting.file_template_project
         end
       end
 

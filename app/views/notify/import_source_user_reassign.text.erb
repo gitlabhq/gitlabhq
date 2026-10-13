@@ -20,6 +20,9 @@
 
 <%= s_('UserMapping|Import details:') %>
 <%= safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname) %>
+<% if @offline_transfer %>
+<%= s_('UserMapping|This import was created from a file. The source hostname was supplied by the importing user and GitLab cannot verify it.') %>
+<% end %>
 <%= safe_format(s_('UserMapping|Original user: %{source_name} (%{source_username})'), source_name: source_name, source_username: source_username) %>
 
 <%= s_('UserMapping|Reassignment details:') %>

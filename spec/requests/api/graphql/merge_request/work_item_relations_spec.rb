@@ -15,17 +15,17 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let_it_be(:closing_relation) do
-    create(:merge_requests_closing_issues,
+    create(:merge_request_issue,
       issue: closing_issue, merge_request: merge_request, link_type: :closes, from_mr_description: true)
   end
 
   let_it_be(:confidential_relation) do
-    create(:merge_requests_closing_issues,
+    create(:merge_request_issue,
       issue: confidential_issue, merge_request: merge_request, link_type: :closes, from_mr_description: true)
   end
 
   let_it_be(:mentioned_relation) do
-    create(:merge_requests_closing_issues,
+    create(:merge_request_issue,
       issue: mentioned_issue, merge_request: merge_request, link_type: :mentioned, from_mr_description: false)
   end
 
@@ -134,7 +134,7 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
   describe 'avoiding N+1 queries on the connection authorization' do
     def add_relations(count)
       Array.new(count) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: create(:issue, project: project), merge_request: merge_request,
           link_type: :related, from_mr_description: false)
       end

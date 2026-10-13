@@ -1,0 +1,18 @@
+{
+  "allOf": [
+    {
+      "$ref": "user/basic.json"
+    },
+    {
+      "type": "object",
+      "required": [
+        "bot"
+      ],
+      "properties": {
+        "bot": {
+          "type": "boolean"
+        }
+      }
+    }
+  ]
+}

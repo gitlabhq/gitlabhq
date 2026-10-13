@@ -36,9 +36,11 @@ RSpec.describe FindJhBranch, feature_category: :tooling do # rubocop:disable RSp
           .with(described_class::JH_PROJECT_PATH, jh_branch_name)
           .and_return(jh_branch_exist)
 
-        allow(subject).to receive(:ref_name).and_return(branch_name)
-        allow(subject).to receive(:default_branch).and_return(default_branch)
-        allow(subject).to receive(:merge_request).and_return(merge_request)
+        allow(subject).to receive_messages(
+          ref_name: branch_name,
+          default_branch: default_branch,
+          merge_request: merge_request
+        )
       end
 
       context 'when there is a corresponding JH branch' do

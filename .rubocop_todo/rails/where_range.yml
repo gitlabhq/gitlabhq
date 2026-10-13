@@ -28,7 +28,7 @@ Rails/WhereRange:
     - 'app/models/import_export_upload.rb'
     - 'app/models/issue.rb'
     - 'app/models/merge_request.rb'
-    - 'app/models/merge_requests_closing_issues.rb'
+    - 'app/models/merge_request_issue.rb'
     - 'app/models/pages_deployment.rb'
     - 'app/models/pages_domain.rb'
     - 'app/models/pages_domain_acme_order.rb'

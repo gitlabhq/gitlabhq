@@ -15,8 +15,21 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       )
     end
 
-    it 'sets is_unique' do
-      expect { project_auth.save! }.to change { project_auth.is_unique }.to(true)
+    it 'sets is_unique, overriding whatever the caller passed' do
+      project_auth.is_unique = nil
+
+      expect { project_auth.save! }.to change { project_auth.is_unique }.from(nil).to(true)
+    end
+
+    it 'writes is_unique into the INSERT rather than relying on the database default' do
+      # The test schema already has the new default, so is_unique matches it in memory and
+      # partial_inserts would drop the column from the INSERT. SafelyChangeColumnDefault
+      # puts it back, which is what protects a process holding a stale schema cache.
+      recorder = ActiveRecord::QueryRecorder.new { project_auth.save! }
+      insert = recorder.log.find { |sql| sql.include?('INSERT INTO "project_authorizations"') }
+
+      expect(insert).to include('is_unique')
+      expect(project_auth.reload.is_unique).to be(true)
     end
   end
 

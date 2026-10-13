@@ -2,6 +2,8 @@
 
 module Integrations
   class PropagateService
+    include Gitlab::Loggable
+
     BATCH_SIZE = 10_000
 
     def initialize(integration)
@@ -9,6 +11,22 @@ module Integrations
     end
 
     def execute
+      log_info('Integration propagation started')
+
+      propagate
+
+      log_info('Integration propagation finished')
+    rescue StandardError => e
+      log_info('Integration propagation failed', error: e)
+
+      raise
+    end
+
+    private
+
+    attr_reader :integration
+
+    def propagate
       return propagate_instance_level_integration if integration.instance_level?
 
       if integration.class.instance_specific?
@@ -21,9 +39,18 @@ module Integrations
       propagate_integration_to_descendant_projects
     end
 
-    private
+    def log_info(message, error: nil)
+      payload = build_structured_payload_labkit(
+        message: message,
+        integration_id: integration.id,
+        integration_class: integration.class.name,
+        integration_level: integration.instance_level? ? 'instance' : 'group',
+        Labkit::Fields::GL_ORGANIZATION_ID => integration.organization_id_for_logging
+      )
+      Gitlab::ExceptionLogFormatter.format!(error, payload)
 
-    attr_reader :integration
+      Gitlab::IntegrationsLogger.info(payload)
+    end
 
     def propagate_instance_level_integration
       update_inherited_integrations
@@ -32,10 +59,17 @@ module Integrations
     end
 
     def create_integration_for_projects_without_integration
-      propagate_integrations(
-        Project.without_integration(integration),
-        PropagateIntegrationProjectWorker
-      )
+      scope =
+        if simplified_instance_propagation_batching?
+          # Skip without_integration filter here - the worker re-applies it.
+          # Keeping the batch scope simple avoids expensive OFFSET queries.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/631695
+          Project.in_organization(integration.organization_id)
+        else
+          Project.without_integration(integration)
+        end
+
+      propagate_integrations(scope, PropagateIntegrationProjectWorker)
     end
 
     def update_inherited_integrations
@@ -60,10 +94,21 @@ module Integrations
     end
 
     def create_integration_for_groups_without_integration
-      propagate_integrations(
-        Group.without_integration(integration),
-        PropagateIntegrationGroupWorker
-      )
+      scope =
+        if simplified_instance_propagation_batching?
+          # Skip without_integration filter here - the worker re-applies it.
+          # Keeping the batch scope simple avoids expensive OFFSET queries.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/631695
+          Group.in_organization(integration.organization_id)
+        else
+          Group.without_integration(integration)
+        end
+
+      propagate_integrations(scope, PropagateIntegrationGroupWorker)
+    end
+
+    def simplified_instance_propagation_batching?
+      Feature.enabled?(:simplified_instance_propagation_batching, integration.organization)
     end
 
     def propagate_integration_to_descendant_groups

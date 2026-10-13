@@ -16,7 +16,19 @@ class NewMergeRequestWorker
   worker_resource_boundary :cpu
   weight 2
 
-  def perform(merge_request_id, user_id)
+  def self.idempotency_arguments(arguments)
+    # Exclude pipeline_creation_request because it's randomly generated and would break deduplication
+    merge_request_id, user_id, params = arguments
+    filtered_params = (params || {}).except('pipeline_creation_request')
+
+    # Fall back to the pre-existing 2-argument key when nothing dedup-relevant remains, so a
+    # mixed-version fleet produces the same key for the same job during rollout.
+    return [merge_request_id, user_id] if filtered_params.empty?
+
+    [merge_request_id, user_id, filtered_params]
+  end
+
+  def perform(merge_request_id, user_id, params = {})
     context = { merge_request_id: merge_request_id, user_id: user_id }
     xp = Labkit::UserExperienceSli.resume(:create_merge_request, **context)
 
@@ -27,7 +39,7 @@ class NewMergeRequestWorker
     return xp.complete(**context) if xp.has_error?
 
     MergeRequests::AfterCreateService
-      .new(project: issuable.target_project, current_user: user)
+      .new(project: issuable.target_project, current_user: user, params: (params || {}).symbolize_keys)
       .execute(issuable)
 
     xp.complete(**context)

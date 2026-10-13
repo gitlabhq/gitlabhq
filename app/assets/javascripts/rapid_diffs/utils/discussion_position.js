@@ -39,7 +39,8 @@ export function findApplicablePosition(discussion, diffRefs) {
 
 export function discussionMatchesLinePosition(discussion, linePos, diffRefs) {
   for (const pos of getDiscussionPositions(discussion)) {
-    if (positionMatchesLine(pos, linePos) && positionMatchesDiffRefs(pos, diffRefs)) return true;
+    if (positionMatchesLine(pos, linePos) && (!diffRefs || positionMatchesDiffRefs(pos, diffRefs)))
+      return true;
   }
   return false;
 }

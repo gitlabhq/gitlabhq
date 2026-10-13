@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_deployments
+description: Enables Vue 3 in compatibility mode for the deployment details (show) page.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629158
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255696
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629158
+milestone: '19.5'
+group: group::environments
+type: beta
+default_enabled: false

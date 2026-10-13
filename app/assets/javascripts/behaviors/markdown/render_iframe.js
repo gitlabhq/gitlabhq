@@ -1,31 +1,37 @@
-import { setAttributes } from '~/lib/utils/dom_utils';
-
-// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox
-export const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origin';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import EmbeddedIframe from '../components/embedded_iframe.vue';
 
 export const iframeRenderingEnabled = () =>
-  Boolean(window.gon?.iframe_rendering_enabled && window.gon?.features?.allowIframesInMarkdown);
+  Boolean(window.gon?.iframe_rendering_providers && window.gon?.features?.allowIframesInMarkdown);
 
-export const isIframeSrcAllowed = (src) => {
-  if (!iframeRenderingEnabled()) return false;
-
-  let srcUrl;
+const originOf = (src) => {
   try {
-    srcUrl = new URL(src, window.location.origin);
+    return new URL(src, window.location.origin).origin;
   } catch {
-    return false;
+    return null;
   }
-
-  const allowlist = window.gon?.iframe_rendering_allowlist ?? [];
-  return allowlist.some((domain) => new URL(`https://${domain}`).origin === srcUrl.origin);
 };
+
+export const iframeProviderFor = (src, providerId) => {
+  if (!iframeRenderingEnabled()) return null;
+
+  const providers = window.gon.iframe_rendering_providers;
+  if (!Object.prototype.hasOwnProperty.call(providers, providerId)) return null;
+
+  const provider = providers[providerId];
+
+  return provider.src_origin === originOf(src) ? provider : null;
+};
+
+export const isIframeSrcAllowed = (src, providerId) => Boolean(iframeProviderFor(src, providerId));
 
 const elsProcessingMap = new WeakMap();
 
 function renderIframeEl(el) {
   const { src } = el;
 
-  if (!isIframeSrcAllowed(src)) {
+  const provider = iframeProviderFor(src, el.dataset.iframeProviderId);
+  if (!provider) {
     // This URL passed the allowlist at the time the Markdown content was
     // created/last updated, but no longer does. We must remove the node
     // entirely: if this instance uses the asset proxy, allowing it to remain in
@@ -35,36 +41,22 @@ function renderIframeEl(el) {
     return;
   }
 
-  const width = el.getAttribute('width');
-  const height = el.getAttribute('height');
-  const hasExplicitDimensions = width || height;
+  const mountEl = document.createElement('div');
+  el.hidden = true;
+  el.closest('.media-container').replaceChildren(el, mountEl);
 
-  const iframeEl = document.createElement('iframe');
-  setAttributes(iframeEl, {
-    src,
-    class: 'gl-border-none',
-    sandbox: IFRAME_SANDBOX_RESTRICTIONS,
-    allowfullscreen: 'true',
-    referrerpolicy: 'strict-origin-when-cross-origin',
+  initVueApp({
+    el: mountEl,
+    name: 'EmbeddedIframeRoot',
+    component: EmbeddedIframe,
+    props: {
+      provider,
+      src,
+      canonicalSrc: el.dataset.iframeCanonicalSrc,
+      width: el.getAttribute('width'),
+      height: el.getAttribute('height'),
+    },
   });
-
-  if (hasExplicitDimensions) {
-    if (width) iframeEl.setAttribute('width', width);
-    if (height) iframeEl.setAttribute('height', height);
-    iframeEl.style.maxWidth = '100%';
-    if (width && height) {
-      iframeEl.style.aspectRatio = `${width} / ${height}`;
-      iframeEl.style.height = 'auto';
-    }
-  } else {
-    iframeEl.classList.add('gl-inset-0', 'gl-h-full', 'gl-w-full');
-  }
-
-  const wrapper = document.createElement('div');
-  wrapper.appendChild(iframeEl);
-
-  const container = el.closest('.media-container');
-  container.replaceChildren(wrapper);
 }
 
 export default function renderIframes(els) {

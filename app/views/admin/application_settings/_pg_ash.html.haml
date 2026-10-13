@@ -1,0 +1,15 @@
+= gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-pg-ash-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.gitlab_ui_checkbox_component :pg_ash_sampling_enabled,
+        s_('AdminSettings|Turn on session sampling'),
+        help_text: s_('AdminSettings|Has no effect until you install pg_ash. Changes to this setting apply automatically, but can take up to 90 seconds.')
+    .form-group
+      = f.label :pg_ash_sample_interval_seconds, s_('AdminSettings|Sample interval (seconds)'), class: 'label-bold'
+      = f.number_field :pg_ash_sample_interval_seconds, min: 1, max: 60, required: true, class: 'form-control gl-form-input'
+      .form-text.gl-text-subtle
+        = s_('AdminSettings|How often to take a sample, in seconds. Must be between 1 and 60. Default is 1.')
+
+  = f.submit _('Save changes'), pajamas_button: true

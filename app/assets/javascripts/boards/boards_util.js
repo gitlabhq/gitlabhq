@@ -246,6 +246,7 @@ export function isListDraggable(list) {
 export const FiltersInfo = {
   assigneeUsername: {
     negatedSupport: true,
+    unionedKey: 'assigneeUsernames',
     remap: (k, v) => (v === AssigneeFilterType.any ? 'assigneeWildcardId' : k),
   },
   assigneeId: {
@@ -259,9 +260,14 @@ export const FiltersInfo = {
   },
   authorUsername: {
     negatedSupport: true,
+    unionedKey: 'authorUsernames',
+  },
+  authorUsernames: {
+    negatedSupport: true,
   },
   labelName: {
     negatedSupport: true,
+    unionedKey: 'labelNames',
   },
   milestoneTitle: {
     negatedSupport: true,
@@ -277,12 +283,19 @@ export const FiltersInfo = {
   releaseTag: {
     negatedSupport: true,
   },
+  type: {
+    remap: () => 'workItemTypeIds',
+  },
+  // Legacy alias so bookmarked URLs using the old `types` param keep working.
   types: {
     remap: () => 'workItemTypeIds',
   },
   workItemTypeIds: {
     negatedSupport: true,
-    transform: (val) => convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, val),
+    transform: (val) =>
+      Array.isArray(val)
+        ? val.map((id) => convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, id))
+        : convertToGraphQLId(TYPENAME_WORK_ITEMS_TYPE, val),
   },
   confidential: {
     negatedSupport: false,
@@ -299,18 +312,27 @@ export const FiltersInfo = {
 };
 
 /**
- * @param {Object} filters - ex. { search: "foobar", "not[authorUsername]": "root", }
- * @returns {Object} - ex. [ ["search", "foobar", false], ["authorUsername", "root", true], ]
+ * @param {Object} filters - ex. { search: "foobar", "not[authorUsername]": "root", "or[labelName]": ["a"] }
+ * @returns {Object} - ex. [ ["search", "foobar", { negated: false, unioned: false }], ... ]
  */
 const parseFilters = (filters) => {
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   const isNegated = (x) => x.startsWith('not[') && x.endsWith(']');
+  /* eslint-disable-next-line @gitlab/require-i18n-strings */
+  const isUnioned = (x) => x.startsWith('or[') && x.endsWith(']');
 
   return Object.entries(filters).map(([k, v]) => {
-    const isNot = isNegated(k);
-    const filterKey = isNot ? k.slice(4, -1) : k;
+    const negated = isNegated(k);
+    const unioned = isUnioned(k);
+    let filterKey = k;
 
-    return [filterKey, v, isNot];
+    if (negated) {
+      filterKey = k.slice(4, -1);
+    } else if (unioned) {
+      filterKey = k.slice(3, -1);
+    }
+
+    return [filterKey, v, { negated, unioned }];
   });
 };
 
@@ -327,34 +349,48 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
   const customFieldRegex = /^custom-field\[(\d*)\]$/;
 
   return parseFilters(filters)
-    .map(([k, v, negated]) => {
+    .map(([k, v, modifiers]) => {
+      // Unioned (OR) filters map to plural fields on UnionedIssueFilterInput.
+      if (modifiers.unioned) {
+        return [filterInfo[k]?.unionedKey ?? k, v, modifiers];
+      }
+
       // for legacy reasons, some filters need to be renamed to correct GraphQL fields.
       const remapAvailable = filterInfo[k]?.remap;
       const remappedKey = remapAvailable ? filterInfo[k].remap(k, v) : k;
 
-      return [remappedKey, v, negated];
+      return [remappedKey, v, modifiers];
     })
-    .filter(([k, , negated]) => {
+    .filter(([k, , modifiers]) => {
       if (k.match(customFieldRegex) && options.hasCustomFieldsFeature) {
         return true;
+      }
+
+      if (modifiers.unioned) {
+        return filterFields[issuableType].includes(k);
       }
 
       // remove unsupported filters (+ check if the filters support negation)
       const supported = filterFields[issuableType].includes(k);
       if (supported) {
-        return negated ? filterInfo[k].negatedSupport : true;
+        return modifiers.negated ? filterInfo[k].negatedSupport : true;
       }
 
       return false;
     })
-    .map(([k, v, negated]) => {
+    .map(([k, v, modifiers]) => {
+      // Unioned filters keep their raw array value; no per-field transform applies.
+      if (modifiers.unioned) {
+        return [k, v, modifiers];
+      }
+
       // if the filter value needs a special transformation, apply it (e.g., capitalization)
       const transform = filterInfo[k]?.transform;
       const newVal = transform ? transform(v) : v;
 
-      return [k, newVal, negated];
+      return [k, newVal, modifiers];
     })
-    .map(([k, v, negated]) => {
+    .map(([k, v, modifiers]) => {
       let newK = k;
       let newV = v;
       if (k.match(customFieldRegex) && options.hasCustomFieldsFeature) {
@@ -373,22 +409,17 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
         newK = 'customField';
       }
 
-      return [newK, newV, negated];
+      return [newK, newV, modifiers];
     })
     .reduce(
-      (acc, [k, v, negated]) => {
-        return negated
-          ? {
-              ...acc,
-              not: {
-                ...acc.not,
-                [k]: v,
-              },
-            }
-          : {
-              ...acc,
-              [k]: v,
-            };
+      (acc, [k, v, modifiers]) => {
+        if (modifiers.negated) {
+          return { ...acc, not: { ...acc.not, [k]: v } };
+        }
+        if (modifiers.unioned) {
+          return { ...acc, or: { ...acc.or, [k]: v } };
+        }
+        return { ...acc, [k]: v };
       },
       { not: {} },
     );

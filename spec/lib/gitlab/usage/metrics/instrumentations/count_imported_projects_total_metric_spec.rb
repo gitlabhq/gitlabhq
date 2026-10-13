@@ -34,8 +34,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsTo
   context 'with all time frame' do
     let(:expected_value) { 9 }
     let(:expected_query) do
-      "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\" "\
-      "IN ('gitlab_project', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest', "\
+      "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\" " \
+      "IN ('gitlab_project', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest', " \
       "'gitlab_project_migration', 'offline_transfer', 'fogbugz')"
     end
 
@@ -47,9 +47,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsTo
     let(:start) { 30.days.ago.to_fs(:db) }
     let(:finish) { 2.days.ago.to_fs(:db) }
     let(:expected_query) do
-      "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\" "\
-      "IN ('gitlab_project', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest', "\
-      "'gitlab_project_migration', 'offline_transfer', 'fogbugz') "\
+      "SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\" " \
+      "IN ('gitlab_project', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest', " \
+      "'gitlab_project_migration', 'offline_transfer', 'fogbugz') " \
       "AND \"projects\".\"created_at\" BETWEEN '#{start}' AND '#{finish}'"
     end
 

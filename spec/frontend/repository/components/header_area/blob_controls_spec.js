@@ -141,7 +141,6 @@ describe('Blob controls component', () => {
 
   const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);
   const findFindButton = () => wrapper.findComponentByTestId('find');
-  const findBlameButton = () => wrapper.findComponentByTestId('blame');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);
@@ -205,57 +204,6 @@ describe('Blob controls component', () => {
         {},
         undefined,
       );
-    });
-  });
-
-  describe('Blame button', () => {
-    it('renders a blame button with the correct href', () => {
-      expect(findBlameButton().attributes('href')).toBe('blame/file.js');
-    });
-
-    it('does not render on mobile layout', () => {
-      expect(findBlameButton().classes()).toContain('gl-hidden', '@sm/panel:gl-inline-flex');
-    });
-
-    it('does not render blame button when blobInfo.storedExternally is true', async () => {
-      const blobOverwriteResolver = overrideBlobControlsResolver({ storedExternally: true });
-      await createComponent({ blobControlsResolver: blobOverwriteResolver });
-
-      expect(findBlameButton().exists()).toBe(false);
-    });
-
-    it('does not render blame button when blobInfo.externalStorage is "lfs"', async () => {
-      const blobOverwriteResolver = overrideBlobControlsResolver({
-        storedExternally: true,
-        externalStorage: 'lfs',
-      });
-      await createComponent({ blobControlsResolver: blobOverwriteResolver });
-
-      expect(findBlameButton().exists()).toBe(false);
-    });
-
-    it('renders blame button when blobInfo.storedExternally is false and externalStorage is not "lfs"', async () => {
-      const blobOverwriteResolver = overrideBlobControlsResolver({
-        storedExternally: false,
-        externalStorage: null,
-      });
-      await createComponent({ blobControlsResolver: blobOverwriteResolver });
-
-      expect(findBlameButton().exists()).toBe(true);
-    });
-
-    it('calls trackEvent method when clicked on blame button', () => {
-      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-      findBlameButton().vm.$emit('click');
-
-      expect(trackEventSpy).toHaveBeenCalledWith('click_blame_control_on_blob_page', {}, undefined);
-    });
-
-    it('does not render when the `inline_blame` feature flag is enabled', async () => {
-      await createComponent({ provide: { glFeatures: { inlineBlame: true } } });
-
-      expect(findBlameButton().exists()).toBe(false);
     });
   });
 

@@ -136,6 +136,10 @@ RSpec.describe JwksController, feature_category: :system_access do
         expect(parsed_response['scopes_supported'].size).to be > 1
       end
 
+      it 'does not advertise the backend-only granular scope' do
+        expect(parsed_response['scopes_supported']).not_to include('granular')
+      end
+
       it 'includes registration_endpoint' do
         expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
       end

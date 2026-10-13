@@ -51,7 +51,7 @@ module Issues
     end
 
     # overridden in EE
-    def after_close(issue, _status, closed_via: nil, notifications: true, system_note: true)
+    def after_close(issue, _status, closed_via: nil, notifications: true, system_note: true, old_associations: {})
       event_service.close_issue(issue, current_user)
       create_note(issue, closed_via) if system_note
 
@@ -71,7 +71,7 @@ module Issues
 
       todo_service.close_issue(issue, current_user)
       perform_incident_management_actions(issue)
-      execute_hooks(issue, 'close')
+      execute_hooks(issue, 'close', old_associations: old_associations)
       invalidate_cache_counts(issue, users: issue.assignees)
       issue.invalidate_project_counter_caches
       track_incident_action(current_user, issue, :incident_closed)

@@ -131,12 +131,6 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
     end
   end
 
-  describe '#importer_user_mapping_enabled?' do
-    it 'returns true' do
-      expect(described_class.new(tracker, extra: :data).importer_user_mapping_enabled?).to be(true)
-    end
-  end
-
   describe '#source_ghost_user_id' do
     it 'returns the ghost user ID' do
       expect(BulkImports::SourceInternalUserFinder).to receive(:cached_ghost_user_id)

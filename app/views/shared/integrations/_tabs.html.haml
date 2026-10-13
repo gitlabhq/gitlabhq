@@ -3,8 +3,8 @@
   .tabs.gl-tabs
     %div
       = gl_tabs_nav({ class: 'gl-mb-5' }) do
-        = gl_tab_link_to _('Settings'), scoped_edit_integration_path(integration, project: @project, group: @group)
-        = gl_tab_link_to custom_settings_title, scoped_overrides_integration_path(integration)
+        = gl_tab_link_to _('Settings'), scoped_edit_integration_path(integration, project: @project, group: @group, organization: @organization)
+        = gl_tab_link_to custom_settings_title, scoped_overrides_integration_path(integration, organization: @organization)
 
       = yield
 

@@ -2,7 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe "User edits a comment on a commit", :js, feature_category: :source_code_management do
+RSpec.describe "User edits a comment on a commit", :js, feature_category: :source_code_management,
+  quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44444', type: :flaky } do
   include Features::NotesHelpers
   include RepoHelpers
 

@@ -274,4 +274,31 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
       expect(authentication_payload[:expires_in]).to eq(described_class::DEFAULT_EXPIRE_TIME)
     end
   end
+
+  describe 'with several db_key_base keys' do
+    include DbKeyBaseHelpers
+
+    let(:old_key) { Settings.db_key_base_keys.last }
+    let(:new_key) { SecureRandom.hex(64) }
+
+    where(actor_name: %i[user deploy_key])
+
+    with_them do
+      let(:actor) { public_send(actor_name) }
+
+      it 'accepts a token signed with the previous key' do
+        token = lfs_token.token
+        stub_db_key_base_keys(old_key, new_key)
+
+        expect(described_class.new(actor, project).token_valid?(token)).to be(true)
+      end
+
+      it 'rejects it once the previous key is removed' do
+        token = lfs_token.token
+        stub_db_key_base_keys(new_key)
+
+        expect(described_class.new(actor, project).token_valid?(token)).to be(false)
+      end
+    end
+  end
 end

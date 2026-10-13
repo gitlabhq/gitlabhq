@@ -13,7 +13,7 @@ import {
 import { mapActions, mapState } from 'pinia';
 import { s__, sprintf } from '~/locale';
 
-import PageHeading from '~/vue_shared/components/page_heading.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 
 import { useServiceAccounts } from '../stores/service_accounts';
 
@@ -32,7 +32,7 @@ export default {
     GlPagination,
     GlButton,
     GlDisclosureDropdown,
-    PageHeading,
+    IndexLayout,
     DeleteServiceAccountModal,
     CreateEditServiceAccountModal,
   },
@@ -173,28 +173,26 @@ export default {
 </script>
 
 <template>
-  <div>
-    <page-heading :heading="$options.i18n.title">
-      <template #description>
-        <gl-sprintf
-          :message="
-            s__(
-              'ServiceAccounts|Service accounts are non-human accounts that allow interactions between software applications, systems, or services. %{learnMore}',
-            )
-          "
-        >
-          <template #learnMore>
-            <gl-link :href="serviceAccountsDocsPath">{{ __('Learn more') }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </template>
+  <index-layout :heading="$options.i18n.title">
+    <template #description>
+      <gl-sprintf
+        :message="
+          s__(
+            'ServiceAccounts|Service accounts are non-human accounts that allow interactions between software applications, systems, or services. %{learnMore}',
+          )
+        "
+      >
+        <template #learnMore>
+          <gl-link :href="serviceAccountsDocsPath">{{ __('Learn more') }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
 
-      <template #actions>
-        <gl-button v-if="serviceAccountsEnabled" variant="confirm" @click="addServiceAccount">
-          {{ s__('ServiceAccounts|Add service account') }}
-        </gl-button>
-      </template>
-    </page-heading>
+    <template #actions>
+      <gl-button v-if="serviceAccountsEnabled" variant="confirm" @click="addServiceAccount">
+        {{ s__('ServiceAccounts|Add service account') }}
+      </gl-button>
+    </template>
 
     <gl-tabs content-class="gl-pt-0">
       <gl-tab>
@@ -255,5 +253,5 @@ export default {
       @cancel="setCreateEditType(null)"
       @submit="createEditAccount"
     />
-  </div>
+  </index-layout>
 </template>

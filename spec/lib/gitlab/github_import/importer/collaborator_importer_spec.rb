@@ -9,14 +9,14 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) do
     create(
-      :project, :repository, :with_import_url, :import_user_mapping_enabled,
+      :project, :small_repo, :with_import_url, :import_user_mapping_enabled,
       import_type: ::Import::SOURCE_GITHUB,
       group: group
     )
   end
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
-  let(:github_user_id) { rand(1000) }
+  let_it_be(:github_user_id) { rand(1000) }
   let(:collaborator) do
     Gitlab::GithubImport::Representation::Collaborator.from_json_hash(
       'id' => github_user_id,
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     )
   end
 
-  let!(:source_user) do
+  let_it_be_with_reload(:source_user) do
     create(
       :import_source_user, :awaiting_approval,
       namespace: project.root_ancestor,
@@ -48,12 +48,6 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
   let(:member_finder_relations) { ::Import::ReassignPlaceholderUserRecordsService::PROJECT_FINDER_MEMBER_RELATIONS }
 
   describe '#execute' do
-    before do
-      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        allow(finder).to receive(:find).with(github_user_id, user.username).and_return(user.id)
-      end
-    end
-
     shared_examples 'role mapping' do |collaborator_role, member_access_level|
       let(:github_role_name) { collaborator_role }
 
@@ -82,21 +76,6 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
         )
 
         expect(project.members.last).to have_attributes(expected_member_attrs)
-      end
-
-      context 'when user contribution mapping is disabled' do
-        before do
-          project.build_or_assign_import_data(data: {})
-          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        end
-
-        it 'creates expected member' do
-          expect { importer.execute }.to change { project.members.count }
-            .from(0).to(1)
-
-          expected_member_attrs = basic_member_attrs.merge(access_level: member_access_level)
-          expect(project.members.last).to have_attributes(expected_member_attrs)
-        end
       end
     end
 
@@ -137,7 +116,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     end
 
     context 'when user has lower role in a project group' do
-      before do
+      before_all do
         create(:group_member, group: group, user: user, access_level: Gitlab::Access::DEVELOPER)
       end
 
@@ -147,7 +126,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     context 'when user has higher role in a project group' do
       let(:github_role_name) { 'write' }
 
-      before do
+      before_all do
         create(:group_member, group: group, user: user, access_level: Gitlab::Access::MAINTAINER)
       end
 
@@ -169,21 +148,11 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
         source_user.accept!
         expect { importer.execute }.not_to change { project.members.count }
       end
-
-      context 'when user contribution mapping is disabled' do
-        before do
-          project.build_or_assign_import_data(data: {})
-          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        end
-
-        it 'skips creating member for the project' do
-          expect { importer.execute }.not_to change { project.members.count }
-        end
-      end
     end
 
     context 'when source_user is mapped to a project bot' do
       let(:github_role_name) { 'write' }
+      let(:github_user_id) { rand(1000..1999) }
 
       let!(:source_user) do
         create(
@@ -203,6 +172,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
 
     context 'when source_user is mapped to a service account' do
       let(:github_role_name) { 'write' }
+      let(:github_user_id) { rand(1000..1999) }
 
       let!(:source_user) do
         create(

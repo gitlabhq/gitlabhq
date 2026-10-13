@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../support/helpers/repo_helpers'
 
 RSpec.describe Gitlab::Git, feature_category: :source_code_management do
   describe '.ref_name' do

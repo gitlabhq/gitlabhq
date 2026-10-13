@@ -1,0 +1,13 @@
+---
+table_name: organization_teams
+classes:
+- Organizations::Team
+feature_categories:
+- organization
+description: Team scoped to an organization, holding a roster of users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250663
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

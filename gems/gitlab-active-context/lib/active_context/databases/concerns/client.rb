@@ -12,6 +12,8 @@ module ActiveContext
           raise NotImplementedError
         end
 
+        def close; end
+
         private
 
         def log_search(collection:)

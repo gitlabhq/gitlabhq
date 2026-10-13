@@ -5,7 +5,7 @@ description: "List the schema inconsistencies in the database"
 product_group: database_health
 product_categories:
 - database
-value_type: boolean
+value_type: object
 status: active
 milestone: "16.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123383

@@ -39,7 +39,7 @@ module API
             coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
           optional :milestone_title, type: Array[String],
             desc: 'Filter by milestone titles.',
-            coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+            coerce_with: ->(value) { Array.wrap(value).map { |v| v.to_s.strip }.compact_blank }
           optional :milestone_wildcard_id, type: String,
             values: %w[None Any Upcoming Started],
             desc: 'Filter by milestone wildcard. Values: None, Any, Upcoming, or Started.'
@@ -123,7 +123,7 @@ module API
               coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
             optional :milestone_title, type: Array[String],
               desc: 'Exclude work items with these milestones.',
-              coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+              coerce_with: ->(value) { Array.wrap(value).map { |v| v.to_s.strip }.compact_blank }
             optional :milestone_wildcard_id, type: String,
               values: %w[Started Upcoming],
               desc: 'Exclude by milestone wildcard. Values: Started or Upcoming.'

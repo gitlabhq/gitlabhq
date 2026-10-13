@@ -11,6 +11,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
+import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import { mockParentWorkItem } from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('CE IssueCardTimeInfo component', () => {
@@ -111,6 +112,7 @@ describe('CE IssueCardTimeInfo component', () => {
       propsData: { issue, hiddenMetadataKeys },
       stubs: {
         WorkItemAttribute,
+        WorkItemDatesAttribute,
       },
     });
 
@@ -144,7 +146,7 @@ describe('CE IssueCardTimeInfo component', () => {
         it('renders with "No start date" prefix when no start date is present', () => {
           wrapper = mountComponent({ issue: object({ dueDate: '2020-12-12' }) });
           expect(findWorkItemAttribute().props('title')).toBe('No start date – Dec 12, 2020');
-          expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date');
           expect(findDueDateIcon().props()).toMatchObject({
             variant: 'current',
             name: 'calendar',
@@ -196,7 +198,7 @@ describe('CE IssueCardTimeInfo component', () => {
             variant: 'warning',
             name: 'calendar-due',
           });
-          expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates (due soon)');
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date (due soon)');
         });
 
         it('renders with warning variant and calendar-due icon when due within 6 days', () => {
@@ -215,7 +217,7 @@ describe('CE IssueCardTimeInfo component', () => {
             variant: 'current',
             name: 'calendar',
           });
-          expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date');
         });
 
         it('does not apply approaching state when issue is closed', () => {

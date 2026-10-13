@@ -34,6 +34,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       expect(variables[:includeJobs]).to be(false)
       expect(variables[:includeDownstreamPipelines]).to be(false)
       expect(variables[:includeBridgeJobs]).to be(false)
+      expect(variables[:includeArtifacts]).to be(false)
     end
 
     it 'defaults first to 20 and omits after' do
@@ -50,6 +51,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
         'jobs'                  | :includeJobs
         'downstream_pipelines'  | :includeDownstreamPipelines
         'bridge_jobs'           | :includeBridgeJobs
+        'artifacts'             | :includeArtifacts
       end
 
       with_them do
@@ -57,7 +59,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
 
         it 'enables only the requested facet', :aggregate_failures do
           variables = tool.build_variables
-          all_keys = %i[includeJobs includeDownstreamPipelines includeBridgeJobs]
+          all_keys = %i[includeJobs includeDownstreamPipelines includeBridgeJobs includeArtifacts]
 
           expect(variables[enabled_key]).to be(true)
           (all_keys - [enabled_key]).each { |key| expect(variables[key]).to be(false) }
@@ -234,6 +236,122 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       end
     end
 
+    context 'with include: artifacts' do
+      let_it_be(:job_with_artifacts) do
+        create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'rspec 1/2')
+      end
+
+      let_it_be(:other_job_with_artifacts) do
+        create(:ci_build, :success, :artifacts, pipeline: pipeline, name: 'rspec 2/2')
+      end
+
+      let_it_be(:job_without_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'lint') }
+
+      let(:params) { super().merge(include: ['artifacts']) }
+
+      it 'returns a flat artifact list carrying the job each artifact came from', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+
+        artifacts = result[:structuredContent][:artifacts]
+        expect(artifacts.pluck(:job_id).uniq).to contain_exactly(
+          job_with_artifacts.id, other_job_with_artifacts.id
+        )
+
+        archive = job_with_artifacts.job_artifacts_archive
+        expect(artifacts).to include(
+          id: archive.id,
+          name: archive.filename,
+          size: archive.size,
+          file_type: 'archive',
+          expire_at: archive.expire_at&.iso8601,
+          expired: false,
+          job_id: job_with_artifacts.id,
+          job_name: 'rspec 1/2'
+        )
+      end
+
+      context 'with an expired artifact' do
+        let_it_be(:expired_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:expired_artifact_job) { create(:ci_build, :success, pipeline: expired_pipeline) }
+        let_it_be(:expired_artifact) { create(:ci_job_artifact, :archive, :expired, job: expired_artifact_job) }
+
+        let(:params) { { id: project.full_path, pipeline_id: expired_pipeline.id, include: ['artifacts'] } }
+
+        it 'reports expired: true with the iso8601 timestamp', :aggregate_failures do
+          result = tool.execute
+
+          artifact = result[:structuredContent][:artifacts].find { |a| a[:id] == expired_artifact.id }
+          expect(artifact[:expired]).to be(true)
+          expect(artifact[:expire_at]).to eq(expired_artifact.expire_at.iso8601)
+        end
+      end
+
+      it 'tolerates bridges and generic statuses in the pipeline', :aggregate_failures do
+        create(:ci_bridge, pipeline: pipeline)
+        create(:generic_commit_status, pipeline: pipeline)
+
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent][:artifacts].pluck(:job_id).uniq).to contain_exactly(
+          job_with_artifacts.id, other_job_with_artifacts.id
+        )
+      end
+
+      it 'does not run one artifact query per job' do
+        baseline = ActiveRecord::QueryRecorder.new { described_class.new(current_user: user, params: params).execute }
+
+        create_list(:ci_build, 3, :success, :artifacts, pipeline: pipeline)
+
+        expect { described_class.new(current_user: user, params: params).execute }
+          .not_to exceed_query_limit(baseline)
+      end
+
+      context 'with pagination' do
+        # A dedicated pipeline where every job has artifacts, so the assertion does not
+        # depend on which job the first page happens to return.
+        let_it_be(:paged_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:paged_jobs) { create_list(:ci_build, 2, :success, :artifacts, pipeline: paged_pipeline) }
+
+        let(:params) { { id: project.full_path, pipeline_id: paged_pipeline.id, include: ['artifacts'], first: 1 } }
+
+        it 'pages over the jobs, not the artifacts', :aggregate_failures do
+          result = tool.execute
+
+          artifacts = result[:structuredContent][:artifacts]
+          expect(artifacts.pluck(:job_id).uniq.size).to eq(1)
+          expect(result[:structuredContent][:page_info][:has_next_page]).to be(true)
+          expect(result[:structuredContent][:page_info][:end_cursor]).to be_present
+        end
+      end
+
+      context 'when an artifact is expired' do
+        let_it_be(:pipeline_with_expired_artifact) { create(:ci_pipeline, project: project) }
+        let_it_be(:job_with_expired_artifact) do
+          create(:ci_build, :success, pipeline: pipeline_with_expired_artifact, name: 'rspec-expired')
+        end
+
+        let_it_be(:expired_artifact) { create(:ci_job_artifact, :archive, :expired, job: job_with_expired_artifact) }
+
+        let(:params) do
+          { id: project.full_path, pipeline_id: pipeline_with_expired_artifact.id, include: ['artifacts'] }
+        end
+
+        it 'reports the artifact as expired with its ISO 8601 expiry timestamp', :aggregate_failures do
+          result = tool.execute
+
+          expect(result[:isError]).to be(false), -> { result.inspect }
+
+          artifacts = result[:structuredContent][:artifacts]
+          expect(artifacts.pluck(:id)).to contain_exactly(expired_artifact.id)
+          expect(artifacts.first[:expired]).to be(true)
+          expect(artifacts.first[:expire_at]).to eq(expired_artifact.expire_at.iso8601)
+        end
+      end
+    end
+
     context 'when the pipeline does not exist' do
       let(:params) { { id: project.full_path, pipeline_id: non_existing_record_id } }
 
@@ -242,6 +360,22 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Pipeline not found')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+      end
+    end
+
+    context 'when the caller can see the project but not its pipelines' do
+      let_it_be(:builds_private_project) { create(:project, :public, :builds_private) }
+      let_it_be(:hidden_pipeline) { create(:ci_pipeline, project: builds_private_project) }
+
+      let(:tool) { described_class.new(current_user: create(:user), params: params) }
+      let(:params) { { id: builds_private_project.full_path, pipeline_id: hidden_pipeline.id } }
+
+      it 'reports not_found, as for a missing pipeline', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:content].first[:text]).to eq('Pipeline not found or inaccessible')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 

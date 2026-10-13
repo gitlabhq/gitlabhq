@@ -4,7 +4,8 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
   include IssuableActions
   include HandlesGitalyErrors
 
-  before_action :authorize_can_resolve_conflicts!
+  # resolve_conflicts runs these checks inside ResolveService, so the GraphQL mutation can share them
+  before_action :authorize_can_resolve_conflicts!, except: :resolve_conflicts
 
   urgency :low, [
     :show,
@@ -51,32 +52,30 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
   end
 
   def resolve_conflicts
-    return render_404 unless @conflicts_list.can_be_resolved_in_ui?
+    result = ::MergeRequests::Conflicts::ResolveService
+      .new(merge_request)
+      .execute(current_user, resolve_conflicts_params)
 
-    Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_resolve_conflict_action(user: current_user)
+    return render_resolve_conflicts_error(result) if result.error?
 
-    if @merge_request.can_be_merged?
-      render status: :bad_request,
-        json: { message: _('The merge conflicts for this merge request have already been resolved.') }
-      return
-    end
+    flash[:notice] = _('All merge conflicts were resolved. The merge request can now be merged.')
 
-    begin
-      ::MergeRequests::Conflicts::ResolveService
-        .new(merge_request)
-        .execute(current_user, resolve_conflicts_params)
-
-      flash[:notice] = _('All merge conflicts were resolved. The merge request can now be merged.')
-
-      render json: { redirect_to: project_merge_request_path(@project, @merge_request, resolved_conflicts: true) }
-    rescue Gitlab::Git::Conflict::Resolver::ResolutionError => e
-      render status: :bad_request, json: { message: e.message }
-    rescue Gitlab::Git::PreReceiveError => e
-      render status: :unprocessable_entity, json: { message: e.message }
-    end
+    render json: { redirect_to: project_merge_request_path(@project, @merge_request, resolved_conflicts: true) }
   end
 
   private
+
+  def render_resolve_conflicts_error(result)
+    case result.reason
+    when ::MergeRequests::Conflicts::ResolveService::REASON_NO_PUSH_ACCESS,
+      ::MergeRequests::Conflicts::ResolveService::REASON_NOT_RESOLVABLE_IN_UI
+      render_404
+    when ::MergeRequests::Conflicts::ResolveService::REASON_PRE_RECEIVE
+      render status: :unprocessable_entity, json: { message: result.message }
+    else
+      render status: :bad_request, json: { message: result.message }
+    end
+  end
 
   def conflict_path_params
     params.permit(:old_path, :new_path)

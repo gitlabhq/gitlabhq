@@ -36,7 +36,7 @@ module Ci
     attr_reader :bridge, :current_user, :project, :pipeline
 
     def rate_limit_throttled?
-      scope = [project, current_user, pipeline.sha]
+      scope = { project: project, user: current_user, sha: pipeline.sha }
 
       ::Gitlab::ApplicationRateLimiter.throttled?(:downstream_pipeline_trigger, scope: scope).tap do |throttled|
         create_throttled_log_entry if throttled

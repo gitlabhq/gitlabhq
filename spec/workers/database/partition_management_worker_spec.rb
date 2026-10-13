@@ -11,8 +11,9 @@ RSpec.describe Database::PartitionManagementWorker, feature_category: :database 
       allow(Gitlab::Database::Partitioning).to receive(:report_metrics)
     end
 
-    it 'syncs partitions' do
-      expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+    it 'syncs partitions, including the ANALYZE for tables relying on the default analyze_interval' do
+      expect(Gitlab::Database::Partitioning)
+        .to receive(:sync_partitions).with(analyze_tables_with_default_interval: true)
 
       subject
     end

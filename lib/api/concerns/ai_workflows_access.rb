@@ -8,7 +8,7 @@ module API
       class_methods do
         def allow_ai_workflows_access
           allow_access_with_scope :ai_workflows, if: ->(request) do
-            request.get? || request.head? || request.post? || request.put?
+            request.get? || request.head? || request.post? || request.put? || request.patch?
           end
         end
       end

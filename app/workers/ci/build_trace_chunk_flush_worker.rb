@@ -13,9 +13,7 @@ module Ci
     sidekiq_options retry: false
 
     def perform(id)
-      ::Ci::BuildTraceChunk.find_by_id(id).try do |chunk|
-        chunk.persist_data!
-      end
+      ::Ci::BuildTraceChunk.find_by_id(id).try(&:persist_data!)
     end
   end
 end

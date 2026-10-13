@@ -6,6 +6,7 @@ module DraftNotes
       executing_user ||= current_user
 
       return error('Not allowed to create notes') unless can?(executing_user, :create_note, merge_request)
+      return error('Review not found') if params[:review_id].present? && existing_review.nil?
 
       review = nil
       if draft
@@ -13,22 +14,53 @@ module DraftNotes
       else
         review = create_review(executing_user)
         merge_request_activity_counter.track_publish_review_action(user: current_user) if review
+        review ||= existing_review
       end
 
-      # `handle_notifications` publishes MergeRequests::DraftNotePublishedEvent,
-      # which enqueues MergeRequests::ProcessDraftNotePublishedWorker. Report
-      # back whether that async delivery was scheduled so the caller knows the
-      # submit_and_notify_mr_review_ui experience will be completed in the worker
-      # rather than synchronously.
-      async_notifications = (draft || review).present?
-      handle_notifications(current_user, merge_request, review) if async_notifications
-      success(async_notifications: async_notifications)
+      summary_note = create_summary_note(review)
+
+      if (draft || review) && !params[:defer_notifications]
+        handle_notifications(current_user, merge_request, review, summary_note)
+      end
+
+      success(review_id: review&.id)
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "
       error(message)
     end
 
+    # Whether there are draft notes for #execute to publish, or an existing review to
+    # notify about. Only then does it publish MergeRequests::DraftNotePublishedEvent.
+    def publishes_draft_notes?(draft: nil)
+      draft.present? || draft_notes.present? || existing_review.present?
+    end
+
     private
+
+    def existing_review
+      return if params[:review_id].blank?
+
+      review = merge_request.reviews.find_by_id(params[:review_id])
+      review if review&.author_id == current_user.id
+    end
+    strong_memoize_attr :existing_review
+
+    def create_summary_note(review)
+      return unless params[:summary_note]
+
+      note = Notes::CreateService.new(project, current_user, params[:summary_note].merge(review_id: review&.id)).execute
+
+      if note.errors.any?
+        Gitlab::AppLogger.warn(
+          message: 'Draft note publish: summary note not persisted',
+          merge_request_id: merge_request.id,
+          project_id: project.id,
+          errors: note.errors.full_messages
+        )
+      end
+
+      note
+    end
 
     def publish_draft_note(draft, executing_user)
       create_note_from_draft(draft, executing_user)
@@ -38,7 +70,7 @@ module DraftNotes
     def create_review(executing_user)
       return if draft_notes.blank?
 
-      review = Review.create!(author: current_user, merge_request: merge_request, project: project)
+      review = existing_review || Review.create!(author: current_user, merge_request: merge_request, project: project)
 
       created_notes = draft_notes.filter_map do |draft_note|
         next unless draft_note.note.present?
@@ -130,18 +162,19 @@ module DraftNotes
       merge_request.assignees.each(&:invalidate_merge_request_cache_counts)
     end
 
-    def handle_notifications(current_user, merge_request, review)
-      create_draft_published_event(merge_request, current_user, review)
+    def handle_notifications(current_user, merge_request, review, summary_note)
+      create_draft_published_event(merge_request, current_user, review, summary_note)
 
       MergeRequests::ResolvedDiscussionNotificationService
         .new(project: project, current_user: current_user)
         .execute(merge_request, send_notifications: false)
     end
 
-    def create_draft_published_event(merge_request, current_user, review)
+    def create_draft_published_event(merge_request, current_user, review, summary_note)
       review_id = review&.id
       data = { current_user_id: current_user.id, merge_request_id: merge_request.id }
       data[:review_id] = review_id if review_id
+      data[:summary_note_id] = summary_note.id if review_id && summary_note&.persisted?
 
       Gitlab::EventStore.publish(
         MergeRequests::DraftNotePublishedEvent.new(

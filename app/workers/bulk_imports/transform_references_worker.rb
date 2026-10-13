@@ -34,10 +34,6 @@ module BulkImports
 
       object.refresh_markdown_cache!
 
-      unless Import::BulkImports::EphemeralData.new(tracker.entity.bulk_import_id).importer_user_mapping_enabled?
-        body.gsub!(username_regex(mapped_usernames), mapped_usernames)
-      end
-
       if object_has_reference?(body)
         matching_urls(object).each do |old_url, new_url|
           body.gsub!(old_url, new_url) if body.include?(old_url)
@@ -70,17 +66,6 @@ module BulkImports
 
     def body_field(object)
       object.is_a?(Note) ? 'note' : 'description'
-    end
-
-    def mapped_usernames
-      @mapped_usernames ||= ::BulkImports::UsersMapper.new(context: context)
-                              .map_usernames.transform_keys { |key| "@#{key}" }
-                              .transform_values { |value| "@#{value}" }
-    end
-
-    def username_regex(mapped_usernames)
-      @username_regex ||= Regexp.new(mapped_usernames.keys.sort_by(&:length)
-                            .reverse.map { |x| Regexp.escape(x) }.join('|'))
     end
 
     def matching_urls(object)

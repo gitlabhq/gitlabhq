@@ -1,6 +1,6 @@
 <script>
 import { uniqueId } from 'lodash-es';
-import { GlButton, GlTooltipDirective, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlModal, GlSprintf } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
@@ -15,7 +15,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModal: GlModalDirective,
   },
   props: {
     emoji: {

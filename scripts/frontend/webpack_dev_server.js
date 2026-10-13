@@ -10,7 +10,7 @@ const CONFIG_PATH = USE_RSPACK ? 'config/rspack.config.mjs' : 'config/webpack.co
 const BUILD_CMD = USE_RSPACK ? 'yarn run rspack-prod' : 'yarn run webpack';
 const SERVE_CMD = USE_RSPACK
   ? // @rspack/cli doesn't set WEBPACK_SERVE (webpack-dev-server does); the config
-    // keys HMR, bail, and lazy compilation off it.
+    // keys HMR and bail off it.
     `WEBPACK_SERVE=true rspack serve --config ${CONFIG_PATH}`
   : `webpack-dev-server --config ${CONFIG_PATH}`;
 

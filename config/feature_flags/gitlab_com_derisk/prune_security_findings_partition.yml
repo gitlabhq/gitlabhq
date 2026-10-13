@@ -1,0 +1,10 @@
+---
+name: prune_security_findings_partition
+description: Makes the pipeline has_vulnerabilities check skip the security_findings query when the pipeline has no security scans, and otherwise adds a partition_number predicate so the query prunes to the pipeline's partition of the partitioned security_findings table. Corrective action for INC-13566.
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29649
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252311
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631155
+milestone: '19.5'
+group: group::vulnerability management
+type: gitlab_com_derisk
+default_enabled: false

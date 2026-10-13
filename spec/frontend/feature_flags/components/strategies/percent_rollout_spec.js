@@ -1,10 +1,10 @@
 import { GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
 import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
 import { PERCENT_ROLLOUT_GROUP_ID } from '~/feature_flags/constants';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { percentRolloutStrategy } from '../../mock_data';
 
 const DEFAULT_PROPS = {

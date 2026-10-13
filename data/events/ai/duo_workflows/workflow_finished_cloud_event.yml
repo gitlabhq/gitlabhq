@@ -1,0 +1,7 @@
+---
+event: Ai::DuoWorkflows::WorkflowFinishedCloudEvent
+description: Published when a Duo agent session completes successfully. Published for
+  every session, whatever flow it runs, so subscribers filter themselves. Will
+  replace WorkflowFinishedEvent. Deferred via run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

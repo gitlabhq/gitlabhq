@@ -6,14 +6,14 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:build) { create(:ci_build, pipeline: pipeline, project: project) }
+  let_it_be_with_reload(:build) { create(:ci_build, pipeline: pipeline, project: project) }
   let(:service) { described_class.new(project, nil) }
 
   describe '#execute' do
     subject { service.execute(artifact) }
 
     context 'when build has a dotenv artifact' do
-      let!(:artifact) { create(:ci_job_artifact, :dotenv, job: build) }
+      let_it_be_with_reload(:artifact) { create(:ci_job_artifact, :dotenv, job: build) }
 
       it 'parses the artifact' do
         expect(subject[:status]).to eq(:success)
@@ -38,7 +38,6 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
       end
 
       context 'when dotenv variables have duplicate variables' do
-        let!(:artifact) { create(:ci_job_artifact, :dotenv, job: build) }
         let(:blob) do
           <<~DOTENV
             KEY1=VAR1
@@ -304,7 +303,7 @@ RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_secur
     end
 
     context 'when build does not have a dotenv artifact' do
-      let!(:artifact) { nil }
+      let(:artifact) { nil }
 
       it 'raises an error' do
         expect { subject }.to raise_error(ArgumentError)

@@ -111,6 +111,8 @@ To turn your personal notifications on or off:
 1. In the upper-right corner, select the user icon.
 1. Select **Turn off email notifications** or **Turn on email notifications**.
 
+To view a history of notifications sent to your instance, see [Notifications](../tenant_overview.md#notifications).
+
 ## SMTP email service
 
 You can configure an [SMTP](../../../subscriptions/gitlab_dedicated/_index.md#email-service) email service for your GitLab Dedicated instance.

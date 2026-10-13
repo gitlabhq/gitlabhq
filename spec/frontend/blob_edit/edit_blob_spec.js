@@ -71,11 +71,13 @@ describe('Blob Editing', () => {
     getValue: getValueMock,
     focus: jest.fn(),
     updateModelLanguage: jest.fn(),
+    updateOptions: jest.fn(),
   };
 
   const setEditorFixture = ({ editorContent = '' } = {}) => {
     setHTMLFixture(`
       <div class="js-edit-mode"><a href="#editor">Write</a><a href="#preview">Preview</a></div>
+      <button class="soft-wrap-toggle" type="button">Soft wrap</button>
       <form class="js-edit-blob-form">
         <input id="file_path" />
         <div class="js-edit-mode-pane" id="editor" data-ref="main">${editorContent}</div>
@@ -153,6 +155,10 @@ describe('Blob Editing', () => {
 
   const findPane = (id) => document.querySelector(`.js-edit-mode-pane${id}`);
 
+  const hasMarkdownPreviewExtension = (extensions) =>
+    Array.isArray(extensions) &&
+    extensions.some(({ definition }) => definition === EditorMarkdownPreviewExtension);
+
   const expectEditorPaneVisible = () => {
     expect(findPane('#editor').style.display).not.toBe('none');
     expect(findPane('#preview').style.display).toBe('none');
@@ -203,6 +209,81 @@ describe('Blob Editing', () => {
     });
   });
 
+  describe('before the editor has loaded', () => {
+    let resolveRawFile;
+    let rejectRawFile;
+
+    const clickSoftWrapToggle = async () => {
+      document.querySelector('.soft-wrap-toggle').click();
+      await waitForPromises();
+    };
+
+    beforeEach(() => {
+      Api.getRawFile.mockReturnValueOnce(
+        new Promise((resolve, reject) => {
+          resolveRawFile = resolve;
+          rejectRawFile = reject;
+        }),
+      );
+      stubPreviewEndpoint();
+
+      blobInstance = new EditBlob({
+        previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
+        filePath,
+        projectPath: 'path/to/project',
+        projectId,
+      });
+    });
+
+    it('waits for the editor and then renders the preview when a mode tab is clicked', async () => {
+      await clickTab('#preview');
+
+      expect(findPreviewRequest()).toBeUndefined();
+
+      resolveRawFile({ data: 'raw content' });
+      await waitForPromises();
+
+      expectPreviewPaneRendered({ content: valueMock, file_path: '' });
+    });
+
+    it('waits for the editor and then applies soft wrap when the toggle is clicked', async () => {
+      await clickSoftWrapToggle();
+
+      expect(document.querySelector('.soft-wrap-toggle').classList).not.toContain(
+        'soft-wrap-active',
+      );
+      expect(mockInstance.updateOptions).not.toHaveBeenCalled();
+
+      resolveRawFile({ data: 'raw content' });
+      await waitForPromises();
+
+      expect(mockInstance.updateOptions).toHaveBeenCalledWith({ wordWrap: 'off' });
+    });
+
+    describe('when the file fails to load', () => {
+      beforeEach(async () => {
+        rejectRawFile(new Error('load failed'));
+        await waitForPromises();
+      });
+
+      it('creates an alert', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: BLOB_EDITOR_ERROR,
+          error: expect.any(Error),
+          captureError: true,
+        });
+      });
+
+      it('does not throw when a mode tab or the soft wrap toggle is clicked', async () => {
+        await clickTab('#preview');
+        await clickSoftWrapToggle();
+
+        expect(findPreviewRequest()).toBeUndefined();
+        expect(mockInstance.updateOptions).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   it('loads SourceEditorExtension and FileTemplateExtension by default', async () => {
     await initEditor();
     expect(useMock).toHaveBeenCalledWith(defaultExtensions);
@@ -234,11 +315,7 @@ describe('Blob Editing', () => {
 
   describe('Markdown', () => {
     const countMarkdownExtensionInstalls = () =>
-      useMock.mock.calls.filter(
-        ([extensions]) =>
-          Array.isArray(extensions) &&
-          extensions.some(({ definition }) => definition === EditorMarkdownExtension),
-      ).length;
+      useMock.mock.calls.filter(([extensions]) => hasMarkdownPreviewExtension(extensions)).length;
 
     it.each`
       desc                                 | from
@@ -251,6 +328,7 @@ describe('Blob Editing', () => {
         await initEditor();
         expect(countMarkdownExtensionInstalls()).toBe(1);
         expect(useMock).toHaveBeenCalledWith(markdownExtensions);
+        expect(addEditorMarkdownListeners).toHaveBeenCalledTimes(1);
 
         await renameFile('README.rst');
 
@@ -291,7 +369,10 @@ describe('Blob Editing', () => {
     });
 
     describe('on the new file page', () => {
+      let loadSpy;
+
       beforeEach(async () => {
+        loadSpy = jest.spyOn(EditBlob.prototype, 'loadMarkdownExtensions');
         await initNewFilePage();
       });
 
@@ -315,15 +396,13 @@ describe('Blob Editing', () => {
       });
 
       it('does not start a second load while one is in progress', async () => {
-        const loadSpy = jest.spyOn(EditBlob.prototype, 'loadMarkdownExtensions');
-
         // Type two markdown names (.mkd, then .mkdn) without waiting,
         // so the second keystroke arrives while the first load is still in flight.
         startRename('README.mkd');
         startRename('README.mkdn');
+        expect(loadSpy).toHaveBeenCalledTimes(1);
         await waitForPromises();
 
-        expect(loadSpy).toHaveBeenCalledTimes(1);
         expect(countMarkdownExtensionInstalls()).toBe(1);
       });
 
@@ -332,6 +411,7 @@ describe('Blob Editing', () => {
         // so the next keystroke arrives while the load is still in flight.
         startRename('README.md');
         startRename('README.mde');
+        expect(loadSpy).toHaveBeenCalledTimes(1);
         await waitForPromises();
 
         expect(unuseMock).not.toHaveBeenCalled();
@@ -350,6 +430,7 @@ describe('Blob Editing', () => {
         startRename('README.md');
         startRename('README.mde');
         startRename('README.md');
+        expect(loadSpy).toHaveBeenCalledTimes(2);
         await waitForPromises();
 
         expect(countMarkdownExtensionInstalls()).toBe(1);
@@ -387,18 +468,34 @@ describe('Blob Editing', () => {
       expectPreviewPaneRendered({ content: valueMock, file_path: previewFilePath });
     };
 
-    const mockEditorWithPreview = ({ shown = false } = {}) => {
+    const expectLivePreviewOpened = (fire) => {
+      expect(fire).toHaveBeenCalledTimes(1);
+      expect(findPreviewRequest()).toBeUndefined();
+      expectEditorPaneVisible();
+    };
+
+    const mockEditorWithMarkdownPreview = ({ shown = false } = {}) => {
       const fire = jest.fn();
-      jest.spyOn(SourceEditor.prototype, 'createInstance').mockReturnValue({
+      // markdownPreview only exists while the markdown extensions are used,
+      // like on the real editor instance: using provides it, un-using removes it.
+      const editor = {
         ...mockInstance,
-        markdownPreview: {
-          shown,
-          eventEmitter: {
-            fire,
-          },
-        },
-      });
-      return fire;
+        use: jest.fn((extensions) => {
+          const result = useMock(extensions);
+          if (hasMarkdownPreviewExtension(extensions)) {
+            editor.markdownPreview = { shown, eventEmitter: { fire } };
+          }
+          return result;
+        }),
+        unuse: jest.fn((extensions) => {
+          unuseMock(extensions);
+          if (hasMarkdownPreviewExtension(extensions)) {
+            delete editor.markdownPreview;
+          }
+        }),
+      };
+      jest.spyOn(SourceEditor.prototype, 'createInstance').mockReturnValue(editor);
+      return { fire };
     };
 
     it.each`
@@ -413,7 +510,7 @@ describe('Blob Editing', () => {
     `(
       'when the file type is $fileType (preview shown: $previewShown), clicking $tabToClick fires preview toggle $expectedFireCount time(s)',
       async ({ fileName, previewShown, tabToClick, expectedFireCount }) => {
-        const fire = mockEditorWithPreview({ shown: previewShown });
+        const { fire } = mockEditorWithMarkdownPreview({ shown: previewShown });
         setFileName(fileName);
         await initEditor();
         await clickTab(tabToClick);
@@ -422,11 +519,72 @@ describe('Blob Editing', () => {
       },
     );
 
+    describe('with a pre-filled markdown file name', () => {
+      let fire;
+
+      beforeEach(() => {
+        ({ fire } = mockEditorWithMarkdownPreview());
+        stubPreviewEndpoint();
+        setFileName('README.md');
+      });
+
+      it('opens the live preview when the file name input is absent but the extensions are already installed', async () => {
+        await initEditor();
+        // Stands in for the race where the tab is clicked before the input is wired up.
+        findFileNameInput().remove();
+
+        await clickTab('#preview');
+
+        expectLivePreviewOpened(fire);
+      });
+
+      describe('when the initial markdown extension load fails', () => {
+        let loadSpy;
+
+        beforeEach(async () => {
+          loadSpy = jest.spyOn(EditBlob.prototype, 'loadMarkdownExtensions');
+          // The first use() call installs the default extensions;
+          // the second is the markdown install triggered by the file name.
+          useMock
+            .mockImplementationOnce((extensions) => extensions)
+            .mockImplementationOnce(() => {
+              throw new Error('loading failed');
+            });
+          await initEditor();
+        });
+
+        it('installs the extensions again and opens the live preview on tab click', async () => {
+          expect(loadSpy).toHaveBeenCalledTimes(1);
+
+          await clickTab('#preview');
+
+          // A successful retry does not alert again.
+          expect(createAlert).toHaveBeenCalledTimes(1);
+          expect(loadSpy).toHaveBeenCalledTimes(2);
+          expect(addEditorMarkdownListeners).toHaveBeenCalledTimes(1);
+          expectLivePreviewOpened(fire);
+        });
+
+        it('falls back to the preview pane when the retry fails too', async () => {
+          // A persistent failure, like a chunk that no longer loads:
+          // the retry on click fails like the initial load did.
+          useMock.mockImplementationOnce(() => {
+            throw new Error('loading failed');
+          });
+
+          await clickTab('#preview');
+
+          expect(createAlert).toHaveBeenCalledTimes(2);
+          expectFallbackToPreviewPane(fire, 'README.md');
+        });
+      });
+    });
+
     describe('when the file is renamed mid-edit', () => {
       let fire;
 
       beforeEach(() => {
-        fire = mockEditorWithPreview();
+        ({ fire } = mockEditorWithMarkdownPreview());
         stubPreviewEndpoint();
       });
 
@@ -475,37 +633,58 @@ describe('Blob Editing', () => {
       let fire;
 
       beforeEach(async () => {
-        fire = mockEditorWithPreview();
+        ({ fire } = mockEditorWithMarkdownPreview());
         await initNewFilePage();
+        stubPreviewEndpoint();
       });
 
-      it('switches the preview tab to the live preview when a markdown file name is entered', async () => {
+      it('opens the live preview when a markdown file name is entered', async () => {
         await renameFile('README.md');
         await clickTab('#preview');
 
-        expect(fire).toHaveBeenCalledTimes(1);
-        expectEditorPaneVisible();
+        expectLivePreviewOpened(fire);
       });
 
-      it('falls back to the preview pane while markdown extensions are still loading', async () => {
-        stubPreviewEndpoint();
+      it('opens the live preview once the in-flight load resolves', async () => {
+        const loadSpy = jest.spyOn(EditBlob.prototype, 'loadMarkdownExtensions');
 
         // Enter the file name without waiting, so the load is still in flight on click.
         startRename('README.md');
         await clickTab('#preview');
 
-        expectFallbackToPreviewPane(fire, 'README.md');
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+        expectLivePreviewOpened(fire);
       });
 
-      it('falls back to the preview pane after markdown extensions failed to load', async () => {
-        stubPreviewEndpoint();
+      it('falls back to the preview pane when the in-flight load fails', async () => {
         useMock.mockImplementationOnce(() => {
           throw new Error('loading failed');
         });
 
+        // Enter the file name without waiting, so the failing load is still in flight on click.
+        startRename('README.md');
+        await clickTab('#preview');
+
+        // A single alert: the click joins the in-flight load instead of retrying.
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expectFallbackToPreviewPane(fire, 'README.md');
+      });
+
+      it('falls back to the preview pane when the load fails again on tab click', async () => {
+        // A persistent failure, like a chunk that no longer loads:
+        // the load triggered by the rename and the retry on click both fail.
+        useMock
+          .mockImplementationOnce(() => {
+            throw new Error('loading failed');
+          })
+          .mockImplementationOnce(() => {
+            throw new Error('loading failed');
+          });
+
         await renameFile('README.md');
         await clickTab('#preview');
 
+        expect(createAlert).toHaveBeenCalledTimes(2);
         expectFallbackToPreviewPane(fire, 'README.md');
       });
     });

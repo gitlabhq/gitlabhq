@@ -33,6 +33,7 @@ describe('issue_note_body component', () => {
       },
       stubs: {
         UserFeedback: true,
+        DuoCodeReviewFeedbackLink: true,
       },
     });
   };
@@ -158,6 +159,7 @@ describe('issue_note_body component', () => {
         createComponent({ note: duoNote });
 
         expect(wrapper.findByTestId('code-review-feedback').exists()).toBe(exists);
+        expect(wrapper.findByTestId('code-review-feedback-link').exists()).toBe(exists);
       },
     );
 
@@ -169,6 +171,7 @@ describe('issue_note_body component', () => {
       createComponent({ note: duoNote });
 
       expect(wrapper.findByTestId('code-review-feedback').exists()).toBe(false);
+      expect(wrapper.findByTestId('code-review-feedback-link').exists()).toBe(false);
     });
   });
 

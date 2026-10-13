@@ -745,6 +745,23 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
       it_behaves_like 'service not tracking apply suggestion event'
     end
 
+    context 'suggestion is oversized' do
+      let(:suggestion) do
+        create(:suggestion, note: diff_note, lines_below: Suggestible::MAX_LINES_CONTEXT + 1)
+      end
+
+      let(:result) { apply_service.new(user, suggestion).execute }
+
+      it 'returns error message' do
+        expect(result).to eq(
+          message: 'Cannot apply as this suggestion spans more than 100 lines.',
+          status: :error
+        )
+      end
+
+      it_behaves_like 'service not tracking apply suggestion event'
+    end
+
     context 'lines of suggestions overlap' do
       let(:suggestion) do
         create_suggestion(

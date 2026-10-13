@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:overrides) do
     %i[
       create_build_service_proxy
@@ -33,7 +33,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   end
 
   shared_context 'pipeline and build for project' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
   end
 
@@ -228,6 +228,78 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
   end
 
+  describe ':read_build_trace' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:duo_workflow_build) do
+      create(:ci_build, pipeline: create(:ci_pipeline, project: public_project, source: :duo_workflow))
+    end
+
+    let_it_be(:push_build) do
+      create(:ci_build, pipeline: create(:ci_pipeline, project: public_project, source: :push))
+    end
+
+    let_it_be(:non_member) { create(:user) }
+    let_it_be(:guest) { create(:user, guest_of: public_project) }
+    let_it_be(:planner) { create(:user, planner_of: public_project) }
+    let_it_be(:reporter) { create(:user, reporter_of: public_project) }
+    let_it_be(:security_manager) { create(:user, security_manager_of: public_project) }
+    let_it_be(:developer) { create(:user, developer_of: public_project) }
+    let_it_be(:maintainer) { create(:user, maintainer_of: public_project) }
+    let_it_be(:owner) { create(:user, owner_of: public_project) }
+
+    where(:build, :user, :allowed) do
+      ref(:duo_workflow_build) | nil                    | false
+      ref(:duo_workflow_build) | ref(:non_member)       | false
+      ref(:duo_workflow_build) | ref(:guest)            | false
+      ref(:duo_workflow_build) | ref(:planner)          | false
+      ref(:duo_workflow_build) | ref(:reporter)         | false
+      ref(:duo_workflow_build) | ref(:security_manager) | false
+      ref(:duo_workflow_build) | ref(:developer)        | true
+      ref(:duo_workflow_build) | ref(:maintainer)       | true
+      ref(:duo_workflow_build) | ref(:owner)            | true
+      ref(:push_build)         | nil                    | true
+      ref(:push_build)         | ref(:non_member)       | true
+      ref(:push_build)         | ref(:guest)            | true
+      ref(:push_build)         | ref(:planner)          | true
+      ref(:push_build)         | ref(:reporter)         | true
+      ref(:push_build)         | ref(:security_manager) | true
+      ref(:push_build)         | ref(:developer)        | true
+      ref(:push_build)         | ref(:maintainer)       | true
+      ref(:push_build)         | ref(:owner)            | true
+    end
+
+    with_them do
+      it { expect(policy.allowed?(:read_build_trace)).to eq(allowed) }
+    end
+
+    context 'when user is an admin' do
+      let_it_be(:user) { create(:admin) }
+      let(:build) { duo_workflow_build }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect(policy).to be_allowed(:read_build_trace) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect(policy).to be_disallowed(:read_build_trace) }
+      end
+    end
+
+    context 'when the project is archived' do
+      let_it_be(:archived_project) { create(:project, :public, :archived) }
+      let_it_be(:user) { create(:user, developer_of: archived_project) }
+      let_it_be(:build) do
+        create(:ci_build, pipeline: create(:ci_pipeline, project: archived_project, source: :duo_workflow))
+      end
+
+      it 'allows developers to read the log of a duo_workflow job' do
+        expect(policy).to be_allowed(:read_build_trace)
+      end
+    end
+  end
+
   describe '#rules' do
     context 'when user does not have access to the project' do
       let_it_be_with_reload(:project) { create(:project, :private) }
@@ -312,8 +384,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         before do
           project.add_maintainer(user)
 
-          allow(project).to receive(:empty_repo?).and_return(false)
-          allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+          allow(project).to receive_messages(empty_repo?: false, branch_allows_collaboration?: true)
         end
 
         it 'enables updates if user is maintainer', :aggregate_failures do
@@ -326,8 +397,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         subject { policy }
 
         before do
-          allow(project).to receive(:empty_repo?).and_return(false)
-          allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+          allow(project).to receive_messages(empty_repo?: false, branch_allows_collaboration?: true)
         end
 
         context 'on a public project' do
@@ -570,7 +640,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     let_it_be(:guest) { create(:user) }
     let_it_be_with_reload(:project) { create(:project, :public, namespace: owner.namespace, maintainers: maintainer, developers: developer, reporters: reporter, guests: guest) }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, source: :webide) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, source: :webide) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
 
     before do
@@ -592,7 +662,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         context 'when build is not from a webide pipeline' do
-          let(:pipeline) { create(:ci_empty_pipeline, project: project, source: :chat) }
+          let(:pipeline) { create(:ci_pipeline, project: project, source: :chat) }
 
           it { expect_disallowed(:read_web_ide_terminal, :update_web_ide_terminal, :create_build_service_proxy) }
         end

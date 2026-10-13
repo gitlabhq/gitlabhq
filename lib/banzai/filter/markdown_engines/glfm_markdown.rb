@@ -36,7 +36,6 @@ module Banzai
           sourcepos: true,
           strikethrough: true,
           table: true,
-          tagfilter: false,
           tasklist: true,
           tasklist_classes: true,
           tasklist_in_table: true,

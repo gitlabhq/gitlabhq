@@ -10,3 +10,5 @@ export const OPEN_INTELLIJ_SSH = 'open_intellij_ssh';
 export const OPEN_INTELLIJ_HTTPS = 'open_intellij_https';
 export const IDE_TYPE_VSCODE = 'vscode';
 export const IDE_TYPE_INTELLIJ = 'intellij';
+export const OPEN_CUSTOM_IDE_LINK = 'user_opens_custom_code_dropdown_link';
+export const EXTERNAL_LINK_REL = 'noopener noreferrer';

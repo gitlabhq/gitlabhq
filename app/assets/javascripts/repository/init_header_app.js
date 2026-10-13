@@ -1,5 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import apolloProvider from './graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
@@ -61,7 +62,6 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
       xcodeUrl,
       kerberosUrl,
       downloadLinks,
-      downloadArtifacts,
       showNoSshKeyMessage,
       userSettingsSshKeysPath,
       projectShortPath,
@@ -69,7 +69,20 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
       newWorkspacePath,
       organizationId,
       fullName,
+      customCodeDropdownClients,
     } = headerEl.dataset;
+
+    let parsedCustomCodeDropdownClients = [];
+    try {
+      const parsed = JSON.parse(customCodeDropdownClients || '[]');
+      if (Array.isArray(parsed)) {
+        parsedCustomCodeDropdownClients = parsed.map((client) =>
+          convertObjectPropsToCamelCase(client),
+        );
+      }
+    } catch (_e) {
+      parsedCustomCodeDropdownClients = [];
+    }
 
     const {
       isFork,
@@ -132,12 +145,12 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
         kerberosUrl,
         newWorkspacePath,
         downloadLinks: downloadLinks ? JSON.parse(downloadLinks) : null,
-        downloadArtifacts: downloadArtifacts ? JSON.parse(downloadArtifacts) : [],
         showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
         userSettingsSshKeysPath,
         isBinary: parseBoolean(isBinary),
         rootRef,
         organizationId,
+        customCodeDropdownClients: parsedCustomCodeDropdownClients,
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef, fullName),

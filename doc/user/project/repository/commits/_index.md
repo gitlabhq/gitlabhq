@@ -180,6 +180,37 @@ The actions menu includes:
 - **Browse files**: View all repository files at the selected Git revision.
 - **Subscribe to commits RSS feed**: Subscribe to an RSS feed of commits for the current revision.
 
+## Create or view a merge request for a branch
+
+{{< history >}}
+
+- Merge request buttons [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252846) to the redesigned commits list in GitLab 19.4.
+
+{{< /history >}}
+
+When you view the commits list for a branch other than the default branch, you can go to an
+open merge request for that branch, or create a new one.
+
+Prerequisites:
+
+- To create a merge request, you must have the Developer, Maintainer, or Owner role for the project.
+
+To create a merge request from the commits page:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Commits**.
+1. At the top, open the **Select Git revision** dropdown list, then select a branch other than
+   the default branch.
+1. In the upper-right corner, select **Create merge request**.
+1. Complete the fields on the **New merge request** page, then select **Create merge request**.
+
+If an open merge request already exists for that branch, the button shows **View open merge request**
+and opens the existing merge request instead.
+
+The button does not appear when you view the default branch, a tag, or a commit SHA. On smaller
+screens, the action moves to the actions menu ({{< icon name="ellipsis_v" >}}) in the
+upper-right corner.
+
 ## Cherry-pick a commit
 
 Apply changes from a specific commit to another.

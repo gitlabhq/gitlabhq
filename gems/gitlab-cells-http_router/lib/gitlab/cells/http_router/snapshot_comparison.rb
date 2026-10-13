@@ -10,10 +10,9 @@ module Gitlab
       # own copy, so a route GitLab knows about and the router does not can be
       # classified to the wrong cell.
       #
-      # The verdict is byte equality, because the router parses this file and a
-      # serialization change matters as much as a missing route. The template sets
-      # are compared separately, only to explain a byte difference in terms a
-      # route author can act on.
+      # The verdict is coverage: the router must have every GitLab template. A
+      # template only the router has is the safe direction, because it only adds a
+      # guard, and the router keeps the routes of open GitLab merge requests.
       class SnapshotComparison
         # A payload with fewer routes than this is a truncated response or an
         # error page rather than a snapshot. Real snapshots hold thousands.
@@ -63,10 +62,8 @@ module Gitlab
 
         attr_reader :gitlab_only, :router_only
 
-        # Both arguments are the raw file contents, compared verbatim.
+        # Both arguments are the raw file contents.
         def initialize(gitlab_payload:, router_payload:)
-          @identical = gitlab_payload == router_payload
-
           gitlab_templates = self.class.parse(gitlab_payload, source: :gitlab)
           router_templates = self.class.parse(router_payload, source: :router)
 
@@ -74,14 +71,8 @@ module Gitlab
           @router_only = (router_templates - gitlab_templates).sort
         end
 
-        def identical?
-          @identical
-        end
-
-        # True when the byte comparison failed but both sides carry the same
-        # routes, so only the serialization or the per-route fields moved.
-        def formatting_only?
-          !identical? && gitlab_only.empty? && router_only.empty?
+        def covered?
+          gitlab_only.empty?
         end
       end
     end

@@ -30,7 +30,6 @@ import { Mousetrap } from '~/lib/mousetrap';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { stubPerformanceWebAPI } from 'helpers/performance';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import waitForPromises from 'helpers/wait_for_promises';
 import { removeCookie, setCookie } from '~/lib/utils/common_utils';
@@ -129,7 +128,6 @@ describe('diffs/components/app', () => {
     useBatchComments();
     useFindingsDrawer();
 
-    stubPerformanceWebAPI();
     // setup globals (needed for component to mount :/)
     window.mrTabs = {
       resetViewContainer: jest.fn(),

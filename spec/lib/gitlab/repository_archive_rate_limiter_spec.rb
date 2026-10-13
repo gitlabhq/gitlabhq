@@ -36,7 +36,8 @@ RSpec.describe ::Gitlab::RepositoryArchiveRateLimiter do
       context 'when current user exists' do
         it 'checks for project_repositories_archive rate limiting with default threshold' do
           expect(subject).to receive(:check_rate_limit!)
-                               .with(:project_repositories_archive, scope: [project, current_user], threshold: nil)
+                               .with(:project_repositories_archive,
+                                 scope: { project: project, user: current_user }, threshold: nil)
           check
         end
       end
@@ -46,7 +47,8 @@ RSpec.describe ::Gitlab::RepositoryArchiveRateLimiter do
 
         it 'checks for project_repositories_archive rate limiting with threshold 100' do
           expect(subject).to receive(:check_rate_limit!)
-                               .with(:project_repositories_archive, scope: [project, current_user], threshold: 100)
+                               .with(:project_repositories_archive,
+                                 scope: { project: project, user: current_user }, threshold: 100)
           check
         end
       end

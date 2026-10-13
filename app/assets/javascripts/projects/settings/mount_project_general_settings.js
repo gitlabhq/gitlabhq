@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import ProjectGeneralSettings from './components/project_general_settings.vue';
 
 Vue.use(VueApollo);

@@ -9,6 +9,13 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
   include IssueBuildParameters
 
+  rescue_from ::Issuable::Callbacks::Base::Error do |e|
+    respond_to do |format|
+      format.html { redirect_back_or_default(default: project_issues_path(project), options: { alert: e.message }) }
+      format.json { render json: { errors: [e.message] }, status: :unprocessable_entity }
+    end
+  end
+
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk
     can_create_branch].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
@@ -60,7 +67,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:hide_incident_management_features, project)
     push_force_frontend_feature_flag(:work_item_features_field,
       Feature.enabled?(:work_item_features_field, current_user))
-    push_frontend_feature_flag(:work_items_task_list_toggle, project.root_ancestor)
   end
 
   after_action :log_issue_show, only: :show
@@ -76,7 +82,7 @@ class Projects::IssuesController < Projects::ApplicationController
     :destroy, :move, :reorder, :designs, :toggle_subscription,
     :discussions, :bulk_update, :realtime_changes,
     :toggle_award_emoji, :mark_as_spam, :related_branches,
-    :can_create_branch, :create_merge_request
+    :can_create_branch, :create_merge_request, :export_csv
   ]
   urgency :low, [
     :index, :calendar, :show, :new, :update, :move, :reorder, :designs, :toggle_subscription,
@@ -87,7 +93,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   feature_category :service_desk, [:service_desk]
   urgency :low, [:service_desk]
-  feature_category :importers, [:import_csv, :export_csv]
+  feature_category :importers, [:import_csv]
   urgency :low, [:import_csv, :export_csv]
 
   def index

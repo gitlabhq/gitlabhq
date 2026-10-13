@@ -59,13 +59,33 @@ module Ci
             relation.order_by_semantic_version_desc.first
           end
 
-          def versions_for_catalog_resources(catalog_resources)
+          def versions_for_catalog_resources(catalog_resources, limit: nil)
             return none if catalog_resources.empty?
 
-            for_catalog_resources(catalog_resources)
-              .with_semver
-              .includes(:components, project: { namespace: :route })
+            relation = if limit
+                         top_versions_per_catalog_resource(catalog_resources, limit)
+                       else
+                         for_catalog_resources(catalog_resources).with_semver
+                       end
+
+            relation
+              .includes(:components, :release, project: { namespace: :route })
               .order_by_semantic_version_desc
+          end
+
+          private
+
+          def top_versions_per_catalog_resource(catalog_resources, limit)
+            resources = Ci::Catalog::Resource.arel_table
+            ids = Arel::Nodes::ValuesList.new(catalog_resources.map { |resource| [resource.id] })
+
+            top_versions = with_semver
+              .where(arel_table[:catalog_resource_id].eq(resources[:id]))
+              .order_by_semantic_version_desc
+              .limit(limit)
+
+            from(Arel::Nodes::Grouping.new(ids).as("#{resources.name}(id)"))
+              .joins("INNER JOIN LATERAL (#{top_versions.to_sql}) #{table_name} ON TRUE")
           end
         end
 

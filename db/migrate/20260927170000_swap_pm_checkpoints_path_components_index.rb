@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SwapPmCheckpointsPathComponentsIndex < Gitlab::Database::Migration[2.3]
-  milestone '19.4'
+  milestone '19.5'
 
   disable_ddl_transaction!
 

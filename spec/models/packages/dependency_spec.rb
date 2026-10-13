@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Dependency, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Dependency, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:project2) { create(:project) }
 

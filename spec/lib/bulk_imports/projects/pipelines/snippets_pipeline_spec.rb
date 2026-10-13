@@ -23,6 +23,20 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
   let(:snippet_attributes) { {} }
+
+  let(:source_user_ids) { [22, 1] }
+  let(:placeholders) do
+    source_user_ids.index_with do |identifier|
+      create(:import_source_user,
+        import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+        namespace: group,
+        source_user_identifier: identifier,
+        source_hostname: bulk_import.configuration.url,
+        placeholder_user: create(:user, :import_user)
+      ).placeholder_user
+    end
+  end
+
   let(:exported_snippet) do
     {
       'id' => 25,
@@ -54,11 +68,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
 
       allow(pipeline).to receive(:set_source_objects_counter)
 
-      # These specs assert against the legacy user-resolution path where the
-      # importing user becomes the author. They predate contribution mapping
-      # being always-on and would otherwise exercise SourceUsersMapper end-to-end.
-      allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
-
+      placeholders
       pipeline.run
     end
 
@@ -68,7 +78,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
       expect(imported_snippet).to have_attributes(
         title: exported_snippet['title'],
         content: exported_snippet['content'],
-        author_id: user.id,
+        author_id: placeholders[22].id,
         created_at: DateTime.parse(exported_snippet['created_at']),
         updated_at: DateTime.parse(exported_snippet['updated_at']),
         file_name: exported_snippet['file_name'],
@@ -93,7 +103,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
 
         expect(snippet_award).to have_attributes(
           name: expected_award['name'],
-          user_id: user.id,
+          user_id: placeholders[1].id,
           awardable_type: expected_award['awardable_type'],
           created_at: DateTime.parse(expected_award['created_at']),
           updated_at: DateTime.parse(expected_award['updated_at']))
@@ -106,23 +116,22 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
       # converted to Strings.
       let(:exported_snippet) { Gitlab::Json.parse(note.noteable.attributes.merge('notes' => notes).to_json) }
       let(:note) { create(:note_on_project_snippet) }
+      let(:source_user_ids) { [note.author_id] }
       let(:notes) { [note.attributes.merge('author' => { 'name' => note.author.name })] }
 
       it 'restores the notes' do
         snippet_note = project.snippets.last.notes.first
-        author_name = note.author.name
-        note_updated_at = exported_snippet['notes'].first['updated_at'].split('.').first
 
         expect(snippet_note).to have_attributes(
-          note: note.note + "\n\n *By #{author_name} on #{note_updated_at}*",
+          note: note.note,
           noteable_type: note.noteable_type,
-          author_id: user.id,
+          author_id: placeholders[note.author_id].id,
           updated_at: note.updated_at,
           line_code: note.line_code,
           commit_id: note.commit_id,
           system: note.system,
           st_diff: note.st_diff,
-          updated_by_id: user.id)
+          updated_by_id: placeholders[note.author_id].id)
       end
     end
   end

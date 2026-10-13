@@ -16,7 +16,9 @@ module RunnerReleasesHelper
       method.call(gitlab_version, runner_releases_double)
     end
 
-    allow(runner_releases_double).to receive(:releases).and_return(available_runner_releases)
-    allow(runner_releases_double).to receive(:releases_by_minor).and_return(releases_by_minor)
+    allow(runner_releases_double).to receive_messages(
+      releases: available_runner_releases,
+      releases_by_minor: releases_by_minor
+    )
   end
 end

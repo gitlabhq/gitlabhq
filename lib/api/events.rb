@@ -30,7 +30,7 @@ module API
       end
       params do
         optional :scope, type: String,
-          desc: 'Include all events across a user’s projects',
+          desc: "Include all events across the user's projects.",
           documentation: { example: 'all' }
         use :pagination
         use :event_filter_params
@@ -48,7 +48,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID or username of the user'
+      requires :id, type: String, desc: 'ID or username of the user.'
     end
     resource :users do
       desc 'Retrieve contribution events for a user' do

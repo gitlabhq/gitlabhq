@@ -1,12 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createDefaultClient from '~/lib/graphql';
 import showToast from '~/vue_shared/plugins/global_toast';
-import {
-  buildUrlWithCurrentLocation,
-  historyReplaceState,
-  parseBoolean,
-} from '~/lib/utils/common_utils';
+import { buildUrlWithCurrentLocation, historyReplaceState } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';

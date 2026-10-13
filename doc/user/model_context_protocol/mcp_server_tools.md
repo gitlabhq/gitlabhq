@@ -10,12 +10,12 @@ title: GitLab MCP server tools
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Generally available
 
 {{< /details >}}
 
 > [!warning]
-> To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
+> To provide feedback on this feature, leave a comment on [issue 630189](https://gitlab.com/gitlab-org/gitlab/-/issues/630189).
 
 The GitLab MCP server provides a set of tools that integrate with your existing GitLab workflows.
 You can use these tools to interact directly with GitLab and perform common GitLab operations.
@@ -25,6 +25,7 @@ You can use these tools to interact directly with GitLab and perform common GitL
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200105) in GitLab 18.3.
+- Changed from [beta](../../policy/development_stages_support.md#beta) to [generally available](../../policy/development_stages_support.md#generally-available) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -129,7 +130,7 @@ Creates a new issue in a GitLab project.
 
 | Parameter      | Type              | Required | Description |
 |----------------|-------------------|----------|-------------|
-| `id`           | string            | Yes      | ID or URL-encoded path of the project. |
+| `id`           | string            | Yes      | ID or full path of the project. |
 | `title`        | string            | Yes      | Title of the issue. |
 | `description`  | string            | No       | Description of the issue. |
 | `assignee_ids` | array of integers | No       | Array of IDs of assigned users. |
@@ -150,14 +151,18 @@ Create a new issue titled "Fix login bug" in project 123 with description
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/628333) in GitLab 19.4. Superseded by [`get_work_item`](#get_work_item).
 
 {{< /history >}}
+
+Superseded by [`get_work_item`](#get_work_item), which covers issues and other work item
+types. This tool no longer appears in `tools/list` but remains callable while callers migrate.
 
 Retrieves detailed information about a specific GitLab issue.
 
 | Parameter   | Type    | Required | Description |
 |-------------|---------|----------|-------------|
-| `id`        | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`        | string  | Yes      | ID or full path of the project. |
 | `issue_iid` | integer | Yes      | Internal ID of the issue. |
 
 Example:
@@ -223,20 +228,40 @@ Update merge request 42 in project gitlab-org/gitlab to add the "bug" label and 
 
 {{< /history >}}
 
-Retrieves a merge request and, optionally, its diffs, commits, notes, pipelines, discussions, or conflicts.
+Retrieves a merge request and, optionally, its diffs, commits, notes, pipelines, discussions, approvals, or
+conflicts.
 Only the base merge request is returned unless you request associated data with the `include` parameter.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
 | `url`               | string  | No       | GitLab URL of the merge request. Provide this, or `project_id` and `merge_request_iid`. |
-| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing. |
+| `project_id`        | string  | No       | ID or full path of the project. Required if `url` is missing. |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
-| `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, or `conflicts`. Limited to one facet per call. |
+| `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, `approvals`, or `conflicts`. Limited to one facet per call. |
+| `detail`            | string  | No       | Level of diff detail. One of `none` for summary counts only, `stats` for per-file additions and deletions, or `full_patch` for per-file patch text plus the per-file stats. Default is `stats`. Applies only when `include` is `["diffs"]`. |
+| `diffs_after`       | string  | No       | Cursor for forward pagination of files. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
+| `diffs_first`       | integer | No       | Number of files to return after the cursor, up to 100. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
 | `notes_after`       | string  | No       | Cursor for forward pagination of notes. Applies only when `include` is `["notes"]`. |
 | `notes_first`       | integer | No       | Number of notes to return after the cursor, up to 100. Applies only when `include` is `["notes"]`. |
+| `notes_before`      | string  | No       | Cursor for backward pagination of notes. Applies only when `include` is `["notes"]`. |
+| `notes_last`        | integer | No       | Number of notes to return before the cursor, up to 100. Applies only when `include` is `["notes"]`. |
+| `commits_after`     | string  | No       | Cursor for forward pagination of commits. Applies only when `include` is `["commits"]`. |
+| `commits_first`     | integer | No       | Number of commits to return after the cursor, up to 100. Applies only when `include` is `["commits"]`. |
+| `pipelines_after`   | string  | No       | Cursor for forward pagination of pipelines. Applies only when `include` is `["pipelines"]`. |
+| `pipelines_first`   | integer | No       | Number of pipelines to return after the cursor, up to 100. Applies only when `include` is `["pipelines"]`. |
 
-The `diffs` facet returns change statistics only: overall totals and per-file additions and
-deletions. To get patch text, use `get_merge_request_diffs`.
+The `diffs` facet returns change statistics by default: overall totals and per-file additions and
+deletions. To get patch text, set `detail` to `full_patch`.
+
+The `commits` and `pipelines` facets return up to 100 entries per call. Each response carries
+`pageInfo.hasNextPage` and `pageInfo.endCursor`. Pass that cursor back as `commits_after` or
+`pipelines_after` to read the next page.
+
+The `notes` facet also pages backward with `notes_last` and `notes_before`. To read the newest
+notes, pass `notes_last` without `notes_first` or `notes_after`. Mixing both directions in one
+call returns an error. Each note returns its `position` (the file and line of a diff comment) and
+its `discussion` (the thread it belongs to, and whether the thread is resolved). The response also
+includes `resolvedDiscussionsCount` and `resolvableDiscussionsCount`.
 
 The `conflicts` facet returns raw conflict file content, including Git conflict markers. It is
 available only when the merge request cannot be merged and you can push to the source branch, and
@@ -248,11 +273,128 @@ Example:
 Get merge request 15 in project gitlab-org/gitlab with its commits
 ```
 
+## `list_duo_agents_and_flows`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617173) in GitLab 19.5.
+
+{{< /history >}}
+
+Lists the GitLab Duo agents and flows enabled in a project, so you can discover what is
+available instead of guessing a flow name. Which agents and flows a project offers is
+configured per project, and their IDs differ between projects.
+
+Each entry includes `can_start_session`, which is `true` for a flow you have permission to run,
+and for a foundational chat agent when you can run sessions in CI in the project. The default
+GitLab Duo agent, other agents, and external agents are listed for discovery only, and
+`can_start_session` is always `false` for them. It is also `false` for a flow you cannot execute,
+or whose version is unreleased or still a draft.
+
+If you do not have a GitLab Ultimate subscription, a foundational chat agent that requires it is
+either not listed or listed with `can_start_session` set to `false`.
+
+Only flows with `can_start_session` set to `true` include the `ai_catalog_item_consumer_id` that
+`start_duo_session` takes. To start a foundational chat agent, pass its `workflow_definition` as
+`agent`. Descriptions might be truncated.
+
+The list covers the agents, flows and external agents configured in the project, plus the
+foundational chat agents. The chat agents are a fixed list rather than part of the paginated
+project results, so they are returned with the first page only, and are omitted unless agents
+are included. They come in addition to `first`, so the first page can contain more
+entries than you asked for. They carry a `workflow_definition` instead of an
+`ai_catalog_item_consumer_id`, which also tells apart the two agents that share the display
+name `GitLab Duo`; entries configured in the project have `workflow_definition` set to `null`.
+
+Foundational chat agents are governed by the project's top-level group on GitLab.com, and by the
+organization on GitLab Self-Managed, rather than by the project.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `project_id` | string  | Yes      | Numeric ID or full path of the project to list agents and flows for. |
+| `item_type`  | string  | No       | Return only `agent`, `flow` or `third_party_flow` entries. All kinds are returned when omitted. |
+| `after`      | string  | No       | Cursor for forward pagination. |
+| `first`      | integer | No       | Number of agents and flows to return for forward pagination. Default is 20, maximum is 100. |
+
+Each call returns a single page of results.
+If more pages exist, the response includes `pageInfo.endCursor` that you can pass as `after`.
+
+Items that are configured but disabled are dropped after the page is fetched, so a page can
+hold fewer entries than `first`, or none at all, while `pageInfo.hasNextPage` is still `true`.
+Keep paging until `hasNextPage` is `false` instead of stopping at an empty page.
+
+Example:
+
+```plaintext
+Which Duo flows can I run in gitlab-org/gitlab?
+```
+
+## `start_duo_session`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607619) in GitLab 19.5.
+
+{{< /history >}}
+
+Starts an asynchronous GitLab Duo Agent Platform session to accomplish a goal in a project.
+Returns a `workflow_id` immediately. Use `get_duo_session` with that ID to track progress and retrieve the final result.
+
+These tools are listed only when GitLab Duo Agent Platform is available for you.
+For more information, see [select tool groups](mcp_server.md#select-tool-groups-toolsets).
+
+The session runs in a CI job that can push commits and open merge requests.
+
+Provide exactly one of `url` or `project_id`. Provide at most one of `flow`, `flow_item_id`,
+`ai_catalog_item_consumer_id`, or `agent`.
+
+| Parameter                     | Type    | Required | Description |
+|-------------------------------|---------|----------|-------------|
+| `url`                         | string  | No       | Full GitLab URL of the project (for example, `https://gitlab.com/group/project`). Do not use with `project_id`. |
+| `project_id`                  | string  | No       | Numeric ID or full path of the project (for example, `gitlab-org/gitlab`). Do not use with `url`. |
+| `goal`                        | string  | Yes      | Natural-language goal for the session (for example, `Fix the flaky spec in issue #1234 and open a merge request`). Some flows take a URL instead, for example the failed pipeline's URL for `fix_pipeline/v1`. |
+| `flow`                        | string  | No       | Foundational flow reference (for example, `developer/v1`, `fix_pipeline/v1`). Defaults to `developer/v1` when no flow or agent is supplied. Do not use with `flow_item_id`, `ai_catalog_item_consumer_id`, or `agent`. |
+| `flow_item_id`                | integer | No       | AI Catalog item ID of a custom flow enabled in the project. The latest released version is run. Do not use with `flow`, `ai_catalog_item_consumer_id`, or `agent`. |
+| `ai_catalog_item_consumer_id` | integer | No       | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. Do not use with `flow`, `flow_item_id`, or `agent`. |
+| `agent`                       | string  | No       | Reference of a foundational agent to run (for example, `analytics_agent/v1`). The default GitLab Duo agent cannot be started. Do not use with `flow`, `flow_item_id`, or `ai_catalog_item_consumer_id`. |
+
+The flow must be enabled for the project, or for an ancestor group of the project. If the flow is
+not enabled, the tool returns an error.
+
+A flow behind a feature flag runs only when that flag is enabled. If a flow doesn't meet these
+conditions, the tool returns an error.
+
+Some flows expect the goal in a specific format, and the tool checks it before it starts the session:
+
+- `fix_pipeline/v1` expects the URL of the failed pipeline, in the same project. The session runs
+  on the pipeline's branch. If the pipeline belongs to an open merge request, the flow posts its
+  suggested fix on that merge request. Otherwise, it opens a new merge request with the fix. If the
+  goal is not a pipeline in the project, the tool returns an error and does not start a session.
+- `code_review/v1` expects the URL or IID of a merge request. The session runs on the merge
+  request's source branch.
+
+These are the same branch and merge request that the flow uses when you start it from the
+pipeline or merge request in the GitLab UI.
+
+To start a foundational flow, use `flow`. If you pass a foundational flow's AI Catalog item ID to
+`flow_item_id`, the tool returns an error that names the `flow` value to use instead.
+If you pass a foundational agent's reference to `flow`, the tool returns an error that names the
+`agent` value to use instead.
+
+The response includes `poll_after_seconds` as a hint for how long to wait before calling `get_duo_session`.
+
+Example:
+
+```plaintext
+Fix the flaky spec in issue #1234 and open an MR in gitlab-org/gitlab
+```
+
 ## `list_duo_sessions`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248587) in GitLab 19.3.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256101) to accept the `statuses` parameter in GitLab 19.5.
 
 {{< /history >}}
 
@@ -266,10 +408,12 @@ The goal preview might be truncated.
 | `url`          | string  | No       | GitLab URL of the project to filter sessions by. Do not use with `project_id`. |
 | `project_id`   | string  | No       | Numeric ID or full path of the project to filter sessions by. Do not use with `url`. |
 | `status_group` | string  | No       | Session status group. One of `active`, `paused`, `awaiting_input`, `completed`, `failed`, or `canceled`. |
+| `statuses`     | array   | No       | Session statuses. One or more of `created`, `running`, `paused`, `finished`, `failed`, `stopped`, `input_required`, `plan_approval_required`, or `tool_call_approval_required`. Do not use with `status_group`. |
 | `after`        | string  | No       | Cursor for forward pagination. |
 | `first`        | integer | No       | Number of sessions to return for forward pagination. Default is 20, maximum is 100. |
 
 The `status_group` filter can return sessions with multiple individual statuses.
+Use `statuses` to filter by one or more exact statuses instead.
 Each call returns a single page of results.
 If more pages exist, the response includes `pageInfo.endCursor` that you can pass as `after`.
 
@@ -284,21 +428,72 @@ List my active Duo Agent Platform sessions in gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607634) in GitLab 19.4. `get_duo_workflow_status` is also accepted as an alias.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/627561) to return the merge requests, work items and comments the session created, to vary the polling delay by status, and to report `status` with underscores (`input_required` rather than `input required`) to match `list_duo_sessions`, in GitLab 19.5.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/631690) to return why a failed session failed and a link to its CI job, in GitLab 19.5.
 
 {{< /history >}}
 
 Checks the status of a GitLab Duo Agent Platform session. Running sessions include a suggested
-polling delay. Finished sessions and completed chat turns include the latest agent answer.
-Sessions waiting for approval include instructions for continuing the session.
+polling delay, which is longer while the session waits for its CI job to start. Finished sessions
+and completed chat turns include the latest agent answer. Any merge request, work item or comment
+the session created is included once it exists, as `created_merge_requests`, `created_work_items`
+and `created_notes`. Each is an array, empty when the session created nothing of that kind, and
+holds at most the 20 most recent items. When a list is cut off, `artifacts_truncated` names the
+lists that were cut and `artifact_limit` gives the cap. Use `get_merge_request` with
+`include: ["notes"]` to page through every comment on a merge request.
+Sessions waiting for approval include instructions for continuing the session with
+`send_duo_session_input`.
+
+Failed sessions also include:
+
+- `failure_reason`: the reason recorded for the failure, or `null` if no reason was recorded.
+- `job_url`: the CI job that ran the session, or `null` if no CI job ran or you cannot read its log.
+
+When a session failed before its agent started, the response says it made no changes and can be
+started again. Sessions older than 30 days do not include this message. Checkpoints older than 30
+days are not retained, so the tool cannot identify if the agent ran the session.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
-| `workflow_id` | integer | Yes      | Workflow ID returned by `trigger_duo_flow` or `ask_duo_agent`. |
+| `workflow_id` | integer | Yes      | ID of the Duo session, as returned by `start_duo_session` or `list_duo_sessions`. |
 
 Example:
 
 ```plaintext
 Check the status of Duo session 42
+```
+
+## `send_duo_session_input`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617171) in GitLab 19.5.
+
+{{< /history >}}
+
+Answers a GitLab Duo Agent Platform session that is waiting for input: approves or rejects a
+pending plan or tool call, or replies to a question the agent asked. Works for sessions started
+from `ai_catalog_item_consumer_id` and for those started from `agent`. A session accepts input
+once its last CI job has finished, whether it is waiting with status `input_required`,
+`plan_approval_required`, or `tool_call_approval_required`.
+
+The session continues in a CI job. The response includes a suggested polling delay; use
+`get_duo_session` with the same `workflow_id` to follow progress.
+
+| Parameter        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `workflow_id`    | integer | Yes      | ID of the Duo session, as returned by `list_duo_sessions` or `get_duo_session`. |
+| `human_approval` | boolean | Yes      | `true` approves the pending plan or tool call. Do not include `human_message` with `true`, or the tool rejects the call instead of resuming the session. `false` rejects it: include `human_message` so the agent continues with your feedback. Without one, the agent is told not to proceed and the session continues. |
+| `human_message`  | string  | No       | Your feedback for the agent, or your answer when the session asked a question, up to 2000 characters. Provide it with `human_approval=false`. With `human_approval=true`, the tool rejects the call instead of resuming the session. |
+
+Examples:
+
+```plaintext
+Approve the plan for Duo session 42
+```
+
+```plaintext
+Reject the plan for Duo session 42 and ask it to also add tests
 ```
 
 ## `list_merge_requests`
@@ -331,9 +526,10 @@ A group result also includes the owning project path of each merge request, for 
 | `after`             | string  | No       | Cursor for forward pagination. |
 | `first`             | integer | No       | Number of merge requests to return for forward pagination. Default is 20, maximum is 100. |
 
-To retrieve a single merge request in full detail, use `get_merge_request`. Its diffs, commits, and
-notes are available from `get_merge_request_diffs`, `get_merge_request_commits`, and
-`get_merge_request_notes`. For full-text search across resource types, use `search`.
+To retrieve a single merge request in full detail, use `get_merge_request`. To get its commits, use
+`get_merge_request` with `include: ["commits"]`. For diffs or notes, use `include: ["diffs"]`
+or `include: ["notes"]`. To get patch text, also set `detail` to `full_patch`. For full-text search
+across resource types, use `search`.
 
 Example:
 
@@ -346,14 +542,18 @@ List my open merge requests in gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_merge_request`](#get_merge_request) with `include: ["commits"]`.
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["commits"]`. This tool no
+longer appears in `tools/list` but remains callable while callers migrate.
 
 Retrieves the list of commits in a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`                | string  | Yes      | ID or full path of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 | `per_page`          | integer | No       | Number of commits per page. |
 | `page`              | integer | No       | Current page number. |
@@ -369,14 +569,19 @@ Show me all commits in merge request 42 from project 123
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_merge_request`](#get_merge_request) with `include: ["diffs"]`.
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["diffs"]`. For raw patch text,
+also pass `detail: full_patch`. This tool no longer appears in `tools/list` but remains callable
+while callers migrate.
 
 Retrieves the diffs for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`                | string  | Yes      | ID or full path of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 | `per_page`          | integer | No       | Number of diffs per page. |
 | `page`              | integer | No       | Current page number. |
@@ -392,14 +597,18 @@ What files were changed in merge request 25 in the gitlab project?
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_merge_request`](#get_merge_request) with `include: ["pipelines"]`.
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["pipelines"]`. This tool no
+longer appears in `tools/list` but remains callable while callers migrate.
 
 Retrieves the pipelines for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`                | string  | Yes      | ID or full path of the project. |
 | `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 
 Example:
@@ -413,8 +622,14 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221941) in GitLab 18.10.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_merge_request`](#get_merge_request) with `include: ["conflicts"]`.
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["conflicts"]`, which
+returns the same conflicts as structured `conflictFiles` entries with separate `ourPath` and
+`theirPath` fields, instead of the plain text below. This tool no longer appears in
+`tools/list` but remains callable while callers migrate.
 
 Retrieves the merge conflict content for a merge request that cannot be merged.
 Returns the raw Git conflict markers (`<<<<<<<`, `=======`, and `>>>>>>>`) exactly as they
@@ -478,15 +693,19 @@ Examples:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597494) in GitLab 19.2.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by the `notes` facet of [`get_merge_request`](#get_merge_request).
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["notes"]`. This tool no
+longer appears in `tools/list` but remains callable while callers migrate.
 
 Retrieves the notes (comments and system notes) for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description                                                                                    |
 |---------------------|---------|----------|--------------------------------------------------------------------------------------------------|
 | `url`               | string  | No       | URL of the GitLab merge request. Required if `project_id` and `merge_request_iid` are missing.   |
-| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing.                           |
+| `project_id`        | string  | No       | ID or full path of the project. Required if `url` is missing.                                  |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing.                                |
 | `after`             | string  | No       | Cursor for forward pagination.                                                                 |
 | `before`            | string  | No       | Cursor for backward pagination.                                                                |
@@ -601,7 +820,7 @@ Provide exactly one of `username`, `id`, or `me`.
 |------------|---------|----------|-------------|
 | `username` | string  | No       | Username of the user to look up. |
 | `id`       | integer | No       | Numeric ID of the user to look up. |
-| `me`       | boolean | No       | Set to `true` to look up the authenticated user. When provided, must be `true`. Omit `username` and `id`. |
+| `me`       | boolean | No       | Set to `true` to look up the authenticated user. Omit `username` and `id` when set. Set to `false` to not use this parameter. |
 
 The response returns the user's numeric `id`, `username`, `name`, `state`, and `web_url`.
 
@@ -690,7 +909,7 @@ permission to fork the project.
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `id`             | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`             | string  | Yes      | ID or full path of the project. |
 | `namespace_id`   | integer | No       | ID of the namespace to fork the project into. |
 | `namespace_path` | string  | No       | Path of the namespace to fork the project into. |
 | `name`           | string  | No       | Name to assign to the fork. |
@@ -716,7 +935,7 @@ Lists the branches of a GitLab project, optionally filtered by name.
 
 | Parameter  | Type    | Required | Description |
 |------------|---------|----------|-------------|
-| `id`       | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`       | string  | Yes      | ID or full path of the project. |
 | `search`   | string  | No       | Filters branches by name. |
 | `page`     | integer | No       | Current page number. Default is `1`. |
 | `per_page` | integer | No       | Number of items per page. Default is `20`. |
@@ -743,7 +962,7 @@ The file is returned as committed at `ref`, so uncommitted changes in a local ch
 | Parameter    | Type    | Required | Description |
 |--------------|---------|----------|-------------|
 | `url`        | string  | No       | URL of the file, for example `https://gitlab.example.com/my-group/my-project/-/blob/main/app/models/user.rb`. Provide this, or `project_id`, `file_path`, and `ref`. |
-| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. If `url` is also provided, both must refer to the same project. |
 | `file_path`  | string  | No       | Path of the file relative to the repository root. Required if `url` is not provided. |
 | `ref`        | string  | No       | Branch name, tag name, or commit SHA. Use `HEAD` for the default branch. Required if `url` is not provided. |
 | `offset`     | integer | No       | Zero-indexed line to start reading from. Default is `0`. |
@@ -805,7 +1024,7 @@ Retrieves a single commit's metadata, and optionally its diff or notes.
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
 | `url`         | string  | No       | URL of the GitLab commit. Required if `project_id` and `commit_sha` are not provided. |
-| `project_id`  | string  | No       | ID or URL-encoded path of the project. Required if `url` is not provided. |
+| `project_id`  | string  | No       | ID or full path of the project. Required if `url` is not provided. |
 | `commit_sha`  | string  | No       | Commit to look up. Accepts a full or short SHA, branch name, or tag name. Required if `url` is not provided. |
 | `include`     | array   | No       | Associated facet to fetch inline, one per call (`diff` or `notes`). Base metadata is always returned. |
 | `diff_detail` | string  | No       | Level of detail in the commit diff. Applies only when `include` contains `diff`. Can be either `stats` or `full_patch`. Default is `stats`. |
@@ -942,18 +1161,20 @@ List the most recent tags for the gitlab-org/gitlab project
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605853) in GitLab 19.3.
+- `artifacts` facet [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/585022) in GitLab 19.5.
 
 {{< /history >}}
 
-Retrieves a pipeline, and optionally its jobs, downstream pipelines, or bridge (trigger) jobs.
+Retrieves a pipeline, and optionally its jobs, downstream pipelines, bridge (trigger) jobs, or the
+artifacts its jobs produced.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
 | `id`          | string  | Yes      | ID or full path of the project. |
 | `pipeline_id` | integer | Yes      | ID of the pipeline. |
-| `include`     | array   | No       | Facet to include alongside the pipeline, one per call: `jobs`, `downstream_pipelines`, or `bridge_jobs`. |
+| `include`     | array   | No       | Facet to include alongside the pipeline, one per call: `jobs`, `downstream_pipelines`, `bridge_jobs`, or `artifacts`. |
 | `job_status`  | string  | No       | Filters the `jobs` facet by status (for example, `failed`). Only applies when `include` is `jobs`. |
-| `first`       | integer | No       | Number of items to return for the selected `include` facet. Default is `20`, maximum is `100`. |
+| `first`       | integer | No       | Number of items to return for the selected `include` facet. For the `artifacts` facet, this is the number of jobs whose artifacts are returned. Default is `20`, maximum is `100`. |
 | `after`       | string  | No       | Cursor for forward pagination of the selected `include` facet. Use `page_info.end_cursor` from a previous response. |
 
 A bridge job's `downstream_pipeline` is omitted (`null`) both when the trigger job hasn't
@@ -961,6 +1182,10 @@ triggered a downstream pipeline yet, and when you don't have access to that pipe
 
 Each downstream pipeline includes a `project_full_path`, because a downstream pipeline can belong to
 a different project. Use that value as the `id` of a follow-up call.
+
+The `artifacts` facet returns a flat list of artifacts. Each artifact carries its `name`, `size`,
+`file_type`, expiry information, and the `job_id` and `job_name` of the job that produced it.
+Pagination pages over the pipeline's jobs, not over the artifacts.
 
 Examples:
 
@@ -982,20 +1207,31 @@ Examples:
   Show me the downstream pipelines triggered by pipeline 12345 in project gitlab-org/gitlab
   ```
 
+- Get the artifacts a pipeline produced:
+
+  ```plaintext
+  List the artifacts of pipeline 12345 in project gitlab-org/gitlab
+  ```
+
 ## `get_pipeline_jobs`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_pipeline`](#get_pipeline) with `include: ["jobs"]`.
 
 {{< /history >}}
 
-Retrieves the jobs for a specific GitLab CI/CD pipeline. To get jobs alongside the rest of the
-pipeline's data in a single call, use the `get_pipeline` tool with `include: jobs` instead.
+Superseded by [`get_pipeline`](#get_pipeline) with `include: ["jobs"]`, which returns jobs alongside
+the rest of the pipeline's data in a single call. The `jobs` facet returns fewer fields per job:
+it does not include `failure_reason`, `duration`, `queued_duration`, or timestamps. This tool no
+longer appears in `tools/list` but remains callable while callers migrate.
+
+Retrieves the jobs for a specific GitLab CI/CD pipeline.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
-| `id`          | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`          | string  | Yes      | ID or full path of the project. |
 | `pipeline_id` | integer | Yes      | ID of the pipeline. |
 | `per_page`    | integer | No       | Number of jobs per page. |
 | `page`        | integer | No       | Current page number. |
@@ -1012,21 +1248,25 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605856) in GitLab 19.3.
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605856) from `get_job_log` in GitLab 19.3. `get_job_log` continues to work as an alias and always returns the `log` facet, capped at `byte_limit`.
+- `artifacts` facet [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/585022) in GitLab 19.5.
 
 {{< /history >}}
 
-Gets a CI/CD job's metadata, and optionally its trace/log.
+Gets a CI/CD job's metadata, and optionally its trace/log or the artifacts it produced.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
 | `id`          | string  | Yes      | ID or full path of the project. |
 | `job_id`      | integer | Yes      | ID of the job. |
-| `include`     | array   | No       | Facet to include alongside the job, one per call: `log`. |
+| `include`     | array   | No       | Facet to include alongside the job, one per call: `log` or `artifacts`. |
 | `byte_offset` | integer | No       | Byte offset to start reading the job's log from. Only applies when `include` is `log`. Default is `0`. |
 | `byte_limit`  | integer | No       | Maximum number of bytes of the job's log to return. Only applies when `include` is `log`. Default and maximum is `512000`. |
 
 When the log is longer than `byte_limit`, the response reports the total size and tells you the
 `byte_offset` to use for the next window.
+
+The `artifacts` facet lists every artifact the job produced, with its `name`, `size`, `file_type`,
+and expiry information.
 
 Examples:
 
@@ -1042,6 +1282,53 @@ Examples:
   Show me the log output for job 88 in project gitlab-org/gitlab
   ```
 
+- Get a job's artifacts:
+
+  ```plaintext
+  What artifacts did job 88 in project gitlab-org/gitlab produce?
+  ```
+
+## `get_artifact_file`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/585022) in GitLab 19.5.
+
+{{< /history >}}
+
+Reads a file from inside the artifacts archive of a CI/CD job as text. To discover what a job or
+pipeline produced, use the `get_job` or `get_pipeline` tool with `include: artifacts`.
+
+| Parameter       | Type    | Required | Description |
+|-----------------|---------|----------|-------------|
+| `url`           | string  | No       | URL of the job. Provide this, or `project_id` and `job_id`. |
+| `project_id`    | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `job_id`        | integer | No       | ID of the job. Required if `url` is not provided. |
+| `artifact_path` | string  | Yes      | Path of the file inside the artifacts archive, for example `coverage/index.html`. |
+| `byte_offset`   | integer | No       | Byte offset to start reading the file from. Default is `0`. |
+| `byte_limit`    | integer | No       | Maximum number of bytes to return. Default and maximum is `1048576` (1 MB). |
+
+The tool reads from the archive artifact only. Report artifacts stored as separate files, such as
+`junit` or `dotenv` artifacts, are not part of the archive and cannot be read with this tool.
+
+When the file is longer than `byte_limit`, the response reports the total size and tells you the
+`byte_offset` to use for the next window. Binary files are not returned; the error names the file,
+its size and type, and where to view it in the browser.
+
+Examples:
+
+- Read a test report from a job's artifacts:
+
+  ```plaintext
+  Read coverage/index.html from the artifacts of job 88 in project gitlab-org/gitlab
+  ```
+
+- Investigate a failed end-to-end test:
+
+  ```plaintext
+  Find the JUnit report in the artifacts of job 88 in gitlab-org/gitlab and summarize the failures
+  ```
+
 ## `list_pipelines`
 
 {{< history >}}
@@ -1054,7 +1341,7 @@ Lists pipelines in a GitLab project, with optional filters.
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `id`             | string  | Yes      | ID or URL-encoded path of the project. |
+| `id`             | string  | Yes      | ID or full path of the project. |
 | `ref`            | string  | No       | Branch or tag name. Filters pipelines by ref. |
 | `status`         | string  | No       | Filters pipelines by status (for example, `running`, `success`, `failed`). |
 | `source`         | string  | No       | Filters pipelines by source (for example, `push`, `web`, `schedule`). |
@@ -1084,9 +1371,8 @@ List all failed pipelines on the main branch for project gitlab-org/gitlab
 
 {{< /history >}}
 
-Runs, retries, cancels, or renames a CI/CD pipeline in a GitLab project. To delete a
-pipeline, use the `manage_pipeline` tool instead. To list pipelines, use the
-`list_pipelines` tool instead.
+Runs, retries, cancels, or renames a CI/CD pipeline in a GitLab project. To list pipelines,
+use the `list_pipelines` tool instead.
 
 | Parameter     | Type    | Required    | Description |
 |---------------|---------|-------------|-------------|
@@ -1132,8 +1418,14 @@ Examples:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247806) the `list` action in favor of the `list_pipelines` tool in GitLab 19.3.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605855) the `create`, `retry`, and `cancel` actions in favor of the `save_pipeline` tool in GitLab 19.3.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/631276) in GitLab 19.5. To rename a pipeline, use [`save_pipeline`](#save_pipeline) with `action: "update"`.
 
 {{< /history >}}
+
+> [!warning]
+> This tool is no longer listed but remains callable by agents that have an outdated tools list
+> or have stored the tool name. To rename a pipeline, use [`save_pipeline`](#save_pipeline) with
+> `action: "update"` instead. Pipeline deletion has no replacement yet.
 
 Updates pipeline metadata or deletes a pipeline in a GitLab project. To create, retry, or cancel a
 pipeline, use the `save_pipeline` tool instead. To list pipelines, use the `list_pipelines` tool
@@ -1141,7 +1433,7 @@ instead.
 
 | Parameter     | Type    | Required    | Description |
 |---------------|---------|-------------|-------------|
-| `id`          | string  | Yes         | ID or URL-encoded path of the project. |
+| `id`          | string  | Yes         | ID or full path of the project. |
 | `pipeline_id` | integer | Yes         | ID of the pipeline. If only this parameter is set, deletes a pipeline and all related data. |
 | `name`        | string  | No          | Name of the pipeline. If this parameter and `pipeline_id` are set, updates the pipeline metadata. |
 
@@ -1164,12 +1456,14 @@ Examples:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605882) in GitLab 19.4.
+- `discussions` facet [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/597686) in GitLab 19.5.
 
 {{< /history >}}
 
 Retrieves a single work item (issue, epic, task, incident, objective, or key result) with its
-type, dates, assignees, labels, milestone, and parent. Optionally includes its notes or the
-merge requests related to it. Widgets the work item type does not support are omitted.
+type, dates, assignees, labels, milestone, and parent. Optionally includes its notes, its
+discussions, or the merge requests related to it. Widgets the work item type does not support
+are omitted.
 
 | Parameter                       | Type    | Required | Description |
 |---------------------------------|---------|----------|-------------|
@@ -1177,19 +1471,33 @@ merge requests related to it. Widgets the work item type does not support are om
 | `group_id`                      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`                    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid`                 | integer | No       | Internal ID of the work item. Required if `url` is missing. |
-| `include`                       | array   | No       | Associated data to return. One of `notes` or `related_merge_requests`, one facet per call. For the newest notes, use `notes_last` without `notes_first` or `notes_after`. |
+| `include`                       | array   | No       | Associated data to return. One of `notes`, `discussions`, or `related_merge_requests`, one facet per call. For the newest notes, use `notes_last` without `notes_first` or `notes_after`. |
 | `notes_first`                   | integer | No       | Number of notes to return after the cursor (forward pagination). Default 100, maximum 100. |
 | `notes_after`                   | string  | No       | Cursor for forward pagination of notes. Use `pageInfo.endCursor` from a previous response. |
 | `notes_last`                    | integer | No       | Number of notes to return before the cursor (backward pagination). Default 100, maximum 100. |
 | `notes_before`                  | string  | No       | Cursor for backward pagination of notes. Use `pageInfo.startCursor` from a previous response. |
+| `discussions_first`             | integer | No       | Number of discussions to return after the cursor. Default 20, maximum 100. |
+| `discussions_after`             | string  | No       | Cursor for forward pagination of discussions. Use `pageInfo.endCursor` from a previous response. |
+| `discussions_filter`            | string  | No       | Which discussions to return: `all_notes` (default), `only_comments` to leave out system notes, or `only_activity` for system notes only. |
 | `related_merge_requests_first`  | integer | No       | Number of related merge requests to return. Default 20, maximum 100. |
 | `related_merge_requests_after`  | string  | No       | Cursor for forward pagination of related merge requests. |
 | `mr_page_size`                  | integer | No       | Deprecated: use `related_merge_requests_first` instead. |
 | `mr_pagination_cursor`          | string  | No       | Deprecated: use `related_merge_requests_after` instead. |
 
 The `notes` facet returns up to 100 notes per call and paginates in both directions with
-the `notes_*` parameters. The `related_merge_requests` facet is empty for group-level work
-items such as epics.
+the `notes_*` parameters. Each note includes `discussion.id`, the ID of the thread it belongs to,
+so you can group notes by thread.
+
+Use `discussions` for thread structure and resolution state,
+and `notes` for a flat chronological history.
+
+The `discussions` facet returns the threads on the work item. Each discussion includes its
+`resolvable` and `resolved` state and its notes, so you can find the threads that are still
+unresolved. An unresolved thread has `resolvable` set to `true` and `resolved` set to `false`.
+It paginates forward only with the `discussions_*` parameters, and a discussion
+is never split across pages.
+
+The `related_merge_requests` facet is empty for group work items such as epics.
 
 Example:
 
@@ -1281,7 +1589,84 @@ Example:
 Show me the work items in this saved view: <URL>
 ```
 
+## `list_vulnerabilities`
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251243) in GitLab 19.4.
+
+{{< /history >}}
+
+Lists security vulnerabilities in a GitLab project, with optional filters and cursor pagination.
+Returns paginated vulnerability metadata. To get full details for a single vulnerability,
+use [`get_vulnerability`](#get_vulnerability).
+
+Requires the security dashboard feature to be enabled.
+
+This tool is listed only when the licensed feature is available for you.
+For more information, see [select tool groups](mcp_server.md#select-tool-groups-toolsets).
+
+| Parameter            | Type             | Required | Description |
+|----------------------|------------------|----------|-------------|
+| `project_full_path`  | string           | Yes      | Full path of the project (for example, `namespace/project` or `group/subgroup/project`). |
+| `severity`           | array of strings | No       | Filter by severity level. Omit to include vulnerabilities of any severity. One or more of `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`, or `UNKNOWN`. |
+| `report_type`        | array of strings | No       | Filter by security report type. Omit to include all report types. For example, `SAST`, `DAST`, or `DEPENDENCY_SCANNING`. |
+| `state`              | array of strings | No       | Filter by vulnerability state. Omit to include vulnerabilities in any state. One or more of `CONFIRMED`, `DETECTED`, `DISMISSED`, or `RESOLVED`. |
+| `first`              | integer          | No       | Number of vulnerabilities to return for forward pagination. Default is `20`, maximum is `100`. |
+| `after`              | string           | No       | Cursor for forward pagination. Use `pageInfo.endCursor` from a previous response. |
+
+Example:
+
+```plaintext
+List critical and high severity vulnerabilities in project gitlab-org/gitlab
+```
+
+## `get_vulnerability`
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251243) in GitLab 19.4.
+
+{{< /history >}}
+
+Returns comprehensive details for a single vulnerability, including title, state, description,
+severity, and identifiers.
+
+This tool is listed only when the licensed feature is available for you.
+For more information, see [select tool groups](mcp_server.md#select-tool-groups-toolsets).
+
+| Parameter          | Type   | Required | Description |
+|--------------------|--------|----------|-------------|
+| `vulnerability_id` | string | Yes      | Numeric ID of the vulnerability (for example, `567`). |
+
+Example:
+
+```plaintext
+Get full details for vulnerability 567
+```
+
 ## `save_vulnerability`
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -1290,6 +1675,9 @@ Show me the work items in this saved view: <URL>
 {{< /history >}}
 
 Performs write operations on a vulnerability in a GitLab project.
+
+This tool is listed only when the licensed feature is available for you.
+For more information, see [select tool groups](mcp_server.md#select-tool-groups-toolsets).
 
 | Parameter            | Type   | Required | Description |
 |----------------------|--------|----------|-------------|
@@ -1538,8 +1926,8 @@ Available scopes depend on the [search type](../search/_index.md).
 |----------------|------------------|----------|-------------|
 | `scope`        | string           | Yes      | Search scope (for example, `work_items`, `merge_requests`, or `projects`). |
 | `search`       | string           | Yes      | Search term. |
-| `group_id`     | string           | No       | ID or URL-encoded path of the group you want to search. |
-| `project_id`   | string           | No       | ID or URL-encoded path of the project you want to search. |
+| `group_id`     | string           | No       | ID or full path of the group you want to search. |
+| `project_id`   | string           | No       | ID or full path of the project you want to search. |
 | `state`        | string           | No       | State of search results (for `work_items` and `merge_requests`). |
 | `confidential` | boolean          | No       | Filters results by confidentiality (for `work_items`). Default is `false`. |
 | `fields`       | array of strings | No       | Array of fields you want to search (for `work_items` and `merge_requests`). |
@@ -1559,18 +1947,20 @@ Search issues for "flaky test" across GitLab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218121) in GitLab 18.9.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/621662) in GitLab 19.5 to accept multiple search terms.
 
 {{< /history >}}
 
 Searches for labels in a GitLab project or group.
 
-| Parameter    | Type    | Required | Description |
-|--------------|---------|----------|-------------|
-| `full_path`  | string  | Yes      | Full path of the project or group (for example, `group/project`). |
-| `is_project` | boolean | Yes      | Whether to search in a project (`true`) or group (`false`). |
-| `search`     | string  | No       | Search term to filter labels by title. |
+| Parameter    | Type                        | Required | Description |
+|--------------|-----------------------------|----------|-------------|
+| `full_path`  | string                      | Yes      | Full path of the project or group (for example, `group/project`). |
+| `is_project` | boolean                     | Yes      | Whether to search in a project (`true`) or group (`false`). |
+| `search`     | string or array of strings  | No       | One term or an array of up to 10 terms to filter labels by title. If omitted, lists labels instead. An empty array is invalid. |
 
 When you search group labels, the results include labels from ancestor and descendant groups.
+Results from multiple terms form one list without duplicate labels.
 
 Example:
 
@@ -1658,6 +2048,13 @@ How are authorizations managed in this project?
 
 ## `attach_scan_profile`
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240685) in GitLab 19.2.
@@ -1665,6 +2062,9 @@ How are authorizations managed in this project?
 {{< /history >}}
 
 Attaches the given security scan profile to the specified projects, or to all projects under the specified groups.
+
+This tool is listed only when the licensed feature is available for you.
+For more information, see [select tool groups](mcp_server.md#select-tool-groups-toolsets).
 
 | Parameter                  | Type             | Required | Description |
 |----------------------------|------------------|----------|-------------|

@@ -517,7 +517,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       it 'does not increase the number of queries when the project is forked' do
-        expected_query = /#{public_project.fork_network.find_forks_in(other_user.namespace).to_sql}/
+        expected_query = /#{Regexp.escape(public_project.fork_network.find_forks_in(other_user.namespace.projects).to_sql)}/
 
         expect { get(:show, params: { namespace_id: public_project.namespace, id: public_project }) }
           .not_to exceed_query_limit(2).for_query(expected_query)
@@ -611,6 +611,12 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect { subject }.to change { Project.count }
 
           expect(response).to have_gitlab_http_status(:redirect)
+        end
+
+        it 'captures request_channel: ui on the import state', :clean_gitlab_redis_shared_state, :request_store do
+          subject
+
+          expect(Project.find_by(path: 'foo').import_state.request_channel).to eq('ui')
         end
       end
     end
@@ -1983,15 +1989,25 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     describe '#download_export', :clean_gitlab_redis_rate_limiting do
       let(:project) { create(:project, service_desk_enabled: false, creator: user) }
-      let!(:export) { create(:import_export_upload, project: project, user: user) }
+      let!(:export) do
+        create(
+          :import_export_upload,
+          project: project,
+          user: user,
+          export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')
+        )
+      end
+
       let(:action) { :download_export }
 
       context 'object storage enabled' do
         context 'when project export is enabled' do
-          it 'returns 200' do
+          it 'returns download headers for import compatibility' do
             get action, params: { namespace_id: project.namespace, id: project }
 
             expect(response).to have_gitlab_http_status(:ok)
+            expect(response.header['Content-Disposition']).to include('project_export.tar.gz')
+            expect(response.header['Content-Type']).to eq('application/octet-stream')
           end
         end
 
@@ -2036,7 +2052,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           it 'applies throttle per project' do
             expect(Gitlab::ApplicationRateLimiter)
               .to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project])
+              .with(:project_download_export, scope: { user: user, project: project })
 
             get action, params: { namespace_id: project.namespace, id: project }
           end
@@ -2136,8 +2152,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   it 'updates Service Desk attributes' do
     project.add_maintainer(user)
     sign_in(user)
-    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+    allow(Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
     params = {
       service_desk_enabled: true
     }

@@ -64,7 +64,8 @@ After you invite the bot to a Telegram channel, you can configure GitLab to send
      1. Select **Settings** > **Integrations**.
 1. Select **Telegram**.
 1. Under **Enable integration**, select the **Active** checkbox.
-1. Optional. In **Hostname**, enter the hostname of your [local bot API server](https://core.telegram.org/bots/api#using-a-local-bot-api-server).
+1. Optional. In **Hostname**, enter the URL of your [local bot API server](https://core.telegram.org/bots/api#using-a-local-bot-api-server),
+   including `http://` or `https://`. For example, `https://telegram-bot-api.example.com`.
 1. In **Token**, [paste the token value from the Telegram bot](#create-a-telegram-bot).
 1. In the **Trigger** section, select the checkboxes for the GitLab events you want to receive in Telegram.
 1. In the **Notification settings** section:

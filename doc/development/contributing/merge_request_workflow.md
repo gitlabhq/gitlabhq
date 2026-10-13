@@ -254,9 +254,9 @@ requirements.
    > [GitLab Self-Managed instances](../../subscriptions/manage_subscription.md), so keep
    > that in mind for any data implications with your merge request.
    >
-   > 1. Consider self-managed functionality and upgrade paths. The change should consider both:
+   > 1. Consider GitLab Self-Managed functionality and upgrade paths. The change should consider both:
    >
-   > - If additional work needs to be done for self-managed availability, and
+   > - If additional work needs to be done for GitLab Self-Managed availability, and
    > - If the change requires a [required stop](../database/required_stops.md) when upgrading GitLab versions.
 
    Upgrade stops are sometimes requested when a GitLab code change is dependent

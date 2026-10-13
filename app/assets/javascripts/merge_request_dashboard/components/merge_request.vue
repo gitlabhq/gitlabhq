@@ -12,7 +12,6 @@ import { __, n__, sprintf } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
@@ -57,7 +56,6 @@ export default {
     StatusBadge,
   },
   directives: {
-    SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
   props: {
@@ -127,7 +125,7 @@ export default {
 </script>
 
 <template>
-  <div :class="{ 'gl-bg-green-50': isNewlyAdded }" role="row">
+  <div :class="{ 'gl-bg-feedback-success': isNewlyAdded }" role="row">
     <div role="cell" class="gl-flex gl-flex-col gl-items-start gl-gap-2">
       <status-badge :merge-request="mergeRequest" :list-id="listId" />
       <span v-if="reviewerUpdatedAt" class="gl-text-sm gl-text-subtle">

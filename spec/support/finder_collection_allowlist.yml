@@ -7,6 +7,7 @@
 - Namespaces::FreeUserCap::UsersFinder # Reason: There is no need to have anything else besides the count
 - Groups::EnvironmentScopesFinder # Reason: There is no need to have anything else besides the simple strucutre with the scope name
 - Security::RelatedPipelinesFinder # Reason: There is no need to have anything else besides the IDs of pipelines
+- Security::ProjectsByAttributesFinder # Reason: Callers intersect the IDs in memory with explicit project_id args and pass them to Elasticsearch as a terms filter; the rows also live on the sec DB, so a ProjectToSecurityAttribute relation would be plucked at every call site and cannot be composed with main-DB queries anyway
 - Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
 - WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
 - Sbom::PathFinder # Reason: we need an [[Sbom::Occurrence]]
@@ -23,16 +24,18 @@
 - Ai::UsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
 - Ai::DuoWorkflows::SessionArtifactsFinder # Reason: Dispatches between Postgres and ClickHouse, may return a ClickHouse query builder
 - Ai::DuoWorkflows::SessionArtifacts::ClickHouseFinder # Reason: The finder's data is coming from ClickHouse and not Postgres, no ActiveRelation involved
+- Ai::Governance::Sessions::ClickHouseFinder # Reason: The finder's data is coming from ClickHouse and not Postgres, no ActiveRelation involved
 - Ai::FoundationalChatAgentsFinder # Reason: Foundational chat agents are a fixed-items model held in memory, not a table
 - AuditEvents::AiAuditEvents::ClickHouseFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
 - AuditEvents::AiAuditEvents::Finder # Reason: Dispatches between Postgres and Clickhouse, may return a Clickhouse query builder
 - WorkItems::TypesFinder # Reason: Types can come from system-defined or ActiveRecord, no ActiveRelation involved
+- Projects::Members::EffectiveAccessLevelFinder # Reason: The highest access level per user is reduced in Ruby, returning a relation would mean sending the membership tuples back to the database as a VALUES literal
+- Projects::Members::EffectiveAccessLevelPerUserFinder # Reason: Subclass of Projects::Members::EffectiveAccessLevelFinder, same reason
 
 # Temporary excludes (aka TODOs)
 # For example:
 # BarFinder  # See <ISSUE_URL>
 - AccessRequestsFinder
-- Admin::PlansFinder
 - Analytics::CycleAnalytics::StageFinder
 - ApplicationsFinder
 - Autocomplete::GroupFinder

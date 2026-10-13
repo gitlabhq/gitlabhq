@@ -6,8 +6,8 @@ RSpec.describe Types::MergeRequests::MergeabilityCheckIdentifierEnum, feature_ca
   specify { expect(described_class.graphql_name).to eq('MergeabilityCheckIdentifier') }
 
   it 'exposes all the existing mergeability check identifiers' do
-    expect(described_class.values.keys).to contain_exactly(
-      *MergeRequest.all_mergeability_checks.map { |check_class| check_class.identifier.to_s.upcase }
+    expect(described_class.values.keys).to match_array(
+      MergeRequest.all_mergeability_checks.map { |check_class| check_class.identifier.to_s.upcase }
     )
   end
 end

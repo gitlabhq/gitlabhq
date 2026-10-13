@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RecaptchaHelper, type: :helper do
+RSpec.describe RecaptchaHelper do
   let(:session) { {} }
 
   before do

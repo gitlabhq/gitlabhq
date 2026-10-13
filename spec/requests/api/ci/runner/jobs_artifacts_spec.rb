@@ -321,8 +321,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       it_behaves_like 'an API request enforcing organization maintenance mode' do
         include_context 'with a job in a maintenance organization'
 
-        let(:success_status) { :ok }
-
         def request
           authorize_artifacts_with_token_in_headers(filesize: 100)
         end
@@ -971,8 +969,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       it_behaves_like 'an API request enforcing organization maintenance mode' do
         include_context 'with a job in a maintenance organization'
 
-        let(:success_status) { :created }
-
         def request
           upload_artifacts(file_upload, headers_with_token)
         end
@@ -1065,6 +1061,39 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 expect(response).to have_gitlab_http_status(:found)
                 expect(response.headers).to include('Location')
+              end
+            end
+
+            context 'when proxy download is enabled and direct mode is allowed' do
+              before do
+                stub_artifacts_object_storage(proxy_download: true, allowed_download_modes: %w[proxy direct])
+              end
+
+              it 'redirects when download_mode=direct is requested' do
+                download_artifact(download_mode: 'direct')
+
+                expect(response).to have_gitlab_http_status(:found)
+                expect(response.headers).to include('Location')
+              end
+
+              it 'uses the workhorse send-url when download_mode is absent' do
+                download_artifact
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers).to include('Gitlab-Workhorse-Send-Data' => /send-url:/)
+              end
+            end
+
+            context 'when direct mode is not allowed' do
+              before do
+                stub_artifacts_object_storage(proxy_download: true, allowed_download_modes: %w[proxy])
+              end
+
+              it 'uses the workhorse send-url when download_mode=direct is requested' do
+                download_artifact(download_mode: 'direct')
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers).to include('Gitlab-Workhorse-Send-Data' => /send-url:/)
               end
             end
           end
@@ -1231,8 +1260,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           create(:ci_build, :artifacts, :pending, user: user, project: project, pipeline: pipeline,
             runner_id: runner.id)
         end
-
-        let(:success_status) { :ok }
 
         def request
           get api("/jobs/#{job.id}/artifacts"), params: { token: job.token }, headers: headers

@@ -78,7 +78,10 @@ RSpec.shared_examples 'an exportable' do |restricted_association: :project|
         let(:restricted_note_access) { true }
 
         it 'string includes all notes' do
-          is_expected.to include("\"notes\":[{\"id\":#{readable_note.id}},{\"id\":#{restricted_note.id}}]")
+          # The `notes` association is unordered, so assert on membership rather than row order.
+          expect(Gitlab::Json::SafeParser.parse(subject)['notes']).to contain_exactly(
+            { 'id' => readable_note.id }, { 'id' => restricted_note.id }
+          )
         end
       end
     end

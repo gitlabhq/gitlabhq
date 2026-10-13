@@ -29,9 +29,11 @@ module Gitlab
     end
 
     def throttled?(limit, peek: false)
+      # Scope names must be characteristics of the rule registered for the
+      # limit in LabkitAdapter::SupportedRateLimits.
       # Return false as some scopes are missing avoid inflating another limit's count
-      scope = limit.scopes.filter_map { |sk| @params[sk.to_sym] }
-      return false if scope.size != limit.scopes.size
+      scope = limit.scopes.to_h { |sk| [sk.to_sym, @params[sk.to_sym]] }.compact
+      return false if scope.empty? || scope.size != limit.scopes.size
 
       Gitlab::ApplicationRateLimiter.resource_usage_throttled?(
         limit.name,

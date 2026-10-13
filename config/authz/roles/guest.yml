@@ -32,9 +32,11 @@ project:
   - read_ai_catalog_item_consumer
   - read_analytics
   - read_approval_rule
+  - read_boundary
   - read_contribution_analytics
   - read_cycle_analytics
   - read_insights
+  - read_issuable_metric_image
   - read_issue
   - read_issue_board
   - read_issue_board_list
@@ -68,6 +70,7 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - _delete_authored_timelog
   - _read_assigned_work_item
   - _read_authored_work_item
   - _reopen_assigned_work_item
@@ -81,6 +84,7 @@ group:
   - delete_saved_view
   - read_ai_catalog_item_consumer
   - read_approval_rule
+  - read_boundary
   - read_epic_link_relation
   - read_epic_relation
   - read_group

@@ -16,6 +16,19 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
     it { is_expected.to belong_to :project }
     it { is_expected.to belong_to :build }
     it { is_expected.to belong_to :namespace }
+
+    describe '#plan' do
+      it 'resolves the system-defined plan from plan_name_uid' do
+        premium = GitlabSubscriptions::SystemDefined::Plan.find_by(name: 'premium')
+        pending_build = FactoryBot.build(:ci_pending_build, plan_name_uid: premium.id)
+
+        expect(pending_build.plan).to eq(premium)
+      end
+
+      it 'is nil without a plan_name_uid' do
+        expect(FactoryBot.build(:ci_pending_build, plan_name_uid: nil).plan).to be_nil
+      end
+    end
   end
 
   describe 'scopes' do

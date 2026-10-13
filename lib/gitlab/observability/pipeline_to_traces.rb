@@ -75,8 +75,6 @@ module Gitlab
       end
 
       def parent_span_id_for_pipeline
-        return '' unless pipeline_data[:trace_correlation_enabled]
-
         bridge_id = pipeline_data.dig(:source_pipeline, :bridge_id)
         return '' unless bridge_id
 

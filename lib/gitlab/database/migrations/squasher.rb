@@ -84,6 +84,7 @@ module Gitlab
               files_to_delete << "ee/lib/ee/gitlab/background_migration/#{filename}.rb"
               files_to_delete << "spec/lib/gitlab/background_migration/#{filename}_spec.rb"
               files_to_delete << "ee/spec/lib/ee/gitlab/background_migration/#{filename}_spec.rb"
+              files_to_delete << "ee/spec/lib/gitlab/background_migration/#{filename}_spec.rb"
             end
           end
 

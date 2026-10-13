@@ -125,4 +125,32 @@ RSpec.describe Namespaces::ProjectNamespacePolicy, feature_category: :groups_and
       end
     end
   end
+
+  describe 'read_namespace_via_membership' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:internal_project) { create(:project, :internal) }
+    let_it_be(:non_member) { create(:user) }
+    let_it_be(:guest) { create(:user, guest_of: [public_project, internal_project]) }
+    let_it_be(:admin) { create(:admin) }
+
+    subject(:policy) { described_class.new(current_user, project.project_namespace) }
+
+    where(:project, :current_user, :admin_mode, :allowed) do
+      ref(:public_project)   | ref(:non_member) | false | false
+      ref(:internal_project) | ref(:non_member) | false | false
+      ref(:public_project)   | ref(:guest)      | false | true
+      ref(:internal_project) | ref(:guest)      | false | true
+      ref(:public_project)   | ref(:admin)      | false | false
+      ref(:public_project)   | ref(:admin)      | true  | true
+    end
+
+    with_them do
+      before do
+        enable_admin_mode!(admin) if admin_mode
+      end
+
+      it { expect(policy.allowed?(:read_namespace_via_membership)).to eq(allowed) }
+    end
+  end
 end

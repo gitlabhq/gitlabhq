@@ -23,7 +23,7 @@ title: GitLab高度なSAST
 - GitLab 17.4でJava Server Pages（JSP）のサポートが追加されました。
 - GitLab 18.1でPHPのサポートが[追加](https://gitlab.com/groups/gitlab-org/-/epics/14273)されました。
 - GitLab 18.6でC/C++のサポートが[追加](https://gitlab.com/groups/gitlab-org/-/work_items/14271)されました。
-- GitLab 19.3で、SwiftとObjective-Cのサポートが[追加](https://gitlab.com/groups/gitlab-org/-/work_items/16318)され、[ベータ](../../../policy/development_stages_support.md#beta)として提供されます。
+- GitLab 19.3でSwiftとObjective-Cのサポートが[ベータ版](../../../policy/development_stages_support.md#beta)として[追加](https://gitlab.com/groups/gitlab-org/-/work_items/16318)されました。
 
 {{< /history >}}
 
@@ -149,6 +149,10 @@ SASTの脆弱性には、検出された脆弱性の主要なCWE識別子に従�
 {{< history >}}
 
 - GitLab 18.6でC#バージョンのサポートが[10.0から13.0に増加](https://gitlab.com/gitlab-org/gitlab/-/issues/570499)しました。
+- DartのサポートはGitLab 19.4で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/630101)され、[ベータ](../../../policy/development_stages_support.md#beta)版として提供されています。
+- ScalaのサポートはGitLab 19.4で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/630101)され、[ベータ](../../../policy/development_stages_support.md#beta)版として提供されています。
+- KotlinのサポートはGitLab 19.4で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/630101)され、[ベータ](../../../policy/development_stages_support.md#beta)版として提供されています。
+- RustのサポートはGitLab 19.5で[追加](https://gitlab.com/gitlab-org/gitlab/-/issues/630101)され、[ベータ](../../../policy/development_stages_support.md#beta)版として提供されています。
 
 {{< /history >}}
 
@@ -156,18 +160,24 @@ GitLab高度なSASTは、以下の言語をサポートしています:
 
 - C#（13.0まで）
 - C/C++
+- Dart（ベータ）
 - Go
 - Java（Java Server Pages（JSP）を含む）
 - JavaScript、TypeScript
+- Kotlin（ベータ）
 - Objective-C（ベータ）
 - PHP
 - Python
 - Ruby
+- Rust（ベータ）
+- Scala（ベータ）
 - Swift（ベータ）
 
 GitLab高度なSAST C++には、コンパイルデータベースを含む追加の設定が必要です。詳細については、[C/C++設定](advanced_sast_cpp.md)を参照してください。GitLab高度なSAST C++とSemgrepは両方ともC/C++プロジェクトで実行され、それぞれ異なるルールセットを使用します。
 
-SwiftとObjective-Cのサポートは[ベータ](../../../policy/development_stages_support.md#beta)版です。GitLab高度なSASTが有効で、リポジトリにSwiftまたはObjective-Cファイルが含まれている場合、分析は別のCI/CDジョブ`gitlab-advanced-sast-ext`として実行されます。追加の変数は必要ありません。詳細については、[SwiftとObjective-Cの設定](advanced_sast_swift_objc.md)を参照してください。
+Dart、Kotlin、Objective-C、Rust、Scala、Swiftのサポートは[ベータ](../../../policy/development_stages_support.md#beta)版です。GitLab Advanced SASTが有効で、リポジトリにこれらの言語のファイルが含まれている場合、分析は別のCI/CDジョブである`gitlab-advanced-sast-ext`として実行されます。追加の変数は必要ありません。SwiftおよびObjective-Cについては、[SwiftおよびObjective-Cの設定](advanced_sast_swift_objc.md)を参照してください。
+
+Kotlin、Objective-C、Scala、Swiftの場合、`semgrep-sast`も実行され、Semgrepが既に報告している脆弱性については`gitlab-advanced-sast-ext`がそれに委ねるため、同じ脆弱性クラスが2回報告されることはありません。Kotlinの場合、これらはCWE-89、CWE-78、CWE-22、CWE-79、CWE-327、およびCWE-295です。Swiftの場合、Keychainのアクセシビリティチェック（CWE-922）です。この動作を変更またはオフにするには、`GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES`を使用します。DartとRustの場合、SASTテンプレートが`.dart`または`.rs`ファイルをそこにルーティングしないため、`semgrep-sast`は実行されません。
 
 ### PHPの既知の問題 {#php-known-issues}
 
@@ -179,6 +189,27 @@ PHPコードを分析する際、GitLab高度なSASTには以下の既知のイ�
 ## スキャンパフォーマンスの改善 {#improve-scanning-performance}
 
 GitLab高度なSASTのスキャンパフォーマンスは、主にコードカバレッジとRunnerリソースによって決定されます。GitLab高度なSASTのスキャンパフォーマンスを向上させるには、コードカバレッジとRunnerリソースを調整できます。
+
+### スキャンパフォーマンスの診断 {#diagnose-scan-performance}
+
+設定を変更する前に、何が遅いかを見つけます。GitLab高度なSASTは、各スキャンに対して2つのタイミングアーティファクトを生成でき、スキャンにかかる時間を示します。これらのアーティファクトはデフォルトではアップロードされません。
+
+これらを収集するには、`.gitlab-ci.yml`ファイル内のジョブの既存の`artifacts`設定にパスを追加します:
+
+```yaml
+gitlab-advanced-sast:
+  artifacts:
+    paths:
+      - '**/scan_metrics.csv'
+      - '**/lightz_times.json'
+    when: always
+```
+
+このジョブに対してすでに`artifacts`をオーバーライドしている場合（例えば、インクリメンタルスキャンのため）、これらのパスを既存の`artifacts.paths`リストに追加してください。2番目の`gitlab-advanced-sast`ブロックを追加すると、SASTレポートなどの他のアーティファクトがドロップされる可能性があります。
+
+`scan_metrics.csv`と`lightz_times.json`には、各ルールとファイルに関するタイミング情報が含まれています。この情報を使用して、どのルールとファイルのスキャンに最も時間がかかっているかを見つけることができます。`scan_metrics.csv`は、タイミング列でスプレッドシート内でソート可能です。`lightz_times.json`には、GitLabサポートが解釈を支援できる各ファイルのより詳細なタイミングが含まれています。アナライザーは、ジョブが正常に完了した場合にのみこれらのアーティファクトを生成します。タイムアウトするジョブはそれらを生成しません。ジョブがタイムアウトする場合は、まず[`timeout`](../../../ci/yaml/_index.md#timeout)を上げてスキャンが完了できるようにし、その後アーティファクトを収集してください。
+
+最も遅いルールとファイルを特定したら、[パスを除外する](#exclude-paths)か[特定のルールを無効にする](customize_rulesets.md#disable-specific-default-gitlab-advanced-sast-rules)ことができます。
 
 ### コードカバレッジを調整する {#tune-code-coverage}
 
@@ -212,6 +243,8 @@ GitLab高度なSASTのスキャンパフォーマンスは、主にコードカ�
 
 パスを除外する場合は、脆弱性を隠さないように選択的に行ってください。変更をインクリメンタルに行い、それぞれの除外後のスキャン時間への影響をテストします。
 
+GitLab高度なSASTは、テスト、`node_modules`、`vendor`、ビルド出力など、多くの一般的なパスをデフォルトで除外します。デフォルトでカバーされていないプロジェクト固有の追加のパスには、`SAST_EXCLUDED_PATHS`を使用します。
+
 以下のものを含むパスを除外することを検討してください:
 
 - データベースマイグレーション
@@ -223,6 +256,14 @@ GitLab高度なSASTのスキャンパフォーマンスは、主にコードカ�
 - テストデータ
 - Infrastructure as Code
 
+除外候補を特定するには、リポジトリのファイルタイプの分布をリストします:
+
+```shell
+git ls-files | grep -o '\.[^.]*$' | sort | uniq -c | sort -nr
+```
+
+バンドルされたUI依存関係は一般的な候補です。例えば、`swagger-ui`または`swagger-ui-dist/`ディレクトリを除外すると、バンドルされたファイルがスキャン時間を増大させるため、スキャン時間を短縮できます。ワイルドカードパターン`**/*.min.js`は、縮小されたコンテンツも除外します。
+
 前提条件: 
 
 - プロジェクトのメンテナーまたはオーナーのロール。
@@ -230,6 +271,10 @@ GitLab高度なSASTのスキャンパフォーマンスは、主にコードカ�
 パスを除外するには:
 
 - [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD変数に除外するパスをリストします。
+
+除外を追加した後、以前のフルスキャンとの検出数を比較してください。減少は、実際のコードを含むパスを除外したことを示している可能性があります。各パターンが何を削除したかを確認し、必要に応じて除外を絞り込みます。
+
+検出数は、除外されたファイルの数に直接対応するわけではありません。合計ではなく、変更が影響を与えたパスに基づいて判断してください。負荷がかかっている場合、各ファイルのタイムアウト（`GITLAB_ADVANCED_SAST_RULE_TIMEOUT`）に達したルールはスキップされる可能性があるため、実行ごとに多少の変動が予想されます。特定の除外パスに関連する永続的な減少は、カバレッジの損失を示す可能性が高いです。
 
 #### 行を除外する {#exclude-lines}
 
@@ -330,6 +375,19 @@ result = db.execute(query)
 
 1. 最初のスキャン（コールドラン）: アナライザーは完全な分析を実行し、テイント署名のキャッシュを作成します。キャッシュはCIアーティファクト（`ts-cache.sqlite.gz`）として保存されます。
 1. その後のスキャン（ウォームラン）: アナライザーは、キャッシュアーティファクトを含む成功したパイプラインを以前のコミットから検索します。見つかった場合、キャッシュがフェッチされ、変更されていない結果が再利用されます。スキャンが完了すると、更新されたキャッシュは新しいアーティファクトとして保存されます。
+
+アナライザーがキャッシュを取得できない場合、フルスキャンが実行され、スキャン速度の改善は見られません。これは、次の場合に発生することがあります。
+
+- 以前のパイプラインにキャッシュアーティファクトがまだありません（例えば、初回実行時）。
+- キャッシュアーティファクトの有効期限が切れたか、`GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD`の範囲外にあります。
+- `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME`を設定せずにジョブの名前が変更されました。
+- キャッシュがアーティファクトのサイズ制限を超えています。
+
+インクリメンタルスキャンでスキャン速度が改善しない場合は、ジョブログで次の行から始まるものを確認してください。コロンの後の理由を読みます:
+
+```plaintext
+Failed to retrieve cache, continuing without cache:
+```
 
 ##### キャッシュの無効化 {#cache-invalidation}
 
@@ -456,7 +514,7 @@ GitLab高度なSASTは、テイント解析を使用して、信頼できない�
 
 未検証の結果は、完全に検証された脆弱性とは以下の点で明確に区別されます:
 
-- パイプライン**セキュリティ**タブでは、脆弱性の説明は**（未検証）** プレフィックスで始まります。
+- パイプライン**セキュリティ**タブでは、脆弱性の説明は**（未検証）**　プレフィックスで始まります。
 - **脆弱性レポート**では、未検証の結果も同様にプレフィックスが付加されます。
 - **データフロー**タブでは、未検証の脆弱性にはソースノードがありません。フロー内の最初のノードは**トレースエントリーポイント**であり、部分的なトレースの開始点を示します。
 
@@ -495,6 +553,10 @@ CPUとメモリの割り当てを確認するには、`gitlab-advanced-sast`ジ�
 [INFO] [GitLab Advanced SAST] [2026-03-30T02:38:09Z] ▶ No Memory limit is detected
 ```
 
+#### 推奨される開始点 {#recommended-starting-point}
+
+スキャンが遅い大規模なリポジトリの場合、複数のCPUコアと1コアあたり4 GBの十分なメモリから開始します。その後、観測されたスキャン時間に基づいて調整します。設定例については、[Runnerリソース設定の構成](#configure-runner-resource-settings)を参照してください。最初のフルスキャンが完了するのに十分な高さにジョブの[`timeout`](../../../ci/yaml/_index.md#timeout)を設定してください。
+
 #### Runnerリソース設定を構成する {#configure-runner-resource-settings}
 
 以下の状況で、CI/CD変数を使用してアナライザーのCPUおよびメモリ設定を手動で調整できます:
@@ -528,19 +590,47 @@ variables:
   ADVANCED_SAST_AVAILABLE_MEMORY: '16384'  # 16 GB for 4 cores
 ```
 
+#### Runnerリソース調整が有効になったことを確認 {#verify-runner-resource-tuning-took-effect}
+
+`ADVANCED_SAST_AVAILABLE_CPUS`または`ADVANCED_SAST_AVAILABLE_MEMORY`を設定した後、`gitlab-advanced-sast`ジョブログで有効な値を確認します。ログには検出されたCPUと、メモリが設定されている場合は検出されたメモリが報告されます。例: 
+
+```plaintext
+Detected 2 CPU Cores
+Detected 8192 MB of Memory
+```
+
+有効な値が要求したものよりも低い場合:
+
+1. Runnerの実際のCPUとメモリを確認します。アナライザーは指定されたオーバーライド値をそのまま適用し、Runnerの処理能力に合わせて上限を設けることはありません。実際の容量を超える値は、より高速なスキャンではなくリソースの競合を引き起こします。GitLabホスト型Runnerについては、[ホスト型Runnerの仕様](../../../ci/runners/hosted_runners/linux.md)を参照してください。セルフマネージドRunnerでは、`nproc`とRunnerホスト上のcgroup制限を確認してください。
+1. 変数が[正しいスコープ](../../../ci/variables/_index.md#cicd-variable-precedence)に設定されており、他の何者もそれを上書きしていないことを確認します。
+
+デフォルトでは、アナライザーは`MAX_UNVERIFIED_CORES`（デフォルト`4`）よりも最大1コア少ないコアを使用するため、3コアを使用します。この動作により、何も設定を変更していない場合でも、ジョブログに次のような行が表示されることがあります:
+
+```plaintext
+Detected 8 cores but using 3; set --multi-core or MAX_UNVERIFIED_CORES for more
+```
+
+より多くのコアを使用するには、`MAX_UNVERIFIED_CORES`を上げるか、`SAST_SCANNER_ALLOWED_CLI_OPTS`を介して`--multi-core`で特定の数をリクエストします:
+
+```yaml
+variables:
+  SAST_SCANNER_ALLOWED_CLI_OPTS: "--multi-core 6"
+```
+
 ## 設定 {#configuration}
 
 次の変数を使用して、GitLab高度なSASTの動作を調整できます:
 
 | CI/CD変数                              | デフォルト                | 説明                                                                                                                                                                                     |
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | CおよびC++を除く、サポートされているすべての言語でGitLab高度なSASTスキャンを有効にします。SwiftとObjective-Cの分析は、個別の`gitlab-advanced-sast-ext`ジョブとして実行されます。 |
+| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | CおよびC++を除く、サポートされているすべての言語でGitLab高度なSASTスキャンを有効にします。Dart、Kotlin、Objective-C、Rust、Scala、Swiftの分析は、別の`gitlab-advanced-sast-ext`ジョブとして実行されます。 |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | CおよびC++プロジェクト専用にGitLab高度なSASTスキャンを有効にします。                                                                                                                       |
-| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | `false`に設定して、SwiftおよびObjective-C (`gitlab-advanced-sast-ext`) アナライザーの[インクリメンタルスキャン](advanced_sast_swift_objc.md#incremental-scanning)をオフにします。 |
+| `GITLAB_ADV_SAST_INCR_SCAN`                 | `false`                | パイプライン実行間でテイント署名をキャッシュする[インクリメンタルスキャン](#incremental-scanning)を有効にします。 |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | これは、[インクリメンタルスキャン](advanced_sast_swift_objc.md#incremental-scanning)がデフォルトで有効になっている`gitlab-advanced-sast-ext`アナライザー（Dart、Kotlin、Objective-C、Rust、Scala、およびSwift）にのみ適用されます。オフにするには`false`に設定します。これらの言語のファイルがないリポジトリには影響しません。他の言語の場合は、代わりに`GITLAB_ADV_SAST_INCR_SCAN`を使用してください。 |
+| `GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES` | `kotlin,swift` | これは`gitlab-advanced-sast-ext`アナライザーにのみ適用されます。アナライザーがSemgrepが既に報告している脆弱性について`semgrep-sast`に委ねるベータ言語のカンマ区切りリスト。これにより、同じ脆弱性が2回報告されることはありません。Kotlinの場合: CWE-89、CWE-78、CWE-22、CWE-79、CWE-327、およびCWE-295。Swiftの場合: Keychainアクセシビリティチェック（CWE-922）。ベンチマーク時など、重複排除をオフにするには空の値を設定します。 |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | GitLab高度なSAST差分-スキャンモードを`differential`に設定して有効にします。                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | ファイルおよびルールごとのタイムアウト（秒単位）。超過すると、その分析はスキップされます。                                                                                                                  |
 | `REPORT_UNVERIFIED_VULNS`                   | `false`                | スキャン結果に未検証の結果を含めます。有効にするには、`true`、`1`、または`True`に設定します。                                                                                                           |
-| `GITLAB_ADV_SAST_INCR_SCAN`                 | `false`                | パイプライン実行間でテイント署名をキャッシュする[インクリメンタルスキャン](#incremental-scanning)を有効にします。                                                                                           |
 | `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD`   | `3 days`               | キャッシュされたテイント署名アーティファクトを検索する期間。サポートされているフォーマット: 数値の後に`d`、`day`、または`days`（例: `7 days`）が続きます。アーティファクトの有効期限を超えてはなりません。 |
 | `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME` | `gitlab-advanced-sast` | キャッシュアーティファクトルックアップ用のカスタムジョブ名。`gitlab-advanced-sast`ジョブの名前を変更した場合にこれを設定します。                                                                                              |
 | `GITLAB_ADV_SAST_INCR_SCAN_STORAGE`         | 設定なし                | キャッシュストレージバックエンド。`s3`に設定すると、キャッシュをCI/CDアーティファクトではなくAWS S3に保存できます。詳細については、[外部オブジェクトストレージにキャッシュを保存する](#store-cache-in-external-object-storage)を参照してください。           |

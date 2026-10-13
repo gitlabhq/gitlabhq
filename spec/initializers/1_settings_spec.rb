@@ -482,6 +482,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         authn_data_retention_authentication_event_archive_worker
         authn_data_retention_oauth_access_grant_archive_worker
         authn_data_retention_oauth_access_token_archive_worker
+        authn_iam_replication_reconciliation_oauth_applications
         authorized_project_update_periodic_recalculate_worker
         authz_reverify_project_authorizations_cron_worker
         background_operations_worker_main_database
@@ -497,6 +498,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         background_operation_environments_auto_delete
         background_operation_merge_requests_clear_old_merged_cached_html
         background_operation_merge_requests_clear_stale_cached_html
+        background_operation_notes_clear_old_cached_html
         background_operation_notes_clear_stale_cached_html
         bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
@@ -561,7 +563,12 @@ RSpec.describe '1_settings', feature_category: :settings do
         performance_bar_stats
         personal_access_tokens_expired_notification_worker
         personal_access_tokens_expiring_worker
+        pg_ash_rollup_cleanup_worker
+        pg_ash_rollup_hour_worker
+        pg_ash_rollup_minute_worker
+        pg_ash_rotate_worker
         pipeline_schedule_worker
+        postgres_dynamic_partitions_detach_finalizer
         postgres_dynamic_partitions_dropper
         postgres_dynamic_partitions_manager
         projects_schedule_refresh_build_artifacts_size_statistics_worker

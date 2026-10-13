@@ -18,8 +18,7 @@ RSpec.describe 'bin/audit-event-type' do
 
     before do
       allow(creator).to receive(:all_audit_event_type_names) { existing_audit_event_types }
-      allow(creator).to receive(:branch_name).and_return('feature-branch')
-      allow(creator).to receive(:editor).and_return(nil)
+      allow(creator).to receive_messages(branch_name: 'feature-branch', editor: nil)
 
       # ignore writes
       allow(File).to receive(:write).and_return(true)

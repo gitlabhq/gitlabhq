@@ -29,11 +29,16 @@ module API
       end
       route_setting :authorization, permissions: :download_group_export, boundary_type: :group
       get ':id/export/download' do
-        check_rate_limit! :group_download_export, scope: [current_user, user_group]
+        check_rate_limit! :group_download_export, scope: { user: current_user, group: user_group }
 
         if user_group.export_file_exists?(current_user)
           if user_group.export_archive_exists?(current_user)
-            present_carrierwave_file!(user_group.export_file(current_user))
+            export_file = user_group.export_file(current_user)
+            present_carrierwave_file!(
+              export_file,
+              content_disposition: 'attachment',
+              content_type: Gitlab::ImportExport.export_download_content_type
+            )
           else
             render_api_error!('The group export file is not available yet', 404)
           end
@@ -56,7 +61,7 @@ module API
       end
       route_setting :authorization, permissions: :start_group_export, boundary_type: :group
       post ':id/export' do
-        check_rate_limit! :group_export, scope: current_user
+        check_rate_limit! :group_export, scope: { user: current_user }
 
         export_service = ::Groups::ImportExport::ExportService.new(
           group: user_group,

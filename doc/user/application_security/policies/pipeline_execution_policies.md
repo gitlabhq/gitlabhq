@@ -862,7 +862,10 @@ However, even when the `variables_override` setting is enabled, pipeline executi
 
 When enabled, the `variables_override` setting allows the policy to access and apply the variables according to standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules.
 
-However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
+This means a variable allowed by `variables_override` and set in the group or project settings
+takes precedence over the same variable defined in the policy.
+
+When `variables_override` is not set, the precedence depends on the pipeline execution policy strategy:
 
 - `inject_policy` strategy: If the variable is defined in the pipeline execution policy, the job always uses this value. If a variable is not defined in a pipeline execution policy, the job applies the value from the group or project settings.
 - `inject_ci` strategy: If the variable is defined in the pipeline execution policy, the job always uses this value. If a variable is not defined in a pipeline execution policy, the job applies the value from the group or project settings.

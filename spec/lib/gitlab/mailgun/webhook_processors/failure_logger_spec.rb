@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
       context 'when threshold is not exceeded' do
         it 'increments counter but does not log the failure' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-            :permanent_email_failure, scope: 'recipient@gitlab.com'
+            :permanent_email_failure, scope: { email: 'recipient@gitlab.com' }
           ).and_call_original
           expect(Gitlab::ErrorTracking::Logger).not_to receive(:error)
 
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
 
         it 'increments counter and logs the failure' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-            :permanent_email_failure, scope: 'recipient@gitlab.com'
+            :permanent_email_failure, scope: { email: 'recipient@gitlab.com' }
           ).and_call_original
           expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
             event: 'email_delivery_failure',
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
         context 'when threshold is not exceeded' do
           it 'uses global scope and does not log the failure' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-              :permanent_email_failure, scope: :global
+              :permanent_email_failure, scope: { email: :global }
             ).and_call_original
             expect(Gitlab::ErrorTracking::Logger).not_to receive(:error)
 
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
 
           it 'uses global scope and logs the failure' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-              :permanent_email_failure, scope: :global
+              :permanent_email_failure, scope: { email: :global }
             ).and_call_original
             expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
               event: 'email_delivery_failure',
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
       context 'when threshold is not exceeded' do
         it 'increments counter but does not log the failure' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-            :temporary_email_failure, scope: 'recipient@gitlab.com'
+            :temporary_email_failure, scope: { email: 'recipient@gitlab.com' }
           ).and_call_original
           expect(Gitlab::ErrorTracking::Logger).not_to receive(:error)
 
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
 
         it 'increments counter and logs the failure' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-            :temporary_email_failure, scope: 'recipient@gitlab.com'
+            :temporary_email_failure, scope: { email: 'recipient@gitlab.com' }
           ).and_call_original
           expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
             event: 'email_delivery_failure',
@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
         context 'when threshold is not exceeded' do
           it 'uses global scope and does not log the failure' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-              :temporary_email_failure, scope: :global
+              :temporary_email_failure, scope: { email: :global }
             ).and_call_original
             expect(Gitlab::ErrorTracking::Logger).not_to receive(:error)
 
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Mailgun::WebhookProcessors::FailureLogger do
 
           it 'uses global scope and logs the failure' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
-              :temporary_email_failure, scope: :global
+              :temporary_email_failure, scope: { email: :global }
             ).and_call_original
             expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
               event: 'email_delivery_failure',

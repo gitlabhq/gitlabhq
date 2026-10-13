@@ -32,7 +32,8 @@ module API
               type: String,
               desc: 'Filter operations by job class name.'
           end
-          route_setting :authorization, permissions: :read_batched_background_operation, boundary_type: :instance
+          route_setting :authorization, permissions: :read_batched_background_operation, boundary_type: :instance,
+            assignable_when: [:admin]
           get do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
               operations = ::Database::BatchedBackgroundOperationsCellLocalFinder.new(params: params).execute
@@ -63,7 +64,8 @@ module API
                 desc: 'The name of the database',
                 default: 'main'
             end
-            route_setting :authorization, permissions: :read_batched_background_operation, boundary_type: :instance
+            route_setting :authorization, permissions: :read_batched_background_operation, boundary_type: :instance,
+              assignable_when: [:admin]
             get do
               Gitlab::Database::SharedModel.using_connection(base_model.connection) do
                 not_found!('Batched background operation') unless batched_background_operation
@@ -89,7 +91,8 @@ module API
                 desc: 'The name of the database',
                 default: 'main'
             end
-            route_setting :authorization, permissions: :stop_batched_background_operation, boundary_type: :instance
+            route_setting :authorization, permissions: :stop_batched_background_operation, boundary_type: :instance,
+              assignable_when: [:admin]
             put 'stop' do
               Gitlab::Database::SharedModel.using_connection(base_model.connection) do
                 not_found!('Batched background operation') unless batched_background_operation
@@ -121,7 +124,8 @@ module API
                 desc: 'The name of the database',
                 default: 'main'
             end
-            route_setting :authorization, permissions: :restart_batched_background_operation, boundary_type: :instance
+            route_setting :authorization, permissions: :restart_batched_background_operation, boundary_type: :instance,
+              assignable_when: [:admin]
             put 'restart' do
               Gitlab::Database::SharedModel.using_connection(base_model.connection) do
                 not_found!('Batched background operation') unless batched_background_operation

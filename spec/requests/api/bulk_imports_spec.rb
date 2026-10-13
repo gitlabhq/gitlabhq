@@ -167,6 +167,22 @@ RSpec.describe API::BulkImports, :with_current_organization, feature_category: :
         expect(json_response['status']).to eq('created')
       end
 
+      describe 'request_channel' do
+        it 'defaults to :api' do
+          request
+
+          expect(::Import::BulkImports::EphemeralData.new(user.bulk_imports.last.id).request_channel).to eq('api')
+        end
+
+        it 'is :congregate when the caller identifies as Congregate' do
+          post api('/bulk_imports', user),
+            params: params,
+            headers: { 'User-Agent' => 'GitLabApiClient' }
+
+          expect(::Import::BulkImports::EphemeralData.new(user.bulk_imports.last.id).request_channel).to eq('congregate')
+        end
+      end
+
       describe 'migrate projects flag' do
         context 'when true' do
           it 'sets true' do

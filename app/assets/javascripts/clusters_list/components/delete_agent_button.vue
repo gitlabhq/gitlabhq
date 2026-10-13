@@ -2,7 +2,6 @@
 import {
   GlButton,
   GlModal,
-  GlModalDirective,
   GlSprintf,
   GlFormGroup,
   GlFormInput,
@@ -28,7 +27,6 @@ export default {
     GlDisclosureDropdownItem,
   },
   directives: {
-    GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
   mixins: [GlToastMixin],

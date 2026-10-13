@@ -223,6 +223,27 @@ ai-principles-manifest:
   script:
     - scripts/lint-ai-principles-manifest.sh
 
+# Lints changed `.ai/` and `AGENTS.md` files. `.vale.ini` limits them to the British spelling rule.
+# Only changed files, so legacy spellings in distilled principles do not block unrelated MRs.
+docs-lint ai-spelling:
+  extends:
+    - .default-retry
+    - .docs:rules:ai-spelling
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  script:
+    - |
+      compare_sha="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-$CI_MERGE_REQUEST_DIFF_BASE_SHA}"
+      git fetch --depth=1 origin "$compare_sha"
+      changed_files="$(git diff --name-only --diff-filter=d "$compare_sha" HEAD -- '.ai/*.md' '*AGENTS.md' ':!doc/')"
+      if [ -z "$changed_files" ]; then
+        echo "No AI instruction files changed in this merge request; skipping."
+        exit 0
+      fi
+      # shellcheck disable=SC2086 # Word splitting is intentional to pass each path as a separate arg.
+      vale --minAlertLevel error $changed_files
+
 # Read-only drift guard: detects Duo Code Review instruction fences in
 # .gitlab/duo/mr-review-instructions.yaml that are stale, malformed, or
 # orphaned relative to .ai/principles/distilled/. Rails-free; only runtime
@@ -231,7 +252,7 @@ ai-principles-manifest:
 # regenerate stale fences, or correct/remove malformed or orphaned markers.
 #
 # Fence regeneration is decoupled from distillation (gitlab-org/gitlab#604890):
-# a team's distilled MR merges independently and the daily fence-reconcile job
+# a team's distilled MR merges independently and the fence-reconcile job
 # catches the fences up from merged master afterwards. So fence STALENESS is
 # expected transient state on ordinary MRs and on master, not something those
 # refs can fix. The guard therefore runs as two jobs:

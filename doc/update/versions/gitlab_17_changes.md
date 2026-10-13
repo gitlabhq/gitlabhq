@@ -484,7 +484,7 @@ OpenSSL 3. Therefore, you only need to verify the services and integrations that
 are not part of the GitLab package and are ["external"](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3/#identifying-external-integrations).
 
 SSH keys are not affected by this upgrade. OpenSSL sets
-security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and
+security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.org/) and
 [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md) have their
 own configuration settings for the allowed cryptographic algorithms.
 

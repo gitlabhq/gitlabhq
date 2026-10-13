@@ -11,7 +11,7 @@ title: Set up Observability on GitLab.com
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 

@@ -3,9 +3,14 @@ import {
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
+  ACCESSIBILITY_ROUTE,
   ROOT_ROUTE,
   METRICS_ROUTE,
+  TEST_SUMMARY_ROUTE,
+  TERRAFORM_ROUTE,
+  STATUS_CHECKS_ROUTE,
 } from './constants';
 
 const CATCH_ALL_ROUTE = '/:pathMatch(.*)*';
@@ -38,15 +43,42 @@ export default [
     component: () => import('~/merge_requests/reports/code_quality/code_quality_page.vue'),
   },
   {
+    name: BROWSER_PERFORMANCE_ROUTE,
+    path: `/${BROWSER_PERFORMANCE_ROUTE}`,
+    component: () =>
+      import('ee_component/merge_requests/reports/browser_performance/browser_performance_page.vue'),
+  },
+  {
     name: LOAD_PERFORMANCE_ROUTE,
     path: `/${LOAD_PERFORMANCE_ROUTE}`,
     component: () =>
       import('ee_component/merge_requests/reports/load_performance/load_performance_page.vue'),
   },
   {
+    name: ACCESSIBILITY_ROUTE,
+    path: `/${ACCESSIBILITY_ROUTE}`,
+    component: () => import('~/merge_requests/reports/accessibility/accessibility_page.vue'),
+  },
+  {
     name: METRICS_ROUTE,
     path: `/${METRICS_ROUTE}`,
     component: () => import('ee_component/merge_requests/reports/metrics/metrics_page.vue'),
+  },
+  {
+    name: TEST_SUMMARY_ROUTE,
+    path: `/${TEST_SUMMARY_ROUTE}`,
+    component: () => import('~/merge_requests/reports/test_summary/test_summary_page.vue'),
+  },
+  {
+    name: TERRAFORM_ROUTE,
+    path: `/${TERRAFORM_ROUTE}`,
+    component: () => import('~/merge_requests/reports/terraform/terraform_page.vue'),
+  },
+  {
+    name: STATUS_CHECKS_ROUTE,
+    path: `/${STATUS_CHECKS_ROUTE}`,
+    component: () =>
+      import('ee_component/merge_requests/reports/status_checks/status_checks_page.vue'),
   },
   {
     path: CATCH_ALL_ROUTE,

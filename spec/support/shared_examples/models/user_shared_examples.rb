@@ -148,6 +148,7 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       early_access_program_tracking_events
       duo_workflow_session_artifacts
       project_settings
+      import_sync_repositories
     ]
   end
 

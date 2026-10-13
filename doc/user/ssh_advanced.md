@@ -99,7 +99,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. Optional. Update **Expiration date** to modify the default expiration date.
 1. Select **Add key**.
 
-For more information about using 1Password with SSH keys, see the [1Password documentation](https://developer.1password.com/docs/ssh/get-started/).
+For more information about using 1Password with SSH keys, see the [1Password documentation](https://www.1password.dev/ssh/get-started).
 
 ## Disable SSH keys for enterprise users
 
@@ -223,7 +223,7 @@ If your SSH key pair is not in the default directory, configure your SSH client 
 
    ```shell
    eval $(ssh-agent -s)
-   ssh-add <directory to private SSH key>
+   ssh-add <path to private SSH key file>
    ```
 
 1. Save these settings in the `~/.ssh/config` file. For example:

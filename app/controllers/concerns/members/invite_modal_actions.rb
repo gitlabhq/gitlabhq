@@ -8,7 +8,6 @@ module Members
       users = Members::InviteUsersFinder.new(
         current_user,
         source,
-        organization_id: Current.organization.id,
         search: invite_search_params[:search]
       ).execute
         .page(1)

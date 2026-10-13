@@ -7,7 +7,7 @@ class CreateBillableUsageDailyAggregates < Gitlab::Database::Migration[2.3]
   UUID_INDEX_NAME = 'index_billable_usage_daily_aggs_on_event_aggregate_uuid'
 
   def change
-    create_table :billable_usage_daily_aggregates do |t|
+    create_table :billable_usage_daily_aggregates do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory renamed with the table; table dropped in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258349
       # Unique across every instance: CustomersDot dedupes uploads on this value alone.
       t.uuid :event_aggregate_uuid, null: false
       t.timestamps_with_timezone null: false

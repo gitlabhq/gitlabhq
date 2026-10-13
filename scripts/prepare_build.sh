@@ -9,6 +9,7 @@ fi
 
 cp config/gitlab.yml.example config/gitlab.yml
 sed -i 's/bin_path: \/usr\/bin\/git/bin_path: \/usr\/local\/bin\/git/' config/gitlab.yml
+sed -i 's/# bundler: rspack/bundler: rspack\n    dev_server:\n      enabled: false/' config/gitlab.yml
 
 cp config/cable.yml.example config/cable.yml
 sed -i 's|url:.*$|url: redis://redis:6379|g' config/cable.yml

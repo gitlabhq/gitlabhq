@@ -38,6 +38,10 @@ module Integrations
       'gitlab_slack_application'
     end
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('illustrations/slack_logo.svg')
+    end
+
     override :manual_activation?
     def manual_activation?
       false

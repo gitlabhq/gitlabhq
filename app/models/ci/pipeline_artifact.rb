@@ -80,7 +80,7 @@ module Ci
     end
 
     def present
-      super(presenter_class: "Ci::PipelineArtifacts::#{self.file_type.camelize}Presenter".constantize)
+      super(presenter_class: "Ci::PipelineArtifacts::#{file_type.camelize}Presenter".constantize)
     end
   end
 end

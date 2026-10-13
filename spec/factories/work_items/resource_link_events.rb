@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :resource_link_event, class: 'WorkItems::ResourceLinkEvent' do
     action { :add }
-    issue { association(:issue) }
+    issue { @overrides[:work_item] || association(:issue) }
     user { issue&.author || association(:user) }
     child_work_item { association(:work_item, :task) }
   end

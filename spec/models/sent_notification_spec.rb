@@ -41,7 +41,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
     end
   end
 
-  describe ' associations' do
+  describe 'associations' do
     subject { build(:sent_notification) }
 
     it { is_expected.to belong_to(:issue_email_participant) }

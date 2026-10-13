@@ -98,6 +98,7 @@ RSpec.describe Gitlab::TestBalancing::Client, feature_category: :code_testing do
 
   describe 'network retries' do
     let(:url) { "#{api_url}/job/test_balancing/request" }
+    let(:drained_body) { { test_splits: [] }.to_json }
 
     before do
       allow(client).to receive(:sleep) # don't actually wait between retries
@@ -112,6 +113,15 @@ RSpec.describe Gitlab::TestBalancing::Client, feature_category: :code_testing do
       expect(stub).to have_been_requested.twice
     end
 
+    it 'retries SSL errors and succeeds' do
+      stub = stub_request(:post, url)
+        .to_raise(OpenSSL::SSL::SSLError.new('SSL_connect returned=1 errno=0 state=error: unexpected eof')).then
+        .to_return(status: 201, body: drained_body)
+
+      expect(client.request).to eq([])
+      expect(stub).to have_been_requested.twice
+    end
+
     it 'gives up after MAX_ATTEMPTS and raises Error' do
       stub = stub_request(:post, url).to_raise(Net::ReadTimeout)
 
@@ -120,7 +130,29 @@ RSpec.describe Gitlab::TestBalancing::Client, feature_category: :code_testing do
       expect(stub).to have_been_requested.times(described_class::MAX_ATTEMPTS)
     end
 
-    it 'does not retry HTTP error responses' do
+    [500, 502, 503, 504].each do |status|
+      it "retries a #{status} response and succeeds" do
+        stub = stub_request(:post, url)
+          .to_return(status: status, body: 'Server error').then
+          .to_return(status: 201, body: drained_body)
+
+        expect(client.request).to eq([])
+        expect(stub).to have_been_requested.twice
+      end
+    end
+
+    it 'gives up on repeated 5xx responses after MAX_ATTEMPTS and includes the status' do
+      stub = stub_request(:post, url).to_return(status: 502, body: 'Bad Gateway')
+
+      expect { client.request }
+        .to raise_error(
+          described_class::Error,
+          a_string_including("after #{described_class::MAX_ATTEMPTS} attempts", '502 Bad Gateway')
+        )
+      expect(stub).to have_been_requested.times(described_class::MAX_ATTEMPTS)
+    end
+
+    it 'does not retry 4xx error responses' do
       stub = stub_request(:post, url).to_return(status: 422, body: 'nope')
 
       expect { client.request }.to raise_error(described_class::Error, /422/)

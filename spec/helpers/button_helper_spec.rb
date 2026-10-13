@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe ButtonHelper do
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project) }
+
   describe 'http_clone_button' do
-    let(:user) { create(:user) }
-    let(:project) { build_stubbed(:project) }
     let(:has_tooltip_class) { 'has-tooltip' }
 
     def element
@@ -26,7 +27,7 @@ RSpec.describe ButtonHelper do
       end
 
       context 'when user has password automatically set' do
-        let(:user) { create(:user, password_automatically_set: true) }
+        let(:user) { build_stubbed(:user, password_automatically_set: true) }
 
         it 'shows the password text on the dropdown' do
           description = element.search('.dropdown-menu-inner-content').first
@@ -50,6 +51,8 @@ RSpec.describe ButtonHelper do
       end
 
       context 'when user has personal access tokens' do
+        let(:user) { create(:user) }
+
         before do
           create(:personal_access_token, user: user)
         end
@@ -72,9 +75,6 @@ RSpec.describe ButtonHelper do
   end
 
   describe 'ssh_button' do
-    let(:user) { create(:user) }
-    let(:project) { build_stubbed(:project) }
-
     def element
       element = helper.ssh_clone_button(project)
 
@@ -106,6 +106,8 @@ RSpec.describe ButtonHelper do
     end
 
     context 'with an ssh key on the user' do
+      let(:user) { create(:user) }
+
       before do
         create(:key, user: user)
       end
@@ -119,9 +121,6 @@ RSpec.describe ButtonHelper do
   end
 
   describe 'ssh and http clone buttons' do
-    let(:user) { create(:user) }
-    let(:project) { build_stubbed(:project) }
-
     def http_button_element
       element = helper.http_clone_button(project, append_link: false)
 
@@ -148,9 +147,6 @@ RSpec.describe ButtonHelper do
 
   describe 'clipboard_button' do
     include IconsHelper
-
-    let_it_be(:user) { create(:user) }
-    let(:project) { build_stubbed(:project) }
 
     def element(data = {})
       element = helper.clipboard_button(data)

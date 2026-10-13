@@ -17,9 +17,7 @@ FactoryBot.define do
     end
 
     trait :with_version do
-      after(:create) do |state|
-        create(:terraform_state_version, terraform_state: state)
-      end
+      versions { [association(:terraform_state_version, strategy: :build, terraform_state: instance)] }
     end
   end
 end

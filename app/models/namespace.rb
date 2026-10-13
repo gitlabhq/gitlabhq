@@ -31,9 +31,10 @@ class Namespace < ApplicationRecord
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
-  ignore_column :file_template_project_id, remove_with: '19.2', remove_after: '2026-06-18'
-  ignore_column :custom_project_templates_group_id, remove_with: '19.2', remove_after: '2026-06-18'
+  ignore_column :file_template_project_id, remove_with: '19.6', remove_after: '2026-10-12'
+  ignore_column :custom_project_templates_group_id, remove_with: '19.6', remove_after: '2026-10-12'
   ignore_columns %i[marked_for_deletion_at marked_for_deletion_by_user_id], remove_with: '19.4', remove_after: '2026-09-17'
+  ignore_column :max_personal_access_token_lifetime, remove_with: '19.7', remove_after: '2026-11-13'
 
   columns_changing_default :organization_id
 
@@ -195,6 +196,10 @@ class Namespace < ApplicationRecord
     :creator=,
     :deletion_error,
     :deletion_error=,
+    :deletion_attempt_count,
+    :deletion_attempt_count=,
+    :deletion_last_failed_at,
+    :deletion_last_failed_at=,
     :description,
     :description=,
     :description_html,
@@ -202,6 +207,8 @@ class Namespace < ApplicationRecord
     :last_error=,
     :state_metadata,
     :state_metadata=,
+    :transfer_last_error,
+    :transfer_last_error=,
     :deletion_scheduled_at,
     :deletion_scheduled_at=,
     to: :namespace_details, allow_nil: true
@@ -241,6 +248,7 @@ class Namespace < ApplicationRecord
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
+  after_update :schedule_sync_event_worker, if: -> { saved_change_to_organization_id? }
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -605,13 +613,13 @@ class Namespace < ApplicationRecord
     if Gitlab::SafeRequestStore.active?
       forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do
         Hash.new do |found_forks, project|
-          found_forks[project] = project.fork_network.find_forks_in(projects).first
+          found_forks[project] = uncached_fork_of(project)
         end
       end
 
       forks_in_namespace[project]
     else
-      project.fork_network.find_forks_in(projects).first
+      uncached_fork_of(project)
     end
   end
 
@@ -684,10 +692,6 @@ class Namespace < ApplicationRecord
   # Overridden on EE module
   def multiple_issue_boards_available?
     false
-  end
-
-  def all_project_ids_except(ids)
-    all_project_ids.where.not(id: ids)
   end
 
   # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
@@ -767,10 +771,6 @@ class Namespace < ApplicationRecord
 
   def all_container_repositories
     ContainerRepository.for_project_id(all_projects)
-  end
-
-  def any_project_with_pages_deployed?
-    all_projects.with_pages_deployed.any?
   end
 
   def closest_setting(name)
@@ -962,6 +962,13 @@ class Namespace < ApplicationRecord
   end
 
   private
+
+  # A project is a member of its own fork network, so it has to be excluded
+  # from the candidates. Otherwise a project in this namespace is returned as
+  # a fork of itself.
+  def uncached_fork_of(project)
+    project.fork_network.find_forks_in(projects.excluding(project)).first
+  end
 
   def parent_organization_match
     return unless parent

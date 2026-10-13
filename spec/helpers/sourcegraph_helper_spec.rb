@@ -9,9 +9,11 @@ RSpec.describe SourcegraphHelper do
     let(:is_com) { true }
 
     before do
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url).and_return(sourcegraph_url)
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url_is_com?).and_return(is_com)
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_public_only).and_return(public_only)
+      allow(Gitlab::CurrentSettings).to receive_messages(
+        sourcegraph_url: sourcegraph_url,
+        sourcegraph_url_is_com?: is_com,
+        sourcegraph_public_only: public_only
+      )
     end
 
     subject { helper.sourcegraph_url_message }

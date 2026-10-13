@@ -43,12 +43,10 @@ const setupAxiosStartupCalls = (axios) => {
     return;
   }
 
-  const remainingCalls = new Map(Object.entries(startupCalls));
-
   const interceptor = axios.interceptors.request.use(async (req) => {
     const fullUrl = getFullUrl(req);
 
-    const startupCall = remainingCalls.get(fullUrl);
+    const startupCall = startupCalls[fullUrl];
 
     if (!startupCall?.fetchCall) {
       return req;
@@ -61,9 +59,12 @@ const setupAxiosStartupCalls = (axios) => {
       console.warn(`[gitlab] Something went wrong with the startup call for "${fullUrl}"`, e);
     }
 
-    remainingCalls.delete(fullUrl);
+    // A startup response may be replayed once per page. The Vue 2 and Vue 3
+    // realms each load their own axios_utils and install this interceptor on
+    // the shared axios instance, so the consumed state lives on gl.startup_calls.
+    delete startupCalls[fullUrl];
 
-    if (remainingCalls.size === 0) {
+    if (isEmpty(startupCalls)) {
       axios.interceptors.request.eject(interceptor);
     }
 

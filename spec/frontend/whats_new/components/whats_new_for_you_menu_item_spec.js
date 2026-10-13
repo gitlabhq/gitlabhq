@@ -17,9 +17,14 @@ const baseSidebarData = {
 describe('WhatsNewForYouMenuItem', () => {
   let wrapper;
 
-  const createWrapper = ({ sidebarData = baseSidebarData, placement = 'help_menu', icon } = {}) => {
+  const createWrapper = ({
+    sidebarData = baseSidebarData,
+    placement = 'profile_menu',
+    trackingProperty = 'nav_user_menu',
+    icon,
+  } = {}) => {
     wrapper = mountExtended(WhatsNewForYouMenuItem, {
-      propsData: { sidebarData, placement, icon },
+      propsData: { sidebarData, placement, trackingProperty, icon },
     });
   };
 
@@ -50,17 +55,15 @@ describe('WhatsNewForYouMenuItem', () => {
     });
 
     it('does not render an icon when the prop is omitted', () => {
-      createWrapper({ placement: 'help_menu' });
+      createWrapper();
       expect(findIcon().exists()).toBe(false);
     });
 
     it('sets the click tracking attributes via extraAttrs', () => {
-      createWrapper({ placement: 'profile_menu' });
-      expect(wrapper.find('[data-track-action="click_whats_new_for_you_menu_item"]').exists()).toBe(
-        true,
-      );
-      expect(wrapper.find('[data-track-property="profile_menu"]').exists()).toBe(true);
-      expect(wrapper.find('[data-track-experiment="whats_new_placement"]').exists()).toBe(true);
+      createWrapper({ trackingProperty: 'nav_help_menu' });
+      expect(wrapper.find('[data-track-action="click_button"]').exists()).toBe(true);
+      expect(wrapper.find('[data-track-label="whats_new"]').exists()).toBe(true);
+      expect(wrapper.find('[data-track-property="nav_help_menu"]').exists()).toBe(true);
     });
   });
 
@@ -116,7 +119,7 @@ describe('WhatsNewForYouMenuItem', () => {
 
     it('reuses the cached toggle on subsequent clicks (passes no arguments)', async () => {
       createWrapper();
-      const item = wrapper.findComponentByTestId('whats-new-for-you-help-menu-item');
+      const item = wrapper.findComponentByTestId('whats-new-for-you-profile-menu-item');
 
       item.vm.$emit('action');
       await waitForPromises();
@@ -129,7 +132,7 @@ describe('WhatsNewForYouMenuItem', () => {
 
     it('updates the unread count when the drawer reports articles read', async () => {
       createWrapper();
-      wrapper.findComponentByTestId('whats-new-for-you-help-menu-item').vm.$emit('action');
+      wrapper.findComponentByTestId('whats-new-for-you-profile-menu-item').vm.$emit('action');
       await waitForPromises();
 
       const [, updateBadge] = toggleWhatsNewDrawer.mock.calls[0];

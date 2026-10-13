@@ -49,7 +49,7 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
     let_it_be(:project) { create(:project) }
     let(:user) { create(:user) }
     let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService) }
-    let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
+    let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true, project_id: project.id) }
     let(:perform_args) do
       [
         project.id, user.id, project.default_branch, :web,
@@ -206,6 +206,90 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
           expect(Sidekiq.logger).to receive(:warn)
 
           expect { worker.perform(*push_args) }.not_to raise_error
+        end
+      end
+    end
+  end
+
+  describe 'create_pipeline_from_commit user experience' do
+    let(:worker) { described_class.new }
+    let_it_be(:sli_project) { create(:project) }
+    let(:sli_user) { create(:user) }
+    let(:started_at) { 3.seconds.ago.to_f }
+    let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
+    let(:service_response) { instance_double(ServiceResponse, payload: pipeline, error?: false, message: nil) }
+    let(:creation_request) { { 'pipeline_creation_request' => { 'started_at' => started_at } } }
+    let(:perform_args) { [sli_project.id, sli_user.id, sli_project.default_branch, :push, {}, creation_request] }
+
+    before do
+      allow(Ci::CreatePipelineService).to receive(:new)
+        .and_return(instance_double(Ci::CreatePipelineService, execute: service_response))
+    end
+
+    it 'reports the finished creation with the request start time' do
+      expect(Ci::PipelineCreation::ExperienceReporter).to receive(:report)
+        .with(pipeline: pipeline, source: :push, started_at: started_at)
+
+      worker.perform(*perform_args)
+    end
+
+    # merge_request_event reaches this worker only from the GraphQL pipelineCreate mutation
+    # with mergeRequestIid, an API creation outside the SLI.
+    %i[merge_request_event api web].each do |source|
+      context "when the source is #{source}" do
+        let(:perform_args) { [sli_project.id, sli_user.id, sli_project.default_branch, source, {}, creation_request] }
+
+        it 'does not report' do
+          expect(Ci::PipelineCreation::ExperienceReporter).not_to receive(:report)
+
+          worker.perform(*perform_args)
+        end
+      end
+    end
+
+    context 'when a retriable transient error is raised' do
+      let(:blank_sha) { Gitlab::Git::SHA1_BLANK_SHA }
+      let(:ref_not_found) { Gitlab::Ci::Pipeline::Chain::Validate::Repository::REFERENCE_NOT_FOUND_MESSAGE }
+      let(:service_response) { instance_double(ServiceResponse, error?: true, message: ref_not_found, payload: pipeline) }
+      let(:perform_args) do
+        [sli_project.id, sli_user.id, sli_project.default_branch, :push, {},
+          creation_request.merge('before' => blank_sha)]
+      end
+
+      it 'does not report, leaving emission to the successful retry or exhaustion' do
+        expect(Ci::PipelineCreation::ExperienceReporter).not_to receive(:report)
+
+        expect { worker.perform(*perform_args) }.to raise_error(described_class::TransientGitalyReadError)
+      end
+    end
+
+    describe 'when retries are exhausted' do
+      let(:job) do
+        { 'args' => [sli_project.id, sli_user.id, 'main', 'push', {},
+          { 'pipeline_creation_request' => { 'started_at' => started_at } }] }
+      end
+
+      it 'reports an errored experience' do
+        allow_next_instance_of(described_class) { |w| allow(w).to receive(:perform_failure) }
+
+        expect(Ci::PipelineCreation::ExperienceReporter).to receive(:report_error)
+          .with(source: 'push', started_at: started_at, project_id: sli_project.id)
+
+        described_class.sidekiq_retries_exhausted_block.call(job, RuntimeError.new)
+      end
+
+      context 'when the source is merge_request_event' do
+        let(:job) do
+          { 'args' => [sli_project.id, sli_user.id, 'main', 'merge_request_event', {},
+            { 'pipeline_creation_request' => { 'started_at' => started_at } }] }
+        end
+
+        it 'does not report' do
+          allow_next_instance_of(described_class) { |w| allow(w).to receive(:perform_failure) }
+
+          expect(Ci::PipelineCreation::ExperienceReporter).not_to receive(:report_error)
+
+          described_class.sidekiq_retries_exhausted_block.call(job, RuntimeError.new)
         end
       end
     end

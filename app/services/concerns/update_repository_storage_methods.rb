@@ -42,8 +42,17 @@ module UpdateRepositoryStorageMethods
       mirror_repositories
     end
 
+    old_pool = pool_for_cleanup
+
     repository_storage_move.transaction do
       track_repository(destination_storage_name)
+    end
+
+    begin
+      old_pool&.mark_obsolete_if_empty
+    rescue StandardError => error
+      # The move has committed; old pool cleanup failure must not stop the remaining storage-move steps.
+      Gitlab::ErrorTracking.track_exception(error, pool_repository_id: old_pool.id)
     end
 
     repository_storage_move.finish_replication!
@@ -61,6 +70,10 @@ module UpdateRepositoryStorageMethods
   end
 
   private
+
+  def pool_for_cleanup
+    nil
+  end
 
   def track_repository(destination_shard)
     raise NotImplementedError

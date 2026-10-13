@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:docs:compile_windows', :silence_stdout, feature_category: :pipeline_composition do
   let(:output_file) { 'doc/update/breaking_windows.md' }

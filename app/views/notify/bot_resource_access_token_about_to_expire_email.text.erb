@@ -2,6 +2,6 @@
 
 <%= _('Your %{resource_type} access token %{token_name} for %{resource_path} will expire in %{days_to_expire} or less.') % { days_to_expire: pluralize(@days_to_expire, _('day')), token_name: @token_name, resource_path: "#{@resource.class.name.titleize}: #{@resource.full_path}", resource_type: "#{@resource.class.name.titleize}"  }%>
 
-<%= _('You can create a new one or check them in your access token settings: %{target_url}') % { target_url: @target_url } %>
+<%= _('Go to %{target_url} to check your access tokens or create a new one.') % { target_url: @target_url } %>
 
 <%= @reason_text %>

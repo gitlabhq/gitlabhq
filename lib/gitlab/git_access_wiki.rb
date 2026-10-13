@@ -32,8 +32,8 @@ module Gitlab
     # Project wikis resolve to the project boundary; group wikis to the group
     # boundary. read_wiki/create_wiki (from download_ability/push_ability)
     # support both.
-    override :granular_pat_boundaries
-    def granular_pat_boundaries
+    override :granular_token_boundaries
+    def granular_token_boundaries
       ::Authz::Boundary.for(project || container.container)
     end
 

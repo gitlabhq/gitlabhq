@@ -4,10 +4,11 @@ description: Separate table for Import Export Upload Upload verification states
 introduced_by_url:
 milestone: '19.0'
 feature_categories:
-  - geo_replication
+- geo_replication
 classes:
-  - Geo::ImportExportUploadUploadState
+- Geo::ImportExportUploadUploadState
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces
+table_size: small

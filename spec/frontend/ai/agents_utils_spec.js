@@ -1,4 +1,5 @@
 import {
+  parseAgentPresence,
   userIsAgent,
   userHasFlowTriggerEvent,
   userDisabledReason,
@@ -270,6 +271,42 @@ describe('Agents utils', () => {
       ],
     ])('with %s returns %s', (user, trigger, expected) => {
       expect(userDisabledAttributes(user, trigger)).toEqual(expected);
+    });
+  });
+
+  describe('parseAgentPresence', () => {
+    const graphqlPresence = {
+      sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+      agentName: 'Developer Agent',
+      initiator: { label: '@root', webPath: '/root' },
+      userPermissions: { readDuoWorkflow: true },
+    };
+
+    it('returns the GraphQL shape as is', () => {
+      expect(parseAgentPresence(graphqlPresence)).toEqual(graphqlPresence);
+    });
+
+    it('converts the REST shape to camelCase, including nested objects', () => {
+      expect(
+        parseAgentPresence({
+          session_id: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+          agent_name: 'Developer Agent',
+          initiator: { label: '@root', web_path: '/root' },
+          user_permissions: { read_duo_workflow: true },
+        }),
+      ).toEqual(graphqlPresence);
+    });
+
+    describe.each`
+      description             | presence
+      ${'missing'}            | ${undefined}
+      ${'null'}               | ${null}
+      ${'without agent name'} | ${{ ...graphqlPresence, agentName: null }}
+      ${'without session'}    | ${{ ...graphqlPresence, sessionId: null }}
+    `('when the presence is $description', ({ presence }) => {
+      it('returns null', () => {
+        expect(parseAgentPresence(presence)).toBeNull();
+      });
     });
   });
 });

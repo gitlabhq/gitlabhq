@@ -5,7 +5,6 @@ import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import AssigneeDropdown from '~/merge_requests/components/assignees/assignee_dropdown.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keysFor, ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
@@ -43,7 +42,6 @@ export default {
     UserSelect,
     AssigneeDropdown,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     directlyInviteMembers: {
       default: false,

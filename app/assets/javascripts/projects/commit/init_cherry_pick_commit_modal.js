@@ -1,5 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import CommitFormModal from './components/form_modal.vue';
 import {

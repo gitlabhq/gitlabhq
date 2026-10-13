@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestForPipelineEntity do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, developers: user) }
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project) }
   let(:request) { EntityRequest.new(project: project) }
-  let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+  let(:merge_request) { build_stubbed(:merge_request, target_project: project, source_project: project) }
   let(:presenter) { MergeRequestPresenter.new(merge_request, current_user: user) }
 
   let(:entity) do

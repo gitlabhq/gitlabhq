@@ -191,6 +191,48 @@ When implementing application-level cascading settings:
 
 These configurations ensure proper validation and cascading behavior throughout the system hierarchy.
 
+#### Handle new project creation
+
+The cascade workers (`Namespaces::CascadeDuoSettingsWorker` and `AppConfig::CascadeDuoSettingsWorker`) run when a parent setting is updated.
+They do not run at project creation time.
+
+When a cascading setting on `project_settings` uses `NOT NULL DEFAULT`, new projects receive the database default value instead of the parent group value.
+For example, if a group has `duo_features_enabled` set to `false` but the column default is `true`,
+a newly created project under that group starts with `duo_features_enabled: true`.
+
+To handle this, add your setting name to the `DUO_CASCADING_SETTINGS` array in `EE::Projects::CreateService`.
+The `sync_duo_cascading_defaults_from_namespace` method reads the database default from `ProjectSetting.column_defaults` at runtime and copies the inherited value when it differs:
+
+```ruby
+# In EE::Projects::CreateService
+
+DUO_CASCADING_SETTINGS = %i[
+  duo_features_enabled
+  ai_audit_events_storage_enabled
+  duo_auto_mode_enabled
+].freeze
+
+def sync_duo_cascading_defaults_from_namespace
+  DUO_CASCADING_SETTINGS.each do |setting|
+    db_default = ::ProjectSetting.column_defaults[setting.to_s]
+
+    inherited_value = project.group.public_send(setting) # rubocop:disable GitlabSecurity/PublicSend -- setting names from a frozen constant
+    next if inherited_value == db_default
+
+    next if project.project_setting.public_send(:"#{setting}_locked?") # rubocop:disable GitlabSecurity/PublicSend -- setting names from a frozen constant
+
+    project.project_setting.update!(setting => inherited_value)
+  end
+end
+```
+
+This method runs from `after_create_actions` in `EE::Projects::CreateService`, guarded by `return unless project.group`.
+
+Without this fixup, the `auto_duo_code_review_enabled` setting
+([merge request 200397](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200397)) required a
+43-million-row batched background migration (`ResetAutoDuoCodeReviewFalseValues`) to correct values
+after `NOT NULL DEFAULT false` broke the inheritance chain.
+
 Cascading settings that were added previously still have default `nil` values and read the ancestor hierarchy to find inherited settings values. But to minimize confusion we should update those to cascade on write. [Issue 483143](https://gitlab.com/gitlab-org/gitlab/-/issues/483143) describes this maintenance task.
 
 ## Display cascading settings on the frontend
@@ -248,15 +290,15 @@ Renders the label for a `fieldset` setting.
 | `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `-> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                           | `Lambda`             | `true`                   |
 | `help_text`            | Text shown below the checkbox.                                                                                                                                                                                       | `String`             | `false` (`nil`)          |
 
-[`_lock_tooltips.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/shared/namespaces/cascading_settings/_lock_tooltips.html.haml)
+[`_lock_popovers.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/shared/namespaces/cascading_settings/_lock_popovers.html.haml)
 
-Renders the mount element needed to initialize the JavaScript used to display the tooltip when hovering over the lock icon. This partial is only needed once per page.
+Renders the mount element needed to initialize the JavaScript used to display the popover when hovering over or focusing the lock icon. This partial is only needed once per page.
 
 ### JavaScript
 
-[`initCascadingSettingsLockTooltips`](https://gitlab.com/gitlab-org/gitlab/-/blob/acb2ef4dbbd06f93615e8e6a1c0a78e7ebe20441/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
+[`initCascadingSettingsLockPopovers`](https://gitlab.com/gitlab-org/gitlab/-/blob/acb2ef4dbbd06f93615e8e6a1c0a78e7ebe20441/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
 
-Initializes the JavaScript needed to display the tooltip when hovering over the lock icon ({{< icon name="lock" >}}).
+Initializes the JavaScript needed to display the popover when hovering over or focusing the lock icon ({{< icon name="lock" >}}).
 This function should be imported and called in the [page-specific JavaScript](fe_guide/performance.md#page-specific-javascript).
 
 ### Put it all together
@@ -264,7 +306,7 @@ This function should be imported and called in the [page-specific JavaScript](fe
 ```ruby
 -# app/views/groups/edit.html.haml
 
-= render 'shared/namespaces/cascading_settings/lock_tooltips'
+= render 'shared/namespaces/cascading_settings/lock_popovers'
 
 - delayed_project_removal_locked = cascading_namespace_setting_locked?(:delayed_project_removal, @group)
 - merge_method_locked = cascading_namespace_setting_locked?(:merge_method, @group)
@@ -311,9 +353,9 @@ This function should be imported and called in the [page-specific JavaScript](fe
 ```javascript
 // app/assets/javascripts/pages/groups/edit/index.js
 
-import { initCascadingSettingsLockTooltips } from '~/namespaces/cascading_settings';
+import { initCascadingSettingsLockPopovers } from '~/namespaces/cascading_settings';
 
-initCascadingSettingsLockTooltips();
+initCascadingSettingsLockPopovers();
 ```
 
 ### Vue
@@ -332,12 +374,12 @@ initCascadingSettingsLockTooltips();
 
    ```ruby
    # Example call from your Ruby helper  method for groups
-   cascading_settings_data = cascading_namespace_settings_tooltip_data(:replace_attribute_here, @group, method(:edit_group_path))[:tooltip_data]
+   cascading_settings_data = cascading_namespace_settings_popover_data(:replace_attribute_here, @group, method(:edit_group_path))[:popover_data]
    ```
 
    ```ruby
    # Example call from your Ruby helper  method for projects
-   cascading_settings_data = project_cascading_namespace_settings_tooltip_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
+   cascading_settings_data = project_cascading_namespace_settings_popover_data(:duo_features_enabled, project, method(:edit_group_path)).to_json
    ```
 
 1. From your Vue's `index.js` file, be sure to convert the data into JSON and camel case format. This will make it easier to use in Vue.
@@ -389,4 +431,4 @@ You can look into the following examples of MRs for implementing `cascading_lock
 
 ### Reasoning for supporting both HAML and Vue
 
-It is the goal to build all new frontend features in Vue and to eventually move away from building features in HAML. However there are still HAML frontend features that utilize cascading settings, so support will remain with `initCascadingSettingsLockTooltips` until those components have been migrated into Vue.
+It is the goal to build all new frontend features in Vue and to eventually move away from building features in HAML. However there are still HAML frontend features that utilize cascading settings, so support will remain with `initCascadingSettingsLockPopovers` until those components have been migrated into Vue.

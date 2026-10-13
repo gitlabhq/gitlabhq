@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'html/pipeline'
 
 RSpec.describe Banzai::Filter::QuickActionFilter, feature_category: :markdown do
   let(:result) { {} }

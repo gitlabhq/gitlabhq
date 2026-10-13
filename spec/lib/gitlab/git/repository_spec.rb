@@ -3629,6 +3629,51 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    describe 'follow' do
+      let(:gitaly_commit_client) { repository.gitaly_commit_client }
+
+      before do
+        allow(gitaly_commit_client).to receive(:list_commits).and_call_original
+      end
+
+      it 'defaults follow to false' do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb')
+
+        expect(gitaly_commit_client)
+          .to have_received(:list_commits)
+          .with(['master'], a_hash_including(follow: false))
+      end
+
+      it 'forwards follow: true without reverse or skip', :aggregate_failures do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb', follow: true)
+
+        expect(gitaly_commit_client)
+          .to have_received(:list_commits)
+          .with(['master'], a_hash_including(follow: true, reverse: false))
+        expect(gitaly_commit_client)
+          .to have_received(:list_commits)
+          .with(['master'], hash_excluding(:skip))
+      end
+    end
+
+    describe 'trailers' do
+      # The tip of this ref carries a Signed-off-by trailer in its message.
+      let(:ref) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+      let(:signed_off_by) { 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>' }
+
+      it 'returns no trailers by default' do
+        commit = repository.list_commits(ref: ref, pagination_params: { limit: 1 }).first
+
+        expect(commit.trailers).to eq({})
+      end
+
+      it 'parses the commit trailers when trailers is requested' do
+        commit = repository.list_commits(ref: ref, pagination_params: { limit: 1 }, trailers: true).first
+
+        expect(commit.trailers).to eq('Signed-off-by' => signed_off_by)
+      end
+    end
+
     describe 'when storage is broken', :broken_storage do
       let(:broken_repository) { create(:project, :broken_storage).repository }
 

@@ -62,6 +62,10 @@ class EnvironmentEntity < Grape::Entity
     environment.available? && can?(current_user, :stop_environment, environment)
   end
 
+  expose :can_force_stop do |environment|
+    environment.stopping? && can?(current_user, :stop_environment, environment)
+  end
+
   expose :can_delete do |environment|
     can?(current_user, :destroy_environment, environment)
   end

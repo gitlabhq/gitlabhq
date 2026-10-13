@@ -29,9 +29,17 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         headers: { 'Content-Type' => 'application/json' })
   end
 
+  shared_context 'with a stubbed repository' do
+    let(:group) { build_stubbed(:group, name: 'group') }
+    let(:project) { build_stubbed(:project, path: 'test', group: group) }
+    let(:repository) { build_stubbed(:container_repository, name: 'my_image', project: project) }
+  end
+
   it_behaves_like 'having unique enum values'
 
   describe 'associations' do
+    include_context 'with a stubbed repository'
+
     it 'belongs to the project' do
       expect(repository).to belong_to(:project)
     end
@@ -53,6 +61,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#last_published_at' do
+    include_context 'with a stubbed repository'
+
     subject { repository.last_published_at }
 
     context 'when the GitLab API is supported' do
@@ -92,6 +102,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tag' do
+    include_context 'with a stubbed repository'
+
     shared_examples 'returning an instantiated tag' do
       it 'returns an instantiated tag' do
         allow(ContainerRegistry::Tag).to receive(:new).and_call_original
@@ -200,6 +212,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#path' do
+    include_context 'with a stubbed repository'
+
     context 'when project path does not contain uppercase letters' do
       it 'returns a full path to the repository' do
         expect(repository.path).to eq('group/test/my_image')
@@ -207,7 +221,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
 
     context 'when path contains uppercase letters' do
-      let(:project) { create(:project, :repository, path: 'MY_PROJECT', group: group) }
+      let(:project) { build_stubbed(:project, path: 'MY_PROJECT', group: group) }
 
       it 'returns a full path without capital letters' do
         expect(repository.path).to eq('group/my_project/my_image')
@@ -216,12 +230,16 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#manifest' do
+    include_context 'with a stubbed repository'
+
     it 'returns non-empty manifest' do
       expect(repository.manifest).not_to be_nil
     end
   end
 
   describe '#image_manifest' do
+    include_context 'with a stubbed repository'
+
     let(:ref) { 'latest' }
     let(:manifest_content) { '{"data":"example"}' }
 
@@ -237,12 +255,16 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#valid?' do
+    include_context 'with a stubbed repository'
+
     it 'is a valid repository' do
       expect(repository).to be_valid
     end
   end
 
   describe '#tags' do
+    include_context 'with a stubbed repository'
+
     shared_examples 'returning the non-empty tags list' do
       it 'returns non-empty tags list' do
         expect(repository.tags).not_to be_empty
@@ -304,6 +326,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#each_tags_page' do
+    include_context 'with a stubbed repository'
+
     let(:page_size) { 100 }
 
     before do
@@ -464,6 +488,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tags_page' do
+    include_context 'with a stubbed repository'
+
     let_it_be(:page_size) { 100 }
     let_it_be(:before) { 'before' }
     let_it_be(:last) { 'last' }
@@ -585,12 +611,16 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tags_count' do
+    include_context 'with a stubbed repository'
+
     it 'returns the count of tags' do
       expect(repository.tags_count).to eq(1)
     end
   end
 
   describe '#has_tags?' do
+    include_context 'with a stubbed repository'
+
     subject { repository.has_tags? }
 
     context 'when the Gitlab API is supported' do
@@ -640,8 +670,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#delete_tags!' do
+    include_context 'with a stubbed repository'
+
     let(:repository) do
-      create(
+      build_stubbed(
         :container_repository,
         name: 'my_image',
         tags: { latest: '123', rc1: '234' },
@@ -696,8 +728,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#delete_tag' do
+    include_context 'with a stubbed repository'
+
     let(:repository) do
-      create(
+      build_stubbed(
         :container_repository,
         name: 'my_image',
         tags: { latest: '123', rc1: '234' },
@@ -729,6 +763,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#location' do
+    include_context 'with a stubbed repository'
+
     context 'when registry is running on a custom port' do
       before do
         stub_container_registry_config(
@@ -763,6 +799,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#size' do
+    include_context 'with a stubbed repository'
+
     subject { repository.size }
 
     context 'when the Gitlab API is supported' do
@@ -1131,6 +1169,28 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     it { is_expected.to contain_exactly(repository) }
   end
 
+  describe '.counts_by_project_id' do
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:other_repositories) { create_list(:container_repository, 2, project: other_project) }
+    let_it_be(:project_without_repositories) { create(:project) }
+
+    subject { described_class.for_project_id([project.id, other_project.id]).counts_by_project_id }
+
+    before do
+      repository
+    end
+
+    it { is_expected.to eq(project.id => 1, other_project.id => 2) }
+
+    it 'omits projects without container repositories' do
+      expect(described_class.for_project_id(project_without_repositories.id).counts_by_project_id).to be_empty
+    end
+
+    it 'ignores any ordering already applied to the relation' do
+      expect(described_class.ordered.for_project_id(project.id).counts_by_project_id).to eq(project.id => 1)
+    end
+  end
+
   describe '.expiration_policy_started_at_nil_or_before' do
     let_it_be(:repository1) { create(:container_repository, expiration_policy_started_at: nil) }
     let_it_be(:repository2) { create(:container_repository, expiration_policy_started_at: 1.day.ago) }
@@ -1252,6 +1312,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#registry' do
+    include_context 'with a stubbed repository'
+
     it 'caches the client' do
       registry = repository.registry
       registry1 = repository.registry
@@ -1267,6 +1329,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tag_details' do
+    include_context 'with a stubbed repository'
+
     let(:tag_name) { 'my-tag' }
     let(:raw_response) do
       {
@@ -1308,6 +1372,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#transform_tag_details' do
+    include_context 'with a stubbed repository'
+
     subject { repository.send(:transform_tag_details, response) }
 
     context 'when response is nil' do

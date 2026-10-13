@@ -140,6 +140,10 @@ describe('DivergingBarChart', () => {
       expect(chartOptions().series.map(({ name }) => name)).toEqual(seriesNames);
     });
 
+    it('colours the legend text from the theme token', () => {
+      expect(chartOptions().legend.textStyle.color).toBe('var(--gl-text-color-default)');
+    });
+
     // Regression: the track spans the whole grid and covered the labels at the default z.
     it('draws the axes above the bar tracks', () => {
       const barSeriesZ = 2;
@@ -201,6 +205,20 @@ describe('DivergingBarChart', () => {
 
     it('keeps the defaults it does not override', () => {
       expect(xAxisAt(0).inverse).toBe(true);
+    });
+  });
+
+  describe('accessible title', () => {
+    it('passes it to the chart, which names itself for screen readers', () => {
+      createWrapper({ accessibleTitle: 'Panel title' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Panel title');
+    });
+
+    it('passes no title by default', () => {
+      createWrapper();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
     });
   });
 });

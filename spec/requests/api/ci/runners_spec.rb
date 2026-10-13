@@ -737,6 +737,30 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           expect(json_response['maintenance_note']).to be_nil
         end
 
+        context 'when runner has a token expiry' do
+          let(:token_expires_at) { 15.days.from_now.change(usec: 0) }
+
+          before do
+            shared_runner.update!(token_expires_at: token_expires_at)
+          end
+
+          it 'does not expose token_expires_at' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).not_to have_key('token_expires_at')
+          end
+
+          context 'with admin mode enabled', :enable_admin_mode do
+            it 'exposes token_expires_at' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['token_expires_at']).to eq(token_expires_at.iso8601(3))
+            end
+          end
+        end
+
         context 'with admin mode enabled', :enable_admin_mode do
           it "returns runner's details" do
             perform_request
@@ -828,6 +852,27 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
             expect(json_response['description']).to eq(runner.description)
             expect(json_response['maintenance_note']).not_to be_nil
             expect(json_response['maintenance_note']).to eq(runner.maintenance_note)
+          end
+
+          context 'when runner has no token expiry' do
+            it 'returns nil for token_expires_at' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to include('token_expires_at' => nil)
+            end
+          end
+
+          context 'when runner has a token expiry' do
+            let(:token_expires_at) { 14.days.from_now.change(usec: 0) }
+            let(:runner) { create(:ci_runner, :project, token_expires_at: token_expires_at, projects: [project]) }
+
+            it 'returns token_expires_at' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['token_expires_at']).to eq(token_expires_at.iso8601(3))
+            end
           end
 
           context 'with include_projects=false' do

@@ -1,4 +1,5 @@
 import { s__ } from '~/locale';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 const extractDisabled = (user) => {
   return Boolean(user?.duoStatus?.disabled ?? user?.disabled);
@@ -66,4 +67,11 @@ export const userDisabledAttributes = (user, eventType) => {
   return {
     isDisabled: false,
   };
+};
+
+export const parseAgentPresence = (presence) => {
+  if (!presence) return null;
+
+  const parsed = convertObjectPropsToCamelCase(presence, { deep: true });
+  return parsed.agentName && parsed.sessionId ? parsed : null;
 };

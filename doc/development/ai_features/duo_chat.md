@@ -318,7 +318,7 @@ Duo Agentic Chat reports client-side errors to Sentry to support monitoring and 
 Use the `captureExceptionForDuoChat` wrapper in
 `ee/app/assets/javascripts/ai/duo_agentic_chat/observability/sentry_utils.js`
 instead of calling Sentry directly.
-The wrapper automatically adds the `feature_category: 'duo_chat'` tag to every exception.
+The wrapper automatically adds the `feature_category: 'chat_engine'` tag to every exception.
 Callers can add extra tags, but cannot override `feature_category`.
 
 ```javascript

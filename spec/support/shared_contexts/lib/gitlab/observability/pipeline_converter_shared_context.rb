@@ -23,8 +23,8 @@ RSpec.shared_context 'with pipeline converter data' do
         detailed_status: 'passed',
         created_at: Time.zone.parse('2023-01-01T10:00:00Z'),
         finished_at: Time.zone.parse('2023-01-01T10:05:00Z'),
-        duration: 300000,
-        queued_duration: 30000,
+        duration: 300,
+        queued_duration: 30,
         protected_ref: true,
         url: 'https://gitlab.com/project/-/pipelines/123',
         stages: %w[test build deploy]
@@ -43,8 +43,8 @@ RSpec.shared_context 'with pipeline converter data' do
           status: 'success',
           started_at: Time.zone.parse('2023-01-01T10:01:00Z'),
           finished_at: Time.zone.parse('2023-01-01T10:03:00Z'),
-          duration: 120000,
-          queued_duration: 5000,
+          duration: 120,
+          queued_duration: 5,
           manual: false,
           allow_failure: false,
           runner: {
@@ -66,8 +66,8 @@ RSpec.shared_context 'with pipeline converter data' do
           status: 'failed',
           started_at: Time.zone.parse('2023-01-01T10:03:00Z'),
           finished_at: Time.zone.parse('2023-01-01T10:04:00Z'),
-          duration: 60000,
-          queued_duration: 2000,
+          duration: 60,
+          queued_duration: 2,
           manual: true,
           allow_failure: true,
           failure_reason: 'script_failure'

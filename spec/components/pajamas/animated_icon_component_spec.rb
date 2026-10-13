@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::AnimatedIconComponent, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::AnimatedIconComponent, feature_category: :design_system do
   describe "variant param" do
     it 'renders the default "current" variant if none defined' do
       render_inline described_class.new(icon: :chevron_down_up, is_on: false)

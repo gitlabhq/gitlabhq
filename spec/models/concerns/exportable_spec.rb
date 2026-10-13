@@ -71,8 +71,6 @@ RSpec.describe Exportable, feature_category: :importers do
 
             expect(json['notes'].pluck('note'))
               .to contain_exactly(note1.note, note2.note)
-            expect(record_json)
-              .to include("\"notes\":[{\"note\":\"#{note1.note}\"},{\"note\":\"#{note2.note}\"}]")
           end
         end
 

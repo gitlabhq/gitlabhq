@@ -4,9 +4,9 @@ stage: ai-powered
 level: primary
 tier: [ Free, Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
-documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/developer/"
+documentation_link: "../../../user/project/merge_requests/developer/"
 work_item: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228817"
-categories: [ Duo Agent Platform ]
+categories: [ Duo Developer ]
 weight: 40
 ---
 

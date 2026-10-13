@@ -278,6 +278,64 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       expect(page).to have_text('😄')
     end
 
+    it 'inserts a new line on Enter while no emoji is highlighted' do
+      type_in_content_editor 'Steps :'
+
+      expect(find(suggestions_dropdown)).to have_text('grinning')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      type_in_content_editor 'Open the page'
+
+      expect(page).to have_selector('p', text: 'Steps :', exact_text: true)
+      expect(page).to have_selector('p', text: 'Open the page', exact_text: true)
+    end
+
+    it 'closes the emoji suggestions at a space instead of matching the rest of the sentence' do
+      type_in_content_editor 'Statut :'
+
+      expect(find(suggestions_dropdown)).to have_text('grinning')
+
+      type_in_content_editor ' '
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      send_keys :enter
+      type_in_content_editor 'Suite'
+
+      expect(page).not_to have_css("#{content_editor_testid} gl-emoji")
+      expect(page).to have_selector('p', text: /\AStatut :\s*\z/)
+      expect(page).to have_selector('p', text: 'Suite', exact_text: true)
+    end
+
+    it 'keeps searching emoji across a space that follows the query' do
+      type_in_content_editor ':smiling'
+
+      expect(find(suggestions_dropdown)).to have_text('smiling')
+
+      type_in_content_editor ' '
+
+      expect(find(suggestions_dropdown)).to have_text('smiling')
+    end
+
+    it 'closes the merge request suggestions when a space follows the trigger' do
+      type_in_content_editor 'Bonjour !'
+
+      expect(find(suggestions_dropdown)).to have_text('My Cool Merge Request')
+
+      type_in_content_editor ' '
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      send_keys :enter
+      type_in_content_editor 'Comment'
+
+      expect(page).to have_selector('p', text: /\ABonjour !\s*\z/)
+      expect(page).to have_selector('p', text: 'Comment', exact_text: true)
+    end
+
     it 'shows suggestions for wiki pages' do
       type_in_content_editor '[[My'
 

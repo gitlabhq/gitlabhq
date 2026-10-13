@@ -88,6 +88,8 @@ module Mutations
           issue: result.success? ? result[:issue] : nil,
           errors: result.errors
         }
+      rescue ::Issuable::Callbacks::Base::Error => e
+        { issue: nil, errors: [e.message] }
       end
 
       private

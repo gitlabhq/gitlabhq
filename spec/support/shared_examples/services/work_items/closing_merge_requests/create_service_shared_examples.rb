@@ -7,7 +7,7 @@ RSpec.shared_examples 'a service that works for full references and URLs' do
     it 'adds the closing merge requests' do
       expect do
         create_result
-      end.to change { MergeRequestsClosingIssues.count }.by(1)
+      end.to change { MergeRequestIssue.count }.by(1)
 
       expect(create_result).to be_success
     end
@@ -19,7 +19,7 @@ RSpec.shared_examples 'a service that works for full references and URLs' do
     it 'adds the closing merge requests' do
       expect do
         create_result
-      end.to change { MergeRequestsClosingIssues.count }.by(1)
+      end.to change { MergeRequestIssue.count }.by(1)
 
       expect(create_result).to be_success
     end
@@ -39,7 +39,7 @@ RSpec.shared_examples 'a service that adds closing merge requests' do
     it 'adds the closing merge requests' do
       expect do
         create_result
-      end.to change { MergeRequestsClosingIssues.count }.by(1)
+      end.to change { MergeRequestIssue.count }.by(1)
 
       expect(create_result).to be_success
     end
@@ -52,13 +52,13 @@ RSpec.shared_examples 'a service that adds closing merge requests' do
 
     context 'when the merge request was already associated with the work item' do
       before do
-        create(:merge_requests_closing_issues, merge_request: merge_request, issue_id: work_item.id)
+        create(:merge_request_issue, merge_request: merge_request, issue_id: work_item.id)
       end
 
       it 'does not add the closing merge requests' do
         expect do
           create_result
-        end.to not_change { MergeRequestsClosingIssues.count }
+        end.to not_change { MergeRequestIssue.count }
       end
 
       it 'returns an error message' do
@@ -76,7 +76,7 @@ RSpec.shared_examples 'a service that adds closing merge requests' do
       it 'does not add the closing merge requests' do
         expect do
           create_result
-        end.to not_change { MergeRequestsClosingIssues.count }
+        end.to not_change { MergeRequestIssue.count }
       end
 
       it 'returns an error message' do

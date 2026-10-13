@@ -59,8 +59,7 @@ RSpec.shared_examples 'housekeeps repository' do
 
       context 'task type' do
         it 'goes through all three housekeeping tasks, executing only the highest task when there is overlap' do
-          allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
-          allow(subject).to receive(:lease_key).and_return(:the_lease_key)
+          allow(subject).to receive_messages(try_obtain_lease: :the_uuid, lease_key: :the_lease_key)
 
           # At push 200
           expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :gc, :the_lease_key, :the_uuid)
@@ -81,8 +80,7 @@ RSpec.shared_examples 'housekeeps repository' do
       it 'runs the task specifically requested' do
         housekeeping = described_class.new(resource, :gc)
 
-        allow(housekeeping).to receive(:try_obtain_lease).and_return(:gc_uuid)
-        allow(housekeeping).to receive(:lease_key).and_return(:gc_lease_key)
+        allow(housekeeping).to receive_messages(try_obtain_lease: :gc_uuid, lease_key: :gc_lease_key)
 
         expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :gc, :gc_lease_key, :gc_uuid).twice
 

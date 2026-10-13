@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::Metrics::Lfs, feature_category: :source_code_management do
   describe '#initialize_slis!' do

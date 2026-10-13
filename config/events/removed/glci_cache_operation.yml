@@ -40,7 +40,7 @@ additional_properties:
     description: Target branch name for merge request pipelines
   pipeline_source:
     description: Pipeline trigger source (merge_request_event, push, schedule, etc.)
-product_group: development_analytics
+product_group: development_health
 milestone: '18.3'
 milestone_removed: '19.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TBD

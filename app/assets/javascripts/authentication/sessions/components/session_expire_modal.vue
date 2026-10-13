@@ -3,7 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import { INTERVAL_SESSION_MODAL, BROADCAST_CHANNEL } from '../constants';
+import { BROADCAST_CHANNEL_SESSION_EXPIRE_MODAL_SHOWN, INTERVAL_SESSION_MODAL } from '../constants';
 
 export default {
   name: 'SessionExpireModal',
@@ -11,6 +11,18 @@ export default {
     GlModal,
   },
   props: {
+    // When true, announce this modal's visibility on the shown-channel so subordinate
+    // modals (the group-SAML reload modal) yield while it is shown and resume when it is
+    // hidden. Only the general modal sets this.
+    announceShown: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    broadcastChannel: {
+      type: String,
+      required: true,
+    },
     message: {
       type: String,
       required: true,
@@ -31,7 +43,8 @@ export default {
   },
   data() {
     return {
-      broadcastChannel: null,
+      broadcastChannelInstance: null,
+      shownChannelInstance: null,
       intervalId: null,
       modalId: uniqueId('expire-session-modal-'),
       showModal: false,
@@ -45,15 +58,21 @@ export default {
     },
   },
   async created() {
-    this.broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL);
-    this.broadcastChannel.postMessage(this.timeout);
-    this.broadcastChannel.addEventListener('message', this.reset);
+    this.broadcastChannelInstance = new BroadcastChannel(this.broadcastChannel);
+    this.broadcastChannelInstance.postMessage(this.timeout);
+    this.broadcastChannelInstance.addEventListener('message', this.reset);
+    if (this.announceShown) {
+      this.shownChannelInstance = new BroadcastChannel(
+        BROADCAST_CHANNEL_SESSION_EXPIRE_MODAL_SHOWN,
+      );
+    }
     this.setEvents();
   },
   beforeDestroy() {
     this.clearEvents();
-    this.broadcastChannel.removeEventListener('message', this.reset);
-    this.broadcastChannel.close();
+    this.broadcastChannelInstance.removeEventListener('message', this.reset);
+    this.broadcastChannelInstance.close();
+    this.shownChannelInstance?.close();
   },
   methods: {
     clearEvents() {
@@ -63,9 +82,13 @@ export default {
         this.intervalId = null;
       }
     },
+    announceShownState(shown) {
+      this.shownChannelInstance?.postMessage(shown);
+    },
     checkStatus() {
       if (Date.now() >= this.timeout) {
         this.showModal = true;
+        this.announceShownState(true);
         this.clearEvents();
       }
     },
@@ -83,13 +106,24 @@ export default {
     },
     /** @param {MessageEvent} event */
     reset(event) {
-      this.timeout = event.data;
+      // Ignore anything that isn't a deadline, so tabs running older code treat
+      // future message types on this channel as a no-op.
+      const deadline = Number(event.data);
+      if (!Number.isFinite(deadline) || deadline <= 0) return;
+
+      this.timeout = deadline;
       if (!this.intervalId) {
+        // The modal had already fired; a later deadline hides it again, so tell the
+        // subordinate modals they may resume (they yielded when it was shown).
         this.showModal = false;
+        this.announceShownState(false);
         this.setEvents();
       }
     },
     setEvents() {
+      // Poll rather than a single setTimeout to the deadline: background tabs throttle or
+      // defer timers, so a one-shot timer can miss it. The interval plus the
+      // visibilitychange re-check stays reliable.
       this.intervalId = setInterval(this.checkStatus, INTERVAL_SESSION_MODAL);
       this.checkStatus();
       document.addEventListener('visibilitychange', this.onDocumentVisible);

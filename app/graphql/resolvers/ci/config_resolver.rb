@@ -45,7 +45,7 @@ module Resolvers
 
         result = ::Gitlab::Ci::Lint
           .new(project: project, current_user: context[:current_user], sha: sha,
-            verify_project_sha: !skip_verify_project_sha)
+            verify_project_sha: !skip_verify_project_sha, surface: :graphql_ci_config)
           .legacy_validate(content, dry_run: dry_run)
 
         response(result)

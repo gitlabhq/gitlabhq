@@ -21,6 +21,10 @@ class ResourceStateEvent < ResourceEvent
     where(state: :merged, source_merge_request: nil, source_commit: nil)
   end
 
+  scope :merged_by_another_merge_request, -> do
+    where(state: :merged).where.not(source_merge_request_id: nil)
+  end
+
   def self.issuable_attrs
     %i[issue merge_request].freeze
   end

@@ -16,7 +16,7 @@ RSpec.describe 'IDE merge request', :js, feature_category: :web_ide do
   end
 
   it 'user opens merge request' do
-    within '.merge-request' do
+    within '.panel-header-inner-actions' do
       click_button 'Code'
     end
     new_tab = window_opened_by { click_link 'Open in Web IDE' }

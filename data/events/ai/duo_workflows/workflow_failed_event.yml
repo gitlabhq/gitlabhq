@@ -1,0 +1,8 @@
+---
+event: Ai::DuoWorkflows::WorkflowFailedEvent
+description: Published when a Duo agent session ends early. It currently carries both
+  a drop and a stop, for messaging-triggered sessions only, told apart by
+  status_event. A future release moves a stop onto WorkflowStoppedEvent. Deferred via
+  run_after_commit.
+feature_category: duo_agent_platform
+ee_only: true

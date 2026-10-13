@@ -1,6 +1,6 @@
 ---
-stage: Security Risk Management
-group: Security Platform Management
+stage: Security Governance
+group: Security Controls
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Security inventory
 description: Group-level visibility of assets, scanner coverage, and vulnerabilities.
@@ -73,6 +73,7 @@ Each security scanner shows one of the following coverage statuses for every pro
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552224) in GitLab 18.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_inventory_filtering`. Enabled by default.
 - Feature flag `security_inventory_filtering` removed in GitLab 19.4.
+- Filter persistence in the URL [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580024) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -84,6 +85,9 @@ The following filters are available:
 - **Project name**: Search for specific projects by name.
 
 These filters help you narrow down results in large inventories and make it easier to identify projects that require immediate attention.
+
+The URL keeps the filters you apply.
+You can share or bookmark a filtered view by copying the URL from your browser.
 
 ## Related topics
 

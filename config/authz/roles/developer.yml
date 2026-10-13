@@ -8,6 +8,7 @@ project:
   permissions: []
   raw_permissions:
   - _contribute_security_policy_project
+  - _read_agent_build
   - _read_developer_job_artifact
   - _read_own_workspace
   - _update_own_workspace
@@ -28,6 +29,7 @@ project:
   - build_push_code
   - cancel_build
   - cancel_pipeline
+  - clear_runner_cache
   - create_ai_agent_audit_event
   - create_ai_agent_identity
   - create_ai_agent_session
@@ -67,6 +69,7 @@ project:
   - keep_job_artifacts
   - play_job
   - provide_status_check_response
+  - provision_secrets_manager
   - publish_catalog_version
   - publish_status_page
   - push_code
@@ -94,6 +97,7 @@ project:
   - read_resource_group
   - read_secret_push_protection_info
   - read_secure_files
+  - read_security_attribute
   - read_security_configuration
   - read_security_inventory
   - read_security_orchestration_policies
@@ -147,7 +151,6 @@ group:
   - create_vulnerability_export
   - create_wiki
   - delete_custom_dashboard
-  - delete_o11y_settings
   - destroy_saved_replies
   - duo_workflow
   - read_advanced_dependency_management
@@ -170,5 +173,4 @@ group:
   - read_vulnerability_statistics
   - resolve_note
   - update_custom_dashboard
-  - update_o11y_settings
   - update_saved_replies

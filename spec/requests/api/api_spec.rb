@@ -312,6 +312,17 @@ RSpec.describe API::API, feature_category: :system_access do
 
     context 'when the endpoint is handled by the application' do
       context 'when the endpoint supports all possible fields' do
+        it 'does not attribute ordinary user API traffic to the indexer service' do
+          expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+            expect(data.stringify_keys).to include('meta.user' => user.username)
+            expect(data.stringify_keys).not_to have_key('meta.client_service')
+          end
+
+          get(api("/projects/#{project.id}/issues", user))
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
         it 'logs all application context fields and the route' do
           expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
             expect(data.stringify_keys).to include(

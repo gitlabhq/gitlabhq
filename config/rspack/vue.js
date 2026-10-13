@@ -5,8 +5,9 @@ const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/c
 
 const EXACT_VUE_VERSION = require('vue/package.json').version;
 
-const { isCustomElement } = require('../vue3migration/vue3_template_compiler');
-const { INFECTION_LOADER_PATH } = require('./vue3_infection_loader');
+const { isCustomElement } = require('../vue3migration/compilers/vue3_template');
+const { INFECTION_LOADER_PATH } = require('../vue3migration/plugins/rspack_loader');
+const vendorDllHash = require('../helpers/vendor_dll_hash');
 
 const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
 
@@ -25,10 +26,10 @@ const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
 const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
 
 const VueLoaderPlugin = USE_VUE3_COMPILER
-  ? // eslint-disable-next-line import/no-dynamic-require
+  ? // eslint-disable-next-line import-x/no-dynamic-require
     require(VUE_LOADER_MODULE).VueLoaderPlugin
   : require('./vue_loader_plugin');
-// eslint-disable-next-line import/no-dynamic-require
+// eslint-disable-next-line import-x/no-dynamic-require
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 
 function buildVueLoaderOptions() {
@@ -41,18 +42,23 @@ function buildVueLoaderOptions() {
       EXACT_VUE_VERSION,
       VUE_LOADER_VERSION,
       VUE_VERSION,
+      // package.json, yarn.lock and patch-package patches (vue-loader itself is patched)
+      vendorDllHash(),
     ].join('|'),
     compilerOptions: {
       whitespace: 'preserve',
     },
   };
 
-  vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
+  vueLoaderOptions.compiler = path.join(
+    ROOT_PATH,
+    'config/vue3migration/compilers/vue2_template.js',
+  );
 
   if (USE_VUE3_COMPILER) {
     vueLoaderOptions.compiler = path.join(
       ROOT_PATH,
-      'config/vue3migration/vue3_template_compiler.js',
+      'config/vue3migration/compilers/vue3_template.js',
     );
     vueLoaderOptions.compilerOptions.compatConfig = {
       MODE: 2,

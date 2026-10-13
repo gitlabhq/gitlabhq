@@ -344,7 +344,6 @@ raises `Gitlab::Fp::UnmatchedResultError`, ensuring exhaustive matching.
 These files are expected to exist in the repo:
 
 - `AGENTS.md` (top-level, and optionally at subdirectory levels)
-- `CLAUDE.md` (identical to `AGENTS.md` at the same level)
 - `.ai/*.md` (instruction modules referenced via `.ai/...`)
 - `.ai/README.md`
 

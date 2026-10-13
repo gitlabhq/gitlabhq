@@ -123,6 +123,51 @@ RSpec.describe Gitlab::PolicyStore::RuleProgramMerger do
       end
     end
 
+    context "with a custom rule that imports" do
+      let(:importing_program) { "package governance\n\nimport rego.v1\n\nallow if true\n" }
+      let(:importing_rule) { { "type" => "custom", "value" => importing_program, "rego" => importing_program } }
+
+      context "when another rule precedes it" do
+        let(:rules) { [compiled_rule("environment", { "tiers" => ["production"] }, rule_index: 0), importing_rule] }
+
+        it "lifts the import under the package line, so the rule parses in any position", :aggregate_failures do
+          expect(merged).to start_with("package governance\n\nimport rego.v1\n")
+          expect(merged.scan("import rego.v1").size).to eq(1)
+          expect(merged).to include("allow if true\n")
+        end
+      end
+
+      context "when two rules share the import" do
+        let(:rules) { [importing_rule, importing_rule] }
+
+        it "keeps one copy of the import" do
+          expect(merged.scan("import rego.v1").size).to eq(1)
+        end
+      end
+
+      context "when the rules comment the import differently" do
+        let(:rules) do
+          commented = "package governance\n\nimport rego.v1 # v1 syntax\n\ndeny if false\n"
+          [importing_rule, { "type" => "custom", "value" => commented, "rego" => commented }]
+        end
+
+        it "keeps one copy of the import" do
+          expect(merged.scan("import rego.v1").size).to eq(1)
+        end
+      end
+
+      context "when an import-like line sits inside a rule body" do
+        let(:rules) do
+          program = "package governance\n\nallow if {\n\timportant := true\n\timportant\n}\n"
+          [{ "type" => "custom", "value" => program, "rego" => program }]
+        end
+
+        it "leaves it where it is" do
+          expect(merged).to eq("package governance\n\nallow if {\n\timportant := true\n\timportant\n}\n")
+        end
+      end
+    end
+
     context "with a rule that carries no compiled rego" do
       let(:rules) do
         [compiled_rule("environment", { "tiers" => ["production"] }, rule_index: 0), { "type" => "custom" }]

@@ -176,7 +176,7 @@ For more information, see the
 [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-more-masters).
 
 To create users and roles with permissions and map users to roles,
-see the [OpenSearch documentation](https://opensearch.org/docs/latest/security/access-control/users-roles/).
+see the [OpenSearch documentation](https://docs.opensearch.org/latest/security/access-control/users-roles/).
 You must include the following permissions in the role:
 
 ```json

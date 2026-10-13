@@ -1,13 +1,10 @@
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
-import { shortcircuitPermalinkButton } from '~/blob/utils';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import LineHighlighter from '~/blob/line_highlighter';
 
 export default () => {
   new LineHighlighter(); // eslint-disable-line no-new
-
-  shortcircuitPermalinkButton();
 
   addShortcutsExtension(ShortcutsNavigation);
 

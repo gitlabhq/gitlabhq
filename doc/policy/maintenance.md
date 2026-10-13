@@ -9,7 +9,7 @@ description: Version support, release cadence, and backporting policies.
 The Release and Deploy team are the owners of the maintenance policy and must approve any requested updates. This follows our DRI model and is in place to ensure predictability for customers.
 
 GitLab has strict policies governing version naming and release pace for major, minor,
-patch releases. New releases are announced on the [GitLab blog](https://about.gitlab.com/releases/categories/releases/).
+patch releases. New releases are announced in the [release notes](https://docs.gitlab.com/releases/).
 
 Our current policy is:
 
@@ -63,7 +63,7 @@ The following GitLab release versions are currently maintained:
 
 ## Upgrade recommendations
 
-We encourage everyone to run the [latest stable release](https://about.gitlab.com/releases/categories/releases/)
+We encourage everyone to run the [latest stable release](https://docs.gitlab.com/releases/)
 to ensure that you can upgrade to the most secure and feature-rich GitLab experience.
 To make sure you can run the most recent stable release, we are working
 hard to keep the update process reliable.

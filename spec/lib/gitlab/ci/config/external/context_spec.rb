@@ -125,8 +125,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
   describe '#check_execution_time!' do
     before do
-      allow(subject).to receive(:current_monotonic_time).and_return(stubbed_time)
-      allow(subject).to receive(:execution_deadline).and_return(stubbed_deadline)
+      allow(subject).to receive_messages(current_monotonic_time: stubbed_time, execution_deadline: stubbed_deadline)
     end
 
     context 'when execution is expired' do

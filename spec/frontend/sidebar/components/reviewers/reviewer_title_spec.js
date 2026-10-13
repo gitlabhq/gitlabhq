@@ -12,7 +12,7 @@ Vue.use(VueApollo);
 describe('ReviewerTitle component', () => {
   let wrapper;
 
-  const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
+  const createComponent = (props) => {
     const apolloProvider = createMockApollo([
       [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { namespace: null } })],
       [userPermissionsQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
@@ -29,9 +29,6 @@ describe('ReviewerTitle component', () => {
         issuableId: '1',
         issuableIid: '1',
         multipleApprovalRulesAvailable: false,
-        glFeatures: {
-          reviewerAssignDrawer,
-        },
       },
       stubs: ['approval-summary', 'ReviewerDropdown'],
     });

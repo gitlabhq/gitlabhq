@@ -27,7 +27,7 @@ Before you can install the agent in your cluster, you need:
 - Access to an agent server:
   - On GitLab.com, the agent server is available at `grpcs://kas.gitlab.com`. The WebSocket address `wss://kas.gitlab.com` is also available.
   - On GitLab Self-Managed, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
-    Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
+    Then it is available by default at `grpcs://gitlab.example.com`, or at `wss://gitlab.example.com/-/kubernetes-agent/` on instances without HTTPS or with a relative URL root.
   - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom domain](../../../../administration/dedicated/configure_instance/network_security.md#custom-domains) for your GitLab Dedicated instance, you can also use a custom domain for the KAS service.
 
 ## Bootstrap the agent with Flux support (recommended)
@@ -218,6 +218,30 @@ To install the agent on your cluster using Helm:
 
 1. Optional. [Customize the Helm installation](#customize-the-helm-installation).
    If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. Related customization options are described below.
+
+##### Install the agent from an OCI registry
+
+Install the agent directly from an OCI registry instead of adding the `https://charts.gitlab.io` Helm
+repository.
+
+Prerequisites:
+
+- Chart 2.32.0 or later.
+- Helm 3.8 or later.
+
+To install the agent directly from an OCI registry:
+
+```shell
+helm upgrade --install test oci://registry.gitlab.com/charts/charts.gitlab.io/release/gitlab-agent \
+  --version <chart_version> \
+  --namespace gitlab-agent-test \
+  --create-namespace \
+  --set image.tag=<current agentk version> \
+  --set config.token=<your_token> \
+  --set config.kasAddress=<address_to_GitLab_KAS_instance>
+```
+
+You must specify `--version` because Helm does not resolve the latest chart version when you pull directly from an OCI registry. To update the agent later, run the same command with the new chart version.
 
 ##### Customize the Helm installation
 

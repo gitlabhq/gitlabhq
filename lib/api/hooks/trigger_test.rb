@@ -25,17 +25,23 @@ module API
         tags ['hooks']
       end
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook'
+        requires :hook_id, type: Integer, desc: 'ID of the hook.'
         requires :trigger,
           type: String,
-          desc: 'The type of trigger hook',
+          desc: 'Type of webhook event to test.',
           values: ProjectHook.triggers.values.map(&:to_s)
+      end
+      given configuration[:tier] do
+        route_setting :tier, configuration[:tier]
       end
       route_setting :authorization, permissions: :test_webhook, boundary_type: configuration[:boundary_type]
       post ":hook_id/test/:trigger" do
         hook = find_hook
 
-        check_rate_limit!(:web_hook_test, scope: [hook.parent, current_user])
+        check_rate_limit!(
+          :web_hook_test,
+          scope: ::Gitlab::ApplicationRateLimiter.parent_scope(hook.parent).merge(user: current_user)
+        )
 
         service = hook_test_service(hook, configuration[:entity])
         result = service.execute

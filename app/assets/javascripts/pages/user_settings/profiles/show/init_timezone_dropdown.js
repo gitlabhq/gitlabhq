@@ -16,7 +16,7 @@ export const initTimezoneDropdown = () => {
     name: 'TimezoneDropdownRoot',
     data() {
       return {
-        value: initialValue,
+        value: initialValue ?? '',
       };
     },
     render(h) {

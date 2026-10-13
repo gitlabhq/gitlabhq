@@ -5,13 +5,16 @@ module API
     module NotesHelpers
       include ::RendersNotes
 
-      NoteableType = Data.define(:noteable_class, :feature_category, :noteables_str, :parent_type, :policy_base) do
+      NoteableType = Data.define(
+        :noteable_class, :feature_category, :noteables_str, :parent_type, :policy_base, :tier
+      ) do
         def initialize(
           noteable_class:,
           feature_category:,
           noteables_str: noteable_class.to_s.underscore.pluralize,
           parent_type: noteable_class.parent_class.to_s.underscore,
-          policy_base: nil
+          policy_base: nil,
+          tier: nil
         )
           super
         end
@@ -42,7 +45,7 @@ module API
       def update_note(noteable, note_id, noteable_class = nil)
         note = noteable.notes.find(note_id)
 
-        authorize! :admin_note, note
+        authorize! :update_note, note
 
         opts = {
           note: params[:body],
@@ -78,7 +81,7 @@ module API
       def delete_note(noteable, note_id)
         note = noteable.notes.find(note_id)
 
-        authorize! :admin_note, note
+        authorize! :delete_note, note
 
         parent = noteable_parent(noteable)
         project = parent if parent.is_a?(Project)

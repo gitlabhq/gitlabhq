@@ -17,6 +17,8 @@ title: Pipeline analytics
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 - [Changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/416) to cover pipelines in all states, including in-progress pipelines, in GitLab 19.2.
 - Configurable `granularity` and `quantile` parameters [introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
+- `durationMin`, `durationMax`, `durationMean`, and `durationSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
+- `!=` and `not in` operators on the `ref`, `source`, and `status` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -32,17 +34,20 @@ To query individual pipeline records, use [Pipelines](pipelines.md).
 | `project` | Query pipelines in a specific project.                               |
 | `group`   | Query pipelines across all projects in a group, including subgroups. |
 
-## Query fields
+To aggregate pipelines across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
+
+## Query filters
 
 Use these fields in the `query` parameter to filter your results.
 
 | Field                                  | Name       | Operators                 |
 | -------------------------------------- | ---------- | ------------------------- |
 | [Finished at](#finished-at)         | `finished` | `=`, `>`, `<`, `>=`, `<=` |
-| [Ref](#ref)                         | `ref`      | `=`, `in`                 |
-| [Source](#source)                   | `source`   | `=`, `in`                 |
+| [Ref](#ref)                         | `ref`      | `=`, `!=`, `in`, `not in` |
+| [Source](#source)                   | `source`   | `=`, `!=`, `in`, `not in` |
 | [Started at](#started-at)           | `started`  | `=`, `>`, `<`, `>=`, `<=` |
-| [Status](#status)                   | `status`   | `=`, `in`                 |
+| [Status](#status)                   | `status`   | `=`, `!=`, `in`, `not in` |
 
 ### Finished at {#finished-at}
 
@@ -65,7 +70,12 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- `!=` and `not in` return only pipelines that have a ref. Pipelines without one are left out,
+  so `ref != "main"` is not the same as every pipeline except those on `main`.
 
 ### Source {#source}
 
@@ -74,7 +84,13 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- `!=` and `not in` return only pipelines that have a source. Pipelines without one are left out.
+- Excluding a source that GitLab does not recognize excludes nothing.
+  Validation of source values is proposed in [issue 629846](https://gitlab.com/gitlab-org/gitlab/-/issues/629846).
 
 ### Started at {#started-at}
 
@@ -99,17 +115,17 @@ Use these fields in the `query` parameter to filter your results.
 - `Enum`, one of `canceled`, `canceling`, `created`, `failed`, `manual`, `pending`,
   `preparing`, `running`, `scheduled`, `skipped`, `success`, `waiting_for_callback`,
   or `waiting_for_resource`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ## Dimensions
 
 | Dimension   | Name       | Description                              |
 | ----------- | ---------- | ---------------------------------------- |
-| Finished at | `finished` | Group by finish date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `finished(daily)`. |
+| Finished at | `finished` | Group by finish date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `finished(daily)` or `finished(granularity=30d, origin=2026-07-16)`. |
 | Project     | `project`  | Group by project.                        |
 | Ref         | `ref`      | Group by Git ref (branch or tag).        |
 | Source      | `source`   | Group by what triggered the pipeline.    |
-| Started at  | `started`  | Group by start date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `started(daily)`. |
+| Started at  | `started`  | Group by start date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `started(daily)` or `started(granularity=30d, origin=2026-07-16)`. |
 | Status      | `status`   | Group by pipeline status.                |
 
 ## Metrics
@@ -119,7 +135,11 @@ A pipeline is considered finished when it has completed processing and reached a
 | Metric            | Name               | Description                                            |
 | ----------------- | ------------------ | ------------------------------------------------------ |
 | Canceled rate     | `canceledRate`     | Ratio of canceled pipelines to finished pipelines.    |
+| Duration max      | `durationMax`      | Longest pipeline duration, in seconds.                |
+| Duration mean     | `durationMean`     | Average pipeline duration, in seconds.                |
+| Duration min      | `durationMin`      | Shortest pipeline duration, in seconds.               |
 | Duration quantile | `durationQuantile` | Pipeline duration quantile, in seconds. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.95`). For example, `durationQuantile(0.5)`. |
+| Duration sum      | `durationSum`      | Total duration of all pipelines, in seconds.          |
 | Failure rate      | `failureRate`      | Ratio of failed pipelines to finished pipelines.      |
 | Skipped rate      | `skippedRate`      | Ratio of skipped pipelines to finished pipelines.     |
 | Success rate      | `successRate`      | Ratio of successful pipelines to finished pipelines.  |
@@ -143,6 +163,21 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: ref as "Ref"
   metrics: totalCount as "Total", successRate as "Success rate", failureRate as "Failure rate"
   sort: totalCount desc
+  ```
+  ````
+
+- Pipelines with any status other than `success`, off the default branches, for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Pipelines not successful, off the default branches (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = Pipeline and project = "gitlab-org/gitlab" and finished >= -30d and status != success and ref not in ("main", "master")
+  dimensions: ref as "Ref"
+  metrics: totalCount as "Pipelines", failureRate as "Failure rate"
+  sort: totalCount desc
+  limit: 10
   ```
   ````
 

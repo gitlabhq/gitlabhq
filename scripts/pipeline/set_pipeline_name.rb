@@ -20,11 +20,10 @@ class SetPipelineName
   DOCS = ['docs-lint markdown', 'docs-lint links'].freeze
   RSPEC_PREDICTIVE = ['rspec:predictive:trigger', 'rspec-ee:predictive:trigger'].freeze
   CODE = ['retrieve-tests-metadata'].freeze
-  E2E_GDK = ['e2e:test-on-gdk'].freeze
   E2E_CNG = ['e2e:test-on-cng'].freeze
   E2E_OMNIBUS = ['e2e:test-on-omnibus-ee', 'e2e:test-on-omnibus-ce'].freeze
   # Ordered by expected duration, DESC
-  PIPELINE_TYPES_ORDERED = %w[e2e-omnibus e2e-gdk e2e-cng code rspec-predictive docs].freeze
+  PIPELINE_TYPES_ORDERED = %w[e2e-omnibus e2e-cng code rspec-predictive docs].freeze
 
   # We need an access token that isn't CI_JOB_TOKEN because we are querying
   # the pipelines API to fetch jobs and bridge jobs.
@@ -136,7 +135,6 @@ class SetPipelineName
   def pipeline_types_for(job)
     types = Set.new
     types << 'rspec-predictive' if RSPEC_PREDICTIVE.include?(job.name)
-    types << 'e2e-gdk'          if E2E_GDK.include?(job.name)
     types << 'e2e-cng'          if E2E_CNG.include?(job.name)
     # omnibus e2e tests are manual in mr pipelines and are only executed on demand
     types << 'e2e-omnibus'      if E2E_OMNIBUS.include?(job.name) && job.status != 'manual'

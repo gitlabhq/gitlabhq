@@ -128,7 +128,7 @@ This is a brief summary of how Geo works in your GitLab environment. For more de
 
 Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This makes working with large repositories over large distances much faster.
 
-![Geo overview](img/geo_overview_v11_5.png)
+![Diagram showing a Geo primary site replicating data to a secondary site.](img/geo_overview_v11_5.png)
 
 When Geo is enabled, the:
 
@@ -203,6 +203,8 @@ The following are required to run Geo:
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run the exact same GitLab version. The [major, minor, and patch versions](../../policy/maintenance.md#versioning) must all match.
+  To check the GitLab version of a site, run `sudo gitlab-rake gitlab:env:info`. For more information, see
+  [Gather GitLab and system information](../raketasks/maintenance.md#gather-gitlab-and-system-information).
 - All sites must define the same [repository storages](../repository_storage_paths.md).
 - When using the container registry with Geo, you must configure separate, external PostgreSQL instances for the container registry metadata database at each site. See [Container registry for a secondary site](replication/container_registry.md) for details.
 
@@ -284,7 +286,6 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 > [!warning]
 > These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
 
-- Git over SSH through a secondary Geo site does not work reliably. For more information, see [issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109), [issue #417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186), [issue #454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707), and [issue 585913](https://gitlab.com/gitlab-org/gitlab/-/issues/585913).
 - Pushing directly to a secondary site redirects (for HTTP) or proxies (for SSH) the request to the primary site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The primary site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the secondary site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
@@ -305,7 +306,7 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
   - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../pages/_index.md#prerequisites).
 - With a [unified URL](secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites), Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain. To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate the certificate, then copy it to all other sites.
 - When a [secondary site uses a separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
-- Git clone and fetch requests with option `--depth` over SSH against a secondary site do not work and hang indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
+- Git clone and fetch requests with option `--depth` over SSH against a secondary site hang indefinitely if the secondary site is not up to date at the time the request is initiated and the `geo_proxy_fetch_ssh_to_primary` feature flag is disabled. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). The flag is enabled by default in GitLab 19.4 and later. Cloud Native GitLab deployments that use the bundled NGINX Ingress must [take action before upgrading to 19.4](replication/troubleshooting/ssh_proxying.md#ssh-pull-and-push-hang-indefinitely-on-cloud-native-deployments-using-nginx-ingress).
 - Do not use [relative URLs](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab)
   with GitLab Geo because they will break the proxy between sites. For more information, see
   [issue 456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427).
@@ -350,6 +351,11 @@ For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
 ### Pausing and resuming replication
 
 For more information, see [Pausing and resuming replication](replication/pause_resume_replication.md).
+
+### Resyncing and reverifying data
+
+For more information on manually retrying replication or verification for individual components
+or in bulk, see [Resync and reverify Geo data](replication/resync_reverify.md).
 
 ### Background jobs
 

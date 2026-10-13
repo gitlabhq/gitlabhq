@@ -210,6 +210,21 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsTool, feature_category: :mcp_
       end
     end
 
+    context 'when the query resolves but returns no namespace' do
+      let(:arguments) { { project_id: project.id.to_s } }
+
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return({ 'data' => { 'namespace' => nil } })
+      end
+
+      it 'reports a not-found error without leaking whether the namespace exists', :aggregate_failures do
+        expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
+        expect(result[:content].first[:text])
+          .to eq('Project or group not found: it does not exist or you do not have access to it.')
+      end
+    end
+
     context 'when the namespace exists but the caller cannot read it' do
       let_it_be(:private_project) { create(:project, :private) }
       let_it_be(:non_member_user) { create(:user) }

@@ -51,10 +51,12 @@ RSpec.describe Achievements::RevokeService, feature_category: :user_profile do
         let(:user_achievement_param) { instance_double('Achievements::UserAchievement') }
 
         it 'returns the correct error' do
-          allow(user_achievement_param).to receive(:save).and_return(false)
-          allow(user_achievement_param).to receive(:achievement).and_return(achievement)
-          allow(user_achievement_param).to receive(:revoked?).and_return(false)
-          allow(user_achievement_param).to receive(:errors).and_return(nil)
+          allow(user_achievement_param).to receive_messages(
+            save: false,
+            achievement: achievement,
+            revoked?: false,
+            errors: nil
+          )
           expect(user_achievement_param).to receive(:assign_attributes)
 
           expect(response).to be_error

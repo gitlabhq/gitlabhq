@@ -93,6 +93,74 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
       end
     end
 
+    context 'when the token is not granular' do
+      it 'does not return granular_scopes', :aggregate_failures do
+        get api(path, personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to have_key('granular_scopes')
+      end
+
+      it 'does not load granular scopes' do
+        recorder = ActiveRecord::QueryRecorder.new { get api(path, personal_access_token: token) }
+
+        expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+      end
+    end
+
+    context 'when the token is granular' do
+      let(:token) do
+        create(:granular_pat, user: current_user, permissions: ['read_personal_access_token'],
+          boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::USER))
+      end
+
+      it 'returns granular_scopes', :aggregate_failures do
+        get api(path, personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['granular_scopes']).to contain_exactly(
+          a_hash_including('access' => 'user', 'permissions' => ['read_personal_access_token'],
+            'project_id' => nil, 'group_id' => nil)
+        )
+      end
+
+      context 'when the token also has a project-scoped granular scope' do
+        let_it_be(:project) { create(:project) }
+
+        let(:token) do
+          create(:granular_pat, user: current_user, permissions: ['read_personal_access_token'],
+            boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::USER),
+            additional_scopes: [{ boundary: ::Authz::Boundary.for(project), permissions: ['read_job'] }])
+        end
+
+        it 'resolves project_id', :aggregate_failures do
+          get api(path, personal_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => 'user', 'permissions' => ['read_personal_access_token']),
+            a_hash_including('permissions' => ['read_job'], 'project_id' => project.id, 'group_id' => nil)
+          )
+        end
+
+        it 'avoids N+1 queries when the token has multiple project-scoped granular scopes' do
+          get api(path, personal_access_token: token) # warm-up
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            get api(path, personal_access_token: token)
+          end
+
+          other_project = create(:project)
+          other_scope = create(:granular_scope, boundary: ::Authz::Boundary.for(other_project),
+            permissions: ['read_job'], organization: token.organization)
+          create(:personal_access_token_granular_scope, personal_access_token: token,
+            granular_scope: other_scope, organization: token.organization)
+
+          expect { get api(path, personal_access_token: token) }.not_to exceed_all_query_limit(control)
+        end
+      end
+    end
+
     context 'when an ip is recently used' do
       let(:request_ip_address) { '192.168.1.2' }
 

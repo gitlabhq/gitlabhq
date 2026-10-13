@@ -26,7 +26,7 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
 
     context 'when service execution succeeded' do
       before do
-        allow(update_service).to receive(:execute_async) { { status: :success } }
+        allow(update_service).to receive(:execute_async).and_return({ status: :success })
       end
 
       it 'returns no errors' do
@@ -51,7 +51,7 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
 
     context 'when service encounters a problem' do
       before do
-        allow(update_service).to receive(:execute_async) { { status: :error, message: 'something went wrong' } }
+        allow(update_service).to receive(:execute_async).and_return({ status: :error, message: 'something went wrong' })
       end
 
       it 'returns an error' do

@@ -244,6 +244,45 @@ RSpec.describe ActiveContext::Reference, :aggregate_failures do
       end
     end
 
+    context 'with current_model_only parameter' do
+      before do
+        allow(mock_collection_record).to receive_messages(
+          current_indexing_embedding_model: { model_ref: 'model-001', field: 'embeddings_v1' },
+          next_indexing_embedding_model: { model_ref: 'model-002', field: 'embeddings_v2' }
+        )
+      end
+
+      it 'returns only the current indexing embedding model when current_model_only is true' do
+        models = reference.indexing_embedding_models(current_model_only: true)
+
+        expect(models.size).to eq(1)
+        expect(models.first.model_ref).to eq('model-001')
+        expect(models.first.field).to eq(:embeddings_v1)
+      end
+
+      it 'returns all indexing embedding models when current_model_only is false' do
+        models = reference.indexing_embedding_models(current_model_only: false)
+
+        expect(models.size).to eq(2)
+        expect(models.map(&:model_ref)).to eq(%w[model-001 model-002])
+      end
+
+      it 'returns empty array when current_model_only is true but current model is not set' do
+        allow(mock_collection_record).to receive(:current_indexing_embedding_model).and_return(nil)
+
+        models = reference.indexing_embedding_models(current_model_only: true)
+
+        expect(models).to be_empty
+      end
+
+      it 'prefers next_model_only over current_model_only when both are true' do
+        models = reference.indexing_embedding_models(next_model_only: true, current_model_only: true)
+
+        expect(models.size).to eq(1)
+        expect(models.first.model_ref).to eq('model-002')
+      end
+    end
+
     context 'when collection_class is nil' do
       before do
         allow(mock_collection_record).to receive(:collection_class).and_return(nil)
@@ -255,6 +294,10 @@ RSpec.describe ActiveContext::Reference, :aggregate_failures do
 
       it 'returns an empty array even with next_model_only true' do
         expect(reference.indexing_embedding_models(next_model_only: true)).to be_empty
+      end
+
+      it 'returns an empty array even with current_model_only true' do
+        expect(reference.indexing_embedding_models(current_model_only: true)).to be_empty
       end
     end
   end

@@ -6,21 +6,23 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences, feature_category: :sour
   include ProjectForksHelper
 
   let(:null_logger) { Logger.new('/dev/null') }
-  let(:project) { create(:project, :repository, lfs_enabled: true) }
-  let(:lfs_object) { create(:lfs_object) }
 
-  let!(:invalid_reference) { create(:lfs_objects_project, project: project, lfs_object: lfs_object) }
+  let_it_be(:project) { create(:project, :repository, lfs_enabled: true) }
+  let_it_be(:lfs_object) { create(:lfs_object) }
+  let_it_be(:invalid_reference) { create(:lfs_objects_project, project: project, lfs_object: lfs_object) }
+
+  let_it_be(:valid_lfs_object) do
+    oid = project.repository.gitaly_blob_client.get_all_lfs_pointers.first.lfs_oid
+    create(:lfs_object, oid: oid)
+  end
+
+  let_it_be(:valid_reference) { create(:lfs_objects_project, project: project, lfs_object: valid_lfs_object) }
 
   subject(:service) { described_class.new(project, logger: null_logger, dry_run: dry_run) }
 
   before do
     allow(null_logger).to receive(:info)
-
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
-
-    oid = project.repository.gitaly_blob_client.get_all_lfs_pointers.first.lfs_oid
-    lfs_object2 = create(:lfs_object, oid: oid)
-    create(:lfs_objects_project, project: project, lfs_object: lfs_object2)
   end
 
   context 'dry run' do
@@ -80,10 +82,10 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences, feature_category: :sour
 
     context 'with multiple orphan OID slices' do
       let(:oid_batch_size) { 2 }
-      let(:additional_lfs_objects) { create_list(:lfs_object, 2) }
+      let_it_be(:additional_lfs_objects) { create_list(:lfs_object, 2) }
       let(:orphan_oids) { [lfs_object.oid, *additional_lfs_objects.map(&:oid)] }
 
-      let!(:additional_references) do
+      let_it_be(:additional_references) do
         additional_lfs_objects.map do |additional_lfs_object|
           create(:lfs_objects_project, project: project, lfs_object: additional_lfs_object)
         end
@@ -200,7 +202,7 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences, feature_category: :sour
   end
 
   context 'LFS for project snippets' do
-    let(:snippet) { create(:project_snippet) }
+    let(:snippet) { create(:project_snippet, project: project) }
 
     it 'is disabled' do
       # Support project snippets here before enabling LFS for them

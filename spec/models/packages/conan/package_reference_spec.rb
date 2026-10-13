@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Conan::PackageReference, feature_category: :package_registry do
   it { is_expected.to be_a(Packages::Conan::PackageFileable) }
 
   describe 'associations' do

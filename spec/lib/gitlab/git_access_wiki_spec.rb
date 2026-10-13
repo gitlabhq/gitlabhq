@@ -85,7 +85,7 @@ RSpec.describe Gitlab::GitAccessWiki do
 
       context 'when in a read-only GitLab instance' do
         before do
-          allow(Gitlab::Database).to receive(:read_only?) { true }
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
         end
 
         it_behaves_like 'forbidden git access' do
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
   end
 
-  describe '#check_granular_pat_permissions!', feature_category: :source_code_management do
+  describe '#check_granular_token_permissions!', feature_category: :source_code_management do
     let(:access) do
       described_class.new(user, wiki, 'web',
         authentication_abilities: authentication_abilities,

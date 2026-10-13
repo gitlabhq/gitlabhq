@@ -60,6 +60,17 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
       ])
     end
 
+    context 'when merged_by is nil' do
+      let(:merger_user) { nil }
+
+      it 'maps merged_by to the ghost user and pushes no references' do
+        subject.execute
+
+        expect(merge_request.metrics.reload.merged_by_id).to eq(ghost_user.id)
+        expect(cached_references).to be_empty
+      end
+    end
+
     context 'when importing into a personal namespace' do
       let_it_be(:user_namespace) { create(:namespace) }
 
@@ -77,74 +88,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
         subject.execute
 
         expect(merge_request.metrics.reload.merged_by_id).to eq(user_namespace.owner_id)
-      end
-    end
-
-    context 'when user mapping is disabled' do
-      before do
-        project.build_or_assign_import_data(data: {}).save!
-        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-      end
-
-      shared_examples 'adds a note referencing the merger user' do
-        it 'adds a note referencing the merger user' do
-          expect { subject.execute }
-            .to change { Note.count }.by(1)
-            .and not_change(merge_request, :updated_at)
-
-          metrics = merge_request.metrics.reload
-          expect(metrics.merged_by).to be_nil
-          expect(metrics.merged_at).to eq(merged_at)
-
-          last_note = merge_request.notes.last
-          expect(last_note.created_at).to eq(merged_at)
-          expect(last_note.author).to eq(project.creator)
-          expect(last_note.note).to eq("*Merged by: merger at #{merged_at}*")
-          expect(last_note.imported_from).to eq('github')
-        end
-      end
-
-      context 'when the merger user can be mapped' do
-        it 'assigns the merged by user when mapped' do
-          merge_user = create(:user, email: 'merger@email.com')
-
-          subject.execute
-
-          metrics = merge_request.metrics.reload
-          expect(metrics.merged_by).to eq(merge_user)
-          expect(metrics.merged_at).to eq(merged_at)
-        end
-      end
-
-      context 'when the merger user cannot be mapped to a gitlab user' do
-        it_behaves_like 'adds a note referencing the merger user'
-
-        context 'when original user cannot be found on github' do
-          before do
-            allow(client_double).to receive(:user).and_raise(Octokit::NotFound)
-          end
-
-          it_behaves_like 'adds a note referencing the merger user'
-        end
-      end
-
-      context 'when the merger user is not provided' do
-        let(:merger_user) { nil }
-
-        it 'adds a note referencing the ghost user' do
-          expect { subject.execute }
-            .to change { Note.count }.by(1)
-            .and not_change(merge_request, :updated_at)
-
-          metrics = merge_request.metrics.reload
-          expect(metrics.merged_by).to eq(ghost_user)
-          expect(metrics.merged_at).to eq(merged_at)
-
-          last_note = merge_request.notes.last
-          expect(last_note.created_at).to eq(merged_at)
-          expect(last_note.author).to eq(project.creator)
-          expect(last_note.note).to eq("*Merged by: ghost at #{merged_at}*")
-        end
       end
     end
   end

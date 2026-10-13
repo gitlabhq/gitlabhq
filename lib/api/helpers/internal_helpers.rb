@@ -234,6 +234,16 @@ module API
           retry_config: Gitlab::GitalyClient.retry_policy
         }
       end
+
+      # Overridden in EE with Groups::SshCertificates::FindService; FOSS has no group
+      # certificates, so nothing can match. It sits here rather than in the endpoint's own
+      # helpers, which EE overrides, so that the FOSS default stays reachable from a spec.
+      def group_ssh_certificate_response
+        ServiceResponse.error(
+          message: 'Certificate Not Found',
+          reason: ::Gitlab::SshCertificates::Reason::CERTIFICATE_NOT_FOUND
+        )
+      end
     end
   end
 end

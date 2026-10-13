@@ -48,7 +48,7 @@ module API
           tags %w[access_tokens]
           hidden true
         end
-        route_setting :authorization, permissions: :read_any_token, boundary_type: :instance
+        route_setting :authorization, permissions: :read_any_token, boundary_type: :instance, assignable_when: [:admin]
         post do
           identified_token = identify_token(params[:token])
           render_api_error!({ error: 'Not found' }, :not_found) if identified_token.revocable.nil?
@@ -71,7 +71,8 @@ module API
           tags %w[access_tokens]
           hidden true
         end
-        route_setting :authorization, permissions: :revoke_any_token, boundary_type: :instance
+        route_setting :authorization, permissions: :revoke_any_token, boundary_type: :instance,
+          assignable_when: [:admin]
         delete do
           identified_token = identify_token(params[:token])
 

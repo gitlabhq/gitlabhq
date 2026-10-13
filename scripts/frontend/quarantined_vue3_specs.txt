@@ -1,2 +1,0 @@
-# Lines beginning with a hash are ignored, like this one.
-# Do not add new specs to this file.

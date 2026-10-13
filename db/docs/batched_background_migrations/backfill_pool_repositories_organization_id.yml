@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillPoolRepositoriesOrganizationId
-description: Backfills organization_id on pool_repositories
-feature_category: source_code_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208322
-milestone: '18.8'
-queued_migration_version: 20251217130435
-finalized_by: 20260116190154

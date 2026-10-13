@@ -20,7 +20,7 @@ export const formatGraphQLGroup = (
     childrenLoading: false,
     hasChildren: Boolean(hasChildren),
     fullPath,
-    relativeWebUrl: groupPath(fullPath),
+    relativeWebUrl: groupPath(fullPath, { organizationPath: null }),
   };
 
   return {

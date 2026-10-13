@@ -1,0 +1,14 @@
+<%= docs_render 'page_metadata', title: 'Queries', description: 'Entry points for reading data from the GitLab GraphQL API.' %>
+
+Queries are the top-level entry points for reading data from the
+[GitLab GraphQL API](../../_index.md). You can explore queries interactively
+using the [GraphiQL explorer](../../getting_started.md#graphiql).
+
+<%= docs_render 'deprecation_warning_header' %>
+
+<% sorted_by_name(@queries).each do |query| %>
+
+## <%= name(query) %>
+
+<%= render_query_body(query) %>
+<% end %>

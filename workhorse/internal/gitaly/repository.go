@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/gitaly/v18/streamio"
+	"gitlab.com/gitlab-org/gitaly/v19/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v19/streamio"
 )
 
 // RepositoryClient encapsulates RepositoryService calls

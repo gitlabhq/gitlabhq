@@ -7,7 +7,6 @@ RSpec.describe MergeWorker, feature_category: :code_review_workflow do
   describe "remove source branch" do
     let!(:merge_request) { create(:merge_request, source_branch: "markdown") }
     let!(:source_project) { merge_request.source_project }
-    let!(:project) { merge_request.project }
     let!(:author) { merge_request.author }
 
     before do
@@ -63,7 +62,7 @@ RSpec.describe MergeWorker, feature_category: :code_review_workflow do
       let(:user_id) { user.id }
 
       context 'and merge request exists' do
-        let!(:merge_request) { create(:merge_request, source_project: create(:project, :empty_repo)) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: create(:project, :empty_repo)) }
         let(:merge_request_id) { merge_request.id }
         let(:user) { merge_request.author }
         let(:merge_service_double) { instance_double(MergeRequests::MergeService) }
@@ -109,9 +108,9 @@ RSpec.describe MergeWorker, feature_category: :code_review_workflow do
 
   describe 'immediate_web_merge UX SLI' do
     let_it_be_with_reload(:merge_request) { create(:merge_request, source_branch: 'markdown') }
-    let(:user) { merge_request.author }
+    let_it_be(:user) { merge_request.author }
 
-    before do
+    before_all do
       merge_request.source_project.add_maintainer(user)
     end
 

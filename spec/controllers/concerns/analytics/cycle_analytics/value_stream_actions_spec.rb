@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::ValueStreamActions, type: :controller,
+RSpec.describe Analytics::CycleAnalytics::ValueStreamActions,
   feature_category: :value_stream_management do
   subject(:controller) do
     Class.new(ApplicationController) do

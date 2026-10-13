@@ -55,24 +55,29 @@ module Gitlab
 
       to_update.map do |lang|
         {
-          programming_language_id: lang.programming_language_id,
+          target: row_target(lang),
           share: detection[lang.name][:value],
           language_id: lang.resolved_programming_language.language_id
         }
       end
     end
 
-    # Returns the ids of the programming languages that do not occur in the detection
-    # as current repository languages
+    # Returns the current repository languages that do not occur in the detection.
+    # Callers need the rows themselves to target them by stable language_id.
     def deletions
-      @repository_languages.filter_map do |repo_lang|
-        next if detection.key?(repo_lang.name)
-
-        repo_lang.programming_language_id
-      end
+      @repository_languages.reject { |repo_lang| detection.key?(repo_lang.name) }
     end
 
     private
+
+    # programming_language_id carries the source cell's programming_languages.id after an
+    # organization move, so rows are targeted by the stable language_id. The legacy fallback
+    # is only needed while the language_id backfill can still leave the column NULL.
+    def row_target(repository_language)
+      return { language_id: repository_language.language_id } if repository_language.language_id
+
+      { language_id: nil, programming_language_id: repository_language.programming_language_id }
+    end
 
     def previous_language_names
       @previous_language_names ||= @repository_languages.map(&:name)

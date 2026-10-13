@@ -280,24 +280,8 @@ module Banzai
         def replace_node_with_html(node, index, html)
           return if node.to_html == html
 
-          previous_node = node.previous
-          next_node = node.next
-          parent_node = node.parent
-          # Unfortunately node.replace(html) returns re-parented nodes, not the actual replaced nodes in the doc
-          # We need to find the actual nodes in the doc that were replaced
-          node.replace(html)
-          @new_nodes[index] = []
-
-          # We replaced node with new nodes, so we find first new node. If previous_node is nil, we take first parent child
-          new_node = previous_node ? previous_node.next : parent_node&.children&.first
-
-          # We iterate from first to last replaced node and store replaced nodes in @new_nodes
-          while new_node && new_node != next_node
-            @new_nodes[index] << new_node.xpath(query)
-            new_node = new_node.next
-          end
-
-          @new_nodes[index].flatten!
+          created = node.replace(html)
+          @new_nodes[index] = created.xpath(query).to_a
         end
 
         def only_path?

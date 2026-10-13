@@ -6,6 +6,8 @@ module Gitlab
       module Chain
         class CancelPendingPipelines < Chain::Base
           def perform!
+            ::Ci::RedundantPipelines::RegisterCandidateService.for(pipeline).execute
+
             cancellation_worker_class.perform_async(pipeline.id, { 'partition_id' => pipeline.partition_id })
           end
 

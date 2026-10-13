@@ -174,6 +174,26 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'when an issue in the batch is at the labels limit' do
+      let_it_be(:label) { create(:label, project: project) }
+      let(:issue_at_limit) { create(:issue, project: project, labels: create_list(:label, 2, project: project)) }
+      let(:issue_below_limit) { create(:issue, project: project) }
+
+      before do
+        stub_const('Issue::MAX_NUMBER_OF_LABELS', 2)
+      end
+
+      it 'updates the other issues and reports the failure', :aggregate_failures do
+        result = bulk_update([issue_at_limit, issue_below_limit], add_label_ids: [label.id])
+
+        expect(result).to be_error
+        expect(result.http_status).to eq(422)
+        expect(result.message).to include('1 item(s) could not be updated', 'Cannot add more than 2 labels')
+        expect(issue_below_limit.reload.labels).to contain_exactly(label)
+        expect(issue_at_limit.reload.labels).not_to include(label)
+      end
+    end
+
     context 'when issuable update service raises an ArgumentError' do
       before do
         allow_next_instance_of(Issues::UpdateService) do |update_service|

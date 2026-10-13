@@ -283,14 +283,12 @@ class MergeRequestDiff < ApplicationRecord
     by_head_commit_sha(head_commit_sha).maximum(:id)
   end
 
-  # Batched counterpart to #includes_any_commits?: the Set of `merge_request_diffs.id`
-  # values containing at least one of `shas`. Resolving the shas once and matching
-  # every diff in the same query makes the cost independent of the diff count,
-  # instead of re-serializing the whole sha list once per diff per BATCH_SIZE chunk.
+  # The Set of `merge_request_diffs.id` values containing at least one of `shas`.
+  # Resolving the shas once and matching every diff in the same query keeps the
+  # cost independent of the diff count.
   #
-  # The two-step fallback must stay in step with #includes_any_commits?: while
-  # mr_diff_commits_read_new_table is not the read source, a commit may exist only
-  # on merge_request_diff_commits.sha.
+  # While mr_diff_commits_read_new_table is not the read source, a commit may
+  # exist only on merge_request_diff_commits.sha, hence the two-step fallback.
   def self.ids_including_any_commits(diff_ids, shas, project:)
     matched = Set.new
     return matched if diff_ids.blank? || shas.blank?
@@ -356,6 +354,7 @@ class MergeRequestDiff < ApplicationRecord
     compare_diffs_preloaded
 
     eager_load_diff_collection
+    store_external_diff_before_save
   end
 
   # Collect information about commits and diff from repository
@@ -460,6 +459,11 @@ class MergeRequestDiff < ApplicationRecord
     real_size.presence || raw_diffs.size
   end
 
+  # Uses project_id so it loads nothing and works on the unsaved fallback diff.
+  def skip_charset_detection?
+    Feature.enabled?(:diff_skip_redundant_charset_detection, Project.actor_from_id(project_id))
+  end
+
   def lines_count
     strong_memoize(:lines_count) do
       raw_diffs(limits: false).line_count
@@ -538,19 +542,6 @@ class MergeRequestDiff < ApplicationRecord
     sorted_diff_commits.map(&:sha)
   end
 
-  def includes_any_commits?(shas)
-    return false if shas.blank?
-
-    # when the number of shas is huge (1000+) we don't want
-    # to pass them all as an SQL param, let's pass them in batches
-    shas.each_slice(BATCH_SIZE).any? do |batched_shas|
-      next true if metadata_sha_exists?(batched_shas)
-      next false if read_new_commits_table?
-
-      merge_request_diff_commits.where(sha: batched_shas).exists?
-    end
-  end
-
   def diff_refs=(new_diff_refs)
     self.base_commit_sha = new_diff_refs&.base_sha
     self.start_commit_sha = new_diff_refs&.start_sha
@@ -627,7 +618,8 @@ class MergeRequestDiff < ApplicationRecord
 
   def diffs_for_streaming_by_changed_paths(diff_options = {}, &)
     offset = diff_options[:offset_index].to_i || 0
-    repository.diffs_by_changed_paths(diff_refs, offset, &)
+    # Match the order of the file tree and first diffs slice, which use sorted MR diff files
+    repository.diffs_by_changed_paths(diff_refs, offset, sorted: true, &)
   end
 
   def diffs_in_batch(batch_page, batch_size, diff_options:)
@@ -907,7 +899,9 @@ class MergeRequestDiff < ApplicationRecord
   def build_external_merge_request_diff_files(rows)
     tempfile = build_external_diff_tempfile(rows)
 
-    self.external_diff = tempfile
+    # A new record has no id yet, so the object name can't depend on it.
+    # Reads resolve the object from the stored `external_diff` identifier.
+    self.external_diff = { tempfile: tempfile, filename: "diff-#{id || SecureRandom.uuid}" }
     self.stored_externally = true
 
     rows
@@ -915,11 +909,26 @@ class MergeRequestDiff < ApplicationRecord
     tempfile&.unlink
   end
 
-  def create_merge_request_diff_files(rows)
-    rows = build_external_merge_request_diff_files(rows) if use_external_diff?
+  def merge_request_diff_file_rows
+    strong_memoize(:merge_request_diff_file_rows) do
+      rows = build_merge_request_diff_files(compare_diffs_preloaded)
+      rows = build_external_merge_request_diff_files(rows) if use_external_diff?
+      rows
+    end
+  end
 
-    # Faster inserts
-    ApplicationRecord.legacy_bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+  # Uploads the external diff before the caller opens the save! transaction,
+  # so the object storage round trip doesn't hold a connection idle in
+  # transaction.
+  def store_external_diff_before_save
+    ensure_project_id
+    return unless Feature.enabled?(:external_diff_upload_before_save, Project.actor_from_id(project_id))
+    return unless new_record? && use_external_diff?
+    return if compare.commits.empty? || compare_diffs_preloaded.empty?
+
+    merge_request_diff_file_rows
+    external_diff.store!
+    self.external_diff_store = external_diff.object_store
   end
 
   def build_external_diff_tempfile(rows)
@@ -1009,7 +1018,7 @@ class MergeRequestDiff < ApplicationRecord
       .limit(1)
       .pick(:latest_merge_request_diff_id)
 
-    latest_id && self.id < latest_id
+    latest_id && id && id < latest_id
   end
 
   def load_diffs(options)
@@ -1022,7 +1031,9 @@ class MergeRequestDiff < ApplicationRecord
         collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
       end
 
-      Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
+      Gitlab::Git::DiffCollection.new(
+        collection.map(&:to_hash), options.merge(skip_charset_detection: skip_charset_detection?)
+      )
     end
   end
 
@@ -1037,6 +1048,10 @@ class MergeRequestDiff < ApplicationRecord
       commits = Commit.decorate(commits, project)
     else
       commits = diff_commits.with_users(read_new_commits_table: read_new_commits_table?).map { |commit| Commit.from_hash(commit.to_hash, project) }
+    end
+
+    MergeRequests::RestoreDiffCommitsWorker.schedule_for(self) do
+      page.to_i <= 1 && (load_from_gitaly ? shas.empty? : commits.empty?)
     end
 
     CommitCollection
@@ -1055,8 +1070,10 @@ class MergeRequestDiff < ApplicationRecord
       if diff_collection.any?
         new_attributes[:state] = :collected
 
-        rows = build_merge_request_diff_files(diff_collection)
-        create_merge_request_diff_files(rows)
+        rows = merge_request_diff_file_rows.each { |row| row[:merge_request_diff_id] = id }
+        # Faster inserts
+        ApplicationRecord.legacy_bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+        clear_memoization(:merge_request_diff_file_rows)
         new_attributes[:sorted] = true
         self.class.uncached { merge_request_diff_files.reset }
       end
@@ -1192,23 +1209,6 @@ class MergeRequestDiff < ApplicationRecord
       Dir.tmpdir,
       EXTERNAL_DIFFS_CACHE_TMPDIR % { project_id: project.id, mr_id: merge_request_id, id: id }
     )
-  end
-
-  def metadata_sha_exists?(shas)
-    diff_commits_relation = MergeRequestDiffCommit.where(merge_request_diff_id: id)
-    if MergeRequestDiffCommit.read_new_commits_table?(project_id)
-      diff_commits_relation = diff_commits_relation.where(project_id: project_id)
-    end
-
-    MergeRequest::CommitsMetadata
-      .where(project: project, sha: shas)
-      .where_exists(
-        diff_commits_relation
-          .where(
-            MergeRequestDiffCommit.arel_table[:merge_request_commits_metadata_id]
-                                  .eq(MergeRequest::CommitsMetadata.arel_table[:id])
-          )
-      ).exists?
   end
 
   def commit_shas_from_metadata(limit)

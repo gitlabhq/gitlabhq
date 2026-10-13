@@ -188,6 +188,19 @@ RSpec.describe Milestone, feature_category: :team_planning, factory_default: :ke
     end
   end
 
+  describe '.order_by_group_and_id' do
+    it 'sorts by group, then id' do
+      group1 = create(:group)
+      group2 = create(:group)
+      milestone1 = create(:milestone, group: group2)
+      milestone2 = create(:milestone, group: group1)
+      milestone3 = create(:milestone, group: group1)
+
+      expect(described_class.of_groups([group1, group2]).order_by_group_and_id)
+        .to eq([milestone2, milestone3, milestone1])
+    end
+  end
+
   it_behaves_like 'within_timeframe scope' do
     let_it_be(:now) { Time.current }
     let_it_be(:project) { create(:project, :empty_repo) }

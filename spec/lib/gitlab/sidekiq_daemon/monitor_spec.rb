@@ -200,6 +200,12 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
   end
 
   describe '#stop' do
+    # Without SIDEKIQ_MONITOR_WORKER, run_thread returns at once, so the thread
+    # could exit before the alive? check. Keep it running until stop interrupts it.
+    before do
+      allow(monitor).to receive(:run_thread) { sleep }
+    end
+
     let!(:monitor_thread) { monitor.start }
 
     it 'does stop the thread' do

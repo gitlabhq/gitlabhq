@@ -52,14 +52,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
 
     it_behaves_like 'a Note mutation when the given resource id is not for a Noteable'
 
-    context 'with quarantine', quarantine: {
-      issue: [
-        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17014',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/552090'
-      ]
-    } do
-      it_behaves_like 'a Note mutation when there are rate limit validation errors'
-    end
+    it_behaves_like 'a Note mutation when there are rate limit validation errors'
 
     it 'returns the note' do
       post_graphql_mutation(mutation, current_user: current_user)

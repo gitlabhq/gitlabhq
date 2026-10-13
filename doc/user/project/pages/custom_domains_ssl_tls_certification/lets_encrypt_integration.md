@@ -28,7 +28,7 @@ open source Certificate Authority.
 
 ## Prerequisites
 
-Before you can enable automatic provisioning of an SSL certificate for your domain, make sure you have:
+Before you can turn on automatic provisioning of an SSL certificate for your domain, make sure you have:
 
 - Created a [project](../_index.md#getting-started) in GitLab
   containing your website's source code.
@@ -39,24 +39,24 @@ Before you can enable automatic provisioning of an SSL certificate for your doma
   and verified your ownership.
 - Verified your website is up and running, accessible through your custom domain.
 
-The GitLab integration with Let's Encrypt is enabled and available on GitLab.com.
+The GitLab integration with Let's Encrypt is turned on and available on GitLab.com.
 For **GitLab Self-Managed** instances, make sure your administrator has
-[enabled it](../../../../administration/pages/_index.md#lets-encrypt-integration).
+[turned it on](../../../../administration/pages/_index.md#lets-encrypt-integration).
 
 ## Enabling Let's Encrypt integration for your custom domain
 
-After you've met the requirements, enable Let's Encrypt integration:
+After you've met the requirements, turn on Let's Encrypt integration:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Deploy** > **Pages**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. Turn on the **Automatic certificate management using Let's Encrypt** toggle.
 
-   ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
+   ![The Let's Encrypt toggle in the custom domain settings.](img/lets_encrypt_integration_v12_1.png)
 
 1. Select **Save changes**.
 
-Once enabled, GitLab obtains a LE certificate and adds it to the
+After you turn it on, GitLab obtains a Let's Encrypt certificate and adds it to the
 associated Pages domain. GitLab also renews it automatically.
 
 > [!note]
@@ -98,7 +98,7 @@ Go back to the **Deploy** > **Pages** settings, and retry the verification.
 
 ### Obtaining a certificate hangs for more than an hour
 
-If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message:
+If you've turned on Let's Encrypt integration, but a certificate is absent after an hour and you see the message:
 
 ```plaintext
 GitLab is obtaining a Let's Encrypt SSL certificate for this domain.
@@ -111,7 +111,7 @@ Remove and add the domain for GitLab Pages again by following these steps:
 1. In the left sidebar, select **Deploy** > **Pages**.
 1. Next to the domain name, select **Remove**.
 1. [Add the domain again, and verify it](_index.md#step-1-add-a-custom-domain).
-1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
+1. [Turn on Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
 1. If you're still getting the same error:
    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
    1. Make sure your domain does not have an `AAAA` DNS record.

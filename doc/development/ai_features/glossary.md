@@ -55,7 +55,7 @@ Automated mechanism for determining the helpfulness and accuracy of GitLab Duo C
 
 ### Cloud Connector
 
-Cloud Connector is a way to access services common to multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the set of technical solutions and APIs used to make such services available to all GitLab customers. For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
+Cloud Connector is a way to access services common to multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the set of technical solutions and APIs used to make such services available to all GitLab customers. For more information, see the [Cloud Connector architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/).
 
 ### Closed source model
 
@@ -405,7 +405,7 @@ However, GitLab Duo Core is an exception as it's assigned at the namespace level
 
 ### License
 
-Specifically refers to the license file used for **Self-Managed GitLab instances**. The license file is uploaded to activate paid-tier features (Premium or Ultimate) on self-managed installations. Self-managed customers have both a subscription (what they pay for) and a license file (what they upload to activate features).
+Specifically refers to the license file used for **GitLab Self-Managed instances**. The license file is uploaded to activate paid-tier features (Premium or Ultimate) on GitLab Self-Managed installations. GitLab Self-Managed customers have both a subscription (what they pay for) and a license file (what they upload to activate features).
 
 ### Subscription
 
@@ -418,5 +418,5 @@ Refers to the tier level a customer is using, which determines available feature
 The implementation differs by deployment type:
 
 - **SaaS (GitLab.com)**: Only requires a subscription - no license file needed since GitLab manages everything
-- **Self-managed**: Requires both a subscription (billing) and a license file (feature activation)
+- **GitLab Self-Managed**: Requires both a subscription (billing) and a license file (feature activation)
 - **Community/Education**: Special free subscriptions for qualifying organizations (schools, open source projects) that provide paid-tier features at no cost

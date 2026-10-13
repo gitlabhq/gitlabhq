@@ -524,7 +524,8 @@ To transfer a project:
 After you confirm the transfer:
 
 - The project is transferred asynchronously.
-- A confirmation email is sent after the transfer completes or fails.
+- If the transfer succeeds, a confirmation email is sent to users who turned on the **Moved project** custom notification.
+- If the transfer fails, no email is sent. The user who started the transfer gets a to-do item with the reason for the failure.
 - The old project URL is redirected to the new project URL. Refresh the page to see the new project URL. For large projects, you must wait until the transfer completes before you can view the project under the destination namespace.
 
 After you transfer a project, make sure you:

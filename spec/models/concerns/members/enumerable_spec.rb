@@ -33,10 +33,10 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
   end
 
   let_it_be(:source) { create(:namespace).becomes(klass) } # rubocop: disable Cop/AvoidBecomes -- easier to reuse existing factory object for a dummy model
-  let!(:owner) { create(:member, :owner, source: source).user }
-  let!(:guest) { create(:member, :guest, source: source).user }
+  let_it_be(:owner) { create(:member, :owner, source: source, importing: true).user }
+  let_it_be(:guest) { create(:member, :guest, source: source, importing: true).user }
   let!(:requested) { create(:member, :access_request, source: source).user }
-  let!(:invited) { create(:member, :invited, source: source, user: create(:user)).user }
+  let_it_be(:invited) { create(:member, :invited, source: source, user: create(:user)).user }
 
   shared_context 'with parametrized filters table' do
     where(:filters, :selected) do

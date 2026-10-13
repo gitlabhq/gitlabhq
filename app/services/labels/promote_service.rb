@@ -62,9 +62,18 @@ module Labels
 
     # rubocop: disable CodeReuse/ActiveRecord
     def update_resource_label_events(group_label, label_ids)
-      ResourceLabelEvent
-        .where(label: label_ids)
-        .update_all(label_id: group_label.id)
+      events = ResourceLabelEvent.where(label: label_ids)
+      in_group = group_label.group.self_and_descendants(skope: Namespace).select(:id)
+
+      events
+        .where(namespace_id: in_group)
+        .update_all(label_id: group_label.id, reference: group_label.to_reference(format: :id))
+
+      # Only events outside the group still match: moves can copy events there, and they need the full path.
+      events.update_all(
+        label_id: group_label.id,
+        reference: group_label.to_reference(group_label.group, format: :id, full: true)
+      )
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

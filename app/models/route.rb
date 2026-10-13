@@ -41,6 +41,10 @@ class Route < ApplicationRecord
   scope :for_routable_type, ->(routable_type) { where(source_type: routable_type) }
   scope :sort_by_path_length, -> { order('LENGTH(routes.path)', :path) }
 
+  def self.root_namespace_id_by_path(path)
+    by_paths([path]).joins(:namespace).pick(Arel.sql('namespaces.traversal_ids[1]'))
+  end
+
   def rename_descendants
     return unless saved_change_to_path? || saved_change_to_name?
 

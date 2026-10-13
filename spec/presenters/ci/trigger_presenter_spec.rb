@@ -6,9 +6,7 @@ RSpec.describe Ci::TriggerPresenter do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: user) }
 
-  let_it_be_with_reload(:trigger) do
-    create(:ci_trigger, token: '123456789abcd', project: project)
-  end
+  let(:trigger) { build_stubbed(:ci_trigger, token: '123456789abcd', project: project) }
 
   subject do
     described_class.new(trigger, current_user: user)
@@ -30,9 +28,7 @@ RSpec.describe Ci::TriggerPresenter do
   end
 
   context 'when user is a trigger owner and builds admin' do
-    before do
-      trigger.update!(owner: user)
-    end
+    let(:trigger) { build_stubbed(:ci_trigger, token: '123456789abcd', project: project, owner: user) }
 
     describe '#token' do
       it 'exposes full token' do

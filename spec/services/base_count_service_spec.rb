@@ -37,13 +37,7 @@ RSpec.describe BaseCountService, :use_clean_rails_memory_store_caching, feature_
 
   describe '#refresh_cache' do
     it 'refreshes the cache' do
-      allow(service)
-        .to receive(:cache_key)
-        .and_return('foo')
-
-      allow(service)
-        .to receive(:uncached_count)
-        .and_return(4)
+      allow(service).to receive_messages(cache_key: 'foo', uncached_count: 4)
 
       service.refresh_cache
 
@@ -53,13 +47,7 @@ RSpec.describe BaseCountService, :use_clean_rails_memory_store_caching, feature_
 
   describe '#delete_cache' do
     it 'deletes the cache' do
-      allow(service)
-        .to receive(:cache_key)
-        .and_return('foo')
-
-      allow(service)
-        .to receive(:uncached_count)
-        .and_return(4)
+      allow(service).to receive_messages(cache_key: 'foo', uncached_count: 4)
 
       service.refresh_cache
       service.delete_cache

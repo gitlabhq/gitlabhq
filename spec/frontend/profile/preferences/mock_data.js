@@ -35,5 +35,3 @@ export const themes = [
 ];
 
 export const themeId1 = 1;
-
-export const themeId2 = 2;

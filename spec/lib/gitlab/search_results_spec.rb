@@ -281,6 +281,65 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
           end
         end
       end
+
+      context 'with title ordering' do
+        # Creation order is deliberately neither title order nor its reverse, so an assertion
+        # here cannot be satisfied by the default `created_at DESC` or by `id` order in either
+        # direction.
+        let_it_be(:title_banana) do
+          create(:merge_request, source_project: project, source_branch: 'b7', title: 'titled banana')
+        end
+
+        let_it_be(:title_zebra) do
+          create(:merge_request, source_project: project, source_branch: 'b8', title: 'titled Zebra')
+        end
+
+        let_it_be(:title_apple) do
+          create(:merge_request, source_project: project, source_branch: 'b9', title: 'titled Apple')
+        end
+
+        let(:sorted_asc) { [title_apple, title_banana, title_zebra].map(&:id) }
+
+        def objects_for(sort_key, query = 'titled')
+          described_class
+            .new(user, query, Project.order(:id), sort: sort_key, filters: filters)
+            .objects(scope).map(&:id)
+        end
+
+        it 'sorts results by lowercased title ascending' do
+          expect(objects_for('title_asc')).to eq(sorted_asc)
+        end
+
+        it 'sorts results by lowercased title descending' do
+          expect(objects_for('title_desc')).to eq(sorted_asc.reverse)
+        end
+
+        context 'when titles are tied' do
+          # Identical lowercased titles, so the ID tie-breaker is the only thing that can
+          # give LIMIT/OFFSET pagination a total order.
+          let_it_be(:tied_first) do
+            create(:merge_request, source_project: project, source_branch: 'b10', title: 'tiebreak Same')
+          end
+
+          let_it_be(:tied_second) do
+            create(:merge_request, source_project: project, source_branch: 'b11', title: 'tiebreak same')
+          end
+
+          let_it_be(:tied_third) do
+            create(:merge_request, source_project: project, source_branch: 'b12', title: 'TIEBREAK SAME')
+          end
+
+          let(:tied_by_id_desc) { [tied_third, tied_second, tied_first].map(&:id) }
+
+          it 'breaks ties by ID descending under title_asc' do
+            expect(objects_for('title_asc', 'tiebreak')).to eq(tied_by_id_desc)
+          end
+
+          it 'breaks ties by ID descending under title_desc' do
+            expect(objects_for('title_desc', 'tiebreak')).to eq(tied_by_id_desc)
+          end
+        end
+      end
     end
 
     describe '#issues' do
@@ -374,6 +433,55 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
             include_examples 'search results sorted by popularity' do
               let(:results_popular) do
                 described_class.new(user, 'popular', Project.order(:id), sort: sort, filters: filters)
+              end
+            end
+          end
+        end
+      end
+
+      context 'with title ordering' do
+        # Creation order is deliberately neither title order nor its reverse, so an assertion
+        # here cannot be satisfied by the default `created_at DESC` or by `id` order in either
+        # direction.
+        let_it_be(:title_banana) { create(:issue, project: project, title: 'titled banana') }
+        let_it_be(:title_zebra) { create(:issue, project: project, title: 'titled Zebra') }
+        let_it_be(:title_apple) { create(:issue, project: project, title: 'titled Apple') }
+
+        let(:sorted_asc) { [title_apple, title_banana, title_zebra].map(&:id) }
+
+        %w[issues work_items].each do |searched_scope|
+          context "when scope is #{searched_scope}" do
+            let(:scope) { searched_scope }
+
+            def objects_for(sort_key, scope, filters, query = 'titled')
+              described_class
+                .new(user, query, Project.order(:id), sort: sort_key, filters: filters)
+                .objects(scope).map(&:id)
+            end
+
+            it 'sorts results by lowercased title ascending' do
+              expect(objects_for('title_asc', scope, filters)).to eq(sorted_asc)
+            end
+
+            it 'sorts results by lowercased title descending' do
+              expect(objects_for('title_desc', scope, filters)).to eq(sorted_asc.reverse)
+            end
+
+            context 'when titles are tied' do
+              # Identical lowercased titles, so the ID tie-breaker is the only thing that can
+              # give LIMIT/OFFSET pagination a total order.
+              let_it_be(:tied_first) { create(:issue, project: project, title: 'tiebreak Same') }
+              let_it_be(:tied_second) { create(:issue, project: project, title: 'tiebreak same') }
+              let_it_be(:tied_third) { create(:issue, project: project, title: 'TIEBREAK SAME') }
+
+              let(:tied_by_id_desc) { [tied_third, tied_second, tied_first].map(&:id) }
+
+              it 'breaks ties by ID descending under title_asc' do
+                expect(objects_for('title_asc', scope, filters, 'tiebreak')).to eq(tied_by_id_desc)
+              end
+
+              it 'breaks ties by ID descending under title_desc' do
+                expect(objects_for('title_desc', scope, filters, 'tiebreak')).to eq(tied_by_id_desc)
               end
             end
           end

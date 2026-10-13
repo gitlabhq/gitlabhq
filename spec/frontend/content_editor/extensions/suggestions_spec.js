@@ -1,4 +1,5 @@
 import tippy from 'tippy.js';
+import Vue, { nextTick } from 'vue';
 import { Plugin as MockPMPlugin } from '@tiptap/pm/state';
 import Suggestions from '~/content_editor/extensions/suggestions';
 
@@ -11,6 +12,7 @@ jest.mock('@tiptap/suggestion', () => {
     return new MockPMPlugin({ props: { items: config.items } });
   };
   mock.getCaptured = () => captured;
+  mock.findSuggestionMatch = jest.requireActual('@tiptap/suggestion').findSuggestionMatch;
   return mock;
 });
 
@@ -195,6 +197,214 @@ describe('content_editor/extensions/suggestions', () => {
       expect(chars).toContain('@');
       expect(chars).toContain('/');
       expect(chars).not.toContain(':');
+    });
+  });
+
+  describe('trigger configuration', () => {
+    const capturedConfigs = () => jest.requireMock('@tiptap/suggestion').getCaptured();
+
+    beforeEach(() => {
+      window.gon = { emoji_autocomplete_enabled: true };
+      buildEditorWithExtension([]);
+    });
+
+    it('registers every trigger', () => {
+      expect(capturedConfigs().map((c) => c.char)).toEqual([
+        '@',
+        '#',
+        '[issue:',
+        '[work_item:',
+        '$',
+        '~',
+        '&',
+        '[epic:',
+        '!',
+        '[vulnerability:',
+        '*iteration:',
+        '"',
+        '%',
+        ':',
+        '[[',
+        '/',
+      ]);
+    });
+
+    it('lets every query run across spaces', () => {
+      expect(capturedConfigs().every((c) => c.allowSpaces)).toBe(true);
+    });
+
+    it('narrows the match on a leading space for every trigger', () => {
+      expect(capturedConfigs().every((c) => c.findSuggestionMatch)).toBe(true);
+    });
+
+    describe('the trigger match', () => {
+      const matchTrigger = (char, text) =>
+        capturedConfigs()
+          .find((c) => c.char === char)
+          .findSuggestionMatch({
+            char,
+            allowSpaces: true,
+            allowToIncludeChar: false,
+            allowedPrefixes: [' '],
+            startOfLine: false,
+            $position: { pos: text.length + 1, nodeBefore: { isText: true, text } },
+          });
+
+      it.each`
+        description                        | char   | text                 | query
+        ${'the colon on its own'}          | ${':'} | ${':'}               | ${''}
+        ${'a name being typed'}            | ${':'} | ${':smil'}           | ${'smil'}
+        ${'a name followed by a space'}    | ${':'} | ${':smiling '}       | ${'smiling '}
+        ${'a name with a space inside it'} | ${':'} | ${'a :smiling f'}    | ${'smiling f'}
+        ${'a title being typed'}           | ${'!'} | ${'!Fix the'}        | ${'Fix the'}
+        ${'a title with a space after it'} | ${'!'} | ${'!Fix the '}       | ${'Fix the '}
+        ${'an issue title with spaces'}    | ${'#'} | ${'#login page bug'} | ${'login page bug'}
+      `('keeps searching for $description', ({ char, text, query }) => {
+        expect(matchTrigger(char, text)).toMatchObject({ query });
+      });
+
+      it.each`
+        description                              | char   | text
+        ${'a space right after the colon'}       | ${':'} | ${': '}
+        ${'French spacing before a word'}        | ${':'} | ${'Statut : suite'}
+        ${'a space right after the bang'}        | ${'!'} | ${'! '}
+        ${'French spacing after an exclamation'} | ${'!'} | ${'Bonjour ! Comment'}
+        ${'a space right after the tilde'}       | ${'~'} | ${'~ '}
+        ${'a space right after the hash'}        | ${'#'} | ${'# '}
+      `('stops searching on $description', ({ char, text }) => {
+        expect(matchTrigger(char, text)).toBeNull();
+      });
+    });
+
+    it('only requires quick actions to start the line', () => {
+      const startOfLine = capturedConfigs()
+        .filter((c) => c.startOfLine)
+        .map((c) => c.char);
+
+      expect(startOfLine).toEqual(['/']);
+    });
+  });
+
+  describe('popup keyboard handling', () => {
+    let handlers;
+    let popup;
+    let tippyOptions;
+    let command;
+    let editorDom;
+
+    const emojiItem = {
+      emoji: {
+        name: 'smile',
+        e: '😄',
+        d: 'smiling face with open mouth and smiling eyes',
+        u: '6.0',
+      },
+      fieldValue: 'smile',
+    };
+
+    const keyDownEvent = (key) => {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+      jest.spyOn(event, 'stopPropagation');
+      return event;
+    };
+
+    // Builds the popup with its items already known. The live plugin passes the loaded
+    // items through onStart, which updates the same props on the rendered component.
+    const openPopup = async ({ query, items }) => {
+      handlers.onBeforeStart({
+        editor: { view: { dom: editorDom } },
+        clientRect: () => new DOMRect(0, 0, 100, 20),
+        items,
+        query,
+        command,
+      });
+      await nextTick();
+    };
+
+    beforeAll(() => {
+      // The dropdown renders emoji through the <gl-emoji> custom element, which is not
+      // installed in jsdom; register a plain stand-in so Vue does not warn about it.
+      Vue.component('GlEmoji', { render: (h) => h('span') });
+    });
+
+    beforeEach(() => {
+      popup = { setProps: jest.fn(), destroy: jest.fn(), hide: jest.fn() };
+      tippy.mockImplementation((_, options) => {
+        tippyOptions = options;
+        return [popup];
+      });
+      command = jest.fn();
+      editorDom = document.createElement('div');
+
+      buildEditorWithExtension([]);
+
+      const SuggestionMock = jest.requireMock('@tiptap/suggestion');
+      handlers = SuggestionMock.getCaptured()
+        .find((c) => c.char === ':')
+        .render();
+    });
+
+    afterEach(() => {
+      handlers.onExit();
+    });
+
+    it('renders the dropdown component as the popup content', async () => {
+      await openPopup({ query: '', items: [emojiItem] });
+
+      expect(tippyOptions.content.classList).toContain('content-editor-suggestions-dropdown');
+    });
+
+    describe('Escape', () => {
+      it('hides the popup and stops the key from reaching the surrounding page', async () => {
+        await openPopup({ query: '', items: [emojiItem] });
+        const event = keyDownEvent('Escape');
+
+        expect(handlers.onKeyDown({ event })).toBe(true);
+        expect(popup.hide).toHaveBeenCalledTimes(1);
+        expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+      });
+
+      it('lets a second Escape through once the popup is hidden', async () => {
+        await openPopup({ query: '', items: [emojiItem] });
+        handlers.onKeyDown({ event: keyDownEvent('Escape') });
+        tippyOptions.onHide();
+
+        const event = keyDownEvent('Escape');
+
+        expect(handlers.onKeyDown({ event })).toBe(false);
+        expect(event.stopPropagation).not.toHaveBeenCalled();
+      });
+    });
+
+    describe.each(['Enter', 'Tab'])('%s', (key) => {
+      it('lets the key through and hides the popup while no item is highlighted', async () => {
+        await openPopup({ query: '', items: [emojiItem] });
+        const event = keyDownEvent(key);
+
+        expect(handlers.onKeyDown({ event })).toBe(false);
+        expect(command).not.toHaveBeenCalled();
+        expect(popup.hide).toHaveBeenCalledTimes(1);
+        expect(event.stopPropagation).not.toHaveBeenCalled();
+      });
+
+      it('inserts the highlighted item when the query matched', async () => {
+        await openPopup({ query: 'smi', items: [emojiItem] });
+        const event = keyDownEvent(key);
+
+        expect(handlers.onKeyDown({ event })).toBe(true);
+        expect(command).toHaveBeenCalledWith(
+          expect.objectContaining({ text: '😄', name: 'smile' }),
+        );
+        expect(popup.hide).not.toHaveBeenCalled();
+      });
+    });
+
+    it('ignores every key once the popup is hidden', async () => {
+      await openPopup({ query: 'smi', items: [emojiItem] });
+      tippyOptions.onHide();
+
+      expect(handlers.onKeyDown({ event: keyDownEvent('Enter') })).toBe(false);
+      expect(command).not.toHaveBeenCalled();
     });
   });
 

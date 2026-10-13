@@ -35,8 +35,8 @@ export default {
   apollo: {
     items: {
       query: RecentlyViewedItemsQuery,
-      update({ currentUser: { recentlyViewedItems = [] } = {} }) {
-        return recentlyViewedItems
+      update({ currentUser }) {
+        return (currentUser?.recentlyViewedItems ?? [])
           .map((entry) => {
             // eslint-disable-next-line no-underscore-dangle
             const typename = entry.item.__typename;

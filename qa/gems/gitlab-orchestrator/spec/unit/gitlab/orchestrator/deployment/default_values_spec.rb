@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
   let(:gitaly_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:kas_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:shell_version) { "14.0.5" }
-  let(:openbao_version) { "v2.5.5-gitlab2" }
+  let(:openbao_version) { "v2.6.2-gitlab1" }
   let(:image_tags) { {} }
 
   let(:env) do

@@ -28,6 +28,7 @@ RSpec.describe Ci::PipelineIid, feature_category: :continuous_integration do
       end
     end
 
+    let_it_be(:other_project) { create(:project, namespace: project.namespace) }
     let(:new_iid) { described_class.where(project: project).maximum(:iid) + 1 }
 
     before do
@@ -40,7 +41,6 @@ RSpec.describe Ci::PipelineIid, feature_category: :continuous_integration do
       ])
 
       # Add iid records for another project just to ensure they're ignored in the tests
-      other_project = create(:project)
       described_class.insert_all([
         { project_id: other_project.id, iid: 1 },
         { project_id: other_project.id, iid: 2 },

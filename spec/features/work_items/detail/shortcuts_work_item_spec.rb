@@ -21,7 +21,9 @@ RSpec.describe 'Work item keyboard shortcuts', :js, feature_category: :team_plan
       sign_in(user)
       visit work_items_path
 
-      wait_for_requests
+      wait_for_keyboard_shortcuts('ShortcutsWorkItem', 'ShortcutsNavigation', 'ShortcutsWorkItemNotes')
+      # Waits for the seeded note to render, which the `pressing r` examples select text from.
+      find('.notes .note-comment', text: note_text)
     end
 
     describe 'sidebar' do

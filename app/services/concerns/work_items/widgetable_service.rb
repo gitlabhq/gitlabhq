@@ -15,7 +15,14 @@ module WorkItems
         next if callback_class.nil?
 
         callback_params = widget_params[widget.class.api_symbol] || {}
-        callback_params[:excluded_in_new_type] = true if new_type_excludes_widget?(widget, work_item.resource_parent)
+
+        if new_type_excludes_widget?(widget, work_item.resource_parent)
+          # `custom_fields` is the only widget whose params are an Array. When the new type drops
+          # the widget its input is discarded anyway, so replace it with the exclusion marker
+          # instead of stamping a Symbol key onto an Array, which raises a TypeError.
+          callback_params = {} unless callback_params.is_a?(Hash)
+          callback_params[:excluded_in_new_type] = true
+        end
 
         if callback_class.const_defined?(:ALLOWED_PARAMS)
           callback_params.reverse_merge!(params.slice(*callback_class::ALLOWED_PARAMS))

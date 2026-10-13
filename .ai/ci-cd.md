@@ -28,7 +28,6 @@ The CI/CD configuration spans ~58 YAML files and ~12,500 lines across `.gitlab-c
   qa.gitlab-ci.yml                # E2E QA test triggers
   qa-common/                      # Shared QA config (rules, variables, Allure reporting)
   test-on-cng/                    # Cloud-Native GitLab E2E tests
-  test-on-gdk/                    # GDK-based E2E tests
   test-on-omnibus/                # Omnibus-based E2E tests (internal + external)
   cng/                            # CNG image build jobs
   templates/
@@ -214,7 +213,7 @@ Each gem gets its own child pipeline triggered from its `.gitlab-ci.yml`.
 
 ### QA/E2E pipelines
 
-`qa.gitlab-ci.yml`, `test-on-cng/`, `test-on-omnibus/`, and `test-on-gdk/` trigger E2E test child pipelines with shared config from `qa-common/`.
+`qa.gitlab-ci.yml`, `test-on-cng/`, and `test-on-omnibus/` trigger E2E test child pipelines with shared config from `qa-common/`.
 
 ## Override Pattern
 

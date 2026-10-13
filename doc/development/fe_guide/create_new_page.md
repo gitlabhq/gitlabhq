@@ -34,7 +34,7 @@ and action name.
 
 ### Entrypoint loading
 
-The bundler (Webpack or Vite) looks for entrypoint files in
+The bundler (Rspack) looks for entrypoint files in
 `app/assets/javascripts/pages/` using a cascading convention. For a controller action like
 `projects/pages/new`, it loads the following files in order, if they exist:
 

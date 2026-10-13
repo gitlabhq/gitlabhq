@@ -1,8 +1,8 @@
 const path = require('path');
 
 const { IS_EE, IS_JH, ROOT_PATH } = require('../webpack.constants');
-const { CONTEXT_ALIASES } = require('./context_aliases_shared');
-const { USE_VUE3 } = require('./vue_version');
+const { CONTEXT_ALIASES } = require('../vue3migration/aliases');
+const { USE_VUE3 } = require('../vue3migration/version');
 
 const aliases = {
   // Map Apollo client to apollo/client/core to prevent react related imports from being loaded
@@ -59,7 +59,6 @@ const aliases = {
   jest: path.join(ROOT_PATH, 'spec/frontend'),
   test_fixtures: path.join(ROOT_PATH, 'tmp/tests/frontend/fixtures'),
   test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
-  test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
   public: path.join(ROOT_PATH, 'public'),
   storybook_addons: path.resolve(ROOT_PATH, 'storybook/config/addons'),
   storybook_helpers: path.resolve(ROOT_PATH, 'storybook/helpers'),

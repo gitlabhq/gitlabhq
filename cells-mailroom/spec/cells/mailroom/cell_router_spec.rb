@@ -42,6 +42,53 @@ RSpec.describe Cells::Mailroom::CellRouter do
       expect(router.address_for(Gitlab::EmailHandler::Target.project_id(54))).to be_nil
     end
 
+    describe 'address validation' do
+      # An address we cannot turn into a URL authority is treated as
+      # unresolved, so the caller falls back to the default cell.
+      [
+        ['an address with a path', 'cell-1.example.com/api'],
+        ['a bracketed IPv6 address', '[::1]:443'],
+        ['a bare IPv6 address', '::1'],
+        ['an address with no host', ':443'],
+        ['an empty address', '']
+      ].each do |description, address|
+        it "returns nil for #{description}" do
+          proxy = Gitlab::Cells::TopologyService::ProxyInfo.new(address: address)
+          allow(stub).to receive(:classify).and_return(
+            Gitlab::Cells::TopologyService::ClassifyResponse.new(
+              action: Gitlab::Cells::TopologyService::ClassifyAction::PROXY, proxy: proxy
+            )
+          )
+
+          expect(router.address_for(Gitlab::EmailHandler::Target.project_id(54))).to be_nil
+        end
+      end
+
+      it 'accepts a host without a port' do
+        proxy = Gitlab::Cells::TopologyService::ProxyInfo.new(address: 'cell-1.example.com')
+        allow(stub).to receive(:classify).and_return(
+          Gitlab::Cells::TopologyService::ClassifyResponse.new(
+            action: Gitlab::Cells::TopologyService::ClassifyAction::PROXY, proxy: proxy
+          )
+        )
+
+        expect(router.address_for(Gitlab::EmailHandler::Target.project_id(54))).to eq('cell-1.example.com')
+      end
+
+      it 'logs the unusable address' do
+        proxy = Gitlab::Cells::TopologyService::ProxyInfo.new(address: '[::1]:443')
+        allow(stub).to receive(:classify).and_return(
+          Gitlab::Cells::TopologyService::ClassifyResponse.new(
+            action: Gitlab::Cells::TopologyService::ClassifyAction::PROXY, proxy: proxy
+          )
+        )
+
+        expect(logger).to receive(:warn).with(hash_including(Labkit::Fields::TCP_ADDRESS => '[::1]:443'))
+
+        router.address_for(Gitlab::EmailHandler::Target.project_id(54))
+      end
+    end
+
     describe 'target translation' do
       {
         'project id' => [Gitlab::EmailHandler::Target.project_id(54), :project_id, 54],

@@ -36,12 +36,16 @@ export default {
   mixins: [glAbilitiesMixin(), glLicensedFeaturesMixin()],
   inject: {
     namespaceFullPath: {},
-    namespaceName: {},
     dataSourceClickhouse: {},
     overviewCountsAggregationEnabled: {},
     // Defaulted because the dashboard edit and data explorer routes mount panels outside the
     // dashboard page that provides this.
     isProject: { default: false },
+  },
+  // GLQL presenters name their chart or table with this for assistive technology.
+  // A getter keeps it current when the title changes; Vue 2 does not unwrap an injected ref.
+  provide() {
+    return { getVisualizationTitle: () => this.panelTitle };
   },
   props: {
     visualization: {
@@ -82,6 +86,13 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    // The panel's index in the dashboard's reading order. Visualizations that queue their
+    // requests load in this order, so a view fills top to bottom.
+    loadPriority: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   emits: ['select-dashboard-view'],
@@ -142,7 +153,7 @@ export default {
       return this.namespaceFullPath;
     },
     subtitle() {
-      return this.visualizationOptionOverrides?.subtitle;
+      return this.visualizationOptions?.subtitle;
     },
     panelTitle() {
       return this.visualizationOptions?.title ?? this.title;
@@ -411,6 +422,7 @@ export default {
         :namespace="namespace"
         :is-project="isProject"
         :filters="filters"
+        :load-priority="loadPriority"
         @set-alerts="setAlerts"
         @set-actions="setActions"
         @reload="fetchData"

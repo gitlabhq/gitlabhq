@@ -1,3 +1,7 @@
 <%= s_('OfflineTransferExport|Export failed') %>
 
 <%= safe_format(s_('OfflineTransferExport|The offline export you started on %{start_date} from %{strong_open}%{source_hostname}%{strong_close} has failed.'), strong_open: '', strong_close: '', source_hostname: Gitlab::UrlSanitizer.sanitize(@offline_export.source_hostname.to_s), start_date: l(@offline_export.created_at.to_date, format: :long)) %>
+
+<%= safe_format(s_('OfflineTransferExport|Partial export artifacts may have been written to %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket. You can safely delete any files found at that path.'), strong_open: '', strong_close: '', export_prefix: @configuration.export_prefix) %>
+
+<%= s_('OfflineTransferExport|To try again, start a new export from your source GitLab instance.') %>

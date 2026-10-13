@@ -598,6 +598,22 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
       end
 
+      context 'when adding labels past the work item labels limit' do
+        let(:issue_params) { { label_ids: create_list(:label, 2, project: project).map(&:id) } }
+
+        before do
+          stub_const('Issue::MAX_NUMBER_OF_LABELS', 1)
+        end
+
+        it 'responds with the error as JSON', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to include(a_string_matching(/Cannot add more than 1 labels/))
+          expect(issue.reload.labels).to be_empty
+        end
+      end
+
       it 'updates the issue' do
         subject
 
@@ -1745,7 +1761,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         sign_in(user)
       end
 
-      context do
+      context 'with discussions on the issue' do
         it_behaves_like 'discussions provider' do
           let_it_be(:note_on_issue1) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
           let_it_be(:note_on_issue2) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }

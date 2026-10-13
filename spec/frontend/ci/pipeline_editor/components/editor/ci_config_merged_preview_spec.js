@@ -16,11 +16,10 @@ describe('Text editor component', () => {
     },
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(CiConfigMergedPreview, {
       propsData: {
         ciConfigData: mockLintResponse,
-        ...props,
       },
       provide: {
         ciConfigPath: mockCiConfigPath,

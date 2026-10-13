@@ -1120,6 +1120,35 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     end
   end
 
+  describe 'POST cancel when the rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    let!(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+    let(:throttle_message) { _('This endpoint has been requested too many times. Try again later.') }
+
+    def post_cancel(format: nil)
+      post :cancel, params: { namespace_id: project.namespace, project_id: project, id: pipeline.id }, format: format
+    end
+
+    before do
+      stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+    end
+
+    it 'returns 429 with the message for JSON', :aggregate_failures do
+      2.times { post_cancel(format: :json) }
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response.headers['Retry-After']).to eq(::Gitlab::ApplicationRateLimiter.period_for(:pipeline_cancel).to_s)
+      expect(json_response['message']).to eq(throttle_message)
+    end
+
+    it 'redirects with a flash alert for HTML', :aggregate_failures do
+      2.times { post_cancel }
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:alert]).to eq(throttle_message)
+    end
+  end
+
   describe 'GET test_report' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -1368,6 +1397,25 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(Ci::Build.exists?(build.id)).to be_falsy
         expect(Ci::Pipeline.exists?(pipeline.id)).to be_falsy
+      end
+
+      context 'when the rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        before do
+          stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+
+          ::Ci::DestroyPipelineService.new(project, project.first_owner)
+            .execute(create(:ci_pipeline, project: project))
+        end
+
+        # Surfaced rather than silently redirecting, so the user is not told a delete
+        # succeeded when the pipeline is still there.
+        it 'keeps the pipeline and flashes the throttle', :aggregate_failures do
+          delete_pipeline
+
+          expect(response).to have_gitlab_http_status(:see_other)
+          expect(flash[:alert]).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+          expect(Ci::Pipeline.exists?(pipeline.id)).to be_truthy
+        end
       end
 
       context 'and builds are disabled' do

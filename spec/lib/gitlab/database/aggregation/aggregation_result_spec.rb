@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::AggregationResult, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::AggregationResult, feature_category: :value_stream_management do
   subject(:result) { described_class.new(nil, nil, nil) }
 
   it { is_expected.to require_method_definition(:load_data) }

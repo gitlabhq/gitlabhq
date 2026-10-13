@@ -52,7 +52,6 @@ RSpec.describe Gitlab::Observability::TracingHelpers, feature_category: :observa
       let(:pipeline_data) do
         {
           object_attributes: { id: pipeline_id },
-          trace_correlation_enabled: true,
           source_pipeline: { pipeline_id: 99 }
         }
       end
@@ -79,6 +78,12 @@ RSpec.describe Gitlab::Observability::TracingHelpers, feature_category: :observa
       build = { id: 300 }
       expect(instance.send(:job_span_id, build)).to eq(
         Gitlab::Ci::TraceContext.span_id_for_job(root_id, 300, :export)
+      )
+    end
+
+    it 'matches TraceContext.export_job_span_id' do
+      expect(instance.send(:job_span_id, { id: 300 })).to eq(
+        Gitlab::Ci::TraceContext.export_job_span_id(root_id, 300)
       )
     end
   end

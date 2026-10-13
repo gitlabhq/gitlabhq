@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
@@ -26,7 +26,6 @@ export default {
     NewDirectoryModal,
   },
   directives: {
-    GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],

@@ -10,7 +10,7 @@ title: GitLab MCP server
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Generally available
 
 {{< /details >}}
 
@@ -21,11 +21,16 @@ title: GitLab MCP server
 - Support for `2025-03-26` and `2025-06-18` MCP protocol specifications [added](https://gitlab.com/gitlab-org/gitlab/-/issues/581459) in GitLab 18.7.
 - Support for the `2025-11-25` MCP protocol specification [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216219) in GitLab 18.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/590729) to a separate setting and [moved](https://gitlab.com/groups/gitlab-org/-/work_items/21183) from GitLab Premium to GitLab Free in GitLab 19.2.
+- Toolset selection [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/607755) in GitLab 19.5.
+- `duo_agent_platform` toolset [included by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/630992) in GitLab 19.5.
+- Changed from [beta](../../policy/development_stages_support.md#beta) to [generally available](../../policy/development_stages_support.md#generally-available) in GitLab 19.5.
+- `duo_agent_platform` toolset [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/631747) when GitLab Duo Agent Platform is available for the user in GitLab 19.5.
+- `code_security` tools [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/629267) when the licensed feature behind each tool is available for the user in GitLab 19.5.
 
 {{< /history >}}
 
 > [!warning]
-> To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
+> To provide feedback on this feature, leave a comment on [issue 630189](https://gitlab.com/gitlab-org/gitlab/-/issues/630189).
 
 With the GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
 you can securely connect AI tools and applications to your GitLab instance.
@@ -65,6 +70,8 @@ The GitLab MCP server supports two transport types:
 
 Common AI tools support the JSON configuration format for the `mcpServers` key
 and provide different methods to configure the GitLab MCP server settings.
+
+To limit which tools the server returns, see [Select tool groups (toolsets)](#select-tool-groups-toolsets).
 
 ### HTTP transport (recommended)
 
@@ -112,6 +119,141 @@ The prefix is truncated to the first 32 characters if it exceeds this limit.
   }
 }
 ```
+
+### Select tool groups (toolsets)
+
+To limit the tools returned by the GitLab MCP server to specific groups, configure the
+`X-Gitlab-Enabled-Mcp-Server-Toolsets` HTTP header with a comma-separated list of toolset names.
+
+Available toolsets:
+
+| Toolset | Included by default |
+|---------|----------------------|
+| `meta` | Always |
+| `core` | Yes |
+| `merge_requests` | Yes |
+| `work_items` | Yes |
+| `repository` | Yes |
+| `ci` | Yes |
+| `duo_agent_platform` | Yes, if GitLab Duo Agent Platform is available |
+| `wikis` | No (opt-in) |
+| `code_security` | No (opt-in) |
+
+The `duo_agent_platform` tools are listed only when GitLab Duo Agent Platform is available for you.
+This applies even when you request the toolset in the header or set the header to `all`.
+
+On GitLab.com, both of the following must be true:
+
+- You belong to a top-level group on the Premium or Ultimate plan that has GitLab Duo Agent Platform turned on,
+  or you have GitLab Duo Agent Platform through GitLab credits.
+- You are allowed to use GitLab Duo Agent Platform, for example, you have the required seat.
+
+On GitLab Self-Managed and GitLab Dedicated, all of the following must be true:
+
+- GitLab Duo is not set to **Always off** for the instance. With **Off by default**, the tools are listed
+  so that groups that turn GitLab Duo on can use them.
+- The instance has a license that includes GitLab Duo Agent Platform, or has GitLab credits.
+- GitLab Duo Agent Platform is turned on for your organization.
+- You are allowed to use GitLab Duo Agent Platform, for example, you have the required seat.
+
+For more information, see the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites)
+and [how to turn GitLab Duo Agent Platform on or off](../duo_agent_platform/turn_on_off.md).
+
+The `code_security` tools are listed only when the feature behind each tool is available for you.
+This applies even when you request the toolset in the header or set the header to `all`.
+
+- `list_vulnerabilities`, `get_vulnerability`, and `save_vulnerability` require the security dashboard.
+- `attach_scan_profile` requires security scan profiles.
+
+Both are Ultimate features. On GitLab.com, the tools are listed if you belong to at least one top-level group
+on the Ultimate plan, including Ultimate trials. Access to a project in that group also counts.
+On GitLab Self-Managed and GitLab Dedicated, the tools are listed if the instance license includes the feature.
+
+Listing a tool does not grant access. Each tool still checks your project and namespace permissions when called.
+
+To include an opt-in toolset, add it to the header value explicitly. To request every toolset,
+including all opt-in toolsets, set the header to `all`.
+
+When you omit both headers, the server returns the default toolsets. If you omit the toolsets header
+but set `X-Gitlab-Enabled-Mcp-Server-Tools`, the server returns only the tools you named, without any
+default toolsets or `meta` tools.
+
+Toolset names in the `X-Gitlab-Enabled-Mcp-Server-Toolsets` header are matched without regard to
+case, so `ci`, `CI`, and `Ci` are all accepted.
+
+An unrecognized toolset name in the header returns a `400` error.
+
+If you also set `X-Gitlab-Enabled-Mcp-Server-Tools`, the server returns the union of both lists,
+not the intersection. Setting both headers never returns fewer tools than either header alone.
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "type": "http",
+      "url": "https://<gitlab.example.com>/api/v4/mcp",
+      "headers": {
+        "X-Gitlab-Enabled-Mcp-Server-Toolsets": "core,work_items"
+      }
+    }
+  }
+}
+```
+
+The way you set this header depends on how your client is configured. Check your client's
+section on this page for its configuration format.
+
+- Clients configured with a JSON object that accepts a `headers` key, including Cursor and
+  Kiro: use the previous example.
+- opencode uses a top-level `mcp` key and `"type": "remote"`, so add a `headers` key to the
+  server definition in [Connect opencode to the GitLab MCP server](#connect-opencode-to-the-gitlab-mcp-server).
+- Claude Code, which is configured from the command line: pass `--header`.
+
+  ```shell
+  claude mcp add -s user --transport http GitLab https://<gitlab.example.com>/api/v4/mcp \
+    --header "X-Gitlab-Enabled-Mcp-Server-Toolsets: core,work_items"
+  ```
+
+- Clients that connect through `mcp-remote`, including Claude Desktop and Zed: pass `--header`
+  as an argument.
+
+  ```json
+  {
+    "mcpServers": {
+      "GitLab": {
+        "command": "npx",
+        "args": [
+          "-y", "mcp-remote", "https://<gitlab.example.com>/api/v4/mcp",
+          "--header", "X-Gitlab-Enabled-Mcp-Server-Toolsets: core,work_items"
+        ]
+      }
+    }
+  }
+  ```
+
+  On Windows, spaces inside `args` are not escaped when `npx` is invoked, which corrupts the
+  header value. Put the value in an environment variable and omit the space after the colon:
+
+  ```json
+  {
+    "mcpServers": {
+      "GitLab": {
+        "command": "npx",
+        "args": [
+          "-y", "mcp-remote", "https://<gitlab.example.com>/api/v4/mcp",
+          "--header", "X-Gitlab-Enabled-Mcp-Server-Toolsets:${GITLAB_TOOLSETS}"
+        ],
+        "env": {
+          "GITLAB_TOOLSETS": "core,work_items"
+        }
+      }
+    }
+  }
+  ```
+
+Other clients, including Gemini Code Assist and Gemini CLI, GitHub Copilot in VS Code, and
+OpenAI Codex, use their own configuration formats. Check your client's documentation for how
+to send a custom HTTP header.
 
 ### stdio transport with `mcp-remote`
 
@@ -174,6 +316,43 @@ You can now start a new chat and ask a question depending on the [available tool
 > You're responsible for guarding against prompt injection when you use these tools.
 > Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
+## Connect Amazon Q Developer to the GitLab MCP server
+
+Amazon Q Developer uses stdio transport through the `mcp-remote` proxy.
+You configure the server in a form rather than in a JSON file.
+
+Prerequisites:
+
+- Install Node.js version 20 or later.
+
+To configure the GitLab MCP server in Amazon Q Developer:
+
+1. In the Amazon Q panel, go to the MCP server settings and add a server.
+1. Complete the form:
+   - For **Scope**, select **Global** to use the server everywhere, or
+     **This workspace** to limit it to one workspace.
+   - For **Name**, enter `gitlab`.
+   - For **Transport**, select `stdio`.
+   - For **Command**, enter `npx`. If `npx` is installed locally instead of globally,
+     provide the full path to `npx`.
+   - For **Arguments**, add three separate arguments: `-y`, `mcp-remote`, and
+     `https://<gitlab.example.com>/api/v4/mcp`. Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+   - For **Timeout**, enter `60`.
+1. Save the configuration.
+1. In your browser, review and approve the authorization request.
+
+Do not pin `mcp-remote` to a specific version. Pinning was a workaround for how the
+OAuth scope was requested, and the server now defaults that scope during dynamic client
+registration. A pinned proxy also misses upstream fixes.
+
+You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
+
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
+
 ## Connect Claude Code to the GitLab MCP server
 
 Claude Code uses HTTP transport for direct connection without additional dependencies.
@@ -185,7 +364,25 @@ To configure the GitLab MCP server in Claude Code:
      - On GitLab.com, `gitlab.com`.
 
    ```shell
-   claude mcp add --transport http GitLab https://<gitlab.example.com>/api/v4/mcp
+   claude mcp add -s user --transport http GitLab https://<gitlab.example.com>/api/v4/mcp
+   ```
+
+   The `-s user` scope makes the server available in every project. Without it, the server
+   is added at `local` scope and is available only in the directory where you ran the command.
+
+   If you have already configured a GitLab MCP server, `claude mcp add` does not overwrite it.
+   List your existing servers and check which scope the GitLab entry uses:
+
+   ```shell
+   claude mcp list
+   ```
+
+   Remove the existing entry at that scope, then add it again. Entries added by following
+   earlier versions of these instructions are at `local` scope, because no `-s` flag was
+   given, and a `local` entry takes precedence over a `user` entry with the same name.
+
+   ```shell
+   claude mcp remove GitLab -s local
    ```
 
 1. Start Claude Code:
@@ -341,6 +538,43 @@ To configure the GitLab MCP server in Kiro IDE or CLI:
 
    The OAuth authorization page should appear.
    Otherwise, open Kiro CLI and run the `/mcp` command.
+
+1. In your browser, review and approve the authorization request.
+
+You can now start a new chat and ask a question depending on the [available tools](mcp_server_tools.md).
+
+> [!warning]
+> You're responsible for guarding against prompt injection when you use these tools.
+> Exercise extreme caution or use MCP tools only on GitLab objects you trust.
+
+## Connect OpenCode to the GitLab MCP server
+
+OpenCode uses HTTP transport for direct connection without additional dependencies.
+To configure the GitLab MCP server in OpenCode:
+
+1. Add this definition to the `mcp` key in your `~/.config/opencode/opencode.json` file:
+   - Replace `<gitlab.example.com>` with:
+     - On GitLab Self-Managed, your GitLab instance URL.
+     - On GitLab.com, `gitlab.com`.
+
+   ```json
+   {
+     "mcp": {
+       "gitlab-mcp": {
+         "type": "remote",
+         "url": "https://<gitlab.example.com>/api/v4/mcp",
+         "enabled": true
+       }
+     }
+   }
+   ```
+
+1. Save the file.
+1. Authenticate with the GitLab MCP server:
+
+   ```shell
+   opencode mcp auth gitlab-mcp
+   ```
 
 1. In your browser, review and approve the authorization request.
 
@@ -517,6 +751,51 @@ PKCE defends against authorization code interception for public clients.
 
 To enforce PKCE, verify that your MCP client sends `code_challenge` and `code_challenge_method` parameters during the OAuth flow.
 GitLab accepts PKCE parameters for pre-registered applications, but does not require them.
+
+## Rate limits
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/629883) in GitLab 19.5 [with feature flags](../../administration/feature_flags/_index.md) named `rate_limiter_mcp_limits_free_info`, `rate_limiter_mcp_limits_free_enforce`, `rate_limiter_mcp_limits_premium_info`, `rate_limiter_mcp_limits_premium_enforce`, `rate_limiter_mcp_limits_ultimate_info`, and `rate_limiter_mcp_limits_ultimate_enforce`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Requests to the MCP server endpoint, `POST /api/v4/mcp`, are limited for each user by the plan of
+their namespace:
+
+| Plan     | Limit            |
+| -------- | ---------------- |
+| Free     | 60 each minute   |
+| Premium  | 600 each minute  |
+| Ultimate | 600 each minute  |
+
+These limits apply for each user, not for each client or token. A user who connects several MCP
+clients shares one allowance across all of them.
+
+MCP server requests also count toward the
+[GitLab.com rate limits](../gitlab_com/rate_limits.md) that apply to all traffic, so a request can
+reach either limit. The MCP server limit is the lower of the two for every plan.
+
+When you exceed the limit, GitLab returns `429 Too Many Requests` with the
+[standard rate limit headers](../../administration/settings/user_and_ip_rate_limits.md#response-headers),
+including `Retry-After` and `RateLimit-Reset`. `RateLimit-Name` identifies which limit you reached.
+
+A rate limit on the GitLab API endpoint behind a tool is reported differently. For that case, see
+[the `rate_limited` tool result](mcp_server_troubleshooting.md#error-rate_limited-tool-result).
+
+On GitLab Self-Managed and GitLab Dedicated, an administrator sets a single MCP server limit for
+the instance. For more information, see
+[authenticated MCP server request rate limit](../../administration/settings/user_and_ip_rate_limits.md#enable-authenticated-mcp-server-request-rate-limit).
 
 ## Supported MCP protocol versions
 

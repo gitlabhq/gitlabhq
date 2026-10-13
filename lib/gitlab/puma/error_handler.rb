@@ -25,7 +25,8 @@ module Gitlab
         )
 
         # note the below is just a Rack response
-        [status_code, {}, message]
+        # Wrap message in an Array. Puma's response writer calls `.call` on a bare String body and raises NoMethodError.
+        [status_code, {}, [message]]
       end
 
       private

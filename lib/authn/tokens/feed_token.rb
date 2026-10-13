@@ -24,7 +24,7 @@ module Authn
       def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        Users::ResetFeedTokenService.new(
+        ::Users::ResetFeedTokenService.new(
           current_user,
           user: revocable,
           source: source

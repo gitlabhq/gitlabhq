@@ -85,7 +85,9 @@ Prerequisites:
 1. Expand **Visibility, project features, permissions**.
 1. From the **Project visibility** dropdown list, select an option.
    The visibility setting for a project must be at least as restrictive
-   as the visibility of its parent group.
+   as the visibility of its parent group. If the project is a fork, the visibility must
+   be at least as restrictive as the visibility of its upstream project.
+   For more information, see [fork visibility](project/repository/forking_workflow.md#create-a-fork).
 1. Select **Save changes**.
 
 ## Change the visibility of individual features in a project

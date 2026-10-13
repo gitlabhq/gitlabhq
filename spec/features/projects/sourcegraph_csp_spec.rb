@@ -24,8 +24,7 @@ RSpec.describe 'Sourcegraph Content Security Policy', feature_category: :groups_
     end
 
     before do
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url).and_return(sourcegraph_url)
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_enabled).and_return(true)
+      allow(Gitlab::CurrentSettings).to receive_messages(sourcegraph_url: sourcegraph_url, sourcegraph_enabled: true)
 
       sign_in(user)
     end

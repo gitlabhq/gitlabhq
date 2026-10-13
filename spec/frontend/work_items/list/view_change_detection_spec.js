@@ -166,11 +166,51 @@ describe('view change detection', () => {
       ).toBe(false);
     });
 
-    it('treats missing tracked keys as empty arrays and visibleGroups as null', () => {
+    it('treats missing tracked keys as empty arrays, visibleGroups as null, and showEmptyGroups as true', () => {
       expect(
         preferencesChanged({
-          currentPreferences: { hiddenMetadataKeys: [], visibleGroups: null },
+          currentPreferences: {
+            hiddenMetadataKeys: [],
+            visibleGroups: null,
+            showEmptyGroups: true,
+          },
           baselinePreferences: {},
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true when showEmptyGroups differs', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { showEmptyGroups: false },
+          baselinePreferences: { showEmptyGroups: true },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when showEmptyGroups matches', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { showEmptyGroups: false },
+          baselinePreferences: { showEmptyGroups: false },
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true when groupSort differs', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { groupSort: 'desc' },
+          baselinePreferences: { groupSort: 'asc' },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when groupSort matches', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { groupSort: 'desc' },
+          baselinePreferences: { groupSort: 'desc' },
         }),
       ).toBe(false);
     });

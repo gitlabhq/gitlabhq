@@ -21,12 +21,21 @@ module Import
                 pipeline: ::BulkImports::Projects::Pipelines::RepositoryBundlePipeline,
                 stage: 1
               },
+              members: {
+                pipeline: Import::Offline::Projects::Pipelines::MembersPipeline,
+                stage: 1
+              },
               labels: {
                 pipeline: ::BulkImports::Common::Pipelines::LabelsPipeline,
                 stage: 2
               },
               milestones: {
                 pipeline: ::BulkImports::Common::Pipelines::MilestonesPipeline,
+                stage: 2
+              },
+              badges: {
+                pipeline: Import::Offline::Projects::Pipelines::BadgesPipeline,
+                minimum_source_version: '19.5.0',
                 stage: 2
               },
               issues: {

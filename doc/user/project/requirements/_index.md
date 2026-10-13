@@ -54,7 +54,7 @@ To create a requirement:
 1. Select **New requirement**.
 1. Enter a title and description and select **New requirement**.
 
-![The requirement form in a right-side panel, where you enter a title and description.](img/requirement_create_v13_5.png)
+![The requirement form in a drawer.](img/requirement_create_v13_5.png)
 
 You can see the newly created requirement at the top of the list, with the requirements
 list being sorted by creation date, in descending order.
@@ -63,7 +63,7 @@ list being sorted by creation date, in descending order.
 
 You can view a requirement from the list by selecting it.
 
-![An example of a selected requirement](img/requirement_view_v13_5.png)
+![A requirement selected in the list, with its details in a drawer.](img/requirement_view_v13_5.png)
 
 To edit a requirement while viewing it, select the **Edit** icon ({{< icon name="pencil" >}})
 next to the requirement title.

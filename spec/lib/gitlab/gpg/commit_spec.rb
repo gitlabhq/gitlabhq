@@ -278,6 +278,39 @@ RSpec.describe Gitlab::Gpg::Commit, feature_category: :source_code_management do
           it_behaves_like 'returns the cached signature on second call'
         end
 
+        context 'committer_email belongs to a uid of the key that has been revoked' do
+          let(:public_key) { GpgHelpers::UserWithRevokedUid.public_key }
+          let(:committer_email) { GpgHelpers::UserWithRevokedUid.revoked_emails.first }
+
+          let(:user) do
+            create(:user, email: GpgHelpers::UserWithRevokedUid.emails.first).tap do |user|
+              create :email, :confirmed, user: user, email: committer_email
+            end
+          end
+
+          let(:signature_data) do
+            {
+              signature: GpgHelpers::UserWithRevokedUid.signed_commit_signature,
+              signed_text: GpgHelpers::UserWithRevokedUid.signed_commit_base_data,
+              signer: signer
+            }
+          end
+
+          it 'returns an invalid signature carrying the live uid of the key' do
+            expect(described_class.new(commit).signature).to have_attributes(
+              commit_sha: commit_sha,
+              project: project,
+              gpg_key: gpg_key,
+              gpg_key_primary_keyid: GpgHelpers::UserWithRevokedUid.primary_keyid,
+              gpg_key_user_name: GpgHelpers::UserWithRevokedUid.names.first,
+              gpg_key_user_email: GpgHelpers::UserWithRevokedUid.emails.first,
+              verification_status: 'same_user_different_email'
+            )
+          end
+
+          it_behaves_like 'returns the cached signature on second call'
+        end
+
         context 'signing key has been revoked' do
           before do
             revoked_signature = instance_double(GPGME::Signature, fingerprint: GpgHelpers::User1.fingerprint,
@@ -360,6 +393,33 @@ RSpec.describe Gitlab::Gpg::Commit, feature_category: :source_code_management do
             gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
             gpg_key_user_name: GpgHelpers::User1.names.first,
             gpg_key_user_email: GpgHelpers::User1.emails.first,
+            verification_status: 'unverified_key'
+          )
+        end
+
+        it_behaves_like 'returns the cached signature on second call'
+      end
+
+      context 'every uid of the key has been revoked' do
+        let(:public_key) { GpgHelpers::UserWithOnlyRevokedUid.public_key }
+        let(:committer_email) { GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first }
+
+        let(:signature_data) do
+          {
+            signature: GpgHelpers::UserWithOnlyRevokedUid.signed_commit_signature,
+            signed_text: GpgHelpers::UserWithOnlyRevokedUid.signed_commit_base_data,
+            signer: signer
+          }
+        end
+
+        it 'returns an invalid signature carrying no identity' do
+          expect(described_class.new(commit).signature).to have_attributes(
+            commit_sha: commit_sha,
+            project: project,
+            gpg_key: gpg_key,
+            gpg_key_primary_keyid: GpgHelpers::UserWithOnlyRevokedUid.primary_keyid,
+            gpg_key_user_name: nil,
+            gpg_key_user_email: nil,
             verification_status: 'unverified_key'
           )
         end

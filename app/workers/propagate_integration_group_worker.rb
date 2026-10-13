@@ -21,7 +21,7 @@ class PropagateIntegrationGroupWorker
               integration.group.descendants.where(id: min_id..max_id).without_integration(integration)
             end
 
-    return if batch.empty?
+    return if batch.load.empty?
 
     Integrations::Propagation::BulkCreateService.new(integration, batch, 'group').execute
   end

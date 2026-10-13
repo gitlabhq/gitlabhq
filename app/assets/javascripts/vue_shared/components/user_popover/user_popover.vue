@@ -15,6 +15,7 @@ import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   I18N_ERROR_FOLLOW,
@@ -46,6 +47,7 @@ export default {
     GlButton,
     GlAvatarLabeled,
     HelpIcon,
+    TimeAgoTooltip,
   },
   directives: {
     SafeHtml,
@@ -59,7 +61,6 @@ export default {
     user: {
       type: Object,
       required: true,
-      default: null,
     },
     placement: {
       type: String,
@@ -104,6 +105,18 @@ export default {
     userCannotMerge() {
       return this.target.dataset.cannotMerge;
     },
+    recommendationReason() {
+      return this.target.dataset.recommendationReason;
+    },
+    recommendationCreatedAt() {
+      return this.target.dataset.recommendationCreatedAt;
+    },
+    recommendationReasonIconVariant() {
+      return this.isBusy ? 'subtle' : 'info';
+    },
+    recommendationReasonIconName() {
+      return this.isBusy ? 'status-waiting' : 'status-active';
+    },
     userIsLoading() {
       return !this.user?.loaded;
     },
@@ -137,10 +150,18 @@ export default {
       return `@${this.user?.username}`;
     },
     cssClasses() {
-      const classList = ['user-popover', 'gl-w-34'];
+      const classList = ['user-popover', 'gl-w-34', 'gl-overflow-clip'];
 
       if (this.userCannotMerge) {
         classList.push('user-popover-cannot-merge');
+      }
+
+      // Skip the recommendation accent when "Cannot merge" is shown so its
+      // warning header background wins; both classes style .popover-header.
+      if (this.recommendationReason && !this.userCannotMerge) {
+        classList.push(
+          this.isBusy ? 'user-popover-recommendation-busy' : 'user-popover-recommendation',
+        );
       }
 
       return classList;
@@ -213,10 +234,40 @@ export default {
     triggers="hover focus manual"
     data-testid="user-popover"
   >
-    <template v-if="userCannotMerge" #title>
-      <div class="gl-flex gl-items-center gl-pb-3" data-testid="cannot-merge">
+    <template v-if="userCannotMerge || recommendationReason" #title>
+      <div
+        v-if="userCannotMerge"
+        class="gl-flex gl-items-center gl-pb-3"
+        data-testid="cannot-merge"
+      >
         <gl-icon name="warning-solid" class="gl-mr-2" variant="warning" />
-        <span class="gl-font-normal">{{ __('Cannot merge') }}</span>
+        <span class="gl-font-semibold">{{ __('Cannot merge') }}</span>
+      </div>
+      <div
+        v-if="recommendationReason"
+        class="gl-flex gl-items-start gl-pb-3 gl-font-semibold"
+        data-testid="user-popover-recommendation-reason"
+      >
+        <gl-icon
+          :size="12"
+          :name="recommendationReasonIconName"
+          class="gl-mr-2 gl-mt-1 gl-shrink-0"
+          :variant="recommendationReasonIconVariant"
+        />
+        <span>
+          {{ recommendationReason }}
+          <span
+            v-if="recommendationCreatedAt"
+            class="gl-mt-2 gl-block gl-text-sm gl-text-subtle"
+            data-testid="user-popover-recommendation-created-at"
+          >
+            <gl-sprintf :message="__('Created %{timeAgo}')">
+              <template #timeAgo>
+                <time-ago-tooltip :time="recommendationCreatedAt" />
+              </template>
+            </gl-sprintf>
+          </span>
+        </span>
       </div>
     </template>
     <div class="gl-mb-3">

@@ -30,6 +30,7 @@ import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   i18n,
+  WIDGET_TYPE_WORKPLAN,
   WIDGET_TYPE_DESCRIPTION,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WIDGET_TYPE_DESIGNS,
@@ -204,6 +205,7 @@ export default {
     'add-child',
     'attributes-updated',
     'delete-work-item',
+    'duo-question-answered',
     'work-item-emoji-updated',
     'work-item-updated',
     'work-item-state-updated',
@@ -337,7 +339,7 @@ export default {
       return !this.agentPlanWidget;
     },
     agentPlanWidget() {
-      return this.workItem?.features?.agentPlan || this.findWidget('AGENT_PLAN');
+      return this.workItem?.features?.agentPlan || this.findWidget(WIDGET_TYPE_WORKPLAN);
     },
     workItemProjectId() {
       return this.workItem?.project?.id;
@@ -1005,7 +1007,11 @@ export default {
             :is-drawer="isDetailPanel"
             :work-item="workItem"
             :archived="workItem.archived"
-          />
+          >
+            <template v-if="glSlots()['sticky-header-append']" #append>
+              <slot name="sticky-header-append" :work-item="workItem"></slot>
+            </template>
+          </work-item-sticky-header>
         </template>
 
         <template #heading-wrapper>
@@ -1024,7 +1030,6 @@ export default {
                 :title-html="workItem.titleHtml"
                 @update-work-item="updateWorkItem"
                 @update-draft="updateDraft('title', $event)"
-                @error="updateError = $event"
               />
             </div>
             <work-item-title
@@ -1035,7 +1040,6 @@ export default {
               :class="titleClassComponent"
               :title="workItem.title"
               :title-html="workItem.titleHtml"
-              @error="updateError = $event"
               @update-work-item="updateWorkItem"
               @update-draft="updateDraft('title', $event)"
             />
@@ -1294,6 +1298,7 @@ export default {
             :use-h2="!isDetailPanel"
             :parent-id="parentWorkItemId"
             :hide-fullscreen-markdown-button="isDetailPanel"
+            @duo-question-answered="$emit('duo-question-answered')"
             @error="updateError = $event"
             @open-report-abuse="openReportAbuseModal"
             @start-editing="isAddingNotes = true"

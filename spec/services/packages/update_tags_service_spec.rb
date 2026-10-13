@@ -14,7 +14,7 @@ RSpec.describe Packages::UpdateTagsService, feature_category: :package_registry 
     RSpec.shared_examples 'updating tags' do |tags_count|
       it 'updates a tag' do
         expect { subject }.to change { Packages::Tag.count }.by(tags_count)
-        expect(package.reload.tags.map(&:name)).to contain_exactly(*tags)
+        expect(package.reload.tags.map(&:name)).to match_array(tags)
       end
     end
 

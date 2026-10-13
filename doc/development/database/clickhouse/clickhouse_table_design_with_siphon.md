@@ -143,6 +143,10 @@ The configuration fields are:
     starts with columns that are not part of the PostgreSQL primary key (for example, ordering by
     `(merge_request_diff_id, relative_order, traversal_path)` while the PostgreSQL primary key is
     `(merge_request_diff_id, relative_order)`).
+  - **`downstream_materialized_views`** *(optional)*: The destination tables of any materialized
+    views attached to the `target` table. Listing them here includes them in the tables that the
+    `gitlab:siphon:clean_clickhouse` Rake task truncates. For more information, see
+    [Materialized views and re-snapshots](#materialized-views-and-re-snapshots).
   - **`reconcile`** *(optional)*: Configuration for the periodic consistency check job that repairs
     denormalized columns.
     - **`column`**: The denormalized column to reconcile (for example, `traversal_path`).
@@ -158,6 +162,8 @@ database: main
 replication_targets:
   - name: clickhouse_main
     target: siphon_merge_requests
+    downstream_materialized_views:
+      - merge_requests_base
     dedup_by_table: merge_requests
     dedup_by:
       - id
@@ -208,6 +214,28 @@ Or you can start ClickHouse client and run the following query:
 ```sql
 SELECT * FROM siphon_labels;
 ```
+
+#### Materialized views and re-snapshots
+
+A re-snapshot happens when the CDC pipeline breaks and Siphon loses its consistent replication point
+in PostgreSQL. The data in ClickHouse can no longer be trusted, so the
+`gitlab:siphon:clean_clickhouse` Rake task truncates it and Siphon replays the table from scratch.
+
+A materialized view's destination table keeps its rows when the view's source table is truncated.
+Without `downstream_materialized_views`, a re-snapshot leaves that table holding a mix of stale rows
+and replayed ones. List the destination table, not the view name, so the Rake task truncates both
+together. For example, `db/siphon/tables/events.yml` lists `contributions_new`, the destination of
+the `contributions_new_mv` view.
+
+Configure it whenever a Siphon-replicated table feeds the view, both when that table is the only
+source and when the view joins other tables as well. Extra joins do not exempt the destination table.
+
+Only list tables that a replay can rebuild. If a view joins a table that Siphon does not replicate,
+that table holds the only copy of its data, and a truncate loses it permanently.
+
+The Rake task also only truncates, it never re-runs the view. An incremental view refills as the
+replay re-inserts rows into its source table. A refreshable view refills only on its next scheduled
+refresh, so its destination table stays empty until then.
 
 ## Hierarchy Denormalization Examples
 
@@ -706,6 +734,34 @@ With all denormalizations, there are trade-offs. The Siphon-based hierarchy deno
   - Eventual consistency is enforced via periodical consistency check jobs. The system aims to resolve these consistency issues in 5 minutes for large tables (note: this is to be implemented within [this issue](https://gitlab.com/gitlab-org/analytics-section/siphon/-/work_items/160)).
 
 In development, consistency issues might appear more often as record creation might happen very close to the project or group creation. In these cases, the eventual consistency enforcement should resolve the problems in seconds or minutes (configurable).
+
+## Updating rows
+
+Avoid `ALTER TABLE ... UPDATE` (mutations) or any other statement that modifies ClickHouse rows in place on Siphon tables.
+In-place changes can affect the data correctness of the Siphon data synchronization.
+
+To change rows, reinsert them with a higher `_siphon_replicated_at` value (add one microsecond).
+`ReplacingMergeTree` keeps the row with the highest `_siphon_replicated_at`, so the reinserted row wins.
+One microsecond is small enough that a later change replicated by Siphon still wins, which prevents concurrent modification issues.
+
+For tables that use the `Null` engine pattern, read the rows from the storage table and insert them into the `Null` table.
+The materialized views run again and recompute the denormalized columns.
+The column list must include every column of the `Null` table, which you can read from `system.columns`.
+
+The query does not need deduplication or a `_siphon_deleted` filter.
+Every version moves forward by the same microsecond, so the latest version still wins and deleted rows stay deleted.
+
+```sql
+-- Abbreviated: list every column of siphon_merge_requests in both clauses
+INSERT INTO siphon_merge_requests (id, title, traversal_path, ..., _siphon_replicated_at, _siphon_deleted)
+SELECT id, title, traversal_path, ..., addMicroseconds(_siphon_replicated_at, 1) AS _siphon_replicated_at, _siphon_deleted
+FROM merge_requests
+WHERE id IN (1, 2, 3)
+```
+
+Alternatively, you can update the affected rows in PostgreSQL, for example from a
+[post-deployment migration](../post_deployment_migrations.md), you can touch the records (bump `updated_at`).
+Siphon replicates the change like any other update.
 
 ## Table Partitioning
 

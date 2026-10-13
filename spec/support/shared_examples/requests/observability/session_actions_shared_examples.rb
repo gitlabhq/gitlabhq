@@ -68,7 +68,7 @@ RSpec.shared_examples 'observability BFF session actions' do
   context 'when the rate limit is exceeded' do
     before do
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled_request?)
-        .with(instance_of(ActionDispatch::Request), user, :observability_bff_session, scope: user)
+        .with(instance_of(ActionDispatch::Request), user, :observability_bff_session, scope: { user: user })
         .and_return(true)
     end
 

@@ -21,8 +21,7 @@ RSpec.describe ProjectBadge do
     end
 
     def stub_project_commit_info(project)
-      allow(project).to receive(:commit).and_return(double('Commit', sha: 'whatever'))
-      allow(project).to receive(:default_branch).and_return('master')
+      allow(project).to receive_messages(commit: double('Commit', sha: 'whatever'), default_branch: 'master')
     end
   end
 

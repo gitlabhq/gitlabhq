@@ -20,7 +20,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { partitioned_table_name }
     let(:partitioning_strategy) do
-      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
+      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil, analyze_interval: nil,
+        default_analyze_interval?: false)
     end
 
     let(:partitions) do
@@ -96,7 +97,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
               instance_double(Gitlab::Database::Partitioning::TimePartition, partition_name: 'foo0')
             ],
             after_adding_partitions: nil,
-            analyze_interval: nil
+            analyze_interval: nil,
+            default_analyze_interval?: false
           )
         end
 
@@ -152,6 +154,62 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
         sync_partitions
       end
+    end
+  end
+
+  context 'when the database is a logical replication subscriber (mocked)' do
+    subject(:sync_partitions) { manager.sync_partitions }
+
+    let(:manager) { described_class.new(model) }
+    let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
+    let(:connection) { ActiveRecord::Base.connection }
+    let(:table) { partitioned_table_name }
+    let(:partitioning_strategy) do
+      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil,
+        validate_and_fix: nil, analyze_interval: nil, default_analyze_interval?: false)
+    end
+
+    let(:partitions) do
+      [
+        instance_double(Gitlab::Database::Partitioning::TimePartition,
+          table: 'bar',
+          partition_name: 'foo',
+          to_create_sql: "CREATE TABLE _partition_1",
+          to_attach_sql: "ALTER TABLE foo ATTACH PARTITION _partition_1")
+      ]
+    end
+
+    before do
+      create_partitioned_table(connection, table)
+
+      allow(connection).to receive(:table_exists?).and_call_original
+      allow(connection).to receive(:table_exists?).with(table).and_return(true)
+      allow(manager).to receive(:logical_replication_subscriber?).and_return(true)
+
+      stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
+    end
+
+    it 'creates the missing partitions and leaves the parent table and its existing partitions alone', :aggregate_failures do
+      expect(manager).to receive(:create_partition_tables).with(partitions)
+      expect(manager).to receive(:attach_partition_tables).with(partitions)
+
+      sync_partitions
+
+      expect(partitioning_strategy).not_to have_received(:validate_and_fix)
+      expect(partitioning_strategy).not_to have_received(:after_adding_partitions)
+      expect(partitioning_strategy).not_to have_received(:extra_partitions)
+    end
+
+    it 'logs that it runs in replica mode' do
+      allow(manager).to receive(:create_partition_tables)
+      allow(manager).to receive(:attach_partition_tables)
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      sync_partitions
+
+      expect(Gitlab::AppLogger).to have_received(:info).with(
+        hash_including('message' => 'Checking state of dynamic postgres partitions', 'replica_mode' => true)
+      )
     end
   end
 
@@ -334,7 +392,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:table) { :_test_foo }
     let(:partitioning_strategy) do
       double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
-        analyze_interval: nil, detach_concurrently?: false, detachable_since: nil)
+        analyze_interval: nil, default_analyze_interval?: false, detach_concurrently?: false, detachable_since: nil)
     end
 
     let(:extra_partitions) do
@@ -374,8 +432,6 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     context 'when the eligibility check hits a database error' do
       before do
-        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-
         allow_next_instances_of(Gitlab::Database::Partitioning::DetachEligibility, extra_partitions.size) do |check|
           allow(check).to receive(:detachable?).and_raise(ActiveRecord::StatementInvalid, 'statement timeout')
         end
@@ -446,33 +502,20 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       context 'when the blocker is at error level' do
         let(:blocker_level) { :error }
 
-        it 'reports one error for the whole run, naming every partition it could not detach' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
-            expect(exception).to be_a(described_class::UnableToDetachPartition)
-            expect(exception.message).to eq(
-              'Unable to detach partitions of _test_foo: ' \
-                'foo1 (referencing_table_cannot_prune), foo2 (referencing_table_cannot_prune)'
-            )
-          end
+        it 'logs an error for each blocker' do
+          expect(Gitlab::AppLogger).to receive(:error)
+            .with(hash_including('message' => 'Cannot detach partition'))
+            .exactly(extra_partitions.size).times
 
           sync_partitions
         end
 
-        it 'logs every blocker before it escalates' do
-          expect(Gitlab::AppLogger).to receive(:error)
-            .with(hash_including('message' => 'Cannot detach partition'))
-            .exactly(extra_partitions.size).times.ordered
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).ordered
-
-          sync_partitions
+        it 'does not raise, because syncing runs on boot and during db:migrate' do
+          expect { sync_partitions }.not_to raise_error
         end
       end
 
       context 'when the blocker asks for another log level' do
-        before do
-          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-        end
-
         where(:blocker_level, :log_method) do
           :info  | :info
           :error | :error
@@ -509,7 +552,6 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         end
 
         before do
-          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
           allow(partitioning_strategy).to receive(:detachable_since).and_return(detachable_since)
         end
 
@@ -518,7 +560,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
           it 'reports the deferral at the level the blocker asked for' do
             allow(Gitlab::AppLogger).to receive(:info)
-            expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+            expect(Gitlab::AppLogger).not_to receive(:warn)
 
             extra_partitions.each do |partition|
               expect(Gitlab::AppLogger).to receive(:info).with(
@@ -538,7 +580,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
           it 'reports the long wait separately from the deferral it logged' do
             allow(Gitlab::AppLogger).to receive(:info)
-            allow(Gitlab::AppLogger).to receive(:error)
+            allow(Gitlab::AppLogger).to receive(:warn)
 
             extra_partitions.each do |partition|
               expect(Gitlab::AppLogger).to receive(:info).with(
@@ -549,24 +591,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
                 )
               )
 
-              expect(Gitlab::AppLogger).to receive(:error).with(
+              expect(Gitlab::AppLogger).to receive(:warn).with(
                 hash_including(
                   'message' => 'Detach deferred for too long',
                   'blocker_reason' => :counterpart_partition_present,
                   'deferral_duration_s' => be_within(1.minute).of(max_detach_deferral + 1.hour),
                   'partition_name' => partition.partition_name
                 )
-              )
-            end
-
-            sync_partitions
-          end
-
-          it 'names the long wait, not the blocker, in the error it reports' do
-            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
-              expect(exception.message).to eq(
-                'Unable to detach partitions of _test_foo: ' \
-                  'foo1 (deferred too long), foo2 (deferred too long)'
               )
             end
 
@@ -580,13 +611,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
               )
             end
 
-            it 'reports the blocker on its own, because an error is not a deferral' do
-              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
-                expect(exception.message).to eq(
-                  'Unable to detach partitions of _test_foo: ' \
-                    'foo1 (referencing_table_cannot_prune), foo2 (referencing_table_cannot_prune)'
-                )
-              end
+            it 'does not report a long wait, because an error is not a deferral' do
+              expect(Gitlab::AppLogger).not_to receive(:warn)
+              expect(Gitlab::AppLogger).to receive(:error)
+                .with(hash_including('message' => 'Cannot detach partition'))
+                .exactly(extra_partitions.size).times
 
               sync_partitions
             end
@@ -599,8 +628,6 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       let(:blocked_partition) { extra_partitions.first }
 
       before do
-        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-
         allow(Gitlab::Database::Partitioning::DetachEligibility).to receive(:new)
           .and_wrap_original do |method, partition, **kwargs|
             method.call(partition, **kwargs).tap do |check|
@@ -615,8 +642,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect { sync_partitions }.to change { Postgresql::DetachedPartition.pluck(:table_name) }.to(%w[foo2])
       end
 
-      it 'escalates the blocked one once the run is done' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+      it 'logs an error naming the blocked one' do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            'message' => 'Cannot detach partition',
+            'blocker_reason' => :database_error,
+            'partition_name' => blocked_partition.partition_name
+          )
+        )
 
         sync_partitions
       end
@@ -625,7 +658,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     context 'when the strategy detaches concurrently' do
       let(:partitioning_strategy) do
         double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
-          analyze_interval: nil, detach_concurrently?: true)
+          analyze_interval: nil, default_analyze_interval?: false, detach_concurrently?: true)
       end
 
       let(:extra_partitions) do
@@ -664,6 +697,35 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
         expect { sync_partitions }.to change { Postgresql::DetachedPartition.pluck(:table_name) }
           .to(%w[_test_foo1])
+      end
+
+      context 'when an earlier detach attempt failed and left its cleanup records' do
+        # Rows written by earlier attempts on the still-attached partition
+        let!(:stale_records) do
+          Array.new(2) { Postgresql::DetachedPartition.create!(table_name: '_test_foo1', drop_after: 1.day.from_now) }
+        end
+
+        it 'deletes them before creating the new record' do
+          freeze_time do
+            sync_partitions
+
+            expect(Postgresql::DetachedPartition.where(table_name: '_test_foo1'))
+              .to contain_exactly(have_attributes(
+                drop_after: Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR
+              ))
+          end
+        end
+
+        it 'deletes them even when the detach fails again' do
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute).with('SELECT 1').and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+          sync_partitions
+
+          records = Postgresql::DetachedPartition.where(table_name: '_test_foo1')
+          expect(records.count).to eq(1)
+          expect(records).not_to include(*stale_records)
+        end
       end
 
       it 'records the concurrent form as a log field' do
@@ -823,6 +885,48 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       expect(pending_drop.drop_after).to eq(Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR)
     end
 
+    context 'when the partition already has a cleanup record' do
+      # Stands in for a row left by an earlier concurrent detach attempt
+      let!(:stale_record) do
+        Postgresql::DetachedPartition.create!(table_name: "#{partitioned_table_name}_202104", drop_after: 1.day.from_now)
+      end
+
+      it 'deletes it before creating the new record' do
+        subject
+
+        expect(Postgresql::DetachedPartition.where(table_name: "#{partitioned_table_name}_202104"))
+          .to contain_exactly(have_attributes(
+            drop_after: Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR
+          ))
+      end
+
+      it 'keeps it when the detach fails' do
+        allow(connection).to receive(:execute).and_call_original
+        allow(connection).to receive(:execute).with(/DETACH PARTITION/).and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+        subject
+
+        # The delete and create share the failed detach's transaction, so both roll back
+        expect(Postgresql::DetachedPartition.all).to contain_exactly(stale_record)
+      end
+    end
+
+    context 'when the database is a logical replication subscriber' do
+      before do
+        allow_next_instance_of(described_class) do |manager|
+          allow(manager).to receive(:logical_replication_subscriber?).and_return(true)
+        end
+      end
+
+      it 'detaches nothing and schedules no drop', :aggregate_failures do
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        expect { subject }.not_to change { find_partitions(my_model.table_name).size }
+
+        expect(Postgresql::DetachedPartition.count).to eq(0)
+      end
+    end
+
     context 'when the model overrides the detached partition retention period' do
       let(:my_model) do
         Class.new(ApplicationRecord) do
@@ -855,10 +959,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
       # A range-partitioned parent is outside what the eligibility check supports, so a partition
       # of one that is referenced can never be detached
-      it 'reports an error and detaches nothing' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).once do |exception|
-          expect(exception.message).to include('unsupported_partition_key')
-        end
+      it 'logs an error and detaches nothing' do
+        allow(Gitlab::AppLogger).to receive(:error)
+        expect(Gitlab::AppLogger).to receive(:error)
+          .with(hash_including('blocker_reason' => :unsupported_partition_key))
+          .at_least(:once)
 
         expect { subject }.not_to change { find_partitions(my_model.table_name).size }
       end
@@ -886,6 +991,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
   describe 'analyze partitioned table' do
     let(:analyze) { true }
+    let(:analyze_tables_with_default_interval) { false }
     let(:analyze_table) { partitioned_table_name }
     let(:analyze_partition) { "#{partitioned_table_name}_1" }
     let(:analyze_regex) { /ANALYZE \(SKIP_LOCKED\) "#{analyze_table}"/ }
@@ -905,6 +1011,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
     end
 
+    def sync_with_analyze
+      described_class.new(my_model, connection: connection)
+        .sync_partitions(analyze: analyze, analyze_tables_with_default_interval: analyze_tables_with_default_interval)
+    end
+
     shared_examples_for 'run only once analyze within interval' do
       before do
         allow_next_instance_of(described_class) do |instance|
@@ -914,14 +1025,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
 
       specify do
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).to include(analyze_regex)
 
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).not_to include(analyze_regex)
 
         travel_to((analyze_interval * 2).since) do
-          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+          control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
           expect(control.occurrences).to include(analyze_regex)
         end
       end
@@ -929,14 +1040,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     shared_examples_for 'not to run the analyze at all' do
       specify do
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).not_to include(analyze_regex)
 
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).not_to include(analyze_regex)
 
         travel_to((analyze_interval * 2).since) do
-          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+          control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
           expect(control.occurrences).not_to include(analyze_regex)
         end
       end
@@ -958,6 +1069,17 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     it_behaves_like 'run only once analyze within interval'
 
+    it 'bounds the analyze transaction by the statement timeout' do
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+      end
+
+      expect(Gitlab::Database::TransactionTimeout)
+        .to receive(:set).with(connection, described_class::STATEMENT_TIMEOUT, local: true)
+
+      described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+    end
+
     context 'when analyze is false' do
       let(:analyze) { false }
 
@@ -965,6 +1087,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
 
     context 'when model does not set analyze_interval' do
+      let(:analyze_interval) { Gitlab::Database::Partitioning::BaseStrategy::DEFAULT_ANALYZE_INTERVAL }
       let(:my_model) do
         Class.new(ApplicationRecord) do
           include PartitionedTable
@@ -976,13 +1099,71 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         end
       end
 
-      it_behaves_like 'not to run the analyze at all'
+      it 'falls back to the conservative default analyze_interval' do
+        expect(my_model.partitioning_strategy.analyze_interval).to eq(analyze_interval)
+      end
+
+      context 'when not syncing from the partition management worker' do
+        it_behaves_like 'not to run the analyze at all'
+      end
+
+      context 'when syncing from the partition management worker' do
+        let(:analyze_tables_with_default_interval) { true }
+
+        it_behaves_like 'run only once analyze within interval'
+
+        context 'when the analyze_partitioned_tables_with_default_interval ops flag is disabled' do
+          before do
+            stub_feature_flags(analyze_partitioned_tables_with_default_interval: false)
+          end
+
+          it_behaves_like 'not to run the analyze at all'
+        end
+      end
+    end
+
+    context 'when the model sets an explicit analyze_interval' do
+      context 'when syncing from the partition management worker' do
+        let(:analyze_tables_with_default_interval) { true }
+
+        it_behaves_like 'run only once analyze within interval'
+
+        context 'when the analyze_partitioned_tables_with_default_interval ops flag is disabled' do
+          before do
+            stub_feature_flags(analyze_partitioned_tables_with_default_interval: false)
+          end
+
+          it 'keeps the explicit interval, which the flag does not gate' do
+            expect(my_model.partitioning_strategy.default_analyze_interval?).to be(false)
+          end
+
+          it_behaves_like 'run only once analyze within interval'
+        end
+      end
     end
 
     context 'when no partition is created' do
       let(:create_partition) { false }
 
       it_behaves_like 'run only once analyze within interval'
+    end
+
+    context 'when only the partitions have been analyzed' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+        end
+
+        allow(connection).to receive(:select_value).and_call_original
+        # vacuumdb --analyze-in-stages, run by a major upgrade, analyzes partitions but not their parent
+        connection.execute("ANALYZE #{analyze_partition}")
+      end
+
+      it 'analyzes the partitioned table' do
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
+
+        expect(control.occurrences).to include(analyze_regex)
+      end
     end
 
     context 'when a partition is created within the analyze interval' do
@@ -1042,13 +1223,42 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           end
         end
 
-        it 'does not analyze the created partition' do
+        it 'analyzes the created partition using the default analyze_interval' do
           control = ActiveRecord::QueryRecorder.new do
             described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
           end
 
-          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+          expect(control.occurrences).to include(created_partition_analyze_regex)
           expect(control.occurrences).not_to include(analyze_regex)
+        end
+
+        context 'when the table has never been analyzed' do
+          before do
+            allow(connection).to receive(:select_value)
+              .with(/pg_stat_get_last_analyze_time/)
+              .and_return(nil)
+          end
+
+          it 'skips the whole-table ANALYZE but still analyzes the created partition', :aggregate_failures do
+            control = ActiveRecord::QueryRecorder.new do
+              described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+            end
+
+            expect(control.occurrences).not_to include(analyze_regex)
+            expect(control.occurrences).to include(created_partition_analyze_regex)
+          end
+
+          context 'when syncing from the partition management worker' do
+            it 'runs the whole-table ANALYZE instead', :aggregate_failures do
+              control = ActiveRecord::QueryRecorder.new do
+                described_class.new(my_model, connection: connection)
+                  .sync_partitions(analyze: analyze, analyze_tables_with_default_interval: true)
+              end
+
+              expect(control.occurrences).to include(analyze_regex)
+              expect(control.occurrences).not_to include(created_partition_analyze_regex)
+            end
+          end
         end
       end
 

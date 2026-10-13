@@ -3,15 +3,22 @@
 module Gitlab
   module Database
     module HealthStatus
-      DEFAULT_INIDICATORS = [
+      DEFAULT_INDICATORS = [
         Indicators::AutovacuumActiveOnTable,
         Indicators::WriteAheadLog,
         Indicators::PatroniApdex,
         Indicators::WalRate
       ].freeze
 
+      # Database-wide indicators only, for workers that shouldn't pause on per-table autovacuum.
+      GLOBAL_INDICATORS = [
+        Indicators::WriteAheadLog,
+        Indicators::PatroniApdex,
+        Indicators::WalRate
+      ].freeze
+
       class << self
-        def evaluate(context, indicators = DEFAULT_INIDICATORS)
+        def evaluate(context, indicators = DEFAULT_INDICATORS)
           indicators.map do |indicator|
             signal = begin
               indicator.new(context).evaluate

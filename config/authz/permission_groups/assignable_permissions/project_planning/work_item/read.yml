@@ -64,3 +64,7 @@ permissions:
   - read_snippet_note
   - read_snippet_note_award_emoji
   - read_wiki_page_meta_note
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

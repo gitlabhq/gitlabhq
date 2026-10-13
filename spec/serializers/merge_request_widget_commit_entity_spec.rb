@@ -14,8 +14,10 @@ RSpec.describe MergeRequestWidgetCommitEntity do
   context 'as json' do
     subject { entity.as_json }
 
-    it { expect(subject[:message]).to eq(commit.safe_message) }
-    it { expect(subject[:short_id]).to eq(commit.short_id) }
-    it { expect(subject[:title]).to eq(commit.title) }
+    it 'returns commit attributes', :aggregate_failures do
+      expect(subject[:message]).to eq(commit.safe_message)
+      expect(subject[:short_id]).to eq(commit.short_id)
+      expect(subject[:title]).to eq(commit.title)
+    end
   end
 end

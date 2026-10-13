@@ -62,6 +62,32 @@ RSpec.describe Sidebars::Admin::Organizations::Menus::SettingsMenu, feature_cate
       expect(general_item).to be_present
       expect(general_item.title).to eq(_('General'))
     end
+
+    describe 'Integrations item' do
+      subject(:integrations_item) do
+        menu.renderable_items.find { |item| item.item_id == :organization_admin_settings_integrations }
+      end
+
+      it 'links to the organization integrations page' do
+        expect(integrations_item).to be_present
+        expect(integrations_item.title).to eq(_('Integrations'))
+        expect(integrations_item.link)
+          .to eq(Rails.application.routes.url_helpers.organization_admin_settings_integrations_path(organization))
+      end
+
+      context 'when the user cannot update integrations' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :update_integration, organization).and_return(false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when on GitLab.com', :saas do
+        it { is_expected.to be_present }
+      end
+    end
   end
 end
 # rubocop:enable RSpec/FactoryBot/AvoidCreate

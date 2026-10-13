@@ -27,8 +27,7 @@ module AuthenticatesWithTwoFactor
     add_gon_variables
     setup_webauthn_authentication(user)
 
-    layout = Feature.enabled?(:two_factor_vue, user) ? 'devise_empty' : :default
-    render 'devise/sessions/two_factor', layout: layout, status: status
+    render 'devise/sessions/two_factor', layout: 'devise_empty', status: status
   end
 
   def prompt_for_passwordless_authentication_via_passkey

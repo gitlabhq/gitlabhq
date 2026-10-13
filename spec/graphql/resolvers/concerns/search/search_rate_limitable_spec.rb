@@ -57,7 +57,7 @@ RSpec.describe Search::SearchRateLimitable, feature_category: :global_search do
             request,
             current_user,
             :search_rate_limit,
-            scope: [current_user, 'issues'],
+            scope: { user: current_user, search_scope: 'issues' },
             users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist
           )
 
@@ -119,12 +119,12 @@ RSpec.describe Search::SearchRateLimitable, feature_category: :global_search do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(false)
         end
 
-        it 'excludes search scope when search params are abusive' do
+        it 'leaves the search scope unfilled when search params are abusive' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).with(
             request,
             current_user,
             :search_rate_limit,
-            scope: [current_user],
+            scope: { user: current_user, search_scope: nil },
             users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist
           )
 
@@ -151,7 +151,7 @@ RSpec.describe Search::SearchRateLimitable, feature_category: :global_search do
             request,
             nil,
             :search_rate_limit_unauthenticated,
-            scope: ['127.0.0.1'],
+            scope: { ip: '127.0.0.1' },
             users_allowlist: nil
           )
 

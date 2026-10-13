@@ -15,6 +15,8 @@ title: Code suggestions
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
+- `daily`, `weekly`, and fixed-day `granularity` values for `timestamp` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
+- `!=` and `not in` operators on the `ideName`, `language`, and `user` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -33,16 +35,19 @@ usage across your project or group.
 | `project` | Query code suggestions in a specific project.                               |
 | `group`   | Query code suggestions across all projects in a group, including subgroups. |
 
-## Query fields
+To aggregate code suggestions across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
+
+## Query filters
 
 Use these fields in the `query` parameter to filter your results.
 
 | Field                                      | Name (and alias) | Operators                 |
 | ------------------------------------------ | ---------------- | ------------------------- |
-| [IDE name](#cs-ide-name)                   | `ideName`        | `=`, `in`                 |
-| [Language](#cs-language)                    | `language`       | `=`, `in`                 |
+| [IDE name](#cs-ide-name)                   | `ideName`        | `=`, `!=`, `in`, `not in` |
+| [Language](#cs-language)                    | `language`       | `=`, `!=`, `in`, `not in` |
 | [Timestamp](#cs-timestamp)                 | `timestamp`      | `=`, `>`, `<`, `>=`, `<=` |
-| [User](#cs-user)                           | `user`           | `=`, `in`                 |
+| [User](#cs-user)                           | `user`           | `=`, `!=`, `in`, `not in` |
 
 ### IDE name {#cs-ide-name}
 
@@ -51,7 +56,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ### Language {#cs-language}
 
@@ -60,7 +65,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ### Timestamp {#cs-timestamp}
 
@@ -80,7 +85,7 @@ Use range operators to define a time window.
 **Allowed value types**:
 
 - `Number` (user ID)
-- `List` (use `in` operator for multiple user IDs)
+- `List` (use `in` or `not in` operator for multiple user IDs)
 
 > [!note]
 > Support for username filtering is being tracked in [issue 599750](https://gitlab.com/gitlab-org/gitlab/-/work_items/599750).
@@ -93,7 +98,7 @@ The following dimensions are supported:
 |-----------|------------------|------------------------------------------------------|
 | IDE name  | `ideName`        | Group by IDE used (for example, VSCode, JetBrains).  |
 | Language  | `language`       | Group by programming language.                       |
-| Timestamp | `timestamp`      | Group by date. Accepts only the `monthly` [`granularity` parameter](../_index.md#field-parameters) (default: `monthly`). |
+| Timestamp | `timestamp`      | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `timestamp(weekly)` or `timestamp(granularity=30d, origin=2026-07-16)`. |
 | User      | `user`           | Group by user (displays avatar, name, and username). |
 
 ## Metrics

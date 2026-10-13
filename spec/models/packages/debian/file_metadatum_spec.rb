@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::FileMetadatum, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Debian::FileMetadatum, feature_category: :package_registry do
   RSpec.shared_context 'with Debian file metadatum' do |package_file_trait|
     let_it_be_with_reload(:debian_package_file) { create(:debian_package_file, package_file_trait) }
     let(:debian_file_metadatum) { debian_package_file.debian_file_metadatum }

@@ -4,18 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_management do
   describe '#execute' do
-    let(:project) { create(:project, :repository) }
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
+
     let(:chat_name) { double(:chat_name, user: user) }
     let(:regex_match) { described_class.match('deploy staging to production') }
 
-    before do
-      # Make it possible to trigger protected manual actions for developers.
-      #
-      project.add_developer(user)
-
-      create(:protected_branch, :developers_can_merge,
-        name: 'master', project: project)
+    before_all do
+      create(:protected_branch, :developers_can_merge, name: 'master', project: project)
     end
 
     subject do
@@ -30,10 +26,10 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
     end
 
     context 'with environment' do
-      let!(:staging) { create(:environment, name: 'staging', project: project) }
-      let!(:pipeline) { create(:ci_pipeline, project: project) }
-      let!(:build) { create(:ci_build, pipeline: pipeline, environment: 'production') }
-      let!(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
+      let_it_be(:staging) { create(:environment, name: 'staging', project: project) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline, environment: 'production') }
+      let_it_be(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
 
       context 'without actions' do
         it 'does not execute an action' do
@@ -54,15 +50,30 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
           expect(subject[:text])
             .to start_with('Deployment started from staging to production')
         end
+
+        context 'when the action cannot be played' do
+          before do
+            allow_next_instance_of(Ci::PlayBuildService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Too many requests'))
+            end
+          end
+
+          it 'tells the user why the deployment did not start' do
+            expect(subject[:response_type]).to be(:ephemeral)
+            expect(subject[:text]).to eq "Couldn't start the deployment: Too many requests"
+          end
+        end
       end
 
       context 'when more than one action has been matched' do
+        before_all do
+          create(:ci_build, :manual, pipeline: pipeline,
+            name: 'first',
+            environment: 'production')
+        end
+
         context 'when there is no specific actions with a environment name' do
           before do
-            create(:ci_build, :manual, pipeline: pipeline,
-              name: 'first',
-              environment: 'production')
-
             create(:ci_build, :manual, pipeline: pipeline,
               name: 'second',
               environment: 'production')
@@ -77,10 +88,6 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
         context 'when one of the actions is environement specific action' do
           before do
             create(:ci_build, :manual, pipeline: pipeline,
-              name: 'first',
-              environment: 'production')
-
-            create(:ci_build, :manual, pipeline: pipeline,
               name: 'production',
               environment: 'production')
           end
@@ -94,10 +101,6 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
 
         context 'when one of the actions is a teardown action' do
           before do
-            create(:ci_build, :manual, pipeline: pipeline,
-              name: 'first',
-              environment: 'production')
-
             create(:ci_build, :manual, :teardown_environment,
               pipeline: pipeline, name: 'teardown', environment: 'production')
           end

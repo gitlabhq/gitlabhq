@@ -5,7 +5,7 @@ module Types
     class BranchRuleType < BaseObject
       graphql_name 'BranchRule'
       description 'Branch rules configured for a rule target.'
-      authorize :read_protected_branch
+      authorize :read_branch_rule
 
       alias_method :branch_rule, :object
 

@@ -684,7 +684,7 @@ Root Cause Analysis is a separate GitLab Duo Chat experience from the GitLab Duo
 If GitLab Duo Chat is turned off for your instance, the option to troubleshoot doesn't appear,
 even if the Agent Platform is available.
 If you want to fix the pipeline automatically, see the
-[Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md).
+[Fix CI/CD Pipeline Flow](../../ci/pipelines/fix_pipeline.md).
 
 Provide feedback on this feature in [epic 13872](https://gitlab.com/groups/gitlab-org/-/epics/13872).
 
@@ -843,8 +843,6 @@ These commands work only when using GitLab Duo Chat in supported IDEs:
 | /explain  | [Explain code](#explain-selected-code)            |
 | /refactor | [Refactor the code](#refactor-code-in-the-ide)    |
 | /fix      | [Fix the code](#fix-code-in-the-ide)              |
-| /include  | [Include file context](#ask-about-specific-files-in-the-ide) <sup>1</sup> |
+| /include  | [Include file context](#ask-about-specific-files-in-the-ide)[^not-in-ide-chat] |
 
-**Footnotes**:
-
-1. Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.
+[^not-in-ide-chat]: Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.

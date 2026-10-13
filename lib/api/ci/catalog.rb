@@ -6,7 +6,7 @@ module API
       feature_category :pipeline_composition
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Publish a new component project release as version to the CI/CD catalog' do
@@ -23,7 +23,7 @@ module API
         end
         params do
           requires :version, type: String, desc: 'The version of the catalog resource / tag of the release to publish'
-          requires :metadata, type: Hash, desc: 'The metadata for the release'
+          requires :metadata, type: Hash, desc: 'Metadata for the release.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :admin_releases, permissions: :publish_catalog_version,

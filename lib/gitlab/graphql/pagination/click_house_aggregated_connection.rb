@@ -174,7 +174,16 @@ module Gitlab
         end
 
         def execute_query(query)
-          super.map(&:with_indifferent_access)
+          context_attributes = items.context_attributes
+
+          rows =
+            if context_attributes.present?
+              ::Gitlab::ApplicationContext.with_context(context_attributes) { super }
+            else
+              super
+            end
+
+          rows.map(&:with_indifferent_access)
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord

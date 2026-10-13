@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-mixed-jest-aliases', noMixedJestAliases, {
   valid: [
     {
-      code: "import { buildHandlers, featureHandlers } from 'ee_else_ce_jest/msw_integration/handlers';",
+      code: "import { buildHandlers, featureHandlers } from 'ee_else_ce_jest/integration/handlers';",
     },
     {
       code: "import { something } from 'jest/some/module';",
@@ -26,7 +26,7 @@ ruleTester.run('no-mixed-jest-aliases', noMixedJestAliases, {
       code: ["import { a } from 'jest/module';", "import { b } from 'jest/module';"].join('\n'),
     },
     {
-      code: "export { buildHandlers } from 'jest/msw_integration/handlers';",
+      code: "export { buildHandlers } from 'jest/integration/handlers';",
     },
     {
       code: ["import { a } from '~/utils';", "import { b } from 'ee_else_ce/utils';"].join('\n'),
@@ -36,15 +36,15 @@ ruleTester.run('no-mixed-jest-aliases', noMixedJestAliases, {
   invalid: [
     {
       code: [
-        "import { buildHandlers } from 'jest/msw_integration/handlers';",
-        "import { featureHandlers, restEndpoints } from 'ee_else_ce_jest/msw_integration/handlers';",
+        "import { buildHandlers } from 'jest/integration/handlers';",
+        "import { featureHandlers, restEndpoints } from 'ee_else_ce_jest/integration/handlers';",
       ].join('\n'),
       errors: [{ messageId: 'mixedAliases' }],
     },
     {
       code: [
-        "import { featureHandlers } from 'ee_else_ce_jest/msw_integration/handlers';",
-        "import { buildHandlers } from 'jest/msw_integration/handlers';",
+        "import { featureHandlers } from 'ee_else_ce_jest/integration/handlers';",
+        "import { buildHandlers } from 'jest/integration/handlers';",
       ].join('\n'),
       errors: [{ messageId: 'mixedAliases' }],
     },

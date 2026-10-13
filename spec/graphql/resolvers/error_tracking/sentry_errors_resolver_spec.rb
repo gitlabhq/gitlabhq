@@ -80,7 +80,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorsResolver do
         end
 
         it 'sets the issues' do
-          expect(resolve_errors).to contain_exactly(*issues)
+          expect(resolve_errors).to match_array(issues)
         end
 
         it 'sets the pagination variables' do

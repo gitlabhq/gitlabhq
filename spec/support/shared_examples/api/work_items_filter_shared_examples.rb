@@ -196,6 +196,59 @@ RSpec.shared_examples 'work item listing filters' do
       it_behaves_like 'contains only matching work items'
     end
 
+    context 'with milestone titles containing a comma' do
+      let_it_be(:comma_milestone) do
+        create_milestone_for_namespace(namespace_record).tap { |m| m.update!(title: 'September 16, 2026') }
+      end
+
+      before do
+        work_item_1.update!(milestone: comma_milestone)
+      end
+
+      context 'with milestone_title filter' do
+        let(:params) { { milestone_title: [comma_milestone.title] } }
+
+        it_behaves_like 'contains only matching work items'
+      end
+
+      context 'with negated milestone_title filter' do
+        let(:params) { { not: { milestone_title: [comma_milestone.title] } } }
+
+        it 'excludes work items with the milestone' do
+          get api(api_request_path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to include(work_item_2.id)
+          expect(json_response.pluck('id')).not_to include(work_item_1.id)
+        end
+      end
+    end
+
+    context 'with a blank milestone_title' do
+      let(:params) { { milestone_title: '' } }
+
+      before do
+        work_item_1.update!(milestone: namespace_milestone)
+      end
+
+      it 'does not filter by milestone' do
+        get api(api_request_path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to include(work_item_1.id, work_item_2.id)
+      end
+    end
+
+    context 'with a milestone_title padded with whitespace' do
+      let(:params) { { milestone_title: " #{namespace_milestone.title} " } }
+
+      before do
+        work_item_1.update!(milestone: namespace_milestone)
+      end
+
+      it_behaves_like 'contains only matching work items'
+    end
+
     context 'with milestone_wildcard filter' do
       let(:params) { { milestone_wildcard_id: 'None' } }
 

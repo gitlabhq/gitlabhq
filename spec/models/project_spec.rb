@@ -3620,6 +3620,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
     end
+
+    it 'excludes projects belonging to a different organization than an instance-level integration' do
+      instance_integration = create(:jira_integration, :instance)
+      project_in_same_org = create(:project, group: create(:group, organization: instance_integration.organization))
+      create(:project, group: create(:group, organization: create(:organization)))
+
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(project_in_same_org)
+    end
   end
 
   describe '.without_integration_excluding_ancestor_archived_check' do
@@ -3773,6 +3781,33 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         expect(batched.count).to eq(control.count + 1)
       end
+    end
+  end
+
+  describe '.root_namespace_id_subquery' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+
+    let_it_be(:other_group) { create(:group) }
+    let_it_be(:other_group_project) { create(:project, namespace: other_group) }
+
+    it 'selects the root namespace id of each given project' do
+      subquery = described_class.root_namespace_id_subquery([subgroup_project.id, other_group_project.id])
+
+      expect(Namespace.id_in(subquery)).to contain_exactly(group, other_group)
+    end
+
+    it 'selects the user namespace id for a personal project' do
+      user = create(:user, :with_namespace)
+      personal_project = create(:project, namespace: user.namespace)
+
+      expect(Namespace.id_in(described_class.root_namespace_id_subquery(personal_project.id)))
+        .to contain_exactly(user.namespace)
+    end
+
+    it 'selects nothing for a non-existent project id' do
+      expect(Namespace.id_in(described_class.root_namespace_id_subquery(non_existing_record_id))).to be_empty
     end
   end
 
@@ -4360,8 +4395,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it 'updates the project storage location' do
-          allow(project).to receive(:disk_path).and_return('fancy/new/path')
-          allow(project).to receive(:repository_storage).and_return('foo')
+          allow(project).to receive_messages(disk_path: 'fancy/new/path', repository_storage: 'foo')
           allow(project.repository).to receive(:object_format).and_return('sha1')
 
           project.track_project_repository
@@ -4376,8 +4410,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it 'refreshes a memoized repository value' do
           previous_repository = project.repository
 
-          allow(project).to receive(:disk_path).and_return('fancy/new/path')
-          allow(project).to receive(:repository_storage).and_return('foo')
+          allow(project).to receive_messages(disk_path: 'fancy/new/path', repository_storage: 'foo')
           allow(project.repository).to receive(:object_format).and_return('sha1')
 
           project.track_project_repository
@@ -5380,30 +5413,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
     end
-  end
-
-  describe '#github_enterprise_import?' do
-    let_it_be(:github_com_project) do
-      build(
-        :project,
-        import_type: 'github',
-        import_url: 'https://api.github.com/user/repo'
-      )
-    end
-
-    let_it_be(:github_enterprise_project) do
-      build(
-        :project,
-        import_type: 'github',
-        import_url: 'https://othergithub.net/user/repo'
-      )
-    end
-
-    it { expect(github_com_project.github_import?).to be true }
-    it { expect(github_com_project.github_enterprise_import?).to be false }
-
-    it { expect(github_enterprise_project.github_import?).to be true }
-    it { expect(github_enterprise_project.github_enterprise_import?).to be true }
   end
 
   describe '#remove_import_data' do
@@ -6800,6 +6809,45 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'wrapped query matches original' do
       expect(subject.to_sql).to match(/^WITH "projects_cte" AS MATERIALIZED/)
       expect(subject).to match_array(projects)
+    end
+  end
+
+  describe '.sort_without_index' do
+    let_it_be(:project_b) { create(:project, name: 'B', path: 'b', updated_at: 1.day.ago, last_activity_at: 3.days.ago) }
+    let_it_be(:project_a) { create(:project, name: 'A', path: 'a', updated_at: 2.days.ago, last_activity_at: 1.day.ago) }
+    let_it_be(:project_c) { create(:project, name: 'C', path: 'c', updated_at: 3.days.ago, last_activity_at: 2.days.ago) }
+
+    let(:projects) { described_class.id_in([project_a, project_b, project_c]) }
+
+    where(:column, :direction, :expected_expression) do
+      'name'             | 'asc'  | "('' || projects.name) ASC"
+      'path'             | 'desc' | "('' || projects.path) DESC"
+      'updated_at'       | 'asc'  | "(projects.updated_at + interval '0') ASC"
+      'last_activity_at' | 'desc' | "(projects.last_activity_at + interval '0') DESC"
+    end
+
+    with_them do
+      subject(:sorted) { projects.sort_without_index(column, direction) }
+
+      it 'sorts by the expression and returns the same order as sorting by the column' do
+        expect(sorted.to_sql).to include("ORDER BY #{expected_expression}")
+        expect(sorted.to_a).to eq(projects.reorder(column => direction, id: direction).to_a)
+      end
+    end
+
+    it 'replaces any existing order' do
+      expect(projects.order(:id).sort_without_index('name', 'asc').to_a).to eq([project_a, project_b, project_c])
+    end
+
+    it 'breaks ties by id in the sort direction' do
+      project_a2 = create(:project, name: 'A', namespace: create(:namespace))
+      projects = described_class.id_in([project_a, project_a2, project_b])
+
+      expect(projects.sort_without_index('name', 'desc').to_a).to eq([project_b, project_a2, project_a])
+    end
+
+    it 'raises for a column without an expression' do
+      expect { projects.sort_without_index('star_count', 'asc') }.to raise_error(KeyError)
     end
   end
 
@@ -8702,6 +8750,30 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { subject.find_or_initialize_integrations }.not_to exceed_query_limit(control)
     end
 
+    it 'does not issue extra queries when the deprecated Slack integration is hidden' do
+      stub_application_setting(slack_app_enabled: false)
+      visible = described_class.find(subject.id)
+      control = ActiveRecord::QueryRecorder.new { visible.find_or_initialize_integrations }
+
+      stub_application_setting(slack_app_enabled: true)
+      hidden = described_class.find(subject.id)
+
+      expect { hidden.find_or_initialize_integrations }.not_to exceed_query_limit(control)
+    end
+
+    context 'when the deprecated Slack notifications integration is hidden' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it 'omits it from the list but keeps the replacement' do
+        titles = subject.find_or_initialize_integrations.map(&:to_param)
+
+        expect(titles).not_to include('slack')
+        expect(titles).to include('gitlab_slack_application')
+      end
+    end
+
     context 'with disabled integrations' do
       before do
         allow(Integration).to receive(:available_integration_names).and_return(%w[zentao pushover teamcity])
@@ -8729,6 +8801,79 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { build(:project).disabled_integrations }
 
     it { is_expected.to include('zentao') }
+
+    it 'does not hide the deprecated Slack integration, which would break its API endpoints' do
+      stub_application_setting(slack_app_enabled: true)
+
+      is_expected.not_to include('slack')
+    end
+  end
+
+  describe '#hidden_integrations' do
+    let_it_be(:project) { create(:project) }
+
+    # Refetched per example: Project memoizes @integration_instances, so a reused
+    # let_it_be object would report a stale instance-level lookup.
+    subject(:hidden_integrations) { described_class.find(project.id).hidden_integrations }
+
+    context 'when the GitLab for Slack app is available as a replacement' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it { is_expected.to include('slack') }
+      it { is_expected.not_to include('gitlab_slack_application') }
+
+      context 'when the project already has a Slack notifications integration' do
+        before do
+          create(:integrations_slack, project: project, active: false)
+        end
+
+        it { is_expected.not_to include('slack') }
+      end
+
+      context 'when an instance-level Slack notifications integration exists' do
+        before do
+          create(:integrations_slack, :instance)
+        end
+
+        it { is_expected.not_to include('slack') }
+      end
+
+      context 'when an instance-level Slack notifications integration exists in another organization' do
+        before do
+          create(:integrations_slack, :instance, organization: create(:organization))
+        end
+
+        it { is_expected.to include('slack') }
+      end
+
+      # Group-level integrations reach projects as real rows, created by
+      # Projects::CreateService or PropagateIntegrationProjectWorker. Until that
+      # propagation lands the project has no row of its own and is hidden. Pinned here
+      # rather than endorsed. Built inline: a nested let_it_be override of :project
+      # breaks test-prof transaction reuse and re-creates fixtures for the whole file.
+      it 'hides it for a group-level integration until propagation creates the project row',
+        :aggregate_failures do
+        group = create(:group)
+        group_project = create(:project, group: group)
+        create(:integrations_slack, :group, group: group)
+
+        expect(group_project.hidden_integrations).to include('slack')
+
+        create(:integrations_slack, project: group_project)
+
+        expect(described_class.find(group_project.id).hidden_integrations).not_to include('slack')
+      end
+    end
+
+    context 'when the GitLab for Slack app is not available as a replacement' do
+      before do
+        stub_application_setting(slack_app_enabled: false)
+      end
+
+      it { is_expected.to be_empty }
+    end
   end
 
   describe '#find_or_initialize_integration' do
@@ -8752,6 +8897,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(subject.find_or_initialize_integration('non-existing')).to be_nil
     end
 
+    it 'still resolves the deprecated Slack integration while it is hidden from the list' do
+      stub_application_setting(slack_app_enabled: true)
+      project = build(:project)
+
+      expect(project.hidden_integrations).to include('slack')
+      expect(project.find_or_initialize_integration('slack')).to be_a(Integrations::Slack)
+    end
+
     context 'with an existing integration' do
       subject { create(:project) }
 
@@ -8765,12 +8918,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'with an instance-level integration' do
+      subject { build(:project) }
+
       before do
         create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
       end
 
       it 'builds the integration from the instance integration' do
         expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://instance.atlassian.net/wiki')
+      end
+    end
+
+    context 'with an instance-level integration in another organization' do
+      subject { build(:project) }
+
+      before do
+        create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki',
+          organization: create(:organization))
+      end
+
+      it 'builds a new integration', :aggregate_failures do
+        integration = subject.find_or_initialize_integration('confluence')
+
+        expect(integration).to be_a(::Integrations::Confluence)
+        expect(integration.confluence_url).to be_nil
+        expect(integration.inherit_from_id).to be_nil
       end
     end
 
@@ -8990,6 +9162,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { swap_pool_repository! }.to change { project.reload.pool_repository }.from(pool1).to(pool2)
     end
 
+    context 'when the project is pending delete' do
+      before do
+        project.pending_delete = true
+      end
+
+      it 'swaps membership and schedules old pool destruction without disconnecting', :aggregate_failures do
+        expect(project.repository).not_to receive(:disconnect_alternates)
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool1.id)
+
+        swap_pool_repository!
+
+        expect(project.reload.pool_repository).to eq(pool2)
+        expect(pool1.reload).to be_obsolete
+      end
+    end
+
     context 'when repository does not exist' do
       let(:project) { build(:project) }
 
@@ -9079,6 +9267,47 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         subject
 
         expect(pool.member_projects.reload).not_to include(project)
+      end
+    end
+  end
+
+  describe '#schedule_leave_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { create(:project, :repository, pool_repository: pool) }
+
+    subject(:schedule_leave_pool_repository) { project.schedule_leave_pool_repository }
+
+    context 'when the project has no pool' do
+      let(:pool) { nil }
+
+      it 'does not schedule a disconnect' do
+        expect(ObjectPool::DisconnectWorker).not_to receive(:perform_async)
+
+        schedule_leave_pool_repository
+      end
+    end
+
+    context 'when the project is pending delete' do
+      it 'clears membership synchronously without scheduling a disconnect', :aggregate_failures do
+        project.pending_delete = true
+
+        expect(ObjectPool::DisconnectWorker).not_to receive(:perform_async)
+        expect(project.repository).not_to receive(:disconnect_alternates)
+
+        schedule_leave_pool_repository
+
+        expect(project.reload.pool_repository).to be_nil
+      end
+    end
+
+    context 'when the project is not pending delete' do
+      it 'keeps membership and schedules the disconnect after commit', :aggregate_failures do
+        expect(project.repository).not_to receive(:disconnect_alternates)
+        expect(ObjectPool::DisconnectWorker).to receive(:perform_async).with(project.id, pool.disk_path)
+
+        Project.transaction { schedule_leave_pool_repository }
+
+        expect(project.reload.pool_repository).to eq(pool)
       end
     end
   end
@@ -9569,6 +9798,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         .with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
       project.add_export_job(current_user: user)
+    end
+
+    it 'passes the after export strategy on as native JSON types', :aggregate_failures do
+      after_export_strategy = Import::AfterExportStrategies::WebUploadStrategy.new(url: 'https://example.com/upload')
+
+      expect(Projects::ImportExport::CreateRelationExportsWorker)
+        .to receive(:perform_async) do |_user_id, _project_id, strategy, _params|
+          expect([strategy]).to param_containing_valid_native_json_types
+          expect(strategy).to eq(
+            'url' => 'https://example.com/upload',
+            'http_method' => 'PUT',
+            'klass' => 'Import::AfterExportStrategies::WebUploadStrategy'
+          )
+        end
+
+      project.add_export_job(current_user: user, after_export_strategy: after_export_strategy)
     end
 
     context 'when user is admin', :enable_admin_mode do
@@ -10406,6 +10651,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    context 'when updating project organization_id' do
+      let_it_be(:new_organization) { create(:organization) }
+
+      it 'creates a projects_sync_event record' do
+        expect do
+          project.update_attribute(:organization_id, new_organization.id)
+        end.to change { Projects::SyncEvent.count }.by(1)
+
+        expect(project.sync_events.count).to eq(2)
+      end
+
+      it 'enqueues ProcessProjectSyncEventsWorker' do
+        expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
+
+        project.update_attribute(:organization_id, new_organization.id)
+      end
+    end
+
     context 'when updating project other attribute' do
       it 'creates a projects_sync_event record' do
         expect do
@@ -10571,22 +10834,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#vulnerability_malware_detection_feature_flag_enabled?' do
+  describe '#use_mermaid_v12_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :vulnerability_malware_detection_feature_flag_enabled? }
-      let(:feature_flag) { :vulnerability_malware_detection }
-      let(:subject_project) { group_project }
-    end
-  end
-
-  describe '#dependency_malware_detection_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
-      let(:feature_flag) { :dependency_malware_detection }
+      let(:feature_flag_method) { :use_mermaid_v12_feature_flag_enabled? }
+      let(:feature_flag) { :use_mermaid_v12 }
       let(:subject_project) { group_project }
     end
   end
@@ -11395,6 +11648,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.ensure_pool_repository.organization)
           .to eq(project.organization)
       end
+    end
+  end
+
+  describe '#pool_repository_reusable?' do
+    let(:project) { create(:project) }
+
+    subject(:pool_repository_reusable) { project.pool_repository_reusable? }
+
+    context 'when there is no pool' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the project owns the pool' do
+      before do
+        create(:pool_repository, source_project: project)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when another project owns the pool' do
+      before do
+        project.update!(pool_repository: create(:pool_repository))
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

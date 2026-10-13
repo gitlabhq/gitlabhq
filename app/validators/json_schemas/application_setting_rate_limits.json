@@ -9,6 +9,16 @@
       "minimum": 0,
       "description": "Number of requests allowed to the instance audit events API endpoints per user per minute."
     },
+    "project_audit_events_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the project audit events API endpoints per user per project per minute."
+    },
+    "group_audit_events_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the group audit events API endpoints per user per group per minute."
+    },
     "autocomplete_users_limit": {
       "type": "integer",
       "minimum": 0,
@@ -158,6 +168,20 @@
       "minimum": 1,
       "description": "Authenticated Git HTTP rate limit period in seconds"
     },
+    "throttle_authenticated_mcp_enabled": {
+      "type": "boolean",
+      "description": "Enable MCP Server request rate limit"
+    },
+    "throttle_authenticated_mcp_requests_per_period": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum MCP Server requests per period per user"
+    },
+    "throttle_authenticated_mcp_period_in_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "MCP Server rate limit period in seconds"
+    },
     "throttle_authenticated_dependency_proxy_enabled": {
       "type": "boolean",
       "description": "Enable authenticated dependency proxy request rate limit"
@@ -196,6 +220,36 @@
       "type": "integer",
       "minimum": 0,
       "description": "Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
+    },
+    "pipeline_cancel_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable the limit."
+    },
+    "pipeline_retry_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of pipeline retries allowed per minute for a given project. Set to 0 to disable the limit."
+    },
+    "job_retry_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of job retries allowed per minute for a given project. Set to 0 to disable the limit."
+    },
+    "job_play_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of manual job runs allowed per minute for a given project. Set to 0 to disable the limit."
+    },
+    "pipeline_delete_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of pipeline deletions allowed per minute for a given project. Set to 0 to disable the limit."
+    },
+    "job_erase_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of job erasures allowed per minute for a given project. Set to 0 to disable the limit."
     },
     "users_api_limit_followers": {
       "type": "integer",

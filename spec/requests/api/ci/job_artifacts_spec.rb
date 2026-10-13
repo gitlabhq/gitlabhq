@@ -1330,6 +1330,92 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     end
   end
 
+  describe 'with an ai_workflows OAuth token' do
+    include_context 'workhorse headers'
+
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+
+    let(:user) { maintainer }
+    let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+    let!(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline, user: user) }
+
+    def api_path(suffix = '')
+      "/projects/#{project.id}/jobs/#{job.id}/artifacts#{suffix}"
+    end
+
+    describe 'reading artifacts' do
+      it 'downloads the artifacts archive' do
+        get api(api_path, oauth_access_token: token), headers: workhorse_headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'responds to HEAD on the artifacts archive' do
+        head api(api_path, oauth_access_token: token), headers: workhorse_headers
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'lists the artifacts tree' do
+        get api(api_path('/tree'), oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+      end
+
+      context 'when the job has non-public artifacts and the user is a guest' do
+        let(:user) { guest }
+        let!(:job) { create(:ci_build, :private_artifacts, :with_private_artifacts_config, pipeline: pipeline) }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+          project.update_column(:public_builds, true)
+        end
+
+        it 'still rejects the download' do
+          get api(api_path, oauth_access_token: token), headers: workhorse_headers
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'still rejects the tree' do
+          get api(api_path('/tree'), oauth_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    describe 'writing artifacts' do
+      it 'rejects keep with insufficient_scope and leaves the expiry alone' do
+        job.update!(artifacts_expire_at: 7.days.from_now)
+
+        expect { post api(api_path('/keep'), oauth_access_token: token) }
+          .not_to change { job.reload.artifacts_expire_at }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+
+      it 'rejects deleting a job\'s artifacts with insufficient_scope and keeps them' do
+        expect { delete api(api_path, oauth_access_token: token) }
+          .not_to change { job.reload.job_artifacts.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+
+      it 'rejects deleting all project artifacts with insufficient_scope and never calls the service' do
+        expect(Ci::JobArtifacts::DeleteProjectArtifactsService).not_to receive(:new)
+
+        delete api("/projects/#{project.id}/artifacts", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+    end
+  end
+
   describe 'ETag caching' do
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: developer) }
     let(:archive_sha256) { job.job_artifacts_archive.file_sha256 }

@@ -40,13 +40,13 @@ docker run \
 
 ### 특정 언어 또는 패키지 관리자의 누락된 지원 해결 {#working-around-missing-support-for-certain-languages-or-package-managers}
 
-[지원되는 언어](_index.md#supported-languages-and-package-managers)에 언급된 대로 일부 종속성 정의 파일은 아직 지원되지 않습니다. 그러나 언어, 패키지 관리자 또는 타사 도구가 정의 파일을 지원되는 형식으로 변환할 수 있다면 종속성 검사를 구현할 수 있습니다.
+[지원되는 언어](_index.md#supported-languages-and-package-managers)에서 설명한 대로 일부 종속성 정의 파일은 아직 지원되지 않습니다. 그러나 언어, 패키지 관리자 또는 타사 도구가 정의 파일을 지원되는 형식으로 변환할 수 있다면 종속성 검사를 구현할 수 있습니다.
 
 일반적으로 접근 방식은 다음과 같습니다:
 
 1. `.gitlab-ci.yml` 파일에서 전용 변환기 작업을 정의합니다. 적절한 Docker 이미지, 스크립트 또는 둘 다를 사용하여 변환을 수행합니다.
 1. 해당 작업이 변환된 지원되는 파일을 아티팩트로 업로드하도록 합니다.
-1. [`dependencies: [<your-converter-job>]`](../../../../ci/yaml/_index.md#dependencies)을(를) `dependency_scanning` 작업에 추가하여 변환된 정의 파일을 사용합니다.
+1. [`dependencies: [<your-converter-job>]`](../../../../ci/yaml/_index.md#dependencies)을 `dependency_scanning` 작업에 추가하여 변환된 정의 파일을 사용합니다.
 
 예를 들어 `pyproject.toml` 파일만 있는 Poetry 프로젝트는 `poetry.lock` 파일을 다음과 같이 생성할 수 있습니다.
 
@@ -123,7 +123,7 @@ variables:
 
 ## setuptools 프로젝트의 종속성 검사가 `use_2to3 is invalid` 오류로 실패함 {#dependency-scanning-of-setuptools-project-fails-with-use_2to3-is-invalid-error}
 
-[2to3](https://docs.python.org/3/library/2to3.html)에 대한 지원이 `setuptools` 버전 `v58.0.0`에서 [제거](https://setuptools.pypa.io/en/latest/history.html#v58-0-0)되었습니다. 종속성 검사(`python 3.9` 실행)은 `setuptools` 버전 `58.1.0+`을(를) 사용하며, `2to3`을(를) 지원하지 않습니다. 따라서 `setuptools`에 의존하는 `lib2to3` 종속성은 이 메시지와 함께 실패합니다:
+[2to3](https://docs.python.org/3.12/library/2to3.html)에 대한 지원은 `setuptools` 버전 `v58.0.0`에서 [제거](https://setuptools.pypa.io/en/latest/history.html#v58-0-0)되었습니다. 종속성 검사(`python 3.9` 실행)은 `setuptools` 버전 `58.1.0+`을(를) 사용하며, `2to3`을(를) 지원하지 않습니다. 따라서 `setuptools`에 의존하는 `lib2to3` 종속성은 이 메시지와 함께 실패합니다:
 
 ```plaintext
 error in <dependency name> setup command: use_2to3 is invalid
@@ -209,7 +209,7 @@ variables:
 
 ## `ERROR: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE` {#error-these-packages-do-not-match-the-hashes-from-the-requirements-file}
 
-이 오류는 `requirements.txt` 파일의 패키지 해시가 다운로드된 패키지의 해시와 일치하지 않을 때 발생합니다. 보안 조치로 `pip`은(는) 패키지가 손상되었다고 가정하고 설치를 거부합니다. 이를 해결하려면 요구 사항 파일에 포함된 해시가 올바른지 확인하세요. [`pip-compile`](https://pip-tools.readthedocs.io/en/stable/)에서 생성한 요구 사항 파일의 경우 `pip-compile --generate-hashes`을(를) 실행하여 해시가 최신 상태인지 확인하세요. [`pipenv`](https://pipenv.pypa.io/)에서 생성한 `Pipfile.lock`을(를) 사용하는 경우 `pipenv verify`을(를) 실행하여 잠금 파일에 최신 패키지 해시가 포함되어 있는지 확인하세요.
+이 오류는 `requirements.txt` 파일의 패키지 해시가 다운로드된 패키지의 해시와 일치하지 않을 때 발생합니다. 보안 조치로 `pip`은(는) 패키지가 손상되었다고 가정하고 설치를 거부합니다. 이를 해결하려면 요구 사항 파일에 포함된 해시가 올바른지 확인하세요. [`pip-compile`](https://pip-tools.readthedocs.io/en/stable/)에서 생성한 요구 사항 파일의 경우 `pip-compile --generate-hashes`을(를) 실행하여 해시가 최신 상태인지 확인하세요. [`pipenv`](https://pipenv.pypa.io/en/latest/)에서 생성한 `Pipfile.lock`을 사용하는 경우 `pipenv verify`를 실행하여 잠금 파일에 최신 패키지 해시가 포함되어 있는지 확인합니다.
 
 ## `ERROR: In --require-hashes mode, all requirements must have their versions pinned with ==` {#error-in---require-hashes-mode-all-requirements-must-have-their-versions-pinned-with-}
 
@@ -275,7 +275,7 @@ gemnasium-dependency_scanning:
 
 이 상황이 발생하면 리포지토리에 [지원되는 파일](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files)이 포함되어 있거나 지원되는 파일이 런타임에 생성된다는 것을 나타내는 파일이 포함되어 있는지 확인하세요. 종속성 검사 작업을 트리거하기 위해 리포지토리에 이러한 파일을 추가할 수 있는지 고려하세요.
 
-리포지토리에 실제로 이러한 파일이 포함되어 있고 작업이 여전히 트리거되지 않는다고 생각하는 경우 다음 정보와 함께 [이슈를 열기](https://gitlab.com/gitlab-org/gitlab/-/issues/new)를 수행하세요:
+리포지토리에 해당 파일이 있지만 작업이 여전히 트리거되지 않는다고 생각되면 다음 정보와 함께 [이슈를 열](https://gitlab.com/gitlab-org/gitlab/-/work_items/new)기 바랍니다:
 
 - 사용 중인 언어 및 빌드 도구입니다.
 - 제공하는 잠금 파일의 종류와 생성되는 위치입니다.
@@ -342,7 +342,7 @@ OpenShift를 실행 중이거나 Kubernetes 실행기를 사용하는 경우 그
 
 종속성 검사 CI/CD 작업이 성공하고 SBOM 구성 요소가 종속성 검사 목록에 나타나지만 파이프라인 보안 탭에서는 취약성이 보고되지 않습니다.
 
-GitLab 18.10 이상에서 보안 탭은 다음 메시지를 표시합니다: "SBOM 보고서는 취약성 검사에 필요한 필수 GitLab 메타데이터 속성이 누락되었습니다."
+GitLab 18.10 이상에서는 보안 탭에 "SBOM 보고서에 취약성 스캔에 필요한 GitLab 메타데이터 속성이 없습니다." 메시지가 표시됩니다.
 
 이 문제는 SBOM에 필수 [GitLab CycloneDX 속성](../../../../development/sec/cyclonedx_property_taxonomy.md)이 누락되었을 때 발생합니다. 이러한 속성이 없으면 취약성 스캐너가 SBOM의 구성 요소에 대한 발견을 구성할 수 없습니다. 종속성 검사 목록은 여전히 채워지지만 취약성은 보고되지 않습니다.
 

@@ -108,6 +108,26 @@ RSpec.describe Route do
     end
   end
 
+  describe '.root_namespace_id_by_path', feature_category: :groups_and_projects do
+    let_it_be(:root_group) { create(:group, path: 'git_lab', name: 'git_lab') }
+    let_it_be(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: root_group) }
+    let_it_be(:project) { create(:project, path: 'other-project', namespace: nested_group) }
+
+    it 'folds a group, a subgroup and a project route onto the root namespace', :aggregate_failures do
+      expect(described_class.root_namespace_id_by_path('git_lab')).to eq(root_group.id)
+      expect(described_class.root_namespace_id_by_path('git_lab/foo')).to eq(root_group.id)
+      expect(described_class.root_namespace_id_by_path('git_lab/foo/other-project')).to eq(root_group.id)
+    end
+
+    it 'matches a path whose case differs from the stored route' do
+      expect(described_class.root_namespace_id_by_path('GIT_LAB/FOO')).to eq(root_group.id)
+    end
+
+    it 'returns nothing for a path with no route' do
+      expect(described_class.root_namespace_id_by_path('no/such/route')).to be_nil
+    end
+  end
+
   describe '#rename_descendants' do
     let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
     let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }

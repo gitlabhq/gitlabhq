@@ -56,13 +56,14 @@ module Slack
       handle_http_error(e, 'Slack API error when removing reaction', channel)
     end
 
-    def post_ephemeral(channel:, user:, text:, thread_ts: nil)
+    def post_ephemeral(channel:, user:, text:, thread_ts: nil, blocks: nil)
       Gitlab::IntegrationsLogger.info(
         message: 'Slack API: posting ephemeral',
         channel_id: channel
       )
       payload = { channel: channel, user: user, text: text }
       payload[:thread_ts] = thread_ts if thread_ts.present?
+      payload[:blocks] = blocks if blocks.present?
       response = post('chat.postEphemeral', payload)
       log_error('Slack API error when posting ephemeral message', response, channel) unless response['ok']
       response
@@ -115,7 +116,8 @@ module Slack
 
     # Sets a thread's AI status indicator. loading_messages (max 10) auto-rotate
     # as a loading animation; the status clears when the app posts a reply, and
-    # otherwise times out after 2 minutes. Needs only chat:write.
+    # otherwise times out after 2 minutes. Needs assistant:write, so installs
+    # that predate the Duo agent scopes fail silently here until reinstalled.
     # See https://docs.slack.dev/reference/methods/assistant.threads.setStatus
     def set_status(channel:, thread_ts:, status:, loading_messages: nil)
       Gitlab::IntegrationsLogger.info(

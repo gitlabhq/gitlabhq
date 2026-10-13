@@ -120,7 +120,7 @@ module API
       end
       route_setting :authorization, permissions: :create_offline_export, boundary_type: :user
       post do
-        check_rate_limit!(:offline_export, scope: current_user)
+        check_rate_limit!(:offline_export, scope: { user: current_user })
 
         provider, credentials = object_storage_provider_and_credentials
         storage_config = { bucket: declared_params[:bucket], provider: provider, credentials: credentials }
@@ -214,7 +214,7 @@ module API
       end
       route_setting :authorization, permissions: :create_offline_import, boundary_type: :instance
       post do
-        check_rate_limit!(:offline_import, scope: current_user)
+        check_rate_limit!(:offline_import, scope: { user: current_user })
 
         provider, credentials = object_storage_provider_and_credentials
         storage_config = {
@@ -228,7 +228,8 @@ module API
           storage_config,
           import_entities_params,
           current_user: current_user,
-          fallback_organization: Current.organization
+          fallback_organization: Current.organization,
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?

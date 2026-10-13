@@ -52,12 +52,14 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, ref)
-      allow(helper).to receive(:selected_branch).and_return(ref)
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(false)
-      allow(helper).to receive(:user_access).and_return(instance_double(Gitlab::UserAccess, can_push_to_branch?: false))
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(false)
-      allow(helper).to receive(:can_edit_tree?).and_return(false)
+      allow(helper).to receive_messages(
+        selected_branch: ref,
+        current_user: user,
+        can?: false,
+        user_access: instance_double(Gitlab::UserAccess, can_push_to_branch?: false),
+        can_collaborate_with_project?: false,
+        can_edit_tree?: false
+      )
     end
 
     it 'returns a list of breadcrumb attributes' do
@@ -100,21 +102,21 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
   end
 
   describe '#vue_tree_header_app_data' do
-    let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
-
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, sha)
-      allow(helper).to receive(:can?).and_return(false)
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
-      allow(helper).to receive(:user_access).and_return(instance_double(Gitlab::UserAccess, can_push_to_branch?: false))
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:ssh_enabled?).and_return(true)
-      allow(helper).to receive(:http_enabled?).and_return(true)
-      allow(helper).to receive(:show_xcode_link?).and_return(false)
+      allow(helper).to receive_messages(
+        can?: false,
+        can_collaborate_with_project?: true,
+        user_access: instance_double(Gitlab::UserAccess, can_push_to_branch?: false),
+        current_user: user,
+        ssh_enabled?: true,
+        http_enabled?: true,
+        show_xcode_link?: false
+      )
     end
 
-    subject { helper.vue_tree_header_app_data(project, repository, sha, pipeline, 'heads') }
+    subject { helper.vue_tree_header_app_data(project, repository, sha, 'heads') }
 
     it 'returns a list of attributes related to the project' do
       is_expected.to include(
@@ -126,13 +128,11 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         project_root_path: project_path(project),
         project_path: project.full_path,
         compare_path: project_compare_index_path(project, from: repository&.root_ref, to: sha),
-        web_ide_button_options: Gitlab::Json.parse(subject[:web_ide_button_options]).to_json,
-        web_ide_button_default_branch: project.default_branch_or_main,
+        web_ide_button_options: helper.repository_header_web_ide_button_options(nil),
         ssh_url: ssh_clone_url_to_repo(project),
         http_url: http_clone_url_to_repo(project),
         xcode_url: '',
         download_links: helper.download_links(project, sha, "#{project.path}-#{sha.tr('/', '-')}", 'heads').to_json,
-        download_artifacts: '[]',
         escaped_ref: sha
       )
     end
@@ -167,12 +167,15 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       end
     end
 
-    context 'when pipeline is not present' do
-      let(:pipeline) { nil }
+    it 'includes the custom Code dropdown clients' do
+      stub_feature_flags(custom_code_dropdown_clients: true)
+      stub_application_setting(code_dropdown_custom_clients: [
+        { 'name' => 'VSCodium', 'http_url_template' => 'vscodium://vscode.git/clone?url={url}' }
+      ])
 
-      it 'does not include download_artifacts' do
-        expect(subject[:download_artifacts]).to be_nil
-      end
+      parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+
+      expect(parsed.pluck('name')).to eq(['VSCodium'])
     end
   end
 
@@ -228,11 +231,13 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, sha)
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:show_web_ide_button?).and_return(true)
-      allow(helper).to receive(:show_gitpod_button?).and_return(false)
-      allow(helper).to receive(:web_ide_url).and_return("/-/ide/project/#{project.full_path}/edit/#{sha}")
-      allow(helper).to receive(:gitpod_url).and_return('')
+      allow(helper).to receive_messages(
+        current_user: user,
+        show_web_ide_button?: true,
+        show_gitpod_button?: false,
+        web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}",
+        gitpod_url: ''
+      )
     end
 
     subject { helper.code_dropdown_ide_data }
@@ -319,18 +324,19 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, ref)
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:ssh_enabled?).and_return(true)
-      allow(helper).to receive(:http_enabled?).and_return(true)
-      allow(helper).to receive(:show_xcode_link?).and_return(false)
-      allow(helper).to receive(:code_dropdown_ide_data)
-                         .and_return({
-                           gitpod_enabled: false,
-                           show_web_ide_button: true,
-                           show_gitpod_button: false,
-                           web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{ref}",
-                           gitpod_url: ''
-                         })
+      allow(helper).to receive_messages(
+        current_user: user,
+        ssh_enabled?: true,
+        http_enabled?: true,
+        show_xcode_link?: false,
+        code_dropdown_ide_data: {
+          gitpod_enabled: false,
+          show_web_ide_button: true,
+          show_gitpod_button: false,
+          web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{ref}",
+          gitpod_url: ''
+        }
+      )
     end
 
     subject { helper.compact_code_dropdown_data(project, ref, 'heads') }
@@ -339,9 +345,115 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       expected_keys = [
         :ssh_url, :http_url, :xcode_url,
         :ide_data, :directory_download_links,
-        :show_no_ssh_key_message, :user_settings_ssh_keys_path
+        :show_no_ssh_key_message, :user_settings_ssh_keys_path,
+        :custom_code_dropdown_clients
       ]
       expect(subject.keys).to match_array(expected_keys)
+    end
+
+    describe ':custom_code_dropdown_clients' do
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(custom_code_dropdown_clients: false)
+        end
+
+        it 'is an empty JSON array' do
+          expect(subject[:custom_code_dropdown_clients]).to eq('[]')
+        end
+      end
+
+      context 'when the feature flag is enabled' do
+        let(:vscodium_entry) do
+          {
+            'name' => 'VSCodium',
+            'ssh_url_template' => 'vscodium://vscode.git/clone?url={url}',
+            'http_url_template' => 'vscodium://vscode.git/clone?url={url}'
+          }
+        end
+
+        before do
+          stub_feature_flags(custom_code_dropdown_clients: true)
+          stub_application_setting(code_dropdown_custom_clients: [vscodium_entry])
+        end
+
+        it 'serializes admin entries with substituted URLs' do
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+          expect(parsed.first['name']).to eq('VSCodium')
+          expect(parsed.first['ssh_url']).to include('vscodium://vscode.git/clone?url=')
+          expect(parsed.first['http_url']).to include('vscodium://vscode.git/clone?url=')
+        end
+
+        it 'percent-encodes the clone URL into the placeholder' do
+          allow(helper).to receive(:http_clone_url_to_repo).and_return('https://example.com/foo bar?x=1')
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+          expect(parsed.first['http_url']).to include('foo%20bar')
+          expect(parsed.first['http_url']).to include('%3F')
+        end
+
+        # #security -- a stored value can skip model validation (for example a direct database
+        # write), and these links render unsanitized, so the helper must drop unsafe URLs itself.
+        context 'with a template whose scheme would be refused on save' do
+          where(:template) do
+            [
+              'javascript:alert(1)//{url}',
+              'JaVaScRiPt:alert(1)//{url}',
+              'data:text/html,<script>alert(1)</script>?{url}',
+              ' javascript:alert(1)//{url}',
+              'no-scheme/{url}'
+            ]
+          end
+
+          with_them do
+            it 'drops that URL and keeps the safe one' do
+              stub_application_setting(code_dropdown_custom_clients: [
+                vscodium_entry.merge('http_url_template' => template)
+              ])
+
+              parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients]).first
+
+              expect(parsed['http_url']).to be_nil
+              expect(parsed['ssh_url']).to start_with('vscodium://')
+            end
+          end
+        end
+
+        it 'skips stored entries that are not objects' do
+          stub_application_setting(code_dropdown_custom_clients: ['junk', vscodium_entry])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+          expect(parsed.pluck('name')).to eq(['VSCodium'])
+        end
+
+        it 'leaves the URL nil when the entry has no template for it' do
+          stub_application_setting(code_dropdown_custom_clients: [vscodium_entry.except('http_url_template')])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients]).first
+          expect(parsed['http_url']).to be_nil
+          expect(parsed['ssh_url']).to start_with('vscodium://')
+        end
+
+        it 'skips an entry left with no usable URL when a protocol is disabled' do
+          allow(helper).to receive(:ssh_enabled?).and_return(false)
+          stub_application_setting(code_dropdown_custom_clients: [
+            vscodium_entry.except('http_url_template'), vscodium_entry.merge('name' => 'Fork')
+          ])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+
+          expect(parsed.pluck('name')).to eq(['Fork'])
+          expect(parsed.first['ssh_url']).to be_nil
+        end
+
+        it 'skips an entry whose only template has a blocked scheme' do
+          stub_application_setting(code_dropdown_custom_clients: [
+            { 'name' => 'Bad', 'http_url_template' => 'javascript:alert(1)//{url}' }, vscodium_entry
+          ])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+
+          expect(parsed.pluck('name')).to eq(['VSCodium'])
+        end
+      end
     end
 
     it 'includes SSH URL when SSH is enabled' do

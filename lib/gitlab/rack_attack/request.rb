@@ -154,6 +154,11 @@ module Gitlab
           Gitlab::Throttle.settings.throttle_authenticated_git_http_enabled
       end
 
+      def throttle_authenticated_mcp?
+        mcp_path? &&
+          Gitlab::Throttle.settings.throttle_authenticated_mcp_enabled
+      end
+
       def throttle_authenticated_git_lfs?
         git_lfs_path? &&
           Gitlab::Throttle.settings.throttle_authenticated_git_lfs_enabled

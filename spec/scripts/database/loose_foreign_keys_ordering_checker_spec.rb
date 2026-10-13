@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative '../../../scripts/database/loose_foreign_keys_ordering_checker'
 
 RSpec.describe LooseForeignKeysOrderingChecker, feature_category: :database do

@@ -78,4 +78,39 @@ RSpec.describe Gitlab::DatabaseImporters::AdminOrganizationImporter, feature_cat
       end
     end
   end
+
+  describe '.seeded_admin' do
+    let_it_be(:first_admin) { create(:admin, username: 'root-cell-2-abcd1234') }
+
+    context 'when an admin has the root username' do
+      let_it_be(:root_admin) { create(:admin, username: 'root') }
+
+      it 'returns that admin' do
+        expect(described_class.seeded_admin).to eq(root_admin)
+      end
+    end
+
+    context 'when no admin has the root username' do
+      before_all do
+        create(:user, username: 'root')
+        create(:admin)
+      end
+
+      it 'returns the first admin' do
+        expect(described_class.seeded_admin).to eq(first_admin)
+      end
+    end
+  end
+
+  describe '.seeded_admin_organization' do
+    let_it_be(:organization) { create(:organization) }
+
+    before_all do
+      create(:admin, username: 'root', organization: organization)
+    end
+
+    it 'returns the organization of the seeded admin' do
+      expect(described_class.seeded_admin_organization).to eq(organization)
+    end
+  end
 end

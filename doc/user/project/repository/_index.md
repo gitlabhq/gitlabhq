@@ -66,8 +66,10 @@ trigger or skip pipelines, and reverting changes, see [commits](../merge_request
 You can clone a repository using the:
 
 - Command line:
-  - [Clone with SSH](../../../topics/git/clone.md#clone-with-ssh)
-  - [Clone with HTTPS](../../../topics/git/clone.md#clone-with-https)
+  - [Clone with SSH](../../../topics/git/clone.md#clone-with-ssh):
+      Use SSH if you have SSH keys configured and want to authenticate without entering credentials for each operation.
+  - [Clone with HTTPS](../../../topics/git/clone.md#clone-with-https):
+      Use HTTPS if you prefer to authenticate with a personal access token or if your network blocks SSH connections.
 - GitLab UI:
   - [Clone and open in Apple Xcode](../../../topics/git/clone.md#clone-and-open-in-apple-xcode)
   - [Clone and open in Visual Studio Code](../../../topics/git/clone.md#clone-and-open-in-visual-studio-code)
@@ -97,6 +99,10 @@ To download a repository's source code as a compressed file:
 
 The checksums of generated archives can change even if the repository itself doesn't
 change. For example, this occurs if Git or a third-party library that GitLab uses changes.
+
+> [!note]
+> Do not use an archive checksum to confirm that two downloads contain the same repository contents.
+> Instead, verify contents with [signed commits and tags](signed_commits/_index.md).
 
 ## View repository by Git revision
 

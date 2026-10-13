@@ -6,18 +6,17 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   include KubernetesHelpers
   include Gitlab::Routing.url_helpers
 
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
+  let_it_be_with_refind(:environment) { create(:environment, project: project) }
+
   let(:request) { double('request', current_user: user, project: project) }
   let(:entity) do
     described_class.new(environment, request: request)
   end
 
-  let_it_be(:user)    { create(:user) }
-  let_it_be(:project) { create(:project, :repository, developers: user) }
-  let_it_be_with_refind(:environment) { create(:environment, project: project) }
-
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:project).and_return(project)
+    allow(request).to receive_messages(current_user: user, project: project)
   end
 
   subject { entity.as_json }
@@ -88,14 +87,14 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   end
 
   context 'with deployment platform' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
+    let(:project) { create(:project) }
+    let(:environment) { build_stubbed(:environment, project: project) }
 
     context 'when deployment platform is a cluster' do
       before do
         create(
           :cluster,
-          :provided_by_gcp,
+          :provided_by_user,
           :project,
           environment_scope: '*',
           projects: [project]
@@ -110,7 +109,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   end
 
   context 'with auto_stop_in' do
-    let(:environment) { create(:environment, :will_auto_stop, project: project) }
+    let(:environment) { build_stubbed(:environment, :will_auto_stop, project: project) }
 
     it 'exposes auto stop related information' do
       project.add_maintainer(user)
@@ -121,8 +120,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
 
   context 'with deployment service ready' do
     before do
-      allow(environment).to receive(:has_terminals?).and_return(true)
-      allow(environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
+      allow(environment).to receive_messages(has_terminals?: true, rollout_status: kube_deployment_rollout_status)
     end
 
     it 'exposes rollout_status' do
@@ -131,10 +129,43 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   end
 
   context 'with deployment service not ready' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it 'does not expose rollout_status' do
       expect(subject).not_to include(:rollout_status)
+    end
+  end
+
+  describe 'can_stop and can_force_stop' do
+    context 'when the environment is available' do
+      it 'allows only a regular stop' do
+        expect(subject).to include(can_stop: true, can_force_stop: false)
+      end
+    end
+
+    context 'when the environment is stopping' do
+      let(:environment) { build_stubbed(:environment, :stopping, project: project) }
+
+      it 'allows only a forced stop' do
+        expect(subject).to include(can_stop: false, can_force_stop: true)
+      end
+    end
+
+    context 'when the environment is stopped' do
+      let(:environment) { build_stubbed(:environment, :stopped, project: project) }
+
+      it 'allows neither' do
+        expect(subject).to include(can_stop: false, can_force_stop: false)
+      end
+    end
+
+    context 'when the user cannot stop the environment' do
+      let(:environment) { build_stubbed(:environment, :stopping, project: project) }
+      let(:user) { create(:user, reporter_of: project) }
+
+      it 'allows neither' do
+        expect(subject).to include(can_stop: false, can_force_stop: false)
+      end
     end
   end
 end

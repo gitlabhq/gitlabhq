@@ -44,6 +44,52 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
     end
   end
 
+  describe '#valid_degradation?' do
+    subject(:valid_degradation) { codequality_report.valid_degradation?(degradation) }
+
+    context 'when the degradation matches the Code Climate schema' do
+      let(:degradation) { degradation_major }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when a required property is missing' do
+      let(:degradation) { degradation_major.except(:location) }
+
+      it { is_expected.to be(false) }
+    end
+
+    it 'reuses the parsed schema instead of building it for every degradation' do
+      codequality_report.valid_degradation?(degradation_major)
+
+      expect(JSONSchemer).not_to receive(:schema)
+
+      codequality_report.valid_degradation?(degradation_minor)
+      described_class.new.valid_degradation?(degradation_blocker)
+    end
+
+    it 'builds a separate schema for each thread' do
+      codequality_report.valid_degradation?(degradation_major)
+
+      expect(JSONSchemer).to receive(:schema).once.and_call_original
+
+      Thread.new { described_class.new.valid_degradation?(degradation_minor) }.join
+    end
+
+    it 'retries building the schema after a failed build', :aggregate_failures do
+      expect(JSONSchemer).to receive(:schema).and_raise(StandardError).ordered
+      expect(JSONSchemer).to receive(:schema).and_call_original.ordered
+
+      first, second = Thread.new do
+        report = described_class.new
+        [report.valid_degradation?(degradation_major), report.valid_degradation?(degradation_major)]
+      end.value
+
+      expect(first).to be(false)
+      expect(second).to be(true)
+    end
+  end
+
   describe '#set_error_message' do
     context 'when there is an error' do
       it 'sets errors' do

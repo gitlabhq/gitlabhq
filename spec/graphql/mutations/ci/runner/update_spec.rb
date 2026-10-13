@@ -80,9 +80,9 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_core do
           expect(response[:errors]).to be_empty
           expect(response[:runner]).to be_an_instance_of(Ci::Runner)
           expect(response[:runner]).to have_attributes(expected_attributes)
-          expect(response[:runner].tag_list).to contain_exactly(*mutation_params[:tag_list])
+          expect(response[:runner].tag_list).to match_array(mutation_params[:tag_list])
           expect(runner.reload).to have_attributes(expected_attributes)
-          expect(runner.tag_list).to contain_exactly(*mutation_params[:tag_list])
+          expect(runner.tag_list).to match_array(mutation_params[:tag_list])
         end
       end
 

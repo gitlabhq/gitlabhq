@@ -3,7 +3,7 @@ title: Governance for GitLab MCP server tools
 offering: [ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]
 tier: [ Free, Premium, Ultimate ]
 stage: software_supply_chain_security
-documentation_link: "../../../user/ai_governance/tool-governance"
+documentation_link: "../../../user/ai-governance/tool-governance"
 work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/628391
 categories: [ AI Governance ]
 level: primary

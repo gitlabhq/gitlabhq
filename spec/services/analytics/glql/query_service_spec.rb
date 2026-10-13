@@ -162,6 +162,28 @@ RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboar
       end
     end
 
+    context 'when GraphQL errors carry extensions' do
+      let(:graphql_result) do
+        {
+          'data' => nil,
+          'errors' => [{ 'message' => 'not available', 'extensions' => { 'code' => 'SIPHON_REPLICATION_DISABLED' } }]
+        }
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return(graphql_result)
+      end
+
+      it 'preserves the extensions so clients can map error codes' do
+        result = service.execute(query: query, variables: variables, context: context)
+
+        expect(result[:errors]).to eq([{
+          message: 'not available',
+          extensions: { 'code' => 'SIPHON_REPLICATION_DISABLED' }
+        }])
+      end
+    end
+
     context 'when GraphQL errors contain non-hash elements' do
       let(:graphql_result) do
         {
@@ -222,7 +244,7 @@ RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboar
         expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
         expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
           :glql,
-          hash_including(scope: service.send(:query_sha))
+          hash_including(scope: { query_sha: service.send(:query_sha) })
         )
 
         result = service.execute(query: query, variables: variables, context: context)

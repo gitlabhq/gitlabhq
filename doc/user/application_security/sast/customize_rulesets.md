@@ -48,7 +48,7 @@ or adding rules.
 
 The table below shows the customization options that are available for each analyzer type.
 
-| Customization                          | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep             | [Other analyzers](analyzers.md#official-analyzers) |
+| Customization                          | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep             | [Other analyzers](analyzers.md#official-analyzers) and [IaC scanning](../iac_scanning/_index.md) |
 |----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|
 | Disable default rules               | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
 | Override metadata of default rules  | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
@@ -663,7 +663,7 @@ are used to iteratively assemble the `/sgrules/my-rules.yml` file, which
 is then provided to Semgrep as the ruleset. Each passthrough appends a
 single rule to the ruleset. The first passthrough is responsible for
 initializing the top-level `rules` object, according to the
-[Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax).
+[Semgrep rule syntax](https://docs.semgrep.dev/writing-rules/rule-syntax).
 
 ```toml
 [semgrep]

@@ -12,6 +12,9 @@
     "remove_approvals_with_new_commit": {
       "type": "boolean"
     },
+    "remove_code_owner_approvals_with_new_commit": {
+      "type": "boolean"
+    },
     "require_password_to_approve": {
       "type": "boolean"
     },

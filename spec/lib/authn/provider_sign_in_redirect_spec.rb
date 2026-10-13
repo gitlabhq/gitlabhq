@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'action_dispatch'
 
 RSpec.describe Authn::ProviderSignInRedirect, feature_category: :system_access do
   let(:redirector) { Authn::ChatGpt::SiwcRedirect }

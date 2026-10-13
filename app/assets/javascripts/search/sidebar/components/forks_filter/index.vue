@@ -2,9 +2,9 @@
 import { GlFormCheckboxGroup, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE,
   EXCLUDE_FORKS_FILTER_PARAM,

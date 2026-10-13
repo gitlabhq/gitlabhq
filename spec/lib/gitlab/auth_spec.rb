@@ -102,6 +102,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         ai_workflows
         create_runner
         email
+        granular
         k8s_proxy
         manage_runner
         mcp
@@ -604,6 +605,11 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
               .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
           end
         end
+      end
+
+      it 'includes the OAuth access token in the authentication context' do
+        expect(authenticate(username: 'oauth2', password: token).oauth_access_token)
+          .to eq(OauthAccessToken.find_by(application_id: application.id, resource_owner_id: user.id))
       end
 
       it 'does not try password auth before oauth' do

@@ -26,7 +26,8 @@ module Resolvers
       default_value: false,
       description: 'Match `searchTerm` fuzzily: labels match when they contain the searched ' \
         'characters in order, but not necessarily contiguously ' \
-        '(for example, `bugu` matches `bug::ux`). Ignored if using `title`.'
+        '(for example, `bugu` matches `bug::ux`). Ignored if using `title`, or if the ' \
+        '`fuzzy_label_search` feature flag is disabled.'
 
     argument :search_in, [Types::Issuables::Labels::SearchFieldListEnum],
       default_value: [:title, :description],
@@ -58,6 +59,8 @@ module Resolvers
 
       # If `title` is used, remove `search_in`
       args.delete(:search_in) if args[:title]
+
+      args[:fuzzy_search] = false unless Feature.enabled?(:fuzzy_label_search, parent.root_ancestor)
 
       # Optimization:
       # Rely on the LabelsPreloader rather than the default parent record preloading in the

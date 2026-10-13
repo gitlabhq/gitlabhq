@@ -37,7 +37,11 @@ module Projects
           fork_network.update(root_project: nil, deleted_root_project_name: @project.full_name)
         end
 
-        @project.leave_pool_repository
+        if Feature.enabled?(:async_object_pool_disconnect, @project)
+          @project.schedule_leave_pool_repository
+        else
+          @project.leave_pool_repository
+        end
       end
 
       # rubocop: disable Cop/InBatches

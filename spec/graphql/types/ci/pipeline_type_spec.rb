@@ -47,6 +47,9 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       warnings
       commit
       commit_path
+      commit_title
+      commit_author_name
+      commit_author_gravatar
       uses_needs
       test_report_summary
       test_suite

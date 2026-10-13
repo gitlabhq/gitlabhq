@@ -13,6 +13,7 @@ module Projects
           show_approvers: 'false',
           show_code_owners: 'false',
           can_admin_protected_branches: can?(current_user, :admin_protected_branch, project).to_s,
+          can_read_protected_branches: can?(current_user, :read_protected_branch, project).to_s,
           can_read_squash_option: can?(current_user, :read_squash_option, project).to_s,
           can_update_squash_option: can?(current_user, :update_squash_option, project).to_s
         }

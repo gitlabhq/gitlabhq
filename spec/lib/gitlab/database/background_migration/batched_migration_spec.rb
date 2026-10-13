@@ -907,11 +907,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     subject { migration.progress }
 
     context 'when the migration is completed' do
-      let(:migration) do
-        create(:batched_background_migration, :finished, total_tuple_count: 1).tap do |record|
-          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
-        end
-      end
+      let(:migration) { build_stubbed(:batched_background_migration, :finished, total_tuple_count: 1) }
 
       it 'returns 100' do
         expect(subject).to be 100
@@ -919,11 +915,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'when the migration is finalized' do
-      let(:migration) do
-        create(:batched_background_migration, :finalized, total_tuple_count: 1).tap do |record|
-          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 1)
-        end
-      end
+      let(:migration) { build_stubbed(:batched_background_migration, :finalized, total_tuple_count: 1) }
 
       it 'returns 100' do
         expect(subject).to be 100
@@ -931,11 +923,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'when the status is finished' do
-      let(:migration) do
-        create(:batched_background_migration, :finished, total_tuple_count: 100).tap do |record|
-          create(:batched_background_migration_job, :succeeded, batched_migration: record, batch_size: 5)
-        end
-      end
+      let(:migration) { build_stubbed(:batched_background_migration, :finished, total_tuple_count: 100) }
 
       it 'returns 100' do
         expect(subject).to be 100
@@ -974,7 +962,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100, interval: 120) }
 
     context 'when migration is finished' do
-      let(:batched_migration) { create(:batched_background_migration, :finished, total_tuple_count: 100) }
+      let(:batched_migration) { build_stubbed(:batched_background_migration, :finished, total_tuple_count: 100) }
 
       it 'returns nil' do
         expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
@@ -982,7 +970,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'when migration is finalized' do
-      let(:batched_migration) { create(:batched_background_migration, :finalized, total_tuple_count: 100) }
+      let(:batched_migration) { build_stubbed(:batched_background_migration, :finalized, total_tuple_count: 100) }
 
       it 'returns nil' do
         expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
@@ -1094,7 +1082,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'when migration is finished' do
-      let(:batched_migration) { create(:batched_background_migration, :finished, total_tuple_count: 100) }
+      let(:batched_migration) { build_stubbed(:batched_background_migration, :finished, total_tuple_count: 100) }
 
       it 'returns nil' do
         expect(batched_migration.estimated_time_remaining).to be_nil

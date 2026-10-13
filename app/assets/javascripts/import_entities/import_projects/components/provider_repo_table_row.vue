@@ -12,7 +12,6 @@ import {
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
@@ -36,7 +35,6 @@ export default {
     GlSprintf,
     GlModal,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     userNamespace: {
       default: null,

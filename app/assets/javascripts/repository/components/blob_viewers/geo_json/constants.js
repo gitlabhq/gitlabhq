@@ -12,13 +12,3 @@ export const ICON_CONFIG = { iconUrl, iconRetinaUrl, shadowUrl };
 export const MAP_ATTRIBUTION = __('Map data from');
 export const OPEN_STREET_COPYRIGHT_LINK =
   '<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>';
-
-export const POPUP_CONTENT_TEMPLATE = `
-<div class="gl-pt-4">
-  <% eachFunction(popupProperties, function(value, label) { %>
-    <div>
-      <strong><%- label %>:</strong> <span><%- value %></span>
-    </div>
-  <% }); %>
-</div>
-`;

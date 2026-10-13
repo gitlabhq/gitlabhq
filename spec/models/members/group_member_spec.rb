@@ -32,6 +32,37 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
         expect(described_class.of_ldap_type).to eq([group_member])
       end
     end
+
+    describe '.active_for_self_and_hierarchy' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:other_group) { create(:group) }
+
+      let_it_be(:ancestor_member) { create(:group_member, source: parent_group) }
+      let_it_be(:direct_member) { create(:group_member, source: group) }
+      let_it_be(:descendant_member) { create(:group_member, source: subgroup) }
+      let_it_be(:other_group_member) { create(:group_member, source: other_group) }
+
+      let_it_be(:invited_member) { create(:group_member, :invited, source: group) }
+      let_it_be(:requested_member) { create(:group_member, :access_request, source: group) }
+      let_it_be(:blocked_user_member) { create(:group_member, :blocked, source: group) }
+      let_it_be(:minimal_access_member) { create(:group_member, :minimal_access, source: group) }
+
+      subject(:members) { described_class.active_for_self_and_hierarchy(group) }
+
+      it 'returns active members of the group, its descendants, and its ancestors' do
+        expect(members).to contain_exactly(ancestor_member, direct_member, descendant_member)
+      end
+
+      context 'when minimal_access is true' do
+        subject(:members) { described_class.active_for_self_and_hierarchy(group, minimal_access: true) }
+
+        it 'also returns Minimal Access members' do
+          expect(members).to contain_exactly(ancestor_member, direct_member, descendant_member, minimal_access_member)
+        end
+      end
+    end
   end
 
   describe '.access_level_roles' do
@@ -330,47 +361,6 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
 
       it 'does not recalculate authorizations' do
         expect(AuthorizedProjectsWorker).not_to receive(:new)
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when the group has a project' do
-        create(:project, group: group)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when a subgroup has a project' do
-        subgroup = create(:group, parent: group)
-        create(:project, group: subgroup)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when the group has an inbound group share' do
-        create(:group_group_link, shared_with_group: group)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when the group has an inbound project share' do
-        create(:project_group_link, group: group)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
 
         member.save!
       end

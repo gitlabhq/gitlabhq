@@ -73,9 +73,7 @@ RSpec.describe Gitaly::Server do
     let(:storage_status) { double('storage_status') }
 
     before do
-      allow(storage_status).to receive(:storage_name).and_return('default')
-      allow(storage_status).to receive(:available).and_return(disk_available)
-      allow(storage_status).to receive(:used).and_return(disk_used)
+      allow(storage_status).to receive_messages(storage_name: 'default', available: disk_available, used: disk_used)
       response = double("response")
       allow(response).to receive(:storage_statuses).and_return([storage_status])
       allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
@@ -173,6 +171,39 @@ RSpec.describe Gitaly::Server do
       it 'returns an error and no public_key' do
         expect(server.server_signature_public_key).to be_nil
         expect(server.server_signature_error?).to be(true)
+      end
+    end
+  end
+
+  describe '#address' do
+    let(:gitaly_address) { 'tcp://gitaly.example.com:8075' }
+    let(:gitway_address) { 'tcp://gitway.example.com:8075' }
+
+    before do
+      stub_storage_settings(
+        'default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address }
+      )
+    end
+
+    # The page shows this next to disk and replication stats read from the node, so naming the
+    # gitway hop here would leave an admin correlating two different machines.
+    context 'when the storage is routed through gitway' do
+      before do
+        stub_feature_flags(route_gitaly_through_gitway: true)
+      end
+
+      it 'still reports the Gitaly node address' do
+        expect(server.address).to eq(gitaly_address)
+      end
+    end
+
+    context 'when the storage is not routed through gitway' do
+      before do
+        stub_feature_flags(route_gitaly_through_gitway: false)
+      end
+
+      it 'reports the Gitaly node address' do
+        expect(server.address).to eq(gitaly_address)
       end
     end
   end

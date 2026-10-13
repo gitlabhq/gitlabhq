@@ -110,7 +110,7 @@ export const renderTransferSuccessToast = (project) => {
   toast(
     sprintf(
       s__(
-        "TransferProject|Project '%{project_name}' transfer has been scheduled. Users with the Maintainer or Owner role will be notified when it completes.",
+        "TransferProject|Project '%{project_name}' transfer is scheduled. If it fails, you get a to-do item with the reason.",
       ),
       {
         project_name: project.nameWithNamespace,

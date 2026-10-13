@@ -38,6 +38,12 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
       end
     end
 
+    it 'captures request_channel: ui on the import state', :clean_gitlab_redis_shared_state do
+      subject
+
+      expect(Project.find_by(path: 'test').import_state.request_channel).to eq('ui')
+    end
+
     context 'with an invalid path' do
       ['/test', '../test'].each do |invalid_path|
         it "redirects with an error when path is `#{invalid_path}`" do

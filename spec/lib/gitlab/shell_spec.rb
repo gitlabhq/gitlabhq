@@ -63,8 +63,10 @@ RSpec.describe Gitlab::Shell, feature_category: :source_code_management do
     let(:link_file) { 'tmp/tests/shell-secret-test/.gitlab_shell_secret' }
 
     before do
-      allow(Gitlab.config.gitlab_shell).to receive(:secret_file).and_return(secret_file)
-      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-secret-test')
+      allow(Gitlab.config.gitlab_shell).to receive_messages(
+        secret_file: secret_file,
+        path: 'tmp/tests/shell-secret-test'
+      )
       FileUtils.mkdir('tmp/tests/shell-secret-test')
     end
 

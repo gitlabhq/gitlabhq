@@ -50,11 +50,6 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
     end
 
     allow(subject).to receive(:set_source_objects_counter)
-
-    # These specs assert against the legacy user-resolution path. They predate
-    # contribution mapping being always-on and would otherwise exercise the
-    # full SourceUsersMapper stack.
-    allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
   end
 
   subject { described_class.new(context) }
@@ -84,7 +79,7 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
 
           expect(milestone).to receive(:save!)
 
-          subject.load(context, milestone)
+          subject.load(context, [milestone, {}])
         end
       end
 
@@ -135,16 +130,37 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
       let(:tested_entity) { project }
       let(:source_project_id) { 1 }
 
-      it 'imports events' do
-        subject.run
+      it 'does not import an event whose author is missing from the source instance' do
+        expect { subject.run }.not_to change { BulkImports::Failure.count }
 
-        imported_event = tested_entity.milestones.first.events.first
+        expect(tested_entity.milestones.first.events).to be_empty
+      end
 
-        expect(imported_event.created_at).to eq("2021-08-12T19:12:49.810Z")
-        expect(imported_event.updated_at).to eq("2021-08-12T19:12:49.810Z")
-        expect(imported_event.target_type).to eq("Milestone")
-        expect(imported_event.fingerprint).to eq("f270eb9b27d0")
-        expect(imported_event.action).to eq("created")
+      context 'when the event author already has a source user' do
+        let_it_be(:placeholder_user) { create(:user, :import_user) }
+
+        before do
+          create(:import_source_user,
+            import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+            namespace: group,
+            source_user_identifier: 9,
+            source_hostname: bulk_import.configuration.url,
+            placeholder_user: placeholder_user
+          )
+        end
+
+        it 'imports the event authored by the placeholder user' do
+          subject.run
+
+          imported_event = tested_entity.milestones.first.events.first
+
+          expect(imported_event.author).to eq(placeholder_user)
+          expect(imported_event.created_at).to eq("2021-08-12T19:12:49.810Z")
+          expect(imported_event.updated_at).to eq("2021-08-12T19:12:49.810Z")
+          expect(imported_event.target_type).to eq("Milestone")
+          expect(imported_event.fingerprint).to eq("f270eb9b27d0")
+          expect(imported_event.action).to eq("created")
+        end
       end
     end
   end

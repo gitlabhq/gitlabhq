@@ -79,3 +79,6 @@ export const SORT_ITEM_UPDATED_AT = {
   value: SORT_UPDATED_AT,
   text: SORT_LABEL_UPDATED,
 };
+
+export const SOLO_OWNED_GROUPS_INITIAL_COUNT = 5;
+export const SOLO_OWNED_GROUPS_FETCH_MORE_COUNT = 100;

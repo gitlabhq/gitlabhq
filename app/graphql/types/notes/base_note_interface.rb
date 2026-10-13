@@ -7,6 +7,10 @@ module Types
 
       implements Types::ResolvableInterface
 
+      # Mirrors the awardable allowlist in `API::AwardEmoji`. Snippet reactions, and any other
+      # noteable, need separate approval before `ai_workflows` tokens can read them.
+      AI_WORKFLOWS_NOTEABLE_TYPES = %w[Issue MergeRequest Epic].freeze
+
       field :author, Types::UserType,
         null: true,
         scopes: [:api, :read_api, :ai_workflows],
@@ -14,6 +18,7 @@ module Types
 
       field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
         null: true,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'List of emoji reactions associated with the note.'
 
       field :body, GraphQL::Types::String,
@@ -58,11 +63,27 @@ module Types
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
       end
 
+      def award_emoji
+        return unless award_emoji_readable?
+
+        object.award_emoji
+      end
+
       def url
         # compute note url if noteable_url is not already precomputed
         return ::Gitlab::UrlBuilder.build(object) unless context[:noteable_url]
 
         context[:noteable_url] + "#note_#{object.id}"
+      end
+
+      private
+
+      # Any noteable outside the allowlist stays fail-closed for `ai_workflows` tokens.
+      def award_emoji_readable?
+        return true if AI_WORKFLOWS_NOTEABLE_TYPES.include?(object.noteable_type)
+
+        scope_validator = context[:scope_validator]
+        scope_validator.nil? || scope_validator.valid_for?(%i[api read_api])
       end
     end
   end

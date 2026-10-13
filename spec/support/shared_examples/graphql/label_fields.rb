@@ -114,6 +114,45 @@ RSpec.shared_examples 'querying a GraphQL type with labels' do
             label_d.title
           )
         end
+
+        context 'when a page boundary falls between contiguous and subsequence-only matches' do
+          # These sort after label_c and label_d alphabetically, so only the
+          # contiguous-first ordering puts them on the first page.
+          let_it_be(:contiguous_labels, freeze: false) do
+            Array.new(2) { |i| create(label_factory, title: "mtchng #{i}", **label_attrs) }
+          end
+
+          let(:labels_params) { { search_term: 'mtchng', search_in: [:TITLE], fuzzy_search: true, first: 2 } }
+          let(:end_cursor) { graphql_data.dig(*path_prefix, 'labels', 'pageInfo', 'endCursor') }
+
+          let(:query) do
+            make_query(
+              [
+                query_graphql_field(:labels, labels_params,
+                  ['pageInfo { endCursor }', query_graphql_field(:nodes, nil, %w[title])])
+              ]
+            )
+          end
+
+          let(:paginated_query) do
+            make_query(
+              [
+                query_graphql_field(:labels, labels_params.merge(after: end_cursor),
+                  [query_graphql_field(:nodes, nil, %w[title])])
+              ]
+            )
+          end
+
+          it 'returns the contiguous matches first and the rest on the next page' do
+            expect(labels_response.pluck('title')).to match_array(contiguous_labels.map(&:title))
+
+            post_graphql(paginated_query, current_user: current_user)
+
+            expect(graphql_errors).not_to be_present
+            expect(graphql_data.dig(*path_prefix, 'labels', 'nodes').pluck('title'))
+              .to contain_exactly(label_c.title, label_d.title)
+          end
+        end
       end
 
       context 'without fuzzy_search' do

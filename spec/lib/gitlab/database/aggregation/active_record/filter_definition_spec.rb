@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::FilterDefinition, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::FilterDefinition,
+  feature_category: :value_stream_management do
   it 'requires #apply definition' do
     expect(described_class.new(:foo, :bar)).to require_method_definition(:apply, nil, nil)
   end

@@ -775,8 +775,7 @@ TEXT
     end
 
     before do
-      allow(commit).to receive(:author).and_return(user1)
-      allow(commit).to receive(:committer).and_return(user2)
+      allow(commit).to receive_messages(author: user1, committer: user2)
     end
 
     it 'includes the commit author' do

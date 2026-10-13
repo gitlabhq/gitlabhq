@@ -9,7 +9,6 @@ import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import { PIPELINE_ID_KEY } from '~/ci/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
 import getPipelineCreationRequests from '~/ci/merge_requests/graphql/queries/get_pipeline_creation_requests.query.graphql';
 import pipelineCreationRequestsUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
@@ -47,7 +46,7 @@ export default {
     TablePagination,
     RunPipelineButton,
   },
-  mixins: [PipelinesMixin, glFeatureFlagsMixin(), GlToastMixin],
+  mixins: [PipelinesMixin, GlToastMixin],
   props: {
     canCreatePipelineInTargetProject: {
       type: Boolean,

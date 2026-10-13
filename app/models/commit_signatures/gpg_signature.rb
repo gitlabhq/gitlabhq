@@ -2,8 +2,8 @@
 
 module CommitSignatures
   class GpgSignature < ApplicationRecord
-    extend ::Gitlab::Utils::Override
     include CommitSignature
+    include ProjectScopedCommitSignature
     include SignatureType
     include EachBatch
 
@@ -13,15 +13,6 @@ module CommitSignatures
     belongs_to :gpg_key_subkey
 
     validates :gpg_key_primary_keyid, presence: true
-
-    override :safe_create!
-    def self.safe_create!(attributes)
-      create_with(attributes)
-        .safe_find_or_create_by!( # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- This overrides an existent class method defined in CommitSignature concern
-          project_id: attributes[:project].id,
-          commit_sha: attributes[:commit_sha]
-        )
-    end
 
     def signed_by_user
       gpg_key&.user

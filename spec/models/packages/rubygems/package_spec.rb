@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Rubygems::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Rubygems::Package, feature_category: :package_registry do
   let_it_be(:rubygems_package) { build_stubbed(:rubygems_package) }
 
   describe 'associations' do

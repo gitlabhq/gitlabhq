@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffNotePosition, type: :model, feature_category: :code_review_workflow do
+RSpec.describe DiffNotePosition, feature_category: :code_review_workflow do
   let(:diff_position) { build(:diff_position) }
   let(:line_code) { 'bd4b7bfff3a247ccf6e3371c41ec018a55230bcc_534_521' }
 

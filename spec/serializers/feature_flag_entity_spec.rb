@@ -3,15 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe FeatureFlagEntity do
-  let(:feature_flag) { create(:operations_feature_flag, project: project) }
-  let(:project) { create(:project) }
+  let(:feature_flag) { build_stubbed(:operations_feature_flag, project: project, iid: 1) }
+  let(:project) { create(:project, developers: user) }
   let(:request) { double('request', current_user: user) }
   let(:user) { create(:user) }
   let(:entity) { described_class.new(feature_flag, request: request) }
-
-  before do
-    project.add_developer(user)
-  end
 
   subject { entity.as_json }
 

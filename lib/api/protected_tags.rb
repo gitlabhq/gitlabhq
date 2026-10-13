@@ -11,7 +11,7 @@ module API
     helpers Helpers::ProtectedTagsHelpers
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all protected tags' do
@@ -47,7 +47,7 @@ module API
         tags %w[protected_tags]
       end
       params do
-        requires :name, type: String, desc: 'The name of the tag or wildcard', documentation: { example: 'release*' }
+        requires :name, type: String, desc: 'Name of the tag or wildcard.', documentation: { example: 'release*' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_protected_tag, boundary_type: :project
@@ -70,12 +70,12 @@ module API
         tags %w[protected_tags]
       end
       params do
-        requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
+        requires :name, type: String, desc: 'Name of the tag or wildcard.', documentation: { example: 'release-1-0' }
         # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
         optional :create_access_level,
           type: Integer,
           values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
-          desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)',
+          desc: 'Access level allowed to create the protected tag. Defaults to `40` (Maintainer role).',
           documentation: { example: 30 }
         # rubocop:enable API/AccessLevelStringType
         use :optional_params
@@ -110,7 +110,7 @@ module API
         tags %w[protected_tags]
       end
       params do
-        requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
+        requires :name, type: String, desc: 'Name of the tag or wildcard.', documentation: { example: 'release-1-0' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_protected_tag, boundary_type: :project

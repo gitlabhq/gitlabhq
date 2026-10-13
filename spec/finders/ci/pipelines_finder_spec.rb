@@ -382,7 +382,7 @@ RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
         end
 
         it 'is expected to return pipelines' do
-          is_expected.to contain_exactly(*pipelines)
+          is_expected.to match_array(pipelines)
         end
       end
 

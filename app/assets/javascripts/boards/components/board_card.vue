@@ -234,7 +234,8 @@ export default {
     :class="[
       {
         'gl-cursor-grab': isDraggable,
-        'is-active !gl-bg-blue-50 hover:!gl-bg-blue-50': isActive,
+        'is-active !gl-border-strong !gl-bg-neutral-100 hover:!gl-bg-neutral-100 dark:!gl-bg-neutral-700':
+          isActive,
         'is-disabled': isDisabled,
         'gl-cursor-not-allowed gl-bg-subtle': item.isLoading,
       },

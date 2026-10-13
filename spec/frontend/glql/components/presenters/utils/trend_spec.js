@@ -1,4 +1,8 @@
-import { formatChange, trendChangeFor } from '~/glql/components/presenters/utils/trend';
+import {
+  formatChange,
+  formatSignedChange,
+  trendChangeFor,
+} from '~/glql/components/presenters/utils/trend';
 
 describe('trendChangeFor', () => {
   it.each`
@@ -51,5 +55,19 @@ describe('formatChange', () => {
     ${-1}    | ${'100%'}
   `('formats $change as $expected', ({ change, expected }) => {
     expect(formatChange(change)).toBe(expected);
+  });
+});
+
+describe('formatSignedChange', () => {
+  it.each`
+    change   | expected
+    ${0.07}  | ${'+7%'}
+    ${-0.04} | ${'-4%'}
+    ${0}     | ${'0%'}
+    ${-0}    | ${'0%'}
+    ${0.234} | ${'+23.4%'}
+    ${-1}    | ${'-100%'}
+  `('formats $change as $expected', ({ change, expected }) => {
+    expect(formatSignedChange(change)).toBe(expected);
   });
 });

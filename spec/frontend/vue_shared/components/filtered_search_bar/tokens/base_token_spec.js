@@ -390,6 +390,48 @@ describe('BaseToken', () => {
         });
       });
 
+      describe('when searching for a value which collides with a default suggestion', () => {
+        const findSuggestionValues = () =>
+          wrapper
+            .findAllComponents(GlFilteredSearchSuggestion)
+            .wrappers.map((c) => c.props('value'));
+
+        const searchFor = async (data) => {
+          wrapper = createComponent({
+            props: {
+              defaultSuggestions: OPTIONS_NONE_ANY_ME,
+              value: { data: '', operator: OPERATOR_IS },
+            },
+            mountFn: shallowMountExtended,
+          });
+          findGlFilteredSearchToken().vm.$emit('input', { data });
+
+          await nextTick();
+        };
+
+        it.each([
+          ['N', ['None']],
+          ['No', ['None']],
+          ['None', ['None']],
+          ['A', ['Any']],
+          ['Any', ['Any']],
+          ['M', ['Me']],
+          ['Me', ['Me']],
+          ['n', []],
+          ['nO', []],
+          ['none', []],
+          ['aNy', []],
+          ['m', []],
+          ['me', []],
+          ['Mes', []],
+          ['Nones', []],
+        ])('renders %p as %p', async (data, expected) => {
+          await searchFor(data);
+
+          expect(findSuggestionValues()).toEqual(expected);
+        });
+      });
+
       describe('with the "Me" wildcard suggestion', () => {
         it('renders "Me" for the "is" operator', () => {
           wrapper = createComponent({

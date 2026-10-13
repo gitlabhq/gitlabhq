@@ -69,7 +69,9 @@ class Import::BulkImportsController < ApplicationController
       end
 
       ::BulkImports::CreateService.new(
-        current_user, entry.to_h, credentials, fallback_organization: Current.organization
+        current_user, entry.to_h, credentials,
+        fallback_organization: Current.organization,
+        request_channel: ::Gitlab::Import::RequestChannel::UI
       ).execute
     end
 
@@ -245,6 +247,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def throttled_request?
-    ::Gitlab::ApplicationRateLimiter.throttled_request?(request, current_user, :bulk_import, scope: current_user)
+    ::Gitlab::ApplicationRateLimiter.throttled_request?(request, current_user, :bulk_import,
+      scope: { user: current_user })
   end
 end

@@ -9,6 +9,7 @@ import routes from './routes';
 import YourWorkGroupsApp from './components/app.vue';
 
 Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 export const createRouter = (basePath) => {
   const router = new VueRouter({

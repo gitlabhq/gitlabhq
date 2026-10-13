@@ -19,7 +19,7 @@ import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
-import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import SourceViewer from '~/blob/components/source_viewer/source_viewer.vue';
 import TooLargeViewer from '~/repository/components/blob_viewers/too_large_viewer.vue';
 import LfsViewer from '~/repository/components/blob_viewers/lfs_viewer.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
@@ -27,7 +27,6 @@ import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.g
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import getRefMixin from '~/repository/mixins/get_ref';
 import { InternalEvents } from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -156,17 +155,10 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
       apolloProvider: fakeApollo,
       pinia,
       propsData: propsMock,
-      mixins: [
-        getRefMixin,
-        highlightMixin,
-        glAbilitiesMixin(),
-        glFeatureFlagMixin(),
-        InternalEvents.mixin(),
-      ],
+      mixins: [getRefMixin, highlightMixin, glAbilitiesMixin(), InternalEvents.mixin()],
       provide: {
         targetBranch: 'test',
         originalBranch: 'default-ref',
-        glFeatures: { inlineBlame: true },
         ...inject,
       },
       router,

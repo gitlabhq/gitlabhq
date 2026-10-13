@@ -74,7 +74,7 @@ Scan existing tests before writing new ones. Don't test the same thing twice.
 Match your test to the correct suite and stage. Follow established patterns.
 
 **Default to Blocking**
-New tests _block by default_. Non-blocking tests are the exception, not the rule.
+New tests block by default. Non-blocking tests are the exception, not the rule.
 
 ### Modifying Test Execution in Pipeline
 

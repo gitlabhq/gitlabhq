@@ -34,7 +34,6 @@ module Authz
           on_duplicate: Arel.sql(<<~SQL.squish)
             status = #{statuses[:requeued]},
             enqueued_at = excluded.enqueued_at
-            WHERE #{table_name}.status = #{statuses[:processing]}
           SQL
         )
       rescue ActiveRecord::InvalidForeignKey => e

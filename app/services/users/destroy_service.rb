@@ -6,7 +6,7 @@ module Users
 
     DestroyError = Class.new(StandardError)
 
-    handles_removal_of :project_authorization_reverifications
+    handles_removal_of :project_authorization_reverifications, :oauth_consent_grants
 
     attr_accessor :current_user
 
@@ -101,7 +101,6 @@ module Users
 
     def authorized_projects_refresh_priority_for(user)
       return unless user.project_bot?
-      return unless Feature.enabled?(:deprioritize_destroyed_project_bot_user_project_authorizations_refresh, user)
 
       UserProjectAccessChangedService::MEDIUM_PRIORITY
     end

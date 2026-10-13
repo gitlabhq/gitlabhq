@@ -301,6 +301,139 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     );
   });
 
+  describe('onKeyDown', () => {
+    // Every trigger the suggestions extension registers, with one item each.
+    const triggers = [
+      { char: '@', nodeType: 'reference', referenceType: 'user', item: exampleUser },
+      { char: '#', nodeType: 'reference', referenceType: 'issue', item: exampleIssue },
+      {
+        char: '[issue:',
+        nodeType: 'reference',
+        referenceType: 'issue_alternative',
+        item: exampleIssue,
+      },
+      {
+        char: '[work_item:',
+        nodeType: 'reference',
+        referenceType: 'work_item',
+        item: exampleIssue,
+      },
+      { char: '$', nodeType: 'reference', referenceType: 'snippet', item: exampleSnippet },
+      { char: '~', nodeType: 'referenceLabel', referenceType: 'label', item: exampleLabel1 },
+      { char: '&', nodeType: 'reference', referenceType: 'epic', item: exampleEpic },
+      {
+        char: '[epic:',
+        nodeType: 'reference',
+        referenceType: 'epic_alternative',
+        item: exampleEpic,
+      },
+      {
+        char: '!',
+        nodeType: 'reference',
+        referenceType: 'merge_request',
+        item: exampleMergeRequest,
+      },
+      {
+        char: '[vulnerability:',
+        nodeType: 'reference',
+        referenceType: 'vulnerability',
+        item: exampleVulnerability,
+      },
+      {
+        char: '*iteration:',
+        nodeType: 'reference',
+        referenceType: 'iteration',
+        item: exampleIteration,
+      },
+      { char: '"', nodeType: 'reference', referenceType: 'status', item: exampleStatus },
+      { char: '%', nodeType: 'reference', referenceType: 'milestone', item: exampleMilestone1 },
+      { char: ':', nodeType: 'emoji', referenceType: 'emoji', item: exampleEmoji },
+      { char: '[[', nodeType: 'link', referenceType: 'wiki', item: exampleWiki },
+      { char: '/', nodeType: 'reference', referenceType: 'command', item: exampleCommand },
+    ];
+
+    let commandSpy;
+
+    const buildTriggerWrapper = ({ char, nodeType, referenceType, item }, query) => {
+      commandSpy = jest.fn();
+
+      buildWrapper({
+        propsData: {
+          char,
+          nodeType,
+          nodeProps: { referenceType },
+          items: [item],
+          command: commandSpy,
+          query,
+        },
+      });
+    };
+
+    const keyDown = (key) => wrapper.vm.onKeyDown({ event: { key } });
+
+    describe.each(triggers)('for the $char trigger', (trigger) => {
+      describe.each(['Enter', 'Tab'])('when %s is pressed', (key) => {
+        it('lets the key through and inserts nothing while no item is highlighted', () => {
+          buildTriggerWrapper(trigger, '');
+
+          expect(keyDown(key)).toBe(false);
+          expect(commandSpy).not.toHaveBeenCalled();
+        });
+
+        it('inserts the highlighted item when the query highlighted the first match', async () => {
+          buildTriggerWrapper(trigger, 'a');
+          await nextTick();
+
+          expect(keyDown(key)).toBe(true);
+          expect(commandSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('inserts the item highlighted with the arrow keys even without a query', async () => {
+          buildTriggerWrapper(trigger, '');
+
+          expect(keyDown('ArrowDown')).toBe(true);
+          await nextTick();
+
+          expect(keyDown(key)).toBe(true);
+          expect(commandSpy).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    it('still consumes the arrow keys while no item is highlighted', () => {
+      buildTriggerWrapper(triggers[0], '');
+
+      expect(keyDown('ArrowUp')).toBe(true);
+      expect(keyDown('ArrowDown')).toBe(true);
+      expect(commandSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not consume other keys', async () => {
+      buildTriggerWrapper(triggers[0], 'a');
+      await nextTick();
+
+      expect(keyDown('a')).toBe(false);
+      expect(keyDown('Escape')).toBe(false);
+      expect(commandSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not consume any key when there are no items', () => {
+      buildWrapper({
+        propsData: {
+          char: '@',
+          nodeType: 'reference',
+          nodeProps: { referenceType: 'user' },
+          items: [],
+          query: 'zz',
+        },
+      });
+
+      expect(keyDown('Enter')).toBe(false);
+      expect(keyDown('Tab')).toBe(false);
+      expect(keyDown('ArrowDown')).toBe(false);
+    });
+  });
+
   describe('rendering user references', () => {
     it('displays avatar component', () => {
       buildWrapper({

@@ -558,3 +558,11 @@ export const AREA_CHART_SERIES_OPTIONS = {
   areaStyle: { opacity: defaultAreaOpacity },
   type: 'line',
 };
+
+// Panel state variants rendered by panel_state.vue in place of a panel body.
+export const PANEL_STATE_NO_DATA = 'no-data';
+export const PANEL_STATE_NO_ACCESS = 'no-access';
+export const PANEL_STATE_NOT_CONFIGURED = 'not-configured';
+export const PANEL_STATE_UNAVAILABLE = 'unavailable';
+export const PANEL_STATE_ERROR = 'error';
+export const PANEL_STATE_ERROR_NO_RETRY = 'error-no-retry';

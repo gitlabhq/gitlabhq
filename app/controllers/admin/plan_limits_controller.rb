@@ -24,7 +24,11 @@ class Admin::PlanLimitsController < Admin::ApplicationController
   private
 
   def set_plan_limits
-    plan = Plan.find_by_plan_name_uid!(plan_limits_params[:plan_name_uid])
+    plan = ::GitlabSubscriptions::SystemDefined::Plan.instance_plans.find do |instance_plan|
+      instance_plan.id == plan_limits_params[:plan_name_uid].to_i
+    end
+    return not_found unless plan
+
     @plan_limits = plan.actual_limits
   end
 

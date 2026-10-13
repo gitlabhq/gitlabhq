@@ -47,7 +47,10 @@ module WebHooks
     end
 
     def check_resend_rate_limit!
-      check_rate_limit!(:web_hook_event_resend, scope: [hook.parent, current_user])
+      check_rate_limit!(
+        :web_hook_event_resend,
+        scope: ::Gitlab::ApplicationRateLimiter.parent_scope(hook.parent).merge(user: current_user)
+      )
     end
   end
 end

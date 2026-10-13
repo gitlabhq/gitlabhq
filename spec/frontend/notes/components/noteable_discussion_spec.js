@@ -369,6 +369,40 @@ describe('noteable_discussion component', () => {
       });
     });
 
+    describe('when the reply changes the resolved state', () => {
+      it.each`
+        responseResolved                    | resolvedStateSaved
+        ${!discussionMock.resolved}         | ${true}
+        ${Boolean(discussionMock.resolved)} | ${false}
+      `(
+        'sends the resolved state and reports resolvedStateSaved=$resolvedStateSaved',
+        async ({ responseResolved, resolvedStateSaved }) => {
+          const callback = jest.fn();
+          useNotes().saveNote.mockResolvedValue({ discussion: { resolved: responseResolved } });
+          createComponent();
+
+          wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
+          await nextTick();
+
+          wrapper
+            .findComponent(NoteForm)
+            .vm.$emit('handle-form-update', 'test reply', null, callback, !discussionMock.resolved);
+
+          await waitForPromises();
+
+          expect(useNotes().saveNote).toHaveBeenCalledWith(
+            expect.objectContaining({
+              data: expect.objectContaining({
+                resolve_discussion: !discussionMock.resolved,
+                return_discussion: true,
+              }),
+            }),
+          );
+          expect(callback).toHaveBeenCalledWith(undefined, { resolvedStateSaved });
+        },
+      );
+    });
+
     describe('if response contains validation errors', () => {
       beforeEach(async () => {
         useNotes().saveNote.mockRejectedValue({

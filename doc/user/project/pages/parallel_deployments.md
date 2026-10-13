@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages parallel deployments
+description: Publish multiple versions of a GitLab Pages site at the same time, each with its own URL.
 ---
 
 {{< details >}}

@@ -19,8 +19,11 @@ module Oauth
       # rubocop:disable CodeReuse/ActiveRecord -- We are using .find_by here because the models are part of the Doorkeeper gem.
       device_grant = device_grant_model.find_by(user_code: user_code)
       # rubocop:enable CodeReuse/ActiveRecord
-      @scopes = device_grant&.scopes || ''
-      @application = device_grant&.application
+      return authorization_error_response(:invalid_user_code) if device_grant.nil?
+      return authorization_error_response(:expired_user_code) if device_grant.expired?
+
+      @scopes = device_grant.scopes
+      @application = device_grant.application
       respond_to do |format|
         format.html do
           render "doorkeeper/device_authorization_grant/authorize"

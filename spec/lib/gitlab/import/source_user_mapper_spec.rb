@@ -407,7 +407,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       end
     end
 
-    context "when the source user is in a state that returns nil for `#mapped_user_id`" do
+    context "when the source user is in a state that must be reset" do
       include ExclusiveLeaseHelpers
 
       shared_examples 'returns the existing source user, in a reset state' do
@@ -492,7 +492,6 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
               source_user_validation_errors: ['mocked_error']
             )
 
-            expect(existing_import_source_user).to be_invalid
             expect { find_source_user }.to change { Import::SourceUser.count }.by(-1)
             expect(find_source_user).to be_nil
             expect(Import::SourceUser.find_by_id(existing_import_source_user.id)).to be_nil
@@ -543,6 +542,37 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
 
         it 'creates a new placeholder user' do
           expect { find_source_user }.to change { existing_import_source_user.reload.placeholder_user_id }.from(nil)
+        end
+      end
+
+      context 'as the reassignment was revoked' do
+        let_it_be_with_reload(:existing_import_source_user) do
+          create(
+            :import_source_user,
+            :revoked,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          )
+        end
+
+        it_behaves_like 'returns the existing source user, in a reset state'
+
+        it 'creates a new placeholder user' do
+          expect { find_source_user }.to change { existing_import_source_user.reload.placeholder_user_id }.from(nil)
+        end
+
+        context 'and the source user has a leftover placeholder user' do
+          let_it_be(:leftover_placeholder_user) { create(:user, :placeholder) }
+
+          before do
+            existing_import_source_user.update!(placeholder_user: leftover_placeholder_user)
+          end
+
+          it 'does not reuse the leftover placeholder user' do
+            expect(find_source_user.placeholder_user_id).to be_present
+            expect(find_source_user.placeholder_user_id).not_to eq(leftover_placeholder_user.id)
+          end
         end
       end
     end

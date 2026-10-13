@@ -89,21 +89,20 @@ RSpec.describe 'OAuth Provider', :with_current_organization, feature_category: :
     end
 
     context 'when confirming an unknown device code as an administrator' do
-      # No matching device grant, so @application is nil: the admin warning must
-      # stay a complete sentence instead of interpolating a blank client name.
+      # No matching device grant: confirm redirects back to the entry page with
+      # an error instead of rendering the authorize page with a blank app name.
       let(:user) { create(:admin, organizations: [current_organization]) }
 
       before do
         find_by_testid('authorization-button').click
       end
 
-      # rubocop:disable Layout/LineLength -- It is a string
-      it 'shows the generic admin escalation warning without a blank name' do
+      it 'redirects to the device code entry page with an error' do
         expect(page).to have_content(
-          s_('DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well.')
+          I18n.t('doorkeeper.flash.device_codes.authorize.invalid_user_code')
         )
+        expect(page).not_to have_content('You are an administrator')
       end
-      # rubocop:enable Layout/LineLength
     end
   end
 

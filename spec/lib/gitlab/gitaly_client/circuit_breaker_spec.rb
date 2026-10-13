@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::CircuitBreaker, :clean_gitlab_redis_rate_limiting, feature_category: :gitaly do
+RSpec.describe Gitlab::GitalyClient::CircuitBreaker, :clean_gitlab_redis_rate_limiting, :freeze_time,
+  feature_category: :gitaly do
   subject(:circuit_breaker) { described_class.new(service: service, rpc: rpc, storage: storage) }
 
   let(:service) { :ref_service }
@@ -54,6 +55,52 @@ RSpec.describe Gitlab::GitalyClient::CircuitBreaker, :clean_gitlab_redis_rate_li
       end
 
       context 'when request is unauthenticated' do
+        context 'with message-size ResourceExhausted errors' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:details) do
+            [
+              'grpc: Received message larger than max (5691745 vs. 4194304)',
+              'grpc: received MESSAGE LARGER THAN MAX (5691745 vs. 4194304)'
+            ]
+          end
+
+          with_them do
+            it 'propagates the original errors without opening the circuit' do
+              message_size_error = GRPC::ResourceExhausted.new(details)
+
+              5.times do
+                expect { circuit_breaker.call { raise message_size_error } }.to raise_error do |error|
+                  expect(error).to equal(message_size_error)
+                end
+              end
+
+              expect(circuit_breaker.call { 'success' }).to eq('success')
+            end
+          end
+
+          it 'does not count the errors as successful calls' do
+            message_size_error = GRPC::ResourceExhausted.new(
+              'grpc: Received message larger than max (5691745 vs. 4194304)'
+            )
+
+            5.times do
+              expect { circuit_breaker.call { raise message_size_error } }
+                .to raise_error(GRPC::ResourceExhausted)
+            end
+
+            circuit_breaker.call { 'success' }
+
+            4.times do
+              expect { circuit_breaker.call { raise resource_exhausted_error } }
+                .to raise_error(GRPC::ResourceExhausted)
+            end
+
+            expect { circuit_breaker.call { 'should not execute' } }
+              .to raise_error(Gitlab::Git::ResourceExhaustedError, /Circuit is open/)
+          end
+        end
+
         it 'executes block successfully' do
           result = circuit_breaker.call { 'success' }
 

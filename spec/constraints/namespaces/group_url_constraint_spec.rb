@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::GroupUrlConstraint do
-  let!(:group) { create(:group, path: 'gitlab') }
+  let_it_be(:group) { create(:group, path: 'gitlab') }
 
   describe '#matches?' do
     context 'valid request' do
@@ -34,7 +34,7 @@ RSpec.describe Namespaces::GroupUrlConstraint do
 
     context 'when the request matches a redirect route' do
       context 'for a root group' do
-        let!(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
+        let_it_be(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }
 
         context 'and is a GET request' do
           let(:request) { build_request(redirect_route.path) }

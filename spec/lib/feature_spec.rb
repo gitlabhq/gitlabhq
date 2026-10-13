@@ -1469,6 +1469,49 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     end
   end
 
+  describe '.expire_cache' do
+    let(:key) { :awesome_feature }
+    let(:flipper_key) { "flipper/v1/feature/#{key}" }
+
+    before do
+      stub_feature_flag_definition(key)
+      described_class.enable(key)
+      described_class.enabled?(key)
+    end
+
+    # Delete the gate row directly, as a row replicated over logical replication
+    # would change, so Flipper's caches are never told about it.
+    def disable_in_database
+      Feature::FlipperGate.where(feature_key: key.to_s).delete_all
+    end
+
+    it 'makes the next read see a change made behind the caches' do
+      disable_in_database
+
+      expect(described_class.enabled?(key)).to be(true)
+
+      described_class.expire_cache(key)
+
+      expect(described_class.enabled?(key)).to be(false)
+    end
+
+    it 'removes the entries from the L1 and L2 caches' do
+      expect(described_class.send(:l1_cache_backend).exist?(flipper_key)).to be(true)
+      expect(described_class.l2_cache_backend.exist?(flipper_key)).to be(true)
+
+      described_class.expire_cache(key)
+
+      expect(described_class.send(:l1_cache_backend).exist?(flipper_key)).to be(false)
+      expect(described_class.l2_cache_backend.exist?(flipper_key)).to be(false)
+    end
+
+    it 'does nothing when the adapter chain has no cache layer' do
+      allow(described_class).to receive(:flipper).and_return(Flipper.new(Flipper::Adapters::Memory.new))
+
+      expect { described_class.expire_cache(key) }.not_to raise_error
+    end
+  end
+
   describe '.remove' do
     subject { described_class.remove(key) }
 

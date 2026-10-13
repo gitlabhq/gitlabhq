@@ -31,6 +31,7 @@ export default {
     DiffLineChanges: defineAsyncComponent(() => import('./diff_line_changes.vue')),
     CalculatePercent: defineAsyncComponent(() => import('./calculate_percent.vue')),
     FormatNumber: defineAsyncComponent(() => import('./format_number.vue')),
+    FormatText: defineAsyncComponent(() => import('./format_text.vue')),
     FormatTime: defineAsyncComponent(() => import('./format_time.vue')),
     FormatTimeRange: defineAsyncComponent(() => import('./format_time_range.vue')),
     MergeRequestLink: defineAsyncComponent(() => import('./merge_request_link.vue')),

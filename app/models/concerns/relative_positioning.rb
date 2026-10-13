@@ -80,6 +80,16 @@ module RelativePositioning
     private
 
     # @api private
+    # No-op by default; overridden on Issue to preload work_item_positions (avoids an N+1).
+    def preload_positioning_associations(_objects); end
+
+    # @api private
+    # Persists a batch of positions; overridden on Issue to write work_item_positions.
+    def assign_relative_positions(mapping)
+      ::Gitlab::Database::BulkUpdate.execute([:relative_position], mapping, &:model_class)
+    end
+
+    # @api private
     def gap_size(context, gaps:, at_end:, starting_from:)
       ideal = relative_positioning_ideal_distance
       min_pos = relative_positioning_min_position
@@ -119,6 +129,7 @@ module RelativePositioning
     #                          positions are placed _before_ all siblings with positions.
     # @returns [Number] The number of moved records.
     def move_nulls(objects, at_end:)
+      preload_positioning_associations(objects)
       objects = objects.reject(&:relative_position)
       return 0 if objects.empty?
 
@@ -158,7 +169,7 @@ module RelativePositioning
             { relative_position: desired_pos.clamp(lower_bound, upper_bound) }
           end
 
-          ::Gitlab::Database::BulkUpdate.execute([:relative_position], mapping, &:model_class)
+          assign_relative_positions(mapping)
         end
       end
 

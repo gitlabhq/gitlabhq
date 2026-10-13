@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlSprintf, GlModalDirective } from '@gitlab/ui';
+import { GlModal, GlSprintf } from '@gitlab/ui';
 import { __, s__, createDateTimeFormat } from '~/locale';
 import Tracking from '~/tracking';
 import MetadataTable from './table.vue';
@@ -15,9 +15,6 @@ export default {
     GlModal,
     GlSprintf,
     MetadataTable,
-  },
-  directives: {
-    GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
   props: {

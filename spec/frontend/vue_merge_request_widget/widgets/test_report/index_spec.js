@@ -5,6 +5,7 @@ import testReportExtension from '~/vue_merge_request_widget/widgets/test_report/
 import { i18n } from '~/vue_merge_request_widget/widgets/test_report/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -13,6 +14,7 @@ import {
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import TestCaseDetails from '~/ci/pipeline_details/test_reports/test_case_details.vue';
+import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 
 import { failedReport } from 'jest/ci/reports/mock_data/mock_data';
 import mixedResultsTestReports from 'jest/ci/reports/mock_data/new_and_fixed_failures_report.json';
@@ -50,6 +52,7 @@ describe('Test report extension', () => {
   const findCopyFailedSpecsBtn = () => wrapper.findByTestId('copy-failed-specs-btn');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
   const findModal = () => wrapper.findComponent(TestCaseDetails);
+  const findWidget = () => wrapper.findComponent(Widget);
 
   const createComponent = (props) => {
     wrapper = mountExtended(testReportExtension, {
@@ -315,6 +318,50 @@ describe('Test report extension', () => {
       expect(findModal().props('testCase')).toMatchObject(
         mixedResultsTestReports.suites[0].new_failures[0],
       );
+    });
+  });
+
+  describe('"View report" button', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+    const reportsTabPath = '/root/repo/-/merge_requests/4/reports';
+    const findViewReportButton = () =>
+      findWidget()
+        .props('actionButtons')
+        .find(({ text }) => text === 'View report');
+
+    beforeEach(() => mockApi(HTTP_STATUS_OK));
+
+    it.each`
+      description                  | props
+      ${'without a reports tab'}   | ${{}}
+      ${'while the pipeline runs'} | ${{ reportsTabPath, isPipelineActive: true }}
+    `('is not rendered, and the widget stays expandable, $description', async ({ props }) => {
+      createComponent(props);
+      await waitForPromises();
+
+      expect(findViewReportButton()).toBeUndefined();
+      expect(findWidget().props('isCollapsible')).toBe(true);
+    });
+
+    it('navigates to the test summary report instead of expanding, and tracks the click', async () => {
+      createComponent({ reportsTabPath });
+      await waitForPromises();
+
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const pushStateSpy = jest.spyOn(window.history, 'pushState');
+      const button = findViewReportButton();
+      const event = { preventDefault: jest.fn() };
+
+      button.onClick(button, event);
+
+      expect(findWidget().props('isCollapsible')).toBe(false);
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_view_report_on_merge_request_widget',
+        { label: 'test_summary' },
+        undefined,
+      );
+      expect(pushStateSpy).toHaveBeenCalledWith(null, null, `${reportsTabPath}/test-summary`);
     });
   });
 });

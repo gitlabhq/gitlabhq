@@ -1,6 +1,6 @@
 %section.settings-section.js-search-settings-section{ options_attrs }
   .settings-sticky-header{ class: ('gl-mb-4' if !description && !@description) }
-    %h2.gl-heading-2.gl-mb-0
+    %h2.gl-mb-0{ class: @heading_classes }
       = heading || @heading
   - if description || @description
     .settings-sticky-header-description.gl-mb-6

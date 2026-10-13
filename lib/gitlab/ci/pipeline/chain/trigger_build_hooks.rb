@@ -6,6 +6,8 @@ module Gitlab
       module Chain
         class TriggerBuildHooks < Chain::Base
           def perform!
+            return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
+
             ::Ci::ExecutePipelineBuildHooksWorker.perform_async(pipeline.id)
           end
 

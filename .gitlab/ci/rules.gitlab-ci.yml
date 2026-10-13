@@ -20,15 +20,15 @@
 .if-force-ci: &if-force-ci
   if: '$FORCE_GITLAB_CI'
 
-# weekly, ai-principles-* and whats-new pipelines are opt-in and should not automatically run every job
+# weekly, ai-principles-*, whats-new and housekeeping pipelines are opt-in and should not automatically run every job
 .if-default-refs: &if-default-refs
   if: '
       (
         $CI_PIPELINE_SOURCE != "merge_request_event"
         && $SCHEDULE_TYPE != "weekly"
         && $SCHEDULE_TYPE != "ai-principles-distillation"
-        && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"
         && $SCHEDULE_TYPE != "whats-new"
+        && $SCHEDULE_TYPE != "housekeeping"
         && $TRIGGERED_BY_AI_GATEWAY_PROJECT != "true"
         &&
         (
@@ -49,9 +49,9 @@
       || $FORCE_GITLAB_CI
       '
 
-# weekly, ai-principles-* and whats-new pipelines are opt-in and should not automatically run every job
+# weekly, ai-principles-*, whats-new and housekeeping pipelines are opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new"'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
 
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
@@ -244,11 +244,11 @@
 .if-default-branch-schedule-ai-principles: &if-default-branch-schedule-ai-principles
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-distillation"'
 
-.if-default-branch-schedule-ai-principles-fence-reconcile: &if-default-branch-schedule-ai-principles-fence-reconcile
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-fence-reconcile"'
-
 .if-default-branch-schedule-whats-new: &if-default-branch-schedule-whats-new
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "whats-new"'
+
+.if-default-branch-schedule-housekeeping: &if-default-branch-schedule-housekeeping
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "housekeeping"'
 
 .if-ruby-branch-schedule: &if-ruby-branch-schedule
   if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -272,7 +272,7 @@
   if: '($CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org") && ($CI_SERVER_HOST != "jihulab.com" || $CI_PROJECT_NAMESPACE != "gitlab-cn")'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new"'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
 
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -294,9 +294,6 @@
 
 .if-rails-next-branch: &if-rails-next-branch
   if: '$CI_COMMIT_BRANCH == "rails-next"'
-
-.if-group-code-review-label-or-maintenance-label-on-mr: &if-group-code-review-label-or-maintenance-label-on-mr
-  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
 
 .if-canonical-mr: &if-canonical-mr
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE =~ /^gitlab(-org)?($|\/)/'
@@ -334,7 +331,6 @@
   - ".gitlab/ci/build-images.gitlab-ci.yml"
   - ".gitlab/ci/qa.gitlab-ci.yml"
   - ".gitlab/ci/test-on-omnibus/*.yml"
-  - ".gitlab/ci/test-on-gdk/*.yml"
   - ".gitlab/ci/version.yml"
 
 .gitaly-patterns: &gitaly-patterns
@@ -351,6 +347,12 @@
   - GITLAB_KAS_VERSION
   - GITLAB_PAGES_VERSION
   - GITALY_SERVER_VERSION
+
+# patch-package patches rewrite vendored frontend runtime code (e.g. the Vue runtime)
+# that every rendered page loads, and the predictive rspec mapping cannot see that.
+# Treated like workhorse-patterns: a change runs the full system spec suite.
+.frontend-patch-patterns: &frontend-patch-patterns
+  - "patches/**/*"
 
 .workhorse-patterns: &workhorse-patterns
   - ".gitlab/ci/version.yml"
@@ -409,13 +411,29 @@
 # owns — a change to any of these can break the fences on its own ref, so the
 # STRICT `ai-duo-review-instructions` job (where staleness blocks) triggers on
 # these. Distilled files are deliberately NOT here: a team's distilled MR
-# cannot fix a fence on its own ref (the fence catches up via the daily
-# reconcile job), so those MRs fall through to the warn-stale job.
+# cannot fix a fence on its own ref (the fence catches up via the reconcile
+# job after it merges), so those MRs fall through to the warn-stale job.
 # gitlab-org/gitlab#604890
 .ai-duo-review-instructions-owned-patterns: &ai-duo-review-instructions-owned-patterns
   - ".gitlab/duo/mr-review-instructions.yaml"
   - "gems/gitlab-ai-principles-distiller/**/*"
   - "scripts/lint-duo-review-instructions.sh"
+
+# Files the fence projection reads. A default-branch push that changes any of
+# them can leave the fences stale, so it triggers `ai-principles-reconcile-fences`.
+.ai-principles-fence-input-patterns: &ai-principles-fence-input-patterns
+  - ".ai/principles/distilled/*.md"
+  - ".ai/principles/manifest.yml"
+  - ".gitlab/duo/mr-review-instructions.yaml"
+  - "gems/gitlab-ai-principles-distiller/lib/**/*"
+
+.ai-spelling-patterns: &ai-spelling-patterns
+  - ".ai/**/*.md"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".vale.ini"
+  - "**/AGENTS.md"
+  - "doc/.vale/gitlab_base/British.yml"
 
 .docs-i18n-patterns: &docs-i18n-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
@@ -515,13 +533,16 @@
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "config/webpack.config.js"
   - "config/helpers/*.js"
+  - "config/vue3migration/**/*"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
 
 .frontend-build-patterns: &frontend-build-patterns
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - ".browserslistrc"
   - "babel.config.js"
   - "vite.config.js"
@@ -542,6 +563,7 @@
 # This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
 .assets-compilation-patterns: &assets-compilation-patterns
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "{Gemfile,Gemfile.lock}"
   - "{Gemfile.next,Gemfile.next.lock}"
   - ".browserslistrc"
@@ -590,7 +612,7 @@
   - "{,ee/,jh/}spec/**/*"
 
 # Frontend GraphQL query documents.
-# A query change should re-run backend unit/integration specs (e.g. the N+1
+# A query change should re-run backend integration specs (e.g. the N+1
 # request specs added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224202),
 # but it must NOT trigger migration specs. Keep this out of `.backend-patterns`
 # so the `*-background-migration` rules (which key off `.backend-patterns`) are
@@ -738,7 +760,7 @@
 .qa-patterns: &qa-patterns
   - ".dockerignore"
   - "{,jh/}qa/**/*"
-  - ".gitlab/ci/{test-on-omnibus,qa-common,test-on-cng,test-on-gdk,performance-on-cng}/*"
+  - ".gitlab/ci/{test-on-omnibus,qa-common,test-on-cng,performance-on-cng}/*"
 
 # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/470
 # for the reasons why we only match those patterns.
@@ -779,6 +801,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "lib/gitlab/redis/*"
   - "babel.config.js"
@@ -817,6 +840,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -863,6 +887,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -908,6 +933,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -927,7 +953,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "scripts/**/*"
   - "{,spec/}tooling/**/*"
-  - "{,ee/,jh/}spec/{frontend,frontend_integration,support,factories,fixtures}/**/*"
+  - "{,ee/,jh/}spec/{frontend,support,factories,fixtures}/**/*"
   # spec_helper.rb and the files it requires (simplecov_env.rb, knapsack_env.rb, ...)
   - "{,ee/,jh/}spec/*.rb"
   # FE island changes
@@ -947,6 +973,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -995,6 +1022,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -1040,7 +1068,8 @@
 #       result in docs-only pipelines having failures of jobs which use `setup-test-env-patterns`
 #       in their rules and thus require `setup-test-env`, which isn't present in docs-only pipelines.
 .setup-test-env-patterns: &setup-test-env-patterns
-  - "{package.json,yarn.lock}"
+  # folded: rules:changes allows at most 50 entries and this anchor is at the limit
+  - "{package.json,yarn.lock,patches/**/*}"
   - ".browserslistrc"
   - "babel.config.js"
   - "vite.config.js"
@@ -1149,11 +1178,10 @@
   - "{,ee/,jh/}config/feature_flags/**/*.yml"
 
 .gdk-component-patterns: &gdk-component-patterns
-  - qa/gdk/**/*
   - Gemfile.lock
   - Gemfile.next.lock
   - yarn.lock
-  - scripts/build_gdk_image
+  - patches/**/*
   - scripts/frontend/postinstall.js
   - workhorse/**/*
   - vendor/gems/**/*
@@ -1224,7 +1252,7 @@
 # When adding new runtime dependencies to doctor, add their paths here
 # in the same MR.
 .ai-harness-doctor-patterns: &ai-harness-doctor-patterns
-  # Parity / .ai-reference inputs (check_parity.rb, check_ai_references.rb)
+  # .ai-reference inputs (check_ai_references.rb)
   - "**/AGENTS.md"
   - "**/CLAUDE.md"
   - ".ai/**/*"
@@ -1266,9 +1294,9 @@
     - <<: *if-jh
       when: never
 
-# Single source of truth for excluding a job from the dedicated ai-principles-*
-# schedules (distillation and fence-reconcile). Those schedules should run only
-# their own ai-principles jobs; because rules:changes is always-true on
+# Single source of truth for excluding a job from the dedicated ai-principles
+# distillation schedule. That schedule should run only its own ai-principles
+# jobs; because rules:changes is always-true on
 # scheduled pipelines, default-branch jobs would otherwise be pulled in.
 # `!reference` this from any job (including those in other CI files) whose rules
 # would otherwise match a schedule, so the guard has one canonical phrasing.
@@ -1276,9 +1304,9 @@
   rules:
     - <<: *if-default-branch-schedule-ai-principles
       when: never
-    - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
-      when: never
     - <<: *if-default-branch-schedule-whats-new
+      when: never
+    - <<: *if-default-branch-schedule-housekeeping
       when: never
 
 .rails:rules:run-search-tests:
@@ -1324,6 +1352,8 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *workhorse-patterns
+    - <<: *if-merge-request
+      changes: *frontend-patch-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
@@ -1380,6 +1410,9 @@
       when: never
     - <<: *if-merge-request
       changes: *workhorse-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patch-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -1649,6 +1682,11 @@
     - <<: *if-default-refs
       changes: *ai-principles-manifest-patterns
 
+.docs:rules:ai-spelling:
+  rules:
+    - <<: *if-merge-request
+      changes: *ai-spelling-patterns
+
 # Strict Duo-fence guard: fires only on MRs that touch the fence's OWNED files
 # (the reconcile MR, the gem, or the guard script). On those refs a stale fence
 # is real, ref-fixable drift, so the guard runs WITHOUT WARN_STALE and staleness
@@ -1662,8 +1700,8 @@
 # Warn-stale Duo-fence guard: fires on the default branch and on ordinary MRs
 # caught by the broad manifest trigger (including team distilled MRs), but NOT
 # on the owned-path MRs already covered by the strict job. It runs with
-# WARN_STALE=1, so fence staleness — expected transient state until the daily
-# reconcile job catches master up — only warns, while malformed and orphaned
+# WARN_STALE=1, so fence staleness — expected transient state until the
+# reconcile MR catches master up — only warns, while malformed and orphaned
 # fences still fail (hence this job is not allow_failure). The owned-path
 # `when: never` prevents a duplicate run alongside the strict job.
 # gitlab-org/gitlab#604890
@@ -1800,6 +1838,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - !reference [".allow-on-tier-3", rules]
     - <<: *if-default-refs
       changes: *permissions-patterns
 
@@ -1870,8 +1909,6 @@
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - <<: *if-tag
     - <<: *if-sync-changes-on-stable-branches
-    - <<: *if-group-code-review-label-or-maintenance-label-on-mr
-      changes: *backend-only-patterns
     # Automatically run on canonical MRs with backend changes (before assets-shared to avoid prevent-tier-1 exclusion)
     - <<: *if-canonical-mr
       changes: *backend-only-patterns
@@ -1923,6 +1960,8 @@
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    # jest-integration has a hard `needs` on graphql-schema-dump, which extends these
+    # rules, so forcing the suite must schedule its dependency too.
     - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
     - if: '$ENABLE_ESLINT == "true"'
@@ -2089,41 +2128,22 @@
     - <<: *if-merge-request
       changes: *frontend-predictive-patterns
 
-# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:jest-integration:
   rules:
-    # From .frontend:rules:default-frontend-jobs
+    # Frontend integration tests are EE-only; the harness and fixtures do not exist in
+    # FOSS, so never run this job in a FOSS (including as-if-foss) pipeline.
+    - <<: *if-not-ee
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # For tier-1 pipelines, only run when jest predictive jobs would
-    - <<: *if-merge-request-tier-1-or-no-tier
-      changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-tier-1-or-no-tier
-      when: never
-    # From .frontend:rules:default-frontend-jobs
-    - <<: *if-default-refs
-      changes: *code-backstage-spec-patterns
-
-.frontend:rules:jest-msw-integration:
-  rules:
-    # MSW integration tests are EE-only; the harness and fixtures do not exist in
-    # FOSS, so never run this job in a FOSS (including as-if-foss) pipeline.
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$ENABLE_JEST_MSW_INTEGRATION == "true"'
-    - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-labels-frontend-and-feature-flag
-      changes: *setup-test-env-patterns
-    # Tier-1: only run when the MSW integration tests themselves change
+    # Tier-1: only run when the frontend integration tests themselves change
     - <<: *if-merge-request-tier-1-or-no-tier
       changes:
-        - "{ee,jh}/spec/frontend/msw_integration/**/*"
+        - "{ee,jh}/spec/frontend/integration/**/*"
     - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # Tier-2+: same scope as the full Jest jobs, since this suite also runs on the frontend fixtures
@@ -2148,6 +2168,9 @@
 
 .frontend:rules:bundle-size-review:
   rules:
+    # The job requests the medium runner tag, which is stuck when unset.
+    - if: '$GLCI_MEDIUM_RUNNER_REQUIRED == ""'
+      when: never
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -2190,22 +2213,16 @@
     - <<: *if-default-refs
       changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
 
-.frontend:rules:test-infection-scanner:
+.frontend:rules:test-vue3migration-tooling:
   rules:
     - !reference ['.ai-principles-schedule:rules:skip', rules]
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-not-foss
-      changes: ["scripts/frontend/infection_scanner/**/*", "spec/frontend/scripts/infection_scanner/**/*"]
-
-.frontend:rules:jest-vue3-check-quarantined:
-  rules:
-    - <<: *if-not-merge-request
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - !reference [.frontend:rules:jest, rules]
+      changes:
+        - "config/vue3migration/**/*"
+        - "scripts/frontend/infection_scanner/**/*"
+        - "spec/frontend/config/vue3migration/**/*"
+        - "spec/frontend/scripts/infection_scanner/**/*"
 
 .frontend:rules:fixtures-packages-cleanup:
   rules:
@@ -2335,7 +2352,6 @@
     - <<: *if-merge-request
       changes: *gitlab-pages-patterns
     - <<: *if-merge-request
-      # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
       changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
@@ -2492,16 +2508,6 @@
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
 
-.qa:rules:e2e:test-on-gdk:
-  rules:
-    # Retired: test-on-cng covers merge requests and exports the code-paths mapping.
-    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/609350
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-
 .qa:rules:e2e:test-on-cng:
   rules:
     # TODO: Check security fork is able to build cng images before enabling
@@ -2546,9 +2552,6 @@
     - <<: *if-rails-branch-schedule
       when: never
     - !reference [".prevent-tier-2-and-below", rules]
-    # Automatically run for MRs with group::code review label or maintenance::dependency label and backend changes
-    - <<: *if-group-code-review-label-or-maintenance-label-on-mr
-      changes: *backend-only-patterns
     # Run only on the canonical gitlab-org/gitlab 2-hourly maintenance schedule so CPT stores baselines
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     # Allow manual triggering for CNG dependency changes
@@ -2890,8 +2893,6 @@
     - <<: *if-default-refs
       changes: *backend-patterns
     - <<: *if-default-refs
-      changes: *frontend-graphql-patterns
-    - <<: *if-default-refs
       changes: *backstage-patterns
 
 .rails:rules:clickhouse-changes:
@@ -2958,8 +2959,6 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
-    - <<: *if-default-refs
-      changes: *frontend-graphql-patterns
 
 .rails:rules:only-run-system-if-medium-runners-available:
   rules:
@@ -3013,6 +3012,8 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request-tier-2
       changes: *workhorse-patterns
+    - <<: *if-merge-request-tier-2
+      changes: *frontend-patch-patterns
     - <<: *if-security-merge-request  # security fork: no full system pipeline available, run normally
     - <<: *if-merge-request-tier-2
       when: never
@@ -3085,8 +3086,40 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+
+# No tier guard: predictive selection ignores non-Ruby files.
+.rails:rules:graphql-query-documents:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-default-refs
       changes: *frontend-graphql-patterns
+
+.rails:rules:graphql-query-documents-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:graphql-query-documents", rules]
+
+# Runs only integration specs matching the changed GraphQL query file; see tooling/ci/graphql_query_document_specs.rb.
+# MR only: default branch pipelines already run the full integration suite.
+.rails:rules:graphql-document-integration:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION == "true"'
+    - <<: *if-merge-request
+      changes: *frontend-graphql-patterns
+
+.rails:rules:graphql-document-integration-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:graphql-document-integration", rules]
 
 .rails:rules:ee-only-integration:
   rules:
@@ -3097,8 +3130,6 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
-    - <<: *if-default-refs
-      changes: *frontend-graphql-patterns
 
 .rails:rules:ee-only-system:
   rules:
@@ -3143,6 +3174,7 @@
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
+    - !reference ['.rails:rules:graphql-document-integration', rules]
 
 .rails:rules:rspec-ci-config-validation:
   rules:
@@ -3522,7 +3554,7 @@
       when: never
     - if: $SAST_DISABLED
       when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /(^|[,[:space:]])gitlab-advanced-sast([,[:space:]]|$)/
       when: never
     # Only run on tier-3 MR pipelines to save CI minutes. A merge request runs a
     # tier-3 pipeline before it is merged, so pre-merge coverage is preserved.
@@ -3666,6 +3698,8 @@
 .setup:rules:clone-gitlab-repo:
   rules:
     - <<: *if-dot-com-gitlab-org-and-subgroups-merge-train
+      when: never
+    - <<: *if-default-branch-schedule-housekeeping
       when: never
     - if: '$CI_FETCH_REPO_GIT_STRATEGY == "none"'
 
@@ -4047,13 +4081,21 @@
       when: never
     - <<: *if-default-branch-schedule-ai-principles
 
-.ai-principles-reconcile:rules:scheduled:
+# Reconciles automatically when a push to the default branch changes a fence input.
+# Every other default-branch push gets a manual job, for recovery after a failed run or a push that skipped CI.
+# Failures are allowed on push pipelines so a reconcile error never marks master as broken.
+.ai-principles-reconcile:rules:
   rules:
     - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
       when: never
     - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
       when: never
-    - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
+    - <<: *if-default-branch-push
+      changes: *ai-principles-fence-input-patterns
+      allow_failure: true
+    - <<: *if-default-branch-push
+      when: manual
+      allow_failure: true
 
 ###################
 # What's New rules #
@@ -4065,6 +4107,15 @@
     - if: '$PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE == null'
       when: never
     - <<: *if-default-branch-schedule-whats-new
+
+####################
+# Housekeeping rules #
+####################
+.housekeeping:rules:scheduled:
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - <<: *if-default-branch-schedule-housekeeping
 
 ###################
 # Benchmark rules #
@@ -4112,6 +4163,9 @@
       when: never
     - <<: *if-merge-request
       changes: *workhorse-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patch-patterns
       when: never
 
 .prevent-run-all-rspec:
@@ -4189,6 +4243,17 @@
     - <<: *if-missing-clickhouse-diff-stats-credentials
       when: never
     - *if-merge-request
+
+.rails:rules:file-based-spec-selection:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-merge-request-tier-3
+      changes: *backend-patterns
+    - <<: *if-merge-request-tier-3
+      changes: *backstage-patterns
 
 ###############################
 # Per-test coverage rules     #

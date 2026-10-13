@@ -36,4 +36,43 @@ RSpec.describe Gitlab::Metrics::Transfers, :prometheus, feature_category: :group
       end.not_to raise_error
     end
   end
+
+  describe '.observe_end_to_end_transfer_duration' do
+    let(:histogram) { instance_double(Prometheus::Client::Histogram) }
+
+    before do
+      allow(::Gitlab::Metrics).to receive(:histogram)
+        .with(:gitlab_namespace_transfer_end_to_end_duration_seconds, anything, {},
+          described_class::END_TO_END_DURATION_BUCKETS)
+        .and_return(histogram)
+    end
+
+    it 'observes the seconds elapsed since scheduled_at', :freeze_time do
+      expect(histogram).to receive(:observe).with({ namespace_type: 'project' }, 7200.0)
+
+      described_class.observe_end_to_end_transfer_duration(
+        scheduled_at: 2.hours.ago.as_json,
+        namespace_type: 'project'
+      )
+    end
+
+    it 'observes zero when scheduled_at is in the future', :freeze_time do
+      expect(histogram).to receive(:observe).with({ namespace_type: 'group' }, 0.0)
+
+      described_class.observe_end_to_end_transfer_duration(
+        scheduled_at: 5.seconds.from_now.as_json,
+        namespace_type: 'group'
+      )
+    end
+
+    where(scheduled_at: [nil, 'not-a-date', '2026-99-99T00:00:00Z', 123])
+
+    with_them do
+      it 'does not observe anything' do
+        expect(histogram).not_to receive(:observe)
+
+        described_class.observe_end_to_end_transfer_duration(scheduled_at: scheduled_at, namespace_type: 'group')
+      end
+    end
+  end
 end

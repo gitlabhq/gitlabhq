@@ -26,13 +26,9 @@ module Gitlab
       private
 
       def ensure_gvl_instrumentation
-        if Feature.enabled?(:enable_sidekiq_gvl_metrics, :current_pod, type: :ops)
-          GVLTools::LocalTimer.enable
-          GVLTools::GlobalTimer.enable
-        else
-          GVLTools::LocalTimer.disable
-          GVLTools::GlobalTimer.disable
-        end
+        ::Gitlab::Instrumentation::Gvl.toggle(
+          Feature.enabled?(:enable_sidekiq_gvl_metrics, :current_pod, type: :ops)
+        )
       end
     end
   end

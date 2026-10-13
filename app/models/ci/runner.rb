@@ -58,6 +58,7 @@ module Ci
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
+    CREATED_RUNNER_TOKEN_PREFIX_PATTERN = /\A(?:[a-zA-Z0-9]+-)?#{Regexp.escape(CREATED_RUNNER_TOKEN_PREFIX)}/
     REGISTRATION_RUNNER_TOKEN_PREFIX = 'glrtr-'
 
     RUNNER_SHORT_SHA_LENGTH = 8
@@ -88,10 +89,13 @@ module Ci
     AVAILABLE_STATUSES_INCL_DEPRECATED = (DEPRECATED_STATUSES + AVAILABLE_STATUSES).freeze
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES_INCL_DEPRECATED).freeze
 
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level
+      maximum_timeout_human_readable].freeze
     MINUTES_COST_FACTOR_FIELDS = %i[public_projects_minutes_cost_factor private_projects_minutes_cost_factor].freeze
 
     TAG_LIST_MAX_LENGTH = 50
+
+    NO_PROJECTS_ERROR_MESSAGE = 'needs to be assigned to at least one project'
 
     has_many :runner_managers, inverse_of: :runner,
       foreign_key: [:runner_id, :runner_type], primary_key: [:id, :runner_type]
@@ -289,7 +293,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      with_encrypted_tokens(encode(query)).or(fuzzy_search(query, [:description]))
+      with_encrypted_tokens(encode_candidates(query)).or(fuzzy_search(query, [:description]))
     end
 
     def self.online_contact_time_deadline
@@ -413,25 +417,25 @@ module Ci
     end
     strong_memoize_attr :runner_matcher
 
-    def assign_to(project, current_user = nil)
+    def assign_to(project, _current_user = nil)
       if instance_type?
         raise ArgumentError, 'Transitioning an instance runner to a project runner is not supported'
       elsif group_type?
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      if self.runner_projects.empty?
-        self.errors.add(:assign_to, 'Taking over an orphaned project runner is not allowed')
+      if runner_projects.empty?
+        errors.add(:assign_to, 'Taking over an orphaned project runner is not allowed')
         return false
       end
 
       begin
         transaction do
-          self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
-          self.save!
+          runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
+          save!
         end
       rescue ActiveRecord::RecordInvalid => e
-        self.errors.add(:assign_to, e.message)
+        errors.add(:assign_to, e.message)
         false
       end
     end
@@ -488,12 +492,7 @@ module Ci
 
       legacy_partition_prefix = legacy_partition_id_prefix_in_16_bit_encode
       start_index = if authenticated_user_registration_type?
-                      instance_prefix = ::Authn::TokenField::PrefixHelper.instance_prefix
-                      if instance_prefix.present? && token.starts_with?(instance_prefix)
-                        CREATED_RUNNER_TOKEN_PREFIX.length + "#{instance_prefix}-".length
-                      else
-                        CREATED_RUNNER_TOKEN_PREFIX.length
-                      end
+                      (token[CREATED_RUNNER_TOKEN_PREFIX_PATTERN] || CREATED_RUNNER_TOKEN_PREFIX).length
                     elsif token.start_with?(REGISTRATION_RUNNER_TOKEN_PREFIX)
                       REGISTRATION_RUNNER_TOKEN_PREFIX.length
                     else
@@ -514,10 +513,12 @@ module Ci
     end
 
     def predefined_variables
+      serialized_tags = tag_list.to_a.map { |tag| Gitlab::Json.generate(tag) }.join(', ')
+
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_RUNNER_ID', value: id.to_s)
         .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
-        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_a.to_s)
+        .append(key: 'CI_RUNNER_TAGS', value: "[#{serialized_tags}]")
     end
 
     def tick_runner_queue
@@ -662,14 +663,6 @@ module Ci
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
     end
 
-    def fallback_owner_project
-      # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
-      # deleted by the LFK, so we might find join records that point to a still-existing project
-      project_ids = runner_projects.order(:id).pluck(:project_id)
-      projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
-      Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
-    end
-
     def compute_token_expiration_instance
       return unless expiration_interval = Gitlab::CurrentSettings.runner_token_expiration_interval
 
@@ -693,7 +686,7 @@ module Ci
     end
 
     def runner_queue_key
-      "runner:build_queue:#{self.token}"
+      "runner:build_queue:#{token}"
     end
 
     def persist_cached_data?
@@ -711,10 +704,10 @@ module Ci
           'can not be empty when runner is not allowed to pick untagged jobs')
       end
 
-      if tag_list_changed? && tag_list.count > TAG_LIST_MAX_LENGTH
-        errors.add(:tags_list,
-          "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
-      end
+      return unless tag_list_changed? && tag_list.count > TAG_LIST_MAX_LENGTH
+
+      errors.add(:tags_list,
+        "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
     end
 
     def no_organization_id
@@ -730,7 +723,7 @@ module Ci
     end
 
     def any_project
-      errors.add(:runner, 'needs to be assigned to at least one project') if runner_projects.empty?
+      errors.add(:runner, NO_PROJECTS_ERROR_MESSAGE) if runner_projects.empty?
     end
 
     def exactly_one_group
@@ -744,9 +737,9 @@ module Ci
     def organization_id_matches_owner
       return unless owner
 
-      if organization_id != owner.organization_id
-        errors.add(:organization_id, 'must match the organization of the parent group/project')
-      end
+      return if organization_id == owner.organization_id
+
+      errors.add(:organization_id, 'must match the organization of the parent group/project')
     end
 
     def legacy_partition_id_prefix_in_16_bit_encode

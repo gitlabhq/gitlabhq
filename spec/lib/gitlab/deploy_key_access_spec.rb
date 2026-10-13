@@ -39,6 +39,36 @@ RSpec.describe Gitlab::DeployKeyAccess, feature_category: :source_code_managemen
 
     it { is_expected.to be_falsey }
 
+    context 'with a branch ref' do
+      it 'leaves protected-branch rules to BranchCheck' do
+        expect(access.can_push_for_ref?("refs/heads/#{protected_branch.name}")).to be_truthy
+      end
+
+      context 'when the deploy key has no write access' do
+        before do
+          deploy_key.deploy_keys_projects.update_all(can_push: false)
+        end
+
+        it { expect(access.can_push_for_ref?("refs/heads/#{protected_branch.name}")).to be_falsey }
+      end
+
+      context 'when the deploy key user cannot read the project' do
+        before do
+          deploy_key.user = build(:user)
+        end
+
+        it { expect(access.can_push_for_ref?("refs/heads/#{protected_branch.name}")).to be_falsey }
+      end
+    end
+
+    context 'with a non-branch ref' do
+      before do
+        create(:protected_branch, :no_one_can_push, project: project, name: '*')
+      end
+
+      it { expect(access.can_push_for_ref?('refs/tags/v1.0.0')).to be_falsey }
+    end
+
     context 'when the deploy_key is active for the project' do
       before do
         create(:protected_branch_push_access_level, protected_branch: protected_branch, deploy_key: deploy_key)

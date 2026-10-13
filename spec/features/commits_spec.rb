@@ -249,7 +249,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           before do
             visit pipeline_path(pipeline)
             wait_for_requests
-            click_on 'Cancel pipeline'
+            click_on 'Cancel the running pipeline'
             wait_for_requests
           end
 
@@ -270,7 +270,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         it 'renders header' do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.user.name
-          expect(page).not_to have_link('Cancel pipeline')
+          expect(page).not_to have_button('Cancel the running pipeline')
           expect(page).not_to have_link('Retry')
         end
 
@@ -293,7 +293,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.user.name
 
-          expect(page).not_to have_link('Cancel pipeline')
+          expect(page).not_to have_button('Cancel the running pipeline')
           expect(page).not_to have_link('Retry')
         end
       end

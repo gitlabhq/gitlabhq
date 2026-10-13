@@ -113,7 +113,7 @@ module Gitlab
             last_rule = rules_value.last
 
             if last_rule&.keys == [:when] && last_rule[:when] != 'never'
-              docs_url = 'read more: https://docs.gitlab.com/ee/ci/jobs/job_troubleshooting.html#job-may-allow-multiple-pipelines-to-run-for-a-single-action-warning'
+              docs_url = 'read more: https://docs.gitlab.com/ee/ci/jobs/job_troubleshooting.html#warning-job-may-allow-multiple-pipelines-to-run-for-a-single-action'
               add_warning("may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - #{docs_url}")
             end
           end

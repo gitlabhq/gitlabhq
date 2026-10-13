@@ -31,10 +31,6 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     merge_request.default_merge_commit_message(include_description: false, user: current_user)
   end
 
-  expose :mergeable do |merge_request, options|
-    merge_request.mergeable?
-  end
-
   expose :default_merge_commit_message_with_description do |_|
     # Deprecated: This value was unused
     ''

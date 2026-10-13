@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Nuget::ServiceIndexPresenter do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:group) { create(:group) }
-
+  let(:project) { build_stubbed(:project) }
+  let(:group) { build_stubbed(:group) }
   let(:presenter) { described_class.new(target) }
 
   describe '#version' do

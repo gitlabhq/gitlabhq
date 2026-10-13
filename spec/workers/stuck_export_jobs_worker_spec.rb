@@ -39,6 +39,16 @@ RSpec.describe StuckExportJobsWorker, feature_category: :importers do
           expect(project_export_job.reload.failed?).to be true
         end
 
+        it 'logs the project_id alongside the jid' do
+          expect(Gitlab::Export::Logger).to receive(:info).with(
+            message: 'Marked stuck export job as failed',
+            jid: project_export_job.jid,
+            Labkit::Fields::GL_PROJECT_ID => project_export_job.project_id
+          )
+
+          worker.perform
+        end
+
         context 'when export job has relation exports' do
           before do
             create(:project_relation_export, project_export_job: project_export_job)
@@ -109,6 +119,36 @@ RSpec.describe StuckExportJobsWorker, feature_category: :importers do
     it_behaves_like 'project export job detection' do
       let(:project) { create(:project) }
       let!(:project_export_job) { create(:project_export_job, project: project, jid: '123') }
+    end
+  end
+
+  describe 'with multiple stuck export jobs' do
+    let!(:project_export_job_1) { create(:project_export_job, project: create(:project)) }
+    let!(:project_export_job_2) { create(:project_export_job, project: create(:project)) }
+
+    before do
+      allow(Gitlab::SidekiqStatus).to receive(:completed_jids) do
+        project_export_job_1.start
+        project_export_job_2.start
+
+        [project_export_job_1.jid, project_export_job_2.jid]
+      end
+    end
+
+    it 'logs the project_id alongside the jid for each stuck job' do
+      expect(Gitlab::Export::Logger).to receive(:info).with(
+        message: 'Marked stuck export job as failed',
+        jid: project_export_job_1.jid,
+        Labkit::Fields::GL_PROJECT_ID => project_export_job_1.project_id
+      )
+
+      expect(Gitlab::Export::Logger).to receive(:info).with(
+        message: 'Marked stuck export job as failed',
+        jid: project_export_job_2.jid,
+        Labkit::Fields::GL_PROJECT_ID => project_export_job_2.project_id
+      )
+
+      worker.perform
     end
   end
 end

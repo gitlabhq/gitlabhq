@@ -1,0 +1,11 @@
+<%= docs_render 'page_metadata', title: 'Unions', description: 'Fields that return one of several object types, depending on the data.' %>
+
+A union represents a value that can be one of several object types. For more
+information, see the [GraphQL union documentation](https://graphql.org/learn/schema/#union-types).
+
+<% sorted_by_name(@unions).each do |union| %>
+
+## <%= name(union) %>
+
+<%= render_union_body(union) %>
+<% end %>

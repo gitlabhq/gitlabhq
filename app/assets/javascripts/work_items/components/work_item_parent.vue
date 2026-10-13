@@ -341,10 +341,6 @@ export default {
       this.searchTerm = '';
       this.updateParent();
     },
-    unassignParent() {
-      this.localSelectedItem = NO_WORK_ITEM_IID;
-      this.updateParent();
-    },
     onListboxShown() {
       this.searchStarted = true;
     },
@@ -377,7 +373,6 @@ export default {
     @dropdown-hidden="onListboxHide"
     @search-started="searchWorkItems"
     @update-value="handleItemClick"
-    @reset="unassignParent"
   >
     <template #readonly>
       <template v-if="localSelectedItem">

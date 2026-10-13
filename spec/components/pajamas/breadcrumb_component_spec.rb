@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::BreadcrumbComponent, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::BreadcrumbComponent, feature_category: :design_system do
   it 'uses the correct class on the root element' do
     render_inline described_class.new
     expect(page).to have_selector('.gl-breadcrumbs')

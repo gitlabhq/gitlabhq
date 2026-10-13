@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import UpdateSharedRunnersForm from './components/shared_runners_form.vue';
 
 export default (containerId = 'update-shared-runners-form') => {

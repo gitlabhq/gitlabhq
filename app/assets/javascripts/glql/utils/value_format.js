@@ -7,15 +7,21 @@ import { baseFieldKeyOf, labelWithParameter } from './chart_data';
 
 export const formatCount = (value) => formatNumber(value);
 
-// Compact notation for chart axes where horizontal space is tight: 2,500,000 → 2.5M.
-// Cells and tooltips keep the full-digit `formatCount` for precision.
-export const formatCountCompact = (value, { lowercaseThousands = false } = {}) => {
-  const formatted = formatNumber(value, { notation: 'compact', maximumFractionDigits: 1 });
+// Compact notation where horizontal space is tight: 2,500,000 → 2.5M.
+// Axes keep 1 fraction digit; stats use 2 for extra precision at large sizes.
+export const formatCountCompact = (
+  value,
+  { lowercaseThousands = false, maximumFractionDigits = 1 } = {},
+) => {
+  const formatted = formatNumber(value, { notation: 'compact', maximumFractionDigits });
 
   return lowercaseThousands && typeof formatted === 'string'
     ? formatted.replace('K', 'k')
     : formatted;
 };
+
+// Credits are fractional amounts, so cap the digits at cents-style precision.
+export const formatCredits = (value) => formatNumber(value, { maximumFractionDigits: 2 });
 
 export const formatRate = (value) => {
   const percentage = value * 100;
@@ -30,21 +36,15 @@ export const formatDuration = (seconds) => timeIntervalInWords(seconds, { abbrev
 export const formatDurationCompact = (seconds) =>
   humanizeTimeInterval(seconds, { abbreviated: true });
 
-// Millisecond variants for metrics the backend emits in milliseconds
-// (e.g. `timeToMergeQuantile`, derived from ClickHouse merge_duration_ms).
-export const formatDurationMs = (milliseconds) => formatDuration(milliseconds / 1000);
-
-export const formatDurationMsCompact = (milliseconds) => formatDurationCompact(milliseconds / 1000);
-
 const rawString = (value) => (value == null ? '' : String(value));
 
 // Each unit owns its cell and axis formatters. Rates render the same in both
 // contexts; counts and durations get a compact variant on the axis.
 const UNITS = {
   count: { cell: formatCount, axis: formatCountCompact },
+  credits: { cell: formatCredits, axis: formatCountCompact },
   rate: { cell: formatRate, axis: formatRate },
   duration: { cell: formatDuration, axis: formatDurationCompact },
-  durationMs: { cell: formatDurationMs, axis: formatDurationMsCompact },
 };
 
 const unitByFieldKey = {
@@ -60,11 +60,41 @@ const unitByFieldKey = {
   totalCount: 'count',
   usersCount: 'count',
   finishedCount: 'count',
+  projectsCount: 'count',
   suggestionSizeSum: 'count',
   throughputCount: 'count',
   featuresCount: 'count',
   returningUsersCount: 'count',
   previousPeriodUsersCount: 'count',
+  joinedUsersCount: 'count',
+  churnedUsersCount: 'count',
+  flowTypesCount: 'count',
+  createdMrCountMin: 'count',
+  createdMrCountMax: 'count',
+  createdMrCountMean: 'count',
+  createdMrCountSum: 'count',
+  createdMrCountQuantile: 'count',
+  mergedMrCountMin: 'count',
+  mergedMrCountMax: 'count',
+  mergedMrCountMean: 'count',
+  mergedMrCountSum: 'count',
+  mergedMrCountQuantile: 'count',
+  closedMrCountMin: 'count',
+  closedMrCountMax: 'count',
+  closedMrCountMean: 'count',
+  closedMrCountSum: 'count',
+  closedMrCountQuantile: 'count',
+  openMrCountMin: 'count',
+  openMrCountMax: 'count',
+  openMrCountMean: 'count',
+  openMrCountSum: 'count',
+  openMrCountQuantile: 'count',
+  creditsUsedMin: 'credits',
+  creditsUsedMax: 'credits',
+  creditsUsedMean: 'credits',
+  creditsUsedSum: 'credits',
+  creditsUsedQuantile: 'credits',
+  creditsPerMergedMrRatio: 'credits',
   duration: 'duration',
   queuedDuration: 'duration',
   durationQuantile: 'duration',
@@ -72,7 +102,11 @@ const unitByFieldKey = {
   durationMin: 'duration',
   durationMax: 'duration',
   durationSum: 'duration',
-  timeToMergeQuantile: 'durationMs',
+  timeToMergeQuantile: 'duration',
+  timeToMergeMean: 'duration',
+  timeToMergeMin: 'duration',
+  timeToMergeMax: 'duration',
+  timeToMergeSum: 'duration',
 };
 
 export const unitFor = (fieldKey) => unitByFieldKey[fieldKey] ?? null;
@@ -83,11 +117,29 @@ export const axisFormatterFor = (fieldKey) => UNITS[unitFor(fieldKey)]?.axis ?? 
 
 export const valueFormatterFor = (metric) => formatterFor(baseFieldKeyOf(metric));
 
+// Compact notation per unit: numbers gain a compact suffix (1,450,191 -> 1.45M),
+// rates stay in their already-short percentage format, and durations drop to
+// their largest unit (1h 1m 1s -> 1h).
+const formatCountCompactTwoDigits = (value) =>
+  formatCountCompact(value, { maximumFractionDigits: 2 });
+
+const COMPACT_BY_UNIT = {
+  count: formatCountCompactTwoDigits,
+  credits: formatCountCompactTwoDigits,
+  rate: formatRate,
+  duration: formatDurationCompact,
+};
+
+export const compactValueFormatterFor = (metric) => {
+  const fieldKey = baseFieldKeyOf(metric);
+  return COMPACT_BY_UNIT[unitFor(fieldKey)] ?? formatterFor(fieldKey);
+};
+
 const UNIT_LABELS = {
   count: () => __('Count'),
+  credits: () => __('Credits'),
   rate: () => __('Percentage'),
   duration: () => __('Duration'),
-  durationMs: () => __('Duration'),
 };
 
 /**

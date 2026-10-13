@@ -95,5 +95,35 @@ RSpec.describe 'autocomplete users for a project', feature_category: :team_plann
         )
       )
     end
+
+    # The field takes any merge request ID, so the granular boundary must come from
+    # that merge request rather than from the project the query is rooted at.
+    it 'does not return the interaction for a merge request outside the token boundary' do
+      other_project = create(:project, :private, :repository)
+      other_merge_request = create(:merge_request, source_project: other_project)
+      other_project.add_maintainer(direct_member)
+      assignable = ->(permission) { ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name }
+      pat = create(:granular_pat, user: direct_member, boundary: ::Authz::Boundary.for(project),
+        permissions: [assignable.call(:read_project), assignable.call(:read_merge_request)],
+        additional_scopes: [{ boundary: ::Authz::Boundary.for(:user),
+                              permissions: [assignable.call(:read_user)] }])
+      query = graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        query_graphql_field('autocompleteUsers', params, <<~FIELDS)
+          id
+          mergeRequestInteraction(id: "#{other_merge_request.to_global_id}") {
+            canMerge
+          }
+        FIELDS
+      )
+
+      post_graphql(query, token: { personal_access_token: pat })
+
+      users = graphql_data.dig('project', 'autocompleteUsers')
+
+      expect(users).to be_present
+      expect(users).to all(a_hash_including('mergeRequestInteraction' => nil))
+    end
   end
 end

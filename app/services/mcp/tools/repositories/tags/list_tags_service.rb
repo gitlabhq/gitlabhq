@@ -57,13 +57,6 @@ module Mcp
             }
           }
 
-          override :authorize!
-          def authorize!(params)
-            super
-          rescue ::Gitlab::Access::AccessDeniedError
-            raise ArgumentError, "Project '#{project_path(arguments_from(params))}' not found or inaccessible"
-          end
-
           protected
 
           def auth_ability

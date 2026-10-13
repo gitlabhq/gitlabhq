@@ -22,8 +22,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
     it 'returns sessionless user first' do
       allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:find_sessionless_user).and_return(sessionless_user)
-        allow(instance).to receive(:find_user_from_warden).and_return(session_user)
+        allow(instance).to receive_messages(
+          find_sessionless_user: sessionless_user,
+          find_user_from_warden: session_user
+        )
       end
 
       expect(request_authenticator.user([:api])).to eq sessionless_user
@@ -235,6 +237,49 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
         expect(request_authenticator.find_authenticated_requester([:api])).to be_nil
       end
     end
+
+    context 'with a dependency proxy JWT' do
+      let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest' }
+
+      subject(:requester) { request_authenticator.find_authenticated_requester([:api]) }
+
+      before do
+        env['SCRIPT_NAME'] = accessed_path
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
+      end
+
+      context 'with a deploy token' do
+        let(:token) { build_jwt(deploy_token).encoded }
+
+        it { is_expected.to eq(deploy_token) }
+
+        context 'on a path outside the dependency proxy' do
+          let(:accessed_path) { '/foo/bar' }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the JWT has expired' do
+          it 'returns nil' do
+            travel_to(Time.zone.now + Auth::ContainerProxyAuthenticationService.token_expire_at + 1.minute) do
+              expect(requester).to be_nil
+            end
+          end
+        end
+      end
+
+      context 'with a user' do
+        let(:token) { build_jwt(api_user).encoded }
+
+        it { is_expected.to eq(api_user) }
+
+        it 'decodes the JWT once' do
+          expect(::DependencyProxy::AuthTokenService).to receive(:user_or_deploy_token_from_jwt).once.and_call_original
+
+          requester
+        end
+      end
+    end
   end
 
   describe '#find_user_for_git_or_lfs_request memoization' do
@@ -295,7 +340,16 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       expect(request_authenticator.find_sessionless_user(:api)).to eq dependency_proxy_user
     end
 
-    it 'returns access_token user if no dependency_proxy user found' do
+    it 'returns job bearer token user if no dependency_proxy user found' do
+      allow(request_authenticator).to receive_messages(
+        find_user_from_job_bearer_token: job_token_user,
+        find_user_from_web_access_token: access_token_user
+      )
+
+      expect(request_authenticator.find_sessionless_user(:api)).to eq job_token_user
+    end
+
+    it 'returns access_token user if no job bearer token user found' do
       allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token)
                                                   .with(anything, scopes: [:api, :read_api])
                                                   .and_return(access_token_user)
@@ -465,18 +519,14 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       end
 
       it 'does not consult the other sessionless authentication methods' do
-        allow(request_authenticator)
-          .to receive(:find_user_from_dependency_proxy_token)
-          .and_return(dependency_proxy_user)
-        allow(request_authenticator).to receive(:find_user_from_feed_token).and_return(feed_token_user)
-        allow(request_authenticator)
-          .to receive(:find_user_from_static_object_token)
-          .and_return(static_object_token_user)
-        allow(request_authenticator).to receive(:find_user_from_job_token).and_return(job_token_user)
-        allow(request_authenticator)
-          .to receive(:find_user_from_personal_access_token_for_api_or_git)
-          .and_return(basic_auth_access_token_user)
-        allow(request_authenticator).to receive(:find_user_for_git_or_lfs_request).and_return(lfs_token_user)
+        allow(request_authenticator).to receive_messages(
+          find_user_from_dependency_proxy_token: dependency_proxy_user,
+          find_user_from_feed_token: feed_token_user,
+          find_user_from_static_object_token: static_object_token_user,
+          find_user_from_job_token: job_token_user,
+          find_user_from_personal_access_token_for_api_or_git: basic_auth_access_token_user,
+          find_user_for_git_or_lfs_request: lfs_token_user
+        )
 
         expect(request_authenticator.find_sessionless_user(:design)).to be_nil
       end
@@ -512,6 +562,26 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
           it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
           it { is_expected.to be_nil } if user_type == :no_user
+        end
+
+        context 'with the auth ping' do
+          let(:accessed_path) { '/v2' }
+
+          it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
+          it { is_expected.to be_nil } if user_type == :no_user
+        end
+
+        context 'with a cache-write upload' do
+          let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest/upload/authorize' }
+
+          it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
+          it { is_expected.to be_nil } if user_type == :no_user
+        end
+
+        context 'with a virtual registry path' do
+          let(:accessed_path) { '/v2/virtual_registries/container/1/library/alpine/manifests/latest' }
+
+          it { is_expected.to be_nil }
         end
 
         context 'with any other path' do
@@ -561,8 +631,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     let_it_be(:user) { personal_access_token.user }
 
     before do
-      allow(request_authenticator).to receive(:has_basic_credentials?).and_return(true)
-      allow(request_authenticator).to receive(:user_name_and_password).and_return([user.username, personal_access_token.token])
+      allow(request_authenticator).to receive_messages(
+        has_basic_credentials?: true,
+        user_name_and_password: [user.username, personal_access_token.token]
+      )
     end
 
     context 'with API requests' do
@@ -639,6 +711,124 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     end
   end
 
+  describe 'job tokens sent as basic auth or a bearer token' do
+    let_it_be(:user) { build_stubbed(:user) }
+
+    let(:job) { build(:ci_build, user: user, status: :running) }
+    let(:token) { 'glcbt-token_value' }
+
+    shared_examples 'a job token the rack layer resolves on API paths' do
+      it 'resolves the job user' do
+        expect(::Ci::Build).to receive(:find_by_token).with('glcbt-token_value').and_return(job)
+
+        expect(request_authenticator.find_sessionless_user(:api)).to eq user
+      end
+
+      it 'returns nil if the job is not running' do
+        job.status = :success
+        allow(::Ci::Build).to receive(:find_by_token).with('glcbt-token_value').and_return(job)
+
+        expect(request_authenticator.find_sessionless_user(:api)).to be_blank
+      end
+
+      it 'returns nil for a token that matches no job' do
+        allow(::Ci::Build).to receive(:find_by_token).with('glcbt-token_value').and_return(nil)
+
+        expect(request_authenticator.find_sessionless_user(:api)).to be_blank
+      end
+
+      it 'does not search for a job on a non-API path' do
+        env['SCRIPT_NAME'] = '/web/endpoint'
+
+        expect(::Ci::Build).not_to receive(:find_by_token)
+
+        expect(request_authenticator.find_sessionless_user(:api)).to be_blank
+      end
+
+      context 'with a JWT job token' do
+        let_it_be(:running_job) { create(:ci_build, :running, user: create(:user)) }
+
+        let(:token) { ::Ci::JobToken::Jwt.encode(running_job) }
+
+        it 'resolves the job user while the token is valid' do
+          expect(request_authenticator.find_sessionless_user(:api)).to eq(running_job.user).and be_present
+        end
+
+        it 'returns nil once the token has expired' do
+          travel_to(::Ci::JobToken::Jwt.expire_time(running_job) + 1.minute) do
+            expect(request_authenticator.find_sessionless_user(:api)).to be_blank
+          end
+        end
+      end
+
+      context 'with a token over the size limit' do
+        let(:token) { "glcbt-#{'x' * Gitlab::Auth::AuthFinders::MAX_JOB_TOKEN_SIZE_BYTES}" }
+
+        it 'returns nil without a job lookup' do
+          expect(::Ci::Build).not_to receive(:find_by_token)
+
+          expect(request_authenticator.find_sessionless_user(:api)).to be_blank
+        end
+      end
+    end
+
+    context 'when sent as basic auth' do
+      before do
+        env['SCRIPT_NAME'] = '/api/v4/projects/1/terraform/state/production'
+        env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(
+          Gitlab::Auth::CI_JOB_USER, token
+        )
+      end
+
+      it_behaves_like 'a job token the rack layer resolves on API paths'
+    end
+
+    context 'when sent as a bearer token' do
+      before do
+        env['SCRIPT_NAME'] = '/api/v4/job'
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
+      end
+
+      it_behaves_like 'a job token the rack layer resolves on API paths'
+    end
+
+    context 'with other tokens on an API path' do
+      let_it_be(:personal_access_token, freeze: false) { create(:personal_access_token) }
+      let_it_be(:oauth_access_token) { create(:oauth_access_token, scopes: 'api') }
+
+      before do
+        env['SCRIPT_NAME'] = '/api/v4/job'
+      end
+
+      it 'still resolves a personal access token sent as basic auth, without a job lookup' do
+        env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(
+          'any-username', personal_access_token.token
+        )
+
+        expect(::Ci::Build).not_to receive(:find_by_token)
+
+        expect(request_authenticator.find_sessionless_user(:api)).to eq personal_access_token.user
+      end
+
+      it 'still resolves a personal access token sent as basic auth with the CI job username' do
+        env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(
+          Gitlab::Auth::CI_JOB_USER, personal_access_token.token
+        )
+
+        expect(request_authenticator.find_sessionless_user(:api)).to eq personal_access_token.user
+      end
+
+      it 'still resolves an OAuth token sent as a bearer token, without a job lookup' do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{oauth_access_token.plaintext_token}"
+
+        expect(::Ci::Build).not_to receive(:find_by_token)
+        expect(::Ci::JobToken::Jwt).not_to receive(:decode)
+
+        expect(request_authenticator.find_sessionless_user(:api)).to eq oauth_access_token.resource_owner
+      end
+    end
+  end
+
   describe '#runner' do
     let_it_be(:runner) { build(:ci_runner) }
 
@@ -660,6 +850,26 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
         .and_raise(Gitlab::Auth::UnauthorizedError)
 
       expect(request_authenticator.runner).to be_blank
+    end
+
+    context 'with a Runner-Token header, as router discovery sends' do
+      let_it_be(:runner) { create(:ci_runner) }
+
+      before do
+        env['SCRIPT_NAME'] = '/api/v4/runners/router/discovery'
+      end
+
+      it 'returns the runner' do
+        env['HTTP_RUNNER_TOKEN'] = runner.token
+
+        expect(request_authenticator.runner).to eq(runner)
+      end
+
+      it 'returns nil for an unknown token' do
+        env['HTTP_RUNNER_TOKEN'] = 'unknown'
+
+        expect(request_authenticator.runner).to be_nil
+      end
     end
   end
 
@@ -687,9 +897,9 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     using RSpec::Parameterized::TableSyntax
 
     where(:script_name, :expected_job_token_allowed, :expected_basic_auth_personal_access_token, :expected_deploy_token_allowed) do
-      '/api/endpoint'          | true  | true  | true
-      '/namespace/project.git' | false | true  | true
-      '/web/endpoint'          | false | false | false
+      '/api/endpoint'          | %i[request basic_auth] | true  | true
+      '/namespace/project.git' | false                  | true  | true
+      '/web/endpoint'          | false                  | false | false
     end
 
     with_them do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'mail'
 
 RSpec.describe Gitlab::Email::Handler::BaseHandler, feature_category: :team_planning do
   let(:handler) { described_class.new(Mail::Message.new, 'mail_key') }

@@ -49,4 +49,12 @@ RSpec.describe Integrations::ChatMessage::BaseMessage, feature_category: :integr
       end
     end
   end
+
+  describe '#attachment_color' do
+    subject(:attachment_color) { base_message.send(:attachment_color) }
+
+    it 'uses a Mattermost-compatible hex color' do
+      expect(attachment_color).to match(/\A#[0-9a-fA-F]{6}\z/)
+    end
+  end
 end

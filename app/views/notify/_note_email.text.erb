@@ -4,6 +4,7 @@
 <% author = local_assigns.fetch(:author) { note.author } -%>
 <% discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
 <% project = local_assigns.fetch(:project, @project) -%>
+<% show_header = local_assigns.fetch(:show_header, true) -%>
 
 <% if note.noteable.respond_to?(:confidential?) && note.noteable.confidential? -%>
 <%= _('[Confidential work item]') %>
@@ -12,6 +13,7 @@
 [<%= s_('Notify|Internal note') %>]
 
 <% end -%>
+<% if show_header -%>
 <%= sanitize_name(author.name) -%>
 <%  if discussion.nil? -%>
  <%= 'commented' -%>
@@ -27,6 +29,7 @@
 <%  end -%>
 <%= ':' -%>
 <%= " #{target_url}" -%>
+<% end -%>
 
 
 <%  if discussion&.diff_discussion? && discussion.on_text? && project.show_diff_preview_in_email? -%>

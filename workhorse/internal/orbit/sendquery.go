@@ -24,7 +24,12 @@ import (
 const defaultStreamingTimeout = 30 * time.Second
 const maxStreamingTimeout = 120 * time.Second
 
-const queryTypeNamed = "named"
+const (
+	queryTypeRaw   = "raw"
+	queryTypeNamed = "named"
+	formatGQL      = "gql"
+	languageGQL    = "gql"
+)
 
 // SendQuery is a senddata.Injecter that handles GKG graph queries via gRPC.
 type SendQuery struct {
@@ -46,6 +51,7 @@ type sendQueryParams struct {
 	GkgServer      GkgServer `json:"GkgServer"`
 	Query          string    `json:"Query"`
 	QueryType      string    `json:"QueryType,omitempty"`
+	Language       string    `json:"Language,omitempty"`
 	Format         string    `json:"Format"`
 	TimeoutSeconds int       `json:"TimeoutSeconds,omitempty"`
 	McpID          any       `json:"McpId,omitempty"`
@@ -104,7 +110,7 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 
 	client, err := getClient(params.GkgServer)
 	if err != nil {
-		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: create client: %v", err), fail.WithStatus(http.StatusServiceUnavailable))
+		failQuery(w, r, params.McpID, fmt.Errorf("orbit.SendQuery: create client: %v", err), http.StatusServiceUnavailable)
 		return
 	}
 
@@ -112,14 +118,17 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 
 	stream, err := client.ExecuteQuery(ctx)
 	if err != nil {
-		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: open stream: %v", err), fail.WithStatus(http.StatusBadGateway))
+		failQuery(w, r, params.McpID, fmt.Errorf("orbit.SendQuery: open stream: %v", err), http.StatusBadGateway)
 		return
 	}
 	defer func() { _ = stream.CloseSend() }()
 
 	format := orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW
-	if params.Format == "llm" {
+	switch params.Format {
+	case "llm":
 		format = orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM
+	case formatGQL:
+		format = orbitpb.ResponseFormat_RESPONSE_FORMAT_GQL
 	}
 
 	ok := sendInitialRequest(ctx, w, r, stream, params, format)
@@ -137,9 +146,26 @@ func sendInitialRequest(
 	params sendQueryParams,
 	format orbitpb.ResponseFormat,
 ) bool {
-	queryType := orbitpb.QueryType_QUERY_TYPE_JSON
-	if params.QueryType == queryTypeNamed {
+	var queryType orbitpb.QueryType
+	switch params.QueryType {
+	case "", queryTypeRaw:
+		queryType = orbitpb.QueryType_QUERY_TYPE_JSON
+	case queryTypeNamed:
 		queryType = orbitpb.QueryType_QUERY_TYPE_NAMED
+	default:
+		writeQueryError(w, r, params.McpID, "validation_error", "Invalid query type", "")
+		return false
+	}
+
+	var language orbitpb.QueryLanguage
+	switch params.Language {
+	case "", "json":
+		language = orbitpb.QueryLanguage_QUERY_LANGUAGE_JSON
+	case languageGQL:
+		language = orbitpb.QueryLanguage_QUERY_LANGUAGE_GQL
+	default:
+		writeQueryError(w, r, params.McpID, "validation_error", "Invalid query language", "")
+		return false
 	}
 
 	initialMsg := &orbitpb.ExecuteQueryMessage{
@@ -148,6 +174,7 @@ func sendInitialRequest(
 				Query:     params.Query,
 				Format:    format,
 				QueryType: queryType,
+				Language:  language,
 			},
 		},
 	}
@@ -157,7 +184,7 @@ func sendInitialRequest(
 			handleRecvError(ctx, w, r, recvErr, params.McpID)
 			return false
 		}
-		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: send request: %v", err), fail.WithStatus(http.StatusBadGateway))
+		failQuery(w, r, params.McpID, fmt.Errorf("orbit.SendQuery: send request: %v", err), http.StatusBadGateway)
 		return false
 	}
 	return true
@@ -182,7 +209,7 @@ func (sq *SendQuery) recvLoop(
 		switch c := msg.GetContent().(type) {
 		case *orbitpb.ExecuteQueryMessage_Redaction:
 			if err := sq.handleRedaction(ctx, r, stream, c.Redaction, params.ClientIP); err != nil {
-				fail.Request(w, r, err, fail.WithStatus(http.StatusBadGateway))
+				failQuery(w, r, params.McpID, err, http.StatusBadGateway)
 				return
 			}
 		case *orbitpb.ExecuteQueryMessage_Result:
@@ -194,8 +221,8 @@ func (sq *SendQuery) recvLoop(
 		}
 	}
 
-	fail.Request(w, r, fmt.Errorf("orbit.SendQuery: exceeded %d stream messages without result", maxStreamMessages),
-		fail.WithStatus(http.StatusBadGateway))
+	failQuery(w, r, params.McpID, fmt.Errorf("orbit.SendQuery: exceeded %d stream messages without result", maxStreamMessages),
+		http.StatusBadGateway)
 }
 
 const codeQuotaExhausted = "quota_exhausted"
@@ -203,11 +230,11 @@ const reasonGitLabCreditsExhausted = "GITLAB_CREDITS_EXHAUSTED" // #nosec G101 -
 
 func handleRecvError(ctx context.Context, w http.ResponseWriter, r *http.Request, err error, mcpID any) {
 	if err == io.EOF {
-		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: stream ended without result"), fail.WithStatus(http.StatusBadGateway))
+		failQuery(w, r, mcpID, fmt.Errorf("orbit.SendQuery: stream ended without result"), http.StatusBadGateway)
 		return
 	}
 	if isContextDone(ctx, err) {
-		fail.Request(w, r, fmt.Errorf("orbit.SendQuery: %v", err), fail.WithStatus(http.StatusGatewayTimeout))
+		failQuery(w, r, mcpID, fmt.Errorf("orbit.SendQuery: query did not finish in time, narrow the query and try again: %v", err), http.StatusGatewayTimeout)
 		return
 	}
 	if st, ok := status.FromError(err); ok && st.Code() == codes.ResourceExhausted {
@@ -218,7 +245,7 @@ func handleRecvError(ctx context.Context, w http.ResponseWriter, r *http.Request
 		}
 	}
 	log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: stream recv: %v", err)).Error()
-	fail.Request(w, r, fmt.Errorf("orbit.SendQuery: stream error"), fail.WithStatus(http.StatusBadGateway))
+	failQuery(w, r, mcpID, fmt.Errorf("orbit.SendQuery: stream error"), http.StatusBadGateway)
 }
 
 func quotaDenyReason(st *status.Status) string {
@@ -278,7 +305,7 @@ func (sq *SendQuery) handleRedaction(
 }
 
 func writeResultResponse(w http.ResponseWriter, r *http.Request, result *orbitpb.ExecuteQueryResult, format orbitpb.ResponseFormat, mcpID any) {
-	if format == orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM {
+	if format == orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM || format == orbitpb.ResponseFormat_RESPONSE_FORMAT_GQL {
 		writeLLMResultResponse(w, r, result, mcpID)
 		return
 	}
@@ -333,27 +360,45 @@ func writeLLMResultResponse(w http.ResponseWriter, r *http.Request, result *orbi
 	}
 }
 
+// failQuery sends MCP callers an isError tool result instead of an HTTP error.
+func failQuery(w http.ResponseWriter, r *http.Request, mcpID any, err error, httpStatus int) {
+	if mcpID == nil {
+		fail.Request(w, r, err, fail.WithStatus(httpStatus))
+		return
+	}
+
+	log.WithRequest(r).WithError(err).Error()
+	writeMCPToolError(w, r, mcpID, err.Error())
+}
+
 func writeQueryError(w http.ResponseWriter, r *http.Request, mcpID any, code, message, reason string) {
+	if mcpID != nil {
+		writeMCPToolError(w, r, mcpID, message)
+		return
+	}
+
 	w.Header().Del("Content-Length")
 	w.Header().Set("Content-Type", "application/json")
-
-	var err error
-	if mcpID != nil {
-		w.WriteHeader(http.StatusOK)
-		err = json.NewEncoder(w).Encode(mcpResponse{
-			JSONRPC: "2.0",
-			Result: mcpToolResult{
-				Content: []mcpContent{{Type: "text", Text: message}},
-				IsError: true,
-			},
-			ID: mcpID,
-		})
-	} else {
-		w.WriteHeader(gkgErrorToHTTPStatus(code))
-		err = json.NewEncoder(w).Encode(queryErrorResponse{Code: code, Message: message, Reason: reason})
-	}
-	if err != nil {
+	w.WriteHeader(gkgErrorToHTTPStatus(code))
+	if err := json.NewEncoder(w).Encode(queryErrorResponse{Code: code, Message: message, Reason: reason}); err != nil {
 		log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: write error response: %v", err)).Error()
+	}
+}
+
+func writeMCPToolError(w http.ResponseWriter, r *http.Request, mcpID any, message string) {
+	w.Header().Del("Content-Length")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	err := json.NewEncoder(w).Encode(mcpResponse{
+		JSONRPC: "2.0",
+		Result: mcpToolResult{
+			Content: []mcpContent{{Type: "text", Text: message}},
+			IsError: true,
+		},
+		ID: mcpID,
+	})
+	if err != nil {
+		log.WithRequest(r).WithError(fmt.Errorf("orbit.SendQuery: write MCP error response: %v", err)).Error()
 	}
 }
 

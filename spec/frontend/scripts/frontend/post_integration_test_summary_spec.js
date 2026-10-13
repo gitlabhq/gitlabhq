@@ -1,0 +1,749 @@
+/* eslint-disable import-x/extensions */
+import {
+  perFileFromReport,
+  computeActionable,
+  shouldSkipSummary,
+  thresholdInfo,
+  formatDuration,
+  buildComment,
+  buildCombinedComment,
+  COMBINED_MARKER,
+  spliceSection,
+  placeholderSection,
+  formatSignedDuration,
+  buildDeletedFileRow,
+  apiRequest,
+  run,
+} from '../../../../scripts/frontend/post_integration_test_summary.mjs';
+
+// Helper: build a Jest --json-shaped testResults entry with the given
+// assertion durations (ms). Jest records absolute file paths.
+const reportEntry = (relPath, durationsMs) => ({
+  name: `/builds/gitlab-org/gitlab/${relPath}`,
+  assertionResults: durationsMs.map((duration, i) => ({ title: `test ${i}`, duration })),
+});
+
+describe('perFileFromReport', () => {
+  it('normalises absolute paths and aggregates runtime + test count per file', () => {
+    const data = {
+      testResults: [
+        reportEntry('spec/frontend/integration/a_spec.js', [1000, 2000]),
+        reportEntry('ee/spec/frontend/integration/b_spec.js', [500]),
+      ],
+    };
+
+    expect(perFileFromReport(data)).toEqual({
+      'spec/frontend/integration/a_spec.js': { runtimeS: 3, testCount: 2 },
+      'ee/spec/frontend/integration/b_spec.js': { runtimeS: 0.5, testCount: 1 },
+    });
+  });
+
+  it('returns an empty map when there are no test results', () => {
+    expect(perFileFromReport({})).toEqual({});
+  });
+});
+
+describe('thresholdInfo', () => {
+  it.each`
+    perTestS | level
+    ${null}  | ${'none'}
+    ${0}     | ${'ok'}
+    ${14}    | ${'ok'}
+    ${15}    | ${'warning'}
+    ${60}    | ${'warning'}
+    ${61}    | ${'action'}
+    ${130}   | ${'action'}
+  `('maps $perTestS s/test to level "$level"', ({ perTestS, level }) => {
+    expect(thresholdInfo(perTestS).level).toBe(level);
+  });
+});
+
+describe('formatSignedDuration', () => {
+  it.each`
+    seconds | expected
+    ${null} | ${'—'}
+    ${12}   | ${'+12s'}
+    ${130}  | ${'+2m 10s'}
+    ${-5}   | ${'−5s'}
+  `('formats $seconds as "$expected"', ({ seconds, expected }) => {
+    expect(formatSignedDuration(seconds)).toBe(expected);
+  });
+});
+
+describe('computeActionable', () => {
+  const report = {
+    perFile: {
+      'spec/frontend/integration/slow_spec.js': { runtimeS: 170, testCount: 9 },
+      'spec/frontend/integration/new_spec.js': { runtimeS: 12, testCount: 4 },
+      'spec/frontend/integration/renamed_spec.js': { runtimeS: 20, testCount: 5 },
+      'spec/frontend/integration/untouched_spec.js': { runtimeS: 99, testCount: 3 },
+    },
+  };
+  const baseline = {
+    perFile: {
+      'spec/frontend/integration/slow_spec.js': { runtimeS: 40, testCount: 8 },
+      'spec/frontend/integration/old_name_spec.js': { runtimeS: 18, testCount: 5 },
+    },
+  };
+
+  it('diffs a modified file against its master baseline', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/integration/slow_spec.js',
+        isNew: false,
+        oldPath: 'spec/frontend/integration/slow_spec.js',
+      },
+    ];
+
+    const result = computeActionable({ changedFiles, report, baseline });
+
+    expect(result.addedTests).toBe(1);
+    expect(result.addedRuntimeS).toBe(130);
+    expect(result.perTestS).toBe(130);
+    expect(result.files[0]).toMatchObject({ masterTests: 8, currentTests: 9, deltaRuntimeS: 130 });
+  });
+
+  it('treats a brand-new file as fully added cost', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/integration/new_spec.js',
+        isNew: true,
+        oldPath: 'spec/frontend/integration/new_spec.js',
+      },
+    ];
+
+    const result = computeActionable({ changedFiles, report, baseline });
+
+    expect(result.addedTests).toBe(4);
+    expect(result.addedRuntimeS).toBe(12);
+    expect(result.perTestS).toBe(3);
+    expect(result.files[0]).toMatchObject({ isNew: true, masterTests: null, masterRuntimeS: null });
+  });
+
+  it('looks up a renamed file under its old path', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/integration/renamed_spec.js',
+        isNew: false,
+        oldPath: 'spec/frontend/integration/old_name_spec.js',
+      },
+    ];
+
+    const result = computeActionable({ changedFiles, report, baseline });
+
+    // 20s / 5 tests now vs 18s / 5 tests on master → +2s, 0 net-new tests.
+    expect(result.addedRuntimeS).toBe(2);
+    expect(result.addedTests).toBe(0);
+    expect(result.perTestS).toBeNull();
+  });
+
+  it('ignores changed files that did not run in this job', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/integration/deleted_from_run_spec.js',
+        isNew: false,
+        oldPath: 'spec/frontend/integration/deleted_from_run_spec.js',
+      },
+    ];
+
+    const result = computeActionable({ changedFiles, report, baseline });
+
+    expect(result.files).toHaveLength(0);
+    expect(result.perTestS).toBeNull();
+  });
+
+  it('aggregates across multiple files into a single per-test number', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/integration/slow_spec.js',
+        isNew: false,
+        oldPath: 'spec/frontend/integration/slow_spec.js',
+      },
+      {
+        path: 'spec/frontend/integration/new_spec.js',
+        isNew: true,
+        oldPath: 'spec/frontend/integration/new_spec.js',
+      },
+    ];
+
+    const result = computeActionable({ changedFiles, report, baseline });
+
+    // (130 + 12)s added over (1 + 4) new tests = 28.4s/test.
+    expect(result.addedRuntimeS).toBe(142);
+    expect(result.addedTests).toBe(5);
+    expect(result.perTestS).toBeCloseTo(28.4);
+  });
+
+  describe('when a file modified by the MR has no baseline row', () => {
+    // new_spec.js ran in this job but is absent from the baseline. The diff says
+    // it is not a new file, so the missing row means "unknown", not "all added".
+    const changedFiles = [
+      {
+        path: 'spec/frontend/integration/new_spec.js',
+        isNew: false,
+        oldPath: 'spec/frontend/integration/new_spec.js',
+      },
+    ];
+
+    it('does not tag the file as new', () => {
+      const result = computeActionable({ changedFiles, report, baseline });
+
+      expect(result.files[0].isNew).toBe(false);
+    });
+
+    it('reports unknown deltas rather than diffing against zero', () => {
+      const result = computeActionable({ changedFiles, report, baseline });
+
+      expect(result.files[0]).toMatchObject({ deltaTests: null, deltaRuntimeS: null });
+    });
+
+    it('excludes the file from the actionable totals', () => {
+      const result = computeActionable({ changedFiles, report, baseline });
+
+      expect(result.addedTests).toBe(0);
+      expect(result.addedRuntimeS).toBe(0);
+      expect(result.perTestS).toBeNull();
+    });
+  });
+
+  describe('with deleted spec files', () => {
+    it('returns an empty deletedFiles array when no deleted files are provided', () => {
+      const result = computeActionable({ changedFiles: [], report, baseline });
+
+      expect(result.deletedFiles).toEqual([]);
+    });
+
+    it('ignores deleted files that have no master baseline entry', () => {
+      // In production a `.rb` path never reaches computeActionable because
+      // DELETED_SPEC_FILE_RE only matches `_spec.js`; this still exercises the
+      // baseline-miss path of computeActionable directly.
+      const deletedFiles = [{ path: 'spec/features/unknown_spec.rb' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.deletedFiles).toHaveLength(0);
+      expect(result.addedRuntimeS).toBe(0);
+      expect(result.addedTests).toBe(0);
+    });
+
+    it('includes deleted files that have a master baseline entry', () => {
+      // slow_spec.js is in the baseline with runtimeS: 40, testCount: 8.
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.deletedFiles).toHaveLength(1);
+      expect(result.deletedFiles[0]).toEqual({
+        path: 'spec/frontend/integration/slow_spec.js',
+        masterRuntimeS: 40,
+        masterTests: 8,
+      });
+    });
+
+    it('subtracts deleted file runtime and tests from the net totals', () => {
+      // slow_spec.js baseline: runtimeS 40, testCount 8.
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.addedRuntimeS).toBe(-40);
+      expect(result.addedTests).toBe(-8);
+    });
+
+    it('sets perTestS to null when deletions outweigh additions (no net-new tests)', () => {
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles: [], deletedFiles, report, baseline });
+
+      expect(result.perTestS).toBeNull();
+    });
+
+    it('accounts for deletions when computing net totals alongside added files', () => {
+      // new_spec.js (new): +4 tests, +12s. slow_spec.js (deleted): -8 tests, -40s.
+      const changedFiles = [
+        {
+          path: 'spec/frontend/integration/new_spec.js',
+          isNew: true,
+          oldPath: 'spec/frontend/integration/new_spec.js',
+        },
+      ];
+      const deletedFiles = [{ path: 'spec/frontend/integration/slow_spec.js' }];
+
+      const result = computeActionable({ changedFiles, deletedFiles, report, baseline });
+
+      // Net: 4 - 8 = -4 tests, 12 - 40 = -28s.
+      expect(result.addedTests).toBe(-4);
+      expect(result.addedRuntimeS).toBe(-28);
+      expect(result.perTestS).toBeNull();
+    });
+  });
+});
+
+describe('buildComment', () => {
+  const stats = { total: 100, passed: 99, failed: 0, skipped: 1, suites: 10, testDurationS: 300 };
+  const baseline = {
+    perFile: { 'spec/frontend/integration/slow_spec.js': { runtimeS: 40, testCount: 8 } },
+  };
+  const baseArgs = {
+    jobName: 'jest-integration',
+    jobUrl: 'https://example.com/job',
+    ciDuration: 320,
+    stats,
+  };
+
+  it('renders an Action-required callout when a new test blows the budget', () => {
+    const actionable = {
+      files: [
+        {
+          path: 'spec/frontend/integration/slow_spec.js',
+          isNew: false,
+          currentRuntimeS: 170,
+          masterRuntimeS: 40,
+          deltaRuntimeS: 130,
+          currentTests: 9,
+          masterTests: 8,
+          deltaTests: 1,
+        },
+      ],
+      addedRuntimeS: 130,
+      addedTests: 1,
+      perTestS: 130,
+    };
+
+    const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+    expect(comment).toContain('### Frontend Integration Test Result Summary');
+    expect(comment).not.toContain(COMBINED_MARKER);
+    expect(comment).toContain('🔴 **Action required**');
+    expect(comment).toContain('+1 new test');
+    expect(comment).toContain('130s/test');
+    expect(comment).toContain('40s → 2m 50s');
+    expect(comment).toContain('**jest-integration**: ❌ [job log]');
+    expect(comment).toContain('| ❌ | 100 | 99 | 0 |');
+  });
+
+  it('omits the delta and badge when no master baseline is available', () => {
+    const actionable = { files: [], addedRuntimeS: 0, addedTests: 0, perTestS: null };
+
+    const comment = buildComment({ ...baseArgs, baseline: null, actionable });
+
+    expect(comment).toContain('No master baseline available yet');
+    expect(comment).not.toContain('Action required');
+    expect(comment).not.toContain('Warning');
+    expect(comment).toContain('**jest-integration**: ✅ [job log]');
+  });
+
+  it('reports missing report gracefully', () => {
+    const comment = buildComment({ ...baseArgs, stats: null, baseline, actionable: null });
+
+    expect(comment).toContain('no JSON report found');
+  });
+
+  it('renders a truncation warning when the diffs page cap is hit', () => {
+    const actionable = { files: [], addedRuntimeS: 0, addedTests: 0, perTestS: null };
+
+    const comment = buildComment({ ...baseArgs, baseline, actionable, truncated: true });
+
+    expect(comment).toContain('⚠️ **Warning**: This MR changes 500+ files');
+    expect(comment).toContain('the per-file breakdown is truncated');
+  });
+
+  it('omits the truncation warning when the breakdown is complete', () => {
+    const actionable = { files: [], addedRuntimeS: 0, addedTests: 0, perTestS: null };
+
+    const comment = buildComment({ ...baseArgs, baseline, actionable, truncated: false });
+
+    expect(comment).not.toContain('per-file breakdown is truncated');
+  });
+
+  describe('with deleted spec files', () => {
+    const deletedFiles = [
+      {
+        path: 'spec/features/work_items/list/user_applies_filters_spec.rb',
+        masterRuntimeS: 90,
+        masterTests: 3,
+      },
+    ];
+
+    it('mentions time saved in the headline when there are deleted files with a baseline', () => {
+      const actionable = {
+        files: [
+          {
+            path: 'ee/spec/frontend/integration/work_items_spec.js',
+            isNew: true,
+            currentRuntimeS: 3,
+            masterRuntimeS: null,
+            deltaRuntimeS: 3,
+            currentTests: 8,
+            masterTests: null,
+            deltaTests: 8,
+          },
+        ],
+        deletedFiles,
+        addedRuntimeS: -87, // 3 - 90
+        addedTests: 5, // 8 - 3
+        perTestS: -87 / 5,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('−1m 30s saved');
+      expect(comment).toContain('deleting 1 spec file');
+    });
+
+    it('includes deleted file rows in the per-file breakdown table', () => {
+      const actionable = {
+        files: [],
+        deletedFiles,
+        addedRuntimeS: -90,
+        addedTests: -3,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('(deleted)');
+      expect(comment).toContain('user_applies_filters_spec.rb');
+      expect(comment).toContain('3 → 0 (−3)');
+      expect(comment).toContain('1m 30s → 0s');
+    });
+
+    it('shows the per-file breakdown section when only deleted files are present', () => {
+      const actionable = {
+        files: [],
+        deletedFiles,
+        addedRuntimeS: -90,
+        addedTests: -3,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).toContain('<details><summary>Per-file breakdown</summary>');
+    });
+
+    it('omits the deleted suffix when no deleted files have a baseline', () => {
+      const actionable = {
+        files: [],
+        deletedFiles: [],
+        addedRuntimeS: 0,
+        addedTests: 0,
+        perTestS: null,
+      };
+
+      const comment = buildComment({ ...baseArgs, baseline, actionable });
+
+      expect(comment).not.toContain('saved');
+      expect(comment).not.toContain('deleted');
+    });
+  });
+});
+
+describe('buildDeletedFileRow', () => {
+  it('renders a table row with (deleted) tag, test count going to 0, and negative delta', () => {
+    const df = {
+      path: 'spec/features/work_items/list/user_applies_filters_spec.rb',
+      masterRuntimeS: 90,
+      masterTests: 3,
+    };
+
+    const row = buildDeletedFileRow(df);
+
+    expect(row).toContain('(deleted)');
+    expect(row).toContain('user_applies_filters_spec.rb');
+    expect(row).toContain('3 → 0 (−3)');
+    expect(row).toContain('1m 30s → 0s (−1m 30s)');
+    expect(row).toContain('−1m 30s');
+  });
+});
+
+describe('apiRequest', () => {
+  const okResponse = (payload) => ({ ok: true, json: () => Promise.resolve(payload) });
+  const errorResponse = (status) => ({
+    ok: false,
+    status,
+    text: () => Promise.resolve(`status ${status}`),
+  });
+
+  beforeEach(() => {
+    // Modern fake timers so `runAllTimersAsync` can flush the backoff sleeps
+    // (the shared setup defaults to legacy timers, which lack the async API).
+    jest.useFakeTimers({ legacyFakeTimers: false });
+    // Retries log a warning before backing off; silence it so the shared
+    // console guard does not fail the test.
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    delete global.fetch;
+  });
+
+  it('returns the parsed JSON body on a successful response', async () => {
+    global.fetch = jest.fn().mockResolvedValue(okResponse({ id: 7 }));
+
+    await expect(apiRequest('GET', '/x')).resolves.toEqual({ id: 7 });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([429, 500, 503])('retries a transient %i and eventually succeeds', async (status) => {
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(errorResponse(status))
+      .mockResolvedValueOnce(okResponse({ ok: true }));
+
+    const promise = apiRequest('GET', '/x');
+    await jest.runAllTimersAsync();
+
+    await expect(promise).resolves.toEqual({ ok: true });
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([401, 403, 404])('fails fast on non-retryable %i without retrying', async (status) => {
+    global.fetch = jest.fn().mockResolvedValue(errorResponse(status));
+
+    await expect(apiRequest('GET', '/x')).rejects.toThrow(`GitLab API ${status} on GET /x`);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries network errors and throws after exhausting attempts', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new Error('ECONNRESET'));
+
+    const promise = apiRequest('GET', '/x').catch((err) => err);
+    await jest.runAllTimersAsync();
+
+    await expect(promise).resolves.toThrow('ECONNRESET');
+    // 1 initial call + 2 retries (MAX_API_ATTEMPTS = 3).
+    expect(global.fetch).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('spliceSection', () => {
+  const existing = [
+    '<!-- test-result-summary -->',
+    '',
+    '## Test Result Summary',
+    '',
+    '<!-- section:msw -->',
+    '### Frontend Integration Test Result Summary',
+    '',
+    'stale msw body',
+    '<!-- /section:msw -->',
+    '',
+    '<!-- section:rspec -->',
+    '### RSpec Test Result Summary',
+    '',
+    'rspec body',
+    '<!-- /section:rspec -->',
+    '',
+  ].join('\n');
+
+  it('replaces only its own section', () => {
+    const result = spliceSection(existing, 'msw', 'fresh msw body');
+
+    expect(result).toContain('fresh msw body');
+    expect(result).not.toContain('stale msw body');
+  });
+
+  it('leaves the other section untouched', () => {
+    const result = spliceSection(existing, 'msw', 'fresh msw body');
+
+    expect(result).toContain(
+      '<!-- section:rspec -->\n### RSpec Test Result Summary\n\nrspec body\n<!-- /section:rspec -->',
+    );
+  });
+
+  it('appends the section when its markers are missing', () => {
+    const body =
+      '<!-- test-result-summary -->\n\n<!-- section:rspec -->\nrspec body\n<!-- /section:rspec -->\n';
+
+    const result = spliceSection(body, 'msw', 'msw body');
+
+    expect(result).toContain('<!-- section:msw -->');
+    expect(result).toContain('msw body');
+    expect(result).toContain('rspec body');
+  });
+});
+
+describe('placeholderSection', () => {
+  it('reports a counterpart job that is in the pipeline as pending', () => {
+    expect(placeholderSection('rspec', { jobPresent: true })).toContain('Pending');
+  });
+
+  it('reports a counterpart that is absent or had nothing to report', () => {
+    const section = placeholderSection('rspec', { jobPresent: false });
+
+    expect(section).toContain('Did not run');
+    expect(section).toContain('nothing to report');
+  });
+});
+
+describe('shouldSkipSummary', () => {
+  const changes = ({
+    changedFiles = [],
+    deletedFiles = [],
+    truncated = false,
+    fetchFailed = false,
+  } = {}) => ({
+    changedFiles,
+    deletedFiles,
+    truncated,
+    fetchFailed,
+  });
+  const specPath = 'ee/spec/frontend/integration/work_items/work_items_spec.js';
+
+  it('skips when the MR changes no integration spec files', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/boards/board_list_spec.js',
+        oldPath: 'spec/frontend/boards/board_list_spec.js',
+      },
+    ];
+
+    expect(shouldSkipSummary(changes({ changedFiles }))).toBe(true);
+  });
+
+  it('posts when the MR changes an integration spec file', () => {
+    expect(
+      shouldSkipSummary(changes({ changedFiles: [{ path: specPath, oldPath: specPath }] })),
+    ).toBe(false);
+  });
+
+  it('posts when the MR deletes an integration spec file, even without a master baseline', () => {
+    expect(shouldSkipSummary(changes({ deletedFiles: [{ path: specPath }] }))).toBe(false);
+  });
+
+  it('posts when the MR renames a spec file out of the integration suite', () => {
+    const changedFiles = [{ path: 'spec/frontend/moved_spec.js', oldPath: specPath }];
+
+    expect(shouldSkipSummary(changes({ changedFiles }))).toBe(false);
+  });
+
+  it('posts when the diff listing is truncated, since it cannot prove there are no changes', () => {
+    expect(shouldSkipSummary(changes({ truncated: true }))).toBe(false);
+  });
+
+  it('posts when the diff fetch failed, since it cannot prove there are no changes', () => {
+    expect(shouldSkipSummary(changes({ fetchFailed: true }))).toBe(false);
+  });
+});
+
+describe('run', () => {
+  const okResponse = (payload) => ({ ok: true, json: () => Promise.resolve(payload) });
+  const integrationSpecPath = 'ee/spec/frontend/integration/work_items/work_items_spec.js';
+  let originalEnv;
+
+  // Serves the GitLab API endpoints run() touches; everything not listed is a
+  // note mutation (POST/PUT), which the assertions inspect via mutationCalls().
+  const mockApi = ({ diffs = [], notes = [], diffsFail = false } = {}) => {
+    global.fetch = jest.fn((url, { method } = {}) => {
+      if (url.includes('/diffs')) {
+        // 404 is non-retryable, so a failing diffs call surfaces immediately.
+        if (diffsFail) {
+          return Promise.resolve({ ok: false, status: 404, text: () => Promise.resolve('gone') });
+        }
+        return Promise.resolve(okResponse(diffs));
+      }
+      if (url.endsWith('/user')) return Promise.resolve(okResponse({ username: 'bot' }));
+      if (method === 'GET' && url.includes('/notes')) return Promise.resolve(okResponse(notes));
+      return Promise.resolve(okResponse({}));
+    });
+  };
+
+  const mutationCalls = () => global.fetch.mock.calls.filter(([, init]) => init?.method !== 'GET');
+
+  beforeEach(() => {
+    originalEnv = process.env;
+    process.env = {
+      ...originalEnv,
+      CI_PROJECT_ID: '1',
+      CI_MERGE_REQUEST_IID: '2',
+      PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE: 'token',
+    };
+    // The counterpart-job lookup must not fire against the mocked pipeline API.
+    delete process.env.CI_PIPELINE_ID;
+    // run() narrates its progress; silence it for the shared console guard.
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+    delete global.fetch;
+  });
+
+  it('creates no note when the MR has no integration spec changes and no note exists', async () => {
+    mockApi({ diffs: [{ new_path: 'spec/frontend/boards/board_list_spec.js' }] });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(0);
+  });
+
+  it('still fills its section when the counterpart already created the note', async () => {
+    const body = buildCombinedComment('rspec', 'rspec body', { counterpartPresent: true });
+    mockApi({ notes: [{ id: 7, body, author: { username: 'bot' } }] });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(1);
+    const [url, init] = mutationCalls()[0];
+    expect(init.method).toBe('PUT');
+    expect(url).toContain('/notes/7');
+
+    const updated = JSON.parse(init.body).body;
+    expect(updated).toContain('rspec body');
+    expect(updated).toContain('no JSON report found');
+  });
+
+  it('creates the note when the diff fetch fails, since it cannot rule out spec changes', async () => {
+    mockApi({ diffsFail: true });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(1);
+    expect(mutationCalls()[0][1].method).toBe('POST');
+  });
+
+  it('creates the combined note when the MR changes an integration spec file', async () => {
+    mockApi({ diffs: [{ new_path: integrationSpecPath, new_file: true }] });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(1);
+    const [url, init] = mutationCalls()[0];
+    expect(init.method).toBe('POST');
+    expect(url).toContain('/merge_requests/2/notes');
+    expect(JSON.parse(init.body).body).toContain(COMBINED_MARKER);
+  });
+});
+
+describe('buildCombinedComment', () => {
+  it('carries the shared marker and both sections', () => {
+    const comment = buildCombinedComment('msw', 'msw body', { counterpartPresent: true });
+
+    expect(comment).toContain('<!-- test-result-summary -->');
+    expect(comment).toContain('## Test Result Summary');
+    expect(comment).toContain('<!-- section:msw -->');
+    expect(comment).toContain('msw body');
+    expect(comment).toContain('<!-- section:rspec -->');
+    expect(comment).toContain('Pending');
+  });
+});
+
+describe('formatDuration', () => {
+  it.each`
+    seconds   | expected
+    ${null}   | ${'—'}
+    ${-1}     | ${'—'}
+    ${0}      | ${'0s'}
+    ${59}     | ${'59s'}
+    ${90}     | ${'1m 30s'}
+    ${3599}   | ${'59m 59s'}
+    ${3600}   | ${'1h 0m 0s'}
+    ${3661}   | ${'1h 1m 1s'}
+    ${215142} | ${'59h 45m 42s'}
+  `('formats $seconds as "$expected"', ({ seconds, expected }) => {
+    expect(formatDuration(seconds)).toBe(expected);
+  });
+});

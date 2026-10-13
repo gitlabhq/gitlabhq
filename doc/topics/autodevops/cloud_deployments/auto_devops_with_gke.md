@@ -57,7 +57,7 @@ or Google Drive, or create a new one.
 
 To create a new cluster on Google Kubernetes Engine (GKE), use Infrastructure as Code (IaC) approach
 by following steps in [Create a Google GKE cluster with OpenTofu and GitLab](../../../user/infrastructure/iac/_index.md) guide.
-The guide requires you to create a new project that uses [Terraform](https://www.terraform.io/) to create a GKE cluster and install a GitLab agent for Kubernetes.
+The guide requires you to create a new project that uses [Terraform](https://developer.hashicorp.com/terraform) to create a GKE cluster and install a GitLab agent for Kubernetes.
 This project is where configuration for the GitLab agent for Kubernetes resides.
 
 ## Create an application project from a template

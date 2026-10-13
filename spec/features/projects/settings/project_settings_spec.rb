@@ -115,6 +115,10 @@ RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
 
     expect(panel).to have_css(is_collapsed ? '.settings-toggle[aria-label^="Expand"]' : '.settings-toggle[aria-label^="Collapse"]')
 
-    expect(panel[:class]).send(is_collapsed ? 'not_to' : 'to', include('expanded'))
+    if is_collapsed
+      expect(panel[:class]).not_to include('expanded')
+    else
+      expect(panel[:class]).to include('expanded')
+    end
   end
 end

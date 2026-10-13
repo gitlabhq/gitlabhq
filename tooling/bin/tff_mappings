@@ -32,7 +32,6 @@ module Tooling
       spec/factories/ ee/spec/factories/
       spec/fixtures/ ee/spec/fixtures/
       spec/frontend/ ee/spec/frontend/
-      spec/frontend_integration/ ee/spec/frontend_integration/
       spec/support/ ee/spec/support/
       tmp/
       workhorse/

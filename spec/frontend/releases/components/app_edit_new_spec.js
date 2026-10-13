@@ -217,6 +217,52 @@ describe('Release edit/new component', () => {
     });
   });
 
+  describe('accessible names', () => {
+    beforeEach(async () => {
+      await factory();
+    });
+
+    describe('release title input', () => {
+      const findTitleInput = () => wrapper.findByRole('textbox', { name: 'Release title' });
+
+      it('is named by the "Release title" label', () => {
+        expect(findTitleInput().element).toBe(wrapper.find('#release-title').element);
+        expect(wrapper.find('label[for="release-title"]').text()).toBe('Release title');
+      });
+
+      it('is described by the form group description', () => {
+        const descriptionId = findTitleInput().attributes('aria-describedby');
+
+        expect(wrapper.find(`#${descriptionId}`).text()).toBe(
+          'Leave blank to use the tag name as the release title.',
+        );
+      });
+    });
+
+    describe('release date input', () => {
+      const findDatepickerInput = () => wrapper.findComponent(GlDatepicker).find('input');
+
+      it('is named "Release date"', () => {
+        expect(wrapper.findByRole('textbox', { name: 'Release date' }).element).toBe(
+          findDatepickerInput().element,
+        );
+      });
+
+      it('is the target of the "Release date" label', () => {
+        expect(wrapper.find('label[for="release-released-at"]').exists()).toBe(true);
+        expect(wrapper.find('#release-released-at').element).toBe(findDatepickerInput().element);
+      });
+
+      it('is described by the form group description', () => {
+        const descriptionId = findDatepickerInput().attributes('aria-describedby');
+
+        expect(wrapper.find(`#${descriptionId}`).text()).toBe(
+          'A release with a date in the future is labeled as an Upcoming Release.',
+        );
+      });
+    });
+  });
+
   describe(`when the URL does not contain a "${BACK_URL_PARAM}" parameter`, () => {
     beforeEach(async () => {
       await factory();

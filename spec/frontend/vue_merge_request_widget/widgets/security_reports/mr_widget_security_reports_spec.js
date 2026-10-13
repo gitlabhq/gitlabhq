@@ -41,6 +41,10 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
       expect(wrapper.emitted('loaded')[0]).toContain(0);
     });
 
+    it('reports it is empty until the reports load', () => {
+      expect(wrapper.emitted('empty')).toEqual([[true], [false]]);
+    });
+
     it('displays the correct message', () => {
       expect(wrapper.findByText('Security scans have run').exists()).toBe(true);
     });

@@ -93,7 +93,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
 
       it 'user removes a specific tag from container repository' do
         service = double('service')
-        expect(service).to receive(:execute).with(container_repository) { { status: :success } }
+        expect(service).to receive(:execute).with(container_repository).and_return({ status: :success })
         expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['latest']) { service }
 
         first('[data-testid="additional-actions"]').click

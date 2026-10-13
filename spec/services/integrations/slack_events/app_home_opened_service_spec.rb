@@ -29,6 +29,15 @@ RSpec.describe Integrations::SlackEvents::AppHomeOpenedService, feature_category
         )
     end
 
+    context 'when the messages tab was opened' do
+      let(:params) { super().deep_merge(event: { tab: 'messages' }) }
+
+      it 'does not publish the home view' do
+        expect(execute).to be_success
+        expect(a_request(:post, api_url)).not_to have_been_made
+      end
+    end
+
     shared_examples 'there is no bot token' do
       it 'does not call the Slack API, logs info, and returns a success response' do
         expect(Gitlab::IntegrationsLogger).to receive(:info).with(

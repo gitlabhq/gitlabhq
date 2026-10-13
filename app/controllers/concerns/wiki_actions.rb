@@ -38,6 +38,10 @@ module WikiActions
       push_force_frontend_feature_flag(:glql_load_on_click, !!container&.glql_load_on_click_feature_flag_enabled?)
     end
 
+    before_action only: [:show] do
+      push_frontend_feature_flag(:wiki_collaborative_editing, container.root_ancestor)
+    end
+
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end
@@ -268,10 +272,16 @@ module WikiActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def history
     if page
-      @commits_count = page.count_versions
-      @commits = Kaminari.paginate_array(page.versions(page: pagination_params[:page].to_i),
-        total_count: page.count_versions)
-        .page(pagination_params[:page])
+      if Feature.enabled?(:wiki_page_history_follow_renames, container)
+        history = Wikis::PageHistory.new(page)
+        @commits_count = history.count
+        versions = history.versions(page: pagination_params[:page].to_i)
+      else
+        @commits_count = page.count_versions
+        versions = page.versions(page: pagination_params[:page].to_i)
+      end
+
+      @commits = Kaminari.paginate_array(versions, total_count: @commits_count).page(pagination_params[:page])
 
       render 'shared/wikis/history'
     else
@@ -378,8 +388,21 @@ module WikiActions
 
   def page
     strong_memoize(:page) do
-      wiki.find_page(*page_params, load_content: load_content?)
+      page_at_previous_slug || wiki.find_page(*page_params, load_content: load_content?)
     end
+  end
+
+  def page_at_previous_slug
+    return unless %w[show diff].include?(action_name) && version_id_param.present?
+    return unless Feature.enabled?(:wiki_page_history_follow_renames, container)
+
+    current_page = wiki.find_page(id_param, load_content: false)
+    return unless current_page
+
+    slug = Wikis::PageHistory.new(current_page).slug_at(version_id_param)
+    return if slug.nil? || slug == current_page.slug
+
+    wiki.find_page(slug, version_id_param, load_content: load_content?)&.as_version_of(current_page)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables

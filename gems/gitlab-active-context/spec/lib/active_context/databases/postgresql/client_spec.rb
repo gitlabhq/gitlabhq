@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_record/connection_adapters/postgresql_adapter'
+
 RSpec.describe ActiveContext::Databases::Postgresql::Client do
   let(:options) do
     {
@@ -21,7 +23,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
   subject(:client) { described_class.new(options) }
 
   before do
-    allow_any_instance_of(described_class).to receive(:create_connection_model).and_return(connection_model)
+    allow(client).to receive(:connection_model).and_return(connection_model)
     allow(connection_model).to receive(:establish_connection)
     allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
   end
@@ -32,8 +34,10 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       expect(client.options[:host]).to eq('localhost')
       expect(client.options['host']).to eq('localhost')
     end
+  end
 
-    it 'establishes a connection pool' do
+  describe '#connection_pool' do
+    it 'returns the established connection pool' do
       expect(client.connection_pool).to eq(connection_pool)
     end
   end
@@ -305,22 +309,34 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     end
   end
 
-  describe '#close' do
-    it 'disconnects the connection pool' do
-      expect(connection_pool).to receive(:disconnect!)
+  describe 'connection pool registration' do
+    let(:real_client) { described_class.new(options) }
 
-      client.send(:close)
+    def registered_pools
+      ActiveRecord::Base.connection_handler.connection_pool_list(:all).size
     end
 
-    context 'when connection pool is nil' do
-      before do
-        allow(connection_model).to receive(:connection_pool).and_return(nil)
+    after do
+      real_client.close
+    end
+
+    it 'does not register a pool on initialize' do
+      expect { real_client }.not_to change { registered_pools }
+    end
+
+    it 'registers a pool on first use' do
+      expect { real_client.connection_pool }.to change { registered_pools }.by(1)
+    end
+
+    describe '#close' do
+      it 'deregisters the pool' do
+        real_client.connection_pool
+
+        expect { real_client.close }.to change { registered_pools }.by(-1)
       end
 
-      it 'does not raise an error' do
-        new_client = described_class.new(options)
-
-        expect { new_client.send(:close) }.not_to raise_error
+      it 'does nothing when the pool was never used' do
+        expect { real_client.close }.not_to change { registered_pools }
       end
     end
   end

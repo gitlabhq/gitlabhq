@@ -20,7 +20,7 @@ module Gitlab
       end
 
       def mr_closing_issues_table
-        MergeRequestsClosingIssues.arel_table
+        MergeRequestIssue.arel_table
       end
 
       def issue_table

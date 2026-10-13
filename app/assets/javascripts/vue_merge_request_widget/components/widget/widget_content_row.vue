@@ -33,6 +33,11 @@ export default {
       default: '',
       validator: (value) => value === '' || Object.keys(EXTENSION_ICONS).includes(value),
     },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     widgetName: {
       type: String,
       required: true,
@@ -97,6 +102,7 @@ export default {
       :level="2"
       :name="widgetName"
       :icon-name="statusIconName"
+      :is-loading="isLoading"
     />
     <div class="gl-w-full gl-min-w-0">
       <div v-if="hasHeader()" class="gl-flex">
@@ -141,6 +147,7 @@ export default {
           :level="2"
           :name="widgetName"
           :icon-name="statusIconName"
+          :is-loading="isLoading"
         />
         <slot name="body"></slot>
       </div>

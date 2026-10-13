@@ -8,13 +8,13 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, so before_all cannot access it
 
     sign_in(user)
   end
@@ -107,8 +107,6 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     context 'in parallel diff' do
       before do
         select_parallel_view
-
-        wait_for_requests
       end
 
       it 'adds draft comments to both sides' do

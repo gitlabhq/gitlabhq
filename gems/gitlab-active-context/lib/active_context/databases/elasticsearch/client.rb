@@ -29,7 +29,7 @@ module ActiveContext
         end
 
         def client
-          ::Elasticsearch::Client.new(elasticsearch_config)
+          @client ||= ::Elasticsearch::Client.new(elasticsearch_config)
         end
 
         private

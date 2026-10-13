@@ -81,8 +81,8 @@ module Gitlab
             include ::Gitlab::Config::Entry::Validatable
             include ::Gitlab::Config::Entry::Attributable
 
-            ALLOWED_KEYS = %i[pipeline job artifacts].freeze
-            attributes :pipeline, :job, :artifacts
+            ALLOWED_KEYS = %i[pipeline job artifacts optional].freeze
+            attributes :pipeline, :job, :artifacts, :optional
 
             validations do
               validates :config, presence: true
@@ -90,6 +90,7 @@ module Gitlab
               validates :pipeline, type: String, presence: true
               validates :job, type: String, presence: true
               validates :artifacts, boolean: true, allow_nil: true
+              validates :optional, boolean: true, allow_nil: true
             end
 
             def type
@@ -97,7 +98,7 @@ module Gitlab
             end
 
             def value
-              super.merge(artifacts: artifacts || artifacts.nil?)
+              super.merge(artifacts: artifacts || artifacts.nil?, optional: !!optional)
             end
           end
 

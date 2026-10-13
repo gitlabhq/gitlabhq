@@ -114,19 +114,18 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesTool, feature_category: :m
       end
     end
 
-    context 'when work item types are not present in the structured content' do
-      it 'returns a "not found or inaccessible" error' do
-        # Simulate a response where the namespace resolves but workItemTypes is missing
-        # (for example, when visibility settings disable all types for the requester).
-        empty_namespace_result = {
+    context 'when the resolved payload carries no workItemTypes key' do
+      it 'reports the failure without a category' do
+        namespace_without_types = {
           'data' => { 'namespace' => { 'id' => 'gid://gitlab/Group/1' } }
         }
 
-        allow(GitlabSchema).to receive(:execute).and_return(empty_namespace_result)
+        allow(GitlabSchema).to receive(:execute).and_return(namespace_without_types)
 
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
         expect(result[:content].first[:text]).to eq('Work item types not found or inaccessible')
       end
     end

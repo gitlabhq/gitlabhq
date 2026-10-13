@@ -56,6 +56,22 @@ RSpec.describe Gitlab::PolicyStore::RegoValidator do
       end
     end
 
+    context "with the merged module" do
+      let(:field) { described_class::MERGED_PROGRAM_FIELD }
+
+      it "raises EngineError when it does not parse", :aggregate_failures do
+        expect { described_class.validate!(field, "package governance\n\nimport rego.v1\n\nallow if {\n") }
+          .to raise_error(Gitlab::PolicyStore::EngineError, /\Apolicy_merged_program is invalid: .+ \(at \d+:\d+\)\z/)
+
+        expect { described_class.validate!(field.to_s, "x") }.to raise_error(Gitlab::PolicyStore::EngineError)
+      end
+
+      it "raises EngineError when it is not valid UTF-8" do
+        expect { described_class.validate!(field, (+"package governance\n\xFF").force_encoding("UTF-8")) }
+          .to raise_error(Gitlab::PolicyStore::EngineError, "policy_merged_program must be valid UTF-8")
+      end
+    end
+
     it "raises ValidationError for a program that is not valid UTF-8" do
       expect { described_class.validate!(:scope_rego, (+"package gitlab.scope\n\xFF").force_encoding("UTF-8")) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, "scope_rego must be valid UTF-8")
@@ -66,12 +82,12 @@ RSpec.describe Gitlab::PolicyStore::RegoValidator do
         .to raise_error(Gitlab::PolicyStore::ValidationError, "scope_rego must be valid UTF-8")
     end
 
-    it "raises EngineError, a ValidationError, when the engine faults, keeping the fault as the cause" do
+    it "raises EngineError when the engine faults" do
       allow(engine).to receive(:validate).and_raise(RuntimeError, "engine panicked")
 
       expect { described_class.validate!(:policy_rego, "x") }
         .to raise_error(Gitlab::PolicyStore::EngineError, "policy_rego could not be validated") { |error|
-          expect(error).to be_a(Gitlab::PolicyStore::ValidationError)
+          expect(error).to be_a(Gitlab::PolicyStore::Error)
           expect(error.cause).to have_attributes(class: RuntimeError, message: "engine panicked")
         }
     end

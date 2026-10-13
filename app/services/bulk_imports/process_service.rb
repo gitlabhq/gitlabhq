@@ -56,8 +56,6 @@ module BulkImports
     end
 
     def placeholder_references_loaded?
-      return true unless importer_user_mapping_enabled?
-
       store = Import::PlaceholderReferences::Store.new(
         import_source: bulk_import.import_source,
         import_uid: bulk_import.id
@@ -106,10 +104,6 @@ module BulkImports
 
     def max_batch_size_exceeded?
       started_entities.count >= DEFAULT_BATCH_SIZE
-    end
-
-    def importer_user_mapping_enabled?
-      Import::BulkImports::EphemeralData.new(bulk_import.id).importer_user_mapping_enabled?
     end
 
     def next_batch_size

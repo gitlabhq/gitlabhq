@@ -5,9 +5,7 @@ module Analytics
     class ValueStreamEntity < Grape::Entity
       expose :name
       expose :id
-      expose :is_custom do |object|
-        object.custom?
-      end
+      expose :is_custom, &:custom?
       expose :stages, using: Analytics::CycleAnalytics::StageEntity
 
       private

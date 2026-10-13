@@ -28,7 +28,7 @@ module WebHooks
 
       log_data['request_headers']['X-Gitlab-Token'] = _('[REDACTED]') if hook.token?
 
-      WebHookLog.create!(web_hook: hook, **log_data)
+      WebHookLog.insert_log!(web_hook: hook, **log_data)
     end
 
     def mask_response_headers

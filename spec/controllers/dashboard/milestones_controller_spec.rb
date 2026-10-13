@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::MilestonesController do
+RSpec.describe Dashboard::MilestonesController, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:group) { create(:group, developers: user) }

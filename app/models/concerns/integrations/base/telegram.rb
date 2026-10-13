@@ -39,7 +39,10 @@ module Integrations
         field :hostname,
           title: -> { _('Hostname') },
           section: Integrations::Base::Integration::SECTION_TYPE_CONNECTION,
-          help: -> { _('Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.') },
+          help: -> {
+            _('URL of the Telegram API server, including `http://` or `https://`. ' \
+              'The default value is `https://api.telegram.org`.')
+          },
           placeholder: 'https://api.telegram.org',
           exposes_secrets: true,
           required: false
@@ -105,7 +108,7 @@ module Integrations
         private
 
         def set_webhook
-          hostname = self.hostname.presence || 'https://api.telegram.org'
+          hostname = (self.hostname.presence || 'https://api.telegram.org').delete_suffix('/')
           self.webhook = format(TELEGRAM_HOSTNAME, hostname: hostname, token: token) if token.present?
         end
 

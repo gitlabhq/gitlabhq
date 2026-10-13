@@ -7,18 +7,12 @@ import StickyHeader from '~/merge_requests/components/sticky_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
-import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
-import SubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import RapidDiffsToggle from '~/rapid_diffs/app/rapid_diffs_toggle.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { isLoggedIn } from '~/lib/utils/common_utils';
 import { EVENT_MR_TITLE_UPDATED } from '~/merge_requests/constants';
-
-jest.mock('~/lib/utils/common_utils');
-isLoggedIn.mockReturnValue(true);
 
 Vue.use(PiniaVuePlugin);
 
@@ -45,8 +39,7 @@ describe('Merge requests sticky header component', () => {
 
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findStickyHeaderTitle = () => wrapper.findByTestId('sticky-header-title');
-  const findTodoWidget = () => wrapper.findComponent(TodoWidget);
-  const findSubscriptionsWidget = () => wrapper.findComponent(SubscriptionsWidget);
+  const findSubmitReviewButton = () => wrapper.findComponent(SubmitReviewButton);
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
@@ -104,21 +97,7 @@ describe('Merge requests sticky header component', () => {
     it('renders submit review button', () => {
       createComponent();
 
-      expect(wrapper.findComponent(SubmitReviewButton).exists()).toBe(true);
-    });
-  });
-
-  describe('todo and notifications buttons', () => {
-    it('renders todo widget for signed-in users', () => {
-      createComponent();
-
-      expect(findTodoWidget().exists()).toBe(true);
-    });
-
-    it('renders subscriptions widget for signed-in users', () => {
-      createComponent();
-
-      expect(findSubscriptionsWidget().exists()).toBe(true);
+      expect(findSubmitReviewButton().exists()).toBe(true);
     });
   });
 
@@ -134,6 +113,20 @@ describe('Merge requests sticky header component', () => {
       await Vue.nextTick();
 
       expect(findStickyHeaderTitle().text()).toBe('Initial title');
+    });
+
+    it('renders the markdown title HTML when provided in the event', async () => {
+      createComponent({ provide: { title: 'Draft: Initial title' } });
+
+      document.dispatchEvent(
+        new CustomEvent(EVENT_MR_TITLE_UPDATED, {
+          detail: { title: 'code title', titleHtml: '<code>code</code> title' },
+        }),
+      );
+      await Vue.nextTick();
+
+      expect(findStickyHeaderTitle().find('code').exists()).toBe(true);
+      expect(findStickyHeaderTitle().text()).toBe('code title');
     });
   });
 

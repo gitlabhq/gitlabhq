@@ -7,9 +7,10 @@ RSpec.describe ForkNamespaceEntity do
   include ProjectForksHelper
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:namespace) { create(:group, :with_avatar, description: 'test', developers: user) }
   let_it_be(:forked_project) { build(:project) }
+
+  let(:project) { build_stubbed(:project) }
 
   let(:memberships) do
     user.members.index_by(&:source_id)

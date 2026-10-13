@@ -86,12 +86,11 @@ describe('AnalyticsDashboardPanel', () => {
   const findVisualization = () => wrapper.findComponent(LineChart);
   const findSegmentedControl = () => wrapper.findComponent(GlSegmentedControl);
 
-  const createWrapper = ({ props = {}, provide = {} } = {}) => {
+  const createWrapper = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(AnalyticsDashboardPanel, {
       provide: {
         hasUltimateLicense: true,
         namespaceId: '1',
-        namespaceName: 'Namespace name',
         namespaceFullPath: 'namespace/full/path',
         isProject: true,
         dataSourceClickhouse: true,
@@ -114,6 +113,7 @@ describe('AnalyticsDashboardPanel', () => {
         ExtendedDashboardPanel,
         GlSprintf,
         LineChart,
+        ...stubs,
       },
     });
   };
@@ -170,6 +170,27 @@ describe('AnalyticsDashboardPanel', () => {
           setVisualizationOverrides: expect.any(Function),
         }),
       );
+    });
+  });
+
+  describe('panel subtitle', () => {
+    it('passes the subtitle from the visualization options to the panel', () => {
+      createWrapper({
+        props: {
+          visualization: {
+            ...mockPanel.visualization,
+            options: { ...mockPanel.visualization.options, subtitle: 'Distinct users this month' },
+          },
+        },
+      });
+
+      expect(findExtendedDashboardPanel().props('subtitle')).toBe('Distinct users this month');
+    });
+
+    it('passes no subtitle when the options do not set one', () => {
+      createWrapper();
+
+      expect(findExtendedDashboardPanel().props('subtitle')).toBe('');
     });
   });
 
@@ -306,6 +327,19 @@ describe('AnalyticsDashboardPanel', () => {
   });
 
   describe('when the data has been fetched', () => {
+    describe('and the panel has a load priority', () => {
+      beforeEach(() => {
+        mockFetch.mockResolvedValue([{ name: 'foo' }]);
+        createWrapper({ props: { loadPriority: 3 } });
+        return waitForPromises();
+      });
+
+      // Like `filters`, only visualizations that declare the prop read it; the rest see it in `$attrs`.
+      it('passes it to the visualization', () => {
+        expect(findVisualization().vm.$attrs['load-priority']).toBe(3);
+      });
+    });
+
     describe('and there is data', () => {
       const mockData = [{ name: 'foo' }];
 
@@ -741,6 +775,25 @@ describe('AnalyticsDashboardPanel', () => {
         },
       });
       expect(findExtendedDashboardPanel().props('title')).toBe('overridden title');
+    });
+  });
+
+  describe('visualization title for assistive technology', () => {
+    const TitleProbe = {
+      inject: ['getVisualizationTitle'],
+      template: '<span data-testid="title-probe">{{ getVisualizationTitle() }}</span>',
+    };
+
+    it('keeps the provided title current when the panel title changes', async () => {
+      mockFetch.mockResolvedValue([{ name: 'foo' }]);
+      createWrapper({ props: { title: 'First title' }, stubs: { LineChart: TitleProbe } });
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('title-probe').text()).toBe('First title');
+
+      await wrapper.setProps({ title: 'Second title' });
+
+      expect(wrapper.findByTestId('title-probe').text()).toBe('Second title');
     });
   });
 

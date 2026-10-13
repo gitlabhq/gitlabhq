@@ -4,8 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_management do
   let_it_be(:origin_project) { create(:project) }
-  let_it_be(:accessed_project) { create(:project) }
-  let_it_be(:another_project) { create(:project) }
+  let_it_be(:accessed_project) { create(:project, namespace: origin_project.namespace) }
   let_it_be(:policies) { [:read_jobs, :admin_environments] }
 
   describe 'associations' do
@@ -233,7 +232,7 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
 
   describe '.preload_origin_project' do
     before do
-      create_list(:ci_job_token_authorization, 3)
+      create_list(:ci_job_token_authorization, 3, accessed_project: origin_project)
     end
 
     it 'does not perform N+1 queries' do
@@ -241,7 +240,7 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
         described_class.preload_origin_project.map { |a| a.origin_project.full_path }
       end
 
-      create(:ci_job_token_authorization)
+      create(:ci_job_token_authorization, accessed_project: origin_project)
 
       expect do
         described_class.preload_origin_project.map { |a| a.origin_project.full_path }
@@ -250,13 +249,15 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
   end
 
   describe '.for_project scope' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, namespace: origin_project.namespace) }
 
     let!(:current_authorizations) do
       create_list(:ci_job_token_authorization, 2, accessed_project: project)
     end
 
-    let!(:other_authorization) { create(:ci_job_token_authorization) }
+    let!(:other_authorization) do
+      create(:ci_job_token_authorization, origin_project: origin_project, accessed_project: accessed_project)
+    end
 
     it 'contains only the authorizations targeting the project' do
       authorizations = described_class.for_project(project)
@@ -267,12 +268,16 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
   end
 
   describe '.with_existing_origin_projects' do
-    let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
-    let_it_be(:deleted_project) { create(:project) }
+    let_it_be(:project1) { create(:project, namespace: origin_project.namespace) }
+    let_it_be(:deleted_project) { create(:project, namespace: origin_project.namespace) }
 
-    let_it_be(:auth_with_existing_project) { create(:ci_job_token_authorization, origin_project: project1) }
-    let_it_be(:auth_with_deleted_project) { create(:ci_job_token_authorization, origin_project: deleted_project) }
+    let_it_be(:auth_with_existing_project) do
+      create(:ci_job_token_authorization, origin_project: project1, accessed_project: accessed_project)
+    end
+
+    let_it_be(:auth_with_deleted_project) do
+      create(:ci_job_token_authorization, origin_project: deleted_project, accessed_project: accessed_project)
+    end
 
     before do
       deleted_project.delete
@@ -289,9 +294,11 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
       before do
         stub_const("#{described_class}::AUTHORIZATION_ROW_LIMIT", 2)
 
-        # Create more projects and authorizations to exceed the limit
-        create_list(:ci_job_token_authorization, 3) do |auth|
-          auth.update!(origin_project: create(:project))
+        # Create more authorizations, each with its own existing origin project, to exceed the limit
+        Array.new(3) do
+          create(:ci_job_token_authorization,
+            accessed_project: project1,
+            origin_project: create(:project, namespace: project1.namespace))
         end
       end
 

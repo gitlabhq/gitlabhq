@@ -57,9 +57,11 @@ module Gitlab
 
           def set_statement_timeout
             connection.execute(format("SET statement_timeout TO '%ds'", STATEMENT_TIMEOUT))
+            Gitlab::Database::TransactionTimeout.set(connection, STATEMENT_TIMEOUT)
             yield
           ensure
             connection.execute('RESET statement_timeout')
+            Gitlab::Database::TransactionTimeout.reset(connection)
           end
 
           def lease_timeout

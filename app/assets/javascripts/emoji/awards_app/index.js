@@ -1,7 +1,7 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import createstore from './store';

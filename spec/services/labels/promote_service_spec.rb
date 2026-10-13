@@ -6,12 +6,12 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 
+    subject(:service) { described_class.new(project_1, user) }
+
     context 'without a group' do
-      let!(:project_1) { create(:project) }
+      let_it_be(:project_1) { create(:project) }
 
-      let!(:project_label_1_1) { create(:label, project: project_1) }
-
-      subject(:service) { described_class.new(project_1, user) }
+      let_it_be(:project_label_1_1) { create(:label, project: project_1) }
 
       it 'fails on project without group' do
         expect(service.execute(project_label_1_1)).to be_falsey
@@ -54,8 +54,6 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
       let_it_be(:issue_board_list_2_1) { create(:list, board: issue_board_2_1, label: project_label_2_1) }
 
       let(:new_label) { group_1.labels.find_by(title: promoted_label_name) }
-
-      subject(:service) { described_class.new(project_1, user) }
 
       it 'fails on group label' do
         group_label = create(:group_label, group: group_1)
@@ -173,7 +171,7 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
       end
 
       context 'when there is an existing identical group label' do
-        let!(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title) }
+        let_it_be(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title) }
 
         it 'uses the existing group label' do
           expect { service.execute(project_label_1_1) }
@@ -208,6 +206,57 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
         end
 
         it_behaves_like 'promoting a project label to a group label'
+
+        describe 'the reference on events for the promoted label' do
+          let!(:event) do
+            create(:resource_label_event, issue: issue_1_1, label: project_label_1_1)
+          end
+
+          it 'repoints the reference at the group label' do
+            expect(event.reference).to eq(project_label_1_1.to_reference(format: :id))
+
+            service.execute(project_label_1_1)
+
+            expect(event.reload.reference).to eq(new_label.to_reference(format: :id))
+          end
+
+          context 'when a move copied the event into a subgroup of the group' do
+            let_it_be(:subgroup) { create(:group, parent: group_1) }
+            let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+            let_it_be(:nested_subgroup) { create(:group, parent: subgroup) }
+
+            it 'keeps the short reference on an issue in a subgroup project' do
+              subgroup_event = create(:resource_label_event,
+                issue: create(:issue, project: subgroup_project), label: project_label_1_1)
+
+              service.execute(project_label_1_1)
+
+              expect(subgroup_event.reload.reference).to eq(new_label.to_reference(format: :id))
+            end
+
+            it 'keeps the short reference on a work item of a nested subgroup' do
+              subgroup_event = create(:resource_label_event,
+                issue: create(:work_item, :group_level, namespace: nested_subgroup), label: project_label_1_1)
+
+              service.execute(project_label_1_1)
+
+              expect(subgroup_event.reload.reference).to eq(new_label.to_reference(format: :id))
+            end
+          end
+
+          context 'when a move copied the event onto an issue in another group' do
+            let!(:foreign_event) do
+              create(:resource_label_event, issue: issue_4_1, label: project_label_1_1)
+            end
+
+            it 'qualifies the reference on the event outside the group' do
+              service.execute(project_label_1_1)
+
+              expect(foreign_event.reload.reference)
+                .to eq("#{group_1.full_path}~#{new_label.id}")
+            end
+          end
+        end
       end
     end
   end

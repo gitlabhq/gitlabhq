@@ -15,14 +15,15 @@ As a rule, merge requests [should not increase query counts](../merge_request_co
 
 This style of test works by counting the number of SQL queries executed by ActiveRecord. First a control count is taken, then you add new records to the database and rerun the count. If the number of queries has significantly increased then an `N+1` queries problem exists.
 
-As an example you might create 5 issues in between counts, which would cause the query count to increase by 5 if an N+1 problem exists.
+For example, create three issues between counts.
+An N+1 query that runs once per additional issue increases the count by three.
 
 ```ruby
 it "avoids N+1 database queries", :request_store, :use_sql_query_cache do
   visit_some_page # warm-up
 
   control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
-  create_list(:issue, 5)
+  create_list(:issue, 3)
   expect { visit_some_page }.to issue_same_number_of_queries_as(control)
 end
 ```
@@ -34,7 +35,7 @@ it "avoids N+1 database queries", :request_store, :use_sql_query_cache do
   visit_some_page # warm-up
 
   control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
-  create_list(:issue, 5)
+  create_list(:issue, 3)
   action = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
 
   expect(action).to issue_same_number_of_queries_as(control)
@@ -59,7 +60,7 @@ it "avoids N+1 database queries", :request_store, :use_sql_query_cache do
   visit_some_page # warm-up
 
   control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
-  create_list(:issue, 5)
+  create_list(:issue, 3)
   expect { visit_some_page }.to issue_same_number_of_queries_as(control)
 end
 ```
@@ -73,6 +74,10 @@ Each component serves a specific purpose:
 - `skip_cached: false`: Counts ALL queries including cached ones. This catches N+1 queries that might be masked by caching.
 - `issue_same_number_of_queries_as`: Fails if the query count increases OR decreases unexpectedly (bidirectional).
 - `warm-up`: Handles one-time initialization queries that do not repeat on subsequent requests, such as schema loading.
+
+Follow the guidance to [create only the records the test needs](../testing_guide/best_practices.md#create-only-the-records-the-test-needs).
+If you use `with_threshold`, the expected increase from the regression must exceed that threshold.
+Keep the records in the query's filters and page limit so the measured request actually processes them.
 
 ### Why use `issue_same_number_of_queries_as` over `exceed_query_limit`
 

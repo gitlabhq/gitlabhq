@@ -134,7 +134,7 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    -- https://gitlab.com/gitlab-org/gitlab/-/issues/325965
    UPDATE application_settings SET encrypted_ci_jwt_signing_key = null;
    -- Clear runner tokens
-   UPDATE ci_runners SET token = null, token_encrypted = null;
+   UPDATE ci_runners SET token_encrypted = null;
    ```
 
 ### Reset pending pipeline jobs
@@ -157,7 +157,7 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
    ```sql
    -- Clear build tokens
-   UPDATE ci_builds SET token_encrypted = null;
+   UPDATE p_ci_builds SET token_encrypted = null;
    ```
 
 A similar strategy can be employed for the remaining features. By removing the
@@ -191,7 +191,7 @@ You should verify that the secrets are the root cause before deleting any data.
 
    ```sql
    -- truncate web_hooks table
-   TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs CASCADE;
+   TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs_daily CASCADE;
    ```
 
 ## Container registry is not restored

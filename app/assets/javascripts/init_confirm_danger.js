@@ -1,6 +1,6 @@
 import { pickBy } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from './lib/utils/common_utils';
 import ConfirmDanger from './vue_shared/components/confirm_danger/confirm_danger.vue';
 
 export default () => {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe SystemCheck::SimpleExecutor, :silence_stdout do
   before do
@@ -207,7 +207,7 @@ RSpec.describe SystemCheck::SimpleExecutor, :silence_stdout do
 
         context 'when repair fails' do
           it 'does not execute #show_error' do
-            expect_any_instance_of(RepairCheck).to receive(:repair!) { false }
+            expect_any_instance_of(RepairCheck).to receive(:repair!).and_return(false)
             expect_any_instance_of(RepairCheck).to receive(:show_error)
 
             subject.run_check(RepairCheck)

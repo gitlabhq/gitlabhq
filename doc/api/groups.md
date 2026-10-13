@@ -41,7 +41,8 @@ Parameters:
 > To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/4"
 ```
 
@@ -217,7 +218,9 @@ Example response:
   ],
   "ip_restriction_ranges": null,
   "math_rendering_limits_enabled": true,
-  "lock_math_rendering_limits_enabled": false
+  "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false
 }
 ```
 
@@ -304,7 +307,8 @@ when GitLab Duo Agent Platform is available for the group. The object contains t
 When adding the parameter `with_projects=false`, projects aren't returned.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
 ```
 
@@ -570,7 +574,7 @@ Parameters:
 | `active`                      | boolean        | no       | Limit by project status. When `true`, returns active projects. When `false`, returns projects that are archived or marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218053) in GitLab 18.8. |
 | `archived`                    | boolean        | no       | Limit by archived status. |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private`. |
-| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at`. |
+| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity`[^orders-results-similarity], `star_count` or `last_activity_at` fields. Default is `created_at`. |
 | `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `search`                      | string         | no       | Return list of authorized projects matching the search criteria. |
 | `simple`                      | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
@@ -585,11 +589,9 @@ Parameters:
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_security_reports`       | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
-**Footnotes**:
-
-1. Orders the results by a similarity score calculated from the `search` URL parameter.
-   When you use `order_by=similarity`, the `sort` parameter is ignored.
-   When the `search` parameter is not provided, the API returns the projects ordered by `name`.
+[^orders-results-similarity]: Orders the results by a similarity score calculated from the `search` URL parameter.
+    When you use `order_by=similarity`, the `sort` parameter is ignored.
+    When the `search` parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 
@@ -837,7 +839,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/saml_users"
 ```
 
@@ -1591,6 +1594,8 @@ Example response:
   "archived": true,
   "math_rendering_limits_enabled": true,
   "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false,
   "default_branch": null,
   "default_branch_protection": 2,
   "default_branch_protection_defaults": {
@@ -1678,6 +1683,8 @@ Example response:
   "archived": false,
   "math_rendering_limits_enabled": true,
   "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false,
   "default_branch": null,
   "default_branch_protection": 2,
   "default_branch_protection_defaults": {
@@ -1717,6 +1724,13 @@ Example response:
 
 ### Transfer a group
 
+{{< history >}}
+
+- Asynchronous transfers [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/586549) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- Asynchronous transfers [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
+
+{{< /history >}}
+
 Transfers a group to a new parent group or transforms a subgroup into a top-level group.
 
 Prerequisites:
@@ -1736,11 +1750,20 @@ Parameters:
 | `id`       | integer | yes      | ID of the group to transfer. |
 | `group_id` | integer | no       | ID of the new parent group. If unspecified, the group is transformed into a top-level group. |
 
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the group as it was before the transfer.
+
+Example request:
+
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
 ```
+
+To confirm the transfer was successful, [retrieve the group](#retrieve-a-group) until its `parent_id` matches the ID of the new parent group.
+The value is `null` for a top-level group.
+
+If the transfer fails, the user who requested it gets a to-do item with the `transfer_failed` action. To get to-do items, see [list all to-do items](todos.md#list-all-to-do-items).
 
 #### List all locations available for group transfer
 
@@ -1930,6 +1953,8 @@ PUT /groups/:id
 | `ai_settings_attributes`                             | hash | no | AI-related settings for this group. For available options, see [Options for `ai_settings_attributes`](#options-for-ai_settings_attributes). GitLab Duo features must be enabled. |
 | `math_rendering_limits_enabled`                      | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                 | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |
+| `require_sha_for_merge`                              | boolean           | no       | Indicates whether merge requests in this group require a valid commit SHA for calls to the [merge a merge request](merge_requests.md#merge-a-merge-request) endpoint. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256966) in GitLab 19.5. |
+| `lock_require_sha_for_merge`                         | boolean           | no       | Enforces the `require_sha_for_merge` setting for all descendant groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256966) in GitLab 19.5. |
 | `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. GitLab Self-Managed, Premium and Ultimate only. |
 | `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. GitLab Self-Managed, Premium and Ultimate only. |
 | `ai_audit_events_storage_enabled`                    | boolean           | no       | Indicates whether AI audit events are stored for the group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245843) in GitLab 19.2. Premium and Ultimate only. |
@@ -2021,7 +2046,9 @@ Example response:
   ],
   "ip_restriction_ranges": null,
   "math_rendering_limits_enabled": true,
-  "lock_math_rendering_limits_enabled": false
+  "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false
 }
 ```
 
@@ -2099,7 +2126,8 @@ GET /groups/:id/avatar
 Example:
 
 ```shell
-curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
   --remote-header-name \
   --remote-name \
   --url "https://gitlab.example.com/api/v4/groups/4/avatar"
@@ -2206,7 +2234,8 @@ GET /groups/:id/manage/personal_access_tokens
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <group_owner_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
 ```
 
@@ -2255,7 +2284,8 @@ GET /groups/:id/manage/resource_access_tokens
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <group_owner_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
 ```
 
@@ -2300,7 +2330,8 @@ GET /groups/:id/manage/ssh_keys
 | `expires_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire after the specified time. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <group_owner_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
 ```
 
@@ -2399,6 +2430,7 @@ Other possible responses:
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632314) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -2438,6 +2470,11 @@ Example response:
     "token": "s3cr3t"
 }
 ```
+
+> [!note]
+> Rotating a token with granular scopes returns those scopes in a `granular_scopes` attribute
+> on the new token. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
 
 If successful, returns `200: OK`.
 

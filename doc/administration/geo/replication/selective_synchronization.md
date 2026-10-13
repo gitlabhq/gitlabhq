@@ -35,6 +35,12 @@ Selective synchronization:
    - The primary site generates events as long as any secondary sites are present.
      Selective synchronization restrictions are implemented on the secondary sites,
      not the primary site.
+1. Does not apply to OpenBao data.
+   - OpenBao stores its data in PostgreSQL, and this data cannot be filtered by group or project.
+     As a result, secrets, policies, and authentication configuration replicate in full to secondary sites,
+     regardless of selective synchronization settings.
+     For more information, see
+     [OpenBao behavior in Geo](../../secrets_manager/_index.md#openbao-behavior-in-geo).
 
 ## Enable selective synchronization
 

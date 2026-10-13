@@ -4,15 +4,15 @@ require 'spec_helper'
 
 RSpec.describe MembersHelper do
   describe '#remove_member_message' do
-    let(:requester) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:project_member) { create(:project_member, project: project) }
-    let(:project_member_invite) { create(:project_member, project: project).tap { |m| m.generate_invite_token! } }
-    let(:project_member_request) { project.request_access(requester) }
-    let(:group) { create(:group) }
-    let(:group_member) { create(:group_member, group: group) }
-    let(:group_member_invite) { create(:group_member, group: group).tap { |m| m.generate_invite_token! } }
-    let(:group_member_request) { group.request_access(requester) }
+    let(:requester) { build_stubbed(:user) }
+    let(:project) { build_stubbed(:project, :public) }
+    let(:project_member) { build_stubbed(:project_member, source: project) }
+    let(:project_member_invite) { build_stubbed(:project_member, :invited, source: project) }
+    let(:project_member_request) { build_stubbed(:project_member, :access_request, source: project, user: requester) }
+    let(:group) { build_stubbed(:group) }
+    let(:group_member) { build_stubbed(:group_member, source: group) }
+    let(:group_member_invite) { build_stubbed(:group_member, :invited, source: group) }
+    let(:group_member_request) { build_stubbed(:group_member, :access_request, source: group, user: requester) }
 
     it { expect(remove_member_message(project_member)).to eq "Are you sure you want to remove #{project_member.user.name} from the #{project.full_name} project?" }
     it { expect(remove_member_message(project_member_invite)).to eq "Are you sure you want to revoke the invitation for #{project_member_invite.invite_email} to join the #{project.full_name} project?" }
@@ -24,8 +24,9 @@ RSpec.describe MembersHelper do
     it { expect(remove_member_message(group_member_request, user: requester)).to eq "Are you sure you want to withdraw your access request for the #{group.name} group?" }
 
     context 'an accepted user invitation with no user associated' do
-      before do
-        group_member_invite.update_columns(invite_email: "#{SecureRandom.hex}@example.com", invite_token: nil, user_id: nil)
+      let(:group_member_invite) do
+        build_stubbed(:group_member, source: group, invite_email: "#{SecureRandom.hex}@example.com",
+          invite_token: nil, user: nil)
       end
 
       it 'logs an exception and shows orphaned status' do
@@ -35,8 +36,9 @@ RSpec.describe MembersHelper do
     end
 
     context 'a pending member invitation with no user associated' do
-      before do
-        project_member_invite.update_columns(invite_email: "#{SecureRandom.hex}@example.com", invite_token: 'some-token', user_id: nil)
+      let(:project_member_invite) do
+        build_stubbed(:project_member, source: project, invite_email: "#{SecureRandom.hex}@example.com",
+          invite_token: 'some-token', user: nil)
       end
 
       it 'does not error when there is an invitation for the requestor' do

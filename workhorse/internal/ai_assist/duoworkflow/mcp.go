@@ -77,6 +77,7 @@ type manager struct {
 
 type roundTripper struct {
 	serverName  string
+	internal    bool
 	next        http.RoundTripper
 	headers     map[string]string
 	originalReq *http.Request
@@ -117,6 +118,12 @@ func (t *roundTripper) setWorkflowHeader(r *http.Request) {
 	}
 	if wfID := t.workflow.WorkflowID(); wfID != "" {
 		r.Header.Set("X-Duo-Workflow-Session-Id", wfID)
+
+		// Rails attributes the call to the workflow through this header, as for RunHTTPRequest
+		// actions. Third-party servers must not receive it.
+		if t.internal {
+			r.Header.Set("X-Gitlab-Duo-Workflow-Id", wfID)
+		}
 	}
 }
 
@@ -220,7 +227,8 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 		orbitServerName:  "api/v4/orbit/mcp",
 	}
 
-	if path, ok := internalPaths[serverName]; ok {
+	path, internal := internalPaths[serverName]
+	if internal {
 		endpoint = rails.URL.JoinPath(path).String()
 		nextTransport = secret.NewRoundTripper(rails.Client.Transport, rails.Version)
 	} else {
@@ -230,6 +238,7 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 
 	rt := &roundTripper{
 		serverName:  serverName,
+		internal:    internal,
 		next:        nextTransport,
 		headers:     serverCfg.Headers,
 		originalReq: r,

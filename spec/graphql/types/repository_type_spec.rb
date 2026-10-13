@@ -29,6 +29,10 @@ RSpec.describe GitlabSchema.types['Repository'], feature_category: :source_code_
     expect(described_class).to have_graphql_field(:commits, calls_gitaly?: true, max_page_size: 100)
   end
 
+  specify do
+    expect(described_class).to have_graphql_field(:tags, calls_gitaly?: true, max_page_size: 100)
+  end
+
   specify { expect(described_class).to have_graphql_field(:branch_count, calls_gitaly?: true) }
 
   specify { expect(described_class).to have_graphql_field(:tag_count, calls_gitaly?: true) }

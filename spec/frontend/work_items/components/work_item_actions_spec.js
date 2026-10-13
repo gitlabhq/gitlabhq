@@ -34,6 +34,7 @@ import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.muta
 import {
   convertWorkItemMutationErrorResponse,
   convertWorkItemMutationResponse,
+  mockWorkItemFeaturesData,
   namespaceWorkItemTypesQueryResponse,
   updateWorkItemMutationResponse,
   updateWorkItemNotificationsMutationResponse,
@@ -143,7 +144,6 @@ describe('WorkItemActions component', () => {
     isDiscussionLocked = false,
     isGroup = false,
     isParentConfidential = false,
-    okrsMvc = false,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
     lockDiscussionMutationHandler = lockDiscussionMutationResolver,
@@ -203,9 +203,6 @@ describe('WorkItemActions component', () => {
         $toast,
       },
       provide: {
-        glFeatures: {
-          okrsMvc,
-        },
         getWorkItemTypeConfiguration: jest.fn(),
         ...provide,
       },
@@ -244,9 +241,7 @@ describe('WorkItemActions component', () => {
     createComponent({
       workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       provide: {
-        getWorkItemTypeConfiguration: jest
-          .fn()
-          .mockReturnValue({ supportsMoveAction: true, showProjectSelector: true }),
+        getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ supportsMoveAction: true }),
       },
     });
 
@@ -620,27 +615,47 @@ describe('WorkItemActions component', () => {
       });
     });
 
-    describe('when button is clicked', () => {
-      beforeEach(async () => {
-        createComponent({
-          workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
-          provide: {
-            getWorkItemTypeConfiguration: jest
-              .fn()
-              .mockReturnValue({ canPromoteToObjective: true }),
+    describe.each([false, true])(
+      'when button is clicked and workItemFeaturesField is %s',
+      (workItemFeaturesField) => {
+        const { workItemConvert } = convertWorkItemMutationResponse.data;
+        const convertHandler = jest.fn().mockResolvedValue({
+          data: {
+            workItemConvert: {
+              ...workItemConvert,
+              workItem: {
+                ...workItemConvert.workItem,
+                ...(workItemFeaturesField && { features: mockWorkItemFeaturesData() }),
+              },
+            },
           },
         });
-        await waitForPromises();
 
-        findPromoteButton().vm.$emit('action');
-        await waitForPromises();
-      });
+        beforeEach(async () => {
+          createComponent({
+            workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+            convertWorkItemMutationHandler: convertHandler,
+            provide: {
+              getWorkItemTypeConfiguration: jest
+                .fn()
+                .mockReturnValue({ canPromoteToObjective: true }),
+              glFeatures: { workItemFeaturesField },
+            },
+          });
+          await waitForPromises();
 
-      it('promotes key result to objective', () => {
-        expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
-        expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
-      });
-    });
+          findPromoteButton().vm.$emit('action');
+          await waitForPromises();
+        });
+
+        it('promotes key result to objective', () => {
+          expect(convertHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ useWorkItemFeatures: workItemFeaturesField }),
+          );
+          expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
+        });
+      },
+    );
 
     describe('when promote mutation fails', () => {
       beforeEach(async () => {
@@ -765,7 +780,6 @@ describe('WorkItemActions component', () => {
 
       expect(findCreateWorkItemModal().props()).toMatchObject({
         creationContext: CREATION_CONTEXT_RELATED_ITEM,
-        namespaceFullName: 'GitLab.org / GitLab Test',
         relatedItem: {
           id: 'gid://gitlab/WorkItem/1',
           reference: 'gitlab-org/gitlab-test#1',
@@ -783,26 +797,6 @@ describe('WorkItemActions component', () => {
 
       expect(findCreateWorkItemModal().props('visible')).toBe(true);
     });
-
-    it.each`
-      isProjectSelectorVisible | showProjectSelector
-      ${true}                  | ${true}
-      ${false}                 | ${false}
-      ${false}                 | ${undefined}
-    `(
-      'when showProjectSelector config is $showProjectSelector, sets `CreateWorkItemModal` `showProjectSelector` prop to $isProjectSelectorVisible',
-      ({ isProjectSelectorVisible, showProjectSelector }) => {
-        createComponent({
-          provide: {
-            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ showProjectSelector }),
-          },
-        });
-
-        expect(findCreateWorkItemModal().props('showProjectSelector')).toBe(
-          isProjectSelectorVisible,
-        );
-      },
-    );
 
     it('emits `workItemCreated` when `CreateWorkItemModal` emits `workItemCreated`', () => {
       createComponent();

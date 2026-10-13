@@ -44,6 +44,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         expect(response).to render_template('admin/application_settings/integrations')
         expect(assigns(:hide_search_settings)).to be(true)
       end
+
+      it 'only lists instance integrations of the current organization', :aggregate_failures do
+        integration = create(:jira_integration, :instance, organization: current_organization)
+        other_integration = create(:redmine_integration, :instance, organization: create(:organization))
+
+        get :integrations
+
+        expect(assigns(:integrations)).to include(integration)
+        expect(assigns(:integrations)).not_to include(other_integration)
+        expect(assigns(:integrations).find { |i| i.to_param == 'redmine' }).to be_new_record
+      end
     end
   end
 
@@ -673,6 +684,18 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
       expect(assigns(:service_ping_data)).not_to be_present
       expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
+  describe 'GET #ci_cd', feature_category: :continuous_integration do
+    before do
+      sign_in(admin)
+    end
+
+    it 'assigns the instance plans' do
+      get :ci_cd
+
+      expect(assigns(:plans)).to eq([::GitlabSubscriptions::SystemDefined::Plan.default])
     end
   end
 end

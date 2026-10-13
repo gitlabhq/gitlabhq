@@ -36,24 +36,14 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     create(:note,
       noteable: issue,
       project: project,
-      note: 'https://my.gitlab.com/source/full/path/-/issues/1 @older_username, not_a@username, and @old_username.')
+      note: 'https://my.gitlab.com/source/full/path/-/issues/1')
   end
 
   let_it_be(:merge_request_note) do
     create(:note,
       noteable: merge_request,
       project: project,
-      note: 'https://my.gitlab.com/source/full/path/-/merge_requests/1 @same_username')
-  end
-
-  let_it_be(:system_note) do
-    create(:note,
-      project: project,
-      system: true,
-      noteable: issue,
-      note: "mentioned in merge request !#{merge_request.iid} created by @old_username",
-      note_html: 'note html'
-    )
+      note: 'https://my.gitlab.com/source/full/path/-/merge_requests/1')
   end
 
   let(:expected_url) do
@@ -69,6 +59,32 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
 
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { [[issue.id], 'Issue', tracker.id] }
+  end
+
+  shared_examples 'transforms and saves references' do
+    it 'transforms references and saves the object' do
+      expect { perform }.not_to change { object.reload.updated_at }
+
+      expect(body).to eq(expected_body)
+    end
+
+    context 'when an error is raised' do
+      before do
+        allow_next_found_instance_of(object.class) do |instance|
+          allow(instance).to receive(:refresh_markdown_cache!).and_raise(StandardError)
+        end
+      end
+
+      it 'tracks the error and creates an import failure' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(anything, hash_including(bulk_import_id: bulk_import.id))
+
+        expect(BulkImports::Failure).to receive(:create)
+          .with(hash_including(bulk_import_entity_id: entity.id, pipeline_class: 'ReferencesPipeline'))
+
+        perform
+      end
+    end
   end
 
   it 'transforms and saves multiple objects' do
@@ -89,32 +105,6 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     described_class.new.perform([issue_note.id], 'Note', tracker.id)
   end
 
-  shared_examples 'transforms and saves references' do
-    it 'transforms references and saves the object' do
-      expect { subject }.not_to change { object.updated_at }
-
-      expect(body).to eq(expected_body)
-    end
-
-    context 'when an error is raised' do
-      before do
-        allow_next_found_instance_of(object.class) do |instance|
-          allow(instance).to receive(:refresh_markdown_cache!).and_raise(StandardError)
-        end
-      end
-
-      it 'tracks the error and creates an import failure' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
-          .with(anything, hash_including(bulk_import_id: bulk_import.id))
-
-        expect(BulkImports::Failure).to receive(:create)
-          .with(hash_including(bulk_import_entity_id: entity.id, pipeline_class: 'ReferencesPipeline'))
-
-        subject
-      end
-    end
-  end
-
   context 'for issue description' do
     let(:object) { issue }
     let(:body) { object.reload.description }
@@ -123,31 +113,33 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     include_examples 'transforms and saves references'
 
     shared_examples 'returns object unchanged' do
-      it 'returns object unchanged' do
+      before do
         issue.update!(description: description)
+      end
 
-        subject
+      it 'returns object unchanged' do
+        perform
 
         expect(issue.reload.description).to eq(description)
       end
 
       it 'does not save the object' do
-        expect_any_instance_of(object.class) do |object|
-          expect(object).to receive(:save!)
+        expect_next_found_instance_of(Issue) do |instance|
+          expect(instance).not_to receive(:save!)
         end
 
-        subject
+        perform
       end
     end
 
-    context 'when object does not have reference or username' do
+    context 'when object does not have a reference' do
       let(:description) { 'foo' }
 
       include_examples 'returns object unchanged'
     end
 
-    context 'when there are no matched urls or usernames' do
-      let(:description) { 'https://my.gitlab.com/another/project/path/-/issues/1 @random_username' }
+    context 'when there are no matched urls' do
+      let(:description) { 'https://my.gitlab.com/another/project/path/-/issues/1' }
 
       include_examples 'returns object unchanged'
     end
@@ -174,8 +166,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   context 'for merge request description' do
     let(:object) { merge_request }
     let(:body) { object.reload.description }
-    # Usernames pass through unchanged since user contribution mapping is
-    # always enabled. See gitlab-org/gitlab#628379.
+    # Mentions are left as-is; users are resolved through placeholder references.
     let(:expected_body) do
       "#{expected_url}/-/merge_requests/#{merge_request.iid} @source_username? @bob, @alice!"
     end
@@ -186,9 +177,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   context 'for issue notes' do
     let(:object) { issue_note }
     let(:body) { object.reload.note }
-    let(:expected_body) do
-      "#{expected_url}/-/issues/#{issue.iid} @older_username, not_a@username, and @old_username."
-    end
+    let(:expected_body) { "#{expected_url}/-/issues/#{issue.iid}" }
 
     include_examples 'transforms and saves references'
   end
@@ -196,55 +185,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   context 'for merge request notes' do
     let(:object) { merge_request_note }
     let(:body) { object.reload.note }
-    let(:expected_body) { "#{expected_url}/-/merge_requests/#{merge_request.iid} @same_username" }
-
-    include_examples 'transforms and saves references'
-  end
-
-  context 'for system notes' do
-    let(:object) { system_note }
-    let(:body) { object.reload.note }
-    let(:expected_body) { "mentioned in merge request !#{merge_request.iid} created by @old_username" }
-
-    include_examples 'transforms and saves references'
-
-    context 'when the note includes a username' do
-      let_it_be(:object) do
-        create(:note,
-          project: project,
-          system: true,
-          noteable: issue,
-          note: 'mentioned in merge request created by @source_username.',
-          note_html: 'empty'
-        )
-      end
-
-      let(:body) { object.reload.note }
-      let(:expected_body) { 'mentioned in merge request created by @source_username.' }
-
-      include_examples 'transforms and saves references'
-    end
-  end
-
-  context 'when old and new usernames are interchanged' do
-    # e.g
-    # |------------------------|-------------------------|
-    # | old_username           | new_username            |
-    # |------------------------|-------------------------|
-    # | @manuelgrabowski-admin | @manuelgrabowski        |
-    # | @manuelgrabowski       | @manuelgrabowski-admin  |
-    # |------------------------|-------------------------|
-
-    let_it_be(:object) do
-      create(:note,
-        project: project,
-        noteable: merge_request,
-        note: '@manuelgrabowski-admin, @boaty-mc-boatface'
-      )
-    end
-
-    let(:body) { object.reload.note }
-    let(:expected_body) { '@manuelgrabowski-admin, @boaty-mc-boatface' }
+    let(:expected_body) { "#{expected_url}/-/merge_requests/#{merge_request.iid}" }
 
     include_examples 'transforms and saves references'
   end

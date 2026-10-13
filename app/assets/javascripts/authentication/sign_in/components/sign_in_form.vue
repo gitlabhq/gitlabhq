@@ -1,11 +1,17 @@
 <script>
-import { GlForm, GlFormFields, GlButton, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import {
+  GlForm,
+  GlFormFields,
+  GlButton,
+  GlFormCheckbox,
+  GlLink,
+  GlFormPasswordInput,
+} from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/src/utils';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { setUrlFragment, visitUrl, mergeUrlParams } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
@@ -20,7 +26,7 @@ export default {
     GlButton,
     GlFormCheckbox,
     GlLink,
-    PasswordInput,
+    GlFormPasswordInput,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -248,13 +254,16 @@ export default {
           </div>
         </template>
         <template #input(password)="{ id, validation, value, input }">
-          <password-input
+          <gl-form-password-input
             :id="id"
             :value="value"
             :state="validation.state"
             :name="passwordNameAttr"
             :autofocus="passwordFieldAutofocusAttr"
-            testid="password-field"
+            autocomplete="current-password"
+            required
+            input-class="js-password-complexity-validation js-track-error"
+            data-testid="password-field"
             @input="input"
           />
         </template>

@@ -128,7 +128,7 @@ To create an agent:
    For example, for the agent to create issues automatically, select **Create issue**.
 
    > [!note]
-   > Some tools require the IDE extension and are not available in Web UI.
+   > Some tools require the IDE extension and are not available in the GitLab UI.
    > For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
@@ -153,7 +153,9 @@ To create an agent:
    select which tools the agent can access.
    For example, for the agent to create issues automatically, select **Create issue**.
 
-   For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
+   > [!note]
+   > Some tools require the IDE extension and are not available in the GitLab UI.
+   > For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
 {{< /tab >}}
@@ -328,6 +330,7 @@ To duplicate an agent:
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
+1. Select the project where you want to duplicate the agent.
 1. Optional. Edit any fields you want to change.
 1. Select **Create agent**.
 
@@ -364,7 +367,8 @@ To hide an agent:
 
 ## Delete an agent
 
-Delete an agent to permanently remove it from the instance.
+Delete an agent to remove it from the instance. If a project other than the managing project has turned off
+the agent, the agent is hidden instead of removed.
 
 Prerequisites:
 

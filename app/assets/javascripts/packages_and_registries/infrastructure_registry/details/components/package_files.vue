@@ -9,7 +9,6 @@ import {
 import { last } from 'lodash-es';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
-import Tracking from '~/tracking';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import FileSha from './file_sha.vue';
@@ -26,7 +25,6 @@ export default {
     TimeAgoTooltip,
     FileSha,
   },
-  mixins: [Tracking.mixin()],
   props: {
     packageFiles: {
       type: Array,

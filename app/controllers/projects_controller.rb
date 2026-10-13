@@ -50,7 +50,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_create_rate_limit!, only: [:create]
 
   before_action do
-    push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
@@ -112,12 +111,14 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def create
+    ::Gitlab::Import::RequestChannel.stash(::Gitlab::Import::RequestChannel::UI) if import_url_params.present?
+
     @project = ::Projects::CreateService.new(current_user,
       project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
       redirect_to(
-        project_path(@project, custom_import_params),
+        project_path(@project, custom_import_params.merge({ organization_path: nil })),
         notice: safe_format(_("Project '%{project_name}' was successfully created."), project_name: @project.name)
       )
     else
@@ -310,7 +311,11 @@ class ProjectsController < Projects::ApplicationController
     if @project.export_file_exists?(current_user)
       if @project.export_archive_exists?(current_user)
         export_file = @project.export_file(current_user)
-        send_upload(export_file, attachment: export_file.filename)
+        send_upload(
+          export_file,
+          attachment: export_file.filename,
+          send_params: { content_type: Gitlab::ImportExport.export_download_content_type }
+        )
       else
         redirect_to(
           edit_project_path(@project, anchor: 'js-project-advanced-settings'),
@@ -671,13 +676,13 @@ class ProjectsController < Projects::ApplicationController
 
     project_scope = action_name == 'download_export' ? @project : nil
 
-    check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
+    check_rate_limit!(prefixed_action, scope: { user: current_user, project: project_scope }.compact)
   end
 
   def check_create_rate_limit!
     return unless Feature.enabled?(:namespace_create_rate_limit, current_user)
 
-    check_rate_limit!(:projects_create, scope: [current_user])
+    check_rate_limit!(:projects_create, scope: { user: current_user })
   end
 
   def render_edit

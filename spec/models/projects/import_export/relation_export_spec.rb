@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportExport::RelationExport, type: :model, feature_category: :importers do
+RSpec.describe Projects::ImportExport::RelationExport, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:project_export_job) }
     it { is_expected.to have_one(:upload) }
@@ -38,7 +38,8 @@ RSpec.describe Projects::ImportExport::RelationExport, type: :model, feature_cat
   describe '.relation_names_list' do
     it 'includes extra relations list' do
       expect(described_class.relation_names_list).to include(
-        'design_repository', 'lfs_objects', 'repository', 'snippets_repository', 'uploads', 'wiki_repository'
+        'avatar', 'design_repository', 'lfs_objects', 'repository', 'snippets_repository', 'uploads',
+        'wiki_repository'
       )
     end
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Layouts::SettingsBlockComponent, type: :component, feature_category: :shared do
+RSpec.describe Layouts::SettingsBlockComponent, feature_category: :shared do
   let(:heading) { 'Settings block heading' }
   let(:description) { 'Settings block description' }
   let(:body) { 'Settings block content' }

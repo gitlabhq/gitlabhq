@@ -1,6 +1,7 @@
 import { builders } from 'prosemirror-test-builder';
 import { CellSelection } from '@tiptap/pm/tables';
 import { GapCursor } from '@tiptap/pm/gapcursor';
+import { iframeProviders } from 'helpers/iframe_providers';
 import CopyPaste from '~/content_editor/extensions/copy_paste';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Loading, { findAllLoaders } from '~/content_editor/extensions/loading';
@@ -8,11 +9,18 @@ import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Selection from '~/content_editor/extensions/selection';
 import Heading from '~/content_editor/extensions/heading';
+import HTMLComment from '~/content_editor/extensions/html_comment';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
 import Bold from '~/content_editor/extensions/bold';
+import Blockquote from '~/content_editor/extensions/blockquote';
 import BulletList from '~/content_editor/extensions/bullet_list';
+import OrderedList from '~/content_editor/extensions/ordered_list';
 import ListItem from '~/content_editor/extensions/list_item';
+import TaskList from '~/content_editor/extensions/task_list';
+import TaskItem from '~/content_editor/extensions/task_item';
 import Italic from '~/content_editor/extensions/italic';
+import Iframe from '~/content_editor/extensions/iframe';
+import Image from '~/content_editor/extensions/image';
 import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TableRow from '~/content_editor/extensions/table_row';
@@ -34,10 +42,15 @@ describe('content_editor/extensions/copy_paste', () => {
   let bold;
   let italic;
   let heading;
+  let htmlComment;
   let horizontalRule;
   let codeBlock;
+  let blockquote;
   let bulletList;
+  let orderedList;
   let listItem;
+  let taskList;
+  let taskItem;
   let renderMarkdown;
   let resolveRenderMarkdownPromise;
   let resolveRenderMarkdownPromiseAndWait;
@@ -68,13 +81,20 @@ describe('content_editor/extensions/copy_paste', () => {
         Diagram,
         Frontmatter,
         Heading,
+        HTMLComment,
         HorizontalRule,
+        Blockquote,
         BulletList,
+        OrderedList,
         ListItem,
+        TaskList,
+        TaskItem,
         Table,
         TableCell,
         TableRow,
         TableHeader,
+        Image,
+        Iframe,
         CopyPaste.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
@@ -85,10 +105,15 @@ describe('content_editor/extensions/copy_paste', () => {
       bold,
       italic,
       heading,
+      htmlComment,
       horizontalRule,
       codeBlock,
+      blockquote,
       bulletList,
+      orderedList,
       listItem,
+      taskList,
+      taskItem,
     } = builders(tiptapEditor.schema));
   });
 
@@ -157,6 +182,68 @@ describe('content_editor/extensions/copy_paste', () => {
 
     it('modifies the document', () => {
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+    });
+  });
+
+  describe('when the selection contains an HTML comment', () => {
+    beforeEach(() => {
+      tiptapEditor.commands.setContent(
+        doc(htmlComment({ description: 'my comment' }), p('Some text')).toJSON(),
+      );
+      tiptapEditor.commands.selectAll();
+    });
+
+    describe.each`
+      eventName | expectedDoc
+      ${'cut'}  | ${() => doc(p())}
+      ${'copy'} | ${() => doc(htmlComment({ description: 'my comment' }), p('Some text'))}
+    `('when $eventName event is triggered', ({ eventName, expectedDoc }) => {
+      let event;
+
+      beforeEach(() => {
+        event = buildClipboardEvent({ eventName });
+
+        jest.spyOn(event, 'preventDefault');
+
+        tiptapEditor.view.dispatchEvent(event);
+      });
+
+      it('writes the comment to the HTML and markdown clipboard payloads', () => {
+        expect(event.clipboardData.setData).toHaveBeenCalledWith('text/plain', 'Some text');
+        expect(event.clipboardData.setData).toHaveBeenCalledWith(
+          'text/html',
+          '<comment data-description="my comment"></comment><p dir="auto">Some text</p>',
+        );
+        expect(event.clipboardData.setData).toHaveBeenCalledWith(
+          'text/x-gfm',
+          '<!--my comment-->\n\nSome text',
+        );
+        expect(event.preventDefault).toHaveBeenCalled();
+      });
+
+      it('modifies the document', () => {
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+      });
+    });
+
+    it('restores the comment when its HTML clipboard payload is pasted back', async () => {
+      const event = buildClipboardEvent({ eventName: 'copy' });
+      tiptapEditor.view.dispatchEvent(event);
+      const clipboard = Object.fromEntries(event.clipboardData.setData.mock.calls);
+
+      tiptapEditor.commands.setContent('<p></p>');
+
+      await triggerPasteEventHandler(
+        buildClipboardEvent({
+          types: ['text/plain', 'text/html'],
+          data: { 'text/plain': clipboard['text/plain'], 'text/html': clipboard['text/html'] },
+        }),
+      );
+      await waitForPromises();
+
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(
+        doc(htmlComment({ description: 'my comment' }), p('Some text')).toJSON(),
+      );
     });
   });
 
@@ -304,6 +391,32 @@ describe('content_editor/extensions/copy_paste', () => {
           ['X', 'Y'],
           ['C', 'D'],
         ]);
+      });
+
+      it('keeps an HTML comment inside a pasted cell', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html':
+                '<table><tr><td><comment data-description="KEEP THIS COMMENT"></comment><p>X</p></td><td><p>Y</p></td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y'],
+          ['C', 'D'],
+        ]);
+
+        const comments = [];
+        tiptapEditor.state.doc.descendants((node) => {
+          if (node.type.name === 'htmlComment') comments.push(node.attrs.description);
+          return true;
+        });
+        expect(comments).toEqual(['KEEP THIS COMMENT']);
       });
 
       it('auto-expands the table when pasting more cells than remaining columns', async () => {
@@ -912,6 +1025,265 @@ describe('content_editor/extensions/copy_paste', () => {
       });
     });
 
+    describe('when pasting into a block of the same kind as the pasted content', () => {
+      const LIST_ITEM = { gfm: '* one', html: '<ul dir="auto">\n<li>one</li>\n</ul>' };
+
+      // Sets the document and places the cursor at the <a> tag in the builder
+      const setContentWithCursor = (documentNode) => {
+        tiptapEditor.commands.setContent(documentNode.toJSON());
+        tiptapEditor.commands.setTextSelection(documentNode.tag.a);
+      };
+
+      const pasteMarkdown = async ({ gfm, html }) => {
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/x-gfm', 'text/plain', 'text/html'],
+            data: { 'text/x-gfm': gfm, 'text/plain': gfm, 'text/html': html },
+          }),
+        );
+        await resolveRenderMarkdownPromiseAndWait(html);
+      };
+
+      it.each`
+        where                     | initialDoc                                                                    | expectedDoc
+        ${'at the end of the'}    | ${() => doc(bulletList(listItem(p('item one')), listItem(p('item two<a>'))))} | ${() => doc(bulletList(listItem(p('item one')), listItem(p('item twoone'))))}
+        ${'at the start of the'}  | ${() => doc(bulletList(listItem(p('item one')), listItem(p('<a>item two'))))} | ${() => doc(bulletList(listItem(p('item one')), listItem(p('oneitem two'))))}
+        ${'in the middle of the'} | ${() => doc(bulletList(listItem(p('item one')), listItem(p('item <a>two'))))} | ${() => doc(bulletList(listItem(p('item one')), listItem(p('item onetwo'))))}
+        ${'into an empty'}        | ${() => doc(bulletList(listItem(p('item one')), listItem(p('<a>'))))}         | ${() => doc(bulletList(listItem(p('item one')), listItem(p('one'))))}
+      `(
+        'inserts a copied list item inline $where list item under the cursor',
+        async ({ initialDoc, expectedDoc }) => {
+          setContentWithCursor(initialDoc());
+
+          await pasteMarkdown(LIST_ITEM);
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc().toJSON());
+        },
+      );
+
+      it.each`
+        description          | gfm            | html
+        ${'an ordered list'} | ${'1. one'}    | ${'<ol dir="auto">\n<li>one</li>\n</ol>'}
+        ${'a task list'}     | ${'* [ ] one'} | ${'<ul class="task-list" dir="auto">\n<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled> one</li>\n</ul>'}
+      `('treats an item copied from $description as a list item too', async ({ gfm, html }) => {
+        setContentWithCursor(doc(bulletList(listItem(p('item one')), listItem(p('item two<a>')))));
+
+        await pasteMarkdown({ gfm, html });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('item one')), listItem(p('item twoone')))).toJSON(),
+        );
+      });
+
+      it('inserts a list item copied as HTML from a web page inline too', async () => {
+        setContentWithCursor(doc(bulletList(listItem(p('item one')), listItem(p('item two<a>')))));
+
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'one',
+              'text/html': "<meta charset='utf-8'><ul><li>one</li></ul>",
+            },
+          }),
+        );
+        await waitForPromises();
+
+        expect(renderMarkdown).not.toHaveBeenCalled();
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('item one')), listItem(p('item twoone')))).toJSON(),
+        );
+      });
+
+      it('inserts a bullet list item inline into a task list item', async () => {
+        setContentWithCursor(doc(taskList(taskItem(p('task one')), taskItem(p('task two<a>')))));
+
+        await pasteMarkdown(LIST_ITEM);
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(taskList(taskItem(p('task one')), taskItem(p('task twoone')))).toJSON(),
+        );
+      });
+
+      it('inserts an ordered list item inline into an ordered list item', async () => {
+        setContentWithCursor(doc(orderedList(listItem(p('step one')), listItem(p('step two<a>')))));
+
+        await pasteMarkdown({ gfm: '1. one', html: '<ol dir="auto">\n<li>one</li>\n</ol>' });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(orderedList(listItem(p('step one')), listItem(p('step twoone')))).toJSON(),
+        );
+      });
+
+      it('adds the remaining items as siblings when several items are pasted', async () => {
+        setContentWithCursor(doc(bulletList(listItem(p('item one')), listItem(p('item two<a>')))));
+
+        await pasteMarkdown({
+          gfm: '* a\n* b',
+          html: '<ul dir="auto">\n<li>a</li>\n<li>b</li>\n</ul>',
+        });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(
+            bulletList(listItem(p('item one')), listItem(p('item twoa')), listItem(p('b'))),
+          ).toJSON(),
+        );
+      });
+
+      it('inserts inline into a nested list item', async () => {
+        setContentWithCursor(
+          doc(bulletList(listItem(p('outer'), bulletList(listItem(p('inner<a>')))))),
+        );
+
+        await pasteMarkdown(LIST_ITEM);
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('outer'), bulletList(listItem(p('innerone')))))).toJSON(),
+        );
+      });
+
+      it('keeps the sub-items of the list item under the cursor', async () => {
+        setContentWithCursor(
+          doc(bulletList(listItem(p('item<a>'), bulletList(listItem(p('sub-item')))))),
+        );
+
+        await pasteMarkdown(LIST_ITEM);
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('itemone'), bulletList(listItem(p('sub-item')))))).toJSON(),
+        );
+      });
+
+      it('continues the text after the cursor in the last pasted block', async () => {
+        setContentWithCursor(doc(bulletList(listItem(p('alpha<a> beta')), listItem(p('gamma')))));
+
+        await pasteMarkdown({
+          gfm: '* outer\n  * inner',
+          html: '<ul dir="auto">\n<li>outer\n<ul>\n<li>inner</li>\n</ul>\n</li>\n</ul>',
+        });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(
+            bulletList(
+              listItem(p('alphaouter'), bulletList(listItem(p('inner beta')))),
+              listItem(p('gamma')),
+            ),
+          ).toJSON(),
+        );
+      });
+
+      it('keeps the marks of the pasted content', async () => {
+        setContentWithCursor(doc(bulletList(listItem(p('item<a>')))));
+
+        await pasteMarkdown({
+          gfm: '* **bold** one',
+          html: '<ul dir="auto">\n<li><strong>bold</strong> one</li>\n</ul>',
+        });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('item', bold('bold'), ' one')))).toJSON(),
+        );
+      });
+
+      it('replaces the selected text with the pasted item content', async () => {
+        const initialDoc = doc(bulletList(listItem(p('item one')), listItem(p('item <a>two<b>'))));
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+        tiptapEditor.commands.setTextSelection({ from: initialDoc.tag.a, to: initialDoc.tag.b });
+
+        await pasteMarkdown(LIST_ITEM);
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('item one')), listItem(p('item one')))).toJSON(),
+        );
+      });
+
+      it('inserts at the loading indicator when content is typed before the markdown is processed', async () => {
+        setContentWithCursor(doc(bulletList(listItem(p('item<a>')))));
+
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/x-gfm', 'text/plain', 'text/html'],
+            data: {
+              'text/x-gfm': LIST_ITEM.gfm,
+              'text/plain': LIST_ITEM.gfm,
+              'text/html': LIST_ITEM.html,
+            },
+          }),
+        );
+        tiptapEditor.commands.insertContent(' typed');
+        await resolveRenderMarkdownPromiseAndWait(LIST_ITEM.html);
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(bulletList(listItem(p('itemone typed')))).toJSON(),
+        );
+      });
+
+      it('inserts quoted text inline into the blockquote under the cursor', async () => {
+        setContentWithCursor(doc(blockquote(p('existing <a>quote'))));
+
+        await pasteMarkdown({
+          gfm: '> quoted',
+          html: '<blockquote dir="auto">\n<p dir="auto">quoted</p>\n</blockquote>',
+        });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(blockquote(p('existing quotedquote'))).toJSON(),
+        );
+      });
+
+      it('inserts heading text inline into the heading under the cursor', async () => {
+        setContentWithCursor(doc(heading({ level: 2 }, 'Some <a>heading')));
+
+        await pasteMarkdown({ gfm: '# Title', html: '<h1 dir="auto">Title</h1>' });
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(
+          doc(heading({ level: 2 }, 'Some Titleheading')).toJSON(),
+        );
+      });
+
+      describe('when the cursor is not in the same kind of block', () => {
+        it('still pastes a list item as a list into an empty paragraph', async () => {
+          setContentWithCursor(doc(p('<a>')));
+
+          await pasteMarkdown(LIST_ITEM);
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(bulletList(listItem(p('one')))).toJSON(),
+          );
+        });
+
+        it('still pastes a list item as a list block inside a paragraph', async () => {
+          setContentWithCursor(doc(p('hello <a>world')));
+
+          await pasteMarkdown(LIST_ITEM);
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(p('hello '), bulletList(listItem(p('one'))), p('world')).toJSON(),
+          );
+        });
+
+        it('still pastes a list item as a list block inside a blockquote paragraph', async () => {
+          setContentWithCursor(doc(blockquote(p('quote <a>text'))));
+
+          await pasteMarkdown(LIST_ITEM);
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(blockquote(p('quote '), bulletList(listItem(p('one'))), p('text'))).toJSON(),
+          );
+        });
+
+        it('still pastes a heading as a block inside a paragraph', async () => {
+          setContentWithCursor(doc(p('hello <a>world')));
+
+          await pasteMarkdown({ gfm: '# Title', html: '<h1 dir="auto">Title</h1>' });
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(
+            doc(p('hello '), heading({ level: 1 }, 'Title'), p('world')).toJSON(),
+          );
+        });
+      });
+    });
+
     describe('when pasting a single code block with lang=markdown', () => {
       it('process the textContent as markdown, ignoring the htmlContent', async () => {
         const resolvedValue = '<ul><li>Cat</li><li>Dog</li><li>Turtle</li></ul>';
@@ -1005,6 +1377,127 @@ describe('content_editor/extensions/copy_paste', () => {
         await waitForPromises();
 
         expect(findAllLoaders(tiptapEditor.state)).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('when pasting an iframe embed', () => {
+    const buildEmbed = () => {
+      const container = document.createElement('span');
+      container.classList.add('media-container', 'img-container');
+
+      const img = document.createElement('img');
+      img.classList.add('js-render-iframe');
+      img.setAttribute('src', 'https://www.youtube.com/embed/abc123');
+      img.dataset.iframeCanonicalSrc = 'https://www.youtube.com/watch?v=abc123';
+      img.dataset.iframeProviderId = 'youtube';
+      container.appendChild(img);
+
+      return container;
+    };
+
+    const buildParagraphWithEmbed = () => {
+      const paragraph = document.createElement('p');
+      paragraph.appendChild(buildEmbed());
+      return paragraph;
+    };
+
+    const buildTableWithEmbed = () => {
+      const table = document.createElement('table');
+      const row = table.insertRow();
+      row.insertCell().appendChild(buildEmbed());
+      row.insertCell().textContent = 'Y';
+      return table;
+    };
+
+    const findNodeTypes = () => {
+      const types = [];
+      tiptapEditor.state.doc.descendants((node) => {
+        types.push(node.type.name);
+      });
+      return types;
+    };
+
+    beforeEach(() => {
+      window.gon = {
+        iframe_rendering_providers: iframeProviders(),
+        features: { allowIframesInMarkdown: true },
+      };
+    });
+
+    describe('when the clipboard carries GFM', () => {
+      it('pastes an iframe node rendered by the backend', async () => {
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html', 'text/x-gfm'],
+            data: {
+              'text/plain': 'https://www.youtube.com/watch?v=abc123',
+              'text/html': buildParagraphWithEmbed().outerHTML,
+              'text/x-gfm': '![](https://www.youtube.com/watch?v=abc123)',
+            },
+          }),
+        );
+        await resolveRenderMarkdownPromiseAndWait(buildParagraphWithEmbed().outerHTML);
+
+        expect(findNodeTypes()).toContain('iframe');
+      });
+    });
+
+    describe('when the clipboard carries only HTML', () => {
+      it('pastes an image node rather than an iframe node', async () => {
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'https://www.youtube.com/embed/abc123',
+              'text/html': buildParagraphWithEmbed().outerHTML,
+            },
+          }),
+        );
+        await waitForPromises();
+
+        expect(findNodeTypes()).toContain('image');
+        expect(findNodeTypes()).not.toContain('iframe');
+      });
+    });
+
+    describe('when table HTML is pasted into a table', () => {
+      beforeEach(() => {
+        tiptapEditor.commands.insertContent(
+          '<table><tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr></table>',
+        );
+        tiptapEditor.commands.setTextSelection(4);
+      });
+
+      it('pastes an image node rather than an iframe node', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html': buildTableWithEmbed().outerHTML,
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(findNodeTypes()).toContain('image');
+        expect(findNodeTypes()).not.toContain('iframe');
+      });
+    });
+
+    describe('when ProseMirror parses the clipboard itself', () => {
+      it('parses an image node rather than an iframe node', () => {
+        const parser = tiptapEditor.view.someProp('clipboardParser');
+        const slice = parser.parseSlice(buildParagraphWithEmbed());
+
+        const types = [];
+        slice.content.descendants((node) => {
+          types.push(node.type.name);
+        });
+
+        expect(types).toContain('image');
+        expect(types).not.toContain('iframe');
       });
     });
   });

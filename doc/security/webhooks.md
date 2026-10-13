@@ -73,6 +73,27 @@ Prerequisites:
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
 
+### Cloud metadata endpoints are always blocked
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/628701) in GitLab 19.5.
+
+{{< /history >}}
+
+Cloud instance metadata services (IMDS) can return IAM credentials to any
+process that can reach them. GitLab always blocks outbound webhook and
+integration requests to these endpoints, regardless of the other outbound
+request settings on this page. The block cannot be lifted through the
+[allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+
+Blocked endpoints:
+
+- `169.254.169.254` (AWS, GCP, Azure, and OpenStack IMDS, and the alias `metadata.google.internal`).
+- `fd00:ec2::254` (AWS IPv6 IMDS).
+- `100.100.100.200` (Alibaba Cloud IMDS).
+- `192.0.0.192` (legacy Oracle Cloud Infrastructure IMDS).
+
 ### Enforce DNS rebinding attack protection
 
 Prerequisites:

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RapidDiffs::EmptyStateComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::EmptyStateComponent, feature_category: :code_review_workflow do
   it "renders with default message" do
     render_inline(described_class.new)
     expect(page).to have_text("There are no changes")

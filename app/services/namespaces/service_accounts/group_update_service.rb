@@ -27,13 +27,6 @@ module Namespaces
         user.provisioned_by_group
       end
 
-      override :skip_confirmation?
-      def skip_confirmation?
-        return true if super
-
-        resource.owner_of_email?(params[:email])
-      end
-
       override :invalid_resource_id_message
       def invalid_resource_id_message
         s_("ServiceAccount|Group ID provided does not match the service account's group ID.")

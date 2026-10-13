@@ -74,6 +74,32 @@ RSpec.describe PerTestCoverageArtifactDownloader, feature_category: :tooling do
       end
     end
 
+    context 'when target_pipeline_id is given explicitly' do
+      let(:given_pipeline_id) { 22222 }
+
+      subject(:downloader) do
+        described_class.new(job_name_pattern: pattern, output_dir: output_dir, target_pipeline_id: given_pipeline_id)
+      end
+
+      before do
+        stub_request(:get, "#{api_url}/projects/#{project_id}/pipelines/#{given_pipeline_id}/jobs?per_page=100&page=1")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 200, body: [{ 'id' => 100, 'name' => 'rspec unit per-test-coverage' }].to_json)
+        stub_request(:get, "#{api_url}/projects/#{project_id}/jobs/100/artifacts")
+          .with(headers: { 'JOB-TOKEN' => job_token })
+          .to_return(status: 200, body: 'fake-zip-bytes')
+        allow(downloader).to receive(:system).with('unzip', any_args).and_return(true)
+      end
+
+      it 'skips the bridge lookup and searches the given pipeline directly' do
+        expect(downloader.run).to eq(0)
+
+        expect(WebMock)
+          .not_to have_requested(:get, "#{api_url}/projects/#{project_id}/pipelines/#{pipeline_id}/bridges")
+        expect(WebMock).to have_requested(:get, "#{api_url}/projects/#{project_id}/jobs/100/artifacts").once
+      end
+    end
+
     context 'when no jobs in the child pipeline match the pattern' do
       before do
         stub_bridges([

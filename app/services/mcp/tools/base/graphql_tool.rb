@@ -8,9 +8,20 @@ module Mcp
         include Mcp::Tools::Concerns::Constants
 
         QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
+        IMPORT_PATTERN = %r{^#\s*import "\./(?<path>[^"]+)"$}
 
         def self.load_graphql(relative_path)
-          File.read(QUERIES_ROOT.join(relative_path)).freeze
+          query = read_graphql_file(relative_path)
+          directory = File.dirname(relative_path)
+          fragments = query.scan(IMPORT_PATTERN).flatten.map do |path|
+            read_graphql_file(File.join(directory, path))
+          end
+
+          [query, *fragments].join("\n").freeze
+        end
+
+        def self.read_graphql_file(relative_path)
+          File.read(QUERIES_ROOT.join(relative_path))
         end
 
         attr_reader :current_user, :params
@@ -68,28 +79,40 @@ module Mcp
           nil
         end
 
-        def resource_not_found?(result)
-          result['errors'].blank? && result.dig('data', operation_name).nil?
-        end
-
         def process_result(result)
           if result['errors']
             error_messages = extract_error_messages(result['errors'])
             return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
           end
 
-          operation_data = result.dig('data', operation_name)
+          not_found_error = resource_not_found_error_for_result(result)
+          return not_found_error if not_found_error
 
-          return ::Mcp::Tools::Base::Response.error("Operation returned no data") if operation_data.nil?
+          operation_data = result.dig('data', operation_name)
+          return resource_not_found_error if operation_data.nil?
 
           operation_errors = operation_data['errors']
           if operation_errors&.any?
             error_messages = extract_error_messages(operation_errors)
-            return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
+            return ::Mcp::Tools::Base::Response.error(
+              error_messages.join(', '), reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+            )
           end
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]
           ::Mcp::Tools::Base::Response.success(formatted_content, operation_data)
+        end
+
+        def resource_not_found_error
+          ::Mcp::Tools::Base::Response.error(
+            "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+          )
+        end
+
+        def resource_not_found_error_for_result(result)
+          return unless result.dig('data', operation_name).nil?
+
+          resource_not_found_error
         end
 
         def extract_error_messages(errors)

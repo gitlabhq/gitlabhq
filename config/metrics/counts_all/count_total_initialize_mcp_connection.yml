@@ -1,0 +1,23 @@
+---
+key_path: counts.count_total_initialize_mcp_connection
+description: Count of MCP initialize handshakes
+product_group: agent_execution
+product_categories:
+- mcp_server
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256984
+time_frame:
+- 7d
+- 28d
+- all
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: initialize_mcp_connection

@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import {
@@ -228,6 +229,7 @@ describe('Job State actions', () => {
       mock.restore();
       stopPolling();
       clearEtagPoll();
+      setWindowLocation('https://gitlab.test/job');
     });
 
     describe('success', () => {
@@ -235,6 +237,9 @@ describe('Job State actions', () => {
 
       beforeEach(() => {
         isScrolledToBottom.mockReturnValue(false);
+        // Simulate a subsequent poll (not the initial load) so the first-load
+        // auto-scroll doesn't interfere with these assertions.
+        mockedState.jobLogState = 'some-state';
       });
 
       describe('when job is complete', () => {
@@ -334,6 +339,58 @@ describe('Job State actions', () => {
               { type: 'requestTestSummary' },
               { type: 'scrollBottom' },
             ],
+          );
+        });
+      });
+
+      describe('on the initial log fetch', () => {
+        beforeEach(() => {
+          // Not scrolled to bottom, and the initial fetch is marked by a null
+          // jobLogState, so the log should still land at the bottom.
+          isScrolledToBottom.mockReturnValue(false);
+          mockedState.jobLogState = null;
+
+          jobLogPayload = {
+            html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+            complete: true,
+          };
+
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+        });
+
+        it('auto scrolls to the bottom by dispatching scrollBottom', () => {
+          return testAction(
+            fetchJobLog,
+            null,
+            mockedState,
+            [
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
+            ],
+            [
+              { type: 'stopPollingJobLog' },
+              { type: 'requestTestSummary' },
+              { type: 'scrollBottom' },
+            ],
+          );
+        });
+
+        it('does not auto scroll when deep-linking to a line via the URL hash', () => {
+          setWindowLocation('https://gitlab.test/job#L10');
+
+          return testAction(
+            fetchJobLog,
+            null,
+            mockedState,
+            [
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
+            ],
+            [{ type: 'stopPollingJobLog' }, { type: 'requestTestSummary' }],
           );
         });
       });

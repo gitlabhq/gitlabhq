@@ -227,6 +227,39 @@ describe('User Count Manager', () => {
     });
   });
 
+  describe('when a second copy of the module exists (hybrid Vue 2/Vue 3 build)', () => {
+    let secondCopy;
+
+    beforeEach(() => {
+      jest.isolateModules(() => {
+        // eslint-disable-next-line global-require
+        secondCopy = require('~/super_sidebar/user_counts_manager');
+      });
+    });
+
+    it('creating a manager tears down the listeners of the other copy', () => {
+      createUserCountsManager();
+      userCounts.todos = 10;
+
+      secondCopy.createUserCountsManager();
+
+      document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { delta: 1 } }));
+
+      expect(userCounts.todos).toBe(11);
+    });
+
+    it('destroying via the other copy removes the active listeners', () => {
+      createUserCountsManager();
+      userCounts.todos = 10;
+
+      secondCopy.destroyUserCountsManager();
+
+      document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { delta: 1 } }));
+
+      expect(userCounts.todos).toBe(10);
+    });
+  });
+
   describe('destroyUserCountsManager', () => {
     it('unregisters event handler', () => {
       expect(document.removeEventListener).not.toHaveBeenCalledWith();

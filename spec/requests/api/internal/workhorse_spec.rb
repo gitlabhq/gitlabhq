@@ -96,22 +96,22 @@ RSpec.describe API::Internal::Workhorse, :allow_forgery_protection, feature_cate
       context 'when the client_id does not match any application' do
         let(:params) { { client_id: 'nonexistent-client-id' } }
 
-        it 'routes to Rails (documented fallback for unknown apps)', :aggregate_failures do
+        it 'routes to IAM', :aggregate_failures do
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to eq('destination' => 'rails')
+          expect(json_response).to eq('destination' => 'iam')
         end
       end
 
       context 'when the client_id parameter is missing' do
         let(:params) { {} }
 
-        it 'routes to Rails (documented fallback for missing client_id)', :aggregate_failures do
+        it 'routes to IAM', :aggregate_failures do
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to eq('destination' => 'rails')
+          expect(json_response).to eq('destination' => 'iam')
         end
       end
     end

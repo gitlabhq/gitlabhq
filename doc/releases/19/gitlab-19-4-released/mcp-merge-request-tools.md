@@ -16,7 +16,6 @@ GitLab MCP server:
 - `save_merge_request` opens and updates an MR.
 - `get_merge_request` inspects an MR in depth, with new diffs, conflicts, and
   approvals facets.
-- `list_merge_requests` now works at group scope.
 - `save_merge_request_review` leaves line-level review comments, with batched
   diff comments and a summary in a single call.
 - `accept_merge_request` merges an MR once checks pass, and can also approve

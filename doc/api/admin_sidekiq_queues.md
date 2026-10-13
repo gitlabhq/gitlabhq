@@ -41,6 +41,9 @@ DELETE /admin/sidekiq/queues/:queue_name
 | `subscription_plan` | string | no       | The subscription plan of the root namespace (GitLab.com only) |
 | `caller_id`         | string | no       | The endpoint or background job that scheduled the job (for example: `ProjectsController#create`, `/api/:version/projects/:id`, `PostReceive`) |
 | `feature_category`  | string | no       | The feature category of the background job (for example: `team_planning` or `code_review`) |
+| `client_type`       | string | no       | The kind of client whose request scheduled the jobs (for example: `browser`, `ide`, or `mobile`) |
+| `client_name`       | string | no       | The client whose request scheduled the jobs (for example: `vscode` or `gitlab-mobile-ios`) |
+| `client_version`    | string | no       | The release of the client whose request scheduled the jobs (for example: `6.21.0` or `1.2.0`) |
 | `worker_class`      | string | no       | The class of the background job worker (for example: `PostReceive` or `MergeWorker`) |
 
 At least one attribute, other than `queue_name`, is required.
@@ -49,8 +52,8 @@ Example request:
 
 ```shell
 curl --request DELETE \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/admin/sidekiq/queues/:queue_name"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/sidekiq/queues/:queue_name"
 ```
 
 Example response:

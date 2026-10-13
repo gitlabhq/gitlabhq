@@ -13,6 +13,7 @@ module Gitlab
         SOURCE_AI_WORKFLOWS = 'ai_workflows'
         SOURCE_API = 'api'
         SOURCE_INTERNAL = 'internal'
+        MAX_WORKFLOW_ID = ::Gitlab::Database::MAX_BIGINT_VALUE
 
         def self.track(event:, properties:)
           track_internal_event(event, **properties)
@@ -50,6 +51,23 @@ module Gitlab
 
           SOURCE_API
         end
+
+        def self.plan_event_properties(work_item)
+          properties = { source: current_source, work_item_id: work_item.id }
+          workflow_id = context_workflow_id
+          properties[:workflow_id] = workflow_id if workflow_id
+          properties
+        end
+
+        # Client-supplied header; analytics only, not authorized.
+        def self.context_workflow_id
+          value = ::Gitlab::ApplicationContext.current_context_attribute(:duo_workflow_id).to_s
+          return unless value.match?(/\A\d+\z/)
+
+          workflow_id = value.to_i
+          workflow_id if (1..MAX_WORKFLOW_ID).cover?(workflow_id)
+        end
+        private_class_method :context_workflow_id
 
         def initialize(work_item:, current_user:, event: nil, old_associations: nil, extra_properties: {})
           raise ArgumentError unless valid_params?(work_item, current_user, event, old_associations)

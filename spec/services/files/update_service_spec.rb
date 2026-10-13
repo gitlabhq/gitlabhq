@@ -12,11 +12,13 @@ RSpec.describe Files::UpdateService, feature_category: :source_code_management d
   let(:branch_name) { project.default_branch }
   let(:start_branch) { project.default_branch }
   let(:last_commit_sha) { nil }
+  let(:previous_path) { nil }
   let(:commit) { project.repository.commit }
 
   let(:commit_params) do
     {
       file_path: file_path,
+      previous_path: previous_path,
       commit_message: "Update File",
       file_content: new_contents,
       file_content_encoding: "text",
@@ -104,6 +106,21 @@ RSpec.describe Files::UpdateService, feature_category: :source_code_management d
 
           expect(result[:status]).to eq(:error)
           expect(result[:message]).to eq(_('Path is a directory, not a file'))
+        end
+
+        # Without this guard the move reaches Gitaly, which replaces the
+        # directory and its contents with the moved file rather than reporting
+        # a collision. See https://gitlab.com/gitlab-org/gitaly/-/merge_requests/9267
+        context "when the file is being moved onto the directory" do
+          let(:previous_path) { 'README.md' }
+
+          it "returns an error and leaves the directory untouched" do
+            result = update_service.execute
+
+            expect(result[:status]).to eq(:error)
+            expect(result[:message]).to eq(_('Path is a directory, not a file'))
+            expect(project.repository.commit(branch_name).tree_entry(file_path)[:type]).to eq(:tree)
+          end
         end
       end
     end

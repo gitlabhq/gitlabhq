@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
+  include WorkhorseHelpers
 
   using RSpec::Parameterized::TableSyntax
   include HttpIOHelpers
@@ -790,79 +791,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
   end
 
-  describe 'GET /projects/:id/jobs/:job_id/runtime_environment_key' do
-    subject(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/runtime_environment_key", api_user) }
-
-    context 'when the job is resuming a suspended environment' do
-      let(:runtime_environment) { create(:ci_runtime_environment, project: project, environment_key: '42/s_machineid/data') }
-
-      before do
-        create(:ci_job_runtime_environment, build: job, runtime_environment: runtime_environment)
-      end
-
-      it 'returns the runtime environment key' do
-        request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['runtime_environment_key']).to eq('42/s_machineid/data')
-      end
-    end
-
-    context 'when the job has no linked runtime environment' do
-      it 'returns not found' do
-        request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'unauthorized user' do
-      let(:api_user) { nil }
-
-      it 'returns unauthorized' do
-        request
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'user without :update_build permission' do
-      let(:api_user) { reporter }
-
-      it 'returns forbidden' do
-        request
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'with oauth token' do
-      let(:token) { create(:oauth_access_token, user: maintainer, scopes: [:api]) }
-
-      before do
-        create(:ci_job_runtime_environment, build: job,
-          runtime_environment: create(:ci_runtime_environment, project: project, environment_key: '42/s_machineid/data'))
-      end
-
-      it 'returns the runtime environment key' do
-        get api("/projects/#{project.id}/jobs/#{job.id}/runtime_environment_key", oauth_access_token: token)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    it_behaves_like 'authorizing granular token permissions', :update_job do
-      let(:user) { maintainer }
-      let(:boundary_object) { project }
-      let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/runtime_environment_key", personal_access_token: pat) }
-
-      before do
-        create(:ci_job_runtime_environment, build: job,
-          runtime_environment: create(:ci_runtime_environment, project: project, environment_key: '42/s_machineid/data'))
-      end
-    end
-  end
-
   describe 'GET /projects/:id/jobs/:job_id/trace' do
     before do |example|
       unless example.metadata[:skip_before_request]
@@ -881,10 +809,11 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         end
       end
 
-      context 'when log is in ObjectStorage' do
+      context 'when log is in ObjectStorage', :skip_before_request do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
         let(:url) { 'http://object-storage/trace' }
         let(:file_path) { expand_fixture_path('trace/sample_trace') }
+        let(:content_disposition) { "infile; filename=\"#{job.id}.log\"" }
 
         before do
           stub_remote_url_206(url, file_path)
@@ -895,18 +824,192 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           end
         end
 
-        it 'returns specific job logs' do
+        it 'lets Workhorse stream the log from object storage' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(job.trace.raw)
+          expect(response.body).to be_empty
+          expect(response.headers['Content-Disposition']).to eq(content_disposition)
+
+          type, params = workhorse_send_data
+          expect(type).to eq('send-url')
+          expect(params['URL']).to eq(url)
+          expect(params['ResponseHeaders']).to eq(
+            'Content-Type' => ['text/plain'],
+            'Content-Disposition' => [content_disposition]
+          )
+          expect(a_request(:get, url)).not_to have_been_made
+        end
+
+        it 'answers HEAD from the artifact metadata without fetching the object' do
+          head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+          expect(response.headers['Content-Length']).to eq(File.size(file_path).to_s)
+          expect(response.headers['Content-Disposition']).to eq(content_disposition)
+        end
+
+        it 'rejects requests that did not come through Workhorse before setting log headers', :verify_workhorse_jwt do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.headers).not_to include('Content-Disposition')
+        end
+
+        context 'when a byte range is requested' do
+          let(:trace_size) { File.size(file_path) }
+
+          def get_trace_range(byte_params)
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: byte_params
+          end
+
+          def expect_send_url_for(upstream_range)
+            type, params = workhorse_send_data
+            expect(type).to eq('send-url')
+            expect(params['URL']).to eq(url)
+            expect(params['UpstreamRange']).to eq(upstream_range)
+            expect(params['ResponseHeaders']).to eq(
+              'Content-Type' => ['text/plain'],
+              'Content-Disposition' => [content_disposition]
+            )
+          end
+
+          it 'lets Workhorse fetch exactly the requested span as a full response' do
+            get_trace_range(byte_offset: 10, byte_limit: 5)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to be_empty
+            expect(response.headers['Content-Disposition']).to eq(content_disposition)
+            expect_send_url_for('bytes=10-14')
+            expect(a_request(:get, url)).not_to have_been_made
+          end
+
+          it 'starts at the beginning when byte_offset is omitted' do
+            get_trace_range(byte_limit: 5)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect_send_url_for('bytes=0-4')
+          end
+
+          it 'clamps the span to the end of the log' do
+            get_trace_range(byte_offset: trace_size - 3, byte_limit: 10)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect_send_url_for("bytes=#{trace_size - 3}-#{trace_size - 1}")
+          end
+
+          it 'answers an empty 200 itself when byte_offset is at the end of the log' do
+            get_trace_range(byte_offset: trace_size, byte_limit: 10)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Disposition']).to eq(content_disposition)
+            expect(response.body).to eq('')
+            expect(a_request(:get, url)).not_to have_been_made
+          end
+
+          it 'answers HEAD with the span length without fetching the object' do
+            head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 10, byte_limit: 5 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Length']).to eq('5')
+            expect(a_request(:get, url)).not_to have_been_made
+          end
+
+          it 'answers HEAD with a zero length when byte_offset is at the end of the log' do
+            head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: trace_size }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Length']).to eq('0')
+          end
+
+          it 'fetches from byte_offset to the end of the log when byte_limit is omitted' do
+            get_trace_range(byte_offset: 2)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect_send_url_for("bytes=2-#{trace_size - 1}")
+          end
+
+          it 'answers HEAD with the remaining length when byte_limit is omitted' do
+            head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 2 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Length']).to eq((trace_size - 2).to_s)
+          end
+
+          it 'rejects requests that did not come through Workhorse before setting log headers', :verify_workhorse_jwt do
+            get_trace_range(byte_offset: 0, byte_limit: 5)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.headers).not_to include('Content-Disposition')
+          end
+
+          context 'when the ci_job_trace_api_range_via_workhorse feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_job_trace_api_range_via_workhorse: false)
+            end
+
+            it 'reads the range in Rails' do
+              get_trace_range(byte_offset: 0, byte_limit: 5)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+              expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
+            end
+          end
+        end
+
+        context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_job_trace_api_archived_log_via_workhorse: false)
+          end
+
+          it 'returns specific job logs' do
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.body).to eq(job.trace.raw)
+          end
         end
       end
 
-      context 'when log is artifact' do
+      context 'when log is artifact', :skip_before_request do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
-        it 'returns specific job log' do
+        it 'lets Workhorse send the log from disk' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(job.trace.raw)
+          expect(response.body).to be_empty
+          expect(response.headers['X-Sendfile']).to eq(job.job_artifacts_trace.file.path)
+          expect(response.headers['Content-Disposition']).to eq("infile; filename=\"#{job.id}.log\"")
+        end
+
+        it 'reads a byte range from disk in Rails' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 0, byte_limit: 5 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+          expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
+        end
+
+        context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_job_trace_api_archived_log_via_workhorse: false)
+          end
+
+          it 'returns specific job log' do
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include('X-Sendfile')
+            expect(response.body).to eq(job.trace.raw)
+          end
         end
       end
 
@@ -1189,6 +1292,21 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       call_retry_job
     end
 
+    context 'when the job retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      before do
+        stub_application_setting(job_retry_limit_per_user_project: 1)
+      end
+
+      # The outer before block already made one retry call.
+      it 'returns 429 with Retry-After', :aggregate_failures do
+        call_retry_job
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers['Retry-After']).to be_present
+        expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+      end
+    end
+
     shared_examples 'job retry API call handler' do
       context 'authorized user with :retry_job permission' do
         context 'when the job is a build' do
@@ -1420,6 +1538,24 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
     end
 
+    context 'when the job erase rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:other_job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
+
+      before do
+        stub_application_setting(job_erase_limit_per_user_project: 1)
+        post api("/projects/#{project.id}/jobs/#{other_job.id}/erase", user)
+      end
+
+      it 'returns 429 with Retry-After', :aggregate_failures do
+        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers['Retry-After']).to be_present
+        expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+      end
+    end
+
     context 'when project is undergoing stats refresh' do
       let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
 
@@ -1462,6 +1598,22 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       before do
         project.add_developer(user)
+      end
+
+      context 'when the job play rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        before do
+          stub_application_setting(job_play_limit_per_user_project: 1)
+        end
+
+        it 'returns 429 with Retry-After', :aggregate_failures do
+          other_job = create(:ci_build, :manual, project: project, pipeline: pipeline)
+
+          post api("/projects/#{project.id}/jobs/#{other_job.id}/play", api_user), params: params
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+          expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+        end
       end
 
       context 'when user is authorized to trigger a manual action' do

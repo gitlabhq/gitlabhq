@@ -94,6 +94,7 @@ Existing preprocessors are:
 
 1. `ContentFetcher`: fetches content from existing documents in the vector store
 1. `Embeddings`: generates embeddings for every document in bulk
+1. `EmbeddedSkipper`: drops refs whose documents already have an embedding
 
 These preprocessors rely on the document with content already stored in the vector store. If you need ActiveContext to handle the initial storage of documents in the vector store, you'll need to add a new preprocessor for that.
 
@@ -108,6 +109,7 @@ add_preprocessor :get_content do |refs|
 
   fetch_content(refs: refs, query: query, collection: Collections::Code)
 end
+```
 
 #### Embeddings
 
@@ -134,6 +136,26 @@ end
 ```
 
 See [how to set initial embedding model](how_to.md#set-embedding-model) and [how to migrate from one embedding model to another](how_to.md#migrate-from-one-embedding-model-to-another).
+
+#### EmbeddedSkipper
+
+Drops the refs whose documents already have an embedding in the selected embedding fields, so later preprocessors do not request them again. Run it before the `ContentFetcher` and `Embeddings` preprocessors.
+
+```ruby
+add_preprocessor :skip_embedded do |refs, queue_name: nil, next_model_only: false, current_model_only: false, **|
+  skip_embedded(
+    refs: refs,
+    collection: Collections::Code,
+    queue_name: queue_name,
+    next_model_only: next_model_only,
+    current_model_only: current_model_only
+  )
+end
+```
+
+`collection` is the collection class. It needs `search` and `collection_record`. The step expects at most one document for each ref, with a document `id` equal to `ref.identifier`. With `next_model_only` or `current_model_only`, it checks only that model's field. Without them, it checks all indexing embedding fields.
+
+If the lookup fails, it logs the error and keeps all refs.
 
 ### Operation types
 

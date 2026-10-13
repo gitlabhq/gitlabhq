@@ -101,6 +101,32 @@ RSpec.describe Ci::ParseAnnotationsArtifactService, feature_category: :job_artif
           end
         end
 
+        context 'when multiple files contain the same annotation list name' do
+          let(:data) do
+            {
+              external_links: [
+                {
+                  external_link: {
+                    label: 'URL 1',
+                    url: 'https://url1.example.com/'
+                  }
+                }
+              ]
+            }
+          end
+
+          before do
+            allow(artifact).to receive(:each_blob).and_yield(blob).and_yield(blob)
+          end
+
+          it 'returns error and does not create annotations' do
+            expect(subject[:status]).to eq(:error)
+            expect(subject[:message]).to eq("Duplicate annotation list name 'external_links' across annotations files")
+            expect(subject[:http_status]).to eq(:bad_request)
+            expect(build.job_annotations).to be_empty
+          end
+        end
+
         context 'when invalid JSON is given' do
           let(:blob) { 'Invalid JSON!' }
 

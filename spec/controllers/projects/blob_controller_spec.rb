@@ -47,9 +47,9 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         context 'and the file is valid' do
           let(:path) { 'README.md' }
 
-          it 'renders the blob with a signature container', :aggregate_failures do
+          it 'renders the blob without a signature container', :aggregate_failures do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(response.body).to have_css('.js-signature-container')
+            expect(response.body).not_to have_css('.js-signature-container')
           end
 
           context 'and the ref_type is valid' do
@@ -122,7 +122,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       end
     end
 
-    context 'when the last commit for the file path is unavailable' do
+    context 'when rendering the blob page' do
       let(:id) { 'master/README.md' }
       let(:repository) { project.repository }
 
@@ -132,13 +132,12 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         end
       end
 
-      it 'renders the blob without a signature container', :aggregate_failures do
-        expect(repository).to receive(:last_commit_for_path).and_return(nil)
+      it 'does not look up the last commit for the file path' do
+        expect(repository).not_to receive(:last_commit_for_path)
 
         request
 
         expect(response).to be_ok
-        expect(response.body).not_to have_css('.js-signature-container')
       end
     end
 
@@ -510,6 +509,40 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       end
     end
 
+    context 'when an uploaded file exceeds the maximum attachment size' do
+      let(:file) do
+        t = Tempfile.new(['oversized', '.bin'])
+        t.write('x' * (1.megabyte + 1))
+        t.rewind
+        fixture_file_upload(t.path, 'application/octet-stream')
+      end
+
+      let(:default_params) { super().except(:content).merge(file: file) }
+
+      subject(:request) { put :update, params: default_params }
+
+      before do
+        stub_application_setting(max_attachment_size: 1)
+      end
+
+      it 'responds with an error and does not update the file' do
+        expect { request }.not_to change { project.repository.commit('master').id }
+
+        expect(response).to have_gitlab_http_status(:payload_too_large)
+        expect(json_response['error']).to match(/Max filesize: 1MiB/)
+      end
+
+      context 'when the file is within the limit' do
+        let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
+
+        it 'updates the file' do
+          request
+
+          expect(response).to redirect_to(blob_after_edit_path)
+        end
+      end
+    end
+
     context '?from_merge_request_iid' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
       let(:mr_params) { default_params.merge(from_merge_request_iid: merge_request.iid) }
@@ -786,6 +819,38 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         expect(response).to be_successful
         expect(response).to render_template(:new)
         expect(response.body).to include('You must provide a commit message')
+      end
+    end
+
+    context 'when an uploaded file exceeds the maximum attachment size' do
+      let(:file) do
+        t = Tempfile.new(['oversized', '.bin'])
+        t.write('x' * (1.megabyte + 1))
+        t.rewind
+        fixture_file_upload(t.path, 'application/octet-stream')
+      end
+
+      let(:default_params) { super().except(:content).merge(file: file) }
+
+      before do
+        stub_application_setting(max_attachment_size: 1)
+      end
+
+      it 'responds with an error and does not create the file' do
+        expect { request }.not_to change { project.repository.commit('master').id }
+
+        expect(response).to have_gitlab_http_status(:payload_too_large)
+        expect(json_response['error']).to match(/Max filesize: 1MiB/)
+      end
+
+      context 'when the file is within the limit' do
+        let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
+
+        it 'creates the file' do
+          request
+
+          expect(response).to redirect_to(project_blob_path(project, 'master/dk.png'))
+        end
       end
     end
 

@@ -54,6 +54,7 @@ export default {
       },
     },
   },
+  expose: ['show'],
   data() {
     return {
       protectableBranches: [],
@@ -146,7 +147,6 @@ export default {
       );
     },
   },
-  expose: ['show'],
   methods: {
     handleBranchRuleSearch(query) {
       this.searchQuery = query;

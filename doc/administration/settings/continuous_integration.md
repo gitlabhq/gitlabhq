@@ -122,16 +122,19 @@ To set the default expiration time for job artifacts:
 
 #### Keep artifacts from latest successful pipelines
 
-Preserve artifacts from the most recent successful pipeline
-for each Git ref (branch or tag), regardless of their expiration time.
+For each Git ref (branch or tag), GitLab preserves artifacts from the following:
 
-By default, this setting is turned on.
+- The latest pipeline for the ref, even if it failed or is blocked by a manual job.
+- The most recent successful pipeline, if it's different from the latest pipeline.
+
+By default, these artifacts are preserved regardless of their expiration time.
 
 This setting takes precedence over [project settings](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 If turned off for an instance, it cannot be turned on for individual projects.
 
 When this feature is turned off, existing preserved artifacts don't immediately expire.
-A new successful pipeline must run on a branch before its artifacts can expire.
+A newer pipeline on the branch must complete, or become blocked by a manual job,
+before those artifacts can expire.
 
 > [!note]
 > All application settings have a [customizable cache expiry interval](../application_settings_cache.md),
@@ -457,17 +460,36 @@ To disable the reclaimed-path JWT restriction:
 
 When enabled, tokens fail to generate in CI/CD jobs with this error:
 
-- `ID token issuance is disabled in CI because this project's path was previously used by a different project.`
+- ``ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project.``
 
 ## Access job log settings
 
-Control how CI/CD job logs are stored and processed.
+Control how CI/CD job logs are stored, processed, and updated.
 
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Job logs**.
+
+### Configure the frequency of job log updates
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565373) in GitLab 19.5.
+
+{{< /history >}}
+
+Configure how often job log updates are sent while a job is running.
+Lower intervals make job logs appear sooner, but increase the number of trace update requests.
+The interval used when the job log is open must be less than or equal to the interval used when the
+job log is not open.
+
+To configure job log update intervals:
+
+1. In **Job log update interval**, enter a value.
+1. In **Job log update interval when open**, enter a value.
+1. Select **Save changes**.
 
 ### Configure incremental logging
 

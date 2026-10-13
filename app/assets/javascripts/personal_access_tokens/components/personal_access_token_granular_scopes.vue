@@ -103,9 +103,9 @@ export default {
       permissions: s__('AccessTokens|Group and project permissions'),
       personalProjects: s__('AccessTokens|Only my personal projects, including future ones'),
       allMemberships: s__(
-        "AccessTokens|All groups and projects that I'm a member of, including future ones",
+        'AccessTokens|All groups and projects I have access to, including future ones',
       ),
-      selectedMemberships: s__("AccessTokens|Only specific group or projects that I'm a member of"),
+      selectedMemberships: s__('AccessTokens|Only specific groups or projects I have access to'),
     },
     user: {
       permissions: s__('AccessTokens|User permissions'),

@@ -7,15 +7,14 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
   let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}) }
 
   before do
-    allow(including_class).to receive(:context).and_return({})
     allow(including_class).to receive(:parent_from_ref).and_call_original
-    allow(including_class).to receive(:reference_cache).and_return(reference_cache)
+    allow(including_class).to receive_messages(context: {}, reference_cache: reference_cache)
   end
 
   describe '#parent_from_ref' do
     context 'when no project was referenced' do
       it 'returns the project from context' do
-        project = double
+        project = build_stubbed(:project)
 
         allow(including_class).to receive(:context).and_return({ project: project })
 
@@ -25,7 +24,7 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
 
     context 'when no project was referenced in group context' do
       it 'returns the group from context' do
-        group = double
+        group = build_stubbed(:group)
 
         allow(including_class).to receive(:context).and_return({ group: group })
 
@@ -35,7 +34,7 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
 
     context 'when no project was referenced in user context' do
       it 'returns nil' do
-        user = double
+        user = build_stubbed(:user)
 
         allow(including_class).to receive(:context).and_return({ user: user })
 
@@ -51,25 +50,27 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
 
     context 'when referenced project exists' do
       it 'returns the referenced project' do
-        project2 = double('referenced project')
+        referenced_project = build_stubbed(:project)
 
         expect(Project).to receive(:find_by_full_path)
-          .with('cross/reference').and_return(project2)
+          .with('cross/reference').and_return(referenced_project)
 
-        expect(including_class.parent_from_ref('cross/reference')).to eq project2
+        expect(including_class.parent_from_ref('cross/reference')).to eq referenced_project
       end
     end
 
     context 'when reference cache is loaded' do
-      let(:project2) { double('referenced project') }
+      let(:referenced_project) { build_stubbed(:project) }
 
       before do
-        allow(reference_cache).to receive(:cache_loaded?).and_return(true)
-        allow(reference_cache).to receive(:parent_per_reference).and_return({ 'cross/reference' => project2 })
+        allow(reference_cache).to receive_messages(
+          cache_loaded?: true,
+          parent_per_reference: { 'cross/reference' => referenced_project }
+        )
       end
 
       it 'pulls from the reference cache' do
-        expect(including_class.parent_from_ref('cross/reference')).to eq project2
+        expect(including_class.parent_from_ref('cross/reference')).to eq referenced_project
       end
     end
   end

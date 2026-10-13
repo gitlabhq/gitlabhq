@@ -21,6 +21,14 @@ module ObjectPool
       pool = PoolRepository.find_by_id(pool_repository_id)
       return unless pool&.obsolete?
 
+      # A project can join the pool after it was marked obsolete
+      # (https://gitlab.com/gitlab-org/gitlab/-/work_items/628444).
+      if pool.member_projects.exists?
+        log_extra_metadata_on_done(:destroy_skipped, 'members_exist')
+
+        return
+      end
+
       pool.delete_object_pool
       pool.destroy
     end

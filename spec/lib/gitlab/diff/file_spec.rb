@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   end
 
   describe '#ipynb?' do
-    context 'is ipynb' do
+    context 'when it is ipynb' do
       let(:commit) { project.commit("532c837") }
 
       it 'is true' do
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       end
     end
 
-    context 'is not ipynb' do
+    context 'when it is not ipynb' do
       it 'is false' do
         expect(diff_file.ipynb?).to be_falsey
       end
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   end
 
   describe '#has_renderable?' do
-    context 'file is ipynb' do
+    context 'when file is ipynb' do
       let(:commit) { project.commit("532c837") }
 
       it 'has renderable viewer' do
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       end
     end
 
-    context 'file is not ipynb' do
+    context 'when file is not ipynb' do
       let(:commit) { project.commit("d59c60028b053793cecfb4022de34602e1a9218e") }
 
       it 'does not have renderable viewer' do
@@ -258,7 +258,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when unfold required' do
       before do
-        allow(unfolder).to receive(:unfold_required?) { true }
+        allow(unfolder).to receive(:unfold_required?).and_return(true)
         allow(unfolder).to receive(:unfolded_diff_lines) { unfolded_lines }
       end
 
@@ -283,7 +283,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when unfold not required' do
       before do
-        allow(unfolder).to receive(:unfold_required?) { false }
+        allow(unfolder).to receive(:unfold_required?).and_return(false)
       end
 
       it 'does not invalidate highlighted diff lines' do
@@ -577,8 +577,10 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when diff has both to_id and from_id' do
       before do
-        allow(diff).to receive(:to_id).and_return('efd587ccb47caf5f31fc954edb21f0a713d9ecc3')
-        allow(diff).to receive(:from_id).and_return('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+        allow(diff).to receive_messages(
+          to_id: 'efd587ccb47caf5f31fc954edb21f0a713d9ecc3',
+          from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae'
+        )
       end
 
       it 'uses to_id over from_id' do
@@ -589,8 +591,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when diff has from_id but not to_id (deleted file)' do
       before do
-        allow(diff).to receive(:to_id).and_return(nil)
-        allow(diff).to receive(:from_id).and_return('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+        allow(diff).to receive_messages(to_id: nil, from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae')
       end
 
       it 'does not load the blob' do
@@ -606,8 +607,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when diff has neither from_id nor to_id (persisted diff)' do
       before do
-        allow(diff).to receive(:to_id).and_return(nil)
-        allow(diff).to receive(:from_id).and_return(nil)
+        allow(diff).to receive_messages(to_id: nil, from_id: nil)
       end
 
       it 'falls back to blob.id' do
@@ -617,7 +617,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     end
   end
 
-  context 'diff file stats' do
+  context 'when diff file stats' do
     let(:diff_file) do
       described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository, stats: stats)
     end
@@ -879,8 +879,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when mode changed' do
       before do
-        allow(diff_file).to receive(:content_changed?).and_return(nil)
-        allow(diff_file).to receive(:mode_changed?).and_return(true)
+        allow(diff_file).to receive_messages(content_changed?: nil, mode_changed?: true)
       end
 
       it 'returns a Mode Changed viewer' do
@@ -890,12 +889,14 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when no other conditions apply' do
       before do
-        allow(diff_file).to receive(:content_changed?).and_return(false)
-        allow(diff_file).to receive(:new_file?).and_return(false)
-        allow(diff_file).to receive(:deleted_file?).and_return(false)
-        allow(diff_file).to receive(:renamed_file?).and_return(false)
-        allow(diff_file).to receive(:mode_changed?).and_return(false)
-        allow(diff_file).to receive(:text?).and_return(false)
+        allow(diff_file).to receive_messages(
+          content_changed?: false,
+          new_file?: false,
+          deleted_file?: false,
+          renamed_file?: false,
+          mode_changed?: false,
+          text?: false
+        )
       end
 
       it 'returns a No Preview viewer' do
@@ -1371,8 +1372,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     let(:text?) { true }
 
     before do
-      allow(diff_file).to receive(:diffable?).and_return(diffable?)
-      allow(diff_file).to receive(:text?).and_return(text?)
+      allow(diff_file).to receive_messages(diffable?: diffable?, text?: text?)
     end
 
     subject(:ai_reviewable?) { diff_file.ai_reviewable? }
@@ -1389,6 +1389,82 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       let(:text?) { false }
 
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#ai_reviewable_patch?' do
+    let(:patch) { "@@ -1,2 +1,2 @@\n-old\n+new\n context\n" }
+    let(:diff) do
+      Gitlab::Git::Diff.new({ diff: patch, new_path: 'file.txt', old_path: 'file.txt',
+                              a_mode: '100644', b_mode: '100644' })
+    end
+
+    subject(:ai_reviewable_patch?) { diff_file.ai_reviewable_patch? }
+
+    it { is_expected.to be(true) }
+
+    it 'does not load blobs' do
+      expect(diff_file).not_to receive(:old_blob)
+      expect(diff_file).not_to receive(:new_blob)
+
+      ai_reviewable_patch?
+    end
+
+    context 'when not diffable by .gitattributes' do
+      before do
+        allow(diff_file).to receive(:diffable_by_attribute?).and_return(false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when git replaced the patch with a binary notice' do
+      let(:patch) { "Binary files a/file.txt and b/file.txt differ\n" }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the patch contains a NUL byte' do
+      let(:patch) { "@@ -0,0 +1,2 @@\n+%PDF-1.5\n+binary\0content\n" }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with an LFS pointer patch' do
+      let(:patch) do
+        "@@ -0,0 +1,3 @@\n+version https://git-lfs.github.com/spec/v1\n+oid sha256:#{'a' * 64}\n+size 1024\n"
+      end
+
+      before do
+        stub_lfs_setting(enabled: true)
+      end
+
+      it { is_expected.to be(false) }
+
+      context 'when the patch changes the pointer' do
+        let(:patch) do
+          "@@ -1,3 +1,3 @@\n version https://git-lfs.github.com/spec/v1\n" \
+            "-oid sha256:#{'a' * 64}\n+oid sha256:#{'b' * 64}\n-size 1024\n+size 2048\n"
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when LFS is disabled' do
+        before do
+          stub_lfs_setting(enabled: false)
+        end
+
+        it 'treats the pointer as a text file' do
+          is_expected.to be(true)
+        end
+      end
+    end
+
+    context 'when a text file mentions the LFS spec after its first line' do
+      let(:patch) { "@@ -1,2 +1,2 @@\n # Notes\n-old\n+version https://git-lfs.github.com/spec/v1\n" }
+
+      it { is_expected.to be(true) }
     end
   end
 
@@ -1424,10 +1500,12 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     subject(:whitespace_only?) { diff_file.whitespace_only? }
 
     it 'returns true for non-collapsed empty diffs' do
-      allow(diff_file).to receive(:collapsed?).and_return(false)
-      allow(diff_file).to receive(:diff_lines_for_serializer).and_return(nil)
-      allow(diff_file).to receive(:added_lines).and_return(2)
-      allow(diff_file).to receive(:removed_lines).and_return(2)
+      allow(diff_file).to receive_messages(
+        collapsed?: false,
+        diff_lines_for_serializer: nil,
+        added_lines: 2,
+        removed_lines: 2
+      )
       expect(whitespace_only?).to be(true)
     end
 

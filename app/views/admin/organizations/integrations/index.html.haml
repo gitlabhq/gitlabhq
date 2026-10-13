@@ -1,0 +1,10 @@
+- breadcrumb_title s_('Integrations|Organization-level integration management')
+- page_title s_('Integrations|Organization-level integration management')
+- add_page_specific_style 'page_bundles/settings'
+
+= render ::Layouts::PageHeadingComponent.new(s_('Integrations|Organization-level integration management')) do |c|
+  - c.with_description do
+    - integrations_link = tag_pair(link_to('', integrations_help_page_path, target: '_blank', rel: 'noopener noreferrer'), :integrations_link_start, :link_end)
+    = safe_format(s_("Integrations|Organization owners can set up integrations that all groups and projects in the organization inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}integration management%{link_end}."), integrations_link)
+
+= render 'shared/integrations/index', integrations: @integrations

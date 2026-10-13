@@ -41,7 +41,7 @@ RSpec.describe Members::AccessGrantedMailer, feature_category: :groups_and_proje
         let(:group) { build(:group, organization: organization) }
 
         before do
-          stub_feature_flags(ui_for_organizations: true)
+          stub_organization_release(org_reference_in_member_access_granted_emails: true)
         end
 
         it 'includes organization information' do
@@ -72,7 +72,7 @@ RSpec.describe Members::AccessGrantedMailer, feature_category: :groups_and_proje
         let(:project) { build(:project, organization: organization) }
 
         before do
-          stub_feature_flags(ui_for_organizations: true)
+          stub_organization_release(org_reference_in_member_access_granted_emails: true)
         end
 
         it 'includes organization information' do

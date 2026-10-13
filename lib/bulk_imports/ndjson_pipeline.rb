@@ -42,7 +42,7 @@ module BulkImports
             excluded_keys: import_export_config.relation_excluded_keys(key),
             import_source: context.bulk_import.import_source,
             original_users_map: original_users_map,
-            rewrite_mentions: context.importer_user_mapping_enabled?
+            rewrite_mentions: true
           )
         end
 
@@ -80,7 +80,7 @@ module BulkImports
           end
 
         ensure
-          push_placeholder_references(original_users_map) if context.importer_user_mapping_enabled?
+          push_placeholder_references(original_users_map)
         end
       end
 
@@ -109,7 +109,7 @@ module BulkImports
 
         # Create Import::SourceUser objects during the transformation
         # step if they were not created during the MemberPipeline.
-        create_import_source_users(relation_key, relation_hash) if context.importer_user_mapping_enabled?
+        create_import_source_users(relation_key, relation_hash)
 
         yield(relation_key, relation_hash)
       end
@@ -145,11 +145,7 @@ module BulkImports
       end
 
       def members_mapper
-        @members_mapper ||= if context.importer_user_mapping_enabled?
-                              Import::BulkImports::SourceUsersMapper.new(context: context)
-                            else
-                              UsersMapper.new(context: context)
-                            end
+        @members_mapper ||= Import::BulkImports::SourceUsersMapper.new(context: context)
       end
 
       def source_user_mapper

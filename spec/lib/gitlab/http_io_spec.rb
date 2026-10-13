@@ -321,6 +321,15 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
     end
   end
 
+  describe '#rewind' do
+    it 'moves pos back to the start of the file', :aggregate_failures do
+      http_io.seek(size / 2)
+
+      expect(http_io.rewind).to eq(0)
+      expect(http_io.tell).to eq(0)
+    end
+  end
+
   describe '#eof?' do
     subject { http_io.eof? }
 

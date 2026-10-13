@@ -10,9 +10,55 @@ CREATE INDEX missing_index ON events USING btree (created_at, author_id);
 
 CREATE UNIQUE INDEX wrong_index ON table_name (column_name, column_name_2);
 
+CREATE INDEX renamed_index ON events USING btree (id);
+
+CREATE INDEX duplicated_index ON events USING btree (project_id);
+
+CREATE INDEX swapped_index_1 ON events USING btree (target_id);
+
+CREATE INDEX swapped_index_2 ON events USING btree (target_type);
+
 CREATE UNIQUE INDEX "index" ON achievements USING btree (namespace_id, lower(name));
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
+
+CREATE INDEX index_partitioned_table_on_id ON ONLY partitioned_table USING btree (id);
+
+CREATE INDEX index_partitioned_table_on_column_name ON ONLY partitioned_table USING btree (column_name);
+
+CREATE INDEX index_other_partitioned_table_on_column_name ON ONLY other_partitioned_table USING btree (column_name) WHERE (status = 0);
+
+CREATE INDEX index_partitioned_table_on_column_name_2 ON ONLY partitioned_table USING btree (column_name_2);
+
+CREATE INDEX index_partitioned_table_on_created_at ON ONLY partitioned_table USING btree (created_at);
+
+CREATE INDEX index_partitioned_table_on_other_column ON ONLY partitioned_table USING btree (other_column);
+
+CREATE INDEX index_public_partitioned_table_on_id ON ONLY public_partitioned_table USING btree (id);
+
+CREATE INDEX partition_index ON gitlab_partitions_static.partitioned_table_1 USING btree (id);
+
+CREATE INDEX partition_index_1 ON gitlab_partitions_static.partitioned_table_1 USING btree (column_name);
+
+CREATE INDEX partition_index_2 ON gitlab_partitions_static.other_partitioned_table_1 USING btree (column_name) WHERE (status = 0);
+
+CREATE INDEX renamed_partition_index ON gitlab_partitions_static.partitioned_table_3 USING btree (id);
+
+CREATE INDEX wrong_partition_index ON gitlab_partitions_static.partitioned_table_1 USING btree (column_name_2);
+
+CREATE INDEX redefined_partition_index ON gitlab_partitions_static.partitioned_table_7 USING btree (created_at);
+
+CREATE INDEX missing_partition_index ON gitlab_partitions_static.partitioned_table_1 USING btree (other_column);
+
+CREATE INDEX detached_partition_index ON gitlab_partitions_static.partitioned_table_6 USING btree (id);
+
+CREATE INDEX relocated_partition_index ON gitlab_partitions_static.partitioned_table_8 USING btree (id);
+
+CREATE INDEX standalone_partition_index ON gitlab_partitions_static.partitioned_table_5 USING btree (id);
+
+CREATE INDEX public_partition_index_1 ON public_partitioned_table_1 USING btree (id);
+
+CREATE INDEX public_partition_index_2 ON public_partitioned_table_2 USING btree (id);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
 
@@ -116,3 +162,25 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY bulk_import_configurations
     ADD CONSTRAINT fk_rails_536b96bff1 FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;
+
+ALTER INDEX index_partitioned_table_on_id ATTACH PARTITION gitlab_partitions_static.partition_index;
+
+ALTER INDEX index_partitioned_table_on_column_name ATTACH PARTITION gitlab_partitions_static.partition_index_1;
+
+ALTER INDEX index_other_partitioned_table_on_column_name ATTACH PARTITION gitlab_partitions_static.partition_index_2;
+
+ALTER INDEX index_partitioned_table_on_id ATTACH PARTITION gitlab_partitions_static.renamed_partition_index;
+
+ALTER INDEX index_partitioned_table_on_column_name_2 ATTACH PARTITION gitlab_partitions_static.wrong_partition_index;
+
+ALTER INDEX index_partitioned_table_on_created_at ATTACH PARTITION gitlab_partitions_static.redefined_partition_index;
+
+ALTER INDEX index_partitioned_table_on_other_column ATTACH PARTITION gitlab_partitions_static.missing_partition_index;
+
+ALTER INDEX index_partitioned_table_on_id ATTACH PARTITION gitlab_partitions_static.detached_partition_index;
+
+ALTER INDEX index_partitioned_table_on_id ATTACH PARTITION gitlab_partitions_static.relocated_partition_index;
+
+ALTER INDEX index_public_partitioned_table_on_id ATTACH PARTITION public_partition_index_1;
+
+ALTER INDEX index_public_partitioned_table_on_id ATTACH PARTITION public_partition_index_2;

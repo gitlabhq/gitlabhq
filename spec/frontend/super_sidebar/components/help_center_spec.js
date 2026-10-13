@@ -6,23 +6,12 @@ import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_men
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
 import { mockTracking } from 'helpers/tracking_helper';
-import { stubExperiments } from 'helpers/experimentation_helper';
 import HelpCenterUpgradeSubscription from 'ee_component/super_sidebar/components/help_center_upgrade_subscription.vue';
-import { sidebarData } from '../mock_data';
+import { sidebarData, loggedOutSidebarData } from '../mock_data';
 
 describe('HelpCenter component', () => {
   let wrapper;
   let trackingSpy;
-  let origGl;
-
-  beforeEach(() => {
-    origGl = window.gl;
-    window.gl = { ...window.gl, experiments: {} };
-  });
-
-  afterEach(() => {
-    window.gl = origGl;
-  });
 
   const GlEmoji = { template: '<img/>' };
 
@@ -267,64 +256,22 @@ describe('HelpCenter component', () => {
   });
 
   describe("What's new for you", () => {
-    describe('when not in the candidate variant', () => {
-      it('renders WhatsNewForYouMenuItem with help_menu placement (no experiment data)', () => {
-        createWrapper();
+    describe('when logged out', () => {
+      it('renders WhatsNewForYouMenuItem with help_menu placement', () => {
+        createWrapper(loggedOutSidebarData);
         const item = findWhatsNewForYouMenuItem();
+
         expect(item.exists()).toBe(true);
         expect(item.props('placement')).toBe('help_menu');
-        expect(item.props('sidebarData')).toBe(sidebarData);
-      });
-
-      it('renders the item when explicitly in control variant', () => {
-        stubExperiments({ whats_new_placement: 'control' });
-        createWrapper();
-        expect(findWhatsNewForYouMenuItem().exists()).toBe(true);
-      });
-
-      it('fires the render tracking event when the dropdown is opened', () => {
-        createWrapper();
-        findDropdown().vm.$emit('shown');
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          'render_whats_new_for_you_menu_item',
-          expect.objectContaining({ property: 'help_menu' }),
-        );
+        expect(item.props('trackingProperty')).toBe('nav_help_menu');
+        expect(item.props('sidebarData')).toBe(loggedOutSidebarData);
       });
     });
 
-    describe('when in the candidate variant', () => {
-      beforeEach(() => {
-        stubExperiments({ whats_new_placement: 'candidate' });
-        createWrapper();
-      });
-
+    describe('when logged in', () => {
       it('does not render WhatsNewForYouMenuItem in the help menu', () => {
+        createWrapper();
         expect(findWhatsNewForYouMenuItem().exists()).toBe(false);
-      });
-
-      it('does not fire the render tracking event when the dropdown is opened', () => {
-        findDropdown().vm.$emit('shown');
-        expect(trackingSpy).not.toHaveBeenCalledWith(
-          undefined,
-          'render_whats_new_for_you_menu_item',
-          expect.anything(),
-        );
-      });
-    });
-
-    describe('when display_whats_new is false', () => {
-      beforeEach(() => {
-        createWrapper({ ...sidebarData, display_whats_new: false });
-      });
-
-      it('does not fire the render tracking event when the dropdown is opened', () => {
-        findDropdown().vm.$emit('shown');
-        expect(trackingSpy).not.toHaveBeenCalledWith(
-          undefined,
-          'render_whats_new_for_you_menu_item',
-          expect.anything(),
-        );
       });
     });
   });

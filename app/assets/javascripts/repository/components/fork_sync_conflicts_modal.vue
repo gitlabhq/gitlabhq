@@ -3,7 +3,6 @@
 import { GlModal, GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getBaseURL } from '~/lib/utils/url_utility';
 
 export const i18n = {
@@ -33,9 +32,6 @@ export default {
     GlButton,
     SimpleCopyButton,
   },
-  directives: {
-    SafeHtml,
-  },
   props: {
     sourceDefaultBranch: {
       type: String,
@@ -50,7 +46,6 @@ export default {
     selectedBranch: {
       type: String,
       required: true,
-      default: '',
     },
   },
   computed: {

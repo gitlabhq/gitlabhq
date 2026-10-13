@@ -25,7 +25,10 @@ module Gitlab
               denominator = Arel::Nodes::Count.new([Arel.star])
             end
 
-            Arel::Nodes::NamedFunction.new('countIf', [inner_column.eq(1)]) / denominator
+            # ClickHouse returns inf/nan for division by zero rather than raising, so
+            # guard the denominator to return NULL ("no data") instead.
+            Arel::Nodes::NamedFunction.new('countIf', [inner_column.eq(1)]) /
+              Arel::Nodes::NamedFunction.new('nullIf', [denominator, Arel::Nodes.build_quoted(0)])
           end
         end
       end

@@ -1,0 +1,22 @@
+---
+key_path: settings.database.statement_timeout_unlimited_by_default
+description: Whether the cluster's default statement_timeout is 0, letting sessions other than GitLab's own run a query with no limit.
+product_group: database_health
+product_categories:
+- database
+value_type: boolean
+status: active
+milestone: "19.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255789
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: DatabaseDiagnosticsFindingMetric
+options:
+  check: timeouts
+  finding_code: statement_timeout_unlimited_by_default
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

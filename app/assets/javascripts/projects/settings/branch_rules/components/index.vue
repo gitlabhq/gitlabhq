@@ -25,7 +25,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import { createAlert } from '~/alert';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
@@ -89,20 +88,19 @@ export default {
     CrudComponent,
     SettingsSection,
   },
-  mixins: [glFeatureFlagsMixin(), GlToastMixin, glSlotsMixin],
+  mixins: [GlToastMixin, glSlotsMixin],
   inject: {
     branchRulesPath: { default: '' },
     branchesPath: { default: '' },
     canAdminGroupProtectedBranches: { default: false },
     canAdminProtectedBranches: { default: false },
+    canReadProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },
     canReadSquashOption: { default: false },
     canUpdateSquashOption: { default: false },
-    projectId: { default: null },
     projectPath: { default: '' },
     protectedBranchesPath: { default: '' },
     showApprovers: { default: false },
-    showStatusChecks: { default: false },
     squashOptionsFeatureAvailable: { default: false },
   },
   apollo: {
@@ -625,7 +623,7 @@ export default {
       </crud-component>
 
       <settings-section
-        v-if="!isPredefinedRule"
+        v-if="!isPredefinedRule && canReadProtectedBranches"
         :heading="$options.i18n.protectBranchTitle"
         class="gl-mt-5"
       >

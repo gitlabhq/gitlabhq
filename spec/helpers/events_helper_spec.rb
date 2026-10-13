@@ -17,8 +17,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
   let_it_be(:user) { create_default(:user).freeze }
 
   describe '#link_to_author' do
-    let(:user) { create(:user) }
-    let(:event) { create(:event, author: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:event) { build_stubbed(:event, author: user) }
 
     it 'returns a link to the author' do
       name = user.name
@@ -421,7 +421,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     it 'returns design url' do
-      event = create(:design_event)
+      event = build_stubbed(:design_event)
 
       expect(helper.event_feed_url(event)).to eq(design_url(event.design))
     end
@@ -435,7 +435,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
   describe '#event_preposition' do
     context 'for wiki page events' do
-      let(:event) { create(:wiki_page_event) }
+      let(:event) { build_stubbed(:event, target: build_stubbed(:wiki_page_meta, container: project)) }
 
       it 'returns a suitable phrase' do
         expect(helper.event_preposition(event)).to eq('in the wiki for')
@@ -443,7 +443,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     context 'for push action events' do
-      let(:event) { create(:push_event) }
+      let(:event) { build_stubbed(:push_event) }
 
       it 'returns a suitable phrase' do
         expect(helper.event_preposition(event)).to eq('at')
@@ -451,7 +451,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     context 'for commented actions' do
-      let(:event) { create(:event, :commented) }
+      let(:event) { build_stubbed(:event, :commented) }
 
       it 'returns a suitable phrase' do
         expect(helper.event_preposition(event)).to eq('at')
@@ -459,7 +459,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     context 'for any event with a target' do
-      let(:event) { create(:event, target: create(:issue)) }
+      let(:event) { build_stubbed(:event, target: build_stubbed(:issue)) }
 
       it 'returns a suitable phrase' do
         expect(helper.event_preposition(event)).to eq('at')
@@ -467,7 +467,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     context 'for milestone events' do
-      let(:event) { create(:event, target: create(:milestone)) }
+      let(:event) { build_stubbed(:event, target: build_stubbed(:milestone)) }
 
       it 'returns a suitable phrase' do
         expect(helper.event_preposition(event)).to eq('in')
@@ -475,7 +475,7 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
 
     context 'for non-matching events' do
-      let(:event) { create(:event, :created, target: nil, project: nil) }
+      let(:event) { build_stubbed(:event, :created, target: nil, project: nil) }
 
       it 'returns no preposition' do
         expect(helper.event_preposition(event)).to be_nil

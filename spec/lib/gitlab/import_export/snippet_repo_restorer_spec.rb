@@ -67,10 +67,12 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer, :clean_gitlab_redis_sh
 
     context 'when it is valid' do
       before do
-        allow(repository).to receive(:branch_count).and_return(1)
-        allow(repository).to receive(:tag_count).and_return(0)
-        allow(repository).to receive(:branch_names).and_return(['master'])
-        allow(repository).to receive(:ls_files).and_return(['foo'])
+        allow(repository).to receive_messages(
+          branch_count: 1,
+          tag_count: 0,
+          branch_names: ['master'],
+          ls_files: ['foo']
+        )
       end
 
       it 'creates the repository from the bundle' do

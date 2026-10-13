@@ -6,7 +6,7 @@ RSpec.describe Integrations::JiraTrackerData, feature_category: :integrations do
   it_behaves_like Integrations::BaseDataFields
 
   describe 'deployment_type' do
-    specify do
+    it 'defines the deployment_type enum' do
       is_expected.to define_enum_for(:deployment_type).with_values([:unknown, :server, :cloud]).with_prefix(:deployment)
     end
   end

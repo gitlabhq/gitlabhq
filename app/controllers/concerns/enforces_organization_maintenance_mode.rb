@@ -6,10 +6,9 @@
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/607966.
 #
 # Enforcement gates on the single `Organizations::Organization#under_maintenance?`
-# predicate, which is wrapped in the `organization_maintenance_enforcement`
-# feature flag, so it ships dark and is a complete no-op when the flag is disabled.
+# predicate.
 #
-# See https://gitlab.com/gitlab-org/gitlab/-/issues/603377.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/618032.
 module EnforcesOrganizationMaintenanceMode
   extend ActiveSupport::Concern
 
@@ -60,13 +59,29 @@ module EnforcesOrganizationMaintenanceMode
   # Renders a full error page rather than flash + redirect_back: with GETs also
   # blocked, any redirect target would itself be intercepted and loop.
   def render_maintenance_mode_html_error
-    organization = ::Current.organization
-
-    if organization.maintenance_time_bounded?
-      response.headers['Retry-After'] = Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
-      render_503(organization.maintenance_message)
+    if ::Current.organization.maintenance_time_bounded?
+      render_maintenance_mode_service_unavailable
     else
-      access_denied!(organization.maintenance_message)
+      render_maintenance_mode_forbidden
     end
+  end
+
+  # render_503 lives in ApplicationController; controllers that inherit from
+  # BaseActionController (for example the OAuth/Doorkeeper controllers) fall back
+  # to a plain error response.
+  def render_maintenance_mode_service_unavailable
+    message = ::Current.organization.maintenance_message
+    response.headers['Retry-After'] = Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
+    return render_503(message) if respond_to?(:render_503, true)
+
+    render plain: message, status: :service_unavailable
+  end
+
+  # access_denied! lives in ApplicationController; see the note above.
+  def render_maintenance_mode_forbidden
+    message = ::Current.organization.maintenance_message
+    return access_denied!(message) if respond_to?(:access_denied!, true)
+
+    render plain: message, status: :forbidden
   end
 end

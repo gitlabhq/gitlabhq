@@ -5,6 +5,8 @@ module Gitlab
     class ChangedPath
       attr_reader :status, :path, :old_mode, :new_mode, :new_blob_id, :old_blob_id, :old_path, :commit_id
 
+      alias_method :new_path, :path
+
       def self.from_diff(diff)
         status =
           if diff.new_file?

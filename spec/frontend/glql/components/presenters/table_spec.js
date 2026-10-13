@@ -32,15 +32,21 @@ describe('TablePresenter', () => {
     window.location.origin = 'https://gitlab.com';
   });
 
-  const createWrapper = async ({ data, fields, ...moreProps }, mountFn = shallowMountExtended) => {
+  const createWrapper = async (
+    { data, fields, provide = {}, ...moreProps },
+    mountFn = shallowMountExtended,
+  ) => {
     wrapper = mountFn(TablePresenter, {
       propsData: { data, fields, ...moreProps },
+      provide,
     });
 
     await nextTick();
   };
 
   const getCells = (row) => row.findAll('td').wrappers.map((td) => td.text());
+  // Collapses the line breaks between a cell's label and its hint.
+  const getCellsText = (row) => getCells(row).map((text) => text.replace(/\s+/g, ' '));
 
   it('renders header rows with sentence cased field names', async () => {
     await createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS });
@@ -105,6 +111,27 @@ describe('TablePresenter', () => {
     expect(fieldPresenter.props('presenterKey')).toBe('durationQuantile');
   });
 
+  it('renders date bucket dimensions as date-only labels, not relative time', async () => {
+    const monthlyDimension = {
+      key: 'created',
+      label: 'Created',
+      name: 'created',
+      type: 'dimension',
+      parameters: { granularity: 'monthly' },
+    };
+
+    await createWrapper(
+      {
+        data: { nodes: [{ created: '2026-06-01' }, { created: '2026-07-01' }] },
+        fields: [monthlyDimension],
+      },
+      mountExtended,
+    );
+
+    expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['Jun 2026']);
+    expect(getCells(wrapper.findByTestId('table-row-1'))).toEqual(['Jul 2026']);
+  });
+
   it('renders formatted values, not "None", for aliased parameterised fields', async () => {
     const fields = [
       {
@@ -132,7 +159,170 @@ describe('TablePresenter', () => {
 
     const cells = getCells(wrapper.findByTestId('table-row-0'));
 
-    expect(cells).toEqual(['Jun 1, 2026', '1h 1m 1s']);
+    expect(cells).toEqual(['Jun 2026', '1h 1m 1s']);
+  });
+
+  describe('null values', () => {
+    const fields = [
+      { key: 'status', label: 'Status', name: 'status', type: 'dimension' },
+      { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+      { key: 'creditsUsedSum', label: 'Credits', name: 'creditsUsedSum', type: 'metric' },
+    ];
+
+    const projectFields = [
+      { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
+      { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+    ];
+
+    beforeEach(async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', status: null, usersCount: 864, creditsUsedSum: null }] },
+          fields,
+        },
+        mountExtended,
+      );
+    });
+
+    it('renders a dash, not "None", for a null metric', () => {
+      expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['None', '864', '—']);
+      expect(wrapper.findByTestId('metric-no-value').exists()).toBe(true);
+    });
+
+    it('names a null group or project bucket instead of rendering "None"', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', Group: null, project: null, usersCount: 864 }] },
+          fields: [
+            {
+              key: 'Group',
+              field: 'group',
+              label: 'Group',
+              name: 'group',
+              type: 'dimension',
+              // The compiler passes parameters as strings.
+              parameters: { depth: '2' },
+            },
+            { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
+            { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+          ],
+          source: 'DuoWorkflows',
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'Not in a subgroup May include subgroups you cannot see',
+        'No project Not tied to a project, or a project you cannot see',
+        '864',
+      ]);
+      expect(wrapper.findAllByTestId('dimension-no-value-hint')).toHaveLength(2);
+    });
+
+    it('explains a null project bucket for agent platform sessions', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864 }] },
+          fields: projectFields,
+          source: 'AgentPlatformSessions',
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'No project Not tied to a project, or a project you cannot see',
+        '864',
+      ]);
+    });
+
+    it('names a null project bucket without the hint for pipelines', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864 }] },
+          fields: projectFields,
+          source: 'Pipelines',
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual(['No project', '864']);
+      expect(wrapper.findByTestId('dimension-no-value-hint').exists()).toBe(false);
+    });
+
+    it('names a null project bucket without the hint when the source is unknown', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864 }] },
+          fields: projectFields,
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual(['No project', '864']);
+      expect(wrapper.findByTestId('dimension-no-value-hint').exists()).toBe(false);
+    });
+
+    it('says which depth a null group bucket is missing at', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', group: null, usersCount: 12 }] },
+          fields: [
+            {
+              key: 'group',
+              label: 'Group',
+              name: 'group',
+              type: 'dimension',
+              parameters: { depth: 3 },
+            },
+            { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'No group No group at depth 3',
+        '12',
+      ]);
+    });
+
+    it('treats a group dimension without parameters as depth 1', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', group: null, usersCount: 5 }] },
+          fields: [
+            { key: 'group', label: 'Group', name: 'group', type: 'dimension' },
+            { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'No group No group at depth 1',
+        '5',
+      ]);
+    });
+
+    it('leaves a null project alone outside analytics mode', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', title: 'An issue', project: null }] },
+          fields: [
+            { key: 'title', label: 'Title', name: 'title' },
+            { key: 'project', label: 'Project', name: 'project' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['An issue', 'None']);
+      expect(wrapper.findByTestId('dimension-no-value').exists()).toBe(false);
+    });
+
+    it('keeps the null presenter for a null dimension', () => {
+      expect(wrapper.findAllComponents(FieldPresenter)).toHaveLength(2);
+    });
   });
 
   it('renders skeleton loader if loading is true', () => {
@@ -315,6 +505,164 @@ describe('TablePresenter', () => {
     });
   });
 
+  describe('caption', () => {
+    it('names the table with the panel title for screen readers', async () => {
+      await createWrapper({
+        data: MOCK_ISSUES,
+        fields: MOCK_FIELDS,
+        provide: { getVisualizationTitle: () => 'Group comparison' },
+      });
+
+      const caption = wrapper.findByTestId('table-caption');
+      expect(caption.text()).toBe('Group comparison');
+      expect(caption.classes()).toContain('gl-sr-only');
+    });
+
+    it('has no caption outside a dashboard panel', async () => {
+      await createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS });
+
+      expect(wrapper.findByTestId('table-caption').exists()).toBe(false);
+    });
+  });
+
+  describe('description', () => {
+    const FIELDS = [
+      { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+      { key: 'totalCount', label: 'Sessions', name: 'totalCount', type: 'metric' },
+    ];
+    const DATA = { nodes: [{ usersCount: 1747, totalCount: 18294 }] };
+
+    const findDescription = () => wrapper.findByTestId('description');
+
+    const createTable = (moreProps) => createWrapper({ data: DATA, fields: FIELDS, ...moreProps });
+
+    it('renders no description when the block sets none', async () => {
+      await createTable();
+
+      expect(findDescription().exists()).toBe(false);
+    });
+
+    it('renders a static description above the table', async () => {
+      await createTable({ displayConfig: { description: 'All of Capsule Corp' } });
+
+      expect(findDescription().text()).toBe('All of Capsule Corp');
+    });
+
+    it('fills each placeholder with its formatted value', async () => {
+      await createTable({
+        displayConfig: {
+          description: 'Shares are of the %{usersCount} users and the %{totalCount} sessions.',
+        },
+      });
+
+      expect(findDescription().text()).toBe(
+        'Shares are of the 1,747 users and the 18,294 sessions.',
+      );
+    });
+
+    describe('when the result has no rows', () => {
+      it('renders a static description', async () => {
+        await createTable({
+          data: { nodes: [] },
+          displayConfig: { description: 'All of Capsule Corp' },
+        });
+
+        expect(findDescription().text()).toBe('All of Capsule Corp');
+      });
+
+      it('renders the no-data placeholder for each quoted metric', async () => {
+        await createTable({
+          data: { nodes: [] },
+          displayConfig: { description: '%{usersCount} users' },
+        });
+
+        expect(findDescription().text()).toBe('— users');
+      });
+    });
+
+    describe('while loading', () => {
+      it('renders a static description', async () => {
+        await createTable({
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: 'All of Capsule Corp' },
+        });
+
+        expect(findDescription().text()).toBe('All of Capsule Corp');
+      });
+
+      it('renders no description that quotes a metric', async () => {
+        await createTable({
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: '%{usersCount} users' },
+        });
+
+        expect(findDescription().exists()).toBe(false);
+      });
+    });
+
+    // A placeholder reads the first row, which with a dimension is only one group.
+    it('emits an error for a placeholder when the query has a dimension', async () => {
+      await createTable({
+        data: MOCK_AGGREGATED_DATA_ONE_DIM,
+        fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+        displayConfig: { description: '%{totalCount} sessions' },
+      });
+
+      expect(wrapper.emitted('error')[0][0].message).toBe(
+        'Description placeholders cannot be used with dimensions.',
+      );
+    });
+
+    it('renders a static description when the query has a dimension', async () => {
+      await createTable({
+        data: MOCK_AGGREGATED_DATA_ONE_DIM,
+        fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+        displayConfig: { description: 'Sessions by language' },
+      });
+
+      expect(wrapper.emitted('error')).toBeUndefined();
+      expect(findDescription().text()).toBe('Sessions by language');
+    });
+
+    it('emits an error for a placeholder naming a metric the query does not select', async () => {
+      await createTable({ displayConfig: { description: 'Across %{creditsUsedSum} credits' } });
+
+      expect(wrapper.emitted('error')[0][0].message).toBe(
+        'Unknown description placeholder: `creditsUsedSum`.',
+      );
+    });
+
+    describe('hiddenMetrics', () => {
+      const headerCells = () =>
+        wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
+
+      it('keeps a quoted metric as a column when hiddenMetrics does not name it', async () => {
+        await createTable({ displayConfig: { description: '%{usersCount} users' } });
+
+        expect(headerCells()).toEqual(['Users', 'Sessions']);
+      });
+
+      it('leaves a hidden metric out of the columns but still fills its placeholder', async () => {
+        await createTable({
+          displayConfig: { description: '%{usersCount} users', hiddenMetrics: ['usersCount'] },
+        });
+
+        expect(headerCells()).toEqual(['Sessions']);
+        expect(findDescription().text()).toBe('1,747 users');
+      });
+
+      it('emits an error for a metric the query does not select', async () => {
+        await createTable({ displayConfig: { hiddenMetrics: ['creditsUsedSum'] } });
+
+        expect(wrapper.emitted('error')[0][0].message).toBe(
+          'Unknown metric for `hiddenMetrics`: `creditsUsedSum`.',
+        );
+      });
+    });
+  });
+
   describe('trend column', () => {
     const trendProps = {
       data: MOCK_AGGREGATED_DATA_ONE_DIM,
@@ -436,15 +784,28 @@ describe('TablePresenter', () => {
     });
 
     describe('when a row is duplicated in the previous period', () => {
-      it('does not add the column, because either pairing would be a guess', async () => {
+      beforeEach(async () => {
         const duplicated = MOCK_AGGREGATED_DATA_ONE_DIM.nodes[0];
 
         await createWrapper(
-          { ...trendProps, comparisonData: { nodes: [duplicated, duplicated] } },
+          {
+            ...trendProps,
+            comparisonData: {
+              nodes: [duplicated, duplicated, { language: 'python', totalCount: 7 }],
+            },
+          },
           mountExtended,
         );
+      });
 
-        expect(headerLabels()).toEqual(['Language', 'Total count']);
+      it('still adds the column', () => {
+        expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+      });
+
+      it('shows only the ambiguous row as unknown, since the rest still pair', () => {
+        expect(rowLabels()).toEqual(['ruby', 'python', 'go']);
+        expect(badges()).toHaveLength(1);
+        expect(wrapper.findAllByTestId('trend-unknown')).toHaveLength(2);
       });
     });
 

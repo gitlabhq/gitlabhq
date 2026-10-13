@@ -45,6 +45,10 @@ module QA
       def api_delete_path
         "/projects/#{project.id}/snippets/#{id}"
       end
+
+      def add_comment(body:)
+        api_post_to("#{api_get_path}/notes", body: body)
+      end
     end
   end
 end

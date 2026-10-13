@@ -67,6 +67,9 @@ export default {
     summaryTitle() {
       return this.summary.title ? generateText(this.summary.title) : '';
     },
+    summarySubtitle() {
+      return this.summary.subtitle ? generateText(this.summary.subtitle) : '';
+    },
     hasSections() {
       return this.sections.length > 0;
     },
@@ -92,6 +95,12 @@ export default {
         <div class="media-body gl-flex !gl-flex-row gl-self-center">
           <div class="gl-grow">
             <span v-if="summaryTitle" v-safe-html="summaryTitle" data-testid="summary"></span>
+            <div
+              v-if="summarySubtitle"
+              v-safe-html="summarySubtitle"
+              class="gl-text-sm gl-text-subtle"
+              data-testid="summary-subtitle"
+            ></div>
           </div>
           <div class="gl-flex">
             <help-popover
@@ -132,7 +141,7 @@ export default {
             <strong class="gl-block" data-testid="section-header">{{ section.header }}</strong>
             <span
               v-if="section.text"
-              class="gl-block gl-text-secondary"
+              class="gl-block gl-whitespace-pre-line gl-text-secondary"
               data-testid="section-text"
               >{{ section.text }}</span
             >
@@ -161,11 +170,10 @@ export default {
                 <gl-link v-if="item.link" :href="item.link.href">{{ item.link.text }}</gl-link>
                 <p
                   v-if="item.supportingText"
+                  v-safe-html="generateText(item.supportingText)"
                   class="gl-mb-0 gl-text-secondary"
                   data-testid="item-supporting-text"
-                >
-                  {{ item.supportingText }}
-                </p>
+                ></p>
               </div>
               <gl-badge
                 v-if="item.badge"

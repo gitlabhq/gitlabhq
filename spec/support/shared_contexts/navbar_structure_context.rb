@@ -156,6 +156,7 @@ RSpec.shared_context 'group navbar structure' do
         _('Applications'),
         _('Packages and registries'),
         s_('UsageQuota|Usage quotas'),
+        s_('Orbit|Orbit'),
         _('Domain Verification')
       ]
     }
@@ -192,7 +193,7 @@ RSpec.shared_context 'group navbar structure' do
   let(:observability_nav_item) do
     {
       nav_item: _("Observe"),
-      nav_sub_items: [s_("Observability|O11y service settings"), s_('Observability|Observability configuration')]
+      nav_sub_items: [s_('Observability|Observability configuration')]
     }
   end
 
@@ -236,6 +237,10 @@ end
 RSpec.shared_context 'dashboard navbar structure' do
   let(:structure) do
     [
+      {
+        nav_item: _("Home"),
+        nav_sub_items: []
+      },
       {
         nav_item: _("Projects"),
         nav_sub_items: []

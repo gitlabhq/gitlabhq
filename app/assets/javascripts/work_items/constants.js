@@ -54,7 +54,11 @@ export const WIDGET_TYPE_CRM_CONTACTS = 'CRM_CONTACTS';
 export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 export const WIDGET_TYPE_CUSTOM_FIELDS = 'CUSTOM_FIELDS';
 export const WIDGET_TYPE_VULNERABILITIES = 'VULNERABILITIES';
-export const WIDGET_TYPE_AGENT_PLAN = 'AGENT_PLAN';
+// Value is 'AGENT_PLAN' because the backend derives it from the widget class name
+// https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/work_items/widgets/agent_plan.rb
+// Rename tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/612831
+export const WIDGET_TYPE_WORKPLAN = 'AGENT_PLAN';
+export const WIDGET_TYPE_DECISION_LOG = 'DECISION_LOG';
 
 // Maps a `workItem.features` key to its widget `type`
 // for widgets shown as child/linked item metadata.
@@ -167,7 +171,6 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
 
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';
-export const TODO_PENDING_STATE = 'pending';
 
 export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_ASSIGNEES]: 'assignees',
@@ -249,10 +252,10 @@ export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 
 export const WORK_ITEM_DETAIL_PANEL = 'work-item-detail';
-export const AGENT_PLAN_PANEL = 'agent-plan';
+export const WORKPLAN_PANEL = 'workplan';
 export const DECISION_LOG_PANEL = 'decision-log';
 // Every value `show` can hold that is a panel key rather than an encoded child reference.
-export const CONTEXTUAL_PANEL_KEYS = [WORK_ITEM_DETAIL_PANEL, AGENT_PLAN_PANEL, DECISION_LOG_PANEL];
+export const CONTEXTUAL_PANEL_KEYS = [WORK_ITEM_DETAIL_PANEL, WORKPLAN_PANEL, DECISION_LOG_PANEL];
 export const ROUTES = {
   index: 'planningView',
   workItem: 'workItem',
@@ -262,16 +265,6 @@ export const ROUTES = {
 };
 
 export const WORK_ITEM_TYPE_ROUTE_WORK_ITEM = 'work_items';
-export const WORK_ITEM_TYPE_ROUTE_ISSUE = 'issues';
-export const WORK_ITEM_TYPE_ROUTE_EPIC = 'epics';
-export const WORK_ITEM_TYPE_ROUTE_SERVICE_DESK = 'service_desk';
-
-export const WORK_ITEM_BASE_ROUTE_MAP = {
-  [WORK_ITEM_TYPE_ROUTE_WORK_ITEM]: null,
-  [WORK_ITEM_TYPE_ROUTE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
-  [WORK_ITEM_TYPE_ROUTE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
-  [WORK_ITEM_TYPE_ROUTE_SERVICE_DESK]: WORK_ITEM_TYPE_ENUM_TICKET,
-};
 
 export const WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY = 'workItemLinks.hiddenMetadataKeys';
 export const WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemTree.showClosed';

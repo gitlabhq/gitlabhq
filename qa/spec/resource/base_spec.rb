@@ -57,8 +57,7 @@ RSpec.describe QA::Resource::Base do
     end
 
     before do
-      allow(subject).to receive(:current_url).and_return(location)
-      allow(subject).to receive(:new).and_return(resource)
+      allow(subject).to receive_messages(current_url: location, new: resource)
     end
   end
 

@@ -23,7 +23,7 @@ const useDiscussionsStore = defineStore('discussionsStore', {
       return this.discussions;
     },
     addNewLineDiscussionForm() {},
-    setPositionDiscussionsHidden() {},
+    expandLineDiscussions() {},
     setFileDiscussionsHidden() {},
     startReplying() {},
     stopReplying() {},

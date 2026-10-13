@@ -71,6 +71,27 @@ export default {
 
       return this.pipeline.id;
     },
+    modalPipeline() {
+      const pipeline = this.pipelineToCancel;
+
+      // The modal reads GraphQL field names, so REST rows are adapted below.
+      // Both branches go away once `mr_pipelines_graphql` ships and the REST table is removed.
+      if (isGid(pipeline.id)) {
+        return pipeline;
+      }
+
+      return {
+        ...pipeline,
+        ref: pipeline.ref?.name,
+        refUrl: pipeline.ref?.path,
+        commit: pipeline.commit && {
+          ...pipeline.commit,
+          shortId: pipeline.commit.short_id,
+          webPath: pipeline.commit.commit_path,
+        },
+        detailedStatus: pipeline.details?.status,
+      };
+    },
     pipelineIid() {
       // GraphQL returns a string, pipeline manual actions expects a number
       return Number(this.pipeline.iid);
@@ -120,7 +141,7 @@ export default {
 <template>
   <div class="gl-text-right">
     <pipeline-stop-modal
-      :pipeline="pipelineToCancel"
+      :pipeline="modalPipeline"
       :show-confirmation-modal="showConfirmationModal"
       @submit="onConfirmCancelPipeline"
       @close-modal="onCloseModal"

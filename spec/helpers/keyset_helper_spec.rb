@@ -16,7 +16,7 @@ RSpec.describe KeysetHelper, type: :controller do
 
   render_views
 
-  let(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     sign_in(admin)

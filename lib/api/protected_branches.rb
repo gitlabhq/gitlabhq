@@ -13,7 +13,7 @@ module API
     params do
       requires :id,
         types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the project',
+        desc: 'ID or URL-encoded path of the project.',
         documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -29,7 +29,8 @@ module API
       end
       params do
         use :pagination
-        optional :search, type: String, desc: 'Search for a protected branch by name', documentation: { example: 'mai' }
+        optional :search, type: String, desc: 'Name or part of the name of protected branches to search ' \
+                                          'for.', documentation: { example: 'mai' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_protected_branch, boundary_type: :project
@@ -56,7 +57,7 @@ module API
         tags ['protected_branches']
       end
       params do
-        requires :name, type: String, desc: 'The name of the branch or wildcard', documentation: { example: 'main' }
+        requires :name, type: String, desc: 'Name of the branch or wildcard.', documentation: { example: 'main' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_protected_branch, boundary_type: :project
@@ -82,18 +83,18 @@ module API
         tags ['protected_branches']
       end
       params do
-        requires :name, type: String, desc: 'The name of the protected branch', documentation: { example: 'main' }
+        requires :name, type: String, desc: 'Name of the branch or wildcard.', documentation: { example: 'main' }
         # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
         optional :push_access_level, type: Integer,
           values: ProtectedBranch::PushAccessLevel.allowed_access_levels,
-          desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
+          desc: 'Access level allowed to push. Defaults to `40` (Maintainer role).'
         optional :merge_access_level, type: Integer,
           values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
-          desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
+          desc: 'Access level allowed to merge. Defaults to `40` (Maintainer role).'
         # rubocop:enable API/AccessLevelStringType
         optional :allow_force_push, type: Boolean,
           default: false,
-          desc: 'Allow force push for all users with push access.'
+          desc: 'If `true`, members who can push to this branch can also force push.'
 
         use :optional_params
       end
@@ -132,9 +133,9 @@ module API
         tags ['protected_branches']
       end
       params do
-        requires :name, type: String, desc: 'The name of the branch', documentation: { example: 'main' }
+        requires :name, type: String, desc: 'Name of the branch or wildcard.', documentation: { example: 'main' }
         optional :allow_force_push, type: Boolean,
-          desc: 'Allow force push for all users with push access.',
+          desc: 'If `true`, members who can push to this branch can also force push.',
           allow_blank: false
 
         use :optional_params
@@ -168,7 +169,7 @@ module API
         tags ['protected_branches']
       end
       params do
-        requires :name, type: String, desc: 'The name of the protected branch', documentation: { example: 'main' }
+        requires :name, type: String, desc: 'Name of the branch or wildcard.', documentation: { example: 'main' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_protected_branch, boundary_type: :project

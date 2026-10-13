@@ -3,7 +3,7 @@ key_path: redis_hll_counters.quickactions.i_quickactions_promote_to_weekly
 description: Count of WAU using the `/promote_to` quick action
 product_group: portfolio_planning
 product_categories:
-- team_planning
+- portfolio_management
 value_type: number
 status: active
 milestone: "16.1"

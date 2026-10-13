@@ -47,17 +47,5 @@ RSpec.describe Gitlab::GithubImport::AdvanceStageWorker, feature_category: :impo
         worker.perform(project.id, { '123' => 2 }, 'finish')
       end
     end
-
-    context 'when user contribution mapping is disabled' do
-      before do
-        allow(Gitlab::GithubImport::Settings).to receive_message_chain(:new, :user_mapping_enabled?).and_return(false)
-      end
-
-      it 'does not enqueue LoadPlaceholderReferencesWorker' do
-        expect(::Import::LoadPlaceholderReferencesWorker).not_to receive(:perform_async)
-
-        worker.perform(project.id, { '123' => 2 }, 'finish')
-      end
-    end
   end
 end

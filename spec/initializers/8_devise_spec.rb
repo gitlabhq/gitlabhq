@@ -10,18 +10,20 @@ RSpec.describe 'Devise initializer for GitLab', :delete, :reestablished_active_r
 
   describe "unlock configuration" do
     before do
-      allow(Gitlab::Application.instance.middleware).to receive(:use)
-      allow(Gitlab::CurrentSettings).to receive(:max_login_attempts).and_return(35)
-      allow(Gitlab::CurrentSettings).to receive(:failed_login_attempts_unlock_period_in_minutes).and_return(15)
+      allow(Gitlab::Application.instance.middleware).to receive(:insert_before)
+      allow(Gitlab::CurrentSettings).to receive_messages(
+        max_login_attempts: 35,
+        failed_login_attempts_unlock_period_in_minutes: 15
+      )
       load_initializers
     end
 
     it "sets custom maximum attempts" do
-      expect(Devise.maximum_attempts).to be_eql(35)
+      expect(Devise.maximum_attempts).to be(35)
     end
 
     it "sets custom unlock_in" do
-      expect(Devise.unlock_in).to be_eql(15.minutes)
+      expect(Devise.unlock_in).to eql(15.minutes)
     end
   end
 end

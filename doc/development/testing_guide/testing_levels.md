@@ -238,14 +238,14 @@ They're useful, for example, to test permissions, redirections, API endpoints, w
 | `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. Request specs are encouraged for API endpoints. |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/frontend/` | Jest | [More details below](#frontend-integration-tests) |
+| `app/assets/javascripts/` | `ee/spec/frontend/integration/` | Jest | [More details below](#frontend-integration-tests) |
 
 ### Frontend integration tests
 
 Integration tests cover the interaction between all components on a single page.
 Their abstraction level is comparable to how a user would interact with the UI.
 
-For more details on MSW jest integration test and how to use them, see [the MSW integration tests page](frontend_testing.md#msw-integration-tests)
+For more details on frontend integration tests and how to use them, see [the frontend integration tests page](frontend_testing.md#frontend-integration-tests)
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -556,7 +556,7 @@ and the basic idea is that the cost of a test includes:
 There are cases where the behavior you are testing is not worth the time spent
 running the full application, for example, if you are testing styling, animation,
 edge cases, or small actions that don't involve the backend,
-you should write an integration test using [Frontend integration tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend_integration/README.md).
+you should write an integration test using [Frontend integration tests](#frontend-integration-tests).
 
 ---
 

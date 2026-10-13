@@ -2,33 +2,34 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::KubernetesNamespace, type: :model do
+RSpec.describe Clusters::KubernetesNamespace do
   it { is_expected.to belong_to(:cluster_project) }
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to have_one(:platform_kubernetes) }
 
   describe 'has_service_account_token' do
+    let_it_be(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+
     subject { described_class.has_service_account_token }
 
     context 'namespace has service_account_token' do
-      let!(:namespace) { create(:cluster_kubernetes_namespace, :with_token) }
+      let!(:namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster) }
 
       it { is_expected.to include(namespace) }
     end
 
     context 'namespace has no service_account_token' do
-      let!(:namespace) { create(:cluster_kubernetes_namespace) }
+      let!(:namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
 
       it { is_expected.not_to include(namespace) }
     end
   end
 
   describe '.with_environment_name' do
-    let(:cluster) { create(:cluster, :group) }
-    let(:environment) { create(:environment, name: name) }
-
-    let(:name) { 'production' }
+    let_it_be(:cluster) { create(:cluster, :group) }
+    let_it_be(:name) { 'production' }
+    let_it_be(:environment) { create(:environment, name: name) }
 
     subject { described_class.with_environment_name(name) }
 

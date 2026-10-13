@@ -13,7 +13,6 @@ module Mutations
         :extensions_marketplace_opt_in_status,
         :organization_groups_projects_display,
         :visibility_pipeline_id_type,
-        :use_work_items_view,
         :merge_request_dashboard_list_type,
         :merge_request_dashboard_show_drafts,
         :wiki_use_auto_commit_message
@@ -36,7 +35,8 @@ module Mutations
         description: 'Sort order for issue lists.'
       argument :use_work_items_view, GraphQL::Types::Boolean,
         required: false,
-        description: 'Use work item view instead of legacy issue view.'
+        description: 'Use work item view instead of legacy issue view.',
+        deprecated: { reason: 'Work item view is always used', milestone: '19.5' }
       argument :visibility_pipeline_id_type, Types::VisibilityPipelineIdTypeEnum,
         required: false,
         description: 'Determines whether the pipeline list shows ID or IID.'
@@ -80,6 +80,8 @@ module Mutations
         description: 'User preferences after mutation.'
 
       def resolve(**attributes)
+        # Deprecated and ignored: the column is no longer written to.
+        attributes.delete(:use_work_items_view)
         attributes.delete_if { |key, value| NON_NULLABLE_ARGS.include?(key) && value.nil? }
 
         if attributes.include?(:extensions_marketplace_opt_in_status)

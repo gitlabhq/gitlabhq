@@ -1502,8 +1502,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         skip_if_multiple_databases_are_setup
       end
 
-      it 'delegates syncing of partitions without limiting databases' do
-        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+      it 'delegates syncing of partitions without limiting databases or analyzing default-interval tables' do
+        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).with(no_args)
 
         run_rake_task('gitlab:db:create_dynamic_partitions')
       end
@@ -1516,7 +1516,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       context 'when running the multi-database variant' do
         it 'delegates syncing of partitions without limiting databases' do
-          expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+          expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).with(no_args)
 
           run_rake_task('gitlab:db:create_dynamic_partitions')
         end
@@ -1528,6 +1528,47 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
           run_rake_task('gitlab:db:create_dynamic_partitions:main')
         end
+      end
+    end
+
+    context 'when partitions are synced' do
+      it 'prints nothing' do
+        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).and_return(true)
+
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions') }.not_to output.to_stdout
+      end
+    end
+
+    context 'when partition_manager_sync_partitions is disabled' do
+      let(:note) { /partition_manager_sync_partitions feature is currently disabled/ }
+
+      before do
+        stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'prints a note naming the flag' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions') }.to output(note).to_stdout
+      end
+
+      context 'when running a single-database variant' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'prints a note naming the flag' do
+          expect { run_rake_task('gitlab:db:create_dynamic_partitions:main') }.to output(note).to_stdout
+        end
+      end
+    end
+
+    context 'when disallow_database_ddl_feature_flags is enabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+      end
+
+      it 'prints a note naming the flag' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions') }
+          .to output(/disallow_database_ddl_feature_flags feature is currently enabled/).to_stdout
       end
     end
 

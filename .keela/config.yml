@@ -18,3 +18,4 @@ extensions:
   - haml
   - erb
   - builder
+  - rake

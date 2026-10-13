@@ -6,9 +6,9 @@ import {
   GlModal,
   GlButton,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -34,7 +34,9 @@ import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutatio
 import * as urlUtility from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import eventHub from '~/notes/event_hub';
-import createStore from '~/notes/stores';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import updateIssueMutation from '~/issues/show/queries/update_issue.mutation.graphql';
@@ -50,10 +52,8 @@ describe('HeaderActions component', () => {
   let wrapper;
   let visitUrlSpy;
 
-  Vue.use(Vuex);
   Vue.use(VueApollo);
-
-  const store = createStore();
+  Vue.use(PiniaVuePlugin);
 
   const defaultProps = {
     canCreateIssue: true,
@@ -164,7 +164,9 @@ describe('HeaderActions component', () => {
     blockedByIssues = [],
     promoteToEpicHandler = promoteToEpicMutationSuccessResponseHandler,
   } = {}) => {
-    store.dispatch('setNoteableData', {
+    const pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useLegacyDiffs();
+    useNotes().setNoteableData({
       blocked_by_issues: blockedByIssues,
       state: issueState,
     });
@@ -181,7 +183,7 @@ describe('HeaderActions component', () => {
 
     return shallowMountExtended(HeaderActions, {
       apolloProvider: createMockApollo(handlers),
-      store,
+      pinia,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },

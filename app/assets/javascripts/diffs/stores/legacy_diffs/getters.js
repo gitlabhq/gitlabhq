@@ -1,6 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { __, n__, sprintf } from '~/locale';
 import { getParameterValues, getParameterByName } from '~/lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,

@@ -12,12 +12,13 @@ module Gitlab
           PAGER = %w[less -R].freeze
 
           # interactive: nil auto-detects a terminal, so specs and pipes get the full report.
+          # A single view has nothing to pick from, so it also gets the full report.
           def initialize(
             database_names:, views:, output: $stdout, interactive: nil, prompt: nil, pager: nil)
             @database_names = database_names
             @printer = Printer.new(output: output)
             @views = views
-            @interactive = interactive.nil? ? output.tty? && $stdin.tty? : interactive
+            @interactive = interactive.nil? ? views.many? && output.tty? && $stdin.tty? : interactive
             @prompt = prompt
             @pager = pager
           end
@@ -49,8 +50,9 @@ module Gitlab
             @interactive
           end
 
-          # DatabaseInformation forces the primary only for its vacuum query, so the
-          # report could otherwise describe a replica. The admin page does not do this.
+          # DatabaseInformation forces the primary only for its vacuum and timeout
+          # queries, so the report could otherwise describe a replica. The admin
+          # page does not do this.
           def with_primary_reads(&block)
             ::Gitlab::Database::LoadBalancing::SessionMap
               .with_sessions(::Gitlab::Database::LoadBalancing.base_models)

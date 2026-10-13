@@ -212,29 +212,3 @@ export const createOrganizationMutationErrorResponse = {
     },
   },
 };
-
-export const updateOrganizationMutationResponse = {
-  data: {
-    customerRelationsOrganizationUpdate: {
-      __typeName: 'CustomerRelationsOrganizationUpdatePayload',
-      organization: {
-        __typename: 'CustomerRelationsOrganization',
-        id: 'gid://gitlab/CustomerRelations::Organization/2',
-        name: 'A',
-        defaultRate: null,
-        description: null,
-        active: true,
-      },
-      errors: [],
-    },
-  },
-};
-
-export const updateOrganizationMutationErrorResponse = {
-  data: {
-    customerRelationsOrganizationUpdate: {
-      organization: null,
-      errors: ['Description is invalid.'],
-    },
-  },
-};

@@ -214,7 +214,7 @@ export default {
       <ul class="gl-m-0 gl-flex gl-list-none gl-flex-wrap gl-items-baseline gl-p-0">
         <li
           v-for="(reference, index) in references"
-          :key="reference"
+          :key="reference.text || reference"
           class="gl-mb-2 gl-mr-2 gl-max-w-full"
         >
           <issue-token

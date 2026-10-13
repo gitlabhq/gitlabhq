@@ -159,7 +159,7 @@ describe('Achievements app', () => {
 
     describe('when a user is awarded', () => {
       const newUser = {
-        id: 'gid://gitlab/User/99',
+        id: 'gid://gitlab/User/999999999',
         avatarUrl: 'https://example.com/avatar.png',
         name: 'New User',
         username: 'newuser',

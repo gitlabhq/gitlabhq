@@ -44,8 +44,12 @@ module Gitlab
               GraphQL::Analysis::AST.analyze_query(@subject, ALL_ANALYZERS, multiplex_analyzers: [])
 
             case complexity_or_error
-            when Integer
-              results[:complexity] = complexity_or_error
+            when Numeric
+              # `__typename` costs 0.2, so the total can be a Float. `complexity` floors it
+              # to match `Types::QueryComplexityType#score`; the raw field keeps the exact
+              # score, as a Float so the log field's type never changes.
+              results[:complexity] = complexity_or_error.floor
+              results[Labkit::Fields::GRAPHQL_COMPLEXITY_RAW] = complexity_or_error.to_f
             when GraphQL::AnalysisError
               results[:analysis_error] = complexity_or_error.message
             end
@@ -80,11 +84,17 @@ module Gitlab
             # or in a separate tracer.
             # https://gitlab.com/gitlab-org/gitlab/-/issues/343802
 
-            RequestStore.store[:graphql_logs] ||= []
-            RequestStore.store[:graphql_logs] << results.except(:time_started, :duration_s).merge({
+            request_log = results.except(:time_started, :duration_s).merge({
               variables: process_variables(query.provided_variables, query.operation_name),
               operation_name: query.operation_name
             })
+
+            # The tracer adds fields known only after execution. Multiplexed queries
+            # share context values, so use a namespace, which is per query.
+            query.context.namespace(:gl_logging)[:request_log] = request_log
+
+            RequestStore.store[:graphql_logs] ||= []
+            RequestStore.store[:graphql_logs] << request_log
           end
 
           def process_variables(variables, operation_name)

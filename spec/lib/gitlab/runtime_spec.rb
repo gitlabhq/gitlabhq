@@ -127,8 +127,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :durability_metrics do
 
     before do
       stub_const('::Sidekiq', sidekiq_type)
-      allow(sidekiq_type).to receive(:server?).and_return(true)
-      allow(sidekiq_type).to receive(:default_configuration).and_return({ concurrency: 2 })
+      allow(sidekiq_type).to receive_messages(server?: true, default_configuration: { concurrency: 2 })
     end
 
     it_behaves_like "valid runtime", :sidekiq, 2

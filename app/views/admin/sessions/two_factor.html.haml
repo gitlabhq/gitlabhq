@@ -4,4 +4,4 @@
 %div{ class: "row gl-mt-5 !gl-justify-center" }
   .gl-col-md-5
     .login-page
-      = render 'devise/shared/totp_recovery_code_or_webauthn', admin_mode: true
+      #js-2fa{ data: two_factor_authentication_app_data(user: @user, params: params, admin_mode: true) }

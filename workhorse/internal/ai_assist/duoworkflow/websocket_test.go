@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -152,27 +153,52 @@ func TestWsManager_WriteAction_AgentContextUsage(t *testing.T) {
 	assert.Equal(t, 200000, payload.NewCheckpoint.AgentContextUsage["chat"].MaxTokens)
 }
 
-// TestWsManager_MarshalBufferSizing guards the per-connection memory footprint
-// of the action marshaling buffer. It used to be allocated at the full 4MB
-// message ceiling for every connection, which inflated the live heap and with
-// it the GC goal, so the collector ran far less often and transient garbage
-// accumulated as RSS.
-func TestWsManager_MarshalBufferSizing(t *testing.T) {
-	largeAction := func(size int) *pb.Action {
-		return &pb.Action{
-			RequestID: "req-large",
-			Action: &pb.Action_RunCommand{
-				RunCommand: &pb.RunCommandAction{Program: strings.Repeat("x", size)},
-			},
-		}
+func largeTestAction(size int) *pb.Action {
+	return &pb.Action{
+		RequestID: "req-large",
+		Action: &pb.Action_RunCommand{
+			RunCommand: &pb.RunCommandAction{Program: strings.Repeat("x", size)},
+		},
 	}
+}
 
-	t.Run("does not reserve the message ceiling per connection", func(t *testing.T) {
-		ws := newWsManager(&mockWebSocketConn{})
+// TestWsManager_MarshalBufferPooling guards the memory footprint of the action
+// marshaling buffer. It was first allocated at the full 4MB message ceiling
+// for every connection, then grown on demand but still held per connection.
+// Both pinned memory for the whole multi-hour connection lifetime, which at
+// gprd's near-thousand concurrent connections reached the container limit.
+// Buffers now come from a shared pool, so retention follows concurrent writes
+// rather than open connections.
+func TestWsManager_MarshalBufferPooling(t *testing.T) {
+	t.Run("connection holds no marshaling buffer of its own", func(t *testing.T) {
+		conn := &mockWebSocketConn{}
+		var sink *wsManager
 
-		assert.Empty(t, ws.buf, "buffer must start empty, not at full length")
-		assert.LessOrEqual(t, cap(ws.buf), initialMarshalBufSize,
-			"buffer must not pre-allocate ActionResponseBodyLimit per connection")
+		allocs := testing.AllocsPerRun(100, func() {
+			sink = newWsManager(conn)
+		})
+		runtime.KeepAlive(sink)
+
+		assert.LessOrEqual(t, allocs, 1.0,
+			"a new connection must allocate only the wsManager struct, not a marshaling buffer")
+	})
+
+	t.Run("never hands out a buffer holding a previous payload", func(t *testing.T) {
+		// Capacity is deliberately not asserted: a pooled buffer may have been
+		// grown by an earlier write, and sync.Pool gives no guarantee about
+		// which entry Get returns. Zero length is the actual invariant.
+		for i := 0; i < 8; i++ {
+			bufp := marshalBufPool.Get().(*[]byte)
+			assert.Empty(t, *bufp, "a pooled buffer must be reset before reuse")
+			releaseMarshalBuf(bufp)
+		}
+	})
+
+	t.Run("clears the payload before returning a buffer to the pool", func(t *testing.T) {
+		buf := []byte(`{"requestID":"secret-prompt-text"}`)
+		releaseMarshalBuf(&buf)
+
+		assert.Empty(t, buf, "the previous action's payload must not stay reachable")
 	})
 
 	t.Run("grows on demand to write an action larger than the initial buffer", func(t *testing.T) {
@@ -180,43 +206,26 @@ func TestWsManager_MarshalBufferSizing(t *testing.T) {
 		mockConn := &mockWebSocketConn{}
 		ws := newWsManager(mockConn)
 
-		require.NoError(t, ws.WriteAction(context.Background(), largeAction(size)))
+		require.NoError(t, ws.WriteAction(context.Background(), largeTestAction(size)))
 
 		require.Len(t, mockConn.writeMessages, 1)
 		assert.Greater(t, len(mockConn.writeMessages[0]), size,
 			"the full action must be written even though the buffer started small")
 	})
 
-	t.Run("reuses the grown buffer across repeated large actions", func(t *testing.T) {
-		// gprd actions are routinely 1-2MB. Shrinking the buffer back after
-		// each write would force a full reallocation per action, which costs
-		// far more churn than the retained capacity saves.
-		mockConn := &mockWebSocketConn{}
-		ws := newWsManager(mockConn)
-		action := largeAction(300 << 10)
-
-		require.NoError(t, ws.WriteAction(context.Background(), action))
-		capAfterFirst := cap(ws.buf)
-		require.NoError(t, ws.WriteAction(context.Background(), action))
-
-		assert.Equal(t, capAfterFirst, cap(ws.buf),
-			"a repeated large action must reuse the buffer, not regrow it")
-	})
-
-	t.Run("retains the buffer across small writes", func(t *testing.T) {
-		mockConn := &mockWebSocketConn{}
-		ws := newWsManager(mockConn)
-		action := &pb.Action{
-			RequestID: "req-small",
-			Action:    &pb.Action_RunCommand{RunCommand: &pb.RunCommandAction{Program: "ls"}},
-		}
-
-		require.NoError(t, ws.WriteAction(context.Background(), action))
-		capAfterFirst := cap(ws.buf)
-		require.NoError(t, ws.WriteAction(context.Background(), action))
-
-		assert.Equal(t, capAfterFirst, cap(ws.buf),
-			"small writes must reuse the buffer rather than reallocate it")
+	t.Run("keeps buffers up to the cap and drops larger ones", func(t *testing.T) {
+		// The cap must stay clear of the sizes real actions reach. Dropping a
+		// buffer costs a full regrow on the next write, so a cap set near the
+		// message size would thrash on the largest actions instead of
+		// protecting against outliers.
+		assert.True(t, shouldPoolMarshalBuf(initialMarshalBufSize),
+			"a fresh buffer must be poolable")
+		assert.True(t, shouldPoolMarshalBuf(gprdActionSize),
+			"a buffer grown to a production action size must be poolable")
+		assert.True(t, shouldPoolMarshalBuf(maxPooledMarshalBufSize),
+			"the cap itself must be poolable")
+		assert.False(t, shouldPoolMarshalBuf(maxPooledMarshalBufSize+1),
+			"a buffer past the cap must be dropped")
 	})
 }
 
@@ -242,20 +251,16 @@ func BenchmarkNewWsManager(b *testing.B) {
 	}
 }
 
+// gprdActionSize mirrors the 1.42MB actions seen in gprd.
+const gprdActionSize = 1420 << 10
+
 // BenchmarkWriteActionLarge guards the steady-state cost of a connection that
 // repeatedly writes large actions, which is the gprd pattern. B/op must stay
 // small: if it approaches the payload size the buffer is being reallocated on
-// every action instead of reused.
+// every action instead of reused from the pool.
 func BenchmarkWriteActionLarge(b *testing.B) {
-	const payload = 1420 << 10 // mirrors the 1.42MB actions seen in gprd
-
 	ws := newWsManager(discardConn{})
-	action := &pb.Action{
-		RequestID: "req-large",
-		Action: &pb.Action_RunCommand{
-			RunCommand: &pb.RunCommandAction{Program: strings.Repeat("x", payload)},
-		},
-	}
+	action := largeTestAction(gprdActionSize)
 	ctx := context.Background()
 
 	b.ReportAllocs()
@@ -265,7 +270,62 @@ func BenchmarkWriteActionLarge(b *testing.B) {
 			b.Fatal(err)
 		}
 	}
-	b.ReportMetric(float64(cap(ws.buf))/(1<<20), "MB-retained")
+}
+
+// BenchmarkConnectionsRetainedBytes measures the heap pinned by a fleet of idle
+// connections that have each written one large action, which is the gprd shape:
+// connections live for hours and spend nearly all of it waiting on model and
+// tool latency.
+//
+// This is the regression guard for the per-connection buffer. When each
+// connection owned its buffer this reported roughly the action size per
+// connection, so a thousand concurrent connections pinned well over a
+// gigabyte. Pooling must keep it near the size of a wsManager struct.
+//
+// Two collections run before the measurement because sync.Pool entries survive
+// one cycle in the victim cache; the second frees them, leaving only memory the
+// live connections actually pin.
+func BenchmarkConnectionsRetainedBytes(b *testing.B) {
+	const connections = 500
+
+	action := largeTestAction(gprdActionSize)
+	ctx := context.Background()
+
+	var retainedPerConn float64
+
+	for i := 0; i < b.N; i++ {
+		conns := make([]*wsManager, 0, connections)
+
+		runtime.GC()
+		runtime.GC()
+		var before runtime.MemStats
+		runtime.ReadMemStats(&before)
+
+		for j := 0; j < connections; j++ {
+			ws := newWsManager(discardConn{})
+			if err := ws.WriteAction(ctx, action); err != nil {
+				b.Fatal(err)
+			}
+			conns = append(conns, ws)
+		}
+
+		runtime.GC()
+		runtime.GC()
+		var after runtime.MemStats
+		runtime.ReadMemStats(&after)
+		runtime.KeepAlive(conns)
+
+		// Guard the unsigned subtraction: a collection that frees more than
+		// the loop allocated would otherwise report a nonsense huge number
+		// instead of a small one.
+		if after.HeapAlloc < before.HeapAlloc {
+			retainedPerConn = 0
+			continue
+		}
+		retainedPerConn = float64(after.HeapAlloc-before.HeapAlloc) / connections
+	}
+
+	b.ReportMetric(retainedPerConn, "B-retained/conn")
 }
 
 func TestWsManager_ReadError(t *testing.T) {

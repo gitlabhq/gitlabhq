@@ -1,3 +1,5 @@
 = form_errors(@application_setting)
 
 #js-signup-form{ data: signup_form_data }
+
+= render_if_exists 'admin/application_settings/sms_cost_restricted_dial_codes'

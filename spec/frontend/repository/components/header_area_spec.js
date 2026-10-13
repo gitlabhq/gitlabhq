@@ -334,18 +334,6 @@ describe('HeaderArea', () => {
           path: 'index.js',
         });
       });
-
-      it('renders RepositoryOverflowMenu component with correct props when on non-default branch', () => {
-        wrapper = createComponent({
-          route: { name: 'treePathDecoded' },
-          provided: { comparePath: 'test/project/compare' },
-        });
-        expect(findRepositoryOverflowMenu().props()).toStrictEqual({
-          currentRef: 'main',
-          fullPath: 'test/project',
-          path: 'index.js',
-        });
-      });
     });
   });
 
@@ -356,9 +344,22 @@ describe('HeaderArea', () => {
         expect(findBlobControls().exists()).toBe(false);
       });
 
-      it('should not render blob controls when route name is not blobPathDecoded', () => {
+      it.each`
+        routeName
+        ${'blobPath'}
+        ${'blobPathDecoded'}
+        ${'blobPathEncoded'}
+        ${'blobPathEncodedSlashes'}
+      `('should render blob controls when route name is $routeName', ({ routeName }) => {
         wrapper = createComponent({
-          route: { name: 'blobPath', params: { path: '/some/file.js' } },
+          route: { name: routeName, params: { path: '/some/file.js' } },
+        });
+        expect(findBlobControls().exists()).toBe(true);
+      });
+
+      it('should not render blob controls for non-blob routes', () => {
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded', params: { path: 'some/dir' } },
         });
         expect(findBlobControls().exists()).toBe(false);
       });

@@ -49,6 +49,8 @@
   - 1
 - - ai_active_context_disable
   - 1
+- - ai_catalog_add_inherited_service_account_members_to_hierarchy
+  - 1
 - - ai_catalog_delete_service_account_members_from_hierarchy
   - 1
 - - ai_catalog_flows_cascade_sync_foundational_flows
@@ -71,6 +73,8 @@
   - 1
 - - ai_catalog_item_consumers_bulk_create
   - 1
+- - ai_catalog_item_consumers_sync_project_service_accounts
+  - 1
 - - ai_daily_flow_on_push
   - 1
 - - ai_duo_workflows_cancel_associated_pipelines
@@ -89,6 +93,8 @@
   - 1
 - - ai_duo_workflows_process_audit_events
   - 1
+- - ai_duo_workflows_session_lifecycle
+  - 1
 - - ai_duo_workflows_sync_session_artifact
   - 1
 - - ai_duo_workflows_update_workflow_status_event
@@ -97,9 +103,15 @@
   - 1
 - - ai_messaging_progress_delivery
   - 1
+- - ai_messaging_server_side_turn
+  - 1
 - - ai_messaging_webhook_delivery
   - 1
 - - ai_repository_xray_scan_dependencies
+  - 1
+- - ai_risk_classification_calculate_score
+  - 1
+- - ai_risk_classification_timeout
   - 1
 - - ai_run_flow_schedule
   - 1
@@ -110,6 +122,8 @@
 - - analytics_devops_adoption_create_snapshot
   - 1
 - - analytics_knowledge_graph_code_indexing
+  - 1
+- - analytics_orbit_disable_ended_trials
   - 1
 - - analytics_usage_trends_counter_job
   - 1
@@ -469,6 +483,8 @@
   - 1
 - - dependency_management_security_update_track_merged_mr
   - 1
+- - dependency_management_security_update_track_reopened_mr
+  - 1
 - - dependency_management_security_update_track_resolve_dependency_bump_pipeline
   - 1
 - - dependency_management_security_update_trigger_resolve_dependency_bump_workflow
@@ -801,6 +817,8 @@
   - 1
 - - merge_requests_resolve_todos_after_approval
   - 1
+- - merge_requests_restore_diff_commits
+  - 1
 - - merge_requests_stream_approval_audit_event
   - 1
 - - merge_requests_sync_code_owner_approval_rules
@@ -877,6 +895,8 @@
   - 1
 - - organizations_root_group_organization_backfill
   - 1
+- - organizations_transfer_sbom
+  - 1
 - - organizations_transfer_security_exports
   - 1
 - - organizations_transfer_topic_avatar
@@ -888,6 +908,8 @@
 - - package_metadata_global_advisory_scan
   - 1
 - - package_metadata_global_malware_advisory_scan
+  - 1
+- - package_metadata_reindex_malware_advisory_occurrence_refs
   - 1
 - - package_repositories
   - 1
@@ -1199,6 +1221,8 @@
   - 1
 - - security_generate_policy_violation_comment
   - 1
+- - security_inventory_filters_update_traversal_ids
+  - 1
 - - security_orchestration_configuration_create_bot
   - 1
 - - security_orchestration_configuration_create_bot_for_namespace
@@ -1235,6 +1259,8 @@
   - 1
 - - security_policies_skip_pipelines_audit
   - 1
+- - security_process_tracked_context_group_transfer_events
+  - 1
 - - security_process_tracked_context_project_transfer_events
   - 1
 - - security_project_tracked_contexts_create_or_update_default_tracked_context
@@ -1262,6 +1288,8 @@
 - - security_scan_profiles_delete_scan_profiles
   - 1
 - - security_scan_profiles_detach
+  - 1
+- - security_scan_profiles_process_archived_events
   - 1
 - - security_scan_profiles_process_group_transfer_events
   - 1
@@ -1292,6 +1320,8 @@
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
 - - security_scan_result_policies_sync_merge_request_approvals
+  - 1
+- - security_scan_result_policies_sync_merge_requests_for_project
   - 1
 - - security_scan_result_policies_sync_project
   - 1
@@ -1334,6 +1364,10 @@
 - - security_sync_scan_policies
   - 1
 - - security_sync_tracked_context_traversal_ids
+  - 1
+- - security_triage_coverage_schedule_update
+  - 1
+- - security_triage_coverage_update
   - 1
 - - security_unassign_policy_configurations_for_expired_namespace
   - 1
@@ -1500,6 +1534,8 @@
 - - work_items_rolledup_dates_update_rolledup_dates
   - 1
 - - work_items_rolledup_dates_update_rolledup_dates_event_handler
+  - 1
+- - work_items_statuses_backfill_converted_status_ids
   - 1
 - - work_items_update_namespace_traversal_ids
   - 1

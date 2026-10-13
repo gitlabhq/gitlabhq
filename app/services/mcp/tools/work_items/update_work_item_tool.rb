@@ -86,7 +86,8 @@ module Mcp
         def process_result(result)
           if access_denied?(result)
             return ::Mcp::Tools::Base::Response.error(
-              'Work item not found: it does not exist or you do not have access to it.'
+              'Work item not found: it does not exist or you do not have access to it.',
+              reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
             )
           end
 

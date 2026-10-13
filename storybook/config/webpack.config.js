@@ -249,12 +249,8 @@ module.exports = function storybookWebpackConfig({ config }) {
     );
   }
 
-  const baseIntegrationTestHelpersPath = 'spec/frontend_integration/test_helpers';
-
   // Add any missing aliases from the main GitLab webpack config
   Object.assign(config.resolve.alias, gitlabWebpackConfig.resolve.alias, {
-    test_helpers: path.resolve(ROOT, baseIntegrationTestHelpersPath),
-    ee_else_ce_test_helpers: path.resolve(ROOT, IS_EE ? 'ee' : '', baseIntegrationTestHelpersPath),
     test_fixtures: path.resolve(ROOT, 'tmp/tests/frontend', IS_EE ? 'fixtures-ee' : 'fixtures'),
   });
   // The main GitLab project aliases this `icons.svg` file to app/assets/javascripts/lib/utils/icons_path.js,

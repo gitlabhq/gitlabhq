@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::SingleStatComponent, type: :component, feature_category: :shared do
+RSpec.describe Pajamas::SingleStatComponent, feature_category: :shared do
   let(:title) { "Single Stat" }
   let(:stat_value) { "9,000" }
   let(:stat_value_testid) { nil }

@@ -85,6 +85,19 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
     end
   end
 
+  describe '#repository_mirroring_blocked?' do
+    subject { described_class.new }
+
+    it 'returns false' do
+      # EE replaces this method entirely rather than calling super, so walk
+      # past the override to exercise the worker's own definition.
+      method = described_class.instance_method(:repository_mirroring_blocked?)
+      method = method.super_method until method.owner == described_class
+
+      expect(method.bind_call(subject, remote_mirror.project)).to be(false)
+    end
+  end
+
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { [remote_mirror.id, scheduled_time] }
   end

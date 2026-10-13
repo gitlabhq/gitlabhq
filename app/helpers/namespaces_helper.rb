@@ -21,20 +21,20 @@ module NamespacesHelper
     end
   end
 
-  def cascading_namespace_settings_tooltip_data(attribute, group, settings_path_helper)
+  def cascading_namespace_settings_popover_data(attribute, group, settings_path_helper)
     {
-      tooltip_data: cascading_namespace_settings_tooltip_raw_data(attribute, group, settings_path_helper).to_json,
+      popover_data: cascading_namespace_settings_popover_raw_data(attribute, group, settings_path_helper).to_json,
       testid: 'cascading-settings-lock-icon'
     }
   end
 
-  def cascading_namespace_settings_tooltip_raw_data(attribute, group, settings_path_helper)
+  def cascading_namespace_settings_popover_raw_data(attribute, group, settings_path_helper)
     return {} if group.nil?
 
     locked_by_ancestor = check_group_lock(group, "#{attribute}_locked_by_ancestor?")
     locked_by_application = check_group_lock(group, "#{attribute}_locked_by_application_setting?")
 
-    tooltip_data = {
+    popover_data = {
       locked_by_application_setting: locked_by_application,
       locked_by_ancestor: locked_by_ancestor
     }
@@ -43,20 +43,20 @@ module NamespacesHelper
       ancestor_namespace = group.namespace_settings&.public_send("#{attribute}_locked_ancestor")&.namespace # rubocop:disable GitlabSecurity/PublicSend
 
       if ancestor_namespace
-        tooltip_data[:ancestor_namespace] = {
+        popover_data[:ancestor_namespace] = {
           full_name: ancestor_namespace.full_name,
           path: settings_path_helper.call(ancestor_namespace)
         }
       end
     end
 
-    tooltip_data
+    popover_data
   end
 
-  def project_cascading_namespace_settings_tooltip_data(attribute, project, settings_path_helper)
+  def project_cascading_namespace_settings_popover_data(attribute, project, settings_path_helper)
     return unless attribute && project && settings_path_helper
 
-    data = cascading_namespace_settings_tooltip_raw_data(attribute, project.parent, settings_path_helper)
+    data = cascading_namespace_settings_popover_raw_data(attribute, project.parent, settings_path_helper)
     return data if data[:locked_by_ancestor]
 
     data[:locked_by_application_setting] = check_project_lock(project, "#{attribute}_locked_by_application_setting?")

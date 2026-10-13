@@ -280,7 +280,7 @@ POST /groups/:id/boards
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `name` | string | yes | The name of the new board. |
+| `name` | string | yes | The name of the new board. Maximum 255 characters. |
 
 ```shell
 curl --request POST \
@@ -322,7 +322,7 @@ PUT /groups/:id/boards/:board_id
 | ---------------------------- | -------------- | -------- | ----------- |
 | `id`                         | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `board_id`                   | integer        | yes      | The ID of a board. |
-| `name`                       | string         | no       | The new name of the board. |
+| `name`                       | string         | no       | The new name of the board. Maximum 255 characters. |
 | `hide_backlog_list`          | boolean        | no       | Hide the Open list. |
 | `hide_closed_list`           | boolean        | no       | Hide the Closed list. |
 | `assignee_id`                | integer        | no       | The assignee the board should be scoped to. Premium and Ultimate only. |

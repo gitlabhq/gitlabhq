@@ -61,13 +61,8 @@ describe('DiffRow', () => {
       ...props,
     };
 
-    const provide = {
-      glFeatures: { dragCommentSelection: true },
-    };
-
     return shallowMount(DiffRow, {
       propsData,
-      provide,
     });
   };
 

@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs, max-classes-per-file */
+/* eslint-disable import-x/no-commonjs, max-classes-per-file */
 
 const { TestEnvironment } = require('jest-environment-jsdom');
 const { ErrorWithStack } = require('jest-util');

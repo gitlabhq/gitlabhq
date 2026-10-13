@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
-import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import BoardColumn from '~/work_items/board/components/board_column.vue';
 import ColumnHeader from '~/work_items/board/components/column_header.vue';
@@ -24,7 +23,6 @@ import {
   buildWorkItemNode,
   buildBoardRestWorkItemsResponse,
   buildBoardWorkItemsResponse,
-  buildBoardWorkItemsCountResponse,
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -51,7 +49,6 @@ describe.each([
   let apolloProvider;
 
   const queryHandler = jest.fn();
-  const countQueryHandler = jest.fn();
 
   const findColumnHeader = () => wrapper.findComponent(ColumnHeader);
   const findSkeletons = () => wrapper.findAllComponents(WorkItemCardSkeleton);
@@ -76,10 +73,7 @@ describe.each([
   };
 
   const createComponent = ({ props = {} } = {}) => {
-    apolloProvider = createMockApollo([
-      [query, queryHandler],
-      [getWorkItemsCountOnlyQuery, countQueryHandler],
-    ]);
+    apolloProvider = createMockApollo([[query, queryHandler]]);
 
     wrapper = shallowMountExtended(BoardColumn, {
       apolloProvider,
@@ -103,6 +97,7 @@ describe.each([
         strategy: mockStrategy,
         rootPageFullPath: 'full/path',
         baseQueryVariables,
+        count: 1,
         ...props,
       },
     });
@@ -110,7 +105,6 @@ describe.each([
 
   beforeEach(() => {
     queryHandler.mockResolvedValue(buildResponse([buildWorkItemNode(1)]));
-    countQueryHandler.mockResolvedValue(buildBoardWorkItemsCountResponse(1));
   });
 
   afterEach(() => {
@@ -133,37 +127,15 @@ describe.each([
       expect(findColumnHeader().props('count')).toBe(1);
     });
 
-    it('passes the total count from the count query, not the number of loaded items', async () => {
-      // A single page is loaded, but the column actually holds 57 matching items.
+    it('passes through the count prop, not the number of loaded items', async () => {
+      // A single page is loaded, but the column actually holds 57 matching items,
+      // reported by the parent (board_view) via the count prop.
       queryHandler.mockResolvedValue(buildResponse([buildWorkItemNode(1)]));
-      countQueryHandler.mockResolvedValue(buildBoardWorkItemsCountResponse(57));
-      createComponent();
+      createComponent({ props: { count: 57 } });
       await waitForPromises();
 
       expect(findWorkItemCards()).toHaveLength(1);
       expect(findColumnHeader().props('count')).toBe(57);
-    });
-
-    it('queries the count with the column query variables', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(countQueryHandler).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fullPath: 'full/path',
-          ...baseQueryVariables,
-          status: { name: mockStatus.name },
-        }),
-      );
-    });
-
-    it('captures the error in Sentry when the count query fails', async () => {
-      const queryError = new Error('GraphQL failure');
-      countQueryHandler.mockRejectedValue(queryError);
-      createComponent();
-      await waitForPromises();
-
-      expect(Sentry.captureException).toHaveBeenCalledWith(queryError);
     });
   });
 
@@ -227,7 +199,9 @@ describe.each([
 
       expect(findColumnHeader().props('collapsed')).toBe(true);
       expect(findDraggable().exists()).toBe(false);
-      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-w-8', 'gl-self-start']));
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['gl-w-[2.75rem]', 'gl-self-start']),
+      );
       expect(wrapper.classes()).not.toContain('gl-h-full');
     });
 
@@ -258,11 +232,10 @@ describe.each([
       expect(queryHandler).not.toHaveBeenCalled();
     });
 
-    it('still fetches the count query when collapsed', async () => {
-      createComponent({ props: { collapsed: true } });
+    it('still shows the count from the prop when collapsed', async () => {
+      createComponent({ props: { collapsed: true, count: 1 } });
       await waitForPromises();
 
-      expect(countQueryHandler).toHaveBeenCalled();
       expect(findColumnHeader().props('count')).toBe(1);
     });
 
@@ -338,6 +311,133 @@ describe.each([
     });
   });
 
+  describe('drop target', () => {
+    // SortableJS adds this element to the list while a card is dragged over it.
+    const addDropIndicator = () => {
+      const indicator = document.createElement('li');
+      indicator.classList.add('board-card-drop-indicator');
+      findDraggable().element.appendChild(indicator);
+      return indicator;
+    };
+
+    describe('when the column is empty', () => {
+      beforeEach(async () => {
+        queryHandler.mockResolvedValue(buildResponse([]));
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('does not mark the card list as the drop target', () => {
+        expect(findDraggable().classes()).not.toContain('is-drop-target');
+      });
+
+      describe('when a card is dragged over it', () => {
+        let indicator;
+
+        beforeEach(async () => {
+          indicator = addDropIndicator();
+          await waitForPromises();
+        });
+
+        it('marks the card list as the drop target', () => {
+          expect(findDraggable().classes()).toContain('is-drop-target');
+        });
+
+        describe('when the card leaves', () => {
+          beforeEach(async () => {
+            indicator.remove();
+            await waitForPromises();
+          });
+
+          it('removes the drop target mark', () => {
+            expect(findDraggable().classes()).not.toContain('is-drop-target');
+          });
+        });
+      });
+    });
+
+    describe('when the column has cards', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      describe('when a card is dragged over it', () => {
+        beforeEach(async () => {
+          addDropIndicator();
+          await waitForPromises();
+        });
+
+        it('does not mark the card list as the drop target', () => {
+          expect(findDraggable().classes()).not.toContain('is-drop-target');
+        });
+      });
+    });
+
+    describe('when the column is destroyed', () => {
+      beforeEach(async () => {
+        jest.spyOn(MutationObserver.prototype, 'disconnect');
+        createComponent();
+        await waitForPromises();
+        wrapper.destroy();
+      });
+
+      it('stops watching for the drop indicator', () => {
+        expect(MutationObserver.prototype.disconnect).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('card reordering', () => {
+    const nodes = [buildWorkItemNode(1), buildWorkItemNode(2), buildWorkItemNode(3)];
+
+    beforeEach(async () => {
+      queryHandler.mockResolvedValue(buildResponse(nodes));
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('does not let cards reorder by default', () => {
+      expect(findWorkItemCards().at(1).props('canReorder')).toBe(false);
+    });
+
+    it('marks only the first and last card as such when canReorderCards is true', async () => {
+      createComponent({ props: { canReorderCards: true } });
+      await waitForPromises();
+
+      const cards = findWorkItemCards();
+      expect(cards.at(0).props()).toMatchObject({ canReorder: true, isFirst: true, isLast: false });
+      expect(cards.at(1).props()).toMatchObject({
+        canReorder: true,
+        isFirst: false,
+        isLast: false,
+      });
+      expect(cards.at(2).props()).toMatchObject({ canReorder: true, isFirst: false, isLast: true });
+    });
+
+    it('emits card-move-to-position with newIndex 0 when a card moves to the start', async () => {
+      createComponent({ props: { canReorderCards: true } });
+      await waitForPromises();
+
+      findWorkItemCards().at(1).vm.$emit('move-to-start');
+
+      expect(wrapper.emitted('card-move-to-position')).toEqual([
+        [{ workItemId: nodes[1].id, oldIndex: 1, newIndex: 0 }],
+      ]);
+    });
+
+    it('emits card-move-to-position with the last index when a card moves to the end', async () => {
+      createComponent({ props: { canReorderCards: true } });
+      await waitForPromises();
+
+      findWorkItemCards().at(0).vm.$emit('move-to-end');
+
+      expect(wrapper.emitted('card-move-to-position')).toEqual([
+        [{ workItemId: nodes[0].id, oldIndex: 0, newIndex: 2 }],
+      ]);
+    });
+  });
+
   describe('drag and drop', () => {
     const nodes = [buildWorkItemNode(1), buildWorkItemNode(2)];
 
@@ -364,6 +464,11 @@ describe.each([
 
     it('gives the drop indicator its own ghost class', () => {
       expect(findDraggable().vm.$attrs.ghostClass).toBe('board-card-drop-indicator');
+    });
+
+    it('filters out the card actions menu so opening it does not start a drag', () => {
+      expect(findDraggable().vm.$attrs.filter).toBe('.js-board-card-no-drag');
+      expect(findDraggable().vm.$attrs.preventOnFilter).toBe(false);
     });
 
     it('marks the document body as dragging when a card drag starts', () => {

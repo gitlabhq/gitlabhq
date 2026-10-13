@@ -31,6 +31,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         'rspec unit pg17 single-redis 4/5',
         'rspec unit pg17 5/5',
         'rspec integration pg17',
+        'rspec graphql-document-integration pg17',
         'rspec system pg17',
         'rspec migration pg17',
         'rspec background_migration pg17',
@@ -46,7 +47,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         'graphql-schema-dump',
         'jest 1/5',
         'jest-integration',
-        'jest-msw-integration',
         'jest predictive 1/5',
         'rubocop',
         'qa:internal',
@@ -101,6 +101,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION: 'true',
         ENABLE_RSPEC_SINGLE_REDIS: 'true',
         ENABLE_RSPEC_INTEGRATION: 'true',
+        ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION: 'true',
         ENABLE_RSPEC_SYSTEM: 'true',
         ENABLE_RSPEC_MIGRATION: 'true',
         ENABLE_RSPEC_BACKGROUND_MIGRATION: 'true',
@@ -114,7 +115,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_GRAPHQL_SCHEMA_DUMP: 'true',
         ENABLE_JEST: 'true',
         ENABLE_JEST_INTEGRATION: 'true',
-        ENABLE_JEST_MSW_INTEGRATION: 'true',
         ENABLE_JEST_PREDICTIVE: 'true',
         ENABLE_RUBOCOP: 'true',
         ENABLE_QA_INTERNAL: 'true',
@@ -131,7 +131,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
     context 'when there are only predictive frontend jobs' do
       let(:jobs) do
         [
-          'jest-integration',
           'jest predictive 1/5',
           'jest-with-fixtures predictive 1/2'
         ]
@@ -146,7 +145,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
           FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
           FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
           GLCI_USE_TEST_BALANCING: ENV['GLCI_USE_TEST_BALANCING'],
-          ENABLE_JEST_INTEGRATION: 'true',
           ENABLE_JEST_PREDICTIVE: 'true'
         })
       end
@@ -219,6 +217,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION=true
         ENABLE_RSPEC_SINGLE_REDIS=true
         ENABLE_RSPEC_INTEGRATION=true
+        ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION=true
         ENABLE_RSPEC_SYSTEM=true
         ENABLE_RSPEC_MIGRATION=true
         ENABLE_RSPEC_BACKGROUND_MIGRATION=true
@@ -232,7 +231,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_GRAPHQL_SCHEMA_DUMP=true
         ENABLE_JEST=true
         ENABLE_JEST_INTEGRATION=true
-        ENABLE_JEST_MSW_INTEGRATION=true
         ENABLE_JEST_PREDICTIVE=true
         ENABLE_RUBOCOP=true
         ENABLE_QA_INTERNAL=true

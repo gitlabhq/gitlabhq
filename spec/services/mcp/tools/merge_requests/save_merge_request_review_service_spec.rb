@@ -67,7 +67,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           },
           body: {
             type: 'string',
-            description: 'Note text (create_note, reply_discussion, create_diff_note; max 1,048,576 ' \
+            description: 'Note text (create_note, reply_discussion, create_diff_note; max 1048576 ' \
               'characters). Lines that begin with "/" are rejected to avoid triggering quick actions ' \
               'such as /merge.',
             maxLength: 1_048_576
@@ -296,6 +296,22 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
         }
       end
 
+      context 'when the summary contains a quick action' do
+        let(:params) do
+          {
+            arguments: identification.merge(
+              method: 'submit_review', comments: comments, summary: "Looks good.\n/merge"
+            )
+          }
+        end
+
+        it 'reports the caller input as a bad request' do
+          result = service.execute(request: request, params: params)
+
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
+        end
+      end
+
       it 'posts every diff comment plus the summary note', :aggregate_failures do
         expect { service.execute(request: request, params: params) }.to change { merge_request.notes.count }.by(3)
 
@@ -384,6 +400,24 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
         expect(result.dig(:structuredContent, :error, 'created_notes').first['note_id']).to eq(first_note_id)
       end
 
+      it 'forwards the failed step\'s reason rather than reporting a generic error', :aggregate_failures do
+        allow(service).to receive(:execute_graphql_tool).and_wrap_original do |original, args|
+          if args[:new_line] == 9
+            next ::Mcp::Tools::Base::Response.error(
+              'Merge request not found or inaccessible',
+              reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+            )
+          end
+
+          original.call(args)
+        end
+
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
+      end
+
       it 'rejects an empty comments array' do
         result = service.execute(
           request: request,
@@ -441,6 +475,28 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
         expect(merge_request.reset.approved_by?(user)).to be(true)
       end
 
+      it 'forwards the given sha to the approval service', :aggregate_failures do
+        expect(::MergeRequests::ApprovalService).to receive(:new)
+          .with(project: project, current_user: user, params: { sha: merge_request.diff_head_sha })
+          .and_call_original
+
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'approve', sha: merge_request.diff_head_sha) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(merge_request.reset.approved_by?(user)).to be(true)
+      end
+
+      it 'forwards a nil sha to the approval service when none is given' do
+        expect(::MergeRequests::ApprovalService).to receive(:new)
+          .with(project: project, current_user: user, params: { sha: nil })
+          .and_call_original
+
+        service.execute(request: request, params: params)
+      end
+
       it 'refuses to approve on a stale sha', :aggregate_failures do
         result = service.execute(
           request: request,
@@ -483,6 +539,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('not allowed to approve')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
       end
 
       it 'rejects approving a merged merge request', :aggregate_failures do
@@ -495,6 +552,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('already merged')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
       end
     end
 
@@ -557,6 +615,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
         result = service.execute(request: request, params: params)
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:unauthorized)
         expect(result[:content].first[:text]).to include('not allowed to unapprove')
       end
     end

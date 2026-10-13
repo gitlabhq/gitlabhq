@@ -106,3 +106,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::JiraImport.prepend_mod_with('Gitlab::JiraImport')

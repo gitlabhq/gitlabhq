@@ -8,7 +8,9 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:user) { create(:user) }
-  let(:resource) { create(:issue, project: project) }
+  let_it_be(:member) { create(:user) }
+  let(:resource) { build_stubbed(:issue, project: project) }
+  let(:non_member) { build_stubbed(:user) }
 
   let(:request) { double('request', current_user: user) }
 
@@ -16,7 +18,7 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
 
   describe 'web_url' do
     context 'when issue is of type task' do
-      let(:resource) { create(:issue, :task, project: project) }
+      let(:resource) { build_stubbed(:issue, :task, project: project) }
 
       # This was already a path and not a url when the work items change was introduced
       it 'has a work item path with iid' do
@@ -51,14 +53,11 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
   end
 
   context 'when issue got moved' do
-    let_it_be(:public_project) { create(:project, :public) }
-    let_it_be(:member) { create(:user) }
-    let_it_be(:non_member) { create(:user) }
+    let_it_be(:public_project) { create(:project, :public, developers: member) }
     let_it_be(:issue) { create(:issue, project: public_project) }
 
     before_all do
       project.add_developer(member)
-      public_project.add_developer(member)
       ::WorkItems::DataSync::MoveService.new(
         work_item: issue, current_user: member, target_namespace: project.project_namespace
       ).execute
@@ -87,7 +86,6 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
 
   context 'when issue got duplicated' do
     let_it_be(:private_project) { create(:project, :private) }
-    let_it_be(:member) { create(:user) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:new_issue) { create(:issue, project: private_project) }
 
@@ -98,8 +96,6 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
     end
 
     context 'when user cannot read new issue' do
-      let(:non_member) { create(:user) }
-
       it 'does not return duplicated_to_id' do
         request = double('request', current_user: non_member)
 
@@ -175,13 +171,18 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
     end
   end
 
-  it_behaves_like 'issuable entity current_user properties'
+  context 'with a persisted issue' do
+    let_it_be_with_reload(:resource) { create(:issue, project: project) }
+
+    it_behaves_like 'issuable entity current_user properties'
+  end
 
   context 'when issue has email participants' do
-    let(:obfuscated_email) { 'an*****@e*****.c**' }
-    let(:email) { 'any@email.com' }
+    let_it_be_with_reload(:resource) { create(:issue, project: project) }
+    let_it_be(:obfuscated_email) { 'an*****@e*****.c**' }
+    let_it_be(:email) { 'any@email.com' }
 
-    before do
+    before_all do
       resource.issue_email_participants.create!(email: email)
     end
 
@@ -202,8 +203,6 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
       end
 
       context 'when user has guest role in project' do
-        let_it_be(:member) { create(:user) }
-
         before_all do
           project.add_guest(member)
         end
@@ -217,8 +216,6 @@ RSpec.describe IssueEntity, feature_category: :team_planning do
       end
 
       context 'when user has (at least) reporter role in project' do
-        let_it_be(:member) { create(:user) }
-
         before_all do
           project.add_reporter(member)
         end

@@ -249,8 +249,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       context 'public project' do
@@ -269,8 +268,10 @@ RSpec.describe API::Helpers, feature_category: :api do
         let_it_be(:outside_project) { create(:project) }
 
         before do
-          allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: :project)
-          allow(helper).to receive(:initial_current_user).and_return(user)
+          allow(helper).to receive_messages(
+            route_authentication_setting: { job_token_scope: :project },
+            initial_current_user: user
+          )
           helper.instance_variable_set(:@current_authenticated_job, job)
         end
 
@@ -295,8 +296,10 @@ RSpec.describe API::Helpers, feature_category: :api do
         let_it_be(:outside_project) { create(:project) }
 
         before do
-          allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: nil)
-          allow(helper).to receive(:initial_current_user).and_return(user)
+          allow(helper).to receive_messages(
+            route_authentication_setting: { job_token_scope: nil },
+            initial_current_user: user
+          )
           helper.instance_variable_set(:@current_authenticated_job, job)
         end
 
@@ -307,8 +310,10 @@ RSpec.describe API::Helpers, feature_category: :api do
 
           context 'with job token' do
             before do
-              allow(user).to receive(:from_ci_job_token?).and_return(true)
-              allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+              allow(user).to receive_messages(
+                from_ci_job_token?: true,
+                ci_job_token_scope: user.set_ci_job_token_scope!(job)
+              )
             end
 
             it 'returns forbidden without exposing project name' do
@@ -344,8 +349,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
           context 'without job token scope' do
             before do
-              allow(user).to receive(:from_ci_job_token?).and_return(true)
-              allow(user).to receive(:ci_job_token_scope).and_return(nil)
+              allow(user).to receive_messages(from_ci_job_token?: true, ci_job_token_scope: nil)
             end
 
             it 'returns not_found' do
@@ -451,8 +455,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is not authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(nil)
-        allow(helper).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive_messages(current_user: nil, initial_current_user: nil)
       end
 
       context 'public project' do
@@ -472,10 +475,12 @@ RSpec.describe API::Helpers, feature_category: :api do
       let(:user) { project.first_owner }
 
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:authorized_project_scope?).and_return(true)
-        allow(helper).to receive(:job_token_authentication?).and_return(false)
-        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive_messages(
+          current_user: user,
+          authorized_project_scope?: true,
+          job_token_authentication?: false,
+          authenticate_non_public?: false
+        )
       end
 
       shared_examples 'project finder' do
@@ -585,8 +590,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       context 'public project' do
@@ -620,8 +624,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is not authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(nil)
-        allow(helper).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive_messages(current_user: nil, initial_current_user: nil)
       end
 
       context 'public project' do
@@ -642,10 +645,12 @@ RSpec.describe API::Helpers, feature_category: :api do
       let(:user) { project.first_owner }
 
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:authorized_project_scope?).and_return(true)
-        allow(helper).to receive(:job_token_authentication?).and_return(false)
-        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive_messages(
+          current_user: user,
+          authorized_project_scope?: true,
+          job_token_authentication?: false,
+          authenticate_non_public?: false
+        )
       end
 
       shared_examples 'pipeline finder' do
@@ -683,8 +688,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     let_it_be(:user) { create(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:initial_current_user).and_return(user)
+      allow(helper).to receive_messages(current_user: user, initial_current_user: user)
     end
 
     context 'when organization is public' do
@@ -769,8 +773,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       context 'public group' do
@@ -786,8 +789,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is not authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(nil)
-        allow(helper).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive_messages(current_user: nil, initial_current_user: nil)
       end
 
       context 'public group' do
@@ -807,10 +809,12 @@ RSpec.describe API::Helpers, feature_category: :api do
       let(:user) { group.first_owner }
 
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:authorized_project_scope?).and_return(true)
-        allow(helper).to receive(:job_token_authentication?).and_return(false)
-        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive_messages(
+          current_user: user,
+          authorized_project_scope?: true,
+          job_token_authentication?: false,
+          authenticate_non_public?: false
+        )
       end
 
       shared_examples 'group finder' do
@@ -854,11 +858,12 @@ RSpec.describe API::Helpers, feature_category: :api do
     let_it_be(:organization) { create(:organization) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(group.first_owner)
-      allow(helper).to receive(:job_token_authentication?).and_return(false)
-      allow(helper).to receive(:authenticate_non_public?).and_return(false)
-      allow(helper).to receive(:request)
-        .and_return(instance_double(Rack::Request, request_method: 'GET', get?: true))
+      allow(helper).to receive_messages(
+        current_user: group.first_owner,
+        job_token_authentication?: false,
+        authenticate_non_public?: false,
+        request: instance_double(Rack::Request, request_method: 'GET', get?: true)
+      )
     end
 
     subject { helper.find_group!(group.id, organization: organization) }
@@ -898,8 +903,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       context 'public group' do
@@ -929,8 +933,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when user is not authenticated' do
       before do
-        allow(helper).to receive(:current_user).and_return(nil)
-        allow(helper).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive_messages(current_user: nil, initial_current_user: nil)
       end
 
       context 'public group' do
@@ -946,8 +949,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'organization maintenance mode enforcement' do
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       it 'enforces maintenance mode on the accessible group' do
@@ -1060,8 +1062,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     let_it_be(:user1) { create(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user1)
-      allow(helper).to receive(:header).and_return(nil)
+      allow(helper).to receive_messages(current_user: user1, header: nil)
       allow(helper).to receive(:not_found!).and_raise('404 Namespace not found')
     end
 
@@ -1120,8 +1121,7 @@ RSpec.describe API::Helpers, feature_category: :api do
       let(:current_user) { project.first_owner }
 
       before do
-        allow(helper).to receive(:initial_current_user).and_return(current_user)
-        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive_messages(initial_current_user: current_user, current_user: current_user)
       end
 
       it 'renders namespace not found by default' do
@@ -1183,8 +1183,7 @@ RSpec.describe API::Helpers, feature_category: :api do
       end
 
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       it 'enforces maintenance mode on the accessible namespace' do
@@ -1232,8 +1231,7 @@ RSpec.describe API::Helpers, feature_category: :api do
       let(:current_user) { project.first_owner }
 
       before do
-        allow(helper).to receive(:initial_current_user).and_return(current_user)
-        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive_messages(initial_current_user: current_user, current_user: current_user)
       end
 
       it 'renders namespace not found by default' do
@@ -1295,8 +1293,7 @@ RSpec.describe API::Helpers, feature_category: :api do
       end
 
       before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(helper).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive_messages(current_user: user, initial_current_user: user)
       end
 
       it 'enforces maintenance mode on the accessible namespace' do
@@ -1336,9 +1333,11 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     with_them do
       before do
-        allow(helper).to receive(:job_token_authentication?).and_return(job_token_authentication)
-        allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: route_setting ? :project : nil)
-        allow(helper).to receive(:current_authenticated_job).and_return(job)
+        allow(helper).to receive_messages(
+          job_token_authentication?: job_token_authentication,
+          route_authentication_setting: { job_token_scope: route_setting ? :project : nil },
+          current_authenticated_job: job
+        )
         allow(job).to receive(:project).and_return(same_job_project ? project : other_project)
       end
 
@@ -1358,10 +1357,8 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     before do
-      allow(helper).to receive(:env).and_return({})
       allow(helper).to receive(:content_type)
-      allow(helper).to receive(:header).and_return({})
-      allow(helper).to receive(:body).and_return('')
+      allow(helper).to receive_messages(env: {}, header: {}, body: '')
       # The senddata helpers call `verify_workhorse_api!` before storing
       # the response header. The synthetic helper class in this spec does
       # not include the Grape framework, so the rescue path's `forbidden!`
@@ -1413,8 +1410,10 @@ RSpec.describe API::Helpers, feature_category: :api do
       allow(helper).to receive(:header)
       allow(helper).to receive(:body).and_return('')
       allow(helper).to receive(:check_download_permission!)
-      allow(builder).to receive(:content_type).and_return('application/zip')
-      allow(builder).to receive(:content_disposition).and_return('attachment; filename="my-project-main.zip"')
+      allow(builder).to receive_messages(
+        content_type: 'application/zip',
+        content_disposition: 'attachment; filename="my-project-main.zip"'
+      )
     end
 
     it 'builds ArchiveHeaderBuilder without ref_type by default' do
@@ -1891,8 +1890,7 @@ RSpec.describe API::Helpers, feature_category: :api do
       let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }
 
       before do
-        allow(helper).to receive(:env).and_return({})
-        allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: false))
+        allow(helper).to receive_messages(env: {}, request: instance_double(Rack::Request, head?: false))
         stub_artifacts_object_storage(enabled: true)
       end
 
@@ -2284,9 +2282,11 @@ RSpec.describe API::Helpers, feature_category: :api do
       subject { helper.present_artifacts_file!(artifact.file) }
 
       before do
-        allow(helper).to receive(:env).and_return({})
-        allow(helper).to receive(:request).and_return(instance_double(Rack::Request, head?: is_head_request))
-        allow(helper).to receive(:headers).and_return({})
+        allow(helper).to receive_messages(
+          env: {},
+          request: instance_double(Rack::Request, head?: is_head_request),
+          headers: {}
+        )
         allow(helper).to receive(:header)
         stub_artifacts_object_storage(enabled: true)
       end
@@ -2377,8 +2377,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#render_api_error!' do
     before do
-      allow(helper).to receive(:env).and_return({})
-      allow(helper).to receive(:header).and_return({})
+      allow(helper).to receive_messages(env: {}, header: {})
       allow(helper).to receive(:error!)
     end
 
@@ -2416,8 +2415,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#render_api_error_with_reason!' do
     before do
-      allow(helper).to receive(:env).and_return({})
-      allow(helper).to receive(:header).and_return({})
+      allow(helper).to receive_messages(env: {}, header: {})
       allow(helper).to receive(:error!)
     end
 
@@ -2620,18 +2618,19 @@ RSpec.describe API::Helpers, feature_category: :api do
     let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
 
     before do
-      allow(helper).to receive(:params).and_return({ id: project.id, group_id: group.id })
-      allow(helper).to receive(:find_project).and_return(project)
-      allow(helper).to receive(:find_group).and_return(group)
-      allow(helper).to receive(:access_token).and_return(access_token)
+      allow(helper).to receive_messages(
+        params: { id: project.id, group_id: group.id },
+        find_project: project,
+        find_group: group,
+        access_token: access_token
+      )
     end
 
     context 'with :boundary authorization setting' do
       subject(:boundary) { helper.send(:boundaries_for_endpoint) }
 
       before do
-        allow(helper).to receive(:authorization_settings).and_return({ boundary: boundary_setting })
-        allow(helper).to receive(:project).and_return(project)
+        allow(helper).to receive_messages(authorization_settings: { boundary: boundary_setting }, project: project)
       end
 
       context 'when setting value responds to call' do
@@ -2696,14 +2695,16 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when project boundary returns nil' do
       before do
-        allow(helper).to receive(:find_project).and_return(nil)
-        allow(helper).to receive(:authorization_settings).and_return({
-          boundaries: [
-            { boundary_type: :instance },
-            { boundary_type: :project },
-            { boundary_type: :group }
-          ]
-        })
+        allow(helper).to receive_messages(
+          find_project: nil,
+          authorization_settings: {
+            boundaries: [
+              { boundary_type: :instance },
+              { boundary_type: :project },
+              { boundary_type: :group }
+            ]
+          }
+        )
       end
 
       it 'returns an array of valid boundaries' do
@@ -2713,163 +2714,6 @@ RSpec.describe API::Helpers, feature_category: :api do
           Authz::Boundary::NilBoundary,
           Authz::Boundary::GroupBoundary
         ])
-      end
-    end
-  end
-
-  describe '#granular_token_requirements' do
-    let_it_be(:target_project) { create(:project) }
-
-    subject(:requirements) { helper.send(:granular_token_requirements) }
-
-    before do
-      allow(helper).to receive_messages(
-        params: { to_project_id: target_project.id },
-        find_project: target_project,
-        authorization_settings: settings
-      )
-    end
-
-    context 'without additional boundaries' do
-      let(:settings) { { permissions: [:read_project], boundary_type: :project } }
-
-      it 'returns only the primary requirement' do
-        expect(requirements.size).to eq(1)
-      end
-    end
-
-    context 'with an additional boundary' do
-      let(:settings) do
-        {
-          permissions: [:read_project], boundary_type: :project,
-          additional_scopes: [
-            { permissions: [:create_work_item], boundary_type: :project, boundary_param: :to_project_id }
-          ]
-        }
-      end
-
-      it 'appends the resolved boundary with its own permissions', :aggregate_failures do
-        boundaries, permissions = requirements.last
-
-        expect(boundaries).to be_a(Authz::Boundary::ProjectBoundary)
-        expect(permissions).to eq([:create_work_item])
-      end
-
-      context 'when the boundary cannot be resolved' do
-        before do
-          allow(helper).to receive(:find_project).and_return(nil)
-        end
-
-        it 'leaves it nil so the service reports it as missing' do
-          expect(requirements.last.first).to be_nil
-        end
-      end
-    end
-
-    context 'with an additional boundary resolved by a callable' do
-      let(:settings) do
-        {
-          permissions: [:read_project], boundary_type: :project,
-          additional_scopes: [
-            { permissions: [:assign_runner], boundary_type: :project, boundary: -> { runner_owner } }
-          ]
-        }
-      end
-
-      before do
-        allow(helper).to receive(:runner_owner).and_return(runner_owner)
-      end
-
-      context 'when the callable returns a boundary object' do
-        let(:runner_owner) { target_project }
-
-        it 'resolves the boundary from the callable', :aggregate_failures do
-          boundaries, permissions = requirements.last
-
-          expect(boundaries).to be_a(Authz::Boundary::ProjectBoundary)
-          expect(permissions).to eq([:assign_runner])
-        end
-      end
-
-      context 'when the callable returns nil' do
-        let(:runner_owner) { nil }
-
-        it 'leaves it nil so the service reports it as missing' do
-          expect(requirements.last.first).to be_nil
-        end
-      end
-
-      context 'when the callable returns something that is not a boundary' do
-        let(:runner_owner) { 'not a boundary' }
-
-        it 'leaves it nil rather than passing an invalid boundary to the service' do
-          expect(requirements.last.first).to be_nil
-        end
-      end
-
-      context 'when the callable returns an object of a different boundary type' do
-        let(:runner_owner) { create(:group) }
-
-        it 'leaves it nil rather than checking the wrong container type' do
-          expect(requirements.last.first).to be_nil
-        end
-      end
-    end
-  end
-
-  describe '#authorize_granular_token_scopes!' do
-    include Rack::Test::Methods
-
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project, developers: user) }
-    let_it_be(:target_project) { create(:project, developers: user) }
-
-    let(:assignable) { ::Authz::PermissionGroups::Assignable.for_permission(:read_project).first.name }
-
-    let(:pat) do
-      create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project), permissions: [assignable])
-    end
-
-    let(:helper_app) do
-      Class.new(Grape::API::Instance) do
-        helpers API::Helpers
-        format :json
-
-        route_setting :authorization, permissions: :read_project, boundary_type: :project,
-          additional_scopes: [
-            { permissions: :read_project, boundary_type: :project, boundary_param: :to_project_id }
-          ]
-        get ':id/move' do
-          authorize_granular_token_scopes!(PersonalAccessToken.find_by_token(params[:token]))
-          { ok: true }
-        end
-      end
-    end
-
-    def app
-      helper_app
-    end
-
-    context 'when the additional boundary cannot be resolved' do
-      it 'denies with 404 without running the endpoint' do
-        get "/#{project.id}/move", token: pat.token, to_project_id: non_existing_record_id
-
-        expect(last_response.status).to eq(404)
-      end
-    end
-
-    context 'when the token is scoped to both boundaries' do
-      let(:pat) do
-        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project), permissions: [assignable],
-          additional_scopes: [
-            { boundary: ::Authz::Boundary.for(target_project), permissions: [assignable] }
-          ])
-      end
-
-      it 'grants access' do
-        get "/#{project.id}/move", token: pat.token, to_project_id: target_project.id
-
-        expect(last_response.status).to eq(200)
       end
     end
   end
@@ -2959,18 +2803,20 @@ RSpec.describe API::Helpers, feature_category: :api do
     let(:token) { instance_double(PersonalAccessToken) }
 
     before do
-      allow(helper).to receive(:access_token).and_return(token)
-      allow(helper).to receive(:initial_current_user).and_return(nil)
-      allow(helper).to receive(:params).and_return({})
-      allow(helper).to receive(:env).and_return({})
-      allow(helper).to receive(:scopes_registered_for_endpoint).and_return(nil)
-      allow(helper).to receive(:validate_and_save_access_token!).and_return(token)
+      allow(helper).to receive_messages(
+        access_token: token,
+        initial_current_user: nil,
+        params: {},
+        env: {},
+        scopes_registered_for_endpoint: nil,
+        validate_and_save_access_token!: token
+      )
     end
 
     context 'when access token is not granular' do
       context 'when token responds to granularity (legacy personal access token)' do
         before do
-          allow(token).to receive(:granular?).and_return(false)
+          allow(token).to receive_messages(granular?: false, subject_to_granular_enforcement?: true)
         end
 
         it 'returns true' do
@@ -2984,7 +2830,23 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
       end
 
-      context 'when token does not respond to granularity (OAuth token)' do
+      context 'when token is not subject to granular enforcement (legacy OAuth token)' do
+        let(:token) { instance_double(OauthAccessToken, granular?: false, subject_to_granular_enforcement?: false) }
+
+        it 'returns false' do
+          allow(helper).to receive(:authorization_settings).and_return({})
+
+          expect(helper.send(:authorize_granular_token?, token)).to be(false)
+        end
+
+        it 'does not authorize granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+          helper.current_user
+        end
+      end
+
+      context 'when token does not respond to granularity' do
         before do
           allow(token).to receive(:respond_to?).with(:granular?).and_return(false)
         end

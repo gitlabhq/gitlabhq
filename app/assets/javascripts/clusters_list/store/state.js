@@ -1,4 +1,4 @@
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 
 export default (initialState = {}) => ({
   ancestorHelperPath: initialState.ancestorHelpPath,

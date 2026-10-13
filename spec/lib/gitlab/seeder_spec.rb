@@ -88,6 +88,15 @@ RSpec.describe Gitlab::Seeder, feature_category: :tooling do
     end
   end
 
+  describe '.without_statement_timeout' do
+    it 'disables and resets the transaction timeout on every database connection around the block' do
+      expect(Gitlab::Database::TransactionTimeout).to receive(:disable).at_least(:once).ordered
+      expect(Gitlab::Database::TransactionTimeout).to receive(:reset).at_least(:once).ordered
+
+      expect { |block| described_class.without_statement_timeout(&block) }.to yield_control
+    end
+  end
+
   describe '.log_message' do
     it 'prepends timestamp to the logged message' do
       freeze_time do

@@ -118,7 +118,7 @@ module QA
           element 'standard-rebase-button'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
+        view 'app/assets/javascripts/vue_merge_request_widget/components/merge_widget.vue' do
           element 'merge-button'
           element 'merge-immediately-dropdown'
           element 'merge-immediately-button'
@@ -133,7 +133,7 @@ module QA
           element 'squash-checkbox'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
+        view 'app/assets/javascripts/vue_merge_request_widget/components/merge_widget.vue' do
           element 'widget_edit_commit_message'
         end
 
@@ -171,8 +171,11 @@ module QA
           element 'description-content'
         end
 
-        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
+        view 'app/assets/javascripts/merge_requests/components/merge_request_title_actions.vue' do
           element 'edit-title-button'
+        end
+
+        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
           element 'title-content', required: true
         end
 
@@ -331,6 +334,7 @@ module QA
         end
 
         def click_diffs_tab
+          wait_for_merge_request_preparation
           click_element('diffs-tab')
 
           # We check for the file tree toggle as sometimes the MR takes some time to be built.
@@ -353,13 +357,17 @@ module QA
         end
 
         def has_file?(file_name)
-          open_file_tree
+          # The reload leaves stale element references. The reloaded page shows the same diff,
+          # so retrying the lookup is safe.
+          retry_on_exception(sleep_interval: 1, message: 'Retry file lookup in the diffs file tree') do
+            open_file_tree
 
-          return true if has_element?('file-row-name-container', file_name: file_name)
+            next true if has_element?('file-row-name-container', file_name: file_name)
 
-          # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
-          search_file_tree(file_name)
-          has_element?('file-row-name-container', file_name: file_name)
+            # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
+            search_file_tree(file_name)
+            has_element?('file-row-name-container', file_name: file_name)
+          end
         end
 
         def has_no_file?(file_name)
@@ -375,6 +383,15 @@ module QA
 
         def open_file_tree
           click_element(file_tree_toggle) if has_no_element?('file-tree-container', wait: 1)
+        end
+
+        # A new merge request is still "preparing" while Sidekiq builds its diff, and the Changes
+        # badge shows "-". Rapid Diffs then reloads the whole page when it is ready, which breaks
+        # lookups made during the reload. https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44973
+        def wait_for_merge_request_preparation
+          wait_until(sleep_interval: 1, message: 'Wait for merge request to be prepared') do
+            has_element?('diffs-tab', text: /\d/, wait: 1)
+          end
         end
 
         def has_file_tree_toggle?
@@ -512,6 +529,7 @@ module QA
 
         # Waits up 10 seconds and returns false if the Revert button is not enabled
         def revertible?
+          close_dap_panel_if_exists(wait: 3)
           has_element?('revert-button', disabled: false, wait: 10)
         end
 
@@ -650,7 +668,12 @@ module QA
         end
 
         def cherry_pick!
-          click_element('cherry-pick-button', Page::Component::CommitModal)
+          # reload page since the cherry-pick button can render after the merged status text
+          # https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37617 (transient issue)
+          retry_on_exception(reload: true, sleep_interval: 2, message: "Retry cherry-pick button click") do
+            close_dap_panel_if_exists(wait: 3)
+            click_element('cherry-pick-button', Page::Component::CommitModal)
+          end
           submit_commit
         end
 
@@ -658,6 +681,7 @@ module QA
           # reload page when the revert modal occasionally doesn't appear in ee:large-setup job
           # https://gitlab.com/gitlab-org/gitlab/-/issues/386623 (transient issue)
           retry_on_exception(reload: true) do
+            close_dap_panel_if_exists(wait: 3)
             click_element('revert-button', Page::Component::CommitModal)
           end
           submit_commit
@@ -704,7 +728,7 @@ module QA
         end
 
         # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
-        def close_dap_panel_if_exists; end
+        def close_dap_panel_if_exists(wait: 0.5); end
 
         private
 

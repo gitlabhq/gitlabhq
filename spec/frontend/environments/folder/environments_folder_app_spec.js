@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSkeletonLoader, GlTab, GlPagination } from '@gitlab/ui';
+import { GlSkeletonLoader, GlTab, GlTabs, GlPagination } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EnvironmentsFolderAppComponent from '~/environments/folder/environments_folder_app.vue';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
@@ -51,7 +51,7 @@ describe('EnvironmentsFolderAppComponent', () => {
     __typename: 'LocalEnvironmentFolder',
   };
 
-  const createWrapper = ({ folderData } = {}) => {
+  const createWrapper = ({ folderData, scope = 'active' } = {}) => {
     environmentFolderMock.mockReturnValue(folderData || emptyFolderData);
 
     const apolloProvider = createApolloProvider();
@@ -61,7 +61,7 @@ describe('EnvironmentsFolderAppComponent', () => {
       propsData: {
         folderName: mockFolderName,
         folderPath: '/gitlab-org/test-project/-/environments/folder/dev',
-        scope: 'active',
+        scope,
         page: 1,
       },
     });
@@ -81,6 +81,24 @@ describe('EnvironmentsFolderAppComponent', () => {
   it('should show skeletons while loading', () => {
     createWrapper();
     expect(findSkeletonLoaders()).toHaveLength(3);
+  });
+
+  describe.each([
+    ['active', 0, 3],
+    ['stopped', 1, 7],
+  ])('with scope %s', (scope, activeTab, totalItems) => {
+    beforeEach(async () => {
+      createWrapper({
+        scope,
+        folderData: { ...emptyFolderData, activeCount: 3, stoppedCount: 7 },
+      });
+      await waitForPromises();
+    });
+
+    it('selects the matching tab and pagination count', () => {
+      expect(wrapper.findComponent(GlTabs).props('value')).toBe(activeTab);
+      expect(wrapper.findComponent(GlPagination).props('totalItems')).toBe(totalItems);
+    });
   });
 
   describe('when environments are loaded', () => {

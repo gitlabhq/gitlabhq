@@ -12,8 +12,6 @@ module Gitlab
       def initialize(pipeline)
         @pipeline = pipeline
 
-        trace_correlation_enabled = trace_correlation_enabled?(pipeline)
-
         attrs = {
           object_kind: 'pipeline',
           object_attributes: hook_attrs(pipeline),
@@ -24,27 +22,20 @@ module Gitlab
           builds: Gitlab::Lazy.new do
             preload_builds(pipeline, :latest_builds)
             pipeline.latest_builds.map { |build| build_hook_attrs(build) }
-          end
-        }
-
-        if trace_correlation_enabled
-          attrs[:object_attributes][:root_pipeline_id] = pipeline.root_ancestor.id
-          attrs[:bridges] = Gitlab::Lazy.new do
+          end,
+          bridges: Gitlab::Lazy.new do
             preload_bridges(pipeline, :latest_bridges)
             pipeline.latest_bridges.map { |bridge| build_hook_attrs(bridge, skip_artifacts: true).merge(bridge: true) }
           end
-        end
+        }
 
         if pipeline.source_pipeline.present?
-          if trace_correlation_enabled
-            ActiveRecord::Associations::Preloader.new(
-              records: [pipeline.source_pipeline],
-              associations: :source_bridge
-            ).call
-          end
+          ActiveRecord::Associations::Preloader.new(
+            records: [pipeline.source_pipeline],
+            associations: :source_bridge
+          ).call
 
-          attrs[:source_pipeline] =
-            source_pipeline_attrs(pipeline.source_pipeline, trace_correlation_enabled)
+          attrs[:source_pipeline] = source_pipeline_attrs(pipeline.source_pipeline)
         end
 
         super(attrs)
@@ -60,10 +51,6 @@ module Gitlab
       end
 
       private
-
-      def trace_correlation_enabled?(pipeline)
-        Feature.enabled?(:ci_pipeline_otlp_trace_correlation, pipeline.project)
-      end
 
       # Unlike preload_builds, this omits runner: :tags and
       # job_artifacts_archive: []. Ci::Bridge overrides #runner to return nil,
@@ -121,26 +108,24 @@ module Gitlab
           protected_ref: pipeline.protected_ref?,
           default_branch: pipeline.default_branch?,
           variables: pipeline.variables.map(&:hook_attrs),
-          url: Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline)
+          url: Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline),
+          root_pipeline_id: pipeline.root_ancestor.id
         }
       end
 
-      def source_pipeline_attrs(source_pipeline, trace_correlation_enabled = false)
+      def source_pipeline_attrs(source_pipeline)
         project = source_pipeline.source_project
 
-        attrs = {
+        {
           project: {
             id: project.id,
             web_url: project.web_url,
             path_with_namespace: project.full_path
           },
           job_id: source_pipeline.source_job_id,
-          pipeline_id: source_pipeline.source_pipeline_id
+          pipeline_id: source_pipeline.source_pipeline_id,
+          bridge_id: source_pipeline.source_bridge&.id
         }
-
-        attrs[:bridge_id] = source_pipeline.source_bridge&.id if trace_correlation_enabled
-
-        attrs
       end
 
       def merge_request_attrs(merge_request)

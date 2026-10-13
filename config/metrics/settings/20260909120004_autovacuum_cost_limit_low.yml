@@ -11,8 +11,9 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254376
 time_frame: none
 data_source: system
 data_category: optional
-instrumentation_class: DatabaseAutovacuumFindingMetric
+instrumentation_class: DatabaseDiagnosticsFindingMetric
 options:
+  check: autovacuum_settings
   finding_code: autovacuum_cost_limit_low
 performance_indicator_type: []
 tiers:

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Quantile, :click_house, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Quantile, :click_house,
+  feature_category: :value_stream_management do
   include_context 'with agent_platform_sessions ClickHouse aggregation engine'
 
   let(:engine_definition) do
@@ -93,6 +94,16 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Quantile, :click_house
   end
 
   describe "quantile without param" do
+    it 'uses quantileExactInclusive' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :duration_quantile }]
+      )
+
+      sql = engine.execute(request).payload[:data].send(:query).to_sql
+
+      expect(sql).to include('quantileExactInclusive(0.5)(')
+    end
+
     it 'returns median' do
       request = Gitlab::Database::Aggregation::Request.new(
         metrics: [{ identifier: :duration_quantile }]

@@ -79,7 +79,9 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
             },
             description: {
               type: 'string',
-              description: 'Description in GitLab Flavored Markdown (max 1,048,576 characters).',
+              description: 'Description in GitLab Flavored Markdown (max 1048576 characters). Lines ' \
+                'beginning with "/" are rejected to avoid triggering quick actions. Use add_labels, ' \
+                'assignee_ids, and the other fields instead.',
               maxLength: 1_048_576
             },
             assignee_ids: {
@@ -525,8 +527,9 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
           .not_to change { WorkItem.count }
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text])
-          .to eq('Validation error: Work item #42 not found or inaccessible')
+          .to eq('Tool execution failed: Work item #42 not found or inaccessible')
       end
     end
 
@@ -551,6 +554,23 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(result[:content].first[:text])
           .to eq('Validation error: type_name is required when creating a work item')
       end
+    end
+  end
+
+  describe '#governed_containers' do
+    it 'governs by the container holding the parent work item', :aggregate_failures do
+      arguments = { parent_id: work_item.to_global_id.to_s }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.containers).to contain_exactly(project)
+      expect(resolved.named).to eq(1)
+    end
+
+    it 'counts an unknown parent as named so the call is refused', :aggregate_failures do
+      resolved = service.governed_containers({ parent_id: non_existing_record_id.to_s }.with_indifferent_access)
+
+      expect(resolved.containers).to be_empty
+      expect(resolved.named).to eq(1)
     end
   end
 end

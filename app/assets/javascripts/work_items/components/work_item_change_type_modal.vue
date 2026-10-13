@@ -16,6 +16,8 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEM_WIDGETS_NAME_MAP,
 } from '../constants';
 
@@ -353,6 +355,7 @@ export default {
               id: this.workItemId,
               workItemTypeId: this.workItemTypeId,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         });
         if (errors?.length > 0) {
@@ -400,9 +403,12 @@ export default {
       this.warningMessage = '';
       this.valueNotPresentWarning = '';
 
-      const isEpicWithSubepicsFeature =
-        this.parentWorkItemType === WORK_ITEM_TYPE_NAME_EPIC && this.hasSubepicsFeature;
-      if (this.hasParent && !isEpicWithSubepicsFeature) {
+      const isPromotingToEpicWithoutSubepicsFeature =
+        this.selectedWorkItemType.name === WORK_ITEM_TYPE_NAME_EPIC && !this.hasSubepicsFeature;
+      const isTask = this.workItemType === WORK_ITEM_TYPE_NAME_TASK;
+      const isKeyResult = this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT;
+
+      if (this.hasParent && (isPromotingToEpicWithoutSubepicsFeature || isTask || isKeyResult)) {
         this.warningMessage = sprintf(
           s__(
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',

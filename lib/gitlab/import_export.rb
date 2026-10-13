@@ -9,6 +9,9 @@ module Gitlab
     # - user/project/settings/import_export.md
     VERSION = '0.2.4'
     FILENAME_LIMIT = 50
+    # Use octet-stream for downloads so browsers preserve the .tar.gz extension.
+    # See Gitlab::Repositories::ArchiveHeaderBuilder#content_type.
+    EXPORT_DOWNLOAD_CONTENT_TYPE = 'application/octet-stream'
 
     def export_path(relative_path:)
       File.join(storage_path, relative_path)
@@ -78,6 +81,10 @@ module Gitlab
       basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{exportable.full_path.tr('/', '_')}"
 
       "#{basename[0..FILENAME_LIMIT]}_export.tar.gz"
+    end
+
+    def export_download_content_type
+      EXPORT_DOWNLOAD_CONTENT_TYPE
     end
 
     def version

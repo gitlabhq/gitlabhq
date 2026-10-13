@@ -25,7 +25,7 @@ RSpec.describe 'RunnerCacheClear', feature_category: :runner_core do
     let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
   end
 
-  context 'when the user has admin pipeline permission on the given project' do
+  context 'when the user is a maintainer of the project' do
     before_all do
       project.add_maintainer(current_user)
     end
@@ -39,7 +39,21 @@ RSpec.describe 'RunnerCacheClear', feature_category: :runner_core do
     end
   end
 
-  context 'when the user does not have admin pipeline permission' do
+  context 'when the user is a developer' do
+    before_all do
+      project.add_developer(current_user)
+    end
+
+    it 'clears the runner cache' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+      end.to change { project.reload.jobs_cache_index }.by(1)
+
+      expect(mutation_response['errors']).to be_empty
+    end
+  end
+
+  context 'when the user is not a project member' do
     it_behaves_like 'a mutation that returns a top-level access error'
 
     it 'does not clear the runner cache' do

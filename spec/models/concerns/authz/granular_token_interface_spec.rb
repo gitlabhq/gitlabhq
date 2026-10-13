@@ -37,6 +37,20 @@ RSpec.describe Authz::GranularTokenInterface, feature_category: :permissions do
     end
   end
 
+  describe '#subject_to_granular_enforcement?' do
+    context 'when the token is granular' do
+      it 'returns false' do
+        expect(token_class.new(true).subject_to_granular_enforcement?).to be(false)
+      end
+    end
+
+    context 'when the token is not granular' do
+      it 'returns true' do
+        expect(token_class.new(false).subject_to_granular_enforcement?).to be(true)
+      end
+    end
+  end
+
   describe '#permitted_for_boundary?' do
     subject(:permitted_for_boundary) { token.permitted_for_boundary?(boundary, permissions) }
 
@@ -85,7 +99,21 @@ RSpec.describe Authz::GranularTokenInterface, feature_category: :permissions do
     it 'provides every method of the granular token contract' do
       token = build_stubbed(:personal_access_token)
 
-      expect(token).to respond_to(:granular?, :legacy?, :permitted_for_boundary?, :can?, :granular_scopes)
+      expect(token).to respond_to(:granular?, :legacy?, :permitted_for_boundary?, :can?, :granular_scopes,
+        :subject_to_granular_enforcement?)
+    end
+  end
+
+  describe 'OauthAccessToken' do
+    it 'includes the interface' do
+      expect(OauthAccessToken.include?(described_class)).to be(true)
+    end
+
+    it 'provides every method of the granular token contract' do
+      token = build_stubbed(:oauth_access_token)
+
+      expect(token).to respond_to(:granular?, :legacy?, :permitted_for_boundary?, :can?, :granular_scopes,
+        :subject_to_granular_enforcement?)
     end
   end
 end

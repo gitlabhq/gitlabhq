@@ -90,7 +90,9 @@ module Gitlab
         #   taken, an attribute is outside CREATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES,
         #   one of NON_NULLABLE_ATTRIBUTES is explicitly nil, its mode, lifecycle_state, or
         #   trigger_type is outside ENUMERATED_ATTRIBUTES, an action is not a { type, value }
-        #   entry, or its rules merge into a module larger than MAX_COMPILED_RULES_BYTES
+        #   entry, its rules merge into a module larger than MAX_COMPILED_RULES_BYTES, or a
+        #   custom rule's program, the merged module, or an authored scope_rego does not
+        #   parse (see RegoValidator)
         def create(_attributes)
           raise NotImplementedError
         end
@@ -106,8 +108,10 @@ module Gitlab
         #   taken, an attribute is outside UPDATABLE_ATTRIBUTES and IMMUTABLE_ATTRIBUTES, one of
         #   IDENTITY_ATTRIBUTES differs from the stored policy, one of
         #   NON_NULLABLE_ATTRIBUTES is explicitly nil, its mode, lifecycle_state, or trigger_type
-        #   is outside ENUMERATED_ATTRIBUTES, an action is not a { type, value } entry, or
-        #   replacement rules merge into a module larger than MAX_COMPILED_RULES_BYTES
+        #   is outside ENUMERATED_ATTRIBUTES, an action is not a { type, value } entry,
+        #   replacement rules merge into a module larger than MAX_COMPILED_RULES_BYTES, or a
+        #   replacement custom rule's program, the merged module, or a supplied scope_rego does
+        #   not parse (see RegoValidator)
         def update(_id, _attributes)
           raise NotImplementedError
         end
@@ -128,8 +132,9 @@ module Gitlab
 
         # @param organization_id [Integer] the organization ID
         # @param trigger_type [String, nil] returns every trigger when nil
-        # @param namespace_id [Integer, nil] when nil returns all policies; when set, returns
-        #   only policies stamped with that namespace_id (how a group surface sees only its own)
+        # @param namespace_ids [Array<Integer, nil>, nil] when nil returns all policies; when set,
+        #   returns only policies stamped with one of these namespace ids, where a nil element
+        #   matches organization-wide policies
         # @param lifecycle_state [String, nil] returns every lifecycle state when nil
         # @param ids [Array<Integer>, nil] when given, returns only these ids (ignoring
         #   offset/per_page) instead of a page; an empty array returns no policies
@@ -137,7 +142,7 @@ module Gitlab
         # @param per_page [Integer] items per page; clamped to between 1 and MAX_PER_PAGE
         # @return [Gitlab::PolicyStore::Page] the requested page of policies
         def list(
-          organization_id:, trigger_type: nil, namespace_id: nil, lifecycle_state: nil, ids: nil, offset: 0,
+          organization_id:, trigger_type: nil, namespace_ids: nil, lifecycle_state: nil, ids: nil, offset: 0,
           per_page: DEFAULT_PER_PAGE)
           raise NotImplementedError
         end
@@ -314,10 +319,18 @@ module Gitlab
         # cleared the same way: a hand-authored program carries no structured scope to derive
         # paths from, and `nil` (not `[]`) says that, since `[]` means "reads nothing".
         def with_compiled_scope(attributes)
-          return attributes.merge(policy_scope: nil, scope_dimensions: nil) unless blank?(attributes[:scope_rego])
+          unless blank?(attributes[:scope_rego])
+            validate_authored_scope_rego!(attributes)
+            return attributes.merge(policy_scope: nil, scope_dimensions: nil)
+          end
 
           transpiler = ScopeTranspiler.new(attributes[:policy_scope], policy_name: attributes[:name])
           attributes.merge(scope_rego: transpiler.transpile, scope_dimensions: transpiler.scope_dimensions)
+        end
+
+        def validate_authored_scope_rego!(attributes)
+          validate_compiled_text_limits!(attributes)
+          RegoValidator.validate!(:scope_rego, attributes[:scope_rego])
         end
 
         def with_updated_scope(stored, changes)
@@ -366,22 +379,33 @@ module Gitlab
 
           compiled = rules.each_with_index.map do |rule, index|
             transpiler = RuleTranspiler.new(rule, rule_index: index, max_projected_bytes: MAX_COMPILED_RULES_BYTES)
-            rule.merge(COMPILED_RULE_KEY => transpiler.transpile)
+            program = transpiler.transpile
+            RegoValidator.validate!("rules[#{index}]", program) if authored_rego_rule?(rule)
+
+            rule.merge(COMPILED_RULE_KEY => program)
           end
 
-          validate_merged_program_size!(compiled)
+          validate_merged_program!(compiled)
 
           attributes.merge(rules: compiled)
         end
 
-        def validate_merged_program_size!(compiled_rules)
+        # Only a `custom` rule holds user-written Rego, so only it is parsed on its own.
+        def authored_rego_rule?(rule)
+          rule['type'] == 'custom'
+        end
+
+        def validate_merged_program!(compiled_rules)
           return if compiled_rules.empty?
 
-          merged_program_bytesize = RuleProgramMerger.new(compiled_rules).merge.bytesize
-          return if merged_program_bytesize <= MAX_COMPILED_RULES_BYTES
+          merged_program = RuleProgramMerger.new(compiled_rules).merge
 
-          raise PolicyStore::ValidationError,
-            "rules compile to #{merged_program_bytesize} bytes, over the maximum of #{MAX_COMPILED_RULES_BYTES} bytes"
+          if merged_program.bytesize > MAX_COMPILED_RULES_BYTES
+            raise PolicyStore::ValidationError,
+              "rules compile to #{merged_program.bytesize} bytes, over the maximum of #{MAX_COMPILED_RULES_BYTES} bytes"
+          end
+
+          RegoValidator.validate!(RegoValidator::MERGED_PROGRAM_FIELD, merged_program)
         end
       end
     end

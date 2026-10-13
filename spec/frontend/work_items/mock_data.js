@@ -1578,7 +1578,7 @@ export const workItemNoBlockedByLinkedItemsResponseWithFeatures = {
 
 export const workItemDevelopmentMRNodes = [
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/61',
+    id: 'gid://gitlab/MergeRequestIssue/61',
     fromMrDescription: true,
     mergeRequest: {
       iid: '13',
@@ -1619,7 +1619,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/62',
+    id: 'gid://gitlab/MergeRequestIssue/62',
     fromMrDescription: true,
     mergeRequest: {
       iid: '15',
@@ -1649,7 +1649,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/63',
+    id: 'gid://gitlab/MergeRequestIssue/63',
     fromMrDescription: true,
     mergeRequest: {
       iid: '14',
@@ -1679,7 +1679,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/64',
+    id: 'gid://gitlab/MergeRequestIssue/64',
     fromMrDescription: true,
     mergeRequest: {
       iid: '12',
@@ -1720,7 +1720,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/65',
+    id: 'gid://gitlab/MergeRequestIssue/65',
     fromMrDescription: true,
     mergeRequest: {
       iid: '11',
@@ -2109,6 +2109,7 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
   },
   status: null,
   agentPlan: null,
+  decisionLog: null,
   customFields: null,
   participants: null,
 });
@@ -2809,14 +2810,6 @@ export const deleteWorkItemFailureResponse = {
       path: ['workItemDelete'],
     },
   ],
-};
-
-export const deleteWorkItemMutationErrorResponse = {
-  data: {
-    workItemDelete: {
-      errors: ['Error'],
-    },
-  },
 };
 
 export const workItemHierarchyNoUpdatePermissionResponse = {
@@ -6241,34 +6234,26 @@ export const getAwardEmojiResponse = (toggledOn) => {
   };
 };
 
-export const getTodosMutationResponse = (state) => {
-  return {
-    data: {
-      todoMutation: {
-        todo: {
-          id: 'gid://gitlab/Todo/1',
-          state,
-        },
-        errors: [],
-      },
-    },
+export const workItemCurrentUserTodosMutationResponseFactory = ({
+  todos = [],
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetCurrentUserTodos',
+    type: 'CURRENT_USER_TODOS',
+    currentUserTodos: { nodes: todos, __typename: 'TodoConnection' },
   };
-};
 
-export const getMarkAllDoneTodosMutationResponse = () => {
   return {
     data: {
       workItemUpdate: {
+        __typename: 'WorkItemUpdatePayload',
         workItem: {
+          __typename: 'WorkItem',
           id: 'gid://gitlab/WorkItem/1',
-          widgets: [
-            {
-              type: 'CURRENT_USER_TODOS',
-              currentUserTodos: {
-                nodes: [],
-              },
-            },
-          ],
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', currentUserTodos: widget } }
+            : { widgets: [widget] }),
         },
         errors: [],
       },
@@ -6403,139 +6388,6 @@ export const groupEpicsWithMilestonesQueryResponseWithFeatures = {
   },
 };
 
-export const workItemsQueryResponse = {
-  data: {
-    namespace: {
-      id: 'gid://gitlab/Group/3',
-      __typename: 'Group',
-      name: 'Test',
-      workItems: {
-        pageInfo: {
-          hasNextPage: true,
-          hasPreviousPage: false,
-          startCursor: 'startCursor',
-          endCursor: 'endCursor',
-          __typename: 'PageInfo',
-        },
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/58',
-            iid: '23',
-            author: {
-              id: 'gid://gitlab/User/9',
-              avatarUrl: 'author/avatar/url',
-              name: 'Arthur',
-              username: 'arthur',
-              webUrl: 'author/web/url',
-              webPath: 'author/web/url',
-            },
-            closedAt: '',
-            confidential: true,
-            createdAt: '2020-01-23T12:34:56Z',
-            hidden: true,
-            namespace: {
-              id: 'full-path-epic-id',
-              fullPath: 'full-path',
-            },
-            reference: 'javascriptjs/js#23',
-            state: 'OPEN',
-            title: 'a group level work item',
-            titleHtml: 'a group level work item',
-            updatedAt: '',
-            webUrl: 'web/url',
-            userDiscussionsCount: 0,
-            widgets: [
-              {
-                __typename: 'WorkItemWidgetAssignees',
-                assignees: {
-                  nodes: mockAssignees,
-                },
-                type: 'ASSIGNEES',
-              },
-              {
-                __typename: 'WorkItemWidgetLabels',
-                allowsScopedLabels: false,
-                labels: {
-                  nodes: [
-                    {
-                      __typename: 'Label',
-                      id: 'gid://gitlab/Label/7',
-                      color: '#f00',
-                      description: '',
-                      title: 'Label 7',
-                    },
-                  ],
-                },
-                type: 'LABELS',
-              },
-            ],
-            workItemType: {
-              id: 'gid://gitlab/WorkItems::Type/5',
-              name: 'Issue',
-            },
-          },
-          {
-            id: 'gid://gitlab/WorkItem/51',
-            iid: '21',
-            author: {
-              id: 'gid://gitlab/User/9',
-              avatarUrl: 'author/avatar/url',
-              name: 'Arthur',
-              username: 'arthur',
-              webUrl: 'author/web/url',
-              webPath: 'author/web/url',
-            },
-            closedAt: '',
-            confidential: true,
-            createdAt: '2020-01-23T12:34:56Z',
-            hidden: true,
-            namespace: {
-              id: 'full-path-epic-id',
-              fullPath: 'full-path',
-            },
-            reference: 'javascriptjs/js#23',
-            state: 'OPEN',
-            title: 'a group level work item',
-            titleHtml: 'a group level work item',
-            updatedAt: '',
-            webUrl: 'web/url',
-            userDiscussionsCount: 0,
-            widgets: [
-              {
-                __typename: 'WorkItemWidgetAssignees',
-                assignees: {
-                  nodes: mockAssignees,
-                },
-                type: 'ASSIGNEES',
-              },
-              {
-                __typename: 'WorkItemWidgetLabels',
-                allowsScopedLabels: false,
-                labels: {
-                  nodes: [
-                    {
-                      __typename: 'Label',
-                      id: 'gid://gitlab/Label/7',
-                      color: '#f00',
-                      description: '',
-                      title: 'Label 7',
-                    },
-                  ],
-                },
-                type: 'LABELS',
-              },
-            ],
-            workItemType: {
-              id: 'gid://gitlab/WorkItems::Type/5',
-              name: 'Issue',
-            },
-          },
-        ],
-      },
-    },
-  },
-};
-
 const emptyRestFeatures = {
   __typename: 'WorkItemFeatures',
   labels: {
@@ -6644,6 +6496,10 @@ const subChildBaseNodes = [
       name: 'Issue',
       iconName: 'work-item-issue',
     },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
+    },
   },
   {
     id: 'gid://gitlab/WorkItem/102',
@@ -6710,6 +6566,10 @@ const subChildBaseNodes = [
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Issue',
       iconName: 'work-item-issue',
+    },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
     },
   },
 ];
@@ -7072,6 +6932,10 @@ export const combinedQueryResultExample = [
       name: 'Issue',
       iconName: 'work-item-issue',
     },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
+    },
     __typename: 'WorkItem',
   },
   {
@@ -7132,6 +6996,10 @@ export const combinedQueryResultExample = [
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Issue',
       iconName: 'work-item-issue',
+    },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
     },
     __typename: 'WorkItem',
   },
@@ -7767,6 +7635,19 @@ export const createWorkItemQueryResponseWithFeatures = (widgets = []) => {
   return base;
 };
 
+export const createWorkItemFeaturesQueryResponse = ({ hasEpicsFeature = false } = {}) => ({
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/33',
+      availableFeatures: {
+        hasEpicsFeature,
+        __typename: 'NamespaceAvailableFeatures',
+      },
+      __typename: 'Group',
+    },
+  },
+});
+
 export const mockToggleResolveDiscussionResponse = {
   data: {
     discussionToggleResolve: {
@@ -7899,17 +7780,6 @@ export const mockMoveWorkItemMutationResponse = ({ error = undefined } = {}) => 
         userPermissions: mockUserPermissions,
       },
       errors: [error],
-    },
-  },
-});
-
-export const mockUserPreferences = (useWorkItemsView = true) => ({
-  data: {
-    currentUser: {
-      id: '1',
-      userPreferences: {
-        useWorkItemsView,
-      },
     },
   },
 });
@@ -8386,6 +8256,7 @@ export const mockCreateWorkItemDraftData = {
             id: 'gid://gitlab/WorkItem/618',
             iid: '1',
             title: 'Sample Epic',
+            titleHtml: 'Sample Epic',
             confidential: false,
             namespace: {
               __typename: 'Namespace',
@@ -8509,8 +8380,19 @@ export const mockNewWorkItemCache = {
       type: 'START_AND_DUE_DATE',
     },
     {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
+      __typename: 'WorkItemWidgetDefinitionStatus',
       type: 'STATUS',
+      allowedStatuses: [],
+      defaultOpenStatus: {
+        id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+        category: 'to_do',
+        name: 'To do',
+        description: null,
+        iconName: 'status-waiting',
+        color: '#737278',
+        position: 0,
+        __typename: 'WorkItemStatus',
+      },
     },
     {
       __typename: 'WorkItemWidgetDefinitionGeneric',
@@ -8529,197 +8411,6 @@ export const mockNewWorkItemCache = {
   workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
   workItemTypeIconName: 'work-item-epic',
 };
-
-export const restoredDraftDataWidgets = [
-  {
-    type: 'DESCRIPTION',
-    description: 'Some **description**',
-    descriptionHtml: '',
-    lastEditedAt: null,
-    lastEditedBy: null,
-    taskCompletionStatus: null,
-    __typename: 'WorkItemWidgetDescription',
-  },
-  { type: 'STATUS', __typename: 'WorkItemWidgetStatus' },
-  {
-    type: 'LABELS',
-    allowsScopedLabels: true,
-    labels: {
-      nodes: [
-        {
-          __typename: 'Label',
-          id: 'gid://gitlab/GroupLabel/12',
-          title: 'Brische',
-          description: null,
-          color: '#472821',
-          textColor: '#FFFFFF',
-        },
-      ],
-      __typename: 'LabelConnection',
-    },
-    __typename: 'WorkItemWidgetLabels',
-  },
-  {
-    type: 'WEIGHT',
-    weight: 5,
-    rolledUpWeight: null,
-    rolledUpCompletedWeight: null,
-    __typename: 'WorkItemWidgetWeight',
-  },
-  {
-    type: 'START_AND_DUE_DATE',
-    dueDate: '2026-12-01',
-    startDate: '2025-01-01',
-    isFixed: false,
-    rollUp: false,
-    __typename: 'WorkItemWidgetStartAndDueDate',
-  },
-  {
-    type: 'HEALTH_STATUS',
-    healthStatus: 'on_track',
-    rolledUpHealthStatus: [],
-    __typename: 'WorkItemWidgetHealthStatus',
-  },
-  {
-    type: 'LINKED_ITEMS',
-    blockingCount: 0,
-    blockedByCount: 0,
-    linkedItems: { nodes: [] },
-    __typename: 'WorkItemWidgetLinkedItems',
-  },
-  { type: 'COLOR', color: '#1068bf', textColor: '#FFFFFF', __typename: 'WorkItemWidgetColor' },
-  { type: 'CUSTOM_FIELDS', customFieldValues: [], __typename: 'WorkItemWidgetCustomFields' },
-  {
-    type: 'HIERARCHY',
-    hasChildren: false,
-    hasParent: false,
-    parent: {
-      __typename: 'WorkItem',
-      id: 'gid://gitlab/WorkItem/618',
-      iid: '1',
-      title: 'Sample Epic',
-      confidential: false,
-      namespace: {
-        __typename: 'Namespace',
-        id: 'gid://gitlab/Group/104',
-        fullPath: 'work-items-beta',
-      },
-      webUrl: null,
-      workItemType: {
-        __typename: 'WorkItemType',
-        id: 'gid://gitlab/WorkItems::Type/8',
-        name: 'Epic',
-        iconName: 'work-item-epic',
-      },
-    },
-    depthLimitReachedByType: [],
-    rolledUpCountsByType: [],
-    children: { nodes: [], __typename: 'WorkItemConnection' },
-    __typename: 'WorkItemWidgetHierarchy',
-  },
-  {
-    type: 'TIME_TRACKING',
-    timeEstimate: 0,
-    humanReadableAttributes: {
-      timeEstimate: '',
-    },
-    timelogs: { nodes: [], __typename: 'WorkItemTimelogConnection' },
-    totalTimeSpent: 0,
-    __typename: 'WorkItemWidgetTimeTracking',
-  },
-];
-
-export const restoredDraftDataWidgetsEmpty = [
-  {
-    type: 'DESCRIPTION',
-    description: null,
-    descriptionHtml: '',
-    lastEditedAt: null,
-    lastEditedBy: null,
-    taskCompletionStatus: null,
-    __typename: 'WorkItemWidgetDescription',
-  },
-  {
-    type: 'STATUS',
-    __typename: 'WorkItemWidgetStatus',
-  },
-  {
-    type: 'LABELS',
-    allowsScopedLabels: true,
-    labels: {
-      nodes: [],
-      __typename: 'LabelConnection',
-    },
-    __typename: 'WorkItemWidgetLabels',
-  },
-  {
-    type: 'WEIGHT',
-    weight: null,
-    rolledUpWeight: null,
-    rolledUpCompletedWeight: null,
-    __typename: 'WorkItemWidgetWeight',
-  },
-  {
-    type: 'START_AND_DUE_DATE',
-    dueDate: null,
-    startDate: null,
-    isFixed: false,
-    rollUp: false,
-    __typename: 'WorkItemWidgetStartAndDueDate',
-  },
-  {
-    type: 'HEALTH_STATUS',
-    healthStatus: null,
-    rolledUpHealthStatus: [],
-    __typename: 'WorkItemWidgetHealthStatus',
-  },
-  {
-    type: 'LINKED_ITEMS',
-    blockingCount: 0,
-    blockedByCount: 0,
-    linkedItems: {
-      nodes: [],
-    },
-    __typename: 'WorkItemWidgetLinkedItems',
-  },
-  {
-    type: 'COLOR',
-    color: '#1068bf',
-    textColor: '#FFFFFF',
-    __typename: 'WorkItemWidgetColor',
-  },
-  {
-    type: 'CUSTOM_FIELDS',
-    customFieldValues: [],
-    __typename: 'WorkItemWidgetCustomFields',
-  },
-  {
-    type: 'HIERARCHY',
-    hasChildren: false,
-    hasParent: false,
-    parent: null,
-    depthLimitReachedByType: [],
-    rolledUpCountsByType: [],
-    children: {
-      nodes: [],
-      __typename: 'WorkItemConnection',
-    },
-    __typename: 'WorkItemWidgetHierarchy',
-  },
-  {
-    type: 'TIME_TRACKING',
-    timeEstimate: 0,
-    humanReadableAttributes: {
-      timeEstimate: '',
-    },
-    timelogs: {
-      nodes: [],
-      __typename: 'WorkItemTimelogConnection',
-    },
-    totalTimeSpent: 0,
-    __typename: 'WorkItemWidgetTimeTracking',
-  },
-];
 
 export const getAllStatusesQueryResponse = [
   {
@@ -10401,12 +10092,10 @@ export const workItemMetadataProviderResponse = {
       availableFeatures: {
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
-        hasOkrsFeature: true,
         hasSubepicsFeature: true,
         hasIssuableHealthStatusFeature: true,
         hasEpicsFeature: true,
         hasScopedLabelsFeature: true,
-        hasQualityManagementFeature: true,
         hasLinkedItemsEpicsFeature: true,
         hasWorkItemStatusFeature: true,
         __typename: 'NamespaceAvailableFeatures',
@@ -10432,7 +10121,7 @@ export const workItemMetadataProviderResponse = {
       },
       userPermissions: {
         createWorkItem: true,
-        adminLabel: true,
+        createLabel: true,
         __typename: 'NamespacePermissions',
       },
       __typename: 'Namespace',
@@ -10565,16 +10254,13 @@ export const mockMetadataQueryResponse = {
         __typename: 'AvailableFeatures',
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
-        hasOkrsFeature: true,
         hasSubepicsFeature: true,
         hasIssuableHealthStatusFeature: true,
         hasEpicsFeature: true,
         hasScopedLabelsFeature: true,
-        hasQualityManagementFeature: true,
         hasLinkedItemsEpicsFeature: true,
         hasWorkItemStatusFeature: true,
         hasBlockedIssuesFeature: true,
-        hasGroupBulkEditFeature: true,
         hasCustomFieldsFeature: true,
         hasDuoRemoteFlowsFeature: true,
         hasProjects: true,
@@ -10606,7 +10292,7 @@ export const mockMetadataQueryResponse = {
       },
       userPermissions: {
         __typename: 'NamespaceUserPermissions',
-        adminLabel: true,
+        createLabel: true,
         createProjects: true,
         bulkAdminEpic: true,
         adminIssue: true,
@@ -11753,239 +11439,3 @@ export const sharedSavedView = [
     },
   },
 ];
-
-export const workItemsQueryResponseWithFeatures = {
-  data: {
-    namespace: {
-      id: 'gid://gitlab/Group/3',
-      __typename: 'Group',
-      name: 'Test',
-      workItems: {
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: 'start',
-          endCursor: 'end',
-          __typename: 'PageInfo',
-        },
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/1',
-            iid: '1',
-            title: 'Test item 1',
-            titleHtml: 'Test item 1',
-            state: 'OPEN',
-            createdAt: '2022-08-03T12:41:54Z',
-            updatedAt: '2022-08-08T12:32:54Z',
-            closedAt: null,
-            author: mockAssignees[0],
-            namespace: {
-              id: 'gid://gitlab/Group/3',
-              fullPath: 'test-group',
-              __typename: 'Namespace',
-            },
-            webUrl: 'http://gdk.test/groups/test-group/-/work_items/1',
-            webPath: '/groups/test-group/-/work_items/1',
-            reference: 'test-group#1',
-            workItemType: {
-              id: 'gid://gitlab/WorkItems::Type/1',
-              name: 'Issue',
-              iconName: 'work-item-issue',
-              __typename: 'WorkItemType',
-            },
-            confidential: false,
-            hidden: false,
-            archived: false,
-            externalAuthor: null,
-            imported: false,
-            userDiscussionsCount: 0,
-            widgets: [
-              {
-                type: 'ASSIGNEES',
-                __typename: 'WorkItemWidgetAssignees',
-                allowsMultipleAssignees: true,
-                canInviteMembers: true,
-                assignees: {
-                  nodes: [mockAssignees[0]],
-                },
-              },
-              {
-                type: 'LABELS',
-                __typename: 'WorkItemWidgetLabels',
-                allowsScopedLabels: false,
-                labels: {
-                  nodes: mockLabels,
-                },
-              },
-            ],
-            features: {
-              assignees: {
-                assignees: {
-                  nodes: [mockAssignees[0]],
-                },
-              },
-              awardEmoji: {
-                upvotes: 0,
-                downvotes: 0,
-              },
-              milestone: {
-                milestone: null,
-              },
-              startAndDueDate: {
-                type: 'START_AND_DUE_DATE',
-                startDate: null,
-                dueDate: null,
-                rollUp: false,
-                isFixed: false,
-              },
-              labels: {
-                allowsScopedLabels: false,
-                labels: {
-                  nodes: mockLabels,
-                },
-              },
-              timeTracking: {
-                type: 'TIME_TRACKING',
-                humanReadableAttributes: {
-                  timeEstimate: '',
-                },
-              },
-              healthStatus: {
-                healthStatus: null,
-                rolledUpHealthStatus: [],
-              },
-              weight: {
-                weight: null,
-                rolledUpWeight: null,
-                rolledUpCompletedWeight: null,
-              },
-              linkedItems: {
-                blockedByCount: 0,
-                blockingCount: 0,
-              },
-              iteration: {
-                iteration: null,
-              },
-              development: {
-                closingMergeRequests: {
-                  count: 0,
-                },
-              },
-              hierarchy: {
-                parent: null,
-              },
-              status: null,
-              agentPlan: null,
-              __typename: 'WorkItemFeatures',
-            },
-            __typename: 'WorkItem',
-          },
-          {
-            id: 'gid://gitlab/WorkItem/2',
-            iid: '2',
-            title: 'Test item 2',
-            titleHtml: 'Test item 2',
-            state: 'CLOSED',
-            createdAt: '2022-08-03T12:41:54Z',
-            updatedAt: '2022-08-08T12:32:54Z',
-            closedAt: '2022-08-10T12:32:54Z',
-            author: mockAssignees[1],
-            namespace: {
-              id: 'gid://gitlab/Group/3',
-              fullPath: 'test-group',
-              __typename: 'Namespace',
-            },
-            webUrl: 'http://gdk.test/groups/test-group/-/work_items/2',
-            webPath: '/groups/test-group/-/work_items/2',
-            reference: 'test-group#2',
-            workItemType: {
-              id: 'gid://gitlab/WorkItems::Type/5',
-              name: 'Task',
-              iconName: 'work-item-task',
-              __typename: 'WorkItemType',
-            },
-            confidential: false,
-            hidden: false,
-            archived: false,
-            externalAuthor: null,
-            imported: false,
-            userDiscussionsCount: 0,
-            widgets: [
-              {
-                type: 'ASSIGNEES',
-                __typename: 'WorkItemWidgetAssignees',
-                allowsMultipleAssignees: true,
-                canInviteMembers: true,
-                assignees: {
-                  nodes: [mockAssignees[1]],
-                },
-              },
-            ],
-            features: {
-              assignees: {
-                assignees: {
-                  nodes: [mockAssignees[1]],
-                },
-              },
-              awardEmoji: {
-                upvotes: 0,
-                downvotes: 0,
-              },
-              milestone: {
-                milestone: null,
-              },
-              startAndDueDate: {
-                type: 'START_AND_DUE_DATE',
-                startDate: null,
-                dueDate: null,
-                rollUp: false,
-                isFixed: false,
-              },
-              labels: {
-                allowsScopedLabels: false,
-                labels: {
-                  nodes: [],
-                },
-              },
-              timeTracking: {
-                type: 'TIME_TRACKING',
-                humanReadableAttributes: {
-                  timeEstimate: '',
-                },
-              },
-              healthStatus: {
-                healthStatus: null,
-                rolledUpHealthStatus: [],
-              },
-              weight: {
-                weight: null,
-                rolledUpWeight: null,
-                rolledUpCompletedWeight: null,
-              },
-              linkedItems: {
-                blockedByCount: 0,
-                blockingCount: 0,
-              },
-              iteration: {
-                iteration: null,
-              },
-              development: {
-                closingMergeRequests: {
-                  count: 0,
-                },
-              },
-              hierarchy: {
-                parent: null,
-              },
-              status: null,
-              agentPlan: null,
-              __typename: 'WorkItemFeatures',
-            },
-            __typename: 'WorkItem',
-          },
-        ],
-        __typename: 'WorkItemConnection',
-      },
-    },
-  },
-};

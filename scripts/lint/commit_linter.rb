@@ -15,7 +15,8 @@ module Lint
 
         Lints commit message(s) against GitLab's commit message guidelines.
 
-        With no arguments, lints the first commit ahead of #{DEFAULT_BRANCH_REF}.
+        With no arguments, lints the first commit ahead of #{DEFAULT_BRANCH_REF}
+        (override the base ref with the COMMIT_LINT_BASE environment variable).
 
       Options:
         -m, --message MESSAGE  Lint the given message string directly, instead of
@@ -36,6 +37,11 @@ module Lint
       .freeze
 
     module_function
+
+    def base_ref
+      override = ENV['COMMIT_LINT_BASE'].to_s.strip
+      override.empty? ? DEFAULT_BRANCH_REF : override
+    end
 
     def run_command(cmd)
       output = `#{cmd}`
@@ -65,7 +71,7 @@ module Lint
     # This may cause false positives in unusual git states (e.g. shallow clones),
     # but it's safer than letting bad messages through.
     def first_commit_on_branch?
-      base_sha_output, base_success = run_command("git merge-base #{DEFAULT_BRANCH_REF} HEAD")
+      base_sha_output, base_success = run_command("git merge-base #{base_ref} HEAD")
       base_sha = base_sha_output.strip
       return true unless base_success && base_sha.match?(SHA_PATTERN)
 
@@ -124,7 +130,7 @@ module Lint
     end
 
     def commits_from_git
-      base_sha_output, base_success = run_command("git merge-base #{DEFAULT_BRANCH_REF} HEAD")
+      base_sha_output, base_success = run_command("git merge-base #{base_ref} HEAD")
       base_sha = base_sha_output.strip
       unless base_success && base_sha.match?(SHA_PATTERN)
         warn "ERROR: Failed to determine merge base"

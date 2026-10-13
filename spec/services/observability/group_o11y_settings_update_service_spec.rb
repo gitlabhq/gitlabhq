@@ -73,6 +73,31 @@ RSpec.describe Observability::GroupO11ySettingsUpdateService, feature_category: 
       end
     end
 
+    context 'when o11y_service_name is provided' do
+      it 'builds the service url from a valid service name' do
+        params = { o11y_service_name: 'my-service' }
+
+        expect(settings).to receive(:update)
+                        .with({ o11y_service_url: 'https://my-service.gitlab-o11y.com' })
+                        .and_return(true)
+
+        result = service.execute(settings, params)
+        expect(result).to be_success
+      end
+
+      ['webhook.site#', 'attacker.com#', 'foo@bar', 'foo/bar', 'foo?bar', 'foo:bar', 'foo bar', 'foo.bar']
+        .each do |malicious_name|
+        it "rejects service name #{malicious_name.inspect} without updating" do
+          expect(settings).not_to receive(:update)
+
+          result = service.execute(settings, { o11y_service_name: malicious_name })
+
+          expect(result).to be_error
+          expect(result.message).to eq('O11y service name is invalid')
+        end
+      end
+    end
+
     context 'when update fails' do
       it 'returns error response when update fails' do
         error_message = "Validation failed"

@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState } from 'pinia';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import notesEventHub from '~/notes/event_hub';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';

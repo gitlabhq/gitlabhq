@@ -125,7 +125,6 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
         id
         parent_id
         owner_id
-        created_at
         updated_at
         runners_token
         runners_token_encrypted
@@ -149,6 +148,10 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
 
       it 'does not import root group path' do
         expect(group.path).to eq('user-inputed-path')
+      end
+
+      it 'imports created_at' do
+        expect(group.created_at).to eq(Time.zone.parse(group_json['created_at']))
       end
 
       excluded_attributes.each do |excluded_attribute|

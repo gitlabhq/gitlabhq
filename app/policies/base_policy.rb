@@ -131,12 +131,12 @@ class BasePolicy < DeclarativePolicy::Base
     user.is_a?(User)
   end
 
-  def owns_organization?(org)
+  def user_is_organization_admin?(org)
     return false unless org.present?
     return false unless user_is_user?
 
-    # Admin is often automatically assigned as an owner of the default organization
-    # so we only want to return true here if an admin user is running in admin mode
+    # An instance admin is automatically an organization admin of their home organization,
+    # so we only want to return true here if an instance admin is running in admin mode
     return false if admin_mode_required?
 
     # Load the owners with a single query.

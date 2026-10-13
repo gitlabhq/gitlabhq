@@ -37,7 +37,7 @@ No longer necessary as Gitaly no longer has Ruby code.
 
 If the Rails upgrade was over a patch release and it contains important security fixes,
 make sure to release it in a
-GitLab patch release to self-managed customers. Consult with our [release managers](https://about.gitlab.com/community/release-managers/)
+GitLab patch release to GitLab Self-Managed customers. Consult with our [release managers](https://about.gitlab.com/community/release-managers/)
 for how to proceed.
 
 ### Deprecation Logger

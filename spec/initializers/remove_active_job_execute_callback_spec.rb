@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'active_job/callbacks'
+require 'active_job'
 
 RSpec.describe 'ActiveJob execute callback' do
   it 'is removed in test environment' do

@@ -8,6 +8,6 @@ RSpec.describe GitlabSchema.types['ConanMetadatumFileTypeEnum'] do
       .keys
       .map(&:upcase)
 
-    expect(described_class.values.keys).to contain_exactly(*expected_keys)
+    expect(described_class.values.keys).to match_array(expected_keys)
   end
 end

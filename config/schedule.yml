@@ -29,6 +29,12 @@ authn_data_retention_oauth_access_token_archive_worker:
   class: Authn::DataRetention::OauthAccessTokenArchiveWorker
   cron: "5 6 * * *"
 
+authn_iam_replication_reconciliation_oauth_applications:
+  class: Authn::IamReplication::ReconciliationWorker
+  cron: "*/5 * * * *"
+  args:
+    - oauth_application
+
 authorized_project_update_periodic_recalculate_worker:
   class: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   cron: "45 1 1,15 * *"
@@ -65,6 +71,19 @@ background_operation_merge_requests_clear_stale_cached_html:
     job_class_name: "MergeRequestsClearStaleCachedHtml"
     table_name: "merge_requests"
     column_name: "id"
+
+background_operation_notes_clear_old_cached_html:
+  class: Database::BackgroundOperation::CronEnqueueWorker
+  cron: "45 6 1 1,4,7,10 *"
+  args:
+    job_class_name: "NotesClearOldCachedHtml"
+    table_name: "notes"
+    column_name: "id"
+    options:
+      # Batching is unscoped, so most sub-batches in the recent-id stretch match nothing.
+      # `pause_ms` is a fixed cost per sub-batch and `batch_size` self-tunes, so the
+      # sub-batch size is the only lever on how much of the table a pass covers.
+      sub_batch_size: 500
 
 background_operation_notes_clear_stale_cached_html:
   class: Database::BackgroundOperation::CronEnqueueWorker
@@ -377,9 +396,33 @@ personal_access_tokens_expiring_worker:
   class: PersonalAccessTokens::ExpiringWorker
   cron: "0 1 * * *"
 
+pg_ash_rollup_cleanup_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "7 3-5 * * *"
+  args: [rollup_cleanup]
+
+pg_ash_rollup_hour_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "1 * * * *"
+  args: [rollup_hour]
+
+pg_ash_rollup_minute_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "* * * * *"
+  args: [rollup_minute]
+
+pg_ash_rotate_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "3 0-5 * * *"
+  args: [rotate]
+
 pipeline_schedule_worker:
   class: PipelineScheduleWorker
   cron: "3-59/10 * * * *"
+
+postgres_dynamic_partitions_detach_finalizer:
+  class: Database::FinalizePendingDetachPartitionsWorker
+  cron: "17 0-3 * * *"
 
 postgres_dynamic_partitions_dropper:
   class: Database::DropDetachedPartitionsWorker

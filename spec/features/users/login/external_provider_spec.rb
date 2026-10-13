@@ -76,7 +76,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           click_button 'Authorize'
 
-          expect(page).to have_current_path profile_account_path
+          expect(page).to have_current_path profile_two_factor_auth_path
           expect(page).to have_content(_('Authentication method updated'))
 
           expect(user.identities.last.provider).to eq('jwt')
@@ -97,7 +97,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           click_link 'Cancel'
 
-          expect(page).to have_current_path profile_account_path
+          expect(page).to have_current_path profile_two_factor_auth_path
           expect(page).not_to have_content(_('Authentication method updated'))
 
           expect(user.identities).to be_empty

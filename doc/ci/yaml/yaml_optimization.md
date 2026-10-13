@@ -49,7 +49,7 @@ job1:
     - ./job-script.sh
 ```
 
-You can't use YAML anchors across multiple files when using the [`include`](_index.md#include)
+You cannot use YAML anchors across multiple files when using the [`include`](_index.md#include)
 keyword. Anchors are only valid in the file they were defined in. To reuse configuration
 from different YAML files, use [`!reference` tags](#reference-tags) or the
 [`extends` keyword](#use-extends-to-reuse-configuration-sections).
@@ -402,8 +402,8 @@ You cannot combine `!reference` tags and inputs:
 - You cannot use an input inside the path of a `!reference` tag, for example
   `!reference [.settings, "$[[ inputs.key ]]"]`. The path segments are read when the YAML file is parsed,
   before inputs are interpolated, so the input is treated as literal text and the reference is not found.
-- You cannot use a `!reference` tag in an [input value](../inputs/_index.md#array-type), because tags are
-  resolved after inputs are interpolated.
+- Do not use a `!reference` tag in an input value, because
+  [tags are resolved after inputs are interpolated](../inputs/_index.md#input-value-looks-like-gitlabciconfigyamltagsreference).
 
 In the following example, a `script` and an `after_script` from two different locations are
 reused in the `test` job:

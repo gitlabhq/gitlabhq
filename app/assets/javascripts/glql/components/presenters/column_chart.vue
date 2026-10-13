@@ -34,8 +34,9 @@ export default {
   },
   emits: { error: null },
   computed: {
-    stacked() {
-      return this.displayConfig?.stacked === true;
+    maxSeries() {
+      const maxSeries = Number(this.displayConfig.maxSeries);
+      return Number.isInteger(maxSeries) && maxSeries > 0 ? maxSeries : null;
     },
   },
 };
@@ -46,9 +47,10 @@ export default {
     display-type="columnChart"
     :fields="fields"
     :loading="loading"
+    :display-config="displayConfig"
     @error="$emit('error', $event)"
   >
-    <template #one-dimension="{ dimension, metrics }">
+    <template #one-dimension="{ dimension, metrics, stacked }">
       <single-dimension-column-chart
         :data="data"
         :dimension="dimension"
@@ -62,6 +64,7 @@ export default {
         :primary-dimension="dimensions[0]"
         :secondary-dimension="dimensions[1]"
         :metric="metric"
+        :max-series="maxSeries"
       />
     </template>
   </dimension-routed-chart>

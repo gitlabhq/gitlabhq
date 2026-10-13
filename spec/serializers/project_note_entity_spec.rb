@@ -21,8 +21,7 @@ RSpec.describe ProjectNoteEntity do
 
   context 'when note is part of resolvable discussion' do
     before do
-      allow(note).to receive(:part_of_discussion?).and_return(true)
-      allow(note).to receive(:resolvable?).and_return(true)
+      allow(note).to receive_messages(part_of_discussion?: true, resolvable?: true)
     end
 
     it 'exposes paths to resolve note' do

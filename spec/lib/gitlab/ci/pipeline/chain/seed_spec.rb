@@ -65,6 +65,106 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed, feature_category: :pipeline_co
       expect(command.pipeline_seed.size).to eq 1
     end
 
+    describe 'logging rule errors dropped with a fully excluded stage' do
+      let(:command) { initialize_command(source: :push) }
+
+      let(:invalid_rule) do
+        [{ changes: { paths: ['README.md'], compare_to: 'invalid-ref' } }]
+      end
+
+      let(:config) do
+        {
+          stages: %w[build test],
+          build_job: { stage: 'build', script: 'echo' },
+          swallowed_job: { stage: 'test', script: 'echo', rules: invalid_rule }
+        }
+      end
+
+      it 'logs the errors that are currently discarded' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          a_hash_including(
+            class_name: described_class.name,
+            message: 'rule errors dropped with fully excluded stage',
+            project_id: project.id,
+            extra: a_hash_including(
+              pipeline_source: 'push',
+              would_newly_fail: true,
+              dropped_errors: [
+                a_string_including('rules:changes:compare_to is not a valid ref')
+              ]
+            )
+          )
+        )
+
+        run_chain
+      end
+
+      it 'still creates the pipeline' do
+        run_chain
+
+        expect(pipeline.errors).to be_empty
+        expect(command.pipeline_seed.stages.map(&:name)).to contain_exactly('build')
+      end
+
+      context 'when an included stage already reports an error' do
+        let(:config) do
+          {
+            stages: %w[build test],
+            build_job: { stage: 'build', script: 'echo' },
+            reported_job: { stage: 'build', script: 'echo', rules: invalid_rule },
+            swallowed_job: { stage: 'test', script: 'echo', rules: invalid_rule }
+          }
+        end
+
+        it 'records that the pipeline already fails' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            a_hash_including(extra: a_hash_including(would_newly_fail: false))
+          )
+
+          run_chain
+        end
+      end
+
+      context 'when no stage was dropped' do
+        let(:config) do
+          {
+            stages: %w[build test],
+            build_job: { stage: 'build', script: 'echo' },
+            reported_job: { stage: 'test', script: 'echo', rules: invalid_rule },
+            sibling_job: { stage: 'test', script: 'echo' }
+          }
+        end
+
+        it 'does not log' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+          run_chain
+        end
+      end
+
+      context 'when the command is readonly' do
+        shared_examples 'skips logging' do
+          it 'does not log' do
+            expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+            run_chain
+          end
+        end
+
+        context 'when it is a dry run' do
+          let(:command) { initialize_command(dry_run: true) }
+
+          it_behaves_like 'skips logging'
+        end
+
+        context 'when it is linting' do
+          let(:command) { initialize_command(linting: true) }
+
+          it_behaves_like 'skips logging'
+        end
+      end
+    end
+
     context 'when no ref policy is specified' do
       let(:config) do
         {
@@ -331,14 +431,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed, feature_category: :pipeline_co
 
   private
 
-  def initialize_command(dry_run: false, linting: false)
+  def initialize_command(dry_run: false, linting: false, source: nil)
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
       origin_ref: 'master',
       seeds_block: seeds_block,
       dry_run: dry_run,
-      linting: linting
+      linting: linting,
+      source: source
     )
   end
 end

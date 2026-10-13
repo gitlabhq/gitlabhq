@@ -5,21 +5,22 @@ module Gitlab
     module Partitioning
       # Decides if we can safely detach a partition.
       #
-      # Two conditions concern the partition itself, and failing either makes Postgres refuse outright:
+      # Three conditions concern the partition and its parent, and failing any makes Postgres refuse outright:
       #
-      #   1. for a concurrent detach, the parent has no DEFAULT partition
-      #   2. the partition is not awaiting FINALIZE from an interrupted concurrent detach
+      #   1. the partition is not awaiting FINALIZE from an interrupted concurrent detach
+      #   2. for a concurrent detach, no other partition of the parent is awaiting FINALIZE
+      #   3. for a concurrent detach, the parent has no DEFAULT partition
       #
       # If any table holds a foreign key to the partition's parent, Postgres detaches the partition
       # only after proving no row still references it. To prove that, it queries every table with a
       # foreign key to the parent. The query prunes to nothing only when all of these hold:
       #
-      #   3. no referencing table has a DEFAULT partition, which holds no partition id bound
-      #   4. no detached partition of a referencing table still carries a foreign key to the parent
-      #   5. every referencing table is list partitioned on the key the parent is partitioned on
-      #   6. every referencing table has already dropped its partition for the same partition ids
+      #   4. no referencing table has a DEFAULT partition, which holds no partition id bound
+      #   5. no detached partition of a referencing table still carries a foreign key to the parent
+      #   6. every referencing table is list partitioned on the key the parent is partitioned on
+      #   7. every referencing table has already dropped its partition for the same partition ids
       #
-      # The detach errors when it fails condition #6. Failing one of the other referencing
+      # The detach errors when it fails condition #7. Failing one of the other referencing
       # conditions makes it read a whole referencing table, inside the DETACH statement and
       # under a lock on its parent. Only partitions that can successfully detach without paying
       # the full scan cost are eligible for detach. See cost measured per shape analysis:
@@ -45,7 +46,13 @@ module Gitlab
 
         def detachable?
           with_connection do
-            next false unless supported_detach? && not_pending_detach?
+            next false unless not_pending_detach?
+
+            if detach_concurrently
+              next false unless no_sibling_pending_detach?
+              next false unless no_default_partition?
+            end
+
             next true if referencing_foreign_keys.empty?
 
             referencing_conditions_satisfied?
@@ -66,21 +73,27 @@ module Gitlab
             counterpart_partitions_dropped?
         end
 
-        # Postgres refuses DETACH ... CONCURRENTLY while the parent
-        # has a DEFAULT partition, but plain DETACH is unaffected.
-        def supported_detach?
-          return true unless detach_concurrently
-          return true unless has_default_partition?(partition.table)
-
-          blocked_by(:parent_has_default_partition, :error)
-        end
-
         # Either form of DETACH errors on a partition awaiting FINALIZE.
         # DetachedPartitionDropper finalizes it once retention elapses.
         def not_pending_detach?
           return true unless pg_partition&.pending_detach
 
           blocked_by(:partition_pending_detach, :warn)
+        end
+
+        # Postgres allows one pending detach per parent, so it refuses a concurrent
+        # detach of any other partition until the pending one is finalized.
+        def no_sibling_pending_detach?
+          sibling = PostgresPartition.for_parent_table(partition.table).find_by(pending_detach: true)
+          return true unless sibling
+
+          blocked_by(:sibling_pending_detach, :info, pending_detach_partition: sibling.identifier)
+        end
+
+        def no_default_partition?
+          return true unless has_default_partition?(partition.table)
+
+          blocked_by(:parent_has_default_partition, :error)
         end
 
         def supported_partition_key?

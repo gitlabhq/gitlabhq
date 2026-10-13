@@ -30,6 +30,11 @@ module Gitlab
       GRANULAR_SCOPE
     ].freeze
 
+    MCP_RESOURCE_SCOPES = {
+      '/api/v4/mcp' => MCP_SCOPE,
+      '/api/v4/orbit/mcp' => MCP_ORBIT_SCOPE
+    }.freeze
+
     # Scopes for Duo
     AI_FEATURES = :ai_features
     AI_FEATURES_SCOPES = [AI_FEATURES].freeze
@@ -125,18 +130,7 @@ module Gitlab
 
         raise IpBlocked if !skip_rate_limit?(login: login) && rate_limiter.banned?
 
-        # `user_with_password_for_git` should be the last check
-        # because it's the most expensive, especially when LDAP
-        # is enabled.
-        result =
-          service_request_check(login, password, project) ||
-          build_access_token_check(login, password) ||
-          lfs_token_check(login, password, project, request) ||
-          oauth_access_token_check(password) ||
-          personal_access_token_check(password, project) ||
-          deploy_token_check(login, password, project) ||
-          user_with_password_for_git(login, password) ||
-          Gitlab::Auth::Result::EMPTY
+        result = git_client_checks(login, password, project, request)
 
         rate_limit!(rate_limiter, success: result.success?, login: login, request: request)
         look_to_limit_user(result.actor)
@@ -146,6 +140,23 @@ module Gitlab
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
         raise Gitlab::Auth::MissingPersonalAccessTokenError
+      end
+
+      # Split out from find_for_git_client so EE can override just the
+      # credential checks without duplicating the rate-limiting wrapper
+      # around them.
+      def git_client_checks(login, password, project, request)
+        # `user_with_password_for_git` should be the last check
+        # because it's the most expensive, especially when LDAP
+        # is enabled.
+        service_request_check(login, password, project) ||
+          build_access_token_check(login, password) ||
+          lfs_token_check(login, password, project, request) ||
+          oauth_access_token_check(password) ||
+          personal_access_token_check(password, project) ||
+          deploy_token_check(login, password, project) ||
+          user_with_password_for_git(login, password) ||
+          Gitlab::Auth::Result::EMPTY
       end
 
       # Find and return a user if the provided password is valid for various
@@ -277,7 +288,7 @@ module Gitlab
           user = User.id_in(token.resource_owner_id).first
           return unless user && (user.can_log_in_with_non_expired_password? || valid_composite_identity?(user))
 
-          Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
+          Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes), oauth_access_token: token)
         end
       end
 
@@ -471,8 +482,7 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES -
-          [GRANULAR_SCOPE]
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES
       end
 
       def registry_scopes

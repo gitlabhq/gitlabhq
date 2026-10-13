@@ -6,9 +6,9 @@ import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
-import { formatGroups } from '~/organizations/shared/utils';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
+import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
@@ -174,7 +174,7 @@ describe('GroupsView', () => {
         await waitForPromises();
 
         expect(findGroupsList().props()).toMatchObject({
-          items: formatGroups(nodes),
+          items: formatGraphQLGroups(nodes),
           showGroupIcon: true,
           listItemClass: defaultPropsData.listItemClass,
           timestampType: TIMESTAMP_TYPE_CREATED_AT,

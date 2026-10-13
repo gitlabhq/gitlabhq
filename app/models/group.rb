@@ -477,7 +477,8 @@ class Group < Namespace
         .where("#{Integration.table_name}.group_id = namespaces.id")
         .where(type: integration.type)
 
-      where('NOT EXISTS (?)', integrations)
+      scope = where('NOT EXISTS (?)', integrations)
+      integration.instance_level? ? scope.in_organization(integration.organization_id) : scope
     end
 
     def groups_user_can(groups, user, action, same_root: false)
@@ -729,8 +730,6 @@ class Group < Namespace
   end
 
   def add_security_manager(user, current_user = nil)
-    return unless Gitlab::Security::SecurityManagerConfig.enabled?
-
     add_member(user, :security_manager, current_user: current_user)
   end
 
@@ -904,13 +903,6 @@ class Group < Namespace
     GroupMember
       .active_without_invites_and_requests
       .where(source_id: self_and_descendants.without_order.select(:id))
-  end
-
-  # Returns all members that are part of the group, it's subgroups, and ancestor groups
-  def hierarchy_members
-    GroupMember
-      .active_without_invites_and_requests
-      .where(source_id: self_and_hierarchy.without_order.select(:id))
   end
 
   def hierarchy_members_with_inactive
@@ -1160,12 +1152,8 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  def vulnerability_malware_detection_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:vulnerability_malware_detection, type: :beta)
-  end
-
-  def dependency_malware_detection_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:dependency_malware_detection, type: :beta)
+  def use_mermaid_v12_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:use_mermaid_v12, type: :gitlab_com_derisk)
   end
 
   def use_work_item_url?
@@ -1229,10 +1217,6 @@ class Group < Namespace
 
   def dependency_proxy_for_containers_policy_subject
     ::Packages::Policies::DependencyProxy::Group.new(self)
-  end
-
-  def update_two_factor_requirement_for_members
-    hierarchy_members.find_each(&:update_two_factor_requirement)
   end
 
   def readme_project

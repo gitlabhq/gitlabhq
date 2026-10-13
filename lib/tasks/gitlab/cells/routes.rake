@@ -46,7 +46,7 @@ namespace :gitlab do
         # mounted, so the memo holds a partial route table. Compile to build the
         # full endpoint tree, then drop the memo to force a rebuild.
         API::API.compile!
-        API::API.reset_routes!
+        API::API.send(:reset_routes!)
 
         snapshot = Gitlab::Cells::HttpRouter::RoutesSnapshot.new(
           path_specs: Rails.application.routes.routes.map { |route| route.path.spec.to_s } +

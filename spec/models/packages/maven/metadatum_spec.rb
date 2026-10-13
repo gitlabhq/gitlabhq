@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::Metadatum, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Maven::Metadatum, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package).class_name('Packages::Maven::Package') }
   end

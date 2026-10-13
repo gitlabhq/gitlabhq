@@ -15,8 +15,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
     let(:https) { true }
 
     before do
-      allow(helper).to receive(:current_user).and_return(nil)
-      allow(helper).to receive(:gon).and_return(gon)
+      allow(helper).to receive_messages(current_user: nil, gon: gon)
       stub_config_setting(https: https)
     end
 
@@ -76,6 +75,50 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
 
           helper.add_gon_variables
         end
+      end
+    end
+
+    context 'when iframe rendering is enabled' do
+      before do
+        stub_iframe_providers(
+          'example' => {
+            'name' => 'Example',
+            'matches' => [{ 'host' => 'example.com', 'path' => '/{id}' }],
+            'src' => 'https://embed.example.com/{id}',
+            'sandbox' => %w[allow-scripts allow-popups]
+          },
+          'other' => {
+            'name' => 'Other',
+            'matches' => [{ 'host' => 'other.example.com', 'path' => '/{id}' }],
+            'src' => 'https://other.example.com/embed/{id}',
+            'sandbox' => []
+          })
+        stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
+      end
+
+      it 'exposes the enabled providers' do
+        expect(gon).to receive(:iframe_rendering_providers=).with({
+          'example' => {
+            name: 'Example',
+            src_origin: 'https://embed.example.com',
+            sandbox: 'allow-scripts allow-popups',
+            require_activation: true
+          }
+        })
+
+        helper.add_gon_variables
+      end
+    end
+
+    context 'when iframe rendering is disabled' do
+      before do
+        stub_application_setting(iframe_rendering_enabled: false, iframe_rendering_allowlist: %w[youtube])
+      end
+
+      it 'does not expose any providers' do
+        expect(gon).not_to receive(:iframe_rendering_providers=)
+
+        helper.add_gon_variables
       end
     end
 
@@ -186,13 +229,15 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
         before do
           organization = build_stubbed(:organization, path: 'acme')
-          allow(Current).to receive(:organization_resolver)
-            .and_return(instance_double(Gitlab::Current::Organization,
-              from_organization_params: organization))
 
-          allow(Current).to receive(:data_context).and_return(
-            Gitlab::Current::DataContext.new(organization: build_stubbed(:organization, :isolated,
-              path: 'acme'))
+          allow(Current).to receive_messages(
+            organization_resolver: instance_double(
+              Gitlab::Current::Organization,
+              from_organization_params: organization
+            ),
+            data_context: Gitlab::Current::DataContext.new(
+              organization: build_stubbed(:organization, :isolated, path: 'acme')
+            )
           )
         end
 
@@ -299,6 +344,27 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
           stub_application_setting(instance_token_prefix: 'instanceprefix')
 
           expect(gon).not_to receive(:instance_token_prefix=).with('instanceprefix')
+
+          helper.add_gon_variables
+        end
+      end
+    end
+
+    describe 'aggregation_max_page_size' do
+      it 'exposes the ClickHouse aggregation page size cap' do
+        expect(gon).to receive(:aggregation_max_page_size=)
+          .with(Gitlab::Database::Aggregation::ClickHouse::Engine.max_page_size)
+
+        helper.add_gon_variables
+      end
+
+      context 'with feature flag larger_clickhouse_aggregation_pages disabled' do
+        before do
+          stub_feature_flags(larger_clickhouse_aggregation_pages: false)
+        end
+
+        it 'does not expose the page size cap' do
+          expect(gon).not_to receive(:aggregation_max_page_size=)
 
           helper.add_gon_variables
         end

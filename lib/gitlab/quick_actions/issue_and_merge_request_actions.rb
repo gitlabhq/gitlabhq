@@ -161,10 +161,13 @@ module Gitlab
         end
         command :copy_metadata do |source_issuable|
           if can_copy_metadata?(source_issuable)
-            @updates[:add_label_ids] = source_issuable.labels.map(&:id)
-            @updates[:milestone_id] = source_issuable.milestone.id if source_issuable.milestone
+            label_ids = source_issuable.labels.map(&:id)
+            has_milestone = source_issuable.milestone.present?
 
-            @execution_message[:copy_metadata] = _("Copied labels and milestone from %{source_issuable_reference}.") % { source_issuable_reference: source_issuable.to_reference }
+            @updates[:add_label_ids] = label_ids
+            @updates[:milestone_id] = source_issuable.milestone.id if has_milestone
+
+            @execution_message[:copy_metadata] = copy_metadata_message(source_issuable, label_ids.any?, has_milestone)
           end
         end
 
@@ -328,6 +331,20 @@ module Gitlab
 
         def can_copy_metadata?(source_issuable)
           source_issuable.present? && find_namespace(source_issuable) == find_namespace(quick_action_target)
+        end
+
+        def copy_metadata_message(source_issuable, has_labels, has_milestone)
+          ref = source_issuable.to_reference
+
+          if has_labels && has_milestone
+            _("Copied labels and milestone from %{source_issuable_reference}.") % { source_issuable_reference: ref }
+          elsif has_labels
+            _("Copied labels from %{source_issuable_reference}.") % { source_issuable_reference: ref }
+          elsif has_milestone
+            _("Copied milestone from %{source_issuable_reference}.") % { source_issuable_reference: ref }
+          else
+            _("No labels or milestone to copy from %{source_issuable_reference}.") % { source_issuable_reference: ref }
+          end
         end
 
         def find_namespace(item)

@@ -41,10 +41,12 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store, feature_categ
 
   describe '.payload' do
     it 'returns values that are higher than 0' do
-      allow(instrumentation_class_a).to receive(:get_request_count) { 1 }
-      allow(instrumentation_class_a).to receive(:query_time) { 0.1 }
-      allow(instrumentation_class_a).to receive(:read_bytes) { 0.0 }
-      allow(instrumentation_class_a).to receive(:write_bytes) { 123 }
+      allow(instrumentation_class_a).to receive_messages(
+        get_request_count: 1,
+        query_time: 0.1,
+        read_bytes: 0.0,
+        write_bytes: 123
+      )
 
       expected_payload = {
         redis_instance_a_calls: 1,
@@ -56,10 +58,12 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store, feature_categ
     end
 
     it 'formats keys for classes with non-default shard_key' do
-      allow(instrumentation_class_c).to receive(:get_request_count) { 1 }
-      allow(instrumentation_class_c).to receive(:query_time) { 0.1 }
-      allow(instrumentation_class_c).to receive(:read_bytes) { 0.0 }
-      allow(instrumentation_class_c).to receive(:write_bytes) { 123 }
+      allow(instrumentation_class_c).to receive_messages(
+        get_request_count: 1,
+        query_time: 0.1,
+        read_bytes: 0.0,
+        write_bytes: 123
+      )
 
       expected_payload = {
         redis_instance_c_common_calls: 1,
@@ -190,7 +194,7 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store, feature_categ
 
   describe '.add_call_details' do
     before do
-      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?) { true }
+      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
     end
 
     context 'storage key overlapping' do

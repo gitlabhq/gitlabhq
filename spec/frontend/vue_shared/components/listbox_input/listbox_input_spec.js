@@ -53,19 +53,30 @@ describe('ListboxInput', () => {
 
   describe('wrapper', () => {
     it.each`
-      description          | labelProp      | descriptionProp      | rendersGlFormGroup
-      ${'does not render'} | ${''}          | ${''}                | ${false}
-      ${'renders'}         | ${'labelProp'} | ${''}                | ${true}
-      ${'renders'}         | ${''}          | ${'descriptionProp'} | ${true}
-      ${'renders'}         | ${'labelProp'} | ${'descriptionProp'} | ${true}
+      description          | labelProp      | labelDescriptionProp      | descriptionProp      | rendersGlFormGroup
+      ${'does not render'} | ${''}          | ${''}                     | ${''}                | ${false}
+      ${'renders'}         | ${'labelProp'} | ${''}                     | ${''}                | ${true}
+      ${'renders'}         | ${''}          | ${'labelDescriptionProp'} | ${''}                | ${true}
+      ${'renders'}         | ${''}          | ${''}                     | ${'descriptionProp'} | ${true}
+      ${'renders'}         | ${'labelProp'} | ${'labelDescriptionProp'} | ${'descriptionProp'} | ${true}
     `(
-      "$description a GlFormGroup when label is '$labelProp' and description is '$descriptionProp'",
-      ({ labelProp, descriptionProp, rendersGlFormGroup }) => {
-        createComponent({ label: labelProp, description: descriptionProp });
+      "$description a GlFormGroup when label is '$labelProp', labelDescription is '$labelDescriptionProp' and description is '$descriptionProp'",
+      ({ labelProp, labelDescriptionProp, descriptionProp, rendersGlFormGroup }) => {
+        createComponent({
+          label: labelProp,
+          labelDescription: labelDescriptionProp,
+          description: descriptionProp,
+        });
 
         expect(findGlFormGroup().exists()).toBe(rendersGlFormGroup);
       },
     );
+
+    it('passes the label description to the GlFormGroup', () => {
+      createComponent({ labelDescription: 'Shown under the label' });
+
+      expect(findGlFormGroup().props('labelDescription')).toBe('Shown under the label');
+    });
   });
 
   describe('options', () => {

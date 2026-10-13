@@ -79,7 +79,7 @@ module ApplicationSettingsHelper
   end
 
   def global_search_settings_checkboxes(form)
-    checkboxes = [
+    [
       form.gitlab_ui_checkbox_component(
         :anonymous_searches_allowed,
         _("Allow unauthenticated users to use search"),
@@ -113,18 +113,13 @@ module ApplicationSettingsHelper
         :global_search_users_enabled,
         _("Show users in global search results"),
         checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
-      )
-    ]
-
-    if ::Feature.enabled?(:elasticsearch_group_search, current_user)
-      checkboxes << form.gitlab_ui_checkbox_component(
+      ),
+      form.gitlab_ui_checkbox_component(
         :global_search_groups_enabled,
         _("Show groups in global search results"),
         checkbox_options: { checked: @application_setting.global_search_groups_enabled, multiple: false }
       )
-    end
-
-    checkboxes
+    ]
   end
 
   def default_search_scope_options_for_select
@@ -185,6 +180,21 @@ module ApplicationSettingsHelper
         source.title,
         checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
         checked_value: source.name,
+        unchecked_value: nil
+      )
+    end
+  end
+
+  def iframe_providers_checkboxes(form)
+    Gitlab::Markdown::IframeProviders.known_providers.map do |provider|
+      checked = @application_setting.iframe_rendering_allowlist.include?(provider.id)
+
+      form.gitlab_ui_checkbox_component(
+        :iframe_rendering_allowlist,
+        provider.name,
+        help_text: format(_('Loads content from %{origin}'), origin: provider.src_origin),
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: provider.id,
         unchecked_value: nil
       )
     end
@@ -307,6 +317,8 @@ module ApplicationSettingsHelper
       :allow_bypass_placeholder_confirmation,
       :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
+      :ci_job_trace_update_interval,
+      :ci_job_trace_update_interval_when_being_watched,
       :ci_partitions_in_seconds_limit_human_readable,
       :code_dropdown_custom_clients,
       :concurrent_github_import_jobs_limit,
@@ -512,6 +524,9 @@ module ApplicationSettingsHelper
       :throttle_authenticated_web_enabled,
       :throttle_authenticated_web_period_in_seconds,
       :throttle_authenticated_web_requests_per_period,
+      :throttle_authenticated_mcp_enabled,
+      :throttle_authenticated_mcp_period_in_seconds,
+      :throttle_authenticated_mcp_requests_per_period,
       :throttle_authenticated_packages_api_enabled,
       :throttle_authenticated_packages_api_period_in_seconds,
       :throttle_authenticated_packages_api_requests_per_period,
@@ -688,6 +703,12 @@ module ApplicationSettingsHelper
       :security_txt_content,
       :allow_project_creation_for_guest_and_below,
       :downstream_pipeline_trigger_limit_per_project_user_sha,
+      :pipeline_cancel_limit_per_user_project,
+      :pipeline_retry_limit_per_user_project,
+      :job_retry_limit_per_user_project,
+      :job_play_limit_per_user_project,
+      :pipeline_delete_limit_per_user_project,
+      :job_erase_limit_per_user_project,
       :asciidoc_max_includes,
       :ai_action_api_rate_limit,
       :code_suggestions_api_rate_limit,
@@ -717,6 +738,8 @@ module ApplicationSettingsHelper
       :runner_jobs_patch_trace_api_limit,
       :runner_jobs_endpoints_api_limit,
       :background_operations_max_jobs,
+      :pg_ash_sampling_enabled,
+      :pg_ash_sample_interval_seconds,
       :enforce_granular_tokens,
       :granular_tokens_enforced_after,
       :logging_field_schema_version,

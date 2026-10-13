@@ -18,7 +18,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def index
     drafts = prepare_notes_for_rendering(draft_notes)
-    render json: DraftNoteSerializer.new(current_user: current_user).represent(drafts)
+    render json: serialize_drafts(drafts)
   end
 
   def create
@@ -38,13 +38,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     prepare_notes_for_rendering(draft_note)
 
-    render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+    render json: serialize_drafts(draft_note)
   end
 
   def update
     if draft_note.update(draft_note_params)
       prepare_notes_for_rendering(draft_note)
-      render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+      render json: serialize_drafts(draft_note)
     else
       render json: { errors: draft_note.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -61,27 +61,28 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     # is visible in the app, submit_and_notify_mr_review_ui keeps running until the
     # todos and notifications have been delivered in ProcessDraftNotePublishedWorker.
     submit_experience = Labkit::UserExperienceSli.start(:submit_mr_review_ui)
-    submit_and_notify_experience = Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
+    submit_and_notify_experience = start_submit_and_notify_experience
 
-    result = DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
-      .execute(draft: draft_note(allow_nil: true))
+    result = publish_service.execute(draft: draft_note(allow_nil: true))
 
     if create_note_params[:note]
-      ::Notes::CreateService.new(@project, current_user, create_note_params).execute
+      ::Notes::CreateService.new(@project, current_user, create_note_params).execute unless summary_note_in_review?
 
       merge_request_activity_counter.track_submit_review_comment(user: current_user)
     end
 
-    update_reviewer_state if reviewer_state_params[:reviewer_state]
+    reviewer_state_error = update_reviewer_state if reviewer_state_params[:reviewer_state]
 
     if result[:status] == :success
       submit_experience.complete
-      submit_and_notify_experience.complete(notes_published: false) unless result[:async_notifications]
 
-      head :ok
+      payload = { review_id: result[:review_id] }
+      payload[:reviewer_state_error] = reviewer_state_error if reviewer_state_error
+
+      render json: payload
     else
       submit_experience.error!(result[:message]).complete
-      submit_and_notify_experience.error!(result[:message]).complete
+      submit_and_notify_experience.error!(result[:message]).complete if submit_and_notify_experience
 
       render json: { message: result[:message] }, status: :internal_server_error
     end
@@ -120,6 +121,20 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     end
   end
 
+  def publish_service
+    strong_memoize(:publish_service) do
+      DraftNotes::PublishService.new(merge_request, current_user, publish_params)
+    end
+  end
+
+  # Completed by ProcessDraftNotePublishedWorker, which only runs when draft notes are published.
+  def start_submit_and_notify_experience
+    return if publish_params[:defer_notifications]
+    return unless publish_service.publishes_draft_notes?(draft: draft_note(allow_nil: true))
+
+    Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
     @merge_request ||= MergeRequestsFinder
@@ -154,10 +169,16 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     end
   end
 
-  def draft_note_ids_param
-    params.permit(ids: []).tap do |ids_params|
-      ids_params[:ids] = ids_params[:ids]&.map(&:to_i) if ids_params[:ids].present?
+  def publish_params
+    params.permit(:review_id, :defer_notifications, ids: []).tap do |permitted|
+      permitted[:ids] = permitted[:ids]&.map(&:to_i) if permitted[:ids].present?
+      permitted[:defer_notifications] = Gitlab::Utils.to_boolean(permitted[:defer_notifications])
+      permitted[:summary_note] = create_note_params if summary_note_in_review?
     end
+  end
+
+  def summary_note_in_review?
+    create_note_params[:note].present? && Feature.enabled?(:improved_review_email, @project)
   end
 
   def approve_params
@@ -166,6 +187,20 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def reviewer_state_params
     params.permit(:reviewer_state)
+  end
+
+  def serialize_drafts(drafts)
+    trace_merge_head_positions(drafts)
+
+    DraftNoteSerializer
+      .new(current_user: current_user)
+      .represent(drafts)
+  end
+
+  def trace_merge_head_positions(drafts)
+    return unless Feature.enabled?(:draft_note_merge_head_line_code, project)
+
+    DraftNotes::TraceMergeHeadPositionService.new(merge_request, drafts).execute
   end
 
   def prepare_notes_for_rendering(notes)
@@ -223,11 +258,14 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
   end
 
+  # @return [String, nil] why the approval was refused, so the review can still be published
   def update_reviewer_state
     if reviewer_state_params[:reviewer_state] === 'approved'
-      ::MergeRequests::ApprovalService
+      approval = ::MergeRequests::ApprovalService
         .new(project: @project, current_user: current_user, params: approve_params)
         .execute(merge_request)
+
+      return approval.message if approval.error? && approval.reason != :already_approved
 
       merge_request_activity_counter.track_submit_review_approve(user: current_user)
     else
@@ -235,6 +273,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
         .new(project: @project, current_user: current_user)
         .execute(merge_request, reviewer_state_params[:reviewer_state])
     end
+
+    nil
   end
 end
 

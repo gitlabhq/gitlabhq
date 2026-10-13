@@ -61,10 +61,17 @@ module Cells
       # Routes an email that could not be identified to the default (first)
       # cell, unless that fallback is disabled, in which case the email is
       # dropped.
+      #
+      # The return value tells mail_room whether the message may be removed from
+      # the mailbox. A deliberate drop returns true: the decision is final, so
+      # keeping the message would only regrow the mailbox and re-scan it every
+      # cycle. A missing default cell while the fallback is enabled is transient
+      # or a misconfiguration, so it returns false to retry rather than lose the
+      # message.
       def forward_to_default_cell(raw)
         unless @route_unidentified_to_default_cell
-          @logger.info(Labkit::Fields::LOG_MESSAGE => 'Email could not be routed to a cell')
-          return false
+          @logger.info(Labkit::Fields::LOG_MESSAGE => 'Email could not be routed to a cell and was dropped')
+          return true
         end
 
         cell_address = @cell_router.default_cell_address

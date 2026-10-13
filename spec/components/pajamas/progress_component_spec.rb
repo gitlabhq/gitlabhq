@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::ProgressComponent, type: :component do
+RSpec.describe Pajamas::ProgressComponent do
   before do
     render_inline(described_class.new(value: value, variant: variant))
   end

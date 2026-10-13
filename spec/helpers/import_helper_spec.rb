@@ -18,7 +18,7 @@ RSpec.describe ImportHelper, feature_category: :importers do
   end
 
   describe '#import_project_target' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user, namespace: build_stubbed(:user_namespace)) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -26,7 +26,7 @@ RSpec.describe ImportHelper, feature_category: :importers do
 
     context 'when current user can create namespaces' do
       it 'returns project namespace' do
-        user.update_attribute(:can_create_group, true)
+        user.can_create_group = true
 
         expect(helper.import_project_target('asd', 'vim')).to eq 'asd/vim'
       end
@@ -34,7 +34,7 @@ RSpec.describe ImportHelper, feature_category: :importers do
 
     context 'when current user can not create namespaces' do
       it "takes the current user's namespace" do
-        user.update_attribute(:can_create_group, false)
+        user.can_create_group = false
 
         expect(helper.import_project_target('asd', 'vim')).to eq "#{user.namespace_path}/vim"
       end
@@ -51,8 +51,7 @@ RSpec.describe ImportHelper, feature_category: :importers do
   end
 
   describe '#import_by_url_data_attributes' do
-    let_it_be(:project) { create(:project, import_url: 'https://example.com/repo.git') }
-
+    let(:project) { build_stubbed(:project, import_url: 'https://example.com/repo.git') }
     let(:ci_cd_only) { false }
     let(:git_timeout) { '10 minutes' }
     let(:repository_mirrors_available) { false }

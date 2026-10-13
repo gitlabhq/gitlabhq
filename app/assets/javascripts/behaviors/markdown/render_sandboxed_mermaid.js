@@ -1,7 +1,7 @@
 import { countBy, debounce } from 'lodash-es';
 import { __ } from '~/locale';
 import { getBaseURL, isValidURL, relativePathToAbsolute, visitUrl } from '~/lib/utils/url_utility';
-import { sandboxMermaidV11Path } from '~/lib/utils/path_helpers/routes';
+import { sandboxMermaidV11Path, sandboxMermaidV12Path } from '~/lib/utils/path_helpers/routes';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
@@ -92,9 +92,8 @@ function fixElementSource(el) {
 }
 
 export function getSandboxFrameSrc() {
-  const relativeURL = darkModeEnabled()
-    ? sandboxMermaidV11Path({ darkMode: true })
-    : sandboxMermaidV11Path();
+  const sandboxPath = gon.features?.useMermaidV12 ? sandboxMermaidV12Path : sandboxMermaidV11Path;
+  const relativeURL = darkModeEnabled() ? sandboxPath({ darkMode: true }) : sandboxPath();
 
   return relativePathToAbsolute(relativeURL, getBaseURL());
 }

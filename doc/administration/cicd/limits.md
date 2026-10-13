@@ -327,6 +327,7 @@ To change this limit on your GitLab Self-Managed instance:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_throttle_pipelines_creation`. Disabled by default. Enabled on GitLab.com
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196545) in 18.3.
 - CI Lint rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599486) in GitLab 19.2 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_ci_lint_rate_limit`. Disabled by default.
+- `ci_lint_limit_per_user` [reset to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256176) on all instances in GitLab 19.5.
 
 {{< /history >}}
 
@@ -342,9 +343,9 @@ GitLab enforces the following rate limits in this section:
 - **Per user for CI lint requests**: Limits [CI lint](../../ci/yaml/lint.md) requests made by a user across all
   projects. CI lint requests are similar to pipeline creation requests.
 
-On new installations, `ci_lint_limit_per_user` is set to `0` (no limit).
-On instances upgraded to GitLab 19.2, if `pipeline_limit_per_user` is already set to a value greater than `0`,
-`ci_lint_limit_per_user` is initialized to that same value.
+By default, `ci_lint_limit_per_user` is set to `0` (no limit).
+Upgrading to GitLab 19.5 resets this value to `0` on every instance, even where an administrator
+had previously set a limit. If you want to limit CI lint requests, set the value again after upgrading.
 
 For example, if you set a per-user limit of `100`, and a user sends `101` pipeline creation requests
 to the [trigger API](../../ci/triggers/_index.md) within one minute across different projects,
@@ -399,6 +400,188 @@ To configure this limit:
 1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Set a value for **Maximum downstream pipeline trigger rate**.
+1. Select **Save changes**.
+
+## Pipeline cancellation rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627270) in GitLab 19.5.
+
+{{< /history >}}
+
+Canceling a pipeline stops every cancelable job in its [pipeline hierarchy](../../ci/pipelines/downstream_pipelines.md),
+so the cost of canceling scales with the size of the pipeline. Repeated cancellations,
+whether on one large pipeline or spread across many pipelines in a project, can add up to excessive load on your instance.
+You can limit how often pipelines can be canceled to protect against this.
+
+This rate limit applies to pipeline cancellations made with the
+[cancel pipeline REST API](../../api/pipelines.md#cancel-all-jobs-for-a-pipeline), the
+[`pipelineCancel`](../../api/graphql/reference/_index.md#mutationpipelinecancel) GraphQL mutation, or the GitLab UI.
+The limit does not apply to automatic cancellations (for example, `auto_cancel_on_job_failure`).
+
+GitLab enforces the following limits:
+
+- Per user and pipeline: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `120` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and pipeline limit still applies.
+
+If either limit is exceeded, the cancellation request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum pipeline cancellations per project**.
+1. Select **Save changes**.
+
+## Pipeline retry rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627233) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_pipeline_retry`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Retrying a pipeline clones every retryable job, so the cost of retrying scales with the size of the pipeline.
+Repeated retries, whether on one large pipeline or spread across many pipelines in a project, can add up to
+excessive load on your instance. You can limit how often pipelines can be retried to protect against this.
+
+This rate limit applies to pipeline retries made with the
+[retry pipeline REST API](../../api/pipelines.md#retry-jobs-in-a-pipeline), the
+[`pipelineRetry`](../../api/graphql/reference/_index.md#mutationpipelineretry) GraphQL mutation, or the GitLab UI.
+The limit does not apply to automatic job retries, such as those triggered by the
+[`retry`](../../ci/yaml/_index.md#retry) keyword, which uses a different code path.
+
+GitLab enforces the following limits:
+
+- Per user and pipeline: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `200` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and pipeline limit still applies.
+
+If either limit is exceeded, the retry request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum pipeline retries per project**.
+1. Select **Save changes**.
+
+## Job retry and manual job run rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627273) in GitLab 19.5 [with feature flags](../feature_flags/_index.md) named `rate_limit_job_retry` and `rate_limit_job_play`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by feature flags. For more information, see the history.
+
+Retrying a job or running a manual job creates a new job and re-evaluates the pipeline,
+so repeated requests add up to significant load on your instance. You can limit how often
+jobs can be retried or run to protect against this.
+
+These rate limits apply to job retries and manual job runs made with the
+[retry job](../../api/jobs.md#retry-a-job) and [run job](../../api/jobs.md#run-a-job) REST API endpoints,
+the [`jobRetry`](../../api/graphql/reference/_index.md#mutationjobretry) and
+[`jobPlay`](../../api/graphql/reference/_index.md#mutationjobplay) GraphQL mutations, or the GitLab UI.
+The limits do not apply to automatic retries (for example, `retry:` in the CI/CD configuration) or automatic rollbacks.
+
+GitLab enforces the following limits:
+
+- Job retry, per user and job: Fixed at `3` requests each minute. Not configurable.
+- Job retry, per user and project: Configurable, with a default of `320` requests each minute. Set to `0` to disable.
+- Manual job run, per user and job: Fixed at `3` requests each minute. Not configurable.
+- Manual job run, per user and project: Configurable, with a default of `200` requests each minute. Set to `0` to disable.
+
+If a limit is exceeded, the request is blocked.
+
+To configure the per user and project limits:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set values for **Maximum job retries per project** and **Maximum manual job runs per project**.
+1. Select **Save changes**.
+
+## Pipeline deletion rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627268) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_pipeline_delete`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Deleting a pipeline cancels every job in the pipeline tree before the records are removed, so the
+work involved scales with the size of the pipeline. You can limit how often a user can delete a
+pipeline to protect your instance from excessive load. Each limit resets after one minute.
+
+This rate limit applies when a user deletes a pipeline with the
+[delete pipeline REST API](../../api/pipelines.md#delete-a-pipeline), the
+[`pipelineDestroy`](../../api/graphql/reference/_index.md#mutationpipelinedestroy) GraphQL mutation,
+or the GitLab UI. It does not apply to pipelines removed by
+[automatic cleanup](../settings/continuous_integration.md), project deletion, or issue deletion,
+because those use a different code path.
+
+GitLab enforces the following limits:
+
+- Per user and pipeline: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `400` requests each minute.
+  Set the limit to `0` to remove this per-project limit. The per user and pipeline limit still applies.
+
+If either limit is exceeded, the delete request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum pipeline deletions per project**.
+1. Select **Save changes**.
+
+## Job erasure rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627274) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_job_erase`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Erasing a job removes its artifacts and log. One erase request is small, but a user who sends
+many requests can strain your instance. For example, a script that erases every job in a
+project can send hundreds of requests a minute. To protect your instance from this load,
+you can limit how often a user erases jobs.
+
+This rate limit applies to job erasures made with the
+[erase job REST API](../../api/jobs.md#erase-a-job) or the GitLab UI.
+
+GitLab enforces the following limits:
+
+- Per user and job: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `400` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and job limit still applies.
+
+If either limit is exceeded, the erase request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum job erasures per project**.
 1. Select **Save changes**.
 
 ## Maximum artifacts size
@@ -516,9 +699,6 @@ To change the limit, change the `default` plan's limit with the following
 [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session) command:
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
 ```
 

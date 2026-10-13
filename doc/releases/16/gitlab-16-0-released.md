@@ -393,7 +393,7 @@ We believe that this change will contribute to a safer deletion process and will
 - Updates to GitLab 16.0 also update cert-manager to version 1.11.x. This cert-manager update includes breaking changes you must
 [read before upgrading](https://cert-manager.io/docs/release-notes/release-notes-1.10/#breaking-changes-you-must-read-this-before-you-upgrade).
 These changes include a change to container names that was best done during a major release of GitLab. To see details of updated features, see the
-[releases notes for cert-manager 1.11](https://cert-manager.io/docs/release-notes/release-notes-1.11).
+[releases notes for cert-manager 1.11](https://cert-manager.io/docs/releases/release-notes/release-notes-1.11/).
 - PostgreSQL 12 is no longer supported. The minimum required version is PostgreSQL 13, and support for PostgreSQL 14 is added.
 New chart installs of GitLab include PostgreSQL 14 by default, and upgrades must follow the steps for
 [upgrading the bundled PostgreSQL version](https://docs.gitlab.com/charts/installation/database_upgrade/).

@@ -1,0 +1,9 @@
+---
+name: create_functional_verification_workflow
+description: Grants the ability to start a functional verification workflow
+available_for:
+  - granular_access_token
+permissions:
+  - create_functional_verification_workflow
+boundaries:
+  - instance

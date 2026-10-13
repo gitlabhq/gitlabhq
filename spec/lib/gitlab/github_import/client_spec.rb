@@ -109,6 +109,48 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
     end
   end
 
+  describe '#create_hook' do
+    let(:config) { { url: 'https://gitlab.example.com/hook', content_type: 'json', secret: 'secret' } }
+    let(:options) { { events: %w[push pull_request], active: true } }
+
+    it 'creates a web hook on the repository' do
+      expect(client.octokit).to receive(:create_hook).with(123, 'web', config, options)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.create_hook(123, config, options)
+    end
+
+    it 'returns the hook data as a hash' do
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:post, 'https://api.github.com/repositories/123/hooks')
+        .to_return(status: 201, body: { id: 42 }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.create_hook(123, config, options)).to eq({ id: 42 })
+    end
+  end
+
+  describe '#delete_hook' do
+    it 'removes the hook from the repository' do
+      expect(client.octokit).to receive(:remove_hook).with(123, 42)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.delete_hook(123, 42)
+    end
+
+    it 'sends a DELETE request for the hook' do
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      delete_request = stub_request(:delete, 'https://api.github.com/repositories/123/hooks/42')
+        .to_return(status: 204)
+
+      expect(client.delete_hook(123, 42)).to be(true)
+      expect(delete_request).to have_been_requested
+    end
+  end
+
   describe '#labels' do
     it 'returns the labels' do
       expect(client)
@@ -275,6 +317,18 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       end
     end
 
+    it 'exposes the next page URL on every page, nil on the last one' do
+      pages = []
+
+      client.each_page(:issues, resume_url, 'foo/bar') { |page| pages << page }
+
+      expect(pages.map(&:next_url)).to eq([
+        'https://api.github.com/repositories/1/issues?page=2&per_page=100',
+        'https://api.github.com/repositories/1/issues?page=3&per_page=100',
+        nil
+      ])
+    end
+
     context 'when a resume URL is passed' do
       let(:resume_url) { 'https://api.github.com/repositories/1/issues?page=2&per_page=100' }
 
@@ -308,6 +362,22 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       end
     end
 
+    context 'when the next URL is malformed' do
+      it 'yields the page without a next_url and raises InvalidURLError when followed' do
+        stub_request(:get, 'https://api.github.com/repos/foo/bar/issues?per_page=100')
+          .to_return(
+            status: 200,
+            body: [{ title: 'Issue 1' }].to_json,
+            headers: { 'Content-Type' => 'application/json', link: '<https://api.github.com/a b>; rel="next"' }
+          )
+
+        enum = client.each_page(:issues, nil, 'foo/bar')
+
+        expect(enum.next.next_url).to be_nil
+        expect { enum.next }.to raise_error(Gitlab::GithubImport::Exceptions::InvalidURLError)
+      end
+    end
+
     context 'when next URL host does not match API URL host' do
       it 'raises InvalidURLError' do
         stub_request(:get, 'https://api.github.com/repos/foo/bar/issues?per_page=100')
@@ -322,7 +392,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
         enum = client.each_page(:issues, nil, 'foo/bar')
 
-        enum.next
+        expect(enum.next.next_url).to be_nil
 
         expect { enum.next }.to raise_error(Gitlab::GithubImport::Exceptions::InvalidURLError, 'Invalid pagination URL')
       end
@@ -452,6 +522,53 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
           expect { client.with_rate_limit(&block_to_rate_limit) }.to raise_error(error_class, 'execution expired')
         end
+      end
+    end
+
+    context 'without a token refresher' do
+      it 'propagates an unauthorized response unchanged' do
+        allow(client).to receive(:requests_remaining?).and_return(true)
+
+        expect { client.with_rate_limit { raise Octokit::Unauthorized } }
+          .to raise_error(Octokit::Unauthorized)
+      end
+    end
+
+    context 'with a token refresher' do
+      subject(:client) { described_class.new('foo', token_refresher: token_refresher) }
+
+      let(:token_refresher) { -> { 'refreshed-token' } }
+
+      before do
+        allow(client).to receive(:requests_remaining?).and_return(true)
+      end
+
+      it 'mints a fresh credential and retries once after an unauthorized response' do
+        attempts = 0
+
+        result = client.with_rate_limit do
+          attempts += 1
+          raise Octokit::Unauthorized if attempts == 1
+
+          'success'
+        end
+
+        expect(result).to eq('success')
+        expect(attempts).to eq(2)
+        expect(client.octokit.access_token).to eq('refreshed-token')
+      end
+
+      it 'does not retry a second unauthorized response from the same attempt' do
+        expect { client.with_rate_limit { raise Octokit::Unauthorized } }
+          .to raise_error(Octokit::Unauthorized)
+      end
+
+      it 'raises when the refresher returns no credential' do
+        client = described_class.new('foo', token_refresher: -> { nil })
+        allow(client).to receive(:requests_remaining?).and_return(true)
+
+        expect { client.with_rate_limit { raise Octokit::Unauthorized } }
+          .to raise_error(ArgumentError, 'GitHub installation token refresh returned no credential')
       end
     end
   end

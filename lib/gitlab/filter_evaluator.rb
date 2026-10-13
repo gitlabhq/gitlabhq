@@ -49,7 +49,21 @@ module Gitlab
 
     def self.dig_value(hash, path)
       path.split('.').reduce(hash) do |value, key|
-        value[key] || value[key.to_sym]
+        # A missing segment fails only this rule. Raising here failed the whole filter,
+        # which also affects webhook and integration filters using this evaluator.
+        # Hook payloads can be SimpleDelegators around the hash, so duck-type rather than is_a?(Hash).
+        unless value.respond_to?(:key?)
+          Gitlab::AppLogger.debug(
+            class: name,
+            message: 'Filter rule path segment not traversable, rule will not match',
+            field: path,
+            stopped_at: key
+          )
+          break
+        end
+
+        # key? rather than || so a legitimate false value is not treated as missing.
+        value.key?(key) ? value[key] : value[key.to_sym]
       end
     end
     private_class_method :dig_value

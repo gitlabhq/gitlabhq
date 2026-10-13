@@ -86,8 +86,10 @@ module Gitaly
       disk_statistics_storage_status
     end
 
+    # The node's own address, not the gitway hop that may sit in front of it: this is shown
+    # beside disk and replication stats that are read from the node itself.
     def address
-      Gitlab::GitalyClient.address(@storage)
+      Gitlab::GitalyClient.gitaly_address(@storage)
     rescue RuntimeError => e
       "Error getting the address: #{e.message}"
     end

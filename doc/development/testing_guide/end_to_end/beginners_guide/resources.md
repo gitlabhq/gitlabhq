@@ -141,9 +141,9 @@ module QA
 end
 ```
 
-**Note that all the attributes are lazily constructed. This means if you want
+Note that all the attributes are lazily constructed. This means if you want
 a specific attribute to be fabricated first, you must call the
-attribute method first even if you're not using it.**
+attribute method first even if you're not using it.
 
 #### Product data attributes
 
@@ -182,9 +182,9 @@ module QA
 end
 ```
 
-**Note again that all the attributes are lazily constructed. This means if
+Note again that all the attributes are lazily constructed. This means if
 you call `shirt.brand` after moving to the other page, it doesn't properly
-retrieve the data because we're no longer on the expected page.**
+retrieve the data because we're no longer on the expected page.
 
 Consider this:
 

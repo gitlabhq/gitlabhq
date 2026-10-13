@@ -6,8 +6,7 @@ RSpec.describe ExploreHelper, feature_category: :groups_and_projects do
   let(:user) { build(:user) }
 
   before do
-    allow(helper).to receive(:current_user).and_return(user)
-    allow(helper).to receive(:can?) { true }
+    allow(helper).to receive_messages(current_user: user, can?: true)
   end
 
   describe '#filter_projects_path' do

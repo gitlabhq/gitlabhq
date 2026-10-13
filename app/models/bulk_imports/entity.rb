@@ -116,14 +116,30 @@ class BulkImports::Entity < ApplicationRecord
       end
 
       entity.track_project_import_event('cancel_project_import')
+      entity.track_group_import_event('cancel_group_import')
+      entity.track_entity_import_event('cancel_gitlab_migration_entity')
     end
 
     after_transition on: :fail_op do |entity, _|
       entity.track_project_import_event('fail_project_import')
+      entity.track_group_import_event('fail_group_import')
+      entity.track_entity_import_event('fail_gitlab_migration_entity')
     end
 
     after_transition on: :cleanup_stale do |entity, _|
       entity.track_project_import_event('timeout_project_import')
+      entity.track_group_import_event('timeout_group_import')
+      entity.track_entity_import_event('timeout_gitlab_migration_entity')
+    end
+
+    after_transition on: :start do |entity, _|
+      entity.track_entity_import_event('start_gitlab_migration_entity')
+    end
+
+    after_transition on: :finish do |entity, _|
+      # `event :finish` has a `failed => failed` self-transition, so guard on
+      # the terminal state to only fire when the entity truly finished.
+      entity.track_entity_import_event('finish_gitlab_migration_entity') if entity.finished?
     end
   end
 
@@ -287,23 +303,76 @@ class BulkImports::Entity < ApplicationRecord
     end
   end
 
-  # label distinguishes Direct Transfer (gitlab_project_migration) from Offline
-  # Transfer (offline_transfer), which share this entity model and EntityFinisher.
-  # Read from bulk_import rather than project&.import_type, since project may not
-  # exist yet if the entity fails/cancels before its pipeline creates it.
   def project_import_event_attributes
-    {
+    import_event_attributes.merge(project: project, namespace: project&.namespace)
+  end
+
+  def start_project_import_event_attributes
+    with_request_channel(project_import_event_attributes)
+  end
+
+  def track_group_import_event(action)
+    return unless group?
+
+    run_after_commit do
+      track_internal_event(action, group_import_event_attributes)
+    end
+  end
+
+  def group_import_event_attributes
+    import_event_attributes.merge(namespace: group)
+  end
+
+  def start_group_import_event_attributes
+    with_request_channel(group_import_event_attributes)
+  end
+
+  # Fires for both project and group entities, and may fire before any
+  # Project/Group record exists (e.g. failure during the very first pipeline),
+  # so no project?/group? guard and identifiers are attached only when present.
+  def track_entity_import_event(action)
+    run_after_commit do
+      track_internal_event(action, entity_import_event_attributes)
+    end
+  end
+
+  def entity_import_event_attributes
+    base = import_event_attributes
+    base.merge(
+      namespace: project&.namespace || group,
       project: project,
+      additional_properties: base[:additional_properties].merge(parent_entity_id: parent_id).compact
+    )
+  end
+
+  # label (gitlab_migration vs offline_transfer) distinguishes Direct Transfer
+  # from Offline Transfer, which share this entity model and EntityFinisher.
+  # project_import_event_attributes/group_import_event_attributes read it from
+  # bulk_import rather than the project/group record, since that record may not
+  # exist yet if the entity fails/cancels before its pipeline creates it.
+  def import_event_attributes
+    {
       user: bulk_import.user,
-      namespace: project&.namespace,
       additional_properties: {
-        label: bulk_import.offline? ? 'offline_transfer' : 'gitlab_project_migration',
+        label: bulk_import.import_source.to_s,
         property: hashed_import_source
       }.compact
     }
   end
 
   private
+
+  # request_channel is captured at CreateService time in EphemeralData
+  # (Redis) rather than on the BulkImport record. Only sent on start_* events,
+  # and deliberately not added to entity_import_event_attributes, per the
+  # design in gitlab-org/gitlab#617884.
+  def with_request_channel(attrs)
+    attrs.merge(
+      additional_properties: attrs[:additional_properties].merge(
+        request_channel: ::Import::BulkImports::EphemeralData.new(bulk_import_id).request_channel
+      ).compact
+    )
+  end
 
   def validate_parent_is_a_group
     errors.add(:parent, s_('BulkImport|must be a group.')) unless parent.group_entity?

@@ -79,6 +79,18 @@ Your project contains sensitive and important information in a `config/` directo
 With this configuration, merge requests that change files in the `config/` directory and target the `main` branch
 require approval from the designated Code Owners before merging.
 
+### Files without a Code Owner
+
+GitLab compares the files changed in a merge request with the `CODEOWNERS` file in the target branch.
+A file that does not match any `CODEOWNERS` rules does not need Code Owner approval. This includes new files, and files
+that were moved or renamed in the target branch while a merge request was open.
+
+To require approval for every file, add a default owner with a `*` entry at the top of the file.
+
+If you add more specific entries later, they override the `*` entry because the last matching entry is used.
+
+For more information, see [`CODEOWNERS` syntax](reference.md) and [advanced `CODEOWNERS` configuration](advanced.md).
+
 ### Allowed to push and merge to a protected branch
 
 Users who are **Allowed to push and merge** can choose to create a merge request

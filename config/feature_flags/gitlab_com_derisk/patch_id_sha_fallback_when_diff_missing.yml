@@ -1,0 +1,11 @@
+---
+name: patch_id_sha_fallback_when_diff_missing
+description: Fall back to computing an MR patch ID from a client-asserted head SHA
+  when the diff row does not exist yet
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395506
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252477
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/624933
+milestone: '19.4'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

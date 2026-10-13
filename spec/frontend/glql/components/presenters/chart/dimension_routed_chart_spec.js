@@ -21,7 +21,7 @@ describe('DimensionRoutedChart', () => {
       scopedSlots: {
         'one-dimension': `
           <div data-testid="one-dimension">
-            {{ props.dimension.label }}|{{ props.metrics.map((m) => m.label).join(',') }}
+            {{ props.dimension.label }}|{{ props.metrics.map((m) => m.label).join(',') }}|{{ props.stacked }}
           </div>`,
         'two-dimensions': `
           <div data-testid="two-dimensions">
@@ -54,8 +54,14 @@ describe('DimensionRoutedChart', () => {
     it('renders the one-dimension slot for 1 dimension, exposing dimension and metrics', () => {
       createComponent({ fields: [DIM_A, METRIC_X, METRIC_Y] });
 
-      expect(findOneDimensionSlot().text()).toBe('A|X,Y');
+      expect(findOneDimensionSlot().text()).toBe('A|X,Y|false');
       expect(findTwoDimensionsSlot().exists()).toBe(false);
+    });
+
+    it('exposes stacked to the one-dimension slot when displayConfig sets it', () => {
+      createComponent({ displayConfig: { stacked: true } });
+
+      expect(findOneDimensionSlot().text()).toBe('A|X|true');
     });
 
     it('renders the two-dimensions slot for 2 dimensions, exposing dimensions and the metric', () => {

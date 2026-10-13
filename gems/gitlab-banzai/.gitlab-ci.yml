@@ -1,0 +1,7 @@
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-banzai"
+      # The RubyGems name is not reserved yet.
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/616907
+      skip_gem_validation: true

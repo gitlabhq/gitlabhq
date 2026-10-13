@@ -710,6 +710,8 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache, feature_cat
     end
 
     context 'when stream is ChunkedIO' do
+      include ChunkedIOHelpers
+
       let(:stream) do
         described_class.new do
           Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
@@ -720,6 +722,31 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache, feature_cat
       end
 
       it_behaves_like 'extract_coverages'
+
+      context 'when the first line spans the whole trace' do
+        let(:chunk_size) { 4.kilobytes }
+        let(:tail) { "\n(98.29%) covered\n" }
+        let(:data) { ('a' * ((5 * chunk_size) - tail.bytesize)) + tail }
+        let(:regex) { '\(\d+.\d+\%\) covered' }
+
+        # A ChunkedIO caches the chunks it writes, so read through a fresh one to
+        # make every chunk it visits a fetch.
+        let(:stream) { described_class.new { Gitlab::Ci::Trace::ChunkedIO.new(build) } }
+
+        before do
+          stub_buffer_size(chunk_size)
+
+          Gitlab::Ci::Trace::ChunkedIO.new(build) { |chunked_io| chunked_io.write(data) }
+        end
+
+        it 'fetches only the header chunk and the tail chunk' do
+          stream # open the reader up front, so its size lookup is not recorded
+
+          recorder = ActiveRecord::QueryRecorder.new { is_expected.to eq('98.29') }
+
+          expect(recorder.log.grep(/ci_build_trace_chunks/).size).to eq(2)
+        end
+      end
     end
 
     context 'when stream is HttpIO' do
@@ -748,6 +775,23 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache, feature_cat
       end
 
       it_behaves_like 'extract_coverages'
+
+      context 'when the first line spans the whole trace' do
+        let(:chunk_size) { 4.kilobytes }
+        let(:tail) { "\n(98.29%) covered\n" }
+        let(:data) { ('a' * ((5 * chunk_size) - tail.bytesize)) + tail }
+        let(:regex) { '\(\d+.\d+\%\) covered' }
+
+        before do
+          stub_const('Gitlab::HttpIO::BUFFER_SIZE', chunk_size)
+        end
+
+        it 'reads only the header prefix and the tail chunk' do
+          is_expected.to eq('98.29')
+
+          expect(WebMock).to have_requested(:get, url).twice
+        end
+      end
     end
 
     context 'when extraction raises' do

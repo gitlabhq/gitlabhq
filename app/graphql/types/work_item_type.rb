@@ -10,7 +10,14 @@ module Types
     implements Types::TodoableInterface
     connection_type_class Types::CountableConnectionType
 
-    authorize_granular_token permissions: :read_work_item, boundary: :project, boundary_type: :project
+    # A work item belongs to a project or directly to a group (an epic, for example).
+    # The boundaries name the associations rather than `resource_parent` so that the
+    # boundary preloader can batch the projects of a list of project work items.
+    authorize_granular_token permissions: :read_work_item,
+      boundaries: [
+        { boundary: :project, boundary_type: :project },
+        { boundary: :namespace, boundary_type: :group }
+      ]
 
     authorize :read_work_item
 

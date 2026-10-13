@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'User edits a merge request', :js, feature_category: :code_review_workflow do
-  let(:project) { create(:project, :repository) }
+  include ListboxHelpers
+
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is per-example and overridden in nested contexts
     sign_in(user)
   end
 
@@ -89,7 +91,13 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
 
       first('.js-target-branch').click
 
-      first('.js-target-branch-dropdown a', text: 'merge-test').click
+      within('.ref-selector') do
+        expect(page).to have_content(_('Branches'))
+
+        find('input[aria-label="Search branches"]').set('merge-test')
+
+        select_listbox_item('merge-test', exact_text: true)
+      end
 
       click_button('Save changes')
 
@@ -104,7 +112,7 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
         visit(edit_project_merge_request_path(project, merge_request))
 
         expect(page).to have_content('From master into feature')
-        expect(page).not_to have_selector('.js-target-branch.js-compare-dropdown')
+        expect(page).not_to have_selector('.js-target-branch')
       end
     end
   end

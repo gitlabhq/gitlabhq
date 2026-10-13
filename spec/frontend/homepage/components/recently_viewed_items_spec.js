@@ -162,6 +162,22 @@ describe('RecentlyViewedItems', () => {
       expect(findEmptyState().exists()).toBe(true);
       expect(findItemsList().exists()).toBe(false);
     });
+
+    describe('when the query resolves without a current user', () => {
+      beforeEach(async () => {
+        const nullUserHandler = jest.fn().mockResolvedValue({ data: { currentUser: null } });
+        createComponent({ recentlyViewedHandler: nullUserHandler });
+        await waitForPromises();
+        // An exception thrown inside the Apollo `update` hook is rethrown from a timer
+        jest.runOnlyPendingTimers();
+      });
+
+      it('shows the empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findItemsList().exists()).toBe(false);
+        expect(findErrorMessage().exists()).toBe(false);
+      });
+    });
   });
 
   describe('GraphQL query', () => {

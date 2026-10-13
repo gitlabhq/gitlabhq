@@ -273,6 +273,13 @@ module SystemNotes
       return false unless mentioned_in.is_a?(MergeRequest)
       return false unless noteable.is_a?(Commit)
 
+      # Avoids loading every diff commit just to check whether one SHA is in the MR.
+      diff = mentioned_in.merge_request_diff
+      if diff.persisted?
+        return MergeRequestDiff.ids_including_any_commits([diff.id], [noteable.id], project: diff.project)
+          .include?(diff.id)
+      end
+
       mentioned_in.commits.include?(noteable)
     end
 

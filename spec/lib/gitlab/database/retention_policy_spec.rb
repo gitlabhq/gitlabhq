@@ -112,6 +112,10 @@ RSpec.describe Gitlab::Database::RetentionPolicy, feature_category: :database do
       it 'accepts an excluded policy with placeholder window and strategy' do
         expect(policy_for('valid_excluded').validation_errors).to be_empty
       end
+
+      it 'accepts an excluded policy with reason needs_archival' do
+        expect(policy_for('valid_excluded_needs_archival').validation_errors).to be_empty
+      end
     end
 
     context 'with invalid declarations' do

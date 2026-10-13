@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grpc'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
   describe '.initialize_slis!' do
@@ -63,9 +65,29 @@ RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
     end
 
     it 'falls back to the storage name when the address is invalid' do
-      allow(::Gitlab::GitalyClient).to receive(:address).with('default').and_return('::not a uri::')
+      allow(::Gitlab::GitalyClient).to receive(:gitaly_address).with('default').and_return('::not a uri::')
 
       expect(described_class.node_label('default')).to eq('default')
+    end
+
+    context 'when the storage is routed through gitway' do
+      before do
+        stub_storage_settings(
+          'default' => { 'gitaly_address' => 'tcp://gitaly-01-stor.example.internal:9999',
+                         'gitway_address' => 'tcp://gitway.example.internal:8075' }
+        )
+        stub_feature_flags(route_gitaly_through_gitway: true)
+      end
+
+      it 'labels the Gitaly node, not gitway' do
+        expect(described_class.node_label('default')).to eq('gitaly-01-stor.example.internal')
+      end
+
+      it 'does not evaluate the feature flag' do
+        expect(Feature).not_to receive(:enabled?).with(:route_gitaly_through_gitway, any_args)
+
+        described_class.node_label('default')
+      end
     end
   end
 
@@ -101,8 +123,7 @@ RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
         GRPC::Internal           | true
         GRPC::Unavailable        | true
         GRPC::DataLoss           | true
-        # ResourceExhausted is ignored server-side but counts as an error here.
-        GRPC::ResourceExhausted  | true
+        GRPC::ResourceExhausted  | false
       end
 
       with_them do

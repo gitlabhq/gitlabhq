@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
   include Ci::PipelineVariableHelpers
 
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:project) { build_stubbed(:project) }
+  let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
+  let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }
 
   subject(:presenter) do
     described_class.new(build)
@@ -47,7 +47,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     context 'when build failed' do
-      let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+      let(:build) { build_stubbed(:ci_build, :failed, pipeline: pipeline) }
 
       it 'returns the reason of failure' do
         status_title = presenter.status_title
@@ -57,7 +57,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     context 'when build has failed && retried' do
-      let(:build) { create(:ci_build, :failed, :retried, pipeline: pipeline) }
+      let(:build) { build_stubbed(:ci_build, :failed, :retried, pipeline: pipeline) }
 
       it 'does not include retried title' do
         status_title = presenter.status_title
@@ -68,7 +68,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     context 'when build has failed and is allowed to' do
-      let(:build) { create(:ci_build, :failed, :allowed_to_fail, pipeline: pipeline) }
+      let(:build) { build_stubbed(:ci_build, :failed, :allowed_to_fail, pipeline: pipeline) }
 
       it 'returns the reason of failure' do
         status_title = presenter.status_title
@@ -78,7 +78,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     context 'For any other build' do
-      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:build) { build_stubbed(:ci_build, :success, pipeline: pipeline) }
 
       it 'returns the status' do
         tooltip_description = presenter.status_title
@@ -90,7 +90,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
 
   describe 'quack like a Ci::Build permission-wise' do
     context 'user is not allowed' do
-      let(:project) { create(:project, public_builds: false) }
+      let(:project) { build_stubbed(:project, public_builds: false) }
 
       it 'returns false' do
         expect(presenter.can?(nil, :read_build)).to be_falsy
@@ -98,7 +98,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     context 'user is allowed' do
-      let(:project) { create(:project, :public) }
+      let(:project) { build_stubbed(:project, :public) }
 
       it 'returns true' do
         expect(presenter.can?(nil, :read_build)).to be_truthy
@@ -109,8 +109,9 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
   describe '#trigger_variables' do
     let_it_be(:project) { create(:project) }
     let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
-    let_it_be_with_reload(:build) { create(:ci_build, pipeline: pipeline) }
     let_it_be(:trigger) { create(:ci_trigger, project: project) }
+
+    let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }
 
     context 'when not triggered' do
       it 'returns empty array' do
@@ -145,7 +146,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
 
     context 'when build is scheduled' do
       context 'when schedule is not expired' do
-        let(:build) { create(:ci_build, :scheduled) }
+        let(:build) { build_stubbed(:ci_build, :scheduled) }
 
         it 'returns execution time' do
           freeze_time do
@@ -155,7 +156,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
       end
 
       context 'when schedule is expired' do
-        let(:build) { create(:ci_build, :expired_scheduled) }
+        let(:build) { build_stubbed(:ci_build, :expired_scheduled) }
 
         it 'returns execution time' do
           freeze_time do
@@ -166,7 +167,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
     end
 
     context 'when build is not delayed' do
-      let(:build) { create(:ci_build) }
+      let(:build) { build_stubbed(:ci_build) }
 
       it 'does not return execution time' do
         freeze_time do
@@ -177,14 +178,14 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
   end
 
   describe '#failure_message' do
-    let_it_be(:build) { create(:ci_build, :failed, failure_reason: 2) }
+    let(:build) { build_stubbed(:ci_build, :failed, failure_reason: 2) }
 
     it 'returns a verbose failure message' do
       expect(subject.failure_message).to eq('There has been an API failure, please try again')
     end
 
     context 'when the build has not failed' do
-      let_it_be(:build) { create(:ci_build, :success, failure_reason: 2) }
+      let(:build) { build_stubbed(:ci_build, :success, failure_reason: 2) }
 
       it 'does not return any failure message' do
         expect(subject.failure_message).to be_nil
@@ -193,7 +194,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
   end
 
   describe '#callout_failure_message' do
-    let(:build) { create(:ci_build, :failed, :api_failure) }
+    let(:build) { build_stubbed(:ci_build, :failed, :api_failure) }
 
     it 'returns a verbose failure reason' do
       description = subject.callout_failure_message

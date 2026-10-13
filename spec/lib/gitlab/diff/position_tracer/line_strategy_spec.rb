@@ -284,10 +284,16 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
                     new_line: 2,
                     line_range: {
                       "start" => {
-                        "line_code" => 1
+                        "line_code" => Gitlab::Git.diff_line_code(file_name, 1, 0),
+                        "type" => "new",
+                        "old_line" => nil,
+                        "new_line" => 1
                       },
                       "end" => {
-                        "line_code" => 2
+                        "line_code" => Gitlab::Git.diff_line_code(file_name, 2, 0),
+                        "type" => "new",
+                        "old_line" => nil,
+                        "new_line" => 2
                       }
                     }
                   )
@@ -1845,6 +1851,242 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
           ]
 
           expect_new_positions(old_position_attrs, new_position_attrs)
+        end
+      end
+    end
+
+    describe "line_range" do
+      let(:create_file_commit) do
+        initial_commit
+
+        create_file(branch_name, file_name, "A\nB\nC\nD\n")
+      end
+
+      let(:old_diff_refs) { diff_refs(initial_commit, create_file_commit) }
+
+      def endpoint(line)
+        { "line_code" => Gitlab::Git.diff_line_code(file_name, line, 0), "type" => "new", "old_line" => nil,
+          "new_line" => line }
+      end
+
+      def old_position_with_range(start_line:, end_line:, line: end_line)
+        position(
+          new_path: file_name,
+          new_line: line,
+          line_range: { "start" => endpoint(start_line), "end" => endpoint(end_line) }
+        )
+      end
+
+      context "when lines were added above the range" do
+        let(:insert_lines_commit) do
+          create_file_commit
+
+          update_file(branch_name, file_name, "X\nY\nA\nB\nC\nD\n")
+        end
+
+        let(:new_diff_refs) { diff_refs(initial_commit, insert_lines_commit) }
+
+        context "when the range spans multiple lines" do
+          let(:old_position) { old_position_with_range(start_line: 2, end_line: 3) }
+
+          it "moves the range with the line" do
+            expect_new_position(new_line: 5, line_range: { "start" => endpoint(4), "end" => endpoint(5) })
+          end
+        end
+
+        context "when the feature flag is disabled" do
+          let(:old_position) { old_position_with_range(start_line: 2, end_line: 3) }
+
+          before do
+            stub_feature_flags(trace_diff_note_line_range: false)
+          end
+
+          it "keeps the range" do
+            expect_new_position(new_line: 5, line_range: old_position.line_range)
+          end
+        end
+
+        context "when a multi-line range ends on another line" do
+          let(:old_position) { old_position_with_range(start_line: 1, end_line: 2, line: 3) }
+
+          it "shrinks the range to the line" do
+            expect_new_position(new_line: 5, line_range: { "start" => endpoint(5), "end" => endpoint(5) })
+          end
+        end
+
+        context "when the range only has line codes" do
+          let(:old_position) do
+            position(
+              new_path: file_name,
+              new_line: 3,
+              line_range: {
+                "start" => endpoint(2).slice("line_code", "type"),
+                "end" => endpoint(3).slice("line_code", "type")
+              }
+            )
+          end
+
+          it "moves the range with the line" do
+            expect_new_position(new_line: 5, line_range: { "start" => endpoint(4), "end" => endpoint(5) })
+          end
+        end
+
+        context "when the range start has no line" do
+          let(:old_position) do
+            position(
+              new_path: file_name,
+              new_line: 3,
+              line_range: { "start" => { "type" => "new" }, "end" => endpoint(3) }
+            )
+          end
+
+          it "shrinks the range to the line" do
+            expect_new_position(new_line: 5, line_range: { "start" => endpoint(5), "end" => endpoint(5) })
+          end
+        end
+
+        context "when the note is on the first line of the range" do
+          let(:old_position) { old_position_with_range(start_line: 2, end_line: 3, line: 2) }
+
+          it "moves the range with the line" do
+            expect_new_position(new_line: 4, line_range: { "start" => endpoint(4), "end" => endpoint(5) })
+          end
+        end
+
+        context "when a single-line range points at another line" do
+          let(:old_position) { old_position_with_range(start_line: 1, end_line: 1, line: 3) }
+
+          it "moves the range to the line" do
+            expect_new_position(new_line: 5, line_range: { "start" => endpoint(5), "end" => endpoint(5) })
+          end
+        end
+      end
+
+      context "when the range starts on an unchanged line" do
+        let(:update_line_commit) do
+          create_file_commit
+
+          update_file(branch_name, file_name, "A\nB\nC\nD1\nD2\n")
+        end
+
+        let(:insert_lines_commit) do
+          update_line_commit
+
+          update_file(branch_name, file_name, "X\nY\nA\nB\nC\nD1\nD2\n")
+        end
+
+        let(:old_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
+        let(:new_diff_refs) { diff_refs(create_file_commit, insert_lines_commit) }
+
+        let(:old_position) do
+          position(
+            old_path: file_name,
+            new_path: file_name,
+            new_line: 5,
+            line_range: {
+              "start" => {
+                "line_code" => Gitlab::Git.diff_line_code(file_name, 3, 3),
+                "type" => nil,
+                "old_line" => 3,
+                "new_line" => 3
+              },
+              "end" => { "type" => "new", "old_line" => nil, "new_line" => 5 }
+            }
+          )
+        end
+
+        it "moves the range with the line" do
+          expect_new_position(new_line: 7)
+          expect(strategy.trace(old_position)[:position].line_range).to match(
+            "start" => {
+              "line_code" => Gitlab::Git.diff_line_code(file_name, 5, 3),
+              "type" => nil,
+              "old_line" => 3,
+              "new_line" => 5
+            },
+            "end" => hash_including("type" => "new", "old_line" => nil, "new_line" => 7)
+          )
+        end
+      end
+
+      context "when the range ends on a removed line" do
+        let(:update_line_commit) do
+          create_file_commit
+
+          update_file(branch_name, file_name, "A\nB\nCC\nD\n")
+        end
+
+        let(:insert_lines_commit) do
+          update_line_commit
+
+          update_file(branch_name, file_name, "X\nY\nA\nB\nCC\nD\n")
+        end
+
+        let(:old_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
+        let(:new_diff_refs) { diff_refs(create_file_commit, insert_lines_commit) }
+
+        let(:old_position) do
+          position(
+            old_path: file_name,
+            new_path: file_name,
+            old_line: 3,
+            line_range: {
+              "start" => { "line_code" => Gitlab::Git.diff_line_code(file_name, 2, 2), "type" => nil },
+              "end" => { "line_code" => Gitlab::Git.diff_line_code(file_name, 3, 3), "type" => "old" }
+            }
+          )
+        end
+
+        it "moves the range with the line" do
+          expect_new_position(
+            old_line: 3,
+            new_line: nil,
+            line_range: {
+              "start" => {
+                "line_code" => Gitlab::Git.diff_line_code(file_name, 4, 2),
+                "type" => nil,
+                "old_line" => 2,
+                "new_line" => 4
+              },
+              "end" => {
+                "line_code" => Gitlab::Git.diff_line_code(file_name, 5, 3),
+                "type" => "old",
+                "old_line" => 3,
+                "new_line" => nil
+              }
+            }
+          )
+        end
+      end
+
+      context "when the range start was removed" do
+        let(:delete_line_commit) do
+          create_file_commit
+
+          update_file(branch_name, file_name, "A\nC\nD\n")
+        end
+
+        let(:new_diff_refs) { diff_refs(initial_commit, delete_line_commit) }
+        let(:old_position) { old_position_with_range(start_line: 2, end_line: 3) }
+
+        it "shrinks the range to the line" do
+          expect_new_position(new_line: 2, line_range: { "start" => endpoint(2), "end" => endpoint(2) })
+        end
+      end
+
+      context "when the line was changed" do
+        let(:update_line_commit) do
+          create_file_commit
+
+          update_file(branch_name, file_name, "A\nB\nCC\nD\n")
+        end
+
+        let(:new_diff_refs) { diff_refs(initial_commit, update_line_commit) }
+        let(:change_diff_refs) { diff_refs(create_file_commit, update_line_commit) }
+        let(:old_position) { old_position_with_range(start_line: 2, end_line: 3) }
+
+        it "keeps the range of the version the note was left on" do
+          expect_change_position(old_line: 3, new_line: nil, line_range: old_position.line_range)
         end
       end
     end

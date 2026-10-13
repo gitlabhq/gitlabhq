@@ -38,8 +38,7 @@ describe('Project creation form fields component', () => {
   const findProjectNameInputComponent = () => wrapper.findComponentByTestId('project-name-input');
   const findProjectSlugInput = () => wrapper.findByTestId('project-slug-input');
   const findNamespaceSelect = () => wrapper.findComponent(NewProjectDestinationSelect);
-  const findDeploymentTargetSelect = () =>
-    wrapper.findComponentByTestId('deployment-target-select');
+  const findDeploymentTargetSelect = () => wrapper.findComponent(GlFormSelect);
   const findKubernetesHelpLink = () => wrapper.findByTestId('kubernetes-help-link');
   const findVisibilitySelector = () => wrapper.findComponent(SingleChoiceSelector);
   const findProjectNameValidator = () => wrapper.findComponent(ProjectNameValidator);

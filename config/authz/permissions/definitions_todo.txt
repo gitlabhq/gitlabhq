@@ -66,7 +66,6 @@ admin_import_source_user
 admin_incident_management_escalation_policy
 admin_incident_management_oncall_schedule
 admin_incident_management_timeline_event
-admin_incident_management_timeline_event_tag
 admin_instance_external_audit_events
 admin_integrations
 admin_issuable_resource_link
@@ -214,7 +213,6 @@ decline_terms
 delete_admin_role
 delete_group_link
 delete_group_stage
-delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
 delete_project_subscription
@@ -241,10 +239,8 @@ destroy_issue_board
 destroy_issue_board_list
 destroy_issue_link
 destroy_iteration
-destroy_label
 destroy_merge_request
 destroy_milestone
-destroy_note
 destroy_package
 destroy_pages
 destroy_path_lock
@@ -394,7 +390,6 @@ read_crm_contact
 read_crm_contacts
 read_crm_organization
 read_cross_project
-read_custom_emoji
 read_custom_field
 read_customizable_dashboards
 read_dedicated_hosted_runner_usage
@@ -619,7 +614,6 @@ update_issue_link
 update_max_artifacts_size
 update_max_pages_size
 update_name
-update_o11y_settings
 update_owned_user_achievement
 update_package
 update_pages

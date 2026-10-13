@@ -8,6 +8,7 @@ import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
 import routes from '~/explore/groups/routes';
 
 Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 export const createRouter = (basePath) => {
   const router = new VueRouter({

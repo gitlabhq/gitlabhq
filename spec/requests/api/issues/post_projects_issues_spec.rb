@@ -230,6 +230,21 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
+    context 'when creating an issue with labels past the work item labels limit' do
+      before do
+        stub_const('Issue::MAX_NUMBER_OF_LABELS', 1)
+      end
+
+      it 'returns 400 and does not create the issue', :aggregate_failures do
+        expect do
+          post api("/projects/#{project.id}/issues", user), params: { title: 'new issue', labels: 'one, two' }
+        end.not_to change { Issue.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include('Cannot add more than 1 labels')
+      end
+    end
+
     it 'creates a new project issue with labels param as array' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', labels: %w[label label2], weight: 3, assignee_ids: [user2.id] }
@@ -935,5 +950,57 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   def post_clone_issue(current_user, issue, target_project)
     post api("/projects/#{issue.project.id}/issues/#{issue.iid}/clone", current_user),
       params: { to_project_id: target_project.id }
+  end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of create_issue', unless: Gitlab.ee? do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'create_issue').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'title' => {
+            type: 'string',
+            description: 'Title of the issue.'
+          },
+          'description' => {
+            type: 'string',
+            description: 'Description of the issue. Limited to 1,048,576 characters.'
+          },
+          'assignee_ids' => {
+            type: 'array',
+            items: {
+              type: 'integer'
+            },
+            description: 'IDs of the users to assign to the issue. Set to `0` or leave empty to unassign all ' \
+              'assignees. Assigning more than one user is Premium and Ultimate only.'
+          },
+          'milestone_id' => {
+            type: 'integer',
+            description: 'Global ID of a milestone to assign to the issue. Set to `0` or leave empty to unassign the ' \
+              'milestone.'
+          },
+          'milestone' => {
+            type: 'string',
+            description: 'The title of a project or ancestor-group milestone to assign the issue to.'
+          },
+          'labels' => {
+            type: 'string',
+            description: 'Comma-separated list of label names. `None` means no labels are assigned. `Any` means at ' \
+              'least one label is assigned. `No+Label` (deprecated) means no labels are assigned. Set to an empty ' \
+              'string to unassign all labels. If a label does not already exist, this creates a new project label ' \
+              'and assigns it to the issue. Predefined names are case-insensitive.'
+          },
+          'confidential' => {
+            type: 'boolean',
+            description: 'If `true`, the issue is confidential.'
+          }
+        },
+        required: %w[id title],
+        additionalProperties: false
+      })
+    end
   end
 end

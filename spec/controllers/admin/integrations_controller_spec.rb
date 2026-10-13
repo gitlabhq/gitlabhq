@@ -45,7 +45,7 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
   describe '#update' do
     include JiraIntegrationHelpers
 
-    let(:integration) { create(:jira_integration, :instance, organization: create(:organization)) }
+    let(:integration) { create(:jira_integration, :instance, organization: organization) }
     let(:integration_name) { integration.class.to_param }
 
     before do
@@ -69,8 +69,23 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
 
       describe 'organization setting' do
         context 'for existing integration' do
-          it 'does not update organization id' do
-            expect(integration.reload.organization_id).not_to eq(organization.id)
+          it 'keeps the organization id' do
+            expect(integration.reload.organization_id).to eq(organization.id)
+          end
+        end
+
+        context 'when an instance integration exists in another organization' do
+          let(:other_integration) do
+            create(:jira_integration, :instance, organization: create(:organization), url: 'https://other.example.com')
+          end
+
+          let(:integration) { nil }
+          let(:integration_name) { other_integration.class.to_param }
+
+          it 'does not update it and creates one for the current organization', :aggregate_failures do
+            expect(other_integration.reload.url).to eq('https://other.example.com')
+            expect(Integrations::Jira.where(instance: true, organization: organization).sole)
+              .to have_attributes(params)
           end
         end
 
@@ -152,6 +167,21 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.map { |p| p['id'] }).not_to include(project.id)
+        end
+      end
+
+      context 'when a project in another organization has a custom integration' do
+        let_it_be(:other_project) { create(:project, organization: create(:organization)) }
+
+        before_all do
+          create(:jira_integration, project: other_project, inherit_from_id: nil)
+        end
+
+        it 'does not include the project in the response', :aggregate_failures do
+          get_overrides
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |p| p['id'] }).not_to include(other_project.id)
         end
       end
     end

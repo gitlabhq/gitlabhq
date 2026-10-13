@@ -94,7 +94,7 @@ RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
 
       context 'when using CE' do
         before do
-          allow(Gitlab).to receive(:ee?) { false }
+          allow(Gitlab).to receive(:ee?).and_return(false)
         end
 
         it 'just returns the normalized Hash' do
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::ImportExport::Config, feature_category: :importers do
 
       context 'when using EE' do
         before do
-          allow(Gitlab).to receive(:ee?) { true }
+          allow(Gitlab).to receive(:ee?).and_return(true)
         end
 
         it 'just returns the normalized Hash' do

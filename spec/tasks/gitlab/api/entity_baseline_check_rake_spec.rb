@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_entity'
+require 'grape'
 
 RSpec.describe 'gitlab:api:check_high_impact_entity_baseline rake task', :silence_output, feature_category: :api do
   let(:baseline_path) { Rails.root.join('rubocop/cop/api/config/api_entity_exposure_baseline.yml') }

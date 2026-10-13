@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Namespace Pages Deployments query', feature_category: :pages do
   include GraphqlHelpers
 
-  let(:project_maintainer) { create(:user) }
+  let_it_be(:project_maintainer) { create(:user) }
   let(:user_namespace) { create(:user_namespace, owner: current_user, path: current_user.username) }
   let(:guest) { create(:user) }
-  let!(:group) { create(:group) }
-  let!(:projects) { create_list(:project, 2, { namespace: group }) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:projects) { create_list(:project, 2, { namespace: group }) }
   let!(:pages_deployments) do
     projects.flat_map do |project|
       [

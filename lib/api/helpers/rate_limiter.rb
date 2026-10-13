@@ -18,11 +18,13 @@ module API
         interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.period_for(key)
         error_message = message || ::Gitlab::ApplicationRateLimiter.throttled_error_message
 
+        header['RateLimit-Name'] = key.to_s
+
         too_many_requests!({ error: error_message }, retry_after: interval_value)
       end
 
       def check_rate_limit_by_user_or_ip!(key, **options)
-        check_rate_limit!(key, scope: current_user || ip_address, **options)
+        check_rate_limit!(key, scope: current_user ? { user: current_user } : { ip: ip_address }, **options)
       end
 
       def mark_throttle!(key, scope:)

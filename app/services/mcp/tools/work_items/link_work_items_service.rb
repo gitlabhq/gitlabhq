@@ -4,6 +4,18 @@ module Mcp
   module Tools
     module WorkItems
       class LinkWorkItemsService < Base::GraphqlService
+        container_arguments record: :work_items_ids
+
+        override :governed_containers
+        def governed_containers(arguments)
+          ids = Array(arguments[:work_items_ids])
+          reject_oversized_argument!(:work_items_ids, ids)
+
+          also_governed_by_all(super, :work_items_ids, ids.select { |id| global_work_item_id?(id) }) do |gids|
+            work_item_containers(gids)
+          end
+        end
+
         register_version '0.1.0', {
           toolset: :work_items,
           description:

@@ -346,6 +346,36 @@ RSpec.describe GitlabSchema do
     end
   end
 
+  describe 'deprecated arguments', feature_category: :api do
+    # graphql-ruby's FieldUsage analyzer reads `Argument#path` for every deprecated or
+    # experiment argument in a query, and an owner without a `graphql_name` raises there.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/630513
+    it 'can compute a path for every deprecated argument in the schema' do
+      deprecated_arguments = described_class.types.values.flat_map do |type|
+        if type.respond_to?(:fields)
+          type.fields.values.flat_map(&:all_argument_definitions)
+        elsif type.respond_to?(:all_argument_definitions)
+          type.all_argument_definitions
+        else
+          []
+        end
+      end.select(&:deprecation_reason)
+
+      expect(deprecated_arguments).not_to be_empty
+
+      # `Argument#path` raises on an anonymous owner, so name the offenders before asserting on paths.
+      unnamed_owners = deprecated_arguments.filter_map do |argument|
+        argument.owner.path
+        nil
+      rescue GraphQL::RequiredImplementationMissingError
+        "#{argument.owner.inspect} (argument `#{argument.name}`)"
+      end
+
+      expect(unnamed_owners).to be_empty
+      expect(deprecated_arguments.map(&:path)).to all(be_present)
+    end
+  end
+
   describe 'validate_max_errors' do
     it 'reports at most 5 errors' do
       query = <<~GQL

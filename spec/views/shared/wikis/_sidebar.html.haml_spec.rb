@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/wikis/_sidebar.html.haml', feature_category: :wiki do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:wiki, freeze: false) { Wiki.for_container(project, project.first_owner) }
+  let(:project) { build_stubbed(:project) }
+  let(:wiki) { Wiki.for_container(project, project.first_owner) }
 
   before do
     assign(:wiki, wiki)

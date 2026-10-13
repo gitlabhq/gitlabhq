@@ -82,6 +82,14 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     end
   end
 
+  context "when MR is in tier-3 and changes only a spec file" do
+    let(:mr_labels) { ['pipeline::tier-3'] }
+    let(:changed_files) { ['spec/models/user_spec.rb'] }
+    let(:expected_job_name) { 'permissions-verify' }
+
+    it_behaves_like 'merge request pipeline'
+  end
+
   context "when unlabeled MR is changing docs only" do
     let(:changed_files) { ['doc/tutorials/index.md'] }
     let(:expected_job_name) { 'eslint-docs' }

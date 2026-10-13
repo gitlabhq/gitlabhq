@@ -29,6 +29,14 @@ module Gitlab
           GROUP_MODELS
         end
 
+        def filter_attributes(params)
+          attributes = super
+
+          return attributes unless ::Gitlab::ImportSources.template?(@importable.import_type)
+
+          attributes.except('created_at')
+        end
+
         def bulk_insert_enabled
           true
         end

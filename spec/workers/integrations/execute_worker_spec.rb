@@ -29,9 +29,35 @@ RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integ
   end
 
   it 'logs executed integration class name' do
-    expect(worker).to receive(:log_extra_metadata_on_done).with(:integration_class, 'Integrations::Jira')
+    allow(worker).to receive(:log_extra_metadata_on_done)
 
     worker.perform(integration.id, {})
+
+    expect(worker).to have_received(:log_extra_metadata_on_done).with(:integration_class, 'Integrations::Jira')
+  end
+
+  describe 'organization logging' do
+    before do
+      allow(worker).to receive(:log_extra_metadata_on_done)
+    end
+
+    it 'logs the organization of a project-level integration' do
+      worker.perform(integration.id, {})
+
+      expect(worker).to have_received(:log_extra_metadata_on_done)
+        .with(Labkit::Fields::GL_ORGANIZATION_ID, integration.project.organization_id)
+    end
+
+    context 'with an instance-level integration' do
+      let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+
+      it 'logs the organization of the integration' do
+        worker.perform(instance_integration.id, {})
+
+        expect(worker).to have_received(:log_extra_metadata_on_done)
+          .with(Labkit::Fields::GL_ORGANIZATION_ID, instance_integration.organization_id)
+      end
+    end
   end
 
   context 'when integration filters are configured' do

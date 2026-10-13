@@ -1,0 +1,10 @@
+---
+name: route_gitaly_through_gitway
+description: Routes a repository storage's traffic through the gitway proxy by using its gitway_address instead of its gitaly_address, both for Rails' own Gitaly calls and for the address Rails hands to Workhorse, gitlab-shell and other clients through connection_data. Gitaly-to-Gitaly traffic always uses the gitaly_address. Has no effect on storages without a gitway_address. The actor is the storage.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632171
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259697
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632192
+milestone: '19.5'
+group: group::gitaly
+type: ops
+default_enabled: false

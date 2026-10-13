@@ -16,15 +16,11 @@ describe('CI Editor Header', () => {
     showHelpDrawer = false,
     showJobAssistantDrawer = false,
     aiChatAvailable = false,
-    aiCiConfigGenerator = false,
   } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CiEditorHeader, {
         provide: {
           aiChatAvailable,
-          glFeatures: {
-            aiCiConfigGenerator,
-          },
         },
         propsData: {
           showHelpDrawer,

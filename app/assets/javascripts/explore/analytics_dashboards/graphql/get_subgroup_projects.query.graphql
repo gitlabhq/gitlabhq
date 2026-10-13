@@ -1,26 +1,34 @@
 # @feature_category: custom_dashboards_foundation
 
-# Also serves a top-level group in the picker's rootless mode, which passes
-# `includeSubgroups: false` to get that group's own projects rather than its whole tree.
-query getAnalyticsDashboardSubgroupProjects($fullPath: ID!, $includeSubgroups: Boolean = true) {
+# Flattens the whole tree beneath the group: `includeSubgroups` reaches projects at any depth,
+# and each carries its own `namespace` so a row can name the subgroup it actually sits in.
+query getAnalyticsDashboardSubgroupProjects($fullPath: ID!, $after: String) {
   group(fullPath: $fullPath) {
     id
     projects(
       first: 20
+      after: $after
       sort: ACTIVITY_DESC
       includeArchived: false
-      includeSubgroups: $includeSubgroups
+      includeSubgroups: true
     ) {
       nodes {
         id
         name
         fullName: nameWithNamespace
         fullPath
+        userPermissions {
+          readProAiAnalytics @gl_introduced(version: "19.5.0")
+        }
         namespace {
           id
           name
           fullPath
         }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }

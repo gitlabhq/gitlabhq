@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :resource_state_event do
-    issue { merge_request.nil? ? association(:issue) : nil }
+    issue { @overrides[:work_item] || (association(:issue) if merge_request.nil?) }
     merge_request { nil }
     state { :opened }
     user { issue&.author || merge_request&.author || association(:user) }

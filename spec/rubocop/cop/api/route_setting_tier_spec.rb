@@ -36,6 +36,26 @@ RSpec.describe RuboCop::Cop::API::RouteSettingTier, :config, feature_category: :
     end
   end
 
+  context 'with dynamic tier values' do
+    it 'does not register an offense for a local variable' do
+      expect_no_offenses(<<~RUBY)
+        route_setting :tier, tier if tier
+      RUBY
+    end
+
+    it 'does not register an offense for a method call' do
+      expect_no_offenses(<<~RUBY)
+        route_setting :tier, noteable_type.tier if noteable_type.tier
+      RUBY
+    end
+
+    it 'does not register an offense for a hash lookup' do
+      expect_no_offenses(<<~RUBY)
+        route_setting :tier, configuration[:tier]
+      RUBY
+    end
+  end
+
   context 'with invalid tier values' do
     it 'registers an offense for :free' do
       expect_offense(<<~RUBY)

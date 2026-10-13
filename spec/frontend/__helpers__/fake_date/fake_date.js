@@ -51,7 +51,7 @@ const setGlobalDateToRealDate = () => {
 };
 
 // We use commonjs so that the test environment module can pick this up
-// eslint-disable-next-line import/no-commonjs
+// eslint-disable-next-line import-x/no-commonjs
 module.exports = {
   setGlobalDateToFakeDate,
   setGlobalDateToRealDate,

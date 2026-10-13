@@ -16,6 +16,7 @@ title: External agent configuration examples
 
 - Introduced in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218840) in GitLab 18.8.
+- `$AI_FLOW_GOAL` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257218) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_goals`. Disabled by default.
 
 {{< /history >}}
 
@@ -27,6 +28,7 @@ These examples contain the following variables:
   - In issues or epics, the comments (up to a limit)
 - `$AI_FLOW_EVENT`: the type of trigger event (for example, `mention`)
 - `$AI_FLOW_INPUT`: the prompt the user enters as a comment in the merge request, issue, or epic
+- `$AI_FLOW_GOAL`: the goal set on the trigger for the event that fired, if a goal is set
 - `$AI_FLOW_GITLAB_TOKEN`: the OAuth token for authenticating to the GitLab API
 - `$AI_FLOW_GITLAB_HOSTNAME`: the hostname of the GitLab instance (for example, `gitlab.com`)
 - `$AI_FLOW_PROJECT_PATH`: the full path of the project (for example, `my-group/my-project`)

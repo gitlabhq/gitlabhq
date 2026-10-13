@@ -2,15 +2,17 @@
 
 /**
  * Reports Vue 3 migration progress and team ownership across page
- * entrypoints.
+ * entrypoints and global bundles.
  *
  * The script is in two halves. `collectEntrypoints` gathers everything
- * known about every page entrypoint into one array of records; the
+ * known about every entry into one array of records; the
  * `render*` functions are pure views over that array and do no gathering
  * of their own. Adding a view should never mean touching the collector.
  *
- * The entry set is taken from the bundler's own entry generator, so the
- * denominator matches what Webpack/Vite actually emit.
+ * The entry set is the bundler's own: page entries from its entry generator
+ * (`pages/**`), global bundles from `config/helpers/entry_points.js`. So the
+ * denominator matches what Webpack/Vite actually emit. Each record carries a
+ * `kind`, `page` or `global`.
  *
  * Each entrypoint is in one of four migration states:
  *
@@ -33,6 +35,8 @@
  * The first hop is the naming convention the bundler and `webpack_helper`
  * already share; the second comes from `rake gitlab:feature_categories:index`;
  * the third from the handbook's `stages.yml`. Both are cached under `tmp/`.
+ * Global bundles are rendered by layouts rather than routed to, so no
+ * controller can be inferred; their stage is stated in `OWNERSHIP_OVERRIDES`.
  *
  * Size estimates how much work a page's migration is: `reachableComponentCount`
  * counts the `.vue` files the entry pulls in through the import graph, and
@@ -48,12 +52,20 @@
  * but not its controller, the attribution is wrong. It is a starting point
  * for assigning work, not a declaration of ownership.
  *
+ * Feature flag overlap asks whether two flags roll out the same components.
+ * Each flag's component set is the union over the pages it covers, minus the
+ * shared layer (`config/frontend_packages.mjs`) and minus a baseline of
+ * components that nearly every flag reaches, such as the Markdown render
+ * path. Two flags with a high overlap on many components are two rollouts of
+ * one code path, which is twice the rollout work for no extra coverage.
+ *
  * Usage — every path is resolved against the repository, so it runs from
  * any directory:
  *
  *   node scripts/frontend/vue3_migration_stats.mjs             summary
  *   node scripts/frontend/vue3_migration_stats.mjs --tree      + entrypoint tree
  *   node scripts/frontend/vue3_migration_stats.mjs --owners    + ownership table
+ *   node scripts/frontend/vue3_migration_stats.mjs --overlap   + flag overlap table
  *   node scripts/frontend/vue3_migration_stats.mjs --json      records, as JSON
  *   node scripts/frontend/vue3_migration_stats.mjs --refresh   rebuild caches
  *
@@ -81,14 +93,15 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { program } from 'commander';
 import { cruise } from 'dependency-cruiser';
-// eslint-disable-next-line import/no-unresolved -- This is a valid subpath export
 import extractWebpackResolveConfig from 'dependency-cruiser/config-utl/extract-webpack-resolve-config';
+import { ASSET_ROOT, SHARED_LAYER, group as alternation } from '../../config/frontend_packages.mjs';
 
 const require = createRequire(import.meta.url);
 const glob = require('glob');
 const yaml = require('js-yaml');
 const { generateEntries } = require('../../config/webpack.helpers');
-const { loadVue3Migrations } = require('../../config/helpers/vue3_migration_loader');
+const { loadVue3Migrations } = require('../../config/vue3migration/migration');
+const { baseEntryPoints } = require('../../config/helpers/entry_points');
 const IS_EE = require('../../config/helpers/is_ee_env');
 
 const ROOT_PATH = path.resolve(import.meta.dirname, '../..');
@@ -99,14 +112,23 @@ const ROOT_PATH = path.resolve(import.meta.dirname, '../..');
 process.chdir(ROOT_PATH);
 
 program
-  .description('Reports Vue 3 migration progress and team ownership across page entrypoints.')
+  .description(
+    'Reports Vue 3 migration progress and team ownership across page entrypoints and global bundles.',
+  )
   .option('--tree', 'list every entrypoint as a tree')
   .option('--owners', 'list every entrypoint and its owning team, as a Markdown table')
+  .option('--overlap', 'list pairs of feature flags that roll out the same components')
   .option('--json', 'print the underlying records instead of a report')
   .option('--refresh', 'rebuild every cached input: feature categories, stages.yml, import graph')
   .parse();
 
-const { tree: TREE, owners: OWNERS, json: JSON_OUTPUT, refresh: REFRESH } = program.opts();
+const {
+  tree: TREE,
+  owners: OWNERS,
+  overlap: OVERLAP,
+  json: JSON_OUTPUT,
+  refresh: REFRESH,
+} = program.opts();
 
 // The slow inputs are cached here: one boots Rails, one hits the network, one
 // cruises the import graph. `tmp/` is fully gitignored.
@@ -121,15 +143,14 @@ const STATUS_ORDER = [STATUS_VUE2, 'rollout', STATUS_MANUAL, 'migrated'];
 // A department is a union of sections. `stages.yml` carries a `section` per
 // stage but no department: its only `department` keys sit under
 // `internal_customers`, which is who a group serves rather than who it reports to.
-//
-// `foundations` and `developer_experience` are absent because no page entrypoint
-// resolves to either; they report as unknown if that changes.
 const DEPARTMENT_BY_SECTION = {
   ai: 'AI Engineering',
   analytics: 'Data / Analytics',
   cd: 'Core DevOps',
   database_excellence: 'Infrastructure Platforms',
   dev: 'Core DevOps',
+  developer_experience: 'Developer Experience',
+  foundations: 'Foundations',
   fulfillment: 'Fulfillment',
   growth: 'Growth',
   saas_production_engineering: 'Infrastructure Platforms',
@@ -142,7 +163,20 @@ const DEPARTMENT_BY_SECTION = {
 
 // Entries no route resolves to, so no `feature_category` and no stage can be
 // derived for them. Only the stage is stated; the department follows from it.
+// Global bundles are all here: they are rendered by layouts, not routed to.
 const OWNERSHIP_OVERRIDES = new Map([
+  ['coverage_persistence', { stage: 'developer_experience' }],
+  ['duo_panel', { stage: 'ai_clients' }],
+  ['graphql_explorer', { stage: 'developer_experience' }],
+  ['jira_connect_app', { stage: 'plan' }],
+  ['performance_bar', { stage: 'foundations' }],
+  ['redirect_listbox', { stage: 'foundations' }],
+  ['sandboxed_mermaid_v11', { stage: 'plan' }],
+  ['sandboxed_mermaid_v12', { stage: 'plan' }],
+  ['sandboxed_swagger', { stage: 'plan' }],
+  ['sentry', { stage: 'production_engineering' }],
+  ['super_sidebar', { stage: 'foundations' }],
+  ['tracker', { stage: 'analytics' }],
   ['pages.admin.ai.amazon_q_settings', { stage: 'ai_platform' }],
   ['pages.admin.application_settings.metrics_and_profiling', { stage: 'production_engineering' }],
   ['pages.admin.application_settings.network', { stage: 'security_platform' }],
@@ -477,17 +511,116 @@ const reachableFrom = (seeds, graph) => {
 };
 
 // ───────────────────────────────────────────────────────────────────────
+// Feature flag overlap
+// ───────────────────────────────────────────────────────────────────────
+
+// Shared-layer components are excluded from a flag's set: every page reaches
+// them, so they say nothing about which pages share a feature.
+const SHARED_LAYER_PATTERN = new RegExp(`${ASSET_ROOT}/${alternation(SHARED_LAYER)}/`);
+
+// A component reached by this many flags or more is baseline rather than
+// feature code. On today's graph that is the Markdown render path (GLQL, the
+// content editor, issuable popovers), which nearly every page imports and
+// which would otherwise put every pair of flags at a similar-looking overlap.
+const BASELINE_FLAG_THRESHOLD = 8;
+
+/**
+ * How much of the same component tree pairs of feature flags put behind a
+ * rollout. A flag's set is the union over the entrypoints it covers, minus the
+ * shared layer and the baseline.
+ *
+ * Two measures per pair. Jaccard (shared / union) says whether two flags are
+ * the same family; it is low when a small flag sits inside a large one. The
+ * overlap coefficient (shared / smaller set) catches exactly that containment,
+ * and is the one to read for "does the second flag prove anything the first
+ * does not". Pairs sharing nothing are left out.
+ *
+ * @typedef {object} FeatureFlagOverlap
+ * @property {number} baselineFlagThreshold
+ * @property {number} baselineComponentCount - Components removed as baseline.
+ * @property {Array<{featureFlag: string, entrypointCount: number, componentCount: number}>} flags
+ * @property {Array<{a: string, b: string, shared: number, jaccard: number, overlap: number}>} pairs
+ *
+ * @param {Entrypoint[]} entrypoints
+ * @param {Map<string, string[]>} componentsByEntry - `.vue` files per entry name.
+ * @returns {FeatureFlagOverlap}
+ */
+function computeFeatureFlagOverlap(entrypoints, componentsByEntry) {
+  const flagged = entrypoints.filter((entry) => entry.featureFlag);
+  const setsByFlag = new Map();
+  const entryCounts = new Map();
+  for (const entry of flagged) {
+    if (!setsByFlag.has(entry.featureFlag)) {
+      setsByFlag.set(entry.featureFlag, new Set());
+      entryCounts.set(entry.featureFlag, 0);
+    }
+    entryCounts.set(entry.featureFlag, entryCounts.get(entry.featureFlag) + 1);
+    const set = setsByFlag.get(entry.featureFlag);
+    for (const file of componentsByEntry.get(entry.name) ?? []) {
+      if (!SHARED_LAYER_PATTERN.test(file)) set.add(file);
+    }
+  }
+
+  const flagsPerComponent = new Map();
+  for (const set of setsByFlag.values()) {
+    for (const file of set) flagsPerComponent.set(file, (flagsPerComponent.get(file) ?? 0) + 1);
+  }
+  const baseline = new Set(
+    [...flagsPerComponent].filter(([, count]) => count >= BASELINE_FLAG_THRESHOLD).map(([f]) => f),
+  );
+  for (const set of setsByFlag.values()) {
+    for (const file of baseline) set.delete(file);
+  }
+
+  const flagNames = [...setsByFlag.keys()].sort((a, b) => a.localeCompare(b));
+  const pairs = [];
+  for (const [index, a] of flagNames.entries()) {
+    for (const b of flagNames.slice(index + 1)) {
+      const setA = setsByFlag.get(a);
+      const setB = setsByFlag.get(b);
+      let shared = 0;
+      for (const file of setA) if (setB.has(file)) shared += 1;
+      if (shared === 0) continue;
+      const union = setA.size + setB.size - shared;
+      const smaller = Math.min(setA.size, setB.size);
+      pairs.push({
+        a,
+        b,
+        shared,
+        jaccard: Number((shared / union).toFixed(3)),
+        overlap: Number((shared / smaller).toFixed(3)),
+      });
+    }
+  }
+  pairs.sort((x, y) => y.shared - x.shared || x.a.localeCompare(y.a) || x.b.localeCompare(y.b));
+
+  return {
+    baselineFlagThreshold: BASELINE_FLAG_THRESHOLD,
+    baselineComponentCount: baseline.size,
+    flags: flagNames.map((featureFlag) => ({
+      featureFlag,
+      entrypointCount: entryCounts.get(featureFlag),
+      componentCount: setsByFlag.get(featureFlag).size,
+    })),
+    pairs,
+  };
+}
+
+// ───────────────────────────────────────────────────────────────────────
 // Collection
 // ───────────────────────────────────────────────────────────────────────
 
 /**
  * @typedef {object} Entrypoint
- * @property {string} name - e.g. `pages.projects.blob.show`.
+ * @property {string} name - e.g. `pages.projects.blob.show`, or `super_sidebar`.
+ * @property {string} kind - `page` for a `pages/**` entry, `global` for a bundle
+ *   declared in `config/helpers/entry_points.js`.
  * @property {string[]} fileNames - The `index.js` files this entry builds from,
  *   repo-relative, CE first. Two when EE shadows a CE entry of the same name.
  * @property {string|null} controllerFileName - The controller routing the most
- *   actions here. `null` when no route resolves to this entry.
- * @property {string} status - `migrated`, `rollout`, `manual` or `vue2`.
+ *   actions here. `null` when no route resolves to this entry, always for a global.
+ * @property {string} status - `migrated`, `rollout`, `manual` or `vue2`. `manual`
+ *   is page-only: no global bundle uses a hand-written `?vue3` import.
  * @property {string|null} featureFlag
  * @property {boolean|null} flagDefaultEnabled - `null` when unknown.
  * @property {FeatureCategory[]} featureCategories - Busiest first; the head owns the entry.
@@ -508,10 +641,13 @@ const reachableFrom = (seeds, graph) => {
  * @property {string|null} department
  */
 
+const KIND_PAGE = 'page';
+const KIND_GLOBAL = 'global';
+
 /**
- * Everything known about every page entrypoint, in one array. Always
- * complete: which fields a view happens to read is not this function's
- * concern.
+ * Everything known about every page entrypoint and global bundle, in one
+ * array. Always complete: which fields a view happens to read is not this
+ * function's concern.
  *
  * @returns {Promise<{entrypoints: Entrypoint[], edition: string, warnings: string[]}>}
  */
@@ -524,8 +660,17 @@ async function collectEntrypoints() {
   const names = Object.keys(entries)
     .filter((name) => !name.endsWith('.vue3'))
     .sort();
+  // Pages only: controller actions and `?vue3` scans resolve against `pages.*`.
   const known = new Set(names);
   const warnings = [];
+
+  // `default` (`./main`) is an array and not a bundle of its own.
+  const globalModules = new Map(
+    Object.entries(baseEntryPoints)
+      .filter(([, spec]) => typeof spec === 'string')
+      .map(([name, spec]) => [name, `app/assets/javascripts/${spec.replace(/^\.\//, '')}`]),
+  );
+  const globalNames = [...globalModules.keys()].sort();
 
   const migrations = loadVue3Migrations();
 
@@ -543,10 +688,13 @@ async function collectEntrypoints() {
    * @returns {string[]}
    */
   const filesOf = (name) => {
+    if (globalModules.has(name)) return [globalModules.get(name)];
+
     const imports = entries[name];
     // Drop the edition prefix (`.` for CE, `ee` otherwise) to get the path
-    // relative to that edition's `app/assets/javascripts`.
-    const [, ...rest] = imports[imports.length - 1].split('/');
+    // relative to that edition's `app/assets/javascripts`. A `migrated` page is
+    // infected in place, so its module path carries a `?vue3` query.
+    const [, ...rest] = imports[imports.length - 1].replace(/\?vue3$/, '').split('/');
     const relative = `app/assets/javascripts/${rest.join('/')}`;
     return ['', 'ee/']
       .map((editionRoot) => `${editionRoot}${relative}`)
@@ -612,9 +760,18 @@ async function collectEntrypoints() {
   const departmentOf = (stage) =>
     (stage && DEPARTMENT_BY_SECTION[sectionByStage.get(stage)]) ?? null;
 
-  const moduleGraph = await loadModuleGraph([...new Set(names.flatMap((name) => filesOf(name)))]);
+  const allNames = [...names, ...globalNames];
+  const seeds = [...new Set(allNames.flatMap((name) => filesOf(name)))];
+  const moduleGraph = await loadModuleGraph(seeds);
 
-  const entrypoints = names.map((name) => {
+  // A graph cached before a bundle was added has no node for it: it would size as 0.
+  const uncruised = seeds.filter((file) => !moduleGraph.has(file));
+
+  // The reachable set itself is kept aside for the overlap computation; the
+  // record only carries its size.
+  const componentsByEntry = new Map();
+
+  const entrypoints = allNames.map((name) => {
     const status = migrations[name]
       ? migrations[name].status
       : (manualEntries.has(name) && STATUS_MANUAL) || STATUS_VUE2;
@@ -655,19 +812,25 @@ async function collectEntrypoints() {
     const [[controller] = []] = busiest(controllersByEntry, name);
 
     const fileNames = filesOf(name);
-    const reachable = reachableFrom(fileNames, moduleGraph);
+    const components = [...reachableFrom(fileNames, moduleGraph)].filter((file) =>
+      file.endsWith('.vue'),
+    );
+    componentsByEntry.set(name, components);
 
     return {
       name,
+      kind: globalModules.has(name) ? KIND_GLOBAL : KIND_PAGE,
       fileNames,
       controllerFileName: controller ? controllerFileOf(controller) : null,
       status,
       featureFlag,
       flagDefaultEnabled: featureFlag ? (flagDefaults.get(featureFlag) ?? null) : null,
       featureCategories: categories,
-      reachableComponentCount: [...reachable].filter((file) => file.endsWith('.vue')).length,
+      reachableComponentCount: components.length,
     };
   });
+
+  const featureFlagOverlap = computeFeatureFlagOverlap(entrypoints, componentsByEntry);
 
   if (names.length !== entriesState.autoEntriesCount) {
     warnings.push(
@@ -677,6 +840,13 @@ async function collectEntrypoints() {
   }
 
   const indent = (values) => values.map((value) => `  ${value}`).join('\n');
+
+  if (uncruised.length > 0) {
+    warnings.push(
+      `${uncruised.length} entry module(s) are missing from the cached import graph, so ` +
+        `their size is 0. Run with --refresh to rebuild it:\n${indent(uncruised.sort())}`,
+    );
+  }
 
   if (contradictory.length > 0) {
     warnings.push(
@@ -690,7 +860,8 @@ async function collectEntrypoints() {
   // The loader globs every page root regardless of edition, so a YAML can
   // describe an entry this build does not emit — either an EE page under
   // `FOSS_ONLY`, or a directory with no sibling `index.js`.
-  const orphans = Object.keys(migrations).filter((entry) => !known.has(entry));
+  const emitted = new Set(allNames);
+  const orphans = Object.keys(migrations).filter((entry) => !emitted.has(entry));
   if (orphans.length > 0) {
     warnings.push(
       `${orphans.length} vue3_migration.yml file(s) describe an entry ` +
@@ -698,7 +869,7 @@ async function collectEntrypoints() {
     );
   }
 
-  return { entrypoints, edition, warnings, committedAt: readCommitDate() };
+  return { entrypoints, featureFlagOverlap, edition, warnings, committedAt: readCommitDate() };
 }
 
 // ───────────────────────────────────────────────────────────────────────
@@ -779,7 +950,8 @@ const buildTree = (entrypoints) => {
     children: new Map(),
     entry: entrypoints.find(({ name }) => name === 'pages'),
   };
-  for (const entrypoint of entrypoints) {
+  // A global bundle's name has no `pages` root and would hang off it as a child.
+  for (const entrypoint of entrypoints.filter((entry) => entry.kind === KIND_PAGE)) {
     let node = root;
     for (const segment of entrypoint.name.split('.').slice(1)) {
       if (!node.children.has(segment)) {
@@ -821,7 +993,13 @@ function renderTree(entrypoints) {
   const topLevel = sortedChildren(root);
   topLevel.forEach((child, index) => layout(child, '', index === topLevel.length - 1));
 
-  const labelWidth = Math.max(...lines.map((line) => line.text.length)) + 2;
+  const globals = entrypoints.filter((entry) => entry.kind === KIND_GLOBAL);
+  const globalLines = globals.map((entry, index) => ({
+    text: `${index === globals.length - 1 ? '└──' : '├──'} ${entry.name}`,
+    node: { entry },
+  }));
+
+  const labelWidth = Math.max(...[...lines, ...globalLines].map((line) => line.text.length)) + 2;
   const flagWidth = active.length
     ? Math.max(...active.map((entry) => flagLabel(entry).length)) + 2
     : 0;
@@ -833,15 +1011,20 @@ function renderTree(entrypoints) {
   console.log();
 
   // Only entries on Vue 3 are annotated, so those rows stand out.
-  for (const { text, node } of lines) {
+  const print = ({ text, node }) => {
     if (!node.entry || !onVue3(node.entry)) {
       console.log(text);
-      continue;
+      return;
     }
     const flag = flagLabel(node.entry);
     const annotation = `${SYMBOL[node.entry.status]} ${flag.padEnd(flagWidth)}${defaultLabel(node.entry)}`;
     console.log(`${text.padEnd(labelWidth)}${annotation}`.trimEnd());
-  }
+  };
+  for (const line of lines) print(line);
+
+  console.log();
+  console.log('global bundles');
+  for (const line of globalLines) print(line);
 }
 
 /**
@@ -853,8 +1036,12 @@ function renderSummary(entrypoints) {
   const total = entrypoints.length;
   const active = entrypoints.filter((entry) => onVue3(entry));
 
+  const pages = entrypoints.filter((entry) => entry.kind === KIND_PAGE).length;
   console.log();
-  console.log(`${countDirectories(buildTree(entrypoints))} directories, ${total} entrypoints`);
+  console.log(
+    `${countDirectories(buildTree(entrypoints))} directories, ${pages} page entrypoints, ` +
+      `${total - pages} global bundles`,
+  );
   console.log();
 
   for (const status of STATUS_ORDER) {
@@ -1025,19 +1212,75 @@ function renderOwners(entrypoints) {
   );
 }
 
+// Below either limit a pair is a small widget in common, not a duplicated
+// rollout: a tiny page fully inside a big flag, or two flags touching one
+// shared table. Both limits sit in the gap of the observed distribution.
+const OVERLAP_MIN_COEFFICIENT = 0.75;
+const OVERLAP_MIN_SHARED = 20;
+
+/**
+ * Pairs of feature flags that roll out mostly the same components, as a
+ * Markdown table with the biggest shared set first.
+ *
+ * @param {FeatureFlagOverlap} overlap
+ */
+function renderOverlap({ baselineComponentCount, baselineFlagThreshold, flags, pairs }) {
+  const sizeOf = new Map(flags.map((flag) => [flag.featureFlag, flag.componentCount]));
+  const rows = pairs.filter(
+    (pair) => pair.overlap >= OVERLAP_MIN_COEFFICIENT && pair.shared >= OVERLAP_MIN_SHARED,
+  );
+
+  console.log();
+  console.log('Feature flag overlap — pairs rolling out the same components');
+  console.log();
+  console.log(
+    `${flags.length} flags · shared layer excluded · ${baselineComponentCount} baseline ` +
+      `components reached by ${baselineFlagThreshold}+ flags excluded`,
+  );
+  console.log(
+    `Listed: overlap coefficient ≥ ${OVERLAP_MIN_COEFFICIENT} (shared / smaller set) ` +
+      `and ≥ ${OVERLAP_MIN_SHARED} shared components`,
+  );
+  console.log();
+
+  if (rows.length === 0) {
+    console.log('  none');
+    return;
+  }
+
+  const columns = [
+    { header: 'flag A', of: (pair) => `\`${pair.a}\`` },
+    { header: 'flag B', of: (pair) => `\`${pair.b}\`` },
+    { header: 'shared', of: (pair) => String(pair.shared) },
+    { header: 'size A', of: (pair) => String(sizeOf.get(pair.a)) },
+    { header: 'size B', of: (pair) => String(sizeOf.get(pair.b)) },
+    { header: 'overlap', of: (pair) => pair.overlap.toFixed(2) },
+    { header: 'jaccard', of: (pair) => pair.jaccard.toFixed(2) },
+  ];
+  const widths = columns.map(({ header, of }) =>
+    Math.max(header.length, ...rows.map((pair) => of(pair).length)),
+  );
+  const line = (values) => `| ${values.map((value, i) => value.padEnd(widths[i])).join(' | ')} |`;
+  console.log(line(columns.map(({ header }) => header)));
+  console.log(`|${widths.map((width) => '-'.repeat(width + 2)).join('|')}|`);
+  for (const pair of rows) console.log(line(columns.map(({ of }) => of(pair))));
+}
+
 // ───────────────────────────────────────────────────────────────────────
 // Main
 // ───────────────────────────────────────────────────────────────────────
 
-const { entrypoints, edition, warnings, committedAt } = await collectEntrypoints();
+const { entrypoints, featureFlagOverlap, edition, warnings, committedAt } =
+  await collectEntrypoints();
 
 if (JSON_OUTPUT) {
-  console.log(JSON.stringify({ committedAt, edition, entrypoints }, null, 2));
+  console.log(JSON.stringify({ committedAt, edition, entrypoints, featureFlagOverlap }, null, 2));
 } else {
   console.log(`Vue 3 page entrypoint migration — ${edition} build`);
   console.log(`Latest commit: ${committedAt ?? 'unknown'}`);
   if (TREE) renderTree(entrypoints);
   if (OWNERS) renderOwners(entrypoints);
+  if (OVERLAP) renderOverlap(featureFlagOverlap);
   renderSummary(entrypoints);
 
   for (const warning of warnings) console.warn(`\nWarning: ${warning}`);

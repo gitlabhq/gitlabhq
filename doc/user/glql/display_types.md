@@ -50,10 +50,20 @@ The following display types are available only in analytics mode:
 
 ## Table
 
+{{< history >}}
+
+- Dynamic descriptions and `hiddenMetrics` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
+
+{{< /history >}}
+
 A table renders one row per result and one column per [field](fields.md).
 
 To sort a table by a column, select the column header. This view reorders the rows loaded in
 the view, not the full result set.
+
+A table can describe its result. This requires [analytics mode](_index.md#analytics-mode). Set
+`description` under `displayConfig`, and set `hiddenMetrics` to keep a metric out of the columns.
+See [Dynamic descriptions](#dynamic-descriptions) for placeholder syntax and rules.
 
 ### Example
 
@@ -117,6 +127,8 @@ query: type = Issue AND project = "gitlab-org/gitlab" AND assignee = currentUser
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241395) in GitLab 19.2.
+- `compact` display option [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23470) in GitLab 19.5.
+- Dynamic descriptions [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255287) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -126,11 +138,18 @@ large value. Use a single stat to highlight a key number, such as a total or a r
 A single stat requires:
 
 - Analytics mode, set with `mode: analytics`.
-- Only one metric, set with the `metrics` parameter.
+- One or more metrics, set with the `metrics` parameter. The stat displays the value of the first
+  metric and ignores the rest, unless the description references them.
 - No `dimensions`.
 
 Values format automatically based on the metric. For example, counts use thousands separators and
-rates display as percentages.
+rates display as percentages. To render numbers in compact notation
+instead, for example `1.45M`, set `compact: true` under `displayConfig`. Rates keep their
+percentage format, and durations drop to their largest unit, for example `1h 1m 1s`
+becomes `1h`.
+
+To describe the value, set `description` under `displayConfig`. See
+[Dynamic descriptions](#dynamic-descriptions) for placeholder syntax and rules.
 
 ### Example
 
@@ -145,11 +164,25 @@ metrics: totalCount
 ```
 ````
 
+To describe the value with the other metrics the query selects:
+
+````yaml
+```glql
+display: stat
+displayConfig:
+  description: "%{acceptedCount} of %{shownCount} suggestions accepted"
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+metrics: acceptanceRate, acceptedCount, shownCount
+```
+````
+
 ## Column chart
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
+- The `maxSeries` display option [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23470) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -168,6 +201,13 @@ The number of dimensions and metrics determines how the chart renders:
   set `stacked: true` under `displayConfig`. With a single metric, `stacked` has no visible effect.
 - Two dimensions with one metric plots a stacked column chart grouped by the second dimension.
   With two dimensions, you can use only one metric, and GitLab ignores `displayConfig.stacked`.
+
+With two dimensions, the `maxSeries` option under `displayConfig` limits how many
+second dimension values get their own segment.
+The values with the largest totals keep theirs, and the rest combine into an `Other (N)` segment.
+A single value past the limit stays as-is.
+Without `maxSeries`, every value gets a segment.
+A `maxSeries` value that is not a whole number greater than zero is ignored.
 
 ### Example
 
@@ -202,6 +242,7 @@ metrics: acceptedCount, rejectedCount
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.2.
+- `categoryLabels`, `colorBy`, and `showAxisTitles` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628025) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -221,6 +262,24 @@ The number of dimensions and metrics determines how the chart renders:
   set `stacked: true` under `displayConfig`. With a single metric, `stacked` has no visible effect.
 - Two dimensions with one metric plots a stacked bar chart grouped by the second dimension.
   With two dimensions, you can use only one metric, and GitLab ignores `displayConfig.stacked`.
+
+A bar chart draws the first row at the bottom, so sort in ascending order to put the largest
+value at the top. The chart is as tall as its rows need, up to the default chart height.
+
+A bar chart also accepts these options under `displayConfig`:
+
+- `categoryLabels: valueAndShare` appends each category's value and its share of the total to
+  the category label, for example `Returning · 1,555 · 78%`. The default, `plain`, shows the
+  category name only. It applies only to count metrics, such as `usersCount`, `totalCount`, or
+  `acceptedCount`, with one dimension and one metric, and is ignored otherwise. The total is the
+  sum of the rows shown, so the shares always add up to 100% of what is displayed. The share is
+  only meaningful when each item falls in exactly one category. For example, with `usersCount`, a
+  user who is active in several categories is counted once in each row, so the share is not a
+  share of users. When the query uses a `limit`, the total covers only the rows that are shown.
+- `colorBy: category` gives each bar its own solid shade from a blue scale, instead of one color
+  for the series. The top bar gets the boldest shade, darkest in light mode and lightest in dark,
+  so bars stay readable either way. Requires one dimension and one metric, and is ignored otherwise.
+- `showAxisTitles: false` hides both axis titles.
 
 ### Example
 
@@ -250,42 +309,133 @@ metrics: acceptedCount, rejectedCount
 ```
 ````
 
+To show each language's share of accepted suggestions as a labeled, individually colored bar
+without axis titles:
+
+````yaml
+```glql
+display: barChart
+displayConfig:
+  categoryLabels: valueAndShare
+  colorBy: category
+  showAxisTitles: false
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: language
+metrics: acceptedCount
+sort: acceptedCount asc
+```
+````
+
 ## Bar list
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623319) in GitLab 19.4.
+- `valueLabels`, `color`, and `scale` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628026) in GitLab 19.5.
+- Rows from metrics for a query without a dimension, and `color: gray`, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628932) in GitLab 19.5.
+- Two-dimension stacked bars and the `maxSeries` display option [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23470) in GitLab 19.5.
+- `metricRows` display option [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628025) in GitLab 19.5.
+- Dynamic descriptions and `hiddenMetrics` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
 
 {{< /history >}}
 
 A bar list visualizes aggregated data from [analytics mode](_index.md#analytics-mode) as
-horizontal bars, where each bar's length is that row's percentage of the total of all rows, not a
-comparison against the largest row. A bar list answers "what share of the whole is this", while a
-bar chart answers "how do these compare to each other".
+horizontal bars. By default, each bar's length is that row's percentage of the total of all rows,
+not a comparison against the largest row. A bar list answers "what share of the whole is this",
+while a bar chart answers "how do these compare to each other".
 
 A bar list requires:
 
 - Analytics mode, set with `mode: analytics`.
-- Exactly one `dimensions` value.
-- Exactly one metric, set with the `metrics` parameter.
+- Up to two `dimensions` values.
+- At least one metric, set with the `metrics` parameter.
 
-More than one dimension causes a validation error in the view. A query that names more than
-one metric renders the first and ignores the rest.
+With one dimension, each row is a value of that dimension and the first metric sets the row's
+value. A query that names more than one metric renders the first and ignores the rest. Rows sort
+in descending order by value. More than two dimensions causes a validation error in the view, as
+does more than one metric together with two dimensions.
 
-Rows sort in descending order by value. Each row's label shows the percentage and the value.
+Without a dimension, each metric becomes a row, in the order the query names them. Use this to
+compare percentiles or counts of a single measure, such as the median and 75th percentile time to
+merge. Each row's value is formatted in the unit of its metric, so a duration reads as `9h 24m`
+rather than as a number of milliseconds. These rows keep their order, are never folded into an
+`Other` row, and show no change against the previous period. A metric with no value in the
+response, such as a percentile over no merge requests, renders as an em dash (`—`) with an empty
+bar.
 
-By default, a bar list shows six rows plus an `Other (N)` roll-up row, so a query that returns
-eight or more rows always has an `Other` row. A query that returns seven or fewer rows shows
-every row, because folding a single row would hide its name without making the list shorter.
-To show a different number of rows, set `maxRows` under `displayConfig` to a whole
-number greater than zero. GitLab keeps that many of the highest-value rows and folds the rest
-into a single row named `Other (N)`, where `N` is the number of rows folded in and the value is
-their combined total. A value that is not a whole number greater than zero falls back to six.
+Some metrics cannot drop their dimension. A metric that compares one time bucket against the
+previous one, such as `returningUsersCount`, requires the date dimension. To get one row per
+metric from a query that has one, set `metricRows: true` under `displayConfig`. Values come
+from the first row of the response, so sort the query to put the row you want first.
+
+With dimensions, the `maxRows` option under `displayConfig` sets how many rows each page shows.
+The default is six, and rows are ranked by value, highest first.
+When the query returns more rows, **Previous** and **Next** controls page through rows already
+[fetched automatically](#pagination-support), so turning a page fetches nothing new.
+That fetch stops at 1,000 rows, so paging covers at most the first 1,000 rows.
+A single row past the page size stays on the first page rather than starting a page of its own.
+Shares stay relative to the total across all pages.
+A `maxRows` value that is not a whole number greater than zero falls back to the default.
 
 A share of the total is meaningful only when the metric is a count or a sum. For a metric such as
 an average or a median, the total behind the shares has no meaning.
 
-### Example
+A bar list without dimensions renders one bar per metric. To select a metric purely for the
+description, without giving it a bar, add it to `hiddenMetrics` under `displayConfig`. See
+[Dynamic descriptions](#dynamic-descriptions) for placeholder syntax and the `hiddenMetrics` rules.
+
+### One dimension
+
+Each row is one value of the dimension.
+
+Each row's label shows a value past the end of the bar, controlled by `valueLabels` under
+`displayConfig`:
+
+- `valueLabels: shareAndValue` is the default. It shows the row's share of the total and a
+  compact value, for example `89% · 85.6k`.
+- `valueLabels: value` shows only the row's value, in full digits, for example `1,071`. Use it
+  when the count matters more than the share.
+
+Bar color is set by `color` under `displayConfig`:
+
+- `color: orange` is the default. It matches the existing look.
+- `color: blue` draws the bars in the same blue the other GLQL charts use for their first
+  series, the chart palette's default color.
+- `color: gray` draws neutral gray bars, for a baseline shown next to a colored list.
+
+Bar length is measured against a scale, set by `scale` under `displayConfig`:
+
+- `scale: total` is the default. A bar's length is the row's share of the total of all rows, so
+  the track reads as 100% of the whole and the gap after a bar is the rest of the total.
+- `scale: max` makes the largest row fill the track, with every other bar sized relative to it, so
+  bars compare rows against each other. Use it when the rows are many or evenly spread, where
+  shares of the total leave every bar short.
+
+The label is unaffected by `scale`: with `valueLabels: shareAndValue` it still shows the share of
+the total, whatever `scale` is.
+
+Any other value for `valueLabels`, `color`, or `scale` causes a validation error in the view.
+
+### Two dimensions
+
+Each row is a value of the first dimension, and its bar splits into stacked segments, one per
+value of the second dimension, with a legend below the chart. Rows are labeled with their compact
+total.
+
+The `maxSeries` option under `displayConfig` limits how many second dimension values get their
+own segment; the rest combine into an `Other (N)` segment. A single segment past the limit stays
+as-is. The default is six.
+
+Rows page with the same `maxRows` and controls as one dimension, each row keeping its segments.
+
+Selecting a legend entry hides that segment and rescales the remaining bars and labels to the
+visible total.
+
+The `valueLabels`, `color`, and `scale` options and the previous-period comparison apply to one
+dimension only.
+
+### Examples
 
 To display Code Suggestions usage by language over the last 30 days as a bar list:
 
@@ -309,6 +459,72 @@ displayConfig:
 mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: language
+metrics: totalCount
+```
+````
+
+To show Duo Agent Platform sessions by flow type over the last 30 days in blue with only the
+value in each label, with bars sized against the largest row instead of the total:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  valueLabels: value
+  color: blue
+  scale: max
+mode: analytics
+query: type = AgentPlatformSession and created >= -30d
+dimensions: flowType
+metrics: usersCount
+```
+````
+
+To compare the median and 75th percentile time to merge for merge requests merged in the last
+30 days, with one row per percentile and the longer bar filling the track:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  valueLabels: value
+  scale: max
+mode: analytics
+query: type = MergeRequest and merged >= -30d
+metrics: timeToMergeQuantile(0.5) as "Median", timeToMergeQuantile(0.75) as "p75"
+```
+````
+
+To split the users active in a period into those who also had a session in the period before and
+those who did not, as one row each. The query covers two consecutive 30-day periods, because
+`returningUsersCount` has nothing to compare against without the earlier one, and sorts the newest
+bucket first so `metricRows` reads the later one. `origin` anchors the buckets to the start of the
+range, so they line up with it instead of counting from the Unix epoch:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  metricRows: true
+mode: analytics
+query: type = DuoWorkflow and created >= 2026-07-16 and created < 2026-09-14
+dimensions: created(granularity=30d, origin=2026-07-16)
+metrics: joinedUsersCount as "New", returningUsersCount as "Returning"
+sort: created desc
+```
+````
+
+To split each user's sessions over the last 30 days by flow type, with at most four flow types
+as their own segment:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  maxSeries: 4
+mode: analytics
+query: type = AgentPlatformSession and created >= -30d
+dimensions: user, flowType
 metrics: totalCount
 ```
 ````
@@ -404,6 +620,7 @@ metrics: shownCount, acceptedCount
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628031) in GitLab 19.4.
+- The `maxColumns` and `maxRows` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628031) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -424,6 +641,17 @@ value at all are shaded a neutral gray rather than the lightest color, so that a
 mistaken for an absent one. Hover a cell for its row, column, and exact value.
 
 To describe the panel above the grid, set `description` under `displayConfig`.
+
+To limit how many dimension values the grid draws, set `maxColumns` or `maxRows` under
+`displayConfig`. `maxColumns` caps the first dimension, which runs along the columns, and
+`maxRows` caps the second, which runs down the rows. The values kept are the largest, ranked by
+the metric totaled across the other axis, and a capped axis is ordered largest first, with
+ties broken by label. That
+ordering replaces the one `sort` gives to that axis. The other axis still follows the query.
+
+Values past the limit are dropped, and nothing on the grid shows that they are missing, so state
+the limit in the panel title or description. Neither option has a default, and a value that is
+not a whole number greater than zero is ignored.
 
 ### Example
 
@@ -446,6 +674,21 @@ To add a description above the grid:
 display: heatMap
 displayConfig:
   description: Code Suggestions accepted per language, by IDE.
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: ideName, language
+metrics: acceptedCount
+```
+````
+
+To show only the five busiest IDEs:
+
+````yaml
+```glql
+display: heatMap
+displayConfig:
+  description: Code Suggestions accepted per language, for the five busiest IDEs.
+  maxColumns: 5
 mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: ideName, language
@@ -499,9 +742,81 @@ sort: totalCount desc
 ```
 ````
 
+## Dynamic descriptions
+
+{{< history >}}
+
+- Dynamic descriptions for single stat [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255287) in GitLab 19.5.
+- Dynamic descriptions for bar list and table [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
+- `hiddenMetrics` for bar list and table [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
+
+{{< /history >}}
+
+The `stat`, `barList`, and `table` display types support a dynamic description in
+[analytics mode](_index.md#analytics-mode). Use a description to summarize the result in a
+sentence, alongside the visualization.
+
+To describe the result, set `description` under `displayConfig`. A description can include
+`%{metricName}` placeholders, where `metricName` identifies a metric from `metrics`.
+GitLab replaces each placeholder with that metric's value, formatted by that metric's own unit. A
+placeholder that names a metric the query does not select shows a validation error. When a metric's
+value is missing from the response, its placeholder renders as an em dash (`—`).
+
+Metrics are always identified by key name, unless they are duplicated parameterized metrics, in
+which case they need an alias to be identified. For example, `metrics: totalCount as "count"` is
+still referenced as `%{totalCount}`, because the alias only sets the label. When the same metric
+appears twice with different parameters, as in
+`metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95 duration"`, each alias
+becomes the key, so you reference them as `%{Median}` and `%{p95 duration}`.
+
+For bar list and table, a description can't use placeholders when the query has `dimensions`. This
+causes a validation error in the view: `Description placeholders cannot be used with dimensions.`
+A placeholder reads a single row, so with dimensions it would show one group's value as if it
+covered every group. A description with no placeholders still works with dimensions.
+
+For bar list and table, set `hiddenMetrics` under `displayConfig` to a list of metrics to leave out
+of the bars or columns. Name them the same way as placeholders. Naming a duplicated metric by its
+base name, such as `durationQuantile`, hides every copy of it. GitLab still runs those metrics, so
+the description can quote them. A `hiddenMetrics` value that isn't a list, or a name that isn't one of the query's
+metrics, causes a validation error in the view. A bar list needs at least one metric left out of
+`hiddenMetrics`.
+
+The description renders above the visualization. While the query loads, a description that
+contains placeholders stays hidden, so it never flashes em dashes for values it doesn't have yet.
+
+### Example
+
+To plot the median and 75th percentile time to merge for merge requests created by GitLab Duo,
+and quote how many merged without drawing a third bar:
+
+````yaml
+```glql
+display: barList
+mode: analytics
+query: type = MergeRequest and createdByDuo = true and merged >= -30d
+metrics: timeToMergeQuantile(0.5) as "Median", timeToMergeQuantile(0.75) as "p75", throughputCount
+displayConfig:
+  description: "%{throughputCount} merged merge requests"
+  hiddenMetrics: [throughputCount]
+```
+````
+
 ## Pagination support
+
+{{< history >}}
+
+- Automatic pagination for analytics mode visualizations [introduced](https://gitlab.com/gitlab-org/glql/-/work_items/170) in GitLab 19.5.
+
+{{< /history >}}
 
 Display types available in any mode display the first page of results and provide a **Load more**
 action to fetch additional pages. For more information, see [pagination](_index.md#pagination).
 
-Analytics mode visualizations don't support pagination. They render all aggregated results at once.
+Analytics mode aggregated visualizations such as charts and stats don't provide a **Load more**
+action. They fetch every page of aggregated results automatically, up to a maximum of 1,000 rows.
+
+If your query returns more than 1,000 aggregated rows, the visualization shows the first 1,000 rows.
+To see all your data, add filters to the query or group by fewer dimensions.
+
+To show a single page instead, set `limit` in the block. The visualization then shows at most that
+many rows, up to a maximum of 100.

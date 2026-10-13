@@ -1,0 +1,17 @@
+# @feature_category: custom_dashboards_foundation
+
+# The default scope for a load that names none: the group the user visits most, `frecentGroups`
+# being ordered by frecency.
+#
+# The results span every organization the user visits, so the group this names is checked against
+# the page's organization before it is applied -- see get_organization_group.query.graphql. That
+# check goes away once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256194 lands and
+# this query can ask for `scopeToOrganization: true`.
+query getAnalyticsDashboardFrecentGroups {
+  frecentGroups {
+    id
+    name
+    fullName
+    fullPath
+  }
+}

@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	gitalyclient "gitlab.com/gitlab-org/gitaly/v18/client"
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v19/client"
 	grpccorrelation "gitlab.com/gitlab-org/labkit/correlation/grpc"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"

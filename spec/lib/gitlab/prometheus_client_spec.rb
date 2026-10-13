@@ -412,7 +412,7 @@ RSpec.describe Gitlab::PrometheusClient do
         context "with response code" do
           let(:response_error) do
             response = Net::HTTPResponse.new(1.1, 400, '{}sumpthin')
-            allow(response).to receive(:body) { '{}' }
+            allow(response).to receive(:body).and_return('{}')
             Gitlab::HTTP::ResponseError.new(response)
           end
 

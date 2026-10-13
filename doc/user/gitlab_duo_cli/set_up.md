@@ -64,13 +64,13 @@ To install the GitLab Duo CLI as a compiled binary, download and run the install
 On macOS and Linux:
 
 ```shell
-bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.sh")
+bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.sh")
 ```
 
 On Windows:
 
 ```shell
-irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
+irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.ps1" | iex
 ```
 
 ### Authenticate
@@ -91,12 +91,15 @@ To authenticate:
 
 1. Run `duo` in your terminal. The first time you run the GitLab Duo CLI, a configuration screen
    appears.
-1. Enter a **GitLab Instance URL** and then press <kbd>Enter</kbd>:
-   - For GitLab.com, enter `https://gitlab.com`.
-   - For GitLab Self-Managed or GitLab Dedicated, enter your instance URL.
-1. For **GitLab Token**, enter your personal access token.
-1. To save and exit the CLI, press <kbd>Enter</kbd>.
-1. To restart the CLI, run `duo` in your terminal.
+1. For **Instance URL**, press <kbd>Enter</kbd> to accept `https://gitlab.com`, or enter the URL of
+   your GitLab Self-Managed or GitLab Dedicated instance.
+1. For **Personal Access Token**, enter your personal access token and press <kbd>Enter</kbd>.
+   To create a token, select **Create a token**. The link opens the personal access token page for
+   your instance with the required scope preselected.
+
+   The GitLab Duo CLI validates the token. If validation fails, press <kbd>Enter</kbd> to enter the
+   token again. After the token is verified, the GitLab Duo CLI saves the configuration and exits.
+1. To start using the GitLab Duo CLI, run `duo` again.
 
 To modify the configuration after initial setup, use `duo config edit`.
 
@@ -131,6 +134,6 @@ where interactive authentication is not possible.
 
 ## Related topics
 
-- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)

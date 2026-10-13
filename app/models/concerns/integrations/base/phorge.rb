@@ -47,6 +47,8 @@ module Integrations
       included do
         validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
+        before_validation :strip_task_prefix_from_issues_url
+
         # See https://we.phorge.it/source/phorge/browse/master/src/infrastructure/markup/rule/PhabricatorObjectRemarkupRule.php
         # for a canonical source of the regular expression used to parse Phorge
         # object references.
@@ -66,6 +68,14 @@ module Integrations
         # since all Phorge identifiers have the application specific alpha prefix.
         def reference_pattern(*)
           @reference_pattern ||= /\b(?<![@-])(?<issue>T\d+)\b/
+        end
+
+        # Task IDs already carry the T prefix (T123), so `/T:id` copied from a
+        # generic tracker would render as `/TT123`.
+        def strip_task_prefix_from_issues_url
+          return unless issues_url&.include?('T:id')
+
+          self.issues_url = issues_url.gsub('T:id', ':id')
         end
       end
     end

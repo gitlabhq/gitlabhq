@@ -18,7 +18,7 @@ describe('App', () => {
   const updateHelpMenuUnreadBadge = jest.fn();
 
   const createWrapper = (options = {}) => {
-    const { glFeatures = {}, shallow = false, stateOverrides = {}, props = {} } = options;
+    const { shallow = false, stateOverrides = {}, props = {} } = options;
 
     Object.assign(store, stateOverrides);
 
@@ -29,10 +29,9 @@ describe('App', () => {
         initialReadArticles: [1, 2],
         mostRecentReleaseItemsCount: 3,
         updateHelpMenuUnreadBadge,
-        placement: 'help_menu',
+        placement: 'profile_menu',
         ...props,
       },
-      ...(Object.keys(glFeatures).length > 0 && { provide: { glFeatures } }),
       ...(!shallow && {
         attachTo: document.body,
       }),
@@ -91,33 +90,26 @@ describe('App', () => {
         expect(getDrawer().props('headerSticky')).toBe(true);
       });
 
-      it('dispatches openDrawer and fires view_whats_new_drawer with the placement', () => {
+      it('dispatches openDrawer and fires open_whats_new_drawer', () => {
         expect(store.openDrawer).toHaveBeenCalledWith('version-digest');
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          'view_whats_new_drawer',
-          expect.objectContaining({
-            label: 'namespace_id',
-            value: 'namespace-840',
-            property: 'help_menu',
-          }),
-        );
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'open_whats_new_drawer', {
+          label: 'namespace_id',
+          value: 'namespace-840',
+          property: 'profile_menu',
+        });
       });
 
-      it('tracks the candidate placement when mounted with placement=profile_menu', () => {
+      it('fires open_whats_new_drawer with property: help_menu when placement is help_menu', () => {
         createWrapper({
-          props: { placement: 'profile_menu' },
+          props: { placement: 'help_menu' },
           stateOverrides: { open: true, features: [], fetching: false },
         });
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          'view_whats_new_drawer',
-          expect.objectContaining({
-            label: 'namespace_id',
-            value: 'namespace-840',
-            property: 'profile_menu',
-          }),
-        );
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'open_whats_new_drawer', {
+          label: 'namespace_id',
+          value: 'namespace-840',
+          property: 'help_menu',
+        });
       });
 
       it('sets readArticles from initialReadArticles', () => {

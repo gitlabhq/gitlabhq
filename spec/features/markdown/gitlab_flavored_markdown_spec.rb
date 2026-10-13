@@ -97,7 +97,7 @@ RSpec.describe "GitLab Flavored Markdown", feature_category: :markdown do
   end
 
   describe "for merge requests" do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
       @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix #{issue.to_reference}")

@@ -6,26 +6,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 인증 스크립트
 ---
 
-인증 스크립트는 다양한 복잡도의 인증 플로우를 처리하기 위한 유연한 JavaScript 기반 접근 방식을 제공합니다. 보안 스캔과 원활하게 통합되는 사용자 정의 스크립트를 사용하여 로그인 프로세스를 자동화합니다.
+DAST 인증 스크립트는 다양한 복잡도의 인증 플로우를 처리하기 위한 유연한 JavaScript 기반 접근 방식을 제공합니다. DAST 보안 스캔과 원활하게 통합되는 사용자 정의 스크립트를 사용하여 로그인 프로세스를 자동화합니다.
 
-인증 스크립트는 작업용으로 특별히 설계된 사용자 정의 메서드를 포함한 JavaScript를 사용합니다. 이러한 스크립트는 기본 사용자 이름 및 암호 인증뿐만 아니라 시간 기반 일회용 암호(TOTP)를 지원하는 복잡한 플로우를 처리할 수 있습니다.
+인증 스크립트는 DAST 작업용으로 특별히 설계된 사용자 정의 메서드를 포함한 JavaScript를 사용합니다. 이러한 스크립트는 기본 사용자 이름 및 암호 인증뿐만 아니라 시간 기반 일회용 암호(TOTP)를 지원하는 복잡한 다중 요소 인증 플로우를 처리할 수 있습니다.
 
-인증 스크립트 통합에는 다음이 포함됩니다:
+인증 스크립트 통합에는 다음이 포함됩니다.
 
 - 다양한 복잡도의 인증 워크플로우 지원.
-- 사용자 정의 메서드를 사용한 JavaScript 기반 스크립팅.
-- 기존 스캔 프로세스와의 원활한 통합.
+- 사용자 정의 DAST 메서드를 사용한 JavaScript 기반 스크립팅.
+- 기존 DAST 스캔 프로세스와의 원활한 통합.
 - 일회용 암호 및 TOTP 생성 지원.
 - 보안 자격 증명 관리를 위한 환경 변수에 대한 액세스.
 - 텍스트 입력, 라디오 버튼, 체크박스 및 드롭다운 목록을 포함한 모든 HTML 양식 요소에 대한 지원.
-- 변수와의 일관된 선택자 구문.
+- 다른 DAST 변수와의 일관된 선택자 구문.
 - 인증 플로우 디버깅을 위한 포괄적인 로깅.
 
 스크립팅 언어가 JavaScript이지만, 스크립트는 브라우저 또는 공통 모듈에 대한 액세스 권한이 없습니다.
 
 ## 스크립트 구성 {#configure-scripts}
 
-에서 인증 스크립트를 사용하려면 다음 변수를 구성합니다:
+DAST에서 인증 스크립트를 사용하려면 다음 변수를 구성합니다.
 
 ```yaml
 include:
@@ -37,7 +37,7 @@ dast:
     DAST_AUTH_SCRIPT: "auth_script.js"
 ```
 
-다음 구성 옵션을 사용할 수 있습니다:
+다음 구성 옵션을 사용할 수 있습니다.
 
 | 변수 | 설명 | 필수 |
 |----------|-------------|----------|
@@ -47,7 +47,7 @@ dast:
 
 ## 예제 스크립트 {#example-scripts}
 
-이 기본 인증 스크립트는 애플리케이션에 로그인합니다:
+이 기본 인증 스크립트는 애플리케이션에 로그인합니다.
 
 ```javascript
 // Navigate to the login page
@@ -64,7 +64,7 @@ doc.actionLeftClick("css:button[type=\"submit\"]")
 auth.successIfAtURL("https://example.com/dashboard")
 ```
 
-이 필요한 애플리케이션의 경우:
+2단계 인증이 필요한 애플리케이션의 경우:
 
 ```javascript
 // Initial login steps
@@ -82,7 +82,7 @@ doc.actionLeftClick("id:verify-button")
 auth.successIfAtURL("https://example.com/app/home")
 ```
 
-스크립트를 실행하려면 구성에 다음을 추가합니다:
+스크립트를 실행하려면 구성에 다음을 추가합니다.
 
 ```yaml
 include:
@@ -144,7 +144,7 @@ if (currentUrl.includes("/login")) {
 
 사용:
 
-인증 플로우 중에 브라우저를 특정 페이지로 이동시킵니다. 이는 대부분의 인증 스크립트에서 일반적으로 첫 번째 작업입니다.
+인증 플로우 동안 브라우저를 특정 페이지로 이동시키며, 대부분의 인증 스크립트에서 첫 번째 작업으로 사용됩니다.
 
 예:
 
@@ -163,7 +163,7 @@ doc.navigateURL("https://tenant1.example.com/login")
 
 텍스트 상자, 암호 필드, 이메일 필드 및 텍스트 영역과 같은 양식 입력 필드에 텍스트를 입력합니다.
 
-기본적으로 이 메서드는 새 텍스트를 입력하기 전에 필드의 기존 콘텐츠를 지웁니다. 다음이 필요한 경우 `dontClear: true`를 설정합니다:
+기본적으로 이 메서드는 새 텍스트를 입력하기 전에 필드의 기존 콘텐츠를 지웁니다. 다음이 필요한 경우 `dontClear: true`를 설정합니다.
 
 - 기존 필드 콘텐츠를 보존하거나 추가합니다.
 - 입력을 방해하는 clearing 프로세스가 있는 auto-focus 동작이 있는 필드로 작업합니다.
@@ -171,13 +171,13 @@ doc.navigateURL("https://tenant1.example.com/login")
 
 매개변수:
 
-- `path` (문자열): 선택자 구문을 사용하는 요소 선택자 경로입니다.
+- `path` (문자열): DAST 선택자 구문을 사용하는 요소 선택자 경로입니다.
 - `value` (문자열): 필드에 입력할 텍스트 값입니다.
 - `dontClear` (부울, 선택 사항): `true`인 경우 메서드는 텍스트를 입력하기 전에 필드를 지우지 않습니다. 기본값: `false`.
 
 사용:
 
-이는 로그인 양식, 검색 상자 및 기타 텍스트 기반 입력 필드를 채우는 주요 메서드입니다.
+이 메서드를 로그인 양식, 검색 상자 및 기타 텍스트 기반 입력 필드를 채우는 주요 방법으로 사용합니다.
 
 예:
 
@@ -503,11 +503,11 @@ auth.failedIfAtURL("https://app.example.com/login?error=1")
 - 애플리케이션은 표준 TOTP 코드(일반적으로 30초마다 새로 고쳐지는 6자리 코드)를 수락해야 합니다.
 
 > [!warning]
-> 보안 위험을 방지하려면 YAML 정의 파일에 `DAST_AUTH_OTP_KEY`를 정의하지 마십시오. 대신 GitLab UI를 사용하여 마스크된 로 생성합니다. 자세한 내용은 [사용자 정의](../../../../../ci/variables/_index.md#for-a-project)를 참조하세요.
+> 보안 위험을 방지하려면 YAML 작업 정의 파일에 `DAST_AUTH_OTP_KEY`를 정의하지 마십시오. 대신 GitLab UI를 사용하여 마스크된 CI/CD 변수로 생성합니다. 자세한 내용은 [사용자 정의 CI/CD 변수](../../../../../ci/variables/_index.md#for-a-project)를 참조하세요.
 
 사용:
 
-Google Authenticator, Authy 또는 유사한 TOTP 기반 시스템과 같은 인증기 앱이 필요한 애플리케이션에 이 메서드를 사용합니다.
+Google Authenticator, Authy 또는 유사한 TOTP 기반 시스템과 같은 인증기 앱을 사용한 2단계 인증이 필요한 애플리케이션에 이 메서드를 사용합니다.
 
 반환:
 
@@ -546,7 +546,7 @@ auth.successIfElementFound("css:.employee-portal")
 
 ## 로깅 메서드 {#logging-methods}
 
-인증 보고서에 메시지를 추가합니다. 이는 문제를 해결할 때 유용할 수 있습니다.
+인증 보고서에 메시지를 추가합니다. 이는 문제 해결 시 도움이 될 수 있습니다.
 
 | 메서드 | 설명 |
 |--------|-------------|
@@ -588,7 +588,7 @@ log.info("Authentication completed successfully")
 
 ### `log.debug(msg)` {#logdebugmsg}
 
-스크립트 문제를 해결하는 데 유용한 자세한 디버깅 정보를 기록합니다.
+스크립트 문제 해결에 유용한 자세한 디버깅 정보를 기록합니다.
 
 매개변수:
 
@@ -804,7 +804,7 @@ try {
 
 ## 요소 선택자 {#element-selectors}
 
-인증 스크립트는 다른 변수와 동일한 선택자 구문을 사용합니다:
+인증 스크립트는 다른 DAST 변수와 동일한 선택자 구문을 사용합니다.
 
 - ID 선택자: `id:element-id`
 - CSS 선택자: `css:.class-name` 또는 `css:button[type="submit"]`
@@ -813,7 +813,7 @@ try {
 
 ## 환경 변수 {#environment-variables}
 
-환경 변수를 통해 중요한 인증 데이터에 액세스합니다:
+환경 변수를 통해 중요한 인증 데이터에 액세스합니다.
 
 ```javascript
 // Use environment variables for credentials
@@ -822,15 +822,15 @@ doc.actionFormInput("id:password", process.env.DAST_AUTH_PASSWORD)
 ```
 
 > [!warning]
-> 보안 위험을 방지하려면 YAML 정의 파일에 중요한 정보를 정의하지 마십시오. 대신 GitLab UI를 사용하여 마스크된 로 생성합니다. 자세한 내용은 [사용자 정의](../../../../../ci/variables/_index.md#for-a-project)를 참조하세요.
+> 보안 위험을 방지하려면 YAML 작업 정의 파일에 중요한 정보를 정의하지 마십시오. 대신 GitLab UI를 사용하여 마스크된 CI/CD 변수로 생성합니다. 자세한 내용은 [사용자 정의 CI/CD 변수](../../../../../ci/variables/_index.md#for-a-project)를 참조하세요.
 
 ## 디버깅 {#debugging}
 
-스크립트가 실행되는 방식과 수행된 작업을 이해하는 두 가지 방법이 있습니다: 인증 보고서와 디버그 로그입니다. 둘 다 아티팩트로 첨부됩니다.
+스크립트 실행 방식과 수행한 작업을 파악하기 위한 두 가지 방법이 있습니다. 즉, 인증 보고서와 디버그 로그입니다. 둘 다 DAST 작업에 아티팩트로 첨부됩니다.
 
-인증 보고서에는 스크립트를 디버깅하는 데 도움이 되는 스크린샷과 함께 인증 스크립트의 각 단계가 포함됩니다. 보고서에는 HTTP 요청 및 응답과 문서 개체 모델(DOM)도 포함됩니다. 인증 보고서는 각 에 대해 생성되고 아티팩트로 수집됩니다. 아티팩트의 파일 이름은 `gl-dast-debug-auth-report.html`입니다.
+인증 보고서에는 스크립트를 디버깅하는 데 도움이 되는 스크린샷과 함께 인증 스크립트의 각 단계가 포함됩니다. 보고서에는 HTTP 요청 및 응답과 문서 개체 모델(DOM)도 포함됩니다. 인증 보고서는 각 DAST 작업에 대해 생성되고 작업 아티팩트로 수집됩니다. 아티팩트의 파일 이름은 `gl-dast-debug-auth-report.html`입니다.
 
-또한 인증 스크립트는 인증 문제를 해결하는 데 도움이 되는 포괄적인 로깅을 제공합니다. 로깅은 이름이 `gl-dast-scan.log`인 아티팩트로 첨부된 디버그 로그로 작성됩니다. 모든 스크립트 작업은 다음을 보여주는 디버깅 정보와 함께 자동으로 기록됩니다:
+또한 인증 스크립트는 인증 문제를 해결하는 데 도움이 되는 포괄적인 로깅을 제공합니다. 로깅은 이름이 `gl-dast-scan.log`인 작업 아티팩트로 첨부된 디버그 로그로 작성됩니다. 모든 스크립트 작업은 다음을 보여주는 디버깅 정보와 함께 자동으로 기록됩니다.
 
 - 환경 변수 할당(마스크된 중요한 값 포함)
 - 스크립트 실행 단계
@@ -849,7 +849,7 @@ DBG SCRIPT doc.actionLeftClick onPath="css:button[type='submit']"
 INF SCRIPT requirement is satisfied, browser URL matches pattern
 ```
 
-스크립트의 로깅 메서드를 사용하여 사용자 정의 디버그 정보를 추가합니다:
+스크립트의 로깅 메서드를 사용하여 사용자 정의 디버그 정보를 추가합니다.
 
 ```javascript
 log.info("Starting authentication process")

@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import ForkInfo from '~/repository/components/fork_info.vue';
 
@@ -22,7 +22,7 @@ export default function initForkInfoApp() {
 
   return initVueApp({
     el: forkEl,
-    name: 'BlobForkInfoRoot',
+    name: 'ForkInfoRoot',
     apolloProvider,
     component: ForkInfo,
     props: {

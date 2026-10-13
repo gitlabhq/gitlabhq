@@ -48,11 +48,11 @@ Use the GitLab backup and restore features to migrate your instance to a new ser
 consider [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md).
 For more information, see [Migrate to a new server](migrate_to_new_server.md).
 
-## Back up and restore large reference architectures
+## Back up and restore large GitLab environments
 
-It is important to back up and restore large reference architectures regularly.
-For information on how to configure and restore backups for object storage data,
-PostgreSQL data, and Git repositories, see [Back up and restore large reference architectures](backup_large_reference_architectures.md).
+Large GitLab environments can require separate procedures for backing up and restoring object
+storage data, PostgreSQL data, and Git repositories. For more information, see
+[Back up and restore large GitLab environments](backup_large_reference_architectures.md).
 
 ## Backup archive process
 

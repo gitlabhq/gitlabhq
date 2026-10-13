@@ -22,6 +22,8 @@ class MergeRequestMergeabilityCheckWorker
       return
     end
 
+    MergeRequest.batch_mark_as_checking([merge_request.id])
+
     result =
       ::MergeRequests::MergeabilityCheckService
         .new(merge_request)

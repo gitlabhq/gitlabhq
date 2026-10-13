@@ -6,9 +6,11 @@ product_categories:
 - observability
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
 milestone: '19.3'
+milestone_removed: '19.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248590
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255784
 time_frame:
 - 28d
 - 7d

@@ -187,6 +187,7 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('too long')
         expect(named_pipeline.reload.name).to be_nil
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'requires pipeline_id' do
@@ -204,6 +205,20 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Pipeline not found or inaccessible.')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+      end
+
+      it 'returns the uniform not-found error for a pipeline the user cannot read', :aggregate_failures do
+        private_pipeline = create(:ci_pipeline, project: create(:project, :private))
+
+        result = service.execute(
+          request: request,
+          params: { arguments: { pipeline_id: private_pipeline.id, action: 'update', name: 'x' } }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Pipeline not found or inaccessible.')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
       end
 
       it 'returns the uniform not-found error for a user who cannot rename', :aggregate_failures do
@@ -214,17 +229,61 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Pipeline not found or inaccessible.')
         expect(named_pipeline.reload.name).to be_nil
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
       end
     end
 
-    context 'when the pipeline does not exist' do
-      let(:params) { { arguments: { pipeline_id: non_existing_record_id, action: 'cancel' } } }
+    context 'when a retry or cancel cannot reach the pipeline' do
+      let_it_be(:private_pipeline) { create(:ci_pipeline, project: create(:project, :private), status: :failed) }
+      let_it_be(:public_pipeline) { create(:ci_pipeline, project: project, status: :failed) }
+      let_it_be(:reporter) { create(:user, reporter_of: project) }
 
-      it 'returns an error response', :aggregate_failures do
-        result = service.execute(request: request, params: params)
+      let(:access_error) { ::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR }
 
-        expect(result[:isError]).to be(true)
-        expect(result[:content].first[:text]).to include("Couldn't find Ci::Pipeline")
+      where(action: %w[retry cancel])
+
+      with_them do
+        it 'answers a missing pipeline with the access error as not_found', :aggregate_failures do
+          expect(::Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          result = service.execute(request: request,
+            params: { arguments: { pipeline_id: non_existing_record_id, action: action } })
+
+          expect(result[:content].first[:text]).to eq(access_error)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+        end
+
+        it 'reports a pipeline in a project the user cannot see as unauthorized', :aggregate_failures do
+          result = service.execute(request: request,
+            params: { arguments: { pipeline_id: private_pipeline.id, action: action } })
+
+          expect(result[:content].first[:text]).to eq(access_error)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
+        end
+
+        it 'reports a readable pipeline the user cannot act on as unauthorized', :aggregate_failures do
+          service.set_cred(current_user: reporter)
+
+          result = service.execute(request: request,
+            params: { arguments: { pipeline_id: public_pipeline.id, action: action } })
+
+          expect(result[:content].first[:text]).to eq(access_error)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
+        end
+      end
+    end
+
+    context 'when a reporter creates a pipeline' do
+      let_it_be(:reporter) { create(:user, reporter_of: project) }
+
+      it 'reports unauthorized with the access error', :aggregate_failures do
+        service.set_cred(current_user: reporter)
+
+        result = service.execute(request: request,
+          params: { arguments: { project_id: project.full_path, ref: project.default_branch } })
+
+        expect(result[:content].first[:text]).to eq(::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
       end
     end
 
@@ -252,6 +311,30 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('current_user is not set')
       end
+    end
+  end
+
+  describe '#governed_containers' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+    it 'governs a pipeline_id by the project that pipeline belongs to' do
+      arguments = { pipeline_id: pipeline.id, action: 'retry' }.with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers).to eq([project])
+    end
+
+    it 'names the pipeline even when it resolves to nothing', :aggregate_failures do
+      arguments = { pipeline_id: non_existing_record_id, action: 'retry' }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.named).to eq(1)
+      expect(resolved.containers).to be_empty
+    end
+
+    it 'still governs the create form by its project' do
+      arguments = { project_id: project.full_path, ref: 'master' }.with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers).to eq([project])
     end
   end
 end

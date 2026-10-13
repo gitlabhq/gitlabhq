@@ -10,6 +10,11 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
   let(:worker) { described_class.new }
   let(:project_namespace) { project.project_namespace }
 
+  it 'defers only on database-wide health signals, not per-table autovacuum' do
+    expect(described_class.database_health_check_attrs)
+      .to include(indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS)
+  end
+
   describe '#perform', :clean_gitlab_redis_shared_state do
     subject(:perform) { worker.perform(project.id, new_namespace.id, user.id) }
 
@@ -31,8 +36,27 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           .with(namespace_type: 'project', result: 'success')
         expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
           .with(duration_s: kind_of(Numeric), namespace_type: 'project')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_end_to_end_transfer_duration)
+          .with(scheduled_at: kind_of(String), namespace_type: 'project')
 
         perform
+      end
+
+      context 'when state_metadata is nil' do
+        it 'observes the end-to-end duration with a nil scheduled_at' do
+          allow(Project).to receive(:find_by_id).with(project.id).and_return(project)
+          allow_next_instance_of(::Projects::TransferService) do |service|
+            allow(service).to receive(:execute) do
+              allow(project_namespace).to receive_messages(state_metadata: nil, complete_transfer!: true)
+              true
+            end
+          end
+
+          expect(::Gitlab::Metrics::Transfers).to receive(:observe_end_to_end_transfer_duration)
+            .with(scheduled_at: nil, namespace_type: 'project').and_call_original
+
+          perform
+        end
       end
 
       context 'when a pending transfer-failed todo exists for the user' do
@@ -98,6 +122,17 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
 
           expect(project_namespace.reload).not_to be_transfer_in_progress
         end
+
+        it 'records the service error so the to-do item can show it' do
+          expect_next_instance_of(::Projects::TransferService) do |service|
+            expect(service).to receive(:execute).with(new_namespace).and_return(false)
+            allow(service).to receive(:error).and_return('Namespace already taken')
+          end
+
+          perform
+
+          expect(project_namespace.reload.transfer_last_error).to eq('Namespace already taken')
+        end
       end
 
       context 'when TransferService raises an error' do
@@ -121,6 +156,8 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
             ).count
           }.by(1)
           expect(project_namespace.reload).not_to be_transfer_in_progress
+          expect(project_namespace.transfer_last_error)
+            .to eq('The transfer failed unexpectedly. Contact your administrator if it continues to fail.')
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
             'message' => 'Projects::TransferWorker failed',
             'gl_project_id' => project.id,

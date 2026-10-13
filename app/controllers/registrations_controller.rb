@@ -23,7 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :init_preferred_language, only: :new
   before_action :load_recaptcha, only: :new
   before_action only: [:create] do
-    check_rate_limit!(:user_sign_up, scope: request.ip)
+    check_rate_limit!(:user_sign_up, scope: { ip: request.ip })
     invite_email # set for failure path so we still remember we are invite in form
   end
   before_action :ensure_signup_enabled, only: [:new, :create]

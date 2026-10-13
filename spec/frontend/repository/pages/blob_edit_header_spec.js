@@ -9,6 +9,7 @@ import {
   HTTP_STATUS_FORBIDDEN,
 } from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -35,8 +36,10 @@ describe('BlobEditHeader', () => {
   let visitUrlSpy;
 
   const content = 'some \r\n content \n';
+  const showModal = jest.fn();
 
   const mockEditor = {
+    editorReady: Promise.resolve(),
     getFileContent: jest.fn().mockReturnValue(content),
     getOriginalFilePath: jest.fn().mockReturnValue('test.js'),
     filepathFormMediator: {
@@ -72,7 +75,7 @@ describe('BlobEditHeader', () => {
         PageHeading,
         CommitChangesModal: stubComponent(CommitChangesModal, {
           methods: {
-            show: jest.fn(),
+            show: showModal,
           },
         }),
       },
@@ -123,9 +126,37 @@ describe('BlobEditHeader', () => {
     expect(buttons.at(1).text()).toBe('Commit changes');
   });
 
-  it('retrieves edit content, when opening the modal', () => {
-    clickCommitChangesButton();
+  it('retrieves edit content, when opening the modal', async () => {
+    await clickCommitChangesButton();
     expect(mockEditor.getFileContent).toHaveBeenCalled();
+  });
+
+  describe('when the commit button is clicked before the editor has loaded', () => {
+    let resolveEditorReady;
+
+    beforeEach(() => {
+      mockEditor.editorReady = new Promise((resolve) => {
+        resolveEditorReady = resolve;
+      });
+      createWrapper();
+    });
+
+    afterEach(() => {
+      mockEditor.editorReady = Promise.resolve();
+    });
+
+    it('waits for the editor and then opens the modal', async () => {
+      await clickCommitChangesButton();
+
+      expect(mockEditor.getFileContent).not.toHaveBeenCalled();
+      expect(showModal).not.toHaveBeenCalled();
+
+      resolveEditorReady();
+      await waitForPromises();
+
+      expect(mockEditor.getFileContent).toHaveBeenCalled();
+      expect(showModal).toHaveBeenCalled();
+    });
   });
 
   it('opens commit changes modal with correct props', () => {
@@ -167,8 +198,8 @@ describe('BlobEditHeader', () => {
     });
 
     describe('when submitting the form', () => {
-      beforeEach(() => {
-        clickCommitChangesButton();
+      beforeEach(async () => {
+        await clickCommitChangesButton();
       });
 
       it('shows confirmation message on cancel button', () => {
@@ -246,7 +277,7 @@ describe('BlobEditHeader', () => {
 
         createWrapper();
 
-        clickCommitChangesButton();
+        await clickCommitChangesButton();
 
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
           branch: 'main', // Same as originalBranch
@@ -281,7 +312,7 @@ describe('BlobEditHeader', () => {
           },
         });
 
-        clickCommitChangesButton();
+        await clickCommitChangesButton();
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
           branch: 'main', // Same as originalBranch
           file_path: 'test.js',
@@ -370,11 +401,11 @@ describe('BlobEditHeader', () => {
       });
 
       describe('when renaming a file', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           // Mock the editor to return a different file path to trigger rename logic
           mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('renamed_test.js');
           mockEditor.getOriginalFilePath.mockReturnValue('test.js');
-          clickCommitChangesButton();
+          await clickCommitChangesButton();
         });
 
         afterEach(() => {
@@ -473,7 +504,7 @@ describe('BlobEditHeader', () => {
             },
           });
 
-          clickCommitChangesButton();
+          await clickCommitChangesButton();
           mock.onPut().replyOnce(HTTP_STATUS_OK, {
             branch: 'patch-1',
             file_path: 'test.js',
@@ -517,7 +548,7 @@ describe('BlobEditHeader', () => {
             },
           });
 
-          clickCommitChangesButton();
+          await clickCommitChangesButton();
           mock.onPut().replyOnce(HTTP_STATUS_OK, {
             branch: 'patch-1',
             file_path: 'test.js',
@@ -558,7 +589,7 @@ describe('BlobEditHeader', () => {
           });
           mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('renamed_test.js');
           mockEditor.getOriginalFilePath.mockReturnValue('test.js');
-          clickCommitChangesButton();
+          await clickCommitChangesButton();
           mock.onPost().replyOnce(HTTP_STATUS_OK, {});
 
           const formData = new FormData();
@@ -604,7 +635,7 @@ describe('BlobEditHeader', () => {
     });
 
     it('on submit, redirects to the new file', async () => {
-      clickCommitChangesButton();
+      await clickCommitChangesButton();
       mock.onPost('/update').reply(HTTP_STATUS_OK, { filePath: '/new/file' });
       await submitForm();
 
@@ -616,10 +647,10 @@ describe('BlobEditHeader', () => {
   });
 
   describe('validation', () => {
-    it('toggles validation error when filename is empty', () => {
+    it('toggles validation error when filename is empty', async () => {
       mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue(null);
       createWrapper();
-      clickCommitChangesButton();
+      await clickCommitChangesButton();
 
       expect(mockEditor.filepathFormMediator.toggleValidationError).toHaveBeenCalledWith(true);
     });

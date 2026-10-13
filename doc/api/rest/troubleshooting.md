@@ -42,14 +42,14 @@ The following table shows the possible return codes for API requests.
 | `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers. |
 | `304 Not Modified`        | The resource hasn't been modified since the last request. |
 | `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given. |
-| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](authentication.md) is necessary. |
+| `401 Unauthorized`        | The user isn't authenticated. A valid [user token](authentication.md) is necessary. Some endpoints also return this status code when the user is authenticated but doesn't have permission for the request. For more information, see [status code 401](#status-code-401). |
 | `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project. |
 | `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource. |
 | `405 Method Not Allowed`  | The request isn't supported. |
 | `409 Conflict`            | A conflicting resource already exists. |
 | `412 Precondition Failed` | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
 | `422 Unprocessable`       | The entity couldn't be processed. |
-| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). |
+| `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). Wait for the duration given in the `Retry-After` header before you retry. For GitLab.com, see [GitLab.com rate limits](../../user/gitlab_com/rate_limits.md). |
 | `500 Server Error`        | While handling the request, something went wrong on the server. |
 | `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded. |
 
@@ -111,6 +111,34 @@ follows:
     }
 }
 ```
+
+### Status code 401
+
+The API returns a `401 Unauthorized` error in the following scenarios:
+
+- An operation requires authentication, but the request doesn't include a token.
+- An operation requires authentication and the request includes an invalid access token. For example, the token doesn't exist, has expired, or was revoked.
+- For some operations, the request includes a valid access token, but the user doesn't have the correct permissions. For example, if you don't have permission to merge a merge request, or to [list another user's personal access tokens](../personal_access_tokens.md#list-all-personal-access-tokens).
+
+For a request without a token, a token that doesn't exist, and both permission examples, the response body is the same:
+
+```json
+{
+    "message": "401 Unauthorized"
+}
+```
+
+If your request is rejected, you can troubleshoot by using the same token to authenticate a request to the
+[retrieve the current user](../users.md#retrieve-the-current-user) operation.
+The response code can provide information:
+
+- `200 OK`: The token is valid. The original request was refused for another reason, such as a missing permission.
+  Verify if the endpoint requires additional permissions.
+- `401 Unauthorized`: The token is invalid.
+- `403 Forbidden`: The token is valid, but cannot be used to read from your user account. For example, a
+  [fine-grained personal access token](../../auth/tokens/fine_grained_access_tokens.md) without permission to read your user account.
+
+This check cannot be used for [CI/CD job tokens](../../ci/jobs/ci_job_token.md#job-token-access).
 
 ## Include HTTP response headers
 

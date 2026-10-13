@@ -22,7 +22,7 @@ module Organizations
       response = nil
 
       ApplicationRecord.transaction do
-        transfer_result = transfer_top_level_groups
+        transfer_result = transfer_group_descendants
 
         if transfer_result.error?
           response = transfer_result
@@ -44,7 +44,10 @@ module Organizations
         end
       end
 
-      publish_activated_event if response&.success?
+      if response&.success?
+        publish_activated_event
+        grant_organization_admin_roles
+      end
 
       track_transfer_finished(response)
 
@@ -88,7 +91,7 @@ module Organizations
 
     # Counted after the transfer, not on the start event: ConfirmService moves only
     # the top-level groups, so descendants and projects still carry the old
-    # organization_id until `transfer_top_level_groups` runs.
+    # organization_id until `transfer_group_descendants` runs.
     def transferred_counts
       {
         groups_count: Group.in_organization(organization).count,
@@ -115,7 +118,9 @@ module Organizations
       )
     end
 
-    def transfer_top_level_groups
+    # ConfirmService already moved each top-level group's root row; this transfers the
+    # descendants. GroupsService resolves the source org per group from what it persisted.
+    def transfer_group_descendants
       aggregated_errors = []
 
       organization.groups.top_level.find_each do |group|
@@ -144,6 +149,14 @@ module Organizations
 
     def create_organization_users
       Organizations::Transfer::OrganizationUsersService.new(organization: organization).execute
+    end
+
+    # Onboarding writes the owner set with upsert_all, which no service hook
+    # sees, so the whole owner set is synced once the transfer has committed.
+    def grant_organization_admin_roles
+      return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      ::Authz::Organizations::GrantOwnerRoleWorker.perform_async(organization.id, nil, current_user.id)
     end
 
     def already_transferred_error?(result)

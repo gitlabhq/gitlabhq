@@ -129,10 +129,10 @@ RSpec.describe Authz::ProjectAuthorizationReverification, feature_category: :per
         create(:project_authorization_reverification, user: user, enqueued_at: 1.day.ago)
       end
 
-      it 'leaves the existing record untouched' do
+      it 'requeues the record' do
         expect { queue_users }
-          .to not_change { reverification.reload.status }.from('pending')
-          .and not_change { reverification.reload.enqueued_at }
+          .to change { reverification.reload.status }.from('pending').to('requeued')
+          .and change { reverification.reload.enqueued_at }
       end
     end
 

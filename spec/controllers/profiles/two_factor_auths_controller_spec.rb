@@ -266,7 +266,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       it 'renders create' do
         go
         expect(response).to render_template(:create)
-        expect(user.otp_backup_codes?).to be_eql(true)
+        expect(user.otp_backup_codes?).to be(true)
       end
 
       it 'do not create new backup codes if exists' do
@@ -400,7 +400,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
 
     it 'update failed_attempts when proper password is not given' do
       go
-      expect(user.failed_attempts).to be_eql(1)
+      expect(user.failed_attempts).to be(1)
     end
 
     context 'when it sets ups its view form' do

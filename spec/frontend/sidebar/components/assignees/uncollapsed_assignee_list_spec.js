@@ -11,7 +11,7 @@ const DEFAULT_RENDER_COUNT = 5;
 describe('UncollapsedAssigneeList component', () => {
   let wrapper;
 
-  function createComponent(props = {}, glFeatures = {}) {
+  function createComponent(props = {}) {
     const propsData = {
       users: [],
       rootPath: TEST_HOST,
@@ -20,7 +20,6 @@ describe('UncollapsedAssigneeList component', () => {
 
     wrapper = mount(UncollapsedAssigneeList, {
       propsData,
-      provide: { glFeatures },
     });
   }
 
@@ -104,13 +103,10 @@ describe('UncollapsedAssigneeList component', () => {
       ${1}
       ${5}
     `('displays as a vertical list for $numberOfUsers of users', ({ numberOfUsers }) => {
-      createComponent(
-        {
-          users: UsersMockHelper.createNumberRandomUsers(numberOfUsers),
-          issuableType: 'merge_request',
-        },
-        { mrAttentionRequests: true },
-      );
+      createComponent({
+        users: UsersMockHelper.createNumberRandomUsers(numberOfUsers),
+        issuableType: 'merge_request',
+      });
 
       expect(wrapper.findAll('[data-testid="username"]')).toHaveLength(numberOfUsers);
     });

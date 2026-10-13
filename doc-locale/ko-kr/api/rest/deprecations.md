@@ -141,3 +141,11 @@ GitLab 18.7에서 [프로젝트 가져오기 및 내보내기 API](../project_im
 - `namespace_path` 경로로 를 지정할 때 사용합니다.
 
 `namespace` 매개변수는 GitLab v5에서 제거될 것입니다.
+
+## 정수 경로 매개변수에서 숫자가 아닌 ID는 `400` {#non-numeric-ids-on-integer-path-parameters-return-400}
+
+주요 변경 사항입니다. [관련 이슈](https://gitlab.com/gitlab-org/gitlab/-/issues/605824)입니다.
+
+여러 REST API 엔드포인트는 이전에 정수 형식의 경로 매개변수에서 숫자가 아닌 값 또는 여러 값을 사전 검증 없이 허용했습니다. 명확한 오류 대신 이러한 요청은 일관성 없는 응답(`401 Unauthorized`, `404 Not Found` 또는 드문 잠재적 버그의 경우 `200 OK`)을 반환했습니다. 이제 매개변수 유형을 검증하고 `400 Bad Request`을 반환합니다.
+
+마이그레이션하려면 각 요청마다 단일 숫자 ID를 보내세요. 정상적인 클라이언트는 이미 이를 수행하므로 올바른 형식의 요청에는 조치가 필요하지 않습니다.

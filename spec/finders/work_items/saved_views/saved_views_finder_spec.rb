@@ -50,7 +50,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewsFinder, feature_category: :plann
     end
 
     context 'with subscribed_only param' do
-      let!(:user_saved_view) { create(:user_saved_view, user: user, saved_view: saved_view1, namespace: group) }
+      let_it_be(:user_saved_view) { create(:user_saved_view, user: user, saved_view: saved_view1, namespace: group) }
 
       context 'when true' do
         let(:params) { { subscribed_only: true } }
@@ -89,11 +89,11 @@ RSpec.describe WorkItems::SavedViews::SavedViewsFinder, feature_category: :plann
       end
 
       context 'when sort is :relative_position' do
-        let!(:user_saved_view1) do
+        let_it_be(:user_saved_view1) do
           create(:user_saved_view, user: user, saved_view: saved_view1, namespace: group, relative_position: 1000)
         end
 
-        let!(:user_saved_view2) do
+        let_it_be(:user_saved_view2) do
           create(:user_saved_view, user: user, saved_view: saved_view2, namespace: group, relative_position: 2000)
         end
 

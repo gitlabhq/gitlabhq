@@ -1,9 +1,13 @@
 const shortcutsPromise = import(/* webpackChunkName: 'shortcutsBundle' */ './shortcuts')
   .then(({ default: Shortcuts }) => new Shortcuts())
-  .catch(() => {});
+  // Fall back to a no-op instance when the chunk fails to load so callers
+  // never crash on `undefined` (shortcuts are optional).
+  .catch(() => ({ addExtension: () => {}, extensions: new Map() }));
 
 export const addShortcutsExtension = (ShortcutExtension, ...args) =>
   shortcutsPromise.then((shortcuts) => shortcuts.addExtension(ShortcutExtension, args));
+
+export { markShortcutExtensionReady } from './shortcuts_ready_marker';
 
 export const resetShortcutsForTests = async () => {
   if (process.env.NODE_ENV === 'test') {
@@ -12,5 +16,6 @@ export const resetShortcutsForTests = async () => {
     Mousetrap.reset();
     const shortcuts = await shortcutsPromise;
     shortcuts.extensions.clear();
+    delete document.body.dataset.shortcutsReady;
   }
 };

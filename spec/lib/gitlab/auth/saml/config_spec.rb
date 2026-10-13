@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Auth::Saml::Config do
 
     it "lists groups" do
       expect(config_1.external_groups).to be_nil
-      expect(config_2.external_groups).to be_eql(['FreeLancers'])
+      expect(config_2.external_groups).to eql(['FreeLancers'])
     end
   end
 end

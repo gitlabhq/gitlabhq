@@ -145,7 +145,7 @@ module TreeHelper
     project_compare_index_path(project, from: repository.root_ref, to: ref)
   end
 
-  def vue_tree_header_app_data(project, repository, ref, pipeline, ref_type)
+  def vue_tree_header_app_data(project, repository, ref, ref_type)
     archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
 
     {
@@ -157,17 +157,15 @@ module TreeHelper
       project_root_path: project_path(project),
       project_path: project.full_path,
       compare_path: compare_path(project, repository, ref),
-      web_ide_button_options: web_ide_button_data({ blob: nil }).merge(fork_modal_options(project, nil)).to_json,
-      web_ide_button_default_branch: project.default_branch_or_main,
+      web_ide_button_options: repository_header_web_ide_button_options(nil),
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
       download_links: download_links(project, ref, archive_prefix, ref_type).to_json,
-      download_artifacts: pipeline &&
-        (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
-      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
+      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : '',
+      custom_code_dropdown_clients: custom_code_dropdown_clients_for(project).to_json
     }
   end
 
@@ -193,6 +191,44 @@ module TreeHelper
     }
   end
 
+  def custom_code_dropdown_clients_for(project)
+    return [] unless Feature.enabled?(:custom_code_dropdown_clients, project)
+
+    ssh_url = ssh_enabled? ? ssh_clone_url_to_repo(project) : nil
+    http_url = http_enabled? ? http_clone_url_to_repo(project) : nil
+
+    Array(Gitlab::CurrentSettings.code_dropdown_custom_clients).filter_map do |entry|
+      next unless entry.is_a?(Hash)
+
+      client = {
+        name: entry['name'],
+        ssh_url: substitute_code_dropdown_clone_url(entry['ssh_url_template'], ssh_url),
+        http_url: substitute_code_dropdown_clone_url(entry['http_url_template'], http_url)
+      }
+
+      # An entry needs only one template. If the instance disables that protocol, or the template
+      # fails the scheme check, the client has nothing left to link to and would never render.
+      next if client[:ssh_url].nil? && client[:http_url].nil?
+
+      client
+    end
+  end
+
+  # These links skip GitLab UI's href sanitizer (clients use their own schemes), so the stored
+  # template is re-checked here rather than trusting that it passed validation when saved.
+  def substitute_code_dropdown_clone_url(template, clone_url)
+    return unless template.is_a?(String) && template.present? && clone_url.present?
+
+    url = template.sub(ApplicationSetting::CODE_DROPDOWN_PLACEHOLDER, ERB::Util.url_encode(clone_url))
+    url if code_dropdown_url_scheme_allowed?(url)
+  end
+
+  def code_dropdown_url_scheme_allowed?(url)
+    scheme = ApplicationSetting.code_dropdown_url_scheme(url)
+
+    scheme.present? && !ApplicationSetting.code_dropdown_scheme_blocked?(scheme)
+  end
+
   def download_links(project, ref, archive_prefix, ref_type)
     return [] if project.empty_repo?
 
@@ -216,7 +252,8 @@ module TreeHelper
       ide_data: current_user&.namespace ? code_dropdown_ide_data.to_json : '',
       directory_download_links: download_links(project, ref, archive_prefix, ref_type).to_json,
       show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
-      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
+      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : '',
+      custom_code_dropdown_clients: custom_code_dropdown_clients_for(project).to_json
     }
   end
 end

@@ -26,7 +26,7 @@ module Resolvers
           has_scheduled_actions: [:scheduled_actions],
           pipeline_schedule: [],
           type: [:merge_request],
-          merge_request: [:merge_request],
+          merge_request: [{ merge_request: [:author, :target_project] }],
           merge_request_event_type: [:merge_request],
           ref_path: [:merge_request]
         }

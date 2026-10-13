@@ -2,19 +2,16 @@ import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
-import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
+import { splitIntoChunks } from '~/highlight_js/workers/highlight_utils';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEXT_FILE_TYPE } from '~/repository/constants';
-import {
-  LINES_PER_CHUNK,
-  EVENT_ACTION,
-  EVENT_LABEL_FALLBACK,
-} from '~/vue_shared/components/source_viewer/constants';
+import { LINES_PER_CHUNK } from '~/highlight_js/constants';
+import { EVENT_ACTION, EVENT_LABEL_FALLBACK } from '~/blob/components/source_viewer/constants';
 import Tracking from '~/tracking';
 
-jest.mock('~/vue_shared/components/source_viewer/workers/highlight_utils', () => ({
+jest.mock('~/highlight_js/workers/highlight_utils', () => ({
   splitIntoChunks: jest.fn().mockResolvedValue([]),
 }));
 
@@ -169,6 +166,42 @@ describe('HighlightMixin', () => {
     });
   });
 
+  describe('4D language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it.each`
+      extension           | language
+      ${'.4dm'}           | ${'4d'}
+      ${'.4DCatalog'}     | ${'xml'}
+      ${'.4DForm'}        | ${'json'}
+      ${'.4DPreferences'} | ${'xml'}
+      ${'.4DProject'}     | ${'json'}
+      ${'.4DSettings'}    | ${'xml'}
+    `(
+      'sets language to $language for $extension files regardless of passed language',
+      ({ extension, language }) => {
+        createComponent({ language: 'plaintext', name: `test${extension}` });
+        expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({ language });
+      },
+    );
+  });
+
+  describe('extension matching', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it.each`
+      name             | language
+      ${'lower.4dm'}   | ${'4d'}
+      ${'upper.4DM'}   | ${'4d'}
+      ${'lower.gleam'} | ${'gleam'}
+      ${'upper.GLEAM'} | ${'gleam'}
+    `('matches $name case-insensitively and sets language to $language', ({ name, language }) => {
+      createComponent({ language: 'plaintext', name });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({ language });
+    });
+  });
+
   describe('Gleam language handling', () => {
     beforeEach(() => workerMock.postMessage.mockClear());
 
@@ -223,5 +256,31 @@ describe('HighlightMixin', () => {
         language: 'veryl',
       });
     });
+  });
+
+  describe('when the blob has no name', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it.each([null, undefined])(
+      'skips the extension lookup and highlights with the blob language when name is %s',
+      (name) => {
+        expect(() => createComponent({ name })).not.toThrow();
+
+        expect(workerMock.postMessage.mock.calls).toHaveLength(2);
+
+        // first call instructs worker to highlight the first 70 lines
+        expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+          content: contentArray.slice(0, LINES_PER_CHUNK).join('\n'),
+          language: languageMock,
+        });
+
+        // second call instructs worker to highlight all of the lines
+        expect(workerMock.postMessage.mock.calls[1][0]).toMatchObject({
+          content: rawTextBlob,
+          language: languageMock,
+          fileType: TEXT_FILE_TYPE,
+        });
+      },
+    );
   });
 });

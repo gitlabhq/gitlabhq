@@ -3,7 +3,7 @@ import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import emptySearchSVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { ZOEKT_CONNECTION_ERROR_IDENTIFIER } from '../constants';
+import { ZOEKT_BACKEND_ERROR_IDENTIFIERS } from '../constants';
 
 export default {
   name: 'GlobalSearchResultsError',
@@ -33,7 +33,7 @@ export default {
     },
     errorType() {
       const errorType = this.error?.graphQLErrors?.[0]?.extensions?.error_type;
-      return errorType === ZOEKT_CONNECTION_ERROR_IDENTIFIER ? 'network' : 'default';
+      return ZOEKT_BACKEND_ERROR_IDENTIFIERS.includes(errorType) ? 'network' : 'default';
     },
     errorTitle() {
       return this.$options.i18n.title;

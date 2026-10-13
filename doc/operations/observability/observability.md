@@ -11,13 +11,14 @@ title: Observability
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/6) in GitLab 18.1 as an experiment available to all users.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/632757) from experiment to [beta](../../policy/development_stages_support.md#beta) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -31,7 +32,7 @@ Use GitLab Observability to:
 - Instrument CI/CD pipelines automatically without code changes.
 - Send high-cardinality metrics without limits by using OpenTelemetry standards.
 
-GitLab Observability is an experimental feature that is actively evolving.
+GitLab Observability is in [beta](../../policy/development_stages_support.md#beta).
 You can start sending traces, logs, and metrics now. To get familiar with the workflow,
 try it on a non-critical service first, then expand usage as needed.
 
@@ -39,7 +40,7 @@ try it on a non-critical service first, then expand usage as needed.
 For a detailed overview, see [GitLab Observability (O11y) Introduction](https://www.youtube.com/watch?v=XI9ZruyNEgs).
 <!-- Video published on 2025-06-18 -->
 
-GitLab Observability is available and free for all tiers. [Share feedback or request features](#share-your-feedback).
+GitLab Observability is available at no cost for all tiers during the beta. [Share feedback or request features](#share-your-feedback).
 
 ## Get started
 
@@ -117,7 +118,7 @@ Most teams are seeing their first traces within 5-10 minutes of enabling the fea
 
 ### Cost-effective and scalable
 
-- Free for all tiers. No per-seat, per-metric, or per-host charges. No limits on traces, metrics, or logs.
+- No cost for all tiers during the beta. No per-seat, per-metric, or per-host charges. No limits on traces, metrics, or logs.
 - No cardinality limits. Send high-cardinality metrics without cost concerns.
 - Open source model. Contribute features and fixes directly.
 - Predictable costs. No surprise bills from metric explosions.

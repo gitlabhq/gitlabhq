@@ -8,6 +8,14 @@
       "type": "boolean",
       "description": "Enable cloud native architecture for storing job logs."
     },
+    "ci_job_trace_update_interval": {
+      "type": "integer",
+      "description": "Interval, in seconds, for job log updates when the job log is not open."
+    },
+    "ci_job_trace_update_interval_when_being_watched": {
+      "type": "integer",
+      "description": "Interval, in seconds, for job log updates when the job log is open."
+    },
     "ci_partitions_in_seconds_limit": {
       "type": "integer",
       "description": "Time window, in seconds, before new partitions are created and the system switches to the next set of partitions."

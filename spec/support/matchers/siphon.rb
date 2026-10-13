@@ -130,7 +130,7 @@ RSpec::Matchers.define :have_correct_reconcile_config do |table_config|
   end
 end
 
-RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_names, pg_table|
+RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_names, pg_table, allow_pk_prefix = false|
   # `ch_primary_keys` and `ch_column_names` are provided by the including example group
   # (delegated via the matcher's method_missing), backed by the ClickHouse schema cache.
   def unique_index_prefix?(table, target_keys)
@@ -170,8 +170,9 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
     if target['dedup_by']
       dedup_cols = target['dedup_by'].join(', ')
       pkeys = postgresql_primary_keys.join(', ')
+      expected_cols = allow_pk_prefix ? postgresql_primary_keys.first(target['dedup_by'].length).join(', ') : pkeys
 
-      @errors << "dedup_by [#{dedup_cols}] does not match PG primary keys [#{pkeys}]" if dedup_cols != pkeys
+      @errors << "dedup_by [#{dedup_cols}] does not match PG primary keys [#{pkeys}]" if dedup_cols != expected_cols
 
       if clickhouse_primary_keys.last(postgresql_primary_keys.length) != postgresql_primary_keys
         @errors << "the ClickHouse primary keys (#{clickhouse_primary_keys.join(', ')}) don't match or end with " \

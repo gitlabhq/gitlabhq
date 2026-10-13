@@ -1,0 +1,10 @@
+---
+name: etag_caching_post_requests
+description: Send eTag-cached GraphQL queries as POST instead of GET to avoid URL length limits
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630808
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257934
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631143
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

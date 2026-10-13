@@ -4,6 +4,9 @@
     "title": {
       "type": "string"
     },
+    "title_html": {
+      "type": "string"
+    },
     "state": {
       "type": "string"
     },

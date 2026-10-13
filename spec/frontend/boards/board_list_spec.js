@@ -396,6 +396,76 @@ describe('Board list component', () => {
     });
   });
 
+  describe('when a card is dragged to a new position', () => {
+    const listId = 'gid://gitlab/List/1';
+    const movedItem = mockIssuesMore[0];
+    let apolloProvider;
+
+    const boardCardEl = (itemId) => ({
+      dataset: { itemId },
+      classList: { contains: (name) => name === 'board-card' },
+    });
+
+    beforeEach(async () => {
+      cacheUpdates.evictWorkItemForIssue = jest.fn();
+
+      ({ wrapper, apolloProvider, resolveQuery, resolveMutation } = createComponent({
+        apolloQueryHandlers: [
+          [
+            listIssuesQuery,
+            jest.fn().mockResolvedValue(mockGroupIssuesResponse(listId, mockIssuesMore)),
+          ],
+          [
+            issueMoveListMutation,
+            jest.fn().mockResolvedValue({
+              data: { issuableMoveList: { issuable: movedItem, errors: [] } },
+            }),
+          ],
+        ],
+      }));
+
+      await resolveQuery(listQuery);
+      await resolveQuery(listIssuesQuery);
+
+      startDrag({
+        item: {
+          dataset: {
+            draggableItemType: DraggableItemTypes.card,
+            itemId: movedItem.id,
+          },
+        },
+      });
+
+      endDrag({
+        oldIndex: 0,
+        newIndex: 1,
+        item: {
+          dataset: {
+            draggableItemType: DraggableItemTypes.card,
+            itemId: movedItem.id,
+            itemIid: movedItem.iid,
+            itemPath: movedItem.referencePath,
+          },
+        },
+        from: { dataset: { listId } },
+        to: {
+          dataset: { listId },
+          children: [boardCardEl(mockIssuesMore[1].id), boardCardEl(mockIssuesMore[2].id)],
+        },
+      });
+    });
+
+    it('evicts the work item so the detail drawer refetches it', async () => {
+      await resolveMutation(issueMoveListMutation);
+      await waitForPromises();
+
+      expect(cacheUpdates.evictWorkItemForIssue).toHaveBeenCalledWith({
+        cache: apolloProvider.defaultClient.cache,
+        issueId: movedItem.id,
+      });
+    });
+  });
+
   describe('moveToPosition', () => {
     const listId = 'gid://gitlab/List/1';
     const movedItem = mockIssuesMore[1];

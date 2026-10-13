@@ -35,6 +35,29 @@ RSpec.shared_examples 'issues list service' do
 
       expect(metadata[:size]).to eq(3)
     end
+
+    it 'counts the same issues as #execute for every list and user', :aggregate_failures do
+      [backlog, list1, list2, closed].product([user, nil]).each do |list, current_user|
+        params = { board_id: board.id, id: list.id }
+        issues = described_class.new(parent, current_user, params).execute.to_a
+
+        metadata = described_class.new(parent, current_user, params).metadata
+
+        expect(metadata[:size]).to eq(issues.size), "list #{list.list_type}, user #{current_user&.username.inspect}"
+      end
+    end
+
+    # Project boards run Latin terms as full-text search and other terms through a CTE-fenced fuzzy search
+    it 'counts the same issues as #execute when searching', :aggregate_failures do
+      %w[Issue 課題].each do |search|
+        params = { board_id: board.id, id: backlog.id, search: search }
+        issues = described_class.new(parent, user, params).execute.to_a
+
+        metadata = described_class.new(parent, user, params).metadata
+
+        expect(metadata[:size]).to eq(issues.size), "search #{search}"
+      end
+    end
   end
 
   it_behaves_like 'items list service' do

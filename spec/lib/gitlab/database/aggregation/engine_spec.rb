@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :value_stream_management do
   let(:engine_klass) do
     described_class.build do
       def self.metrics_mapping
@@ -51,6 +51,12 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
 
   it 'requires execute_query_plan definition' do
     expect(described_class.new(context: {})).to require_method_definition(:execute_query_plan, nil)
+  end
+
+  describe '.max_page_size' do
+    it 'returns nil so the schema default page size applies' do
+      expect(engine_klass.max_page_size).to be_nil
+    end
   end
 
   describe '.transient' do
@@ -167,7 +173,7 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
       )
     end
 
-    it 'assigns the base type to min/max/sum and float to mean/quantile' do
+    it 'assigns the base type to min/max and float to mean/quantile/sum' do
       engine = build_measurement_engine do
         measurement :duration, :integer, ->(_params) { Arel.sql('duration') }
       end
@@ -177,8 +183,18 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
         "duration.max": :integer,
         "duration.mean": :float,
         "duration.quantile": :float,
-        "duration.sum": :integer
+        "duration.sum": :float
       )
+    end
+
+    it 'keeps the float type for a float sum' do
+      engine = build_measurement_engine do
+        measurement :credits, :float, ->(_params) { Arel.sql('credits') }
+      end
+
+      sum = engine.metrics.find { |m| m.identifier == :"credits.sum" }
+
+      expect(sum.type).to eq(:float)
     end
 
     it 'propagates authorize to all expanded metrics' do

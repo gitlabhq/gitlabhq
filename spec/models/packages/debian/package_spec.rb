@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Debian::Package, feature_category: :package_registry do
   describe 'associations' do
     it { is_expected.to have_one(:publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
 
@@ -13,11 +13,6 @@ RSpec.describe Packages::Debian::Package, type: :model, feature_category: :packa
         .inverse_of(:packages)
         .class_name('Packages::Debian::ProjectDistribution')
     end
-  end
-
-  describe 'delegates' do
-    it { is_expected.to delegate_method(:codename).to(:distribution).with_prefix(:distribution) }
-    it { is_expected.to delegate_method(:suite).to(:distribution).with_prefix(:distribution) }
   end
 
   describe '.with_codename' do

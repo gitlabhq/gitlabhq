@@ -1,0 +1,9 @@
+---
+name: organization_scoped_new_dropdown
+description: Scopes the + (Create new…) top-bar menu links to the current organization and titles the section "In this organization".
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255980
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629444
+milestone: '19.5'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

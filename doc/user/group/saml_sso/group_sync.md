@@ -323,7 +323,7 @@ The checkbox does not appear for groups without an active GitLab Duo add-on subs
 
 {{< tab title="GitLab Self-Managed" >}}
 
-To configure Self-Managed:
+To configure GitLab Self-Managed:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
 1. Ensure your configuration includes `groups_attribute` and `duo_add_on_groups`. Any users who are a member of one or more of the `duo_add_on_groups` will have a GitLab Duo seat assigned, if a seat is available. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
@@ -466,8 +466,8 @@ You can enforce a global lock on SAML group memberships. This lock limits who ca
 
 When global group memberships lock is enabled:
 
-- You cannot set a group or subgroup as a [Code Owner](../../project/codeowners/_index.md).
-  For more information, see [Incompatibility with Global group memberships locks](../../project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
+- To use a group or subgroup as a [Code Owner](../../project/codeowners/_index.md), see
+  [Incompatibility with Global group memberships locks](../../project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 - Only administrators can manage group members and change their access levels.
 - Group members cannot:
   - Share a project with other groups.

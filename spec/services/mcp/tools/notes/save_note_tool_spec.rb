@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -124,11 +126,12 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
       context 'when the url is neither a merge request nor a work item url' do
         let(:params) { { url: "https://gitlab.com/#{project.full_path}/-/wikis/home", body: 'Test comment' } }
 
-        it 'raises an ArgumentError mentioning both url formats' do
+        it 'raises an ArgumentError listing the accepted url formats' do
           expect { tool.build_variables }.to raise_error(
             ArgumentError,
-            'URL must be a merge request URL (.../-/merge_requests/<iid>) or a work item URL ' \
-              '(.../-/work_items/<iid>). For issues, pass project_id and work_item_iid instead'
+            'URL must be a merge request URL (.../-/merge_requests/<iid>), a work item URL ' \
+              '(.../-/work_items/<iid>), an issue URL (.../-/issues/<iid>, project-scoped), or an epic URL ' \
+              '(.../groups/<full_path>/-/epics/<iid>, group-scoped)'
           )
         end
       end
@@ -236,6 +239,14 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
         expect(variables[:input][:noteableId]).to eq(work_item.to_global_id.to_s)
       end
 
+      it 'resolves the issue from a URL' do
+        params.delete(:project_id)
+        params[:url] = "https://gitlab.com/#{project.full_path}/-/issues/#{work_item.iid}"
+        variables = tool.build_variables
+
+        expect(variables[:input][:noteableId]).to eq(work_item.to_global_id.to_s)
+      end
+
       context 'when work_item_iid is provided without project_id or group_id' do
         let(:params) { { work_item_iid: work_item.iid, body: 'Test comment' } }
 
@@ -264,7 +275,7 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
 
         it 'raises ArgumentError' do
           expect { tool.build_variables }
-            .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
+            .to raise_error(not_found_error, "Work item ##{non_existing_record_iid} not found or inaccessible")
         end
       end
 

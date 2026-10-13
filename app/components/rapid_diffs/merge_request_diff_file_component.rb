@@ -147,7 +147,7 @@ module RapidDiffs
         Pajamas::ButtonComponent.new(
           category: :tertiary,
           variant: :link,
-          button_options: { type: 'button', data: { click: 'resolveConflictsLocally' } }
+          button_options: { type: 'button', class: 'gl-align-text-bottom', data: { click: 'resolveConflictsLocally' } }
         )
       )
     end

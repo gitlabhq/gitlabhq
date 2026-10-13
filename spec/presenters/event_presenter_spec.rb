@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe EventPresenter do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:target) { create(:milestone, project: project) }
-  let_it_be(:group_event) { create(:event, :created, project: nil, group: group, target: target) }
-  let_it_be(:project_event) { create(:event, :created, project: project, target: target) }
+  let(:group) { build_stubbed(:group) }
+  let(:project) { build_stubbed(:project, group: group) }
+  let(:target) { build_stubbed(:milestone, project: project) }
+  let(:group_event) { build_stubbed(:event, :created, project: nil, group: group, target: target) }
+  let(:project_event) { build_stubbed(:event, :created, project: project, target: target) }
 
   describe '#resource_parent_name' do
     subject { event.present.resource_parent_name }
@@ -66,7 +66,7 @@ RSpec.describe EventPresenter do
 
     context 'when project event has nil target_type' do
       it 'returns project for a project event' do
-        expect(build(:event, project: create(:project), action: :created).present)
+        expect(build(:event, project: project, action: :created).present)
           .to have_attributes(target_type_name: 'project')
       end
     end

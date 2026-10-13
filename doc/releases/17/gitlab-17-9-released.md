@@ -102,7 +102,7 @@ By adding project files, Duo Chat gains deep understanding of your specific code
 
 GitLab workspaces now supports building and running containers directly in your development environment. When your workspace runs on a Kubernetes cluster configured [with Sysbox](../../user/workspace/configuration.md#with-sysbox), you can build and run containers without additional configuration.
 
-Introduced in GitLab 17.4 as part of our [sudo access feature](https://about.gitlab.com/releases/2024/09/19/gitlab-17-4-released/#secure-sudo-access-for-workspaces), this capability enables you to maintain your complete container workflow in your GitLab workspace environment.
+Introduced in GitLab 17.4 as part of our [sudo access feature](gitlab-17-4-released.md#secure-sudo-access-for-workspaces), this capability enables you to maintain your complete container workflow in your GitLab workspace environment.
 
 ### Create workspaces without a custom devfile
 

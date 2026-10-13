@@ -20,6 +20,7 @@ import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import {
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
   PLACEHOLDER_STATUS_COMPLETED,
+  PLACEHOLDER_STATUS_REVOKED,
   placeholderUserBadges,
 } from '~/import_entities/import_groups/constants';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
@@ -161,11 +162,15 @@ export default {
     isReassignedItem(item) {
       return (
         item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER ||
-        item.status === PLACEHOLDER_STATUS_COMPLETED
+        item.status === PLACEHOLDER_STATUS_COMPLETED ||
+        item.status === PLACEHOLDER_STATUS_REVOKED
       );
     },
     isPlaceholderUserDeleted(item) {
-      return item.status === PLACEHOLDER_STATUS_COMPLETED && !item.placeholderUser;
+      return (
+        [PLACEHOLDER_STATUS_COMPLETED, PLACEHOLDER_STATUS_REVOKED].includes(item.status) &&
+        !item.placeholderUser
+      );
     },
     onPrevPage() {
       this.cursor = {

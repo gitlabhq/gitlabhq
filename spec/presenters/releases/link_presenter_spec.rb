@@ -4,8 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Releases::LinkPresenter, feature_category: :release_orchestration do
   describe '#direct_asset_url' do
-    let_it_be(:release) { create(:release) }
-
+    let(:release) { build_stubbed(:release) }
     let(:link) { build(:release_link, release: release, url: url, filepath: filepath) }
     let(:url) { 'https://google.com/-/jobs/140463678/artifacts/download' }
     let(:presenter) { described_class.new(link) }

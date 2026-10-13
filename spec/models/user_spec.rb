@@ -157,9 +157,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to delegate_method(:dpop_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:dpop_enabled=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:use_work_items_view).to(:user_preference) }
-    it { is_expected.to delegate_method(:use_work_items_view=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type=).to(:user_preference).with_arguments(:args) }
 
@@ -255,6 +252,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:second_factor_webauthn_registrations) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:oauth_consents).class_name('Authn::OauthConsent').inverse_of(:user) }
+    it { is_expected.to have_many(:oauth_consent_grants).class_name('Authz::OauthConsentGrant').dependent(:delete_all) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds) }
@@ -1595,173 +1593,96 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(user.dashboard).to eq('projects')
       end
 
-      context 'with flipped dashboard mapping for rollout' do
-        before do
-          stub_feature_flags(personal_homepage: user)
-        end
-
-        it 'uses flipped enum mapping when setting dashboard value' do
-          user.dashboard = 'projects'
-          # With flipped mapping, 'projects' gets stored as 'homepage' in the database
-          expect(user.read_attribute(:dashboard)).to eq('homepage')
-        end
-
-        it 'uses flipped enum mapping when setting homepage value' do
-          user.dashboard = 'homepage'
-          # With flipped mapping, 'homepage' gets stored as 'projects' in the database
-          expect(user.read_attribute(:dashboard)).to eq('projects')
-        end
-
-        it 'does not affect other dashboard values' do
-          user.dashboard = 'stars'
-          expect(user.read_attribute(:dashboard)).to eq('stars') # stars value unchanged
-        end
+      it 'uses flipped enum mapping when setting dashboard value' do
+        user.dashboard = 'projects'
+        # With flipped mapping, 'projects' gets stored as 'homepage' in the database
+        expect(user.read_attribute(:dashboard)).to eq('homepage')
       end
 
-      context 'without flipped dashboard mapping' do
-        before do
-          stub_feature_flags(personal_homepage: false)
-        end
+      it 'uses flipped enum mapping when setting homepage value' do
+        user.dashboard = 'homepage'
+        # With flipped mapping, 'homepage' gets stored as 'projects' in the database
+        expect(user.read_attribute(:dashboard)).to eq('projects')
+      end
 
-        it 'uses standard enum mapping' do
-          user.dashboard = 'projects'
-          expect(user.read_attribute(:dashboard)).to eq('projects') # standard projects value
+      it 'does not affect other dashboard values' do
+        user.dashboard = 'stars'
+        expect(user.read_attribute(:dashboard)).to eq('stars') # stars value unchanged
+      end
 
-          user.dashboard = 'homepage'
-          expect(user.read_attribute(:dashboard)).to eq('homepage') # standard homepage value
-        end
+      # The mapping is keyed by name, so an integer never matches and is stored
+      # as-is, giving it the opposite meaning of the equivalent string value.
+      it 'stores an integer value unmapped, bypassing the flip' do
+        user.dashboard = described_class.dashboards[:homepage]
+
+        expect(user.read_attribute(:dashboard)).to eq('homepage')
       end
     end
 
     describe '#effective_dashboard_for_routing' do
-      context 'without flipped dashboard mapping' do
-        before do
-          stub_feature_flags(personal_homepage: false)
-        end
+      it 'routes projects back from the flipped raw value' do
+        user.dashboard = 'projects'
 
-        it 'returns the actual dashboard value' do
-          user.dashboard = 'projects'
-          expect(user.effective_dashboard_for_routing).to eq('projects')
-
-          user.dashboard = 'stars'
-          expect(user.effective_dashboard_for_routing).to eq('stars')
-        end
+        expect(user.effective_dashboard_for_routing).to eq('projects')
       end
 
-      context 'with flipped dashboard mapping for rollout' do
-        before do
-          stub_feature_flags(personal_homepage: user)
-        end
+      it 'routes homepage back from the flipped raw value' do
+        user.dashboard = 'homepage'
 
-        it 'flips projects to homepage' do
-          user.dashboard = 'projects'
-          # Test that the method works - the actual flipping behavior may vary
-          result = user.effective_dashboard_for_routing
-          expect(result).to be_in(%w[projects homepage])
-        end
+        expect(user.effective_dashboard_for_routing).to eq('homepage')
+      end
 
-        it 'flips homepage to projects' do
-          user.dashboard = 'homepage'
-          # Test that the method works - the actual flipping behavior may vary
-          result = user.effective_dashboard_for_routing
-          expect(result).to be_in(%w[projects homepage])
-        end
+      it 'does not affect other dashboard values' do
+        user.dashboard = 'stars'
+        expect(user.effective_dashboard_for_routing).to eq('stars')
 
-        it 'does not affect other dashboard values' do
-          user.dashboard = 'stars'
-          expect(user.effective_dashboard_for_routing).to eq('stars')
-
-          user.dashboard = 'todos'
-          expect(user.effective_dashboard_for_routing).to eq('todos')
-        end
+        user.dashboard = 'todos'
+        expect(user.effective_dashboard_for_routing).to eq('todos')
       end
     end
 
     describe '#dashboard_enum_mapping' do
-      context 'without flipped dashboard mapping' do
-        before do
-          stub_feature_flags(personal_homepage: false)
-        end
+      it 'returns flipped enum mapping for projects and homepage' do
+        mapping = user.dashboard_enum_mapping
 
-        it 'returns standard enum mapping' do
-          expect(user.dashboard_enum_mapping).to eq(described_class.dashboards.with_indifferent_access)
-        end
+        expect(mapping['projects']).to eq(described_class.dashboards[:homepage])
+        expect(mapping['homepage']).to eq(described_class.dashboards[:projects])
+        expect(mapping['stars']).to eq(described_class.dashboards[:stars]) # unchanged
       end
 
-      context 'with flipped dashboard mapping for rollout' do
-        before do
-          stub_feature_flags(personal_homepage: user)
-        end
+      it 'returns mapping with indifferent access' do
+        mapping = user.dashboard_enum_mapping
 
-        it 'returns flipped enum mapping for projects and homepage' do
-          mapping = user.dashboard_enum_mapping
-
-          expect(mapping['projects']).to eq(described_class.dashboards[:homepage])
-          expect(mapping['homepage']).to eq(described_class.dashboards[:projects])
-          expect(mapping['stars']).to eq(described_class.dashboards[:stars]) # unchanged
-        end
-
-        it 'returns mapping with indifferent access' do
-          mapping = user.dashboard_enum_mapping
-
-          expect(mapping[:projects]).to eq(mapping['projects'])
-          expect(mapping[:homepage]).to eq(mapping['homepage'])
-        end
+        expect(mapping[:projects]).to eq(mapping['projects'])
+        expect(mapping[:homepage]).to eq(mapping['homepage'])
       end
     end
 
     describe '#should_use_flipped_dashboard_mapping_for_rollout?' do
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(personal_homepage: false)
+      context 'for regular users' do
+        it 'returns true when user has no projects' do
+          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
         end
 
-        it 'returns false for regular user' do
-          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
-        end
+        it 'returns true when user has projects' do
+          project = create(:project)
+          project.add_developer(user)
 
-        it 'returns false for admin user' do
-          admin_user = create(:user, admin: true)
-          stub_feature_flags(personal_homepage: false)
-
-          expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
         end
       end
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(personal_homepage: user)
+      context 'for admin users', :enable_admin_mode do
+        let(:admin_user) { create(:user, admin: true) }
+
+        it 'returns false when admin has no projects' do
+          expect(admin_user).not_to be_should_use_flipped_dashboard_mapping_for_rollout
         end
 
-        context 'for regular users' do
-          it 'returns true when user has no projects' do
-            expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
-          end
+        it 'returns true when admin has projects' do
+          create(:project, developers: admin_user)
 
-          it 'returns true when user has projects' do
-            project = create(:project)
-            project.add_developer(user)
-
-            expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
-          end
-        end
-
-        context 'for admin users', :enable_admin_mode do
-          let(:admin_user) { create(:user, admin: true) }
-
-          before do
-            stub_feature_flags(personal_homepage: admin_user)
-          end
-
-          it 'returns false when admin has no projects' do
-            expect(admin_user).not_to be_should_use_flipped_dashboard_mapping_for_rollout
-          end
-
-          it 'returns true when admin has projects' do
-            create(:project, developers: admin_user)
-
-            expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
-          end
+          expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
         end
       end
     end
@@ -1881,6 +1802,39 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       it { expect(service_account.sa_provisioned_by_project?).to be(true) }
+    end
+  end
+
+  describe '#sa_provisioned_for_project?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
+
+    context 'when user is not a service account' do
+      let_it_be(:user) { create(:user) }
+
+      it { expect(user.sa_provisioned_for_project?(project)).to be(false) }
+    end
+
+    context 'when the project is nil' do
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: create(:group)) }
+
+      it { expect(service_account.sa_provisioned_for_project?(nil)).to be(false) }
+    end
+
+    context 'when the service account is provisioned for another project' do
+      let_it_be(:service_account) do
+        create(:user, :service_account).tap { |sa| sa.update!(provisioned_by_project: other_project) }
+      end
+
+      it { expect(service_account.sa_provisioned_for_project?(project)).to be(false) }
+    end
+
+    context 'when the service account is provisioned for the project' do
+      let_it_be(:service_account) do
+        create(:user, :service_account).tap { |sa| sa.update!(provisioned_by_project: project) }
+      end
+
+      it { expect(service_account.sa_provisioned_for_project?(project)).to be(true) }
     end
   end
 
@@ -2653,6 +2607,33 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(described_class.member_of_organization(other_organization)).to contain_exactly(user)
       end
     end
+
+    describe '.not_member_of_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:member) { create(:user, organization: organization) }
+      let_it_be(:other_organization_member) { create(:user, organization: other_organization) }
+
+      subject(:non_members) { described_class.not_member_of_organization(organization) }
+
+      it 'excludes members of the organization' do
+        expect(non_members).not_to include(member)
+      end
+
+      it 'includes users who are only members of another organization' do
+        expect(non_members).to include(other_organization_member)
+      end
+
+      context 'when the user is a member of both organizations' do
+        before do
+          create(:organization_user, organization: organization, user: other_organization_member)
+        end
+
+        it 'excludes the user' do
+          expect(non_members).not_to include(other_organization_member)
+        end
+      end
+    end
   end
 
   describe '.member_of_organization?' do
@@ -3044,6 +3025,40 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect do
         user.update_tracked_fields!(request)
       end.not_to change { user.reload.current_sign_in_at }
+    end
+
+    context 'when the throttle skips the write' do
+      before do
+        user.update_tracked_fields!(request)
+      end
+
+      it 'leaves no unsaved trackable attribute on the record' do
+        user.update_tracked_fields!(request)
+
+        expect(user.changed).to be_empty
+      end
+
+      it 'leaves the record lockable' do
+        user.update_tracked_fields!(request)
+
+        expect { user.with_lock { nil } }.not_to raise_error
+      end
+
+      it 'keeps the values of this sign-in on the record without writing them' do
+        user.update_tracked_fields!(instance_double(ActionDispatch::Request, remote_ip: '10.0.0.2'))
+
+        expect(user.current_sign_in_ip).to eq('10.0.0.2')
+        expect(user.last_sign_in_ip).to eq('127.0.0.1')
+        expect(user.reload.current_sign_in_ip).to eq('127.0.0.1')
+      end
+
+      it 'keeps unsaved changes to other attributes' do
+        user.name = 'Renamed'
+
+        user.update_tracked_fields!(request)
+
+        expect(user.changed).to contain_exactly('name')
+      end
     end
 
     it 'writes trackable attributes for a different user' do
@@ -3501,6 +3516,15 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe 'feed token' do
+    context 'when the user is a frozen let_it_be record' do
+      let_it_be(:frozen_user) { create(:user) }
+
+      it 'returns the feed token generated by the factory' do
+        expect(frozen_user).to be_frozen
+        expect(frozen_user.feed_token).to start_with('glft-')
+      end
+    end
+
     it 'ensures a feed token on read' do
       user = create(:user, feed_token: nil)
       feed_token = user.feed_token
@@ -3553,7 +3577,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe 'static object token' do
-    let_it_be_with_refind(:user) { create(:user, static_object_token: nil) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     it 'ensures a static object token on read' do
       static_object_token = user.static_object_token
@@ -3572,10 +3596,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user[:static_object_token_encrypted]).to be_present
     end
 
-    it 'prefers an encoded version of the token' do
+    it 'ignores a plaintext version of the token' do
       token = user.static_object_token
 
-      user.update_column(:static_object_token, 'Test')
+      described_class.where(id: user.id).update_all(static_object_token: 'Test')
 
       expect(user.static_object_token).not_to eq('Test')
       expect(user.static_object_token).to eq(token)
@@ -3583,20 +3607,18 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe 'enabled_static_object_token' do
-    let_it_be(:static_object_token) { 'ilqx6jm1u945macft4eff0nw' }
-
     it 'returns static object token when supported' do
       allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(true)
 
-      user = create(:user, static_object_token: static_object_token)
+      user = create(:user)
 
-      expect(user.enabled_static_object_token).to eq(static_object_token)
+      expect(user.enabled_static_object_token).to eq(user.static_object_token)
     end
 
     it 'returns `nil` when not supported' do
       allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(false)
 
-      user = create(:user, static_object_token: static_object_token)
+      user = create(:user)
 
       expect(user.enabled_static_object_token).to be_nil
     end
@@ -6322,8 +6344,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     with_them do
       before do
-        allow(user).to receive(:solo_owned_groups).and_return(solo_owned_groups)
-        allow(user).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+        allow(user).to receive_messages(
+          solo_owned_groups: solo_owned_groups,
+          solo_owned_organizations: solo_owned_organizations
+        )
       end
 
       it { is_expected.to be(result) }
@@ -6342,8 +6366,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       with_them do
         before do
           stub_feature_flags(ui_for_organizations: false)
-          allow(user).to receive(:solo_owned_groups).and_return(solo_owned_groups)
-          allow(user).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+          allow(user).to receive_messages(
+            solo_owned_groups: solo_owned_groups,
+            solo_owned_organizations: solo_owned_organizations
+          )
         end
 
         it { is_expected.to be(result) }
@@ -7208,115 +7234,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
-  describe '#all_expanded_groups' do
-    # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
-    let_it_be_with_refind(:user) { create(:user) }
-
-    #                group
-    #        _______ (foo) _______
-    #       |                     |
-    #       |                     |
-    # nested_group_1        nested_group_2
-    # (bar)                 (barbaz)
-    #       |                     |
-    #       |                     |
-    # nested_group_1_1      nested_group_2_1
-    # (baz)                 (baz)
-    #
-    let_it_be_with_reload(:group) { create :group }
-    let_it_be_with_reload(:nested_group_1) { create :group, parent: group, name: 'bar' }
-    let_it_be_with_reload(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
-    let_it_be_with_reload(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
-    let_it_be_with_reload(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
-
-    subject { user.all_expanded_groups }
-
-    context 'user is not a member of any group' do
-      it 'returns an empty array' do
-        is_expected.to eq([])
-      end
-    end
-
-    context 'user is member of all groups' do
-      before_all do
-        group.add_reporter(user)
-        nested_group_1.add_developer(user)
-        nested_group_1_1.add_maintainer(user)
-        nested_group_2.add_developer(user)
-        nested_group_2_1.add_maintainer(user)
-      end
-
-      it 'returns all groups' do
-        is_expected.to match_array [
-          group,
-          nested_group_1, nested_group_1_1,
-          nested_group_2, nested_group_2_1
-        ]
-      end
-    end
-
-    context 'user is member of the top group' do
-      before_all do
-        group.add_owner(user)
-      end
-
-      it 'returns all groups' do
-        is_expected.to contain_exactly(
-          group,
-          nested_group_1, nested_group_1_1,
-          nested_group_2, nested_group_2_1
-        )
-      end
-    end
-
-    context 'user is member of the first child (internal node), branch 1' do
-      before_all do
-        nested_group_1.add_owner(user)
-      end
-
-      it 'returns the groups in the hierarchy' do
-        is_expected.to contain_exactly(
-          group,
-          nested_group_1, nested_group_1_1
-        )
-      end
-    end
-
-    context 'user is member of the first child (internal node), branch 2' do
-      before_all do
-        nested_group_2.add_owner(user)
-      end
-
-      it 'returns the groups in the hierarchy' do
-        is_expected.to contain_exactly(
-          group,
-          nested_group_2, nested_group_2_1
-        )
-      end
-    end
-
-    context 'user is member of the last child (leaf node)' do
-      before_all do
-        nested_group_1_1.add_owner(user)
-      end
-
-      it 'returns the groups in the hierarchy' do
-        is_expected.to contain_exactly(
-          group,
-          nested_group_1, nested_group_1_1
-        )
-      end
-    end
-
-    context 'when the user is not saved' do
-      let(:user) { build(:user) }
-
-      it 'returns empty when there are no groups or ancestor groups for the user' do
-        is_expected.to eq([])
-      end
-    end
-  end
-
   describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
@@ -7510,145 +7427,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       second_query = ActiveRecord::QueryRecorder.new { user.owns_organization?(organization) }
 
       expect(second_query.count).to eq(0)
-    end
-  end
-
-  describe '#update_two_factor_requirement' do
-    let_it_be_with_refind(:user) { create :user }
-
-    context 'with 2FA requirement on groups' do
-      let_it_be(:group1) do
-        create :group, owners: user, require_two_factor_authentication: true, two_factor_grace_period: 23
-      end
-
-      let_it_be(:group2) do
-        create :group, owners: user, require_two_factor_authentication: true, two_factor_grace_period: 32
-      end
-
-      before_all do
-        user.update_two_factor_requirement
-      end
-
-      it 'requires 2FA' do
-        expect(user.require_two_factor_authentication_from_group).to be true
-      end
-
-      it 'uses the shortest grace period' do
-        expect(user.two_factor_grace_period).to be 23
-      end
-    end
-
-    context 'with 2FA requirement from expanded groups' do
-      let!(:group1) { create :group, require_two_factor_authentication: true }
-      let!(:group1a) { create :group, parent: group1, owners: user }
-
-      before do
-        user.update_two_factor_requirement
-      end
-
-      it 'requires 2FA' do
-        expect(user.require_two_factor_authentication_from_group).to be true
-      end
-    end
-
-    context 'with 2FA requirement on nested child group' do
-      let!(:group1) { create :group, require_two_factor_authentication: false, owners: user }
-      let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
-
-      before do
-        user.update_two_factor_requirement
-      end
-
-      it 'requires 2FA' do
-        expect(user.require_two_factor_authentication_from_group).to be true
-      end
-    end
-
-    context "with 2FA requirement from shared project's group" do
-      let!(:group1) { create :group, require_two_factor_authentication: true }
-      let!(:group2) { create :group }
-      let(:shared_project) { create(:project, namespace: group1) }
-
-      before do
-        shared_project.project_group_links.create!(
-          group: group2
-        )
-
-        group2.add_member(user, GroupMember::OWNER)
-      end
-
-      it 'does not require 2FA' do
-        user.update_two_factor_requirement
-
-        expect(user.require_two_factor_authentication_from_group).to be false
-      end
-    end
-
-    context 'without 2FA requirement on groups' do
-      let(:group) { create :group, owners: user }
-
-      before do
-        user.update_two_factor_requirement
-      end
-
-      it 'does not require 2FA' do
-        expect(user.require_two_factor_authentication_from_group).to be false
-      end
-
-      it 'falls back to the default grace period' do
-        expect(user.two_factor_grace_period).to be 48
-      end
-    end
-
-    context 'when the user is not saved' do
-      let(:user) { build(:user) }
-
-      it 'does not raise an ActiveRecord::StatementInvalid statement exception' do
-        expect { user.update_two_factor_requirement }.not_to raise_error
-      end
-    end
-
-    context 'when the record is frozen' do
-      before do
-        user.freeze
-      end
-
-      it 'does not raise' do
-        expect { user.update_two_factor_requirement }.not_to raise_error
-      end
-    end
-  end
-
-  describe '#source_groups_of_two_factor_authentication_requirement' do
-    let_it_be(:group_not_requiring_2fa) { create :group }
-    let_it_be_with_refind(:user) { create(:user, owner_of: [group_not_requiring_2fa]) }
-
-    subject { user.source_groups_of_two_factor_authentication_requirement }
-
-    context 'when user is direct member of group requiring 2FA' do
-      let_it_be(:group) { create :group, require_two_factor_authentication: true, owners: user }
-
-      it 'returns group requiring 2FA' do
-        is_expected.to contain_exactly(group)
-      end
-    end
-
-    context 'when user is member of group which parent requires 2FA' do
-      let_it_be(:parent_group) { create :group, require_two_factor_authentication: true }
-      let_it_be(:group) { create :group, parent: parent_group, owners: user }
-
-      it 'returns group requiring 2FA' do
-        is_expected.to contain_exactly(group)
-      end
-    end
-
-    context 'when user is member of group which child requires 2FA' do
-      let_it_be(:group) { create :group, owners: user }
-      let_it_be(:child_group) { create :group, require_two_factor_authentication: true, parent: group }
-
-      it 'returns group requiring 2FA' do
-        is_expected.to contain_exactly(group)
-      end
     end
   end
 
@@ -8038,8 +7816,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     subject(:projects_limit_left) { user.projects_limit_left }
 
     before do
-      allow(user).to receive(:projects_limit).and_return(10)
-      allow(user).to receive(:personal_projects_count).and_return(5)
+      allow(user).to receive_messages(projects_limit: 10, personal_projects_count: 5)
     end
 
     it { is_expected.to eq(5) }
@@ -10900,8 +10677,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     with_them do
       before do
-        allow(user).to receive(:assigned_open_merge_requests_count).and_return(assigned_count)
-        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(returned_count)
+        allow(user).to receive_messages(
+          assigned_open_merge_requests_count: assigned_count,
+          returned_to_you_merge_requests_count: returned_count
+        )
       end
 
       it do

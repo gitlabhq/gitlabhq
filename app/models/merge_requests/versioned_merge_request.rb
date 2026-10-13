@@ -63,7 +63,7 @@ module MergeRequests
     def has_sast_reports?
       return false unless latest_diff_version?
 
-      __getobj__.has_sast_reports_for?(latest_diff_head_pipeline)
+      __getobj__.has_sast_reports_for?(latest_diff_head_pipeline) || __getobj__.agentic_sast_reports?
     end
 
     def files_count

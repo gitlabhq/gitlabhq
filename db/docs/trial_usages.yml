@@ -1,0 +1,17 @@
+---
+table_name: trial_usages
+classes:
+- GitlabSubscriptions::TrialUsage
+feature_categories:
+- acquisition
+description: >
+  Point-in-time snapshot of the seats, compute minutes and GitLab Credits a namespace used
+  during a trial, captured around day 30 of the trial. Insert-only, one row per namespace
+  per trial end date, read by the post-trial usage card on the group Billing page.
+  Range-partitioned monthly by trial_ends_on; partitions older than 24 months are dropped.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257608
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

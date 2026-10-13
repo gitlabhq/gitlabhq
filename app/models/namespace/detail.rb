@@ -19,14 +19,25 @@ class Namespace::Detail < ApplicationRecord
     last_changed_by_user_id: :integer,
     last_error: :string,
     deletion_error: :string,
+    deletion_attempt_count: :integer,
+    deletion_last_failed_at: :datetime,
     deletion_scheduled_by_user_id: :integer,
     transfer_initiated_at: :datetime,
     transfer_initiated_by_user_id: :integer,
     transfer_target_parent_id: :integer,
     transfer_attempt_count: :integer,
-    transfer_last_error: :string
+    transfer_last_error: :string,
+    organization_transfer_source_id: :integer
 
   scope :deletion_scheduled_before, ->(time) { where(deletion_scheduled_at: ..time) }
+
+  # Returns the oldest deletion_scheduled_at among namespaces awaiting deletion,
+  # used to alert when the deletion backlog is not draining. Scoped to
+  # deletion_scheduled_at IS NOT NULL so MIN uses the partial index
+  # index_namespace_details_on_deletion_scheduled_at.
+  def self.oldest_deletion_scheduled_at
+    where.not(deletion_scheduled_at: nil).minimum(:deletion_scheduled_at)
+  end
 
   cache_markdown_field :description, pipeline: :description
 

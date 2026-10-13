@@ -1,10 +1,10 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import HamlLockTooltips from './components/haml_lock_tooltips.vue';
+import HamlLockPopovers from './components/haml_lock_popovers.vue';
 
-export const initCascadingSettingsLockTooltips = () => {
-  const el = document.querySelector('.js-cascading-settings-lock-tooltips');
+export const initCascadingSettingsLockPopovers = () => {
+  const el = document.querySelector('.js-cascading-settings-lock-popovers');
 
   if (!el) return false;
 
-  return initVueApp({ el, name: 'HamlLockTooltipsRoot', component: HamlLockTooltips });
+  return initVueApp({ el, name: 'HamlLockPopoversRoot', component: HamlLockPopovers });
 };

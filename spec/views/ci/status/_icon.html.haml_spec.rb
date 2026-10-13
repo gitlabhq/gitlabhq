@@ -2,17 +2,16 @@
 require 'spec_helper'
 
 RSpec.describe 'ci/status/_icon' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :private) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :private) }
+
+  let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
   context 'when rendering status for build' do
-    let(:build) do
-      create(:ci_build, :success, pipeline: pipeline)
-    end
+    let(:build) { build_stubbed(:ci_build, :success, pipeline: pipeline) }
 
     context 'when user has ability to see details' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -42,19 +41,22 @@ RSpec.describe 'ci/status/_icon' do
 
   context 'when rendering status for external job' do
     context 'when user has ability to see commit status details' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
       context 'status has external target url' do
-        before do
-          external_job = create(
+        let(:external_job) do
+          build_stubbed(
             :generic_commit_status,
             status: :running,
             pipeline: pipeline,
+            project: project,
             target_url: 'http://gitlab.com'
           )
+        end
 
+        before do
           render_status(external_job)
         end
 
@@ -68,9 +70,9 @@ RSpec.describe 'ci/status/_icon' do
       end
 
       context 'status do not have external target url' do
-        before do
-          external_job = create(:generic_commit_status, status: :canceled)
+        let(:external_job) { build_stubbed(:generic_commit_status, status: :canceled) }
 
+        before do
           render_status(external_job)
         end
 

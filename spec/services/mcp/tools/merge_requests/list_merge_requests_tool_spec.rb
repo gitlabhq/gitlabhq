@@ -323,8 +323,9 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
       context 'when the caller is not a member' do
         let(:tool) { described_class.new(current_user: non_member, params: params) }
 
-        it 'raises the same error as for a missing project, preventing enumeration' do
-          expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+        it 'raises the same message as for a missing project, preventing enumeration' do
+          expect { tool.execute }
+            .to raise_error(Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, /not found or inaccessible/)
         end
       end
 
@@ -342,7 +343,8 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
         let(:params) { { project_id: non_existing_record_id.to_s } }
 
         it 'raises before executing GraphQL' do
-          expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+          expect { tool.execute }
+            .to raise_error(Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError, /not found or inaccessible/)
         end
       end
     end
@@ -389,8 +391,9 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
         context 'when the caller is not a member' do
           let(:tool) { described_class.new(current_user: non_member, params: params) }
 
-          it 'raises the same error as for a missing group, preventing enumeration' do
-            expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+          it 'raises the same message as for a missing group, preventing enumeration' do
+            expect { tool.execute }
+              .to raise_error(Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, /not found or inaccessible/)
           end
         end
 
@@ -409,7 +412,8 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
         let(:params) { { group_id: non_existing_record_id.to_s } }
 
         it 'raises before executing GraphQL' do
-          expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+          expect { tool.execute }
+            .to raise_error(Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError, /not found or inaccessible/)
         end
       end
 
@@ -422,6 +426,7 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
           result = tool.execute
 
           expect(result[:isError]).to be(true)
+          expect(result[:reason]).to eq(:not_found)
           expect(result[:content].first[:text]).to include('Group not found')
         end
       end

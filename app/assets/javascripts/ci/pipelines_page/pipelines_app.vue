@@ -630,7 +630,7 @@ export default {
 
 <template>
   <div class="pipelines-container gl-mt-2">
-    <pipeline-account-verification-alert class="gl-mt-5" />
+    <pipeline-account-verification-alert class="gl-mt-5" button-variant="default" />
 
     <div v-if="showControls">
       <div

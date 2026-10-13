@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe "Adding and removing exclusions to Beyond Identity integration", :sidekiq_inline, feature_category: :source_code_management do
+RSpec.describe "Adding and removing exclusions to Beyond Identity integration", :sidekiq_inline,
+  :with_current_organization, feature_category: :source_code_management do
   let_it_be_with_reload(:project) { create(:project, :in_subgroup) }
   let_it_be(:admin_user) { create :admin }
 
   def create_exclusion_for_project
     Integrations::Exclusions::CreateService.new(
       current_user: admin_user,
+      organization: project.organization,
       integration_name: 'beyond_identity',
       projects: [project]
     ).execute
@@ -17,6 +19,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
   def destroy_exclusion_for_project
     Integrations::Exclusions::DestroyService.new(
       current_user: admin_user,
+      organization: project.organization,
       integration_name: 'beyond_identity',
       projects: [project]
     ).execute
@@ -68,6 +71,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
         let!(:create_group_exclusion) do
           Integrations::Exclusions::CreateService.new(
             current_user: admin_user,
+            organization: project.organization,
             integration_name: 'beyond_identity',
             groups: [project.group]
           ).execute
@@ -86,6 +90,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
       let!(:create_group_exclusion) do
         Integrations::Exclusions::CreateService.new(
           current_user: admin_user,
+          organization: project.organization,
           integration_name: 'beyond_identity',
           groups: [project.group]
         ).execute
@@ -102,6 +107,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
         before do
           Integrations::Exclusions::DestroyService.new(
             current_user: admin_user,
+            organization: project.organization,
             integration_name: 'beyond_identity',
             groups: [project.group]
           ).execute
@@ -120,6 +126,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
       let!(:create_group_exclusion) do
         Integrations::Exclusions::CreateService.new(
           current_user: admin_user,
+          organization: project.organization,
           integration_name: 'beyond_identity',
           groups: [project.group]
         ).execute

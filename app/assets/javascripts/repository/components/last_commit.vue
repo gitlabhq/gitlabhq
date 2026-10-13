@@ -10,7 +10,6 @@ import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.quer
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import pipelineStatusUpdatedSubscription from '../subscriptions/pipeline_status_updated.subscription.graphql';
 import getRefMixin from '../mixins/get_ref';
@@ -39,7 +38,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin(), trackingMixin],
+  mixins: [getRefMixin, trackingMixin],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -97,8 +96,7 @@ export default {
               if (ciPipelineStatusUpdated) {
                 const updatedData = cloneDeep(previousData);
                 const pipeline =
-                  updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
-                    ?.edges[0]?.node || {};
+                  updatedData.project?.repository?.lastCommit?.pipelines?.edges[0]?.node || {};
 
                 pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
 

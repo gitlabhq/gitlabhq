@@ -21,7 +21,7 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   def widget
     respond_to do |format|
       format.json do
-        render json: serializer(MergeRequestPollWidgetEntity)
+        render json: merge_request.with_async_mergeability_check { serializer(MergeRequestPollWidgetEntity) }
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::PartDefinition, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::PartDefinition, feature_category: :value_stream_management do
   let(:name) { :test_part }
   let(:type) { :integer }
   let(:expression) { -> { 'COUNT(*)' } }

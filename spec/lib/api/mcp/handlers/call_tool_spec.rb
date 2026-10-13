@@ -12,11 +12,17 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
   describe '#invoke' do
     let(:tool_name) { 'test_tool' }
     let(:params) { { name: tool_name, arguments: { param: 'value' } } }
-    let(:tool) { instance_double(Mcp::Tools::Base::BaseService) }
+    # EE resolves the telemetry namespace from the tool's own container declaration.
+    let(:no_containers) do
+      Mcp::Tools::Concerns::GovernanceContainerResolver::GovernanceContainerResolutionResult.none
+    end
+
+    let(:tool) { instance_double(Mcp::Tools::Base::BaseService, governed_containers: no_containers) }
     let(:logger) { instance_double(Gitlab::Mcp::Logger) }
 
     before do
       allow(request).to receive(:[]).with(:id).and_return('1')
+      allow(manager).to receive(:resolve_alias) { |name| name }
       allow(Gitlab::Mcp::Logger).to receive(:build).and_return(logger)
       allow(logger).to receive(:conditional_info)
     end
@@ -48,15 +54,66 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
             event_name: 'tool_call',
             ai_component: 'mcp_server',
             tool_name: tool_name,
-            session_id: '1',
-            tool_status: 'done',
+            request_id: '1',
+            tool_status: 'ok',
             argument_keys: ['param'],
+            ::Labkit::Fields::GL_ROOT_NAMESPACE_ID => nil,
             expanded: { arguments: { 'param' => 'value' } }
           )
         )
         expect(logger).to have_received(:conditional_info).with(
           current_user, hash_excluding(::Labkit::Fields::ERROR_TYPE)
         )
+      end
+
+      it 'does not log client fields when the client is unknown' do
+        handler.invoke(request, params, current_user)
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(:mcp_client_name, :mcp_client_version)
+        )
+      end
+
+      context 'when the client identity is known' do
+        let(:client_info) { Gitlab::Mcp::ClientInfo.new(name: 'Cursor', version: '1.0.0') }
+
+        it 'logs the client name and version as indexed fields, outside expanded' do
+          handler.invoke(request, params, current_user, client_info: client_info)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(
+              mcp_client_name: 'Cursor',
+              mcp_client_version: '1.0.0',
+              expanded: { arguments: { 'param' => 'value' } }
+            )
+          )
+        end
+      end
+
+      it 'does not add canonical_tool_name for a canonical call' do
+        handler.invoke(request, params, current_user)
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(:canonical_tool_name)
+        )
+      end
+
+      context 'when the tool is called by an alias' do
+        let(:tool_name) { 'legacy_tool' }
+
+        before do
+          allow(manager).to receive(:resolve_alias).with('legacy_tool').and_return('test_tool')
+        end
+
+        it 'logs the name as sent alongside the canonical name' do
+          handler.invoke(request, params, current_user)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(tool_name: 'legacy_tool', canonical_tool_name: 'test_tool')
+          )
+        end
       end
     end
 
@@ -75,11 +132,28 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
           current_user,
           hash_including(
             tool_name: tool_name,
-            tool_status: 'fail',
+            tool_status: 'error',
             ::Labkit::Fields::ERROR_TYPE => 'StandardError',
             expanded: hash_including(::Labkit::Fields::ERROR_MESSAGE => 'boom')
           )
         )
+      end
+
+      context 'when the tool is called by an alias' do
+        let(:tool_name) { 'legacy_tool' }
+
+        before do
+          allow(manager).to receive(:resolve_alias).with('legacy_tool').and_return('test_tool')
+        end
+
+        it 'records both the name as sent and the canonical name' do
+          expect { handler.invoke(request, params, current_user) }.to raise_error(StandardError, 'boom')
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(tool_name: 'legacy_tool', canonical_tool_name: 'test_tool')
+          )
+        end
       end
     end
 
@@ -88,7 +162,8 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         {
           content: [{ type: 'text', text: 'Validation error: labels is invalid' }],
           structuredContent: {},
-          isError: true
+          isError: true,
+          reason: :bad_request
         }
       end
 
@@ -99,31 +174,49 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         allow(tool).to receive(:execute).and_return(error_result)
       end
 
-      it 'returns the error result without raising' do
+      it 'returns the error result to the agent without the internal reason' do
         result = handler.invoke(request, params, current_user)
 
-        expect(result).to eq(error_result)
+        expect(result).to eq(error_result.except(:reason))
       end
 
-      it 'logs the tool call as a failure with the error message', :aggregate_failures do
+      it 'logs the reason as tool_status and omits the exception fields', :aggregate_failures do
         handler.invoke(request, params, current_user)
 
         expect(logger).to have_received(:conditional_info).with(
           current_user,
-          hash_including(
-            tool_name: tool_name,
-            tool_status: 'fail',
-            ::Labkit::Fields::ERROR_TYPE => 'API::Mcp::Handlers::CallTool::ToolResponseError',
-            expanded: hash_including(
-              ::Labkit::Fields::ERROR_MESSAGE => 'Validation error: labels is invalid'
-            )
-          )
+          hash_including(tool_name: tool_name, tool_status: 'bad_request')
         )
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(::Labkit::Fields::ERROR_TYPE)
+        )
+        expect(logger).to have_received(:conditional_info).with(
+          current_user,
+          hash_including(expanded: hash_excluding(::Labkit::Fields::ERROR_MESSAGE))
+        )
+      end
+
+      context 'when the error response carries no reason' do
+        let(:error_result) do
+          {
+            content: [{ type: 'text', text: 'Something broke' }],
+            structuredContent: {},
+            isError: true
+          }
+        end
+
+        it 'falls back to the generic error status' do
+          handler.invoke(request, params, current_user)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user, hash_including(tool_status: 'error')
+          )
+        end
       end
     end
 
     context 'when tool is a custom service' do
-      let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService) }
+      let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService, governed_containers: no_containers) }
 
       before do
         allow(manager).to receive(:get_tool).with(name: tool_name).and_return(custom_tool)
@@ -143,7 +236,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
     end
 
     context 'when tool is a graphql service' do
-      let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService) }
+      let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService, governed_containers: no_containers) }
 
       before do
         allow(manager).to receive(:get_tool).with(name: tool_name).and_return(graphql_tool)
@@ -180,7 +273,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
           current_user,
           hash_including(
             tool_name: tool_name,
-            tool_status: 'fail',
+            tool_status: 'not_found',
             ::Labkit::Fields::ERROR_TYPE => 'Mcp::Tools::Manager::ToolNotFoundError'
           )
         )

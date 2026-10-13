@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::Capture::Storage, feature_category: :database do
   let(:filename) { 'wal_capture' }

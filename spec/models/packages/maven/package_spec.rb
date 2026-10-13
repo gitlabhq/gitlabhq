@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Maven::Package, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
   end

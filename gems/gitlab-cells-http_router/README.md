@@ -48,12 +48,32 @@ Gitlab::Cells::HttpRouter::RoutesSnapshot.example_for('/api/:version/groups/:id/
 # => "/api/v4/groups/foo/access_requests"
 ```
 
+## RouterSnapshot
+
+Builds the URL of the snapshot copy that the HTTP Router has committed. Shared so that the CI gate
+and the Danger warning can never end up comparing against different files.
+
+```ruby
+Gitlab::Cells::HttpRouter::RouterSnapshot.url
+# => "https://gitlab.com/api/v4/projects/gitlab-org%2Fcells%2Fhttp-router/repository/files/test%2Froutes%2Fgitlab_routes.json/raw?ref=main"
+
+Gitlab::Cells::HttpRouter::RouterSnapshot.url(ref: 'my-branch')
+
+# Resolves CELLS_ROUTER_SNAPSHOT_URL, CELLS_ROUTER_PROJECT, CELLS_ROUTER_REF and CI_API_V4_URL.
+Gitlab::Cells::HttpRouter::RouterSnapshot.url_from_env
+```
+
+Every caller has to go through `url_from_env`. A pipeline variable that repoints one caller
+otherwise leaves the others comparing against a different file.
+
+The snapshot is read through the Repository Files API rather than `/-/raw`, whose unauthenticated
+rate limit is low enough to fail the job under load. In CI the request carries `CI_JOB_TOKEN`
+through `RouterSnapshot.job_token` so it counts as authenticated.
+
 ## SnapshotComparison
 
 Compares the snapshot committed in GitLab with the copy the HTTP Router mirrors. The verdict is
-byte equality, because the router parses the file and a serialization change matters as much as a
-missing route. The template sets are compared separately, only to explain a byte difference in
-terms a route author can act on.
+coverage: the router must have every GitLab template. Templates that only the router has are allowed.
 
 ```ruby
 comparison = Gitlab::Cells::HttpRouter::SnapshotComparison.new(
@@ -61,10 +81,9 @@ comparison = Gitlab::Cells::HttpRouter::SnapshotComparison.new(
   router_payload: downloaded_body
 )
 
-comparison.identical?       # => false
-comparison.formatting_only? # => false when a template moved
-comparison.router_only      # => templates GitLab no longer has
-comparison.gitlab_only      # => templates the router has not seen
+comparison.covered?    # => false when the router lacks a GitLab template
+comparison.router_only # => templates GitLab no longer has
+comparison.gitlab_only # => templates the router has not seen
 ```
 
 A payload that is not a routing snapshot, such as a 404 error page, raises

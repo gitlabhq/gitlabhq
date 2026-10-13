@@ -1,16 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', feature_category: :organization, feature_flag: {
-    name: 'personal_homepage'
-  } do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
       let(:user) { create(:user, is_admin: admin, api_client: api_client) }
-
-      before do
-        Runtime::Feature.enable(:personal_homepage, user: user)
-      end
 
       it do
         Flow::Login.sign_in(as: user)

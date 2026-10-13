@@ -38,17 +38,15 @@ following permissions:
 | ---------------------------------- | -------- | ---------- | ------------- |
 | Clone or pull a project repository | Code     | Download   | Project       |
 | Push to a project repository       | Code     | Push       | Project       |
-| Clone or pull a wiki               | Wiki     | Read       | Project, Group <sup>1</sup> |
-| Push to a wiki                     | Wiki     | Create     | Project, Group <sup>1</sup> |
-| Clone or pull a snippet            | Snippet  | Read       | Project, User <sup>2</sup> |
-| Push to a snippet                  | Snippet  | Update     | Project, User <sup>2</sup> |
+| Clone or pull a wiki               | Wiki     | Read       | Project, Group[^project-wikis-use] |
+| Push to a wiki                     | Wiki     | Create     | Project, Group[^project-wikis-use] |
+| Clone or pull a snippet            | Snippet  | Read       | Project, User[^project-snippets-use] |
+| Push to a snippet                  | Snippet  | Update     | Project, User[^project-snippets-use] |
 | Download Git LFS objects           | Code     | Download   | Project       |
 | Upload Git LFS objects             | Code     | Push       | Project       |
 
-**Footnotes**:
-
-1. Project wikis use the project boundary and group wikis use the group boundary.
-1. Project snippets use the project boundary and personal snippets use the user boundary.
+[^project-wikis-use]: Project wikis use the project boundary and group wikis use the group boundary.
+[^project-snippets-use]: Project snippets use the project boundary and personal snippets use the user boundary.
 
 ## Container registry
 

@@ -818,7 +818,12 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
         let(:url_blocker_attributes) do
           options.merge(
             allow_localhost: true,
-            allow_local_network: true
+            allow_local_network: true,
+            # These shared examples still assert link-local endpoints such as
+            # 169.254.169.254 are reachable when local network requests are
+            # allowed. The IMDS block would otherwise reject them, so we opt
+            # out via the per-call flag.
+            deny_cloud_metadata_requests: false
           )
         end
 
@@ -876,7 +881,8 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
           let(:url_blocker_attributes) do
             options.merge(
               allow_localhost: false,
-              allow_local_network: false
+              allow_local_network: false,
+              deny_cloud_metadata_requests: false
             )
           end
 
@@ -1138,6 +1144,98 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
       yield
 
       allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    end
+
+    describe 'deny_cloud_metadata_requests' do
+      let(:metadata_ips) { %w[169.254.169.254 fd00:ec2::254 100.100.100.200 192.0.0.192] }
+      let(:metadata_hosts) { %w[metadata.google.internal] }
+      let(:metadata_ipv6_mapped) do
+        %w[[0:0:0:0:0:ffff:169.254.169.254] [::ffff:169.254.169.254] [::ffff:a9fe:a9fe]]
+      end
+
+      let(:cloud_alias) { 'metadata.internal.example' }
+
+      context 'when enabled (default) and local requests are allowed' do
+        let(:options) do
+          { schemes: schemes, allow_local_network: true, allow_localhost: true }
+        end
+
+        it 'blocks well-known IPv4 metadata endpoints' do
+          %w[169.254.169.254 100.100.100.200 192.0.0.192].each do |ip|
+            expect(described_class).to be_blocked_url("http://#{ip}", **options),
+              "Expected http://#{ip} to be blocked"
+          end
+        end
+
+        it 'blocks the well-known IPv6 metadata endpoint' do
+          expect(described_class).to be_blocked_url("http://[fd00:ec2::254]", **options)
+        end
+
+        it 'blocks IPv4-mapped IPv6 forms of the AWS/GCP metadata IP' do
+          metadata_ipv6_mapped.each do |host|
+            expect(described_class).to be_blocked_url("http://#{host}", **options),
+              "Expected http://#{host} to be blocked"
+          end
+        end
+
+        it 'blocks well-known metadata hostnames pre-DNS' do
+          metadata_hosts.each do |host|
+            expect(Addrinfo).not_to receive(:getaddrinfo)
+            expect(described_class).to be_blocked_url("http://#{host}", **options),
+              "Expected http://#{host} to be blocked"
+          end
+        end
+
+        it 'blocks hostnames that resolve to a metadata IP' do
+          stub_domain_resolv(cloud_alias, metadata_ips.first) do
+            expect(described_class).to be_blocked_url("http://#{cloud_alias}", **options)
+          end
+        end
+
+        it 'is not overridable by outbound_local_requests_allowlist' do
+          allowlisted = options.merge(
+            outbound_local_requests_allowlist: [metadata_ips.first, cloud_alias])
+
+          expect(described_class).to be_blocked_url("http://#{metadata_ips.first}", **allowlisted)
+
+          stub_domain_resolv(cloud_alias, metadata_ips.first) do
+            expect(described_class).to be_blocked_url("http://#{cloud_alias}", **allowlisted)
+          end
+        end
+
+        it 'still allows other RFC1918 addresses when local requests are permitted' do
+          %w[192.168.1.2 10.0.0.2 172.16.0.2].each do |ip|
+            expect(described_class).not_to be_blocked_url("http://#{ip}", **options)
+          end
+        end
+      end
+
+      context 'when disabled per call' do
+        let(:options) do
+          {
+            schemes: schemes,
+            allow_local_network: true,
+            allow_localhost: true,
+            deny_cloud_metadata_requests: false
+          }
+        end
+
+        it 'does not block metadata IPv4 endpoints' do
+          expect(described_class).not_to be_blocked_url("http://#{metadata_ips.first}", **options)
+        end
+
+        it 'does not block the metadata IPv6 endpoint' do
+          expect(described_class).not_to be_blocked_url("http://[fd00:ec2::254]", **options)
+        end
+
+        it 'does not block metadata hostnames' do
+          metadata_hosts.each do |host|
+            stub_domain_resolv(host, metadata_ips.first) do
+              expect(described_class).not_to be_blocked_url("http://#{host}", **options)
+            end
+          end
+        end
+      end
     end
   end
 

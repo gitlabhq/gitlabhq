@@ -92,11 +92,14 @@ describe('Repository router spec', () => {
 
   describe('Branch names with special characters', () => {
     it.each`
-      path                                | branch           | component   | componentName
-      ${'/-/tree/issues/%23101'}          | ${'issues/#101'} | ${TreePage} | ${'TreePage'}
-      ${'/-/blob/issues/%23101/file.txt'} | ${'issues/#101'} | ${BlobPage} | ${'BlobPage'}
-      ${'/-/tree/feat%23test'}            | ${'feat#test'}   | ${TreePage} | ${'TreePage'}
-      ${'/-/blob/feat%23test/README.md'}  | ${'feat#test'}   | ${BlobPage} | ${'BlobPage'}
+      path                                   | branch               | component   | componentName
+      ${'/-/tree/issues/%23101'}             | ${'issues/#101'}     | ${TreePage} | ${'TreePage'}
+      ${'/-/blob/issues/%23101/file.txt'}    | ${'issues/#101'}     | ${BlobPage} | ${'BlobPage'}
+      ${'/-/tree/feat%23test'}               | ${'feat#test'}       | ${TreePage} | ${'TreePage'}
+      ${'/-/blob/feat%23test/README.md'}     | ${'feat#test'}       | ${BlobPage} | ${'BlobPage'}
+      ${'/-/tree/improve%2Fawesome'}         | ${'improve/awesome'} | ${TreePage} | ${'TreePage'}
+      ${'/-/tree/improve%2Fawesome/app'}     | ${'improve/awesome'} | ${TreePage} | ${'TreePage'}
+      ${'/-/blob/improve%2Fawesome/file.md'} | ${'improve/awesome'} | ${BlobPage} | ${'BlobPage'}
     `(
       'encodes special characters in branch "$branch" and matches path "$path" to $componentName',
       ({ path, component, branch }) => {
@@ -166,6 +169,19 @@ describe('Repository router spec', () => {
       const router = createRouter(projectPath, 'main');
 
       await expect(router.push('/-/tree/main/app')).resolves.not.toThrow();
+    });
+
+    describe('when navigating to a non-repository path (catch-all route)', () => {
+      it('does not throw and defaults to the tree (closing slash) Web IDE path', async () => {
+        const containerEl = setupContainer('container-fluid repository-max-width');
+        const router = createRouter(projectPath, 'main');
+
+        await expect(router.push('/-/wikis/home')).resolves.not.toThrow();
+
+        expect(window.gl.webIDEPath).toBe(`/-/ide/project/${projectPath}/edit/main/-/`);
+        expect(setTitle).toHaveBeenCalledWith('', 'main', undefined);
+        expect(containerEl.classList.contains('repository-max-width')).toBe(false);
+      });
     });
   });
 

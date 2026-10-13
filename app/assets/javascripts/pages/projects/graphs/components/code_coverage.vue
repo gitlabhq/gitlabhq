@@ -174,14 +174,14 @@ export default {
         <gl-alert
           v-if="hasFetchError"
           variant="danger"
-          :title="s__('Code Coverage|Couldn\'t fetch the code coverage data')"
+          :title="s__('CodeCoverage|Couldn\'t fetch the code coverage data')"
           :dismissible="false"
         />
         <gl-alert
           v-if="noDataAvailable"
           variant="info"
           :header-level="3"
-          :title="s__('Code Coverage|No code coverage data')"
+          :title="s__('CodeCoverage|No code coverage data')"
           :dismissible="false"
         >
           <span>

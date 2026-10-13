@@ -44,11 +44,29 @@ RSpec.describe Gitlab::Schema::Validation::Sources::StructureSql, feature_catego
     let(:schema_object) { Gitlab::Schema::Validation::SchemaObjects::Index }
     let(:valid_schema_object_name) { 'index' }
     let(:expected_objects) do
-      %w[missing_index wrong_index index index_namespaces_public_groups_name_id
-        index_on_deploy_keys_id_and_type_and_public index_users_on_public_email_excluding_null_and_empty]
+      %w[missing_index wrong_index renamed_index duplicated_index swapped_index_1 swapped_index_2 index
+        index_namespaces_public_groups_name_id index_partitioned_table_on_id index_partitioned_table_on_column_name
+        index_other_partitioned_table_on_column_name index_partitioned_table_on_column_name_2
+        index_partitioned_table_on_created_at index_partitioned_table_on_other_column
+        index_public_partitioned_table_on_id partition_index partition_index_1 partition_index_2
+        renamed_partition_index wrong_partition_index redefined_partition_index missing_partition_index
+        detached_partition_index relocated_partition_index standalone_partition_index public_partition_index_1
+        public_partition_index_2 index_on_deploy_keys_id_and_type_and_public
+        index_users_on_public_email_excluding_null_and_empty]
     end
 
     include_examples 'structure sql schema assertions for', 'index_exists?', 'indexes', 'fetch_index_by_name'
+
+    it 'reads the parent index of attached children' do
+      attachments = structure_sql.indexes.to_h { |index| [index.name, index.attachment] }
+
+      expect(attachments).to include(
+        'partition_index' => %w[gitlab_partitions_static partitioned_table_1 public index_partitioned_table_on_id],
+        'public_partition_index_1' => %w[public public_partitioned_table_1 public index_public_partitioned_table_on_id],
+        'standalone_partition_index' => nil,
+        'missing_index' => nil
+      )
+    end
   end
 
   context 'when having triggers' do

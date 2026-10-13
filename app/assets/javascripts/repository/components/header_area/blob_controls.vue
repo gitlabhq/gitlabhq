@@ -8,21 +8,20 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import initSourcegraph from '~/sourcegraph';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
-import { FIND_FILE_BUTTON_CLICK, BLAME_BUTTON_CLICK } from '~/tracking/constants';
+import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import {
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
   isIdeTarget,
   forkSuggestionForSelectedEditor,
 } from '~/repository/utils/fork_suggestion_utils';
-import { showBlameButton, isUsingLfs } from '~/repository/utils/storage_info_utils';
+import { isUsingLfs } from '~/repository/utils/storage_info_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import applicationInfoQuery from '~/repository/queries/application_info.query.graphql';
@@ -37,7 +36,6 @@ export default {
   name: 'BlobControls',
   i18n: {
     findFile: __('Find file'),
-    blame: __('Blame'),
     errorMessage: __('An error occurred while loading file controls. Refresh the page.'),
     archivedProjectTooltip: __('You cannot edit files in archived projects'),
     noPermissionTooltip: NO_MODIFY_PERMISSION_MESSAGE,
@@ -60,7 +58,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
+  mixins: [getRefMixin, InternalEvents.mixin()],
   inject: ['currentRef', 'showWebIdeButton'],
   provide() {
     return {
@@ -160,10 +158,6 @@ export default {
     userPermissions() {
       return this.project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
     },
-    showBlameButton() {
-      if (this.glFeatures.inlineBlame) return false;
-      return showBlameButton(this.blobInfo);
-    },
     isUsingLfs() {
       return isUsingLfs(this.blobInfo);
     },
@@ -247,9 +241,6 @@ export default {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
-    handleBlameClick() {
-      this.trackEvent(BLAME_BUTTON_CLICK);
-    },
     onCopy() {
       copyToClipboard(this.blobInfo.rawTextBlob);
     },
@@ -290,16 +281,6 @@ export default {
       @click="handleFindFile"
     >
       {{ $options.i18n.findFile }}
-    </gl-button>
-    <gl-button
-      v-if="showBlameButton"
-      data-testid="blame"
-      :href="blobInfo.blamePath"
-      class="js-blob-blame-link gl-hidden @md/panel:gl-inline-flex"
-      :class="$options.buttonClassList"
-      @click="handleBlameClick"
-    >
-      {{ $options.i18n.blame }}
     </gl-button>
 
     <web-ide-link

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'html/pipeline'
+require_relative '../../../support/helpers/filter_spec_helper'
 
 RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter, feature_category: :wiki do
   include FilterSpecHelper

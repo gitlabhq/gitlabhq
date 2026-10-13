@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlEmptyState } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   name: 'EmptyStateWithAnyIssues',
@@ -22,11 +22,6 @@ export default {
       required: false,
       default: false,
     },
-    isEpic: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     withTabs: {
       type: Boolean,
       required: false,
@@ -40,17 +35,15 @@ export default {
   },
   computed: {
     closedTabTitle() {
-      return this.isEpic ? __('There are no closed epics') : s__('Issues|No closed issues');
+      return s__('Issues|No closed issues');
     },
     openTabTitle() {
-      return this.isEpic ? __('There are no open epics') : s__('Issues|No open issues');
+      return s__('Issues|No open issues');
     },
     noIssueDescription() {
-      return this.isEpic
-        ? ''
-        : s__(
-            'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-          );
+      return s__(
+        'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+      );
     },
   },
 };

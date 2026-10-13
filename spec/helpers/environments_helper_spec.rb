@@ -5,17 +5,15 @@ require 'spec_helper'
 RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
   include ActionView::Helpers::AssetUrlHelper
 
-  folder_name = 'env_folder'
-  let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:environment) { create(:environment, :with_folders, folder: folder_name, project: project) }
+  let(:folder_name) { 'env_folder' }
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project) }
 
   describe '#environments_folder_list_view_data' do
     subject { helper.environments_folder_list_view_data(project, folder_name) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: user, can?: true)
     end
 
     it 'returns folder related data' do

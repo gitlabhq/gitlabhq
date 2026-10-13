@@ -30,26 +30,26 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
       let(:cmd) { %W[#{Gem.ruby} -e $stdout.puts(1);$stderr.puts(2);exit(3)] }
       let(:status) { klass.new.popen_with_streaming(cmd) }
 
-      it { expect(status).to eq(3) }
+      it { expect(status.exitstatus).to eq(3) }
     end
 
     context 'with zero status' do
       let(:status) { klass.new.popen_with_streaming(%w[ls], path) }
 
-      it { expect(status).to eq(0) }
+      it { expect(status).to be_success }
     end
 
     context 'with non-zero status' do
       let(:status) { klass.new.popen_with_streaming(%w[cat NOTHING], path) }
 
-      it { expect(status).to eq(1) }
+      it { expect(status.exitstatus).to eq(1) }
     end
 
     context 'with non-zero status with a kill' do
       let(:cmd) { [Gem.ruby, "-e", "thr = Thread.new { sleep 5 }; Process.kill(9, Process.pid); thr.join"] }
       let(:status) { klass.new.popen_with_streaming(cmd) }
 
-      it { expect(status).to eq(9) }
+      it { expect(status.termsig).to eq(9) }
     end
 
     context 'with unsafe string command' do
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
       end
 
       it 'handles large stderr output without blocking' do
-        expect(status).to eq(0)
+        expect(status).to be_success
         expect(captured_stderr.join).to include(test_string)
       end
     end
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
     context 'without a directory argument' do
       let(:status) { klass.new.popen_with_streaming(%w[ls]) }
 
-      it { expect(status).to eq(0) }
+      it { expect(status).to be_success }
     end
 
     context 'when binary is absent' do
@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
       end
 
       it 'yields stdout and stderr lines as they are produced' do
-        expect(status).to eq(0)
+        expect(status).to be_success
         expect(streamed_output).to include([:stdout, "line1\n"])
         expect(streamed_output).to include([:stdout, "line2\n"])
         expect(streamed_output).to include([:stderr, "error1\n"])
@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
       end
 
       it 'passes environment variables to the command' do
-        expect(status).to eq(0)
+        expect(status).to be_success
         expect(captured_stdout.join).to include('test_value')
       end
     end
@@ -156,7 +156,7 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
           counter = current + 1
         end
 
-        expect(status).to eq(0)
+        expect(status).to be_success
         # Without mutex, we lose some increments due to race conditions
         expect(counter).to eq(200) # 100 stdout + 100 stderr lines
       end
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Popen, feature_category: :shared do
           shared_array << [stream_type, line.strip]
         end
 
-        expect(status).to eq(0)
+        expect(status).to be_success
         expect(shared_array.size).to eq(200)
 
         # Verify all expected lines are present

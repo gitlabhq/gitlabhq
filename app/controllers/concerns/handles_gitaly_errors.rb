@@ -41,6 +41,15 @@ module HandlesGitalyErrors
       format.atom { render action: action_name, layout: 'xml', status: :service_unavailable }
       format.any { render_plain_gitaly_error }
     end
+  rescue StandardError => e
+    # Re-rendering the action's own template can itself fail for reasons
+    # unrelated to Gitaly (e.g. a helper generating a URL from a param the
+    # gitaly failure prevented us from setting), which would otherwise surface
+    # as an unhandled 500 and mask the original Gitaly 503. Fall back to the
+    # plain error response instead.
+    Gitlab::ErrorTracking.track_exception(e)
+
+    render_plain_gitaly_error unless performed?
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

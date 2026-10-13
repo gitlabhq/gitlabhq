@@ -6,16 +6,16 @@ RSpec.describe LinkedProjectIssueEntity do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:issue_link) { create(:issue_link) }
+  let_it_be(:target_project) { create(:project, developers: user) }
+  let_it_be(:issue_link) { create(:issue_link, target: create(:issue, project: target_project)) }
+  let_it_be(:task_issue_link) { create(:issue_link, target: create(:issue, :task, project: target_project)) }
 
   let(:request) { double('request') }
   let(:related_issue) { issue_link.source.related_issues(user).first }
   let(:entity) { described_class.new(related_issue, request: request, current_user: user) }
 
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:issuable).and_return(issue_link.source)
-    issue_link.target.project.add_developer(user)
+    allow(request).to receive_messages(current_user: user, issuable: issue_link.source)
   end
 
   subject(:serialized_entity) { entity.as_json }
@@ -30,7 +30,7 @@ RSpec.describe LinkedProjectIssueEntity do
     end
 
     context 'when related issue is a task' do
-      let_it_be(:issue_link) { create(:issue_link, target: create(:issue, :task)) }
+      let(:issue_link) { task_issue_link }
 
       it 'returns a work item issue type' do
         expect(serialized_entity).to include(type: 'TASK')
@@ -44,7 +44,7 @@ RSpec.describe LinkedProjectIssueEntity do
     end
 
     context 'when related issue is a task' do
-      let_it_be(:issue_link) { create(:issue_link, target: create(:issue, :task)) }
+      let(:issue_link) { task_issue_link }
 
       it 'returns a work items path using iid' do
         expect(serialized_entity).to include(

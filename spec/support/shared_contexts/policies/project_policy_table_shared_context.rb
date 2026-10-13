@@ -73,10 +73,11 @@ RSpec.shared_context 'ProjectPolicyTable context' do
   end
 
   # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
-  def permission_table_for_guest_feature_access
+  def permission_table_for_planner_feature_access
     :public   | :enabled  | :admin      | true  | 1
     :public   | :enabled  | :admin      | false | 1
     :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
     :public   | :enabled  | :guest      | nil   | 1
     :public   | :enabled  | :non_member | nil   | 1
     :public   | :enabled  | :anonymous  | nil   | 1
@@ -84,11 +85,13 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :private  | :admin      | true  | 1
     :public   | :private  | :admin      | false | 0
     :public   | :private  | :reporter   | nil   | 1
-    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :planner    | nil   | 0
+    :public   | :private  | :guest      | nil   | 0
     :public   | :private  | :non_member | nil   | 0
     :public   | :private  | :anonymous  | nil   | 0
 
     :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
     :public   | :disabled | :guest      | nil   | 0
     :public   | :disabled | :non_member | nil   | 0
     :public   | :disabled | :anonymous  | nil   | 0
@@ -96,6 +99,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :enabled  | :admin      | true  | 1
     :internal | :enabled  | :admin      | false | 1
     :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
     :internal | :enabled  | :guest      | nil   | 1
     :internal | :enabled  | :non_member | nil   | 1
     :internal | :enabled  | :anonymous  | nil   | 0
@@ -103,11 +107,82 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :private  | :admin      | true  | 1
     :internal | :private  | :admin      | false | 0
     :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 0
+    :internal | :private  | :guest      | nil   | 0
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :enabled  | :admin      | true  | 1
+    :private  | :enabled  | :admin      | false | 0
+    :private  | :enabled  | :reporter   | nil   | 1
+    :private  | :enabled  | :planner    | nil   | 1
+    :private  | :enabled  | :guest      | nil   | 0
+    :private  | :enabled  | :non_member | nil   | 0
+    :private  | :enabled  | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 0
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_guest_feature_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 1
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 1
+    :public   | :enabled  | :non_member | nil   | 1
+    :public   | :enabled  | :anonymous  | nil   | 1
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 1
+    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 1
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 1
+    :internal | :enabled  | :non_member | nil   | 1
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 1
     :internal | :private  | :guest      | nil   | 1
     :internal | :private  | :non_member | nil   | 0
     :internal | :private  | :anonymous  | nil   | 0
 
     :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
     :internal | :disabled | :guest      | nil   | 0
     :internal | :disabled | :non_member | nil   | 0
     :internal | :disabled | :anonymous  | nil   | 0
@@ -115,11 +190,13 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :private  | :admin      | true  | 1
     :private  | :private  | :admin      | false | 0
     :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 1
     :private  | :private  | :guest      | nil   | 1
     :private  | :private  | :non_member | nil   | 0
     :private  | :private  | :anonymous  | nil   | 0
 
     :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
     :private  | :disabled | :guest      | nil   | 0
     :private  | :disabled | :non_member | nil   | 0
     :private  | :disabled | :anonymous  | nil   | 0
@@ -182,6 +259,200 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :disabled | :anonymous  | nil   | 0
   end
 
+  # Notes on issues, where Planner can also read confidential notes.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_planner_notes_feature_access
+    :public   | :enabled  | :admin      | true  | 2
+    :public   | :enabled  | :admin      | false | 1
+    :public   | :enabled  | :reporter   | nil   | 2
+    :public   | :enabled  | :planner    | nil   | 2
+    :public   | :enabled  | :guest      | nil   | 1
+    :public   | :enabled  | :non_member | nil   | 1
+    :public   | :enabled  | :anonymous  | nil   | 1
+
+    :public   | :private  | :admin      | true  | 2
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 2
+    :public   | :private  | :planner    | nil   | 2
+    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 2
+    :internal | :enabled  | :admin      | false | 1
+    :internal | :enabled  | :reporter   | nil   | 2
+    :internal | :enabled  | :planner    | nil   | 2
+    :internal | :enabled  | :guest      | nil   | 1
+    :internal | :enabled  | :non_member | nil   | 1
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 2
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 2
+    :internal | :private  | :planner    | nil   | 2
+    :internal | :private  | :guest      | nil   | 1
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 2
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 2
+    :private  | :private  | :planner    | nil   | 2
+    :private  | :private  | :guest      | nil   | 1
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # Comments on confidential issues, which Planner and above can read.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_planner_confidential_issue_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 0
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 0
+    :public   | :enabled  | :non_member | nil   | 0
+    :public   | :enabled  | :anonymous  | nil   | 0
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 1
+    :public   | :private  | :guest      | nil   | 0
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 0
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 0
+    :internal | :enabled  | :non_member | nil   | 0
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 1
+    :internal | :private  | :guest      | nil   | 0
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 1
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # Internal comments on merge requests: Planner reads them wherever it can read merge requests.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_planner_internal_note_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 0
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 0
+    :public   | :enabled  | :non_member | nil   | 0
+    :public   | :enabled  | :anonymous  | nil   | 0
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 0
+    :public   | :private  | :guest      | nil   | 0
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 0
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 0
+    :internal | :enabled  | :non_member | nil   | 0
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 0
+    :internal | :private  | :guest      | nil   | 0
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :enabled  | :admin      | true  | 1
+    :private  | :enabled  | :admin      | false | 0
+    :private  | :enabled  | :reporter   | nil   | 1
+    :private  | :enabled  | :planner    | nil   | 1
+    :private  | :enabled  | :guest      | nil   | 0
+    :private  | :enabled  | :non_member | nil   | 0
+    :private  | :enabled  | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 0
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
   # This table is based on permission_table_for_guest_feature_access,
   # but with a slight twist.
   # Some features can be hidden away to GUEST, when project is private.
@@ -239,6 +510,76 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :private  | :anonymous  | nil   | 0
 
     :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # Repository-gated search scopes, where Planner has the same access as Reporter.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_repository_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 1
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 1
+    :public   | :enabled  | :non_member | nil   | 1
+    :public   | :enabled  | :anonymous  | nil   | 1
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 1
+    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 1
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 1
+    :internal | :enabled  | :non_member | nil   | 1
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 1
+    :internal | :private  | :guest      | nil   | 1
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :enabled  | :admin      | true  | 1
+    :private  | :enabled  | :admin      | false | 0
+    :private  | :enabled  | :reporter   | nil   | 1
+    :private  | :enabled  | :planner    | nil   | 1
+    :private  | :enabled  | :guest      | nil   | 0
+    :private  | :enabled  | :non_member | nil   | 0
+    :private  | :enabled  | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 1
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
     :private  | :disabled | :guest      | nil   | 0
     :private  | :disabled | :non_member | nil   | 0
     :private  | :disabled | :anonymous  | nil   | 0
@@ -461,6 +802,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :admin      | true  | 1
     :public   | :admin      | false | 1
     :public   | :reporter   | nil   | 1
+    :public   | :planner    | nil   | 1
     :public   | :guest      | nil   | 1
     :public   | :non_member | nil   | 1
     :public   | :anonymous  | nil   | 1
@@ -468,6 +810,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :admin      | true  | 1
     :internal | :admin      | false | 1
     :internal | :reporter   | nil   | 1
+    :internal | :planner    | nil   | 1
     :internal | :guest      | nil   | 1
     :internal | :non_member | nil   | 1
     :internal | :anonymous  | nil   | 0
@@ -475,6 +818,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :admin      | true  | 1
     :private  | :admin      | false | 0
     :private  | :reporter   | nil   | 1
+    :private  | :planner    | nil   | 1
     :private  | :guest      | nil   | 1
     :private  | :non_member | nil   | 0
     :private  | :anonymous  | nil   | 0
@@ -485,6 +829,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :public   | :enabled  | :admin      | true  | 1
     :public   | :public   | :enabled  | :admin      | false | 1
     :public   | :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :public   | :enabled  | :planner    | nil   | 1
     :public   | :public   | :enabled  | :guest      | nil   | 1
     :public   | :public   | :enabled  | :non_member | nil   | 1
     :public   | :public   | :enabled  | :anonymous  | nil   | 1
@@ -492,6 +837,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :public   | :private  | :admin      | true  | 1
     :public   | :public   | :private  | :admin      | false | 0
     :public   | :public   | :private  | :reporter   | nil   | 1
+    :public   | :public   | :private  | :planner    | nil   | 1
     :public   | :public   | :private  | :guest      | nil   | 1
     :public   | :public   | :private  | :non_member | nil   | 0
     :public   | :public   | :private  | :anonymous  | nil   | 0
@@ -499,6 +845,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :public   | :disabled | :admin      | true  | 1
     :public   | :public   | :disabled | :admin      | false | 0
     :public   | :public   | :disabled | :reporter   | nil   | 0
+    :public   | :public   | :disabled | :planner    | nil   | 0
     :public   | :public   | :disabled | :guest      | nil   | 0
     :public   | :public   | :disabled | :non_member | nil   | 0
     :public   | :public   | :disabled | :anonymous  | nil   | 0
@@ -506,6 +853,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :internal | :enabled  | :admin      | true  | 1
     :public   | :internal | :enabled  | :admin      | false | 1
     :public   | :internal | :enabled  | :reporter   | nil   | 1
+    :public   | :internal | :enabled  | :planner    | nil   | 1
     :public   | :internal | :enabled  | :guest      | nil   | 1
     :public   | :internal | :enabled  | :non_member | nil   | 1
     :public   | :internal | :enabled  | :anonymous  | nil   | 0
@@ -513,6 +861,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :internal | :private  | :admin      | true  | 1
     :public   | :internal | :private  | :admin      | false | 0
     :public   | :internal | :private  | :reporter   | nil   | 1
+    :public   | :internal | :private  | :planner    | nil   | 1
     :public   | :internal | :private  | :guest      | nil   | 1
     :public   | :internal | :private  | :non_member | nil   | 0
     :public   | :internal | :private  | :anonymous  | nil   | 0
@@ -520,6 +869,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :internal | :disabled | :admin      | true  | 1
     :public   | :internal | :disabled | :admin      | false | 0
     :public   | :internal | :disabled | :reporter   | nil   | 0
+    :public   | :internal | :disabled | :planner    | nil   | 0
     :public   | :internal | :disabled | :guest      | nil   | 0
     :public   | :internal | :disabled | :non_member | nil   | 0
     :public   | :internal | :disabled | :anonymous  | nil   | 0
@@ -527,11 +877,13 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :public   | :private  | :private  | :admin      | true  | 1
     :public   | :private  | :private  | :admin      | false | 0
     :public   | :private  | :private  | :reporter   | nil   | 1
+    :public   | :private  | :private  | :planner    | nil   | 1
     :public   | :private  | :private  | :guest      | nil   | 1
     :public   | :private  | :private  | :non_member | nil   | 0
     :public   | :private  | :private  | :anonymous  | nil   | 0
 
     :public   | :private  | :disabled | :reporter   | nil   | 0
+    :public   | :private  | :disabled | :planner    | nil   | 0
     :public   | :private  | :disabled | :guest      | nil   | 0
     :public   | :private  | :disabled | :non_member | nil   | 0
     :public   | :private  | :disabled | :anonymous  | nil   | 0
@@ -539,6 +891,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :public   | :enabled  | :admin      | true  | 1
     :internal | :public   | :enabled  | :admin      | false | 1
     :internal | :public   | :enabled  | :reporter   | nil   | 1
+    :internal | :public   | :enabled  | :planner    | nil   | 1
     :internal | :public   | :enabled  | :guest      | nil   | 1
     :internal | :public   | :enabled  | :non_member | nil   | 1
     :internal | :public   | :enabled  | :anonymous  | nil   | 0
@@ -546,6 +899,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :public   | :private  | :admin      | true  | 1
     :internal | :public   | :private  | :admin      | false | 0
     :internal | :public   | :private  | :reporter   | nil   | 1
+    :internal | :public   | :private  | :planner    | nil   | 1
     :internal | :public   | :private  | :guest      | nil   | 1
     :internal | :public   | :private  | :non_member | nil   | 0
     :internal | :public   | :private  | :anonymous  | nil   | 0
@@ -553,6 +907,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :public   | :disabled | :admin      | true  | 1
     :internal | :public   | :disabled | :admin      | false | 0
     :internal | :public   | :disabled | :reporter   | nil   | 0
+    :internal | :public   | :disabled | :planner    | nil   | 0
     :internal | :public   | :disabled | :guest      | nil   | 0
     :internal | :public   | :disabled | :non_member | nil   | 0
     :internal | :public   | :disabled | :anonymous  | nil   | 0
@@ -560,6 +915,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :internal | :enabled  | :admin      | true  | 1
     :internal | :internal | :enabled  | :admin      | false | 1
     :internal | :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :internal | :enabled  | :planner    | nil   | 1
     :internal | :internal | :enabled  | :guest      | nil   | 1
     :internal | :internal | :enabled  | :non_member | nil   | 1
     :internal | :internal | :enabled  | :anonymous  | nil   | 0
@@ -567,6 +923,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :internal | :private  | :admin      | true  | 1
     :internal | :internal | :private  | :admin      | false | 0
     :internal | :internal | :private  | :reporter   | nil   | 1
+    :internal | :internal | :private  | :planner    | nil   | 1
     :internal | :internal | :private  | :guest      | nil   | 1
     :internal | :internal | :private  | :non_member | nil   | 0
     :internal | :internal | :private  | :anonymous  | nil   | 0
@@ -574,6 +931,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :internal | :disabled | :admin      | true  | 1
     :internal | :internal | :disabled | :admin      | false | 0
     :internal | :internal | :disabled | :reporter   | nil   | 0
+    :internal | :internal | :disabled | :planner    | nil   | 0
     :internal | :internal | :disabled | :guest      | nil   | 0
     :internal | :internal | :disabled | :non_member | nil   | 0
     :internal | :internal | :disabled | :anonymous  | nil   | 0
@@ -581,6 +939,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :private  | :private  | :admin      | true  | 1
     :internal | :private  | :private  | :admin      | false | 0
     :internal | :private  | :private  | :reporter   | nil   | 1
+    :internal | :private  | :private  | :planner    | nil   | 1
     :internal | :private  | :private  | :guest      | nil   | 1
     :internal | :private  | :private  | :non_member | nil   | 0
     :internal | :private  | :private  | :anonymous  | nil   | 0
@@ -588,6 +947,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :internal | :private  | :disabled | :admin      | true  | 1
     :internal | :private  | :disabled | :admin      | false | 0
     :internal | :private  | :disabled | :reporter   | nil   | 0
+    :internal | :private  | :disabled | :planner    | nil   | 0
     :internal | :private  | :disabled | :guest      | nil   | 0
     :internal | :private  | :disabled | :non_member | nil   | 0
     :internal | :private  | :disabled | :anonymous  | nil   | 0
@@ -595,6 +955,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :public   | :enabled  | :admin      | true  | 1
     :private  | :public   | :enabled  | :admin      | false | 0
     :private  | :public   | :enabled  | :reporter   | nil   | 1
+    :private  | :public   | :enabled  | :planner    | nil   | 1
     :private  | :public   | :enabled  | :guest      | nil   | 1
     :private  | :public   | :enabled  | :non_member | nil   | 0
     :private  | :public   | :enabled  | :anonymous  | nil   | 0
@@ -602,6 +963,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :public   | :private  | :admin      | true  | 1
     :private  | :public   | :private  | :admin      | false | 0
     :private  | :public   | :private  | :reporter   | nil   | 1
+    :private  | :public   | :private  | :planner    | nil   | 1
     :private  | :public   | :private  | :guest      | nil   | 1
     :private  | :public   | :private  | :non_member | nil   | 0
     :private  | :public   | :private  | :anonymous  | nil   | 0
@@ -609,6 +971,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :public   | :disabled | :admin      | true  | 1
     :private  | :public   | :disabled | :admin      | false | 0
     :private  | :public   | :disabled | :reporter   | nil   | 0
+    :private  | :public   | :disabled | :planner    | nil   | 0
     :private  | :public   | :disabled | :guest      | nil   | 0
     :private  | :public   | :disabled | :non_member | nil   | 0
     :private  | :public   | :disabled | :anonymous  | nil   | 0
@@ -616,6 +979,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :internal | :enabled  | :admin      | true  | 1
     :private  | :internal | :enabled  | :admin      | false | 0
     :private  | :internal | :enabled  | :reporter   | nil   | 1
+    :private  | :internal | :enabled  | :planner    | nil   | 1
     :private  | :internal | :enabled  | :guest      | nil   | 1
     :private  | :internal | :enabled  | :non_member | nil   | 0
     :private  | :internal | :enabled  | :anonymous  | nil   | 0
@@ -623,6 +987,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :internal | :private  | :admin      | true  | 1
     :private  | :internal | :private  | :admin      | false | 0
     :private  | :internal | :private  | :reporter   | nil   | 1
+    :private  | :internal | :private  | :planner    | nil   | 1
     :private  | :internal | :private  | :guest      | nil   | 1
     :private  | :internal | :private  | :non_member | nil   | 0
     :private  | :internal | :private  | :anonymous  | nil   | 0
@@ -630,6 +995,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :internal | :disabled | :admin      | true  | 1
     :private  | :internal | :disabled | :admin      | false | 0
     :private  | :internal | :disabled | :reporter   | nil   | 0
+    :private  | :internal | :disabled | :planner    | nil   | 0
     :private  | :internal | :disabled | :guest      | nil   | 0
     :private  | :internal | :disabled | :non_member | nil   | 0
     :private  | :internal | :disabled | :anonymous  | nil   | 0
@@ -637,6 +1003,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :private  | :private  | :admin      | true  | 1
     :private  | :private  | :private  | :admin      | false | 0
     :private  | :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :private  | :planner    | nil   | 1
     :private  | :private  | :private  | :guest      | nil   | 1
     :private  | :private  | :private  | :non_member | nil   | 0
     :private  | :private  | :private  | :anonymous  | nil   | 0
@@ -644,6 +1011,7 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :private  | :disabled | :admin      | true  | 1
     :private  | :private  | :disabled | :admin      | false | 0
     :private  | :private  | :disabled | :reporter   | nil   | 0
+    :private  | :private  | :disabled | :planner    | nil   | 0
     :private  | :private  | :disabled | :guest      | nil   | 0
     :private  | :private  | :disabled | :non_member | nil   | 0
     :private  | :private  | :disabled | :anonymous  | nil   | 0

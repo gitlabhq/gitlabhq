@@ -85,10 +85,9 @@ module SidebarsHelper
       shortcut_links: shortcut_links(user: user, project: project),
       work_items: work_items_modal_data(group, project),
       has_multiple_organizations: user.has_multiple_organizations?,
-      show_feature_library_feedback: show_feature_library_feedback?,
       show_feature_library_shimmer: show_feature_library_shimmer?,
       ai_search_available: feature_library_ai_search_available?(project: project, group: group),
-      manage_organization_link: manage_organization_link(user)
+      manage_organization_link: manage_organization_link(user, panel_type)
     })
   end
 
@@ -199,7 +198,7 @@ module SidebarsHelper
 
   private
 
-  def manage_organization_link(user)
+  def manage_organization_link(user, panel_type)
     # Only surface the link on organization- or group-scoped pages, where the request
     # itself names an Organization. from_request is nil on unscoped pages
     # (e.g. the dashboard), unlike ::Current.organization which always falls back to the
@@ -210,12 +209,10 @@ module SidebarsHelper
     return unless user&.can?(:access_organization_admin_area, organization)
 
     # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- Explicitly scope the link to the current organization
+    return organization_path(organization) if panel_type == 'organization_admin'
+
     organization_admin_root_path(organization)
     # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
-  end
-
-  def show_feature_library_feedback?
-    true
   end
 
   # overridden on EE with the FF/trial/resource checks
@@ -388,27 +385,27 @@ module SidebarsHelper
     shortcut_links = [
       {
         title: _('Milestones'),
-        href: dashboard_milestones_path(organization_path: nil),
+        href: dashboard_milestones_path,
         css_class: 'dashboard-shortcuts-milestones'
       },
       {
         title: _('Snippets'),
-        href: dashboard_snippets_path(organization_path: nil),
+        href: dashboard_snippets_path,
         css_class: 'dashboard-shortcuts-snippets'
       },
       {
         title: _('Activity'),
-        href: activity_dashboard_path(organization_path: nil),
+        href: activity_dashboard_path,
         css_class: 'dashboard-shortcuts-activity'
       },
       {
         title: _('Groups'),
-        href: dashboard_groups_path(organization_path: nil),
+        href: dashboard_groups_path,
         css_class: 'dashboard-shortcuts-groups'
       },
       {
         title: _('Projects'),
-        href: dashboard_projects_path(organization_path: nil),
+        href: dashboard_projects_path,
         css_class: 'dashboard-shortcuts-projects'
       }
     ]

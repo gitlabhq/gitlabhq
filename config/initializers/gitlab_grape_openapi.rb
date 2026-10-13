@@ -43,15 +43,20 @@ Gitlab::GrapeOpenapi.configure do |config|
       type: "oauth2",
       flows: {
         authorizationCode: {
-          authorizationUrl: Gitlab::Utils.append_path('https://gitlab.com/api', "/oauth/authorize"),
-          tokenUrl: Gitlab::Utils.append_path('https://gitlab.com/api', "/oauth/token"),
-          refreshUrl: Gitlab::Utils.append_path('https://gitlab.com/api', "/oauth/refresh"),
+          authorizationUrl: Gitlab::Utils.append_path('https://gitlab.com', "/oauth/authorize"),
+          tokenUrl: Gitlab::Utils.append_path('https://gitlab.com', "/oauth/token"),
+          refreshUrl: Gitlab::Utils.append_path('https://gitlab.com', "/oauth/token"),
           scopes: -> {
             Gitlab::Auth::API_SCOPES.reject { |k, _| k == :granular }
                                   .index_with { |s| I18n.t(s, scope: [:doorkeeper, :scope_desc]) }
           }
         }
       }
+    ),
+    Gitlab::GrapeOpenapi::Models::SecurityScheme.new(
+      name: "PRIVATE-TOKEN",
+      type: "apiKey",
+      in: "header"
     )
   ]
 
@@ -182,4 +187,16 @@ Gitlab::GrapeOpenapi.configure do |config|
     'API::Scim::InstanceScim',
     'API::Scim::GroupScim'
   ]
+
+  # CONFIGURE CROSS-FIELD VALIDATION EXCEPTIONS
+  # API endpoints with groupings of cross-field validators that exceed
+  # cross_field_group_limit are not enumerated. These validators include:
+  # mutually_exclusive, exactly_one_of, all_or_none_of, at_least_one_of.
+  # This configuration generates a custom summary on the endpoint's description.
+  # Without an entry, the gem emits a generic counted sentence.
+  # eg. config.cross_field_messages = { `POST /api/v4/project` => 'At least one project attribute must be set.' }
+  config.cross_field_messages = {
+    'PUT /api/v4/application/settings' => 'At least one setting must be updated.',
+    'PUT /api/v4/projects/{id}' => 'At least one project attribute must be updated.'
+  }.freeze
 end

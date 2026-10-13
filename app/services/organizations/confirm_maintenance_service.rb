@@ -5,7 +5,14 @@ module Organizations
     def execute
       return success if organization.maintenance?
       return error(_('Organization is not initializing maintenance')) unless organization.maintenance_initialization?
-      return error(_('Organization is not ready for maintenance'), reason: :not_ready) unless readiness.ready?
+
+      blocking_reason = readiness.blocking_reason
+      if blocking_reason
+        return error(
+          format(_('Organization is not ready for maintenance: %{reason}'), reason: blocking_reason),
+          reason: :not_ready
+        )
+      end
 
       # Re-check under a row lock so the guard and transition are atomic against
       # concurrent maintenance transitions on the same organization.

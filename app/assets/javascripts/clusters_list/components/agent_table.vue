@@ -13,24 +13,39 @@ import {
   GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
+import { partition } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
-import { MAX_LIST_COUNT, AGENT_STATUSES, I18N_AGENT_TABLE, CONNECT_MODAL_ID } from '../constants';
+import { MAX_LIST_COUNT, AGENT_STATUSES, CONNECT_MODAL_ID } from '../constants';
 import { getAgentConfigPath } from '../clusters_util';
 import DeleteAgentButton from './delete_agent_button.vue';
 import ConnectToAgentModal from './connect_to_agent_modal.vue';
 
+const STATUS_ORDER = ['active', 'inactive', 'unused'];
+
+const SORT_COMPARATORS = {
+  name: (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }),
+  status: (a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
+  lastContact: (a, b) => a.lastContact - b.lastContact,
+  agentID: (a, b) => a.agentId - b.agentId,
+  project: (a, b) =>
+    (a.project?.fullPath ?? '').localeCompare(b.project?.fullPath ?? '', undefined, {
+      numeric: true,
+    }),
+};
+
+const SORT_VALUE_PRESENT = {
+  lastContact: (agent) => agent.lastContact,
+  project: (agent) => agent.project?.fullPath,
+};
+
 export default {
   name: 'AgentTable',
   i18n: {
-    ...I18N_AGENT_TABLE,
-    connectActionText: s__('ClusterAgents|Connect to %{agentName}'),
-    deleteActionText: s__('ClusterAgents|Delete agent'),
-    actions: __('Actions'),
+    defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),
     receptiveAgentTooltip: s__(
       'ClusterAgents|GitLab will establish the connection to this agent. A URL configuration is required.',
     ),
@@ -81,41 +96,46 @@ export default {
       currentStartIndex: 0,
       limit: this.maxAgents ?? MAX_LIST_COUNT,
       selectedAgent: null,
+      sortBy: 'lastContact',
+      sortDesc: true,
     };
   },
   computed: {
+    isSortable() {
+      return !this.maxAgents;
+    },
     fields() {
       const tdClass = '!gl-pt-3 !gl-pb-4 !gl-align-middle';
       const thClass = '!gl-border-t-0';
-      return [
+      const columns = [
         {
           key: 'name',
-          label: this.$options.i18n.nameLabel,
+          label: s__('ClusterAgents|Name'),
           isRowHeader: true,
           tdClass,
           thClass,
         },
         {
           key: 'status',
-          label: this.$options.i18n.statusLabel,
+          label: s__('ClusterAgents|Connection status'),
           tdClass,
           thClass,
         },
         {
           key: 'lastContact',
-          label: this.$options.i18n.lastContactLabel,
+          label: s__('ClusterAgents|Last contact'),
           tdClass,
           thClass,
         },
         {
           key: 'version',
-          label: this.$options.i18n.versionLabel,
+          label: __('Version'),
           tdClass,
           thClass,
         },
         {
           key: 'agentID',
-          label: this.$options.i18n.agentIdLabel,
+          label: s__('ClusterAgents|Agent ID'),
           tdClass,
           thClass,
         },
@@ -123,7 +143,7 @@ export default {
           ? [
               {
                 key: 'project',
-                label: this.$options.i18n.projectLabel,
+                label: s__('ClusterAgents|Project'),
                 tdClass,
                 thClass,
               },
@@ -131,7 +151,7 @@ export default {
           : [
               {
                 key: 'configuration',
-                label: this.$options.i18n.configurationLabel,
+                label: s__('ClusterAgents|Configuration'),
                 tdClass,
                 thClass,
               },
@@ -143,14 +163,38 @@ export default {
           thClass,
         },
       ];
+
+      return columns.map((column) => ({
+        ...column,
+        sortable: this.isSortable && Boolean(SORT_COMPARATORS[column.key]),
+      }));
+    },
+    sortedAgents() {
+      const compare = SORT_COMPARATORS[this.sortBy];
+
+      if (!compare) {
+        return this.agents;
+      }
+
+      const direction = this.sortDesc ? -1 : 1;
+      const sorted = [...this.agents].sort((a, b) => compare(a, b) * direction);
+
+      const hasValue = SORT_VALUE_PRESENT[this.sortBy];
+
+      if (!hasValue) {
+        return sorted;
+      }
+
+      const [present, absent] = partition(sorted, hasValue);
+      return [...present, ...absent];
     },
     paginatedAgents() {
-      if (!this.agents.length) {
+      if (!this.sortedAgents.length) {
         return [];
       }
 
       const endIndex = this.currentStartIndex + this.limit;
-      return this.agents.slice(this.currentStartIndex, endIndex);
+      return this.sortedAgents.slice(this.currentStartIndex, endIndex);
     },
     agentsList() {
       return this.paginatedAgents.map((agent) => {
@@ -183,9 +227,6 @@ export default {
     },
     getPopoverTestId(item) {
       return `popover-${item.name}`;
-    },
-    getAgentId(item) {
-      return getIdFromGraphQLId(item.id);
     },
     getAgentConfigPath,
     getAgentVersions(agent) {
@@ -223,13 +264,13 @@ export default {
     },
     getVersionPopoverTitle(agent) {
       if (this.isVersionMismatch(agent) && this.hasWarnings(agent)) {
-        return this.$options.i18n.versionWarningsMismatchTitle;
+        return s__('ClusterAgents|Agent version mismatch and update');
       }
       if (this.isVersionMismatch(agent)) {
-        return this.$options.i18n.versionMismatchTitle;
+        return s__('ClusterAgents|Agent version mismatch');
       }
       if (this.hasWarnings(agent)) {
-        return this.$options.i18n.versionWarningsTitle;
+        return s__('ClusterAgents|Agent version update required');
       }
 
       return null;
@@ -237,7 +278,7 @@ export default {
 
     getActions(item) {
       const connectAction = {
-        text: sprintf(this.$options.i18n.connectActionText, { agentName: item.name }),
+        text: sprintf(s__('ClusterAgents|Connect to %{agentName}'), { agentName: item.name }),
         name: 'connect-agent',
         modalId: CONNECT_MODAL_ID,
         action: () => {
@@ -245,7 +286,7 @@ export default {
         },
       };
       const deleteAction = {
-        text: this.$options.i18n.deleteActionText,
+        text: s__('ClusterAgents|Delete agent'),
         name: 'delete-agent',
         action: () => {
           this.selectedAgent = item;
@@ -265,6 +306,11 @@ export default {
     handleNextPage() {
       this.currentStartIndex += this.limit;
     },
+    handleSortChanged({ sortBy, sortDesc }) {
+      this.sortBy = sortBy;
+      this.sortDesc = sortDesc;
+      this.currentStartIndex = 0;
+    },
   },
 };
 </script>
@@ -274,9 +320,13 @@ export default {
     <gl-table
       :items="agentsList"
       :fields="fields"
+      :sort-by="sortBy"
+      :sort-desc="sortDesc"
+      no-local-sorting
       stacked="md"
       class="!gl-mb-4"
       data-testid="cluster-agent-list-table"
+      @sort-changed="handleSortChanged"
     >
       <template #cell(name)="{ item }">
         <div
@@ -285,14 +335,14 @@ export default {
           <gl-link :href="item.webPath" data-testid="cluster-agent-name-link">{{
             item.name
           }}</gl-link
-          ><gl-badge v-if="item.isShared">{{ $options.i18n.sharedBadgeText }}</gl-badge>
+          ><gl-badge v-if="item.isShared">{{ s__('ClusterAgents|Shared') }}</gl-badge>
           <gl-badge
             v-if="item.isReceptive"
             v-gl-tooltip
             :title="$options.i18n.receptiveAgentTooltip"
             :aria-label="$options.i18n.receptiveAgentTooltip"
             data-testid="cluster-agent-is-receptive"
-            >{{ $options.i18n.receptiveBadgeText }}</gl-badge
+            >{{ s__('ClusterAgents|Receptive') }}</gl-badge
           >
         </div>
       </template>
@@ -330,7 +380,7 @@ export default {
           </p>
           <p class="gl-mb-0">
             <gl-link :href="$options.troubleshootingLink" target="_blank" class="gl-text-sm">
-              {{ $options.i18n.troubleshootingText }}</gl-link
+              {{ s__('ClusterAgents|Learn how to troubleshoot') }}</gl-link
             >
           </p>
         </gl-popover>
@@ -339,7 +389,7 @@ export default {
       <template #cell(lastContact)="{ item }">
         <span data-testid="cluster-agent-last-contact">
           <time-ago-tooltip v-if="item.lastContact" :time="item.lastContact" />
-          <span v-else>{{ $options.i18n.neverConnectedText }}</span>
+          <span v-else>{{ s__('ClusterAgents|Never') }}</span>
         </span>
       </template>
 
@@ -364,14 +414,18 @@ export default {
           container="viewport"
         >
           <p v-if="isVersionMismatch(item)" class="gl-mb-0">
-            {{ $options.i18n.versionMismatchText }}
+            {{
+              s__(
+                "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods.",
+              )
+            }}
           </p>
           <div v-if="hasWarnings(item)">
             <p v-for="(warning, index) of item.warnings" :key="index" class="gl-mb-0">
               {{ warning }}
             </p>
             <gl-link :href="$options.versionUpdateLink" class="gl-text-sm">
-              {{ $options.i18n.viewDocsText }}</gl-link
+              {{ s__('ClusterAgents|How do I update an agent?') }}</gl-link
             >
           </div>
         </gl-popover>
@@ -379,7 +433,7 @@ export default {
 
       <template #cell(agentID)="{ item }">
         <span data-testid="cluster-agent-id">
-          {{ getAgentId(item) }}
+          {{ item.agentId }}
         </span>
       </template>
 
@@ -390,11 +444,11 @@ export default {
           </gl-link>
 
           <span v-else-if="item.isShared">
-            {{ $options.i18n.externalConfigText }}
+            {{ s__('ClusterAgents|External project') }}
           </span>
 
           <span v-else
-            >{{ $options.i18n.defaultConfigText }}
+            >{{ s__('ClusterAgents|Default configuration') }}
             <gl-link
               v-gl-tooltip
               :href="$options.configHelpLink"
@@ -418,7 +472,7 @@ export default {
 
       <template #cell(options)="{ item }">
         <gl-disclosure-dropdown
-          :toggle-text="$options.i18n.actions"
+          :toggle-text="__('Actions')"
           text-sr-only
           category="tertiary"
           no-caret

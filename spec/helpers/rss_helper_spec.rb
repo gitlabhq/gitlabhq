@@ -6,7 +6,7 @@ RSpec.describe RssHelper, feature_category: :user_profile do
   describe '#rss_url_options' do
     context 'when signed in' do
       it "includes the current_user's feed_token" do
-        current_user = create(:user)
+        current_user = build_stubbed(:user, feed_token: 'feed-token')
         allow(helper).to receive(:current_user).and_return(current_user)
 
         feed_token = helper.rss_url_options[:feed_token]
@@ -24,7 +24,7 @@ RSpec.describe RssHelper, feature_category: :user_profile do
 
     context 'when feed_token disabled' do
       it "does not have a feed_token" do
-        current_user = create(:user)
+        current_user = build_stubbed(:user)
         allow(helper).to receive(:current_user).and_return(current_user)
         allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
         expect(helper.rss_url_options[:feed_token]).to be_nil

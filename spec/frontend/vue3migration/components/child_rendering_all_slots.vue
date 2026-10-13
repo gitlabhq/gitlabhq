@@ -11,7 +11,7 @@ export default {
 </script>
 <template>
   <div>
-    <!-- eslint-disable-next-line vue/no-v-for-template-key, local-rules/vue3-gl-slots -->
+    <!-- eslint-disable-next-line vue/no-v-for-template-key, vue/no-deprecated-dollar-scopedslots-api -->
     <template v-for="(_, name) in $scopedSlots">
       <div :key="name" :data-testid="'slot-' + name">
         <!-- eslint-disable-next-line vue/html-self-closing -->

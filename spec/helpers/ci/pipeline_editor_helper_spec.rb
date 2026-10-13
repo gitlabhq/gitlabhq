@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let(:project) { build_stubbed(:project) }
+  let(:user) { build_stubbed(:user) }
 
   describe 'can_view_pipeline_editor?' do
     subject { helper.can_view_pipeline_editor?(project) }
@@ -23,7 +23,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
   end
 
   describe '#js_pipeline_editor_data' do
-    let(:project) { create(:project, :small_repo) }
     let(:default_helper_data) do
       {
         "ci-config-path": project.ci_config_path_or_default,
@@ -46,22 +45,21 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     before do
       allow(helper)
-        .to receive(:namespace_project_new_merge_request_path)
-        .and_return('/mock/project/-/merge_requests/new')
-
-      allow(helper)
         .to receive(:can?)
         .with(user, :create_pipeline, project)
         .and_return(true)
 
-      allow(helper)
-        .to receive(:current_user)
-        .and_return(user)
+      allow(helper).to receive_messages(
+        namespace_project_new_merge_request_path: '/mock/project/-/merge_requests/new',
+        current_user: user
+      )
     end
 
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }
 
     context 'with a project with commits' do
+      let(:project) { create(:project, :small_repo) }
+
       it 'returns pipeline editor data' do
         expect(pipeline_editor_data).to include(default_helper_data.merge({
           "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
@@ -82,8 +80,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
     end
 
     context 'with a project with no repository' do
-      let(:project) { create(:project) }
-
       it 'returns pipeline editor data' do
         expect(pipeline_editor_data).to include({
           "pipeline_etag" => '',
@@ -94,7 +90,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     context 'with a remote CI config' do
       before do
-        create(:commit, project: project)
         project.ci_config_path = 'http://example.com/path/to/ci/config.yml'
       end
 
@@ -105,7 +100,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     context 'with a CI config from an external project' do
       before do
-        create(:commit, project: project)
         project.ci_config_path = '.gitlab-ci.yml@group/project'
       end
 
@@ -115,6 +109,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
     end
 
     context 'with a non-default branch name' do
+      let(:project) { create(:project, :small_repo) }
       let(:user) { create(:user) }
 
       before do

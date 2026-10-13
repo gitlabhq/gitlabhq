@@ -107,8 +107,14 @@ export default {
       return this.isFinished(this.deployment) ? this.finishedAt : this.createdAt;
     },
   },
-  mounted() {
-    renderGFM(this.$refs['gfm-content']);
+  watch: {
+    'release.descriptionHtml': {
+      immediate: true,
+      handler(html) {
+        if (!html) return;
+        this.$nextTick(() => renderGFM(this.$refs['gfm-content']));
+      },
+    },
   },
   methods: {
     isFinished,

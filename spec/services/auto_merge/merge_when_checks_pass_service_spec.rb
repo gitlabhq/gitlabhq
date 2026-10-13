@@ -51,9 +51,10 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
 
     context 'when discussions open' do
       before do
-        allow(mr_merge_if_green_enabled).to receive(:mergeable_discussions_state?).and_return(false)
-        allow(mr_merge_if_green_enabled)
-          .to receive(:only_allow_merge_if_all_discussions_are_resolved?).and_return(true)
+        allow(mr_merge_if_green_enabled).to receive_messages(
+          mergeable_discussions_state?: false,
+          only_allow_merge_if_all_discussions_are_resolved?: true
+        )
       end
 
       it { is_expected.to be true }
@@ -90,8 +91,10 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
 
     context 'when merge request is mergeable and pipeline is not in progress' do
       before do
-        allow(mr_merge_if_green_enabled).to receive(:mergeable?).and_return(true)
-        allow(mr_merge_if_green_enabled).to receive(:diff_head_pipeline_considered_in_progress?).and_return(false)
+        allow(mr_merge_if_green_enabled).to receive_messages(
+          mergeable?: true,
+          diff_head_pipeline_considered_in_progress?: false
+        )
       end
 
       it { is_expected.to be false }

@@ -49,7 +49,6 @@ export default {
     hasBlockedWorkItemsFeature: {
       type: Boolean,
       required: true,
-      default: false,
     },
   },
   emits: ['cancel', 'submitted'],

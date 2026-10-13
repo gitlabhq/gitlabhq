@@ -6,7 +6,7 @@ require_relative '../../support/shared_examples/events/event_with_schema_shared_
 
 RSpec.describe Ci::PipelineCreatedEvent, feature_category: :continuous_integration do
   it_behaves_like 'an event with schema',
-    valid_data: { pipeline_id: 1, partition_id: 100 },
+    valid_data: { pipeline_id: 1, partition_id: 100, pipeline_creation_request: { key: 'key', id: 'id' } },
     missing_required: %i[pipeline_id partition_id],
-    invalid_types: { pipeline_id: 'not_an_integer', partition_id: 'not_an_integer' }
+    invalid_types: { pipeline_id: 'not_an_integer', partition_id: 'not_an_integer', pipeline_creation_request: 'nope' }
 end

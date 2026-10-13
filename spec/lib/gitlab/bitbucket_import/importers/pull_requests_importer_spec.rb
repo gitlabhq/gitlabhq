@@ -27,8 +27,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_
         ])
 
         allow(client).to receive(:each_page).and_yield(page)
-        allow(page).to receive(:next?).and_return(true)
-        allow(page).to receive(:next).and_return('https://example.com/next')
+        allow(page).to receive_messages(next?: true, next: 'https://example.com/next')
       end
     end
 

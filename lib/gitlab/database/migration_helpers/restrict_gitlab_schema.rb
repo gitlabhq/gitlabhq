@@ -61,3 +61,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Database::MigrationHelpers::RestrictGitlabSchema.prepend_mod

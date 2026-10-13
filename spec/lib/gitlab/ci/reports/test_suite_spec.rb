@@ -170,8 +170,8 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
         failed_keys  = test_suite.test_cases['failed'].keys
         success_keys = test_suite.test_cases['success'].keys + test_suite_2.test_cases['success'].keys
 
-        expect(subject.test_cases['failed'].keys).to contain_exactly(*failed_keys)
-        expect(subject.test_cases['success'].keys).to contain_exactly(*success_keys)
+        expect(subject.test_cases['failed'].keys).to match_array(failed_keys)
+        expect(subject.test_cases['success'].keys).to match_array(success_keys)
       end
     end
   end

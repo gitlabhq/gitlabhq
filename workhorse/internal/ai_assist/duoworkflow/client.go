@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"strings"
 	"time"
 
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
@@ -32,6 +33,8 @@ const maxClientNameLength = 255
 // defaultClientName is the client name workhorse sends to DWS when there is no client name header present in request.
 const defaultClientName = "gitlab-duo-workflow"
 
+const clientNameMetadataKey = "x-gitlab-client-name"
+
 // Client is a gRPC client for the Duo Workflow service.
 type Client struct {
 	grpcConn   *grpc.ClientConn
@@ -42,10 +45,12 @@ type Client struct {
 // NewClient creates a new Duo Workflow client with the specified service config and user agent.
 func NewClient(config *api.DuoWorkflowServiceConfig, userAgent string, clientName string) (*Client, error) {
 	serverURI := config.URI
-	headers := config.Headers
+	headers, configClientName := splitClientNameHeader(config.Headers)
 	secure := config.Secure
 	gRPCClientName := defaultClientName
-	if clientName != "" {
+	if configClientName != "" {
+		gRPCClientName = configClientName
+	} else if clientName != "" {
 		gRPCClientName = clientName
 	}
 
@@ -101,6 +106,24 @@ func NewClient(config *api.DuoWorkflowServiceConfig, userAgent string, clientNam
 		grpcClient: pb.NewDuoWorkflowClient(conn),
 		headers:    headers,
 	}, nil
+}
+
+// splitClientNameHeader returns a copy of headers without the client name header, plus its value.
+// The Labkit correlation interceptor appends the client name itself, so leaving it in the
+// headers would send DWS two values.
+func splitClientNameHeader(headers map[string]string) (map[string]string, string) {
+	result := make(map[string]string, len(headers))
+	clientName := ""
+
+	for key, value := range headers {
+		if strings.EqualFold(key, clientNameMetadataKey) {
+			clientName = value
+			continue
+		}
+		result[key] = value
+	}
+
+	return result, clientName
 }
 
 // ExecuteWorkflow initiates a new workflow execution stream with the server.

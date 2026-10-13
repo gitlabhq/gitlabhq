@@ -40,6 +40,17 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::ProjectAuthorizatio
     end
   end
 
+  describe '.for_admin' do
+    let_it_be(:authorization) { create(:agent_user_access_project_authorization) }
+
+    subject { described_class.for_admin }
+
+    it 'returns every authorization with the access level of an owner' do
+      expect(subject).to contain_exactly(authorization)
+      expect(subject.first.access_level).to eq(Gitlab::Access::OWNER)
+    end
+  end
+
   describe '#config_project' do
     let(:record) { create(:agent_user_access_project_authorization) }
 

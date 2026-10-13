@@ -42,6 +42,7 @@ import JobInputsYaml from './yaml_tests/positive_tests/job_inputs.yml';
 import SecretsYaml from './yaml_tests/positive_tests/secrets.yml';
 import ServicesYaml from './yaml_tests/positive_tests/services.yml';
 import NeedsParallelMatrixYaml from './yaml_tests/positive_tests/needs_parallel_matrix.yml';
+import NeedsPipelineOptionalYaml from './yaml_tests/positive_tests/needs_pipeline_optional.yml';
 import ScriptYaml from './yaml_tests/positive_tests/script.yml';
 import WorkflowAutoCancelOnJobFailureYaml from './yaml_tests/positive_tests/workflow/auto_cancel/on_job_failure.yml';
 import WorkflowAutoCancelOnNewCommitYaml from './yaml_tests/positive_tests/workflow/auto_cancel/on_new_commit.yml';
@@ -138,6 +139,7 @@ describe('positive tests', () => {
       JobInputsYaml,
       JobWhenYaml,
       NeedsParallelMatrixYaml,
+      NeedsPipelineOptionalYaml,
       ParallelYaml,
       ProjectPathYaml,
       RetryYaml,

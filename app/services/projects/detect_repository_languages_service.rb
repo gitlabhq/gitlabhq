@@ -12,15 +12,13 @@ module Projects
       matching_programming_languages = ensure_programming_languages(detection)
 
       RepositoryLanguage.transaction do
-        RepositoryLanguage.where(project_id: project.id, programming_language_id: detection.deletions).delete_all
+        delete_undetected_languages(detection.deletions)
 
         detection.updates.each do |update|
-          attrs = { share: update[:share], language_id: update[:language_id] }
-
           RepositoryLanguage
             .where(project_id: project.id)
-            .where(programming_language_id: update[:programming_language_id])
-            .update_all(attrs)
+            .where(update[:target])
+            .update_all(share: update[:share], language_id: update[:language_id])
         end
 
         ApplicationRecord.legacy_bulk_insert( # rubocop:disable Gitlab/BulkInsert
@@ -36,6 +34,28 @@ module Projects
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    # rubocop: disable CodeReuse/ActiveRecord -- Rows are matched by stable language_id, with a
+    # legacy programming_language_id fallback for rows the backfill has not reached yet.
+    def delete_undetected_languages(repository_languages)
+      return if repository_languages.empty?
+
+      populated_rows, unpopulated_rows = repository_languages.partition(&:language_id)
+      project_languages = RepositoryLanguage.where(project_id: project.id)
+      scopes = []
+
+      scopes << project_languages.where(language_id: populated_rows.map(&:language_id)) if populated_rows.any?
+
+      if unpopulated_rows.any?
+        scopes << project_languages.where(
+          language_id: nil,
+          programming_language_id: unpopulated_rows.map(&:programming_language_id)
+        )
+      end
+
+      scopes.reduce(&:or).delete_all
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def ensure_programming_languages(detection)
       Gitlab::LanguageDetection::ProgrammingLanguageResolver.new(detection.detected_languages).execute

@@ -233,11 +233,9 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
         subject(:service) { described_class.new(pipeline_schedule, user, {}) }
 
         before do
-          allow(pipeline_schedule).to receive(:save).and_return(false)
-
           errors = ActiveModel::Errors.new(pipeline_schedule)
           errors.add(:base, 'An error occurred')
-          allow(pipeline_schedule).to receive(:errors).and_return(errors)
+          allow(pipeline_schedule).to receive_messages(save: false, errors: errors)
         end
 
         it 'returns ServiceResponse.error' do

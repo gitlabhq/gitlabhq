@@ -33,6 +33,10 @@ module Types
         null: true,
         description: 'Latest version of the Terraform state.'
 
+      field :versions, Types::Terraform::StateVersionType.connection_type,
+        null: true,
+        description: 'Versions of the Terraform state, most recent first.'
+
       field :created_at, Types::TimeType,
         null: false,
         description: 'Timestamp the Terraform state was created.'
@@ -44,6 +48,11 @@ module Types
       field :deleted_at, Types::TimeType,
         null: true,
         description: 'Timestamp the Terraform state was deleted.'
+
+      field :permanent_deletion_at, Types::TimeType,
+        null: true,
+        experiment: { milestone: '19.5' },
+        description: 'Timestamp of when the state will be permanently deleted, if it is scheduled for deletion.'
 
       field :protection_rule_exists, GraphQL::Types::Boolean,
         null: false,
@@ -60,6 +69,10 @@ module Types
               .each { |row| loader.call([row['project_id'], row['state_name']], row['protected']) }
           end
         end
+      end
+
+      def versions
+        Gitlab::Graphql::Loaders::Terraform::StateVersionsLoader.new(context, object)
       end
 
       def locked_by_user

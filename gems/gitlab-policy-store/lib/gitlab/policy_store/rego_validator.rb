@@ -13,10 +13,14 @@ module Gitlab
       # the source, this keeps the full program out of the response and logs.
       MAX_REPORTED_ERROR_BYTES = 1_000
 
+      # The module all rules merge into. Every authored part of it already parsed on its own,
+      # so a failure here is a defect in the merge, not something the caller can correct.
+      MERGED_PROGRAM_FIELD = :policy_merged_program
+
       # @param field [String, Symbol] what the program is, for the error message
       # @param program [String] Rego source
-      # @raise [Gitlab::PolicyStore::ValidationError] if the program does not parse
-      # @raise [Gitlab::PolicyStore::EngineError] if the engine faults
+      # @raise [Gitlab::PolicyStore::ValidationError] if an authored program does not parse
+      # @raise [Gitlab::PolicyStore::EngineError] if the engine faults, or the merged module does not parse
       # @return [true]
       def validate!(field, program)
         result = engine.validate(policy_rego: program)
@@ -28,9 +32,9 @@ module Gitlab
         detail = reported_errors(errors)
         raise PolicyStore::EngineError, "#{field} could not be validated" if detail.empty?
 
-        raise PolicyStore::ValidationError, "#{field} is invalid: #{detail}"
+        raise invalid_program_error(field), "#{field} is invalid: #{detail}"
       rescue EncodingError
-        raise PolicyStore::ValidationError, "#{field} must be valid UTF-8"
+        raise invalid_program_error(field), "#{field} must be valid UTF-8"
       rescue PolicyStore::Error
         raise
       rescue StandardError
@@ -41,6 +45,10 @@ module Gitlab
 
       def engine
         ::Gitlab::Glaz.govern_policy_engine
+      end
+
+      def invalid_program_error(field)
+        field.to_sym == MERGED_PROGRAM_FIELD ? PolicyStore::EngineError : PolicyStore::ValidationError
       end
 
       def reported_errors(errors)

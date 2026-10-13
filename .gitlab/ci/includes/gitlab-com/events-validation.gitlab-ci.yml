@@ -11,6 +11,7 @@ include:
       events_path: "ee/config/events"
 
 internal-events-definitions-validation:
+  dependencies: []
   rules:
     - !reference ['.ai-principles-schedule:rules:skip', rules]
     - if: '$CI_MERGE_REQUEST_IID'
@@ -20,6 +21,7 @@ internal-events-definitions-validation:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 
 internal-events-definitions-validation-ee:
+  dependencies: []
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference ['.ai-principles-schedule:rules:skip', rules]

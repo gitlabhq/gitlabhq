@@ -48,6 +48,14 @@ module Types
       description: 'Default branch of the repository.'
     field :tag_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
       description: 'Number of tags in the repository.'
+    field :tags, Types::Repositories::TagType.connection_type,
+      null: true,
+      calls_gitaly: true,
+      description: 'Tags in the repository.',
+      experiment: { milestone: '19.5' },
+      resolver: Resolvers::Repositories::TagsResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      max_page_size: 100
     field :tree, Types::Tree::TreeType, null: true, resolver: Resolvers::TreeResolver, calls_gitaly: true,
       description: 'Tree of the repository.'
   end

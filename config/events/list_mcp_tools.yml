@@ -1,0 +1,15 @@
+---
+description: Tracks the MCP tools/list request
+internal_events: true
+action: list_mcp_tools
+identifiers:
+- user
+product_group: agent_execution
+product_categories:
+- mcp_server
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256984
+tiers:
+- free
+- premium
+- ultimate

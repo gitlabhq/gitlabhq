@@ -7,23 +7,6 @@ require 'yaml'
 require_relative '../../scripts/generate_jest_pipeline'
 
 RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling do
-  describe 'FIXTURE_SHARD_COUNT' do
-    it 'matches parallel: on rspec-all frontend_fixture, whose shards the template enumerates as needs' do
-      # frontend.gitlab-ci.yml uses !reference tags. Whether that tag is
-      # already registered with Psych depends on suite run order, so
-      # register and permit it explicitly instead of relying on it.
-      Psych.add_tag('!reference', Gitlab::Ci::Config::Yaml::Tags::Reference)
-      frontend_ci_path = File.expand_path('../../.gitlab/ci/frontend.gitlab-ci.yml', __dir__)
-      parallel = YAML.safe_load(
-        File.read(frontend_ci_path),
-        permitted_classes: [Gitlab::Ci::Config::Yaml::Tags::Reference],
-        aliases: true
-      ).dig('rspec-all frontend_fixture', 'parallel')
-
-      expect(described_class::FIXTURE_SHARD_COUNT).to eq(parallel)
-    end
-  end
-
   describe '#generate!' do
     let!(:jest_files) { Tempfile.new(['jest_files_path', '.txt']) }
     let(:pipeline_template) { Tempfile.new(['pipeline_template', '.yml.erb']) }
@@ -207,11 +190,14 @@ RSpec.describe GenerateJestPipeline, :silence_stdout, feature_category: :tooling
 
         expect(yaml.keys).to include('jest per-test-coverage', 'jest-with-fixtures per-test-coverage')
 
-        shard_count = described_class::FIXTURE_SHARD_COUNT
-        expected_shard_needs = (1..shard_count).map { |i| "rspec-all frontend_fixture #{i}/#{shard_count}" }
+        # Cross-pipeline needs cap at 5; shards are fetched by pattern instead.
         fixture_needs = yaml['jest-with-fixtures per-test-coverage']['needs'].map { |need| need['job'] }
-        expect(fixture_needs).to include(*expected_shard_needs, 'rspec-all frontend_fixture clickhouse')
-        expect(yaml['jest-with-fixtures per-test-coverage']['script'].join).to include('--fixtures')
+        expect(fixture_needs.size).to be <= 5
+        expect(fixture_needs).not_to include(a_string_matching(%r{\Arspec-all frontend_fixture}))
+
+        fixture_script = yaml['jest-with-fixtures per-test-coverage']['script'].join
+        expect(fixture_script).to include('download_per_test_coverage_artifacts.rb')
+        expect(fixture_script).to include('--fixtures')
         expect(yaml['jest per-test-coverage']['script'].join).not_to include('--fixtures')
       end
     end

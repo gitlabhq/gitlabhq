@@ -55,6 +55,17 @@ RSpec.describe Packages::Cargo::ExtractionWorker, feature_category: :package_reg
       it_behaves_like 'updates package and package file'
     end
 
+    context 'with string keys, as Sidekiq delivers them' do
+      let(:params) { { 'user_id' => user.id } }
+
+      it 'resolves the actor and processes the file' do
+        expect(::Packages::Cargo::ProcessPackageFileService)
+          .to receive(:new).with(package_file, user).and_call_original
+
+        cargo_extraction_worker
+      end
+    end
+
     context 'when package file does not exist' do
       let(:package_file_id) { non_existing_record_id }
 

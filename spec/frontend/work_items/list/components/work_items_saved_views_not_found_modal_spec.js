@@ -24,11 +24,7 @@ const MockComponent = {};
 const createComponent = async () => {
   router = new VueRouter({
     mode: 'history',
-    routes: [
-      { name: 'base', path: '/', component: MockComponent },
-
-      ...routes({ fullPath: '/work_items' }),
-    ],
+    routes: [{ name: 'base', path: '/', component: MockComponent }, ...routes],
   });
 
   wrapper = shallowMountExtended(WorkItemsSavedViewsNotFoundModal, {

@@ -111,6 +111,7 @@ import {
   convertToSearchQuery,
   updateNamespaceDisplaySettings,
 } from 'ee_else_ce/work_items/list/utils';
+import { hasBoardViewMode } from 'ee_else_ce/work_items/view_modes';
 
 import {
   CREATED_DESC,
@@ -148,6 +149,7 @@ import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import namespaceWorkItemChangesSubscription from '../list/graphql/namespace_work_item_changes.subscription.graphql';
+import workItemSavedViewUpdatedSubscription from '../list/graphql/work_item_saved_view_updated.subscription.graphql';
 import {
   dropMatchCacheEntries,
   evictNamespaceWorkItems,
@@ -158,6 +160,7 @@ import {
   findMatchingWorkItems,
   removeWorkItemFromNamespaceLists,
 } from '../list/graphql/cache_updates';
+import { markRealtimeRefetch, COUNT_OPERATIONS } from '../list/graphql/realtime_request_tag';
 
 import SavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
 import SavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
@@ -172,10 +175,11 @@ import InfoBanner from '../list/components/info_banner.vue';
 import NewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
 import WorkItemDetailPanel from '../components/work_item_detail_panel.vue';
 import WorkItemDisplaySettingsDrawer from '../list/components/work_item_display_settings_drawer.vue';
+import WorkItemViewModeToggle from '../components/work_item_view_mode_toggle.vue';
+import WorkItemDisplaySettingsButton from '../components/work_item_display_settings_button.vue';
 
 import {
   WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   ROUTES,
   WORK_ITEM_CREATE_SOURCES,
@@ -189,6 +193,7 @@ import {
   DISPLAY_SETTINGS_PAGE_ROOT,
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
 } from '../constants';
+import { GROUP_SORT } from '../board/grouping/ordering';
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
 const BoardView = () => import('~/work_items/board/board_view.vue');
@@ -224,12 +229,12 @@ export default {
   CREATION_CONTEXT_LIST_ROUTE,
   VIEW_CONTEXT,
   VIEW_MODE_LIST,
-  VIEW_MODE_BOARD,
   searchProjectsQuery,
   i18n: {
     boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
   },
-  BOARD_FEEDBACK_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
+  BOARD_FEEDBACK_INTERNAL_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
+  BOARD_FEEDBACK_PUBLIC_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/632391',
   name: 'PlanningView',
   components: {
     GlButton,
@@ -243,6 +248,8 @@ export default {
     CreateWorkItemModal,
     FilteredSearchBar,
     WorkItemDisplaySettingsDrawer,
+    WorkItemViewModeToggle,
+    WorkItemDisplaySettingsButton,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     EmptyStateWithAnyTickets,
@@ -270,20 +277,16 @@ export default {
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
     'hasIssueWeightsFeature',
-    'hasOkrsFeature',
     'hasCustomFieldsFeature',
     'canCreateWorkItem',
     'autocompleteAwardEmojisPath',
     'metadataLoading',
     'canAdminIssue',
-    'canBulkAdminEpic',
     'isGroup',
     'isGroupIssuesList',
     'isServiceDeskSupported',
     'workItemType',
-    'hasGroupBulkEditFeature',
     'hasEpicsFeature',
-    'hasQualityManagementFeature',
     'hasProjects',
     'getWorkItemTypeConfiguration',
     'workItemTypesConfiguration',
@@ -321,6 +324,7 @@ export default {
       filterTokens: [],
       workItemsCount: 0,
       hasWorkItems: false,
+      hasWorkItemsFailed: false,
       pageParams: {},
       listPageInfo: {},
       state: STATUS_OPEN,
@@ -352,6 +356,7 @@ export default {
       displayDrawerPage: DISPLAY_SETTINGS_PAGE_ROOT,
       drawerTopOffset: '0px',
       boardUpdatedItem: null,
+      boardRealtimeMatches: null,
     };
   },
 
@@ -383,15 +388,20 @@ export default {
         };
       },
       update(data) {
+        this.hasWorkItemsFailed = false;
         return data?.namespace?.workItems.nodes.length > 0 || false;
       },
       result({ data }) {
+        // Runs with no data after an error; throwing here stops vue-apollo resubscribing,
+        // so later refetches would never land.
+        if (!data) return;
         const namespaceId = data.namespace?.id;
         this.namespaceId = namespaceId;
         this.subscribeToWorkItemChanges(namespaceId);
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
+        this.hasWorkItemsFailed = true;
         Sentry.captureException(error);
       },
     },
@@ -435,6 +445,7 @@ export default {
 
           this.trackSavedViewVisit();
           this.applySavedViewState(savedView);
+          this.subscribeToSavedViewChanges(savedView.id);
         } catch (error) {
           Sentry.captureException(error);
         }
@@ -533,16 +544,24 @@ export default {
 
   computed: {
     isPlanningViewBoardEnabled() {
-      return Boolean(this.glFeatures.planningViewBoards);
+      return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
     },
     isPlanningViewTableEnabled() {
       return Boolean(this.glFeatures.planningViewTable);
+    },
+    boardFeedbackIssueUrl() {
+      return this.glFeatures.planningViewBoardsGroup
+        ? this.$options.BOARD_FEEDBACK_PUBLIC_ISSUE_URL
+        : this.$options.BOARD_FEEDBACK_INTERNAL_ISSUE_URL;
     },
     isBoardView() {
       return this.viewMode === VIEW_MODE_BOARD && this.isPlanningViewBoardEnabled;
     },
     isTableView() {
       return this.viewMode === VIEW_MODE_TABLE && this.isPlanningViewTableEnabled;
+    },
+    hasWorkItemsLoading() {
+      return this.$apollo.queries.hasWorkItems.loading;
     },
     // `afterCursor` alone answers forward pagination. Backward pagination needs `hasPreviousPage`
     // too: paging next then back to page 1 leaves a real `beforeCursor` set (see
@@ -664,9 +683,6 @@ export default {
     isBulkEditDisabled() {
       return this.showBulkEditSidebar || this.currentWorkItemsCount === 0;
     },
-    initialLoadWasFiltered() {
-      return this.filterTokens.length > 0;
-    },
     hasActiveFilters() {
       return !isEmpty(this.apiFilterParams);
     },
@@ -680,15 +696,11 @@ export default {
       if (this.isBoardView) {
         return false;
       }
-      if (this.isEpicsList) {
-        return this.canBulkAdminEpic;
-      }
       if (!this.isGroup) {
         return this.canAdminIssue;
       }
-      // Groups require EE bulk edit feature, or CE planning view with projects
-      const hasCEBulkEdit = this.hasProjects && !this.hasEpicsFeature;
-      return this.canAdminIssue && (this.hasGroupBulkEditFeature || hasCEBulkEdit);
+      // Without epics, a group only has project-level work items to edit
+      return this.canAdminIssue && (this.hasEpicsFeature || this.hasProjects);
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens, {
@@ -712,7 +724,7 @@ export default {
         ...this.pageParams,
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         search: isIidSearch ? undefined : this.searchQuery,
-        excludeProjects: hasGroupFilter || this.isEpicsList,
+        excludeProjects: hasGroupFilter,
         includeDescendants: !hasGroupFilter,
         isGroup: this.isGroup,
         excludeGroupWorkItems: this.isGroupIssuesList,
@@ -721,9 +733,6 @@ export default {
     },
     isSavedView() {
       return this.$route.name === ROUTES.savedView;
-    },
-    isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     urlParams() {
       return {
@@ -1056,11 +1065,17 @@ export default {
     groupOrder() {
       return this.namespacePreferences.groupOrder ?? [];
     },
+    groupSort() {
+      return this.namespacePreferences.groupSort;
+    },
     visibleGroups() {
       return this.namespacePreferences.visibleGroups ?? null;
     },
     hiddenMetadataKeys() {
       return this.namespacePreferences.hiddenMetadataKeys ?? [];
+    },
+    showEmptyGroups() {
+      return this.namespacePreferences.showEmptyGroups ?? true;
     },
     savedViewId() {
       return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
@@ -1106,17 +1121,12 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
-        hasManualSort: !this.isEpicsList,
-        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList && !this.isServiceDeskList,
+        hasStatusFeature: this.hasStatusFeature && !this.isServiceDeskList,
         hasStartDate: true,
-        hasPriority: !this.isEpicsList,
-        hasMilestoneDueDate: true,
-        hasLabelPriority: !this.isEpicsList,
-        hasWeight: !this.isEpicsList,
       });
     },
     preselectedWorkItemType() {
-      return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
+      return WORK_ITEM_TYPE_NAME_ISSUE;
     },
     canExport() {
       return !this.isGroup && this.isLoggedIn && this.currentWorkItemsCount > 0;
@@ -1281,6 +1291,7 @@ export default {
     document.removeEventListener('actioncable:reconnected', this.debouncedRefetchAfterReconnect);
     this.debouncedRefetchAfterReconnect.cancel();
     this.workItemChangesSubscription?.unsubscribe();
+    this.unsubscribeFromSavedViewChanges();
   },
 
   created() {
@@ -1315,6 +1326,7 @@ export default {
     }
     this.pendingWorkItemChanges = new Map();
     this.workItemChangesSubscription = null;
+    this.savedViewChangesSubscription = null;
     this.debouncedProcessWorkItemChanges = debounce(
       this.processWorkItemChanges,
       REALTIME_DEBOUNCE_MS,
@@ -1341,6 +1353,7 @@ export default {
     handleToggleViewMode(newViewMode) {
       this.trackEvent('switch_view_mode_on_work_item_planning_view', { label: newViewMode });
       this.viewMode = newViewMode;
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
       if (this.isSavedView) {
         this.persistSavedViewDraft();
         return;
@@ -1890,8 +1903,14 @@ export default {
 
       this.persistNamespaceDisplaySettings(newSettings);
     },
+    // A drag or Move left/right only means anything under Manual sort, so switch to it —
+    // otherwise the very next Ascending/Descending render would undo the reorder.
     handleReorderGroups(groupOrder) {
-      const newSettings = { ...this.namespacePreferences, groupOrder };
+      const newSettings = {
+        ...this.namespacePreferences,
+        groupOrder,
+        groupSort: GROUP_SORT.MANUAL,
+      };
 
       if (this.isSavedView) {
         this.handleLocalDisplayPreferencesUpdate(newSettings);
@@ -2028,8 +2047,14 @@ export default {
     },
     handleBoardWorkItemCreated() {
       this.$apollo.queries.workItemsCount.refetch();
+      this.$apollo.queries.hasWorkItems.refetch();
     },
-    async refetchItems({ refetchCounts = false }) {
+    // `cause` is set only by the realtime paths below, so a user-driven refetch (creating an
+    // item, changing filters, ...) stays untagged in the request logs.
+    async refetchItems({ refetchCounts = false, cause }) {
+      if (cause) {
+        markRealtimeRefetch(cause);
+      }
       if (refetchCounts) {
         this.$apollo.queries.workItemsCount.refetch();
         this.$apollo.queries.hasWorkItems.refetch();
@@ -2068,9 +2093,6 @@ export default {
       if (savedViewName) {
         return `${savedViewName} · ${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
-      if (this.isGroup && this.isEpicsList) {
-        return `${__('Epics')} · ${middleCrumb} · GitLab`;
-      }
       return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
     },
     handleRefetch(scope) {
@@ -2103,6 +2125,31 @@ export default {
           error: (error) => Sentry.captureException(error),
         });
     },
+    // No next handler needed: Apollo caches the payload by __typename/id,
+    // so the savedView query re-emits and its result hook re-applies the config.
+    subscribeToSavedViewChanges(savedViewId) {
+      if (!this.glFeatures.workItemsRealtime || !this.isLoggedIn) {
+        return;
+      }
+      if (this.savedViewChangesSubscription?.savedViewId === savedViewId) {
+        return;
+      }
+
+      this.unsubscribeFromSavedViewChanges();
+      const subscription = this.$apollo
+        .subscribe({
+          query: workItemSavedViewUpdatedSubscription,
+          variables: { savedViewId },
+        })
+        .subscribe({
+          error: (error) => Sentry.captureException(error),
+        });
+      this.savedViewChangesSubscription = { savedViewId, subscription };
+    },
+    unsubscribeFromSavedViewChanges() {
+      this.savedViewChangesSubscription?.subscription.unsubscribe();
+      this.savedViewChangesSubscription = null;
+    },
     // A reconnect doesn't replay what was missed while disconnected, so the list can look live
     // but be stale. Reload everything rather than working out what changed.
     refetchAfterReconnect() {
@@ -2110,7 +2157,10 @@ export default {
         return;
       }
 
-      this.refetchItems({ refetchCounts: true });
+      this.refetchItems({ refetchCounts: true, cause: 'reconnect' });
+      if (this.isSavedView) {
+        this.$apollo.queries.savedView.refetch();
+      }
     },
     // Events arrive for every work item in the namespace and its descendants, so a bulk edit can
     // fire many changes at once — buffer them and process together instead of one at a time.
@@ -2164,11 +2214,22 @@ export default {
               // Too many changed items to check in one go — treat it as a bulk change and reload.
               needsListRefetch = true;
             } else {
-              needsListRefetch = checkableCreated.some((id) => matches.has(id));
+              const isMatched = (id) => matches.some((node) => node.id === id);
+
+              // Boards move and insert their own matched cards below instead of reloading.
+              if (this.isBoardView) {
+                this.boardRealtimeMatches = {
+                  created: matches.filter((node) => checkableCreated.includes(node.id)),
+                  updated: matches.filter((node) => visibleUpdated.includes(node.id)),
+                };
+              } else {
+                needsListRefetch = checkableCreated.some(isMatched);
+              }
+
               // A match already patched the item for free; a miss means it no longer belongs in
               // the current filters, so it needs to leave every cached page and board column.
               visibleUpdated
-                .filter((id) => !matches.has(id))
+                .filter((id) => !isMatched(id))
                 .forEach((id) => removeWorkItemFromNamespaceLists(cache, this.namespaceId, id));
             }
           } catch (error) {
@@ -2181,7 +2242,7 @@ export default {
         }
 
         if (needsListRefetch) {
-          this.refetchItems({ refetchCounts: true });
+          this.refetchItems({ refetchCounts: true, cause: 'refetch' });
           return;
         }
 
@@ -2193,6 +2254,7 @@ export default {
         // A change we ignored can still move the counts, and the payload doesn't say which
         // fields changed, so counts always refresh. Using `refetchQueries` instead of a single
         // query's `.refetch()` also catches every board column's own count query.
+        markRealtimeRefetch('count', COUNT_OPERATIONS);
         client.refetchQueries({ include: [getWorkItemsCountOnlyQuery] });
         if (created.length > 0 || deleted.length > 0) {
           this.$apollo.queries.hasWorkItems.refetch();
@@ -2258,12 +2320,11 @@ export default {
               </gl-button>
               <create-work-item-modal
                 v-if="showProjectNewWorkItem"
-                :always-show-work-item-type-select="!isEpicsList"
                 :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                 :full-path="rootPageFullPath"
+                :hide-namespace-selector="!isGroup"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
-                :is-epics-list="isEpicsList"
                 :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                 @work-item-created="handleWorkItemCreated"
               />
@@ -2281,7 +2342,6 @@ export default {
                 :query-variables="csvExportQueryVariables"
                 :full-path="rootPageFullPath"
                 :url-params="urlParams"
-                :is-epics-list="isEpicsList"
                 :is-group-issues-list="isGroupIssuesList"
               />
             </div>
@@ -2308,17 +2368,15 @@ export default {
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
               :url-params="urlParams"
-              :is-epics-list="isEpicsList"
               :is-group-issues-list="isGroupIssuesList"
             />
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :is-epics-list="isEpicsList"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2345,14 +2403,20 @@ export default {
         @on-sort="handleSort"
       >
         <template #user-preference>
-          <gl-button
-            icon="preferences"
-            :selected="isDisplayDrawerOpen"
-            data-testid="display-settings-button"
-            @click="toggleDisplayDrawer"
+          <div
+            class="gl-ml-auto gl-flex gl-items-center gl-gap-3"
+            data-testid="toolbar-view-actions"
           >
-            {{ __('Display') }}
-          </gl-button>
+            <work-item-view-mode-toggle
+              :view-mode="viewMode"
+              @toggle-view-mode="handleToggleViewMode"
+            />
+            <work-item-display-settings-button
+              :selected="isDisplayDrawerOpen"
+              data-testid="display-settings-button"
+              @click="toggleDisplayDrawer"
+            />
+          </div>
         </template>
       </filtered-search-bar>
       <gl-intersection-observer
@@ -2384,14 +2448,20 @@ export default {
               @on-sort="handleSort"
             >
               <template #user-preference>
-                <gl-button
-                  icon="preferences"
-                  :selected="isDisplayDrawerOpen"
-                  data-testid="display-settings-button"
-                  @click="toggleDisplayDrawer"
+                <div
+                  class="gl-ml-auto gl-flex gl-items-center gl-gap-3"
+                  data-testid="toolbar-view-actions"
                 >
-                  {{ __('Display') }}
-                </gl-button>
+                  <work-item-view-mode-toggle
+                    :view-mode="viewMode"
+                    @toggle-view-mode="handleToggleViewMode"
+                  />
+                  <work-item-display-settings-button
+                    :selected="isDisplayDrawerOpen"
+                    data-testid="display-settings-button"
+                    @click="toggleDisplayDrawer"
+                  />
+                </div>
               </template>
             </filtered-search-bar>
           </div>
@@ -2420,11 +2490,11 @@ export default {
             {{ __('Bulk edit') }}
           </gl-button>
           <gl-button
-            v-if="isPlanningViewBoardEnabled && viewMode === $options.VIEW_MODE_BOARD"
+            v-if="isBoardView"
             size="small"
             variant="link"
             class="!gl-text-sm"
-            :href="$options.BOARD_FEEDBACK_ISSUE_URL"
+            :href="boardFeedbackIssueUrl"
             target="_blank"
             rel="noopener noreferrer"
             data-testid="board-feedback-link"
@@ -2489,16 +2559,14 @@ export default {
     </template>
     <component
       :is="isTableView ? 'table-view' : 'list-view'"
-      v-if="viewMode !== $options.VIEW_MODE_BOARD"
+      v-if="!isBoardView"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
       :query-variables="queryVariables"
       :skip-query="shouldSkipDueToSavedViewState || metadataLoading"
       :work-items-count="workItemsCount"
-      :has-work-items="hasWorkItems"
       :error="error"
-      :initial-load-was-filtered="initialLoadWasFiltered"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :checked-issuable-ids="checkedIssuableIds"
       :display-settings="displaySettingsSoT"
@@ -2536,18 +2604,16 @@ export default {
         <empty-state-with-any-issues
           v-else-if="hasWorkItems"
           :has-search="hasSearch"
-          :is-epic="isEpicsList"
           :with-tabs="false"
         >
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :is-epics-list="isEpicsList"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2568,12 +2634,11 @@ export default {
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :show-project-selector="!hasEpicsFeature"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2589,21 +2654,26 @@ export default {
       </template>
     </component>
     <board-view
-      v-if="viewMode === $options.VIEW_MODE_BOARD && isPlanningViewBoardEnabled"
+      v-if="isBoardView"
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
       :group-order="groupOrder"
+      :group-sort="groupSort"
       :visible-groups="visibleGroups"
       :visible-groups-loaded="preferencesLoaded"
       :can-manage-columns="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
+      :show-empty-groups="showEmptyGroups"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
       :updated-work-item="boardUpdatedItem"
+      :realtime-matches="boardRealtimeMatches"
       :has-active-filters="hasActiveFilters"
       :preselected-work-item-type="preselectedWorkItemType"
       :can-create-work-item="showProjectNewWorkItem"
+      :has-work-items="hasWorkItems || hasWorkItemsFailed"
+      :has-work-items-loading="hasWorkItemsLoading"
       @set-error="($evt) => (error = $evt)"
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
@@ -2611,7 +2681,60 @@ export default {
       @hide-group="handleHideGroup"
       @work-item-created="handleBoardWorkItemCreated"
       @open-group-by-settings="openGroupByDisplaySettings"
-    />
+    >
+      <template #empty-state>
+        <empty-state-with-any-issues
+          v-if="hasWorkItems || hasWorkItemsFailed"
+          :has-search="hasSearch"
+          :with-tabs="false"
+        >
+          <template #new-issue-button>
+            <create-work-item-modal
+              v-if="showProjectNewWorkItem"
+              always-show-work-item-type-select
+              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+              :full-path="rootPageFullPath"
+              :is-group="isGroup"
+              :preselected-work-item-type="preselectedWorkItemType"
+              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
+              @work-item-created="handleWorkItemCreated"
+            />
+            <new-resource-dropdown
+              v-if="showGroupNewWorkItem"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+          </template>
+        </empty-state-with-any-issues>
+        <empty-state-without-any-issues
+          v-else
+          :show-new-issue-dropdown="showGroupNewWorkItem"
+          :has-projects="hasProjects"
+        >
+          <template #new-issue-button>
+            <create-work-item-modal
+              v-if="showProjectNewWorkItem"
+              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+              :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
+              :is-group="isGroup"
+              :preselected-work-item-type="preselectedWorkItemType"
+              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
+              @work-item-created="handleWorkItemCreated"
+            />
+            <new-resource-dropdown
+              v-if="showGroupNewWorkItem"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+          </template>
+        </empty-state-without-any-issues>
+      </template>
+    </board-view>
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"
       :page="displayDrawerPage"
@@ -2629,7 +2752,6 @@ export default {
       @page-change="displayDrawerPage = $event"
       @sort="handleSort"
       @update-settings="handleLocalDisplayPreferencesUpdate"
-      @toggle-view-mode="handleToggleViewMode"
     />
   </div>
 </template>

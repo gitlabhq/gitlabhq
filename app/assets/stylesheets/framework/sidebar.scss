@@ -255,7 +255,7 @@
     top: $calc-application-header-height;
 
     @include gl-container-width-down(lg, panel) {
-      z-index: 251;
+      z-index: $sidebar-z-index;
     }
   }
 
@@ -263,7 +263,7 @@
     @include gl-container-width-down(lg, panel) {
       @include right-sidebar;
       top: $calc-application-bars-height;
-      z-index: 251;
+      z-index: $sidebar-z-index;
     }
 
     @include gl-container-width-down(md, panel) {
@@ -498,7 +498,7 @@
     .sidebar-collapsed-container {
       &.with-sub-blocks .sub-block:hover,
       &:not(.with-sub-blocks):hover {
-        background-color: $gray-100;
+        background-color: var(--gl-action-neutral-background-color-hover);
       }
     }
 
@@ -557,8 +557,8 @@
       }
 
       .todo-undone {
-        color: $blue-600;
-        fill: $blue-600;
+        color: var(--gl-status-info-text-color);
+        fill: var(--gl-status-info-icon-color);
       }
 
       .author {
@@ -700,6 +700,24 @@
           drop-shadow(-1px 0 0 var(--gl-background-color-default))
           drop-shadow(0 -1px 0 var(--gl-background-color-default))
           drop-shadow(0 1px 0 var(--gl-background-color-default));
+}
+
+// Overlays the recommendation-reason status badge on the bottom-right of the
+// 24px reviewer avatar, mirroring the "cannot merge" merge-icon treatment.
+.suggested-reviewer-reason-icon {
+  top: 17px;
+  left: 18px;
+  filter: drop-shadow(1px 0 0 var(--gl-background-color-default))
+          drop-shadow(-1px 0 0 var(--gl-background-color-default))
+          drop-shadow(0 -1px 0 var(--gl-background-color-default))
+          drop-shadow(0 1px 0 var(--gl-background-color-default));
+}
+
+.suggested-reviewer-avatar .gl-avatar {
+  @apply gl-border-1;
+  @apply gl-border-dashed;
+  @apply gl-border-strong;
+  background-color: transparent;
 }
 
 .sidebar-help-wrap {

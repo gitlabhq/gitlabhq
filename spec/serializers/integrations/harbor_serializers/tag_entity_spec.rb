@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::HarborSerializers::TagEntity do
-  let_it_be(:harbor_integration) { create(:harbor_integration) }
-
   let(:push_time) { "2022-03-22T09:04:56.186Z" }
   let(:pull_time) { "2022-03-23T09:04:56.186Z" }
 

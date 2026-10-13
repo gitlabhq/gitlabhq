@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlSkeletonLoader } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import CollationCheckerApp from '~/admin/database_diagnostics/components/collation_checker_app.vue';
@@ -27,19 +27,10 @@ describe('CollationCheckerApp component', () => {
   const collationCheckResultsUrl = '/admin/database_diagnostics/collation_check_results.json';
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(CollationCheckerApp, {
+    wrapper = mountExtended(CollationCheckerApp, {
       provide: {
         runCollationCheckUrl,
         collationCheckResultsUrl,
-      },
-      stubs: {
-        DbDiagnosticResults: false,
-        DbCollationMismatches: false,
-        DbCorruptedIndexes: false,
-        DbSkippedIndexes: false,
-        DbIssuesCta: false,
-        GlCard: false,
-        NumberToHumanSize: true,
       },
     });
   };

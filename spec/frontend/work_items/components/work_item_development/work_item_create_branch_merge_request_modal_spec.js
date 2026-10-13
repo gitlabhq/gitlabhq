@@ -9,6 +9,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import WorkItemCreateBranchMergeRequestModal from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { createAlert } from '~/alert';
@@ -163,6 +164,110 @@ describe('CreateBranchMergeRequestModal', () => {
 
         expect(dropdownItems.find((item) => item.text === 'Branches').options).toHaveLength(2);
         expect(dropdownItems.find((item) => item.text === 'Tags').options).toHaveLength(2);
+      });
+    });
+
+    describe('Branch name validation', () => {
+      const refsPath = (search) => `/fullPath/refs?search=${search}`;
+      const isSubmitLoading = () => findPrimaryButton().attributes.loading;
+      const isSubmitDisabled = () => findPrimaryButton().attributes.disabled;
+      const runDebounce = () => jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+      beforeEach(async () => {
+        // The debounce mock is synchronous by default, which hides the window this
+        // describe is about; make it behave like the real debounce instead.
+        global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
+        createWrapper();
+        await waitForPromises();
+      });
+
+      afterEach(() => {
+        global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+      });
+
+      it('shows the submit button as loading from the first keystroke, before the debounced check runs', async () => {
+        mock.onGet(refsPath('new-branch')).reply(HTTP_STATUS_OK, { Branches: [] });
+
+        findTargetBranch().vm.$emit('input', 'new-branch');
+        await nextTick();
+
+        expect(isSubmitLoading()).toBe(true);
+      });
+
+      it('releases the submit button once the check has finished', async () => {
+        mock.onGet(refsPath('new-branch')).reply(HTTP_STATUS_OK, { Branches: [] });
+
+        findTargetBranch().vm.$emit('input', 'new-branch');
+        runDebounce();
+        await waitForPromises();
+
+        expect(isSubmitLoading()).toBe(false);
+        expect(isSubmitDisabled()).toBe(false);
+      });
+
+      it('keeps the submit button loading when a superseded check resolves while a newer one is in flight', async () => {
+        let resolveFirstCheck;
+        mock.onGet(refsPath('new')).reply(
+          () =>
+            new Promise((resolve) => {
+              resolveFirstCheck = () => resolve([HTTP_STATUS_OK, { Branches: [] }]);
+            }),
+        );
+        mock.onGet(refsPath('new-branch')).reply(() => new Promise(() => {}));
+
+        findTargetBranch().vm.$emit('input', 'new');
+        runDebounce();
+        await waitForPromises();
+
+        findTargetBranch().vm.$emit('input', 'new-branch');
+        runDebounce();
+        await waitForPromises();
+
+        resolveFirstCheck();
+        await waitForPromises();
+
+        expect(isSubmitLoading()).toBe(true);
+      });
+
+      it('keeps the submit button loading when a superseded check resolves before the newer one starts', async () => {
+        let resolveFirstCheck;
+        mock.onGet(refsPath('new')).reply(
+          () =>
+            new Promise((resolve) => {
+              resolveFirstCheck = () => resolve([HTTP_STATUS_OK, { Branches: [] }]);
+            }),
+        );
+        mock.onGet(refsPath('new-branch')).reply(() => new Promise(() => {}));
+
+        findTargetBranch().vm.$emit('input', 'new');
+        runDebounce();
+        await waitForPromises();
+
+        findTargetBranch().vm.$emit('input', 'new-branch');
+        resolveFirstCheck();
+        await waitForPromises();
+
+        expect(isSubmitLoading()).toBe(true);
+      });
+
+      it('releases the submit button and marks the branch invalid when the field is cleared during a check', async () => {
+        mock.onGet(refsPath('new')).reply(() => new Promise(() => {}));
+
+        findTargetBranch().vm.$emit('input', 'new');
+        runDebounce();
+        await waitForPromises();
+
+        findTargetBranch().vm.$emit('input', '');
+        runDebounce();
+        await waitForPromises();
+
+        expect(
+          mock.history.get
+            .filter(({ url }) => url.startsWith('/fullPath/refs'))
+            .map(({ url }) => url),
+        ).toEqual([refsPath('new')]);
+        expect(isSubmitLoading()).toBe(false);
+        expect(isSubmitDisabled()).toBe(true);
       });
     });
 

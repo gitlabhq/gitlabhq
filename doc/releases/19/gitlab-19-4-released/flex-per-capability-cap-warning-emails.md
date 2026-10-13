@@ -3,7 +3,7 @@ title: Early warnings for GitLab Flex spend caps
 tier: [ Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 stage: fulfillment
-documentation_link: "../../../subscriptions/gitlab_flex/#adjust-your-reservation"
+documentation_link: "../../../subscriptions/gitlab_flex_dashboard/#usage-notifications"
 work_item: https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/18962
 categories: [ Consumables Cost Management ]
 level: secondary

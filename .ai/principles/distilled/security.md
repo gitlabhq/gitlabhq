@@ -1,6 +1,6 @@
 ---
-source_checksum: e6667c1372494a2a
-distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
+source_checksum: 996c1e57e33519b4
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -12,16 +12,43 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 
 - Write unit and feature specs that assert both what actors **can** and **cannot** do (abuse cases).
 - Test visibility levels in addition to project access rights.
-- Return `404 Not Found` (not `403 Forbidden`) when authorization fails, to avoid revealing resource existence; use `403` only when displaying a specific denial message.
+- Generally return `404 Not Found` when authorization fails; use `403` for a specific denial explanation only when appropriate. DO NOT reveal resource or member existence through distinguishable status codes or specific error messages.
 - Use `user.is_a?(User)` before passing `user.id` to auth methods like `Gitlab::Auth::CurrentUserMode.bypass_session!` to prevent `DeployToken`/`DeployKey` ID confusion.
 - Group all permissions for the same condition into one `.policy` block; DO NOT scatter rules across the file.
 - DO NOT enable permissions in `BasePolicy` — it is inherited by all policies and would grant the permission on every object.
-- DO NOT define permissions dynamically at runtime; declare each permission explicitly so it is searchable.
+- DO NOT construct permission names dynamically at runtime; loading explicitly declared names from role or permission-group YAML is permitted.
 - Set the correct `:scope` on conditions: `scope: :user` for user-data-only, `scope: :subject` for subject-data-only, `scope: :global` for neither, and no scope when both are read.
 - DO NOT cascade permissions through non-private intermediate abilities; add each permission directly to the appropriate role YAML file. Exception: private (underscore-prefixed) permissions may cascade exactly one level deep (private permission + condition enables public permission).
 - Enable a permission unconditionally for a role, then use a separate `prevent` rule to restrict it when a condition is not met — DO NOT combine role checks and settings/flag checks in a single `rule { role & condition }`.
 - DO NOT write `rule { admin | owner }` — `admin` already satisfies `condition(:owner)`.
 - Use role YAML files (`config/authz/roles/*.yml`) as the single source of truth for which permissions each role has; DO NOT use `enable` rules in policy files to grant permissions based on role conditions.
+- DO NOT grant permissions from access-level lookups (`max_member_access_for_user`, `access_level >=` comparisons, bare role conditions, or `can?(:developer_access)`); grant the permission through role YAML instead (flagged by the `Gitlab/Authz/RoleCheckInRule` cop).
+- DO NOT combine existing permissions to grant a third permission; grant that permission in role YAML and check it directly. When the subject policy receives no role YAML grants, check the same permission on the resource that owns the data; this is not prohibited permission cascading.
+- DO NOT grant access based on membership in a different resource; authorize where the action happens. The sole exception is `descendant_project_member`, which grants only baseline group access (`read_group`, `read_boundary`, `upload_file`, and `update_work_item_user_preference`) to descendant-project members.
+- DO NOT use `user.highest_role` in policies; it is instance-wide rather than scoped to the subject.
+- DO NOT call `Ability.allowed?` or `user.can?` (on a receiver) in policy files; use DeclarativePolicy's bare `can?` helper instead (flagged by the `Gitlab/Authz/DisallowAbilityAllowed` cop).
+- DO NOT use `user.admin?` as an implicit grant shortcut in policy conditions; check the permission through the policy and let role definitions and the base policy's `admin` condition (which requires admin mode) decide.
+- DO NOT use `can?(:read_project)` as a membership check — it is granted to every user on public projects; use `user_is_user? && project.member?(@user)` when real membership combined with other state is needed.
+- Name conditions for what they check; DO NOT use "owner" for anything other than the Owner role, name a read-only condition `can_manage_*`, or end a condition name with `?`, because conditions become predicate methods.
+- Keep conditions cheap and side-effect free: order cheap checks first, run queries last, and guard against `nil` users (policies are evaluated for anonymous users too).
+- Match permissions to the action: use read permissions for reads and mutating permissions for writes; DO NOT guard either action with the other kind.
+- Keep access paths and resource boundaries out of permission names; the subject identifies the boundary. Reuse an existing permission with the same meaning before adding one, and DO NOT give a permission multiple meanings.
+- Describe the action a permission gates, not the roles that receive it.
+- Create a complete permission definition file for every new permission; DO NOT add entries to the legacy to-do lists (`config/authz/permissions/definitions_todo.txt` and `config/authz/graphql/authorization_todo.txt`).
+- Preserve intended role access when moving or adding grants: update both `group` and `project` sections when applicable, and check `public_anonymous` and `guest` when replacing a broad read permission.
+- Normally add new `read_*` permissions to `auditor`; DO NOT grant auditors permissions that change project or group data.
+- Prevent new permissions wherever sibling permissions are restricted, including archived, pending-deletion, and feature-availability rules.
+- DO NOT duplicate grants inherited through `inherits_from`; add net-new permissions through an assignable permission group and use `raw_permissions` only to move existing permissions.
+- When changing or removing a cascade, check `ee/config/custom_abilities/*.yml` for dependent grants. Before renaming or removing a permission, check custom abilities and existing custom roles; stored custom-role abilities make a rename a breaking change. Include custom roles alongside default roles in behavior-change notes.
+- Enforce permissions in services and finders too, using the same permission across REST, GraphQL, and controllers; DO NOT re-implement the decision in controllers, helpers, or views. Give bots, service accounts, and internal tokens the narrowest permission needed.
+- DO NOT narrow an existing `before_action` with `only:` unless all excluded actions have their own authorization check. Gate editable UI with `update_*`, not `read_*`, and gate navigation with the permission used by its destination page.
+- DO NOT pass `skip_authorization: true` for requests a user or bot makes; reserve it for system-driven flows and never derive it from user input.
+- Declare granular token authorization on every new endpoint or provide an explicit justified opt-out.
+- Authorize the request-path resource with the token check and check user permissions on other resources the call touches. Choose assignable-permission boundaries from protected endpoints, not every policy grant; reserve `instance` mainly for admin-facing permissions.
+- Declare GraphQL token authorization once with `authorize_granular_token` on the type, resolver, or mutation rather than adding `granular_scope_directive` to individual fields. DO NOT hide a second token-permission check in implementation code; give separately protected data its own mutation or resolver and declaration.
+- Prefer authorizing the whole GraphQL type over individual fields; if part of a response needs a different token permission or boundary, move it to its own type, resolver, or mutation. A field's `authorize:` checks the parent object's policy; role YAML grants reach project, group, and organization policies, so other object policies must delegate to the owning resource.
+- DO NOT disable `Gitlab/Authz/` RuboCop cops (`RoleCheckInRule`, `AvoidHighestRoleUsage`, `DisallowAbilityAllowed`, `EnableInBasePolicy`, `ConditionScope`, `PermissionCheck`, `UsePolicyHelpers`) inline or via `.rubocop_todo/`; any unavoidable disable requires Authorization team approval. Existing uses of a coarse permission do not justify disabling a cop: use a granular permission for the changed code and open a follow-up for the remaining uses.
+- Use `expect_allowed` and `expect_disallowed` in policy specs (enforced by the `Gitlab/Authz/UsePolicyHelpers` cop); use real memberships and settings instead of stubbing `can?` or `Ability.allowed?`.
 
 ### Regular Expressions (Ruby)
 

@@ -7,6 +7,20 @@ import { ENTER_KEY, NUMPAD_ENTER_KEY } from '~/lib/utils/keys';
 import { __, sprintf } from '~/locale';
 import Raphael from './raphael';
 
+const MAX_MESSAGE_CHARS = 100; // matches the threshold Commit#title uses
+const MESSAGE_CHAR_WIDTH = 9; // 14px monospace advance (0.6em), rounded up
+const MESSAGE_OFFSET_X = 40;
+const MESSAGE_PADDING_RIGHT = 20;
+const TOOLTIP_WIDTH = 325; // commitTooltip renders a ~300px box offset from the dot; 325 adds a small margin
+
+const commitSubject = ({ message }) => message.split('\n')[0];
+
+const displayedSubject = (commit) => {
+  const subject = commitSubject(commit);
+
+  return subject.length > MAX_MESSAGE_CHARS ? `${subject.slice(0, MAX_MESSAGE_CHARS)}…` : subject;
+};
+
 export default class BranchGraph {
   constructor(element1, options1) {
     this.element = element1;
@@ -63,7 +77,19 @@ export default class BranchGraph {
     this.graphHeight = $(this.element).height();
     this.graphWidth = $(this.element).width();
     const ch = Math.max(this.graphHeight, this.offsetY + this.unitTime * this.mtime + 150);
-    const cw = Math.max(this.graphWidth, this.offsetX + this.unitSpace * this.mspace + 300);
+    const widestSubject = this.commits.reduce(
+      (widest, commit) => Math.max(widest, displayedSubject(commit).length),
+      0,
+    );
+    const cw = Math.max(
+      this.graphWidth,
+      this.offsetX +
+        this.unitSpace * this.mspace +
+        Math.max(
+          MESSAGE_OFFSET_X + widestSubject * MESSAGE_CHAR_WIDTH + MESSAGE_PADDING_RIGHT,
+          TOOLTIP_WIDTH,
+        ),
+    );
     this.r = Raphael(this.element.get(0), cw, ch);
     this.top = this.r.set();
     this.barHeight = Math.max(this.graphHeight, this.unitTime * this.days.length + 320);
@@ -382,18 +408,19 @@ export default class BranchGraph {
       'stroke-width': 2,
     });
 
-    let message = commit.message.split('\n')[0];
-    if (message.length > 30) {
-      message = `${message.slice(0, 30)}…`;
-    }
-
-    return r.text(this.offsetX + this.unitSpace * this.mspace + 40, y, message).attr({
-      fill: 'currentColor',
-      class: 'gl-text-default',
-      'text-anchor': 'start',
-      font: '14px Monaco, monospace',
-      title: commit.message.split('\n')[0],
-    });
+    return r
+      .text(
+        this.offsetX + this.unitSpace * this.mspace + MESSAGE_OFFSET_X,
+        y,
+        displayedSubject(commit),
+      )
+      .attr({
+        fill: 'currentColor',
+        class: 'gl-text-default',
+        'text-anchor': 'start',
+        font: '14px Monaco, monospace',
+        title: commitSubject(commit),
+      });
   }
 
   drawLines(x, y, commit) {

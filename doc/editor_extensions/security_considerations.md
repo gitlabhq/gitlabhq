@@ -14,6 +14,9 @@ Understand the security implications and follow best practices to protect your d
 When editor extensions and CLI tools execute agents locally, the agents run without container
 isolation and have direct access to your system resources.
 
+The [local sandbox](local_sandbox.md) reduces these risks, but does not
+remove them. The sandbox is turned off by default.
+
 ### File system access
 
 Agents have different file access levels depending on the operation type.
@@ -59,6 +62,11 @@ Because isolation is not in place, the following threats are possible:
 ## Recommended security practices
 
 To protect your development environment, follow these security best practices.
+
+### Turn on the local sandbox
+
+Turn on the [local sandbox](local_sandbox.md) to restrict what agents and
+local MCP servers can read, write, and reach on the network.
 
 ### Review tool calls before approval
 

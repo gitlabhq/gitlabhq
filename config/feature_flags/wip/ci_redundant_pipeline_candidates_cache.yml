@@ -1,0 +1,11 @@
+---
+name: ci_redundant_pipeline_candidates_cache
+description: Cache the pipelines a newer pipeline may auto-cancel, instead of searching
+  p_ci_pipelines for them
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/621543
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257237
+rollout_issue_url:
+milestone: '19.5'
+group: group::ci platform
+type: wip
+default_enabled: false

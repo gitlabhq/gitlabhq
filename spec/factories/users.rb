@@ -26,6 +26,9 @@ FactoryBot.define do
 
       user.organization ||= org_owner_of || create(:common_organization)
 
+      # Frozen let_it_be users cannot generate the token lazily on read.
+      user.ensure_feed_token unless overrides.key?(:feed_token)
+
       # Ensure user.organization will be added to user.organizations
       # except when the organizations is explicitly overridden
       # except when 'owner_of' is set

@@ -40,8 +40,13 @@ To find subscribers, search the subscription files under
 | `Ai::ActiveContext::Code::MarkRepositoryAsReadyEvent` | `global_search` | EE | Published to mark Ai::ActiveContext::Code::Repository records whose embedding indexing has completed as ready, by checking the search index for the presence of expected embedding fields. |
 | `Ai::ActiveContext::Code::ProcessInvalidEnabledNamespaceEvent` | `global_search` | EE | Published to remove Ai::ActiveContext::Code::EnabledNamespace records that are no longer eligible (e.g. expired SaaS subscriptions or instances without AI features). Re-emitted by the subscriber worker to continue batched processing. |
 | `Ai::ActiveContext::Code::ProcessPendingEnabledNamespaceEvent` | `global_search` | EE | Published to process the next pending Ai::ActiveContext::Code::EnabledNamespace by enrolling its eligible projects as Ai::ActiveContext::Code::Repository records. Re-emitted by the subscriber worker while pending namespaces remain. |
-| `Ai::DuoWorkflows::WorkflowFinishedEvent` | `duo_agent_platform` | EE | Published when a Duo workflow transitions to :finished (the agent completed successfully). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. |
+| `Ai::DuoWorkflows::WorkflowApprovalRequiredEvent` | `duo_agent_platform` | EE | Published when a Duo workflow pauses in :tool_call_approval_required (the agent needs a human decision). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. |
+| `Ai::DuoWorkflows::WorkflowFailedEvent` | `duo_agent_platform` | EE | Published when a Duo agent session ends early. It currently carries both a drop and a stop, for messaging-triggered sessions only, told apart by status_event. A future release moves a stop onto WorkflowStoppedEvent. Deferred via run_after_commit. |
+| `Ai::DuoWorkflows::WorkflowFinishedCloudEvent` | `duo_agent_platform` | EE | Published when a Duo agent session completes successfully. Published for every session, whatever flow it runs, so subscribers filter themselves. Will replace WorkflowFinishedEvent. Deferred via run_after_commit. |
+| `Ai::DuoWorkflows::WorkflowFinishedEvent` | `duo_agent_platform` | EE | Published when a Duo workflow transitions to :finished (the agent completed successfully). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. Deprecated, replaced by WorkflowFinishedCloudEvent. |
+| `Ai::DuoWorkflows::WorkflowInputRequiredEvent` | `duo_agent_platform` | EE | Published when a Duo workflow pauses in :input_required (the agent has answered and waits for the user's next message). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. |
 | `Ai::DuoWorkflows::WorkflowStartedEvent` | `duo_agent_platform` | EE | Published when a Duo workflow first transitions to :running (the agent has begun executing). Only emitted for messaging-triggered workflows. Deferred via run_after_commit. |
+| `Ai::DuoWorkflows::WorkflowStoppedEvent` | `duo_agent_platform` | EE | Published when a user cancels a Duo agent session. Nothing publishes or subscribes to it until [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256963); the class ships first so that every node can read it before any node queues one. Deferred via run_after_commit. |
 
 ## Analytics
 
@@ -95,8 +100,10 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
+| `Members::AcceptedInviteCloudEvent` | `user_management` | CE | CloudEvent published when a user accepts a membership invitation to a group or project. |
 | `Members::AcceptedInviteEvent` | `user_management` | CE | Published when a user accepts a membership invitation to a group or project. |
 | `Members::AddedCloudEvent` | `user_management` | CE | CloudEvent published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
+| `Members::DestroyedCloudEvent` | `user_management` | CE | CloudEvent published after a member record is removed from a group or project. Fires once per user per destroy operation; not published on recursive cascades (for example, when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now. |
 | `Members::DestroyedEvent` | `user_management` | CE | Published after a member record is removed from a group or project. Fires once per user per destroy operation; not published on recursive cascades (for example, when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now. |
 | `Members::MembersAddedEvent` | `user_management` | CE | Published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
 | `Members::MembershipModifiedByAdminEvent` | `seat_cost_management` | EE | Published when an admin creates or promotes a member to a billable role while member-promotion-management is enabled, so pending approval workflows can be processed. |
@@ -165,6 +172,7 @@ To find subscribers, search the subscription files under
 |-------|-----------------|---------|-------------|
 | `PackageMetadata::IngestedAdvisoryEvent` | `software_composition_analysis` | CE | Published once per advisory record after package security advisories are ingested. Only fires for advisories whose published_date is within the last 14 days (PUBLISHED_ADVISORY_INTERVAL); older advisories are ingested without an event. |
 | `PackageMetadata::IngestedMalwareAdvisoryEvent` | `software_composition_analysis` | EE | Published for each malware advisory ingested inside the CVS publication-age window, so continuous vulnerability scanning can scan it against existing SBOM occurrences. Mirrors PackageMetadata::IngestedAdvisoryEvent for the malware advisory path. |
+| `PackageMetadata::MalwareAdvisoryStatusChangedEvent` | `software_composition_analysis` | EE | Published via an after-commit hook when an advisory's flagging status changes, so subscribers can re-index the affected SBOM occurrence refs and correct their malware flag. Publishes only when the advisory's flagging actually changed; unchanged re-ingestions publish nothing. |
 
 ## Packages
 

@@ -8,6 +8,10 @@
 
 - Leverage partition pruning wherever possible when querying partitioned tables to minimize LWLock contention
 
+### Agent Session Environment
+
+- Duo agent sessions have no PostgreSQL server or `config/database.yml`, so RSpec cannot run locally; verify by reading code and rely on CI to run tests.
+
 ### Query Plan Analysis
 
 - Analyze query plans in the MR description for:

@@ -298,6 +298,10 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
         analyze_interval: analyze_interval
       })
     end
+
+    it_behaves_like 'a partitioning strategy with a default analyze_interval' do
+      let(:strategy_args) { { next_partition_if: next_partition_if, detach_partition_if: detach_partition_if } }
+    end
   end
 
   def drop_partitions

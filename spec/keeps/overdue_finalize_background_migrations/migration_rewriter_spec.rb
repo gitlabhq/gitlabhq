@@ -7,8 +7,9 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigrations::MigrationRewriter, fe
   subject(:rewriter) { described_class.new }
 
   let(:migration_record) do
-    Struct.new(:id, :finished_at, :updated_at, :gitlab_schema)
-      .new(id: 1, finished_at: '2023-01-01', updated_at: '2023-01-01', gitlab_schema: 'gitlab_main')
+    Struct.new(:id, :finished_at, :updated_at, :gitlab_schema, :table_name, :column_name, :job_arguments)
+      .new(id: 1, finished_at: '2023-01-01', updated_at: '2023-01-01', gitlab_schema: 'gitlab_main',
+        table_name: 'users', column_name: 'id', job_arguments: [])
   end
 
   describe '#find_queue_method_node' do
@@ -263,6 +264,54 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigrations::MigrationRewriter, fe
       result = rewriter.send(:strip_comments, code)
 
       expect(result).to eq("# first line comment\ncode\n")
+    end
+  end
+
+  describe '#add_ensure_call_to_migration without a queue node' do
+    let(:tmp_dir) { Pathname(Dir.mktmpdir) }
+    let(:migration_file) { tmp_dir.join('finalize_migration.rb').to_s }
+
+    after do
+      FileUtils.rm_rf(tmp_dir)
+    end
+
+    before do
+      File.write(migration_file, <<~RUBY)
+        # frozen_string_literal: true
+        class FinalizeHKTestMigration < Gitlab::Database::Migration[2.2]
+          def up
+            # placeholder
+          end
+
+          def down; end
+        end
+      RUBY
+    end
+
+    it 'builds the ensure call from the archived record' do
+      rewriter.add_ensure_call_to_migration(migration_file, nil, 'TestMigration', migration_record)
+
+      expect(File.read(migration_file)).to include(
+        "job_class_name: 'TestMigration'",
+        'table_name: :users',
+        'column_name: :id',
+        'job_arguments: []',
+        'restrict_gitlab_migration gitlab_schema: :gitlab_main'
+      )
+    end
+
+    context 'when the migration was queued with job arguments' do
+      let(:migration_record) do
+        Struct.new(:id, :finished_at, :updated_at, :gitlab_schema, :table_name, :column_name, :job_arguments)
+          .new(id: 1, finished_at: '2023-01-01', updated_at: '2023-01-01', gitlab_schema: 'gitlab_main',
+            table_name: 'notes', column_name: 'id', job_arguments: %w[namespace_id project_id])
+      end
+
+      it 'includes them' do
+        rewriter.add_ensure_call_to_migration(migration_file, nil, 'TestMigration', migration_record)
+
+        expect(File.read(migration_file)).to include('job_arguments: ["namespace_id", "project_id"]')
+      end
     end
   end
 end

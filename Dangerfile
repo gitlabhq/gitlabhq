@@ -52,7 +52,8 @@ Gitlab::Dangerfiles.for_project(self, project_name) do |gitlab_dangerfiles|
   # label reference so it renders as a colored label.
   gitlab_dangerfiles.config.custom_labels_for_categories = {
     'merge requests backend': '~"Merge Requests backend"',
-    geo: '~"group::geo"'
+    geo: '~"group::geo"',
+    project_management: '~"group::work items"'
   }
   gitlab_dangerfiles.import_dangerfiles(except: %w[simple_roulette])
 end

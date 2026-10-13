@@ -72,14 +72,14 @@ module ApiHelpers
   def expect_response_contain_exactly(*items)
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response).to be_an Array
-    expect(json_response.map { |item| item['id'] }).to contain_exactly(*items)
+    expect(json_response.map { |item| item['id'] }).to match_array(items)
   end
 
   def expect_paginated_array_response_contain_exactly(*items)
     expect(response).to have_gitlab_http_status(:ok)
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
-    expect(json_response.map { |item| item['id'] }).to contain_exactly(*items)
+    expect(json_response.map { |item| item['id'] }).to match_array(items)
   end
 
   def stub_last_activity_update

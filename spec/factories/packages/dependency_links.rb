@@ -3,12 +3,12 @@
 FactoryBot.define do
   factory :packages_dependency_link, class: 'Packages::DependencyLink' do
     package { association(:nuget_package) }
-    dependency { association(:packages_dependency) }
+    dependency { association(:packages_dependency, project: package.project) }
     dependency_type { :dependencies }
 
     trait :with_nuget_metadatum do
-      after :build do |link|
-        link.nuget_metadatum = build(:nuget_dependency_link_metadatum)
+      nuget_metadatum do
+        association(:nuget_dependency_link_metadatum, strategy: :build, dependency_link: instance)
       end
     end
 

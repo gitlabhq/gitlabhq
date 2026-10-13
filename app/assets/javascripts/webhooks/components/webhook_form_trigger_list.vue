@@ -25,7 +25,6 @@ export default {
     initialTriggers: {
       type: Object,
       required: true,
-      default: () => {},
     },
     hasGroup: {
       type: Boolean,

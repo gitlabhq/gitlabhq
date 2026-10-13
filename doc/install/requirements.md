@@ -70,7 +70,7 @@ platforms and high availability requirements.
 
 ### Supported infrastructure
 
-GitLab runs on cloud providers and self-managed infrastructure, provided the underlying
+GitLab runs on cloud providers and on your own infrastructure, provided the underlying
 environment meets the hardware and component requirements described in this guide.
 Commonly used cloud providers include AWS, GCP, and Azure.
 [GitLab Support](https://support.gitlab.com/hc/en-us/articles/11625911285404-Statement-of-Support) covers GitLab itself; issues with the underlying infrastructure or platform are outside its scope.
@@ -85,7 +85,7 @@ HA deployments have specific network requirements:
 
 - Latency between nodes must be lower than 5 ms to support synchronous replication.
 - Deploying across availability zones is recommended for resilience. Use an odd number of zones to satisfy quorum requirements.
-- Deploying across multiple self-managed data centers requires synchronous-capable latency, redundant network links, and an odd number of centers in the same geographic region.
+- Deploying across multiple data centers requires synchronous-capable latency, redundant network links, and an odd number of centers in the same geographic region.
 
 > [!warning]
 > A single GitLab instance must not span multiple geographic regions. For multi-region
@@ -103,7 +103,7 @@ HA deployments have specific network requirements:
 - As an external service, such as:
   - A [managed cloud provider service](cloud-services.md#use-managed-cloud-postgresql).
   - The [CloudNativePG operator](https://cloudnative-pg.io/).
-  - A [self-managed instance](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
+  - A [non-packaged PostgreSQL server](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
 For external instances, see:
 
@@ -117,7 +117,7 @@ For the following versions of GitLab, use these PostgreSQL versions:
 
 | GitLab version | Helm chart version | Minimum PostgreSQL version | Maximum PostgreSQL version |
 | -------------- | ------------------ | -------------------------- | -------------------------- |
-| 19.x           | 10.x               | 17.x                       | 17.x                       |
+| 19.x           | 10.x               | 17.x                       | 18.x ([tested against GitLab 18.7 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209519)) |
 | 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x ([tested against GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)) |
 | 17.x           | 8.x                | [14.14](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 16.x ([tested against GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)) |
 | 16.x           | 7.x                | 13.6                       | 15.x ([tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)) |
@@ -169,10 +169,10 @@ The supported versions of Redis or Valkey are:
 
 | Datastore | Recommended version | Minimum version |
 | --------- | ------------------- | --------------- |
-| Redis     | 7.2                 | 7.0<sup>1</sup> |
+| Redis     | 7.2                 | 7.0[^reached-end-life] |
 | Valkey    | 7.2                 | 7.2             |
 
-<sup>1</sup> Redis 7.0 has reached end-of-life (EOL) upstream, but in some cases is actively
+[^reached-end-life]: Redis 7.0 has reached end-of-life (EOL) upstream, but in some cases is actively
 maintained by vendors. For example, Amazon ElastiCache for Redis 7.1 uses its own version number
 but is built on Redis 7.0.
 

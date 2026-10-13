@@ -7,6 +7,6 @@ RSpec.describe Types::ProjectMemberRelationEnum do
 
   it 'exposes all the existing project member relation type values' do
     relation_types = %w[DIRECT INHERITED DESCENDANTS INVITED_GROUPS SHARED_INTO_ANCESTORS]
-    expect(described_class.values.keys).to contain_exactly(*relation_types)
+    expect(described_class.values.keys).to match_array(relation_types)
   end
 end

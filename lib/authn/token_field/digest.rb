@@ -10,7 +10,8 @@ module Authn
       def find_token_authenticatable(token, unscoped = false, uniqueness_check: false) # rubocop:disable Lint/UnusedMethodArgument -- match Base's signature
         return unless token
 
-        relation(unscoped).find_by(token_field_name => encode(token)) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
+        # With every db_key_base key, to find tokens digested before a rotation
+        relation(unscoped).find_by(token_field_name => encode_candidates(token)) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
       end
 
       def get_token(token_owner_record)
@@ -19,6 +20,10 @@ module Authn
 
       def encode(token)
         Gitlab::CryptoHelper.sha256(token)
+      end
+
+      def encode_candidates(token)
+        Gitlab::CryptoHelper.sha256_candidates(token)
       end
 
       def set_token(token_owner_record, token)

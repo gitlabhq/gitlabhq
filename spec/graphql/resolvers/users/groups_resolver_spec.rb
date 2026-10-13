@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Users::GroupsResolver do
+RSpec.describe Resolvers::Users::GroupsResolver, feature_category: :groups_and_projects do
   include GraphqlHelpers
   include AdminModeHelper
 
@@ -96,12 +96,66 @@ RSpec.describe Resolvers::Users::GroupsResolver do
           )
         end
       end
+
+      context 'when solo_owned is true' do
+        let_it_be(:scoped_organization) { create(:organization) }
+        let_it_be(:solo_owned_group) { create(:group, organization: scoped_organization, owners: user) }
+        let_it_be(:co_owned_group) do
+          create(:group, organization: scoped_organization, owners: [user, create(:user)])
+        end
+
+        let_it_be(:other_organization_group) { create(:group, owners: user) }
+
+        let(:group_arguments) { { solo_owned: true } }
+
+        subject(:resolved_items) do
+          resolve(
+            described_class,
+            args: group_arguments,
+            ctx: { current_user: current_user, current_organization: scoped_organization },
+            obj: resolver_object,
+            arg_style: :internal
+          )&.items
+        end
+
+        it 'returns only groups solely owned by the user within the current organization' do
+          is_expected.to contain_exactly(solo_owned_group)
+        end
+      end
     end
 
     context 'when resolver object is different from current user' do
       let(:current_user) { create(:user) }
 
-      it { is_expected.to be_nil }
+      it 'returns nil' do
+        expect(resolve_groups_result).to be_nil
+      end
+
+      context 'when current_user is anonymous' do
+        let(:current_user) { nil }
+
+        it 'returns nil' do
+          expect(resolve_groups_result).to be_nil
+        end
+      end
+
+      context 'when current_user is an owner of the current organization' do
+        # Refind so the memoized `owner_user_ids` used by the policy is not shared between examples.
+        let_it_be_with_refind(:organization) { user.organization }
+        let(:current_user) { create(:user, owner_of: organization) }
+
+        it 'returns expected groups' do
+          is_expected.to match(
+            [
+              public_maintainer_group,
+              public_owner_group,
+              private_maintainer_group,
+              public_developer_group,
+              guest_group
+            ]
+          )
+        end
+      end
 
       context 'when current_user is admin' do
         let(:current_user) { create(:user, :admin) }
@@ -127,5 +181,9 @@ RSpec.describe Resolvers::Users::GroupsResolver do
 
   def resolve_groups(args:, current_user:, obj:)
     resolve(described_class, args: args, ctx: { current_user: current_user, current_organization: organization }, obj: obj, arg_style: :internal)&.items
+  end
+
+  def resolve_groups_result
+    resolve(described_class, args: group_arguments, ctx: { current_user: current_user, current_organization: organization }, obj: resolver_object, arg_style: :internal)
   end
 end

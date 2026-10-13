@@ -156,14 +156,16 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'], feature_catego
       end
 
       context 'when reviewer state changes' do
+        let(:reviewed_at) { 1.hour.from_now }
+
         before do
-          travel_to(1.hour.from_now) do
+          travel_to(reviewed_at) do
             merge_request.batch_update_reviewer_state([user.id], :reviewed)
           end
         end
 
         it 'updates the timestamp' do
-          expect(interaction.updated_at).to be_like_time(1.hour.from_now)
+          expect(interaction.updated_at).to be_like_time(reviewed_at)
         end
       end
     end

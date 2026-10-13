@@ -61,6 +61,7 @@ For information about the security of flows, see [the composite identity documen
 - Turn on **Allow foundational flows** [for the top-level group](foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
 - [Configure your own runners](execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
+- Recommended. Create an [agent configuration file](execution/_index.md#create-the-agent-configuration-file) so that flows in CI/CD have access to your project's toolchain and dependencies.
 
 ## Monitor running flows in the GitLab UI
 

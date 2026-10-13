@@ -22,7 +22,9 @@ values, based on attributes including your database's setup and size.
 > the roles cannot perform all necessary configuration steps. In this case, use the
 > [Geo with external PostgreSQL instances](external_database.md) process instead.
 
-Ensure the secondary site is running the same version of GitLab Enterprise Edition as the primary site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your primary site.
+Ensure the secondary site is running the same version of GitLab Enterprise Edition as the primary site.
+To check the GitLab version of a site, run `sudo gitlab-rake gitlab:env:info`. For more information, see [Gather GitLab and system information](../../raketasks/maintenance.md#gather-gitlab-and-system-information).
+Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your primary site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.
@@ -452,10 +454,22 @@ The following guide assumes that:
    roles(['geo_secondary_role'])
    ```
 
-1. Configure PostgreSQL:
+1. Configure PostgreSQL on the secondary site so it can replicate from the primary site
+   and serve the local Rails and Sidekiq processes. You must complete this step even if
+   you use a single node.
 
-   This step is similar to how you configured the primary instance.
-   You must enable this, even if using a single node.
+   The network listener (`listen_address`) is not required for streaming replication
+   itself, but you must still set it, because:
+
+   - After a failover, the new primary site must accept replication connections from
+     other secondary sites. The steps to
+     [prepare the new primary site to serve secondary sites](../disaster_recovery/_index.md#step-1-prepare-the-new-primary-site-to-serve-one-or-more-secondary-sites)
+     assume the listener is already configured.
+   - Rails and Sidekiq connect over the network when they run on nodes separate from the database.
+
+   When you set `listen_address`, the Linux package configures Rails to connect over TCP
+   to that address instead of the UNIX socket, so `md5_auth_cidr_addresses` must include
+   the secondary site's own address.
 
    > [!warning]
    > Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
@@ -827,7 +841,9 @@ Leader instance:
 
 1. Optional. If primary does not have PgBouncer, but secondary does:
 
-   Configure the `pgbouncer` user on the primary site and add the necessary `pg_shadow_lookup` function for PgBouncer included with the Linux package. PgBouncer on the secondary server should still be able to connect to PostgreSQL nodes on the secondary site.
+   Configure the `pgbouncer` user on the primary site and add the necessary
+   [`pg_shadow_lookup` function](../../postgresql/pgbouncer.md#authentication) for PgBouncer included with the Linux package.
+   PgBouncer on the secondary server should still be able to connect to PostgreSQL nodes on the secondary site.
 
    ```sql
    --- Create a new user 'pgbouncer'
@@ -835,17 +851,6 @@ Leader instance:
 
    --- Set/change a password and grants replication privilege
    ALTER USER pgbouncer WITH REPLICATION ENCRYPTED PASSWORD '<pgbouncer_password_from_secondary>';
-
-   CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
-   BEGIN
-       SELECT usename, passwd FROM pg_catalog.pg_shadow
-       WHERE usename = i_username INTO username, password;
-       RETURN;
-   END;
-   $$ LANGUAGE plpgsql SECURITY DEFINER;
-
-   REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
-   GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
    ```
 
 {{< /tab >}}
@@ -1036,6 +1041,27 @@ For each node running a Patroni instance on the secondary site:
      ```
 
    - If you are configuring a Patroni standby cluster on a site that previously had a working Patroni cluster:
+
+     1. On the primary site, check that the replication slot named in
+        `patroni['standby_cluster']['primary_slot_name']` exists:
+
+        - For a primary site with a Patroni cluster, run the following command on any Patroni node
+          and check that the slot is listed under `slots`:
+
+          ```shell
+          sudo /opt/gitlab/embedded/bin/patronictl -c /var/opt/gitlab/patroni/patroni.yaml show-config
+          ```
+
+        - For a primary site with a single PostgreSQL instance, run the following command on that instance
+          and check that the slot is listed in the output:
+
+          ```shell
+          sudo gitlab-psql -c "SELECT slot_name FROM pg_replication_slots;"
+          ```
+
+        The standby cluster replicates through this slot but does not create it on the primary site.
+        If the slot is missing, [configure it](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site),
+        then run the check again to confirm the slot is listed before you continue.
 
      1. Stop Patroni on all nodes that are managed by Patroni, including cascade replicas:
 

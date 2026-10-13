@@ -12,9 +12,10 @@ module API
     feature_category :markdown
 
     params do
-      requires :text, type: String, desc: "The Markdown text to render"
-      optional :gfm, type: Boolean, desc: "Render text using GitLab Flavored Markdown. Default is false"
-      optional :project, type: String, desc: "Use project as a context when creating references using GitLab Flavored Markdown"
+      requires :text, type: String, desc: 'Markdown text to render.'
+      optional :gfm, type: Boolean, default: false,
+        desc: "Render text using GitLab Flavored Markdown."
+      optional :project, type: String, desc: 'Project used as context when creating references with GitLab Flavored Markdown.'
     end
     resource :markdown do
       desc 'Render Markdown content' do

@@ -18,6 +18,7 @@ title: Agent tool governance
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20466) in GitLab 19.1 as a [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `gitlab_duo_governance_settings`. Enabled by default.
 - Enforcement for background flows, such as the Duo Developer foundational flow, added in GitLab 19.3 behind a [feature flag](../../administration/feature_flags/_index.md) named `duo_workflow_background_tool_governance`. Disabled by default.
 - Feature flag `gitlab_duo_governance_settings` removed in GitLab 19.4.
+- Default for local file reads [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256385) from Always Ask to Always Allow in GitLab 19.5.
 
 {{< /history >}}
 
@@ -57,12 +58,30 @@ enforcement depends on where the flow runs:
 - For flows that run in an IDE extension, GitLab enforces governance rules.
 - For background flows, such as the Duo Developer foundational flow, GitLab enforces governance rules.
 
+## Access types
+
+Each tool has a separate mode for each access type. The access type depends on
+who the agent acts as and where it runs:
+
+Cloud access
+: Runs on GitLab as the user.
+  For example, GitLab Duo Agentic Chat in the GitLab UI.
+
+Local access
+: Runs on the user's machine as the user.
+  For example, the IDE extensions and the GitLab Duo CLI.
+
+Background access
+: Runs on GitLab as a service account, without waiting for anyone.
+  For example, flows started by a trigger or a mention, and code review.
+
 ## Default governance matrix
 
 | Classification | Mode |
 |------|------|
 | Read (GitLab resources) | Always Allow |
-| Read (local files) | Always Ask |
+| Read (local files) | Always Allow |
+| Read (agent session) | Always Allow |
 | Write | Always Ask |
 | Delete | Always Ask |
 
@@ -159,8 +178,7 @@ Prerequisites:
 To configure tool governance rules for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. For each tool, select a mode from the **Mode** dropdown list: **Always Allow**, **Always Ask**, or **Always Deny**.
 1. Select **Save changes**.
 
@@ -248,8 +266,7 @@ Prerequisites:
 To block an MCP server for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **GitLab Duo**.
-1. Select **Change governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. Select the **MCP Registry** tab.
 1. Find the MCP server you want to block and select **Block**.
 
@@ -278,15 +295,24 @@ ancestor.
 
 ## Known issues
 
-- The governance UI has three access categories: Web (browser-based sessions),
-  Local (IDE and CLI), and Runner (background flows that run in CI/CD runners).
-  Runner access supports only Always Allow and Always Deny. Always Ask does not apply,
-  because no user is present to respond to an approval prompt in a background flow.
-  A tool with no configured runner rule defaults to Always Allow.
-- The `search` tool served by the GitLab MCP server aggregates what the
-  GitLab Duo Agent Platform exposes as separate, narrower search tools.
-  Rules configured on those narrower tools do not extend to `search`. To
-  restrict MCP search, configure a rule on `search` directly.
+- [Background access](#access-types) supports only **Always Allow** and **Always Deny**.
+  **Always Ask** does not apply, because no user is present to respond to an approval prompt
+  in a background flow. A tool with no configured background access rule defaults to **Always Allow**.
+- The `search` tool served by the GitLab MCP server aggregates what the GitLab Duo Agent Platform
+  exposes as separate, narrower search tools, and replaces those tools in the toolset.
+  Rules configured on the narrower tools have no effect while `search` is available, including
+  **Always Allow**, which the **Tool management** tab still shows as allowed.
+  Setting `search` to **Always Deny** removes the aggregated tool and returns the narrower ones,
+  which are allowed by default, so search remains available.
+  To remove the search tools that `search` replaces, also set `gitlab_issue_search`,
+  `gitlab_blob_search`, and `gitlab_merge_request_search` to **Always Deny**. Other search tools,
+  such as `gitlab_commit_search` and `gitlab_documentation_search`, have their own rules and stay
+  allowed by default. Denying `gitlab_merge_request_search` also denies the `list_merge_requests` tool,
+  because governance treats the two names as one tool.
+- In GitLab 19.4, setting `search` to **Always Deny** removed `search` without restoring the narrower
+  tools, which left the agent with no issue search and no code search.
+  This issue is resolved in GitLab 19.5, where denying `search` restores `gitlab_issue_search`,
+  `gitlab_blob_search`, and `gitlab_merge_request_search`.
 
 ## Related topics
 

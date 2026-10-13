@@ -34,6 +34,39 @@ RSpec.describe PropagateIntegrationGroupWorker, feature_category: :integrations 
       end
     end
 
+    context 'with a group in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+
+      it 'does not pass the group to Integrations::Propagation::BulkCreateService' do
+        expect(Integrations::Propagation::BulkCreateService).to receive(:new)
+          .with(integration, match_array([group, another_group, subgroup1, subgroup2]), 'group')
+          .and_return(instance_double(Integrations::Propagation::BulkCreateService, execute: nil))
+
+        described_class.new.perform(integration.id, group.id, group_in_other_org.id)
+      end
+    end
+
+    context 'when every group in the range already has the integration' do
+      before do
+        create(:redmine_integration, :group, group: group, inherit_from_id: integration.id)
+      end
+
+      it 'does not call Integrations::Propagation::BulkCreateService' do
+        expect(Integrations::Propagation::BulkCreateService).not_to receive(:new)
+
+        described_class.new.perform(integration.id, group.id, group.id)
+      end
+
+      it 'does not probe the batch with a LIMIT 1 query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          described_class.new.perform(integration.id, group.id, group.id)
+        end
+
+        expect(recorder.log.grep(/FROM "namespaces".*LIMIT 1/)).to be_empty
+      end
+    end
+
     context 'with an invalid integration id' do
       it 'returns without failure' do
         expect(Integrations::Propagation::BulkCreateService).not_to receive(:new)

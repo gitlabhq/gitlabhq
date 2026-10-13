@@ -261,8 +261,8 @@
           }]
         }.to_json
         curl_command_lines = [
-          "curl -X POST #{configuration_settings.otel_https_endpoint}/v1/traces \\\\",
-          "  -H 'Content-Type: application/json' \\\\",
+          "curl -X POST #{configuration_settings.otel_https_endpoint}/v1/traces \\",
+          "  -H 'Content-Type: application/json' \\",
           "  -d '#{json_payload}'"
         ]
         curl_command_single_line = "curl -X POST #{configuration_settings.otel_https_endpoint}/v1/traces -H 'Content-Type: application/json' -d '#{json_payload}'"

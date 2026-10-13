@@ -38,13 +38,13 @@ GitLab Self-Managed 인스턴스에서 SBOM 기반 종속성 검사를 사용할
 - GitLab.com: GitLab.com: "종속성 검사 실행 중" 규정 준수 제어는 SBOM 기반 종속성 검사에서 올바르게 작동합니다.
 - GitLab Self-Managed 18.4부터: "종속성 검사 실행 중" 규정 준수 제어는 SBOM 기반 종속성 검사(`DS_ENFORCE_NEW_ANALYZER: 'true'`)를 사용할 때 기존 `gl-dependency-scanning-report.json` 결과물이 생성되지 않기 때문에 실패할 수 있습니다.
 
-Self-Managed 인스턴스용 해결 방법: "종속성 검사 실행 중" 제어가 필요한 규정 준수 프레임워크 검사를 통과해야 하는 경우 `v2` 템플릿(`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`)을 사용할 수 있으며, 이 템플릿은 SBOM과 종속성 검사 보고서를 모두 생성합니다.
+Self-Managed 인스턴스용 해결 방법: 규정 준수 프레임워크 검사("Dependency scanning running" 제어가 필요한)를 통과해야 하는 경우 `v2` 템플릿(`Jobs/Dependency-Scanning.v2.gitlab-ci.yml`)을 사용할 수 있으며, 이 템플릿은 SBOM과 종속성 검사 보고서를 모두 생성합니다.
 
 규정 준수 제어에 대한 자세한 내용은 [GitLab 규정 준수 제어](../../../compliance/compliance_frameworks/_index.md#gitlab-compliance-controls)를 참조하세요.
 
 ## 확인 작업이 실패하지만 종속성 검사가 계속 실행됨 {#resolution-job-fails-but-dependency-scanning-still-runs}
 
-확인 작업이 자동으로 실행되므로 `allow_failure: true`을(를) 설정합니다. 확인 작업이 실패하면 `dependency-scanning` 작업이 계속 실행됩니다. 잠금 파일이 리포지토리에 커밋되었는지 여부에 따라 스캔이 커밋된 파일을 사용하거나 활성화된 경우 [매니페스트 폴백](_index.md#manifest-fallback)으로 대체됩니다.
+해결 작업은 자동으로 실행되기 때문에 `allow_failure: true`을 설정합니다. 확인 작업이 실패하면 `dependency-scanning` 작업이 계속 실행됩니다. 잠금 파일이 리포지토리에 커밋되었는지 여부에 따라 스캔이 커밋된 파일을 사용하거나 활성화된 경우 [매니페스트 폴백](_index.md#manifest-fallback)으로 대체됩니다.
 
 사용자의 사용 사례가 지원되는지 확인하려면 [알려진 제한 사항](_index.md#dependency-resolution-limitations)을 참조하세요.
 
@@ -105,3 +105,7 @@ dependency-scanning:
 ## 머지 리퀘스트 파이프라인에서만 종속성 검사가 실행되고 다른 작업은 건너뜀으로 표시됨 {#only-dependency-scanning-runs-in-merge-request-pipelines-other-jobs-appear-skipped}
 
 기본적으로 `Dependency-Scanning.v2.gitlab-ci.yml` 템플릿은 머지 리퀘스트 파이프라인에서 종속성 검사 작업을 실행합니다. 프로젝트의 다른 작업에 머지 리퀘스트 파이프라인을 사용하지 않는 경우, 머지 리퀘스트 파이프라인에는 종속성 검사 작업만 표시되고 다른 모든 작업은 별도의 브랜치 파이프라인에서 실행됩니다. 이 동작을 비활성화하려면 [종속성 검사용 MR 파이프라인 비활성화](_index.md#disable-merge-request-pipelines-for-dependency-scanning)를 참조하세요.
+
+템플릿이 파이프라인 실행 정책에 의해 주입되는 경우, 프로젝트 또는 그룹 변수가 `AST_ENABLE_MR_PIPELINES: "false"`을 설정할 때도 이 문제가 발생합니다. 파이프라인 실행 정책은 기본적으로 격리된 상태에서 실행되므로, 정책 작업이 해당 값을 받지 못합니다. 설정되지 않은 변수는 `"true"`로 기본 설정되며, 프로젝트 또는 그룹 설정에 관계없이 작업이 머지 리퀘스트 파이프라인에서 실행됩니다.
+
+해결 방법은 정책 CI/CD 구성에서 `AST_ENABLE_MR_PIPELINES: "false"`을 직접 설정하는 것입니다. 대신 프로젝트 또는 그룹 값을 사용하는 방법을 포함한 자세한 내용은 [CI/CD 변수](../../policies/pipeline_execution_policies.md#cicd-variables)를 참조하세요.

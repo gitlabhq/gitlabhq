@@ -11,6 +11,8 @@ module Types
       field :author_avatar, GraphQL::Types::String, null: false, description: 'Link to author avatar.'
       field :commit_author_link, GraphQL::Types::String, null: false, description: 'Link to the commit author.'
       field :commit_link, GraphQL::Types::String, null: false, description: 'Link to the commit.'
+      field :previous_blame_path, GraphQL::Types::String,
+        null: true, description: 'Path to blame prior to the change.'
       field :project_blame_link, GraphQL::Types::String,
         null: true, description: 'Link to blame prior to the change.'
       field :time_ago_tooltip, GraphQL::Types::String, null: false, description: 'Time of commit.'

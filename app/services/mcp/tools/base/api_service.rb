@@ -5,6 +5,7 @@ module Mcp
     module Base
       class ApiService < BaseService
         extend Gitlab::Utils::Override
+        include Mcp::Tools::Base::RateLimitedResponse
 
         override :set_cred
         def set_cred(current_user: nil, access_token: nil)
@@ -16,7 +17,7 @@ module Mcp
           if access_token.present?
             super
           else
-            Response.error("ApiService: access token is not set")
+            Response.error("ApiService: access token is not set", reason: Response::Reason::UNAUTHORIZED)
           end
         end
 
@@ -61,6 +62,8 @@ module Mcp
         end
 
         def handle_response(response)
+          return rate_limited_response(response.body, response.headers) if response.code == TOO_MANY_REQUESTS
+
           parsed_response = Gitlab::Json.safe_parse(response.body)
 
           if response.success?
@@ -75,7 +78,9 @@ module Mcp
 
             error_payload = parsed_response.nil? ? nil : parsed_response
 
-            ::Mcp::Tools::Base::Response.error(message, error_payload)
+            ::Mcp::Tools::Base::Response.error(
+              message, error_payload, reason: ::Mcp::Tools::Base::Response.reason_for_http_status(response.code)
+            )
           end
         rescue JSON::ParserError, Gitlab::Json::ParserError => e
           ::Mcp::Tools::Base::Response.error('Invalid JSON response', { message: e.message })

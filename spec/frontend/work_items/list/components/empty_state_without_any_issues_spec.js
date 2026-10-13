@@ -18,7 +18,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     signInPath: 'sign/in/path',
     groupId: '',
     isGroup: true,
-    hasEpicsFeature: false,
   };
 
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -75,6 +74,19 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
               expect(findNewProjectLink().attributes('href')).toBe(defaultProvide.newProjectPath);
             });
+
+            describe('when the new-issue-button slot is filled', () => {
+              it('renders slot content and the new project link', () => {
+                mountComponent({
+                  props: { hasProjects: false },
+                  provide: { canCreateProjects: true },
+                  slots: { 'new-issue-button': '<button>New item</button>' },
+                });
+
+                expect(findNewProjectLink().exists()).toBe(true);
+                expect(wrapper.findByRole('button', { name: 'New item' }).exists()).toBe(false);
+              });
+            });
           });
 
           describe('when can create projects but in project context', () => {
@@ -91,20 +103,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
           describe('when cannot create projects', () => {
             it('does not render', () => {
               mountComponent({ provide: { canCreateProjects: false } });
-
-              expect(findNewProjectLink().exists()).toBe(false);
-            });
-          });
-
-          describe('when hasEpicsFeature is true', () => {
-            it('does not render', () => {
-              mountComponent({
-                props: { hasProjects: false },
-                provide: {
-                  canCreateProjects: true,
-                  hasEpicsFeature: true,
-                },
-              });
 
               expect(findNewProjectLink().exists()).toBe(false);
             });

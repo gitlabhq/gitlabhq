@@ -5,20 +5,20 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
-// eslint-disable-next-line import/no-unresolved -- resolver doesn't read @rspack/core's exports field
 import rspack from '@rspack/core';
-import CompressionPlugin from 'compression-webpack-plugin';
 import gqlTag from 'graphql-tag';
 
 import { buildOutput } from './helpers/output.js';
 import { aliases } from './helpers/aliases.js';
 import { supportedBrowsersHash } from './helpers/supported_browsers.js';
-import { VUE_VERSION, VUE_COMPILER_VERSION, logVueVersion } from './helpers/vue_version.js';
+import vendorDllHash from './helpers/vendor_dll_hash.js';
+import { VUE_VERSION, VUE_COMPILER_VERSION, logVueVersion } from './vue3migration/version.js';
 import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
 import { entries } from './rspack/entries.js';
 import GraphqlKnownOperationsPlugin from './plugins/graphql_known_operations_plugin.js';
-import Vue3MigrationManifestPlugin from './plugins/vue3_migration_manifest_plugin.js';
+import GzipAssetsPlugin from './plugins/gzip_assets_plugin.js';
+import Vue3MigrationManifestPlugin from './vue3migration/plugins/manifest.js';
 import { buildLoaderRules } from './rspack/loader_rules.js';
 import { slimManifest } from './rspack/manifest_plugin.js';
 import {
@@ -33,12 +33,11 @@ import vue from './rspack/vue.js';
 import {
   vue3InfectionResolveRegExp,
   createVue3InfectionResolver,
-} from './rspack/vue3_infection_resolve_plugin.js';
+} from './vue3migration/plugins/rspack_resolve.js';
 import {
   IS_EE,
   IS_JH,
   ROOT_PATH,
-  WEBPACK_PUBLIC_PATH,
   copyFilesPatterns,
   IS_PRODUCTION,
   IS_DEV_SERVER,
@@ -91,7 +90,7 @@ const plugins = [
   }),
   new rspack.DefinePlugin(define),
   new rspack.IgnorePlugin({ resourceRegExp: /moment/, contextRegExp: /pikaday/ }),
-  IS_PRODUCTION && COMPRESSION !== false && new CompressionPlugin(),
+  IS_PRODUCTION && COMPRESSION !== false && new GzipAssetsPlugin(),
   RSDOCTOR &&
     new RsdoctorRspackPlugin(
       RSDOCTOR_LEAN
@@ -117,7 +116,6 @@ const output = (() => {
   };
 })();
 
-// eslint-disable-next-line import/no-default-export -- Rspack's config loader reads the default export
 export default {
   bail: !IS_DEV_SERVER,
   mode: IS_PRODUCTION ? 'production' : 'development',
@@ -167,11 +165,9 @@ export default {
     __dirname: 'mock',
     __filename: 'mock',
   },
-  lazyCompilation: {
-    imports: true,
-    entries: false,
-    prefix: `${WEBPACK_PUBLIC_PATH}_rspack/lazy/trigger`,
-  },
+  // Must stay explicit: `rspack serve` turns lazy compilation on when this is undefined.
+  // Lazily compiled imports stall on a full rebuild the first time they are used.
+  lazyCompilation: false,
   devServer: {
     devMiddleware: {
       stats: 'errors-only',
@@ -182,6 +178,9 @@ export default {
     hot: DEV_SERVER_LIVERELOAD,
     liveReload: DEV_SERVER_LIVERELOAD,
     allowedHosts: DEV_SERVER_ALLOWED_HOSTS || 'all',
+    // Rails serves public/. The default static dir would serve stale build output from it and
+    // watch it with an fd per file (chokidar 4 has no fsevents), crashing with EMFILE.
+    static: false,
     client: {
       ...(DEV_SERVER_PUBLIC_ADDR ? { webSocketURL: DEV_SERVER_PUBLIC_ADDR } : {}),
       overlay: {
@@ -202,6 +201,9 @@ export default {
           supportedBrowsersHash,
           `vue${VUE_VERSION}`,
           `compiler${VUE_COMPILER_VERSION}`,
+          // package.json, yarn.lock and patch-package patches: a changed dependency
+          // must not be served from a persisted cache of the old one.
+          vendorDllHash(),
         ].join('-'),
         buildDependencies: [configPath],
         storage: {

@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require_relative 'policy_repository_scope_shared_examples'
+require_relative '../rego_program_helpers'
 
 RSpec.shared_examples 'a policy repository' do
+  include PolicyStoreRegoHelpers
+
   port = Gitlab::PolicyStore::Ports::PolicyRepository
 
   let(:other_organization_id) { organization_id + 1 }
@@ -12,6 +15,10 @@ RSpec.shared_examples 'a policy repository' do
 
   def non_existing_id
     -1
+  end
+
+  def broken_rule
+    { 'type' => 'custom', 'value' => "package governance\n\nviolation contains {\"msg\": \"x\" if {\n" }
   end
 
   def custom_rego_of(merged_bytesize)
@@ -399,17 +406,41 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
-    it 'raises ValidationError when an action entry has a non-string blockMessage' do
-      malformed = [{ 'type' => 'block', 'value' => { 'blockMessage' => 42 } }]
+    %w[message blockMessage].each do |key|
+      it "raises ValidationError when an action entry has a non-string #{key}" do
+        malformed = [{ 'type' => 'block', 'value' => { key => 42 } }]
+
+        expect { repository.create(attributes.merge(actions: malformed)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+      end
+
+      it "allows an action entry with a string #{key}" do
+        valid = [{ 'type' => 'block', 'value' => { key => 'Needs approval' } }]
+
+        expect { repository.create(attributes.merge(actions: valid)) }.not_to raise_error
+      end
+    end
+
+    it 'allows an action entry with a string under both message keys' do
+      valid = [{ 'type' => 'block', 'value' => { 'message' => 'Blocked', 'blockMessage' => 'Blocked' } }]
+
+      expect { repository.create(attributes.merge(actions: valid)) }.not_to raise_error
+    end
+
+    # A valid message under one key does not excuse a non-string under the other: the engine
+    # refuses to serve the policy either way.
+    it 'raises ValidationError when a non-string blockMessage sits alongside a string message' do
+      malformed = [{ 'type' => 'block', 'value' => { 'message' => 'Blocked', 'blockMessage' => 42 } }]
 
       expect { repository.create(attributes.merge(actions: malformed)) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
-    it 'allows an action entry with a string blockMessage' do
-      valid = [{ 'type' => 'block', 'value' => { 'blockMessage' => 'Needs approval' } }]
+    it 'raises ValidationError when a non-string message sits alongside a string blockMessage' do
+      malformed = [{ 'type' => 'block', 'value' => { 'message' => 42, 'blockMessage' => 'Blocked' } }]
 
-      expect { repository.create(attributes.merge(actions: valid)) }.not_to raise_error
+      expect { repository.create(attributes.merge(actions: malformed)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
     it 'raises ValidationError when actions is not an array' do
@@ -450,7 +481,7 @@ RSpec.shared_examples 'a policy repository' do
     end
 
     # A sum that subtracts one declaration per rule still measures this wrong, because
-    # `strip_declaration` drops the whole line and a trailing comment rides along with it.
+    # `split_header` drops the whole line and a trailing comment rides along with it.
     it 'measures the module the merger builds rather than summing the compiled rules' do
       merged_program = "package governance\nallow := true\n"
       stub_const("#{port}::MAX_COMPILED_RULES_BYTES", merged_program.bytesize)
@@ -494,7 +525,7 @@ RSpec.shared_examples 'a policy repository' do
 
     it 'accepts a scope_rego at exactly the limit' do
       limit = Gitlab::PolicyStore::Ports::PolicyRepository::TEXT_LIMITS[:scope_rego]
-      at_limit = attributes.merge(scope_rego: 'p' * limit)
+      at_limit = attributes.merge(scope_rego: scope_rego_of(limit))
 
       expect(repository.create(at_limit).scope_rego.length).to eq(limit)
     end
@@ -562,6 +593,56 @@ RSpec.shared_examples 'a policy repository' do
 
     it 'starts every policy at version 1, whatever version the caller supplies' do
       expect(repository.create(attributes.merge(version: 99))).to have_attributes(version: 1)
+    end
+
+    context 'with Rego that does not parse' do
+      it 'raises ValidationError naming the rule and the location, and stores nothing', :aggregate_failures do
+        expect { repository.create(attributes.merge(rules: [broken_rule])) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[0\] is invalid: .+ \(at 3:\d+\)\z/)
+
+        expect(repository.list(organization_id: organization_id).items).to be_empty
+      end
+
+      it 'names the position of the rule that failed, not the first rule' do
+        rules = [{ 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }, broken_rule]
+
+        expect { repository.create(attributes.merge(rules: rules)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[1\] is invalid/)
+      end
+
+      it 'accepts a custom rule with an import after another rule, since the merged module lifts it' do
+        importing_rule = { 'type' => 'custom', 'value' => "package governance\n\nimport rego.v1\n\nallow if true\n" }
+        rules = [{ 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }, importing_rule]
+
+        expect(repository.create(attributes.merge(rules: rules)).rules.size).to eq(2)
+      end
+
+      it 'raises ValidationError when an authored scope_rego does not parse' do
+        broken_scope = attributes.merge(policy_scope: nil, scope_rego: "package gitlab.scope\n\napplies if {\n")
+
+        expect { repository.create(broken_scope) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Ascope_rego is invalid: .+ \(at \d+:\d+\)\z/)
+      end
+
+      it 'refuses an oversized scope_rego by length without parsing it' do
+        expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with(:scope_rego, anything)
+
+        expect { repository.create(attributes.merge(policy_scope: nil, scope_rego: 'p' * 5000)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, 'scope_rego exceeds maximum length of 4096 characters')
+      end
+
+      it 'parses a custom rule on its own and the merged module once', :aggregate_failures do
+        custom_rule = { 'type' => 'custom', 'value' => "package governance\n\nallow := true\n" }
+        rules = [custom_rule, { 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }]
+
+        expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!).with('rules[0]', custom_rule['value']).ordered
+        expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!)
+          .with(Gitlab::PolicyStore::RegoValidator::MERGED_PROGRAM_FIELD, /\Apackage governance\n/).ordered
+        expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with('rules[1]', anything)
+        expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with(:scope_rego, anything)
+
+        repository.create(attributes.merge(scope_rego: nil, rules: rules))
+      end
     end
   end
 
@@ -692,9 +773,9 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
-    it 'raises ValidationError when an update sets an action entry with a non-string blockMessage' do
+    it 'raises ValidationError when an update sets an action entry with a non-string message' do
       created = repository.create(attributes)
-      malformed = [{ 'type' => 'block', 'value' => { 'blockMessage' => 42 } }]
+      malformed = [{ 'type' => 'block', 'value' => { 'message' => 42 } }]
 
       expect { repository.update(created.id, actions: malformed) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
@@ -945,6 +1026,43 @@ RSpec.shared_examples 'a policy repository' do
       expect { repository.update(non_existing_id, name: 'Renamed policy') }
         .to raise_error(Gitlab::PolicyStore::NotFound)
     end
+
+    context 'with Rego that does not parse' do
+      it 'raises ValidationError and leaves the stored policy as it was', :aggregate_failures do
+        created = repository.create(attributes)
+
+        expect { repository.update(created.id, rules: [broken_rule]) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Arules\[0\] is invalid: .+ \(at 3:\d+\)\z/)
+
+        expect(repository.find(created.id)).to eq(created)
+      end
+
+      it 'raises ValidationError when a supplied scope_rego does not parse', :aggregate_failures do
+        created = repository.create(attributes)
+
+        expect { repository.update(created.id, scope_rego: "package gitlab.scope\n\napplies if {\n") }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /\Ascope_rego is invalid: .+ \(at \d+:\d+\)\z/)
+
+        expect(repository.find(created.id)).to eq(created)
+      end
+
+      {
+        'a metadata-only update' => [{}, { description: 'Rewritten', mode: 'enforce' }],
+        'a rename that recompiles the scope from policy_scope' => [{ scope_rego: nil }, { name: 'Renamed policy' }],
+        'a policy_scope change that recompiles the scope' =>
+          [{ scope_rego: nil }, { policy_scope: { 'compliance_frameworks' => [{ 'id' => 7 }] } }],
+        'a rename that leaves a hand-written scope_rego untouched' =>
+          [{ policy_scope: nil, scope_rego: "package gitlab.scope\n\ndefault applies := false\n" }, { name: 'Renamed' }]
+      }.each do |change, (stored_overrides, changes)|
+        it "parses nothing on #{change}" do
+          created = repository.create(attributes.merge(stored_overrides))
+
+          expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!)
+
+          repository.update(created.id, changes)
+        end
+      end
+    end
   end
 
   describe 'isolation from stored data' do
@@ -1091,19 +1209,34 @@ RSpec.shared_examples 'a policy repository' do
       expect(repository.list(organization_id: organization_id)).to be_empty
     end
 
-    context 'with a namespace_id' do
-      it 'returns only the policies stamped with that namespace' do
+    context 'with namespace_ids' do
+      it 'returns only the policies stamped with one of those namespaces' do
         group_owned = repository.create(attributes)
         repository.create(attributes.merge(name: 'Organization policy', namespace_id: nil))
 
-        expect(repository.list(organization_id: organization_id, namespace_id: namespace_id))
+        expect(repository.list(organization_id: organization_id, namespace_ids: [namespace_id]))
           .to contain_exactly(group_owned)
       end
 
       it 'excludes policies stamped with another namespace' do
         repository.create(attributes.merge(name: 'Other namespace policy', namespace_id: namespace_id + 1))
 
-        expect(repository.list(organization_id: organization_id, namespace_id: namespace_id)).to be_empty
+        expect(repository.list(organization_id: organization_id, namespace_ids: [namespace_id])).to be_empty
+      end
+
+      it 'matches organization-wide policies with a nil element' do
+        group_owned = repository.create(attributes)
+        organization_owned = repository.create(attributes.merge(name: 'Organization policy', namespace_id: nil))
+        repository.create(attributes.merge(name: 'Other namespace policy', namespace_id: namespace_id + 1))
+
+        expect(repository.list(organization_id: organization_id, namespace_ids: [nil, namespace_id]))
+          .to contain_exactly(group_owned, organization_owned)
+      end
+
+      it 'returns no policies for an empty list' do
+        repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, namespace_ids: [])).to be_empty
       end
 
       it 'combines with a trigger_type' do
@@ -1111,7 +1244,7 @@ RSpec.shared_examples 'a policy repository' do
         default_trigger_policy = repository.create(attributes)
 
         expect(repository.list(organization_id: organization_id, trigger_type: trigger_type,
-          namespace_id: namespace_id)).to contain_exactly(default_trigger_policy)
+          namespace_ids: [namespace_id])).to contain_exactly(default_trigger_policy)
       end
     end
 

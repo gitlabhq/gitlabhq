@@ -97,6 +97,19 @@ describe('ImageDiffViewer component', () => {
 
       expect(wrapper.find('.view-modes-menu li.active').text()).toBe('Swipe');
     });
+
+    it('sizes the new image frame to cover the larger of both images', async () => {
+      await wrapper.find('.view-modes-menu li:nth-child(2)').trigger('click');
+      const [oldImage, newImage] = wrapper.find('.swipe').findAllComponents(ImageViewer).wrappers;
+
+      oldImage.vm.$emit('img-loaded', { renderedWidth: 400, renderedHeight: 300 });
+      newImage.vm.$emit('img-loaded', { renderedWidth: 240, renderedHeight: 120 });
+      await nextTick();
+
+      expect(wrapper.find('.swipe .frame.added').attributes('style')).toBe(
+        'width: 402px; height: 302px;',
+      );
+    });
   });
 
   describe('onionSkin', () => {

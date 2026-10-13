@@ -34,6 +34,16 @@ RSpec.shared_examples 'async constraints validation' do
     subject.perform
   end
 
+  it 'validates the constraint while the transaction timeout matches the statement timeout' do
+    allow(connection).to receive(:execute).and_call_original
+    expect(Gitlab::Database::TransactionTimeout).to receive(:set).with(connection, 12.hours).ordered
+    expect(connection).to receive(:execute)
+      .with(/ALTER TABLE "#{table_name}" VALIDATE CONSTRAINT "#{constraint_name}";/).ordered.and_call_original
+    expect(Gitlab::Database::TransactionTimeout).to receive(:reset).with(connection).ordered
+
+    subject.perform
+  end
+
   it 'removes the constraint validation record from table' do
     expect(validation).to receive(:destroy!).and_call_original
 

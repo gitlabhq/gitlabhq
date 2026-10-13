@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Pypi::Metadatum, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Pypi::Metadatum, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
   end

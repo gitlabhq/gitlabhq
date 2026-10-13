@@ -74,30 +74,36 @@ export function findLineRow(element, oldLine, newLine) {
     ?.closest('tr');
 }
 
-export function getNewLineRangeContent(diffElement, lineRange, side) {
+// Returns null unless every new-file line in the range is rendered, so a suggestion is
+// never prefilled with part of the code it replaces.
+export function getNewLinesInRange(diffElement, lineRange) {
   const { start, end } = lineRange;
+  const endLine = end.new_line;
+  if (!endLine) return null;
 
-  let row = findLineRow(diffElement, start.old_line, start.new_line);
+  const startRow = findLineRow(diffElement, start.old_line, start.new_line);
+  if (!startRow) return null;
 
-  if (!row) return [];
-
-  const endLine = end.new_line ?? end.old_line;
+  const { rows } = startRow.closest('table');
   const lines = [];
+  let firstLine = null;
+  let lastLine = null;
 
-  while (row) {
-    if (isRangeBoundary(row)) break;
+  for (let i = startRow.rowIndex; i < rows.length && lastLine !== endLine; i += 1) {
+    const row = rows[i];
+    if (isRangeBoundary(row)) return null;
 
-    if ('hunkLines' in row.dataset) {
-      const content = getNewLineContent(row, side);
-      if (content === null) break;
+    const [, newLine] = 'hunkLines' in row.dataset ? getLineNumbers(row) : [];
+    if (newLine) {
+      if (lastLine !== null && newLine !== lastLine + 1) return null;
+      const content = getNewLineContent(row, 'new');
+      if (content === null) return null;
       lines.push(content);
-
-      const [oldLine, newLine] = getLineNumbers(row);
-      if ((newLine ?? oldLine) >= endLine) break;
+      firstLine ??= newLine;
+      lastLine = newLine;
     }
-
-    row = row.nextElementSibling;
   }
 
-  return lines;
+  if (lastLine !== endLine) return null;
+  return { lines, start: firstLine, end: endLine };
 }

@@ -7,6 +7,7 @@ import {
   SIDEBAR_PINS_EXPANDED_COOKIE,
   SIDEBAR_COOKIE_EXPIRATION,
 } from '../constants';
+import { isPinnedGroupExpanded, setPinnedGroupExpanded } from '../utils';
 import MenuSection from './menu_section.vue';
 import NavItem from './nav_item.vue';
 
@@ -30,6 +31,7 @@ export default {
   },
   inject: {
     isIconOnly: { default: false },
+    panelType: { default: '' },
   },
   props: {
     supportsPins: {
@@ -57,6 +59,14 @@ export default {
       required: false,
       default: false,
     },
+    // When set, this section renders a category grouping of pinned items: the
+    // category title as the header with no icon, and each pinned feature keeps
+    // its own icon (unlike the flat "Pinned" section).
+    groupItem: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     asyncCount: {
       type: Object,
       required: false,
@@ -65,12 +75,19 @@ export default {
   },
   emits: ['pin-remove', 'pin-reorder'],
   data() {
+    const storedExpanded = this.groupItem
+      ? isPinnedGroupExpanded(this.pinnedGroupCollapseKey())
+      : getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false';
+
     return {
-      expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false' || this.wasPinnedNav,
+      expanded: storedExpanded || this.wasPinnedNav,
       draggableItems: this.renameSettings(this.items),
     };
   },
   computed: {
+    groupCollapseKey() {
+      return this.pinnedGroupCollapseKey();
+    },
     wrapperComponent() {
       return this.supportsPins ? Draggable : 'ul';
     },
@@ -94,6 +111,19 @@ export default {
       };
     },
     sectionItem() {
+      if (this.groupItem) {
+        return {
+          // Category grouping: label the section with the category title and no
+          // icon, so the feature icons on each pinned item stand out instead.
+          title: this.groupItem.title,
+          icon: null,
+          // Like the flat section, only a pinned-nav click force-expands, so the
+          // active category doesn't override the stored collapse state on reload.
+          is_active: this.wasPinnedNav,
+          items: this.draggableItems,
+        };
+      }
+
       return {
         title: this.$options.i18n.pinned,
         icon: 'thumbtack',
@@ -104,15 +134,26 @@ export default {
   },
   watch: {
     expanded(newExpanded) {
-      setCookie(SIDEBAR_PINS_EXPANDED_COOKIE, newExpanded, {
-        expires: SIDEBAR_COOKIE_EXPIRATION,
-      });
+      // Groups use local storage to avoid sending cookies the server never reads;
+      // the flat section keeps its cookie to not change behavior outside the flag.
+      if (this.groupItem) {
+        setPinnedGroupExpanded(this.groupCollapseKey, newExpanded);
+      } else {
+        setCookie(SIDEBAR_PINS_EXPANDED_COOKIE, newExpanded, {
+          expires: SIDEBAR_COOKIE_EXPIRATION,
+        });
+      }
     },
     items(newItems) {
       this.draggableItems = this.renameSettings(newItems);
     },
   },
   methods: {
+    // Scoped by panel so the same category id stays independent across the
+    // project and group sidebars. A method, not a computed, so data() can reuse it.
+    pinnedGroupCollapseKey() {
+      return this.groupItem ? `${this.panelType}-${this.groupItem.id}` : null;
+    },
     updateDraggableItems(items) {
       this.draggableItems = items;
     },
@@ -147,8 +188,9 @@ export default {
     :expanded="expanded"
     :has-flyout="hasFlyout"
     :headerless="headerless"
+    :bold-title="Boolean(groupItem)"
     :async-count="asyncCount"
-    @collapse-toggle="expanded = !expanded"
+    @collapse-toggle="expanded = $event"
     @pin-remove="onPinRemove"
     @nav-link-click="writePinnedClick"
   >
@@ -157,7 +199,7 @@ export default {
       v-if="items.length > 0"
       v-bind="wrapperOptions"
       class="gl-m-0 gl-list-none gl-p-0 gl-leading-normal"
-      :aria-label="$options.i18n.pinned"
+      :aria-label="sectionItem.title"
       data-testid="pinned-nav-items"
       v-on="wrapperListeners"
     >

@@ -12,6 +12,21 @@ module Gitlab
         PUSH_MAX_ATTEMPTS = 3
         PUSH_RETRY_BACKOFF_SECONDS = [5, 15].freeze
 
+        TOOLING_SLUG = 'tooling'
+        METADATA_SLUG = 'metadata'
+
+        # Team MRs open as Draft so humans wait until Duo's findings are addressed. Automatic Duo review skips drafts,
+        # so the sync requests it explicitly.
+        DRAFT_PREFIX = 'Draft: '
+        DUO_REVIEW_BOT_USERNAME = 'GitLabDuo'
+        DUO_REREVIEW_MUTATION = <<~GRAPHQL
+          mutation($projectPath: ID!, $iid: String!, $userId: UserID!) {
+            mergeRequestReviewerRereview(input: { projectPath: $projectPath, iid: $iid, userId: $userId }) {
+              errors
+            }
+          }
+        GRAPHQL
+
         # The run-invariant publish inputs: identical for every team branch and the tooling branch in a single
         # create_branch_and_mr call.
         PublishContext = Struct.new(
@@ -60,7 +75,10 @@ module Gitlab
         # `failed` (principles that failed distillation, distinct from the per-team publish `failures` below) and
         # `not_run` (principles whose distill job never completed) travel with the rest of the run-invariant inputs via
         # `ctx` (see PublishContext).
-        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [], not_run: [])
+        #
+        # `checkpoints` (successful no-change distillations) go to a single metadata MR, so the next scan skips those
+        # principles; see publish_metadata_branch.
+        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [], not_run: [], checkpoints: {})
           project_id = ENV.fetch(Env::CI_PROJECT_ID) do
             abort Rainbow("ERROR: #{Env::CI_PROJECT_ID} env var is required when --push is given").red
           end
@@ -82,7 +100,7 @@ module Gitlab
           )
 
           teams = manifest.group_principles_by_team(distilled_contents.keys)
-          prefetch_publish_inputs!(affected, teams, ctx)
+          prefetch_publish_inputs!(affected, teams, ctx, metadata: checkpoints.any?)
 
           failures = []
 
@@ -96,13 +114,10 @@ module Gitlab
             failures << team
           end
 
-          begin
-            publish_tooling_branch(ctx)
-          rescue StandardError => e
-            warn Rainbow("ERROR: tooling MR failed: #{e.message}").red
-            cleanup_branch(ctx.base_branch, tooling_branch_name(ctx.auto_mr_cfg, ctx.date))
-            failures << 'tooling'
-          end
+          # Before the tooling branch: its regeneration rewrites distilled files in the working tree, and those
+          # unstaged edits would carry over into a branch cut after it.
+          failures << METADATA_SLUG if checkpoints.any? && !publish_metadata_branch_or_warn(checkpoints, affected, ctx)
+          failures << TOOLING_SLUG unless publish_tooling_branch_or_warn(ctx)
 
           return if failures.empty?
 
@@ -155,12 +170,13 @@ module Gitlab
         based on recent changes to development documentation.
           MSG
 
-          title = "#{slug}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          # Every call follows a push of new content, so re-drafting an adopted MR here is deliberate.
+          title = "#{DRAFT_PREFIX}#{slug}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
           create_mr(branch, contents, affected, ctx, team: team, title: title)
         end
 
         # Builds, pushes, and opens/updates the tooling MR carrying the global routing-table files (AGENTS.md,
-        # CLAUDE.md, both SKILL.md, CODEOWNERS).
+        # both SKILL.md, CODEOWNERS).
         # These are regenerated in-branch so they never leak into the per-team branches.
         #
         # The Duo review-instructions fences are NOT part of this MR: they are reconciled from merged-master content.
@@ -198,7 +214,7 @@ module Gitlab
           commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Update AI principles routing tables (tooling)
 
-        Regenerates AGENTS.md, CLAUDE.md, the gitlab-coding-principles
+        Regenerates AGENTS.md, the gitlab-coding-principles
         SKILL.md files, and the per-file CODEOWNERS rules from the
         principles manifest.
 
@@ -207,6 +223,82 @@ module Gitlab
 
           title = "tooling: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
           create_tooling_mr(branch, ctx, title)
+        end
+
+        # Like the per-team rescue in create_branch_and_mr: returns false so the caller records the failure and
+        # continues.
+        def publish_tooling_branch_or_warn(ctx)
+          publish_tooling_branch(ctx)
+          true
+        rescue StandardError => e
+          warn Rainbow("ERROR: tooling MR failed: #{e.message}").red
+          cleanup_branch(ctx.base_branch, tooling_branch_name(ctx.auto_mr_cfg, ctx.date))
+          false
+        end
+
+        def publish_metadata_branch_or_warn(checkpoints, affected, ctx)
+          publish_metadata_branch(checkpoints, affected, ctx)
+          true
+        rescue StandardError => e
+          warn Rainbow("ERROR: metadata MR failed: #{e.message}").red
+          cleanup_branch(ctx.base_branch, metadata_branch_name(ctx.auto_mr_cfg, ctx.date))
+          false
+        end
+
+        # Builds, pushes, and opens/updates the metadata MR recording successful no-change distillations.
+        # Only the frontmatter changes; each principle body is preserved byte-for-byte.
+        # A checkpoint whose distilled file changed on the base branch since it was evaluated is skipped, so a merged
+        # team MR or newer metadata is never overwritten; the next scheduled run re-evaluates that principle.
+        def publish_metadata_branch(checkpoints, affected, ctx)
+          branch = metadata_branch_name(ctx.auto_mr_cfg, ctx.date)
+
+          checkout_fresh_branch(branch, ctx.base_branch)
+
+          applied = checkpoints.filter_map do |name, checkpoint|
+            path = manifest.principles_path(name)
+            full_path = Workspace.safe_join(path)
+
+            unless File.exist?(full_path)
+              warn Rainbow("  WARNING: #{name}: distilled file no longer exists on #{ctx.base_branch}; " \
+                'skipping its metadata update').yellow
+              next
+            end
+
+            updated = checkpoint.apply(File.read(full_path))
+
+            unless updated
+              warn Rainbow("  WARNING: #{name}: distilled file changed on #{ctx.base_branch} since it was " \
+                'evaluated; skipping its metadata update').yellow
+              next
+            end
+
+            File.write(full_path, updated)
+            [name, path]
+          end.to_h
+
+          system('git', '-C', Workspace.path, 'add', '-f', *applied.values, exception: true) if applied.any?
+
+          unless applied.any? && git_has_staged_changes?
+            puts Rainbow('  Distillation metadata already up to date; skipping metadata MR.').faint
+            close_adopted_mr_if_empty(branch, ctx)
+            cleanup_branch(ctx.base_branch, branch)
+            return
+          end
+
+          updated_list = applied.keys.map { |name| "- #{name}" }.join("\n")
+
+          commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
+        Update AI principles distillation metadata
+
+        Records distillations that produced no meaningful changes, so
+        these principles are skipped until their sources change again:
+        #{updated_list}
+
+        This commit was auto-generated by gitlab-ai-principles-distiller.
+          MSG
+
+          title = "#{METADATA_SLUG}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          create_metadata_mr(branch, applied.keys, affected, ctx, title)
         end
 
         # Builds, pushes, and opens/updates the dedicated reconcile MR carrying ONLY the Duo review-instructions fence
@@ -265,6 +357,13 @@ module Gitlab
             return
           end
 
+          if open_reconcile_mr_matches?(branch, duo_path, ctx)
+            puts Rainbow('  Open reconcile MR already carries these fences; skipping push.').faint
+            system('git', '-C', Workspace.path, 'restore', '--staged', '--worktree', '--', duo_path, exception: true)
+            cleanup_branch(ctx.base_branch, branch)
+            return
+          end
+
           commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Reconcile Duo review-instruction fences from master
 
@@ -279,6 +378,24 @@ module Gitlab
           create_reconcile_mr(branch, ctx, title)
         end
 
+        # Reconciles run after every relevant merge, so most find the open reconcile MR already correct.
+        # Skipping that identical push keeps the MR's pipeline and approvals.
+        def open_reconcile_mr_matches?(branch, duo_path, ctx)
+          return false unless open_mr_for(branch, ctx)
+
+          encoded_project = URI.encode_www_form_component(ctx.project_id)
+          encoded_path = URI.encode_www_form_component(duo_path)
+          uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/repository/files/#{encoded_path}/raw")
+          uri.query = URI.encode_www_form(ref: branch)
+          response = authenticated_get(uri, ctx.api_token)
+          return false unless response.is_a?(Net::HTTPSuccess)
+
+          response.body.b == File.binread(Workspace.safe_join(duo_path))
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not compare with the open reconcile MR (#{e.message}); pushing anyway").yellow
+          false
+        end
+
         def reconcile_branch_name(auto_mr_cfg)
           "#{auto_mr_cfg['branch_prefix']}-reconcile-fences"
         end
@@ -288,7 +405,11 @@ module Gitlab
         end
 
         def tooling_branch_name(auto_mr_cfg, date)
-          branch_name_for(auto_mr_cfg, date, 'tooling')
+          branch_name_for(auto_mr_cfg, date, TOOLING_SLUG)
+        end
+
+        def metadata_branch_name(auto_mr_cfg, date)
+          branch_name_for(auto_mr_cfg, date, METADATA_SLUG)
         end
 
         # Reuses the source branch of an already-open service-account MR for this slug.
@@ -496,13 +617,15 @@ module Gitlab
           end
         end
 
-        def prefetch_publish_inputs!(affected, teams, ctx)
+        def prefetch_publish_inputs!(affected, teams, ctx, metadata: false)
           # Fetch every prior SHA once up front so each team branch can embed its SSOT diffs without re-fetching.
           prefetch_prior_shas!(affected)
 
           # Resolve adoption for every branch this run will touch, once, before any branch is cut.
-          # `team_slug` is the same key `team_branch_name` derives its suffix from, plus the fixed `tooling` slug.
-          slugs = teams.keys.map { |team| manifest.team_slug(team) } + ['tooling']
+          # `team_slug` is the same key `team_branch_name` derives its suffix from, plus the fixed tooling and metadata
+          # slugs.
+          slugs = teams.keys.map { |team| manifest.team_slug(team) } + [TOOLING_SLUG]
+          slugs << METADATA_SLUG if metadata
           prefetch_adopted_branches!(ctx, slugs)
         end
 
@@ -816,19 +939,27 @@ module Gitlab
           # resolves (see team_display).
           author_entries = affected.slice(*changed_principles.keys)
           authors = reviewer_resolver.ssot_authors(author_entries)
-          mentions = authors.map { |author| "@#{author[:username]}" }
           reviewer_ids = authors.filter_map { |author| author[:id] }
-          fallback_reviewer = reviewer_resolver.owner_team_reviewer(team) if reviewer_ids.empty?
-          outcome = ping_outcome(mentions, fallback_reviewer)
-          ping_line = ping_line_for(outcome, mentions, fallback_reviewer, team)
+          existing_mr = open_mr_for(branch, ctx)
+
+          if reviewer_ids.empty?
+            fallback_reviewer = reviewer_resolver.owner_team_reviewer(
+              team, current_reviewer_ids: mr_reviewer_ids(existing_mr)
+            )
+          end
+
+          outcome = ping_outcome(authors, fallback_reviewer)
+          ping_line = ping_line_for(outcome, authors, fallback_reviewer, team)
 
           description = <<~DESC
         ## Summary
 
         This MR updates AI development principles based on recent changes to the
-        development documentation (SSOT). #{ping_line} It is one of several
+        development documentation (SSOT). It is one of several
         team-scoped MRs from this run; the global routing tables (AGENTS.md,
-        CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
+        SKILL.md) are updated in a separate tooling MR.
+        #{draft_review_section(project_url, default_branch)}
+        #{ping_line}
         #{why_you_were_pinged_section(outcome)}
         #{review_request_section(changed_principles.keys, team)}
         #{failed_principles_section(ctx.failed)}
@@ -849,7 +980,19 @@ module Gitlab
           DESC
 
           reviewer_ids = [fallback_reviewer[:id]] if reviewer_ids.empty? && fallback_reviewer
-          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids)
+          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids,
+            existing_mr: existing_mr, request_duo_review: true)
+        end
+
+        def draft_review_section(project_url, default_branch)
+          skill_url = "#{project_url}/-/blob/#{default_branch}/.claude/skills/ai-principles-review-feedback/SKILL.md"
+
+          <<~SECTION
+
+            > **Draft until GitLab Duo's review is addressed.** GitLab Duo reviews this MR first, and its findings are
+            > worked through with the [`ai-principles-review-feedback` skill](#{skill_url}). Human reviewers: please
+            > start once this MR is marked ready.
+          SECTION
         end
 
         # Opens/updates the tooling MR carrying the regenerated global routing tables. Routed to the broad `/.ai/`
@@ -864,7 +1007,7 @@ module Gitlab
 
         This MR regenerates the global AI-principles routing tables from
         [`.ai/principles/manifest.yml`](#{manifest_url}): `AGENTS.md`,
-        `CLAUDE.md`, the `gitlab-coding-principles` SKILL.md files, and the
+        the `gitlab-coding-principles` SKILL.md files, and the
         per-file CODEOWNERS rules.
 
         These files embed the routing table for **all** principles, so they are
@@ -872,10 +1015,48 @@ module Gitlab
         #{job_line}
         No distilled principle content changes here — only the generated
         routing tables. The Duo review-instruction fences are reconciled
-        separately by the scheduled fence-reconcile job.
+        separately by the fence-reconcile job.
           DESC
 
           submit_mr(branch, default_branch, ctx, title, description)
+        end
+
+        # Opens/updates the metadata MR. Approval still routes through each distilled file's CODEOWNERS rule.
+        # Until it merges every run re-distills these principles, so one member of each owning team is requested as
+        # reviewer, matching the team MRs' fallback when no SSOT author resolves.
+        def create_metadata_mr(branch, principle_names, affected, ctx, title)
+          default_branch = workflow.default_branch
+          teams = manifest.group_principles_by_team(principle_names).keys
+          existing_mr = open_mr_for(branch, ctx)
+          current_reviewer_ids = mr_reviewer_ids(existing_mr)
+          reviewer_ids = teams.filter_map do |team|
+            reviewer_resolver.owner_team_reviewer(team, current_reviewer_ids: current_reviewer_ids)&.dig(:id)
+          end
+          sections = principle_names.map do |name|
+            principle_diff_section(name, affected[name], default_branch)
+          end.join("\n\n")
+
+          description = <<~DESC
+        ## Summary
+
+        The latest distillation of these principles produced no meaningful
+        changes. This MR updates only their `source_checksum` and
+        `distilled_at_sha` frontmatter, so the next scheduled run skips them
+        until their SSOT sources change again. The principle bodies are
+        unchanged.
+
+        Each owning team approves its files through CODEOWNERS:
+        #{teams.map { |team| "**#{manifest.team_display(team)}**" }.join(', ')}.
+        #{job_line}
+        ### Principles and their source-doc changes
+
+        Please check that these documentation changes need no rule update.
+
+        #{sections}
+          DESC
+
+          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids,
+            existing_mr: existing_mr)
         end
 
         # Opens/updates the dedicated reconcile MR carrying only the Duo review-instruction fence update, projected from
@@ -942,8 +1123,8 @@ module Gitlab
 
         # Which of the four ping paths `ping_line_for` took. Named so the "why you were pinged" prose can describe
         # what actually happened rather than asserting one path for every MR.
-        def ping_outcome(mentions, fallback_reviewer)
-          if mentions.any?
+        def ping_outcome(authors, fallback_reviewer)
+          if authors.any?
             fallback_reviewer ? :authors_with_fallback : :authors
           else
             fallback_reviewer ? :fallback : :team_only
@@ -953,10 +1134,10 @@ module Gitlab
         # Names *who* is being asked to review. Four outcomes, because an author may resolve without being assignable
         # (no user ID), and the owning team may yield no assignable member at all (see owner_team_reviewer, which
         # returns nil for an unresolvable group).
-        def ping_line_for(outcome, mentions, fallback_reviewer, team)
+        def ping_line_for(outcome, authors, fallback_reviewer, team)
           case outcome
           when :authors_with_fallback
-            "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review. " \
+            "#{ssot_authors_table(authors)}\n" \
               "Reviewer assignment routed to @#{fallback_reviewer[:username]} from " \
               "**#{manifest.team_display(team)}**."
           when :fallback
@@ -965,8 +1146,18 @@ module Gitlab
           when :team_only
             "Please review: **#{manifest.team_display(team)}**."
           else
-            "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review."
+            ssot_authors_table(authors)
           end
+        end
+
+        def ssot_authors_table(authors)
+          <<~TABLE
+            Could the authors listed below review the principles distilled from their SSOT changes?
+
+            | Author | SSOT commit(s) |
+            | --- | --- |
+            #{authors.map { |author| "| @#{author[:username]} | #{author[:commit_shas].join(', ')} |" }.join("\n")}
+          TABLE
         end
 
         # Explains why the recipient was pinged and why merging (not just reviewing) matters.
@@ -1008,8 +1199,7 @@ module Gitlab
               'as reviewer.'
           when :fallback
             'No documentation author could be resolved for these changes, so ' \
-              'review was routed to the least-loaded available member of the ' \
-              'owning team.'
+              'review was routed to one available member of the owning team.'
           when :team_only
             'No individual could be resolved for these changes, so this merge ' \
               'request is routed to the owning team, which approves through ' \
@@ -1051,9 +1241,13 @@ module Gitlab
         # Branch adoption lets this find an open MR across scheduled runs, while a same-day fresh branch stays
         # idempotent.
         # Either way the MR is updated in place rather than failing on a 409.
-        def submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: [])
+        # Pass `existing_mr` when the caller already looked it up; nil means no open MR.
+        def submit_mr(
+          branch, default_branch, ctx, title, description,
+          reviewer_ids: [], existing_mr: :lookup, request_duo_review: false
+        )
           encoded_project = URI.encode_www_form_component(ctx.project_id)
-          existing_mr = find_open_mr(encoded_project, branch, ctx.api_token)
+          existing_mr = find_open_mr(encoded_project, branch, ctx.api_token) if existing_mr == :lookup
           body = mr_body(ctx, title, description)
           # Assign the MR to its author (the service account) and tag the current milestone so Danger's "no assignee" /
           # "no milestone" warnings don't fire on every weekly auto-MR. Both are best-effort: a lookup failure logs and
@@ -1062,14 +1256,15 @@ module Gitlab
           body[:assignee_id] = assignee_id if assignee_id
           milestone_id = current_milestone_id(encoded_project, ctx.api_token)
           body[:milestone_id] = milestone_id if milestone_id
-          existing_reviewer_ids = existing_mr.to_h.fetch('reviewers', []).filter_map { |reviewer| reviewer['id']&.to_i }
-          merged_reviewer_ids = (existing_reviewer_ids + reviewer_ids).uniq
+          duo_bot_id = duo_review_bot_id(ctx.api_token) if request_duo_review
+          merged_reviewer_ids, rerequest_duo = plan_reviewers(existing_mr, reviewer_ids, duo_bot_id)
           body[:reviewer_ids] = merged_reviewer_ids if merged_reviewer_ids.any?
 
           response, action = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
 
           if body[:reviewer_ids] && !response.is_a?(Net::HTTPSuccess)
-            warn Rainbow("WARNING: reviewer assignment failed (#{response.code}); retrying without reviewers").yellow
+            warn Rainbow("WARNING: reviewer assignment failed (#{response.code}); retrying without reviewers" \
+              "#{duo_bot_id && " (including @#{DUO_REVIEW_BOT_USERNAME}, so no Duo review starts)"}").yellow
             body.delete(:reviewer_ids)
             response, = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
           end
@@ -1082,7 +1277,66 @@ module Gitlab
 
           response_body = JSON.parse(response.body)
           warn_if_reviewers_dropped(body[:reviewer_ids], response_body['reviewers'])
+          rerequest_duo_review(response_body, duo_bot_id) if rerequest_duo
           puts "\n#{Rainbow("MR #{action}: #{response_body['web_url']}").green}"
+        end
+
+        def open_mr_for(branch, ctx)
+          find_open_mr(URI.encode_www_form_component(ctx.project_id), branch, ctx.api_token)
+        end
+
+        def mr_reviewer_ids(merge_request)
+          merge_request.to_h.fetch('reviewers', []).filter_map { |reviewer| reviewer['id']&.to_i }
+        end
+
+        # Returns [reviewer IDs to submit, whether Duo needs a re-request]. Adding Duo as a reviewer starts a review,
+        # but an MR that already has Duo as a reviewer needs an explicit re-request.
+        def plan_reviewers(existing_mr, reviewer_ids, duo_bot_id)
+          existing_reviewer_ids = mr_reviewer_ids(existing_mr)
+
+          [(existing_reviewer_ids + reviewer_ids + Array(duo_bot_id)).uniq, existing_reviewer_ids.include?(duo_bot_id)]
+        end
+
+        # Memoized with `defined?` so a failed lookup is not retried for every team. Nil skips the Duo request.
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
+        def duo_review_bot_id(api_token)
+          return @duo_review_bot_id if defined?(@duo_review_bot_id)
+
+          @duo_review_bot_id = fetch_duo_review_bot_id(api_token)
+        end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+        def fetch_duo_review_bot_id(api_token)
+          uri = URI("#{workflow.gitlab_host}/api/v4/users")
+          uri.query = URI.encode_www_form(username: DUO_REVIEW_BOT_USERNAME)
+          response = authenticated_get(uri, api_token)
+          id = JSON.parse(response.body).first&.dig('id') if response.is_a?(Net::HTTPSuccess)
+          return id if id
+
+          warn Rainbow("WARNING: could not resolve @#{DUO_REVIEW_BOT_USERNAME}; not requesting a Duo review").yellow
+          nil
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not resolve @#{DUO_REVIEW_BOT_USERNAME} (#{e.message}); " \
+            'not requesting a Duo review').yellow
+          nil
+        end
+
+        # query_graphql already warns on transport and top-level GraphQL errors and returns nil; this adds the MR iid.
+        def rerequest_duo_review(mr, duo_bot_id)
+          project_path = mr.dig('references', 'full').to_s.split('!').first
+          if project_path.to_s.empty?
+            return warn Rainbow("WARNING: could not re-request a Duo review on !#{mr['iid']}: " \
+              'MR response has no references.full').yellow
+          end
+
+          data = workflow.query_graphql(
+            DUO_REREVIEW_MUTATION,
+            projectPath: project_path, iid: mr.fetch('iid').to_s, userId: "gid://gitlab/User/#{duo_bot_id}"
+          )
+          errors = data ? Array(data.dig('mergeRequestReviewerRereview', 'errors')) : ['GraphQL request failed']
+          return if errors.empty?
+
+          warn Rainbow("WARNING: could not re-request a Duo review on !#{mr['iid']}: #{errors.join('; ')}").yellow
         end
 
         def mr_body(ctx, title, description)

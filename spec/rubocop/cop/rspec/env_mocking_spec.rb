@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::RSpec::EnvMocking, feature_category: :tooling do
     end
   end
 
-  context 'with mocking bracket calls ' do
+  context 'with mocking bracket calls' do
     it_behaves_like 'cop offense mocking the ENV constant correctable with stub_env',
       offense_call_brackets_string_quotes, %(stub_env('FOO', 'bar'))
     it_behaves_like 'cop offense mocking the ENV constant correctable with stub_env',

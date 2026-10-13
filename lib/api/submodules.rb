@@ -22,7 +22,7 @@ module API
     params do
       requires :id,
         type: String,
-        desc: 'The ID or URL-encoded path of a project',
+        desc: 'ID or URL-encoded path of the project.',
         documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -39,16 +39,16 @@ module API
       params do
         requires :submodule,
           type: String,
-          desc: 'URL-encoded full path to submodule.',
+          desc: 'URL-encoded full path to the submodule, for example `lib%2Fclass%2Erb`.',
           documentation: { example: 'gitlab-org/gitlab-shell' }
         requires :commit_sha,
           type: String,
-          desc: 'Commit sha to update the submodule to.',
+          desc: 'Full commit SHA to update the submodule to.',
           documentation: { example: 'ed899a2f4b50b4370feeea94676502b42383c746' }
         requires :branch, type: String, desc: 'Name of the branch to commit into.', documentation: { example: 'main' }
         optional :commit_message,
           type: String,
-          desc: 'Commit message. If no message is provided a default one will be set.',
+          desc: 'Commit message. If omitted, a default message is used.',
           documentation: { example: 'Commit message' }
       end
       route_setting :authorization, permissions: :update_repository_submodule, boundary_type: :project

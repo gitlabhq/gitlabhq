@@ -191,7 +191,7 @@ describe('Merge request dashboard merge request component', () => {
   it('sets background when newMergeRequestIds includes the merge request ID', () => {
     createComponent({}, [1]);
 
-    expect(wrapper.classes()).toContain('gl-bg-green-50');
+    expect(wrapper.classes()).toContain('gl-bg-feedback-success');
   });
 
   describe('milestone', () => {

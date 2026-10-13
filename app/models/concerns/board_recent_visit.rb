@@ -2,14 +2,20 @@
 
 module BoardRecentVisit
   extend ActiveSupport::Concern
+  include ThrottledTouch
 
   class_methods do
     def visited!(user, board)
-      find_or_create_by(
-        "user" => user,
-        board_parent_relation => board.resource_parent,
-        board_relation => board
-      ).tap(&:touch)
+      visit = Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
+        url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
+        find_or_create_by(
+          "user" => user,
+          board_parent_relation => board.resource_parent,
+          board_relation => board
+        )
+      end
+
+      visit.tap(&:touch)
     rescue ActiveRecord::RecordNotUnique
       retry
     end

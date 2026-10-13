@@ -305,7 +305,7 @@ processing is done in a background worker and requires no downtime.
 
    {{< /tabs >}}
 
-1. If [Geo](../geo/_index.md) is enabled, [reverify all job artifacts](../geo/replication/troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
+1. If [Geo](../geo/_index.md) is enabled, [reverify all job artifacts](../geo/replication/resync_reverify.md#reverify-one-component-on-all-sites).
 
 In some cases, you need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
 to clean up orphaned artifacts.
@@ -327,6 +327,12 @@ an expiry for the artifacts, they are marked for deletion right after that date 
 Otherwise, they expire per the [default artifacts expiration setting](../settings/continuous_integration.md#set-default-artifacts-expiration).
 
 Expired artifacts are deleted by the `Ci::ScheduleBulkDeleteJobArtifactCronWorker` Sidekiq cron job, which runs every 30 minutes (`*/30 * * * *` in [Cron](../../topics/cron/_index.md) syntax) and enqueues `Ci::BulkDeleteExpiredJobArtifactsWorker` to perform the deletion.
+
+On [Geo](../geo/_index.md) deployments, expiring artifacts also reduces storage use on
+secondary sites and the load from Geo sync, verification, and
+[metrics collection](../geo/replication/troubleshooting/common.md#excessive-database-io-from-geo-metrics-collection).
+For more information, see
+[Reduce the amount of replicated data](../geo/replication/tuning.md#reduce-the-amount-of-replicated-data).
 
 ## Set the maximum file size of the artifacts
 

@@ -61,7 +61,7 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
     let(:required_variables) { [:first_param, :all_records, :data_path, :current_user] }
   end
 
-  describe do
+  describe 'pagination' do
     let(:params) { sort_argument }
     let(:query) { pagination_query(params) }
 

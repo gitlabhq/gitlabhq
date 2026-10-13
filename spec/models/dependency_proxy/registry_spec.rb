@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::Registry, type: :model do
+RSpec.describe DependencyProxy::Registry do
   let(:tag)      { '2.3.5-alpine' }
   let(:blob_sha) { '40bd001563085fc35165329ea1ff5c5ecbdbbeef' }
 

@@ -1,0 +1,3 @@
+---
+name: read_import_source_user
+description: Grants the ability to read mappings of users on an import source instance to users on the destination instance

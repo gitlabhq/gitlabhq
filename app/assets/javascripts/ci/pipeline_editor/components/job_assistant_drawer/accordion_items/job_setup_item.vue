@@ -40,7 +40,6 @@ export default {
     availableStages: {
       type: Array,
       required: true,
-      default: () => [],
     },
   },
   emits: ['update-job'],

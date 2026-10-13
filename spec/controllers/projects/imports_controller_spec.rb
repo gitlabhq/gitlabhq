@@ -208,6 +208,29 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
       expect(project.reload.unsafe_import_url).to eq('https://user:password@github.com/vim/vim.git')
     end
 
+    it 'sets request_channel: ui on the import state', :clean_gitlab_redis_shared_state do
+      post_create
+
+      expect(project.reload.import_state.request_channel).to eq('ui')
+    end
+
+    context 'when the project update fails' do
+      let(:params) { { import_url: 'ftp://github.com/vim/vim.git' } }
+
+      it 'does not schedule the import or set request_channel', :clean_gitlab_redis_shared_state do
+        post_create
+
+        expect(RepositoryImportWorker).not_to have_received(:perform_async)
+        expect(project.reload.import_state&.request_channel).to be_nil
+      end
+
+      it 'redirects to the project import path' do
+        post_create
+
+        expect(response).to redirect_to(project_import_path(project))
+      end
+    end
+
     context 'when the project belongs to another organization' do
       let(:project) { create(:project, organization: create(:organization)) }
 

@@ -660,7 +660,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         get diff_files_namespace_project_commit_url(params)
 
         expect(::Gitlab::ApplicationRateLimiter)
-          .not_to receive(:throttled?).with(:expanded_diff_files, scope: user)
+          .not_to receive(:throttled?).with(:expanded_diff_files, scope: { user: user })
       end
     end
 

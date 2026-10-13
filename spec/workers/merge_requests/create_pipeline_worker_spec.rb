@@ -437,4 +437,66 @@ RSpec.describe MergeRequests::CreatePipelineWorker, feature_category: :pipeline_
       end
     end
   end
+
+  describe 'create_pipeline_from_commit user experience' do
+    let_it_be(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:worker) { described_class.new }
+    let(:started_at) { 4.seconds.ago.to_f }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:params) do
+      { 'pipeline_creation_request' => { 'key' => 'k', 'id' => 'i', 'started_at' => started_at },
+        'gitaly_context' => {} }
+    end
+
+    subject(:perform) { worker.perform(project.id, user.id, merge_request.id, params) }
+
+    before do
+      allow_next_instance_of(MergeRequests::CreatePipelineService) do |service|
+        allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: pipeline))
+      end
+      allow(MergeRequest).to receive(:find_by_id).with(merge_request.id).and_return(merge_request)
+      allow(merge_request).to receive(:update_head_pipeline)
+    end
+
+    it 'reports the finished creation with the request start time' do
+      expect(Ci::PipelineCreation::ExperienceReporter).to receive(:report)
+        .with(pipeline: pipeline, source: :merge_request_event, started_at: started_at)
+
+      perform
+    end
+
+    context 'when the service returns a retriable error' do
+      before do
+        allow_next_instance_of(MergeRequests::CreatePipelineService) do |service|
+          allow(service).to receive(:execute)
+            .and_return(ServiceResponse.error(message: 'temporary', reason: :retriable_error))
+        end
+      end
+
+      it 'does not report, leaving emission to the successful retry or exhaustion' do
+        expect(Ci::PipelineCreation::ExperienceReporter).not_to receive(:report)
+
+        expect { perform }.to raise_error(described_class::PipelineCreationRetryError)
+      end
+    end
+
+    describe 'when retries are exhausted' do
+      let(:job) do
+        { 'args' => [project.id, user.id, merge_request.id,
+          { 'pipeline_creation_request' => { 'key' => 'k', 'id' => 'i', 'started_at' => started_at } }] }
+      end
+
+      it 'reports an errored experience' do
+        allow(Ci::PipelineCreation::Requests).to receive(:failed)
+        allow(Ci::PipelineCreation::Requests).to receive(:merge_request_from_key).and_return(nil)
+
+        expect(Ci::PipelineCreation::ExperienceReporter).to receive(:report_error)
+          .with(source: :merge_request_event, started_at: started_at, project_id: project.id)
+
+        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+      end
+    end
+  end
 end

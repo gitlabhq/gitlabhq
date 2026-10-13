@@ -42,7 +42,8 @@ RSpec.describe WebHooks::HookLogActions, feature_category: :webhooks do
     end
 
     it 'checks rate limit with correct scope' do
-      expect(controller).to receive(:check_rate_limit!).with(:web_hook_event_resend, scope: [webhook.parent, user])
+      expect(controller).to receive(:check_rate_limit!)
+        .with(:web_hook_event_resend, scope: { project: webhook.parent, user: user })
 
       get :retry, params: { id: hook_log.id }
     end

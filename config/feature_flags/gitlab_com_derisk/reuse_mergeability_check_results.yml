@@ -1,0 +1,10 @@
+---
+name: reuse_mergeability_check_results
+description: Derives the detailed merge status from mergeability check results already computed in the same request instead of running the checks again
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255821
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631670
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

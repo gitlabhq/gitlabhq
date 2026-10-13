@@ -628,23 +628,31 @@ curl --location "https://packages.gitlab.com/install/repositories/runner/gitlab-
 sudo apt-get install -y gitlab-runner
 ```
 
-Register the runner with your GitLab instance. Go to
-**Admin > CI/CD > Runners** and select **New instance runner** to get
-a registration token, then run:
+To register the runner with your GitLab instance:
 
-```shell
-sudo gitlab-runner register \
-  --url "https://gitlab.example.com" \
-  --token "<REGISTRATION_TOKEN>" \
-  --executor docker \
-  --docker-image "ruby:3.2" \
-  --tag-list "docker" \
-  --description "Docker runner for DAP"
-```
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **CI/CD** > **Runners**.
+1. Select **Create instance runner**.
+1. In the **Tags** field, enter `gitlab--duo`.
+   Flow jobs run only on runners with this tag.
+1. To get a runner authentication token, select **Create runner**.
+1. On the machine where you installed GitLab Runner, run:
+
+   ```shell
+   sudo gitlab-runner register \
+     --url "https://gitlab.example.com" \
+     --token "<RUNNER_AUTHENTICATION_TOKEN>" \
+     --executor docker \
+     --docker-image "ruby:3.2" \
+     --description "Docker runner for DAP"
+   ```
 
 For more details, see
 [Install GitLab Runner](https://docs.gitlab.com/runner/install/) and
 [Create and register a runner](../../tutorials/create_register_first_runner/_index.md).
+
+For more information about runners for flows, see
+[Configure runners to execute flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows).
 
 > [!note]
 > DAP flows use a Docker-in-Docker workflow. The runner must use the

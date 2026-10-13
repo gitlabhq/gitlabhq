@@ -88,12 +88,12 @@ module Gitlab
               Gitlab::AppLogger.warn 'WithLockRetries used already, executing the block directly'
               yield
             else
-              raise <<~EOF
+              raise <<~TEXT
               #{__callee__} can not be run inside an already open transaction.
 
               Lock retries are enabled by default for transactional migrations, so this can be run without `#{__callee__}`.
               For more details, see: https://docs.gitlab.com/development/migration_style_guide/#transactional-migrations
-              EOF
+              TEXT
             end
           else
             with_lock_retries_used!

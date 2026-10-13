@@ -1,6 +1,6 @@
 ---
-stage: AI-powered features
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 title: Flow Registry Framework v1
 ignore_in_report: true
 ---
@@ -78,7 +78,7 @@ flowVersion: "1.0.0"
 
 The rest of this page documents the YAML structure for the flow config. For instructions
 on registering a new foundational flow in the codebase, see the
-[Foundational flows developer guide](foundational_flows/developer.md).
+[Foundational flows developer guide](../../project/merge_requests/developer.md).
 
 ## Session context variables
 

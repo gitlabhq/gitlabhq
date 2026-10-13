@@ -1,0 +1,7 @@
+# valid needs:pipeline:job:optional
+job_with_optional_cross_pipeline_need:
+  script: exit 0
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build
+      optional: true

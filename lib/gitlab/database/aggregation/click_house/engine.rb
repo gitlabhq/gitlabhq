@@ -13,12 +13,19 @@ module Gitlab
           DEDUP_QUERY_NAME = 'ch_aggregation_dedup_query'
           COLUMN_PREFIX = 'aeq_'
 
+          # Cap for `exact_not_match` value lists, tighter than the framework-wide
+          # `Types::BaseArgument::MAX_ARRAY_SIZE`. An exclusion cannot use the sort key to skip
+          # granules, so the whole scoped range is read however short the list is; the cap bounds
+          # the request and the set-membership work, not the read.
+          MAX_EXCLUSION_VALUES = 100
+
           class << self
             def dimensions_mapping
               {
                 column: DimensionDefinition,
                 date_bucket: DateBucketDimension,
-                tier: TierDimension
+                tier: TierDimension,
+                traversal_path: TraversalPathDimension
               }
             end
 
@@ -29,6 +36,7 @@ module Gitlab
                 min: Min,
                 max: Max,
                 rate: Rate,
+                ratio: Ratio,
                 quantile: Quantile,
                 sum: Sum,
                 retained_count: RetainedCount,
@@ -41,10 +49,18 @@ module Gitlab
             def filters_mapping
               {
                 exact_match: ExactMatchFilter,
+                exact_not_match: ExactNotMatchFilter,
                 range: RangeFilter,
+                descendants: DescendantsFilter,
                 metric_exact_match: MetricExactMatchFilter,
                 metric_range: MetricRangeFilter
               }
+            end
+
+            # Each page re-runs the whole aggregation and skips earlier rows with OFFSET, so clients
+            # that walk every page cost less with fewer, larger pages.
+            def max_page_size
+              500
             end
           end
 

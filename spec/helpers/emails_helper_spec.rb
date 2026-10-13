@@ -6,22 +6,36 @@ RSpec.describe EmailsHelper, feature_category: :shared do
   include EmailsHelperTestHelper
   include NotifyHelper
 
+  describe '#notification_email_marker', feature_category: :notifications do
+    subject(:marker) { Nokogiri::HTML.fragment(helper.notification_email_marker(target_url)).at_css('span') }
+
+    let(:target_url) { 'https://gitlab.example.com/group/project/-/merge_requests/1' }
+
+    it 'renders a hidden span with a random marker', :aggregate_failures do
+      expect(marker.text).to match(/\ANotification message regarding #{Regexp.escape(target_url)} at \h{32}\z/)
+      expect(marker['style']).to include('display:none')
+      expect(marker.text).not_to eq(
+        Nokogiri::HTML.fragment(helper.notification_email_marker(target_url)).at_css('span').text
+      )
+    end
+  end
+
   describe 'closure_reason_text' do
-    let(:issue) { create(:issue) }
+    let(:issue) { build_stubbed(:issue) }
 
     before do
       instance_variable_set(:@issue, issue)
     end
 
     context 'when given a MergeRequest' do
-      let(:merge_request) { create(:merge_request) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, developers: user) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
       let(:merge_request_presenter) { merge_request.present }
 
       context 'when user can read merge request' do
-        let(:user) { create(:user) }
-
         before do
-          merge_request.project.add_developer(user)
           instance_variable_set(:@recipient, user)
           instance_variable_set(:@project, merge_request.project)
         end
@@ -191,7 +205,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
   end
 
   describe '#say_hi' do
-    let(:user) { create(:user, name: 'John') }
+    let(:user) { build_stubbed(:user, name: 'John') }
 
     it 'returns the greeting message for the given user' do
       expect(say_hi(user)).to eq('Hi John!')
@@ -295,6 +309,31 @@ RSpec.describe EmailsHelper, feature_category: :shared do
       expect(contact_your_administrator_text).to eq(
         _('Please contact your administrator with any questions.')
       )
+    end
+  end
+
+  describe '#instance_access_request_text' do
+    # Regression: safe_format HTML-escapes interpolated values, which is correct
+    # for the HTML email but wrong for the plain-text email, where a name like
+    # "O'Brien" must render literally, not as "O&#39;Brien".
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255495
+    #
+    let(:user) { build_stubbed(:user, name: "O'Brien & Co") }
+
+    it 'escapes interpolated values for the html format' do
+      result = helper.instance_access_request_text(user, format: :html)
+
+      expect(result).to include('O&#39;Brien &amp; Co')
+    end
+
+    it 'does not escape interpolated values for the text format' do
+      result = helper.instance_access_request_text(user)
+
+      aggregate_failures do
+        expect(result).to include("O'Brien & Co")
+        expect(result).not_to include('&#39;')
+        expect(result).not_to include('&amp;')
+      end
     end
   end
 
@@ -403,8 +442,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     with_them do
       it 'ellipcizes different variants' do
         project = double("project")
-        allow(project).to receive(:full_path).and_return(full_path)
-        allow(project).to receive(:id).and_return(12345)
+        allow(project).to receive_messages(full_path: full_path, id: 12345)
         # Set a max length that gives only 5 chars for the project full path
         max_length = "12345..#{Gitlab.config.gitlab.host}".length + 5
         list_id = create_list_id_string(project, max_length)
@@ -448,8 +486,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     with_them do
       it 'produces the right List-Id' do
         project = double("project")
-        allow(project).to receive(:full_path).and_return(full_path)
-        allow(project).to receive(:id).and_return(12345)
+        allow(project).to receive_messages(full_path: full_path, id: 12345)
         list_id = create_list_id_string(project)
 
         expect(list_id).to eq("12345.#{list_id_path}.#{Gitlab.config.gitlab.host}")

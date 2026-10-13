@@ -11,7 +11,7 @@ title: Access the Observability API
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -100,7 +100,7 @@ curl --header "SIGNOZ-API-KEY: <your_api_key>" \
 ```
 
 Replace `<your_api_key>` with the key from the **API Keys** page, and
-`<group_id>` with your GitLab group ID (or your self-managed instance URL).
+`<group_id>` with your GitLab group ID (or your GitLab Self-Managed instance URL).
 
 ## Available API endpoints
 

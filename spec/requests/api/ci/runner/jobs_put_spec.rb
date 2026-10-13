@@ -452,8 +452,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, runner_id: runner.id)
         end
 
-        let(:success_status) { :ok }
-
         def request
           update_job(state: 'success')
         end

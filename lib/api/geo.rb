@@ -14,6 +14,7 @@ module API
 
     resource :geo do
       desc 'Returns a Geo proxy response' do
+        detail 'Determines if the current Geo site should proxy requests.'
         summary "Determine if a Geo site should proxy requests"
         success code: 200
         failure [{ code: 403, message: 'Forbidden' }]
@@ -25,7 +26,7 @@ module API
       route_setting :authorization, skip_granular_token_authorization: :geo_proxy_auth
       get '/proxy' do
         require_gitlab_workhorse!
-        check_rate_limit!(:geo_proxy, scope: [ip_address])
+        check_rate_limit!(:geo_proxy, scope: { ip: ip_address })
 
         status :ok
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE

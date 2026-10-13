@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_category: :source_code_management do
+RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_management do
   include RepoHelpers
 
   subject(:component) do
@@ -15,18 +15,18 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
     )
   end
 
-  let_it_be(:project, freeze: false) { create(:project, :repository) }
-  let_it_be(:repository, freeze: false) { project.repository }
-  let_it_be(:commit, freeze: false) { project.commit(sample_commit.id) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:repository) { project.repository }
+  let_it_be_with_reload(:commit) { project.commit(sample_commit.id) }
   let_it_be(:diffs, freeze: false) { commit.raw_diffs }
-  let_it_be(:diff, freeze: false) { diffs.first }
-  let_it_be(:diff_refs, freeze: false) { commit.diff_refs }
-  let_it_be(:diff_file, freeze: false) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
-  let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+  let_it_be_with_reload(:diff) { diffs.first }
+  let_it_be_with_reload(:diff_refs) { commit.diff_refs }
+  let_it_be_with_reload(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
+  let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
   let(:diff_files) { [diff_file] }
   let(:expected_button_classes) do
-    "gl-button btn btn-md btn-default"
+    "gl-button btn btn-sm btn-default"
   end
 
   def parse_link(html)
@@ -99,8 +99,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
     # Compare revisions or Merge Request create page
     context "both conditions fail" do
       before do
-        allow(component).to receive(:commit?).and_return(false)
-        allow(component).to receive(:merge_request?).and_return(false)
+        allow(component).to receive_messages(commit?: false, merge_request?: false)
         render_inline component
       end
 
@@ -140,15 +139,13 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
     end
 
     it "is a string when on a merge request page" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(true)
+      allow(component).to receive_messages(commit?: false, merge_request?: true)
 
       is_expected.to eq("foo")
     end
 
     it "is nil in other situations" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(false)
+      allow(component).to receive_messages(commit?: false, merge_request?: false)
 
       is_expected.to be_nil
     end
@@ -169,15 +166,13 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
     end
 
     it "is a string when on a merge request page" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(true)
+      allow(component).to receive_messages(commit?: false, merge_request?: true)
 
       is_expected.to eq("foo")
     end
 
     it "is nil in other situations" do
-      allow(component).to receive(:commit?).and_return(false)
-      allow(component).to receive(:merge_request?).and_return(false)
+      allow(component).to receive_messages(commit?: false, merge_request?: false)
 
       is_expected.to be_nil
     end
@@ -214,8 +209,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
 
     context "when not on a commit or merge request page" do
       before do
-        allow(component).to receive(:commit?).and_return(false)
-        allow(component).to receive(:merge_request?).and_return(false)
+        allow(component).to receive_messages(commit?: false, merge_request?: false)
         render_inline component
       end
 

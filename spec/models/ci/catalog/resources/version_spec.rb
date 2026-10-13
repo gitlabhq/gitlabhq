@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: :pipeline_composition do
+RSpec.describe Ci::Catalog::Resources::Version, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:current_user, freeze: false) { create(:user) }
   let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
   let_it_be(:minor_release, freeze: false) do
-    create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day)
+    create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day, author: current_user)
   end
 
   let_it_be(:major_release, freeze: false) do
@@ -17,15 +17,19 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   let_it_be(:patch, freeze: false) do
-    create(:release, project: project, tag: 'v1.1.3', created_at: Date.today, sha: 'patch_sha')
+    create(:release, project: project, tag: 'v1.1.3', created_at: Date.today, sha: 'patch_sha',
+      author: current_user)
   end
 
-  let!(:v1_1_0) do
+  let_it_be_with_reload(:v1_1_0) do
     create(:ci_catalog_resource_version, semver: '1.1.0', catalog_resource: resource, release: minor_release)
   end
 
-  let!(:v1_1_3) { create(:ci_catalog_resource_version, semver: 'v1.1.3', catalog_resource: resource, release: patch) }
-  let!(:v2_0_0) do
+  let_it_be_with_reload(:v1_1_3) do
+    create(:ci_catalog_resource_version, semver: 'v1.1.3', catalog_resource: resource, release: patch)
+  end
+
+  let_it_be(:v2_0_0) do
     create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource, release: major_release)
   end
 
@@ -82,7 +86,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     let_it_be(:project2, freeze: false) { create(:project, :catalog_resource_with_components) }
     let_it_be(:resource2, freeze: false) { create(:ci_catalog_resource, project: project2) }
     let_it_be(:release_v3, freeze: false) do
-      create(:release, tag: '3.0.0', project: project2, created_at: Date.yesterday)
+      create(:release, tag: '3.0.0', project: project2, created_at: Date.yesterday, author: current_user)
     end
 
     let_it_be(:v3_0_0, freeze: false) do
@@ -131,6 +135,23 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
         expect(new_components.flatten).to all(be_a(Ci::Catalog::Resources::Component))
         expect(new_components.flatten.size).to eq(3) # All 3 components loaded
       end
+
+      context 'with a limit' do
+        subject { described_class.versions_for_catalog_resources([resource, resource2], limit: 2) }
+
+        it 'returns only the highest versions of each catalog resource' do
+          is_expected.to eq([v3_0_0, v2_0_0, v1_1_3])
+        end
+
+        it 'orders prereleases the same way as without a limit' do
+          rc = create(:ci_catalog_resource_version, semver: '2.0.0-rc1', catalog_resource: resource)
+
+          unlimited = described_class.versions_for_catalog_resources([resource])
+
+          expect(described_class.versions_for_catalog_resources([resource], limit: 3)).to eq(unlimited.first(3))
+          expect(unlimited.first(3)).to include(rc)
+        end
+      end
     end
   end
 
@@ -149,7 +170,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     subject { described_class.without_prerelease }
 
     it 'excludes pre-releases' do
-      beta_release = create(:release, project: project, tag: '3.1.3-beta')
+      beta_release = create(:release, project: project, tag: '3.1.3-beta', author: current_user)
       create(:ci_catalog_resource_version, semver: '3.1.3-beta', catalog_resource: resource,
         release: beta_release)
 
@@ -166,7 +187,8 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
       end
 
       it 'excludes pre-release versions' do
-        beta_release = create(:release, project: project, tag: '3.1.3-beta', created_at: Date.today)
+        beta_release = create(:release, project: project, tag: '3.1.3-beta', created_at: Date.today,
+          author: current_user)
         create(:ci_catalog_resource_version, semver: '3.1.3-beta', catalog_resource: resource,
           release: beta_release)
 
@@ -219,7 +241,10 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe '.search_by_version' do
-    let_it_be(:release_v2_beta, freeze: false) { create(:release, project: project, tag: '2.0.0-beta') }
+    let_it_be(:release_v2_beta, freeze: false) do
+      create(:release, project: project, tag: '2.0.0-beta', author: current_user)
+    end
+
     let_it_be(:v2_0_0_beta, freeze: false) do
       create(:ci_catalog_resource_version, catalog_resource: resource, release: release_v2_beta, semver: '2.0.0-beta')
     end
@@ -273,7 +298,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
     it 'returns the correct readme for the version' do
       v1_2_3 = create(:release, :with_catalog_resource_version, project: project, tag: '1.2.3',
-        sha: project.commit('1.2.3').sha)
+        sha: project.commit('1.2.3').sha, author: current_user)
 
       expect(v1_1_0.readme).to include('testme')
       expect(v1_2_3.catalog_resource_version.readme).to include('Patch v1.2.3')
@@ -281,12 +306,12 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe 'synchronizing released_at with `releases` table using model callbacks' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
+    let_it_be(:project, freeze: false) { create(:project, :small_repo) }
     let_it_be(:resource, freeze: false) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_reload(:release) do
       create(:release, :with_catalog_resource_version, project: project, tag: '1.2.3',
-        released_at: '2023-01-01T00:00:00Z')
+        released_at: '2023-01-01T00:00:00Z', author: current_user)
     end
 
     let(:version) { release.catalog_resource_version }

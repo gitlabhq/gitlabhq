@@ -120,6 +120,8 @@ module MergeRequests
       merge_commit_shas = merge_commit_sha_by_diff_head_sha.values.compact.uniq
       commits_by_sha = @project.repository.commits_by(oids: merge_commit_shas).index_by(&:id)
 
+      first_error = nil
+
       merge_requests.each do |merge_request|
         sha = merge_commit_sha_by_diff_head_sha[merge_request.diff_head_sha]
         merge_request.merge_commit_sha = sha
@@ -143,21 +145,26 @@ module MergeRequests
         MergeRequests::PostMergeService
           .new(project: merge_request.target_project, current_user: @current_user)
           .execute(merge_request, source)
+      rescue StandardError => e
+        # One failing merge request must not leave the rest of the batch
+        # unprocessed. Re-raised after the loop so the worker retries the ones
+        # still open; an MR that failed after mark_as_merged is not retried.
+        Gitlab::ErrorTracking.track_exception(
+          e,
+          { merge_request_id: merge_request.id, project_id: @project.id },
+          { merged_manually_detection: 'post_merge_batch' }
+        )
+        first_error ||= e
       end
+
+      raise first_error if first_error
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # The diff commit graph is only read by the pre-8.4 `head_commit_sha` fallback, and
-    # preloading it costs a scope evaluation per diff commit for every open merge request
-    # on the branch. Without it the fallback runs an indexed lookup for the few that need it.
     def post_merge_candidates
-      relation = @project.merge_requests.opened
+      @project.merge_requests.opened
         .preload_project_and_latest_diff
         .preload_merge_data(@project)
-
-      return relation if Feature.enabled?(:merge_request_refresh_skip_diff_commit_preload, @project)
-
-      relation.preload_latest_diff_commit(@project)
     end
 
     # Link LFS objects that exists in forks but does not exists in merge requests
@@ -187,48 +194,14 @@ module MergeRequests
       merge_requests_array = merge_requests.to_a + merge_requests_from_forks.to_a
       filtered_merge_requests = filter_merge_requests(merge_requests_array)
 
-      if batched_commit_lookup_enabled?
-        new_recheck_merge_requests_batched(filtered_merge_requests)
-      else
-        old_recheck_merge_requests_batched(filtered_merge_requests)
-      end
+      recheck_merge_requests_batched(filtered_merge_requests)
 
       # Upcoming method calls need the refreshed version of
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
 
-    def batched_commit_lookup_enabled?
-      Feature.enabled?(:merge_request_refresh_batched_commit_lookup, @project)
-    end
-
-    def old_recheck_merge_requests_batched(filtered_merge_requests)
-      source_branch_or_force_pushed_mrs = []
-      all_mr_ids = []
-
-      filtered_merge_requests.each do |merge_request|
-        all_mr_ids << merge_request.id
-
-        if branch_and_project_match?(merge_request) || @push.force_push?
-          merge_request.reload_diff(current_user)
-          schedule_duo_code_review(merge_request)
-          source_branch_or_force_pushed_mrs << merge_request
-        elsif merge_request.merge_request_diff.includes_any_commits?(push_commit_ids)
-          merge_request.reload_diff(current_user)
-        end
-      end
-
-      MergeRequest.batch_mark_as_unchecked(all_mr_ids, mrs_to_trigger: source_branch_or_force_pushed_mrs)
-
-      # Clear existing merge error if the push were directed at the
-      # source branch. Clearing the error when the target branch
-      # changes will hide the error from the user.
-      MergeRequest.batch_clear_merge_error(source_branch_or_force_pushed_mrs.map(&:id))
-
-      enqueue_auto_merge_for_unchecked(filtered_merge_requests)
-    end
-
-    def new_recheck_merge_requests_batched(filtered_merge_requests)
+    def recheck_merge_requests_batched(filtered_merge_requests)
       source_branch_or_force_pushed_mrs = []
       all_mr_ids = []
       diff_ids_to_reload = batched_diff_ids_to_reload(filtered_merge_requests)
@@ -238,7 +211,7 @@ module MergeRequests
 
         if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
-          schedule_duo_code_review(merge_request)
+          schedule_duo_code_review(merge_request) if branch_and_project_match?(merge_request)
           source_branch_or_force_pushed_mrs << merge_request
         elsif diff_ids_to_reload.include?(merge_request.merge_request_diff.id)
           merge_request.reload_diff(current_user)
@@ -429,7 +402,7 @@ module MergeRequests
     end
 
     # If the merge requests closes any issues, save this information in the
-    # `MergeRequestsClosingIssues` model (as a performance optimization).
+    # `MergeRequestIssue` model (as a performance optimization).
     #
     # Only open merge requests are considered: `persist_merge_request_issues!`
     # is a no-op for closed and merged merge requests, so loading them here is

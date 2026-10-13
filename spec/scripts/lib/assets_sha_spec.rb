@@ -8,6 +8,14 @@ require_relative '../../../scripts/lib/assets_sha'
 RSpec.describe AssetsSha, feature_category: :tooling do
   include StubENV
 
+  describe '.assets_impacting_compilation' do
+    it 'includes patch-package patches, which rewrite node_modules after install' do
+      files = described_class.send(:assets_impacting_compilation)
+
+      expect(files).to include(a_string_matching(%r{\Apatches/.+\.patch\z}))
+    end
+  end
+
   describe '.sha256_of_assets_impacting_compilation' do
     before do
       # Stub the file list so the digest does not depend on the whole working tree;

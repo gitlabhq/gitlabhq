@@ -769,6 +769,21 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
     end
   end
 
+  describe 'PipelineCreatedEvent payload' do
+    it 'publishes the expected event payload shape' do
+      allow(Ci::TrackPipelineTriggerEventsWorker).to receive(:perform_async)
+
+      execute_service(state: 'success', ref: 'master')
+
+      expect(Ci::TrackPipelineTriggerEventsWorker).to have_received(:perform_async).with(
+        'Ci::PipelineCreatedEvent', {
+          'pipeline_id' => kind_of(Integer),
+          'partition_id' => kind_of(Integer)
+        }
+      )
+    end
+  end
+
   def create_user(access_level_trait)
     user = create(:user)
     create(:project_member, access_level_trait, user: user, project: project)

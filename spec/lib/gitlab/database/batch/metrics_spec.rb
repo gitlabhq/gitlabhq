@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::Batch::Metrics, feature_category: :database do
   let(:batch_metrics) { described_class.new }

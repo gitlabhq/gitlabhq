@@ -3,50 +3,36 @@
 require 'spec_helper'
 
 RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
-  let_it_be(:organization) { create(:organization) }
-  let_it_be(:admin) { create(:admin, organizations: [organization]) }
-  let_it_be(:admin_group) do
-    create(:group, :private, project_creation_level: nil, organization: organization)
-  end
+  let_it_be(:attribute) { :math_rendering_limits_enabled }
 
-  let_it_be(:user) { create(:user, organizations: [organization]) }
-  let_it_be(:user_group) do
-    create(:group, :private, project_creation_level: nil, organization: organization)
-  end
-
-  let_it_be(:subgroup1) do
-    create(:group, :private, parent: admin_group, project_creation_level: nil)
-  end
-
-  let_it_be(:subgroup2) do
-    create(
-      :group,
-      :private,
-      parent: admin_group,
-      project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
+  let(:organization) { build_stubbed(:organization) }
+  let(:admin_group) do
+    build_stubbed(
+      :group, :private, project_creation_level: nil, organization: organization,
+      namespace_settings: build_stubbed(:namespace_settings, namespace: nil)
     )
   end
 
-  let_it_be(:subgroup3) do
-    create(
-      :group,
-      :private,
-      parent: admin_group,
-      project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+  let(:subgroup1) do
+    build_stubbed(
+      :group, :private, parent: admin_group, project_creation_level: nil, organization: organization,
+      namespace_settings: build_stubbed(:namespace_settings, namespace: nil)
     )
+  end
+
+  let(:user_group) do
+    build_stubbed(:group, :private, project_creation_level: nil, organization: organization)
   end
 
   let(:project1) { build(:project, namespace: subgroup1) }
   let(:project2) do
-    user.create_namespace!(path: user.username, name: user.name, organization: organization) unless user.namespace
-    build(:project, namespace: user.namespace)
-  end
-
-  let_it_be(:attribute) { :math_rendering_limits_enabled }
-
-  before_all do
-    admin_group.add_owner(admin)
-    user_group.add_owner(user)
+    build(
+      :project,
+      namespace: build_stubbed(
+        :namespace, organization: organization,
+        namespace_settings: build_stubbed(:namespace_settings, namespace: nil)
+      )
+    )
   end
 
   describe '#check_group_lock' do
@@ -77,18 +63,18 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#cascading_namespace_settings_tooltip_data' do
-    it 'returns tooltip data with testid' do
-      allow(helper).to receive(:cascading_namespace_settings_tooltip_raw_data).and_return({ key: 'value' })
-      result = helper.cascading_namespace_settings_tooltip_data(attribute, subgroup1, -> {})
-      expect(result[:tooltip_data]).to eq('{"key":"value"}')
+  describe '#cascading_namespace_settings_popover_data' do
+    it 'returns popover data with testid' do
+      allow(helper).to receive(:cascading_namespace_settings_popover_raw_data).and_return({ key: 'value' })
+      result = helper.cascading_namespace_settings_popover_data(attribute, subgroup1, -> {})
+      expect(result[:popover_data]).to eq('{"key":"value"}')
       expect(result[:testid]).to eq('cascading-settings-lock-icon')
     end
   end
 
-  describe '#cascading_namespace_settings_tooltip_raw_data' do
+  describe '#cascading_namespace_settings_popover_raw_data' do
     subject do
-      helper.cascading_namespace_settings_tooltip_data(
+      helper.cascading_namespace_settings_popover_data(
         attribute,
         subgroup1,
         ->(locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }
@@ -103,7 +89,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
       it 'returns expected hash' do
         expect(subject).to match({
-          tooltip_data: {
+          popover_data: {
             locked_by_application_setting: true,
             locked_by_ancestor: false
           }.to_json,
@@ -121,7 +107,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
       it 'returns expected hash' do
         expect(subject).to match({
-          tooltip_data: {
+          popover_data: {
             locked_by_application_setting: false,
             locked_by_ancestor: true,
             ancestor_namespace: {
@@ -135,13 +121,13 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#project_cascading_namespace_settings_tooltip_data' do
+  describe '#project_cascading_namespace_settings_popover_data' do
     using RSpec::Parameterized::TableSyntax
 
     let(:settings_path_helper) { ->(locked_ancestor) { edit_group_path(locked_ancestor) } }
 
     subject do
-      helper.project_cascading_namespace_settings_tooltip_data(attribute, project, settings_path_helper)
+      helper.project_cascading_namespace_settings_popover_data(attribute, project, settings_path_helper)
     end
 
     shared_examples 'returns correct data' do

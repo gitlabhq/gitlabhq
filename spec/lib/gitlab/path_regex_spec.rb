@@ -622,4 +622,28 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
     it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/blob/sha256:F14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab/../latest') }
     it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/blob/sha256:F14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab/latest') }
   end
+
+  describe '.dependency_proxy_containers_route_regex' do
+    subject { described_class.dependency_proxy_containers_route_regex }
+
+    let(:sha) { 'sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab' }
+
+    it { is_expected.to match('/v2') }
+    it { is_expected.to match('/v2/') }
+    it { is_expected.to match('/v2/group1/dependency_proxy/containers/alpine/manifests/latest') }
+    it { is_expected.to match("/v2/group1/dependency_proxy/containers/alpine/blobs/#{sha}") }
+    it { is_expected.to match("/v2/group1/dependency_proxy/containers/alpine/blobs/#{sha}/upload") }
+    it { is_expected.to match("/v2/group1/dependency_proxy/containers/alpine/blobs/#{sha}/upload/authorize") }
+    it { is_expected.to match('/v2/group1/dependency_proxy/containers/alpine/manifests/latest/upload') }
+    it { is_expected.to match('/v2/group1/dependency_proxy/containers/alpine/manifests/latest/upload/authorize') }
+    it { is_expected.to match('/v2/group1/subgroup/dependency_proxy/containers/alpine/manifests/latest') }
+
+    it { is_expected.not_to match('') }
+    it { is_expected.not_to match('/v2x') }
+    it { is_expected.not_to match('/v2/group1') }
+    it { is_expected.not_to match('/v2/virtual_registries/container/1/library/alpine/manifests/latest') }
+    it { is_expected.not_to match('/v2/dependency_proxy/containers/alpine/manifests/latest') }
+    it { is_expected.not_to match('/v3/group1/dependency_proxy/containers/alpine/manifests/latest') }
+    it { is_expected.not_to match('/group1/dependency_proxy/containers/alpine/manifests/latest') }
+  end
 end

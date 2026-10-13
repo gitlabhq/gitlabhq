@@ -91,11 +91,20 @@ module Gitlab
         connection = model.connection
 
         Diagnostics::Checks::SchemaResolution.new(connection).execute
+          .merge(timeouts: collect_timeouts(connection))
           .merge(collect_vacuum_section(connection))
           .merge(autovacuum_config: collect_autovacuum_config(connection))
       rescue StandardError => e
         Gitlab::ErrorTracking.track_exception(e, database_name: database_name)
         { error: "Failed to gather information for database: #{database_name}" }
+      end
+
+      # Read on the primary because pg_settings is per host: a replica can carry
+      # its own postgresql.conf and report a different cluster default.
+      def collect_timeouts(connection)
+        Gitlab::Database::LoadBalancing::SessionMap
+          .current(connection.load_balancer)
+          .use_primary { Diagnostics::Checks::Timeouts.new(connection).execute }
       end
 
       # Vacuum section of the payload: the in-progress vacuum list plus a flag

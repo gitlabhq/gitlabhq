@@ -76,7 +76,6 @@ gitlab-advanced-sast:
     paths:
       - gl-sast-report.json
       - ts-cache.sqlite.gz
-    expire_in: 3 days
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
@@ -318,6 +317,7 @@ gitlab-advanced-sast-cpp:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
+    SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: 1
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/clangsa:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
@@ -362,6 +362,7 @@ gitlab-advanced-sast-cpp:
     - '**/*.sc'
     - '**/*.kt'
     - '**/*.kts'
+    - '**/*.rs'
 
 gitlab-advanced-sast-ext:
   extends: .sast-analyzer

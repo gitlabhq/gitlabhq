@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationPolicy, feature_category: :organization do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be_with_refind(:private_organization) { create(:organization, :private) }
   let_it_be_with_refind(:organization) { private_organization }
   let_it_be(:public_organization) { create(:organization, :public) }
@@ -39,16 +41,20 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_allowed(:restore_organization) }
       it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_allowed(:read_organization_user) }
+      it { is_expected.to be_allowed(:read_user_groups) }
       it { is_expected.to be_allowed(:read_artifact_registry) }
       it { expect_allowed(:transfer_group) }
       it { expect_allowed(:access_organization_admin_area) }
+      it { expect_allowed(:update_integration) }
     end
 
     context 'when admin mode is disabled' do
       it { is_expected.to be_disallowed(:update_organization) }
       it { is_expected.to be_disallowed(:restore_organization) }
       it { is_expected.to be_disallowed(:access_organization_admin_area) }
+      it { is_expected.to be_disallowed(:read_user_groups) }
       it { expect_disallowed(:transfer_group) }
+      it { expect_disallowed(:update_integration) }
       it { is_expected.to be_disallowed(:read_artifact_registry) }
 
       context 'when the organization is private' do
@@ -76,8 +82,10 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { is_expected.to be_disallowed(:read_organization_user) }
+    it { is_expected.to be_disallowed(:read_user_groups) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
+    it { expect_disallowed(:update_integration) }
   end
 
   context 'when the user is an owner of the organization' do
@@ -92,9 +100,11 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_organization_user) }
+    it { is_expected.to be_allowed(:read_user_groups) }
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { expect_allowed(:transfer_group) }
     it { expect_allowed(:access_organization_admin_area) }
+    it { expect_allowed(:update_integration) }
   end
 
   context 'when the user is not part of the organization' do
@@ -103,9 +113,11 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:delete_organization) }
     it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_disallowed(:read_organization_user) }
+    it { is_expected.to be_disallowed(:read_user_groups) }
     it { is_expected.to be_disallowed(:read_artifact_registry) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
+    it { expect_disallowed(:update_integration) }
 
     context 'when the organization is private' do
       it { is_expected.to be_disallowed(:read_organization) }
@@ -171,6 +183,40 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       end
 
       it { is_expected.to be_disallowed(:delete_organization) }
+    end
+  end
+
+  describe 'read_user_access_level' do
+    include AdminModeHelper
+
+    let(:organization) { private_organization }
+
+    let_it_be(:instance_admin) { create(:admin) }
+    let_it_be(:organization_admin) { create(:organization_owner, organization: private_organization).user }
+    let_it_be(:organization_user) { create(:organization_user, organization: private_organization).user }
+    let_it_be(:non_member) { create(:user) }
+
+    where(:user, :admin_mode, :allowed) do
+      ref(:instance_admin)     | true  | true
+      ref(:instance_admin)     | false | false
+      ref(:organization_admin) | false | true
+      ref(:organization_user)  | false | false
+      ref(:non_member)         | false | false
+      nil                      | false | false
+    end
+
+    with_them do
+      let(:current_user) { user }
+
+      before do
+        enable_admin_mode!(current_user) if admin_mode
+      end
+
+      if params[:allowed]
+        it { expect_allowed(:read_user_access_level) }
+      else
+        it { expect_disallowed(:read_user_access_level) }
+      end
     end
   end
 end

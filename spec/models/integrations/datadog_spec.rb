@@ -135,8 +135,14 @@ RSpec.describe Integrations::Datadog, feature_category: :continuous_integration 
       context 'with datadog_ci_visibility disabled' do
         let(:dd_ci_visibility) { false }
 
-        it { is_expected.not_to allow_value(true).for(:archive_trace_events) }
         it { is_expected.to allow_value(false).for(:archive_trace_events) }
+
+        it 'syncs archive_trace_events to false instead of raising a validation error' do
+          instance.archive_trace_events = true
+
+          expect(instance).to be_valid
+          expect(instance.archive_trace_events).to be(false)
+        end
       end
 
       context 'with datadog_ci_visibility enabled' do
@@ -164,9 +170,19 @@ RSpec.describe Integrations::Datadog, feature_category: :continuous_integration 
   describe 'upgrade from previous version' do
     subject { instance.datadog_ci_visibility }
 
+    let(:instance) do
+      described_class.instantiate(
+        'id' => non_existing_record_id,
+        'project_id' => project.id,
+        'active' => active,
+        'type_new' => 'Integrations::Datadog',
+        'encrypted_properties' => nil,
+        'encrypted_properties_iv' => nil
+      )
+    end
+
     context 'with previously active integration' do
       let(:active) { true }
-      let(:dd_ci_visibility) { nil }
 
       # If the integration was active but no datadog_ci_visibility is in the
       # properties, we're expecting it to be true since this was the previous default
@@ -175,11 +191,102 @@ RSpec.describe Integrations::Datadog, feature_category: :continuous_integration 
 
     context 'with previously inactive integration' do
       let(:active) { false }
-      let(:dd_ci_visibility) { nil }
 
       # If the integration is not active, datadog_ci_visibility shouldn't be initialized
       # since it's now opt-in
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe 'initial setup' do
+    let(:active) { false }
+    let(:dd_ci_visibility) { nil }
+
+    it 'defaults CI Visibility to enabled' do
+      expect(instance.datadog_ci_visibility).to be(true)
+    end
+
+    it 'defaults log pulling to enabled' do
+      expect(instance.archive_trace_events).to be(true)
+    end
+
+    it 'hides log pulling until the integration is saved' do
+      expect(instance.form_fields.pluck(:name)).not_to include('archive_trace_events')
+    end
+
+    it 'does not override an explicitly set value while CI Visibility is enabled' do
+      instance.archive_trace_events = false
+
+      expect(instance).to be_valid
+      expect(instance.archive_trace_events).to be(false)
+    end
+
+    it 'shows log pulling after the integration is saved' do
+      instance.save!
+
+      expect(instance.form_fields.pluck(:name)).to include('archive_trace_events')
+    end
+
+    context 'when CI Visibility is explicitly disabled' do
+      let(:dd_ci_visibility) { false }
+
+      it 'defaults log pulling to disabled' do
+        expect(instance.archive_trace_events).to be(false)
+      end
+
+      it 'keeps log pulling disabled during validation' do
+        instance.archive_trace_events = true
+
+        expect { instance.valid? }.to change { instance.archive_trace_events }.from(true).to(false)
+      end
+    end
+
+    context 'when activating the integration on first save with CI Visibility disabled' do
+      let(:active) { true }
+      let(:dd_ci_visibility) { false }
+
+      it 'keeps log pulling in sync with CI Visibility instead of raising a validation error' do
+        instance.archive_trace_events = true
+
+        expect(instance).to be_valid
+        expect(instance.archive_trace_events).to be(false)
+      end
+    end
+
+    context 'when the integration is built and then activated in a separate step' do
+      it 'keeps log pulling in sync with the final CI Visibility value on save' do
+        integration = described_class.new(project: project)
+
+        integration.assign_attributes(
+          active: true,
+          api_key: api_key,
+          datadog_site: dd_site,
+          datadog_ci_visibility: false
+        )
+
+        expect(integration).to be_valid
+        expect(integration.archive_trace_events).to be(false)
+      end
+    end
+
+    context 'once the integration has already been saved' do
+      let(:active) { true }
+      let(:dd_ci_visibility) { true }
+
+      it 'no longer syncs log pulling with CI Visibility on later edits' do
+        saved_instance.update!(archive_trace_events: false)
+
+        expect { saved_instance.update!(datadog_ci_visibility: false) }
+          .not_to change { saved_instance.archive_trace_events }
+      end
+
+      it 'raises a validation error when only disabling CI Visibility while log pulling stays enabled' do
+        saved_instance # both start enabled by default
+
+        expect(saved_instance.archive_trace_events).to be(true)
+        expect(saved_instance.update(datadog_ci_visibility: false)).to be(false)
+        expect(saved_instance.errors[:archive_trace_events]).to include('requires CI Visibility to be enabled')
+      end
     end
   end
 

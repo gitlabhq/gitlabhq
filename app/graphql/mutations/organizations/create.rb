@@ -6,7 +6,8 @@ module Mutations
       graphql_name 'OrganizationCreate'
 
       authorize :create_organization
-      authorize_granular_token permissions: :create_organization, boundary: :instance, boundary_type: :instance
+      authorize_granular_token permissions: :create_organization, boundary: :instance, boundary_type: :instance,
+        assignable_when: [:saas]
 
       argument :name, GraphQL::Types::String,
         required: true,

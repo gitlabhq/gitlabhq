@@ -65,6 +65,8 @@ Agentic Chat can:
 For an overview, see [GitLab Duo Chat (agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
 
+Share your feedback in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
+
 ## Use GitLab Duo Chat
 
 You can use GitLab Duo Chat in:
@@ -85,6 +87,8 @@ in your terminal.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
 - Previous navigation instructions removed in GitLab 18.7.
 - New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
+- Ability to retry the previous question [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21289) in GitLab 19.5 with a [flag](../../administration/feature_flags/_index.md) named `agentic_manual_retry_for_duo_chat_responses`. Disabled by default.
+- Ability to retry the previous question [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/601522) in GitLab 19.5. Feature flag `agentic_manual_retry_for_duo_chat_responses` removed.
 
 {{< /history >}}
 
@@ -107,6 +111,8 @@ To use Chat in the GitLab UI:
    - You can provide additional [context](../duo_agent_platform/context.md#gitlab-duo-agentic-chat) for your chat.
    - It might take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. You can:
+   - Select **Retry** ({{< icon name="retry" >}}) to try to get a different answer
+     to your question. Use the arrows to select from the original or retry answers to continue the conversation.
    - Ask a follow-up question.
    - Start [another conversation](#have-multiple-conversations).
 
@@ -118,6 +124,55 @@ most recent conversation, and that conversation is still active in the Chat draw
 {{< history >}}
 
 - Triggering foundational flows in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/605446) in GitLab 19.5. Feature flag `agentic_foundational_flow_tool` removed.
+
+{{< /history >}}
+
+Where appropriate, the following foundational flows can be triggered from an Agentic Chat conversation to answer a question or accomplish a goal.
+
+- [Developer Flow](../project/merge_requests/developer.md#use-the-flow-in-agentic-chat)
+- [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review/_index.md#use-the-flow)
+- [Fix CI/CD Pipeline Flow](../../ci/pipelines/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
+
+#### Trigger a flow with a slash command
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252920) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_chat_flow_commands`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/629298) in GitLab 19.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/629298) in GitLab 19.5.
+
+{{< /history >}}
+
+In GitLab Duo Agentic Chat, you can start a flow with a slash command. Use a flow command when a flow does not have a configured trigger, or when you want to start the flow yourself instead of waiting for a trigger.
+
+Prerequisites:
+
+- You must have Chat open in a project. Flow commands are not available outside a project.
+- The flow must be [enabled in the project](../duo_agent_platform/flows/custom.md#enable-a-flow).
+
+> [!warning]
+> If you trigger a flow with a slash command, it has write access to the GitLab API and to Git.
+> The flow can commit and push changes, and post comments on issues and merge requests.
+> Unlike Chat, a flow does not ask you to approve these actions.
+> [Tool approvals](#tool-approvals) apply to the Chat session only, not to flows that the session starts.
+> Each flow run also uses [compute minutes](../../ci/pipelines/compute_minutes.md), because flows started from the GitLab UI run as a CI/CD pipeline.
+
+To trigger a flow from Chat:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, open a new or existing Chat conversation.
+1. In the Chat message box, enter `/` at the start of your message.
+1. In the **Flows** section, select a flow. The command is the flow name in slug format, with a `/flow:` prefix. For example, a flow named `Security scanner` becomes `/flow:security-scanner`. If two flows in a project have names that produce the same command, a numeric ID is appended to the second command.
+1. Optional. After the command, enter the goal for the flow. For example, `/flow:security-scanner check the auth module`.
+1. Press <kbd>Enter</kbd> or select **Send**.
+
+#### Start a long-running task with the `/goal` command
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23107) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_chat_goal_command`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/23107) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -125,11 +180,47 @@ most recent conversation, and that conversation is still active in the Chat draw
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Where appropriate, the following foundational flows can be triggered from an Agentic Chat conversation to answer a question or accomplish a goal.
+Use `/goal` when you want GitLab Duo to keep working on a task until it's done,
+instead of answering one turn at a time and waiting for you to ask it to continue.
 
-- [Developer Flow](../duo_agent_platform/flows/foundational_flows/developer.md#use-the-flow-in-agentic-chat)
-- [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review/_index.md#use-the-flow)
-- [Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
+When you send a goal, Chat starts a [Developer Flow](../project/merge_requests/developer.md)
+session that works toward it. Goals work best for a concrete change with a clear end state,
+for example, fixing a set of failing tests or making a change across several files.
+To ask a question, use a regular Chat message instead.
+
+Prerequisites:
+
+- [Open a chat window](#use-gitlab-duo-chat-in-the-gitlab-ui) in a project. `/goal` is not available outside a project.
+- Meet the [Developer Flow prerequisites](../project/merge_requests/developer.md#prerequisites),
+  including turning on the Developer Flow for the top-level group.
+
+> [!warning]
+> A goal runs the Developer Flow, which has write access to the GitLab API and to Git.
+> The flow can commit and push changes, create merge requests, and post comments on issues and merge requests.
+> Unlike Chat, the flow does not ask you to approve these actions.
+> [Tool approvals](#tool-approvals) apply to the Chat session only, not to flows that the session starts.
+> Each goal also uses [compute minutes](../../ci/pipelines/compute_minutes.md), because flows started from the GitLab UI run as a CI/CD pipeline.
+
+To start a long-running task:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, open a new or existing Chat conversation.
+1. In the Chat message box, do one of the following:
+   - At the start of your message, enter `/goal` and select it from the list.
+   - Select **More actions** ({{< icon name="plus" >}}) > **Goal**.
+
+   A **Goal** label appears in the message box.
+1. Describe what you want done. For example:
+
+   ```plaintext
+   Fix the failing tests in spec/models/user_spec.rb
+   ```
+
+1. Press <kbd>Enter</kbd> or select **Send**.
+
+In the conversation, your message shows a **Goal** label.
+
+To remove the goal before you send the message, on the **Goal** label, select **Remove goal** ({{< icon name="close" >}}).
 
 ### Use GitLab Duo Chat in VS Code
 
@@ -320,15 +411,20 @@ Prerequisites:
 
 {{< tab title=GitLab.com >}}
 
-- The Owner of the top-level group has not selected a model for the GitLab Duo Agent Platform. If a [model has been selected for the group](../gitlab_duo/model_selection.md), you cannot change the model for Chat.
+- A user with the Owner role for the top-level group has not pinned a model for Agentic Chat.
+  If they [selected a non-default model without restricting Agentic Chat to specific models](../duo_agent_platform/model_selection.md#select-a-model-for-agentic-chat),
+  the model is pinned and cannot be changed.
+  Otherwise, you can choose from the available models.
 - You must be using Chat in the top-level group. You cannot change the model if you access Chat in the organization.
 
 {{< /tab >}}
 
-{{< tab title="Self-managed" >}}
+{{< tab title="GitLab Self-Managed" >}}
 
-- The administrator has not selected a model for the instance. If a model has been selected for the instance,
-  you cannot change the model for Chat.
+- An administrator has not pinned a model for Agentic Chat.
+  If they [selected a non-default model without restricting Agentic Chat to specific models](../../administration/gitlab_duo/model_selection.md#select-a-model-for-agentic-chat),
+  the model is pinned and cannot be changed.
+  Otherwise, you can choose from the available models.
 - Your instance must be connected to the GitLab AI Gateway.
 
 {{< /tab >}}
@@ -533,7 +629,7 @@ All approvals reset when you start a new conversation.
 | ------------                                            |------|                                                         -------------                                                                                                          |
 | Ask general programming questions |                       Yes  |                                                          Yes                                                                                                                   |
 | Get answers about an open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |
-| Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation. <sup>1</sup> |        Yes. Provide the path of the file in your question.                                                                   |
+| Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation.[^not-in-ide-chat] |        Yes. Provide the path of the file in your question.                                                                   |
 | Autonomously search project contents |                    No |                                                            Yes                                                                                                                   |
 | Autonomously create files and change files |              No |                                                            Yes. Ask it to change files. It might overwrite changes that you have made manually and have not committed yet.  |
 | Retrieve issues and MRs without specifying IDs |          No |                                                            Yes. Search by other criteria. For example, an MR or issue's title or assignee.                                       |
@@ -548,20 +644,7 @@ All approvals reset when you start a new conversation.
 | Run MCP tools |                                      No |                                                            Yes, IDEs only                                                                                                          |
 | Approve tools for a session |                        No |                                                            Yes, IDEs only                                                                                                          |
 
-**Footnotes**:
-
-1. Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.
-
-## Troubleshooting
-
-When working with GitLab Duo Chat, you might encounter issues.
-
-For information on resolving these issues, see [Troubleshooting](troubleshooting.md).
-
-## Feedback
-
-Your feedback is valuable in helping us improve this feature.
-Share your experience in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
+[^not-in-ide-chat]: Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.
 
 ## Related topics
 

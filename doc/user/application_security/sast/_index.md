@@ -394,69 +394,76 @@ For more information about language support plans in SAST, see the [category dir
 
 These languages are supported by both GitLab Advanced SAST (Ultimate) and standard analyzers (all tiers):
 
-| Language               | GitLab Advanced SAST<sup>1</sup> | Standard analyzer<sup>2</sup> |
+| Language               | GitLab Advanced SAST[^advanced-sast-ultimate] | Standard analyzer[^tiers-uses-semgrep] |
 |------------------------|----------------------------------|-------------------------------|
 | C                      | {{< yes >}}                      | {{< yes >}}                   |
 | C++                    | {{< yes >}}                      | {{< yes >}}                   |
 | C#                     | {{< yes >}}                      | {{< yes >}}                   |
 | Go                     | {{< yes >}}                      | {{< yes >}}                   |
-| Java<sup>3</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| Java[^including-java-server]       | {{< yes >}}                      | {{< yes >}}                   |
 | Java Properties        | {{< yes >}}                      | {{< yes >}}                   |
-| JavaScript<sup>4</sup> | {{< yes >}}                      | {{< yes >}}                   |
-| Objective-C (iOS)<sup>7</sup> | {{< yes >}}               | {{< yes >}}                   |
+| JavaScript[^including-node-react] | {{< yes >}}                      | {{< yes >}}                   |
+| Objective-C (iOS)[^advanced-sast-support] | {{< yes >}}               | {{< yes >}}                   |
 | PHP                    | {{< yes >}}                      | {{< yes >}}                   |
 | Python                 | {{< yes >}}                      | {{< yes >}}                   |
-| Ruby<sup>5</sup>       | {{< yes >}}                      | {{< yes >}}                   |
-| Swift (iOS)<sup>7</sup> | {{< yes >}}                     | {{< yes >}}                   |
+| Ruby[^including-rails]       | {{< yes >}}                      | {{< yes >}}                   |
+| Swift (iOS)[^advanced-sast-support] | {{< yes >}}                     | {{< yes >}}                   |
 | TypeScript             | {{< yes >}}                      | {{< yes >}}                   |
-| YAML<sup>6</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| YAML[^support-restricted-following]       | {{< yes >}}                      | {{< yes >}}                   |
 
-**Footnotes**:
+[^advanced-sast-ultimate]: [GitLab Advanced SAST](gitlab_advanced_sast.md) - Ultimate tier only.
+[^tiers-uses-semgrep]: All tiers. Uses [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) analyzer with [GitLab-managed rules](rules.md#semgrep-based-analyzer) unless otherwise specified.
+[^including-java-server]: Including Java Server Pages (JSP) and Android.
+[^including-node-react]: Including Node.js and React.
+[^including-rails]: Including Ruby on Rails.
+[^support-restricted-following]: YAML support is restricted to the following file patterns:
 
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
+    - `application*.yml`
+    - `application*.yaml`
+    - `bootstrap*.yml`
+    - `bootstrap*.yaml`
 
-1. [GitLab Advanced SAST](gitlab_advanced_sast.md) - Ultimate tier only.
-2. All tiers. Uses [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) analyzer with [GitLab-managed rules](rules.md#semgrep-based-analyzer) unless otherwise specified.
-3. Including Java Server Pages (JSP) and Android.
-4. Including Node.js and React.
-5. Including Ruby on Rails.
-6. YAML support is restricted to the following file patterns:
-   - `application*.yml`
-   - `application*.yaml`
-   - `bootstrap*.yml`
-   - `bootstrap*.yaml`
-7. GitLab Advanced SAST support for Swift and Objective-C is in
-   [beta](../../../policy/development_stages_support.md#beta). Analysis runs as a separate
-   `gitlab-advanced-sast-ext` job, which is enabled together with GitLab Advanced SAST by the
-   shared `GITLAB_ADVANCED_SAST_ENABLED` variable. For more information, see
-   [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
-
-<!-- markdownlint-enable MD029 -->
+[^advanced-sast-support]: GitLab Advanced SAST support for Swift and Objective-C is in
+    [beta](../../../policy/development_stages_support.md#beta). Analysis runs as a separate
+    `gitlab-advanced-sast-ext` job, which is enabled together with GitLab Advanced SAST by the
+    shared `GITLAB_ADVANCED_SAST_ENABLED` variable. For more information, see
+    [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
 ### Languages with standard analyzer support only
 
 These languages are supported by standard analyzers (all tiers) but not by GitLab Advanced SAST:
 
-| Language           | Standard analyzer<sup>1</sup>                                                                           | Proposed support<sup>2</sup> |
+| Language           | Standard analyzer[^languages-standard-tiers-uses-semgrep]                                                                           | Proposed support[^referenced-epic-proposes] |
 |--------------------|---------------------------------------------------------------------------------------------------------|------------------------------|
 | Apex (Salesforce)  | {{< yes >}} [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)              | None                         |
 | Elixir (Phoenix)   | {{< yes >}} [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                | None                         |
-| Groovy             | {{< yes >}} [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup>  | None                         |
-| Kotlin<sup>4</sup> | {{< yes >}}                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
+| Groovy             | {{< yes >}} [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)[^find-sec-bugs]  | None                         |
+| Kotlin[^including-android] | {{< yes >}}                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
 | Scala              | {{< yes >}}                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
 
-**Footnotes**:
+[^languages-standard-tiers-uses-semgrep]: All tiers. Uses [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)
+    analyzer with [GitLab-managed rules](rules.md#semgrep-based-analyzer) unless otherwise specified.
+[^referenced-epic-proposes]: The referenced epic proposes GitLab Advanced SAST support for these languages.
+[^find-sec-bugs]: SpotBugs with the find-sec-bugs plugin. Supports Gradle, Maven, and SBT. It can also be used with variants
+    like the Gradle wrapper, Grails, and the Maven wrapper. However, SpotBugs has
+    [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against Ant-based
+    projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or
+    Scala projects.
+[^including-android]: Including Android.
 
-1. All tiers. Uses [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)
-   analyzer with [GitLab-managed rules](rules.md#semgrep-based-analyzer) unless otherwise specified.
-1. The referenced epic proposes GitLab Advanced SAST support for these languages.
-1. SpotBugs with the find-sec-bugs plugin. Supports Gradle, Maven, and SBT. It can also be used with variants
-   like the Gradle wrapper, Grails, and the Maven wrapper. However, SpotBugs has
-   [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against Ant-based
-   projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or
-   Scala projects.
-1. Including Android.
+### Languages with GitLab Advanced SAST support only
+
+These languages are supported by GitLab Advanced SAST (Ultimate) in
+[beta](../../../policy/development_stages_support.md#beta), but not by the standard analyzers:
+
+| Language | GitLab Advanced SAST |
+|----------|----------------------|
+| Dart     | {{< yes >}}          |
+| Rust     | {{< yes >}}          |
+
+Analysis runs in a separate `gitlab-advanced-sast-ext` CI/CD job, which is enabled together with
+GitLab Advanced SAST by the `GITLAB_ADVANCED_SAST_ENABLED` CI/CD variable.
+For more information, see [GitLab Advanced SAST](gitlab_advanced_sast.md#supported-languages).
 
 The SAST CI/CD template also includes an analyzer job that can scan Kubernetes manifests and Helm charts; this job is off by default.
 See [Enabling Kubesec analyzer](#enabling-kubesec-analyzer) or consider [IaC scanning](../iac_scanning/_index.md), which supports additional platforms, instead.
@@ -679,34 +686,34 @@ you must
 to cover them. You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs
 when the relevant files are modified.
 
-#### Scan a Rust application
+#### Scan an OCaml application
 
 Prerequisites:
 
 - The Developer, Maintainer, or Owner role for the project.
 
-To scan a Rust application, complete these steps:
+To scan an OCaml application, complete these steps:
 
-1. Provide a custom ruleset for Rust. Create a file named `sast-ruleset.toml` in a `.gitlab/`
+1. Provide a custom ruleset for OCaml. Create a file named `sast-ruleset.toml` in a `.gitlab/`
    directory at the root of your repository.
 
-   The following example uses the Semgrep registry's default ruleset for Rust:
+   The following example uses the Semgrep registry's ruleset for OCaml:
 
    ```toml
    [semgrep]
-     description = "Rust ruleset for Semgrep"
+     description = "OCaml ruleset for Semgrep"
      targetdir = "/sgrules"
      timeout = 60
 
      [[semgrep.passthrough]]
        type  = "url"
-       value = "https://semgrep.dev/c/p/rust"
-       target = "rust.yml"
+       value = "https://semgrep.dev/c/p/ocaml"
+       target = "ocaml.yml"
    ```
 
    For more details, see
    [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules).
-1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files.
+1. Override the `semgrep-sast` job to add a rule that detects OCaml (`.ml`) files.
 
    Define the following in the `.gitlab-ci.yml` file:
 
@@ -718,7 +725,7 @@ To scan a Rust application, complete these steps:
      rules:
        - if: $CI_COMMIT_BRANCH
          exists:
-           - '**/*.rs'
+           - '**/*.ml'
            # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml
    ```
 
@@ -1093,7 +1100,17 @@ Some analyzers can be customized by using CI/CD variables.
 |-------------------------------------|----------------------|------------------------------------------|-------------|
 | `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab Advanced SAST | `false`                                  | Set to `true` to enable GitLab Advanced SAST scanning (available in GitLab Ultimate only). |
 | `GITLAB_ADV_SAST_INCR_SCAN` | GitLab Advanced SAST | `false` | Enable incremental scanning to cache taint signatures between pipeline runs. |
-| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | GitLab Advanced SAST | `true` | Set to `false` to turn off incremental scanning for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzers. This variable is enabled by default and has no effect on repositories without Swift or Objective-C files. |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | GitLab Advanced SAST | `true` | Applies only to the `gitlab-advanced-sast-ext` analyzer (Swift, Objective-C, Dart, Scala, and Kotlin), which has [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) turned on by default. Set to `false` to turn it off. Has no effect on repositories without files for those languages. For other languages, use `GITLAB_ADV_SAST_INCR_SCAN` instead. |
+| `GITLAB_ADVANCED_SAST_CPP_ENABLED`  | GitLab Advanced SAST | `false`                                  | To turn on GitLab Advanced SAST scanning for C and C++ projects, set to `true`. |
+| `ADVANCED_SAST_PARTIAL_SCAN`        | GitLab Advanced SAST | `false`                                  | To turn on diff-scanning mode, set to `differential`. |
+| `GITLAB_ADVANCED_SAST_RULE_TIMEOUT` | GitLab Advanced SAST | `30`                                     | Timeout in seconds per rule per file. When this timeout is exceeded, that analysis is skipped. |
+| `REPORT_UNVERIFIED_VULNS`           | GitLab Advanced SAST | `false`                                  | Include unverified findings in scan results. To turn on, set to `true`, `1`, or `True`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD` | GitLab Advanced SAST | `3 days`                           | How far back to search for a cached taint signature artifact. Must not exceed the artifact expiry period. |
+| `GITLAB_ADV_SAST_INCR_SCAN_CUSTOM_JOB_NAME` | GitLab Advanced SAST | `gitlab-advanced-sast`           | Custom job name for cache artifact lookup. Set this variable if you renamed the `gitlab-advanced-sast` job. |
+| `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` | GitLab Advanced SAST | Not set                                  | Cache storage backend. To store the cache in AWS S3 instead of CI/CD artifacts, set to `s3`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_S3_BUCKET` | GitLab Advanced SAST | Not set                                | S3 bucket name for cache storage. Required when `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` is `s3`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_S3_REGION` | GitLab Advanced SAST | Not set                                | AWS region of the S3 bucket. Required when `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` is `s3`. |
+| `GITLAB_ADV_SAST_INCR_SCAN_S3_ROLE_ARN` | GitLab Advanced SAST | Not set                              | ARN of the IAM role to assume through OIDC. Required when `GITLAB_ADV_SAST_INCR_SCAN_STORAGE` is `s3`. |
 | `SCAN_KUBERNETES_MANIFESTS`         | Kubesec              | `"false"`                                | Set to `"true"` to scan Kubernetes manifests. |
 | `KUBESEC_HELM_CHARTS_PATH`          | Kubesec              |                                          | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`              | Kubesec              |                                          | Additional arguments for the `helm` executable. |
@@ -1243,7 +1260,7 @@ When using the Semgrep-based analyzer, the following options are also available:
 > [!note]
 > The Semgrep analyzer does not respect `.gitignore` files. Files listed in `.gitignore` are analyzed unless explicitly excluded by using `.semgrepignore` or `SAST_EXCLUDED_PATHS`.
 
-For more details see [Semgrep documentation](https://semgrep.dev/docs/ignoring-files-folders-code).
+For more details see [Semgrep documentation](https://docs.semgrep.dev/ignoring-files-folders-code).
 
 ## Running SAST in an offline environment
 
@@ -1280,6 +1297,7 @@ images from `registry.gitlab.com` into your
 [local Docker container registry](../../packages/container_registry/_index.md):
 
 ```plaintext
+registry.gitlab.com/security-products/clangsa:1
 registry.gitlab.com/security-products/gitlab-advanced-sast:2
 registry.gitlab.com/security-products/gitlab-advanced-sast-ext:0
 registry.gitlab.com/security-products/kubesec:6

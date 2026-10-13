@@ -803,8 +803,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when user is a maintainer/owner' do
       it 'allows to create timeline event tags' do
-        expect(described_class.new(maintainer, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(owner, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(maintainer, project)).to be_allowed(:create_timeline_event_tag)
+        expect(described_class.new(owner, project)).to be_allowed(:create_timeline_event_tag)
       end
 
       it 'allows to read import error' do
@@ -815,10 +815,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when user is a developer/guest/planner/reporter' do
       it 'disallows creation' do
-        expect(described_class.new(developer, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(guest, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(planner, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(reporter, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(developer, project)).to be_disallowed(:create_timeline_event_tag)
+        expect(described_class.new(guest, project)).to be_disallowed(:create_timeline_event_tag)
+        expect(described_class.new(planner, project)).to be_disallowed(:create_timeline_event_tag)
+        expect(described_class.new(reporter, project)).to be_disallowed(:create_timeline_event_tag)
       end
 
       it 'disallows reading the import error' do
@@ -834,7 +834,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       it 'disallows access to the timeline event tags' do
         expect(described_class.new(non_member, project)).to be_disallowed(:read_incident_management_timeline_event_tag)
-        expect(described_class.new(non_member, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(non_member, project)).to be_disallowed(:create_timeline_event_tag)
       end
     end
   end
@@ -1160,6 +1160,38 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           is_expected.to be_allowed(:update_feature_flags_minimum_role_setting)
         else
           is_expected.to be_disallowed(:update_feature_flags_minimum_role_setting)
+        end
+      end
+    end
+  end
+
+  describe 'clear_runner_cache' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_role, :admin_mode, :allowed) do
+      :guest       | false | false
+      :planner     | false | false
+      :reporter    | false | false
+      :developer   | false | true
+      :maintainer  | false | true
+      :owner       | false | true
+      :anonymous   | false | false
+      :admin       | false | false
+      :admin       | true  | true
+    end
+
+    with_them do
+      let(:current_user) { public_send(user_role) }
+
+      before do
+        enable_admin_mode!(current_user) if admin_mode
+      end
+
+      it 'allows only developers and above to clear the runner cache' do
+        if allowed
+          is_expected.to be_allowed(:clear_runner_cache)
+        else
+          is_expected.to be_disallowed(:clear_runner_cache)
         end
       end
     end
@@ -2517,6 +2549,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
 
       context 'anonymous' do
+        let(:project) { build_stubbed(:project, :private, :analytics_enabled) }
         let(:current_user) { anonymous }
 
         it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
@@ -3307,7 +3340,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           end
         end
 
-        let(:project) { create(:project, :internal, ci_inbound_job_token_scope_enabled: token_scope_enabled) }
+        let(:project) { build_stubbed(:project, :internal, ci_inbound_job_token_scope_enabled: token_scope_enabled) }
         let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
         let(:scope_project) { public_send("#{project_visibility}_project") }
 
@@ -4732,6 +4765,96 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       developer_permissions
     else
       guest_permissions
+    end
+  end
+
+  describe 'read_boundary' do
+    let_it_be(:external_user) { create(:user, :external) }
+
+    context 'with a private project' do
+      let(:project) { private_project }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_member }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'organization owner' do
+        let(:current_user) { organization_owner }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      %w[guest planner reporter developer maintainer owner].each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { expect_allowed(:read_boundary) }
+        end
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed(:read_boundary) }
+        end
+
+        context 'when admin mode is disabled' do
+          it { expect_disallowed(:read_boundary) }
+        end
+      end
+    end
+
+    context 'with an internal project' do
+      let(:project) { internal_project }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+    end
+
+    context 'with a public project' do
+      let(:project) { public_project }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it { expect_allowed(:read_boundary) }
+      end
     end
   end
 end

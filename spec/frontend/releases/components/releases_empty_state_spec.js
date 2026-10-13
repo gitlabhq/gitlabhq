@@ -9,24 +9,22 @@ describe('releases_empty_state.vue', () => {
 
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = ({ canCreateRelease = true } = {}) => {
     wrapper = shallowMountExtended(ReleasesEmptyState, {
       provide: {
         documentationPath,
-        newReleasePath,
         illustrationPath,
+        ...(canCreateRelease ? { newReleasePath } : {}),
       },
     });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   it('renders a GlEmptyState and provides it with the correct props', () => {
-    const emptyStateProps = wrapper.findComponent(GlEmptyState).props();
+    createComponent();
 
-    expect(emptyStateProps).toMatchObject({
+    expect(findEmptyState().props()).toMatchObject({
       title: ReleasesEmptyState.i18n.emptyStateTitle,
       svgPath: illustrationPath,
       description: ReleasesEmptyState.i18n.emptyStateText,
@@ -34,6 +32,16 @@ describe('releases_empty_state.vue', () => {
       primaryButtonText: ReleasesEmptyState.i18n.newRelease,
       secondaryButtonLink: documentationPath,
       secondaryButtonText: ReleasesEmptyState.i18n.releasesDocumentation,
+    });
+  });
+
+  describe('when the user cannot create a release', () => {
+    beforeEach(() => {
+      createComponent({ canCreateRelease: false });
+    });
+
+    it('passes no primary button link, so GlEmptyState hides the button', () => {
+      expect(findEmptyState().props('primaryButtonLink')).toBe(null);
     });
   });
 });

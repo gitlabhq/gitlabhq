@@ -7,3 +7,5 @@ available_for:
   - granular_access_token
 permissions:
   - delete_experiment_cache
+assignable_when:
+  - condition: gitlab_team_member

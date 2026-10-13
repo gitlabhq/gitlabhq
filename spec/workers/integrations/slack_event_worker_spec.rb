@@ -8,7 +8,7 @@ RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state,
     subject { described_class.event?(event) }
 
     context 'when event is known' do
-      where(:event) { %w[app_home_opened app_mention] }
+      where(:event) { %w[app_home_opened app_mention message] }
 
       with_them do
         it { is_expected.to be(true) }
@@ -118,6 +118,13 @@ RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state,
     context 'when event is app_mention' do
       let(:event) { 'app_mention' }
       let(:service_class) { ::Integrations::SlackEvents::AppMentionedService }
+
+      it_behaves_like 'handles slack event'
+    end
+
+    context 'when event is message' do
+      let(:event) { 'message' }
+      let(:service_class) { ::Integrations::SlackEvents::AgentDmService }
 
       it_behaves_like 'handles slack event'
     end

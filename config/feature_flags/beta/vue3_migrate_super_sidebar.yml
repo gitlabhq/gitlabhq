@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_super_sidebar
+description: Enables Vue 3 in compatibility mode for the super sidebar, top bar and breadcrumbs
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/623999
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256620
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630078
+milestone: '19.5'
+group: group::foundations
+type: beta
+default_enabled: false

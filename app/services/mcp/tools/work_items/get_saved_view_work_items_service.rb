@@ -4,6 +4,8 @@ module Mcp
   module Tools
     module WorkItems
       class GetSavedViewWorkItemsService < Base::GraphqlService
+        container_arguments record: { saved_view_id: ->(id) { container_from_saved_view(id) } }
+
         register_version '0.1.0', {
           toolset: :work_items,
           description: 'Fetch a saved view and its work items list from a namespace',
@@ -78,6 +80,12 @@ module Mcp
         end
 
         private
+
+        def container_from_saved_view(id)
+          view = ::WorkItems::SavedViews::SavedView.find_by_id(record_id_from(id))
+
+          container_from_namespace(view&.namespace)
+        end
 
         def append_unsupported_filter_warnings(combined, unsupported_filters)
           return if unsupported_filters.blank?

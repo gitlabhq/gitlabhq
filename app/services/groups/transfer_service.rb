@@ -52,7 +52,7 @@ module Groups
       )
 
       ServiceResponse.success(
-        message: s_("TransferGroup|Group transfer has been queued. You will be notified when it completes.")
+        message: s_("TransferGroup|Group transfer is scheduled. If it fails, you get a to-do item with the reason.")
       )
     rescue TransferError => e
       @group.errors.clear
@@ -77,24 +77,29 @@ module Groups
 
       true
     rescue ServiceDesk::RefreshProjectKeyAddressSlugsService::AddressSlugConflictError => e
+      handle_transfer_failure(e, service_desk_address_conflict_message(e.message))
+    rescue TransferError => e
+      # TransferError messages are curated, user-facing sentences, so they stand on their own.
+      # The to-do item already prefixes them with "Failed to transfer <source> to <target>: ".
+      handle_transfer_failure(e, e.message)
+    rescue ActiveRecord::RecordInvalid, Gitlab::UpdatePathError => e
+      # Unlike TransferError, these carry raw fragments ("namespace directory cannot be moved"),
+      # so they need framing to read as a message.
+      handle_transfer_failure(e, s_("TransferGroup|Transfer failed: %{error_message}") % { error_message: e.message })
+    end
+
+    private
+
+    # Returns false so that every rescue clause in #execute reports the failure to the caller.
+    def handle_transfer_failure(error, message)
       @group.errors.clear
-      @error = service_desk_address_conflict_message(e.message)
+      @error = message
 
-      log_group_transfer_error(@group, @new_parent_group, e)
-      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'group', result: 'failure')
-
-      false
-    rescue TransferError, ActiveRecord::RecordInvalid, Gitlab::UpdatePathError => e
-      @group.errors.clear
-      @error = s_("TransferGroup|Transfer failed: %{error_message}") % { error_message: e.message }
-
-      log_group_transfer_error(@group, @new_parent_group, e)
+      log_group_transfer_error(@group, @new_parent_group, error)
       ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'group', result: 'failure')
 
       false
     end
-
-    private
 
     def log_transfer(group, new_namespace, error = nil)
       action = error.nil? ? "was" : "was not"

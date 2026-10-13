@@ -1,0 +1,13 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+# The gem declares its feature category in the monolith Gemfile
+# (compliance_management); its own Gemfile only wires path dependencies.
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+# The rspec-parameterized table syntax uses `|` to separate columns, which
+# this cop misreads as a binary operator on identical operands.
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - 'spec/**/*.rb'

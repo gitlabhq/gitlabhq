@@ -246,6 +246,8 @@ To enable a flow:
 1. For **Add triggers**, select:
    - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
    - If needed for the trigger event type, a trigger event action.
+1. Optional. For an event, in the **Goal** field, enter text that tells the flow what to do.
+   For more information, see [Add a goal](../triggers/_index.md#add-a-goal).
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -266,6 +268,8 @@ To enable a flow:
 1. For **Add triggers**, select:
    - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
    - If needed for the trigger event type, a trigger event action.
+1. Optional. For an event, in the **Goal** field, enter text that tells the flow what to do.
+   For more information, see [Add a goal](../triggers/_index.md#add-a-goal).
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -296,12 +300,56 @@ To enable a flow in a project:
 1. For **Add triggers**, select:
    - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
    - If needed for the trigger event type, a trigger event action.
+1. Optional. For an event, in the **Goal** field, enter text that tells the flow what to do.
+   For more information, see [Add a goal](../triggers/_index.md#add-a-goal).
 1. Select **Enable**.
 
 The flow appears in the project's **AI** > **Flows** list.
 
 The top-level group's service account is added to the project.
 This account is assigned the Developer role.
+
+## Manage trigger conditions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255119) in GitLab 19.5.
+
+{{< /history >}}
+
+You can manage a flow's triggers from its configuration page.
+
+For more information about triggers, including how to create one, see [triggers](../triggers/_index.md).
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+### Turn a trigger on or off
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Flows**.
+1. Select the flow you want to manage.
+1. In the **Trigger conditions** section, for the trigger you want to turn on or off,
+   select the toggle.
+
+### Edit a trigger
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Flows**.
+1. Select the flow you want to manage.
+1. In the **Trigger conditions** section, for the trigger you want to change,
+   select **Trigger actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
+1. Make the changes and select **Save changes**.
+
+### Delete a trigger
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Flows**.
+1. Select the flow you want to manage.
+1. In the **Trigger conditions** section, for the trigger you want to delete,
+   select **Trigger actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. On the confirmation dialog, select **Delete**.
 
 ## Disable a flow
 
@@ -334,6 +382,8 @@ To use a flow:
    For example, if you enable a flow called `Security scanner` in the `GitLab Duo` group, the service account user is `ai-security-scanner-gitlab-duo`.
 1. After the flow has completed the task, you see a confirmation, and either a ready-to-merge change or an inline comment.
 
+You can also start a flow from a [GitLab Duo Agentic Chat slash command](../../gitlab_duo_chat/agentic_chat.md#trigger-a-flow-with-a-slash-command) if the flow has been turned on for the project.
+
 > [!warning]
 > The service account can access all projects that both:
 >
@@ -358,6 +408,7 @@ To duplicate a flow:
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.
+1. Select the project where you want to duplicate the flow.
 1. Optional. Edit any fields you want to change.
 1. Select **Create flow**.
 
@@ -428,7 +479,8 @@ To hide a flow:
 
 ## Delete a flow
 
-Delete a flow to permanently remove it from the instance.
+Delete a flow to remove it from the instance. If a project other than the managing project has turned off the
+flow, the flow is hidden instead of removed.
 
 Prerequisites:
 
@@ -443,7 +495,7 @@ Prerequisites:
 
 Custom flows have a GitLab OAuth token available as `GITLAB_TOKEN` (also exposed as `GITLAB_OAUTH_TOKEN`).
 These tokens are limited to the scope granted to them. They can only access
-[GitLab API endpoints with the `ai_workflows` scope](foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
+[GitLab API endpoints with the `ai_workflows` scope](../../../editor_extensions/software_development.md#apis-that-the-flow-has-access-to).
 Endpoints outside that scope are refused even when the token is sent correctly.
 
 If you write scripts that call the GitLab API directly, send the token as an `Authorization: Bearer` token.

@@ -110,6 +110,13 @@
         ]
       }
     },
+    "include": {
+      "type": "array",
+      "description": "List of AI Catalog items the flow references. Each entry pins an exact version of a catalog item",
+      "items": {
+        "$ref": "#/definitions/CatalogReference"
+      }
+    },
     "routers": {
       "type": "array",
       "description": "Define how components connect to each other",
@@ -156,6 +163,43 @@
     }
   },
   "definitions": {
+    "CatalogReference": {
+      "type": "object",
+      "required": [
+        "source",
+        "item_type",
+        "item_id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "description": "Reference to an AI Catalog item pinned to an exact version",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "ai-catalog"
+          ],
+          "description": "Where the referenced item lives. Only 'ai-catalog' is supported"
+        },
+        "item_type": {
+          "type": "string",
+          "enum": [
+            "agent"
+          ],
+          "description": "Kind of catalog item referenced. Only 'agent' is supported"
+        },
+        "item_id": {
+          "type": "string",
+          "pattern": "^\\d+$",
+          "description": "ID of the catalog item, as a string of digits. Example: '123'"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Exact version of the catalog item. Example: '1.2.0'"
+        }
+      }
+    },
     "ComponentName": {
       "type": "string",
       "pattern": "^[a-zA-Z0-9_]+$",
@@ -293,18 +337,25 @@
         },
         "subagents": {
           "type": "array",
-          "description": "List of subagent config dicts this agent supervises. When provided, the agent runs in Supervisor Mode. Each entry must contain a 'name' key referencing another AgentComponent with a description field.",
+          "description": "List of subagent config dicts this agent supervises. When provided, the agent runs in Supervisor Mode. Each entry either contains a 'name' key referencing another AgentComponent with a description field, or is a catalog reference matching an entry in the top-level 'include' list.",
           "items": {
-            "type": "object",
-            "required": [
-              "name"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "$ref": "#/definitions/ComponentName"
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "$ref": "#/definitions/ComponentName"
+                  }
+                }
+              },
+              {
+                "$ref": "#/definitions/CatalogReference"
               }
-            }
+            ]
           }
         },
         "max_delegations": {

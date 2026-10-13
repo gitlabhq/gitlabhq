@@ -29,6 +29,7 @@ module Gitlab
       instrument_worker_id(payload)
       instrument_uploads(payload)
       instrument_rate_limiting_gates(payload)
+      instrument_rate_limit_state(payload)
       instrument_global_search_api(payload)
       instrument_ldap(payload)
       instrument_exclusive_lock(payload)
@@ -146,6 +147,12 @@ module Gitlab
 
     def instrument_rate_limiting_gates(payload)
       payload.merge!(::Gitlab::Instrumentation::RateLimitingGates.payload)
+    end
+
+    # Empty when no limiter reported a rule, so a request that matched nothing
+    # keeps the line it has today.
+    def instrument_rate_limit_state(payload)
+      payload.merge!(::Gitlab::Instrumentation::RateLimitState.payload)
     end
 
     def instrument_global_search_api(payload)

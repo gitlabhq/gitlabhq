@@ -45,7 +45,7 @@ const mockLinkedItem = ({ title, linkType }) => {
 const mockRelationItem = ({ title, linkType, fromMrDescription = true }) => {
   const { workItem } = mockLinkedItem({ title, linkType });
   return {
-    id: `gid://gitlab/MergeRequestsClosingIssues/${workItemCounter}`,
+    id: `gid://gitlab/MergeRequestIssue/${workItemCounter}`,
     linkType,
     fromMrDescription,
     workItem,
@@ -812,10 +812,10 @@ describe('MRRelatedWorkItems', () => {
 
         expect(indicator.exists()).toBe(true);
         expect(indicator.attributes('title')).toBe(
-          'This link comes from the merge request description. Edit the description to remove it.',
+          'This link comes from the merge request title, description, or a commit message. To remove the link, edit the text that references it.',
         );
         expect(indicator.attributes('aria-label')).toBe(
-          'This link comes from the merge request description. Edit the description to remove it.',
+          'This link comes from the merge request title, description, or a commit message. To remove the link, edit the text that references it.',
         );
       });
 

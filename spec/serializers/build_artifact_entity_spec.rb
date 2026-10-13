@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe BuildArtifactEntity do
-  let_it_be(:job) { create(:ci_build) }
-  let_it_be(:artifact) { create(:ci_job_artifact, :codequality, expire_at: 1.hour.from_now, job: job) }
+  let(:job) { build_stubbed(:ci_build) }
+  let(:artifact) do
+    build_stubbed(:ci_job_artifact, :codequality, expire_at: 1.hour.from_now, job: job, project: job.project)
+  end
 
   let(:options) { { request: double } }
 

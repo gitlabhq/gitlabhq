@@ -11,7 +11,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be_with_reload(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
+  let_it_be_with_reload(:group1) { create(:group, :with_require_sha_for_merge_enabled_and_locked, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
   let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
@@ -115,6 +115,47 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups" do
+    describe 'finder selection' do
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(namespaces_advanced_groups_finder: false)
+        end
+
+        it 'uses GroupsFinder' do
+          expect(GroupsFinder).to receive(:new).and_call_original
+          expect(Namespaces::GroupsFinder).not_to receive(:new)
+
+          get api("/groups", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(namespaces_advanced_groups_finder: true)
+        end
+
+        it 'uses Namespaces::GroupsFinder' do
+          expect(Namespaces::GroupsFinder).to receive(:new).and_call_original
+
+          get api("/groups", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        # lib/api/groups.rb sends `parent: [nil]` for this, which Namespaces::GroupsFinder
+        # must pass through rather than treat as an unreadable parent.
+        it 'still honours top_level_only' do
+          get api("/groups", user1), params: { top_level_only: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |g| g['parent_id'] }).to all(be_nil)
+          expect(json_response).not_to be_empty
+        end
+      end
+    end
+
     shared_examples 'groups list N+1' do
       it 'avoids N+1 queries', :use_sql_query_cache do
         # warm-up
@@ -160,7 +201,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
           # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all instances for N+1 spec
-          allow_any_instance_of(EE::Namespace).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Namespace).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
           # rubocop:enable RSpec/AnyInstanceOf
         end
       end
@@ -699,7 +743,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
           # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Project).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
           # rubocop:enable RSpec/AnyInstanceOf
         end
       end
@@ -762,6 +809,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['shared_projects'].length).to eq(2)
         expect(json_response['shared_projects'][0]['id']).to eq(project2.id)
         expect(json_response['math_rendering_limits_enabled']).to eq(group2.math_rendering_limits_enabled?)
+        expect(json_response['require_sha_for_merge']).to be(true)
+        expect(json_response['lock_require_sha_for_merge']).to be(true)
       end
 
       it "returns one of user1's groups without projects when with_projects option is set to false", :aggregate_failures do
@@ -1166,11 +1215,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     it 'increments the update_namespace_name rate limit' do
       put api("/groups/#{group1.id}", user1), params: { name: "#{new_group_name}_1" }
 
-      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: group1)).to be_falsey
+      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: { namespace: group1 })).to be_falsey
 
       put api("/groups/#{group1.id}", user1), params: { name: "#{new_group_name}_2" }
 
-      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: group1)).to be_truthy
+      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: { namespace: group1 })).to be_truthy
       expect(response).to have_gitlab_http_status(:ok)
       expect(group1.reload.name).to eq("#{new_group_name}_2")
     end
@@ -1317,6 +1366,22 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['lock_resource_access_token_notify_inherited']).to be(true)
         expect(group1.reload.lock_resource_access_token_notify_inherited).to be(true)
+      end
+
+      it 'updates require_sha_for_merge' do
+        put api("/groups/#{group1.id}", user1), params: { require_sha_for_merge: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['require_sha_for_merge']).to be(false)
+        expect(group1.reload.require_sha_for_merge).to be(false)
+      end
+
+      it 'updates lock_require_sha_for_merge' do
+        put api("/groups/#{group1.id}", user1), params: { lock_require_sha_for_merge: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['lock_require_sha_for_merge']).to be(false)
+        expect(group1.reload.lock_require_sha_for_merge).to be(false)
       end
 
       context 'when default_branch_protection_defaults set to No one' do
@@ -1901,7 +1966,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
           if Gitlab.ee?
             # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-            allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+            allow_any_instance_of(EE::Project).to receive_messages(
+              auto_duo_code_review_settings_available?: false,
+              duo_code_review_decisions_available?: false
+            )
             # rubocop:enable RSpec/AnyInstanceOf
           end
         end
@@ -1999,7 +2067,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
           # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Project).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
           # rubocop:enable RSpec/AnyInstanceOf
         end
 

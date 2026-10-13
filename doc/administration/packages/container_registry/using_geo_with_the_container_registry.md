@@ -116,3 +116,73 @@ To migrate your metadata database:
 1. On the secondary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
 1. On the primary site, [migrate the existing legacy metadata to the new metadata database](../container_registry_metadata_database.md#enable-the-database-for-existing-registries).
 1. Verify Geo replication continues working.
+
+## Add or rebuild a secondary site when the primary is already migrated
+
+Prerequisites:
+
+- An existing Geo primary site whose container registry uses the metadata database and holds data. The primary reaches this state after you [migrate the container registry from legacy metadata](#migrate-the-container-registry-from-legacy-metadata).
+- A secondary site to add, already [set up as a Geo site](../../geo/setup/two_single_node_sites.md),
+  or an existing secondary site to rebuild.
+
+The following steps replace the secondary site's registry storage and database together.
+They are not the recovery path for a secondary site whose registry storage and database are both
+intact.
+
+> [!warning]
+> Provision and migrate the secondary site's registry database before the secondary
+> site's registry starts against storage that holds data. A registry that starts
+> first has no schema to write to.
+> In [prefer mode](../container_registry_metadata_database.md#prefer-mode),
+> a registry that finds no lockfile does not fall back to
+> legacy metadata. It requires a reachable database, and adopts an empty one
+> and serves an empty catalog.
+
+To add or rebuild the secondary site:
+
+1. On the primary site, confirm the registry uses the metadata database and holds data.
+   For how to confirm the backend, see [Verify which metadata backend is active](../container_registry_metadata_database.md#verify-which-metadata-backend-is-active). If the primary still uses legacy metadata, use [Migrate the container registry from legacy metadata](#migrate-the-container-registry-from-legacy-metadata)
+   instead.
+1. On the secondary site, prepare the registry state.
+   Complete one of the following:
+   - If you are rebuilding an existing secondary site,
+     remove the registry state you are replacing:
+     1. Stop the registry.
+     1. Delete the contents of the registry's object storage.
+     1. Drop and recreate the registry database on that site's registry database instance, using the database name and owner configured for that site's registry.
+        For example, in `psql`:
+
+        ```sql
+        DROP DATABASE registry;
+        CREATE DATABASE registry OWNER registry;
+        ```
+
+     Remove both the storage contents and the database.
+     A site with a recreated database and populated storage matches neither this procedure
+     nor the greenfield ones.
+   - If you are adding a new secondary site,
+     confirm the secondary site's registry object storage is empty.
+     If the storage holds data or an earlier attempt left a registry database behind,
+     treat the site as a rebuild and complete the previous path instead.
+1. On the secondary site, configure the
+   [registry database connection](../container_registry_metadata_database.md#using-an-external-database)
+   with the database still disabled, then [reconfigure GitLab](../../restart_gitlab.md).
+   The migration in the next step reads the connection from the registry configuration file,
+   so the connection must be present before it runs.
+1. On the secondary site,
+   [apply the database migrations](../container_registry_metadata_database.md#apply-database-migrations).
+1. On the secondary site, enable the database and [reconfigure GitLab](../../restart_gitlab.md).
+1. Configure
+   [container registry replication](../../geo/replication/container_registry.md#configure-container-registry-replication)
+   for the secondary site, if it is not configured already.
+1. Verify the secondary site holds the images. Compare against the primary site:
+   - The catalog, from `/v2/_catalog`.
+   - The tag list for a repository, and the `Docker-Content-Digest` response header for a tag.
+     The digests must match.
+   - Repository, manifest, and tag row counts in each site's own registry database.
+
+Do not compare object counts between the two sites. A primary site migrated from legacy metadata retains its former metadata files, while a secondary site built on the metadata database stores only content blobs, so the primary always holds more objects.
+
+A difference that grows with each push has another cause.
+For one known cause on secondary sites that still use legacy metadata, see
+[issue 590744](https://gitlab.com/gitlab-org/gitlab/-/issues/590744).

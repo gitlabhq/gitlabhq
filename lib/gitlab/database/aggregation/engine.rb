@@ -25,6 +25,10 @@ module Gitlab
             raise NoMethodError
           end
 
+          def max_page_size
+            # Implicit nil keeps the GraphQL schema's default cap on `first`.
+          end
+
           def build(&block)
             Class.new(self).tap { |klass| klass.class_eval(&block) }
           end
@@ -40,16 +44,16 @@ module Gitlab
         def execute(request)
           plan = authorized_request(request).to_query_plan(self)
 
-          if plan_valid?(plan)
+          if plan_valid?(plan, original_request: request)
             ServiceResponse.success(payload: { data: execute_query_plan(plan) })
           else
             error_response
           end
         end
 
-        def plan_valid?(plan)
+        def plan_valid?(plan, original_request: nil)
           validate
-          validate_authorization!(plan)
+          validate_authorization!(plan, original_request)
 
           if errors.empty?
             plan.validate

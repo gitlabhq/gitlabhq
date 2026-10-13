@@ -1,8 +1,8 @@
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 const crypto = require('./helpers/patched_crypto');
 
-// eslint-disable-next-line import/order
-const vueVersion = require('./helpers/vue_version');
+// eslint-disable-next-line import-x/order
+const vueVersion = require('./vue3migration/version');
 
 const { VUE_VERSION, USE_VUE3, USE_VUE3_COMPILER, VUE_LOADER_MODULE, logVueVersion } = vueVersion;
 
@@ -16,9 +16,9 @@ const BABEL_VERSION = require('@babel/core/package.json').version;
 const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-// eslint-disable-next-line import/no-dynamic-require
+// eslint-disable-next-line import-x/no-dynamic-require
 const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
-// eslint-disable-next-line import/no-dynamic-require
+// eslint-disable-next-line import-x/no-dynamic-require
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 const EXACT_VUE_VERSION = require('vue/package.json').version;
 
@@ -27,7 +27,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const { isCustomElement } = require('./vue3migration/vue3_template_compiler');
+const { isCustomElement } = require('./vue3migration/compilers/vue3_template');
 
 const {
   IS_EE,
@@ -47,14 +47,14 @@ const {
 } = require('./webpack.constants');
 const { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } = require('./pdfjs.constants');
 const { generateEntries, applyVue3Migrations } = require('./webpack.helpers');
-const { loadVue3Migrations } = require('./helpers/vue3_migration_loader');
+const { loadVue3Migrations } = require('./vue3migration/migration');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
-const Vue3MigrationManifestPlugin = require('./plugins/vue3_migration_manifest_plugin');
-const WebpackVue3InfectionPlugin = require('./plugins/webpack_vue3_infection_plugin');
+const Vue3MigrationManifestPlugin = require('./vue3migration/plugins/manifest');
+const WebpackVue3InfectionPlugin = require('./vue3migration/plugins/webpack');
 const { supportedBrowsersHash } = require('./helpers/supported_browsers');
 const { aliases } = require('./helpers/aliases');
 const { baseEntryPoints } = require('./helpers/entry_points');
@@ -103,10 +103,6 @@ const alias = { ...aliases };
 // fallbacks. Webpack 4 doesn't support the exports field, so we alias them
 // to their actual entry files. (Rspack supports "exports", so it omits these.)
 Object.assign(alias, {
-  '@mermaid-js/parser': path.join(
-    ROOT_PATH,
-    'node_modules/@mermaid-js/parser/dist/mermaid-parser.core.mjs',
-  ),
   '@mermaid-js/layout-elk': path.join(
     ROOT_PATH,
     'node_modules/@mermaid-js/layout-elk/dist/mermaid-layout-elk.core.mjs',
@@ -159,6 +155,9 @@ const defaultJsOptions = {
     // A VUE_VERSION changes how we alias certain packages
     // use a different cache to prevent issues when switching between versions
     VUE_VERSION,
+    // package.json, yarn.lock and patch-package patches: transpiled output of a
+    // changed dependency must not be served from the cache of the old one.
+    vendorDllHash(),
   ].join('|'),
   cacheCompression: false,
 };
@@ -173,6 +172,7 @@ const vueLoaderOptions = {
     EXACT_VUE_VERSION,
     VUE_LOADER_VERSION,
     VUE_VERSION,
+    vendorDllHash(),
   ].join('|'),
   compilerOptions: {
     whitespace: 'preserve',
@@ -202,20 +202,20 @@ const shouldExcludeFromCompiling = (modulePath) => {
   );
 };
 
-// vue2_compiler.js wraps vue-template-compiler and injects distinct keys on same-tag
+// vue2_template.js wraps vue-template-compiler and injects distinct keys on same-tag
 // v-if/v-else branches (mirroring the Vue 3 compiler). It's the default for the Vue 2
 // build *and* for the `?vue3`-infected islands compiled here that run on @vue/compat:
 // without those keys the branches are patched in place, and @vue/compat crashes in
 // invokeDirectiveHook ("Cannot read properties of undefined (reading 'value')") when
 // they differ in directives (e.g. v-gl-tooltip on one branch only). The injected keys
 // are a no-op for the Vue 2 runtime. Only the full Vue 3 compiler build overrides it.
-vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
+vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/compilers/vue2_template.js');
 
 if (USE_VUE3) {
   if (USE_VUE3_COMPILER) {
     vueLoaderOptions.compiler = path.join(
       ROOT_PATH,
-      'config/vue3migration/vue3_template_compiler.js',
+      'config/vue3migration/compilers/vue3_template.js',
     );
     vueLoaderOptions.compilerOptions.compatConfig = {
       MODE: 2,
@@ -332,7 +332,7 @@ module.exports = {
         // es-toolkit) use modern syntax (optional chaining, static blocks) that
         // webpack 4 can't parse. Transpile them along with both mermaid versions.
         // vscode-uri (pulled by monaco-yaml) ships the same kind of syntax in its UMD build.
-        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|es-toolkit|vscode-\w+)\/.*\.m?js$/,
+        test: /(mermaid(-v\d+)?|@mermaid-js|@iconify\/utils|es-toolkit|vscode-\w+)\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
@@ -788,6 +788,21 @@ module.exports = {
       });
     }),
 
+    ...Object.entries({
+      '@mermaid-js/parser': 'dist/mermaid-parser.core.mjs',
+      chevrotain: 'lib/src/api.js',
+      '@chevrotain/cst-dts-gen': 'lib/src/api.js',
+      '@chevrotain/gast': 'lib/src/api.js',
+      '@chevrotain/regexp-to-ast': 'lib/src/api.js',
+      '@chevrotain/utils': 'lib/src/api.js',
+    }).map(
+      ([packageName, entry]) =>
+        new webpack.NormalModuleReplacementPlugin(
+          new RegExp(`^${packageName}$`),
+          `${packageName}/${entry}`,
+        ),
+    ),
+
     new webpack.ContextReplacementPlugin(/^\.$/, (context) => {
       if (/\/node_modules\/pdfjs-dist/.test(context.context)) {
         for (const d of context.dependencies) {
@@ -819,7 +834,9 @@ module.exports = {
     }),
 
     // compression can require a lot of compute time and is disabled in CI
-    IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),
+    // The cache never hits in CI and its temp files can collide:
+    // https://gitlab.com/gitlab-org/gitlab/-/work_items/630662
+    IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin({ cache: !process.env.CI }),
 
     // WatchForChangesPlugin
     // TODO: publish this as a separate plugin

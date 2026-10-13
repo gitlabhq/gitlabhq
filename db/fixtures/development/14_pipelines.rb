@@ -122,7 +122,7 @@ class Gitlab::Seeder::Pipelines # rubocop:disable Style/ClassAndModuleChildren
   private
 
   def create_new_project
-    admin = User.admins.first
+    admin = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin
 
     namespace = FactoryBot.create(
       :group,

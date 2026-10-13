@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_security_dashboard
+description: Enables Vue 3 in compatibility mode for the security dashboard pages (project, group, instance, and instance settings)
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607919
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255331
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629138
+milestone: '19.5'
+group: group::agentic security flows
+type: beta
+default_enabled: false

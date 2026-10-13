@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:workhorse namespace rake task', :silence_stdout, feature_category: :source_code_management do
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/workhorse'
+  end
+
+  before do
+    stub_warn_user_is_not_gitlab
   end
 
   describe 'install' do

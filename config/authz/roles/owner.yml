@@ -36,6 +36,7 @@ project:
   - manage_owners
   - mark_issue_for_publication
   - modify_security_policy
+  - provision_secrets_manager
   - read_ai_tool_rule
   - read_compliance_adherence_report
   - read_compliance_dashboard
@@ -105,6 +106,7 @@ group:
   - create_deploy_token
   - create_govern_policy
   - create_group_link
+  - create_ldap_group_link
   - create_placeholder_reassignment
   - create_runners
   - create_secrets_manager_enrollment
@@ -114,6 +116,7 @@ group:
   - delete_enterprise_user
   - delete_govern_policy
   - delete_group_link
+  - delete_ldap_group_link
   - delete_secrets_manager_enrollment
   - delete_secrets_permission
   - delete_service_account
@@ -152,8 +155,11 @@ group:
   - read_group_credentials_inventory
   - read_group_saml_identity
   - read_group_scim_identity
+  - read_ldap_group_link
   - read_member_access_request
   - read_model_selection_allowlist
+  - read_orbit_setting
+  - read_orbit_trial
   - read_placeholder_reassignment
   - read_resource_access_tokens
   - read_runners
@@ -175,6 +181,7 @@ group:
   - set_issue_updated_at
   - set_note_created_at
   - set_show_diff_preview_in_email
+  - start_orbit_trial
   - start_secrets_manager_trial
   - unban_group_member
   - update_ai_domain_settings

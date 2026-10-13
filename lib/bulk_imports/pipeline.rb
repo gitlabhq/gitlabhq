@@ -8,8 +8,11 @@ module BulkImports
     include Runner
 
     NotAllowedError = Class.new(StandardError)
-    ExpiredError = Class.new(StandardError)
-    FailedError = Class.new(StandardError)
+    # Inheriting RetryError keeps source instance export failures out of the
+    # Sidekiq execution error SLI and Sentry on each retry while preserving retries.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/623275 for details.
+    ExpiredError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
+    FailedError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
     CACHE_KEY_EXPIRATION = 2.hours
     NDJSON_EXPORT_TIMEOUT = 90.minutes

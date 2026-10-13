@@ -1,6 +1,6 @@
 ---
-source_checksum: dccc3e71696cd255
-distilled_at_sha: 1f3c26497b7f19bbd0b53f947a7f7aaa95685501
+source_checksum: e1c27b0538b597c5
+distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -23,6 +23,8 @@ distilled_at_sha: 1f3c26497b7f19bbd0b53f947a7f7aaa95685501
 - Add a namespace (PascalCase prefix followed by `|`) to all UI strings using `s__()`/`s_()` to provide translators with context.
 - Use granular, specific namespaces rather than broad category names (e.g., `WorkItemsStatusConfigure|Add to` instead of `WorkItems|Add to`).
 - DO NOT share the same English key across different UI contexts without namespacing; the same English string may require different translations in other languages.
+- DO NOT put whitespace in a namespace, and use exactly one pipe (`|`) per namespaced string, the one that ends the namespace; DO NOT use doubled pipes (`ApprovalRule||year(s)`) or multi-part namespaces (`Pipeline|Source|Security Policy`) (enforced by `rake gettext:lint` in the `static-analysis` CI job).
+- DO NOT use a pipe in the visible text of a namespaced string; GitLab treats it as the end of the namespace, and translators drop everything before it.
 
 ### Interpolation
 
@@ -39,12 +41,17 @@ distilled_at_sha: 1f3c26497b7f19bbd0b53f947a7f7aaa95685501
 
 - Use `n_()` (Ruby/HAML) or `n__()` (JavaScript) when a noun or verb changes form based on a count; DO NOT use `__()` or `s__()` for strings where the noun must pluralize with the count.
 - Use `n_()` and `n__()` only to select between plural forms of the same concept; DO NOT use them to switch between structurally different strings — use `if`/`else` with separate strings instead.
+- DO NOT use `n__()` for strings that label a position, sequence, or identifier rather than a quantity (e.g., `Step %{currentStep}` never changes form regardless of the number); use `__()` instead.
 - DO NOT place a zero-state phrase in the `one` (singular) slot of a plural string; handle the zero state as a separate string outside the `n__()` call.
 - Pluralize whole sentences rather than extracting a single word and constructing the sentence around it, so translators have full context for all plural forms.
 - Prefer named `%{count}` interpolation over positional `%d` in plural strings; for strings with multiple variables, always use named `%{placeholder}` syntax.
-- DO NOT hardcode the number `1` in the singular form of a plural string; use `%{count}` (preferred) or `%s` (acceptable) so that languages where the `one` CLDR category covers numbers other than 1 (e.g., Ukrainian: 21, 31, …) produce correct output. Exception: when a natural singular form without a number is desired, handle the exact count of 1 as a separate string outside the plural call (e.g., `if count == 1 … else n_(…) end`).
+- Interpolate named placeholders in JavaScript `n__()` results with `sprintf()` or `GlSprintf`; `n__()` substitutes only `%d` automatically and leaves named placeholders and `%s` unchanged.
+- Explicitly interpolate Ruby/HAML `n_()` results with `format()` for named placeholders, `safe_format()` when rendering HTML, or `%` for `%d`; `n_()` performs no automatic substitution.
+- DO NOT hardcode the number `1` in the singular form of a plural string; use `%{count}` (preferred) or `%d` for a single count so that languages where the `one` CLDR category covers numbers other than 1 (e.g., Ukrainian: 21, 31, …) produce correct output. Exception: when a natural singular form without a number is desired, handle the exact count of 1 as a separate string outside the plural call (e.g., `if count == 1 … else n_(…) end`).
+- Use `%s` in JavaScript plural strings only for the existing `Timeago|` strings, where `timeago.js` substitutes it after `n__()` returns; use named placeholders or `%d` elsewhere.
 - DO NOT use `%d` in the singular form when the number adds no value (e.g., prefer `'Last day'` over `'Last 1 day'`).
 - For strings with multiple independently pluralized nouns (e.g., hours and minutes), split into separate `n__()` calls and combine with a non-pluralized connector string via `sprintf`; DO NOT attempt to pluralize multiple nouns in a single `n__()` call.
+- Interpolate each pluralized part before combining the parts; `sprintf()` does not recursively substitute placeholders inside interpolation values.
 - DO NOT use Rails `pluralize` helper or `String#pluralize` on translated strings; they apply English-only rules and produce broken output in other locales. Use `n_()` with a whole-sentence pattern instead.
 - In Vue, define pluralized strings that depend on runtime counts as functions accepting a `count` argument in the `i18n` constants object; DO NOT define them as static string constants.
 
@@ -97,3 +104,4 @@ For the full picture, see:
 
 - doc/development/i18n/externalization.md
 - doc/development/i18n/pluralization.md
+

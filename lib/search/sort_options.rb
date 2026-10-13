@@ -4,7 +4,9 @@ module Search
   module SortOptions
     SCOPE_ONLY_SORT = {
       popularity_asc: %w[issues work_items],
-      popularity_desc: %w[issues work_items]
+      popularity_desc: %w[issues work_items],
+      title_asc: %w[issues work_items merge_requests],
+      title_desc: %w[issues work_items merge_requests]
     }.freeze
 
     SORT_MAPPINGS = {
@@ -25,6 +27,8 @@ module Search
       %w[closed_at desc] => :closed_at_desc,
       %w[due_date asc] => :due_date_asc,
       %w[due_date desc] => :due_date_desc,
+      %w[title asc] => :title_asc,
+      %w[title desc] => :title_desc,
       %w[similarity asc] => :similarity,
       %w[similarity desc] => :similarity,
       %w[similarity] => :similarity,
@@ -44,7 +48,9 @@ module Search
       [nil, 'closed_at_asc'] => :closed_at_asc,
       [nil, 'closed_at_desc'] => :closed_at_desc,
       [nil, 'due_date_asc'] => :due_date_asc,
-      [nil, 'due_date_desc'] => :due_date_desc
+      [nil, 'due_date_desc'] => :due_date_desc,
+      [nil, 'title_asc'] => :title_asc,
+      [nil, 'title_desc'] => :title_desc
     }.freeze
 
     def sort_and_direction(order_by, sort)

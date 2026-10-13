@@ -166,6 +166,7 @@ class Repository
       literal_pathspec: opts.fetch(:literal_pathspec, true),
       trailers: opts[:trailers]
     }
+    options[:include_shortstat] = true if opts[:include_shortstat]
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, container) if commits.present?
@@ -205,7 +206,9 @@ class Repository
     pagination_params: { page_token: nil, limit: 1000 },
     literal_pathspec: false,
     first_parent: false,
-    order: nil
+    order: nil,
+    follow: false,
+    trailers: false
   )
     return empty_commit_collection_with_next_cursor unless exists? && has_visible_content? && ref.present?
 
@@ -221,7 +224,9 @@ class Repository
       pagination_params: pagination_params,
       literal_pathspec: literal_pathspec,
       first_parent: first_parent,
-      order: order
+      order: order,
+      follow: follow,
+      trailers: trailers
     )
 
     Repositories::CommitCollectionWithNextCursor.new(
@@ -675,7 +680,7 @@ class Repository
   end
 
   delegate :branch_names, to: :raw_repository
-  cache_method_as_redis_set :branch_names, fallback: [], avoid_cache: -> { Feature.enabled?(:avoid_branch_names_cache, project) }
+  cache_method_as_redis_set :branch_names, fallback: []
 
   delegate :tag_names, to: :raw_repository
   cache_method_as_redis_set :tag_names, fallback: [], avoid_cache: -> { Feature.enabled?(:avoid_tag_names_cache, project) }
@@ -1147,8 +1152,8 @@ class Repository
     import_repository(url, http_authorization_header: http_authorization_header, mirror: true, resolved_address: resolved_address)
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "", resolved_address: "")
-    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, http_authorization_header: http_authorization_header, resolved_address: resolved_address)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, no_tags: false, http_authorization_header: "", resolved_address: "")
+    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, no_tags: no_tags, http_authorization_header: http_authorization_header, resolved_address: resolved_address)
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)
@@ -1475,10 +1480,10 @@ class Repository
     blob_at("refs/heads/#{project.default_branch}", Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
   end
 
-  def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30)
+  def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30, sorted: false)
     Gitlab::Git::BlobPairsDiffs
       .new(self)
-      .diffs_by_changed_paths(diff_refs, offset, batch_size) do |diff_files|
+      .diffs_by_changed_paths(diff_refs, offset, batch_size, sorted: sorted) do |diff_files|
         yield diff_files
       end
   end

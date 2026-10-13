@@ -24,4 +24,4 @@ permissions, so there's no separate access model to maintain. Every create,
 update, and read is logged to your audit trail, so a leak investigation
 doesn't mean stitching together logs from multiple systems.
 
-GitLab Secrets Manager is an add-on billed through GitLab Credits. Start a free 30-day trial to explore all features. Learn more about billing and trials in the [billing documentation](../../../ci/secrets/secrets_manager/secrets_manager_billing.md).
+GitLab Secrets Manager is an add-on billed through GitLab Credits. Start a free 30-day trial to explore all features. Learn more about billing and trials in the [billing documentation](../../../ci/secrets/secrets_manager/credit_usage.md).

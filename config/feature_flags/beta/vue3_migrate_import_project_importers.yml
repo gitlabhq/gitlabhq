@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_import_project_importers
+description: Enables Vue 3 in compatibility mode for external project importer pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629161
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255701
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631150
+milestone: '19.5'
+group: group::import
+type: beta
+default_enabled: false

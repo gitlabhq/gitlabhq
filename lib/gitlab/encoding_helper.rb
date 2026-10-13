@@ -158,9 +158,13 @@ module Gitlab
       message.delete_prefix(BOM_UTF8)
     end
 
+    def valid_utf8?(message)
+      message.encoding == Encoding::UTF_8 && message.valid_encoding?
+    end
+
     def force_encode_utf8(message)
       raise ArgumentError unless message.respond_to?(:force_encoding)
-      return message if message.encoding == Encoding::UTF_8 && message.valid_encoding?
+      return message if valid_utf8?(message)
 
       message = message.dup if message.respond_to?(:frozen?) && message.frozen?
 

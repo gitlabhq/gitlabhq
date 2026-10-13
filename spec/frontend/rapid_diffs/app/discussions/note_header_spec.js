@@ -8,9 +8,10 @@ import NoteAuthor from '~/rapid_diffs/app/discussions/note_author.vue';
 describe('NoteHeader', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, slots = {}) => {
     wrapper = shallowMount(NoteHeader, {
       propsData: props,
+      slots,
     });
   };
 
@@ -181,6 +182,52 @@ describe('NoteHeader', () => {
         slots: { badge: '<span data-testid="custom-badge">Custom</span>' },
       });
       expect(wrapper.find('[data-testid="custom-badge"]').text()).toBe('Custom');
+    });
+  });
+
+  describe('default slot', () => {
+    beforeEach(() => {
+      createComponent({}, { default: '<span data-testid="custom-content">Custom</span>' });
+    });
+
+    it('renders content passed to the default slot', () => {
+      expect(wrapper.find('[data-testid="custom-content"]').text()).toBe('Custom');
+    });
+  });
+
+  describe('author display options', () => {
+    const author = {
+      id: 'gid://gitlab/User/123',
+      name: 'John Doe',
+      username: 'johndoe',
+      path: '/johndoe',
+    };
+
+    describe('by default', () => {
+      beforeEach(() => createComponent({ author }));
+
+      it('shows the username and lets the author name wrap', () => {
+        expect(wrapper.findComponent(NoteAuthor).props()).toMatchObject({
+          showUsername: true,
+          truncate: false,
+        });
+      });
+    });
+
+    describe('when hideUsername is true', () => {
+      beforeEach(() => createComponent({ author, hideUsername: true }));
+
+      it('hides the username', () => {
+        expect(wrapper.findComponent(NoteAuthor).props('showUsername')).toBe(false);
+      });
+    });
+
+    describe('when singleLine is true', () => {
+      beforeEach(() => createComponent({ author, singleLine: true }));
+
+      it('truncates the author name', () => {
+        expect(wrapper.findComponent(NoteAuthor).props('truncate')).toBe(true);
+      });
     });
   });
 

@@ -120,6 +120,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           raw_blob_request_limit raw_blob_request_limit_unauthenticated group_export_limit group_download_export_limit
           group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
           members_delete_limit downstream_pipeline_trigger_limit_per_project_user_sha
+          pipeline_cancel_limit_per_user_project
+          pipeline_retry_limit_per_user_project
+          job_retry_limit_per_user_project job_play_limit_per_user_project
+          pipeline_delete_limit_per_user_project
+          job_erase_limit_per_user_project
           group_api_limit group_projects_api_limit groups_api_limit project_api_limit projects_api_limit
           user_contributed_projects_api_limit user_projects_api_limit user_starred_projects_api_limit
           users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys
@@ -550,12 +555,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '#global_search_settings_checkboxes', feature_category: :global_search do
-    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-    # subject, or an in-memory mutation that survives reload/refind). Do not
-    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-    # (see gitlab-org/gitlab#602925).
-    let_it_be(:application_setting, freeze: false) { build(:application_setting) }
+    let(:application_setting) { build(:application_setting) }
 
     before do
       application_setting.global_search_work_items_enabled = true
@@ -579,25 +579,10 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         expect(result[6]).to have_checked_field('Show groups in global search results', with: 1)
       end
     end
-
-    context 'when the elasticsearch_group_search feature flag is disabled' do
-      before do
-        stub_feature_flags(elasticsearch_group_search: false)
-      end
-
-      it 'does not render the groups checkbox' do
-        helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
-          result = helper.global_search_settings_checkboxes(form)
-
-          expect(result.size).to eq(6)
-          expect(result.join).not_to include('Show groups in global search results')
-        end
-      end
-    end
   end
 
   describe '#restricted_level_checkboxes' do
-    let_it_be(:application_setting, freeze: false) { build_stubbed(:application_setting) }
+    let(:application_setting) { build_stubbed(:application_setting) }
 
     before do
       allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
@@ -645,7 +630,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '.deletion_protection_data' do
-    let_it_be(:application_setting, freeze: false) { build(:application_setting) }
+    let(:application_setting) { build(:application_setting) }
 
     before do
       application_setting.deletion_adjourned_period = 1

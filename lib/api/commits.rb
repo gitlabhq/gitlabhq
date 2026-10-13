@@ -194,7 +194,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS, urgency: :low do
       desc 'List all repository commits' do
@@ -211,38 +211,47 @@ module API
       params do
         optional :ref_name,
           type: String,
-          desc: 'The name of a repository branch or tag, if not given the default branch is used',
+          desc: 'Name of a repository branch, tag, or revision range. Uses the default branch if not given.',
           documentation: { example: 'v1.1.0' }
         optional :since,
           type: DateTime,
-          desc: 'Only commits after or on this date will be returned',
+          desc: 'Only commits after or on this date are returned.',
           documentation: { example: '2021-09-20T11:50:22.001Z' }
         optional :until,
           type: DateTime,
-          desc: 'Only commits before or on this date will be returned',
+          desc: 'Only commits before or on this date are returned.',
           documentation: { example: '2021-09-20T11:50:22.001Z' }
         optional :path,
           type: String,
-          desc: 'The file path',
+          desc: 'File path relative to the repository.',
           documentation: { example: 'README.md' }
         optional :follow,
           type: Boolean,
-          desc: 'Follow file renames when filtering by path'
+          desc: 'If `true`, follows file renames when filtering commits by `path` and returns commits for the ' \
+            'file even if it was renamed. If `false`, returns only commits where the file existed at its ' \
+            'current path. Used only when `path` specifies a single file.'
         optional :author,
           type: String,
-          desc: 'Search commits by commit author',
+          desc: 'Filter commits by commit author.',
           documentation: { example: 'John Smith' }
-        optional :all, type: Boolean, desc: 'Every commit will be returned'
-        optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
-        optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
-        optional :order, type: String, desc: 'List commits in order', default: 'default', values: %w[default topo]
-        optional :trailers, type: Boolean, desc: 'Parse and include Git trailers for every commit', default: false
+        optional :all, type: Boolean,
+          desc: 'If `true`, retrieves every commit from the repository and ignores the `ref_name` parameter.'
+        optional :with_stats, type: Boolean, desc: 'If `true`, includes statistics for each commit in the response.'
+        optional :first_parent, type: Boolean, desc: 'If `true`, follows only the first parent commit upon seeing a ' \
+                                                 'merge commit.'
+        optional :order, type: String,
+          desc: 'Order in which to list commits, either reverse chronological or ' \
+            '[topological](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order).',
+          default: 'default', values: %w[default topo]
+        optional :trailers, type: Boolean, desc: 'If `true`, parses and includes [Git ' \
+                                             'trailers](https://git-scm.com/docs/git-interpret-trailers) for ' \
+                                             'every commit.', default: false
         use :pagination
         optional :pagination, type: String, values: %w[legacy keyset], default: 'legacy',
-          desc: 'Specify the pagination method'
+          desc: 'Specify the pagination method.'
 
         given pagination: ->(value) { value == 'keyset' } do
-          optional :page_token, type: String, desc: 'Record from which to start the keyset pagination'
+          optional :page_token, type: String, desc: 'Record from which to start the keyset pagination.'
         end
       end
       route_setting :authorization, permissions: :read_commit, boundary_type: :project
@@ -396,8 +405,8 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
-        optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
+        requires :sha, type: String, desc: 'Commit SHA or name of a repository branch or tag.'
+        optional :stats, type: Boolean, default: true, desc: 'If `true`, includes commit statistics in the response.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_commit, boundary_type: :project,
@@ -420,7 +429,7 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+        requires :sha, type: String, desc: 'Commit SHA or name of a repository branch or tag.'
         use :pagination
         use :with_unidiff
       end
@@ -446,7 +455,7 @@ module API
       end
       params do
         use :pagination
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+        requires :sha, type: String, desc: 'Commit SHA or name of a repository branch or tag.'
       end
       route_setting :authorization, permissions: :read_commit_comment, boundary_type: :project
       get ':id/repository/commits/:sha/comments', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
@@ -468,8 +477,9 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit SHA'
-        optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges', default: false
+        requires :sha, type: String, desc: 'Commit SHA.'
+        optional :first_parent, type: Boolean, desc: 'If `true`, follows only the first parent commit upon seeing a ' \
+                                                 'merge commit.', default: false
       end
       route_setting :authorization, permissions: :read_commit_sequence, boundary_type: :project
       get ':id/repository/commits/:sha/sequence', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
@@ -492,16 +502,16 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry-picked'
+        requires :sha, type: String, desc: 'Commit SHA, or name of a repository branch or tag, to cherry-pick.'
         requires :branch,
           type: String,
-          desc: 'The name of the branch',
+          desc: 'Name of the branch.',
           allow_blank: false,
           documentation: { example: 'master' }
-        optional :dry_run, type: Boolean, default: false, desc: "Does not commit any changes"
+        optional :dry_run, type: Boolean, default: false, desc: 'If `true`, does not commit any changes.'
         optional :message,
           type: String,
-          desc: 'A custom commit message to use for the picked commit',
+          desc: 'Custom commit message to use for the new commit.',
           documentation: { example: 'Initial commit' }
       end
       route_setting :authorization, permissions: :cherry_pick_commit, boundary_type: :project
@@ -551,13 +561,13 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'Commit SHA to revert'
+        requires :sha, type: String, desc: 'Commit SHA to revert.'
         requires :branch,
           type: String,
-          desc: 'Target branch name',
+          desc: 'Name of the target branch.',
           allow_blank: false,
           documentation: { example: 'master' }
-        optional :dry_run, type: Boolean, default: false, desc: "Does not commit any changes"
+        optional :dry_run, type: Boolean, default: false, desc: 'If `true`, does not commit any changes.'
       end
       route_setting :authorization, permissions: :revert_commit, boundary_type: :project
       post ':id/repository/commits/:sha/revert', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do
@@ -606,8 +616,9 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha'
-        optional :type, type: String, values: %w[branch tag all], default: 'all', desc: 'Scope'
+        requires :sha, type: String, desc: 'Commit SHA.'
+        optional :type, type: String, values: %w[branch tag all], default: 'all', desc: 'Type of references to ' \
+                                                                                    'return for the commit.'
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
@@ -657,21 +668,21 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to post a comment'
+        requires :sha, type: String, desc: 'Commit SHA or name of a repository branch or tag.'
         requires :note,
           type: String,
-          desc: 'The text of the comment',
+          desc: 'Text of the comment.',
           documentation: { example: 'Nice code!' }
         optional :path,
           type: String,
-          desc: 'The file path',
+          desc: 'File path relative to the repository.',
           documentation: { example: 'doc/update/5.4-to-6.0.md' }
         given :path do
           requires :line,
             type: Integer,
-            desc: 'The line number',
+            desc: 'Line number where the comment should be placed.',
             documentation: { example: 11 }
-          requires :line_type, type: String, values: %w[new old], default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w[new old], default: 'new', desc: 'Line type.'
         end
       end
       route_setting :authorization, permissions: :create_commit_comment, boundary_type: :project
@@ -721,8 +732,12 @@ module API
       end
       params do
         requires :sha, type: String,
-          desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
-        optional :state, type: String, desc: 'Filter merge-requests by state', documentation: { example: 'merged' }
+          desc: 'Commit SHA or name of a repository branch or tag.'
+        optional :state, type: String,
+          desc: 'Filter merge requests by state: `opened`, `closed`, `locked`, or `merged`. If ' \
+            'omitted, merge requests of all states are returned. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191169) in GitLab 18.2.',
+          documentation: { example: 'merged' }
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
@@ -758,7 +773,7 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
+        requires :sha, type: String, desc: 'Commit SHA or name of a repository branch or tag.'
       end
       route_setting :authorization, permissions: :read_commit_signature, boundary_type: :project
       get ':id/repository/commits/:sha/signature', requirements: ::API::COMMIT_ENDPOINT_REQUIREMENTS do

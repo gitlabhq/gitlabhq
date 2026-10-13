@@ -93,7 +93,7 @@ describe('LeaveOrganizationModal', () => {
     it('creates an alert with the generic error message', () => {
       expect(createAlert).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: 'An error occurred while leaving the organization.',
+          message: 'An error occurred while leaving the organization. Please try again.',
           captureError: true,
         }),
       );
@@ -114,7 +114,7 @@ describe('LeaveOrganizationModal', () => {
     it('creates an alert', () => {
       expect(createAlert).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: 'An error occurred while leaving the organization.',
+          message: 'An error occurred while leaving the organization. Please try again.',
           captureError: true,
         }),
       );

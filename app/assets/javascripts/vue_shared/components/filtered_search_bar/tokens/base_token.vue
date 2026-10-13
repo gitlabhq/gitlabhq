@@ -122,12 +122,20 @@ export default {
       return this.getActiveTokenValue(this.suggestions, data);
     },
     availableDefaultSuggestions() {
+      let suggestions = this.defaultSuggestions;
+
       if ([OPERATOR_NOT, OPERATOR_OR].includes(this.value.operator)) {
-        return this.defaultSuggestions.filter(
+        suggestions = suggestions.filter(
           (suggestion) => !FILTERS_NONE_ANY_ME.includes(suggestion.value),
         );
       }
-      return this.defaultSuggestions;
+
+      // Case-sensitive match intentional, to deprioritize matching default suggestions
+      if (this.searchKey) {
+        suggestions = suggestions.filter(({ value }) => value.startsWith(this.searchKey));
+      }
+
+      return suggestions;
     },
     /**
      * Return all the suggestions when searchKey is present
@@ -146,7 +154,7 @@ export default {
       return this.applyMaxSuggestions(suggestions);
     },
     showDefaultSuggestions() {
-      return this.availableDefaultSuggestions.length > 0 && !this.searchKey;
+      return this.availableDefaultSuggestions.length > 0;
     },
     showNoMatchesText() {
       return this.searchKey && !this.availableSuggestions.length;

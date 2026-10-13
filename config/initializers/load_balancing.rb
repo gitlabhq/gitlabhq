@@ -19,7 +19,11 @@ end
 configure_load_balancing!
 
 Gitlab::Application.configure do |config|
-  config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
+  # Must sit above LabkitRackRateLimit: that middleware resolves the authenticated
+  # user on the way in, and `use` would append this one below it, so the user would
+  # be loaded before sticking is applied and would miss the replica catch-up guarantee.
+  config.middleware.insert_before(::Gitlab::Middleware::LabkitRackRateLimit,
+    Gitlab::Database::LoadBalancing::RackMiddleware)
 
   # We need re-rerun the setup when code reloads in development
   config.reloader.after_class_unload do

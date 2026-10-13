@@ -16,8 +16,8 @@ RSpec.describe PagesDomainAcmeOrder do
   end
 
   describe '.find_by_domain_and_token' do
-    let!(:domain) { create(:pages_domain, domain: 'test.com') }
-    let!(:acme_order) { create(:pages_domain_acme_order, challenge_token: 'righttoken', pages_domain: domain) }
+    let_it_be(:domain) { create(:pages_domain, domain: 'test.com') }
+    let_it_be(:acme_order) { create(:pages_domain_acme_order, challenge_token: 'righttoken', pages_domain: domain) }
 
     where(:domain_name, :challenge_token, :present) do
       'test.com' | 'righttoken' | true
@@ -32,7 +32,7 @@ RSpec.describe PagesDomainAcmeOrder do
     end
   end
 
-  subject { create(:pages_domain_acme_order) }
+  subject { build_stubbed(:pages_domain_acme_order) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:pages_domain) }

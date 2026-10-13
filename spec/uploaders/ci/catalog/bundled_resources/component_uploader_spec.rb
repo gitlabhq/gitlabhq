@@ -24,7 +24,7 @@ RSpec.describe Ci::Catalog::BundledResources::ComponentUploader, feature_categor
     component.file = file
     component.save!
 
-    expect(component.file.path).to end_with('catalog/bundles/cell.example.com/acme/widgets/1.2.3/deploy.yml')
+    expect(component.file.path).to end_with('catalog/bundles/cell.example.com/acme/widgets/1.2.3/deploy.json')
     expect(component.file.read).to eq('bundle-content')
   ensure
     file.close!

@@ -58,7 +58,6 @@ function webpackTailwindCompilerPlugin({ shouldWatch = true }) {
 
 if (wasScriptCalledDirectly()) {
   build()
-    // eslint-disable-next-line promise/always-return
     .then(() => {
       console.log('Tailwind utils built successfully');
     })

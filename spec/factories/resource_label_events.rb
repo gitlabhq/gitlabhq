@@ -7,7 +7,7 @@ FactoryBot.define do
     user { issuable&.author || association(:user) }
 
     after(:build) do |event, evaluator|
-      event.issue = create(:issue) unless event.issuable
+      event.issue = evaluator.association(:issue) unless event.issuable
     end
   end
 end

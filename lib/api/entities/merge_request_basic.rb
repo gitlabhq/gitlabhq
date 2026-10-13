@@ -41,7 +41,7 @@ module API
         issuable_metadata.downvotes
       end
 
-      expose :author, using: ::API::Entities::UserBasic
+      expose :author, using: ::API::Entities::MergeRequestAuthor
       expose :assignees, using: ::API::Entities::UserBasic
       expose :assignee, using: ::API::Entities::UserBasic
       expose :reviewers, using: ::API::Entities::UserBasic

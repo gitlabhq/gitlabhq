@@ -47,7 +47,7 @@ module Ci
 
     scope :with_token, ->(tokens) {
       tokens = Array.wrap(tokens).reject(&:blank?)
-      encrypted_tokens = tokens.map { |token| Ci::Trigger.encode(token) }
+      encrypted_tokens = tokens.flat_map { |token| Ci::Trigger.encode_candidates(token) }
       where(token_encrypted: encrypted_tokens)
     }
 
@@ -60,7 +60,7 @@ module Ci
     end
 
     def token=(token_value)
-      self.set_token(token_value)
+      set_token(token_value)
     end
 
     def last_used
@@ -73,13 +73,14 @@ module Ci
     def short_token
       return unless token.present?
 
-      token.delete_prefix(Authn::TokenField::PrefixHelper.instance_prefix)
-           .delete_prefix(TRIGGER_TOKEN_PREFIX)[0...4]
+      # Strips an optional instance wide token prefix, which is validated as alphanumeric. Matching its shape
+      # rather than its current value keeps tokens readable after the prefix changes or is disabled.
+      token.sub(/\A(?:[a-zA-Z0-9]+-)?#{Regexp.escape(TRIGGER_TOKEN_PREFIX)}/o, '')[0...4]
     end
     alias_method :trigger_short_token, :short_token
 
     def can_access_project?
-      Ability.allowed?(self.owner, :create_build, project)
+      Ability.allowed?(owner, :create_build, project)
     end
 
     protected

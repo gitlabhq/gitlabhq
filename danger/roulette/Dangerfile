@@ -55,7 +55,8 @@ NOT_AVAILABLE_TEMPLATES = {
   default: 'No %{role} available',
   analytics_instrumentation: group_not_available_template('#g_analyze_analytics_instrumentation', '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
   remote_development_be: group_not_available_template('#f_remote_development', '@gitlab-org/maintainers/remote-development/backend'),
-  project_management: group_not_available_template('#g_project-management', '@gitlab-org/plan-stage/project-management-group')
+  project_management: group_not_available_template('#g_work_items', '@gitlab-org/plan-stage/project-management-group'),
+  advanced_search_migration: group_not_available_template('#g_global_search', '@gitlab-org/search-team/maintainers/advanced-migrations')
 }.freeze
 
 def note_for_spin_role(spin, role, category)
@@ -91,16 +92,24 @@ changes.delete(:docs)
 changes.delete(:changelog)
 # No special review for feature flags needed.
 changes.delete(:feature_flag)
+# Database review is mandatory (not a suggestion) and spins its own reviewer,
+# unaffected by the reviewer-column-hiding experiment below. See danger/database/Dangerfile.
+changes.delete(:database)
 
 categories = roulette.prepare_categories(changes.keys - [:unknown])
+# `prepare_categories` re-adds :database based on the `database` label; strip it
+# back out since it's handled entirely by danger/database/Dangerfile.
+categories.delete(:database)
 
 # Skip specialty reviews for stable branch MRs since they have already been merged to the default branch
-categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
+categories.subtract([:ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
 
-if changes.any? || roulette.required_approvals.any?
+required_approvals = roulette.required_approvals
+
+if changes.any? || required_approvals.any?
   random_roulette_spins = roulette.spin(nil, categories)
-  spins = random_roulette_spins + roulette.required_approvals.map(&:spin)
-  spin_categories = random_roulette_spins.map(&:category) + roulette.required_approvals.map(&:category)
+  spins = random_roulette_spins + required_approvals.map(&:spin)
+  spin_categories = random_roulette_spins.map(&:category) + required_approvals.map(&:category)
 
   # Deterministic per MR so the table doesn't flicker on re-runs; disabled locally
   # so `danger dry_run` always shows the full table.

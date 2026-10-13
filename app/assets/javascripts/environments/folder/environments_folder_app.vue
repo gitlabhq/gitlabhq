@@ -39,7 +39,6 @@ export default {
     scope: {
       type: String,
       required: true,
-      default: ENVIRONMENTS_SCOPE.ACTIVE,
     },
     page: {
       type: Number,

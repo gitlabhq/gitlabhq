@@ -14,7 +14,7 @@ RSpec.describe 'shared/labels/_nav', :aggregate_failures, feature_category: :tea
 
   context 'when archived param is not set' do
     before do
-      render 'shared/labels/nav', labels_or_filters: true, can_admin_label: false
+      render 'shared/labels/nav', labels_or_filters: true, can_create_label: false
     end
 
     it 'shows Active and Archived tabs' do
@@ -34,7 +34,7 @@ RSpec.describe 'shared/labels/_nav', :aggregate_failures, feature_category: :tea
   context 'when archived param is true' do
     before do
       controller.params[:archived] = 'true'
-      render 'shared/labels/nav', labels_or_filters: true, can_admin_label: false
+      render 'shared/labels/nav', labels_or_filters: true, can_create_label: false
     end
 
     it 'marks Archived tab as active' do
@@ -46,7 +46,7 @@ RSpec.describe 'shared/labels/_nav', :aggregate_failures, feature_category: :tea
   context 'when archived param is false' do
     before do
       controller.params[:archived] = 'false'
-      render 'shared/labels/nav', labels_or_filters: true, can_admin_label: false
+      render 'shared/labels/nav', labels_or_filters: true, can_create_label: false
     end
 
     it 'marks Archived tab as active' do

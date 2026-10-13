@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::TimelineEventTag do
+RSpec.describe IncidentManagement::TimelineEventTag, feature_category: :incident_management do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:timeline_event_tag_links).class_name('IncidentManagement::TimelineEventTagLink') }

@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_crm
+description: Enables Vue 3 in compatibility mode for the CRM contacts and organizations pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630031
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257955
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631029
+milestone: '19.5'
+group: group::work items
+type: beta
+default_enabled: false

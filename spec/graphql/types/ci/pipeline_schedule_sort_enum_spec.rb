@@ -6,8 +6,8 @@ RSpec.describe Types::Ci::PipelineScheduleSortEnum, feature_category: :continuou
   specify { expect(described_class.graphql_name).to eq('PipelineScheduleSort') }
 
   it 'exposes all the existing pipeline schedule sort values' do
-    expect(described_class.values.keys).to contain_exactly(
-      *%w[ID_DESC ID_ASC DESCRIPTION_DESC DESCRIPTION_ASC REF_ASC REF_DESC
+    expect(described_class.values.keys).to match_array(
+      %w[ID_DESC ID_ASC DESCRIPTION_DESC DESCRIPTION_ASC REF_ASC REF_DESC
         NEXT_RUN_AT_DESC NEXT_RUN_AT_ASC CREATED_AT_DESC CREATED_AT_ASC
         UPDATED_AT_DESC UPDATED_AT_ASC]
     )

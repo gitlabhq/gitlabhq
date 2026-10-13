@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { resolvers } from '~/environments/graphql/resolvers';
 import environmentToRollback from '~/environments/graphql/queries/environment_to_rollback.query.graphql';
 import environmentToDelete from '~/environments/graphql/queries/environment_to_delete.query.graphql';
@@ -17,6 +18,11 @@ import {
   folder,
   resolvedFolder,
 } from '../mock_data';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  refreshCurrentPage: jest.fn(),
+}));
 
 const ENDPOINT = `${TEST_HOST}/environments`;
 
@@ -145,12 +151,25 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('stopEnvironmentREST', () => {
+    let cache;
+    let client;
+    let environment;
+
+    beforeEach(() => {
+      cache = { evict: jest.fn() };
+      client = { writeQuery: jest.fn() };
+      environment = { stopPath: ENDPOINT };
+    });
+
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
-      const cache = { evict: jest.fn() };
-      const client = { writeQuery: jest.fn() };
-      const environment = { stopPath: ENDPOINT };
-      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
+      const result = await mockResolvers.Mutation.stopEnvironmentREST(
+        null,
+        { environment },
+        { client, cache },
+      );
+
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
@@ -163,11 +182,47 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
       expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
+    it('should not reload the page when stopping from the environments list', async () => {
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
+
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
+
+      expect(refreshCurrentPage).not.toHaveBeenCalled();
+    });
+    it('should reload the page when stopping from the environment details page', async () => {
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
+      environment.onSingleEnvironmentPage = true;
+
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
+
+      expect(refreshCurrentPage).toHaveBeenCalled();
+    });
+    it('should not force the stop by default', async () => {
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
+
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
+
+      expect(mock.history.post).toContainEqual(
+        expect.objectContaining({ url: ENDPOINT, data: JSON.stringify({ force: false }) }),
+      );
+    });
+    it('should post force to the stop environment path when requested', async () => {
+      mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
+
+      const result = await mockResolvers.Mutation.stopEnvironmentREST(
+        null,
+        { environment, force: true },
+        { client, cache },
+      );
+
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
+      expect(mock.history.post).toContainEqual(
+        expect.objectContaining({ url: ENDPOINT, data: JSON.stringify({ force: true }) }),
+      );
+    });
     it('should set is stopping to false if stop fails', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-      const client = { writeQuery: jest.fn() };
-      const environment = { stopPath: ENDPOINT };
       await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client });
 
       expect(mock.history.post).toContainEqual(
@@ -186,7 +241,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
       const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.rollbackEnvironment(
+      const result = await mockResolvers.Mutation.rollbackEnvironment(
         null,
         {
           environment: { retryUrl: ENDPOINT },
@@ -194,6 +249,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         { cache },
       );
 
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
       );
@@ -205,7 +261,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       mock.onDelete(ENDPOINT).reply(HTTP_STATUS_OK);
       const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.deleteEnvironment(
+      const result = await mockResolvers.Mutation.deleteEnvironment(
         null,
         {
           environment: { deletePath: ENDPOINT },
@@ -213,6 +269,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         { cache },
       );
 
+      expect(result).toEqual({ errors: [], __typename: 'LocalEnvironmentErrors' });
       expect(mock.history.delete).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'delete' }),
       );

@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def handle_event_in(delay, event)
-        self.class.perform_in(delay, event.class.name, event.data)
+        self.class.perform_in(delay, event.class.name, event.data_hash)
       end
 
       def handle_event(event)

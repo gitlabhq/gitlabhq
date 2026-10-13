@@ -2,7 +2,7 @@
 
 class DeploymentMergeRequest < ApplicationRecord
   ignore_column :deployment_id_convert_to_bigint, :merge_request_id_convert_to_bigint,
-    :environment_id_convert_to_bigint, remove_with: '18.5', remove_after: '2025-11-01'
+    :environment_id_convert_to_bigint, remove_with: '19.7', remove_after: '2026-11-14'
 
   belongs_to :deployment, optional: false
   belongs_to :merge_request, optional: false

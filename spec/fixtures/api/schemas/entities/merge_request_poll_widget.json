@@ -61,9 +61,6 @@
         "null"
       ]
     },
-    "mergeable": {
-      "type": "boolean"
-    },
     "default_merge_commit_message_with_description": {
       "type": "string"
     },

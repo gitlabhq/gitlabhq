@@ -1,5 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import WebhookFormApp from './components/webhook_form_app.vue';
 import TestDropdown from './components/test_dropdown.vue';
 

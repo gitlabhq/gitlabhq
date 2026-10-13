@@ -13,6 +13,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   before_action :explain_missing_dynamic_client, only: [:create]
   before_action :validate_pkce_for_dynamic_applications, only: [:create]
   before_action :track_short_pkce_verifier, only: [:create]
+  before_action :enforce_organization_maintenance_mode, only: [:create]
 
   def create
     if authorize_response.status == :ok
@@ -30,6 +31,41 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   private
+
+  def enforce_organization_maintenance_mode
+    organization = organization_for_token_request
+    return unless organization&.under_maintenance?
+
+    render_organization_maintenance_mode_error(organization)
+  end
+
+  def organization_for_token_request
+    token_params = params.permit(:grant_type, :refresh_token, :code)
+
+    case token_params[:grant_type]
+    when 'refresh_token'
+      OauthAccessToken.by_refresh_token(token_params[:refresh_token])&.organization
+    when 'authorization_code'
+      OauthAccessGrant.by_token(token_params[:code])&.organization
+    end
+  end
+
+  def render_organization_maintenance_mode_error(organization)
+    if organization.maintenance_time_bounded?
+      response.headers['Retry-After'] =
+        ::Organizations::Organization::MAINTENANCE_MODE_RETRY_AFTER_SECONDS.to_s
+      status = :service_unavailable
+      error = 'temporarily_unavailable'
+    else
+      status = :forbidden
+      error = 'access_denied'
+    end
+
+    render json: {
+      error: error,
+      error_description: organization.maintenance_message
+    }, status: status
+  end
 
   # In Rails 8 alias_method at class-body level fails when the aliased method
   # is not yet in the ancestor chain at load time. Define explicitly instead.

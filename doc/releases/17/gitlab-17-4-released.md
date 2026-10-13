@@ -494,7 +494,7 @@ To configure the setting, go to the security policy project you want to share. S
 
 {{< /details >}}
 
-An enhancement to the [17.2 release of pipeline execution policies](https://about.gitlab.com/releases/2024/07/18/gitlab-17-2-released/#pipeline-execution-policy-type), policy creators may now configure pipeline execution policies to handle collisions in job names gracefully. With the `policy.yml` for the pipeline execution policy, you may now configure the following options:
+An enhancement to the [17.2 release of pipeline execution policies](gitlab-17-2-released.md#pipeline-execution-policy-type), policy creators may now configure pipeline execution policies to handle collisions in job names gracefully. With the `policy.yml` for the pipeline execution policy, you may now configure the following options:
 
 - `suffix: on_conflict` configures the policy to gracefully handle collisions by renaming policy jobs, which is the new default behavior
 - `suffix: never` enforces all jobs names are unique and will fail pipelines if collisions occur, which has been the default behavior since 17.2

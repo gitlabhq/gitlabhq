@@ -62,6 +62,8 @@ module API
           desc: 'OAuth provider required for step-up authentication. Pass empty string to disable.'
         optional :lock_math_rendering_limits_enabled, type: Boolean, desc: 'Indicates if math rendering limits are locked for all descendent groups.'
         optional :math_rendering_limits_enabled, type: Boolean, desc: 'Indicates if math rendering limits are used for this group.'
+        optional :require_sha_for_merge, type: Boolean, desc: 'Indicates whether merge requests in this group require a valid commit SHA for calls to the merge a merge request endpoint'
+        optional :lock_require_sha_for_merge, type: Boolean, desc: 'Enforce the require_sha_for_merge setting for all descendant groups'
         optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       end
 

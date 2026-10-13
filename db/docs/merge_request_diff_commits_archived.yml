@@ -9,6 +9,6 @@ description: Commit related information within a merge request diff (from before
   Table will be dropped once swap is confirmed as stable.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12527
 milestone: '9.4'
-gitlab_schema: gitlab_main_org
+gitlab_schema: gitlab_main_cell_local
 sharding_key_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/18350
 table_size: over_limit

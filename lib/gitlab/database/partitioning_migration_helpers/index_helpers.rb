@@ -75,6 +75,13 @@ module Gitlab
             return
           end
 
+          # The guard is versioned: only migrations on Migration[2.4]+ include the module.
+          if is_a?(Gitlab::Database::MigrationHelpers::RequireForeignKeyIndexes)
+            assert_index_not_last_supporting_foreign_key!(
+              table_name, find_index_definition(table_name, name: index_name)
+            )
+          end
+
           with_lock_retries do
             remove_index(table_name, name: index_name)
           end

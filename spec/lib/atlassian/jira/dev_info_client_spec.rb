@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Atlassian::Jira::DevInfoClient, feature_category: :integrations do
   subject(:client) { described_class.new('https://gitlab-test.atlassian.net') }

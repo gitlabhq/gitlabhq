@@ -36,6 +36,26 @@ describe('Empty result', () => {
     });
   });
 
+  describe('when searchHint prop is passed', () => {
+    it('appends the hint to the search description', () => {
+      createComponent({ type: 'search', searchHint: 'Only names are searched.' });
+
+      expect(findEmptyState().props('description')).toBe(
+        'Edit your search and try again. Only names are searched.',
+      );
+    });
+
+    it('does not append the hint to the minimum length message', () => {
+      createComponent({
+        search: 'te',
+        searchMinimumLength: 3,
+        searchHint: 'Only names are searched.',
+      });
+
+      expect(findEmptyState().props('description')).toBe('Search must be at least 3 characters.');
+    });
+  });
+
   describe('when searchMinimumLength prop is passed', () => {
     describe('with search >= minimum search length', () => {
       beforeEach(() => {

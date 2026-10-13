@@ -18,7 +18,7 @@ module UserSettings
 
       if @identity.persisted?
         delete_session_variables
-        return redirect_to profile_account_path, notice: _('Identity already exists')
+        return redirect_to profile_two_factor_auth_path, notice: _('Identity already exists')
       end
 
       render layout: 'devise'
@@ -33,7 +33,7 @@ module UserSettings
                end
 
       delete_session_variables
-      redirect_to profile_account_path, notice: notice
+      redirect_to profile_two_factor_auth_path, notice: notice
     end
 
     private
@@ -51,7 +51,7 @@ module UserSettings
       return if @provider && @extern_uid
 
       delete_session_variables
-      redirect_to profile_account_path,
+      redirect_to profile_two_factor_auth_path,
         notice: _('Error linking identity: Provider and Extern UID must be in the session.')
     end
 

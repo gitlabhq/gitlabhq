@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import UserTypeSelector from '~/admin/users/components/user_type/user_type_selector.vue';
 
 export const initUserTypeSelector = () => {

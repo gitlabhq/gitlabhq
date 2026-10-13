@@ -39,7 +39,7 @@ RSpec.describe Projects::TerraformHelper do
     end
 
     context 'when current_user is not a terraform admin' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { build_stubbed(:user) }
 
       it 'indicates the user is not an admin' do
         expect(subject[:terraform_admin]).to be(false)
@@ -56,7 +56,7 @@ RSpec.describe Projects::TerraformHelper do
   end
 
   describe '#show_period_in_terraform_state_name_alert?' do
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     context 'when user dismissed' do
       it 'returns false' do

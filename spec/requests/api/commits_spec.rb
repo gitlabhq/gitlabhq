@@ -757,19 +757,30 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
 
       context 'with an unsupported parameter' do
-        it_behaves_like 'rejects unsupported keyset parameter', { trailers: true }
         it_behaves_like 'rejects unsupported keyset parameter', { follow: true }
       end
 
-      context 'with multiple unsupported parameters' do
-        it 'returns a single 400 mentioning all of them', :aggregate_failures do
-          get api(route, current_user), params: { pagination: 'keyset', trailers: true, follow: true }
+      context 'with trailers=true' do
+        # The tip of this ref carries a Signed-off-by trailer in its message.
+        let(:ref_name) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+        let(:signed_off_by) { 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>' }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to include("'trailers'")
-          expect(json_response['message']).to include("'follow'")
-          expect(json_response['message']).to include(::Repositories::CommitsFinder::KEYSET_PARAM_ERROR_SUFFIX)
-          expect(json_response['message']).not_to eq('ref_name is invalid')
+        it 'includes the Git trailers', :aggregate_failures do
+          get api(route, current_user),
+            params: { pagination: 'keyset', ref_name: ref_name, trailers: true, per_page: 1 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.first['trailers']).to eq('Signed-off-by' => signed_off_by)
+          expect(json_response.first['extended_trailers']).to eq('Signed-off-by' => [signed_off_by])
+        end
+
+        it 'omits the trailers when they are not requested', :aggregate_failures do
+          get api(route, current_user),
+            params: { pagination: 'keyset', ref_name: ref_name, per_page: 1 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.first['trailers']).to eq({})
+          expect(json_response.first['extended_trailers']).to eq({})
         end
       end
 
@@ -2115,7 +2126,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
           it 'applies rate limiting' do
             allow_next_instance_of(described_class) do |controller|
-              expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: user)
+              expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: { user: user })
             end
 
             workhorse_body_upload(url, valid_c_params)
@@ -2530,7 +2541,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           stub_const('Repositories::CommitsUploader::MAX_RATE_LIMITED_REQUEST_SIZE', body.bytesize - 1)
 
           allow_next_instance_of(described_class) do |controller|
-            expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: user)
+            expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: { user: user })
           end
 
           perform_workhorse_json_body_upload(url, body, params: { 'file.size': 1 })

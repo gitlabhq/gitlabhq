@@ -100,7 +100,14 @@ export const getMediaDimensions = async (file) => {
   if (file.type.startsWith('video/')) dimensions = await getVideoDimensions(file);
 
   if (file.type.startsWith('image/')) {
-    const data = await readFileAsDataURL(file);
+    let data;
+
+    // An unreadable file yields no dimensions, which every caller already handles.
+    try {
+      data = await readFileAsDataURL(file);
+    } catch {
+      return null;
+    }
 
     if (file.type === 'image/png') {
       try {

@@ -707,6 +707,59 @@ if [[ -f "$GITLAB_YML" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# 5h. Give edit mode and tests their own Redis databases
+#
+#     The cluster pods use Redis DB 0 with gitlabhq_production. Sharing it
+#     lets each side run the other's Sidekiq jobs against the wrong
+#     database, and RSpec's before(:suite) flushdb would wipe the pods'
+#     queues, cron schedule and sessions.
+# ---------------------------------------------------------------------------
+
+REDIS_DEVELOPMENT_DB=1
+REDIS_TEST_DB=2
+
+echo ""
+echo "==> Pointing development at Redis DB $REDIS_DEVELOPMENT_DB and test at DB $REDIS_TEST_DB..."
+
+for file in config/resque.yml config/cable.yml; do
+  file_path="$GITLAB_DIR/$file"
+  if [[ ! -f "$file_path" ]]; then
+    warn "$file not found – skipping Redis DB rewrite"
+    continue
+  fi
+
+  # Only rewrites bare scheme://[auth@]host[:port][/db] URLs, leaving anything
+  # else (query strings, comments) alone. Exits non-zero unless both
+  # development: and test: had a url: rewritten.
+  if awk -v dev="$REDIS_DEVELOPMENT_DB" -v test="$REDIS_TEST_DB" '
+    /^development:/ { db = dev; env = "development" }
+    /^test:/        { db = test; env = "test" }
+    /^[^ ]/ && !/^(development|test):/ { db = "" }
+    db != "" && /^ +url:[[:space:]]+rediss?:\/\/[^\/?#[:space:]]+(\/[0-9]+)?[[:space:]]*$/ {
+      sub(/(\/[0-9]+)?[[:space:]]*$/, "/" db); rewritten[env] = 1
+    }
+    { print }
+    END { exit !(rewritten["development"] && rewritten["test"]) }
+  ' "$file_path" > "$file_path.tmp"; then
+    echo "  ✓ $file"
+  else
+    warn "$file: could not set the Redis DB under both development: and test: (no plain redis:// url: line) – they may still share DB 0 with the cluster pods"
+  fi
+  mv "$file_path.tmp" "$file_path"
+done
+
+WORKHORSE_TOML="$GITLAB_DIR/workhorse/workhorse-config.toml"
+if [[ -f "$WORKHORSE_TOML" ]]; then
+  sed -i.bak -E "s/^DB[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$/DB = $REDIS_DEVELOPMENT_DB/" "$WORKHORSE_TOML"
+  rm "$WORKHORSE_TOML.bak"
+  if grep -q "^DB = $REDIS_DEVELOPMENT_DB$" "$WORKHORSE_TOML"; then
+    echo "  ✓ workhorse/workhorse-config.toml"
+  else
+    warn "workhorse/workhorse-config.toml: no DB = line found – edit-mode Workhorse may still use Redis DB 0"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 # 6. Remove leftover config/vite.gdk.json from earlier versions of this script.
 # ---------------------------------------------------------------------------
 
@@ -719,16 +772,20 @@ if [[ -f "$VITE_GDK_JSON" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 6a. Set duo_workflow.service_url before Puma caches config/gitlab.yml at boot.
+# 6a. Set duo_workflow.service_url before Puma and Sidekiq cache their config
+#     at boot. Sidekiq reads config/gitlab-sidekiq.yml instead of gitlab.yml;
+#     without the setting it falls back to the cloud Duo Workflow Service.
 # ---------------------------------------------------------------------------
 
-if [[ -f "$GITLAB_YML" ]] && ! grep -q '^  duo_workflow:' "$GITLAB_YML"; then
-  echo ""
-  echo "==> Setting duo_workflow.service_url in config/gitlab.yml..."
-  awk '/^development:/ && !d {print; print "  duo_workflow:"; print "    service_url: ai-gateway.ai-gateway.svc.cluster.local:50052"; print "    secure: false"; d=1; next} 1' \
-    "$GITLAB_YML" > "$GITLAB_YML.tmp" && mv "$GITLAB_YML.tmp" "$GITLAB_YML"
-  echo "  ✓ config/gitlab.yml duo_workflow.service_url set."
-fi
+for yml in "$GITLAB_YML" "$SIDEKIQ_GITLAB_YML"; do
+  if [[ -f "$yml" ]] && ! grep -q '^  duo_workflow:' "$yml"; then
+    echo ""
+    echo "==> Setting duo_workflow.service_url in config/$(basename "$yml")..."
+    awk '/^development:/ && !d {print; print "  duo_workflow:"; print "    service_url: ai-gateway.ai-gateway.svc.cluster.local:50052"; print "    secure: false"; d=1; next} 1' \
+      "$yml" > "$yml.tmp" && mv "$yml.tmp" "$yml"
+    echo "  ✓ config/$(basename "$yml") duo_workflow.service_url set."
+  fi
+done
 
 # ---------------------------------------------------------------------------
 # 7. Summary

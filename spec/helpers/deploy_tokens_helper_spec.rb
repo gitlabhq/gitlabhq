@@ -24,7 +24,7 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
     let_it_be(:project) { build(:project) }
     let_it_be(:user) { build(:user) }
 
-    where(:registry_enabled, :can_read_container_image, :can_manage_deploy_tokens, :result) do
+    where(:registry_enabled, :can_read_container_image, :can_create_deploy_token, :result) do
       true  | true  | true  | true
       true  | true  | false | true
       true  | false | true  | true
@@ -39,8 +39,8 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
         allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(user, :read_container_image, project)
           .and_return(can_read_container_image)
-        allow(Ability).to receive(:allowed?).with(user, :manage_deploy_tokens, project)
-          .and_return(can_manage_deploy_tokens)
+        allow(Ability).to receive(:allowed?).with(user, :create_deploy_token, project)
+          .and_return(can_create_deploy_token)
       end
 
       it 'returns expected value' do
@@ -53,7 +53,7 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
     let_it_be(:project) { build(:project) }
     let_it_be(:user) { build(:user) }
 
-    where(:dependency_proxy_enabled, :can_read_dependency_proxy, :can_manage_deploy_tokens, :result) do
+    where(:dependency_proxy_enabled, :can_read_dependency_proxy, :can_create_deploy_token, :result) do
       true  | true  | true  | true
       true  | true  | false | true
       true  | false | true  | true
@@ -68,8 +68,8 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
         allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(user, :read_dependency_proxy, project)
           .and_return(can_read_dependency_proxy)
-        allow(Ability).to receive(:allowed?).with(user, :manage_deploy_tokens, project)
-          .and_return(can_manage_deploy_tokens)
+        allow(Ability).to receive(:allowed?).with(user, :create_deploy_token, project)
+          .and_return(can_create_deploy_token)
       end
 
       it 'returns expected value' do
@@ -82,7 +82,7 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
     let_it_be(:project) { build(:project) }
     let_it_be(:user) { build(:user) }
 
-    where(:packages_enabled, :can_read_package, :can_manage_deploy_tokens, :result) do
+    where(:packages_enabled, :can_read_package, :can_create_deploy_token, :result) do
       true  | true  | true  | true
       true  | true  | false | true
       true  | false | true  | true
@@ -97,8 +97,8 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
         allow(Ability).to receive(:allowed?).and_call_original
         allow(Ability).to receive(:allowed?).with(user, :read_package, instance_of(::Packages::Policies::Project))
           .and_return(can_read_package)
-        allow(Ability).to receive(:allowed?).with(user, :manage_deploy_tokens, project)
-          .and_return(can_manage_deploy_tokens)
+        allow(Ability).to receive(:allowed?).with(user, :create_deploy_token, project)
+          .and_return(can_create_deploy_token)
       end
 
       it 'returns expected value' do

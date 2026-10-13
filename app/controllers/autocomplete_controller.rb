@@ -154,9 +154,9 @@ class AutocompleteController < ApplicationController
 
   def check_autocomplete_users_rate_limit!
     if current_user
-      check_rate_limit!(:autocomplete_users, scope: current_user)
+      check_rate_limit!(:autocomplete_users, scope: { user: current_user })
     else
-      check_rate_limit!(:autocomplete_users_unauthenticated, scope: request.ip)
+      check_rate_limit!(:autocomplete_users_unauthenticated, scope: { ip: request.ip })
     end
   end
 end

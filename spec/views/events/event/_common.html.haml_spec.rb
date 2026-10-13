@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'events/event/_common.html.haml' do
   let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
 
   before do

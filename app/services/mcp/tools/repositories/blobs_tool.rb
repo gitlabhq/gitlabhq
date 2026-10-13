@@ -47,7 +47,8 @@ module Mcp
 
         def traversal_response(paths)
           ::Mcp::Tools::Base::Response.error(
-            "Path(s) #{paths.join(', ')} must not contain a path traversal sequence."
+            "Path(s) #{paths.join(', ')} must not contain a path traversal sequence.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
           )
         end
 
@@ -57,7 +58,8 @@ module Mcp
 
         def excluded_response(paths)
           ::Mcp::Tools::Base::Response.error(
-            "File(s) #{paths.join(', ')} excluded from AI context by this project's settings and cannot be read."
+            "File(s) #{paths.join(', ')} excluded from AI context by this project's settings and cannot be read.",
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
           )
         end
 

@@ -28,7 +28,7 @@
   - if current_user.admin?
     = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
       - c.with_body do
-        = safe_format(_('You are an administrator, which means authorizing access to %{strong_start}%{client_name}%{strong_end} will allow it to interact with GitLab as an administrator as well.'),
+        = safe_format(_('You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application.'),
           { client_name: client_name },
           tag_pair(tag.strong, :strong_start, :strong_end))
   - if @consent_data[:requested_scopes].present?

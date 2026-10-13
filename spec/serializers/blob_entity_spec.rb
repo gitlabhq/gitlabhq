@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe BlobEntity do
-  let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:blob) { project.commit('master').diffs.diff_files.first.blob }
   let(:request) { EntityRequest.new(project: project, ref: 'master') }

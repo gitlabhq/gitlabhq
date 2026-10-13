@@ -210,6 +210,36 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end.not_to publish_event(Organizations::GroupTransferredEvent)
       end
 
+      context 'for the persisted transfer source' do
+        it 'persists the source before the transfer and retains it after success' do
+          persisted_sources = []
+          allow(service).to receive(:perform_transfer).and_wrap_original do |original, *args|
+            persisted_sources << group.reload.state_metadata['organization_transfer_source_id']
+            original.call(*args)
+          end
+
+          expect(service.execute).to be_success
+
+          expect(persisted_sources).to eq([old_organization.id])
+          expect(group.reload.state_metadata['organization_transfer_source_id']).to eq(old_organization.id)
+        end
+
+        context 'when re-running after the root already moved' do
+          before do
+            group.update_column(:organization_id, new_organization.id)
+            group.state_metadata['organization_transfer_source_id'] = old_organization.id
+            group.namespace_details.save!
+          end
+
+          it 'transfers descendants from the stored source' do
+            expect(service.execute).to be_success
+
+            expect(subgroup.reload.organization_id).to eq(new_organization.id)
+            expect(nested_project.reload.organization_id).to eq(new_organization.id)
+          end
+        end
+      end
+
       context 'for runner transfers' do
         it 'enqueues TransferOrganizationWorker with correct arguments' do
           expect(Ci::Runners::TransferOrganizationWorker).to receive(:perform_async).with(
@@ -318,6 +348,63 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
             expect { service.execute }.not_to change { Authn::IamOutbox.count }
           end
+        end
+      end
+
+      context 'for oauth application granular scopes' do
+        let_it_be_with_reload(:group_application) do
+          create(:oauth_application, owner_id: group.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_reload(:subgroup_application) do
+          create(:oauth_application, owner_id: subgroup.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_reload(:user_application) do
+          create(:oauth_application, owner: user, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:group_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_reload(:subgroup_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_reload(:user_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_reload(:group_join_record) do
+          create(:oauth_application_granular_scope, application: group_application,
+            granular_scope: group_granular_scope, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:subgroup_join_record) do
+          create(:oauth_application_granular_scope, application: subgroup_application,
+            granular_scope: subgroup_granular_scope, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:user_join_record) do
+          create(:oauth_application_granular_scope, application: user_application,
+            granular_scope: user_granular_scope, organization: old_organization)
+        end
+
+        it 'updates organization_id for granular scopes declared by group-owned applications' do
+          service.execute
+
+          expect(group_join_record.reload.organization_id).to eq(new_organization.id)
+          expect(subgroup_join_record.reload.organization_id).to eq(new_organization.id)
+          expect(group_granular_scope.reload.organization_id).to eq(new_organization.id)
+          expect(subgroup_granular_scope.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update granular scopes declared by user-owned applications' do
+          service.execute
+
+          expect(user_join_record.reload.organization_id).to eq(old_organization.id)
+          expect(user_granular_scope.reload.organization_id).to eq(old_organization.id)
         end
       end
 
@@ -555,6 +642,30 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
             )
             expect(repointed).to be_present,
               "expected #{event_info[:model]} event to be repointed to new hash #{new_hash.id}"
+          end
+        end
+
+        context 'when batching stage event repoints' do
+          include_context 'with transfer batch size of 1'
+
+          it 'repoints all events across multiple batches' do
+            old_hash = stage.stage_event_hash
+            issues = create_list(:issue, 3, project: project)
+            issues.each do |issue|
+              create(:cycle_analytics_issue_stage_event,
+                stage_event_hash_id: old_hash.id,
+                issue_id: issue.id,
+                group_id: group.id,
+                project_id: project.id
+              )
+            end
+
+            service.execute
+
+            new_hash = stage.reload.stage_event_hash
+            expect(Analytics::CycleAnalytics::IssueStageEvent.where(stage_event_hash_id: new_hash.id).pluck(:issue_id))
+              .to match_array(issues.map(&:id))
+            expect(Analytics::CycleAnalytics::IssueStageEvent.where(stage_event_hash_id: old_hash.id)).to be_empty
           end
         end
 
@@ -1007,6 +1118,35 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end
       end
 
+      context 'for CI mirror sync events' do
+        it 'enqueues the namespace and project sync event workers' do
+          expect(Namespaces::SyncEvent).to receive(:enqueue_worker)
+          expect(Projects::SyncEvent).to receive(:enqueue_worker)
+
+          service.execute
+        end
+
+        it 'does not enqueue the workers when the transfer fails' do
+          allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+          expect(Namespaces::SyncEvent).not_to receive(:enqueue_worker)
+          expect(Projects::SyncEvent).not_to receive(:enqueue_worker)
+
+          expect(service.execute).to be_error
+        end
+
+        it 'does not enqueue the workers when a wrapping transaction rolls back' do
+          expect(Namespaces::SyncEvent).not_to receive(:enqueue_worker)
+          expect(Projects::SyncEvent).not_to receive(:enqueue_worker)
+
+          ApplicationRecord.transaction do
+            expect(service.execute).to be_success
+
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+
       context 'for user agent details' do
         it 'enqueues TransferUserAgentDetailsWorker with correct arguments' do
           expect(Organizations::TransferUserAgentDetailsWorker).to receive(:perform_async).with(
@@ -1119,7 +1259,10 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
       before do
         # Mimic Organizations::ConfirmService having moved only the top-level
-        # group's organization_id forward, without touching descendants.
+        # group's organization_id forward, recording the source so GroupsService
+        # can resolve the descendants' original organization.
+        top_level.state_metadata['organization_transfer_source_id'] = old_organization.id
+        top_level.namespace_details.save!
         top_level.update_column(:organization_id, new_organization.id)
       end
 
@@ -1341,6 +1484,18 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
             new_organization_id: new_organization.id,
             error_message: error_message
           )
+        )
+
+        service.execute
+      end
+
+      it 'tracks the exception with the transfer log context' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(StandardError),
+          group_path: group.full_path,
+          group_id: group.id,
+          new_organization_path: new_organization.full_path,
+          new_organization_id: new_organization.id
         )
 
         service.execute

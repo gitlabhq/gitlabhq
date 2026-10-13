@@ -14,11 +14,11 @@ module Namespaces
       messages = {
         group: s_(
           'TransferGroup|This group is scheduled for transfer. ' \
-            'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+            'If the transfer fails, the user who started it receives a to-do item with the reason.'
         ),
         project: s_(
           'TransferProject|This project is scheduled for transfer. ' \
-            'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+            'If the transfer fails, the user who started it receives a to-do item with the reason.'
         )
       }
 

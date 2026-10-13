@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillDriftedWorkItemTransitions
+description: Re-copies moved_to_id, duplicated_to_id and promoted_to_epic_id from issues onto work_item_transitions rows that drifted while the sync trigger was bound to the retired bigint conversion columns
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260023
+milestone: '19.5'
+queued_migration_version: 20261006140000
+gitlab_schema: gitlab_main_org
+finalized_by: # version of the migration that finalized this BBM

@@ -263,7 +263,7 @@ MergeRequest.where(source_project_id: Project.all.select(:id))
 A few specific reasons you might choose `pluck`:
 
 - You actually need to operate on the values in Ruby itself. For example, writing them to a file.
-- The values get cached or memoized in order to be reused in **multiple related queries**.
+- The values get cached or memoized in order to be reused in multiple related queries.
 
 In line with our `CodeReuse/ActiveRecord` cop, you should only use forms like
 `pluck(:id)` or `pluck(:user_id)` within model code. In the former case, you can

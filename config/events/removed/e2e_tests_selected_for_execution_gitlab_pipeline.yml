@@ -14,7 +14,7 @@ additional_properties:
     description: number of selected tests
   property:
     description: whether the mr label is frontend, backend, fullstack or other
-product_group: development_analytics
+product_group: development_health
 milestone: '17.11'
 milestone_removed: '19.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184867

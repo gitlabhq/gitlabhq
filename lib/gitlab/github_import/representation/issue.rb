@@ -8,7 +8,7 @@ module Gitlab
 
         expose_attribute :iid, :title, :description, :milestone_number,
           :created_at, :updated_at, :state, :assignees,
-          :label_names, :author, :work_item_type_id
+          :label_names, :author, :work_item_type_id, :provider_id
 
         # Builds an issue from a GitHub API response.
         #
@@ -21,6 +21,7 @@ module Gitlab
             end
 
           hash = {
+            provider_id: issue[:id],
             iid: issue[:number],
             title: issue[:title],
             description: issue[:body],

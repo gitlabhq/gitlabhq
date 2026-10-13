@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvents::IssueAssignmentEvent, feature_category: :value_stream_management, type: :model do
+RSpec.describe ResourceEvents::IssueAssignmentEvent, feature_category: :value_stream_management do
   subject(:event) { build(:issue_assignment_event) }
 
   describe 'associations' do

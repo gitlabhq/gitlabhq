@@ -1,8 +1,8 @@
 import createMockApollo from 'helpers/mock_apollo_helper';
-import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
+// The checkbox label cap that lets long names truncate lives in the page bundle.
+import '../../../../stylesheets/page_bundles/explore_analytics_dashboards.scss';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
-import searchNamespacesQuery from '../graphql/search_namespaces.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
 import ScopePicker from './scope_picker.vue';
 
@@ -12,14 +12,6 @@ export default {
 };
 
 const groupFullPath = 'gitlab-org';
-
-const mockGroup = {
-  __typename: 'Group',
-  id: 'gid://gitlab/Group/1',
-  name: 'GitLab.org',
-  fullName: 'GitLab.org',
-  fullPath: groupFullPath,
-};
 
 const mockProject = (id, name, path) => ({
   __typename: 'Project',
@@ -39,13 +31,6 @@ const mockSubgroup = ({ id, name, path, projectsCount = 0, descendantGroupsCount
   descendantGroupsCount,
 });
 
-const mockNamespace = (id, name, path) => ({
-  __typename: 'Group',
-  id: `gid://gitlab/Group/${id}`,
-  name,
-  fullPath: `${groupFullPath}/${path}`,
-});
-
 const frontend = mockSubgroup({
   id: 10,
   name: 'Frontend',
@@ -53,79 +38,43 @@ const frontend = mockSubgroup({
   projectsCount: 1,
   descendantGroupsCount: 2,
 });
-const quality = mockSubgroup({ id: 11, name: 'Quality', path: 'quality', projectsCount: 2 });
-// Its direct counts say it holds a subgroup, but nothing turns up beneath it once expanded.
-const incubation = mockSubgroup({
-  id: 12,
-  name: 'Incubation',
-  path: 'incubation',
-  descendantGroupsCount: 1,
-});
-
-const projects = [
-  mockProject(1, 'GitLab', 'gitlab'),
-  mockProject(2, 'Charts', 'charts'),
-  mockProject(3, 'GitLab Runner', 'gitlab-runner'),
-];
-
-// Keyed by subgroup, so expanding Quality does not render Frontend's projects. Frontend's set
-// mixes a direct project with two from subgroups below it, which is what draws the parent labels.
-const projectsBySubgroup = {
-  [frontend.fullPath]: [
-    {
-      ...mockProject(4, 'GitLab UI', 'frontend/gitlab-ui'),
-      namespace: mockNamespace(10, 'Frontend', 'frontend'),
-    },
-    {
-      ...mockProject(5, 'Design tools', 'frontend/tooling/design'),
-      namespace: mockNamespace(13, 'Tooling', 'frontend/tooling'),
-    },
-    {
-      ...mockProject(6, 'Pajamas', 'frontend/design-system/pajamas'),
-      namespace: mockNamespace(14, 'Design system', 'frontend/design-system'),
-    },
-  ],
-  [quality.fullPath]: [
-    {
-      ...mockProject(7, 'Test tooling', 'quality/test-tooling'),
-      namespace: mockNamespace(11, 'Quality', 'quality'),
-    },
-    {
-      ...mockProject(8, 'Triage ops', 'quality/triage/triage-ops'),
-      namespace: mockNamespace(15, 'Triage', 'quality/triage'),
-    },
-  ],
-  [incubation.fullPath]: [],
-};
-
-// Rootless mode browses the user's own top-level groups instead of one group's contents.
-const mockTopLevelGroup = ({ id, name, path, projectsCount = 0 }) => ({
+const mockTopLevelGroup = ({ id, name, path, projectsCount = 0, descendantGroupsCount = 0 }) => ({
   __typename: 'Group',
   id: `gid://gitlab/Group/${id}`,
   name,
   fullName: name,
   fullPath: path,
   projectsCount,
+  descendantGroupsCount,
 });
 
 const capsuleCorp = mockTopLevelGroup({
   id: 20,
   name: 'Capsule Corp',
   path: 'capsule-corp',
-  projectsCount: 3,
+  projectsCount: 2,
+  descendantGroupsCount: 1,
 });
 const acme = mockTopLevelGroup({ id: 21, name: 'Acme Inc', path: 'acme', projectsCount: 1 });
-// No direct projects, so it gets no chevron.
+// Nothing beneath it at all, so it gets no chevron.
 const empty = mockTopLevelGroup({ id: 22, name: 'Side Quests', path: 'side-quests' });
 
-const topLevelProject = ({ id, name, path, group }) => ({
+const topLevelProject = ({ id, name, path, group, parent = group }) => ({
   __typename: 'Project',
   id: `gid://gitlab/Project/${id}`,
   name,
   fullName: `${group.name} / ${name}`,
   fullPath: `${group.fullPath}/${path}`,
-  namespace: { __typename: 'Group', id: group.id, name: group.name, fullPath: group.fullPath },
+  namespace: { __typename: 'Group', id: parent.id, name: parent.name, fullPath: parent.fullPath },
 });
+
+// A subgroup of Capsule Corp, which only ever shows up as a project's parent label.
+const research = {
+  __typename: 'Group',
+  id: 'gid://gitlab/Group/23',
+  name: 'Research',
+  fullPath: `${capsuleCorp.fullPath}/research`,
+};
 
 const projectsByTopLevelGroup = {
   [capsuleCorp.fullPath]: [
@@ -133,8 +82,9 @@ const projectsByTopLevelGroup = {
     topLevelProject({
       id: 31,
       name: 'Gravity Chamber',
-      path: 'gravity-chamber',
+      path: 'research/gravity-chamber',
       group: capsuleCorp,
+      parent: research,
     }),
     topLevelProject({ id: 32, name: 'Dragon Radar', path: 'dragon-radar', group: capsuleCorp }),
   ],
@@ -177,17 +127,6 @@ const searchProjects = [
   },
 ];
 
-const respondWithSearch = () => () =>
-  Promise.resolve({
-    data: {
-      group: {
-        ...mockGroup,
-        projects: { __typename: 'ProjectConnection', nodes: searchProjects },
-        descendantGroups: { __typename: 'GroupConnection', nodes: [designSystem] },
-      },
-    },
-  });
-
 const respondWithGlobalSearch = () => () =>
   Promise.resolve({
     data: {
@@ -201,34 +140,17 @@ const respondWithTopLevelGroups = (groups) => () =>
     data: { groups: { __typename: 'GroupConnection', nodes: groups } },
   });
 
-const respondWith = (subgroups) => () =>
-  Promise.resolve({
-    data: {
-      group: {
-        ...mockGroup,
-        projects: { __typename: 'ProjectConnection', nodes: projects },
-        descendantGroups: { __typename: 'GroupConnection', nodes: subgroups },
-      },
-    },
-  });
-
-const subgroupsByPath = Object.fromEntries(
-  [frontend, quality, incubation].map((subgroup) => [subgroup.fullPath, subgroup]),
-);
-
-// Serves both modes: a subgroup's whole tree when rooted, a top-level group's own projects
-// when not.
 const respondWithSubgroupProjects =
-  () =>
+  (projects = projectsByTopLevelGroup) =>
   ({ fullPath }) =>
     Promise.resolve({
       data: {
         group: {
           __typename: 'Group',
-          id: subgroupsByPath[fullPath]?.id ?? `gid://gitlab/Group/${fullPath}`,
+          id: `gid://gitlab/Group/${fullPath}`,
           projects: {
             __typename: 'ProjectConnection',
-            nodes: projectsBySubgroup[fullPath] ?? projectsByTopLevelGroup[fullPath] ?? [],
+            nodes: projects[fullPath] ?? [],
           },
         },
       },
@@ -237,19 +159,17 @@ const respondWithSubgroupProjects =
 const Template = (args, { argTypes }) => ({
   components: { ScopePicker },
   apolloProvider: createMockApollo([
-    [getGroupChildrenQuery, args.requestHandler],
     [getSubgroupProjectsQuery, args.subgroupRequestHandler],
     [getTopLevelGroupsQuery, args.topLevelGroupsRequestHandler],
-    [searchNamespacesQuery, args.searchRequestHandler],
     [searchNamespacesGlobalQuery, args.globalSearchRequestHandler],
   ]),
   props: Object.keys(argTypes),
   template: `
     <div style="height:500px;" class="gl-py-3">
-      <scope-picker ref="picker" :group-full-path="groupFullPath || ''" @change="onChange" />
+      <scope-picker ref="picker" :require-permissions="requirePermissions" @change="onChange" />
     </div>`,
   mounted() {
-    // Expand up front, so stories that are about an expanded subgroup open on that state.
+    // Expand up front, so stories that are about an expanded top-level group open on that state.
     if (args.expandedPath) this.$refs.picker.toggleExpanded(args.expandedPath);
     // Same for search: set the term directly, so the results view is what the story opens on.
     // The listbox owns the search input's own value, so the box itself still reads as empty.
@@ -263,52 +183,34 @@ const Template = (args, { argTypes }) => ({
   },
 });
 
-// The two browsing modes. Each opens with one row expanded and the rest collapsed, so a single
-// story covers both states.
-
-// No group to browse within, which is the component's default and what the instance-level
-// Explore page needs. A flat list with no section header, expanding to direct projects only, so
-// no parent labels. Side Quests has no direct projects, so it gets no chevron.
+// The user's own top-level groups, flat, expanding to every project beneath a group however deep
+// it sits -- Gravity Chamber comes from a subgroup, which is what draws its parent label. Side
+// Quests holds nothing, so it gets no chevron. One row opens up front, so a single story covers
+// both the collapsed and the expanded state.
 export const Default = Template.bind({});
 Default.args = {
-  groupFullPath: '',
-  // Skipped in this mode, but the mock client wants a handler for every query it is given.
-  requestHandler: respondWith([]),
   subgroupRequestHandler: respondWithSubgroupProjects(),
   topLevelGroupsRequestHandler: respondWithTopLevelGroups([capsuleCorp, acme, empty]),
-  searchRequestHandler: respondWithSearch(),
   globalSearchRequestHandler: respondWithGlobalSearch(),
   expandedPath: capsuleCorp.fullPath,
 };
 
-// Given a group, the picker browses inside it instead: two sections, with subgroups of their own.
-// Frontend's projects arrive flattened from the subgroups below it, which is what draws the
-// parent labels.
-export const WithRoot = Template.bind({});
-WithRoot.args = {
+// A group can look expandable on its direct counts and still turn up empty -- archived projects
+// are counted but excluded, and a subgroup may hold nothing. Acme stands in for that here.
+export const EmptyGroup = Template.bind({});
+EmptyGroup.args = {
   ...Default.args,
-  groupFullPath,
-  requestHandler: respondWith([frontend, quality, incubation]),
-  expandedPath: frontend.fullPath,
-};
-
-// Shapes only a root can produce. Without one there are no subgroup rows, and chevrons come
-// straight from `projectsCount` rather than guessing from direct counts.
-
-// Nothing to put in the second section, so it drops out and only the group's own projects show.
-export const NoSubgroups = Template.bind({});
-NoSubgroups.args = {
-  ...WithRoot.args,
-  requestHandler: respondWith([]),
-  expandedPath: undefined,
-};
-
-// Incubation looks expandable on its direct counts, but nothing turns up beneath it.
-export const EmptySubgroup = Template.bind({});
-EmptySubgroup.args = {
-  ...WithRoot.args,
-  requestHandler: respondWith([incubation]),
-  expandedPath: incubation.fullPath,
+  subgroupRequestHandler: () =>
+    Promise.resolve({
+      data: {
+        group: {
+          __typename: 'Group',
+          id: acme.id,
+          projects: { __typename: 'ProjectConnection', nodes: [] },
+        },
+      },
+    }),
+  expandedPath: acme.fullPath,
 };
 
 // Search replaces the browse view entirely. Results are flat, and every row names its parent,
@@ -319,4 +221,88 @@ SearchResults.args = {
   ...Default.args,
   searchTerm: 'design',
   expandedPath: undefined,
+};
+
+const REQUIRED_PERMISSION = 'readProAiAnalytics';
+
+const restrictGroup = (group) => ({
+  ...group,
+  userPermissions: { __typename: 'GroupPermissions', [REQUIRED_PERMISSION]: false },
+});
+
+const restrictProject = (project) => ({
+  ...project,
+  userPermissions: { __typename: 'ProjectPermissions', [REQUIRED_PERMISSION]: false },
+});
+
+// Rows the user lacks the required permission on carry a Restricted badge and cannot be picked.
+// Acme is restricted outright; inside Capsule Corp, Dragon Radar is restricted, and so is Gravity
+// Chamber, whose badge takes the place of its parent label.
+export const RestrictedNamespaces = Template.bind({});
+RestrictedNamespaces.args = {
+  ...Default.args,
+  requirePermissions: [REQUIRED_PERMISSION],
+  topLevelGroupsRequestHandler: respondWithTopLevelGroups([
+    capsuleCorp,
+    restrictGroup(acme),
+    empty,
+  ]),
+  subgroupRequestHandler: respondWithSubgroupProjects({
+    [capsuleCorp.fullPath]: projectsByTopLevelGroup[capsuleCorp.fullPath].map((project) =>
+      ['Dragon Radar', 'Gravity Chamber'].includes(project.name)
+        ? restrictProject(project)
+        : project,
+    ),
+  }),
+};
+
+const longNamesGroup = mockTopLevelGroup({
+  id: 50,
+  name: 'Scope picker test group with a long name to check truncation',
+  path: 'long-names',
+  projectsCount: 4,
+  descendantGroupsCount: 1,
+});
+
+const longNamesSubgroup = {
+  __typename: 'Group',
+  id: 'gid://gitlab/Group/51',
+  name: 'Platform engineering and developer productivity tooling',
+  fullPath: `${longNamesGroup.fullPath}/platform`,
+};
+
+// Long names truncate with a tooltip, while the parent label and Restricted badge keep up to 3/8 of
+// the row. The short name is there to show that names which fit are left alone.
+export const LongNames = Template.bind({});
+LongNames.args = {
+  ...Default.args,
+  requirePermissions: [REQUIRED_PERMISSION],
+  topLevelGroupsRequestHandler: respondWithTopLevelGroups([longNamesGroup, acme]),
+  subgroupRequestHandler: respondWithSubgroupProjects({
+    [longNamesGroup.fullPath]: [
+      topLevelProject({
+        id: 52,
+        name: 'Top Project 33 with an exceptionally long name to test truncation in the scope picker xxxxxxxxxxxxxx',
+        path: 'top-project-33',
+        group: longNamesGroup,
+      }),
+      topLevelProject({
+        id: 53,
+        name: 'Nested project with a long name that sits in a subgroup with an equally long name',
+        path: 'platform/nested-project',
+        group: longNamesGroup,
+        parent: longNamesSubgroup,
+      }),
+      restrictProject(
+        topLevelProject({
+          id: 54,
+          name: 'Restricted project with a long name that must never push its badge out of view',
+          path: 'restricted-project',
+          group: longNamesGroup,
+        }),
+      ),
+      topLevelProject({ id: 55, name: 'Short name', path: 'short-name', group: longNamesGroup }),
+    ],
+  }),
+  expandedPath: longNamesGroup.fullPath,
 };

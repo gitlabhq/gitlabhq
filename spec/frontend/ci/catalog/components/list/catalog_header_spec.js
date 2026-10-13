@@ -15,11 +15,10 @@ describe('CatalogHeader', () => {
   const findDescription = () => wrapper.findByTestId('page-description');
   const findLegalDisclaimer = () => wrapper.findByTestId('legal-disclaimer');
 
-  const createComponent = ({ props = {}, provide = {}, stubs = {} } = {}) => {
+  const createComponent = ({ provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(CatalogHeader, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
       provide,
       stubs: {

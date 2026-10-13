@@ -14,6 +14,9 @@ title: GitLab generic packages repository
 
 Use the generic packages repository to publish and manage generic files, such as release binaries, in your project's package registry. This feature is particularly useful for storing and distributing artifacts that don't fit into specific package formats like npm or Maven.
 
+To decide between job artifacts and the generic package registry, see
+[Choose job artifacts or a package registry](../../../ci/jobs/job_artifacts.md#choose-job-artifacts-or-a-package-registry).
+
 The generic packages repository provides:
 
 - A place to store any file type as a package.

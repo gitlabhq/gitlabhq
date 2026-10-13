@@ -24,11 +24,13 @@ module API
         optional :name, type: String, desc: 'Name of the user'
         optional :username, type: String, desc: 'Username of the user'
         optional :email, type: String, desc: 'Custom email address for the user'
+        optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
       end
 
-      route_setting :authorization, permissions: :create_service_account, boundary_type: :instance
+      route_setting :authorization, permissions: :create_service_account, boundary_type: :instance,
+        assignable_when: [:admin]
       post feature_category: :user_management do
-        check_rate_limit!(:service_account_creation, scope: current_user)
+        check_rate_limit!(:service_account_creation, scope: { user: current_user })
 
         response = ::Users::ServiceAccounts::CreateService.new(
           current_user, declared_params.merge(organization_id: Current.organization.id)
@@ -63,7 +65,8 @@ module API
       end
 
       # rubocop: disable CodeReuse/ActiveRecord -- for the user or reorder
-      route_setting :authorization, permissions: :read_service_account, boundary_type: :instance
+      route_setting :authorization, permissions: :read_service_account, boundary_type: :instance,
+        assignable_when: [:admin]
       get do
         authorize! :admin_service_accounts
 
@@ -92,9 +95,11 @@ module API
         optional :name, type: String, desc: 'Name of the user'
         optional :username, type: String, desc: 'Username of the user'
         optional :email, type: String, desc: 'Custom email address for the user'
+        optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
       end
 
-      route_setting :authorization, permissions: :update_service_account, boundary_type: :instance
+      route_setting :authorization, permissions: :update_service_account, boundary_type: :instance,
+        assignable_when: [:admin]
       patch ":user_id", feature_category: :user_management do
         authorize! :admin_service_accounts
 

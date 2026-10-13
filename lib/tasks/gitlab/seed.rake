@@ -115,12 +115,11 @@ namespace :gitlab do
       require_relative "../../../tooling/quality/added_tables"
       require_relative "../../../tooling/quality/fixture_coverage"
 
-      # Merged-results pipelines check out the merge commit, so the merge base also covers every
-      # table master gained since the branch point. The target branch tip is this diff's own base.
-      base_ref = args.base_ref.presence ||
-        ENV["CI_MERGE_REQUEST_TARGET_BRANCH_SHA"].presence ||
-        ENV["CI_MERGE_REQUEST_DIFF_BASE_SHA"].presence
-      next puts "\nNo base ref given, skipping the fixture coverage report" unless base_ref
+      # Only merged-results pipelines expose the target branch tip, and it is the only safe base:
+      # the merge base diffs in whatever master gained since the branch point, which for a branch
+      # that already contains master means other merge requests' tables.
+      base_ref = args.base_ref.presence || ENV["CI_MERGE_REQUEST_TARGET_BRANCH_SHA"].presence
+      next puts "\nNo target branch SHA, skipping the fixture coverage report" unless base_ref
 
       begin
         added = Quality::AddedTables.new(base_ref).entry_names

@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe WikiPageVersionHelper, feature_category: :wiki do
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project) { build_stubbed(:project, :public) }
   let_it_be(:user) { create(:user, username: 'foo') }
 
-  let(:commit_with_user) { create(:commit, project: project, author: user) }
-  let(:commit_without_user) { create(:commit, project: project, author_name: 'Foo', author_email: 'foo@example.com') }
+  let(:commit_with_user) { build(:commit, project: project, author: user) }
+  let(:commit_without_user) { build(:commit, project: project, author_name: 'Foo', author_email: 'foo@example.com') }
   let(:wiki_page_version) { Gitlab::Git::WikiPageVersion.new(commit, nil) }
 
   describe '#wiki_page_version_author_url' do

@@ -5,7 +5,8 @@
 
 import fs from 'node:fs';
 import glob from 'glob';
-import mermaid from 'mermaid-v11';
+import mermaidV11 from 'mermaid-v11';
+import mermaidV12 from 'mermaid-v12';
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 
@@ -22,24 +23,30 @@ DOMPurify.addHook = () => {};
 DOMPurify.sanitize = (x) => x;
 
 const defaultGlob = 'doc/**/*.md';
-const mermaidMatch = /```mermaid(.*?)```/gms;
+const mermaidMatch = /```mermaid[^\n]*\n(.*?)```/gms;
 
 const argv = process.argv.length > 2 ? process.argv.slice(2) : [defaultGlob];
 const mdFiles = argv.flatMap((arg) => glob.sync(arg));
 
 console.log(`Checking ${mdFiles.length} markdown files...`);
 
+const mermaidVersions = { 11: mermaidV11, 12: mermaidV12 };
+
 // Mimicking app/assets/javascripts/lib/mermaid_sandbox.js
-mermaid.initialize({
+const mermaidConfig = {
   // mermaid core options
   mermaid: {
     startOnLoad: false,
   },
   // mermaidAPI options
   theme: 'neutral',
+  layout: 'dagre',
+  look: 'classic',
   flowchart: {
     useMaxWidth: true,
     htmlLabels: true,
+    minNodeWidth: 0,
+    wrappingWidth: 200,
   },
   secure: ['secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'htmlLabels'],
   securityLevel: 'strict',
@@ -47,7 +54,9 @@ mermaid.initialize({
     ADD_TAGS: ['foreignObject'],
     HTML_INTEGRATION_POINTS: { foreignobject: true },
   },
-});
+};
+
+Object.values(mermaidVersions).forEach((mermaid) => mermaid.initialize(mermaidConfig));
 
 let errors = 0;
 
@@ -58,16 +67,20 @@ await Promise.all(
     const matched = [...data.matchAll(mermaidMatch)];
 
     return Promise.all(
-      matched.map((match) => {
+      matched.flatMap((match) => {
         const matchIndex = match.index;
         const mermaidText = match[1];
 
-        return mermaid.parse(mermaidText).catch((error) => {
-          const lineNumber = data.slice(0, matchIndex).split('\n').length;
+        return Object.entries(mermaidVersions).map(([version, mermaid]) =>
+          mermaid.parse(mermaidText).catch((error) => {
+            const lineNumber = data.slice(0, matchIndex).split('\n').length;
 
-          console.log(`${path}:${lineNumber}: Mermaid syntax error\nError: ${error}\n`);
-          errors += 1;
-        });
+            console.log(
+              `${path}:${lineNumber}: Mermaid ${version} syntax error\nError: ${error}\n`,
+            );
+            errors += 1;
+          }),
+        );
       }),
     );
   }),

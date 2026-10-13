@@ -69,6 +69,11 @@ class ApplicationSetting < ApplicationRecord
 
   SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
 
+  CI_JOB_TRACE_UPDATE_INTERVAL_MIN = 3
+  CI_JOB_TRACE_UPDATE_INTERVAL_MAX = 1.hour.to_i
+  CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT = 60
+  CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT = CI_JOB_TRACE_UPDATE_INTERVAL_MIN
+
   # OAuth Time (seconds)
   DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 7200 # 2hrs
   MIN_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 300 # 5 mins
@@ -97,6 +102,27 @@ class ApplicationSetting < ApplicationRecord
 
   sanitizes! :default_branch_name
 
+  # These two are shared by the setting's validation and the Code dropdown helper, so the
+  # two can't disagree about which schemes are usable.
+
+  # Returns the URL's scheme when it is syntactically a scheme.
+  #
+  # @param url [String, nil]
+  # @return [String, nil] the scheme, or nil when the URL has none
+  def self.code_dropdown_url_scheme(url)
+    scheme = Gitlab::Utils.parse_url(url)&.scheme
+
+    scheme if scheme.present? && scheme.match?(CODE_DROPDOWN_SCHEME_FORMAT)
+  end
+
+  # Checks if the scheme is one that is not safe in a link, for example `javascript`.
+  #
+  # @param scheme [String]
+  # @return [Boolean]
+  def self.code_dropdown_scheme_blocked?(scheme)
+    CODE_DROPDOWN_BLOCKED_SCHEMES.include?(scheme.to_s.downcase)
+  end
+
   def self.kroki_formats_attributes
     {
       blockdiag: {
@@ -123,7 +149,7 @@ class ApplicationSetting < ApplicationRecord
   include ApplicationSettingImplementation
 
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :import_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_denylist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -600,6 +626,9 @@ class ApplicationSetting < ApplicationRecord
     {
       pipeline_variables_default_allowed: [:boolean, { default: true }],
       ci_job_live_trace_enabled: [:boolean, { default: false }],
+      ci_job_trace_update_interval: [:integer, { default: CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT }],
+      ci_job_trace_update_interval_when_being_watched: [:integer,
+        { default: CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT }],
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }],
@@ -614,6 +643,17 @@ class ApplicationSetting < ApplicationRecord
   chronic_duration_attr :ci_partitions_in_seconds_limit_human_readable, :ci_partitions_in_seconds_limit
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
+  validates :ci_job_trace_update_interval,
+    :ci_job_trace_update_interval_when_being_watched,
+    presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: CI_JOB_TRACE_UPDATE_INTERVAL_MIN,
+      less_than_or_equal_to: CI_JOB_TRACE_UPDATE_INTERVAL_MAX
+    }
+  validates :ci_job_trace_update_interval_when_being_watched,
+    numericality: { less_than_or_equal_to: :ci_job_trace_update_interval },
+    if: ->(setting) { setting.errors[:ci_job_trace_update_interval].blank? }
   validates :ci_partitions_in_seconds_limit, presence: true,
     numericality: {
       only_integer: true,
@@ -722,6 +762,8 @@ class ApplicationSetting < ApplicationRecord
       :throttle_authenticated_git_http_requests_per_period,
       :throttle_authenticated_git_lfs_period_in_seconds,
       :throttle_authenticated_git_lfs_requests_per_period,
+      :throttle_authenticated_mcp_period_in_seconds,
+      :throttle_authenticated_mcp_requests_per_period,
       :throttle_authenticated_packages_api_period_in_seconds,
       :throttle_authenticated_packages_api_requests_per_period,
       :throttle_authenticated_web_period_in_seconds,
@@ -757,6 +799,7 @@ class ApplicationSetting < ApplicationRecord
       :gitlab_shell_operation_limit,
       :group_api_limit,
       :group_create_limit,
+      :group_deletion_jobs_concurrency_limit,
       :group_archive_unarchive_api_limit,
       :group_invited_groups_api_limit,
       :group_projects_api_limit,
@@ -765,6 +808,9 @@ class ApplicationSetting < ApplicationRecord
       :project_members_api_limit,
       :inactive_projects_min_size_mb,
       :issues_create_limit,
+      :job_erase_limit_per_user_project,
+      :job_play_limit_per_user_project,
+      :job_retry_limit_per_user_project,
       :jobs_per_stage_page_size,
       :max_decompressed_archive_size,
       :max_export_size,
@@ -785,10 +831,14 @@ class ApplicationSetting < ApplicationRecord
       :package_registry_cleanup_policies_worker_capacity,
       :packages_cleanup_package_file_worker_capacity,
       :pages_extra_deployments_default_expiry_seconds,
+      :pipeline_cancel_limit_per_user_project,
+      :pipeline_delete_limit_per_user_project,
       :pipeline_limit_per_project_user_sha,
       :pipeline_limit_per_user,
+      :pipeline_retry_limit_per_user_project,
       :project_api_limit,
       :project_create_limit,
+      :project_deletion_jobs_concurrency_limit,
       :project_invited_groups_api_limit,
       :project_repositories_blobs_batch_limit,
       :projects_api_limit,
@@ -880,7 +930,9 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],
-    disable_invite_members: [:boolean, { default: false }]
+    disable_invite_members: [:boolean, { default: false }],
+    group_deletion_jobs_concurrency_limit: [:integer, { default: 0 }],
+    project_deletion_jobs_concurrency_limit: [:integer, { default: 0 }]
 
   validates :group_settings,
     json_schema: { filename: "application_setting_group_settings" }
@@ -1143,7 +1195,9 @@ class ApplicationSetting < ApplicationRecord
   validates :database_reindexing, json_schema: { filename: "application_setting_database_reindexing" }
 
   jsonb_accessor :database_settings,
-    background_operations_max_jobs: [:integer, { default: 10 }]
+    background_operations_max_jobs: [:integer, { default: 10 }],
+    pg_ash_sampling_enabled: [:boolean, { default: false }],
+    pg_ash_sample_interval_seconds: [:integer, { default: 1 }]
 
   validates :database_settings, json_schema: { filename: "application_setting_database_settings" }
 
@@ -1247,15 +1301,12 @@ class ApplicationSetting < ApplicationRecord
   validates :iframe_rendering_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates_each :iframe_rendering_allowlist, on: :update do |record, attr, value|
-    # Leading "http://" or "https://" and trailing "/" are removed in
-    # ApplicationSettingImplementation#coerce_iframe_rendering_allowlist.
-    # Normalising the values in here is crucial, since we rely on it to
-    # correctly (securely) check iframe src attributes and construct our frame-src CSP.
-    value.each do |entry|
-      unless %r{\A[a-zA-Z0-9.-]+(?::\d+)?\z}.match?(entry)
-        record.errors.add(attr, format(_("'%{entry}' is not a valid domain name"), entry:))
-      end
+  validates_each :iframe_rendering_allowlist,
+    on: :update, if: :iframe_rendering_allowlist_changed? do |record, attr, value|
+    known_ids = Gitlab::Markdown::IframeProviders.known_providers.map(&:id)
+
+    (value - known_ids).each do |entry|
+      record.errors.add(attr, format(_("'%{entry}' is not a known embed provider"), entry:))
     end
   end
 
@@ -1305,7 +1356,6 @@ class ApplicationSetting < ApplicationRecord
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
-  before_validation :coerce_iframe_rendering_allowlist, if: :iframe_rendering_allowlist_changed?
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -1442,8 +1492,14 @@ class ApplicationSetting < ApplicationRecord
       group_projects_api_limit: [:integer, { default: 600 }],
       group_shared_groups_api_limit: [:integer, { default: 60 }],
       groups_api_limit: [:integer, { default: 200 }],
+      job_erase_limit_per_user_project: [:integer, { default: 400 }],
+      job_play_limit_per_user_project: [:integer, { default: 200 }],
+      job_retry_limit_per_user_project: [:integer, { default: 320 }],
       members_delete_limit: [:integer, { default: 60 }],
       create_organization_api_limit: [:integer, { default: 10 }],
+      pipeline_cancel_limit_per_user_project: [:integer, { default: 120 }],
+      pipeline_retry_limit_per_user_project: [:integer, { default: 200 }],
+      pipeline_delete_limit_per_user_project: [:integer, { default: 400 }],
       project_create_limit: [:integer, { default: 200 }],
       group_create_limit: [:integer, { default: 200 }],
       project_api_limit: [:integer, { default: 400 }],
@@ -1461,6 +1517,9 @@ class ApplicationSetting < ApplicationRecord
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],
       throttle_authenticated_git_http_period_in_seconds:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD }],
+      throttle_authenticated_mcp_enabled: [:boolean, { default: false }],
+      throttle_authenticated_mcp_requests_per_period: [:integer, { default: 600 }],
+      throttle_authenticated_mcp_period_in_seconds: [:integer, { default: 60 }],
       throttle_authenticated_dependency_proxy_enabled: [:boolean, { default: false }],
       throttle_authenticated_dependency_proxy_requests_per_period:
         [:integer, { default: DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT }],
@@ -1618,15 +1677,15 @@ class ApplicationSetting < ApplicationRecord
   # cleanly, so the scheme is checked separately to keep script-executing URLs out of the
   # rendered href. See doc/development/secure_coding_guidelines.md.
   def validate_code_dropdown_template_url(template, index, label)
-    scheme = Gitlab::Utils.parse_url(template)&.scheme
+    scheme = self.class.code_dropdown_url_scheme(template)
 
-    if scheme.blank? || !scheme.match?(CODE_DROPDOWN_SCHEME_FORMAT)
+    if scheme.blank?
       errors.add(:code_dropdown_custom_clients,
         format(_('entry %{index} %{label}: must be a valid URL with a scheme'), index: index + 1, label: label))
       return false
     end
 
-    return true unless CODE_DROPDOWN_BLOCKED_SCHEMES.include?(scheme.downcase)
+    return true unless self.class.code_dropdown_scheme_blocked?(scheme)
 
     errors.add(:code_dropdown_custom_clients,
       format(_('entry %{index} %{label}: scheme "%{scheme}" is not allowed'),

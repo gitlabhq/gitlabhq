@@ -21,24 +21,33 @@ module Mcp
         end
 
         def execute(request: nil, params: nil)
-          return Response.error("#{self.class.name}: current_user is not set") unless current_user.present?
+          unless current_user.present?
+            return Response.error("#{self.class.name}: current_user is not set", reason: Response::Reason::UNAUTHORIZED)
+          end
 
           authorize!(params)
 
           super
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::NOT_FOUND)
+        rescue ArgumentError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::BAD_REQUEST)
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, ::Gitlab::Access::AccessDeniedError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::UNAUTHORIZED)
         rescue StandardError => e
+          ::Gitlab::ErrorTracking.track_exception(e, mcp_tool: name)
           Response.error("Tool execution failed: #{e.message}")
         end
 
         def authorize!(params)
           target = auth_target(params)
-          raise ArgumentError, "#{name}: target object not found, the params received: #{params.inspect}" if target.nil?
+          return if target && ::Ability.allowed?(current_user, auth_ability, target)
 
-          allowed = ::Ability.allowed?(current_user, auth_ability, target)
-          return if allowed
+          raise ::Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, authorization_error_message
+        end
 
-          raise Gitlab::Access::AccessDeniedError, "CustomService: User #{current_user.id} does " \
-            "not have permission to #{auth_ability} for target #{target.id}"
+        def authorization_error_message
+          "#{name}: not found or access denied"
         end
 
         def auth_ability

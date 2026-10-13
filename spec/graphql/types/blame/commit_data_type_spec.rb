@@ -14,6 +14,7 @@ RSpec.describe Types::Blame::CommitDataType,
       :author_avatar,
       :commit_author_link,
       :commit_link,
+      :previous_blame_path,
       :project_blame_link,
       :time_ago_tooltip
     ).at_least

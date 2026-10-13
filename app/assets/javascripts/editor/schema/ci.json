@@ -2163,7 +2163,7 @@
                     "type": "string"
                   },
                   "minItems": 1,
-                  "maxItems": 2
+                  "maxItems": 10
                 },
                 "files_commits": {
                   "markdownDescription": "Use the `cache:key:files_commits` keyword to generate a new cache key when the latest commit changes for the specified files. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles_commits)",
@@ -2675,6 +2675,9 @@
                     "type": "string"
                   },
                   "artifacts": {
+                    "type": "boolean"
+                  },
+                  "optional": {
                     "type": "boolean"
                   },
                   "parallel": {

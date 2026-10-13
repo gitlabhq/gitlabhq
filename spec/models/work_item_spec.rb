@@ -357,6 +357,28 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#has_widget?' do
+    let(:work_item) { build(:work_item) }
+
+    it 'returns true for a widget the type supports' do
+      expect(work_item.has_widget?(:description)).to be(true)
+    end
+
+    it 'returns false for a widget the type does not support' do
+      expect(work_item.has_widget?(:nop)).to be(false)
+    end
+
+    it 'resolves the widget list once for repeated calls' do
+      work_item_type = work_item.work_item_type
+      allow(work_item).to receive(:work_item_type).and_return(work_item_type)
+      expect(work_item_type).to receive(:widgets).once.and_call_original
+
+      work_item.has_widget?(:description)
+      work_item.has_widget?(:labels)
+      work_item.get_widget(:description)
+    end
+  end
+
   describe '#supports_assignee?' do
     WorkItems::TypesFramework::SystemDefined::Type::BASE_TYPES.pluck(:base_type).each do |base_type|
       specify do
@@ -658,7 +680,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
 
     context 'with work item url' do
-      let(:link_reference_url) { 'http://localhost/namespace/project/-/work_items/1' }
+      let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/namespace/project/-/work_items/1" }
 
       it 'matches with expected attributes' do
         expect(match_data['group_or_project_namespace']).to eq('namespace/project')
@@ -666,7 +688,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
 
       context 'when work item exists in a group' do
-        let(:link_reference_url) { 'http://localhost/groups/group/sub_group/-/work_items/1' }
+        let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/groups/group/sub_group/-/work_items/1" }
 
         it 'matches with expected attributes' do
           expect(match_data['group_or_project_namespace']).to eq('group/sub_group')

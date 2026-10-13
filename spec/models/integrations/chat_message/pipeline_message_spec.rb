@@ -45,16 +45,17 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
     test_commit = double("A test commit", committer: args[:user], title: "A test commit message")
     test_project = build(:project, name: args[:project][:name])
 
-    allow(test_project).to receive(:commit_by).and_return(test_commit)
-    allow(test_project).to receive(:web_url).and_return(args[:project][:web_url])
+    allow(test_project).to receive_messages(commit_by: test_commit, web_url: args[:project][:web_url])
     allow(test_project).to receive(:avatar_url).with(no_args).and_return("/avatar")
     allow(test_project).to receive(:avatar_url).with(only_path: false).and_return(args[:project][:avatar_url])
     allow(Project).to receive(:find) { test_project }
 
     test_pipeline = build(:ci_empty_pipeline, name: 'Build pipeline')
 
-    allow(test_pipeline).to receive(:has_yaml_errors?).and_return(has_yaml_errors)
-    allow(test_pipeline).to receive(:error_messages).and_return("yaml error description here")
+    allow(test_pipeline).to receive_messages(
+      has_yaml_errors?: has_yaml_errors,
+      error_messages: "yaml error description here"
+    )
     allow(Ci::Pipeline).to receive(:find) { test_pipeline }
 
     allow(Gitlab::UrlBuilder).to receive(:build).with(test_commit).and_return("http://example.com/commit")

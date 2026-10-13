@@ -107,8 +107,10 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       end
 
       before do
-        allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return(redirect_url)
-        allow(helper).to receive(:current_user).and_return(build(:user))
+        allow(helper).to receive_messages(
+          slack_auth_project_settings_slack_url: redirect_url,
+          current_user: build(:user)
+        )
       end
 
       it { is_expected.to include(*fields, *slack_app_fields) }
@@ -238,14 +240,102 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
   end
 
+  describe 'organization-scoped paths' do
+    let_it_be(:organization) { create(:organization) }
+    let(:integration) { build_stubbed(:jira_integration, :instance, organization: organization) }
+
+    describe '#scoped_integrations_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_integrations_path(organization: organization))
+          .to eq(organization_admin_settings_integrations_path(organization))
+      end
+    end
+
+    describe '#scoped_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_integration_path(integration, organization: organization))
+          .to eq(organization_admin_settings_integration_path(organization, integration))
+      end
+    end
+
+    describe '#scoped_edit_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_edit_integration_path(integration, organization: organization))
+          .to eq(edit_organization_admin_settings_integration_path(organization, integration))
+      end
+    end
+
+    describe '#scoped_overrides_integration_path' do
+      it 'returns the organization admin path and keeps extra options' do
+        expect(helper.scoped_overrides_integration_path(integration, organization: organization, format: :json))
+          .to eq(overrides_organization_admin_settings_integration_path(organization, integration, format: :json))
+      end
+    end
+
+    describe '#scoped_test_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_test_integration_path(integration, organization: organization))
+          .to eq(test_organization_admin_settings_integration_path(organization, integration))
+      end
+    end
+
+    describe '#scoped_reset_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_reset_integration_path(integration, organization: organization))
+          .to eq(reset_organization_admin_settings_integration_path(organization, integration))
+      end
+
+      it 'returns an empty string for a new integration' do
+        expect(helper.scoped_reset_integration_path(build(:jira_integration, :instance), organization: organization))
+          .to eq('')
+      end
+    end
+
+    describe '#integration_form_data' do
+      before do
+        allow(helper).to receive(:request).and_return(double(referer: '/services'))
+      end
+
+      it 'uses organization admin paths' do
+        expect(helper.integration_form_data(integration, organization: organization)).to include(
+          cancel_path: organization_admin_settings_integrations_path(organization),
+          test_path: test_organization_admin_settings_integration_path(organization, integration),
+          reset_path: reset_organization_admin_settings_integration_path(organization, integration),
+          form_path: organization_admin_settings_integration_path(organization, integration)
+        )
+      end
+    end
+
+    describe '#integration_overrides_data' do
+      it 'uses organization admin paths' do
+        expect(helper.integration_overrides_data(integration, organization: organization)).to include(
+          edit_path: edit_organization_admin_settings_integration_path(organization, integration),
+          overrides_path: overrides_organization_admin_settings_integration_path(
+            organization, integration, format: :json
+          )
+        )
+      end
+    end
+
+    describe '#integration_list_data' do
+      it 'uses organization admin edit paths' do
+        parsed = Gitlab::Json.safe_parse(helper.integration_list_data([integration],
+          organization: organization)[:integrations])
+
+        expect(parsed.first).to include(
+          'edit_path' => edit_organization_admin_settings_integration_path(organization, integration)
+        )
+      end
+    end
+  end
+
   describe '#add_to_slack_link' do
     subject(:slack_link) { helper.add_to_slack_link(project, 'A12345') }
 
     let(:query) { Rack::Utils.parse_query(URI.parse(slack_link).query) }
 
     before do
-      allow(helper).to receive(:form_authenticity_token).and_return('a token')
-      allow(helper).to receive(:current_user).and_return(build(:user))
+      allow(helper).to receive_messages(form_authenticity_token: 'a token', current_user: build(:user))
     end
 
     it 'returns the endpoint URL with all needed params' do
@@ -325,8 +415,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
 
     before do
-      allow(helper).to receive(:current_user).and_return(build(:user))
-      allow(helper).to receive(:new_session_path).and_return('http://session-path')
+      allow(helper).to receive_messages(current_user: build(:user), new_session_path: 'http://session-path')
     end
 
     it 'includes the required keys' do
@@ -362,8 +451,8 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       :tag_push_events | 'Tag push events'
       :note_events | 'Comments'
       :confidential_note_events | 'Confidential comments'
-      :issues_events | 'Issue events'
-      :confidential_issues_events | 'Confidential issue events'
+      :issues_events | 'Work item events'
+      :confidential_issues_events | 'Confidential work item events'
       :subgroup_events | 'Subgroup events'
       :member_events | 'Member events'
       :merge_requests_events | 'Merge request events'

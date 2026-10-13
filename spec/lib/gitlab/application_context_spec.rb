@@ -17,7 +17,8 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         :auth_fail_token_type,
         :auth_fail_auth_header_type,
         :duo_workflow_id,
-        :organization_source
+        :organization_source,
+        :client_service
       )
     end
   end
@@ -400,6 +401,19 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         context = described_class.new(project: project)
 
         expect(result(context)).not_to have_key(:duo_workflow_id)
+      end
+    end
+
+    context 'when using the client service context' do
+      it 'sets the calling service without adding a user identity' do
+        context = described_class.new(client_service: 'orbit-indexer')
+
+        expect(result(context)).to include(client_service: 'orbit-indexer')
+        expect(result(context)).not_to have_key(:user)
+      end
+
+      it 'does not set the calling service when absent' do
+        expect(result(described_class.new(project: project))).not_to have_key(:client_service)
       end
     end
 

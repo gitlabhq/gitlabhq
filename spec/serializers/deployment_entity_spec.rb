@@ -22,8 +22,7 @@ RSpec.describe DeploymentEntity do
   subject { entity.as_json }
 
   before do
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:project).and_return(project)
+    allow(request).to receive_messages(current_user: user, project: project)
   end
 
   shared_examples_for 'exposes fields' do
@@ -61,13 +60,15 @@ RSpec.describe DeploymentEntity do
   end
 
   context 'when the pipeline has another manual action' do
-    let!(:other_job) do
-      create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline, environment: job.environment)
+    let_it_be_with_reload(:other_job) do
+      create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline, environment: build.environment)
     end
 
-    let!(:other_deployment) { create(:deployment, deployable: job, environment: environment) }
+    let_it_be(:other_deployment) { create(:deployment, deployable: build, environment: environment) }
 
-    let(:job) { build }
+    let_it_be_with_reload(:deployment) do
+      create(:deployment, deployable: build, environment: environment, project: project)
+    end
 
     it 'returns another manual action' do
       expect(subject[:manual_actions].count).to eq(2)
@@ -94,11 +95,14 @@ RSpec.describe DeploymentEntity do
   end
 
   describe 'scheduled_actions' do
-    let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+    let_it_be_with_reload(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
     context 'when the same pipeline has a scheduled action' do
-      let(:other_job) { create(:ci_build, :schedulable, :success, pipeline: pipeline, name: 'other job') }
-      let!(:other_deployment) { create(:deployment, deployable: other_job, environment: environment) }
+      let_it_be_with_reload(:other_job) do
+        create(:ci_build, :schedulable, :success, pipeline: pipeline, name: 'other job')
+      end
+
+      let_it_be(:other_deployment) { create(:deployment, deployable: other_job, environment: environment) }
 
       it 'returns other scheduled actions' do
         expect(subject[:scheduled_actions][0][:name]).to eq 'other job'

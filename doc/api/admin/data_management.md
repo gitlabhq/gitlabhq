@@ -151,6 +151,17 @@ Example response:
 }
 ```
 
+If you supply `identifiers` and none of the values match an existing record, no job is enqueued and no records are changed. The request is still valid, so the endpoint returns `200` with a different message. A blank `identifiers[]=` is not treated as a filter that matches nothing. It still enqueues a job for all records of the model.
+
+Example response when no records match:
+
+```json
+{
+  "status": "success",
+  "message": "No records matched the given identifiers."
+}
+```
+
 ## Retrieve information about a model record
 
 Retrieves information about a specified model record.

@@ -46,6 +46,24 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
       end
     end
 
+    context 'when an unchanged principle has a checkpoint' do
+      subject(:write) { artifacts.write('qa', described_class::STATUS_UNCHANGED, checkpoint: checkpoint) }
+
+      let(:checkpoint) do
+        Gitlab::PrinciplesDistiller::Sync::MetadataCheckpoint.new(
+          source_checksum: 'abc', distilled_at_sha: '2' * 40, original_sha256: 'f' * 64
+        )
+      end
+
+      it 'writes the checkpoint as JSON' do
+        write
+
+        expect(JSON.parse(File.read(File.join(dir, 'qa.checkpoint.json')))).to eq(
+          'source_checksum' => 'abc', 'distilled_at_sha' => '2' * 40, 'original_sha256' => 'f' * 64
+        )
+      end
+    end
+
     context 'when the artifact directory does not exist' do
       let(:status) { described_class::STATUS_FAILED }
 
@@ -75,7 +93,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
 
       it 'sorts each principle into its own state' do
         expect(collected).to eq(
-          described_class::Collected.new(contents: { 'alpha' => 'alpha body' }, failed: ['gamma'], not_run: [])
+          described_class::Collected.new(
+            contents: { 'alpha' => 'alpha body' }, checkpoints: {}, failed: ['gamma'], not_run: []
+          )
         )
       end
     end
@@ -91,7 +111,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
 
       it 'reports it as not run rather than failed' do
         expect(collected).to eq(
-          described_class::Collected.new(contents: { 'alpha' => 'alpha body' }, failed: ['gamma'], not_run: ['beta'])
+          described_class::Collected.new(
+            contents: { 'alpha' => 'alpha body' }, checkpoints: {}, failed: ['gamma'], not_run: ['beta']
+          )
         )
       end
     end
@@ -109,7 +131,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
       it 'warns and reports it as not run', :aggregate_failures do
         expect { collected }.to output(/content artifact is missing or empty/).to_stderr
 
-        expect(collected).to eq(described_class::Collected.new(contents: {}, failed: [], not_run: ['alpha']))
+        expect(collected).to eq(
+          described_class::Collected.new(contents: {}, checkpoints: {}, failed: [], not_run: ['alpha'])
+        )
       end
     end
 
@@ -121,7 +145,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
       end
 
       it 'reports it as not run rather than failed' do
-        expect(collected).to eq(described_class::Collected.new(contents: {}, failed: [], not_run: ['alpha']))
+        expect(collected).to eq(
+          described_class::Collected.new(contents: {}, checkpoints: {}, failed: [], not_run: ['alpha'])
+        )
       end
     end
 
@@ -139,11 +165,46 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
       end
     end
 
+    context 'when an unchanged principle recorded a checkpoint' do
+      let(:expected) { ['alpha'] }
+      let(:checkpoint) do
+        Gitlab::PrinciplesDistiller::Sync::MetadataCheckpoint.new(
+          source_checksum: 'abc', distilled_at_sha: '2' * 40, original_sha256: 'f' * 64
+        )
+      end
+
+      before do
+        artifacts.write('alpha', described_class::STATUS_UNCHANGED, checkpoint: checkpoint)
+      end
+
+      it 'collects the checkpoint' do
+        expect(collected.checkpoints).to eq('alpha' => checkpoint)
+      end
+    end
+
+    # The principle stays stale and is re-evaluated next run, so a bad checkpoint must not fail the collect job.
+    context 'when a checkpoint artifact is corrupt' do
+      let(:expected) { ['alpha'] }
+
+      before do
+        artifacts.write('alpha', described_class::STATUS_UNCHANGED)
+        File.write(File.join(dir, 'alpha.checkpoint.json'), '{not json')
+      end
+
+      it 'warns and collects no checkpoint', :aggregate_failures do
+        expect { collected }.to output(/could not read the checkpoint artifact for alpha/).to_stderr
+
+        expect(collected.checkpoints).to be_empty
+      end
+    end
+
     context 'when nothing was expected' do
       let(:expected) { [] }
 
       it 'returns an empty result' do
-        expect(collected).to eq(described_class::Collected.new(contents: {}, failed: [], not_run: []))
+        expect(collected).to eq(
+          described_class::Collected.new(contents: {}, checkpoints: {}, failed: [], not_run: [])
+        )
       end
     end
   end
@@ -153,6 +214,11 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Artifacts do
   describe 'path traversal' do
     it 'rejects a principle name that escapes the artifact directory' do
       expect { artifacts.write('../../etc/passwd', described_class::STATUS_FAILED) }
+        .to raise_error(Gitlab::PrinciplesDistiller::Workspace::PathTraversalError)
+    end
+
+    it 'rejects an expected name on collect instead of reporting it as not run' do
+      expect { artifacts.collect(['qa', '../../etc/passwd']) }
         .to raise_error(Gitlab::PrinciplesDistiller::Workspace::PathTraversalError)
     end
   end

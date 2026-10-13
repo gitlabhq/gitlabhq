@@ -5,7 +5,24 @@ module Gitlab
     module Aggregation
       module Graphql
         class AggregationConnection < GraphQL::Pagination::Connection
-          delegate :count, to: :items
+          prepend ::Gitlab::Graphql::ConnectionNodesCount
+
+          # A page that reaches the end already proves the total, which spares a second
+          # full aggregation for the COUNT. An empty page past offset 0 proves nothing.
+          def count
+            return selection_range.first + nodes.size if !has_next_page && (nodes.any? || selection_range.first == 0)
+
+            items.count
+          end
+
+          # Without the flag, every engine keeps the schema default, whatever cap its field sets.
+          def self.effective_max_page_size(configured_max_page_size, context:)
+            if Feature.enabled?(:larger_clickhouse_aggregation_pages, context[:current_user])
+              return configured_max_page_size
+            end
+
+            context.schema.default_max_page_size
+          end
 
           # rubocop: disable Naming/PredicatePrefix -- these methods are part of the GraphQL pagination API
           def has_next_page
@@ -31,6 +48,10 @@ module Gitlab
 
           def nodes
             load_nodes
+          end
+
+          def max_page_size
+            self.class.effective_max_page_size(super, context: context)
           end
 
           private

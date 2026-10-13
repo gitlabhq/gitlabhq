@@ -25,7 +25,7 @@ module Ci
       statuses
         .sort_by(&:sortable_name).group_by(&:group_name)
         .map do |group_name, grouped_statuses|
-          self.new(project, stage, name: group_name, jobs: grouped_statuses)
+          new(project, stage, name: group_name, jobs: grouped_statuses)
         end
     end
 

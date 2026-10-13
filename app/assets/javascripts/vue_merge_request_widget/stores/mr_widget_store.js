@@ -12,6 +12,7 @@ import { badgeState } from '~/merge_requests/badge_state';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_STAGE } from '~/graphql_shared/constants';
 import {
+  DETAILED_MERGE_STATUS,
   MT_MERGE_STRATEGY,
   MWCP_MERGE_STRATEGY,
   MTWCP_MERGE_STRATEGY,
@@ -136,7 +137,6 @@ export default class MergeRequestStore {
     this.mergeRequestState = data.state;
     this.isOpen = this.mergeRequestState === STATUS_OPEN;
     this.latestSHA = data.diff_head_sha;
-    this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
     this.allowCollaboration = data.allow_collaboration;
     this.sourceProjectId = data.source_project_id;
@@ -161,6 +161,9 @@ export default class MergeRequestStore {
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;
     this.accessibilityReportPath = data.accessibility_report_path;
+    if (!gon.features?.mergeRequestReportsWidgetGroup) {
+      this.reportsTabPath = data.reportsTabPath;
+    }
     this.exposedArtifactsPath = data.exposed_artifacts_path;
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
@@ -219,15 +222,15 @@ export default class MergeRequestStore {
   }
 
   setGraphqlSubscriptionData(data) {
-    this.commitsCount = data.commitCount || this.commitsCount;
-    this.detailedMergeStatus = data.detailedMergeStatus || this.detailedMergeStatus;
     this.availableAutoMergeStrategies =
       data.availableAutoMergeStrategies || this.availableAutoMergeStrategies;
     this.preferredAutoMergeStrategy = MergeRequestStore.getPreferredAutoMergeStrategy(
       this.availableAutoMergeStrategies,
     );
 
-    this.setState();
+    // The payload is the merge request itself; reshape it like the polled query
+    // so both go through one writer and a push never leaves fields stale.
+    this.setGraphqlData({ ...data.project, mergeRequest: data });
   }
 
   setPipelineStatusData(data, isPostMerge = false) {
@@ -320,6 +323,7 @@ export default class MergeRequestStore {
   setPaths(data) {
     // Paths are set on the first load of the page and not auto-refreshed
     this.squashBeforeMergeHelpPath = data.squash_before_merge_help_path;
+    this.reportsTabPath = data.reportsTabPath;
     this.mrTroubleshootingDocsPath = data.mr_troubleshooting_docs_path;
     this.ciTroubleshootingDocsPath = data.ci_troubleshooting_docs_path;
     this.pipelineMustSucceedDocsPath = data.pipeline_must_succeed_docs_path;
@@ -362,6 +366,10 @@ export default class MergeRequestStore {
 
   get isMergedState() {
     return this.state === stateKey.merged;
+  }
+
+  get isMergeAllowed() {
+    return this.detailedMergeStatus === DETAILED_MERGE_STATUS.MERGEABLE;
   }
 
   static buildMetrics(metrics) {

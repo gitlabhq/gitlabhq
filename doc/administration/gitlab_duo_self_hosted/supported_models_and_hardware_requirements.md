@@ -35,6 +35,13 @@ You can use:
 
 ## Supported models
 
+{{< history >}}
+
+- Claude Sonnet 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7129) as a supported model on September 28, 2026.
+- Claude Haiku 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7364) as a supported model on October 7, 2026.
+
+{{< /history >}}
+
 GitLab-supported models offer different levels of functionality for GitLab Duo features,
 depending on the specific model and feature combination.
 
@@ -42,6 +49,13 @@ depending on the specific model and feature combination.
 - {{< icon name="check-circle-dashed" >}} Partial functionality: The model supports the feature, but there might be compromises or limitations.
 - {{< icon name="dash-circle" >}} Limited functionality: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
   Models that have limited functionality for a feature will not receive GitLab support for that specific feature.
+
+GitLab.com adds new [GitLab-managed models](../../user/duo_agent_platform/model_selection.md#supported-models)
+as soon as they're validated on the GitLab-hosted AI Gateway.
+Self-hosted support for a new model might arrive in a later release
+after validation with each supported platform (such as AWS Bedrock,
+Gemini Enterprise Agent Platform, and Azure OpenAI).
+Any models supported on GitLab.com should also work on GitLab Duo Self-Hosted.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -51,27 +65,33 @@ depending on the specific model and feature combination.
 | Claude 4 | [Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Claude 4 | [Claude Sonnet 4.6](https://www.anthropic.com/news/claude-sonnet-4-6) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Claude 4 | [Claude Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Claude 5 | [Claude Sonnet 5.5](https://www.anthropic.com/claude-sonnet-5-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Claude 5 | [Claude Haiku 5.5](https://www.anthropic.com/claude-haiku-5-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| GLM | [GLM-5.1-FP8](https://huggingface.co/zai-org/GLM-5.1-FP8) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| GLM | [GLM-5.3](https://huggingface.co/zai-org/GLM-5.3) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | GPT | [GPT-5](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
-| GPT | [GPT-5 Mini](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
 | GPT | [GPT-5 Codex](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| GPT | [GPT-5 Mini](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
 | GPT | [GPT-5.1](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-51) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-5.2](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-52) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-oss-120B](https://huggingface.co/openai/gpt-oss-120b) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
-| Mistral Medium 3.5 | [Mistral Medium 3.5 128B](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
-| Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
-| Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
-| GLM | [GLM-5.1-FP8](https://huggingface.co/zai-org/GLM-5.1-FP8) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Kimi | [Kimi-K2.5](https://huggingface.co/moonshotai/Kimi-K2.5) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
 | Kimi | [Kimi-K2.6](https://huggingface.co/moonshotai/Kimi-K2.6) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality |
-| MiniMax | [MiniMax-M2.7](https://huggingface.co/MiniMaxAI/MiniMax-M2.7) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Kimi | [Kimi-K3](https://huggingface.co/moonshotai/Kimi-K3) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |
-| Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| MiniMax | [MiniMax-M2.7](https://huggingface.co/MiniMaxAI/MiniMax-M2.7) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| MiniMax | [MiniMax-M3](https://huggingface.co/MiniMaxAI/MiniMax-M3) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Mistral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| Mistral | [Mistral Medium 3.5 128B](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
+| Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
+| Qwen | [Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 
 ### Compatible models
 
@@ -145,7 +165,10 @@ When enabled for a specific feature:
 
 ## Hardware requirements
 
-The following hardware specifications are the minimum requirements for running GitLab Duo Self-Hosted on-premise. Requirements vary significantly based on the model size and intended usage:
+The following hardware specifications are the minimum requirements for running GitLab Duo Self-Hosted.
+Requirements vary significantly based on the model size and intended usage.
+
+For the hardware requirements for the AI Gateway, see [scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).
 
 ### Base system requirements
 
@@ -160,6 +183,24 @@ The following hardware specifications are the minimum requirements for running G
 
 ### GPU requirements by model size
 
+The following requirements are based on NVIDIA A100 GPUs.
+Newer NVIDIA data center GPUs, such as the H100 and H200,
+are expected to work but have not been tested.
+
+| GPU model | Architecture | VRAM     |
+|-----------|--------------|----------|
+| A100      | Ampere       | 40/80 GB |
+| H100      | Hopper       | 80/94 GB |
+| H200      | Hopper       | 141 GB   |
+
+The following table shows minimum configurations with A100 GPUs.
+An H100 (80 GB) needs the same number of GPUs as an A100 (80 GB).
+Based on the minimum VRAM required, an H200 (141 GB) reduces
+the GPU count for larger models:
+
+- 1x H200 for 22B models
+- 4x H200 for Mixtral 8x22B
+
 | Model size                                 | Minimum GPU configuration | Minimum VRAM required |
 |--------------------------------------------|---------------------------|-----------------------|
 | 7B models<br>(for example, Mistral 7B)     | 1x NVIDIA A100 (40 GB)    | 35 GB                 |
@@ -170,6 +211,8 @@ The following hardware specifications are the minimum requirements for running G
 Use [Hugging Face's memory utility](https://huggingface.co/spaces/hf-accelerate/model-memory-usage) to verify memory requirements.
 
 ### Response time by model size and GPU
+
+The following benchmarks cover A100 GPUs only.
 
 #### Small machine
 
@@ -209,7 +252,3 @@ With a `a2-ultragpu-8g` (8 x NVIDIA A100 80 GB - 1360 GB vRAM) machine on GCP or
 | Mixtral-8x22B-Instruct-v0.1 | 1                  | 14.39                        | 828.0                      | 57.56                                 | 14.38                       | 57.55     |
 | Mixtral-8x22B-Instruct-v0.1 | 10                 | 20.57                        | 629.7                      | 30.24                                 | 28.02                       | 224.71    |
 | Mixtral-8x22B-Instruct-v0.1 | 100                | 27.58                        | 592.49                     | 21.34                                 | 36.80                       | 1609.85   |
-
-### AI Gateway Hardware Requirements
-
-For recommendations on AI Gateway hardware, see the [AI Gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).

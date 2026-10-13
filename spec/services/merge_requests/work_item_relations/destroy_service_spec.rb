@@ -9,13 +9,13 @@ RSpec.describe MergeRequests::WorkItemRelations::DestroyService, feature_categor
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let_it_be_with_refind(:user_created_relation) do
-    create(:merge_requests_closing_issues,
+    create(:merge_request_issue,
       merge_request: merge_request, issue: create(:issue, project: project),
       link_type: :mentioned, from_mr_description: false)
   end
 
   let_it_be_with_refind(:auto_closes_relation) do
-    create(:merge_requests_closing_issues,
+    create(:merge_request_issue,
       merge_request: merge_request, issue: create(:issue, project: project),
       link_type: :closes, from_mr_description: true)
   end
@@ -55,7 +55,7 @@ RSpec.describe MergeRequests::WorkItemRelations::DestroyService, feature_categor
     context 'when an id belongs to a different merge request' do
       let_it_be(:other_merge_request) { create(:merge_request, source_project: project, target_branch: 'other') }
       let_it_be(:foreign_relation) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: other_merge_request, issue: create(:issue, project: project),
           link_type: :mentioned, from_mr_description: false)
       end
@@ -63,7 +63,7 @@ RSpec.describe MergeRequests::WorkItemRelations::DestroyService, feature_categor
       let(:ids) { [foreign_relation.id] }
 
       it 'does not delete rows from another merge request', :aggregate_failures do
-        expect { result }.not_to change { MergeRequestsClosingIssues.count }
+        expect { result }.not_to change { MergeRequestIssue.count }
         expect(result.payload[:removed_ids]).to be_empty
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe MergeRequests::WorkItemRelations::DestroyService, feature_categor
     context 'when a relation points to a work item the user cannot read' do
       let_it_be(:private_project) { create(:project, :private) }
       let_it_be(:unreadable_relation) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue: create(:issue, project: private_project),
           link_type: :mentioned, from_mr_description: false)
       end

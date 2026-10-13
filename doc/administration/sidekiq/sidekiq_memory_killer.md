@@ -1,6 +1,6 @@
 ---
-stage: Tenant Scale
-group: Tenant Services
+stage: Async
+group: Async
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Reducing memory use
 ---
@@ -57,7 +57,7 @@ Sidekiq memory limits are controlled using [environment variables](https://docs.
 
 GitLab emits log events if workers are restarted due to high memory usage.
 
-The following is an example of one of these log events in `/var/log/gitlab/gitlab-rails/sidekiq_client.log`:
+The following is an example of one of these log events in `/var/log/gitlab/sidekiq/current`:
 
 ```json
 {
@@ -66,7 +66,7 @@ The following is an example of one of these log events in `/var/log/gitlab/gitla
   "correlation_id": null,
   "pid": 2725,
   "worker_id": "sidekiq_1",
-  "memwd_handler_class": "Gitlab::Memory::Watchdog::SidekiqHandler",
+  "memwd_handler_class": "Gitlab::Memory::Watchdog::Handlers::SidekiqHandler",
   "memwd_sleep_time_s": 3,
   "memwd_rss_bytes": 1079683247,
   "memwd_max_rss_bytes": 629145600,
@@ -89,6 +89,8 @@ The following is an example of one of these log events in `/var/log/gitlab/gitla
 Where:
 
 - `memwd_rss_bytes` is the actual amount of memory consumed.
-- `memwd_max_rss_bytes` is the RSS limit set through `per_worker_max_memory_mb`.
+- `memwd_max_rss_bytes` is the RSS limit, in bytes, that the process exceeded.
+  The soft limit comes from `SIDEKIQ_MEMORY_KILLER_MAX_RSS`
+  and the hard limit from `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`, both set in kilobytes.
 - `running_jobs` lists the jobs that were running at the time when the process
   exceeded the RSS limit and started a graceful restart.

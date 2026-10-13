@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shared do
+RSpec.describe Layouts::CrudComponent, feature_category: :shared do
   let(:title) { 'Title' }
   let(:description) { 'Description' }
   let(:count) { 99 }

@@ -45,6 +45,7 @@ class User < ApplicationRecord
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
+  ignore_column :static_object_token, remove_with: '19.6', remove_after: '2026-10-18'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -98,7 +99,7 @@ class User < ApplicationRecord
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/439294
-  add_authentication_token_field :static_object_token, encrypted: :optional # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
+  add_authentication_token_field :static_object_token, encrypted: :required # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
 
   attribute :admin, default: false
   attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }
@@ -164,6 +165,14 @@ class User < ApplicationRecord
         end
       end
     end
+
+    # Within the hour the throttle skips the write, which would leave the
+    # tracked attributes marked as changed. Rails refuses to lock a record
+    # with unpersisted changes, so a later `with_lock` on the same user in
+    # this request would raise. Clear the dirty state rather than restoring
+    # the row values: KnownSignIn reads this sign-in's values from
+    # current_user after this hook, and a later save must not write them.
+    clear_attribute_changes(Devise::Models::Trackable.required_fields(self.class))
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -259,6 +268,7 @@ class User < ApplicationRecord
   has_many :authorized_projects, through: :project_authorizations, source: :project
   has_many :project_authorization_reverifications, class_name: 'Authz::ProjectAuthorizationReverification',
     dependent: :delete_all
+  has_many :oauth_consent_grants, class_name: 'Authz::OauthConsentGrant', dependent: :delete_all
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
@@ -474,7 +484,9 @@ class User < ApplicationRecord
   # Override enum setter for `dashboard` to support flipped mapping for rollout
   def dashboard=(value)
     if should_use_flipped_dashboard_mapping_for_rollout?
-      numeric_value = dashboard_enum_mapping[value.to_s]
+      # Pass unmapped values through so the enum still rejects them, rather than
+      # silently persisting the `nil` a missing mapping key would return.
+      numeric_value = dashboard_enum_mapping.fetch(value.to_s, value)
       super(numeric_value)
     else
       super(value)
@@ -507,8 +519,6 @@ class User < ApplicationRecord
 
   # Determines if this user should use flipped dashboard enum mapping
   def should_use_flipped_dashboard_mapping_for_rollout?
-    return false unless Feature.enabled?(:personal_homepage, self)
-
     # Don't flip for SM admins who have no authorized projects as they go through different onboarding flow.
     return false if self_managed_admin? && !authorized_projects.exists?
 
@@ -549,10 +559,8 @@ class User < ApplicationRecord
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
     :dpop_enabled, :dpop_enabled=,
-    :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
-    :orbit_enabled, :orbit_enabled=,
     :orbit_agent_enabled, :orbit_agent_enabled=,
     :orbit_agentic_chat_enabled, :orbit_agentic_chat_enabled=,
     :orbit_other_foundational_agents_enabled, :orbit_other_foundational_agents_enabled=,
@@ -821,6 +829,13 @@ class User < ApplicationRecord
 
   scope :member_of_organization, ->(organization) do
     joins(:organization_users).where(organization_users: { organization: organization })
+  end
+  scope :not_member_of_organization, ->(organization) do
+    where_not_exists(
+      Organizations::OrganizationUser
+        .in_organization(organization)
+        .where(Organizations::OrganizationUser.arel_table[:user_id].eq(arel_table[:id]))
+    )
   end
   scope :with_provisioning_group, ->(group) do
     joins(:user_detail).where(user_detail: { provisioned_by_group: group })
@@ -1662,7 +1677,7 @@ class User < ApplicationRecord
     authorized_groups&.top_level&.pluck(:id)
   end
 
-  # Used to search on the user's authorized_groups effeciently by using a CTE
+  # Used to search on the user's authorized_groups efficiently by using a CTE
   def search_on_authorized_groups(query, use_minimum_char_limit: true)
     authorized_groups_cte = Gitlab::SQL::CTE.new(:authorized_groups, authorized_groups)
     authorized_groups_cte_alias = authorized_groups_cte.table.alias(Group.table_name)
@@ -1675,25 +1690,6 @@ class User < ApplicationRecord
   # Returns the groups a user is a member of, either directly or through a parent group
   def membership_groups
     groups.self_and_descendants
-  end
-
-  # Returns a relation of groups the user has access to, including their parent
-  # and child groups (recursively).
-  def all_expanded_groups
-    groups = groups_with_at_least_minimal_access
-    return groups if groups.empty?
-
-    Gitlab::ObjectHierarchy.new(groups).all_objects
-  end
-
-  def expanded_groups_requiring_two_factor_authentication
-    all_expanded_groups.where(require_two_factor_authentication: true)
-  end
-
-  def source_groups_of_two_factor_authentication_requirement
-    Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
-      .all_objects
-      .where(id: groups_with_at_least_minimal_access)
   end
 
   def direct_groups_with_route
@@ -2051,6 +2047,7 @@ class User < ApplicationRecord
   def has_active_non_default_organization?
     organizations.without_default.with_states(:active).exists?
   end
+  strong_memoize_attr :has_active_non_default_organization?
 
   def can_leave_project?(member_or_project)
     return can?(:destroy_project_member, member_or_project) if member_or_project.is_a?(ProjectMember)
@@ -2693,19 +2690,6 @@ class User < ApplicationRecord
     can?(:update_organization, organization)
   end
 
-  def update_two_factor_requirement
-    # No-op on frozen records: production records are never frozen,
-    # so this only guards frozen shared test fixtures from a lazy write.
-    return if frozen?
-
-    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
-
-    self.require_two_factor_authentication_from_group = periods.any?
-    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
-
-    save
-  end
-
   # each existing user needs to have a `feed_token`.
   # we do this on read since migrating all existing users is not a feasible
   # solution.
@@ -3018,6 +3002,13 @@ class User < ApplicationRecord
     provisioned_by_project_id.present?
   end
 
+  def sa_provisioned_for_project?(project)
+    return false unless project
+    return false unless service_account?
+
+    provisioned_by_project_id == project.id
+  end
+
   def sa_provisioned_by_subgroup?
     return false unless service_account?
 
@@ -3099,11 +3090,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  # method overridden in EE
-  def groups_with_at_least_minimal_access
-    groups
-  end
 
   def self_managed_admin?
     can_admin_all_resources?

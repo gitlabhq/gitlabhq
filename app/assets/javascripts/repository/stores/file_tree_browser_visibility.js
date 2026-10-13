@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { watch } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { FILE_TREE_BROWSER_VISIBILITY } from '../constants';

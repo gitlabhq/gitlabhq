@@ -259,14 +259,35 @@ RSpec.configure do |config|
     end
   end
 
-  config.after(:example, :js) do |example|
-    if example.exception && !example.exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
-      raise_if_unexpected_browser_console_output
-    end
+  config.before(:example, :js) do
+    session = Capybara.current_session
+    browser = session.driver.browser
 
-    # prevent localStorage from introducing side effects based on test order
-    unless ['', 'about:blank', 'data:,'].include? Capybara.current_session.driver.browser.current_url
-      execute_script("localStorage.clear();")
+    # Capybara does a best-effort localStorage clear via execute_script after each example
+    # finishes, but doing it *before* navigating to the target is most reliable. Firefox doesn't
+    # support CDP [1], so this only works in Chrome.
+    #
+    # [1] https://fxdx.dev/cdp-retirement-in-firefox/
+    if browser.respond_to?(:execute_cdp)
+      browser.execute_cdp(
+        'Storage.clearDataForOrigin',
+        origin: session.server.base_url,
+        storageTypes: 'local_storage,session_storage'
+      )
+    end
+  end
+
+  config.after(:example, :js) do |example|
+    # A passing example can hide a swallowed Vue render error. Check the console for every example.
+    # Raise only after the cleanup below, so in-flight requests never leak into the next example.
+    console_error = nil
+    begin
+      unless example.exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
+        # A failed example shows every console error, allowlisted or not, to help debugging.
+        raise_if_unexpected_browser_console_output(example.exception ? nil : example)
+      end
+    rescue StandardError => e
+      console_error = e
     end
 
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
@@ -274,8 +295,10 @@ RSpec.configure do |config|
     # calling it explicitly here, we prevent any new requests from being fired
     # See https://github.com/teamcapybara/capybara/blob/ffb41cfad620de1961bb49b1562a9fa9b28c0903/lib/capybara/rspec.rb#L20-L25
     # We don't reset the session when the example failed, because we need capybara-screenshot to have access to it.
-    Capybara.reset_sessions! unless example.exception
+    Capybara.reset_sessions! unless example.exception || console_error
     block_and_wait_for_requests_complete
     block_and_wait_for_action_cable_requests_complete
+
+    raise console_error if console_error
   end
 end

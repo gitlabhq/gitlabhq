@@ -39,13 +39,12 @@ module Keeps
       end
 
       def ensure_call_source(queue_method_node, job_name, migration_record)
-        constants = constant_assignments(queue_method_node)
-
-        table_name = resolve_node_source(queue_method_node.children[3], constants)
-        column_name = resolve_node_source(queue_method_node.children[4], constants)
-        job_arguments = queue_method_node.children[5..]
-          .select { |s| s.type != :hash } # All remaining non-keyword args
-          .map { |arg| resolve_node_source(arg, constants) }
+        table_name, column_name, job_arguments =
+          if queue_method_node
+            arguments_from_queue_node(queue_method_node)
+          else
+            arguments_from_record(migration_record)
+          end
 
         <<~RUBY.strip
         disable_ddl_transaction!
@@ -62,6 +61,28 @@ module Keeps
             )
           end
         RUBY
+      end
+
+      def arguments_from_queue_node(queue_method_node)
+        constants = constant_assignments(queue_method_node)
+
+        [
+          resolve_node_source(queue_method_node.children[3], constants),
+          resolve_node_source(queue_method_node.children[4], constants),
+          queue_method_node.children[5..]
+            .select { |s| s.type != :hash } # All remaining non-keyword args
+            .map { |arg| resolve_node_source(arg, constants) }
+        ]
+      end
+
+      # Used when the queueing migration has been squashed away. The archived
+      # record holds the same arguments the migration passed.
+      def arguments_from_record(migration_record)
+        [
+          migration_record.table_name.to_sym.inspect,
+          migration_record.column_name.to_sym.inspect,
+          Array(migration_record.job_arguments).map(&:inspect)
+        ]
       end
 
       # Collects top-level constants (e.g. MIGRATION, BATCH_SIZE) defined in the original migration class,

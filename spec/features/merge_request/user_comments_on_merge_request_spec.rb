@@ -13,8 +13,7 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
   before do
     project.add_maintainer(user)
     sign_in(user)
-    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_enabled).and_return(true)
-    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_url).and_return(diagramsnet_url)
+    allow(Gitlab::CurrentSettings).to receive_messages(diagramsnet_enabled: true, diagramsnet_url: diagramsnet_url)
 
     visit(merge_request_path(merge_request))
   end

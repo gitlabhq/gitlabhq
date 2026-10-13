@@ -236,13 +236,28 @@ module QA
       #   wait_for_resource_availability(resource_web_url(create(:issue)))
       def wait_for_resource_availability(resource_web_url)
         return unless Runtime::Address.valid?(resource_web_url)
+        # GET /graphql carries no query, so it cannot confirm anything
+        return if defines_get? && api_get_path == '/graphql'
 
         Support::Retrier.retry_until(sleep_interval: 3, max_attempts: 5, raise_on_failure: false) do
           # Until path based routing is supported in cells authenticated get requests are required
-          response_check = QA::Runtime::Env.running_against_cell? ? api_get_from(api_get_path) : get(resource_web_url)
+          response_check = if QA::Runtime::Env.running_against_cell?
+                             api_get_from(api_get_path)
+                           else
+                             get(availability_check_url(resource_web_url))
+                           end
+
           Runtime::Logger.debug("Resource availability check for #{resource_web_url} ... #{response_check.code}")
           response_check.code == HTTP_STATUS_OK
         end
+      end
+
+      # Unauthenticated requests are rate limited per IP
+      def availability_check_url(resource_web_url)
+        return resource_web_url unless defines_get?
+
+        path = "#{api_get_path}#{query_parameters_to_string(query_parameters)}"
+        Runtime::API::Request.new(api_client, path).url
       end
 
       def extract_graphql_id(item)

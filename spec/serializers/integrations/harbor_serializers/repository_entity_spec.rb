@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::HarborSerializers::RepositoryEntity, feature_category: :container_registry do
-  let_it_be(:harbor_integration) { create(:harbor_integration) }
-
   let(:repo) do
     {
       "artifact_count" => 1,

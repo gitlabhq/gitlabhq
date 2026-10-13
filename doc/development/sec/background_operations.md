@@ -1,6 +1,6 @@
 ---
-stage: Security Risk Management
-group: Security Platform Management
+stage: Security Governance
+group: Security Controls
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Background operations for security inventory
 ---
@@ -87,7 +87,7 @@ TTL: 72 hours
 
 ## Email notifications
 
-Emails are sent **only when failures occur** after the operation completes.
+Emails are sent only when failures occur after the operation completes.
 
 Email includes:
 

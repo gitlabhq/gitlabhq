@@ -18,7 +18,7 @@ class PropagateIntegrationProjectWorker
     batch = Project.where(id: min_id..max_id).without_integration(integration)
     batch = batch.in_namespace(integration.group.self_and_descendants) if integration.group_level?
 
-    return if batch.empty?
+    return if batch.load.empty?
 
     Integrations::Propagation::BulkCreateService.new(integration, batch, 'project').execute
   end

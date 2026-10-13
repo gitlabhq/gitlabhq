@@ -200,6 +200,7 @@ export default {
       <gl-form-group
         :label="__('Release title')"
         :description="s__('Release|Leave blank to use the tag name as the release title.')"
+        label-for="release-title"
       >
         <gl-form-input
           id="release-title"
@@ -236,7 +237,12 @@ export default {
             </template>
           </gl-sprintf>
         </template>
-        <gl-datepicker id="release-released-at" v-model="releasedAt" :default-date="releasedAt" />
+        <gl-datepicker
+          v-model="releasedAt"
+          input-id="release-released-at"
+          :input-label="__('Release date')"
+          :default-date="releasedAt"
+        />
       </gl-form-group>
       <gl-form-group :label="__('Release notes')" data-testid="release-notes">
         <div class="common-note-form">

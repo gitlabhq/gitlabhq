@@ -73,4 +73,19 @@ RSpec.describe ProjectDestroyWorker, feature_category: :source_code_management d
       end.not_to raise_error
     end
   end
+
+  describe 'concurrency limit' do
+    it 'overrides the default with a positive application setting' do
+      stub_application_setting(project_deletion_jobs_concurrency_limit: 50)
+
+      expect(described_class.get_concurrency_limit).to eq(50)
+    end
+
+    it 'falls back to the default calculation when the setting is 0' do
+      stub_application_setting(project_deletion_jobs_concurrency_limit: 0)
+
+      expect(described_class).to receive(:calculate_default_limit_from_max_percentage).and_return(42)
+      expect(described_class.get_concurrency_limit).to eq(42)
+    end
+  end
 end

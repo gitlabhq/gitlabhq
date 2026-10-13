@@ -367,7 +367,7 @@ module BulkImports
         include Pipeline
 
         transformer Common::Transformers::ProhibitedAttributesTransformer
-        transformer Common::Transformers::MemberAttributesTransformer
+        transformer Import::BulkImports::Common::Transformers::SourceUserMemberAttributesTransformer
 
         def extract(context)
           graphql_extractor.extract(context)

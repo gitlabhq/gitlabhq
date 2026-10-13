@@ -35,7 +35,7 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
               { statuses: statuses&.map { |status| Types::Ci::JobStatusEnum.coerce_isolated_input(status) } }
             end
 
-            it { is_expected.to contain_exactly(*expected_jobs) }
+            it { is_expected.to match_array(expected_jobs) }
           end
         end
 
@@ -112,7 +112,7 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
                 }
               end
 
-              it { is_expected.to contain_exactly(*expected_jobs) }
+              it { is_expected.to match_array(expected_jobs) }
             end
           end
         end

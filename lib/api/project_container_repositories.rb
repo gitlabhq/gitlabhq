@@ -19,7 +19,7 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -36,8 +36,8 @@ module API
       end
       params do
         use :pagination
-        optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
-        optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
+        optional :tags, type: Boolean, default: false, desc: 'If `true`, includes an array of `tags` in the response.'
+        optional :tags_count, type: Boolean, default: false, desc: 'If `true`, includes `tags_count` in the response.'
       end
       route_setting :authorization, permissions: :read_container_repository, boundary_type: :project, skip_job_token_policies: true
       get ':id/registry/repositories' do
@@ -62,7 +62,7 @@ module API
         tags %w[container_registry]
       end
       params do
-        requires :repository_id, type: Integer, desc: 'The ID of the repository'
+        requires :repository_id, type: Integer, desc: 'ID of the container registry repository.'
       end
       route_setting :authorization, permissions: :delete_container_repository, boundary_type: :project, skip_job_token_policies: true
       delete ':id/registry/repositories/:repository_id', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
@@ -100,7 +100,7 @@ module API
         tags %w[container_registry]
       end
       params do
-        requires :repository_id, type: Integer, desc: 'The ID of the repository'
+        requires :repository_id, type: Integer, desc: 'ID of the container registry repository.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
@@ -138,14 +138,14 @@ module API
         tags %w[container_registry]
       end
       params do
-        requires :repository_id, type: Integer, desc: 'The ID of the repository'
-        optional :name_regex_delete, type: String, untrusted_regexp: true, desc: 'The tag name regexp to delete, specify .* to delete all'
-        optional :name_regex, type: String, untrusted_regexp: true, desc: 'The tag name regexp to delete, specify .* to delete all'
+        requires :repository_id, type: Integer, desc: 'ID of the container registry repository.'
+        optional :name_regex_delete, type: String, untrusted_regexp: true, desc: '[RE2](https://github.com/google/re2/wiki/Syntax) regular expression of the tag names to delete. Specify `.*` to delete all tags.'
+        optional :name_regex, type: String, untrusted_regexp: true, desc: '[RE2](https://github.com/google/re2/wiki/Syntax) regular expression of the tag names to delete. Specify `.*` to delete all tags. Deprecated. Use `name_regex_delete` instead.'
         # require either name_regex (deprecated) or name_regex_delete, it is ok to have both
         at_least_one_of :name_regex, :name_regex_delete
-        optional :name_regex_keep, type: String, untrusted_regexp: true, desc: 'The tag name regexp to retain'
-        optional :keep_n, type: Integer, desc: 'Keep n of latest tags with matching name'
-        optional :older_than, type: String, desc: 'Delete older than: 1h, 1d, 1month'
+        optional :name_regex_keep, type: String, untrusted_regexp: true, desc: '[RE2](https://github.com/google/re2/wiki/Syntax) regular expression of the tag names to keep. Overrides any matches from `name_regex_delete`. Setting to `.*` results in a no-op.'
+        optional :keep_n, type: Integer, desc: 'Number of most recent tags with a matching name to keep.'
+        optional :older_than, type: String, desc: 'Delete tags older than this age, such as `1h`, `1d`, or `1month`.'
       end
       route_setting :authorization, permissions: :delete_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       delete ':id/registry/repositories/:repository_id/tags', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
@@ -175,8 +175,8 @@ module API
         tags %w[container_registry]
       end
       params do
-        requires :repository_id, type: Integer, desc: 'The ID of the repository'
-        requires :tag_name, type: String, desc: 'The name of the tag'
+        requires :repository_id, type: Integer, desc: 'ID of the container registry repository.'
+        requires :tag_name, type: String, desc: 'Name of the tag.'
       end
       route_setting :authorization, permissions: :read_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       get ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
@@ -198,8 +198,8 @@ module API
         tags %w[container_registry]
       end
       params do
-        requires :repository_id, type: Integer, desc: 'The ID of the repository'
-        requires :tag_name, type: String, desc: 'The name of the tag'
+        requires :repository_id, type: Integer, desc: 'ID of the container registry repository.'
+        requires :tag_name, type: String, desc: 'Name of the tag.'
       end
       route_setting :authorization, permissions: :delete_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
       delete ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do

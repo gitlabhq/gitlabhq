@@ -159,6 +159,35 @@ describe('StatPresenter', () => {
       expect(findSingleStat().props('description')).toBeNull();
     });
 
+    it.each`
+      metric               | expected
+      ${USERS_COUNT}       | ${'14.61K'}
+      ${ACCEPTANCE_RATE}   | ${'73.5%'}
+      ${DURATION_QUANTILE} | ${'1h'}
+    `(
+      'renders $metric.key in its unit-aware compact format with displayConfig.compact',
+      ({ metric, expected }) => {
+        createComponent({ fields: [metric], displayConfig: { compact: true } });
+
+        expect(findSingleStat().props('value')).toBe(expected);
+      },
+    );
+
+    it('keeps the full format with compact set to false', () => {
+      createComponent({ fields: [USERS_COUNT], displayConfig: { compact: false } });
+
+      expect(findSingleStat().props('value')).toBe('14,614');
+    });
+
+    it('rejects a non-boolean compact value', () => {
+      createComponent({ displayConfig: { compact: 'yes' } });
+
+      expect(findSingleStat().exists()).toBe(false);
+      expect(findEmittedErrorMessage()).toBe(
+        'Unknown `compact`: `yes`. Supported values are: `true`, `false`.',
+      );
+    });
+
     it('takes displayConfig.description over the derived copy', () => {
       createComponent({
         fields: [ACCEPTANCE_RATE],
@@ -169,6 +198,85 @@ describe('StatPresenter', () => {
       expect(findSingleStat().props('description')).toBe(
         'Suggestions accepted in the last 30 days',
       );
+    });
+  });
+
+  describe('dynamic description', () => {
+    it('interpolates a metric value into the description', () => {
+      createComponent({
+        displayConfig: { description: '%{totalCount} suggestions shown' },
+      });
+
+      expect(findSingleStat().props('description')).toBe('1,234 suggestions shown');
+    });
+
+    it('formats each metric by its own unit', () => {
+      createComponent({
+        fields: [USERS_COUNT, ACCEPTANCE_RATE, DURATION_QUANTILE],
+        displayConfig: {
+          description: '%{usersCount} users at %{acceptanceRate}, p95 %{durationQuantile}',
+        },
+      });
+
+      expect(findSingleStat().props('description')).toBe('14,614 users at 73.5%, p95 1h 1m 1s');
+    });
+
+    it('interpolates a metric the stat does not render as its value', () => {
+      createComponent({
+        fields: [ACCEPTANCE_RATE, USERS_COUNT],
+        displayConfig: { description: 'Across %{usersCount} users' },
+      });
+
+      expect(findSingleStat().props()).toMatchObject({
+        value: '73.5%',
+        description: 'Across 14,614 users',
+      });
+    });
+
+    it('interpolates an aliased metric by its alias', () => {
+      createComponent({
+        fields: [{ key: 'p50', field: 'durationQuantile', label: 'P50', type: 'metric' }],
+        data: { nodes: [{ p50: 3661 }] },
+        displayConfig: { description: 'Median %{p50}' },
+      });
+
+      expect(findSingleStat().props('description')).toBe('Median 1h 1m 1s');
+    });
+
+    it('interpolates an aliased metric whose alias contains spaces', () => {
+      createComponent({
+        fields: [
+          { key: 'Median', field: 'durationQuantile', label: 'Median', type: 'metric' },
+          { key: 'p95 duration', field: 'durationQuantile', label: 'p95 duration', type: 'metric' },
+        ],
+        data: { nodes: [{ Median: 3661, 'p95 duration': 7322 }] },
+        displayConfig: { description: 'Median %{Median}, p95 %{p95 duration}' },
+      });
+
+      expect(findSingleStat().props('description')).toBe('Median 1h 1m 1s, p95 2h 2m 2s');
+    });
+
+    it.each`
+      scenario                | data
+      ${'the row is missing'} | ${{ nodes: [] }}
+      ${'the value is null'}  | ${{ nodes: [{ totalCount: null }] }}
+    `('renders the no-data placeholder when $scenario', ({ data }) => {
+      createComponent({ data, displayConfig: { description: '%{totalCount} shown' } });
+
+      expect(findSingleStat().props('description')).toBe('\u2014 shown');
+    });
+
+    it('leaves a derived description untouched', () => {
+      createComponent({ fields: [ACCEPTANCE_RATE], source: 'CodeSuggestions' });
+
+      expect(findSingleStat().props('description')).toBe('Ratio of accepted to shown suggestions.');
+    });
+
+    it('emits an error for a placeholder that names no metric in the query', () => {
+      createComponent({ displayConfig: { description: 'Across %{usersCount} users' } });
+
+      expect(findEmittedErrorMessage()).toBe('Unknown description placeholder: `usersCount`.');
+      expect(findSingleStat().exists()).toBe(false);
     });
   });
 
@@ -405,15 +513,15 @@ describe('StatPresenter', () => {
     it('emits an error when there are no metrics', () => {
       createComponent({ fields: [DIMENSION] });
 
-      expect(findEmittedErrorMessage()).toBe('stat display type requires exactly 1 metric');
+      expect(findEmittedErrorMessage()).toBe('stat display type requires at least 1 metric');
       expect(findSingleStat().exists()).toBe(false);
     });
 
-    it('emits an error when there is more than one metric', () => {
+    it('renders the first metric and ignores the rest when there is more than one', () => {
       createComponent({ fields: [TOTAL_COUNT, ACCEPTANCE_RATE] });
 
-      expect(findEmittedErrorMessage()).toBe('stat display type requires exactly 1 metric');
-      expect(findSingleStat().exists()).toBe(false);
+      expect(wrapper.emitted('error')).toBeUndefined();
+      expect(findSingleStat().props('value')).toBe('1,234');
     });
 
     it('emits an error when dimensions are present', () => {

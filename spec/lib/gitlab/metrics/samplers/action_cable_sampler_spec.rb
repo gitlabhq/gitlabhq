@@ -15,12 +15,14 @@ RSpec.describe Gitlab::Metrics::Samplers::ActionCableSampler do
     before do
       allow(action_cable).to receive_message_chain(:worker_pool, :executor).and_return(pool)
       allow(action_cable).to receive(:connections).and_return([])
-      allow(pool).to receive(:min_length).and_return(1)
-      allow(pool).to receive(:max_length).and_return(2)
-      allow(pool).to receive(:length).and_return(3)
-      allow(pool).to receive(:largest_length).and_return(4)
-      allow(pool).to receive(:completed_task_count).and_return(5)
-      allow(pool).to receive(:queue_length).and_return(6)
+      allow(pool).to receive_messages(
+        min_length: 1,
+        max_length: 2,
+        length: 3,
+        largest_length: 4,
+        completed_task_count: 5,
+        queue_length: 6
+      )
     end
 
     it 'includes active connections' do

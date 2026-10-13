@@ -136,6 +136,19 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
       end
     end
 
+    context 'with a reason' do
+      it 'records the reason alongside the error' do
+        result = described_class.error('Project not found', reason: :unauthorized)
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'Project not found' }],
+          structuredContent: {},
+          isError: true,
+          reason: :unauthorized
+        })
+      end
+    end
+
     context 'with nil details' do
       it 'returns an error response with empty structured content' do
         result = described_class.error('Error message', nil)
@@ -145,6 +158,103 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
           structuredContent: {},
           isError: true
         })
+      end
+    end
+  end
+
+  describe '.rate_limited_error' do
+    context 'with a retry delay and a throttle name' do
+      it 'names the throttle and the delay in both the text and the structured error' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: 60, limit: 'search_rate_limit')
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'Rate limited by search_rate_limit. Retry after 60 seconds.' }],
+          structuredContent: {
+            error: {
+              type: 'rate_limited',
+              retry_after_seconds: 60,
+              limit: 'search_rate_limit',
+              message: 'Too many requests'
+            }
+          },
+          isError: true,
+          reason: :error
+        })
+      end
+    end
+
+    context 'with a retry delay of one second' do
+      it 'uses the singular form' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: 1, limit: 'search_rate_limit')
+
+        expect(result[:content].first[:text]).to eq('Rate limited by search_rate_limit. Retry after 1 second.')
+      end
+    end
+
+    context 'with a string retry delay, as read from a header' do
+      it 'coerces it to an integer' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: '60', limit: nil)
+
+        expect(result[:structuredContent][:error][:retry_after_seconds]).to eq(60)
+      end
+    end
+
+    context 'without a throttle name' do
+      it 'omits the limit rather than naming an unknown one' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: 60)
+
+        expect(result[:content].first[:text]).to eq('Rate limited. Retry after 60 seconds.')
+        expect(result[:structuredContent][:error]).not_to have_key(:limit)
+      end
+    end
+
+    context 'without a retry delay' do
+      it 'omits the delay rather than inventing one' do
+        result = described_class.rate_limited_error('Too many requests', limit: 'search_rate_limit')
+
+        expect(result[:content].first[:text]).to eq('Rate limited by search_rate_limit.')
+        expect(result[:structuredContent][:error]).not_to have_key(:retry_after_seconds)
+      end
+    end
+
+    it 'is recognised as an error result' do
+      expect(described_class.error?(described_class.rate_limited_error('Too many requests'))).to be(true)
+    end
+  end
+
+  describe '.error_reason' do
+    it 'returns the recorded reason' do
+      result = described_class.error('Bad input', reason: :bad_request)
+
+      expect(described_class.error_reason(result)).to eq(:bad_request)
+    end
+
+    it 'defaults to :error when no reason was recorded' do
+      expect(described_class.error_reason(described_class.error('Boom'))).to eq(:error)
+    end
+
+    it 'falls back to :error for a reason outside the known set' do
+      result = described_class.error('Boom', reason: :bad_requst)
+
+      expect(described_class.error_reason(result)).to eq(:error)
+    end
+  end
+
+  describe '.reason_for_http_status' do
+    {
+      400 => :bad_request,
+      401 => :unauthorized,
+      403 => :unauthorized,
+      404 => :not_found,
+      408 => :error,
+      422 => :bad_request,
+      429 => :error,
+      '404' => :not_found,
+      500 => :error,
+      503 => :error
+    }.each do |status, reason|
+      it "maps #{status} to #{reason}" do
+        expect(described_class.reason_for_http_status(status)).to eq(reason)
       end
     end
   end

@@ -40,7 +40,7 @@ README.md
 
 ^[Database] @database-team
 model/db/
-config/db/database-setup.md @docs-team
+model/db/database-setup.md @docs-team
 ```
 
 ## Regular entries and sections
@@ -60,7 +60,7 @@ README.md
 
 [Database] @database-team
 model/db/
-config/db/database-setup.md @docs-team
+model/db/database-setup.md @docs-team
 ```
 
 In this example:
@@ -68,7 +68,7 @@ In this example:
 - `@general-approvers` owns all items everywhere, without overrides.
 - `@docs-team` owns all items in the `Documentation` section.
 - `@database-team` owns all items in the `Database` section except
-  `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
+  `model/db/database-setup.md`, which has an override assigning it to `@docs-team`.
 - A merge request that modifies `model/db/CHANGELOG.txt` would require three approvals: one from each
   of the `@general-approvers`, `@docs-team`, and `@database-team` groups.
 
@@ -226,11 +226,24 @@ Without escaping, GitLab parses `folder with spaces/*.md @group` as: `path: "fol
 
 ### Unparsable sections
 
-If a section heading cannot be parsed, the section is:
+{{< history >}}
 
-1. Parsed as an entry.
-1. Added to the previous section.
-1. If no previous section exists, the section is added to the default section.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185180) in GitLab 17.11 to ignore unparsable section headings instead of parsing them as entries.
+
+{{< /history >}}
+
+If a section heading cannot be parsed, GitLab:
+
+- Ignores the heading.
+- Adds the entries that follow the heading to the previous section.
+  If no previous section exists, the entries are added to the default section.
+- Shows an `Unparsable sections` error when you
+  [view the `CODEOWNERS` file](troubleshooting.md#validate-your-codeowners-file).
+
+The `Unparsable sections` error also appears for some malformed headings that GitLab can
+still use, like `[Docs]]` or `[Docs][ 1]`.
+GitLab treats these headings as sections, so the error does not always mean the heading is
+ignored.
 
 #### After the default section
 
@@ -241,12 +254,10 @@ If a section heading cannot be parsed, the section is:
 docs/ @docs_group
 ```
 
-GitLab recognizes the heading `[Section name` as an entry. The default section includes 3 rules:
+GitLab ignores the heading `[Section name`. The default section includes two rules:
 
-- Default section
-  - `*` owned by `@group`
-  - `[Section` owned by `name`
-  - `docs/` owned by `@docs_group`
+- `*` owned by `@group`
+- `docs/` owned by `@docs_group`
 
 #### After a named section
 
@@ -258,10 +269,9 @@ docs/**/* @group
 docs/ @docs_group
 ```
 
-GitLab recognizes the heading `[Section name` as an entry. The `[Docs]` section includes 3 rules:
+GitLab ignores the heading `[Section name`. The `[Docs]` section includes two rules:
 
 - `docs/**/*` owned by `@group`
-- `[Section` owned by `name`
 - `docs/` owned by `@docs_group`
 
 ### Malformed owners

@@ -14,7 +14,7 @@ RSpec.describe StaticObjectExternalStorage do
   end
 
   let(:project) { create(:project, :public) }
-  let(:user) { create(:user, static_object_token: 'hunter1') }
+  let(:user) { create(:user) }
 
   before do
     project.add_developer(user)
@@ -52,18 +52,19 @@ RSpec.describe StaticObjectExternalStorage do
 
       context 'when project is not public' do
         let(:project) { create(:project, :private) }
+        let!(:token) { user.static_object_token }
 
         it 'redirects to external storage URL a token parameter added' do
           do_request
 
-          expect(response).to redirect_to("#{base_redirect_url}?token=#{user.static_object_token}")
+          expect(response).to redirect_to("#{base_redirect_url}?token=#{token}")
         end
 
         context 'when path includes extra parameters' do
           it 'includes the parameters in the redirect URL' do
             do_request(foo: 'bar')
 
-            expect(response.location).to eq("#{base_redirect_url}?foo=bar&token=#{user.static_object_token}")
+            expect(response.location).to eq("#{base_redirect_url}?foo=bar&token=#{token}")
           end
         end
       end

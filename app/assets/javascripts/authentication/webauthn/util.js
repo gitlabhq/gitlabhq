@@ -1,3 +1,13 @@
+/**
+ * Rejects whitespace-only input, unlike GlFormFields' formValidators.required (which only
+ * rejects ''), reproducing the previous trimmed disabled gate.
+ *
+ * @param {String} message
+ * @returns {function(String): String} validator returning the message when blank, '' otherwise
+ */
+export const requiredNonBlank = (message) => (value) =>
+  value == null || value.trim() === '' ? message : '';
+
 export function supported() {
   return Boolean(
     navigator.credentials?.create && navigator.credentials?.get && window.PublicKeyCredential,

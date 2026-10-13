@@ -810,9 +810,7 @@ describe('DiffFile', () => {
 
       beforeEach(() => {
         useLegacyDiffs().diffFiles = [file];
-        createComponent({
-          options: { provide: { glFeatures: { commentOnFiles: true } } },
-        });
+        createComponent();
       });
 
       it('calls saveDiffDiscussion', () => {
@@ -869,9 +867,7 @@ describe('DiffFile', () => {
 
       beforeEach(async () => {
         useLegacyDiffs().diffFiles = [file];
-        createComponent({
-          options: { provide: { glFeatures: { commentOnFiles: true } } },
-        });
+        createComponent();
 
         triggerSaveDraftNote(wrapper, note, parentElement, errorCallback);
 
@@ -901,16 +897,12 @@ describe('DiffFile', () => {
     });
 
     it('assigns an empty string as the autosave key to the note form', () => {
-      createComponent({
-        options: { provide: { glFeatures: { commentOnFiles: true } } },
-      });
+      createComponent();
       expect(findNoteForm(wrapper).props('autosaveKey')).toBe('');
     });
 
     it('clears the autosave value when the note-form emits `cancel-form`', async () => {
-      createComponent({
-        options: { provide: { glFeatures: { commentOnFiles: true } } },
-      });
+      createComponent();
       findNoteForm(wrapper).vm.$emit('cancel-form');
 
       await nextTick();
@@ -923,7 +915,6 @@ describe('DiffFile', () => {
         authenticate();
         createComponent({
           options: {
-            provide: { glFeatures: { commentOnFiles: true } },
             data: () => ({
               noteableData: {
                 id: '1',

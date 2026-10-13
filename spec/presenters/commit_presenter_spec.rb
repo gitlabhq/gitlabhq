@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe CommitPresenter, feature_category: :source_code_management do
-  let(:commit) { project.commit }
-  let(:presenter) { described_class.new(commit, current_user: user) }
-
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:project) { create(:project, :small_repo) }
+
+  let(:commit) { project.commit }
+  let(:presenter) { described_class.new(commit, current_user: user) }
 
   describe '#web_path' do
     it { expect(presenter.web_path).to eq("/#{project.full_path}/-/commit/#{commit.sha}") }
@@ -16,7 +16,7 @@ RSpec.describe CommitPresenter, feature_category: :source_code_management do
   describe '#detailed_status_for' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:pipeline) { create(:ci_pipeline, :success, project: project, sha: commit.sha, ref: 'ref') }
+    let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.sha, ref: 'ref') }
 
     subject { presenter.detailed_status_for('ref')&.text }
 
@@ -40,7 +40,7 @@ RSpec.describe CommitPresenter, feature_category: :source_code_management do
   describe '#status_for' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:pipeline) { create(:ci_pipeline, :success, project: project, sha: commit.sha) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.sha) }
 
     subject { presenter.status_for }
 

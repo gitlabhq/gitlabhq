@@ -103,7 +103,7 @@ ai-principles-distill:
   rules:
     - !reference ['.ai-principles-sync:rules:scheduled', rules]
 
-# Daily job that reconciles the Duo Code Review instruction fences in
+# Job that reconciles the Duo Code Review instruction fences in
 # .gitlab/duo/mr-review-instructions.yaml with the committed distilled
 # principles on master, decoupled from distillation.
 #
@@ -114,8 +114,13 @@ ai-principles-distill:
 # team's distilled MR opens between merging and the fence catching up.
 # See gitlab-org/gitlab#604890 for the design.
 #
-# Trigger: dedicated pipeline schedule on master with
-# SCHEDULE_TYPE=ai-principles-fence-reconcile (daily).
+# Trigger: automatically on master pushes that change a fence input (see
+# `.ai-principles-fence-input-patterns`), and as a manual job on every other
+# master push for recovery.
+#
+# Runs share one resource group because they all force-push the same reconcile
+# branch. Each run fetches master after it acquires the group, so a run that
+# waited reconciles the latest master, not its own pipeline's commit.
 #
 # Token: GITLAB_API_TOKEN (auto-MR REST) sourced from the same
 # AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN service-account PAT as the weekly
@@ -126,6 +131,7 @@ ai-principles-reconcile-fences:
   needs: []
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
   timeout: 15m
+  resource_group: ai-principles-reconcile-fences
   variables:
     # Used by the sync bin to create the reconcile MR via the REST API.
     GITLAB_API_TOKEN: $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN
@@ -134,7 +140,7 @@ ai-principles-reconcile-fences:
     # from system gems).
     BUNDLE_PATH: vendor
   before_script:
-    - apk add --no-cache build-base git
+    - apk add --no-cache git
     # Audit-trail visibility: log the identity making the calls (the
     # service account; see access request #43931).
     - echo "Identity:${GITLAB_USER_LOGIN:-<unset>} (job triggered from $CI_PIPELINE_SOURCE)"
@@ -143,8 +149,21 @@ ai-principles-reconcile-fences:
     # The reconcile cuts its branch off origin/$CI_DEFAULT_BRANCH and projects
     # fences from that ref's committed distilled files, so master's tip must be
     # available. A failed fetch must fail the job rather than silently
-    # reconciling from a stale ref, so no `|| true` here.
-    - git fetch --depth=1 origin "$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH"
+    # reconciling from a stale ref, so no `|| true` here. The `+` is required:
+    # a shallow fetch can't prove a fast-forward once master has advanced.
+    - |
+      attempt=1
+      retry_delay=10
+      until git fetch --depth=1 origin "+$CI_DEFAULT_BRANCH:refs/remotes/origin/$CI_DEFAULT_BRANCH"; do
+        status=$?
+        if [ "$attempt" -ge 4 ]; then
+          exit "$status"
+        fi
+        echo "Fetch attempt $attempt failed; retrying in $retry_delay seconds..."
+        sleep "$retry_delay"
+        attempt=$((attempt + 1))
+        retry_delay=$((retry_delay * 2))
+      done
     - cd gems/gitlab-ai-principles-distiller
     - gem install bundler --no-document --version "$(tail -n 1 Gemfile.lock | tr -d '[:space:]')"
     - bundle install --jobs=$(nproc) --retry=3
@@ -153,4 +172,4 @@ ai-principles-reconcile-fences:
     # reconcile MR. Never re-distills.
     - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" reconcile-fences --push
   rules:
-    - !reference ['.ai-principles-reconcile:rules:scheduled', rules]
+    - !reference ['.ai-principles-reconcile:rules', rules]

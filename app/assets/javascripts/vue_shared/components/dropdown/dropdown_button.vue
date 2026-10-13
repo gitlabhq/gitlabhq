@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'DropdownButton',
@@ -8,6 +9,7 @@ export default {
     GlLoadingIcon,
     GlIcon,
   },
+  mixins: [glSlotsMixin],
   props: {
     isDisabled: {
       type: Boolean,
@@ -38,8 +40,7 @@ export default {
     aria-expanded="false"
   >
     <gl-loading-icon v-show="isLoading" size="sm" :inline="true" />
-    <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-    <slot v-if="$slots.default"></slot>
+    <slot v-if="glSlots().default"></slot>
     <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
     <gl-icon
       v-show="!isLoading"

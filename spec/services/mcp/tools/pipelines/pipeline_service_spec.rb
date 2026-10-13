@@ -14,6 +14,12 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
     end
   end
 
+  describe '#unlisted?' do
+    it 'is unlisted while it awaits removal' do
+      expect(service.unlisted?).to be(true)
+    end
+  end
+
   describe '#description' do
     it 'returns the correct description' do
       description = service.description
@@ -41,7 +47,7 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
           properties: {
             id: {
               type: 'string',
-              description: 'ID or URL-encoded path of the project'
+              description: 'ID or full path of the project'
             },
             pipeline_id: {
               type: 'integer',
@@ -97,7 +103,8 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
 
         expect(result[:isError]).to be true
 
-        expected_text = "Tool execution failed: Tool 'manage_pipeline' not found."
+        expected_text = "Tool execution failed: manage_pipeline is not available on this GitLab " \
+          "instance due to a server configuration problem."
         expect(result[:content].first[:text]).to eq(expected_text)
       end
     end

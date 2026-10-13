@@ -92,7 +92,7 @@ RSpec.describe MemberSerializer, feature_category: :groups_and_projects do
 
   context 'group member' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:members) { present_members(create_list(:group_member, 1, group: group)) }
+    let_it_be(:members) { present_members(create_list(:group_member, 1, source: group)) }
 
     let(:source) { group }
 
@@ -117,7 +117,7 @@ RSpec.describe MemberSerializer, feature_category: :groups_and_projects do
 
   context 'project member' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:members) { present_members(create_list(:project_member, 1, project: project)) }
+    let_it_be(:members) { present_members(create_list(:project_member, 1, source: project)) }
 
     let(:source) { project }
     let(:group) { project.group }

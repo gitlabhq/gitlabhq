@@ -6,7 +6,8 @@ module Gitlab
       module TimeoutHelpers
         # Long-running migrations may take more than the timeout allowed by
         # the database. Disable the session's statement timeout to ensure
-        # migrations don't get killed prematurely.
+        # migrations don't get killed prematurely. On PostgreSQL 17+ the
+        # transaction timeout is disabled for the same scope.
         #
         # There are two possible ways to disable the statement timeout:
         #
@@ -20,15 +21,15 @@ module Gitlab
         def disable_statement_timeout
           if block_given?
             if statement_timeout_disabled?
-              # Don't do anything if the statement_timeout is already disabled
+              # Don't touch statement_timeout if it is already disabled
               # Allows for nested calls of disable_statement_timeout without
               # resetting the timeout too early (before the outer call ends)
-              yield
+              with_transaction_timeout_disabled { yield }
             else
               begin
                 execute('SET statement_timeout TO 0')
 
-                yield
+                with_transaction_timeout_disabled { yield }
               ensure
                 execute('RESET statement_timeout')
               end
@@ -46,14 +47,34 @@ module Gitlab
             end
 
             execute('SET LOCAL statement_timeout TO 0')
+            Gitlab::Database::TransactionTimeout.disable(connection, local: true)
           end
         end
 
         private
 
+        # Same nesting rule as statement_timeout: never reset an exemption an outer scope established.
+        def with_transaction_timeout_disabled
+          return yield if transaction_timeout_disabled?
+
+          begin
+            Gitlab::Database::TransactionTimeout.disable(connection)
+
+            yield
+          ensure
+            Gitlab::Database::TransactionTimeout.reset(connection)
+          end
+        end
+
         def statement_timeout_disabled?
           # This is a string of the form "100ms" or "0" when disabled
           connection.select_value('SHOW statement_timeout') == "0"
+        end
+
+        def transaction_timeout_disabled?
+          return true unless Gitlab::Database::TransactionTimeout.supported?(connection)
+
+          connection.select_value('SHOW transaction_timeout') == "0"
         end
       end
     end

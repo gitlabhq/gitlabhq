@@ -125,16 +125,16 @@ export default {
       return Object.hasOwn(this.project, 'statistics');
     },
     starsHref() {
-      return projectStarrersPath(this.project.fullPath);
+      return projectStarrersPath(this.project.fullPath, { organizationPath: null });
     },
     mergeRequestsHref() {
-      return projectMergeRequestsPath(this.project.fullPath);
+      return projectMergeRequestsPath(this.project.fullPath, { organizationPath: null });
     },
     forksHref() {
-      return projectForksPath(this.project.fullPath);
+      return projectForksPath(this.project.fullPath, { organizationPath: null });
     },
     issuesHref() {
-      return projectIssuesPath(this.project.fullPath);
+      return projectIssuesPath(this.project.fullPath, { organizationPath: null });
     },
     isMergeRequestsEnabled() {
       return (

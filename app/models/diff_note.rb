@@ -69,7 +69,7 @@ class DiffNote < Note
     diff_file = diff_file(create_missing_diff_file: false)
     raise NoteDiffFileCreationError, DIFF_FILE_NOT_FOUND_MESSAGE unless diff_file
 
-    diff_line = diff_file.line_for_position(self.original_position)
+    diff_line = diff_file.line_for_position(original_position)
     unless diff_line
       raise NoteDiffFileCreationError, DIFF_LINE_NOT_FOUND_MESSAGE % {
         file_path: diff_file.file_path,
@@ -107,13 +107,13 @@ class DiffNote < Note
   end
 
   def diff_line
-    @diff_line ||= diff_file&.line_for_position(self.original_position)
+    @diff_line ||= diff_file&.line_for_position(original_position)
   end
 
   def original_line_code
     return unless on_text?
 
-    self.diff_file.line_code(self.diff_line)
+    diff_file.line_code(diff_line)
   end
 
   def created_at_diff?(diff_refs)
@@ -121,7 +121,7 @@ class DiffNote < Note
     return true if for_commit?
     return false unless original_position
 
-    self.original_position.diff_refs == diff_refs
+    original_position.diff_refs == diff_refs
   end
 
   # Checks if the current `position` line in the diff
@@ -132,7 +132,7 @@ class DiffNote < Note
     return false unless noteable&.supports_suggestion? && on_text?
     # We don't want to trigger side-effects of `diff_file` call.
     return false unless file = latest_diff_file
-    return false unless line = file.line_for_position(self.position)
+    return false unless line = file.line_for_position(position)
 
     line&.suggestible?
   end
@@ -195,7 +195,7 @@ class DiffNote < Note
   end
 
   def supported?
-    for_commit? || for_design? || self.noteable&.has_complete_diff_refs?
+    for_commit? || for_design? || noteable&.has_complete_diff_refs?
   end
 
   def set_line_code

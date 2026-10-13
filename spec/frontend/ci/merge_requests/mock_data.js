@@ -33,6 +33,11 @@ export const generateMockPipeline = ({
   failedJobsCount: 0,
   userPermissions,
   __typename: 'Pipeline',
+  commitPath: '/gitlab-org/gitlab/-/commit/a43ea6d3a453f8e603fb3558024c084c45c0c9e4',
+  commitTitle: 'Update .gitlab-ci.yml',
+  commitAuthorName: 'Administrator',
+  commitAuthorGravatar:
+    'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80&d=identicon',
   commit: {
     id: 'gid://gitlab/Ci::Commit/1',
     title:
@@ -203,6 +208,11 @@ export const mockPipelineUpdateResponse = {
       name: 'Ruby 3.0 master branch pipeline',
       ref: 'main',
       refPath: 'refs/heads/main',
+      commitPath: '/root/ci-project/-/commit/577d7917b5d80ef8cd8e543186aae41ccd870022',
+      commitTitle: 'Update .gitlab-ci.yml',
+      commitAuthorName: 'Administrator',
+      commitAuthorGravatar:
+        'https://www.gravatar.com/avatar/3699a2727a92a410332ca568fef4353e3ae40c0b0c1fd5043585ceec77dc0e05?s=80&d=identicon',
       commit: {
         id: 'gid://gitlab/Commit/577d7917b5d80ef8cd8e543186aae41ccd870022',
         sha: '577d7917b5d80ef8cd8e543186aae41ccd870022',

@@ -46,7 +46,7 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :system_access do
 
         expect(rendered).to have_selector('#group_resource_access_token_notify_inherited_false[disabled]')
         expect(rendered).to have_selector('#group_resource_access_token_notify_inherited_true[disabled]')
-        expect(rendered).to have_selector('.js-cascading-settings-lock-tooltip-target')
+        expect(rendered).to have_selector('.js-cascading-settings-lock-popover-target')
       end
     end
   end

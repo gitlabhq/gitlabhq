@@ -11,9 +11,7 @@ module Ci
           target_variable.update(update_variable_params.except(:key))
         end
       when :destroy
-        variable.tap do |target_variable|
-          target_variable.destroy
-        end
+        variable.tap(&:destroy)
       end
     end
 

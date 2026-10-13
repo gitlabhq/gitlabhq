@@ -20,6 +20,9 @@ module Gitlab
         CLAUDE_SKILL_PATH = "#{CLAUDE_SKILL_DIR}/SKILL.md".freeze
         AGENTS_SKILL_PATH = '.agents/skills/gitlab-coding-principles/SKILL.md'
         CODEOWNERS_PATH = '.gitlab/CODEOWNERS'
+
+        # Branch suffixes owned by the tooling and metadata MRs, so no team may resolve to them.
+        RESERVED_TEAM_SLUGS = [AutoMr::TOOLING_SLUG, AutoMr::METADATA_SLUG].freeze
         DUO_REVIEW_INSTRUCTIONS_PATH = DuoInstructions::DUO_PATH
 
         # Markers delimiting the gem-managed per-file CODEOWNERS block. The
@@ -35,7 +38,7 @@ module Gitlab
 
         # Files regenerated from the manifest/distilled principles on every
         # run that are committed to the separate "tooling" MR rather than any
-        # per-team branch (see Sync::AutoMr). AGENTS.md, CLAUDE.md, and the
+        # per-team branch (see Sync::AutoMr). AGENTS.md and the
         # SKILL.md files embed the full routing table for ALL principles, so
         # SSOT teams have no stake in their content.
         #
@@ -46,7 +49,6 @@ module Gitlab
         # mergeable.
         TOOLING_PATHS = [
           'AGENTS.md',
-          'CLAUDE.md',
           AGENTS_SKILL_PATH,
           CLAUDE_SKILL_PATH,
           CODEOWNERS_PATH
@@ -403,8 +405,7 @@ module Gitlab
           end
         end
 
-        # Refreshes the generated OpenCode-context section in AGENTS.md (and
-        # copies the result to CLAUDE.md for parity).
+        # Refreshes the generated OpenCode-context section in AGENTS.md.
         def generate_agents_md_context_loading
           routing_table = build_skill_routing_table
 
@@ -433,10 +434,7 @@ module Gitlab
 
           File.write(agents_path, updated)
 
-          claude_path = Workspace.safe_join('CLAUDE.md')
-          File.write(claude_path, updated)
-
-          puts "  Updated AGENTS.md and CLAUDE.md (#{principles.size} principles, " \
+          puts "  Updated AGENTS.md (#{principles.size} principles, " \
             "#{static_entries.size} static entries)"
         end
 
@@ -713,6 +711,12 @@ module Gitlab
               '(principles sharing an owner_team must agree on the branch slug)'
           end
 
+          reserved = reserved_team_slug_principles
+          if reserved.any?
+            errors << "`team_slug:` resolves to a reserved branch suffix (#{RESERVED_TEAM_SLUGS.join(', ')}): " \
+              "#{reserved.join(', ')} (set an explicit `team_slug:`)"
+          end
+
           return if errors.empty?
 
           abort Rainbow("ERROR: manifest.yml principles #{errors.join('; ')}").red
@@ -731,6 +735,11 @@ module Gitlab
               slugs = configs.filter_map { |config| config['team_slug'] }.uniq
               conflicts[handle] = slugs if slugs.size > 1
             end
+        end
+
+        # A team branch whose suffix equals one of the publisher's own branches would be force-pushed over by it.
+        def reserved_team_slug_principles
+          principles.keys.select { |name| RESERVED_TEAM_SLUGS.include?(team_slug(principle_team(name))) }
         end
 
         def principles_filename(name)

@@ -55,7 +55,7 @@ To configure access between your GitLab instance and your local AI Gateway:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567878) in GitLab 18.7 for Self-Managed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567878) in GitLab 18.7 for GitLab Self-Managed.
 - [Available on GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/603860) in GitLab 19.2.
 
 {{< /history >}}
@@ -212,6 +212,11 @@ To add a self-hosted model:
    - **Model family**: Select the model family the deployment belongs to. You can select either a supported or compatible model.
    - **Endpoint**: Enter the URL where the model is hosted.
    - **API key**: Optional. Add an API key if you need one to access the model.
+   - **IAM role to assume**: Optional. Enter the ARN of an IAM role
+     the AI Gateway assumes to call Amazon Bedrock.
+     The role's trust policy must require your GitLab instance ID as `sts:ExternalId`.
+     You cannot combine an IAM role with an API key.
+     For more information, see [assume an IAM role with AWS Bedrock](supported_llm_serving_platforms.md#assume-an-iam-role-with-aws-bedrock).
    - **Model identifier**: Enter the model identifier based on your deployment method. The model identifier should match the following format:
 
      | Deployment method | Format | Example |
@@ -223,7 +228,8 @@ To add a self-hosted model:
      | [Gemini Enterprise Agent Platform](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude) | `vertex_ai/<model ID of the model>` | `vertex_ai/claude-sonnet-4-6@default` |
      | [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)                                                             | `anthropic/<model ID of the model>`                     | `anthropic/claude-opus-4-6` |
      | [OpenAI](https://developers.openai.com/api/docs/models)                                                                | `openai/<model ID of the model>`                        | `openai/gpt-5` |
-     | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
+     | [Azure OpenAI](supported_llm_serving_platforms.md#configure-azure-openai) | `azure/<deployment name>` | `azure/gpt-4o` |
+     | [Azure OpenAI Responses API](supported_llm_serving_platforms.md#use-the-responses-api) | `azure/responses/<deployment name>` | `azure/responses/gpt-5` |
 
 1. Select **Add self-hosted model**.
 
@@ -269,6 +275,33 @@ bedrock/converse/arn:aws:bedrock:us-east-1:123456789012:application-inference-pr
 
 The `converse/` prefix routes the request through the Amazon Bedrock Converse API, which is
 required for ARN-based identifiers.
+
+### Embedding model
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588849) in GitLab 19.1 [with a feature flag](../feature_flags/_index.md) named `semantic_search_user_model_selection`. Disabled by default.
+- Feature flag `semantic_search_user_model_selection` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246289) in GitLab 19.3.
+- Blank API keys [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7173) as supported keys for `openai/` embedding models on October 5, 2026.
+- **Test connection** [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259216) for embedding models in GitLab 19.5.
+
+{{< /history >}}
+
+For the embedding model family, the supported models per platform are:
+
+- API: Use any [OpenAI-compatible embedding model](https://docs.litellm.ai/docs/embedding/supported_embedding#openai-compatible-embedding-models)
+  with the `openai/` prefix.
+  LiteLLM does not support a `custom_openai/` prefix for embedding models.
+  Model identifiers without a prefix default to `openai`.
+- Google Vertex AI: Use any [Vertex AI embedding model](https://docs.litellm.ai/docs/embedding/supported_embedding#vertex-ai-embedding-models).
+  For the latest models, see also the [Gemini Enterprise Agent Platform documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/embeddings/get-text-embeddings)
+  and test the configuration with **Test connection**.
+- Amazon Bedrock: Use any [Bedrock embedding model](https://docs.litellm.ai/docs/embedding/supported_embedding#bedrock-embedding).
+  For the latest models, see also the
+  [Amazon Bedrock documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+  and test the configuration with **Test connection**.
+
+To request support for additional embedding models, see [epic 23917](https://gitlab.com/groups/gitlab-org/-/work_items/23917).
 
 ## Turn on self-hosted beta models and features
 

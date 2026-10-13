@@ -1,7 +1,12 @@
-import { GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
-import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import {
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+  SCOPE_PICKER_SELECTED_ITEM_SUFFIX,
+} from '~/explore/analytics_dashboards/components/constants';
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 
 describe('ScopePickerItem', () => {
@@ -10,7 +15,7 @@ describe('ScopePickerItem', () => {
   const defaultProps = {
     value: 'gitlab-org',
     text: 'GitLab.org',
-    namespaceType: TYPENAME_GROUP,
+    itemType: SCOPE_PICKER_ITEM_TYPE_GROUP,
   };
 
   const createWrapper = (props = {}) => {
@@ -22,11 +27,14 @@ describe('ScopePickerItem', () => {
 
   const findItem = () => wrapper.findByTestId(`scope-picker-item-${defaultProps.value}`);
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-  const findName = () => wrapper.findByTestId('scope-picker-item-name');
+  const findName = () => wrapper.findComponent(GlTruncate);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findExpandButton = () => wrapper.findComponent(GlButton);
   const findParentName = () => wrapper.findByTestId('scope-picker-item-parent');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findLoadMoreButton = () => wrapper.findComponentByTestId('scope-picker-load-more-button');
+  const findRestrictedBadge = () => wrapper.findComponent(GlBadge);
+  const findScreenReaderText = () => wrapper.find('.gl-sr-only');
 
   describe('default', () => {
     beforeEach(() => createWrapper());
@@ -35,9 +43,17 @@ describe('ScopePickerItem', () => {
       expect(findItem().exists()).toBe(true);
     });
 
-    it('renders the namespace name', () => {
-      expect(findName().text()).toBe(defaultProps.text);
-      expect(findCheckbox().text()).toBe(defaultProps.text);
+    it('renders the namespace name inside the checkbox, truncated with a tooltip', () => {
+      expect(findName().props()).toMatchObject({ text: defaultProps.text, withTooltip: true });
+      expect(findCheckbox().findComponent(GlTruncate).exists()).toBe(true);
+    });
+
+    it('prevents a click on the name from also toggling the checkbox, which would undo the selection', () => {
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
+      findName().element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
     });
 
     it('renders an unchecked, enabled checkbox', () => {
@@ -60,14 +76,19 @@ describe('ScopePickerItem', () => {
     it('does not indent the item', () => {
       expect(findItem().classes()).not.toContain('gl-pl-5');
     });
+
+    it('does not mark the item as inaccessible', () => {
+      expect(findRestrictedBadge().exists()).toBe(false);
+      expect(findScreenReaderText().exists()).toBe(false);
+    });
   });
 
   describe.each`
-    namespaceType       | icon
-    ${TYPENAME_GROUP}   | ${'folder-o'}
-    ${TYPENAME_PROJECT} | ${'doc-text'}
-  `('when the namespace is a $namespaceType', ({ namespaceType, icon }) => {
-    beforeEach(() => createWrapper({ namespaceType }));
+    itemType                          | icon
+    ${SCOPE_PICKER_ITEM_TYPE_GROUP}   | ${'folder-o'}
+    ${SCOPE_PICKER_ITEM_TYPE_PROJECT} | ${'doc-text'}
+  `('when itemType=$itemType', ({ itemType, icon }) => {
+    beforeEach(() => createWrapper({ itemType }));
 
     it(`renders the ${icon} icon`, () => {
       expect(findIcon().props('name')).toBe(icon);
@@ -156,6 +177,49 @@ describe('ScopePickerItem', () => {
     });
   });
 
+  describe.each`
+    itemType                          | message
+    ${SCOPE_PICKER_ITEM_TYPE_GROUP}   | ${"This group has restricted access, so you can't select it. You can select available projects and subgroups listed below it instead."}
+    ${SCOPE_PICKER_ITEM_TYPE_PROJECT} | ${"This project has restricted access, so you can't select it."}
+  `('when the user lacks access to an item with itemType=$itemType', ({ itemType, message }) => {
+    beforeEach(() => createWrapper({ itemType, disabled: true, restricted: true }));
+
+    it('renders a restricted badge outside the checkbox', () => {
+      expect(findRestrictedBadge().exists()).toBe(true);
+      expect(findRestrictedBadge().text()).toBe('Restricted');
+      expect(findCheckbox().findComponent(GlBadge).exists()).toBe(false);
+    });
+
+    it('explains the restriction in a tooltip', () => {
+      expect(findRestrictedBadge().attributes('title')).toBe(message);
+    });
+
+    it('lets the badge respond to hover on a disabled row', () => {
+      expect(findRestrictedBadge().classes()).toContain('gl-pointer-events-auto');
+    });
+
+    it('gives the same explanation to assistive tech, outside the hidden checkbox', () => {
+      expect(findScreenReaderText().text()).toBe(message);
+      expect(findCheckbox().find('.gl-sr-only').exists()).toBe(false);
+    });
+  });
+
+  describe('when the user lacks access to a namespace that sits below the group it is listed under', () => {
+    beforeEach(() =>
+      createWrapper({
+        itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT,
+        parentName: 'Tools',
+        disabled: true,
+        restricted: true,
+      }),
+    );
+
+    it('shows the restricted badge in place of the parent name', () => {
+      expect(findRestrictedBadge().exists()).toBe(true);
+      expect(findParentName().exists()).toBe(false);
+    });
+  });
+
   describe('when disabled by a selected ancestor', () => {
     beforeEach(() => createWrapper({ expandable: true, disabled: true }));
 
@@ -166,20 +230,78 @@ describe('ScopePickerItem', () => {
   });
 
   describe('when the namespace sits below the group it is listed under', () => {
-    beforeEach(() => createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Tools' }));
+    beforeEach(() =>
+      createWrapper({ itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT, parentName: 'Tools' }),
+    );
 
     it('names the group it belongs to', () => {
       expect(findParentName().text()).toBe('in Tools');
     });
 
     it('leaves the name unescaped, Vue escaping the interpolation itself', () => {
-      createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Sales & Marketing' });
+      createWrapper({ itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT, parentName: 'Sales & Marketing' });
 
       expect(findParentName().text()).toBe('in Sales & Marketing');
     });
 
     it('gives the full path in a tooltip, so the hierarchy is exact', () => {
       expect(findParentName().attributes('title')).toBe(defaultProps.value);
+    });
+
+    it('gives a pinned pick its real path in the tooltip, not its pinned value', () => {
+      createWrapper({
+        itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT,
+        parentName: 'Tools',
+        value: `gitlab-org/tools/design${SCOPE_PICKER_SELECTED_ITEM_SUFFIX}`,
+      });
+
+      expect(findParentName().attributes('title')).toBe('gitlab-org/tools/design');
+    });
+  });
+
+  describe('when rendering a Load More button', () => {
+    const loadMoreProps = { itemType: SCOPE_PICKER_ITEM_TYPE_LOAD_MORE, text: 'Load more' };
+
+    beforeEach(() => createWrapper(loadMoreProps));
+
+    it('renders a button in place of a namespace', () => {
+      expect(findLoadMoreButton().text()).toBe(loadMoreProps.text);
+      expect(findCheckbox().exists()).toBe(false);
+      expect(findIcon().exists()).toBe(false);
+    });
+
+    it('emits load-more when clicked, without selecting the row', () => {
+      const event = { stopPropagation: jest.fn() };
+
+      findLoadMoreButton().vm.$emit('click', event);
+
+      expect(wrapper.emitted('load-more')).toHaveLength(1);
+      expect(event.stopPropagation).toHaveBeenCalled();
+    });
+
+    // The listbox option the row sits in is disabled, which would otherwise swallow the click.
+    it('keeps the button clickable', () => {
+      expect(findLoadMoreButton().classes()).toContain('gl-pointer-events-auto');
+    });
+
+    it('renders an idle button until a page is asked for', () => {
+      expect(findLoadMoreButton().props('loading')).toBe(false);
+    });
+
+    describe('while its page is in flight', () => {
+      beforeEach(() => createWrapper({ ...loadMoreProps, loading: true }));
+
+      it('sets the button to loading', () => {
+        expect(findLoadMoreButton().props('loading')).toBe(true);
+      });
+    });
+
+    describe('when it extends a group', () => {
+      beforeEach(() => createWrapper({ ...loadMoreProps, nested: true }));
+
+      it('indents to line up with the rows it extends', () => {
+        expect(findItem().classes()).toContain('gl-pl-5');
+      });
     });
   });
 

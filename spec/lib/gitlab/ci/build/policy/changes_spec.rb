@@ -25,9 +25,9 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
       let(:seed) { double('build seed', to_resource: ci_build) }
 
       before do
-        allow(pipeline).to receive(:modified_paths) do
+        allow(pipeline).to receive(:modified_paths).and_return(
           %w[some/modified/ruby/file.rb some/other_file.txt some/.dir/file]
-        end
+        )
       end
 
       it 'is satisfied by matching literal path' do
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
 
       context 'when modified paths can not be evaluated' do
         before do
-          allow(pipeline).to receive(:modified_paths) { nil }
+          allow(pipeline).to receive(:modified_paths).and_return(nil)
         end
 
         it 'is always satisfied' do

@@ -17,8 +17,9 @@ describe('DivergingBarChartPresenter', () => {
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const errorMessages = () => (wrapper.emitted('error') ?? []).map(([error]) => error.message);
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(DivergingBarChartPresenter, {
+      provide,
       propsData: {
         data: MOCK_AGGREGATED_DATA_ONE_DIM,
         fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
@@ -148,6 +149,20 @@ describe('DivergingBarChartPresenter', () => {
 
       expect(findChart().exists()).toBe(false);
       expect(wrapper.emitted('error')).toBeUndefined();
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createWrapper({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createWrapper();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
     });
   });
 });

@@ -101,7 +101,7 @@ export const x509CertificateDetailsProp = {
   subjectKeyIdentifier: 'BC BC BC BC BC BC BC BC',
 };
 
-export const tippingBranchesMock = ['main', 'development'];
+const tippingBranchesMock = ['main', 'development'];
 
 export const containingBranchesMock = ['branch-1', 'branch-2', 'branch-3'];
 
@@ -114,22 +114,6 @@ export const mockCommitReferencesResponse = {
         containingTags: { names: ['tag-1'], __typename: 'CommitParentNames' },
         tippingBranches: { names: tippingBranchesMock, __typename: 'CommitParentNames' },
         tippingTags: { names: ['tag-latest'], __typename: 'CommitParentNames' },
-        __typename: 'CommitReferences',
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
-export const mockOnlyBranchesResponse = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/1',
-      commitReferences: {
-        containingBranches: { names: ['branch-1'], __typename: 'CommitParentNames' },
-        containingTags: { names: [], __typename: 'CommitParentNames' },
-        tippingBranches: { names: tippingBranchesMock, __typename: 'CommitParentNames' },
-        tippingTags: { names: [], __typename: 'CommitParentNames' },
         __typename: 'CommitReferences',
       },
       __typename: 'Project',

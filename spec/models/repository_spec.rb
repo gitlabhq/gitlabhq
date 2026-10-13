@@ -13,7 +13,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
-  let(:broken_repository) { create(:project, :broken_storage).repository }
+  let(:broken_repository) { build_stubbed(:project, repository_storage: 'broken').repository }
   let(:git_user) { Gitlab::Git::User.from_gitlab(user) }
   let(:message) { 'Test message' }
 
@@ -635,6 +635,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
           commits
         end
       end
+
+      context 'when include_shortstat is passed' do
+        let(:kwargs) { { limit: 1, include_shortstat: true } }
+
+        it 'passes include_shortstat option to perform the query' do
+          expect(Gitlab::Git::Commit).to receive(:where)
+            .with(a_hash_including(include_shortstat: true))
+            .and_call_original
+
+          commits
+        end
+      end
     end
 
     context "when 'author' is set" do
@@ -885,6 +897,26 @@ RSpec.describe Repository, feature_category: :source_code_management do
         it 'returns next_cursor' do
           expect(repository.list_commits(ref: 'master', pagination_params: { limit: 10 }).next_cursor).to eq('eyJjb21taXRfaWQiOiI1NGZjYzIxNGI5NGU3OGQ3YTQxYTlhOGZlNmQ4N2E1ZTU5NTAwZTUxIn0=')
         end
+      end
+    end
+
+    describe 'follow' do
+      let(:raw_repo) { repository.raw_repository }
+
+      before do
+        allow(raw_repo).to receive(:list_commits).and_call_original
+      end
+
+      it 'defaults follow to false' do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb')
+
+        expect(raw_repo).to have_received(:list_commits).with(a_hash_including(follow: false))
+      end
+
+      it 'forwards follow: true to the raw repository' do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb', follow: true)
+
+        expect(raw_repo).to have_received(:list_commits).with(a_hash_including(follow: true))
       end
     end
 
@@ -1673,17 +1705,26 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it 'fetches the URL without creating a remote' do
       expect(repository)
         .to receive(:fetch_remote)
-        .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "", resolved_address: '')
+        .with(url, forced: false, prune: true, refmap: :all_refs, no_tags: false, http_authorization_header: "", resolved_address: '')
         .and_return(nil)
 
       repository.fetch_as_mirror(url)
+    end
+
+    it 'passes no_tags through to fetch_remote' do
+      expect(repository)
+        .to receive(:fetch_remote)
+        .with(url, forced: false, prune: true, refmap: :all_refs, no_tags: true, http_authorization_header: "", resolved_address: '')
+        .and_return(nil)
+
+      repository.fetch_as_mirror(url, no_tags: true)
     end
 
     context 'with http_host provided' do
       it 'fetches the URL with resolved_address value' do
         expect(repository)
           .to receive(:fetch_remote)
-          .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "", resolved_address: '172.16.123.1')
+          .with(url, forced: false, prune: true, refmap: :all_refs, no_tags: false, http_authorization_header: "", resolved_address: '172.16.123.1')
           .and_return(nil)
 
         repository.fetch_as_mirror(url, resolved_address: '172.16.123.1')
@@ -1692,7 +1733,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#fetch_ref' do
-    let(:broken_repository) { create(:project, :broken_storage).repository }
+    let(:broken_repository) { build_stubbed(:project, repository_storage: 'broken').repository }
 
     describe 'when storage is broken', :broken_storage do
       it 'raises a storage error' do
@@ -2004,8 +2045,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     with_them do
       it do
-        allow(repository).to receive(:branch_names).and_return(branch_names)
-        allow(repository).to receive(:tag_names).and_return(tag_names)
+        allow(repository).to receive_messages(branch_names: branch_names, tag_names: tag_names)
 
         expect(repository.has_ambiguous_refs?).to eq(result)
       end
@@ -2315,103 +2355,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#branch_names', :clean_gitlab_redis_cache do
-    let_it_be(:project) { create(:project, :repository) }
-    let(:repository) { project.repository }
-    let(:branch_names) { %w[main develop] }
+    let(:fake_branch_names) { ['foobar'] }
 
-    it 'bypasses cache and calls the uncached method directly' do
-      expect(repository).not_to receive(:cache_method_output_as_redis_set)
-      allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
+    it 'gets cached across Repository instances', :aggregate_failures do
+      allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
 
-      result = repository.branch_names
-      expect(result).to match_array(branch_names)
-    end
+      expect(repository.branch_names).to match_array(fake_branch_names)
 
-    it 'does not use caching mechanism' do
-      allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
-
-      # Call multiple times to verify no caching
-      first_call = repository.branch_names
-      second_call = repository.branch_names
-
-      # Should call raw repository each time (no caching)
-      expect(repository.raw_repository).to have_received(:branch_names).twice
-      expect(first_call).to match_array(branch_names)
-      expect(second_call).to match_array(branch_names)
-    end
-
-    context 'when avoid_branch_names_cache feature flag is disabled' do
-      before do
-        stub_feature_flags(avoid_branch_names_cache: false)
-        repository.expire_branches_cache
-      end
-
-      it 'uses caching mechanism' do
-        expect(repository).to receive(:cache_method_output_as_redis_set).and_call_original
-        allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
-
-        repository.branch_names
-      end
-
-      it 'returns cached result on subsequent calls' do
-        allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
-
-        first_result = repository.branch_names
-        second_result = repository.branch_names
-
-        expect(first_result).to eq(second_result)
-        # Should only call the raw repository once due to caching
-        expect(repository.raw_repository).to have_received(:branch_names).once
-      end
-    end
-
-    context 'fallback behavior' do
-      it 'returns empty array when no branches exist' do
-        allow(repository.raw_repository).to receive(:branch_names).and_return([])
-
-        result = repository.branch_names
-        expect(result).to eq([])
-      end
-    end
-  end
-
-  context 'branch_names_include? method' do
-    let_it_be(:project) { create(:project, :repository) }
-    let(:repository) { project.repository }
-    let(:branch_names) { %w[main develop] }
-
-    it 'bypasses cache for include check' do
-      allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
-
-      expect(repository.branch_names_include?('main')).to be(true)
-      expect(repository.branch_names_include?('feature')).to be(false)
-
-      # Should call branch_names for each include check when cache is bypassed
-      expect(repository.raw_repository).to have_received(:branch_names).at_least(:twice)
-    end
-
-    context 'when avoid_branch_names_cache feature flag is disabled' do
-      before do
-        stub_feature_flags(avoid_branch_names_cache: false)
-        # Stub ref_existence_check_gitaly to ensure consistent test behavior
-        # This prevents the ref existence check from interfering with our cache testing
-        # by forcing include? method to use the branch_names cache path
-        stub_feature_flags(ref_existence_check_gitaly: false)
-      end
-
-      it 'uses caching for include check' do
-        allow(repository.raw_repository).to receive(:branch_names).and_return(branch_names)
-
-        # First call should populate cache
-        repository.branch_names
-
-        # Include check should use cached data
-        expect(repository.branch_names_include?('main')).to be(true)
-        expect(repository.branch_names_include?('feature')).to be(false)
-
-        # Should only call raw repository once due to caching
-        expect(repository.raw_repository).to have_received(:branch_names).once
-      end
+      fresh_repository = Project.find(project.id).repository
+      expect(fresh_repository.raw_repository).not_to receive(:branch_names)
+      expect(fresh_repository.branch_names).to match_array(fake_branch_names)
     end
   end
 
@@ -4557,16 +4510,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
       )
     end
 
-    it 'delegates diffs retrieval to BlobPairsService and verifies the returned diff files' do
-      expected_diff_files = [
+    let(:expected_diff_files) do
+      [
         instance_double(Gitlab::Diff::File, new_path: 'a.md'),
         instance_double(Gitlab::Diff::File, new_path: 'b.md')
       ]
+    end
 
+    it 'delegates diffs retrieval to BlobPairsService and verifies the returned diff files' do
       allow_next_instance_of(Gitlab::Git::BlobPairsDiffs) do |svc|
         allow(svc)
           .to receive(:diffs_by_changed_paths)
-          .with(diff_refs, 0, 10)
+          .with(diff_refs, 0, 10, sorted: false)
           .and_yield(expected_diff_files)
       end
 
@@ -4577,6 +4532,25 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       expect(retrieved_diff_files).to eq(expected_diff_files)
+    end
+
+    context 'when sorted is true' do
+      it 'delegates diffs retrieval to BlobPairsService with sorted' do
+        allow_next_instance_of(Gitlab::Git::BlobPairsDiffs) do |svc|
+          allow(svc)
+            .to receive(:diffs_by_changed_paths)
+            .with(diff_refs, 0, 10, sorted: true)
+            .and_yield(expected_diff_files)
+        end
+
+        retrieved_diff_files = []
+
+        repository.diffs_by_changed_paths(diff_refs, 0, 10, sorted: true) do |diff_files|
+          retrieved_diff_files.concat(diff_files)
+        end
+
+        expect(retrieved_diff_files).to eq(expected_diff_files)
+      end
     end
   end
 

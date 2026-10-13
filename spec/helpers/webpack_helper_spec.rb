@@ -73,6 +73,56 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
         expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
       end
     end
+
+    context 'when the rspack_production_assets flag is enabled in production' do
+      before do
+        stub_rails_env('production')
+        stub_feature_flags(rspack_production_assets: true)
+      end
+
+      it 'uses the Rspack manifest' do
+        expect(helper.bundler_manifest_filename).to eq('manifest.rspack.json')
+      end
+    end
+
+    context 'when only the rspack_production_assets_opt_in flag is enabled in production' do
+      let(:user) { build_stubbed(:user) }
+
+      before do
+        stub_rails_env('production')
+        stub_feature_flags(rspack_production_assets: false)
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'uses the Rspack manifest for an opted-in user' do
+        stub_feature_flags(rspack_production_assets_opt_in: user)
+
+        expect(helper.bundler_manifest_filename).to eq('manifest.rspack.json')
+      end
+
+      it 'keeps the Webpack manifest for other users' do
+        stub_feature_flags(rspack_production_assets_opt_in: build_stubbed(:user))
+
+        expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
+      end
+
+      it 'keeps the Webpack manifest for anonymous requests' do
+        allow(helper).to receive(:current_user).and_return(nil)
+        stub_feature_flags(rspack_production_assets_opt_in: user)
+
+        expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
+      end
+    end
+
+    context 'when the rspack_production_assets flag is enabled outside production' do
+      before do
+        stub_feature_flags(rspack_production_assets: true)
+      end
+
+      it 'keeps the Webpack manifest' do
+        expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
+      end
+    end
   end
 
   context 'when vite enabled' do
@@ -81,8 +131,7 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
     before do
       stub_rails_env('development')
 
-      allow(helper).to receive(:vite_javascript_tag).and_return('vite')
-      allow(helper).to receive(:vite_enabled?).and_return(true)
+      allow(helper).to receive_messages(vite_javascript_tag: 'vite', vite_enabled?: true)
     end
 
     describe '#webpack_bundle_tag' do

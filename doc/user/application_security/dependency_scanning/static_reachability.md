@@ -152,33 +152,33 @@ language.
 
 | Language                          | Maturity | Supported package managers                  | Supported file types |
 |-----------------------------------|----------|---------------------------------------------|----------------------|
-| Python<sup>1</sup>                | Beta     | `pip`, `pipenv`<sup>2</sup>, `poetry`, `uv` | `.py`                |
-| JavaScript/TypeScript<sup>3</sup> | Beta     | `npm`, `pnpm`, `yarn`                       | `.js`, `.ts`         |
-| Java<sup>4</sup>                  | Beta     | `maven`<sup>5</sup>, `gradle`<sup>6</sup>   | `.java`              |
+| Python[^pipdeptree-support]                | Beta     | `pip`, `pipenv`[^pipenv-static-reachability], `poetry`, `uv` | `.py`                |
+| JavaScript/TypeScript[^support-frontend-frameworks] | Beta     | `npm`, `pnpm`, `yarn`                       | `.js`, `.ts`         |
+| Java[^java-dynamic-nature]                  | Beta     | `maven`[^graph-files], `gradle`[^lockfile-support]   | `.java`              |
 
-**Footnotes**:
+[^pipdeptree-support]: When using dependency scanning with `pipdeptree`,
+    [optional dependencies](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)
+    are marked as direct dependencies instead of as transitive dependencies. Static reachability
+    analysis might not identify those packages as in use. For example, requiring `passlib[bcrypt]`
+    may result in `passlib` being marked as `in_use` and `bcrypt` being marked as `not_found`. For more
+    details, see [pip](dependency_scanning_sbom/_index.md#pip).
+[^pipenv-static-reachability]: For Python `pipenv`, static reachability analysis doesn't support `Pipfile.lock` files. Support
+    is available only for `pipenv.graph.json` because it supports a dependency graph.
+[^support-frontend-frameworks]: No support for frontend frameworks.
+[^java-dynamic-nature]: Java's dynamic nature causes the following issues which can result in higher false negative
+    rates for projects using modern frameworks:
 
-1. When using dependency scanning with `pipdeptree`,
-   [optional dependencies](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)
-   are marked as direct dependencies instead of as transitive dependencies. Static reachability
-   analysis might not identify those packages as in use. For example, requiring `passlib[bcrypt]`
-   may result in `passlib` being marked as `in_use` and `bcrypt` being marked as `not_found`. For more
-   details, see [pip](dependency_scanning_sbom/_index.md#pip).
-1. For Python `pipenv`, static reachability analysis doesn't support `Pipfile.lock` files. Support
-   is available only for `pipenv.graph.json` because it supports a dependency graph.
-1. No support for frontend frameworks.
-1. Java's dynamic nature causes the following issues which can result in higher false negative
-   rates for projects using modern frameworks:
-   - Static reachability analysis detects explicit usage through direct imports, Java reflection
-     patterns, and Java Database Connectivity connection strings in source code. It cannot identify
-     dependencies loaded dynamically at runtime, such as those using dependency injection frameworks
-     like Spring Boot.
-   - Coverage is limited to packages in the GitLab advisory database and the most
-     widely-depended-upon packages in Maven Central.
-1. Use `maven.graph.json` files as described in the
-   [Maven](dependency_scanning_sbom/_index.md#maven) instructions.
-1. Use dependency lockfiles as described in the [Gradle](dependency_scanning_sbom/_index.md#gradle)
-   instructions.
+    - Static reachability analysis detects explicit usage through direct imports, Java reflection
+      patterns, and Java Database Connectivity connection strings in source code. It cannot identify
+      dependencies loaded dynamically at runtime, such as those using dependency injection frameworks
+      like Spring Boot.
+    - Coverage is limited to packages in the GitLab advisory database and the most
+      widely-depended-upon packages in Maven Central.
+
+[^graph-files]: Use `maven.graph.json` files as described in the
+    [Maven](dependency_scanning_sbom/_index.md#maven) instructions.
+[^lockfile-support]: Use dependency lockfiles as described in the [Gradle](dependency_scanning_sbom/_index.md#gradle)
+    instructions.
 
 ## Offline environment
 

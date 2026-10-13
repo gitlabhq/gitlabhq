@@ -41,9 +41,11 @@ RSpec.describe Gitlab::Webpack::Manifest, feature_category: :tooling do
   before do
     # Test that config variables work while we're here
     allow(Gitlab.config.webpack.dev_server).to receive_messages(host: 'hostname', port: 2000, https: false)
-    allow(Gitlab.config.webpack).to receive(:manifest_filename).and_return('my_manifest.json')
-    allow(Gitlab.config.webpack).to receive(:public_path).and_return('public_path')
-    allow(Gitlab.config.webpack).to receive(:output_dir).and_return('manifest_output')
+    allow(Gitlab.config.webpack).to receive_messages(
+      manifest_filename: 'my_manifest.json',
+      public_path: 'public_path',
+      output_dir: 'manifest_output'
+    )
   end
 
   context "with dev server enabled" do

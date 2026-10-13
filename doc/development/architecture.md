@@ -373,7 +373,7 @@ Component statuses are linked to configuration documentation for each component.
 
 ### Component list
 
-| Component                                             | Description                                                          | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/self_compiled/_index.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
+| Component                                             | Description                                                          | [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) | [GitLab chart](https://docs.gitlab.com/charts/) | [minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/self_compiled/_index.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) |  [CE/EE](https://about.gitlab.com/install/ce-or-ee/)  |
 |-------------------------------------------------------|----------------------------------------------------------------------|:--------------:|:--------------:|:------------:|:----------------:|:----------:|:------:|:---:|:-------:|
 | [AI Gateway](#ai-gateway)                             | GitLab AI-native features                                            |       ⤓      |       ❌        |      ✅       |      ❌           |     ✅      |  ⤓      |  ✅  | EE Only |
 | [GitLab Duo Workflow Service](#gitlab-duo-workflow-service)                             | GitLab AI-native features                                            |       ⤓       |       ❌        |      ✅       |      ❌           |     ✅      |   ⤓      |  ✅  | EE Only |
@@ -451,7 +451,7 @@ GitLab can be considered to have two layers from a process perspective:
 - GitLab.com: [Monitoring of GitLab.com](https://runbooks.gitlab.com/ai-gateway/)
 
 GitLab AI Gateway is a standalone-service that will give access to AI features to all users of
-GitLab, no matter which instance they are using: self-managed, dedicated, or GitLab.com.
+GitLab, no matter which instance they are using: GitLab Self-Managed, dedicated, or GitLab.com.
 
 You can read more:
 

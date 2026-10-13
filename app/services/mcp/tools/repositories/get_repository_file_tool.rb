@@ -56,6 +56,7 @@ module Mcp
           identifier = project_identifier(args)
           project = find_project!(identifier)
           authorize_read_code!(project, identifier)
+          validate_numeric_project_id_consistency!(project, identifier, args[:project_id]) if args[:url].present?
           ref, path, ref_type = resolve_ref_and_path(project, args)
 
           { project: project, ref: ref, path: path, ref_type: ref_type }
@@ -101,6 +102,15 @@ module Mcp
           end
 
           [args[:ref], normalize_path(args[:file_path]), nil]
+        end
+
+        def validate_numeric_project_id_consistency!(project, url_path, raw_project_id)
+          project_id = raw_project_id.to_s
+          return unless ::Gitlab::ResourceLookup::INTEGER_ID_REGEX.match?(project_id)
+          return if project.id == project_id.to_i
+
+          raise ArgumentError,
+            "Project mismatch: project_id is '#{project_id}' but url contains '#{url_path}'"
         end
 
         def validate_url_consistency!(args, parsed, url_ref, url_path)
@@ -240,7 +250,8 @@ module Mcp
 
         def excluded_response
           ::Mcp::Tools::Base::Response.error(
-            "File '#{target[:path]}' is excluded from AI context by this project's settings and cannot be read."
+            "File '#{target[:path]}' is excluded from AI context by this project's settings and cannot be read.",
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
           )
         end
 
@@ -260,27 +271,31 @@ module Mcp
         def ref_not_found_response
           ::Mcp::Tools::Base::Response.error(
             "Ref '#{target[:ref]}' not found. Provide an existing branch name, tag name, or commit SHA, " \
-              "or use HEAD for the default branch."
+              "or use HEAD for the default branch.",
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
         def file_not_found_response
           ::Mcp::Tools::Base::Response.error(
             "File '#{target[:path]}' does not exist at ref '#{target[:ref]}'. The path must be relative to the " \
-              "repository root. Do not retry the same path; use the search tool with scope 'blobs' to locate the file."
+              "repository root. Do not retry the same path; use the search tool with scope 'blobs' to locate the file.",
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
         def lfs_response(node)
           ::Mcp::Tools::Base::Response.error(
             "File '#{target[:path]}' is stored in LFS (#{node['externalStorage']}) and its content cannot be read " \
-              "with this tool. Size: #{node['rawSize']} bytes."
+              "with this tool. Size: #{node['rawSize']} bytes.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
           )
         end
 
         def binary_response(node)
           ::Mcp::Tools::Base::Response.error(
-            "File '#{target[:path]}' is binary and cannot be returned as text. Size: #{node['rawSize']} bytes."
+            "File '#{target[:path]}' is binary and cannot be returned as text. Size: #{node['rawSize']} bytes.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
           )
         end
       end

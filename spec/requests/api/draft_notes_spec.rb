@@ -25,15 +25,13 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it "returns only draft notes authored by the current user",
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17013' do
+    it "returns only draft notes authored by the current user" do
       get api(base_url, user)
 
-      draft_note_ids = json_response.pluck("id")
-
-      expect(draft_note_ids).to include(draft_note_by_current_user.id)
-      expect(draft_note_ids).not_to include(draft_note_by_random_user.id)
-      expect(draft_note_ids).not_to include(merge_request_note.id)
+      # draft_notes and notes have independent id sequences, so the previous
+      # assertion against merge_request_note.id only held while those sequences
+      # happened not to collide. Compare draft note ids with each other instead.
+      expect(json_response.pluck("id")).to contain_exactly(draft_note_by_current_user.id)
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_merge_request_draft_note do
@@ -355,6 +353,32 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         it "returns the draft note with no changes" do
           expect { update_draft_note({}) }
             .not_to change { draft_note_by_current_user.note }
+        end
+      end
+
+      context "when the draft note is on a diff" do
+        let_it_be(:diff_draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+
+        def update_diff_draft_note(params)
+          put api("#{base_url}/#{diff_draft_note.id}", user), params: params
+        end
+
+        it "keeps the existing position when only the note is updated" do
+          expect { update_diff_draft_note(basic_update_params) }
+            .not_to change { diff_draft_note.reload.position.to_h }
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response["note"]).to eq(basic_update_params[:note])
+          expect(json_response.dig("position", "new_path")).to eq(diff_draft_note.position.new_path)
+        end
+
+        it "updates the position when one is provided" do
+          position = diff_draft_note.position.to_h.merge(position_type: 'file').except(:ignore_whitespace_change)
+
+          update_diff_draft_note(basic_update_params.merge(position: position))
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(diff_draft_note.reload.position.position_type).to eq('file')
         end
       end
 

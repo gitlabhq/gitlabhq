@@ -13,6 +13,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { NUMPAD_ENTER_KEY } from '~/lib/utils/keys';
 import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import savedRepliesQuery from 'ee_else_ce/vue_shared/components/markdown/saved_replies.query.graphql';
 import {
@@ -187,6 +188,20 @@ describe('Comment templates dropdown', () => {
           );
         });
       });
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    beforeEach(async () => {
+      wrapper = createComponent();
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+    });
+
+    it('selects the focused item on NumpadEnter', async () => {
+      await wrapper.find('.gl-new-dropdown-item').trigger('keydown', { code: NUMPAD_ENTER_KEY });
+
+      expect(wrapper.emitted('select')).toEqual([['Saved Reply Content']]);
     });
   });
 

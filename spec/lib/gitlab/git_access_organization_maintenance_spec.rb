@@ -36,81 +36,62 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   end
 
   describe '#check_organization_maintenance!' do
-    context 'with the organization maintenance enforcement feature flag enabled' do
+    context 'when the project organization is in maintenance for a time-bounded reason' do
       before do
-        stub_feature_flags(organization_maintenance_enforcement: true)
+        organization.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
       end
 
-      context 'when the project organization is in maintenance for a time-bounded reason' do
-        before do
-          organization.start_maintenance(maintenance_reason: 'migration')
-          organization.confirm_maintenance
-        end
-
-        it 'blocks both push and pull access with the time-bounded maintenance message' do
-          expect { push_access_check }.to raise_forbidden(organization.maintenance_message)
-          expect { pull_access_check }.to raise_forbidden(organization.maintenance_message)
-        end
-      end
-
-      context 'when the project organization is in maintenance for an indefinite reason' do
-        before do
-          organization.start_maintenance(maintenance_reason: 'legal')
-          organization.confirm_maintenance
-        end
-
-        it 'blocks both push and pull access with the indefinite maintenance message' do
-          expect { push_access_check }.to raise_forbidden(organization.maintenance_message)
-          expect { pull_access_check }.to raise_forbidden(organization.maintenance_message)
-        end
-      end
-
-      context 'when the project organization is active' do
-        it 'allows push and pull access' do
-          expect { push_access_check }.not_to raise_error
-          expect { pull_access_check }.not_to raise_error
-        end
-      end
-
-      context 'when the container does not expose an organization' do
-        before do
-          allow(project).to receive(:respond_to?).and_call_original
-          allow(project).to receive(:respond_to?).with(:organization).and_return(false)
-        end
-
-        it 'allows push and pull access' do
-          expect { push_access_check }.not_to raise_error
-          expect { pull_access_check }.not_to raise_error
-        end
-      end
-
-      context 'when the actor has no access to the project' do
-        let(:actor) { create(:user) }
-
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          organization.start_maintenance(maintenance_reason: 'migration')
-          organization.confirm_maintenance
-        end
-
-        it 'raises the access error rather than disclosing the maintenance status' do
-          expect { pull_access_check }.to raise_error do |error|
-            expect(error.message).not_to eq(organization.maintenance_message)
-          end
-        end
+      it 'blocks both push and pull access with the time-bounded maintenance message' do
+        expect { push_access_check }.to raise_forbidden(organization.maintenance_message)
+        expect { pull_access_check }.to raise_forbidden(organization.maintenance_message)
       end
     end
 
-    context 'with the organization maintenance enforcement feature flag disabled' do
+    context 'when the project organization is in maintenance for an indefinite reason' do
       before do
-        stub_feature_flags(organization_maintenance_enforcement: false)
-        organization.start_maintenance(maintenance_reason: 'migration')
+        organization.start_maintenance(maintenance_reason: 'legal')
         organization.confirm_maintenance
+      end
+
+      it 'blocks both push and pull access with the indefinite maintenance message' do
+        expect { push_access_check }.to raise_forbidden(organization.maintenance_message)
+        expect { pull_access_check }.to raise_forbidden(organization.maintenance_message)
+      end
+    end
+
+    context 'when the project organization is active' do
+      it 'allows push and pull access' do
+        expect { push_access_check }.not_to raise_error
+        expect { pull_access_check }.not_to raise_error
+      end
+    end
+
+    context 'when the container does not expose an organization' do
+      before do
+        allow(project).to receive(:respond_to?).and_call_original
+        allow(project).to receive(:respond_to?).with(:organization).and_return(false)
       end
 
       it 'allows push and pull access' do
         expect { push_access_check }.not_to raise_error
         expect { pull_access_check }.not_to raise_error
+      end
+    end
+
+    context 'when the actor has no access to the project' do
+      let(:actor) { create(:user) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        organization.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
+      end
+
+      it 'raises the access error rather than disclosing the maintenance status' do
+        expect { pull_access_check }.to raise_error do |error|
+          expect(error.message).not_to eq(organization.maintenance_message)
+        end
       end
     end
   end

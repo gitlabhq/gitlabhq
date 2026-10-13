@@ -68,8 +68,8 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Test quality for authentication and authorization specs — positive and negative path coverage, token edge cases (expired, revoked, wrong-scope), the authorization actor matrix (authorized, unauthorized, anonymous, admin), auth-stubbing red flags, rate-limit specs, and narrow token scopes in specs**: Read .ai/principles/distilled/authentication-testing.md
 - **Jest, jsdom, Vue Test Utils patterns**: Read .ai/principles/distilled/testing-jest.md
 - **Rails migrations testing patterns**: Read .ai/principles/distilled/testing-migrations.md
-- **Frontend testing hierarchy — which test type to write (unit vs MSW integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns**: Read .ai/principles/distilled/testing-frontend-testing-hierarchy.md
-- **How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)**: Read .ai/principles/distilled/testing-msw.md
+- **Frontend testing hierarchy — which test type to write (unit vs frontend integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns**: Read .ai/principles/distilled/testing-frontend-testing-hierarchy.md
+- **How to write frontend integration tests correctly (setup, mounting, handlers, fixtures, request counting)**: Read .ai/principles/distilled/testing-frontend-integration.md
 - **End-to-end (QA) test patterns — resource readiness and explicit waits, reliable navigation, and avoiding timing-based flakiness in qa/ specs**: Read .ai/principles/distilled/testing-e2e.md
 
 **Performance:**
@@ -90,6 +90,12 @@ ALWAYS load Database principles regardless of which files you are editing.
 **Import:**
 - **Import/Export framework internals and general importer-design points that are NOT specific to particular import source**: Read .ai/principles/distilled/import-fundamentals.md *(load for any import work)*
 - **Bulk Import/Offline Transfer specific import/export documentation**: Read .ai/principles/distilled/import-direct-and-offline.md *(also load: .ai/principles/distilled/import-fundamentals.md)*
+
+**Webhooks:**
+- **Webhook definitions, triggering, and payload building for project, group, and system webhooks**: Read .ai/principles/distilled/webhooks.md
+
+**MCP Server:**
+- **MCP server tool development (naming, architecture, GraphQL integration, versioning, governance)**: Read .ai/principles/distilled/mcp-server.md
 
 - **Git, commits, or branches**: Read .ai/git.md
 - **CI/CD pipelines or `.gitlab-ci.yml`**: Read .ai/ci-cd.md

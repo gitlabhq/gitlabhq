@@ -211,6 +211,10 @@ module API
         ]
       end
 
+      def self.integration_tier(_slug)
+        nil
+      end
+
       def self.inheritance_field
         {
           required: false,

@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :project_ci_feature_usage, class: 'Projects::CiFeatureUsage' do
     project factory: :project
-    feature { :code_coverage } # rubocop: disable RSpec/EmptyExampleGroup
+    add_attribute(:feature) { :code_coverage }
 
     default_branch { false }
   end

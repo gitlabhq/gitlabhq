@@ -68,33 +68,31 @@ const buildTable = () =>
 describe('renderMarkdownTables', () => {
   beforeEach(() => {
     mockMarkdownTableDestroyed.mockClear();
-    window.gon = {
-      features: { editorStickyTableHeaders: true, markdownSortableTableColumns: true },
-    };
   });
 
   afterEach(async () => {
     document.body.innerHTML = '';
     await waitForPromises();
-    delete window.gon;
   });
 
-  describe('when both feature flags are disabled', () => {
-    beforeEach(() => {
-      window.gon.features.editorStickyTableHeaders = false;
-      window.gon.features.markdownSortableTableColumns = false;
-    });
-
-    it('leaves the table untouched', () => {
+  describe('sticky headers', () => {
+    it('mounts inside a sticky-header wrapper', async () => {
       const table = buildTable();
       const container = appendTable(table);
 
-      expect(renderMarkdownTables([table])).toBeNull();
-      expect(container.contains(table)).toBe(true);
+      renderMarkdownTables([table]);
+      await waitForPromises();
+
+      const wrapper = container.querySelector('[data-sticky-header]');
+      expect(wrapper).not.toBeNull();
+      // The component's <table> is a direct child of the wrapper so the
+      // existing `[data-sticky-header] > table` CSS applies.
+      expect(wrapper.querySelector('table').parentElement).toBe(wrapper);
+      expect(wrapper.querySelector('[data-sort-icon]')).not.toBeNull();
     });
   });
 
-  describe('when at least one feature flag is enabled', () => {
+  describe('table rendering', () => {
     it('replaces the original table with a mounted Vue component', async () => {
       const table = buildTable();
       const container = appendTable(table);
@@ -139,6 +137,49 @@ describe('renderMarkdownTables', () => {
       expect(container.querySelector('thead')).toBeNull();
       expect(container.querySelectorAll('tbody tr')).toHaveLength(3);
       expect(container.querySelectorAll('th')).toHaveLength(0);
+    });
+
+    it('keeps the table footer', async () => {
+      const table = buildTable();
+      const tfoot = document.createElement('tfoot');
+      const footerRow = document.createElement('tr');
+      ['Average', '30'].forEach((content) => {
+        footerRow.appendChild(createCell('td', content));
+      });
+      tfoot.appendChild(footerRow);
+      table.appendChild(tfoot);
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const renderedTable = container.querySelector('table');
+      expect(renderedTable.tFoot).not.toBeNull();
+      expect(renderedTable.tFoot.textContent).toContain('Average');
+      expect(Array.from(renderedTable.children, (el) => el.tagName)).toEqual([
+        'THEAD',
+        'TBODY',
+        'TFOOT',
+      ]);
+    });
+
+    it('keeps the table caption', async () => {
+      const table = buildTable();
+      const caption = document.createElement('caption');
+      caption.textContent = 'Team members';
+      table.insertBefore(caption, table.firstChild);
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const renderedTable = container.querySelector('table');
+      const renderedCaption = renderedTable.caption;
+      expect(renderedCaption).not.toBeNull();
+      expect(renderedCaption.textContent).toBe('Team members');
+      expect(Array.from(renderedTable.children, (el) => el.tagName)).toEqual([
+        'CAPTION',
+        'THEAD',
+        'TBODY',
+      ]);
     });
 
     describe('cell content', () => {
@@ -227,7 +268,7 @@ describe('renderMarkdownTables', () => {
         const container = appendTable(table);
 
         await renderMarkdownTables([table]);
-        container.querySelector('thead th').click();
+        container.querySelector('thead th button').click();
         await waitForPromises();
 
         const sorted = Array.from(container.querySelectorAll('tbody td'));
@@ -260,6 +301,64 @@ describe('renderMarkdownTables', () => {
       expect(renderMarkdownTables([table])).toBeNull();
       expect(container.querySelectorAll('table')).toHaveLength(1);
       expect(container.querySelector('table')).toBe(firstTable);
+    });
+
+    it('does not re-mount the table rendered by the component on a later pass', async () => {
+      const table = buildTable();
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+      const renderedTable = container.querySelector('table');
+
+      expect(renderMarkdownTables([renderedTable])).toBeNull();
+      expect(container.querySelectorAll('table')).toHaveLength(1);
+      expect(container.querySelector('table')).toBe(renderedTable);
+      expect(
+        container.querySelector(
+          '[data-testid="table-shadow-overlay"] [data-testid="table-shadow-overlay"]',
+        ),
+      ).toBeNull();
+    });
+
+    describe('when a second copy of the module processes the same container', () => {
+      let renderMarkdownTablesCopy;
+
+      beforeEach(() => {
+        jest.isolateModules(() => {
+          // eslint-disable-next-line global-require
+          renderMarkdownTablesCopy = require('~/behaviors/markdown/render_markdown_tables').default;
+        });
+      });
+
+      it('does not re-mount a table rendered by the first copy', async () => {
+        const table = buildTable();
+        const container = appendTable(table);
+
+        await renderMarkdownTables([table]);
+        const renderedTable = container.querySelector('table');
+
+        expect(renderMarkdownTablesCopy([renderedTable])).toBeNull();
+        expect(container.querySelectorAll('table')).toHaveLength(1);
+        expect(container.querySelector('table')).toBe(renderedTable);
+        expect(
+          container.querySelector(
+            '[data-testid="table-shadow-overlay"] [data-testid="table-shadow-overlay"]',
+          ),
+        ).toBeNull();
+      });
+
+      it('does not mount a table claimed by the first copy while it is still loading', async () => {
+        const table = buildTable();
+        const container = appendTable(table);
+
+        const rendered = renderMarkdownTables([table]);
+        expect(renderMarkdownTablesCopy([table])).toBeNull();
+
+        await rendered;
+        await waitForPromises();
+
+        expect(container.querySelectorAll('table')).toHaveLength(1);
+      });
     });
 
     it('does not mount a table claimed by an earlier pass that has yet to finish', async () => {
@@ -322,36 +421,6 @@ describe('renderMarkdownTables', () => {
 
       it('keeps the Vue app mounted', () => {
         expect(mockMarkdownTableDestroyed).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('sticky headers', () => {
-      it('does not add a sticky-header wrapper when sticky is disabled', async () => {
-        window.gon.features.editorStickyTableHeaders = false;
-        const table = buildTable();
-        const container = appendTable(table);
-
-        renderMarkdownTables([table]);
-        await waitForPromises();
-
-        expect(container.querySelector('[data-sticky-header]')).toBeNull();
-      });
-
-      it('mounts inside a sticky-header wrapper when sticky is enabled', async () => {
-        window.gon.features.markdownSortableTableColumns = false;
-        const table = buildTable();
-        const container = appendTable(table);
-
-        renderMarkdownTables([table]);
-        await waitForPromises();
-
-        const wrapper = container.querySelector('[data-sticky-header]');
-        expect(wrapper).not.toBeNull();
-        // The component's <table> is a direct child of the wrapper so the
-        // existing `[data-sticky-header] > table` CSS applies.
-        expect(wrapper.querySelector('table').parentElement).toBe(wrapper);
-        // Sticky-only tables render plain (non-sortable) headers.
-        expect(wrapper.querySelector('[data-sort-icon]')).toBeNull();
       });
     });
   });

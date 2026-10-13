@@ -342,6 +342,37 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                   end
                 end
 
+                context 'using a granular OAuth access token' do
+                  let_it_be(:application) { create(:oauth_application) }
+                  let(:oauth_token) { create(:oauth_access_token, :granular, resource_owner: current_user, application: application) }
+
+                  before do
+                    scopes = Doorkeeper.configuration.scopes + Doorkeeper::OAuth::Scopes.from_array([Gitlab::Auth::GRANULAR_SCOPE])
+                    allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+                    create(:oauth_consent_grant, user: current_user, application: application,
+                      boundary: Authz::Boundary.for(project), permissions: permissions)
+                    project.team.add_maintainer(current_user)
+                    env['REMOTE_ADDR'] = '192.168.0.1'
+                    env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('oauth2', oauth_token.plaintext_token)
+                  end
+
+                  context 'with download_code permission' do
+                    let(:permissions) { :download_code }
+
+                    it 'returns the full project path' do
+                      expect_response_with_path(go, enabled_protocol, project.full_path)
+                    end
+                  end
+
+                  context 'without download_code permission' do
+                    let(:permissions) { :read_code }
+
+                    it 'returns 404' do
+                      expect_404_response(go)
+                    end
+                  end
+                end
+
                 context 'when a personal access token is missing' do
                   before do
                     env['REMOTE_ADDR'] = '192.168.0.1'

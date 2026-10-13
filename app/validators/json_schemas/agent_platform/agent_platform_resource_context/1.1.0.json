@@ -15,7 +15,7 @@
     },
     "resource_id": {
       "type": "string",
-      "description": "Identifier of the primary target. Project-scoped IID for work_item/merge_request, global ID for vulnerability/pipeline. Equal to the matching <resource_type>_id field for the types that have one; a vulnerability target has no type-prefixed fields, so resource_type/resource_id/resource_web_url carry it alone."
+      "description": "Identifier of the primary target. Project-scoped IID for work_item/merge_request, plain numeric ID for vulnerability, global ID for pipeline. Equal to the matching <resource_type>_id field for the types that have one; a vulnerability target has no type-prefixed fields, so resource_type/resource_id/resource_web_url carry it alone."
     },
     "resource_web_url": {
       "type": "string",

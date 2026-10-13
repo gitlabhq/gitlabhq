@@ -13,6 +13,12 @@ description: "List of GitLab webhook events and payloads. Includes JSON examples
 
 {{< /details >}}
 
+{{< history >}}
+
+- Timestamp format in payloads [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/622832) from `YYYY-MM-DD HH:MM:SS` with a time zone (`2016-08-12 15:23:28 UTC`) to ISO 8601 with millisecond precision and a time zone designator (`2016-08-12T15:23:28.000Z`) in GitLab 19.0.
+
+{{< /history >}}
+
 Connect GitLab to your external applications and automate your workflow with webhooks.
 When specific events occur in GitLab, webhooks send HTTP POST requests with detailed
 information to your configured endpoints.
@@ -245,6 +251,11 @@ Payload example:
 {{< /history >}}
 
 Work item events are triggered when a work item is created, edited, closed, or reopened.
+To receive these events, when you [create a webhook](webhooks.md#create-a-webhook),
+in the **Trigger** section, select **Work item events**.
+For confidential work items, select **Confidential work items events**.
+Webhooks with only **Work item events** selected do not receive events for confidential work items.
+
 The supported work item types are:
 
 - [Epics](../../group/epics/_index.md)
@@ -318,8 +329,8 @@ Payload example:
     "assignee_id": 51,
     "author_id": 51,
     "project_id": 14,
-    "created_at": "2013-12-03T17:15:43Z",
-    "updated_at": "2013-12-03T17:15:43Z",
+    "created_at": "2013-12-03T17:15:43.000Z",
+    "updated_at": "2013-12-03T17:15:43.000Z",
     "updated_by_id": 1,
     "last_edited_at": null,
     "last_edited_by_id": null,
@@ -357,8 +368,8 @@ Payload example:
         "title": "API",
         "color": "#ffffff",
         "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
+        "created_at": "2013-12-03T17:15:43.000Z",
+        "updated_at": "2013-12-03T17:15:43.000Z",
         "template": false,
         "description": "API related issues",
         "type": "ProjectLabel",
@@ -386,8 +397,8 @@ Payload example:
     "title": "API",
     "color": "#ffffff",
     "project_id": 14,
-    "created_at": "2013-12-03T17:15:43Z",
-    "updated_at": "2013-12-03T17:15:43Z",
+    "created_at": "2013-12-03T17:15:43.000Z",
+    "updated_at": "2013-12-03T17:15:43.000Z",
     "template": false,
     "description": "API related issues",
     "type": "ProjectLabel",
@@ -399,8 +410,8 @@ Payload example:
       "current": 1
     },
     "updated_at": {
-      "previous": "2017-09-15 16:50:55 UTC",
-      "current": "2017-09-15 16:52:00 UTC"
+      "previous": "2017-09-15T16:50:55.000Z",
+      "current": "2017-09-15T16:52:00.000Z"
     },
     "labels": {
       "previous": [{
@@ -408,8 +419,8 @@ Payload example:
         "title": "API",
         "color": "#ffffff",
         "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
+        "created_at": "2013-12-03T17:15:43.000Z",
+        "updated_at": "2013-12-03T17:15:43.000Z",
         "template": false,
         "description": "API related issues",
         "type": "ProjectLabel",
@@ -420,8 +431,8 @@ Payload example:
         "title": "Platform",
         "color": "#123123",
         "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
+        "created_at": "2013-12-03T17:15:43.000Z",
+        "updated_at": "2013-12-03T17:15:43.000Z",
         "template": false,
         "description": "Platform related issues",
         "type": "ProjectLabel",
@@ -504,8 +515,8 @@ Payload example:
     "note": "This is a commit comment. How does this work?",
     "noteable_type": "Commit",
     "author_id": 1,
-    "created_at": "2015-05-17 18:08:09 UTC",
-    "updated_at": "2015-05-17 18:08:09 UTC",
+    "created_at": "2015-05-17T18:08:09.000Z",
+    "updated_at": "2015-05-17T18:08:09.000Z",
     "project_id": 5,
     "attachment":null,
     "line_code": "bec9703f7a456cd2b4ab5fb3220ae016e3e394e3_0_1",
@@ -589,8 +600,8 @@ Payload example:
     "note": "This MR needs work.",
     "noteable_type": "MergeRequest",
     "author_id": 1,
-    "created_at": "2015-05-17 18:21:36 UTC",
-    "updated_at": "2015-05-17 18:21:36 UTC",
+    "created_at": "2015-05-17T18:21:36.000Z",
+    "updated_at": "2015-05-17T18:21:36.000Z",
     "project_id": 5,
     "attachment": null,
     "line_code": null,
@@ -609,8 +620,8 @@ Payload example:
     "author_id": 8,
     "assignee_id": 28,
     "title": "Tempora et eos debitis quae laborum et.",
-    "created_at": "2015-03-01 20:12:53 UTC",
-    "updated_at": "2015-03-21 18:27:27 UTC",
+    "created_at": "2015-03-01T20:12:53.000Z",
+    "updated_at": "2015-03-21T18:27:27.000Z",
     "milestone_id": 11,
     "state": "opened",
     "merge_status": "cannot_be_merged",
@@ -679,7 +690,7 @@ Payload example:
     "last_commit": {
       "id": "562e173be03b8ff2efb05345d12df18815438a4b",
       "message": "Merge branch 'another-branch' into 'master'\n\nCheck in this test\n",
-      "timestamp": "2015-04-08T21: 00:25-07:00",
+      "timestamp": "2015-04-08T21:00:25-07:00",
       "url": "http://example.com/gitlab-org/gitlab-test/commit/562e173be03b8ff2efb05345d12df18815438a4b",
       "author": {
         "name": "John Smith",
@@ -752,8 +763,8 @@ Payload example:
     "note": "Hello world",
     "noteable_type": "Issue",
     "author_id": 1,
-    "created_at": "2015-05-17 17:06:40 UTC",
-    "updated_at": "2015-05-17 17:06:40 UTC",
+    "created_at": "2015-05-17T17:06:40.000Z",
+    "updated_at": "2015-05-17T17:06:40.000Z",
     "project_id": 5,
     "attachment": null,
     "line_code": null,
@@ -771,8 +782,8 @@ Payload example:
     "assignee_id": null,
     "author_id": 1,
     "project_id": 5,
-    "created_at": "2015-04-12 14:53:17 UTC",
-    "updated_at": "2015-04-26 08:28:42 UTC",
+    "created_at": "2015-04-12T14:53:17.000Z",
+    "updated_at": "2015-04-26T08:28:42.000Z",
     "position": 0,
     "branch_name": null,
     "description": "test",
@@ -860,8 +871,8 @@ Payload example:
     "note": "Is this snippet doing what it's supposed to be doing?",
     "noteable_type": "Snippet",
     "author_id": 1,
-    "created_at": "2015-05-17 18:35:50 UTC",
-    "updated_at": "2015-05-17 18:35:50 UTC",
+    "created_at": "2015-05-17T18:35:50.000Z",
+    "updated_at": "2015-05-17T18:35:50.000Z",
     "project_id": 5,
     "attachment": null,
     "line_code": null,
@@ -879,8 +890,8 @@ Payload example:
     "content": "puts 'Hello world'",
     "author_id": 1,
     "project_id": 5,
-    "created_at": "2015-04-09 02:40:38 UTC",
-    "updated_at": "2015-04-09 02:40:38 UTC",
+    "created_at": "2015-04-09T02:40:38.000Z",
+    "updated_at": "2015-04-09T02:40:38.000Z",
     "file_name": "test.rb",
     "type": "ProjectSnippet",
     "visibility_level": 0,
@@ -1296,7 +1307,7 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
   },
   "object_attributes": {
     "author_id": 1,
-    "created_at": "2026-01-16 05:56:22 UTC",
+    "created_at": "2026-01-16T05:56:22.000Z",
     "description": "This merge request adds input validation to the booking form.",
     "draft": false,
     "head_pipeline_id": null,
@@ -1323,9 +1334,9 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
     "target_project_id": 2,
     "time_estimate": 0,
     "title": "Add input validation to booking form",
-    "updated_at": "2026-01-16 05:56:25 UTC",
+    "updated_at": "2026-01-16T05:56:25.000Z",
     "updated_by_id": null,
-    "prepared_at": "2026-01-16 05:56:25 UTC",
+    "prepared_at": "2026-01-16T05:56:25.000Z",
     "assignee_ids": [
       1
     ],
@@ -1341,8 +1352,8 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
         "title": "enhancement",
         "color": "#adb21a",
         "project_id": null,
-        "created_at": "2026-01-07 00:03:52 UTC",
-        "updated_at": "2026-01-07 00:03:52 UTC",
+        "created_at": "2026-01-07T00:03:52.000Z",
+        "updated_at": "2026-01-07T00:03:52.000Z",
         "template": false,
         "description": null,
         "type": "GroupLabel",
@@ -1419,12 +1430,12 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
         "applicable_post_merge": null,
         "project_id": 2,
         "approval_policy_rule_id": null,
-        "updated_at": "2026-01-16 05:56:22 UTC",
-        "created_at": "2026-01-16 05:56:22 UTC"
+        "updated_at": "2026-01-16T05:56:22.000Z",
+        "created_at": "2026-01-16T05:56:22.000Z"
       }
     ],
     "action": "open",
-    "actioned_at": "2026-01-16 05:56:26 UTC"
+    "actioned_at": "2026-01-16T05:56:26.000Z"
   },
   "labels": [
     {
@@ -1432,8 +1443,8 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
       "title": "enhancement",
       "color": "#adb21a",
       "project_id": null,
-      "created_at": "2026-01-07 00:03:52 UTC",
-      "updated_at": "2026-01-07 00:03:52 UTC",
+      "created_at": "2026-01-07T00:03:52.000Z",
+      "updated_at": "2026-01-07T00:03:52.000Z",
       "template": false,
       "description": null,
       "type": "GroupLabel",
@@ -1446,12 +1457,12 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
       "current": "checking"
     },
     "updated_at": {
-      "previous": "2026-01-16 05:56:22 UTC",
-      "current": "2026-01-16 05:56:25 UTC"
+      "previous": "2026-01-16T05:56:22.000Z",
+      "current": "2026-01-16T05:56:25.000Z"
     },
     "prepared_at": {
       "previous": null,
-      "current": "2026-01-16 05:56:25 UTC"
+      "current": "2026-01-16T05:56:25.000Z"
     }
   },
   "assignees": [
@@ -1545,6 +1556,8 @@ Payload example:
 {{< history >}}
 
 - `object_attributes.default_branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606357) in GitLab 19.3.
+- `object_attributes.root_pipeline_id`, `bridges`, and `source_pipeline.bridge_id` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241952) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ci_pipeline_otlp_trace_correlation`. Disabled by default.
+- `object_attributes.root_pipeline_id`, `bridges`, and `source_pipeline.bridge_id` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260524) in GitLab 19.5. Feature flag `ci_pipeline_otlp_trace_correlation` removed.
 
 {{< /history >}}
 
@@ -1553,6 +1566,16 @@ Pipeline events are triggered when the status of a pipeline changes.
 Pipeline webhooks triggered by blocked users are not processed.
 
 Pipeline webhooks expose `object_attributes.name`.
+
+The payload also includes these attributes for pipeline relationships:
+
+- `object_attributes.root_pipeline_id`: The ID of the top-level pipeline in a parent-child pipeline hierarchy.
+  If the pipeline is not a child pipeline, the value is the ID of the pipeline itself.
+- `bridges`: The trigger jobs in the pipeline.
+  Each entry has the same attributes as a `builds` entry, except `artifacts_file`, and includes `"bridge": true`.
+- `source_pipeline.bridge_id`: The ID of the upstream trigger job that created the pipeline.
+  The value is `null` if the upstream job is not a trigger job.
+  `source_pipeline` is included only when the pipeline has an upstream pipeline.
 
 Request header:
 
@@ -1581,8 +1604,8 @@ Payload example:
       "test",
       "deploy"
     ],
-    "created_at": "2016-08-12 15:23:28 UTC",
-    "finished_at": "2016-08-12 15:26:29 UTC",
+    "created_at": "2016-08-12T15:23:28.000Z",
+    "finished_at": "2016-08-12T15:26:29.000Z",
     "duration": 63,
     "queued_duration": 10,
     "protected_ref": false,
@@ -1593,7 +1616,8 @@ Payload example:
         "value": "us-west-1"
       }
     ],
-    "url": "http://example.com/gitlab-org/gitlab-test/-/pipelines/31"
+    "url": "http://example.com/gitlab-org/gitlab-test/-/pipelines/31",
+    "root_pipeline_id": 31
   },
   "merge_request": {
     "id": 1,
@@ -1821,6 +1845,33 @@ Payload example:
       }
     }
   ],
+  "bridges": [
+    {
+      "id": 381,
+      "stage": "deploy",
+      "name": "trigger-downstream",
+      "status": "success",
+      "created_at": "2016-08-12 15:23:28 UTC",
+      "started_at": "2016-08-12 15:26:30 UTC",
+      "finished_at": "2016-08-12 15:28:10 UTC",
+      "duration": 100.0,
+      "queued_duration": 1.0,
+      "failure_reason": null,
+      "when": "on_success",
+      "manual": false,
+      "allow_failure": false,
+      "user": {
+        "id": 1,
+        "name": "Administrator",
+        "username": "root",
+        "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+        "email": "admin@example.com"
+      },
+      "runner": null,
+      "environment": null,
+      "bridge": true
+    }
+  ],
   "source_pipeline": {
     "project": {
       "id": 41,
@@ -1828,7 +1879,8 @@ Payload example:
       "path_with_namespace": "gitlab-org/upstream-project"
     },
     "pipeline_id": 30,
-    "job_id": 3401
+    "job_id": 3401,
+    "bridge_id": 3401
   }
 }
 ```
@@ -1994,7 +2046,7 @@ Payload example:
 {
   "object_kind": "deployment",
   "status": "success",
-  "status_changed_at":"2021-04-28 21:50:00 +0200",
+  "status_changed_at":"2021-04-28T21:50:00.000+02:00",
   "deployment_id": 15,
   "deployable_id": 796,
   "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
@@ -2553,10 +2605,10 @@ Payload example:
 ```json
 {
   "id": 1,
-  "created_at": "2020-11-02 12:55:12 UTC",
+  "created_at": "2020-11-02T12:55:12.000Z",
   "description": "v1.1 has been released",
   "name": "v1.1",
-  "released_at": "2020-11-02 12:55:12 UTC",
+  "released_at": "2020-11-02T12:55:12.000Z",
   "tag": "v1.1",
   "object_kind": "release",
   "project": {
@@ -2674,8 +2726,8 @@ Payload example:
     "title": "v1.0",
     "description": "First stable release",
     "state": "active",
-    "created_at": "2025-06-16 14:10:57 UTC",
-    "updated_at": "2025-06-16 14:10:57 UTC",
+    "created_at": "2025-06-16T14:10:57.000Z",
+    "updated_at": "2025-06-16T14:10:57.000Z",
     "due_date": "2025-06-30",
     "start_date": "2025-06-16",
     "group_id": null,
@@ -2754,12 +2806,12 @@ Payload example:
   },
   "object_attributes": {
     "user_id": 1,
-    "created_at": "2023-07-04 20:44:11 UTC",
+    "created_at": "2023-07-04T20:44:11.000Z",
     "id": 1,
     "name": "thumbsup",
     "awardable_type": "Note",
     "awardable_id": 363,
-    "updated_at": "2023-07-04 20:44:11 UTC",
+    "updated_at": "2023-07-04T20:44:11.000Z",
     "action": "award",
     "awarded_on_url": "http://example.com/flightjs/Flight/-/issues/42#note_363"
   },
@@ -2768,7 +2820,7 @@ Payload example:
     "author_id": 1,
     "change_position": null,
     "commit_id": null,
-    "created_at": "2023-07-04 15:09:55 UTC",
+    "created_at": "2023-07-04T15:09:55.000Z",
     "discussion_id": "c3d97fd471f210a5dc8b97a409e3bea95ee06c14",
     "id": 363,
     "line_code": null,
@@ -2784,7 +2836,7 @@ Payload example:
     "st_diff": null,
     "system": false,
     "type": null,
-    "updated_at": "2023-07-04 19:58:46 UTC",
+    "updated_at": "2023-07-04T19:58:46.000Z",
     "updated_by_id": null,
     "description": "Testing 123",
     "url": "http://example.com/flightjs/Flight/-/issues/42#note_363"
@@ -2793,7 +2845,7 @@ Payload example:
     "author_id": 1,
     "closed_at": null,
     "confidential": false,
-    "created_at": "2023-07-04 14:59:43 UTC",
+    "created_at": "2023-07-04T14:59:43.000Z",
     "description": "Issue description!",
     "discussion_locked": null,
     "due_date": null,
@@ -2809,7 +2861,7 @@ Payload example:
     "state_id": 1,
     "time_estimate": 0,
     "title": "New issue!",
-    "updated_at": "2023-07-04 15:09:55 UTC",
+    "updated_at": "2023-07-04T15:09:55.000Z",
     "updated_by_id": null,
     "weight": null,
     "health_status": null,
@@ -2888,11 +2940,11 @@ Payload example for project:
   },
   "object_attributes": {
     "user_id": 90,
-    "created_at": "2024-01-24 16:27:40 UTC",
+    "created_at": "2024-01-24T16:27:40.000Z",
     "id": 25,
     "name": "acd",
     "expires_at": "2024-01-26",
-    "last_used_at": "2024-01-20 10:15:30 UTC"
+    "last_used_at": "2024-01-20T10:15:30.000Z"
   },
   "event_name": "expiring_access_token"
 }
@@ -2911,11 +2963,11 @@ Payload example for group:
   },
   "object_attributes": {
     "user_id": 90,
-    "created_at": "2024-01-24 16:27:40 UTC",
+    "created_at": "2024-01-24T16:27:40.000Z",
     "id": 25,
     "name": "acd",
     "expires_at": "2024-01-26",
-    "last_used_at": "2024-01-20 10:15:30 UTC"
+    "last_used_at": "2024-01-20T10:15:30.000Z"
   },
   "event_name": "expiring_access_token"
 }
@@ -2972,8 +3024,8 @@ Payload example for project:
   "object_attributes": {
     "id": 79,
     "name": "seven-days-6days",
-    "expires_at": "2025-08-03 07:57:25 UTC",
-    "created_at": "2025-07-28 07:57:25 UTC",
+    "expires_at": "2025-08-03T07:57:25.000Z",
+    "created_at": "2025-07-28T07:57:25.000Z",
     "revoked": false,
     "deploy_token_type": "project_type"
   },
@@ -3114,6 +3166,7 @@ GitLab sends the following events:
 | Event            | Trigger |
 |------------------|---------|
 | `flow.started`   | The agent begins work on the flow. |
+| `flow.progress`  | The agent updates its to-do list or writes a message while the flow runs. For more information, see [progress events](#progress-events). |
 | `flow.completed` | The flow finishes and produces a final message. |
 | `flow.failed`    | The flow fails, or finishes without a final message. |
 
@@ -3166,16 +3219,20 @@ Payload attributes:
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
+| `activity`         | string  | The agent's most recent message, in Markdown. Truncated to 1,500 characters. Present only for `flow.progress`. Omitted until the agent writes a message. |
 | `client_reference` | string  | Value of the `client_reference` attribute from the request that triggered the flow. Omitted when the request did not set it. |
 | `error`            | object  | Reason the flow failed. Present only for `flow.failed`. Contains only `reason`. |
 | `error.reason`     | string  | Machine-readable failure reason. `flow_failed` when the flow itself failed, or `no_response` when the flow finished without a final message. A `no_response` event has a `workflow.status` of `finished`. |
-| `event`            | string  | Event name. One of `flow.started`, `flow.completed`, or `flow.failed`. |
-| `event_id`         | string  | ID of the event. Repeated when GitLab retries a delivery. Use it to ignore an event you have already processed. |
+| `event`            | string  | Event name. One of `flow.started`, `flow.progress`, `flow.completed`, or `flow.failed`. |
+| `event_id`         | string  | ID of the event. Repeated when GitLab retries a delivery. Use it to ignore an event you have already processed. GitLab does not retry `flow.progress`, so every `flow.progress` event has a new ID. |
 | `object_kind`      | string  | Always `duo_workflow`. |
-| `project`          | object  | Project the flow ran in. Omitted for a flow that ran in a group. |
+| `plan`             | array   | The agent's to-do list, in the order the agent wrote it. Limited to 20 items. Present only for `flow.progress`. Omitted until the agent writes a to-do list. |
+| `plan[].description` | string | Description of the to-do item. Truncated to 200 characters. |
+| `plan[].status`    | string  | Status of the to-do item. One of `pending`, `in_progress`, `completed`, or `cancelled`. |
+| `project`          | object  | Project the flow ran in. Omitted for `flow.progress`, and for a flow that ran in a group. |
 | `result`           | object  | Final output of the flow. Present only for `flow.completed`. |
 | `result.message`   | string  | Final message from the agent. |
-| `user`             | object  | User who triggered the flow. |
+| `user`             | object  | User who triggered the flow. Omitted for `flow.progress`. |
 | `version`          | string  | Version of the payload structure. Always `1`. |
 | `workflow`         | object  | The flow. |
 | `workflow.id`      | integer | ID of the flow. |
@@ -3206,6 +3263,52 @@ GitLab also sends `project` and `user`:
   }
 }
 ```
+
+### Progress events
+
+While a flow runs, GitLab sends `flow.progress` events that show what the agent is working on.
+Each event contains the full current state, not only the changes from the previous event:
+
+- `plan`: The agent's complete to-do list.
+- `activity`: The agent's most recent message.
+
+To display progress, replace the previous state with the state from the latest event.
+
+GitLab sends a progress event when the agent updates its to-do list or writes a message.
+GitLab does not send an event for other agent activity, such as reading a file.
+GitLab waits two seconds and combines all progress from that time into one event.
+GitLab stops sending progress events when the flow finishes or fails.
+
+Events might arrive out of order.
+If a `flow.progress` event arrives after the `flow.completed` or `flow.failed` event for the same
+flow, ignore the progress event.
+
+A `flow.progress` payload contains `plan` and `activity` instead of a `result` or `error` object.
+The following example shows a `flow.progress` payload:
+
+```json
+{
+  "object_kind": "duo_workflow",
+  "version": "1",
+  "event": "flow.progress",
+  "event_id": "7b1c9e2a-4f6d-4a2e-9c1d-3e5f7a9b0c1d",
+  "client_reference": "run-abc123",
+  "plan": [
+    { "description": "Reproduce the failing pipeline", "status": "completed" },
+    { "description": "Fix the syntax error in .gitlab-ci.yml", "status": "in_progress" }
+  ],
+  "activity": "The job fails because of an indentation error in `.gitlab-ci.yml`.",
+  "workflow": {
+    "id": 1,
+    "status": "running",
+    "web_url": "https://gitlab.example.com/flightjs/Flight/-/automate/agent-sessions/1"
+  }
+}
+```
+
+The agent writes the plan and the activity.
+Both might include content that the agent read during the flow, such as code or command output.
+Use only a webhook endpoint that you trust with this content.
 
 For the delivery guarantees for these events, see
 [webhook callbacks](../../duo_agent_platform/flows/webhook_callbacks.md#handling-callbacks-in-your-endpoint).

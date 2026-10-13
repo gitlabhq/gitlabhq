@@ -9,7 +9,6 @@ title: Maintain OpenBao
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -31,87 +30,120 @@ generate a root token, see [recovery key management](recovery_key.md).
 
 ## Recover OpenBao authentication
 
-You might need to recover OpenBao authentication if the JWT `aud` (audience) claim and the stored
-`bound_audiences` value drift apart.
+GitLab authenticates to OpenBao with a JSON Web Token (JWT). OpenBao accepts the JWT only if its
+`iss` (issuer) and `aud` (audience) claims match the values that OpenBao stored. OpenBao stores
+these values when OpenBao is initialized, and when the GitLab Secrets Manager is provisioned for each project
+and group. OpenBao does not update the stored values when you change your configuration later.
 
-Reconfigure authentication with a recovery key first, because it preserves stored secrets.
-Reset OpenBao data only as a last resort, because it deletes all stored secrets.
+Authentication fails in these cases:
 
-### Reconfigure authentication with a recovery key
+- JWT audience mismatch: GitLab sends a different audience than the one OpenBao stored, for example
+  after the OpenBao URL changed. To fix the mismatch,
+  [restore the JWT audience](#restore-the-jwt-audience).
+- JWT issuer mismatch: the GitLab URL changed after OpenBao was initialized. To fix the mismatch,
+  [restore the JWT issuer](#restore-the-jwt-issuer).
 
-This method preserves all stored secrets, but requires a recovery key.
+A root token cannot fix authentication, because
+`gitlab:secrets_management:openbao:root_token:generate` authenticates to OpenBao with a GitLab JWT.
 
-1. Generate a temporary root token from the recovery key. For the procedure, see
-   [Generate a root token from the recovery key](recovery_key.md#generate-a-root-token-from-the-recovery-key).
+If you cannot restore the audience or the issuer, [reset OpenBao data](#reset-openbao-data). A reset
+deletes all stored secrets.
 
-1. Read the current authentication role so you have its full configuration:
+### Find the stored JWT audience
 
-   ```shell
-   OPENBAO_POD=$(kubectl get pods -n gitlab -l app.kubernetes.io/name=openbao -o name | head -1)
-   kubectl exec -n gitlab "$OPENBAO_POD" -c openbao-server -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 BAO_TOKEN=<root_token> bao read auth/gitlab_rails_jwt/role/app"
-   ```
+The stored audience is the OpenBao URL from when OpenBao was first initialized.
 
-1. Re-apply the role with the corrected `bound_audiences` and every other field from the previous
-   step. On update, OpenBao resets omitted fields to their defaults, so the request must include the
-   full configuration. Importantly:
+To find the stored JWT audience:
 
-   - The `role_type` field defaults to `oidc`, so you must include `role_type=jwt` or the role
-     breaks.
-   - The `claim_mappings` field resets to empty if omitted, which breaks authorization. Include the
-     same mappings the previous step returned.
+1. Find the candidates. If you set `global.openbao.jwt_audience` in an earlier restore, that value is
+   the stored audience. Check that value in the next step.
 
-   `bound_claims` and `claim_mappings` are maps, so supply the configuration as JSON on standard
-   input with `bao write <path> -`. Replace `<your-domain>` with your OpenBao domain, and replace
-   the `claim_mappings` and other values with the ones the previous step returned:
+   Otherwise, list the candidates. Helm keeps the rendered configuration of recent chart revisions,
+   so list the `bound_audiences` value of each revision:
 
    ```shell
-   kubectl exec -i -n gitlab "$OPENBAO_POD" -c openbao-server -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 BAO_TOKEN=<root_token> bao write auth/gitlab_rails_jwt/role/app -" <<'JSON'
-   {
-     "role_type": "jwt",
-     "user_claim": "user_id",
-     "bound_subject": "gitlab_secrets_manager",
-     "bound_audiences": ["https://openbao.<your-domain>"],
-     "token_policies": ["secrets_manager"],
-     "bound_claims": {"secrets_manager_scope": "privileged"},
-     "claim_mappings": {
-       "user_id": "user_id",
-       "project_id": "project_id",
-       "group_id": "group_id",
-       "namespace_id": "namespace_id",
-       "correlation_id": "correlation_id"
-     }
-   }
-   JSON
+   for revision in $(helm history gitlab -n gitlab | awk 'NR > 1 { print $1 }'); do
+     echo "$revision: $(helm get manifest gitlab -n gitlab --revision "$revision" | grep -o '"bound_audiences": "[^"]*"')"
+   done
    ```
 
-1. Revoke the root token. The procedure in the first step includes the revoke command.
+   Each distinct value is a candidate. By default, Helm keeps the last 10 revisions. If OpenBao
+   was first initialized in an older revision, the list might not include the stored audience.
 
-This procedure corrects the root-level audience only. Geo failover to a secondary site with a
-different domain is not supported, because it also requires re-provisioning JWT authentication for
-every project and group. Instead, update DNS so the primary domain points to the promoted secondary.
-For more information, see [Geo deployment](_index.md#geo-deployment).
+1. Check each candidate. In the [Rails console](../operations/rails_console.md), replace
+   `<candidate_audience>` with the candidate and run:
 
-### Reset OpenBao data
+   ```ruby
+   jwt = SecretsManagement::GlobalSecretsManagerJwt.new(aud: '<candidate_audience>').encoded
+   SecretsManagement::SecretsManagerClient.new(jwt: jwt).generate_root_token_status
+   ```
+
+   If OpenBao stored this audience, the second command returns without an error. Otherwise,
+   OpenBao rejects the JWT with `invalid audience (aud) claim`. If OpenBao rejects the JWT with
+   `invalid issuer (iss) claim` instead, [restore the JWT issuer](#restore-the-jwt-issuer) first.
+
+### Restore the JWT audience
+
+Restore the JWT audience when GitLab sends a different audience than the one OpenBao stored.
+
+Prerequisites:
+
+- The audience that OpenBao stored. For more information, see
+  [Find the stored JWT audience](#find-the-stored-jwt-audience).
+
+To restore the JWT audience:
+
+1. In your Helm values file, set `global.openbao.jwt_audience` to the stored audience. For example:
+
+   ```yaml
+   global:
+     openbao:
+       jwt_audience: https://openbao.example.com
+   ```
+
+1. Redeploy GitLab:
+
+   ```shell
+   helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
+     -n gitlab -f gitlab.yaml
+   ```
+
+After the GitLab pods restart, GitLab authenticates to OpenBao again.
+
+### Restore the JWT issuer
+
+Restore the JWT issuer when the GitLab URL changed after OpenBao was initialized. OpenBao expects
+the GitLab URL from that time as the issuer, so you must change the GitLab URL back.
+
+To restore the JWT issuer:
+
+1. In your Helm values file, set the GitLab host settings back to the values from when OpenBao was
+   first initialized. For more information, see
+   [configure host settings](https://docs.gitlab.com/charts/charts/globals/#configure-host-settings).
+
+1. Redeploy GitLab:
+
+   ```shell
+   helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
+     -n gitlab -f gitlab.yaml
+   ```
+
+After the GitLab pods restart, GitLab authenticates to OpenBao again.
+
+## Reset OpenBao data
 
 > [!warning]
-> This procedure permanently deletes all secrets stored in OpenBao. Re-create all Secrets Manager
-> secrets after you finish.
+> This procedure permanently deletes all secrets and secrets permissions stored in OpenBao, and
+> turns off the secrets manager for every project and group.
 
-Reset OpenBao data when you do not have a recovery key and `bound_audiences` is out of sync with the
-JWT `aud` claim, and authentication fails. A mismatch can happen when OpenBao was initialized with
-the wrong URL. The reset wipes the OpenBao database so that OpenBao self-initializes with the correct
-configuration.
+Resetting OpenBao data wipes the OpenBao database so that OpenBao self-initializes with the
+configuration in your Helm values.
 
-If you have a recovery key, [reconfigure authentication with a recovery key](#reconfigure-authentication-with-a-recovery-key)
-instead. That method preserves stored secrets.
+Prerequisites:
 
-Before you start, set the correct audience in your configuration:
-
-- For GitLab 18.10 and later, set `global.openbao.jwt_audience` to the audience you want.
-- For earlier versions, set the OpenBao external URL. OpenBao derives `bound_audiences` from this
-  URL during self-initialization.
+- The correct OpenBao URL in your configuration. OpenBao derives `bound_audiences` from this URL
+  during self-initialization.
+- `global.openbao.jwt_audience` set to the same URL, or not set.
 
 To reset OpenBao data:
 
@@ -119,7 +151,7 @@ To reset OpenBao data:
 
    ```shell
    kubectl -n gitlab scale deployment gitlab-openbao --replicas=0
-   kubectl -n gitlab rollout status deployment gitlab-openbao --timeout=60s
+   kubectl -n gitlab wait --for=delete pod -l app.kubernetes.io/name=openbao --timeout=120s
    ```
 
 1. Get the toolbox pod name:
@@ -138,33 +170,64 @@ To reset OpenBao data:
      -c "TRUNCATE TABLE openbao_kv_store; TRUNCATE TABLE openbao_ha_locks;"
    ```
 
-1. Redeploy OpenBao with the corrected configuration:
+1. Delete the secrets manager records and the stored recovery key from the GitLab database. The old
+   recovery key no longer works, and you cannot create a new key while the old one is stored.
+   In the [Rails console](../operations/rails_console.md), run:
+
+   ```ruby
+   ApplicationRecord.connection.execute(<<~SQL)
+     TRUNCATE TABLE project_secrets_managers, project_secrets_manager_maintenance_tasks,
+       group_secrets_managers, group_secrets_manager_maintenance_tasks,
+       secret_rotation_infos, group_secret_rotation_infos, namespace_secret_counts
+   SQL
+   SecretsManagement::RecoveryKey.active.destroy_all
+   ```
+
+   Use `TRUNCATE` instead of turning off each secrets manager. Turning off a secrets manager calls
+   OpenBao to delete data that the previous step already deleted.
+
+1. Redeploy OpenBao with autoscaling set for a single OpenBao replica. The `openbao.autoscaling`
+   settings stop the Horizontal Pod Autoscaler from adding a second replica before initialization
+   completes:
+
+   ```shell
+   helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
+     -n gitlab -f gitlab.yaml \
+     --set openbao.autoscaling.minReplicas=1 --set openbao.autoscaling.maxReplicas=1
+   ```
+
+1. Scale OpenBao up to one replica. A chart redeploy does not restore a deployment that you scaled
+   down manually:
+
+   ```shell
+   kubectl -n gitlab scale deployment gitlab-openbao --replicas=1
+   kubectl -n gitlab rollout status deployment gitlab-openbao --timeout=120s
+   ```
+
+1. Verify that OpenBao is initialized and unsealed. Replace `https://openbao.example.com` with your
+   OpenBao URL:
+
+   ```shell
+   curl "https://openbao.example.com/v1/sys/health"
+   ```
+
+   The response includes `"initialized":true` and `"sealed":false`.
+
+1. Redeploy without the single-replica settings, then scale OpenBao up to your usual number of
+   replicas. Replace `<replica_count>` with the value of `openbao.autoscaling.minReplicas`, which is
+   `2` by default:
 
    ```shell
    helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
      -n gitlab -f gitlab.yaml
-   ```
-
-1. Scale OpenBao back up. A chart redeploy does not restore a deployment that you scaled down
-   manually:
-
-   ```shell
-   kubectl -n gitlab scale deployment gitlab-openbao --replicas=2
+   kubectl -n gitlab scale deployment gitlab-openbao --replicas=<replica_count>
    kubectl -n gitlab rollout status deployment gitlab-openbao --timeout=120s
    ```
 
-1. Verify that OpenBao is initialized, unsealed, and uses the correct audience:
+1. Create a new [recovery key](recovery_key.md).
 
-   ```shell
-   OPENBAO_POD=$(kubectl -n gitlab get pods -l app.kubernetes.io/name=openbao \
-     -l openbao-active=true -o jsonpath='{.items[0].metadata.name}')
-   kubectl -n gitlab exec -ti "$OPENBAO_POD" -c openbao-server -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 bao status"
-   kubectl -n gitlab get configmap gitlab-openbao-config -o yaml | grep bound_audiences
-   ```
-
-   The status shows `Initialized   true` and `Sealed   false`, and the `bound_audiences` value
-   matches the audience GitLab sends.
+After the reset, the GitLab Secrets Manager is provisioned again for each project and group the next time someone
+[creates a secret](../../ci/secrets/secrets_manager/_index.md#define-a-secret) in it.
 
 ## Enable secrets access from external requests
 
@@ -179,37 +242,29 @@ Secrets managers provisioned in GitLab 19.2 and later support
 If a secrets manager was provisioned for a project or group in GitLab 19.1 or earlier, this access
 is not supported.
 
-To enable this access for a secrets manager provisioned before GitLab 19.2, you can either:
+To enable this access for a secrets manager provisioned before GitLab 19.2,
+an administrator must run the `backfill_api_auth` Rake task.
+The secrets manager remains active while the Rake task runs, and existing secrets are preserved.
 
-- Disable and [re-enable the secrets manager](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager)
-  for the group or project.
+Prerequisites:
 
-  > [!warning]
-  > If you disable a group or project secrets manager, all the group or project's secrets are
-  > permanently deleted. These secrets cannot be recovered.
+- Administrator access.
 
-- Have an administrator run the `backfill_api_auth` Rake task. The secrets manager remains active
-  while the Rake task runs, and existing secrets are preserved.
+To backfill every group and project secrets manager on the instance:
 
-  Prerequisites:
+```shell
+# Linux package (Omnibus) and Helm chart (Kubernetes)
+sudo gitlab-rake gitlab:secrets_management:backfill_api_auth
 
-  - Administrator access.
+# Self-compiled (source)
+bundle exec rake gitlab:secrets_management:backfill_api_auth RAILS_ENV=production
+```
 
-  To backfill every group and project secrets manager on the instance:
+To scope the backfill to a single top-level group or user namespace instead, pass its ID:
 
-  ```shell
-  # Linux package (Omnibus) and Helm chart (Kubernetes)
-  sudo gitlab-rake gitlab:secrets_management:backfill_api_auth
+```shell
+sudo gitlab-rake "gitlab:secrets_management:backfill_api_auth[<root_namespace_id>]"
+```
 
-  # Self-compiled (source)
-  bundle exec rake gitlab:secrets_management:backfill_api_auth RAILS_ENV=production
-  ```
-
-  To scope the backfill to a single top-level group or user namespace instead, pass its ID:
-
-  ```shell
-  sudo gitlab-rake "gitlab:secrets_management:backfill_api_auth[<root_namespace_id>]"
-  ```
-
-  The task is idempotent and safe to run more than once. If it reports failures, fix the underlying
-  cause (for example, an unreachable OpenBao server) and run the task again.
+The task is idempotent and safe to run more than once. If it reports failures, fix the underlying
+cause (for example, an unreachable OpenBao server) and run the task again.

@@ -21,11 +21,11 @@ RSpec.describe Mutations::Ci::Runner::BulkDelete, factory_default: :keep, featur
 
     context 'when user can delete runners' do
       let_it_be(:group) { create(:group) }
-
-      let(:user) { admin_user }
-      let!(:runners) do
+      let_it_be(:runners) do
         create_list(:ci_runner, 2, :group, groups: [group])
       end
+
+      let(:user) { admin_user }
 
       context 'when runner IDs are missing' do
         let(:mutation_params) { {} }
@@ -38,7 +38,7 @@ RSpec.describe Mutations::Ci::Runner::BulkDelete, factory_default: :keep, featur
       end
 
       context 'with runners specified by id' do
-        let!(:mutation_params) do
+        let(:mutation_params) do
           { ids: runners.map(&:to_global_id) }
         end
 

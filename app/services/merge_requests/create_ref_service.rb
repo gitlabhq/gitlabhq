@@ -89,8 +89,6 @@ module MergeRequests
     # thrown away, so the rewritten SHAs are only recoverable from here.
     # EE widens this for merge trains.
     def should_store_generated_ref_commits?
-      return false unless Feature.enabled?(:generated_ref_commits_for_automatic_rebase, target_project)
-
       rebase_performed?
     end
 

@@ -134,6 +134,33 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
             let(:route) { "/#{project.full_path}/-/graphs/#{ref}" }
           end
         end
+
+        context 'when analytics is set to project members only' do
+          subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
+
+          before do
+            # A public project keeps the Repository menu visible to non-members,
+            # so these examples exercise the analytics permission check.
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            project.project_feature.update!(analytics_access_level: ProjectFeature::PRIVATE)
+          end
+
+          context 'when user is a project member' do
+            it { is_expected.not_to be_nil }
+          end
+
+          context 'when user is a signed-in non-member' do
+            let(:user) { create(:user) }
+
+            it { is_expected.to be_nil }
+          end
+
+          context 'when user is anonymous' do
+            let(:user) { nil }
+
+            it { is_expected.to be_nil }
+          end
+        end
       end
 
       describe 'Network' do

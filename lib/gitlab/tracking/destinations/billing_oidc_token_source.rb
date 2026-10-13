@@ -110,6 +110,12 @@ module Gitlab
             "#{METADATA_BASE_URL}#{path}",
             headers: { METADATA_FLAVOR_HEADER => METADATA_FLAVOR_VALUE },
             allow_local_requests: true,
+            # This is an intentional GitLab-side IMDS call to mint the OIDC
+            # token used for BillingEvents. The UrlBlocker blocks cloud metadata
+            # endpoints by default to prevent SSRF via webhooks and integrations;
+            # this per-call opt-out is the sanctioned escape hatch for trusted
+            # internal callers.
+            deny_cloud_metadata_requests: false,
             open_timeout: HTTP_TIMEOUT,
             read_timeout: HTTP_TIMEOUT
           )

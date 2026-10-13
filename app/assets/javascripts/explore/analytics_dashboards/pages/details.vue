@@ -5,13 +5,30 @@ import { s__ } from '~/locale';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
-import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import {
+  EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
+  EXPLORE_DASHBOARD_MARK_SCOPE_SET,
+  EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW,
+} from '~/performance/constants';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 import { DATE_RANGE_OPTION_LAST_30_DAYS, SCOPE_FILTER_QUERY_NAME } from '../components/constants';
-import { dateRangeOptionToFilter, getDateRangeOption } from '../components/utils';
+import { EVENT_VIEW_DASHBOARD, trackDashboardEvent } from '../tracking';
+import { LOAD_TIMED_DASHBOARD_SLUGS } from '../constants';
+import { isSystemDashboardSlug } from '../utils';
+import {
+  dateRangeFilterFromQuery,
+  dateRangeFilterToQueryParams,
+  dateRangeFilterToUtc,
+  dateRangeOptionToFilter,
+  getDateRangeOption,
+} from '../components/utils';
+import { markLoadStep, PanelsInViewTimer } from '../load_performance';
+
+const GLQL_VISUALIZATION_TYPE = 'Glql';
 
 export default {
   name: 'ExploreAnalyticsDashboardDetails',
@@ -40,12 +57,9 @@ export default {
   // at setup, so plain values/getters won't propagate filter changes to panels.
   provide() {
     return {
-      namespaceFullPath: computed(
-        () => this.selectedProject?.fullPath || this.selectedGroup?.fullPath || '',
-      ),
-      namespaceId: computed(() => this.selectedProject?.id ?? this.selectedGroup?.id ?? null),
-      namespaceName: computed(() => this.selectedProject?.name ?? this.selectedGroup?.name ?? ''),
-      isProject: computed(() => Boolean(this.selectedProject)),
+      namespaceFullPath: computed(() => this.selectedNamespaceFullPath),
+      namespaceId: computed(() => this.primaryNamespace?.id ?? null),
+      isProject: computed(() => this.isProjectScope),
 
       // TODO: Investigate how to handle this namespace specific check. It was
       //  previously done in the controller and passed as a data attribute, but it
@@ -54,24 +68,49 @@ export default {
       //  dataSourceClickhouse is not listed here on purpose: it is an
       //  instance-wide setting provided by the page entry point.
       overviewCountsAggregationEnabled: null,
+
+      isLoadTimed: computed(() => this.isLoadTimed),
+      glqlPanelLoad: {
+        register: (el) => this.panelsTimer?.register(el),
+        settle: (el) => this.panelsTimer?.settle(el),
+      },
     };
   },
   data() {
     return {
       filters: {},
-      selectedGroup: null,
-      selectedProject: null,
+      filtersReady: false,
+      selectedNamespaces: [],
       activeViewIndex: 0,
+      switchingViews: false,
       viewCount: 0,
       filtersKey: 0,
       dashboardFilterConfig: null,
       alert: null,
-      scopePath: getParameterByName(SCOPE_FILTER_QUERY_NAME) ?? '',
+      // The picker enforces the upper limit, so hand everything over as-is.
+      scopePaths: (getParameterByName(SCOPE_FILTER_QUERY_NAME) ?? '').split(',').filter(Boolean),
     };
   },
   computed: {
+    isLoadTimed() {
+      return LOAD_TIMED_DASHBOARD_SLUGS.includes(this.$route?.params.slug);
+    },
     hasNamespace() {
-      return Boolean(this.selectedGroup || this.selectedProject);
+      return this.selectedNamespaces.length > 0;
+    },
+    primaryNamespace() {
+      return this.selectedNamespaces[0] ?? null;
+    },
+    selectedNamespaceFullPath() {
+      return this.primaryNamespace?.fullPath ?? '';
+    },
+    isProjectScope() {
+      return this.primaryNamespace?.type === TYPENAME_PROJECT;
+    },
+    // The filters are held in local time, the way the picker and the URL work. Panel queries
+    // run in whole UTC days, so the range is converted here to be passed to the panels.
+    utcFilters() {
+      return dateRangeFilterToUtc(this.filters);
     },
     // A selected namespace always counts. The date range always has a value,
     // so it only counts when it differs from the configured default.
@@ -85,17 +124,36 @@ export default {
       );
     },
   },
+  watch: {
+    // Ensure that the previous dashboard view is fully unloaded before the next one is built.
+    activeViewIndex() {
+      this.switchingViews = true;
+      this.$nextTick(() => {
+        this.switchingViews = false;
+      });
+      this.cancelPanelsTimer();
+
+      if (this.hasNamespace) this.trackDashboardView();
+    },
+  },
+  created() {
+    // Not reactive: only the tracking and the load timing read them.
+    this.dashboardConfig = null;
+    this.panelsTimer = null;
+  },
   // createAlert renders into the global flash container, which outlives this page, so an alert
   // raised here would otherwise follow the user to the next dashboard.
   beforeDestroy() {
     this.alert?.dismiss();
+    this.cancelPanelsTimer();
   },
   methods: {
     // Set the active tab from the `view` query param on load. Default to the
     // first view if the query param wasn't included, or has an invalid index.
     onDashboardLoaded({ config }) {
+      this.dashboardConfig = config;
       this.dashboardFilterConfig = config.filters;
-      this.filters = this.defaultFilters();
+      this.filters = this.initialDateRangeFilter();
 
       const viewParam = getParameterByName('view');
       const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
@@ -118,15 +176,23 @@ export default {
     hasViews(config) {
       return Boolean(config.views?.length);
     },
-    // When a dashboard defines views, feed the active view's panels to the layout
-    // so the shared grid re-renders as the user switches views.
-    layoutConfig(config) {
+    activeDuoPrompts(config) {
+      const viewPrompts = this.hasViews(config)
+        ? config.views[this.activeViewIndex]?.duoPrompts
+        : null;
+
+      return viewPrompts ?? config.duoPrompts ?? [];
+    },
+    getPanels(config) {
       // Every panel is namespace-scoped, render none until a namespace is specified
-      if (!this.hasNamespace) return { ...config, panels: [] };
+      if (!this.hasNamespace) return [];
 
-      if (!this.hasViews(config)) return config;
+      if (!this.hasViews(config)) return config.panels;
 
-      return { ...config, panels: config.views[this.activeViewIndex]?.panels || [] };
+      return config.views[this.activeViewIndex]?.panels || [];
+    },
+    layoutConfig(config) {
+      return { ...config, panels: this.switchingViews ? [] : this.getPanels(config) };
     },
     panelTestId({ visualization: { slug = '' } }) {
       return `panel-${slug.replaceAll('_', '-')}`;
@@ -141,29 +207,83 @@ export default {
         startDate,
         endDate,
       };
+      this.syncDateRangeToUrl(this.filters);
+      this.cancelPanelsTimer();
     },
-    // The picker emits one namespace, or null, and its type says which of the two the rest of
-    // the page should treat it as. Panels still read groups and projects separately.
-    setScopeFilter(namespace) {
-      const isProject = namespace?.type === TYPENAME_PROJECT;
-
-      this.selectedProject = isProject ? namespace : null;
-      this.selectedGroup = isProject ? null : namespace;
+    // Written to history rather than through the router, for the same reason as the scope
+    // filter below. Replaced, not pushed, so Back leaves the dashboard rather than walking
+    // through every range the user tried.
+    syncDateRangeToUrl(filter) {
+      updateHistory({
+        url: setUrlParams(dateRangeFilterToQueryParams(filter)),
+        replace: true,
+      });
+    },
+    // The picker emits every pick at once; each namespace's type says whether it belongs in the
+    // groups list or the projects list, since panels read the two separately.
+    setScopeFilter(namespaces) {
+      this.selectedNamespaces = namespaces;
       this.filters = {
         ...this.filters,
-        groups: this.selectedGroup ? [this.selectedGroup.fullPath] : [],
-        projects: this.selectedProject ? [this.selectedProject.fullPath] : [],
+        groups: this.pathsOfType(TYPENAME_GROUP),
+        projects: this.pathsOfType(TYPENAME_PROJECT),
       };
 
-      this.scopePath = namespace?.fullPath ?? '';
-      this.syncScopeToUrl(this.scopePath);
+      this.scopePaths = namespaces.map(({ fullPath }) => fullPath);
+      this.syncScopeToUrl(this.scopePaths);
+      this.startPanelsTimer();
+
+      if (this.hasNamespace) this.trackDashboardView();
+    },
+    // System dashboards are routed by slug. Custom dashboards are routed by ID and their view
+    // titles are user-written, so neither is sent.
+    trackDashboardView() {
+      const slug = this.$route?.params.slug ?? '';
+      const isCustom = !isSystemDashboardSlug(slug);
+      const viewTitle = this.dashboardConfig?.views?.[this.activeViewIndex]?.title ?? '';
+
+      trackDashboardEvent(EVENT_VIEW_DASHBOARD, this.selectedNamespaces, {
+        label: isCustom ? 'custom' : slug,
+        property: isCustom ? '' : viewTitle,
+      });
+    },
+    // Measures from the scope being set until the GLQL panels in view have loaded. A view switch
+    // or date range change before then re-queries other panels, so that measurement is dropped.
+    startPanelsTimer() {
+      this.cancelPanelsTimer();
+      if (!this.isLoadTimed || !this.hasNamespace || !this.dashboardConfig) return;
+
+      const expectedPanels = this.getPanels(this.dashboardConfig).filter(
+        ({ visualization }) => visualization?.type === GLQL_VISUALIZATION_TYPE,
+      ).length;
+      if (!expectedPanels) return;
+
+      markLoadStep({ mark: EXPLORE_DASHBOARD_MARK_SCOPE_SET });
+      this.panelsTimer = new PanelsInViewTimer({
+        expectedPanels,
+        onDone: () =>
+          markLoadStep({
+            mark: EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
+            measure: EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW,
+            start: EXPLORE_DASHBOARD_MARK_SCOPE_SET,
+          }),
+      });
+    },
+    cancelPanelsTimer() {
+      this.panelsTimer?.cancel();
+      this.panelsTimer = null;
+    },
+    pathsOfType(type) {
+      return this.selectedNamespaces
+        .filter((namespace) => namespace.type === type)
+        .map(({ fullPath }) => fullPath);
     },
     // Written to history rather than through the router, because GlTabs pushes the `view` param
     // the same way: routing this would rebuild the URL from a $route that never saw that push,
     // dropping the active view. Replaced, not pushed, so Back leaves the dashboard.
-    syncScopeToUrl(fullPath) {
+    syncScopeToUrl(fullPaths) {
       updateHistory({
-        url: setUrlParams({ [SCOPE_FILTER_QUERY_NAME]: fullPath || null }),
+        url: setUrlParams({ [SCOPE_FILTER_QUERY_NAME]: fullPaths.join(',') || null }),
         replace: true,
       });
     },
@@ -180,9 +300,9 @@ export default {
       });
     },
     // The date range picker renders the dashboard's configured default without emitting it,
-    // so seed the filters to match. Otherwise a panel falls back to its own default window
+    // so seed the range to match. Otherwise a panel falls back to its own default window
     // and the first load can show a different range than the picker names.
-    defaultFilters() {
+    defaultDateRangeFilter() {
       const { dateRange = {} } = this.dashboardFilterConfig ?? {};
 
       // dashboard_filters.vue renders the picker whenever dateRange.enabled is not false, so
@@ -195,12 +315,29 @@ export default {
 
       return dateRangeOptionToFilter(option);
     },
+    // A reloaded or shared link restores the range it names, so the page and the picker
+    // agree with the URL on load. Anything the URL cannot supply falls back to the default.
+    initialDateRangeFilter() {
+      const { dateRange = {} } = this.dashboardFilterConfig ?? {};
+
+      if (dateRange.enabled === false) return this.defaultDateRangeFilter();
+
+      const fromQuery = dateRangeFilterFromQuery(window.location.search, {
+        ...(dateRange.options && { options: dateRange.options }),
+        daysLimit: dateRange.numberOfDaysLimit ?? 0,
+      });
+
+      return fromQuery ?? this.defaultDateRangeFilter();
+    },
     resetFilters() {
-      this.filters = this.defaultFilters();
-      this.selectedGroup = null;
-      this.selectedProject = null;
-      this.scopePath = '';
-      this.syncScopeToUrl('');
+      this.filters = this.defaultDateRangeFilter();
+      this.selectedNamespaces = [];
+      this.cancelPanelsTimer();
+      this.scopePaths = [];
+      this.syncScopeToUrl([]);
+      // Cleared rather than set to the default, so the URL only names a range the user chose.
+      this.syncDateRangeToUrl({});
+      this.filtersReady = false;
       // The controls own their selection, so remount them to clear it.
       this.filtersKey += 1;
     },
@@ -210,19 +347,21 @@ export default {
 <template>
   <dashboard-loader @loaded="onDashboardLoaded">
     <template #dashboard="{ config, cellHeight, minCellHeight, isSystemDashboard }">
-      <!--
-        Keying the layout by the active view forces a clean remount of the grid on
-        view change. This routes panel rendering through GlDashboardLayout's initial
-        load (which does not scroll) instead of Gridstack's incremental "added" event,
-        which smooth-scrolls to the last panel and jumps the page to the bottom.
-      -->
       <gl-dashboard-layout
-        :key="activeViewIndex"
+        class="explore-analytics-dashboard"
+        filters-class="explore-dashboard-filters"
         :config="layoutConfig(config)"
         :cell-height="cellHeight"
         :min-cell-height="minCellHeight"
-        :filters="filters"
+        :filters="utcFilters"
       >
+        <template v-if="glSlots()['description-append']" #description>
+          <p data-testid="description" class="gl-mb-0">
+            {{ config.description }}
+            <slot name="description-append"></slot>
+          </p>
+        </template>
+
         <template v-if="glSlots().actions" #actions>
           <slot name="actions" :is-system-dashboard="isSystemDashboard"></slot>
         </template>
@@ -242,9 +381,11 @@ export default {
           <dashboard-filters
             :key="filtersKey"
             :dashboard-filters="config.filters"
-            :scope-path="scopePath"
+            :scope-paths="scopePaths"
+            :date-range-filter="filters"
             @set-date-range="setDateRangeFilter"
             @set-scope="setScopeFilter"
+            @ready="filtersReady = true"
             @error="onScopeError"
           />
           <!-- Outside the filter bar so the remount above cannot destroy it mid-click. -->
@@ -259,6 +400,13 @@ export default {
           >
             {{ $options.i18n.reset }}
           </gl-button>
+          <slot
+            name="filter-actions"
+            :filters="filters"
+            :panels="getPanels(config)"
+            :duo-prompts="activeDuoPrompts(config)"
+            :is-system-dashboard="isSystemDashboard"
+          ></slot>
         </template>
 
         <template #panel="{ panel }">
@@ -278,13 +426,14 @@ export default {
             :visualization="panel.visualization"
             :query-overrides="panel.queryOverrides"
             :views="panel.views"
-            :filters="filters"
+            :load-priority="panel.loadPriority"
+            :filters="utcFilters"
             :data-testid="panelTestId(panel)"
             @select-dashboard-view="selectDashboardView"
           />
         </template>
 
-        <template v-if="!hasNamespace" #empty-state>
+        <template v-if="filtersReady && !hasNamespace" #empty-state>
           <gl-empty-state
             :title="$options.i18n.noNamespaceTitle"
             :description="$options.i18n.noNamespaceDescription"

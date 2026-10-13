@@ -1,0 +1,8 @@
+---
+name: _read_custom_branch_rule
+description: Private permission that gates read access to the "all branches" and
+  "all protected branches" pseudo-rules, which have no protected branch of their
+  own. The AllBranchesRule and AllProtectedBranchesRule policies prevent
+  read_branch_rule unless the holder has it. Must not be checked directly at
+  enforcement points.
+conditionally_enables: read_branch_rule

@@ -205,7 +205,7 @@ SELECT
     `ch_aggregation_inner_query`.`aeq_mean_duration_secondary` = 1
   ) AS aeq_mean_duration,
   countIf(`ch_aggregation_inner_query`.`aeq_completion_rate` = 1) / COUNT(*) AS aeq_completion_rate,
-  quantile(0.5)(`ch_aggregation_inner_query`.`aeq_duration_quantile`) AS aeq_duration_quantile
+  quantileExactInclusive(0.5)(`ch_aggregation_inner_query`.`aeq_duration_quantile`) AS aeq_duration_quantile
 FROM (
   SELECT
     `sessions`.`flow_type` AS aeq_flow_type,
@@ -257,7 +257,8 @@ The macro expands into a group of metrics with dotted identifiers:
 - `<name>.mean`, which is always `:float`
 - `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
   parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
-- `<name>.sum`, which inherits the measurement's base type. The sum is only
+- `<name>.sum`, which is always `:float`, even for an `:integer` measurement,
+  because summed values overflow GraphQL `Int` quickly. The sum is only
   generated for summable base types (`:integer` and `:float`).
 
 The `expression` argument can be a [transient column](#transient-columns)
@@ -307,7 +308,7 @@ duration {
 
 #### `count` metric
 
-Counts rows with support for distinct counting and conditional counting using `countIf()`.
+Counts rows with support for distinct counting and conditional counting using `countIf()`. **Supports parameters.**
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
@@ -316,6 +317,7 @@ Counts rows with support for distinct counting and conditional counting using `c
 | `expression` | Proc | No | Custom expression for counting specific values |
 | `if` | Proc | No | Condition expression for conditional counting (`countIf`) |
 | `distinct` | Boolean | No | Enable distinct counting. Default: `false` |
+| `parameters` | Hash | No | Parameter configuration. A parameter declared with an `in:` allowlist adds a `countIf` condition on the column named by the parameter key |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
@@ -371,9 +373,49 @@ Calculates the ratio between rows matching a numerator condition and rows matchi
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
+#### `ratio` metric
+
+Computes one aggregate divided by another aggregate: `numerator_agg(numerator) / denominator_agg(denominator)`. `ratio` divides the sum of the numerator by the sum of the denominator, which is the correct semantics for "average X per Y" figures. Using `mean` over a row-level division expression instead yields a mean of ratios, which is a different number. For example, for rows `(credits: 10, mrs: 1)` and `(credits: 10, mrs: 9)`, a mean of ratios gives `avg(10, 1.11) = 5.56`, while `ratio` gives `20 / 10 = 2.0`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier name. Identifier becomes `:{name}_ratio` |
+| `type` | Symbol | No | Must be `:float`. Default: `:float`. Any other value raises `ArgumentError` |
+| `numerator` | Proc | Yes | Row-level expression for the numerator |
+| `denominator` | Proc | Yes | Row-level expression for the denominator |
+| `numerator_agg` | Symbol | No | Aggregate function applied to the numerator. Default: `:sum` |
+| `denominator_agg` | Symbol | No | Aggregate function applied to the denominator. Default: `:sum` |
+| `formatter` | Proc | No | Formatting function applied to results |
+| `description` | String | No | Human-readable description |
+| `parameters` | Hash | No | Parameter configuration |
+| `authorize` | Symbol | No | Additional authorization check for the metric |
+
+`numerator_agg` and `denominator_agg` accept `sum`, `count`, `uniqExact`, or `avg`; any other value raises `ArgumentError`. `count` maps to `count(col)`, which counts non-`NULL` values rather than rows. To count rows, use an always-non-null expression, for example `-> (_params) { sql('1') }`.
+
+Both `numerator` and `denominator` must return an expression for every parameter combination, because a ratio has no meaningful value with one side missing. A `nil` expression fails the request with a validation error; building a query without validating the plan first raises `ArgumentError`.
+
+`ratio` does not support the `if` option and raises `ArgumentError` if you pass one, because the denominator occupies the secondary expression slot that `if` uses on other metric types. Encode conditions inside `numerator` or `denominator` instead, for example with ClickHouse's `if(cond, value, NULL)`. Use `NULL` rather than `0` for the else branch. `sum` treats the two the same, but `count` counts a `0`, so the denominator becomes the full row count.
+
+When the aggregated denominator is `0`, the generated SQL wraps it in `nullIf(..., 0)`, so the metric returns `NULL` instead of `inf` or `nan`.
+
+Integer and `Float64` expressions divide to `Float64` at full precision. A `Decimal` numerator keeps the quotient at the numerator's scale, so the result is rounded: `toDecimal64(10, 2) / 3` gives `3.33`. The `:float` option on the metric only describes the type of the returned value; it does not change how ClickHouse performs the division. To avoid the rounding, cast a `Decimal` numerator with `toFloat64` inside the `numerator` expression.
+
+```ruby
+ratio :credits_per_created_mr,
+  numerator: ->(_params) { sql('credits_used') },
+  denominator: ->(_params) { sql('length(created_merge_request_ids)') },
+  description: 'Average credits spent per merge request created by a flow'
+```
+
+This generates:
+
+```sql
+sum(credits_used) / nullIf(sum(length(created_merge_request_ids)), 0)
+```
+
 #### `quantile` metric
 
-Calculates percentiles using ClickHouse's `quantile()` function. **Supports parameters.**
+Calculates percentiles using ClickHouse's `quantileExactInclusive()` function, which is exact and interpolates linearly between neighboring values. It keeps every value of the group in memory, unlike the sampled `quantile()`, so results are stable between runs. **Supports parameters.**
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
@@ -525,7 +567,7 @@ Groups results by a column value.
 | `expression` | Proc | No | Custom expression instead of column |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
-| `association` | Boolean | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Defaults to `false`. |
+| `association` | Boolean or Hash | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Accepts a Hash to configure `model`, `graphql_type`, `finder`, or `preloader`. Defaults to `false`. |
 
 #### `date_bucket` dimension
 
@@ -575,6 +617,40 @@ dimensions do
 end
 ```
 
+#### `traversal_path` dimension
+
+Groups results by the namespace ID found at a given depth of an organization-scoped traversal path
+column, for example `7/12/34/` where `7` is the organization ID. Use it to bucket results by one level
+of the group hierarchy. The leading organization segment is skipped, so depth `1` is the top-level
+group. **Supports parameters.**
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Dimension identifier, for example `:group_id` |
+| `type` | Symbol | Yes | Data type of the extracted ID (`:integer`) |
+| `expression` | Proc | Yes | Expression returning the traversal path column, for example `-> { sql('traversal_path') }` |
+| `parameters` | Hash | No | Extra options for the `depth` parameter, such as an `in:` range |
+| `association` | Boolean or Hash | No | When `true`, the dimension is also accessible without the `_id` suffix as an object. Accepts a Hash to configure `model`, `graphql_type`, `finder`, or `preloader`. Defaults to `false`. |
+| `description` | String | No | Human-readable description |
+
+**Supported Parameters:**
+
+| Parameter | Type | Values | Default | Description |
+|-----------|------|--------|---------|-------------|
+| `depth` | Integer | `1` to `99` by default. Narrow with `parameters: { depth: { in: 1..2 } }` | `1` | Depth in the hierarchy, counted from the top-level group |
+
+Paths shorter than the requested depth and the `0/` placeholder path produce a `NULL` bucket.
+The path identifies namespaces only, so for rows tracked in a project the segment at that depth is
+the project namespace ID rather than a group. That ID is still a distinct bucket; with
+`association: true` only the object lookup resolves to `null`, so one response can hold several
+rows whose dimension renders as `null`.
+
+```ruby
+dimensions do
+  traversal_path :group_id, :integer, -> { sql('traversal_path') }, association: true
+end
+```
+
 #### `exact_match` filter
 
 Filters rows by exact value match. Supports filtering on regular columns or merge columns (pre-aggregated data).
@@ -588,6 +664,97 @@ Filters rows by exact value match. Supports filtering on regular columns or merg
 | `max_size` | Integer | No | Maximum number of values allowed in filter |
 | `description` | String | No | Human-readable description |
 
+#### `exact_not_match` filter (ClickHouse only)
+
+Filters out rows whose value matches any of the given values. It works like `exact_match`, but generates a `NOT IN` condition instead of `IN`. This filter is only available for ClickHouse engines.
+
+```ruby
+filters do
+  exact_match :status, :string
+  exact_not_match :status, :string
+end
+```
+
+In a request, use `{ identifier: :status_not, values: ['skipped'] }`. In GraphQL, the identifier becomes a list argument named in camelCase, for example `statusNot`.
+
+Positive and negative filters combine with `AND`, so `ref: ['main']` together with
+`status_not: ['success']` means "on `main` and not successful".
+
+> [!note]
+> In ClickHouse, `NULL NOT IN (...)` evaluates to NULL, and `WHERE` and `HAVING` treat NULL as false. Rows where the filtered column is NULL are excluded from the results.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name to filter |
+| `type` | Symbol | Yes | Data type of filter values |
+| `expression` | Proc | No | Custom expression instead of column |
+| `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
+| `formatter` | Proc | No | Transforms values before they reach the query |
+| `max_size` | Integer | No | Maximum number of values allowed in filter |
+| `description` | String | No | Human-readable description |
+
+> [!warning]
+> A `formatter` that discards values it does not recognize, for example one using `filter_map` over
+> an enum, inverts the meaning of this filter. An empty `NOT IN` matches every row, so an
+> unrecognized exclusion value makes the filter a no-op that returns everything, whereas the same
+> value passed to `exact_match` returns nothing. Validate values before passing them.
+
+##### Pair every exact_match filter with an exclusion
+
+So that no value list ships without a way to exclude values, every `exact_match` filter should
+get an `exact_not_match` on the same column, declared explicitly on its own line:
+
+```ruby
+filters do
+  exact_match :status, :string, description: 'Filter by one or many statuses'
+  exact_not_match :status, :string, description: 'Exclude one or many statuses.'
+end
+```
+
+The spec `ee/spec/models/analytics/aggregation_engines/exclusion_filter_coverage_spec.rb` enforces
+the pairing and fails when a new `exact_match` filter ships without a counterpart. Columns that
+deliberately have no exclusion belong in that spec's `inclusion_only` list with a reason. A
+non-nullable boolean is one such case, because `createdByDuo: false` already expresses the
+exclusion.
+
+The guard covers `exact_match` only. `descendants` and `metric_exact_match` have no `NOT` form, so
+they are neither checked nor recordable in `inclusion_only`.
+
+The two declarations are independent, so each one carries its own description, `max_size`, and
+`experiment` option.
+
+##### Writing the exclusion description
+
+Because the exclusion filter accepts a list, write its description to read as a list exclusion, for
+example `Exclude one or many statuses.`, rather than as a restatement of the positive filter's
+description. Because deprecation markers are appended to the raw string, end every description
+with a period.
+
+Where the column is nullable, say so in the description, because API users cannot infer the NULL
+behavior from the argument name. Where an enum `formatter` discards unrecognized values, say that
+too, for the reason in the warning above.
+
+##### Capping exclusion list size
+
+Because an exclusion cannot use the sort key to skip granules, the whole scoped range is read
+however short the value list is. A cap therefore bounds the request and the set-membership work
+rather than the read, which is still worth having: set
+`max_size: Gitlab::Database::Aggregation::ClickHouse::Engine::MAX_EXCLUSION_VALUES` on every
+`exact_not_match`, and state the limit in the description. Do not cap the `exact_match` twin, which
+would newly reject queries that work today.
+
+> [!note]
+> A tighter `max_size` does not restore granule pruning, so do not reach for it as a performance
+> control. `NOT IN` reads the scoped range in full because the complement of a value set is not a
+> contiguous range; bound the query with a time range instead, where the sort key allows one.
+
+##### Do not mark generated arguments as experiment
+
+`Gitlab::Graphql::Deprecations` turns an `experiment:` marker into a `deprecation_reason`, and on
+these resolver-generated arguments that makes query execution recurse until the stack overflows.
+Every exclusion argument reproduced it; the positive filters, which carry no marker, are
+unaffected. See [issue 629296](https://gitlab.com/gitlab-org/gitlab/-/issues/629296).
+
 #### `range` filter
 
 Filters rows by value range using `BETWEEN`. Supports filtering on regular columns or merge columns.
@@ -599,6 +766,55 @@ Filters rows by value range using `BETWEEN`. Supports filtering on regular colum
 | `expression` | Proc | No | Custom expression instead of column |
 | `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
 | `description` | String | No | Human-readable description |
+
+#### `descendants` filter
+
+Filters rows whose traversal path column starts with any of the given paths, so a namespace
+matches together with all of its descendants. Values are Group Global IDs. Request validation
+resolves the Global IDs to traversal paths before the filter runs.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Filter identifier, for example `:group_id` |
+| `type` | Symbol | Yes | Data type of filter values (`:string` for Global IDs) |
+| `expression` | Proc | No | Expression returning the traversal path column. Defaults to the column named `name`. |
+| `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
+| `max_size` | Integer | No | Maximum number of values allowed in filter |
+| `with_organization` | Boolean | No | If `false`, resolves Global IDs to traversal paths without the organization prefix. Defaults to `true`. |
+| `description` | String | No | Human-readable description |
+
+```ruby
+filters do
+  descendants :group_id, :string, -> { sql('traversal_path') }, max_size: 100
+end
+```
+
+One PostgreSQL primary key lookup, `Group.id_in`, finds the groups, and
+`traversal_path(with_organization:)` builds each path.
+
+Validation rejects the whole request with the error "Values must be Global IDs of existing groups
+for filter `<key>`" when the value list is empty, a value is blank, a value is not a Global ID,
+the Global ID belongs to another model such as a Project, or the group does not exist. This check
+applies even when a Project's numeric ID collides with a group ID. No value is dropped silently.
+
+`max_size` is validated first. An oversized request is rejected before the PostgreSQL lookup runs,
+so set `max_size` to bound the lookup.
+
+Every resolved path must end with `/`, or the request is rejected with the error "Values must be
+traversal paths ending with `/` for filter `<key>`". A path `1/2` would also match `1/20/`,
+exposing rows of an unrelated group. This check guards against a broken ID-to-path transformation.
+
+Once validation passes, the filter renders one `startsWith(<path column>, '<traversal path>')`
+condition per resolved path, joined with `OR`, as a `WHERE` clause, or as a `HAVING` clause when
+`merge_column` is `true`.
+
+Tables whose path column has no organization prefix, `namespace_path` for example, pass
+`with_organization: false`, until
+[every traversal path carries the organization prefix](https://gitlab.com/gitlab-org/gitlab/-/work_items/603734):
+
+```ruby
+descendants :group_id, :string, -> { sql('namespace_path') }, max_size: 100, with_organization: false
+```
 
 #### `metric_exact_match` filter
 
@@ -965,8 +1181,13 @@ for every resource in the engine context's `authorization_resources`, or a calla
 When a user is not authorized for a part:
 
 - A protected metric is dropped from the request silently, and its field returns `null`. The
-  response shape does not change.
+  response shape does not change. When pruning leaves the request without any metrics, the
+  request fails validation with `access to metric '<identifier>' is not authorized` for each
+  pruned metric, so the caller can tell an authorization failure from an empty request.
 - A protected dimension, filter, order fails request validation with a clear error.
+
+Authorization validation errors are added with the `:unauthorized` type on the model errors,
+so callers can distinguish them from other validation errors.
 
 ### Example GraphQL query
 
@@ -1012,7 +1233,7 @@ query IssueAnalytics($projectId: ID!) {
 
 Filter arguments are split across the two levels based on when the filter is applied:
 
-- **Non-metric filters** (those defined with `exact_match` or `range`) appear on the outer field (e.g. `issueAnalytics`).
+- **Non-metric filters** (those defined with `exact_match`, `exact_not_match`, `range`, or `descendants`) appear on the outer field (e.g. `issueAnalytics`).
 - **Metric filters** (those defined with `metric_exact_match` or `metric_range`) appear on the
   inner `aggregated` field.
 
@@ -1099,6 +1320,15 @@ end
 
 When a dimension is marked as an association, an object is exposed instead of the raw `*_id` field. The dimension above transforms to `field :user, Types::UserType, ...` in GraphQL with batch loading by ID.
 You can order the dimensions by the association ID using the association name without `_id` suffix (for example, `orderBy: [{ identifier: "user", direction: DESC }]`).
+Parameterized association dimensions expose their parameters as field arguments (for example, `group(depth: 2) { id }`).
+
+When you order by a parameterized dimension, pass the same `parameters` in `orderBy` that you used
+in the field selection, because the row key includes the parameter values. `group(depth: 2) { id }`
+produces the row key `group_id_2`, so pair it with
+`orderBy: [{ identifier: "group", direction: DESC, parameters: { depth: 2 } }]`. `group { id }` with
+no arguments produces the row key `group_id`, so pair it with
+`orderBy: [{ identifier: "group", direction: DESC }]`. If the parameters differ, no dimension matches
+and the query fails with `the specified identifier is not available: 'group'`.
 
 > [!note]
 > You must ensure all proper authorization checks on association GraphQL type (e.g. `authorize :read_user`).
@@ -1119,6 +1349,25 @@ dimensions do
     association: { model: User }
     # or model and GraphQL type
     # association: { model: User, graphql_type: Types::CurrentUserType }
+end
+```
+
+The `association` option also accepts a `finder` and a `preloader` key to customize how a batch of
+IDs becomes records:
+
+- `finder`: a lambda that receives the array of IDs for one batch and returns a hash of ID to
+  record. Use it when the default lookup, `model.id_in(ids).index_by(&:id)`, is not suitable, for
+  example `finder: ->(ids) { Project.where(id: ids).index_by(&:id) }`.
+- `preloader`: a class such as `Preloaders::GroupPolicyPreloader` or
+  `Preloaders::ProjectPolicyPreloader`. The framework instantiates it with `(records, current_user)`
+  and calls `execute` once per batch, after the records load and before the GraphQL type's
+  `authorize` check runs on each record. Use it when the type's policy would otherwise run one or
+  more database queries per record. It works with both the default lookup and a custom `finder`.
+
+```ruby
+dimensions do
+  traversal_path :group_id, :integer, -> { sql('traversal_path') },
+    association: { preloader: Preloaders::GroupPolicyPreloader }
 end
 ```
 

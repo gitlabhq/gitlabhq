@@ -5,8 +5,8 @@ clusterwide: true
 column: iframe_rendering_allowlist
 db_type: text
 default:
-description: List of allowed iframe `src` host[:port] entries used for Content Security
-  Policy and sanitization.
+description: List of permitted iframe providers used for Content Security Policy
+  and sanitization.
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

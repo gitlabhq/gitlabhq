@@ -50,6 +50,18 @@ RSpec.describe 'Admin updates metrics and profiling settings', :request_store, :
     expect_field_value(_('Allow access to members of the following group'), nil)
   end
 
+  it 'changes active session history settings', :aggregate_failures do
+    within_testid('pg-ash-settings') do
+      click_unchecked_field s_('AdminSettings|Turn on session sampling')
+      fill_field_with_new_value s_('AdminSettings|Sample interval (seconds)'), '5'
+
+      expect_save_settings(refresh: true)
+
+      expect_field_checked s_('AdminSettings|Turn on session sampling')
+      expect_field_value(s_('AdminSettings|Sample interval (seconds)'), '5')
+    end
+  end
+
   it 'changes logging field naming settings', :js, :aggregate_failures do
     latest_version_text = format(s_('AdminSettings|v%{version} (latest)'),
       version: ApplicationSetting::LOGGING_FIELD_LATEST_VERSION)

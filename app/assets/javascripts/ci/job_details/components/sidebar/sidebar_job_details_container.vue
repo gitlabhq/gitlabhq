@@ -188,10 +188,8 @@ export default {
       :path="testReportUrlWithJobName"
       data-testid="test-summary"
     />
-
-    <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
-      <span class="gl-font-bold">{{ $options.i18n.TAGS }}:</span>
+    <detail-row v-if="hasTags" :title="$options.i18n.TAGS" data-testid="job-tags">
       <gl-badge v-for="(tag, i) in job.tags" :key="i" variant="info">{{ tag }}</gl-badge>
-    </p>
+    </detail-row>
   </div>
 </template>

@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+
+require_relative "banzai/version"
+require_relative "banzai/configuration"
+
+module Banzai
+  ATOM_CONTEXT = { only_path: false, xhtml: true }.freeze
+
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      yield configuration
+    end
+  end
+
+  # `Renderer` is still owned by the monolith and resolves through Zeitwerk at
+  # call time. It moves into this gem once its ActiveRecord coupling is behind
+  # ports; these delegations do not change when it does.
+
+  # if you need to render markdown, then you probably need to post_process as well,
+  # such as removing references that the current user doesn't have
+  # permission to make
+  def self.render_and_post_process(text, context = {})
+    post_process(render(text, context), context)
+  end
+
+  def self.render_field_and_post_process(object, field, context = {})
+    post_process(render_field(object, field, context), context)
+  end
+
+  def self.render(text, context = {})
+    Renderer.render(text, context)
+  end
+
+  def self.render_field(object, field, context = {})
+    Renderer.render_field(object, field, context)
+  end
+
+  def self.cache_collection_render(texts_and_contexts)
+    Renderer.cache_collection_render(texts_and_contexts)
+  end
+
+  def self.render_result(text, context = {})
+    Renderer.render_result(text, context)
+  end
+
+  def self.post_process(html, context)
+    Renderer.post_process(html, context)
+  end
+
+  def self.post_process_result(html, context)
+    Renderer.post_process_result(html, context)
+  end
+end

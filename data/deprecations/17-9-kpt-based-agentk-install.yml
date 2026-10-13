@@ -1,5 +1,5 @@
 - title: "`kpt`-based `agentk` is deprecated"
-  removal_milestone: "Pending"
+  removal_milestone: "20.0"
   announcement_milestone: "17.9"
   breaking_change: true
   reporter: nagyv-gitlab
@@ -13,6 +13,7 @@
   manual_task: true
   body: |  # (required) Don't change this line.
     We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+    The `kpt` package is broken and outdated. It has been unmaintained since 2022, lacks features added to the Helm chart since then, and has no known users.
     Instead, you should install the agent with one of the supported installation methods:
 
     - Helm (recommended)

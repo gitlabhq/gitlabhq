@@ -202,6 +202,35 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'when the work item type is changed' do
+      let(:new_type) { build(:work_item_system_defined_type, :incident) }
+      let(:opts) { { work_item_type: new_type } }
+
+      it 'broadcasts the conversion to namespace subscribers', :aggregate_failures,
+        :clean_gitlab_redis_rate_limiting do
+        source_type_id = work_item.work_item_type_id
+        updated_changes = nil
+        namespace_events = []
+        allow(GraphqlTriggers).to receive(:work_item_updated).and_wrap_original do |original, item, **kwargs|
+          updated_changes = kwargs.fetch(:updated_changes)
+          original.call(item, **kwargs)
+        end
+        allow(GitlabSchema.subscriptions).to receive(:trigger) do |event, arguments, payload|
+          namespace_events << [arguments, payload] if event == 'namespaceWorkItemChanges'
+        end
+
+        expect(work_item.work_item_type.base_type).to eq('issue')
+        expect { update_work_item }
+          .to change { work_item.reload.work_item_type_id }.from(source_type_id).to(new_type.id)
+
+        expect(updated_changes).to contain_exactly('updated_at', 'updated_by_id', 'work_item_type_id')
+        expect(namespace_events).to include(
+          [{ namespace_id: project.project_namespace.to_gid }, { work_item_id: work_item.id, action: :updated }]
+        )
+        expect(namespace_events).to eq(namespace_events.uniq)
+      end
+    end
+
     context 'when dates are changed' do
       let(:opts) { { start_date: Time.zone.today } }
 

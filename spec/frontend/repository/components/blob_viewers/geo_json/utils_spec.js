@@ -41,13 +41,6 @@ describe('GeoJson utilities', () => {
       it('fits the map to the correct bounds', () => {
         expect(map().fitBounds).toHaveBeenCalledWith(featureGroup().getBounds());
       });
-
-      it('generates popup content containing the metaData', () => {
-        const popupContent = utils.popupContent(mockData);
-
-        expect(popupContent).toContain(Object.keys(mockData)[0]);
-        expect(popupContent).toContain(mockData.test);
-      });
     });
 
     describe('invalid params', () => {
@@ -63,6 +56,76 @@ describe('GeoJson utilities', () => {
         expect(geoJson().addTo).not.toHaveBeenCalled();
         expect(map().fitBounds).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('popupContent', () => {
+    const renderPopup = (properties) => {
+      const el = document.createElement('div');
+      el.innerHTML = utils.popupContent(properties);
+      return el;
+    };
+
+    const findRows = (el) =>
+      [...el.firstElementChild.children].map((row) => ({
+        label: row.querySelector('strong').textContent,
+        value: row.querySelector('span').textContent,
+      }));
+
+    it('renders one row per property, in order', () => {
+      const el = renderPopup({ name: 'Park', area: 'North' });
+
+      expect(findRows(el)).toEqual([
+        { label: 'name:', value: 'Park' },
+        { label: 'area:', value: 'North' },
+      ]);
+    });
+
+    it('renders an empty popup when there are no properties', () => {
+      expect(findRows(renderPopup({}))).toEqual([]);
+    });
+
+    it('escapes HTML in labels and values', () => {
+      const el = renderPopup({
+        '<img src=x onerror=alert(1)>': '<script>alert(2)</script>',
+        quotes: `"double" & 'single'`,
+      });
+
+      expect(el.querySelector('img')).toBeNull();
+      expect(el.querySelector('script')).toBeNull();
+      expect(findRows(el)).toEqual([
+        { label: '<img src=x onerror=alert(1)>:', value: '<script>alert(2)</script>' },
+        { label: 'quotes:', value: `"double" & 'single'` },
+      ]);
+    });
+
+    it('renders non-string values as text', () => {
+      const el = renderPopup({
+        empty: null,
+        missing: undefined,
+        zero: 0,
+        flag: false,
+        list: [1, 2],
+        nested: { a: 1 },
+      });
+
+      expect(findRows(el)).toEqual([
+        { label: 'empty:', value: '' },
+        { label: 'missing:', value: '' },
+        { label: 'zero:', value: '0' },
+        { label: 'flag:', value: 'false' },
+        { label: 'list:', value: '1,2' },
+        { label: 'nested:', value: '[object Object]' },
+      ]);
+    });
+
+    it('renders a numeric "length" property as a regular property', () => {
+      const el = renderPopup({ name: 'Main Street', length: 2 });
+
+      expect(findRows(el)).toEqual([
+        { label: 'name:', value: 'Main Street' },
+        { label: 'length:', value: '2' },
+      ]);
     });
   });
 });

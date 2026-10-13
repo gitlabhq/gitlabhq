@@ -96,7 +96,30 @@ describe('PlaceholderReassignedActions', () => {
       expect(findAvatar().props('label')).toBe(mockSourceUser.reassignToUser.name);
     });
 
-    it('does not renders Undo button', () => {
+    it('does not render Undo button', () => {
+      expect(findUndoButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when status is REVOKED', () => {
+    const mockSourceUser = mockSourceUsers[7];
+
+    beforeEach(() => {
+      createComponent({
+        props: {
+          sourceUser: {
+            ...mockSourceUser,
+            status: 'REVOKED',
+          },
+        },
+      });
+    });
+
+    it('renders avatar with reassignToUser data', () => {
+      expect(findAvatar().props('label')).toBe(mockSourceUser.reassignToUser.name);
+    });
+
+    it('does not render Undo button', () => {
       expect(findUndoButton().exists()).toBe(false);
     });
   });

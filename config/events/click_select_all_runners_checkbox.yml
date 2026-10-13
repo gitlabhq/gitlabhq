@@ -1,0 +1,19 @@
+---
+description: Select all checkbox toggled in the header of the runners list. Also fires on the admin runners page, where no namespace is in context and namespace_id is null.
+internal_events: true
+action: click_select_all_runners_checkbox
+identifiers:
+  - user
+  - namespace
+additional_properties:
+  property:
+    description: Either "checked" or "unchecked"
+product_group: runner_core
+product_categories:
+  - fleet_visibility
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255237
+tiers:
+  - free
+  - premium
+  - ultimate

@@ -1,10 +1,22 @@
+const attributeOrComputedSize = (el) => {
+  const computedStyle = window.getComputedStyle(el);
+
+  return {
+    width: parseInt(el.getAttribute('width'), 10) || parseInt(computedStyle.width, 10),
+    height: parseInt(el.getAttribute('height'), 10) || parseInt(computedStyle.height, 10),
+  };
+};
+
 /**
  * Shared mixin for drag-to-resize behavior on media node view wrappers
  * (images, iframes).
  *
  * @param {string} refName - The ref name of the resizable DOM element.
  */
-export default function mediaResize(refName) {
+export default function mediaResize(
+  refName,
+  { startSize = (vm) => attributeOrComputedSize(vm.$refs[refName]), minWidth = () => 0 } = {},
+) {
   return {
     props: {
       getPos: {
@@ -55,11 +67,7 @@ export default function mediaResize(refName) {
     },
     methods: {
       onDragStart(handle, event) {
-        const el = this.$refs[refName];
-        const computedStyle = window.getComputedStyle(el);
-        const width = parseInt(el.getAttribute('width'), 10) || parseInt(computedStyle.width, 10);
-        const height =
-          parseInt(el.getAttribute('height'), 10) || parseInt(computedStyle.height, 10);
+        const { width, height } = startSize(this);
 
         this.dragData = {
           handle,
@@ -67,23 +75,27 @@ export default function mediaResize(refName) {
           startY: event.screenY,
           startWidth: width,
           startHeight: height,
+          minimumWidth: minWidth(this),
           width,
           height,
         };
       },
       onDrag(event) {
-        const { handle, startX, startWidth, startHeight } = this.dragData;
+        const { handle, startX, startWidth, startHeight, minimumWidth } = this.dragData;
         if (!handle) return;
 
         const deltaX = event.screenX - startX;
         const isLeftHandle = handle.includes('w');
-        const newWidth = isLeftHandle ? startWidth - deltaX : startWidth + deltaX;
-        const newHeight = Math.floor((startHeight / startWidth) * newWidth);
+        const newWidth = Math.max(
+          isLeftHandle ? startWidth - deltaX : startWidth + deltaX,
+          minimumWidth,
+        );
+        const newHeight = Math.floor((startHeight * newWidth) / startWidth);
 
         this.dragData = {
           ...this.dragData,
-          width: Math.max(newWidth, 0),
-          height: Math.max(newHeight, 0),
+          width: newWidth,
+          height: newHeight,
         };
       },
       onNativeDragStart(event) {

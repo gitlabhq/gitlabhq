@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :debian_project_distribution, class: 'Packages::Debian::ProjectDistribution' do
-    container { association(:project) }
+    container { @overrides[:project] || association(:project) }
 
     sequence(:codename) { |n| "codename-#{n}" }
 
     factory :debian_group_distribution, class: 'Packages::Debian::GroupDistribution' do
-      container { association(:group) }
+      container { @overrides[:group] || association(:group) }
     end
 
     trait(:with_suite) do

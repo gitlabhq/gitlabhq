@@ -10,11 +10,12 @@ module Projects
 
     attr_reader :current_user, :params
 
-    def initialize(user, import_params, override_params = nil, import_type:)
+    def initialize(user, import_params, override_params = nil, import_type:, request_channel: nil)
       @current_user = user
       @params = params_to_h(import_params.dup)
       @override_params = params_to_h(override_params)
       @import_type = import_type.to_s
+      @request_channel = request_channel
 
       raise ArgumentError, 'Invalid import_type provided' unless valid_import_type?
     end
@@ -24,12 +25,15 @@ module Projects
 
       prepare_import_params
 
+      # Picked up by ProjectImportState#after_create, before the import job is enqueued.
+      ::Gitlab::Import::RequestChannel.stash(request_channel) if request_channel
+
       ::Projects::CreateService.new(current_user, params).execute
     end
 
     private
 
-    attr_reader :import_type, :override_params
+    attr_reader :import_type, :override_params, :request_channel
 
     def valid_import_type?
       import_type == 'gitlab_project' || Gitlab::ImportSources.template?(import_type)

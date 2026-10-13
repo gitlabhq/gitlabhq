@@ -98,7 +98,8 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
 
     context 'setting labels' do
       before do
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(106)
+        # Was 106. Storing the label event reference adds two queries.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
       end
 
       let(:mutation) do
@@ -116,10 +117,30 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
         end
       end
 
+      context 'when adding labels past the work item labels limit' do
+        let(:input_params) { input.merge(extra_params).merge({ addLabelIds: [label1.id, label2.id] }) }
+
+        before do
+          stub_const('Issue::MAX_NUMBER_OF_LABELS', 1)
+        end
+
+        it 'returns the error as mutation errors without persisting the labels' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['errors'].first).to include('Cannot add more than 1 labels')
+          expect(issue.reload.labels).to be_empty
+        end
+      end
+
       context 'reset labels' do
         let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.id, label2.id] }) }
 
         it 'resets labels' do
+          # 106 -> 112: extra work_item_positions reads from the position write-cutover (MR !254713).
+          # 112 -> 114: storing the label event reference adds two queries.
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(114)
+
           post_graphql_mutation(mutation, current_user: current_user)
 
           expect(response).to have_gitlab_http_status(:success)
@@ -155,6 +176,10 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
           let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.to_global_id.to_s, label2.to_global_id.to_s] }) }
 
           it 'resets labels' do
+            # 106 -> 107: extra work_item_positions read from the position write-cutover (MR !254713).
+            # 107 -> 109: storing the label event reference adds two queries.
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(109)
+
             post_graphql_mutation(mutation, current_user: current_user)
 
             expect(response).to have_gitlab_http_status(:success)

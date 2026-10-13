@@ -8,6 +8,7 @@ export const clusterAgents = [
   {
     name: 'agent-1',
     id: 'gid://gitlab/Clusters::Agent/1',
+    agentId: 1,
     configFolder: {
       webPath: '/agent/full/path',
     },
@@ -28,6 +29,7 @@ export const clusterAgents = [
   {
     name: 'agent-2',
     id: 'gid://gitlab/Clusters::Agent/2',
+    agentId: 2,
     webPath: '/agent-2',
     status: 'active',
     lastContact: connectedTimeNow.getTime(),
@@ -59,6 +61,7 @@ export const clusterAgents = [
   {
     name: 'agent-3',
     id: 'gid://gitlab/Clusters::Agent/3',
+    agentId: 3,
     webPath: '/agent-3',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -86,6 +89,7 @@ export const clusterAgents = [
   {
     name: 'agent-4',
     id: 'gid://gitlab/Clusters::Agent/4',
+    agentId: 4,
     webPath: '/agent-4',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -117,6 +121,7 @@ export const clusterAgents = [
   {
     name: 'agent-5',
     id: 'gid://gitlab/Clusters::Agent/5',
+    agentId: 5,
     webPath: '/agent-5',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -148,6 +153,7 @@ export const clusterAgents = [
   {
     name: 'agent-6',
     id: 'gid://gitlab/Clusters::Agent/6',
+    agentId: 6,
     webPath: '/agent-6',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -174,6 +180,7 @@ export const clusterAgents = [
   {
     name: 'agent-7',
     id: 'gid://gitlab/Clusters::Agent/7',
+    agentId: 7,
     webPath: '/agent-7',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -200,6 +207,7 @@ export const clusterAgents = [
   {
     name: 'agent-8',
     id: 'gid://gitlab/Clusters::Agent/8',
+    agentId: 8,
     webPath: '/agent-8',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -226,6 +234,7 @@ export const clusterAgents = [
   {
     name: 'agent-9',
     id: 'gid://gitlab/Clusters::Agent/9',
+    agentId: 9,
     webPath: '/agent-9',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
@@ -413,7 +422,20 @@ export const treeListResponseData = {
 
 export const expectedAgentsList = [
   {
+    id: '1',
+    agentId: 1,
+    name: 'agent-1',
+    webPath: '/agent-1',
+    configFolder: undefined,
+    status: 'unused',
+    lastContact: null,
+    connections: null,
+    tokens: null,
+    project: agentProject,
+  },
+  {
     id: '2',
+    agentId: 2,
     name: 'agent-2',
     configFolder: {
       name: 'agent-2',
@@ -431,17 +453,6 @@ export const expectedAgentsList = [
         },
       ],
     },
-    project: agentProject,
-  },
-  {
-    id: '1',
-    name: 'agent-1',
-    webPath: '/agent-1',
-    configFolder: undefined,
-    status: 'unused',
-    lastContact: null,
-    connections: null,
-    tokens: null,
     project: agentProject,
   },
 ];

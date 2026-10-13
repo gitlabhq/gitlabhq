@@ -77,4 +77,29 @@ RSpec.describe AccessTokenValidationService, feature_category: :system_access do
       end
     end
   end
+
+  describe '#validate' do
+    context 'with an OAuth access token', feature_category: :permissions do
+      using RSpec::Parameterized::TableSyntax
+
+      subject(:result) { described_class.new(token, request: double('request')).validate(scopes: [:api]) }
+
+      let(:token) do
+        build_stubbed(:oauth_access_token, scopes: token_scopes, created_at: created_at, expires_in: 2.hours,
+          revoked_at: revoked_at)
+      end
+
+      where(:token_scopes, :created_at, :revoked_at, :expected) do
+        ['granular']  | 1.hour.ago  | nil        | described_class::VALID
+        ['granular']  | 3.hours.ago | nil        | described_class::EXPIRED
+        ['granular']  | 1.hour.ago  | 1.hour.ago | described_class::REVOKED
+        ['read_user'] | 1.hour.ago  | nil        | described_class::INSUFFICIENT_SCOPE
+        ['api']       | 1.hour.ago  | nil        | described_class::VALID
+      end
+
+      with_them do
+        it { is_expected.to eq(expected) }
+      end
+    end
+  end
 end

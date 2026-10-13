@@ -74,7 +74,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.
      - If you installed the [GitLab for VS Code extension](../editor_extensions/visual_studio_code/_index.md),
-       use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
+       use the [`Gitlab: Create snippet`](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) command.
    - To create a project snippet: Go to your project's page. Select
      **Create new** ({{< icon name="plus" >}}). Below **In this project**, select **New snippet**.
 1. In **Title**, add a title.

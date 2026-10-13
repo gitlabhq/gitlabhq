@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :notification_setting do
-    source factory: :project
+    source { @overrides[:project] || association(:project) }
     user
     level { 3 }
   end

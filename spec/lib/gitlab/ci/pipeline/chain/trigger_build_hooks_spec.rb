@@ -27,9 +27,36 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::TriggerBuildHooks, feature_category:
     expect(step.break?).to be false
   end
 
-  it 'enqueues ExecutePipelineBuildHooksWorker with pipeline_id' do
-    expect(::Ci::ExecutePipelineBuildHooksWorker).to receive(:perform_async).with(pipeline.id)
+  context 'when the project has job hooks' do
+    before do
+      allow(project).to receive(:has_active_hooks?).with(:job_hooks).and_return(true)
+    end
 
-    run_chain
+    it 'enqueues ExecutePipelineBuildHooksWorker with pipeline_id' do
+      expect(::Ci::ExecutePipelineBuildHooksWorker).to receive(:perform_async).with(pipeline.id)
+
+      run_chain
+    end
+  end
+
+  context 'when the project has job integrations' do
+    before do
+      allow(project).to receive(:has_active_hooks?).with(:job_hooks).and_return(false)
+      allow(project).to receive(:has_active_integrations?).with(:job_hooks).and_return(true)
+    end
+
+    it 'enqueues ExecutePipelineBuildHooksWorker with pipeline_id' do
+      expect(::Ci::ExecutePipelineBuildHooksWorker).to receive(:perform_async).with(pipeline.id)
+
+      run_chain
+    end
+  end
+
+  context 'when the project has no job hooks or integrations' do
+    it 'does not enqueue ExecutePipelineBuildHooksWorker' do
+      expect(::Ci::ExecutePipelineBuildHooksWorker).not_to receive(:perform_async)
+
+      run_chain
+    end
   end
 end

@@ -21,6 +21,9 @@ module Gitlab
     #
     # In general, prefer NOT to use serializable_hash / to_json / as_json in favor
     # of serializers / entities instead which has an allowlist of attributes
+    #
+    # This only covers the `except` path. A caller passing `only:` bypasses it,
+    # because ActiveModel ignores `except` when `only:` is present.
     def serializable_hash(options = nil)
       options = options.try(:dup) || {}
       options[:except] = Array(options[:except]).dup

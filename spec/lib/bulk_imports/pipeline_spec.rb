@@ -23,6 +23,13 @@ RSpec.describe BulkImports::Pipeline, feature_category: :importers do
     stub_const('BulkImports::TestWikiPipeline', klass)
   end
 
+  describe 'error classes' do
+    it 'defines errors that inherit from Gitlab::SidekiqMiddleware::RetryError' do
+      expect(described_class::FailedError.superclass).to eq(Gitlab::SidekiqMiddleware::RetryError)
+      expect(described_class::ExpiredError.superclass).to eq(Gitlab::SidekiqMiddleware::RetryError)
+    end
+  end
+
   describe 'pipeline attributes' do
     describe 'getters' do
       it 'retrieves class attributes' do

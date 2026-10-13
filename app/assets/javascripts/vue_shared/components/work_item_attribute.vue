@@ -80,6 +80,11 @@ export default {
       required: false,
       default: null,
     },
+    srOnlyText: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['click'],
   computed: {
@@ -117,6 +122,10 @@ export default {
     v-bind="hasPopover ? popoverAttributes : {}"
     @click="handleClick"
   >
+    <!-- aria-label isn't reliably announced on a non-interactive wrapper (e.g. span/div), so give those an sr-only text alternative -->
+    <span v-if="srOnlyText" class="gl-sr-only" :data-testid="`${anchorId}-sr-only`">{{
+      srOnlyText
+    }}</span>
     <!-- icon  -->
     <slot name="icon">
       <gl-icon

@@ -11,7 +11,7 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all group milestones' do
@@ -22,7 +22,7 @@ module API
       params do
         use :list_params
         optional :include_descendants, type: Grape::API::Boolean,
-          desc: 'Include milestones from all subgroups and subprojects'
+          desc: 'If `true`, includes milestones for the group and its descendants.'
       end
       route_setting :authorization, permissions: :read_milestone, boundary_type: :group
       get ":id/milestones" do
@@ -35,7 +35,7 @@ module API
         tags ['milestones']
       end
       params do
-        requires :milestone_id, type: Integer, desc: 'The ID of a group milestone'
+        requires :milestone_id, type: Integer, desc: 'ID of the group milestone.'
       end
       route_setting :authorization, permissions: :read_milestone, boundary_type: :group
       get ":id/milestones/:milestone_id" do
@@ -96,7 +96,7 @@ module API
         tags ['milestones']
       end
       params do
-        requires :milestone_id, type: Integer, desc: 'The ID of a group milestone'
+        requires :milestone_id, type: Integer, desc: 'ID of the group milestone.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_milestone_issue, boundary_type: :group
@@ -110,7 +110,7 @@ module API
         tags ['milestones']
       end
       params do
-        requires :milestone_id, type: Integer, desc: 'The ID of a group milestone'
+        requires :milestone_id, type: Integer, desc: 'ID of the group milestone.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_milestone_merge_request, boundary_type: :group

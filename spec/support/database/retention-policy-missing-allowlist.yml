@@ -16,7 +16,6 @@
 - abuse_report_events
 - abuse_report_upload_states
 - abuse_report_uploads
-- abuse_report_user_mentions
 - abuse_reports
 - achievement_upload_states
 - achievement_uploads
@@ -163,7 +162,6 @@
 - batched_background_migration_job_transition_logs
 - batched_background_migration_jobs
 - batched_background_migrations
-- billable_usage_daily_aggregates
 - board_assignees
 - board_group_recent_visits
 - board_labels
@@ -394,7 +392,6 @@
 - elasticsearch_indexed_namespaces
 - elasticsearch_indexed_projects
 - emails
-- enabled_foundational_flow_check_results
 - enabled_foundational_flows
 - environments
 - epic_issues

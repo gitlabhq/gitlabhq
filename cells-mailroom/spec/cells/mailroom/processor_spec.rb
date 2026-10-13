@@ -49,7 +49,7 @@ RSpec.describe Cells::Mailroom::Processor do
         expect(processor.process(raw)).to be(true)
       end
 
-      it 'drops the email when no default cell is available' do
+      it 'keeps the email for retry when no default cell is available' do
         allow(cell_router).to receive(:default_cell_address).and_return(nil)
         expect(forwarder).not_to receive(:forward)
 
@@ -63,7 +63,9 @@ RSpec.describe Cells::Mailroom::Processor do
           expect(cell_router).not_to receive(:default_cell_address)
           expect(forwarder).not_to receive(:forward)
 
-          expect(processor.process(raw)).to be(false)
+          # A deliberate drop reports success so mail_room removes the message;
+          # keeping it would only regrow the mailbox and re-scan every cycle.
+          expect(processor.process(raw)).to be(true)
         end
       end
     end
@@ -109,6 +111,15 @@ RSpec.describe Cells::Mailroom::Processor do
       expect(forwarder).to receive(:forward).with(raw, 'cell-1.example.com:443').and_return(true)
 
       expect(processor.process(raw)).to be(true)
+    end
+
+    it 'keeps the email for retry when forwarding to the resolved cell fails' do
+      allow(cell_router).to receive(:address_for)
+        .with(Gitlab::EmailHandler::Target.project_id(20))
+        .and_return('cell-1.example.com:443')
+      expect(forwarder).to receive(:forward).with(raw, 'cell-1.example.com:443').and_return(false)
+
+      expect(processor.process(raw)).to be(false)
     end
 
     it 'returns false and does not raise when processing fails' do

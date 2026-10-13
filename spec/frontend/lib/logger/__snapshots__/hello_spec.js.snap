@@ -3,13 +3,45 @@
 exports[`~/lib/logger/hello logHello when on dot_com console logs a friendly hello message including the careers page 1`] = `
 [
   [
-    "%cWelcome to GitLab!%c
+    "%c⠀⠀%c⣰⣧%c⠀⠀⠀⠀⠀⠀%c⣼⣆%c⠀⠀
+%c⠀%c⢠⣿⣿⡆⣀⣀⣀⣀⢰⣿⣿⡄%c⠀
+%c⠀%c⣾%c⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿%c⣷%c⠀
+%c⠀%c⢿⣿⣿⣿%c⣿⣿⣿⣿%c⣿⣿⣿⡿%c⠀
+%c⠀⠀%c⠙⠻⣿⣿%c⣿⣿%c⣿⣿⠟⠋%c⠀⠀
+%c⠀⠀⠀⠀%c⠈⠙⢿⡿⠋⠁%c⠀⠀⠀⠀
+%cWelcome to GitLab!%c
 
 Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!
 
 🤝 Contribute to GitLab: https://about.gitlab.com/community/contribute/
 🔎 Create a new GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/new
 🚀 We like your curiosity! Help us improve GitLab by joining the team: https://about.gitlab.com/jobs/",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fca326; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fca326; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
     "padding-top: 0.5em; font-size: 2em;",
     "padding-bottom: 0.5em;",
   ],
@@ -19,13 +51,45 @@ Does this page need fixes or improvements? Open an issue or contribute a merge r
 exports[`~/lib/logger/hello logHello when on self managed console logs a friendly hello message without including the careers page 1`] = `
 [
   [
-    "%cWelcome to GitLab!%c
+    "%c⠀⠀%c⣰⣧%c⠀⠀⠀⠀⠀⠀%c⣼⣆%c⠀⠀
+%c⠀%c⢠⣿⣿⡆⣀⣀⣀⣀⢰⣿⣿⡄%c⠀
+%c⠀%c⣾%c⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿%c⣷%c⠀
+%c⠀%c⢿⣿⣿⣿%c⣿⣿⣿⣿%c⣿⣿⣿⡿%c⠀
+%c⠀⠀%c⠙⠻⣿⣿%c⣿⣿%c⣿⣿⠟⠋%c⠀⠀
+%c⠀⠀⠀⠀%c⠈⠙⢿⡿⠋⠁%c⠀⠀⠀⠀
+%cWelcome to GitLab!%c
 
 Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!
 
 🤝 Contribute to GitLab: https://about.gitlab.com/community/contribute/
 🔎 Create a new GitLab issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/new
 ",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #e2432a; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fca326; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fc6d27; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: #fca326; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
+    "color: inherit; font-weight: bold; font-family: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans Mono', monospace; line-height: 1;",
     "padding-top: 0.5em; font-size: 2em;",
     "padding-bottom: 0.5em;",
   ],

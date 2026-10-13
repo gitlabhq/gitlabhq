@@ -15,7 +15,12 @@ const useMockStore = defineStore('discussionRowTestStore', {
     findLineDiscussionsForPosition() {
       return this.discussions;
     },
-    setPositionDiscussionsHidden() {},
+    collapseDiscussion(discussion) {
+      Object.assign(discussion, { hidden: true });
+    },
+    expandDiscussion(discussion) {
+      Object.assign(discussion, { hidden: false });
+    },
     addNewLineDiscussionForm() {},
   },
 });
@@ -26,6 +31,7 @@ describe('DiffDiscussionRow', () => {
 
   const oldPath = 'file.js';
   const newPath = 'file.js';
+  const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
 
   const createDiscussion = (overrides = {}) => ({
     id: '1',
@@ -53,7 +59,7 @@ describe('DiffDiscussionRow', () => {
         parallel: false,
         ...props,
       },
-      provide: { store, filePaths: { oldPath, newPath } },
+      provide: { store, filePaths: { oldPath, newPath }, diffRefs },
     });
   };
 
@@ -67,8 +73,6 @@ describe('DiffDiscussionRow', () => {
   });
 
   describe('per-file diffRefs', () => {
-    const diffRefs = { base_sha: 'base', start_sha: 'start', head_sha: 'head' };
-
     it('passes the injected diffRefs to findLineDiscussionsForPosition', () => {
       store.discussions = [createDiscussion()];
       wrapper = shallowMount(DiffDiscussionRow, {
@@ -82,6 +86,30 @@ describe('DiffDiscussionRow', () => {
         newLine: null,
         diffRefs,
       });
+    });
+  });
+
+  describe('without per-file diffRefs', () => {
+    const createWithoutDiffRefs = () => {
+      wrapper = shallowMount(DiffDiscussionRow, {
+        propsData: { oldLine: 5, newLine: null, parallel: false },
+        provide: { store, filePaths: { oldPath, newPath } },
+      });
+    };
+
+    it('collapses and expands the row through the gutter', async () => {
+      store.discussions = [createDiscussion()];
+      createWithoutDiffRefs();
+
+      findGutterToggles().at(0).vm.$emit('toggle', true);
+      await nextTick();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBe('');
+
+      findGutterToggles().at(0).vm.$emit('toggle', false);
+      await nextTick();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBeUndefined();
     });
   });
 
@@ -128,7 +156,7 @@ describe('DiffDiscussionRow', () => {
       expect(findCells().at(1).attributes('colspan')).toBe('2');
     });
 
-    it('calls setPositionDiscussionsHidden for all positions on spanning row toggle', () => {
+    it('collapses the rendered discussions on spanning row toggle', () => {
       store.discussions = [
         createDiscussion({
           position: { old_path: oldPath, new_path: newPath, old_line: 5, new_line: 3 },
@@ -136,10 +164,7 @@ describe('DiffDiscussionRow', () => {
       ];
       createComponent({ parallel: true, oldLine: 5, newLine: 3 });
       findGutterToggles().at(0).vm.$emit('toggle', true);
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: 3 },
-        true,
-      );
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
   });
 
@@ -189,13 +214,69 @@ describe('DiffDiscussionRow', () => {
       expect(findDiscussions().at(0).props('discussions')).toHaveLength(2);
     });
 
-    it('calls setPositionDiscussionsHidden on manual toggle via gutter', () => {
+    it('collapses the rendered discussion on manual toggle via gutter', () => {
       store.discussions = [createDiscussion()];
       createComponent();
       findGutterToggles().at(0).vm.$emit('toggle', true);
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        true,
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+    });
+
+    it('expands the rendered discussion when the gutter reports it collapsed', () => {
+      store.discussions = [createDiscussion({ hidden: true })];
+      createComponent();
+      findGutterToggles().at(0).vm.$emit('toggle', false);
+      expect(store.expandDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+    });
+
+    it('collapses and expands the row through the gutter', async () => {
+      store.discussions = [createDiscussion()];
+      createComponent();
+
+      findGutterToggles().at(0).vm.$emit('toggle', true);
+      await nextTick();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBe('');
+
+      findGutterToggles().at(0).vm.$emit('toggle', false);
+      await nextTick();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBeUndefined();
+      expect(findDiscussions().at(0).props('collapsed')).toBe(false);
+    });
+
+    it('expands a discussion that was already collapsed on mount', async () => {
+      store.discussions = [createDiscussion({ hidden: true })];
+      createComponent();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBe('');
+
+      findGutterToggles().at(0).vm.$emit('toggle', false);
+      await nextTick();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBeUndefined();
+    });
+
+    it('keeps a resolved discussion expanded after it is shown again', async () => {
+      store.discussions = [createDiscussion({ resolvable: true, resolved: true, hidden: true })];
+      createComponent();
+
+      findGutterToggles().at(0).vm.$emit('toggle', false);
+      await nextTick();
+      await nextTick();
+
+      expect(wrapper.find('tr').attributes('data-collapsed')).toBeUndefined();
+      expect(store.collapseDiscussion).not.toHaveBeenCalled();
+    });
+
+    it('leaves a discussion form untouched on toggle', () => {
+      store.discussions = [
+        createDiscussion(),
+        { id: 'form', isForm: true, diff_discussion: true, position: {} },
+      ];
+      createComponent();
+      findGutterToggles().at(0).vm.$emit('toggle', true);
+      expect(store.collapseDiscussion).not.toHaveBeenCalledWith(
+        expect.objectContaining({ isForm: true }),
       );
     });
   });
@@ -206,10 +287,7 @@ describe('DiffDiscussionRow', () => {
       createComponent();
       store.discussions[0].resolved = true;
       await nextTick();
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        true,
-      );
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
 
     it('unhides all discussions when one is unresolved', async () => {
@@ -217,10 +295,7 @@ describe('DiffDiscussionRow', () => {
       createComponent();
       store.discussions[0].resolved = false;
       await nextTick();
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        false,
-      );
+      expect(store.expandDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
 
     it('hides when all discussions at position are resolved', async () => {
@@ -236,10 +311,8 @@ describe('DiffDiscussionRow', () => {
       createComponent();
       store.discussions[0].resolved = true;
       await nextTick();
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        true,
-      );
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '2' }));
     });
   });
 
@@ -299,14 +372,7 @@ describe('DiffDiscussionRow', () => {
       createComponent({ parallel: true, oldLine: 5, newLine: 3, changed: true });
       store.discussions[0].resolved = true;
       await nextTick();
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        true,
-      );
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: null, newLine: 3 },
-        true,
-      );
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
 
     it('collapses when both sides have all discussions hidden', () => {
@@ -361,9 +427,9 @@ describe('DiffDiscussionRow', () => {
       createComponent();
       store.discussions[0].resolved = true;
       await nextTick();
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        true,
+      expect(store.collapseDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(store.collapseDiscussion).not.toHaveBeenCalledWith(
+        expect.objectContaining({ isDraft: true }),
       );
     });
 
@@ -406,24 +472,21 @@ describe('DiffDiscussionRow', () => {
         createDiscussion({ hidden: true, notes: [{ id: 100, author: { id: 1 } }] }),
       ];
       createComponent();
-      expect(store.setPositionDiscussionsHidden).toHaveBeenCalledWith(
-        { oldPath, newPath, oldLine: 5, newLine: null },
-        false,
-      );
+      expect(store.expandDiscussion).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
 
     it('does not expand when hash does not match any note', () => {
       setWindowLocation('https://example.com/diffs#note_999');
       store.discussions = [createDiscussion({ hidden: true })];
       createComponent();
-      expect(store.setPositionDiscussionsHidden).not.toHaveBeenCalledWith(expect.anything(), false);
+      expect(store.expandDiscussion).not.toHaveBeenCalled();
     });
 
     it('does not expand when there is no note hash', () => {
       setWindowLocation('https://example.com/diffs#diff_abc');
       store.discussions = [createDiscussion({ hidden: true })];
       createComponent();
-      expect(store.setPositionDiscussionsHidden).not.toHaveBeenCalledWith(expect.anything(), false);
+      expect(store.expandDiscussion).not.toHaveBeenCalled();
     });
   });
 });

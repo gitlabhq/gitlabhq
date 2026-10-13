@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - update_audit_event_streaming_destination
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

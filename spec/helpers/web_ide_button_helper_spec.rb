@@ -268,6 +268,44 @@ RSpec.describe WebIdeButtonHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#repository_header_web_ide_button_options' do
+    let(:blob) { instance_double(Blob) }
+    let(:header_keys) { described_class::REPOSITORY_HEADER_WEB_IDE_BUTTON_KEYS }
+
+    subject(:options) { Gitlab::Json.safe_parse(helper.repository_header_web_ide_button_options(blob)) }
+
+    it 'only includes the keys read by the repository header app' do
+      allow(helper).to receive(:web_ide_button_data).with({ blob: blob }).and_return(
+        header_keys.index_with { |key| "#{key} value" }.merge(
+          project_path: 'group/project',
+          ref: 'main',
+          project_id: 1,
+          new_workspace_path: '/-/remote_development/workspaces/new',
+          organization_id: 1
+        )
+      )
+
+      expect(options).to eq(header_keys.to_h { |key| [key.to_s, "#{key} value"] })
+    end
+
+    it 'returns every key the repository header app reads' do
+      @project = project
+
+      helper.instance_variable_set(:@path, '')
+      helper.instance_variable_set(:@ref, 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
+
+      allow(Current).to receive(:organization).and_return(project.organization)
+      allow(helper).to receive_messages(
+        current_user: nil,
+        can_collaborate_with_project?: true,
+        can?: true
+      )
+
+      expect(helper.web_ide_button_data({ blob: nil }).keys)
+        .to include(*described_class::REPOSITORY_HEADER_WEB_IDE_BUTTON_KEYS)
+    end
+  end
+
   describe '.fork_modal_options' do
     let(:path) { '' }
 

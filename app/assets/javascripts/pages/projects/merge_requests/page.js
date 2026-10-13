@@ -1,14 +1,13 @@
 import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import initMrNotes from 'ee_else_ce/mr_notes';
-import initReportsTabCount from 'ee_else_ce/merge_requests/reports/tab_count';
+import initReportsTabCount from '~/merge_requests/reports/tab_count';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_DIFF_GENERATED, EVT_MR_PREPARED } from '~/diffs/constants';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { parseBoolean } from '~/lib/utils/common_utils';
-import { initMrMoreDropdown } from '~/mr_more_dropdown';
 import { pinia } from '~/pinia/instance';
 import ReviewDrawer from '~/batch_comments/components/review_drawer.vue';
 import { observable } from '~/lib/utils/observable';
@@ -143,7 +142,6 @@ const initStackedDropdown = () => {
 export function initMrPage(createRapidDiffsApp) {
   const mergeRequest = initMrNotes(createRapidDiffsApp);
   initShow();
-  initMrMoreDropdown();
   initReportsTabCount();
   startCodeReviewMessaging({ signalBus: diffsEventHub });
 
@@ -171,7 +169,11 @@ export function initMrPage(createRapidDiffsApp) {
 
   if (createRapidDiffsApp) {
     diffsEventHub.$once(EVT_MR_PREPARED, () => {
-      window.location.reload();
+      // Only the Changes tab renders the preparing empty state. Reloading from another tab has
+      // nothing to fix and cancels the full navigation that opening Changes triggers while preparing.
+      if (mergeRequest.tabs.isDiffAction(mergeRequest.tabs.getCurrentAction())) {
+        window.location.reload();
+      }
     });
   }
 

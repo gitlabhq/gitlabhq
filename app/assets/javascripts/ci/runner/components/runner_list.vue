@@ -2,6 +2,7 @@
 import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
@@ -46,7 +47,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glSlotsMixin],
+  mixins: [glSlotsMixin, InternalEvents.mixin()],
   apollo: {
     checkedRunnerIds: {
       query: checkedRunnerIdsQuery,
@@ -128,6 +129,10 @@ export default {
       return {};
     },
     onCheckboxChange(runner, isChecked) {
+      this.trackEvent('click_select_runner_checkbox', {
+        property: isChecked ? 'checked' : 'unchecked',
+      });
+
       this.localMutations.setRunnerChecked({
         runner,
         isChecked,

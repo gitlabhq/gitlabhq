@@ -46,6 +46,85 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
       rotate_token
     end
 
+    context 'when the token is not granular' do
+      it 'does not return granular_scopes or load any to present the new token', :aggregate_failures do
+        recorder = ActiveRecord::QueryRecorder.new { rotate_token }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to have_key('granular_scopes')
+        # RotateService may ask of the token it rotates whether it has granular scopes to copy. Presenting
+        # the new token adds no query about granular scopes.
+        expect(recorder.log.grep(/"(personal_access_token_)?granular_scopes"/)).to all(
+          start_with('SELECT 1 AS one FROM "granular_scopes"')
+        )
+      end
+    end
+
+    context 'when the token is granular' do
+      let_it_be(:project) { create(:project) }
+
+      let(:token) { granular_token_with_project_scopes([project]) }
+
+      def granular_token_with_project_scopes(projects)
+        create(:granular_pat, user: current_user, permissions: ['rotate_personal_access_token'],
+          boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::USER),
+          additional_scopes: projects.map do |project|
+            { boundary: ::Authz::Boundary.for(project), permissions: ['read_job'] }
+          end)
+      end
+
+      it 'returns the granular scopes of the new token with the project ID of a project scope', :aggregate_failures do
+        rotate_token
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['granular_scopes']).to contain_exactly(
+          a_hash_including('access' => 'user', 'permissions' => ['rotate_personal_access_token'],
+            'project_id' => nil, 'group_id' => nil),
+          a_hash_including('access' => 'selected_memberships', 'permissions' => ['read_job'],
+            'project_id' => project.id, 'group_id' => nil)
+        )
+      end
+
+      context 'when presenting the granular scopes of the new token' do
+        let_it_be(:other_project) { create(:project) }
+
+        # RotateService writes a row for every scope it copies, so each token is rotated through it
+        # before its request, and the request presents the new token as the service returned it. The
+        # requests then differ only in the number of scopes they present.
+        def rotate_through_service(projects)
+          ::PersonalAccessTokens::RotateService.new(current_user, granular_token_with_project_scopes(projects))
+            .execute
+        end
+
+        def post_presenting(service_response)
+          allow_next_instance_of(::PersonalAccessTokens::RotateService) do |service|
+            allow(service).to receive(:execute).and_return(service_response)
+          end
+
+          post(api(path, personal_access_token: token), params: params)
+        end
+
+        it 'avoids N+1 queries', :aggregate_failures do
+          # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+          User.find(token.user_id).update_column(:last_activity_on, Date.current)
+
+          # Every token is rotated before the first request stubs the service.
+          warm_up = rotate_through_service([project])
+          one_scope = rotate_through_service([project])
+          two_scopes = rotate_through_service([project, other_project])
+
+          post_presenting(warm_up)
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_presenting(one_scope) }
+
+          expect { post_presenting(two_scopes) }.not_to exceed_all_query_limit(control)
+          expect(json_response['granular_scopes'].pluck('project_id')).to contain_exactly(
+            nil, project.id, other_project.id
+          )
+        end
+      end
+    end
+
     context 'when current_user is an administrator', :enable_admin_mode do
       let(:current_user) { create(:admin) }
 

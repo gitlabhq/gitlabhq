@@ -19,8 +19,9 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
   describe 'PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/authorize' do
     include_context 'workhorse headers'
 
+    before_all { project.add_developer(user) }
+
     before do
-      project.add_developer(user)
       stub_feature_flags(hide_incident_management_features: false)
     end
 
@@ -187,6 +188,8 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
     end
 
     context 'object storage enabled' do
+      before_all { project.add_developer(user) }
+
       before do
         # Object storage
         stub_uploads_object_storage(MetricImageUploader)
@@ -195,7 +198,6 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
           allow(uploader).to receive(:file_storage?).and_return(true)
         end
         stub_feature_flags(hide_incident_management_features: false)
-        project.add_developer(user)
       end
 
       it_behaves_like 'can_upload_metric_image'
@@ -212,7 +214,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
   describe 'GET /projects/:id/alert_management_alerts/:alert_iid/metric_images' do
     using RSpec::Parameterized::TableSyntax
 
-    let!(:image) { create(:alert_metric_image, alert: alert) }
+    let_it_be(:image) { create(:alert_metric_image, alert: alert) }
 
     subject { get api("/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images", user) }
 
@@ -310,10 +312,10 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
     end
 
     context 'when user has access' do
+      before_all { project.add_developer(user) }
+
       before do
         stub_feature_flags(hide_incident_management_features: false)
-
-        project.add_developer(user)
       end
 
       context 'and metric image not found' do
@@ -347,7 +349,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
   describe 'DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:metric_image_id' do
     using RSpec::Parameterized::TableSyntax
 
-    let!(:image) { create(:alert_metric_image, alert: alert) }
+    let_it_be_with_reload(:image) { create(:alert_metric_image, alert: alert) }
 
     subject do
       delete api("/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images/#{image.id}", user)
@@ -390,9 +392,10 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
     end
 
     context 'when user has access' do
+      before_all { project.add_developer(user) }
+
       before do
         stub_feature_flags(hide_incident_management_features: false)
-        project.add_developer(user)
       end
 
       context 'when metric image not found' do
@@ -437,7 +440,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     let(:path) { "/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images" }
     let(:headers) { workhorse_headers }
-    let!(:image) { create(:alert_metric_image, alert: alert) }
+    let_it_be(:image) { create(:alert_metric_image, alert: alert) }
 
     shared_examples 'feature flag returns 404' do |http_method|
       before do

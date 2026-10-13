@@ -1,7 +1,7 @@
 // stylelint-disable-next-line gitlab/no-js-class
 #js-vue-page-breadcrumbs-wrapper {
-  display: flex;
   flex-grow: 1;
+  min-width: 1px;
 
   /*
    * Our auto-resizing GlBreadcrumb component works best when it is set to grow with the available space.

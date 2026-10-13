@@ -371,6 +371,19 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
   end
 end
 
+RSpec.shared_examples 'accepts nuget upload' do |user_type, status, add_member = true, _symbol_package = false|
+  context "for user type #{user_type}" do
+    before do
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it 'creates the package' do
+      expect { subject }.to change { target.packages.count }.by(1)
+      expect(response).to have_gitlab_http_status(status)
+    end
+  end
+end
+
 RSpec.shared_examples 'process nuget download versions request' do |user_type, status, add_member = true|
   RSpec.shared_examples 'returns a valid nuget download versions json response' do
     it 'returns a valid json response' do
@@ -765,6 +778,8 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   it { is_expected.to have_request_urgency(:low) }
 
   context 'with valid project' do
+    # The full upload suite runs once: `authenticate_with` resolves either transport to the same token, and a
+    # developer's `create_package` comes from their role (`Authz::RolePermissions`), not project visibility.
     where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name,
       :expected_status) do
       'PUBLIC'  | :developer  | true  | true  | :basic_auth | 'process nuget upload'          | :created
@@ -775,7 +790,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       'PUBLIC'  | :guest      | false | true  | :basic_auth | 'rejects nuget packages access' | :forbidden
       'PUBLIC'  | :developer  | false | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
       'PUBLIC'  | :guest      | false | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
-      'PRIVATE' | :developer  | true  | true  | :basic_auth | 'process nuget upload'          | :created
+      'PRIVATE' | :developer  | true  | true  | :basic_auth | 'accepts nuget upload'          | :created
       'PRIVATE' | :guest      | true  | true  | :basic_auth | 'rejects nuget packages access' | :forbidden
       'PRIVATE' | :developer  | true  | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
       'PRIVATE' | :guest      | true  | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
@@ -784,7 +799,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       'PRIVATE' | :developer  | false | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
       'PRIVATE' | :guest      | false | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
 
-      'PUBLIC'  | :developer  | true  | true  | :api_key    | 'process nuget upload'          | :created
+      'PUBLIC'  | :developer  | true  | true  | :api_key    | 'accepts nuget upload'          | :created
       'PUBLIC'  | :guest      | true  | true  | :api_key    | 'rejects nuget packages access' | :forbidden
       'PUBLIC'  | :developer  | true  | false | :api_key    | 'rejects nuget packages access' | :unauthorized
       'PUBLIC'  | :guest      | true  | false | :api_key    | 'rejects nuget packages access' | :unauthorized
@@ -792,7 +807,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       'PUBLIC'  | :guest      | false | true  | :api_key    | 'rejects nuget packages access' | :forbidden
       'PUBLIC'  | :developer  | false | false | :api_key    | 'rejects nuget packages access' | :unauthorized
       'PUBLIC'  | :guest      | false | false | :api_key    | 'rejects nuget packages access' | :unauthorized
-      'PRIVATE' | :developer  | true  | true  | :api_key    | 'process nuget upload'          | :created
+      'PRIVATE' | :developer  | true  | true  | :api_key    | 'accepts nuget upload'          | :created
       'PRIVATE' | :guest      | true  | true  | :api_key    | 'rejects nuget packages access' | :forbidden
       'PRIVATE' | :developer  | true  | false | :api_key    | 'rejects nuget packages access' | :unauthorized
       'PRIVATE' | :guest      | true  | false | :api_key    | 'rejects nuget packages access' | :unauthorized

@@ -11,8 +11,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
   subject(:rules) { described_class.new(rule_hashes) }
 
   before do
-    allow(context).to receive(:project).and_return(project)
-    allow(context).to receive(:pipeline).and_return(pipeline)
+    allow(context).to receive_messages(project: project, pipeline: pipeline)
   end
 
   describe '#evaluate' do

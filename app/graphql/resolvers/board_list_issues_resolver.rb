@@ -13,6 +13,11 @@ module Resolvers
 
     alias_method :list, :object
 
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/235681
+    def self.complexity_multiplier(args)
+      0.005
+    end
+
     def resolve_with_lookahead(**args)
       filters = item_filters(args[:filters])
       mutually_exclusive_milestone_args!(filters)
@@ -21,11 +26,6 @@ module Resolvers
       service = ::Boards::Issues::ListService.new(list.board.resource_parent, context[:current_user], filter_params)
 
       apply_lookahead(service.execute)
-    end
-
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/235681
-    def self.complexity_multiplier(args)
-      0.005
     end
 
     private

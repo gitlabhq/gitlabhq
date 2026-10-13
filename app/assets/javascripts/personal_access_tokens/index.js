@@ -1,9 +1,9 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import PersonalAccessTokensApp from './components/app.vue';
 import CreateGranularPersonalAccessTokenForm from './components/create_granular_token/create_granular_personal_access_token_form.vue';
 import CreateLegacyPersonalAccessTokenForm from './components/create_legacy_token/create_legacy_personal_access_token_form.vue';

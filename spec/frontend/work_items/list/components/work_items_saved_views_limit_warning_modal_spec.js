@@ -38,17 +38,10 @@ const defaultSavedViewQueryHandler = jest.fn().mockResolvedValue(exampleSavedVie
 
 const MockComponent = {};
 
-const createComponent = async ({
-  props = {},
-  savedViewQueryHandler = defaultSavedViewQueryHandler,
-} = {}) => {
+const createComponent = async ({ savedViewQueryHandler = defaultSavedViewQueryHandler } = {}) => {
   router = new VueRouter({
     mode: 'history',
-    routes: [
-      { name: 'base', path: '/', component: MockComponent },
-
-      ...routes({ fullPath: '/work_items' }),
-    ],
+    routes: [{ name: 'base', path: '/', component: MockComponent }, ...routes],
   });
 
   const apolloProvider = createMockApollo([[namespaceSavedViewQuery, savedViewQueryHandler]]);
@@ -63,7 +56,6 @@ const createComponent = async ({
       show: true,
       fullPath,
       viewId: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
-      ...props,
     },
     stubs: {
       GlSprintf,

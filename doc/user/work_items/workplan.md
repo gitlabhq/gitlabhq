@@ -19,6 +19,7 @@ title: Workplan
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240718) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan`. Disabled by default.
 - Workplan widget [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250010) in GitLab 19.4.
 - View and implement a workplan from GitLab Duo Agentic Chat [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252727) in GitLab 19.4.
+- View and implement a workplan from GitLab Duo Agentic Chat [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/626672) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -84,12 +85,12 @@ You do not need a workplan for small or well-understood changes, where planning 
 
 {{< /history >}}
 
-By default, the **Workplan** widget and the confidence score are hidden on a work item.
+By default, the **Workplan** widget and the readiness score are hidden on a work item.
 To show them, turn on planning for that work item.
 
 Prerequisites:
 
-- The work item must be an issue or a task.
+- An issue or a task.
 - Permission to edit the work item.
 
 To turn on planning:
@@ -140,10 +141,10 @@ that end in `.plan`.
 
 ## View a workplan
 
-To view a workplan, use one of the following methods:
+To view a workplan:
 
-- On the work item, in the **Workplan** widget, select **View**.
-- On the work item, in [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md), select **View**.
+1. Go to the work item.
+1. In the **Workplan** widget, select **View**.
 
 The workplan opens in a panel and shows the rendered content.
 
@@ -192,11 +193,12 @@ To delete a workplan:
 
 This action cannot be undone.
 
-## Confidence score
+## Readiness score
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248374) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan_score`. Disabled by default.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259555) from confidence score to readiness score in GitLab 19.5.
 
 {{< /history >}}
 
@@ -205,20 +207,71 @@ This action cannot be undone.
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-The confidence score shows how ready a work item is for an agent to run.
+The readiness score shows how ready a work item is for an agent to run.
 GitLab Duo scores the work item on how complete, clear, and well scoped it is, then
-maps the score to a confidence level.
+maps the score to a readiness level.
 
 Prerequisites:
 
 - Planning turned on for the work item.
 
-In the **Workplan** widget on the work item, the confidence level appears as
+In the **Workplan** widget on the work item, the readiness level appears as
 **Low**, **Medium**, or **High**.
-The score appears whether or not the work item has a workplan.
+The readiness level appears only after GitLab Duo generates a workplan and
+calculates a score.
 
 To raise the score, add more detail to the work item description and to the workplan
 steps, such as requirements, acceptance criteria, and constraints.
+
+## Decision log
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249268) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `decision_log`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+The decision log is a record of the decisions made about a work item. It keeps the reason for
+each decision next to the work item, so the history is not lost in chat or in comment threads.
+
+The decision log is available on issues and tasks, and on custom work item types based on issues or tasks.
+A work item does not need a workplan to have a decision log.
+
+GitLab Duo adds a decision to the log when it settles an open question while it plans the work.
+You can also record a decision yourself at any time.
+
+Prerequisites:
+
+- The Planner, Reporter, Security Manager, Developer, Maintainer, or Owner role for the project.
+
+To open the decision log:
+
+- On the work item, in the header, select **Decision log** ({{< icon name="log" >}}).
+
+The button shows a count of the decisions on the work item.
+
+### Record a decision manually
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254465) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `decision_log`. Disabled by default.
+
+{{< /history >}}
+
+To record a decision manually:
+
+1. On the work item, in the header, select **Decision log** ({{< icon name="log" >}}).
+1. In the panel, select **New decision**.
+1. Complete the fields. The required fields are **Decision**, **Decided by**, and **Context**.
+1. Optional. In **Why**, explain why you chose this option over other options.
+1. Optional. In **Source link**, add a link to where the discussion happened, such as Slack,
+   Google Docs, or GitLab.
+1. Select **Create decision**.
 
 ## Implement a workplan with GitLab Duo
 
@@ -229,11 +282,13 @@ additional context.
 Prerequisites:
 
 - GitLab Duo Agent Platform remote flows turned on.
+- [Developer Flow](../project/merge_requests/developer.md) turned on for the top-level
+  group and the project. For more information, see
+  [turn foundational flows on or off](../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 To implement a workplan with GitLab Duo, use one of the following methods:
 
 - On the work item, in the **Workplan** widget, select **Implement**.
-- On the work item, in GitLab Duo Agentic Chat, select **Implement**.
 - Open the workplan, then implement it from the panel:
   1. On the work item, in the **Workplan** widget, select **View**.
   1. In the panel, select **Implement**.

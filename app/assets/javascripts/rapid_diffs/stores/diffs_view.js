@@ -89,11 +89,11 @@ export const useDiffsView = defineStore('diffsView', {
     goToNextFile() {
       this.goToFile(this.currentFileIndex + 1);
     },
-    resolveInitialFileIndex({ linkedFileData } = {}) {
-      if (!linkedFileData) return;
+    resolveInitialFileIndex({ file } = {}) {
+      if (!file) return;
 
-      const oldPath = linkedFileData.oldPath ?? linkedFileData.old_path;
-      const newPath = linkedFileData.newPath ?? linkedFileData.new_path;
+      const oldPath = file.oldPath ?? file.old_path;
+      const newPath = file.newPath ?? file.new_path;
       const { flatBlobsList } = useFileBrowser();
       const index = flatBlobsList.findIndex(
         (entry) => entry.filePaths.old === oldPath && entry.filePaths.new === newPath,

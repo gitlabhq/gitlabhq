@@ -19,7 +19,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/boards' do
@@ -43,7 +43,7 @@ module API
           tags ['boards']
         end
         params do
-          requires :board_id, type: Integer, desc: 'The ID of a board'
+          requires :board_id, type: Integer, desc: 'ID of the board.'
         end
         route_setting :authorization, permissions: :read_issue_board, boundary_type: :project
         get '/:board_id' do
@@ -72,7 +72,7 @@ module API
           tags ['boards']
         end
         params do
-          requires :board_id, type: Integer, desc: 'The ID of a board'
+          requires :board_id, type: Integer, desc: 'ID of the board.'
           use :update_params
         end
         route_setting :authorization, permissions: :update_issue_board, boundary_type: :project
@@ -88,7 +88,7 @@ module API
           tags ['boards']
         end
         params do
-          requires :board_id, type: Integer, desc: 'The ID of a board'
+          requires :board_id, type: Integer, desc: 'ID of the board.'
         end
         route_setting :authorization, permissions: :delete_issue_board, boundary_type: :project
         delete '/:board_id' do
@@ -99,7 +99,7 @@ module API
       end
 
       params do
-        requires :board_id, type: Integer, desc: 'The ID of a board'
+        requires :board_id, type: Integer, desc: 'ID of the board.'
       end
       segment ':id/boards/:board_id' do
         desc 'List all board lists in an issue board' do
@@ -122,7 +122,7 @@ module API
           tags ['boards']
         end
         params do
-          requires :list_id, type: Integer, desc: 'The ID of a list'
+          requires :list_id, type: Integer, desc: "ID of the board's list."
         end
         route_setting :authorization, permissions: :read_issue_board_list, boundary_type: :project
         get '/lists/:list_id' do
@@ -151,8 +151,8 @@ module API
           tags ['boards']
         end
         params do
-          requires :list_id,  type: Integer, desc: 'The ID of a list'
-          requires :position, type: Integer, desc: 'The position of the list'
+          requires :list_id,  type: Integer, desc: "ID of the board's list."
+          requires :position, type: Integer, desc: 'Position of the list.'
         end
         route_setting :authorization, permissions: :update_issue_board_list, boundary_type: :project
         put '/lists/:list_id' do
@@ -169,7 +169,7 @@ module API
           tags ['boards']
         end
         params do
-          requires :list_id, type: Integer, desc: 'The ID of a board list'
+          requires :list_id, type: Integer, desc: "ID of the board's list."
         end
         route_setting :authorization, permissions: :delete_issue_board_list, boundary_type: :project
         delete "/lists/:list_id" do

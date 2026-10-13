@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAvatarLink } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
@@ -100,7 +100,10 @@ describe('Work Item Note', () => {
   const findNoteActions = () => wrapper.findComponent(NoteActions);
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
-  const findUpdateError = () => wrapper.find('[data-testid="update-error"]');
+  const findUpdateError = () => wrapper.findByTestId('update-error');
+  const findSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
+  const findAgentActorLine = () => wrapper.findComponent({ name: 'NoteAgentActorLine' });
+  const findDuoQuestionNote = () => wrapper.findComponent({ name: 'DuoQuestionNote' });
 
   const createComponent = ({
     note = mockWorkItemCommentNote,
@@ -113,7 +116,7 @@ describe('Work Item Note', () => {
     workItemByIidResponseHandler = workItemResponseHandler,
     provideData = {},
   } = {}) => {
-    wrapper = shallowMount(WorkItemNote, {
+    wrapper = shallowMountExtended(WorkItemNote, {
       propsData: {
         fullPath: 'test-project-path',
         workItemId,
@@ -130,6 +133,18 @@ describe('Work Item Note', () => {
       provide: provideData,
       stubs: {
         TimelineEntryItem,
+        NoteSessionBar: {
+          name: 'NoteSessionBar',
+          props: ['agentName', 'sessionId', 'status', 'isReply'],
+          template: '<div></div>',
+        },
+        NoteAgentActorLine: {
+          name: 'NoteAgentActorLine',
+          props: {
+            presence: { type: Object, required: true },
+          },
+          template: '<div></div>',
+        },
       },
       mocks: {
         $route: {},
@@ -339,6 +354,12 @@ end`;
       beforeEach(async () => {
         createComponent({ isFirstNote: true, canReply: true });
         await waitForPromises();
+      });
+
+      it('emits `duo-question-answered` when its Duo question is answered', () => {
+        findDuoQuestionNote().vm.$emit('duo-question-answered');
+
+        expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
       });
 
       it('should have the note header, actions and body', () => {
@@ -708,6 +729,253 @@ end`;
 
       expect(wrapper.emitted('start-editing')).toBeUndefined();
       expect(findCommentForm().exists()).toBe(false);
+    });
+  });
+
+  describe('AgentActorLine', () => {
+    const agentPresence = {
+      sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+      agentName: 'Developer Agent',
+      agentCatalogWebPath: '/-/ai/catalog/agents/3',
+      initiatorType: 'USER',
+      initiator: { label: '@nokafor', webPath: '/nokafor' },
+      userPermissions: { readDuoWorkflow: true },
+    };
+
+    const presenceNote = { ...mockWorkItemCommentNote, agentPresence };
+
+    const createWithFlag = (options = {}) =>
+      createComponent({
+        ...options,
+        provideData: { glFeatures: { agentPresenceConsolidation: true } },
+      });
+
+    describe('when the agentPresenceConsolidation feature flag is disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          note: {
+            ...presenceNote,
+            duoCreatedSession: {
+              id: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+              __typename: 'DuoWorkflow',
+            },
+          },
+          provideData: { glFeatures: { agentPresenceConsolidation: false } },
+        });
+      });
+
+      it('does not render the actor line', () => {
+        expect(findAgentActorLine().exists()).toBe(false);
+      });
+
+      it('still offers the standalone session button', () => {
+        expect(findNoteActions().props('duoSessionId')).toBe(42);
+      });
+    });
+
+    describe.each`
+      description                       | note
+      ${'has no agent presence'}        | ${mockWorkItemCommentNote}
+      ${'has a null agent presence'}    | ${{ ...mockWorkItemCommentNote, agentPresence: null }}
+      ${'has no resolvable agent name'} | ${{ ...mockWorkItemCommentNote, agentPresence: { ...agentPresence, agentName: null } }}
+      ${'has no session to open'}       | ${{ ...mockWorkItemCommentNote, agentPresence: { ...agentPresence, sessionId: null } }}
+    `('when the note $description', ({ note }) => {
+      beforeEach(() => createWithFlag({ note }));
+
+      it('does not render the actor line', () => {
+        expect(findAgentActorLine().exists()).toBe(false);
+      });
+    });
+
+    describe('when the agent presence names no session', () => {
+      beforeEach(() =>
+        createWithFlag({
+          note: {
+            ...mockWorkItemCommentNote,
+            agentPresence: { ...agentPresence, sessionId: null },
+            duoCreatedSession: {
+              id: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+              __typename: 'DuoWorkflow',
+            },
+          },
+        }),
+      );
+
+      it('keeps the standalone session button, rather than a link to nothing', () => {
+        expect(findNoteActions().props('duoSessionId')).toBe(42);
+      });
+    });
+
+    describe('when the note has agent presence', () => {
+      beforeEach(() => createWithFlag({ note: presenceNote }));
+
+      it('renders the actor line for the agent and its session', () => {
+        expect(findAgentActorLine().props('presence')).toEqual({
+          sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+          agentName: 'Developer Agent',
+          agentCatalogWebPath: '/-/ai/catalog/agents/3',
+          initiatorType: 'USER',
+          initiator: { label: '@nokafor', webPath: '/nokafor' },
+          userPermissions: { readDuoWorkflow: true },
+        });
+      });
+
+      it('hides the raw service account username, which the actor line replaces', () => {
+        expect(findNoteHeader().props('hideUsername')).toBe(true);
+      });
+
+      it('keeps the header on one row', () => {
+        expect(findNoteHeader().props('singleLine')).toBe(true);
+      });
+
+      describe('when the actor line reports it no longer fits', () => {
+        beforeEach(async () => {
+          findAgentActorLine().vm.$emit('overflow', true);
+          await nextTick();
+        });
+
+        it('lets the header wrap', () => {
+          expect(findNoteHeader().props('singleLine')).toBe(false);
+        });
+      });
+
+      it('drops the standalone session button, which would duplicate the session link', () => {
+        expect(findNoteActions().props('duoSessionId')).toBe(null);
+      });
+    });
+
+    describe('when the current user cannot read the session', () => {
+      beforeEach(() =>
+        createWithFlag({
+          note: {
+            ...mockWorkItemCommentNote,
+            agentPresence: { ...agentPresence, userPermissions: { readDuoWorkflow: false } },
+          },
+        }),
+      );
+
+      it('still renders the actor line', () => {
+        expect(findAgentActorLine().exists()).toBe(true);
+      });
+
+      it('tells the actor line the session cannot be opened', () => {
+        expect(findAgentActorLine().props('presence').userPermissions).toEqual({
+          readDuoWorkflow: false,
+        });
+      });
+    });
+
+    describe('when the agent has no catalog profile', () => {
+      beforeEach(() =>
+        createWithFlag({
+          note: {
+            ...mockWorkItemCommentNote,
+            agentPresence: { ...agentPresence, agentCatalogWebPath: null },
+          },
+        }),
+      );
+
+      it('passes no catalog path', () => {
+        expect(findAgentActorLine().props('presence').agentCatalogWebPath).toBe(null);
+      });
+    });
+  });
+
+  describe('NoteSessionBar', () => {
+    const SESSION_ID = 1;
+    const AGENT_NAME = 'Duo Developer';
+
+    const sessionNote = {
+      ...mockWorkItemCommentNote,
+      duoTriggeredSession: {
+        id: SESSION_ID,
+        agentName: AGENT_NAME,
+        statusName: 'running',
+      },
+    };
+
+    describe('when the noteAgentSessionBar feature flag is disabled and the note has a session', () => {
+      beforeEach(() => {
+        createComponent({
+          note: sessionNote,
+          provideData: { glFeatures: { noteAgentSessionBar: false } },
+        });
+      });
+
+      it('does not render', () => {
+        expect(findSessionBar().exists()).toBe(false);
+      });
+    });
+
+    describe('when the noteAgentSessionBar feature flag is enabled', () => {
+      const createWithFlag = (options = {}) =>
+        createComponent({
+          ...options,
+          provideData: { glFeatures: { noteAgentSessionBar: true } },
+        });
+
+      describe.each`
+        description                              | note
+        ${'has no session'}                      | ${mockWorkItemCommentNote}
+        ${'has a null session'}                  | ${{ ...mockWorkItemCommentNote, duoTriggeredSession: null }}
+        ${'has a session without an id'}         | ${{ ...mockWorkItemCommentNote, duoTriggeredSession: { id: null, agentName: AGENT_NAME, statusName: 'running' } }}
+        ${'has a session without an agent name'} | ${{ ...mockWorkItemCommentNote, duoTriggeredSession: { id: SESSION_ID, agentName: null, statusName: 'running' } }}
+      `('when the note $description', ({ note }) => {
+        beforeEach(() => {
+          createWithFlag({ note });
+        });
+
+        it('does not render', () => {
+          expect(findSessionBar().exists()).toBe(false);
+        });
+      });
+
+      describe('when the note has a session', () => {
+        beforeEach(() => {
+          createWithFlag({ note: sessionNote });
+        });
+
+        it('renders the session bar', () => {
+          expect(findSessionBar().exists()).toBe(true);
+        });
+
+        it('passes the session props', () => {
+          expect(findSessionBar().props()).toMatchObject({
+            agentName: AGENT_NAME,
+            sessionId: SESSION_ID,
+            status: 'running',
+          });
+        });
+      });
+
+      describe.each`
+        isFirstNote | expectedIsReply
+        ${true}     | ${false}
+        ${false}    | ${true}
+      `('when isFirstNote is $isFirstNote', ({ isFirstNote, expectedIsReply }) => {
+        beforeEach(() => {
+          createWithFlag({ note: sessionNote, isFirstNote });
+        });
+
+        it('passes the matching isReply prop', () => {
+          expect(findSessionBar().props('isReply')).toBe(expectedIsReply);
+        });
+      });
+
+      describe('when the session status is finished', () => {
+        beforeEach(() => {
+          createWithFlag({
+            note: {
+              ...sessionNote,
+              duoTriggeredSession: { ...sessionNote.duoTriggeredSession, statusName: 'finished' },
+            },
+          });
+        });
+
+        it('still renders the session bar', () => {
+          expect(findSessionBar().exists()).toBe(true);
+        });
+      });
     });
   });
 });

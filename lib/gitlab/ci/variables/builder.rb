@@ -189,7 +189,8 @@ module Gitlab
             variables.append(key: 'CI_JOB_GROUP_NAME', value: Gitlab::Utils::Job.group_name(job.name))
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
-            variables.append(key: 'CI_JOB_TAGS', value: job.tag_list.to_a.to_s)
+            json_tags = job.tag_list.to_a.map { |tag| Gitlab::Json.generate(tag) }
+            variables.append(key: 'CI_JOB_TAGS', value: "[#{json_tags.join(', ')}]")
 
             if job.pipeline.trigger_id
               variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true')
@@ -237,10 +238,20 @@ module Gitlab
             next if pipeline.id.blank? || job.id.blank?
 
             root_id = strong_memoize(:root_ancestor_id) { pipeline.root_ancestor&.id || pipeline.id }
-            traceparent = Gitlab::Ci::TraceContext.build_traceparent(root_id, job.id)
+            traceparent = Gitlab::Ci::TraceContext.build_traceparent(root_id, job.id, traceparent_span_kind)
 
             variables.append(key: 'CI_TRACEPARENT', value: traceparent)
             variables.append(key: 'CI_TRACESTATE', value: "gitlab=pipeline:#{pipeline.id};job:#{job.id}")
+          end
+        end
+
+        def traceparent_span_kind
+          strong_memoize(:traceparent_span_kind) do
+            if Feature.enabled?(:ci_traceparent_export_span_id, project)
+              Gitlab::Ci::TraceContext::EXPORT_JOB_SPAN_KIND
+            else
+              :default
+            end
           end
         end
 

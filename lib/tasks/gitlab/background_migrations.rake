@@ -66,7 +66,84 @@ namespace :gitlab do
       end
     end
 
+    desc 'Wait until all batched background migrations across every database have finished'
+    task wait: :environment do |_, _args|
+      # The loop runs until every database is clear. It has no internal timeout by design:
+      # the caller is expected to bound the total run time, and to retry the whole task on
+      # transient database errors, which are left to propagate rather than be swallowed here.
+      interval = wait_interval_seconds
+
+      puts "Waiting for batched background migrations to finish, checking every #{interval}s..."
+
+      loop do
+        by_database = unfinished_batched_background_migrations_by_database
+
+        failed = failed_migrations(by_database)
+
+        if failed.any?
+          puts Rainbow('Some batched background migrations are in a failed state and must be finalized manually:').red
+          print_migrations(failed)
+          exit 1
+        end
+
+        remaining = by_database.values.sum(&:size)
+
+        if remaining == 0
+          puts Rainbow('All batched background migrations have finished.').green
+          break
+        end
+
+        puts "Still waiting on #{remaining} batched background migration(s):"
+        print_migrations(by_database)
+
+        Kernel.sleep(interval)
+      end
+    end
+
     private
+
+    def wait_interval_seconds
+      raw = ENV.fetch('BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS', '30')
+      # Parse in base 10 explicitly: the value is a plain decimal supplied by an external
+      # orchestrator, and Integer's default base would read a zero-padded value like "030" as octal.
+      interval = Integer(raw, 10, exception: false)
+
+      if interval.nil? || interval < 1
+        puts Rainbow("BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS must be a positive integer, got #{raw.inspect}").red
+        exit 1
+      end
+
+      interval
+    end
+
+    def unfinished_batched_background_migrations_by_database
+      Gitlab::Database.database_base_models.each_with_object({}) do |(database_name, model), result|
+        next unless Gitlab::Database.has_database?(database_name)
+
+        Gitlab::Database::SharedModel.using_connection(model.connection) do
+          result[database_name] = Gitlab::Database::BackgroundMigration::BatchedMigration.unfinished.to_a
+        end
+      end
+    end
+
+    def failed_migrations(migrations_by_database)
+      migrations_by_database.each_with_object({}) do |(database_name, migrations), result|
+        failed = migrations.select(&:failed?)
+        result[database_name] = failed if failed.any?
+      end
+    end
+
+    def print_migrations(migrations_by_database)
+      migrations_by_database.each do |database_name, migrations|
+        next if migrations.empty?
+
+        puts "Database: #{database_name}"
+
+        migrations.each do |migration|
+          puts "  #{migration.status_name} | #{migration_identifier(migration)}"
+        end
+      end
+    end
 
     def finalize_migration(class_name, table_name, column_name, job_arguments, connection:)
       Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(
@@ -89,16 +166,18 @@ namespace :gitlab do
         puts "Database: #{database_name}\n"
 
         Gitlab::Database::BackgroundMigration::BatchedMigration.find_each(batch_size: 100) do |migration|
-          identification_fields = [
-            migration.job_class_name,
-            migration.table_name,
-            migration.column_name,
-            migration.job_arguments.to_json
-          ].join(',')
-
-          printf(format_string, migration.status_name, identification_fields)
+          printf(format_string, migration.status_name, migration_identifier(migration))
         end
       end
+    end
+
+    def migration_identifier(migration)
+      [
+        migration.job_class_name,
+        migration.table_name,
+        migration.column_name,
+        migration.job_arguments.to_json
+      ].join(',')
     end
 
     def validate_finalization_arguments!(args)

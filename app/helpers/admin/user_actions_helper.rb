@@ -69,7 +69,7 @@ module Admin
       return unless can?(current_user, :admin_all_resources)
 
       if @user.ldap_blocked?
-        @actions << 'ldap'
+        @actions << 'resync_ldap'
       elsif @user.blocked? && @user.blocked_pending_approval?
         @actions << 'approve'
         @actions << 'reject'

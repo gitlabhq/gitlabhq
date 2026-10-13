@@ -108,7 +108,10 @@ RSpec.describe DiffFileBaseEntity do
     end
 
     context 'open' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_branch: 'master', source_branch: 'feature') }
+      let_it_be_with_reload(:merge_request) do
+        create(:merge_request, source_project: project, target_branch: 'master', source_branch: 'feature')
+      end
+
       let(:params) { { from_merge_request_iid: merge_request.iid } }
 
       it_behaves_like 'a diff file edit path to the source branch'
@@ -116,7 +119,10 @@ RSpec.describe DiffFileBaseEntity do
     end
 
     context 'closed' do
-      let(:merge_request) { create(:merge_request, source_project: project, state: :closed, target_branch: 'master', source_branch: 'feature') }
+      let_it_be_with_reload(:merge_request) do
+        create(:merge_request, source_project: project, state: :closed, target_branch: 'master', source_branch: 'feature')
+      end
+
       let(:params) { { from_merge_request_iid: merge_request.iid } }
 
       it_behaves_like 'a diff file edit path to the source branch'
@@ -149,7 +155,9 @@ RSpec.describe DiffFileBaseEntity do
     let(:expected_merge_request_path) { "/-/ide/project/#{source_project.full_path}?merge_request_id=#{merge_request.iid}" }
 
     context 'when source_project and target_project are the same' do
-      let(:target_project) { source_project }
+      let_it_be_with_reload(:merge_request) do
+        create(:merge_request, target_project: project, source_project: project)
+      end
 
       it_behaves_like 'nil if removed source branch', :ide_edit_path
 

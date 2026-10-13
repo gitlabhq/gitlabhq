@@ -30,6 +30,8 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
 
     context "with a standard user" do
       let_it_be(:user) { create(:user) }
+      let_it_be(:user_group) { create(:group, owners: user) }
+      let_it_be(:project1) { create(:project, namespace: user.namespace) }
 
       before do
         allow(self).to receive(:current_user).and_return(user)
@@ -52,7 +54,6 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       it "includes the user's groups" do
-        create(:group).add_owner(user)
         expect(search_autocomplete_opts("gro").size).to eq(1)
       end
 
@@ -62,8 +63,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       it "includes the user's projects" do
-        project = create(:project, namespace: create(:namespace, owner: user))
-        expect(search_autocomplete_opts(project.name).size).to eq(1)
+        expect(search_autocomplete_opts(project1.name).size).to eq(1)
       end
 
       shared_examples 'for users' do
@@ -184,14 +184,12 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       include_examples 'for users'
 
       it "includes the required project attrs" do
-        project = create(:project, namespace: create(:namespace, owner: user))
-        result = search_autocomplete_opts(project.name).first
+        result = search_autocomplete_opts(project1.name).first
 
         expect(result.keys).to match_array(%i[category id value label url avatar_url])
       end
 
       it "includes the required group attrs" do
-        create(:group).add_owner(user)
         result = search_autocomplete_opts("gro").first
 
         expect(result.keys).to match_array(%i[category id value label url avatar_url])
@@ -202,7 +200,6 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
         let(:recent_merge_requests) { instance_double(::Gitlab::Search::RecentMergeRequests) }
         let(:recent_wiki_pages) { instance_double(::Gitlab::Search::RecentWikiPages) }
 
-        let_it_be(:project1) { create(:project, namespace: user.namespace) }
         let_it_be(:project2) { create(:project) }
 
         shared_examples 'recently viewed work items or issues' do
@@ -307,9 +304,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
         it_behaves_like 'recently viewed work items or issues'
 
         it 'builds URLs using work_item_path helper for issues', :aggregate_failures do
-          project = create(:project, :with_avatar)
-          project.add_developer(user)
-          issue = create(:issue, title: 'test work item', project: project)
+          issue = create(:issue, title: 'test work item', project: project1)
 
           recent_work_items = instance_double(::Gitlab::Search::RecentWorkItems)
           expect(::Gitlab::Search::RecentWorkItems).to receive(:new).with(user: user).and_return(recent_work_items)
@@ -322,14 +317,12 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
           work_item_result = results.find { |r| r[:category] == 'Recent work items' }
           expect(work_item_result).to be_present
           expect(work_item_result[:url]).to eq(expected_url)
-          expect(work_item_result[:url]).to include(project.full_path)
+          expect(work_item_result[:url]).to include(project1.full_path)
           expect(work_item_result[:url]).to match(%r{/-/(issues|work_items)/\d+})
         end
 
         it 'builds URLs using work_item_path helper for work items', :aggregate_failures do
-          project = create(:project, :with_avatar)
-          project.add_developer(user)
-          work_item = create(:work_item, project: project, title: 'test work item')
+          work_item = create(:work_item, project: project1, title: 'test work item')
 
           recent_work_items = instance_double(::Gitlab::Search::RecentWorkItems)
           expect(::Gitlab::Search::RecentWorkItems).to receive(:new).with(user: user).and_return(recent_work_items)
@@ -342,41 +335,8 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
           work_item_result = results.find { |r| r[:category] == 'Recent work items' }
           expect(work_item_result).to be_present
           expect(work_item_result[:url]).to eq(expected_url)
-          expect(work_item_result[:url]).to include(project.full_path)
+          expect(work_item_result[:url]).to include(project1.full_path)
           expect(work_item_result[:url]).to match(%r{/-/(issues|work_items)/\d+})
-        end
-
-        it 'includes the users recently viewed merge requests', :aggregate_failures do
-          expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user)
-            .and_return(recent_merge_requests)
-
-          merge_request1 = create(:merge_request, :unique_branches,
-            title: 'Merge request 1', target_project: project1, source_project: project1)
-          merge_request2 = create(:merge_request, :unique_branches,
-            title: 'Merge request 2', target_project: project2, source_project: project2)
-
-          expect(recent_merge_requests).to receive(:search).with(search_term)
-            .and_return(MergeRequest.id_in_ordered([merge_request1.id, merge_request2.id]))
-
-          results = search_autocomplete_opts(search_term)
-
-          expect(results.count).to eq(2)
-
-          expect(results[0]).to include({
-            category: 'Recent merge requests',
-            id: merge_request1.id,
-            label: 'Merge request 1',
-            url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request1.project, merge_request1),
-            avatar_url: '' # This project didn't have an avatar so set this to ''
-          })
-
-          expect(results[1]).to include({
-            category: 'Recent merge requests',
-            id: merge_request2.id,
-            label: 'Merge request 2',
-            url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request2.project, merge_request2),
-            avatar_url: '' # This project didn't have an avatar so set this to ''
-          })
         end
 
         it 'includes the users recently viewed wiki pages', :aggregate_failures do
@@ -410,25 +370,61 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
           })
         end
 
-        it 'does not have an N+1 for recently viewed merge_requests' do
-          merge_request1 = create(:merge_request, :unique_branches,
-            title: 'Merge request 1', target_project: project1, source_project: project1)
-          merge_request2 = create(:merge_request, :unique_branches,
-            title: 'Merge request 2', target_project: project2, source_project: project2)
-          merge_request_ids = [merge_request1.id, merge_request2.id]
+        context 'with recently viewed merge requests' do
+          let_it_be(:merge_request1) do
+            create(:merge_request, :unique_branches,
+              title: 'Merge request 1', target_project: project1, source_project: project1)
+          end
 
-          expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user)
-            .and_return(recent_merge_requests).twice
-          expect(recent_merge_requests).to receive(:search).with(search_term)
-            .and_return(MergeRequest.id_in_ordered(merge_request_ids))
+          let_it_be(:merge_request2) do
+            create(:merge_request, :unique_branches,
+              title: 'Merge request 2', target_project: project2, source_project: project2)
+          end
 
-          control = ActiveRecord::QueryRecorder.new(skip_cached: true) { search_autocomplete_opts(search_term) }
+          it 'includes the users recently viewed merge requests', :aggregate_failures do
+            expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user)
+              .and_return(recent_merge_requests)
 
-          merge_request_ids += create_list(:merge_request, 3, :unique_branches).map(&:id)
-          expect(recent_merge_requests).to receive(:search).with(search_term)
-            .and_return(MergeRequest.id_in_ordered(merge_request_ids))
+            expect(recent_merge_requests).to receive(:search).with(search_term)
+              .and_return(MergeRequest.id_in_ordered([merge_request1.id, merge_request2.id]))
 
-          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
+            results = search_autocomplete_opts(search_term)
+
+            expect(results.count).to eq(2)
+
+            expect(results[0]).to include({
+              category: 'Recent merge requests',
+              id: merge_request1.id,
+              label: 'Merge request 1',
+              url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request1.project, merge_request1),
+              avatar_url: '' # This project didn't have an avatar so set this to ''
+            })
+
+            expect(results[1]).to include({
+              category: 'Recent merge requests',
+              id: merge_request2.id,
+              label: 'Merge request 2',
+              url: Gitlab::Routing.url_helpers.project_merge_request_path(merge_request2.project, merge_request2),
+              avatar_url: '' # This project didn't have an avatar so set this to ''
+            })
+          end
+
+          it 'does not have an N+1 for recently viewed merge_requests' do
+            merge_request_ids = [merge_request1.id, merge_request2.id]
+
+            expect(::Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user)
+              .and_return(recent_merge_requests).twice
+            expect(recent_merge_requests).to receive(:search).with(search_term)
+              .and_return(MergeRequest.id_in_ordered(merge_request_ids))
+
+            control = ActiveRecord::QueryRecorder.new(skip_cached: true) { search_autocomplete_opts(search_term) }
+
+            merge_request_ids += create_list(:merge_request, 3, :unique_branches).map(&:id)
+            expect(recent_merge_requests).to receive(:search).with(search_term)
+              .and_return(MergeRequest.id_in_ordered(merge_request_ids))
+
+            expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).allow_skip_cache_inconsistency
+          end
         end
       end
 
@@ -438,7 +434,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       context "with a current project" do
-        let(:project) { create(:project, :small_repo) }
+        let_it_be(:project) { create(:project, :small_repo) }
 
         before do
           @project = project
@@ -474,7 +470,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
         end
 
         context 'when user has project access' do
-          let(:project) { create(:project, namespace: user.namespace) }
+          let_it_be(:project) { create(:project, namespace: user.namespace) }
 
           before do
             @project = project
@@ -543,15 +539,10 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:user) { create(:user, name: 'User') }
-    let_it_be(:group) { create(:group, name: 'Group') }
-    let_it_be(:project) { create(:project, name: 'Project') }
+    let_it_be(:group) { create(:group, name: 'Group', owners: user) }
+    let_it_be(:project) { create(:project, name: 'Project', owners: user) }
     let_it_be(:issue) { create(:issue, project: project) }
     let(:issue_iid) { "\##{issue.iid}" }
-
-    before_all do
-      group.add_owner(user)
-      project.add_owner(user)
-    end
 
     before do
       allow(self).to receive(:current_user).and_return(user)
@@ -612,12 +603,8 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:user) { create(:user, name: 'Searched') }
-    let_it_be(:project) { create(:project, name: 'Searched') }
+    let_it_be(:project) { create(:project, name: 'Searched', developers: user) }
     let_it_be(:issue) { create(:issue, title: 'Searched', project: project) }
-
-    before_all do
-      project.add_developer(user)
-    end
 
     before do
       allow(self).to receive(:current_user).and_return(user)
@@ -914,7 +901,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
   describe '#repository_ref' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
     let(:default_branch) { project.default_branch }
     let(:params) { { repository_ref: ref, project_id: project_id } }
 
@@ -1312,7 +1299,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
   end
 
   describe '#wiki_blob_link' do
-    let_it_be(:project) { create :project, :wiki_repo }
+    let(:project) { build_stubbed(:project) }
     let(:wiki_blob) do
       Gitlab::Search::FoundBlob.new(path: 'test', basename: 'test', ref: 'master',
         data: 'foo', startline: 2, project: project, project_id: project.id)
@@ -1710,6 +1697,52 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
 
         # Epic should be available for groups
         expect(type_names).to include('epic')
+      end
+    end
+  end
+
+  describe '#search_result_tracking_attrs' do
+    before do
+      helper.instance_variable_set(:@scope, 'issues')
+    end
+
+    context 'when the controller minted a search request ID' do
+      let(:search_request_id) { '11111111-2222-3333-4444-555555555555' }
+
+      before do
+        helper.instance_variable_set(:@search_request_id, search_request_id)
+      end
+
+      it 'includes the join key in event_property' do
+        attrs = helper.search_result_tracking_attrs(3)
+
+        expect(attrs).to eq(
+          event_tracking: 'click_search_result',
+          event_label: 'issues',
+          event_value: 3,
+          event_property: search_request_id
+        )
+      end
+
+      it 'uses the same join key for every result on the page' do
+        first = helper.search_result_tracking_attrs(1)
+        second = helper.search_result_tracking_attrs(2)
+
+        expect(first[:event_property]).to eq(search_request_id)
+        expect(second[:event_property]).to eq(search_request_id)
+      end
+    end
+
+    context 'when no search request ID was minted' do
+      it 'omits event_property so the payload matches the pre-flag shape' do
+        attrs = helper.search_result_tracking_attrs(3)
+
+        expect(attrs.keys).to eq(%i[event_tracking event_label event_value])
+        expect(attrs).to eq(
+          event_tracking: 'click_search_result',
+          event_label: 'issues',
+          event_value: 3
+        )
       end
     end
   end

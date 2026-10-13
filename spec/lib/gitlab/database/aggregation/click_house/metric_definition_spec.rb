@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ClickHouse::MetricDefinition, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ClickHouse::MetricDefinition,
+  feature_category: :value_stream_management do
   let(:scope_table) { Arel::Table.new('events') }
   let(:context) { { scope: scope_table, inner_query_name: 'ch_aggregation_inner_query' } }
 

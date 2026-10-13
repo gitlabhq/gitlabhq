@@ -21,15 +21,15 @@ This method takes advantage of our Cloud Connected Observability Backend. Your G
 
 How to enable:
 
-1. Add a **GitLab Ultimate Self-Managed** subscription to your GDK instance.
+1. Add a **GitLab Ultimate GitLab Self-Managed** subscription to your GDK instance.
 
    1. Sign in to the [staging Customers Portal](https://customers.staging.gitlab.com) by selecting the **Continue with GitLab.com account** button.
       If you do not have an existing account, you are prompted to create one.
-   1. If you do not have an existing cloud activation code, click the **Staging Self-Managed Ultimate Subscription** link on the [new subscription purchase links page](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/flows/self_service_flow_urls.md#new-subscription-purchase-links).
+   1. If you do not have an existing cloud activation code, click the **Staging GitLab Self-Managed Ultimate Subscription** link on the [new subscription purchase links page](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/flows/self_service_flow_urls.md#new-subscription-purchase-links).
    1. Select enough seats to cover the number of users in your GDK instance (200 should be plenty).
    1. Purchase the subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com/#testing-credit-card-information).
 
-   After this step is complete, you will have an activation code for a _GitLab Ultimate Self-Managed subscription_.
+   After this step is complete, you will have an activation code for a _GitLab Ultimate GitLab Self-Managed subscription_.
 
 1. Set environment variables to point customers-dot to staging, and the Observability URL to staging. For GDK, this can be done in `<gdk-root>/env.runit`:
 

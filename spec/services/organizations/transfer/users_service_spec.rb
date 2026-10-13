@@ -941,6 +941,141 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
         end
       end
 
+      context 'for OAuth consent grant granular scopes' do
+        let_it_be_with_reload(:grant1) do
+          create(:oauth_consent_grant, user: user1, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:grant2) do
+          create(:oauth_consent_grant, user: user2, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:non_group_grant) do
+          create(:oauth_consent_grant, user: non_group_user, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:granular_scope1) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_reload(:granular_scope2) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_reload(:non_group_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_reload(:join_record1) do
+          create(:oauth_consent_grant_granular_scope,
+            oauth_consent_grant: grant1, granular_scope: granular_scope1, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:join_record2) do
+          create(:oauth_consent_grant_granular_scope,
+            oauth_consent_grant: grant2, granular_scope: granular_scope2, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:non_group_join_record) do
+          create(:oauth_consent_grant_granular_scope,
+            oauth_consent_grant: non_group_grant, granular_scope: non_group_granular_scope,
+            organization: old_organization)
+        end
+
+        it 'updates organization_id for consent grants of transferred users' do
+          service.execute
+
+          expect(grant1.reload.organization_id).to eq(new_organization.id)
+          expect(grant2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for granular scopes of transferred users' do
+          service.execute
+
+          expect(granular_scope1.reload.organization_id).to eq(new_organization.id)
+          expect(granular_scope2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for join table records of transferred users' do
+          service.execute
+
+          expect(join_record1.reload.organization_id).to eq(new_organization.id)
+          expect(join_record2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update records for users not in the group' do
+          service.execute
+
+          expect(non_group_grant.reload.organization_id).to eq(old_organization.id)
+          expect(non_group_granular_scope.reload.organization_id).to eq(old_organization.id)
+          expect(non_group_join_record.reload.organization_id).to eq(old_organization.id)
+        end
+      end
+
+      context 'for OAuth application granular scopes' do
+        let_it_be_with_reload(:application1) do
+          create(:oauth_application, owner: user1, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:application2) do
+          create(:oauth_application, owner: user2, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:untransferred_application) do
+          create(:oauth_application, owner: non_group_user, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:granular_scope1) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_reload(:granular_scope2) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_reload(:untransferred_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_reload(:join_record1) do
+          create(:oauth_application_granular_scope,
+            application: application1, granular_scope: granular_scope1, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:join_record2) do
+          create(:oauth_application_granular_scope,
+            application: application2, granular_scope: granular_scope2, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:untransferred_join_record) do
+          create(:oauth_application_granular_scope,
+            application: untransferred_application, granular_scope: untransferred_granular_scope,
+            organization: old_organization)
+        end
+
+        it 'updates organization_id for granular scopes declared by applications of transferred users' do
+          service.execute
+
+          expect(granular_scope1.reload.organization_id).to eq(new_organization.id)
+          expect(granular_scope2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'updates organization_id for join table records of transferred users' do
+          service.execute
+
+          expect(join_record1.reload.organization_id).to eq(new_organization.id)
+          expect(join_record2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update records for users not in the group' do
+          service.execute
+
+          expect(untransferred_application.reload.organization_id).to eq(old_organization.id)
+          expect(untransferred_granular_scope.reload.organization_id).to eq(old_organization.id)
+          expect(untransferred_join_record.reload.organization_id).to eq(old_organization.id)
+        end
+      end
+
       context 'for notes on personal snippets' do
         let_it_be(:personal_snippet, freeze: false) do
           create(:personal_snippet, author: user1, organization: old_organization)
@@ -1092,6 +1227,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
         let(:foss_migratable_models) do
           [
             "AuthenticationEvent",
+            "Authz::OauthConsentGrant",
             "AwardEmoji",
             "BulkImport",
             "DeployKey",
@@ -1116,7 +1252,6 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "Ai::Catalog::McpServerBlock",
             "Ai::Catalog::McpServersUser",
             "Ai::Conversation::Thread",
-            "Ai::EventsCount",
             "Ai::UsageEvent",
             "Analytics::CustomDashboards::DashboardVersion",
             "LDAPKey",
@@ -1132,6 +1267,8 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'AntiAbuse::Event',
               'Authz::AdminRole',
               'Authz::GranularScope',
+              'Authz::OauthApplicationGranularScope',
+              'Authz::OauthConsentGrantGranularScope',
               'Authz::PersonalAccessTokenGranularScope',
               'BulkImports::Export',
               'Clusters::Cluster',
@@ -1142,6 +1279,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'Govern::PolicyEvaluation',
               'Group',
               'ImportFailure',
+              'Import::Sync::Repository',
               'MemberRole',
               'Project',
               'ProjectSnippet',

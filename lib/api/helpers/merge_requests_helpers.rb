@@ -49,7 +49,7 @@ module API
         optional :state, type: String,
           values: %w[opened closed locked merged all],
           default: 'all',
-          desc: 'Returns `all` merge requests or just those that are `opened`, `closed`, `locked`, or `merged`.'
+          desc: 'Filter merge requests by state.'
         optional :order_by, type: String,
           values: Helpers::MergeRequestsHelpers.sort_options,
           default: 'created_at',
@@ -57,63 +57,63 @@ module API
         optional :sort, type: String,
           values: %w[asc desc],
           default: 'desc',
-          desc: 'Returns merge requests sorted in `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order.'
         optional :with_labels_details, type: Boolean,
           default: false,
-          desc: 'If `true`, response returns more details for each label in labels field: `:name`,`:color`, `:description`, `:description_html`, `:text_color`'
+          desc: 'If `true`, the response returns more details for each label in the labels field: `name`, `color`, `description`, `description_html`, `text_color`.'
         optional :with_merge_status_recheck, type: Boolean,
           default: false,
-          desc: 'If `true`, this projection requests (but does not guarantee) that the `merge_status` field be recalculated asynchronously. Introduced in GitLab 13.0.'
+          desc: 'If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](https://docs.gitlab.com/administration/feature_flags/) to ignore this attribute when requested by users without the Developer, Maintainer, or Owner role.'
         optional :created_after, type: DateTime,
-          desc: 'Returns merge requests created on or after the given time. Expected in ISO 8601 format.',
+          desc: 'Return merge requests created on or after the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :created_before, type: DateTime,
-          desc: 'Returns merge requests created on or before the given time. Expected in ISO 8601 format.',
+          desc: 'Return merge requests created on or before the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :updated_after, type: DateTime,
-          desc: 'Returns merge requests updated on or after the given time. Expected in ISO 8601 format.',
+          desc: 'Return merge requests updated on or after the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :updated_before, type: DateTime,
-          desc: 'Returns merge requests updated on or before the given time. Expected in ISO 8601 format.',
+          desc: 'Return merge requests updated on or before the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :merged_after, type: DateTime,
-          desc: 'Returns merge requests merged on or after the given time. Expected in ISO 8601 format.',
+          desc: 'Return merge requests merged on or after the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :merged_before, type: DateTime,
-          desc: 'Returns merge requests merged on or before the given time. Expected in ISO 8601 format.',
+          desc: 'Return merge requests merged on or before the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
         optional :view, type: String,
           values: %w[simple],
-          desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
+          desc: 'If `simple`, returns the `iid`, URL, title, description, and basic state of merge request.'
         optional :scope, type: String,
           values: %w[created-by-me assigned-to-me created_by_me assigned_to_me reviews_for_me all],
-          desc: 'Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, `reviews_for_me` or `all`'
-        optional :source_branch, type: String, desc: 'Returns merge requests with the given source branch'
-        optional :source_project_id, type: Integer, desc: 'Returns merge requests with the given source project id'
-        optional :target_branch, type: String, desc: 'Returns merge requests with the given target branch'
+          desc: 'Return merge requests for the given scope. `reviews_for_me` returns merge requests where the current user is assigned as a reviewer.'
+        optional :source_branch, type: String, desc: 'Return merge requests with the given source branch.'
+        optional :source_project_id, type: Integer, desc: 'Return merge requests with the given source project ID.'
+        optional :target_branch, type: String, desc: 'Return merge requests with the given target branch.'
         optional :search, type: String,
-          desc: 'Search merge requests against their `title` and `description`.'
+          desc: 'Search merge requests against their `title` and `description`. Combine with the `in` attribute.'
         optional :in, type: String,
-          desc: 'Modify the scope of the search attribute. `title`, `description`, or a string joining them with comma.',
+          desc: 'Modify the scope of the `search` attribute to `title`, `description`, or `title,description`. If omitted, defaults to `title,description`.',
           documentation: { example: 'title,description' }
         optional :wip, type: String,
           values: %w[yes no],
-          desc: 'Deprecated. Use `draft` instead. Filter merge requests against their `wip` status. `yes` to return only draft merge requests, `no` to return non-draft merge requests.'
+          desc: 'Filter merge requests by their `wip` status. `yes` returns only draft merge requests, `no` returns non-draft merge requests. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098) in GitLab 19.0. Use `draft` instead.'
         optional :draft, type: Boolean,
-          desc: 'Filter merge requests against their `draft` status. `true` to return only draft merge requests, `false` to return non-draft merge requests.'
+          desc: 'If `true`, returns only draft merge requests. If `false`, returns only non-draft merge requests.'
         mutually_exclusive :draft, :wip
-        optional :not, type: Hash, desc: 'Returns merge requests that do not match the parameters supplied' do
+        optional :not, type: Hash, desc: 'Return merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`.' do
           use :merge_requests_negatable_params, prefix: '`<Negated>` '
 
           optional :reviewer_id, type: Integer,
             desc: '`<Negated>` Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer.'
           mutually_exclusive :reviewer_id, :reviewer_username
         end
-        optional :deployed_before, type: DateTime, desc: 'Returns merge requests deployed before the given date/time. Expected in ISO 8601 format.',
+        optional :deployed_before, type: DateTime, desc: 'Return merge requests deployed before the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
-        optional :deployed_after, type: DateTime, desc: 'Returns merge requests deployed after the given date/time. Expected in ISO 8601 format',
+        optional :deployed_after, type: DateTime, desc: 'Return merge requests deployed after the specified time.',
           documentation: { example: '2019-03-15T08:00:00Z' }
-        optional :environment, type: String, desc: 'Returns merge requests deployed to the given environment',
+        optional :environment, type: String, desc: 'Return merge requests deployed to the given environment.',
           documentation: { example: 'production' }
         optional :merge_user_id, type: Integer,
           desc: "Returns merge requests which have been merged by the user with the given user `id`."
@@ -126,7 +126,7 @@ module API
         optional :scope, type: String,
           values: %w[created-by-me assigned-to-me created_by_me assigned_to_me reviews_for_me all],
           default: 'created_by_me',
-          desc: 'Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, `reviews_for_me` or `all`'
+          desc: 'Return merge requests for the given scope. `reviews_for_me` returns merge requests where the current user is assigned as a reviewer.'
       end
 
       def handle_merge_request_errors!(merge_request)

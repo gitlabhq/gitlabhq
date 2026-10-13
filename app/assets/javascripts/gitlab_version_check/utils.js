@@ -1,4 +1,5 @@
-import { setCookie, getCookie, parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import { COOKIE_EXPIRATION, COOKIE_SUFFIX } from './constants';
 
 const buildKey = (currentVersion) => {

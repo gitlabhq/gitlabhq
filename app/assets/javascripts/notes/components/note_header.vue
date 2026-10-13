@@ -70,6 +70,16 @@ export default {
       required: false,
       default: '',
     },
+    hideUsername: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    singleLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -111,7 +121,8 @@ export default {
         'author-name-link': true,
         'js-user-link': true,
         'gl-overflow-hidden': true,
-        'gl-break-words': true,
+        'gl-break-words': !this.singleLine,
+        'gl-truncate': this.singleLine,
       };
     },
     authorName() {
@@ -140,7 +151,7 @@ export default {
 </script>
 
 <template>
-  <div class="note-header-info">
+  <div class="note-header-info" :class="{ 'gl-min-w-0 !gl-flex-nowrap': singleLine }">
     <template v-if="hasAuthor">
       <span
         v-if="emailParticipant"
@@ -163,7 +174,7 @@ export default {
         ></span>
       </a>
       <span
-        v-if="!isSystemNote && !emailParticipant"
+        v-if="!isSystemNote && !emailParticipant && !hideUsername"
         class="author-username -gl-m-2 gl-mr-0 gl-hidden gl-truncate !gl-whitespace-nowrap gl-p-2 @md/panel:gl-inline"
       >
         <a
@@ -181,11 +192,14 @@ export default {
       }}</span>
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
-    <span class="note-headline-light note-headline-meta">
+    <span
+      class="note-headline-light note-headline-meta"
+      :class="{ 'gl-flex-1 gl-truncate': singleLine }"
+    >
       <span
         v-if="glSlots().default"
         class="system-note-message"
-        :class="!isSystemNote && !emailParticipant && '@md/panel:-gl-ml-2'"
+        :class="!isSystemNote && !emailParticipant && !hideUsername && '@md/panel:-gl-ml-2'"
         data-testid="system-note-content"
       >
         <slot></slot>

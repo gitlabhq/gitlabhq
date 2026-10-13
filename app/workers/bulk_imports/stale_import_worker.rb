@@ -30,9 +30,7 @@ module BulkImports
 
             entity.cleanup_stale
 
-            entity.trackers.find_each do |tracker|
-              tracker.cleanup_stale
-            end
+            entity.trackers.find_each(&:cleanup_stale) # rubocop:disable CodeReuse/ActiveRecord -- false positive, the block-pass is parsed as an argument
           end
         end
       end

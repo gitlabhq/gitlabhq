@@ -67,8 +67,8 @@ export default {
   emits: ['close', 'loading', 'role-change'],
   data() {
     return {
-      initialAccessLevel: this.user?.accessLevel.stringValue,
-      selectedAccessLevel: this.user?.accessLevel.stringValue,
+      initialAccessLevel: this.user?.accessLevel?.stringValue,
+      selectedAccessLevel: this.user?.accessLevel?.stringValue,
       loading: false,
     };
   },
@@ -94,8 +94,8 @@ export default {
   },
   watch: {
     user(value) {
-      this.initialAccessLevel = value?.accessLevel.stringValue;
-      this.selectedAccessLevel = value?.accessLevel.stringValue;
+      this.initialAccessLevel = value?.accessLevel?.stringValue;
+      this.selectedAccessLevel = value?.accessLevel?.stringValue;
     },
   },
   methods: {

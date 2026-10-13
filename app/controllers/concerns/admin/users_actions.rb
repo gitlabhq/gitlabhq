@@ -17,6 +17,7 @@ module Admin
       before_action :set_shared_view_parameters, only: [:show]
 
       helper_method :show_invite_organization_user_button?
+      helper_method :show_users_filter_tokens?
     end
 
     def index
@@ -47,7 +48,11 @@ module Admin
     end
 
     def users_from_search_query(users)
-      users.search(safe_params[:search_query], with_private_emails: true, partial_email_search: partial_email_search?)
+      users.search(
+        safe_params[:search_query],
+        with_private_emails: current_user.can?(:read_admin_users, :global),
+        partial_email_search: partial_email_search?
+      )
     end
 
     # Overridden in EE
@@ -65,6 +70,10 @@ module Admin
     # admin area. Overridden there.
     def show_invite_organization_user_button?
       false
+    end
+
+    def show_users_filter_tokens?
+      true
     end
 
     def user

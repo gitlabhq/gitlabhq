@@ -46,11 +46,11 @@ module Ci
     end
 
     def last_finished_pipeline
-      Ci::Pipeline.last_finished_for_ref_id(self.id)
+      Ci::Pipeline.last_finished_for_ref_id(id)
     end
 
     def artifacts_locked?
-      self.pipelines.where(locked: :artifacts_locked).exists?
+      pipelines.where(locked: :artifacts_locked).exists?
     end
 
     def update_status_by!(pipeline)
@@ -59,11 +59,11 @@ module Ci
         next unless last_finished_pipeline_id == pipeline.id
 
         case pipeline.status
-        when 'success' then self.succeed
-        when 'failed' then self.do_fail
+        when 'success' then succeed
+        when 'failed' then do_fail
         end
 
-        self.status_name
+        status_name
       end
     end
 

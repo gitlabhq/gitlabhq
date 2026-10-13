@@ -38,7 +38,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   desc "User owns the group's organization"
-  condition(:organization_owner) { owns_organization?(@subject.organization) }
+  condition(:organization_owner) { user_is_organization_admin?(@subject.organization) }
 
   rule { admin | organization_owner }.enable :update_organization
 
@@ -70,7 +70,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:design_management_enabled) do
-    group_projects_for(user: @user, group: @subject, exclude_shared: false).any? { |p| p.design_management_enabled? }
+    group_projects_for(user: @user, group: @subject, exclude_shared: false).any?(&:design_management_enabled?)
   end
 
   condition(:dependency_proxy_available, scope: :subject) do
@@ -142,7 +142,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { archived & ~group_scheduled_for_deletion }.policy do
     prevent :delete_custom_emoji
-    prevent :delete_o11y_settings
     prevent :destroy_issue
     prevent :destroy_package
     prevent :destroy_upload

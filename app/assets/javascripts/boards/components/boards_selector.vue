@@ -141,7 +141,7 @@ export default {
   },
   watch: {
     board(newBoard) {
-      document.title = newBoard.name;
+      this.updateDocumentTitle(newBoard);
     },
   },
   created() {
@@ -151,6 +151,25 @@ export default {
     this.handleSearch.cancel();
   },
   methods: {
+    updateDocumentTitle(newBoard) {
+      if (!newBoard?.name) {
+        return;
+      }
+
+      // The server renders the title as "Issue Boards · [board name] · Boards · [Project] · GitLab".
+      // Replace only the board-name segment so the prefix and project/instance suffix are preserved,
+      // instead of clobbering the whole title with the bare board name.
+      const separator = ' · ';
+      const segments = document.title.split(separator);
+      const boardNameIndex = 1;
+
+      if (segments.length > boardNameIndex) {
+        segments[boardNameIndex] = newBoard.name;
+        document.title = segments.join(separator);
+      } else {
+        document.title = newBoard.name;
+      }
+    },
     fullBoardId(boardId) {
       return fullBoardId(boardId);
     },
@@ -215,24 +234,22 @@ export default {
     },
     addBoard(board) {
       const { defaultClient: store } = this.$apollo.provider.clients;
+      const variables = { fullPath: this.fullPath };
 
-      const sourceData = store.readQuery({
-        query: this.boardsQuery,
-        variables: { fullPath: this.fullPath },
-      });
+      const sourceData = store.readQuery({ query: this.boardsQuery, variables });
 
-      const newData = produce(sourceData, (draftState) => {
-        draftState[this.parentType].boards.nodes = [
-          ...draftState[this.parentType].boards.nodes,
-          { ...board },
-        ];
-      });
+      if (sourceData) {
+        const newData = produce(sourceData, (draftState) => {
+          draftState[this.parentType].boards.nodes = [
+            ...draftState[this.parentType].boards.nodes,
+            { ...board },
+          ];
+        });
 
-      store.writeQuery({
-        query: this.boardsQuery,
-        variables: { fullPath: this.fullPath },
-        data: newData,
-      });
+        store.writeQuery({ query: this.boardsQuery, variables, data: newData });
+      } else {
+        this.$apollo.queries.boards.refetch();
+      }
 
       this.$emit('switch-board', board.id);
     },

@@ -62,8 +62,6 @@
           -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
           = render_if_exists "shared/footer/global_footer"
 
-      #contextual-panel-portal.paneled-view-portal{
-        class: 'gl-@container/panel !gl-absolute gl-rounded-l-xl gl-shadow-lg gl-bg-default @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-rounded-l-none @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative @xl/content-panels:gl-bg-transparent gl-right-0'
-      }
+      #contextual-panel-portal.paneled-view-portal
 
   = dispensable_render_if_exists 'layouts/duo_chat_panel'

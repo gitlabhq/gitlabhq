@@ -83,7 +83,7 @@ The Monitor's Keyboard commands:
 
 ## Snowplow Micro
 
-Starting with GitLab 18.0, Self-Managed instances collect event data by default. For versions prior to 18.0, GitLab Self-Managed instances do not collect event data through Snowplow by default. We can use [Snowplow Micro](https://docs.snowplow.io/docs/testing-debugging/snowplow-micro/what-is-micro/), a Docker based Snowplow collector, to test events locally:
+Starting with GitLab 18.0, GitLab Self-Managed instances collect event data by default. For versions prior to 18.0, GitLab Self-Managed instances do not collect event data through Snowplow by default. We can use [Snowplow Micro](https://docs.snowplow.io/docs/testing-debugging/snowplow-micro/what-is-micro/), a Docker based Snowplow collector, to test events locally:
 
 1. Ensure [Docker is installed and working](https://www.docker.com/get-started/).
 1. Enable Snowplow Micro:
@@ -155,7 +155,7 @@ It works in production, staging, and local development environments. It is espec
 
 ## Remote event collector
 
-On GitLab.com events are sent directly to a collector operated by GitLab (snowplowprd.trx\.GitLab\.net). Starting with GitLab 18.0, Self-Managed and Dedicated instances first collect event data locally, then forward it to GitLab event collector (events\.GitLab\.net). For versions prior to 18.0, GitLab Self-Managed instances do not have a collector configured and do not collect data with Snowplow by default.
+On GitLab.com events are sent directly to a collector operated by GitLab (snowplowprd.trx\.GitLab\.net). Starting with GitLab 18.0, GitLab Self-Managed and Dedicated instances first collect event data locally, then forward it to GitLab event collector (events\.GitLab\.net). For versions prior to 18.0, GitLab Self-Managed instances do not have a collector configured and do not collect data with Snowplow by default.
 
 You can configure your instance to use a custom Snowplow collector.
 

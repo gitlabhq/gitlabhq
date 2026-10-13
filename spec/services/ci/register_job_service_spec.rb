@@ -1044,6 +1044,48 @@ module Ci
           end
         end
 
+        context 'when a build-processing exception is a known, already-handled denial' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
+          end
+
+          subject { build_on(project_runner) }
+
+          before do
+            allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+              relation = method.call(*args)
+              allow(relation).to receive(:find_by!).and_return(pending_job)
+              relation
+            end
+            allow(pending_job).to receive(:run!).and_raise(RuntimeError, 'denied elsewhere')
+
+            allow_next_instance_of(described_class) do |service|
+              allow(service).to receive(:known_exception_failure_reason)
+                .with(an_instance_of(RuntimeError))
+                .and_return(:api_failure)
+            end
+          end
+
+          it 'drops the build without the generic conflict-exception handling or Sentry report' do
+            expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+            expect(subject).to be_nil
+
+            pending_job.reload
+            expect(pending_job).to be_failed
+            expect(pending_job.failure_reason).to eq('api_failure')
+          end
+
+          it 'does not count the known exception as a conflict' do
+            counter = Gitlab::Ci::Queue::Metrics.queue_operations_total
+            allow(counter).to receive(:increment)
+
+            expect(counter).not_to receive(:increment).with(operation: :build_conflict_exception)
+
+            subject
+          end
+        end
+
         context 'with a request timeout for job assignment phases' do
           let!(:pending_job) do
             create(:ci_build, :pending, :queued, pipeline: pipeline)
@@ -1408,6 +1450,29 @@ module Ci
           end
         end
 
+        context 'and the build uses id_tokens with job_project_path or source_project_path in sub_claim_components' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued, pipeline: pipeline, id_tokens: id_tokens)
+          end
+
+          where(:leading_component) { %w[job_project_path source_project_path] }
+
+          with_them do
+            before do
+              project.ci_cd_settings.update!(
+                id_token_sub_claim_components: [leading_component, 'ref_type', 'ref'])
+              pending_job.create_queuing_entry!
+            end
+
+            it 'drops the build with id_token_burned_project_path failure reason' do
+              expect(build_on(runner)).to be_nil
+
+              expect(pending_job.reload).to be_failed
+              expect(pending_job).to be_id_token_burned_project_path
+            end
+          end
+        end
+
         context 'and the build has no id_tokens defined' do
           before do
             pending_job.reload.create_queuing_entry!
@@ -1419,20 +1484,24 @@ module Ci
           end
         end
 
-        context 'and sub_claim_components excludes project_path (customer escape)' do
+        context 'and sub_claim_components only has ID components (customer escape)' do
           let!(:pending_job) do
             create(:ci_build, :pending, :queued, pipeline: pipeline, id_tokens: id_tokens)
           end
 
-          before do
-            project.ci_cd_settings.update!(
-              id_token_sub_claim_components: %w[project_id ref_type ref])
-            pending_job.create_queuing_entry!
-          end
+          where(:id_component) { %w[project_id job_project_id source_project_id] }
 
-          it 'picks the build' do
-            expect(build_on(runner)).not_to be_nil
-            expect(pending_job.reload).to be_running
+          with_them do
+            before do
+              project.ci_cd_settings.update!(
+                id_token_sub_claim_components: [id_component, 'ref_type', 'ref'])
+              pending_job.create_queuing_entry!
+            end
+
+            it 'picks the build' do
+              expect(build_on(runner)).not_to be_nil
+              expect(pending_job.reload).to be_running
+            end
           end
         end
       end
@@ -1453,6 +1522,71 @@ module Ci
         it 'picks the build' do
           expect(build_on(runner)).not_to be_nil
           expect(pending_job.reload).to be_running
+        end
+      end
+
+      context 'when the build is in a merge request pipeline in the target project whose source project is a fork' do
+        include ProjectForksHelper
+
+        let!(:runner) { create(:ci_runner, :project, projects: [project]) }
+        let(:runner_params) { { info: { features: { refspecs: true } } } }
+        let(:forked_project) { fork_project(project, nil, repository: true) }
+        let(:merge_request) do
+          create(:merge_request, source_project: forked_project, source_branch: 'feature',
+            target_project: project, target_branch: 'master')
+        end
+
+        let(:fork_pipeline) do
+          create(:ci_pipeline, :detached_merge_request_pipeline, merge_request: merge_request, project: project)
+        end
+
+        let!(:pending_job) do
+          create(:ci_build, :pending, :queued, pipeline: fork_pipeline,
+            id_tokens: { 'TEST_ID_TOKEN' => { aud: 'https://example.com' } })
+        end
+
+        before do
+          burned = public_send(burned_project)
+          create(:burned_project_route,
+            organization: burned.organization, path: burned.full_path, project_id: non_existing_record_id)
+          project.ci_cd_settings.update!(id_token_sub_claim_components: [leading_component, 'ref_type', 'ref'])
+          pending_job.create_queuing_entry!
+        end
+
+        context 'when the burned path is the one in the sub claim' do
+          where(:leading_component, :burned_project) do
+            [
+              ['project_path', :forked_project],
+              ['source_project_path', :forked_project],
+              ['job_project_path', :project]
+            ]
+          end
+
+          with_them do
+            it 'drops the build with id_token_burned_project_path failure reason' do
+              expect(build_on(runner, params: runner_params)).to be_nil
+
+              expect(pending_job.reload).to be_failed
+              expect(pending_job).to be_id_token_burned_project_path
+            end
+          end
+        end
+
+        context 'when the burned path is not the one in the sub claim' do
+          where(:leading_component, :burned_project) do
+            [
+              ['project_path', :project],
+              ['source_project_path', :project],
+              ['job_project_path', :forked_project]
+            ]
+          end
+
+          with_them do
+            it 'picks the build' do
+              expect(build_on(runner, params: runner_params)).not_to be_nil
+              expect(pending_job.reload).to be_running
+            end
+          end
         end
       end
 
@@ -1533,13 +1667,10 @@ module Ci
       before do
         allow(Time).to receive(:now).and_return(current_time)
         # Stub tested metrics
-        allow(Gitlab::Ci::Queue::Metrics)
-          .to receive(:attempt_counter)
-                .and_return(attempt_counter)
-
-        allow(Gitlab::Ci::Queue::Metrics)
-          .to receive(:job_queue_duration_seconds)
-                .and_return(job_queue_duration_seconds)
+        allow(Gitlab::Ci::Queue::Metrics).to receive_messages(
+          attempt_counter: attempt_counter,
+          job_queue_duration_seconds: job_queue_duration_seconds
+        )
 
         project.update!(shared_runners_enabled: true)
         pending_job_2.update!(created_at: current_time - 3600, queued_at: current_time - 1800)

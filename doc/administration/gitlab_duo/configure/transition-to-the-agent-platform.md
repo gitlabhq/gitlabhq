@@ -31,13 +31,11 @@ the agentic version that your users can access after moving to the Agent Platfor
 | Non-agentic feature | Agent Platform |
 |---------------------|----------------|
 | GitLab Duo Non-Agentic Chat | [Agentic Chat](../../../user/gitlab_duo_chat/agentic_chat.md) <br /> Answer complex questions and autonomously create and edit files. Connects to the Planner and Security Analyst agents. Merge request summary, discussion summary, refactor code, and test generation are now part of Agentic Chat. |
-| GitLab Duo Code Review | [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md) <sup>1</sup>  <br /> Automate code review tasks and enforce coding standards across your team. |
-| Root cause analysis | [Fix CI/CD pipeline flow](../../../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md) <sup>1</sup> <br /> Diagnose and automatically fix failing CI/CD pipelines. |
-| Vulnerability explanation and resolution | [SAST vulnerability resolution flow](../../../user/duo_agent_platform/flows/foundational_flows/agentic_sast_vulnerability_resolution.md) <sup>1</sup> <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. |
+| GitLab Duo Code Review | [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md)[^runner-configured-execute]  <br /> Automate code review tasks and enforce coding standards across your team. |
+| Root cause analysis | [Fix CI/CD pipeline flow](../../../ci/pipelines/fix_pipeline.md)[^runner-configured-execute] <br /> Diagnose and automatically fix failing CI/CD pipelines. |
+| Vulnerability explanation and resolution | [SAST vulnerability resolution flow](../../../user/duo_agent_platform/flows/foundational_flows/agentic_sast_vulnerability_resolution.md)[^runner-configured-execute] <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. |
 
-**Footnotes**:
-
-1. Requires a runner [configured to execute flows](#set-up-your-environment). If you don't configure a runner, after you transition to the Agent Platform these features appear unavailable to users who relied on them in GitLab Duo (non-agentic).
+[^runner-configured-execute]: Requires a runner [configured to execute flows](#set-up-your-environment). If you don't configure a runner, after you transition to the Agent Platform these features appear unavailable to users who relied on them in GitLab Duo (non-agentic).
 
 ## Before you begin
 
@@ -105,7 +103,7 @@ When you first transition your instance to the Agent Platform, you might encount
 | `SSL certificate OpenSSL verify result: unable to get local issuer certificate (20)` | On GitLab Self-Managed with a custom or self-signed CA, sandbox hardening blocks the runner's CA injection during `git clone`. | [Error: SSL certificate OpenSSL verify result](../../../user/duo_agent_platform/troubleshooting.md#error-ssl-certificate-openssl-verify-result-unable-to-get-local-issuer-certificate-20) |
 | All GitLab Duo features fail for all users immediately after transition | Silent Mode is turned on, which prevents GitLab from reaching the AI gateway. | [Turn off Silent Mode](../../silent_mode/_index.md#turn-off-silent-mode) |
 | Health check network test fails, or GitLab Duo features are unavailable after transition | Outbound HTTPS to `cloud.gitlab.com`, `customers.gitlab.com`, or `duo-workflow-svc.runway.gitlab.net` is blocked by a firewall or proxy. | [Allow outbound connections from the GitLab instance to GitLab Duo](_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) |
-| Agent Platform features unavailable for all users right after conversion | Usage billing terms have not been accepted, or there are no credits available in the pool. | [On-Demand credits](../../../subscriptions/gitlab_credits.md#on-demand-credits) |
+| Agent Platform features unavailable for all users right after conversion | Usage billing terms have not been accepted, or there are no credits available in the pool. | [On-demand credits](../../../subscriptions/gitlab_credits.md#on-demand-credits) |
 
 ## Related topics
 

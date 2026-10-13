@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitlab/safe_request_store'
 
 RSpec.describe ::Backup::Restore::Preconditions, feature_category: :backup_restore do
   let(:logger) { Gitlab::BackupLogger.new(StringIO.new) }

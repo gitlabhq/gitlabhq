@@ -40,7 +40,13 @@ module Gitlab
         shas.uniq.each do |sha|
           next unless sha.present?
 
-          already_kept = kept_around?(sha)
+          ref_name = keep_around_ref_name(sha)
+          already_kept = begin
+            kept_around?(sha)
+          rescue Gitlab::Git::ReferenceUnresolvableError => e
+            delete_dangling_keep_around_ref(sha, ref_name, e.oid)
+            false
+          end
 
           next unless commit_by(oid: sha)
 
@@ -50,7 +56,7 @@ module Gitlab
           next if already_kept
 
           # This will still fail if the file is corrupted (e.g. 0 bytes)
-          raw_repository.write_ref(keep_around_ref_name(sha), sha)
+          raw_repository.write_ref(ref_name, sha)
 
           @keeparound_created_counter.increment(labels)
           Gitlab::AppLogger.info(message: 'Created keep-around reference', object_id: sha)
@@ -60,7 +66,12 @@ module Gitlab
           # rescued, because `Ci::Pipeline#keep_around_commits` calls this inline from
           # an `after_commit` and must not be interrupted.
           Gitlab::ErrorTracking.track_exception(ex, object_id: sha)
-        rescue Gitlab::Git::CommandError => ex
+        rescue Gitlab::Git::CommandError,
+          Gitlab::Git::Repository::GitError,
+          Gitlab::Git::ReferencesLockedError,
+          Gitlab::Git::InvalidRefFormatError => ex
+          # Reporting failures lets workers retry, while rescuing here prevents
+          # exceptions from reaching inline after_commit callers.
           Gitlab::ErrorTracking.track_exception(ex, object_id: sha)
           failed_shas << sha
         end
@@ -78,6 +89,17 @@ module Gitlab
       private :commit_by, :raw_repository, :ref_exists?, :disk_path
 
       private
+
+      def delete_dangling_keep_around_ref(sha, ref_name, target_oid)
+        Gitlab::AppLogger.info(
+          message: 'Deleting dangling keep-around reference',
+          object_id: sha,
+          ref: ref_name,
+          target_oid: target_oid
+        )
+
+        raw_repository.delete_refs(ref_name)
+      end
 
       def disabled?
         Feature.enabled?(:disable_keep_around_refs, @repository, type: :ops) ||

@@ -3,6 +3,8 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/organizations/show/components/app.vue';
 import LeaveOrganizationModal from '~/organizations/show/components/leave_organization_modal.vue';
 
+jest.mock('@gitlab/svgs/dist/illustrations/rocket-launch-md.svg?url', () => 'mock-svg-path');
+
 describe('OrganizationShowApp', () => {
   let wrapper;
 
@@ -36,6 +38,20 @@ describe('OrganizationShowApp', () => {
       );
     });
   };
+
+  it('renders empty state with correct svg', () => {
+    createComponent();
+
+    expect(findEmptyState().props('svgPath')).toBe('mock-svg-path');
+  });
+
+  it('shows feedback link', () => {
+    createComponent();
+
+    expect(
+      wrapper.findByRole('link', { name: 'Give Organization feedback' }).attributes('href'),
+    ).toBe('https://gitlab.com/gitlab-org/gitlab/-/work_items/629432');
+  });
 
   describe('when user can admin organization', () => {
     beforeEach(() => {

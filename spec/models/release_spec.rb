@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Release, feature_category: :release_orchestration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
+  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:project, freeze: false) { create(:project, :public, :repository, namespace: namespace) }
 
   let_it_be_with_reload(:release) { create(:release, project: project, author: user) }
 
@@ -49,8 +50,10 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
 
     describe 'scopes' do
-      let_it_be(:another_project, freeze: false) { create(:project) }
-      let_it_be(:another_release, freeze: false) { create(:release, project: another_project, tag: 'v2') }
+      let_it_be(:another_project, freeze: false) { create(:project, namespace: namespace) }
+      let_it_be(:another_release, freeze: false) do
+        create(:release, project: another_project, tag: 'v2', author: user)
+      end
 
       describe '.for_projects' do
         it 'returns releases for the given projects' do
@@ -66,7 +69,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
       describe '.released and .upcoming' do
         let_it_be(:scheduled) do
-          create(:release, project: project, tag: 'v9-rc', released_at: 30.days.from_now)
+          create(:release, project: project, tag: 'v9-rc', released_at: 30.days.from_now, author: user)
         end
 
         it 'splits releases on the release date', :aggregate_failures do
@@ -84,7 +87,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
         # A release dated exactly now is not upcoming, so the two scopes must not both match it.
         it 'counts a release dated now as released', :aggregate_failures do
           now = Time.zone.now.change(usec: 0)
-          exact = create(:release, project: project, tag: 'v-now', released_at: now)
+          exact = create(:release, project: project, tag: 'v-now', released_at: now, author: user)
 
           travel_to(now) do
             expect(exact.upcoming_release?).to be false
@@ -109,7 +112,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
     context 'when a release is tied to a milestone for another project' do
       it 'creates a validation error' do
-        milestone = build(:milestone, project: create(:project))
+        milestone = build(:milestone, project: create(:project, namespace: namespace))
 
         expect { release.milestones << milestone }.to raise_error(
           ActiveRecord::RecordInvalid, 'Validation failed: Release does not have the same project as the milestone'
@@ -132,7 +135,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
     # Deleting user along with their contributions, nullifies releases author_id.
     context 'when updating existing release without author' do
-      let(:release) { create(:release, :legacy) }
+      let(:release) { create(:release, :legacy, author: user) }
 
       it 'updates successfully' do
         release.description += 'Update'
@@ -145,7 +148,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
   describe 'tagged' do
     # We only test for empty string since there's a not null constraint at the database level
     it 'does not return the tagless release' do
-      empty_string_tag = create(:release, tag: 'v99.0.0')
+      empty_string_tag = create(:release, project: project, tag: 'v99.0.0', author: user)
       empty_string_tag.update_column(:tag, '')
 
       expect(described_class.tagged).not_to include(empty_string_tag)
@@ -161,30 +164,31 @@ RSpec.describe Release, feature_category: :release_orchestration do
     let_it_be(:today) { Time.zone.now }
     let_it_be(:tomorrow, freeze: false) { Time.zone.now + 1.day }
 
-    let_it_be(:project2, freeze: false) { create(:project) }
+    let_it_be(:project2, freeze: false) { create(:project, namespace: namespace) }
 
     let_it_be(:project_release1) do
-      create(:release, project: project, released_at: yesterday, created_at: tomorrow)
+      create(:release, project: project, released_at: yesterday, created_at: tomorrow, author: user)
     end
 
     let_it_be(:project_release2) do
-      create(:release, project: project, released_at: tomorrow, created_at: yesterday)
+      create(:release, project: project, released_at: tomorrow, created_at: yesterday, author: user)
     end
 
     let_it_be(:project2_release1, freeze: false) do
-      create(:release, project: project2, released_at: yesterday, created_at: tomorrow)
+      create(:release, project: project2, released_at: yesterday, created_at: tomorrow, author: user)
     end
 
     let_it_be(:project2_release2) do
-      create(:release, project: project2, released_at: tomorrow, created_at: yesterday)
+      create(:release, project: project2, released_at: tomorrow, created_at: yesterday, author: user)
     end
 
     let_it_be(:project2_release3) do
-      create(:release, project: project2, released_at: today, created_at: yesterday)
+      create(:release, project: project2, released_at: today, created_at: yesterday, author: user)
     end
 
     let_it_be(:project2_release4) do
-      create(:release, project: project2, released_at: today, created_at: yesterday, release_published_at: today)
+      create(:release, project: project2, released_at: today, created_at: yesterday, release_published_at: today,
+        author: user)
     end
 
     let(:args) { {} }
@@ -271,7 +275,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
 
     context 'when a links exists' do
-      let!(:link) { create(:release_link, release: release) }
+      let_it_be(:link) { create(:release_link, release: release) }
 
       it 'counts the link as an asset' do
         is_expected.to eq(1 + Gitlab::Workhorse::ARCHIVE_FORMATS.count)
@@ -320,12 +324,8 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
 
     context 'when a link exists' do
-      let!(:link1) { create(:release_link, release: release, name: 'test1', url: 'https://www.google1.com/') }
-      let!(:link2) { create(:release_link, release: release, name: 'test2', url: 'https://www.google2.com/') }
-
-      before do
-        release.reload
-      end
+      let_it_be(:link1) { create(:release_link, release: release, name: 'test1', url: 'https://www.google1.com/') }
+      let_it_be(:link2) { create(:release_link, release: release, name: 'test2', url: 'https://www.google2.com/') }
 
       context 'when params are specified for update' do
         let(:params) do
@@ -400,18 +400,18 @@ RSpec.describe Release, feature_category: :release_orchestration do
   describe '#milestone_titles' do
     let_it_be(:milestone_1) { create(:milestone, project: project, title: 'Milestone 1') }
     let_it_be(:milestone_2) { create(:milestone, project: project, title: 'Milestone 2') }
-    let_it_be(:release) { create(:release, project: project, milestones: [milestone_1, milestone_2]) }
+    let_it_be(:release) { create(:release, project: project, milestones: [milestone_1, milestone_2], author: user) }
 
     it { expect(release.milestone_titles).to eq("#{milestone_1.title}, #{milestone_2.title}") }
   end
 
   describe 'updating catalog resource version' do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let_it_be(:project, freeze: false) { create(:project, namespace: namespace) }
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_reload(:release) do
       create(:release, :with_catalog_resource_version, project: project, tag: 'v1.2.3',
-        released_at: '2023-01-01T00:00:00Z')
+        released_at: '2023-01-01T00:00:00Z', author: user)
     end
 
     let(:version) { release.catalog_resource_version }
@@ -434,7 +434,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
   end
 
   describe '#tagged_packages' do
-    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
+    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0', author: user) }
 
     context 'when packages match the release tag version' do
       let_it_be(:matching_package) { create(:generic_package, project: project, version: '1.0.0') }
@@ -462,7 +462,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
 
     context 'when the tag has no v prefix' do
-      let_it_be(:release_no_prefix) { create(:release, project: project, tag: '3.0.0') }
+      let_it_be(:release_no_prefix) { create(:release, project: project, tag: '3.0.0', author: user) }
       let_it_be(:matching_package) { create(:generic_package, project: project, version: '3.0.0') }
 
       it 'matches packages by version directly' do
@@ -471,7 +471,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
 
     context 'when the tag has an uppercase V prefix' do
-      let_it_be(:release_upper_v) { create(:release, project: project, tag: 'V4.0.0') }
+      let_it_be(:release_upper_v) { create(:release, project: project, tag: 'V4.0.0', author: user) }
       let_it_be(:matching_package) { create(:generic_package, project: project, version: '4.0.0') }
 
       it 'strips the uppercase V prefix and matches packages' do
@@ -499,10 +499,10 @@ RSpec.describe Release, feature_category: :release_orchestration do
   end
 
   describe '#related_deployments' do
-    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0') }
+    let_it_be(:release) { create(:release, project: project, tag: 'v1.0.0', author: user) }
     let_it_be(:ref) { release.tag }
     let_it_be(:environment, freeze: false) { create(:environment, project: project) }
-    let_it_be_with_reload(:deployment) { create(:deployment, environment: environment, ref: ref) }
+    let_it_be_with_reload(:deployment) { create(:deployment, environment: environment, ref: ref, deployable: nil) }
 
     it 'returns deployments for the release tag in the available environments' do
       expect(release.related_deployments).to contain_exactly(deployment)

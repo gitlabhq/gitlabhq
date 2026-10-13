@@ -15,6 +15,7 @@ import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphq
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
+import ForceStop from './environment_force_stop.vue';
 import Rollback from './environment_rollback.vue';
 import Pin from './environment_pin.vue';
 import Terminal from './environment_terminal_button.vue';
@@ -35,6 +36,7 @@ export default {
     DeployBoardWrapper,
     ExternalUrl,
     StopComponent,
+    ForceStop,
     Rollback,
     Pin,
     Terminal,
@@ -126,6 +128,9 @@ export default {
     canStop() {
       return this.environment?.canStop;
     },
+    canForceStop() {
+      return this.environment?.canForceStop;
+    },
     retryPath() {
       return this.lastDeployment?.deployable?.retryPath;
     },
@@ -134,6 +139,7 @@ export default {
         this.retryPath ||
         this.canShowAutoStopDate ||
         this.terminalPath ||
+        this.canForceStop ||
         this.canDeleteEnvironment,
       );
     },
@@ -284,6 +290,13 @@ export default {
               :terminal-path="terminalPath"
               data-track-action="click_button"
               data-track-label="environment_terminal"
+            />
+
+            <force-stop
+              v-if="canForceStop"
+              :environment="environment"
+              data-track-action="click_button"
+              data-track-label="environment_force_stop"
             />
 
             <delete

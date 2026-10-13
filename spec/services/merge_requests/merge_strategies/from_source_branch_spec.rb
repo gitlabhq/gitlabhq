@@ -397,6 +397,27 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
       end
     end
 
+    context 'when the target branch tip cannot be resolved' do
+      before do
+        project.merge_method = :ff
+        project.save!
+
+        allow(merge_request.target_project.repository).to receive(:commit).and_call_original
+        allow(merge_request.target_project.repository)
+          .to receive(:commit).with(merge_request.target_branch_ref).and_return(nil)
+      end
+
+      it 'fast-forwards without an expected target sha' do
+        expect(merge_request.target_project.repository)
+          .to receive(:ff_merge)
+          .with(user, merge_request.diff_head_sha, merge_request.target_branch,
+            merge_request: merge_request, target_sha: nil)
+          .and_return('1234')
+
+        expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
+      end
+    end
+
     context 'when the fast-forward does not advance the target branch via the auto-rebase path' do
       before do
         project.merge_method = :ff
@@ -535,6 +556,52 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
         expect(MergeRequests::GeneratedRefCommit.where(project: project, merge_request: merge_request))
           .to be_empty
       end
+    end
+
+    def commit_file(path, message, branch)
+      project.repository.create_file(project.creator, path, '', message: message, branch_name: branch)
+    end
+  end
+
+  describe 'fast-forward when a tag shares the target branch name' do
+    let(:project) { create(:project, :empty_repo) }
+    let(:target_branch) { project.default_branch_or_main }
+    let(:source_branch) { 'feature' }
+
+    let(:merge_request) do
+      create(
+        :merge_request,
+        author: user,
+        source_project: project,
+        target_project: project,
+        source_branch: source_branch,
+        target_branch: target_branch
+      )
+    end
+
+    before do
+      project.merge_method = :ff
+      project.save!
+
+      commit_file('README.md', 'Base commit 1', target_branch)
+      commit_file('EXTRA', 'Base commit 2', target_branch)
+      project.repository.create_branch(source_branch, target_branch)
+      commit_file('a.txt', 'Feature commit', source_branch)
+
+      # A bare-name lookup prefers refs/tags/ over refs/heads/. The tag must sit
+      # behind the branch tip, otherwise both lookups return the same commit.
+      project.repository.add_tag(project.creator, target_branch, branch_tip(target_branch).parent_id)
+    end
+
+    it 'fast-forwards the branch past the tag', :aggregate_failures do
+      source_sha = branch_tip(source_branch).sha
+
+      expect(strategy.execute_git_merge!).to eq({ commit_sha: source_sha })
+      expect(branch_tip(target_branch).sha).to eq(source_sha)
+    end
+
+    def branch_tip(branch)
+      project.repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + branch)
     end
 
     def commit_file(path, message, branch)

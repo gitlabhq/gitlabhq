@@ -45,7 +45,7 @@ determine which projects are affected.
 
 The [Dependency Scanning migration evaluator](https://dependency-scanning-migration-evaluator-cb84d1.gitlab.io/)
 generates a tailored migration checklist based on how dependency scanning is configured in your projects.
-It asks about your enablement path, language ecosystems, CI/CD customizations, and (for self-managed instances)
+It asks about your enablement path, language ecosystems, CI/CD customizations, and (for GitLab Self-Managed instances)
 Package Metadata Database sync status. The evaluator produces:
 
 - An effort estimate (minimal, moderate, significant, or complex).
@@ -93,7 +93,7 @@ Before you migrate, an administrator should:
   used by your projects are selected. For more information, see
   [choose package registry metadata to sync](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync).
 - For offline or firewalled instances, follow
-  [enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+  [Package Metadata Database for offline instances](../../../topics/offline/package-metadata-database.md).
 
 If PMDB synchronization is not complete for a package type that your
 projects use, the new analyzer cannot resolve advisories for the corresponding
@@ -116,6 +116,16 @@ You can also locate legacy usage in your CI/CD configuration:
   `gemnasium-maven-dependency_scanning`, `gemnasium-python-dependency_scanning`)
   in `.gitlab-ci.yml` files, policy YAML, or downstream jobs that use them in
   `needs:` or `dependencies:`.
+
+### Plan for scan volume
+
+Before you migrate a high-volume project, estimate the number of SBOM scans across all pipelines in the project each hour.
+Scans above [50 per project per hour](../../../administration/instance_limits.md#dependency-scanning-using-sbom-limits)
+run at a lower priority and can take longer to complete.
+
+To reduce scan volume, avoid redundant pipelines.
+To reduce the work in each scan, use the
+[scan scope options](dependency_scanning_sbom/_index.md#improve-scanning-performance).
 
 ## Understand the changes
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GracefulTimeoutHandling, type: :controller do
+RSpec.describe GracefulTimeoutHandling do
   controller(ApplicationController) do
     include GracefulTimeoutHandling
 

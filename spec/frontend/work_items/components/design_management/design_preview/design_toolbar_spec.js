@@ -19,6 +19,7 @@ describe('DesignToolbar', () => {
     design = mockDesign,
     isLatestVersion = true,
     canUpdateDesign = true,
+    isTodoUpdating = false,
   } = {}) {
     wrapper = shallowMountExtended(DesignToolbar, {
       propsData: {
@@ -28,6 +29,7 @@ describe('DesignToolbar', () => {
         designFilename: design.filename,
         isLatestVersion,
         canUpdateDesign,
+        isTodoUpdating,
       },
       isLoggedIn: isLoggedIn(),
     });
@@ -110,16 +112,22 @@ describe('DesignToolbar', () => {
   it('renders todos widget if logged in', () => {
     createComponent();
 
-    expect(findWorkItemTodos().props('itemId')).toEqual(mockDesign.id);
     expect(findWorkItemTodos().props('currentUserTodos')).toEqual([]);
+    expect(findWorkItemTodos().props('isUpdating')).toBe(false);
   });
 
-  it('emits `todos-updated` event when todo button is toggled', () => {
+  it('passes isTodoUpdating down to the toggle', () => {
+    createComponent({ isTodoUpdating: true });
+
+    expect(findWorkItemTodos().props('isUpdating')).toBe(true);
+  });
+
+  it('emits `toggle-todo` when the todo button is toggled', () => {
     createComponent();
 
-    findWorkItemTodos().vm.$emit('todos-updated');
+    findWorkItemTodos().vm.$emit('toggle');
 
-    expect(wrapper.emitted('todos-updated')).toHaveLength(1);
+    expect(wrapper.emitted('toggle-todo')).toEqual([[]]);
   });
 
   describe('when user is not logged in', () => {

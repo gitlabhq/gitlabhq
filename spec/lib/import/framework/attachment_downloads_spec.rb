@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/context'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Import::Framework::AttachmentDownloads, feature_category: :importers do
   let(:tmp_dir) { File.join(Dir.tmpdir, 'attachment_downloads_spec') }

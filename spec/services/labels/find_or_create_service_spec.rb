@@ -118,6 +118,24 @@ RSpec.describe Labels::FindOrCreateService, feature_category: :team_planning do
           end
         end
       end
+
+      context 'when the user cannot create labels' do
+        before do
+          group.add_guest(user)
+        end
+
+        it 'does not create a project label' do
+          service = described_class.new(user, project, params)
+
+          expect { expect(service.execute).to be_nil }.not_to change { Label.count }
+        end
+
+        it 'does not create a group label' do
+          service = described_class.new(user, group, params)
+
+          expect { expect(service.execute).to be_nil }.not_to change { Label.count }
+        end
+      end
     end
 
     context 'when authorization is not required' do

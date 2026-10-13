@@ -42,4 +42,9 @@ mailboxes = config.mailboxes.map do |attributes|
   MailRoom::Mailbox.new(attributes)
 end
 
-MailRoom::Coordinator.new(mailboxes).run
+# mail_room's health check serves /liveness on its own thread, which is what a
+# container liveness probe polls. It is only started when a port is configured.
+health_check_attributes = config.health_check_attributes
+health_check = MailRoom::HealthCheck.new(health_check_attributes) if health_check_attributes
+
+MailRoom::Coordinator.new(mailboxes, health_check).run

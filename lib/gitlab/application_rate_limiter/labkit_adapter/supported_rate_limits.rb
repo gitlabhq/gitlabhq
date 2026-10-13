@@ -8,13 +8,12 @@ module Gitlab
       # supported_rate_limits.rb (EE additions, prepended via prepend_mod).
       #
       # Per-rule conventions:
-      #   characteristics: ordered list of identifier slots; AR-typed
-      #                    names (see LabkitAdapter#ar_characteristic_types)
-      #                    are populated by class-routing, primitives fill
-      #                    the remainder positionally. Polymorphic
-      #                    positions list every accepted slot; labkit's
-      #                    '_unknown_' sentinel fills slots not in scope,
-      #                    keeping Redis keys disjoint per real type.
+      #   characteristics: ordered slots of the labkit Redis key. Callers
+      #                    pass `scope:` as a hash keyed by these names,
+      #                    e.g. { project: project, user: current_user }.
+      #                    Polymorphic rules list every accepted slot;
+      #                    labkit's '_unknown_' sentinel fills slots not in
+      #                    scope, keeping Redis keys disjoint per real type.
       #   limit:           static threshold (Integer) or a zero-arity callable
       #                    resolved per check against application settings.
       #                    Omitted for entries whose threshold arrives per call
@@ -405,8 +404,8 @@ module Gitlab
             namespace_work_item_changes_broadcast: ::Labkit::RateLimit::Rule.new(
               name: 'limit_namespace_work_item_change_broadcasts_by_namespace',
               characteristics: %i[group namespace],
-              limit: 30,
-              period: 1.minute,
+              limit: 5,
+              period: 15.seconds,
               action: :limit
             ),
             notes_create: ::Labkit::RateLimit::Rule.new(
@@ -477,6 +476,106 @@ module Gitlab
               characteristics: %i[user],
               limit: 5,
               period: 1.day,
+              action: :limit
+            ),
+            pipeline_cancel: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_cancels_by_user_pipeline',
+              characteristics: %i[user ci_pipeline],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            pipeline_delete: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_deletes_by_user_pipeline',
+              characteristics: %i[user ci_pipeline],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            pipeline_cancel_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_cancels_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.pipeline_cancel_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            pipeline_retry: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_retries_by_user_pipeline',
+              characteristics: %i[user ci_pipeline],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            # Busiest observed actor plus headroom, measured in
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/627233.
+            pipeline_retry_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_retries_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.pipeline_retry_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            job_retry: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_retries_by_user_job',
+              characteristics: %i[user ci_build],
+              limit: 3,
+              period: 1.minute,
+              action: :limit
+            ),
+            job_retry_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_retries_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.job_retry_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            job_play: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_plays_by_user_job',
+              characteristics: %i[user ci_build],
+              limit: 3,
+              period: 1.minute,
+              action: :limit
+            ),
+            job_play_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_plays_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.job_play_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            # Every sampled actor but one stayed under this; see
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/627268.
+            pipeline_delete_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_deletes_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.pipeline_delete_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            job_erase: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_erases_by_user_job',
+              characteristics: %i[user ci_build],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            job_erase_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_erases_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.job_erase_limit_per_user_project
+              },
+              period: 1.minute,
               action: :limit
             ),
             pipelines_create: ::Labkit::RateLimit::Rule.new(

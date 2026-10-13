@@ -3,6 +3,11 @@
 module API
   module WorkItems
     class Create < ::API::Base
+      include ::API::Concerns::AiWorkflowsAccess
+      include APIGuard
+
+      allow_ai_workflows_access
+
       before { authenticate! }
       before { check_work_item_rest_api_feature_flag! }
 

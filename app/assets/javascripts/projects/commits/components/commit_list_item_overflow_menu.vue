@@ -2,7 +2,6 @@
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
-  GlIcon,
   GlTooltipDirective,
   GlToastMixin,
 } from '@gitlab/ui';
@@ -14,7 +13,6 @@ export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -76,13 +74,6 @@ export default {
       :key="item.id"
       :item="item"
       v-bind="item.extraAttrs"
-    >
-      <template #list-item>
-        <div class="gl-align-items-center gl-flex gl-gap-3">
-          <gl-icon :name="item.icon" />
-          <span>{{ item.text }}</span>
-        </div>
-      </template>
-    </gl-disclosure-dropdown-item>
+    />
   </gl-disclosure-dropdown>
 </template>

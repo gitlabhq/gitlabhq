@@ -681,7 +681,7 @@ export const exampleSavedViewResponse = {
   },
 };
 
-export const unsubscribedSavedView = [
+const unsubscribedSavedView = [
   {
     __typename: 'WorkItemSavedViewType',
     name: 'Current sprint 3',
@@ -736,23 +736,6 @@ export const unsubscribedSavedView = [
     },
   },
 ];
-
-export const unsubscribedSavedViewResponse = {
-  data: {
-    namespace: {
-      __typename: 'Namespace',
-      id: 'namespace',
-      currentSavedViews: {
-        nodes: mockSavedViewsData,
-      },
-      subscribedSavedViewLimit: 100,
-      savedViews: {
-        __typename: 'SavedViewConnection',
-        nodes: unsubscribedSavedView,
-      },
-    },
-  },
-};
 
 export const savedViewResponseFactory = ({ limit, subscribed, savedViews = null }) => {
   return {

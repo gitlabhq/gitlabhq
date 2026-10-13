@@ -37,7 +37,7 @@ The spam and CAPTCHA-related logic is also cleanly abstracted into reusable modu
 which can wrap existing logic, and only alter the existing flow if potential spam
 is detected or a CAPTCHA display is needed. This approach allows the spam and CAPTCHA
 support to be added to new areas of the application with minimal changes to
-existing logic. In the case of the frontend, potentially **zero** changes are needed!
+existing logic. In the case of the frontend, potentially zero changes are needed!
 
 On the frontend, this is handled abstractly and transparently using `ApolloLink` for Apollo, and an
 Axios interceptor for Axios. The CAPTCHA display is handled by a standard GitLab UI / Pajamas modal

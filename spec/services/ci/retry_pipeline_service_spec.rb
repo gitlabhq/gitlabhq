@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuous_integration do
+  include ExclusiveLeaseHelpers
   include ProjectForksHelper
 
   let_it_be_with_refind(:user) { create(:user) }
@@ -383,6 +384,73 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       end
     end
 
+    context 'when the pipeline is locked for the duration of the retry' do
+      let(:lock_key) { "ci:retry_pipeline_service:lock:#{pipeline.id}" }
+
+      before do
+        create_build('rspec', :failed, build_stage)
+
+        # Other leases are taken during the retry, so only the retry lease is asserted on.
+        allow(Gitlab::ExclusiveLease).to receive(:cancel).and_call_original
+      end
+
+      it 'obtains and releases the lease around the retry', :aggregate_failures do
+        expect_to_obtain_exclusive_lease(lock_key, 'uuid', timeout: described_class::LOCK_TIMEOUT)
+        expect_to_cancel_exclusive_lease(lock_key, 'uuid')
+
+        expect(service.execute(pipeline)).to be_success
+        expect(build('rspec')).to be_pending
+      end
+
+      it 'releases the lease when retrying a job fails', :aggregate_failures do
+        expect_to_obtain_exclusive_lease(lock_key, 'uuid', timeout: described_class::LOCK_TIMEOUT)
+        expect_to_cancel_exclusive_lease(lock_key, 'uuid')
+
+        allow_next_instance_of(Ci::RetryJobService) do |retry_job_service|
+          allow(retry_job_service).to receive(:clone!).and_raise(ActiveRecord::StaleObjectError)
+        end
+
+        response = service.execute(pipeline)
+
+        expect(response).to be_error
+        expect(response.http_status).to eq(:conflict)
+        expect(response.message).to eq('Error updating stale job')
+      end
+    end
+
+    context 'when another retry of the pipeline is in progress' do
+      before do
+        create_build('rspec', :failed, build_stage)
+
+        stub_exclusive_lease_taken(
+          "ci:retry_pipeline_service:lock:#{pipeline.id}",
+          timeout: described_class::LOCK_TIMEOUT
+        )
+      end
+
+      it 'returns a conflict error without retrying any job', :aggregate_failures do
+        response = service.execute(pipeline)
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:retry_in_progress)
+        expect(response.http_status).to eq(:conflict)
+        expect(response.message).to eq('Pipeline is already being retried')
+        expect(build('rspec')).to be_failed
+        expect(pipeline.reload).not_to be_running
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(lock_concurrent_pipeline_retries: false)
+        end
+
+        it 'retries the pipeline without taking the lock', :aggregate_failures do
+          expect(service.execute(pipeline)).to be_success
+          expect(build('rspec')).to be_pending
+        end
+      end
+    end
+
     context 'when user is not allowed to retry build' do
       before do
         build = create(:ci_build, pipeline: pipeline, status: :failed)
@@ -465,6 +533,150 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(response.http_status).to eq(:forbidden)
         expect(response.errors).to include('403 Forbidden')
         expect(pipeline.reload).not_to be_running
+      end
+    end
+  end
+
+  context 'with rate limiting', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+    context 'when the user can retry the pipeline' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      before do
+        create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
+      end
+
+      it 'retries the pipeline while under both limits' do
+        expect(service.execute(pipeline)).to be_success
+      end
+
+      it 'throttles the sixth retry of the same pipeline in a minute', :aggregate_failures do
+        5.times { expect(service.execute(pipeline)).to be_success }
+
+        response = service.execute(pipeline)
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:rate_limited)
+        expect(response.http_status).to eq(:too_many_requests)
+        expect(response.message).to eq(throttle_message)
+      end
+
+      it 'logs the per-pipeline limit when it fires' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+
+        6.times { service.execute(pipeline) }
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(
+            Labkit::Fields::CLASS_NAME => described_class.to_s,
+            message: 'Pipeline retry rate limit exceeded',
+            rate_limit: 'pipeline_retry',
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            Labkit::Fields::GL_PIPELINE_ID => pipeline.id,
+            Labkit::Fields::GL_USER_ID => user.id
+          )
+        ).once
+      end
+
+      context 'when the per-project limit is exceeded' do
+        let(:other_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+
+        before do
+          stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+        end
+
+        it 'throttles a retry of a different pipeline in the same project', :aggregate_failures do
+          expect(service.execute(pipeline)).to be_success
+
+          response = service.execute(other_pipeline)
+
+          expect(response).to be_error
+          expect(response.reason).to eq(:rate_limited)
+          expect(response.http_status).to eq(:too_many_requests)
+        end
+
+        it 'logs the per-project limit when it fires' do
+          allow(Gitlab::AppJsonLogger).to receive(:info)
+
+          service.execute(pipeline)
+          service.execute(other_pipeline)
+
+          expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+            a_hash_including(message: 'Pipeline retry rate limit exceeded', rate_limit: 'pipeline_retry_per_project')
+          ).once
+        end
+      end
+
+      context 'when the per-project limit is disabled' do
+        before do
+          stub_application_setting(pipeline_retry_limit_per_user_project: 0)
+        end
+
+        it 'does not throttle on the per-project limit' do
+          4.times { expect(service.execute(pipeline)).to be_success }
+        end
+
+        it 'still applies the fixed per-pipeline limit', :aggregate_failures do
+          5.times { expect(service.execute(pipeline)).to be_success }
+
+          expect(service.execute(pipeline).reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the per-pipeline limit is already exceeded' do
+        let(:other_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+
+        before do
+          stub_application_setting(pipeline_retry_limit_per_user_project: 8)
+        end
+
+        it 'does not spend the per-project budget on the blocked calls' do
+          # 5 allowed, then 10 blocked per-pipeline. Were the blocked calls counted,
+          # they would exhaust the per-project budget of 8 and block other pipelines.
+          15.times { service.execute(pipeline) }
+
+          expect(service.execute(other_pipeline)).to be_success
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_pipeline_retry: false)
+          stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+        end
+
+        it 'does not throttle' do
+          2.times { expect(service.execute(pipeline)).to be_success }
+        end
+      end
+    end
+
+    context 'when the user cannot retry the pipeline' do
+      before do
+        stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+      end
+
+      it 'counts the rejected call against the bucket, and still reports the real reason',
+        :aggregate_failures do
+        2.times { expect(service.execute(pipeline).http_status).to eq(:forbidden) }
+
+        project.add_developer(user)
+        create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
+
+        expect(service.execute(pipeline).reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when there is no current user' do
+      let(:service) { described_class.new(project, nil) }
+
+      it 'does not check the rate limit', :aggregate_failures do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        expect(service.execute(pipeline).http_status).to eq(:forbidden)
       end
     end
   end

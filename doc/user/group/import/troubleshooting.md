@@ -255,7 +255,7 @@ batches, so most files do not exceed this limit. Only the `repository`, `lfs`, a
 relations are likely to exceed it.
 
 On GitLab Self-Managed and GitLab Dedicated, an administrator can increase the
-[maximum download file size](../../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer).
+[maximum download file size](../../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-or-offline-transfer).
 
 On GitLab.com, the limit is fixed and cannot be raised. To migrate a project that exceeds the
 limit, reduce the size of the affected relation before you migrate:

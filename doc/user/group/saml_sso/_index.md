@@ -117,7 +117,7 @@ To set up SSO with Okta as your identity provider:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
-1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
+1. Follow the instructions to [create a SAML application in Okta](https://developer.okta.com/docs/guides/create-an-app-integration/saml2/main/).
 
    The following GitLab settings correspond to the Okta fields.
 
@@ -403,6 +403,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/594044) in GitLab 19.5. Feature flag `bso_minimal_access_fallback` removed.
 
 {{< /history >}}
 
@@ -479,9 +480,6 @@ requires a different format. You can use any format except `Transient`.
 #### Change user **NameID**
 
 Group owners can use the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity) to change their group members' **NameID** and update their SAML identities.
-
-> [!warning]
-> Updating the `extern_uid` through the API marks the SAML identity as untrusted. The affected user cannot sign in with SAML until they [re-link their account to the new SAML app](#link-saml-to-your-existing-gitlabcom-account).
 
 If [SCIM](scim_setup.md) is configured, group owners can update the SCIM identities using the [SCIM API](../../../api/scim.md#update-extern_uid-field-for-a-scim-identity).
 
@@ -695,7 +693,7 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
 - For items in the organization's group hierarchy, dashboard visibility is as
   follows:
   - SSO is enforced when viewing your [To-Do List](../../todos.md). Your
-    to-do items are hidden if your SSO session has expired, and an
+    to-do items are masked if your SSO session has expired, and an
     [alert is shown](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115254).
   - SSO is enforced when viewing your list of assigned issues. Your issues are
     hidden if your SSO session has expired.

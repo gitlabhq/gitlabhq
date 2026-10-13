@@ -63,6 +63,7 @@ module Resolvers
           pipeline: [:user],
           kind: [:job_definition, :error_job_messages],
           retryable: [:job_definition, :error_job_messages],
+          expanded_environment_name: [{ project: [:project_feature] }],
           project: [{ project: [:route, { namespace: [:route] }] }],
           commit_path: [:pipeline, { project: { namespace: [:route] } }],
           ref_path: [{ project: [:route, { namespace: [:route] }] }],

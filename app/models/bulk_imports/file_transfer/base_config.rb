@@ -10,8 +10,9 @@ module BulkImports
       USER_CONTRIBUTIONS_RELATION = 'user_contributions'
       MAX_IIDS_RELATION = 'max_iids'
 
-      def initialize(portable)
+      def initialize(portable, offline: false)
         @portable = portable
+        @offline = offline
       end
 
       def portable_tree
@@ -73,6 +74,10 @@ module BulkImports
 
       def user_contributions_relation?(relation)
         relation == USER_CONTRIBUTIONS_RELATION
+      end
+
+      def offline?
+        @offline
       end
 
       def tree_relation_definition_for(relation)

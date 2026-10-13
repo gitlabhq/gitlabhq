@@ -22,8 +22,13 @@ export default {
   },
   inject: {
     store: { type: Object },
-    blobRawPath: { default: null },
     showWhitespace: { default: undefined },
+    resolveCodeSuggestions: { default: null },
+  },
+  provide() {
+    return {
+      codeSuggestions: () => this.resolveCodeSuggestions?.(this.discussion),
+    };
   },
   props: {
     discussion: {
@@ -32,22 +37,6 @@ export default {
     },
   },
   computed: {
-    codeSuggestionsConfig() {
-      const { lines = [], canSuggest = false, previewParams = null } = this.discussion;
-      const posLineRange = this.discussion.position?.line_range;
-      const lineRange = posLineRange
-        ? { start: posLineRange.start.new_line, end: posLineRange.end.new_line }
-        : null;
-      return {
-        canSuggest,
-        lines,
-        lineType: '',
-        showPopover: false,
-        blobRawPath: this.blobRawPath,
-        previewParams,
-        lineRange,
-      };
-    },
     autosaveKey() {
       const {
         old_path: oldPath,
@@ -77,6 +66,9 @@ export default {
   },
   mounted() {
     this.store.setNewLineDiscussionFormAutofocus(this.discussion, false);
+  },
+  beforeDestroy() {
+    clearDraft(this.autosaveKey);
   },
   methods: {
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm() {
@@ -140,10 +132,8 @@ export default {
       :note-body="discussion.noteBody"
       :save-button-title="__('Comment')"
       :save-note="saveNote"
-      :code-suggestions-config="codeSuggestionsConfig"
       :save-draft="store.createDraftLineDiscussion ? saveDraft : null"
       :has-drafts="Boolean(store.hasDrafts)"
-      restore-from-autosave
       @input="store.setDiscussionFormText(discussion, $event)"
       @cancel="cancelReplyForm"
     />

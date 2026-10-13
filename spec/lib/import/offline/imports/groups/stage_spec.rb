@@ -32,6 +32,10 @@ RSpec.describe Import::Offline::Imports::Groups::Stage, feature_category: :impor
           stage: 1
         }),
         hash_including({
+          pipeline: Import::Offline::Common::Pipelines::MembersPipeline,
+          stage: 1
+        }),
+        hash_including({
           pipeline: BulkImports::Groups::Pipelines::NamespaceSettingsPipeline,
           stage: 1
         }),
@@ -41,6 +45,11 @@ RSpec.describe Import::Offline::Imports::Groups::Stage, feature_category: :impor
         }),
         hash_including({
           pipeline: BulkImports::Common::Pipelines::MilestonesPipeline,
+          stage: 1
+        }),
+        hash_including({
+          pipeline: Import::Offline::Common::Pipelines::BadgesPipeline,
+          minimum_source_version: '19.5.0',
           stage: 1
         }),
         hash_including({

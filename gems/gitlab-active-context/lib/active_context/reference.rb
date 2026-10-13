@@ -6,6 +6,7 @@ module ActiveContext
     extend Concerns::Preprocessor
     include Preprocessors::ContentFetcher
     include Preprocessors::Embeddings
+    include Preprocessors::EmbeddedSkipper
 
     DELIMITER = '|'
 
@@ -123,11 +124,13 @@ module ActiveContext
       [identifier]
     end
 
-    def indexing_embedding_models(next_model_only: false)
+    def indexing_embedding_models(next_model_only: false, current_model_only: false)
       return [] unless collection_class
 
       if next_model_only
         [collection_class.next_indexing_embedding_model].compact
+      elsif current_model_only
+        [collection_class.current_indexing_embedding_model].compact
       else
         collection_class.indexing_embedding_models
       end

@@ -17,9 +17,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :durab
           AccessLog: anything
         }).and_call_original
 
-      allow(settings).to receive(:enabled).and_return(true)
-      allow(settings).to receive(:port).and_return(0)
-      allow(settings).to receive(:address).and_return('127.0.0.1')
+      allow(settings).to receive_messages(enabled: true, port: 0, address: '127.0.0.1')
       allow(settings).to receive(:[]).with('tls_enabled').and_return(false)
     end
 
@@ -40,8 +38,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :durab
           let(:address) { 'sidekiq_exporter_address' }
 
           before do
-            allow(settings).to receive(:port).and_return(port)
-            allow(settings).to receive(:address).and_return(address)
+            allow(settings).to receive_messages(port: port, address: address)
           end
 
           it 'starts server with port and address from settings' do
@@ -205,9 +202,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :durab
     end
 
     before do
-      allow(settings).to receive(:enabled).and_return(true)
-      allow(settings).to receive(:port).and_return(0)
-      allow(settings).to receive(:address).and_return('127.0.0.1')
+      allow(settings).to receive_messages(enabled: true, port: 0, address: '127.0.0.1')
       allow(settings).to receive(:[]).with('tls_enabled').and_return(false)
 
       stub_const('Gitlab::Metrics::Exporter::MetricsMiddleware', fake_collector)

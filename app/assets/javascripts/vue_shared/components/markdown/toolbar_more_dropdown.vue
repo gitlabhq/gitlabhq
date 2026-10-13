@@ -26,14 +26,17 @@ export default {
       items: [
         {
           text: __('Alert'),
+          icon: 'warning',
           action: () => this.insertMarkdown('> [!NOTE]\n> {text}', 'alert'),
         },
         {
           text: __('Code block'),
+          icon: 'code',
           action: () => this.insertMarkdown('```\n{text}\n```', 'codeBlock'),
         },
         {
           text: __('Collapsible section'),
+          icon: 'details-block',
           action: () =>
             this.insertMarkdown(
               '<details>\n<summary>Click to expand</summary>\n\n{text}\n\n</details>',
@@ -43,44 +46,53 @@ export default {
         },
         {
           text: __('Bullet list'),
+          icon: 'list-bulleted',
           action: () => this.insertMarkdown('- {text}', 'bulletList'),
           wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Ordered list'),
+          icon: 'list-numbered',
           action: () => this.insertMarkdown('1. {text}', 'orderedList'),
           wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Task list'),
+          icon: 'list-task',
           action: () => this.insertMarkdown('- [ ] {text}', 'taskList'),
           wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Horizontal rule'),
+          icon: 'dash',
           action: () => this.insertMarkdown('\n---\n', 'horizontalRule'),
         },
         {
           text: __('Embedded view'),
+          icon: 'kind',
           action: () =>
             this.insertMarkdown(`\`\`\`glql\n${DEFAULT_GLQL_VIEW_CONTENT}\n\`\`\``, 'glqlView'),
         },
         {
           text: __('Mermaid diagram'),
+          icon: 'diagram',
           action: () =>
             this.insertMarkdown(`\`\`\`mermaid\n${DEFAULT_MERMAID_CONTENT}\n\`\`\``, 'diagram'),
         },
         {
           text: __('PlantUML diagram'),
+          icon: 'diagram',
           action: () =>
             this.insertMarkdown(`\`\`\`plantuml\n${DEFAULT_PLANTUML_CONTENT}\n\`\`\``, 'diagram'),
         },
         {
           text: __('Table of contents'),
+          icon: 'title',
           action: () => this.insertMarkdown('[[_TOC_]]', 'tableOfContents'),
         },
         {
           text: __('Reformat table'),
+          icon: 'table',
           action: () => this.reformatTable('reformatTable'),
         },
       ],
@@ -145,11 +157,7 @@ export default {
       right
       @shown="isDropdownOpen = true"
       @hidden="isDropdownOpen = false"
-    >
-      <template #list-item="{ item }">
-        {{ item.text }}
-      </template>
-    </gl-disclosure-dropdown>
+    />
     <gl-tooltip v-if="!isDropdownOpen" :target="toggleId" placement="top">
       {{ __('More options') }}
     </gl-tooltip>

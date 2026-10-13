@@ -393,7 +393,7 @@ export default {
       <ol class="gl-my-5 gl-list-none gl-p-0">
         <li
           v-for="group in groupedCommits"
-          :key="group.day"
+          :key="group.commits[0].id"
           class="daily-commit"
           data-testid="daily-commits"
         >
@@ -402,6 +402,9 @@ export default {
             <time class="gl-font-bold" :datetime="group.day" data-testid="daily-commits-date">
               {{ getFormattedDate(group.day) }}
             </time>
+            <span v-if="group.isRepeatedDay" class="gl-sr-only" data-testid="repeated-day-hint">{{
+              s__('Commits|This is another group of commits from this date.')
+            }}</span>
           </h2>
           <ul
             class="daily-commits-item gl-mb-6 gl-flex gl-list-none gl-flex-col gl-gap-3 gl-p-0"

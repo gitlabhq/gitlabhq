@@ -15,7 +15,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
     dry_run = safe_params[:dry_run]
 
     result = Gitlab::Ci::Lint
-      .new(project: @project, current_user: current_user)
+      .new(project: @project, current_user: current_user, surface: :web_lint_page)
       .legacy_validate(content, dry_run: dry_run)
 
     render json: ::Ci::Lint::ResultSerializer.new.represent(result)

@@ -3,6 +3,7 @@
 module Projects
   module ImportExport
     class RelationExport < ApplicationRecord
+      AVATAR_RELATION = 'avatar'
       COMMIT_NOTES_RELATION = 'commit_notes'
       DESIGN_REPOSITORY_RELATION = 'design_repository'
       LFS_OBJECTS_RELATION = 'lfs_objects'
@@ -13,7 +14,7 @@ module Projects
       WIKI_REPOSITORY_RELATION = 'wiki_repository'
 
       EXTRA_RELATION_LIST = [
-        DESIGN_REPOSITORY_RELATION, LFS_OBJECTS_RELATION, REPOSITORY_RELATION, ROOT_RELATION,
+        AVATAR_RELATION, DESIGN_REPOSITORY_RELATION, LFS_OBJECTS_RELATION, REPOSITORY_RELATION, ROOT_RELATION,
         SNIPPETS_REPOSITORY_RELATION, UPLOADS_RELATION, WIKI_REPOSITORY_RELATION
       ].freeze
       private_constant :EXTRA_RELATION_LIST

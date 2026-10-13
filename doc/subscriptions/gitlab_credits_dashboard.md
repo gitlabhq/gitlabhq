@@ -42,17 +42,17 @@ Group-level and personal credit usage views are available on GitLab.com only.
 The GitLab Credits dashboard in the Customers Portal provides the most detailed view of your usage and costs.
 
 On the dashboard, used credits represent deductions from available credits.
-For overages (On-Demand credits), used credits represent on-demand usage that will be paid later,
+For overages (on-demand credits), used credits represent on-demand usage that will be paid later,
 if you have agreed to the usage billing terms.
 
 The dashboard displays summary cards of key metrics:
 
 - Current month usage: Total GitLab Credits used in the current month (if you have a monthly commitment)
 - Included credits: Total credits included with your subscription (if you have a monthly commitment)
-- Committed credits: Credits from your Monthly Committed Pool (if applicable)
+- Committed credits: Credits from your monthly commitment pool (if applicable)
 - Monthly waivers: Remaining credits from waivers (if applicable)
-- On-Demand usage: Credits consumed beyond your included and committed amounts.
-  If you have enough waiver credits to offset all On-Demand credits, the GitLab Credits Dashboard hides
+- On-demand usage: Credits consumed beyond your included and committed amounts.
+  If you have enough waiver credits to offset all on-demand credits, the GitLab Credits Dashboard hides
   the **On-Demand** card and displays the **Monthly Waiver** card instead.
 - Usage control status: Whether individual users have been blocked from
   Agent Platform access due to reaching their per-user credit cap.
@@ -66,9 +66,6 @@ The dashboard displays summary cards of key metrics:
 {{< /history >}}
 
 > [!note]
-> This dashboard displays usage of all credit-based features, including non-billable
-> beta and experiment features. To view billable usage only, go to the Customers Portal.
->
 > Some pre-release features, such as the Security Review Flow, are billable and subject to
 > GitLab Credits charges.
 
@@ -77,8 +74,8 @@ Use the dashboard to understand which users, groups, or projects are driving usa
 
 The dashboard displays the following information:
 
-- **Organization usage**: Total credit usage, active users, daily credit average, and peak day usage across your GitLab instance or group
-- **Total credit consumption**: Daily credit consumption over all products, displayed as a bar chart
+- **Organization usage**: Total credit usage (billed and non-billable), active users, daily credit average, and peak day usage across your GitLab instance or group
+- **Total credit consumption**: Daily billed and non-billable credit consumption over all products, displayed as a stacked bar chart
 - **Usage by user**: Number of credits used by each user
 - **User drill-down view**: Individual usage events for each user, with links to session details for each credit-based feature
 - **Usage by product**: Number of credits used and percentage of total credits for credit-based features
@@ -87,6 +84,32 @@ The dashboard displays the following information:
 > While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta,
 > GitLab does not bill for usage. Secrets Manager appears in the Credits dashboard
 > but displays no usage data until the beta period ends.
+
+### Non-billable usage
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23876) in GitLab 19.5.
+
+{{< /history >}}
+
+Non-billable usage is credit consumption that GitLab does not bill.
+The **Total credit consumption** chart displays:
+
+- **Billable**: Number of billable credits used
+- **Non-billable**: Number of non-billable credits used, shown only when the selected period includes non-billable usage
+- **Stacked bars**: Daily credits used, with **Billable usage** and **Non-billable usage** reasons as separate series
+
+The chart displays the following non-billable usage series:
+
+| Series | Description |
+|--------|-------------|
+| **Non-billable usage (Promotional)** | Usage covered by a promotion. |
+| **Non-billable usage (Beta)** | Usage of a feature that is not billable yet. |
+| **Non-billable usage (Other)** | Usage that was not billed for any other reason. |
+
+The chart displays only the reasons for usage in the selected period.
+If non-billable usage data is temporarily unavailable, the chart displays billable usage only.
 
 ## View the GitLab Credits dashboard
 
@@ -180,9 +203,9 @@ The following cap types are available:
 
 | Cap type | Applies to | Credit sources counted | Managed through |
 |---|---|---|---|
-| Subscription cap | All users on the subscription | On-Demand only | Customers Portal |
-| Flat user cap | Individual users (default limit) | All | User interface, GraphQL API |
-| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | User interface, GraphQL API |
+| Subscription cap | All users on the subscription | On-demand only | Customers Portal |
+| Flat user cap | Individual users (default limit) | All, for human subject usage | User interface, GraphQL API |
+| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All, for human subject usage | User interface, GraphQL API |
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
 all credit-based features
@@ -207,12 +230,26 @@ enforcement takes effect.
 Caps do not stop users from consuming their included GitLab Credits. Enforcement begins per user, and only after that user's included allocation is exhausted. Until then, the user retains full GitLab Duo Agent Platform access regardless of the cap value, including a cap of `0`.
 
 To stop all GitLab Credits consumption immediately, regardless of included
-balances, disable GitLab Duo for the affected users or namespace.
+balances, [remove the GitLab Duo seat](subscription-add-ons.md#assign-and-remove-gitlab-duo-seats-in-bulk)
+from the affected users, or [turn off GitLab Duo](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)
+for the namespace. To automate seat removal and reassignment, use the
+[`userAddOnAssignmentRemove`](../api/graphql/reference/_index.md#mutationuseraddonassignmentremove) and
+[`userAddOnAssignmentCreate`](../api/graphql/reference/_index.md#mutationuseraddonassignmentcreate)
+GraphQL mutations.
 
 How the cap value is applied then depends on the cap type:
 
 - A **subscription-level cap** applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
-- A **per-user cap** applies to a user's total usage, including their included credits. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+- A **per-user cap** applies to a user's total usage, including their included credits, for usage the user triggers directly. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+
+> [!note]
+> Usage from [GitLab Duo Agent Platform flows](../user/duo_agent_platform/_index.md)
+> that run under a service account is billed to the namespace, not to the user,
+> and does not count toward the user's flat cap or per-user override.
+> This usage can still appear in the user's **Total credits used**,
+> so their displayed usage can exceed their cap without the user being blocked.
+> To limit this usage, set a subscription-level cap
+> or remove the user's GitLab Duo seat.
 
 ### Examples
 
@@ -326,6 +363,55 @@ To turn off an override:
 1. Under **Per-user cap overrides**, turn the **Enabled** toggle off for the user.
 1. Select **Save**.
 
+#### Bulk update overrides
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257651) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `credit_caps_bulk_update`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use bulk updates to add or change overrides for many users at once.
+
+You can paste a CSV list of users, which merges into the existing list of overrides, adding new records or updating existing ones.
+
+To bulk update per-user cap overrides:
+
+1. Under **Per-user cap overrides**, select **Bulk update**.
+1. In the modal, paste a CSV list.
+1. Select **Save**.
+
+The input accepts three columns, separated by commas.
+You can add an optional header row on the first line. The header row must be `username,cap,enabled`, and is not case-sensitive.
+If any validation fails or a username is not found, the entire update is rejected and no changes are saved.
+
+| Column | Type | Accepted values |
+|--------|------|-----------------|
+| `username` | String | GitLab username without the `@` prefix (for example, `jsmith`, not `@jsmith`) |
+| `cap` | Number | Non-negative number. Use `.` as the decimal separator for fractional values (for example, `0`, `500`, `1000.5`). |
+| `enabled` | Boolean | `true`, `True`, `TRUE`, `false`, `False`, `FALSE` |
+
+Example:
+
+```plaintext
+username,cap,enabled
+sidney.jones,500,true
+zhang.wei,1000.5,True
+alex.garcia,250,false
+```
+
+Example without a header row:
+
+```plaintext
+sidney.jones,500,true
+zhang.wei,1000.5,True
+alex.garcia,250,false
+```
+
 ## Usage control status
 
 {{< history >}}
@@ -357,6 +443,10 @@ To determine the cap type, use the [GraphQL API](../api/graphql/reference/_index
 
 The **Usage control status** column displays only per-user caps.
 The subscription-level on-demand cap applies to the entire subscription, not to individual users, and is not listed in this column.
+
+The status reflects only the usage the user triggers directly.
+Rows with the **Automated flow** badge represent non-human subjects
+and never display **Blocked usage**, because per-user caps do not apply to them.
 
 ### Unblock a user who reached their credit cap
 
@@ -395,11 +485,21 @@ To view a user's individual usage events in a drill-down view:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504) in GitLab 18.10.
+- Background export with a per-event detail file [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/18963) in GitLab 19.4.
 
 {{< /history >}}
 
-You can export the credit usage data for a subscription as a CSV file in Customers Portal.
-The CSV file lists the usage events and credits used on each day of the current month.
+You can export the credit usage data for a subscription in Customers Portal.
+The export runs in the background, and GitLab emails you a link to download the result.
+The download link expires after seven days.
+
+The download is a ZIP file that contains two CSV files:
+
+- A daily summary file that lists the usage events and credits used on each day of the selected period.
+- A per-event file with one row for each billable event, including the product, flow type, session, user ID,
+  namespace, project, credits used, and token counts.
+
+Each export covers a period of up to 31 days.
 
 Prerequisites:
 
@@ -409,3 +509,42 @@ Prerequisites:
 1. On the subscription card, select **GitLab Credits dashboard**.
 1. From the **Usage period** dropdown list, select the period you want to export data for.
 1. Select **Export usage data**.
+
+## View your GitLab Credits usage
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22817) in GitLab 19.5.
+
+{{< /history >}}
+
+You can track the GitLab Credits you consume in a top-level group in the **Your GitLab Credits usage** page.
+The dashboard reports only credit consumption.
+It does not show your remaining credits or a credit cap.
+
+**Your GitLab Credits usage** displays:
+
+- Your usage for the current billing period.
+- A chart of your daily credit consumption for the selected date range and products.
+- **Total usage**: Total number of credits used in the selected date range and products.
+- **Daily average**: Average number of credits used in a day for the selected date range and products.
+- **Peak day usage**: The highest number of credits consumed in a single day for the selected date range and products.
+
+Prerequisites:
+
+- You must be a member of a top-level group with a subscription that includes GitLab Credits.
+
+To view your GitLab Credits usage:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the left sidebar, select **GitLab Credits**.
+1. If you are a member of multiple groups, from the **Group** dropdown list, select a top-level group.
+1. Optional. From the **Date range** dropdown list, select the date range you want to view your usage for. Default is the current month.
+1. Optional. From the **Products** dropdown list, select the products you want to include.

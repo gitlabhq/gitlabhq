@@ -5,7 +5,6 @@ import { reportToSentry } from '~/ci/utils';
 import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { BRIDGE_KIND, BUILD_KIND } from '~/ci/pipeline_details/graph/constants';
 import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retry_mr_failed_job.mutation.graphql';
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
@@ -21,7 +20,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   props: {
     job: {

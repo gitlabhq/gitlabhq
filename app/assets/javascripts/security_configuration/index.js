@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
-import SecurityConfigurationApp from './components/app.vue';
+import SecurityConfigurationApp from 'ee_else_ce/security_configuration/components/app.vue';
 import SecurityConfigurationProvider from './components/security_configuration_provider.vue';
 import { augmentFeatures } from './utils';
 

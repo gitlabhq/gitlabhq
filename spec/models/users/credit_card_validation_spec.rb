@@ -179,6 +179,59 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
       end
     end
 
+    context 'when a banned user has a card with the same Stripe fingerprint' do
+      let_it_be(:credit_card_validation) do
+        create(:credit_card_validation, stripe_card_fingerprint: 'card_fingerprint', holder_name: 'Jane Doe')
+      end
+
+      before do
+        create(:credit_card_validation,
+          user: banned_user.user,
+          stripe_card_fingerprint: 'card_fingerprint',
+          last_digits: 1111,
+          holder_name: 'John Smith'
+        )
+      end
+
+      it { is_expected.to be(true) }
+
+      context 'when limit_phone_verification_by_card_fingerprint is disabled' do
+        before do
+          stub_feature_flags(limit_phone_verification_by_card_fingerprint: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when a card with the same Stripe fingerprint is not associated to a banned user' do
+      let_it_be(:credit_card_validation) do
+        create(:credit_card_validation, stripe_card_fingerprint: 'card_fingerprint', holder_name: 'Jane Doe')
+      end
+
+      before do
+        create(:credit_card_validation,
+          stripe_card_fingerprint: 'card_fingerprint',
+          last_digits: 1111,
+          holder_name: 'John Smith'
+        )
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when neither the card nor a banned user card has a Stripe fingerprint' do
+      before do
+        create(:credit_card_validation,
+          user: banned_user.user,
+          last_digits: 1111,
+          holder_name: 'Jane Smith'
+        )
+      end
+
+      it { is_expected.to be(false) }
+    end
+
     context 'when there are no similar credit cards associated to a banned user' do
       before do
         create(:credit_card_validation,

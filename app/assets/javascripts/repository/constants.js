@@ -109,6 +109,12 @@ export const LOCK_UPDATED_EVENT = 'lock:updated';
 export const EVENT_FILE_SIZE_LIMIT_EXCEEDED = 'repository_file_size_limit_exceeded';
 
 export const FILE_EXTENSION_MAPPING_HLJS = {
+  '.4dm': '4d',
+  '.4DCatalog': 'xml',
+  '.4DForm': 'json',
+  '.4DPreferences': 'xml',
+  '.4DProject': 'json',
+  '.4DSettings': 'xml',
   '.gleam': 'gleam',
   '.glimmer': 'glimmer',
   '.gjs': 'glimmer-javascript',

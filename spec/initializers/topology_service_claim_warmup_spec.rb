@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
+require 'grpc'
 
 RSpec.describe 'config/initializers/topology_service_claim_warmup', feature_category: :cell do
   let(:load_initializer) do
@@ -11,6 +13,7 @@ RSpec.describe 'config/initializers/topology_service_claim_warmup', feature_cate
     before do
       stub_config_cell({ enabled: true, id: 1 })
       allow(Rails.env).to receive(:test?).and_return(false)
+      allow(Gitlab::Runtime).to receive(:application?).and_return(true)
     end
 
     it 'pre-warms the claim service connection on worker start' do
@@ -35,6 +38,20 @@ RSpec.describe 'config/initializers/topology_service_claim_warmup', feature_cate
     end
   end
 
+  context 'when cell is enabled and the runtime is not an application server' do
+    before do
+      stub_config_cell({ enabled: true, id: 1 })
+      allow(Rails.env).to receive(:test?).and_return(false)
+      allow(Gitlab::Runtime).to receive(:application?).and_return(false)
+    end
+
+    it 'does not register a worker-start hook' do
+      expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
+
+      load_initializer
+    end
+  end
+
   context 'when cell is disabled' do
     before do
       stub_config_cell({ enabled: false })
@@ -50,6 +67,7 @@ RSpec.describe 'config/initializers/topology_service_claim_warmup', feature_cate
   context 'when in test environment' do
     before do
       stub_config_cell({ enabled: true, id: 1 })
+      allow(Gitlab::Runtime).to receive(:application?).and_return(true)
     end
 
     it 'does not register a worker-start hook' do

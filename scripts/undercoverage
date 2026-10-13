@@ -71,8 +71,9 @@ end.compact
 
 exclude_file_globs.concat extension_globs
 
-# These have own specs
-exclude_file_globs.concat %w[qa/* gems/* vendor/*]
+# These have own specs. cells-mailroom is a standalone bundle whose suite runs
+# in its own child pipeline, so its coverage never reaches this lcov file.
+exclude_file_globs.concat %w[qa/* gems/* vendor/* cells-mailroom/*]
 
 result = if File.exist?(coverage_file_path)
            Undercover::CLI.run(%W[-c #{compare_base} --exclude-files #{exclude_file_globs.join(',')}])

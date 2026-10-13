@@ -23,9 +23,14 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           const img = element.querySelector('img.js-render-iframe');
-          return (
-            img.dataset.iframeCanonicalSrc || img.dataset.canonicalSrc || img.getAttribute('src')
-          );
+          return img.dataset.iframeCanonicalSrc;
+        },
+      },
+      providerId: {
+        default: null,
+        parseHTML: (element) => {
+          const img = element.querySelector('img.js-render-iframe');
+          return img.dataset.iframeProviderId;
         },
       },
       alt: {
@@ -60,7 +65,8 @@ export default Node.create({
         getAttrs: (element) => {
           const img = element.querySelector('img.js-render-iframe');
           if (!img) return false;
-          if (!isIframeSrcAllowed(img.getAttribute('src'))) return false;
+          if (!isIframeSrcAllowed(img.getAttribute('src'), img.dataset.iframeProviderId))
+            return false;
           return null;
         },
       },
@@ -77,6 +83,7 @@ export default Node.create({
           class: 'js-render-iframe',
           src: node.attrs.src,
           'data-iframe-canonical-src': node.attrs.canonicalSrc,
+          'data-iframe-provider-id': node.attrs.providerId,
           'data-title': node.attrs.alt,
           width: node.attrs.width,
           height: node.attrs.height,

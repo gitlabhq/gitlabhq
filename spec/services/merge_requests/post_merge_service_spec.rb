@@ -31,17 +31,23 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       end.to change { project.open_merge_requests_count }.from(1).to(0)
     end
 
-    it 'updates metrics' do
-      metrics = merge_request.metrics
-      metrics_service = double(MergeRequestMetricsService)
-      allow(MergeRequestMetricsService)
-        .to receive(:new)
-        .with(metrics)
-        .and_return(metrics_service)
+    describe 'metrics' do
+      let(:metrics_service) { instance_double(MergeRequestMetricsService) }
 
-      expect(metrics_service).to receive(:merge)
+      before do
+        allow(MergeRequestMetricsService)
+          .to receive(:new)
+          .with(merge_request.metrics)
+          .and_return(metrics_service)
+      end
 
-      subject
+      it 'prepares the metrics data before the event transaction and merges it inside' do
+        expect(metrics_service).to receive(:prepare_merge_data).ordered
+        expect(Event).to receive(:transaction).ordered.and_call_original
+        expect(metrics_service).to receive(:merge).ordered
+
+        subject
+      end
     end
 
     it 'calls the merge request activity counter' do
@@ -125,6 +131,12 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       subject
     end
 
+    it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+      expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+      subject
+    end
+
     context 'when there are issues to be closed' do
       let_it_be(:issue) { create(:issue, project: project) }
 
@@ -140,7 +152,7 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         end
 
         it 'performs MergeRequests::CloseIssueWorker asynchronously' do
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue)
 
           expect(MergeRequests::CloseIssueWorker)
             .to receive(:perform_in)
@@ -165,11 +177,11 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         end
 
         it 'performs MergeRequests::CloseIssueWorker asynchronously' do
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue2)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue3)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue4)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue5)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue2)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue3)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue4)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue5)
 
           expect(MergeRequests::CloseIssueWorker)
             .to receive(:perform_in)
@@ -336,18 +348,6 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       post_merge
 
       expect(abort_note.all_references(user).merge_requests).to include(merged_merge_request)
-    end
-
-    context 'when auto_merge_abort_uses_target_project is disabled' do
-      before do
-        stub_feature_flags(auto_merge_abort_uses_target_project: false)
-      end
-
-      it 'does not persist the abort note' do
-        post_merge
-
-        expect(abort_note).to be_nil
-      end
     end
   end
 

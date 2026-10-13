@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { isEmpty } from 'lodash-es';
 import { GlAlert, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import DuoQuestionNote from 'ee_else_ce/work_items/components/notes/duo_question_note.vue';
@@ -7,6 +8,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
+import { parseAgentPresence } from '~/ai/agents_utils';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -35,6 +37,12 @@ export default {
     NoteHeader,
     NoteActions,
     GlAlert,
+    NoteSessionBar: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
+    NoteAgentActorLine: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_agent_actor_line.vue'),
+    ),
     GlAvatar,
     GlAvatarLink,
     WorkItemCommentForm,
@@ -154,6 +162,7 @@ export default {
   emits: [
     'cancel-editing',
     'delete-note',
+    'duo-question-answered',
     'error',
     'report-abuse',
     'resolve',
@@ -162,6 +171,7 @@ export default {
   ],
   data() {
     return {
+      actorLineOverflows: false,
       isEditing: false,
       isUpdating: false,
       updateError: null,
@@ -257,7 +267,18 @@ export default {
       return this.workItem.confidential;
     },
     duoCreatedSessionId() {
+      if (this.agentPresence) return null;
+
       return getIdFromGraphQLId(this.note.duoCreatedSession?.id);
+    },
+    agentPresence() {
+      if (!this.glFeatures.agentPresenceConsolidation) return null;
+
+      return parseAgentPresence(this.note.agentPresence);
+    },
+    hasSession() {
+      const session = this.note.duoTriggeredSession;
+      return this.glFeatures.noteAgentSessionBar && Boolean(session?.id && session?.agentName);
     },
   },
   mounted() {
@@ -470,7 +491,16 @@ export default {
             :is-internal-note="note.internal"
             :is-imported="note.imported"
             :email-participant="externalAuthor"
-          />
+            :hide-username="Boolean(agentPresence)"
+            :single-line="Boolean(agentPresence) && !actorLineOverflows"
+          >
+            <template v-if="agentPresence">
+              <note-agent-actor-line
+                :presence="agentPresence"
+                @overflow="actorLineOverflows = $event"
+              />
+            </template>
+          </note-header>
           <div class="gl-inline-flex">
             <note-actions
               v-if="!isEditing"
@@ -552,11 +582,14 @@ export default {
               v-if="isFirstNote"
               :note="note"
               :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :full-path="fullPath"
               :discussion-id="discussionId"
               :replies="replies"
               :is-discussion-resolved="isDiscussionResolved"
               :is-discussion-resolvable="isDiscussionResolvable"
               :can-reply="canReply"
+              @duo-question-answered="$emit('duo-question-answered')"
               @error="$emit('error', $event)"
             />
           </div>
@@ -577,6 +610,13 @@ export default {
             />
           </div>
         </div>
+        <note-session-bar
+          v-if="hasSession"
+          :agent-name="note.duoTriggeredSession.agentName"
+          :session-id="note.duoTriggeredSession.id"
+          :status="note.duoTriggeredSession.statusName"
+          :is-reply="!isFirstNote"
+        />
       </div>
     </div>
   </timeline-entry-item>

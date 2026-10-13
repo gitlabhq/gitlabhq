@@ -456,6 +456,33 @@
         },
         "unfurl_domains": {
           "$ref": "#/definitions/app-manifests.v1.features.unfurl_domains"
+        },
+        "agent_view": {
+          "type": "object",
+          "description": "Agent configuration. Local addition: accepted by the Slack API but not yet in the upstream slackapi/manifest-schema release. See https://docs.slack.dev/reference/app-manifest/#features.",
+          "properties": {
+            "agent_description": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "suggested_prompts": {
+              "type": "array",
+              "maxItems": 4,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "description": "A group of settings corresponding to the Features section of the app config pages.",
@@ -799,10 +826,8 @@
         "your_callback_id": {
           "title": "Your Function Title",
           "description": "Your Function Description",
-          "input_parameters": {
-          },
-          "output_parameters": {
-          }
+          "input_parameters": {},
+          "output_parameters": {}
         }
       }
     },
@@ -1011,9 +1036,7 @@
         "your_workflow_id": {
           "title": "Your Workflow Title",
           "description": "Your Workflow Description",
-          "steps": [
-
-          ]
+          "steps": []
         }
       }
     },
@@ -1227,9 +1250,7 @@
           "provider_type": "CUSTOM",
           "options": {
             "client_id": "Your Client ID",
-            "scope": [
-
-            ]
+            "scope": []
           }
         }
       }

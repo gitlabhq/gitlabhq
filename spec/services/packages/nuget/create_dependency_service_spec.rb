@@ -14,7 +14,7 @@ RSpec.describe Packages::Nuget::CreateDependencyService, feature_category: :pack
           .to change { Packages::Dependency.count }.by(dependency_count)
           .and change { Packages::DependencyLink.count }.by(dependency_link_count)
           .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(dependencies_with_metadata.size)
-        expect(expected_dependency_names).to contain_exactly(*dependency_names)
+        expect(expected_dependency_names).to match_array(dependency_names)
         expect(package.dependency_links.map(&:dependency_type).uniq).to contain_exactly('dependencies')
 
         dependencies_with_metadata.each do |dependency|

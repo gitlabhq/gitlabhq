@@ -7,7 +7,6 @@ import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json'
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getPipelineNeeds from 'shared_queries/pipelines/get_pipeline_needs.query.graphql';
@@ -647,8 +646,6 @@ describe('Pipeline graph wrapper', () => {
 
       describe('when no duration is obtained', () => {
         beforeEach(async () => {
-          stubPerformanceWebAPI();
-
           createComponentWithApollo({
             provide: {
               metricsPath,

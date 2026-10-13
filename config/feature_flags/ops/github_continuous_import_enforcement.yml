@@ -1,0 +1,10 @@
+---
+name: github_continuous_import_enforcement
+description: Kill switch for GitHub continuous sync read-only/mirror-block enforcement, independent of the github_continuous_import flag that governs whether sync rows exist
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628591
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256693
+rollout_issue_url:
+milestone: '19.5'
+type: ops
+group: group::import
+default_enabled: true

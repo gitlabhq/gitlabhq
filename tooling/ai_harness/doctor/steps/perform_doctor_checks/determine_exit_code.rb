@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Gitlab/NoCodeCoverageComment -- see check_parity.rb for explanation
+# rubocop:disable Gitlab/NoCodeCoverageComment -- see check_ai_references.rb for explanation
 # of :nocov: on rightward assignment lines (SimpleCov #1033).
 
 module AiHarness

@@ -142,10 +142,7 @@ const mountComponent = ({
 
   router = new VueRouter({
     mode: 'history',
-    routes: [
-      { name: 'base', path: '/', component: ListView },
-      ...routes({ fullPath: '/work_item' }),
-    ],
+    routes: [{ name: 'base', path: '/', component: ListView }, ...routes],
   });
 
   isLoggedIn.mockReturnValue(isLoggedInValue);
@@ -164,7 +161,6 @@ const mountComponent = ({
     apolloProvider,
     provide: {
       glFeatures: {
-        okrsMvc: true,
         workItemFeaturesField,
         workItemRestApiFrontendUsers,
       },
@@ -176,11 +172,8 @@ const mountComponent = ({
       canCreateProjects: true,
       hasBlockedIssuesFeature: false,
       hasEpicsFeature: false,
-      hasGroupBulkEditFeature: true,
       hasIssuableHealthStatusFeature: false,
       hasIssueWeightsFeature: false,
-      hasOkrsFeature: false,
-      hasQualityManagementFeature: false,
       hasCustomFieldsFeature: false,
       hasStatusFeature: false,
       isGroup: true,
@@ -214,8 +207,6 @@ const mountComponent = ({
     propsData: {
       rootPageFullPath: 'full/path',
       queryVariables: defaultQueryVariables,
-      hasWorkItems: true,
-      initialLoadWasFiltered: false,
       withTabs,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,

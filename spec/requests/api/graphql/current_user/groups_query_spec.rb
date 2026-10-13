@@ -58,7 +58,7 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
   context 'when permission_scope is CREATE_PROJECTS' do
     let(:group_arguments) { { permission_scope: :CREATE_PROJECTS } }
 
-    specify do
+    it 'returns groups where the user can create projects' do
       is_expected.to match(
         expected_group_hash(
           public_maintainer_group,
@@ -72,7 +72,7 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
     context 'when search is provided' do
       let(:group_arguments) { { permission_scope: :CREATE_PROJECTS, search: 'root-group maintainer' } }
 
-      specify do
+      it 'returns matching groups' do
         is_expected.to match(
           expected_group_hash(
             public_maintainer_group,
@@ -86,7 +86,7 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
   context 'when permission_scope is TRANSFER_PROJECTS' do
     let(:group_arguments) { { permission_scope: :TRANSFER_PROJECTS } }
 
-    specify do
+    it 'returns groups where the user can transfer projects' do
       is_expected.to match(
         expected_group_hash(
           public_maintainer_group,
@@ -99,7 +99,7 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
     context 'when search is provided' do
       let(:group_arguments) { { permission_scope: :TRANSFER_PROJECTS, search: 'owner' } }
 
-      specify do
+      it 'returns matching groups' do
         is_expected.to match(
           expected_group_hash(
             public_owner_group
@@ -109,10 +109,22 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
     end
   end
 
+  context 'when both permission_scope and solo_owned are provided' do
+    let(:group_arguments) { { permission_scope: :CREATE_PROJECTS, solo_owned: true } }
+
+    it 'returns a mutually exclusive arguments error' do
+      expect(graphql_errors).to include(
+        a_hash_including(
+          'message' => 'Only one of [permissionScope, soloOwned] arguments is allowed at the same time.'
+        )
+      )
+    end
+  end
+
   context 'when search is provided' do
     let(:group_arguments) { { search: 'maintainer' } }
 
-    specify do
+    it 'returns matching groups' do
       is_expected.to match(
         expected_group_hash(
           public_maintainer_group,
@@ -124,7 +136,7 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
     context 'when searching for a full path (including parent)' do
       let(:group_arguments) { { search: 'root-group/b-private-maintainer' } }
 
-      specify do
+      it 'returns the group matching the full path' do
         is_expected.to match(
           expected_group_hash(
             private_maintainer_group

@@ -268,7 +268,10 @@ export default {
       />
     </gl-form-group>
 
-    <gl-form-group :label="s__('Organization|User type')" label-for="organization-users-role">
+    <gl-form-group
+      :label="s__('Organization|Organization user type')"
+      label-for="organization-users-role"
+    >
       <gl-form-select
         id="organization-users-role"
         v-model="selectedUserType"

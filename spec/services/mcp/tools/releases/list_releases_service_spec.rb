@@ -214,6 +214,7 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('Provide exactly one of: url or project_id')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'rejects a call without arguments', :aggregate_failures do
@@ -227,6 +228,7 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
         result = execute({ url: project.web_url, project_id: project.full_path })
 
         expect(result[:content].first[:text]).to include('Provide exactly one of: url or project_id')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'rejects a url pointing at a group', :aggregate_failures do
@@ -236,6 +238,7 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('must point to a project')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 

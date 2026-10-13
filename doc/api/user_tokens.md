@@ -41,7 +41,7 @@ Supported attributes:
 | `user_id`    | integer | yes      | ID of user account. |
 | `name`       | string  | yes      | Name of personal access token. |
 | `description`| string  | no       | Description of personal access token. Maximum: 255 characters. |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 | `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
 
 Example request:
@@ -79,6 +79,7 @@ Example response:
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632314) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -103,7 +104,7 @@ Supported attributes:
 | `name`       | string | yes      | Name of personal access token. |
 | `description`| string | no       | Description of personal access token. Maximum: 255 characters. |
 | `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy` and `self_rotate`. |
-| `expires_at` | date  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 Example request:
 
@@ -134,12 +135,18 @@ Example response:
 }
 ```
 
+> [!note]
+> For tokens created with granular scopes, the response also includes a `granular_scopes`
+> attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
+
 ## List all impersonation tokens for a user
 
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
 - `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632315) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -209,12 +216,18 @@ Example response:
 ]
 ```
 
+> [!note]
+> For impersonation tokens created with granular scopes, the response also includes a
+> `granular_scopes` attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
+
 ## Retrieve an impersonation token for a user
 
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
 - `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632315) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -263,12 +276,18 @@ Example response:
 }
 ```
 
+> [!note]
+> For impersonation tokens created with granular scopes, the response also includes a
+> `granular_scopes` attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
+
 ## Create an impersonation token
 
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
 - `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632315) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -324,6 +343,11 @@ Example response:
    "last_used_ips": []
 }
 ```
+
+> [!note]
+> For impersonation tokens created with granular scopes, the response also includes a
+> `granular_scopes` attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
 
 ## Revoke an impersonation token
 

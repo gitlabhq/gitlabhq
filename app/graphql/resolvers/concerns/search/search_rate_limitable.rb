@@ -9,11 +9,11 @@ module Search
     def verify_search_rate_limit!(**args)
       if current_user
         key = :search_rate_limit
-        scope = [current_user, safe_search_scope(**args)].compact
+        scope = { user: current_user, search_scope: safe_search_scope(**args) }
         users_allowlist = Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist
       else
         key = :search_rate_limit_unauthenticated
-        scope = [context[:request].ip]
+        scope = { ip: context[:request].ip }
         users_allowlist = nil
       end
 

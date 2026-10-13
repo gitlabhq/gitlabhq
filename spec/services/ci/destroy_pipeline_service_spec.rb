@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integration do
+RSpec.describe ::Ci::DestroyPipelineService, :clean_gitlab_redis_rate_limiting,
+  feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :small_repo) }
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.id) }
 
@@ -161,6 +162,168 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
         it 'raises an exception' do
           expect { response }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
+      end
+    end
+  end
+
+  describe 'rate limiting', :freeze_time do
+    let_it_be(:user) { project.first_owner }
+
+    let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+    def delete_pipeline(target = create(:ci_pipeline, project: project))
+      described_class.new(project, user).execute(target)
+    end
+
+    it 'deletes while under both limits' do
+      expect(delete_pipeline).to be_success
+    end
+
+    it 'throttles the sixth delete of the same pipeline in a minute', :aggregate_failures do
+      target = create(:ci_pipeline, project: project)
+
+      # Delete is idempotent, so repeats of one record are a bug rather than real work.
+      5.times { described_class.new(project, user).execute(target) }
+
+      response = described_class.new(project, user).execute(target)
+
+      expect(response).to be_error
+      expect(response.reason).to eq(:rate_limited)
+      expect(response.message).to eq(throttle_message)
+    end
+
+    it 'logs the per-pipeline limit when it fires' do
+      allow(Gitlab::AppJsonLogger).to receive(:info)
+      target = create(:ci_pipeline, project: project)
+
+      6.times { described_class.new(project, user).execute(target) }
+
+      expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+        a_hash_including(message: 'Pipeline delete rate limit exceeded', rate_limit: 'pipeline_delete')
+      ).once
+    end
+
+    context 'when the per-project limit is exceeded' do
+      before do
+        stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+      end
+
+      it 'throttles a delete of a different pipeline in the same project', :aggregate_failures do
+        expect(delete_pipeline).to be_success
+
+        response = delete_pipeline
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:rate_limited)
+      end
+
+      it 'logs the throttled call' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+        target = create(:ci_pipeline, project: project)
+
+        delete_pipeline
+        delete_pipeline(target)
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(
+            Labkit::Fields::CLASS_NAME => described_class.to_s,
+            message: 'Pipeline delete rate limit exceeded',
+            rate_limit: 'pipeline_delete_per_project',
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            Labkit::Fields::GL_PIPELINE_ID => target.id,
+            Labkit::Fields::GL_USER_ID => user.id
+          )
+        ).once
+      end
+    end
+
+    context 'when the per-project limit is disabled' do
+      before do
+        stub_application_setting(pipeline_delete_limit_per_user_project: 0)
+      end
+
+      it 'does not throttle on the per-project limit' do
+        4.times { expect(delete_pipeline).to be_success }
+      end
+
+      it 'still applies the fixed per-pipeline limit', :aggregate_failures do
+        target = create(:ci_pipeline, project: project)
+
+        5.times { described_class.new(project, user).execute(target) }
+
+        expect(described_class.new(project, user).execute(target).reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when the per-pipeline limit is already exceeded' do
+      let_it_be(:target) { create(:ci_pipeline, project: project) }
+
+      before do
+        stub_application_setting(pipeline_delete_limit_per_user_project: 8)
+      end
+
+      it 'does not spend the per-project budget on the blocked calls' do
+        # 5 allowed, then 10 blocked per-pipeline. Were the blocked calls counted,
+        # they would exhaust the per-project budget of 8 and block other pipelines.
+        15.times { described_class.new(project, user).execute(target) }
+
+        expect(delete_pipeline).to be_success
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_pipeline_delete: false)
+        stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+      end
+
+      it 'does not throttle' do
+        2.times { expect(delete_pipeline).to be_success }
+      end
+    end
+
+    context 'when the user cannot delete the pipeline' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+      end
+
+      it 'counts the rejected call against the bucket, and still raises', :aggregate_failures do
+        2.times do
+          expect { delete_pipeline }.to raise_error(Gitlab::Access::AccessDeniedError)
+        end
+
+        project.add_owner(user)
+
+        expect(delete_pipeline.reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when there is no current user' do
+      it 'does not check the rate limit' do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        expect { described_class.new(project, nil).execute(create(:ci_pipeline, project: project)) }
+          .to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
+
+    describe '#unsafe_execute' do
+      let_it_be(:target) { create(:ci_pipeline, project: project) }
+
+      before do
+        stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+      end
+
+      # Housekeeping, project deletion and batch issuable deletion all reach the service
+      # this way, and must never be throttled.
+      it 'is never throttled', :aggregate_failures do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        10.times { expect(described_class.new(project, user).unsafe_execute([])).to be_success }
+
+        expect(described_class.new(project, user).unsafe_execute([target])).to be_success
       end
     end
   end

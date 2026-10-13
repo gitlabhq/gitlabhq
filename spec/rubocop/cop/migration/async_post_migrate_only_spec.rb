@@ -24,8 +24,7 @@ RSpec.describe RuboCop::Cop::Migration::AsyncPostMigrateOnly, feature_category: 
 
   context 'when in a migration' do
     before do
-      allow(cop).to receive(:in_migration?).and_return(true)
-      allow(cop).to receive(:time_enforced?).and_return(true)
+      allow(cop).to receive_messages(in_migration?: true, time_enforced?: true)
     end
 
     context 'when in a post deployment migration' do

@@ -1121,6 +1121,44 @@ func TestBuildSession_signsInternalRequestsWithWorkhorseJWT(t *testing.T) {
 	}
 }
 
+func TestBuildSession_sendsWorkflowIDOnlyToInternalServers(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	tests := []struct {
+		serverName string
+		want       string
+	}{
+		{serverName: gitlabServerName, want: "workflow-123"},
+		{serverName: orbitServerName, want: "workflow-123"},
+		{serverName: "external-server", want: ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.serverName, func(t *testing.T) {
+			var workflowIDHeader string
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				workflowIDHeader = r.Header.Get("X-Gitlab-Duo-Workflow-Id")
+				handleMcpRequest(t, w, r, tt.serverName, []mcpTool{{Name: "tool1", Description: "desc"}}, nil)
+			}))
+			t.Cleanup(server.Close)
+
+			apiURL, err := url.Parse(server.URL)
+			require.NoError(t, err)
+
+			rails := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+			req := httptest.NewRequest("GET", "/test", nil)
+			state := &workflowState{}
+			state.SetWorkflowID("workflow-123")
+
+			session, err := buildSession(rails, req, tt.serverName, api.McpServerConfig{URL: server.URL}, state)
+			require.NoError(t, err)
+			require.NotNil(t, session)
+
+			assert.Equal(t, tt.want, workflowIDHeader)
+		})
+	}
+}
+
 func TestNewMcpManager_orbitAndGitlabServers(t *testing.T) {
 	testhelper.ConfigureSecret()
 

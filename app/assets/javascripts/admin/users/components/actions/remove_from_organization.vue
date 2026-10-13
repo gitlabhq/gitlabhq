@@ -17,6 +17,10 @@ export default {
       type: String,
       required: true,
     },
+    userId: {
+      type: Number,
+      required: true,
+    },
     organizationUserGid: {
       type: String,
       required: true,
@@ -26,6 +30,7 @@ export default {
     onClick() {
       eventHub.$emit(EVENT_OPEN_REMOVE_FROM_ORGANIZATION_MODAL, {
         username: this.username,
+        userId: this.userId,
         organizationUserGid: this.organizationUserGid,
       });
     },

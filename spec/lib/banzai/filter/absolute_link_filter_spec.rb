@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'html/pipeline'
+require_relative '../../../support/shared_examples/lib/banzai/filters/filter_timeout_shared_examples'
 
 RSpec.describe Banzai::Filter::AbsoluteLinkFilter, feature_category: :markdown do
   def filter(doc, context = {})

@@ -62,6 +62,24 @@ RSpec.describe Users::ServiceAccounts::CreateService, feature_category: :user_ma
       end
     end
 
+    context 'when external is not provided' do
+      let(:params) { { organization_id: organization.id } }
+
+      it 'defaults to external' do
+        user = service.execute.payload[:user]
+        expect(user.external).to be(true)
+      end
+    end
+
+    context 'when external is set to false' do
+      let(:params) { { external: false, organization_id: organization.id } }
+
+      it 'creates a non-external service account' do
+        user = service.execute.payload[:user]
+        expect(user.external).to be(false)
+      end
+    end
+
     describe '#creation_allowed?' do
       it 'delegates to Authn::ServiceAccounts.creation_allowed_for_sm?' do
         expect(::Authn::ServiceAccounts)

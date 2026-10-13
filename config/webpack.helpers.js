@@ -7,7 +7,7 @@ const {
   VUE3_MIGRATION_STATUS_ROLLOUT,
   VUE3_MIGRATION_STATUS_MIGRATED,
   appendVue3Query,
-} = require('./helpers/vue3_migration_loader');
+} = require('./vue3migration/migration');
 
 /**
  * Returns a new entry map with the `?vue3` variants: `rollout` adds an `<entry>.vue3`

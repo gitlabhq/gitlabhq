@@ -1,7 +1,7 @@
 ---
 table_name: ai_compliance_anthropic_integrations
 classes:
-- Ai::Compliance::AnthropicIntegration
+- Ai::Compliance::Anthropic::Integration
 feature_categories:
 - compliance_management
 description: Per-top-level-group Anthropic Compliance API credential and ingestion sync state for Claude Code transcript ingestion

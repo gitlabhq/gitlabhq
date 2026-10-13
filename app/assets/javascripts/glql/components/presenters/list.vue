@@ -1,6 +1,7 @@
 <script>
 import { GlIntersperse, GlSkeletonLoader } from '@gitlab/ui';
-import { baseFieldKeyOf } from '../../utils/chart_data';
+import { baseFieldKeyOf, labelWithParameter } from '../../utils/chart_data';
+import { FIELD_TYPES } from '../../constants';
 import { titleFieldFor } from './presenter_registry';
 import FieldPresenter from './field.vue';
 
@@ -46,13 +47,16 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       return titleFieldFor(this.items[0]?.__typename);
     },
+    // Matched on the base field so `title as "Name"` is still promoted and a
+    // bucket dimension aliased `as "title"` stays an inline field.
+    titleField() {
+      return this.fields?.find((field) => baseFieldKeyOf(field) === this.titleFieldKey);
+    },
     hasTitle() {
-      return this.fields?.some((field) => field.key === this.titleFieldKey);
+      return Boolean(this.titleField);
     },
     visibleFields() {
-      return this.hasTitle
-        ? this.fields.filter((field) => field.key !== this.titleFieldKey)
-        : this.fields;
+      return this.hasTitle ? this.fields.filter((field) => field !== this.titleField) : this.fields;
     },
     pageSize() {
       return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
@@ -60,6 +64,10 @@ export default {
   },
   methods: {
     baseFieldKeyOf,
+    labelWithParameter,
+    isMetric(field) {
+      return field.type === FIELD_TYPES.METRIC;
+    },
   },
 };
 </script>
@@ -76,15 +84,21 @@ export default {
     >
       <div class="gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top">
         <h3 v-if="hasTitle" class="!gl-heading-5 !gl-mb-1 gl-truncate">
-          <field-presenter :item="item" :field-key="titleFieldKey" />
+          <field-presenter
+            :item="item"
+            :field-key="titleField.key"
+            :presenter-key="baseFieldKeyOf(titleField)"
+          />
         </h3>
         <div>
           <gl-intersperse separator=" · ">
             <span v-for="field in visibleFields" :key="field.key">
+              <template v-if="isMetric(field)">{{ labelWithParameter(field) }}: </template>
               <field-presenter
                 :item="item"
                 :field-key="field.key"
                 :presenter-key="baseFieldKeyOf(field)"
+                :parameters="field.parameters"
                 variant="compact"
               />
             </span>

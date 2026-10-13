@@ -430,6 +430,10 @@ adds those wrappers automatically.
     particular, "(a) a change in the SSOT" means the source text governing
     THAT item changed this run; it does NOT cover detail that was already in
     the sources before this run and merely went unstated in a correct item.
+19. **US English spelling.** Write every item in US English (behavior,
+    customize, labeled), even when the SSOT uses British spelling.
+    Correcting a British spelling in a prior item is required work, not
+    churn under rule 18. Exception: keep baseline rules verbatim (rule 15).
 
 ## How to read inputs
 

@@ -38,6 +38,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :require_blob, except: [:new, :create, :preview]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
+  before_action :validate_uploaded_file_size!, only: [:create, :update]
   before_action :validate_diff_params, only: :diff
 
   before_action :set_last_commit_sha, only: [:edit, :update]
@@ -48,9 +49,7 @@ class Projects::BlobController < Projects::ApplicationController
   urgency :low, [:create, :show, :edit, :update, :diff, :diff_lines]
 
   before_action do
-    push_frontend_feature_flag(:inline_blame, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:duo_convert_ci_use_developer_flow, @project)
   end
 
   def new
@@ -114,6 +113,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = permitted_params[:content]
+    return head :bad_request unless @content.is_a?(String)
 
     if @content.bytesize >= MAX_PREVIEW_CONTENT
       return render json: { errors: ["Preview content too large"] }, status: :payload_too_large
@@ -319,6 +319,22 @@ class Projects::BlobController < Projects::ApplicationController
     head :ok if [:since, :to, :offset].any? { |key| permitted_params[key].blank? }
   end
 
+  def validate_uploaded_file_size!
+    uploaded_file = permitted_params[:file]
+    return if uploaded_file.blank?
+
+    max_size_mib = Gitlab::CurrentSettings.max_attachment_size
+    return if uploaded_file.size <= max_size_mib.megabytes
+
+    message = format(
+      _('File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB.'),
+      fileSize: format('%.2f', uploaded_file.size.to_f / 1.megabyte),
+      maxFileSize: max_size_mib
+    )
+
+    render json: { error: message }, status: :payload_too_large
+  end
+
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
       .last_for_path(@repository, ref, @path, literal_pathspec: true)&.sha
@@ -332,7 +348,6 @@ class Projects::BlobController < Projects::ApplicationController
       current_user,
       environment_params
     ).execute.last
-    @last_commit = @repository.last_commit_for_path(commit.id, blob.path, literal_pathspec: true)
     @code_navigation_path = Gitlab::CodeNavigationPath.new(@project, blob.commit_id).full_json_path_for(blob.path)
 
     render 'show'

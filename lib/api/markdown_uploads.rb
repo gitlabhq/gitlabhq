@@ -11,7 +11,12 @@ module API
       filename: ::API::NO_SLASH_URL_PART_REGEX
     )
 
-    allow_access_with_scope :ai_workflows, if: ->(request) { request.post? }
+    # Reads are opt-in per route: listing and ID lookup allow upload enumeration.
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.post? ||
+        ((request.get? || request.head?) &&
+          request.env[Grape::Env::API_ENDPOINT]&.route_setting(:ai_workflows_download).present?)
+    end
 
     before { authenticate_non_get! }
 
@@ -33,7 +38,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the file upload' do
@@ -106,7 +111,7 @@ module API
         tags %w[projects]
       end
       params do
-        requires :upload_id, type: Integer, desc: 'The ID of a project upload'
+        requires :upload_id, type: Integer, desc: 'ID of the upload.'
       end
       route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :project
       get ':id/uploads/:upload_id' do
@@ -130,10 +135,11 @@ module API
         tags %w[projects]
       end
       params do
-        requires :secret, type: String, desc: 'The 32-character secret of a project upload'
-        requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
+        requires :secret, type: String, desc: 'Secret of the upload.'
+        requires :filename, type: String, file_path: true, desc: 'Filename of the upload.'
       end
       route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :project
+      route_setting :ai_workflows_download, true
       get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :read_upload, user_project
 
@@ -154,7 +160,7 @@ module API
         tags %w[projects]
       end
       params do
-        requires :upload_id, type: Integer, desc: 'The ID of a project upload'
+        requires :upload_id, type: Integer, desc: 'ID of the upload.'
       end
       route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :project
       delete ':id/uploads/:upload_id' do
@@ -182,8 +188,8 @@ module API
         tags %w[projects]
       end
       params do
-        requires :secret, type: String, desc: 'The 32-character secret of a project upload'
-        requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
+        requires :secret, type: String, desc: 'Secret of the upload.'
+        requires :filename, type: String, file_path: true, desc: 'Filename of the upload.'
       end
       route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :project
       delete ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
@@ -201,7 +207,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the file upload' do
@@ -283,7 +289,7 @@ module API
         tags %w[groups]
       end
       params do
-        requires :upload_id, type: Integer, desc: 'The ID of a group upload'
+        requires :upload_id, type: Integer, desc: 'ID of the upload.'
       end
       route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :group
       get ':id/uploads/:upload_id' do
@@ -307,10 +313,11 @@ module API
         tags %w[groups]
       end
       params do
-        requires :secret, type: String, desc: 'The 32-character secret of a group upload'
-        requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
+        requires :secret, type: String, desc: 'Secret of the upload.'
+        requires :filename, type: String, file_path: true, desc: 'Filename of the upload.'
       end
       route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :group
+      route_setting :ai_workflows_download, true
       get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :read_upload, user_group
 
@@ -331,7 +338,7 @@ module API
         tags %w[groups]
       end
       params do
-        requires :upload_id, type: Integer, desc: 'The ID of a group upload'
+        requires :upload_id, type: Integer, desc: 'ID of the upload.'
       end
       route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :group
       delete ':id/uploads/:upload_id' do
@@ -359,8 +366,8 @@ module API
         tags %w[groups]
       end
       params do
-        requires :secret, type: String, desc: 'The 32-character secret of a group upload'
-        requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
+        requires :secret, type: String, desc: 'Secret of the upload.'
+        requires :filename, type: String, file_path: true, desc: 'Filename of the upload.'
       end
       route_setting :authorization, permissions: :delete_markdown_upload, boundary_type: :group
       delete ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do

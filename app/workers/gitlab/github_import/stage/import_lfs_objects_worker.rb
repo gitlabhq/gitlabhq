@@ -24,10 +24,18 @@ module Gitlab
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            'finish'
+            next_stage(project)
           )
+        end
+
+        private
+
+        def next_stage(_project)
+          'finish'
         end
       end
     end
   end
 end
+
+Gitlab::GithubImport::Stage::ImportLfsObjectsWorker.prepend_mod

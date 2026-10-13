@@ -1,4 +1,4 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DbCorruptedIndexes from '~/admin/database_diagnostics/components/db_corrupted_indexes.vue';
 import { collationMismatchResults } from '../mock_data';
 
@@ -8,13 +8,13 @@ describe('DbCorruptedIndexes component', () => {
     corruptedIndexes: collationMismatchResults.databases.main.corrupted_indexes,
   };
 
-  const findIcon = () => wrapper.findByTestId('corrupted-indexes-icon');
+  const findIcon = () => wrapper.findComponentByTestId('corrupted-indexes-icon');
   const findCountBadge = () => wrapper.findByTestId('corrupted-indexes-count');
   const findTable = () => wrapper.findByTestId('corrupted-indexes-table');
   const findNoCorruptedIndexesAlert = () => wrapper.findByTestId('no-corrupted-indexes-alert');
 
   const createComponent = ({ props = {} } = {}) => {
-    wrapper = shallowMountExtended(DbCorruptedIndexes, {
+    wrapper = mountExtended(DbCorruptedIndexes, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -28,7 +28,7 @@ describe('DbCorruptedIndexes component', () => {
     });
 
     it('displays an error icon and count badge', () => {
-      expect(findIcon().attributes()).toMatchObject({
+      expect(findIcon().props()).toMatchObject({
         name: 'error',
         variant: 'danger',
       });
@@ -51,7 +51,7 @@ describe('DbCorruptedIndexes component', () => {
     });
 
     it('displays a success icon without a count badge', () => {
-      expect(findIcon().attributes()).toMatchObject({
+      expect(findIcon().props()).toMatchObject({
         name: 'check-circle-filled',
         variant: 'success',
       });

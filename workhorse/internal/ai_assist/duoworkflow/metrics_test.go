@@ -3,6 +3,7 @@ package duoworkflow
 import (
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -207,13 +208,16 @@ func TestSessionErrorsTotal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.wantIncrease {
-				beforeCode := counterVecValue(t, sessionErrorsTotal, tt.wantCode)
+				// No runner wired the stream manager up, so nothing recorded a
+				// cause and the teardown reports as unsolicited.
+				wantReason := teardownUnsolicited.String()
+				beforeCode := counterVecValue(t, sessionErrorsTotal, tt.wantCode, wantReason)
 
 				sm := newTestStreamManager(t, &mockWorkflowStream{recvError: tt.recvError})
 				_, _ = sm.Recv()
 
 				require.InDelta(t, beforeCode+1,
-					counterVecValue(t, sessionErrorsTotal, tt.wantCode), 0,
+					counterVecValue(t, sessionErrorsTotal, tt.wantCode, wantReason), 0,
 					"sessionErrorsTotal{grpc_code=%q} should increment by 1", tt.wantCode)
 			} else {
 				// io.EOF is a normal workflow termination — the total number of
@@ -230,4 +234,202 @@ func TestSessionErrorsTotal(t *testing.T) {
 			}
 		})
 	}
+}
+
+// TestSessionErrorsTotal_teardownReason verifies that the teardown_reason label
+// carries the cause workhorse recorded for the session.
+func TestSessionErrorsTotal_teardownReason(t *testing.T) {
+	for _, reason := range []teardownReason{
+		teardownUnsolicited,
+		teardownClientNormalClose,
+		teardownClientPongTimeout,
+		teardownClientKeepaliveFailed,
+		teardownClientReadFailed,
+		teardownWorkhorseShutdown,
+	} {
+		t.Run(reason.String(), func(t *testing.T) {
+			code := codes.Unavailable.String()
+
+			sm := newTestStreamManager(t, &mockWorkflowStream{
+				recvError: status.Error(codes.Unavailable, "service unavailable"),
+			})
+			sm.teardownReason = func() teardownReason { return reason }
+
+			before := counterVecValue(t, sessionErrorsTotal, code, reason.String())
+			_, _ = sm.Recv()
+
+			require.InDelta(t, before+1,
+				counterVecValue(t, sessionErrorsTotal, code, reason.String()), 0,
+				"sessionErrorsTotal{grpc_code=%q, teardown_reason=%q} should increment by 1",
+				code, reason.String())
+		})
+	}
+}
+
+// TestClientDisconnectReason pins the mapping from the StopWorkflowRequest
+// reasons wsManager.ReadError actually produces onto teardown categories, so
+// the two cannot drift apart.
+func TestClientDisconnectReason(t *testing.T) {
+	tests := []struct {
+		name       string
+		readErr    error
+		wantOK     bool
+		wantReason teardownReason
+	}{
+		{
+			name:       "normal closure",
+			readErr:    &websocket.CloseError{Code: websocket.CloseNormalClosure},
+			wantOK:     true,
+			wantReason: teardownClientNormalClose,
+		},
+		{
+			name:       "going away",
+			readErr:    &websocket.CloseError{Code: websocket.CloseGoingAway},
+			wantOK:     true,
+			wantReason: teardownClientNormalClose,
+		},
+		{
+			name:       "pong timeout",
+			readErr:    &net.OpError{Err: &timeoutError{}},
+			wantOK:     true,
+			wantReason: teardownClientPongTimeout,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &wsManager{}
+			reason, ok := w.ReadError(tt.readErr)
+			require.Equal(t, tt.wantOK, ok)
+			require.Equal(t, tt.wantReason, clientDisconnectReason(reason))
+		})
+	}
+
+	t.Run("abnormal closure is not an orderly disconnect", func(t *testing.T) {
+		w := &wsManager{}
+		reason, ok := w.ReadError(&websocket.CloseError{Code: websocket.CloseAbnormalClosure})
+		require.False(t, ok, "an abnormal closure sends no stop request")
+		require.Equal(t, teardownClientReadFailed, clientDisconnectReason(reason))
+	})
+}
+
+// sessionErrorsByReason sums sessionErrorsTotal across every grpc_code for one
+// teardown_reason. The gRPC code a teardown ends up with is racy on the paths
+// that send no stop request, so assertions key on the reason instead.
+func sessionErrorsByReason(t *testing.T, reason string) float64 {
+	t.Helper()
+
+	families, err := prometheus.DefaultGatherer.Gather()
+	require.NoError(t, err)
+
+	var total float64
+	for _, f := range families {
+		if f.GetName() != "gitlab_workhorse_duo_workflow_session_errors_total" {
+			continue
+		}
+		for _, m := range f.GetMetric() {
+			for _, l := range m.GetLabel() {
+				if l.GetName() == "teardown_reason" && l.GetValue() == reason {
+					total += m.GetCounter().GetValue()
+				}
+			}
+		}
+	}
+
+	return total
+}
+
+// TestSessionErrorsTotal_clientDisconnect drives the whole stack -- a real
+// WebSocket into the real handler, runner and gRPC client, against a Duo
+// Workflow Service stand-in -- and checks which teardown_reason each way of
+// losing the client produces.
+func TestSessionErrorsTotal_clientDisconnect(t *testing.T) {
+	tests := []struct {
+		name string
+		// disconnect ends the client side of the connection.
+		disconnect func(t *testing.T, conn *websocket.Conn)
+		wantReason teardownReason
+	}{
+		{
+			name: "browser tab closed sends a normal close frame",
+			disconnect: func(t *testing.T, conn *websocket.Conn) {
+				closeWebSocket(t, conn, websocket.CloseNormalClosure)
+			},
+			wantReason: teardownClientNormalClose,
+		},
+		{
+			name: "client navigating away sends going away",
+			disconnect: func(t *testing.T, conn *websocket.Conn) {
+				closeWebSocket(t, conn, websocket.CloseGoingAway)
+			},
+			wantReason: teardownClientNormalClose,
+		},
+		{
+			name: "connection dropped without a close frame",
+			disconnect: func(t *testing.T, conn *websocket.Conn) {
+				// Killing the TCP socket leaves no close frame, so the read
+				// fails as an abnormal closure (1006) and no stop is sent.
+				require.NoError(t, conn.UnderlyingConn().Close())
+			},
+			wantReason: teardownClientReadFailed,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testhelper.ConfigureSecret()
+
+			// Stand in for DWS: hold the stream open, and acknowledge a stop the
+			// way DWS does, by tearing the stream down with Unavailable.
+			grpcServer := setupTestServer(t)
+			grpcServer.execWorkflowHandler = func(stream pb.DuoWorkflow_ExecuteWorkflowServer) error {
+				for {
+					event, err := stream.Recv()
+					if err != nil {
+						return err
+					}
+					if event.GetStopWorkflow() != nil {
+						return status.Error(codes.Unavailable, "workflow stopped")
+					}
+				}
+			}
+
+			conn := dialTestHandler(t, setupHandlerWithGRPC(t, grpcServer))
+
+			// Start a flow, so the session is mid-stream when the client goes away.
+			payload, err := marshaler.Marshal(&pb.ClientEvent{
+				Response: &pb.ClientEvent_StartRequest{
+					StartRequest: &pb.StartWorkflowRequest{
+						WorkflowID: "1",
+						Goal:       "test goal",
+					},
+				},
+			})
+			require.NoError(t, err)
+			require.NoError(t, conn.WriteMessage(websocket.TextMessage, payload))
+
+			before := sessionErrorsByReason(t, tt.wantReason.String())
+
+			tt.disconnect(t, conn)
+
+			require.Eventually(t, func() bool {
+				return sessionErrorsByReason(t, tt.wantReason.String()) >= before+1
+			}, 20*time.Second, 10*time.Millisecond,
+				"sessionErrorsTotal{teardown_reason=%q} should increment once the client goes away",
+				tt.wantReason.String())
+		})
+	}
+}
+
+// closeWebSocket sends a close frame with the given code and then closes the
+// connection, the way a browser does when a tab or panel goes away.
+func closeWebSocket(t *testing.T, conn *websocket.Conn, code int) {
+	t.Helper()
+
+	require.NoError(t, conn.WriteControl(
+		websocket.CloseMessage,
+		websocket.FormatCloseMessage(code, ""),
+		time.Now().Add(5*time.Second),
+	))
+	require.NoError(t, conn.Close())
 }

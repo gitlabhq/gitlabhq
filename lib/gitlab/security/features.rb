@@ -17,6 +17,17 @@ module Gitlab
             type: 'sast',
             required_permission_to_configure: :configure_security_scanner
           },
+          business_logic: {
+            name: _('Business Logic Security Analyzer'),
+            short_name: _('Business Logic'),
+            description: _('Detect business-logic vulnerabilities (BOLA/IDOR, missing ' \
+              'authorization, mass assignment) with the agentic Business Logic Security Analyzer.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/business_logic_scanning/_index.md'
+            ),
+            type: 'business_logic',
+            required_permission_to_configure: :configure_security_scanner
+          },
           sast_advanced: {
             name: _('GitLab Advanced SAST'),
             short_name: _('Advanced SAST'),

@@ -1,0 +1,5 @@
+= render "projects/merge_requests/tabs/tab", name: "reports", class: "reports-tab" do
+  = tab_link_for @merge_request, :reports do
+    = _("Reports")
+    = render Pajamas::BadgeComponent.new do
+      %span.js-reports-tab-count= '-'

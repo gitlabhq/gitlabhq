@@ -129,28 +129,6 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     end
   end
 
-  describe '#member?' do
-    let_it_be(:other_user) { create(:user) }
-
-    subject(:member) { described_class.for(boundary).member?(member_user) }
-
-    where(:boundary, :member_user, :result) do
-      ref(:group)      | ref(:user)       | true
-      ref(:group)      | ref(:other_user) | false
-      ref(:project)    | ref(:user)       | true
-      ref(:project)    | ref(:other_user) | false
-      ref(:user)       | ref(:user)       | true
-      ref(:user)       | ref(:other_user) | false
-      :all_memberships | ref(:user)       | true
-      :user            | ref(:user)       | true
-      :instance        | ref(:user)       | true
-    end
-
-    with_them do
-      it { expect(member).to be(result) }
-    end
-  end
-
   describe '#access' do
     subject(:access) { described_class.for(boundary).access }
 
@@ -165,54 +143,6 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
 
     with_them do
       it { expect(access).to be(result) }
-    end
-  end
-
-  describe '#visible_to?' do
-    let_it_be(:other_user) { create(:user) }
-    let_it_be(:external_user) { create(:user, external: true) }
-    let_it_be(:private_group) { create(:group, :private) }
-    let_it_be(:internal_group) { create(:group, :internal) }
-    let_it_be(:public_group) { create(:group, :public) }
-    let_it_be(:private_project) { create(:project, :private, group: private_group) }
-    let_it_be(:internal_project) { create(:project, :internal) }
-    let_it_be(:public_project) { create(:project, :public) }
-
-    subject(:visible_to) { described_class.for(boundary).visible_to?(visibility_user) }
-
-    where(:boundary, :visibility_user, :result) do
-      ref(:private_group)    | ref(:other_user)    | false
-      ref(:private_group)    | nil                 | false
-      ref(:private_group)    | ref(:external_user) | false
-      ref(:internal_group)   | ref(:other_user)    | true
-      ref(:internal_group)   | nil                 | false
-      ref(:internal_group)   | ref(:external_user) | false
-      ref(:public_group)     | ref(:other_user)    | true
-      ref(:public_group)     | nil                 | true
-      ref(:public_group)     | ref(:external_user) | true
-      ref(:private_project)  | ref(:other_user)    | false
-      ref(:private_project)  | ref(:external_user) | false
-      ref(:internal_project) | ref(:other_user)    | true
-      ref(:internal_project) | ref(:external_user) | false
-      ref(:public_project)   | nil                 | true
-      ref(:public_project)   | ref(:external_user) | true
-      ref(:user)             | ref(:other_user)    | true
-      :all_memberships       | ref(:other_user)    | true
-      :user                  | ref(:other_user)    | true
-      :instance              | ref(:other_user)    | true
-    end
-
-    with_them do
-      it { expect(visible_to).to be(result) }
-    end
-
-    context 'when the user is an admin', :enable_admin_mode do
-      let_it_be(:admin) { create(:admin) }
-
-      it 'is visible regardless of visibility level' do
-        expect(described_class.for(private_group).visible_to?(admin)).to be(true)
-        expect(described_class.for(private_project).visible_to?(admin)).to be(true)
-      end
     end
   end
 

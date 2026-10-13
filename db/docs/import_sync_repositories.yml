@@ -1,0 +1,15 @@
+---
+table_name: import_sync_repositories
+classes:
+- Import::Sync::Repository
+feature_categories:
+- importers
+description: Stable GitHub-repository to GitLab-project mappings kept updated by continuous
+  sync. Each record owns the GitHub App installation, provider authority, and the
+  application-generation fence used by future reconciliation jobs.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255079
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

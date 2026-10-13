@@ -216,7 +216,7 @@ export function createControlledMockApollo(handlers, resolvers, cacheOptions) {
   };
 }
 
-export function createLegacyMockApollo(handlers, resolvers, cacheOptions) {
+function createLegacyMockApollo(handlers, resolvers, cacheOptions) {
   const mockClient = createMockClient(handlers, resolvers, {
     legacyMode: true,
     ...cacheOptions,

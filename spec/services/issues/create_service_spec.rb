@@ -14,7 +14,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
   it_behaves_like 'rate limited service' do
     let(:key) { :issues_create }
-    let(:key_scope) { %i[project current_user external_author] }
+    let(:key_scope) { { project: :project, user: :current_user, external_author: :external_author } }
     let(:application_limit_key) { :issues_create_limit }
     let(:created_model) { Issue }
   end

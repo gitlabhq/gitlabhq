@@ -12,7 +12,8 @@
     "folder_path",
     "created_at",
     "updated_at",
-    "can_stop"
+    "can_stop",
+    "can_force_stop"
   ],
   "properties": {
     "id": {
@@ -75,6 +76,9 @@
       "format": "date-time"
     },
     "can_stop": {
+      "type": "boolean"
+    },
+    "can_force_stop": {
       "type": "boolean"
     },
     "has_opened_alert": {

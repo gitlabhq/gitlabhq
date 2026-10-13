@@ -22,7 +22,8 @@ module API
               params do
                 use :pagination
               end
-              route_setting :authorization, permissions: :read_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :read_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               get '/' do
                 variables = ::Ci::InstanceVariable.all
 
@@ -36,9 +37,11 @@ module API
                 tags %w[ci_variables]
               end
               params do
-                requires :key, type: String, desc: 'The key of a variable'
+                requires :key, type: String, desc: 'Key of the instance variable. Must be 255 characters or fewer ' \
+                                               'and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
               end
-              route_setting :authorization, permissions: :read_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :read_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               get ':key' do
                 key = params[:key]
                 variable = ::Ci::InstanceVariable.find_by_key(key)
@@ -59,34 +62,39 @@ module API
               params do
                 requires :key,
                   type: String,
-                  desc: 'The key of the variable. Max 255 characters'
+                  desc: 'Key of the instance variable. Must be 255 characters or fewer and contain only `A-Z`, ' \
+                    '`a-z`, `0-9`, and `_`.'
 
                 optional :description,
                   type: String,
-                  desc: 'The description of the variable'
+                  desc: 'Description of the variable. Limited to 255 characters.'
 
                 requires :value,
                   type: String,
-                  desc: 'The value of a variable'
+                  desc: 'Value of the variable. Limited to 10,000 characters, or 50,000 characters for `file` ' \
+                    'variables.'
 
                 optional :protected,
                   type: Boolean,
-                  desc: 'Whether the variable is protected'
+                  desc: 'If `true`, the variable is protected.'
 
                 optional :masked,
                   type: Boolean,
-                  desc: 'Whether the variable is masked'
+                  desc: 'If `true`, the variable is masked.'
 
                 optional :raw,
                   type: Boolean,
-                  desc: 'Whether the variable will be expanded'
+                  desc: 'If `true`, the variable is treated as a raw string. If `false`, the value is ' \
+                    '[expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).'
 
                 optional :variable_type,
                   type: String,
                   values: ::Ci::InstanceVariable.variable_types.keys,
-                  desc: 'The type of a variable. Available types are: env_var (default) and file'
+                  default: 'env_var',
+                  desc: 'The type of a variable.'
               end
-              route_setting :authorization, permissions: :create_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :create_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               post '/' do
                 variable_params = declared_params(include_missing: false)
 
@@ -109,34 +117,38 @@ module API
               params do
                 optional :key,
                   type: String,
-                  desc: 'The key of a variable'
+                  desc: 'Key of the instance variable. Must be 255 characters or fewer and contain only `A-Z`, ' \
+                    '`a-z`, `0-9`, and `_`.'
 
                 optional :description,
                   type: String,
-                  desc: 'The description of the variable'
+                  desc: 'Description of the variable. Limited to 255 characters.'
 
                 optional :value,
                   type: String,
-                  desc: 'The value of a variable'
+                  desc: 'Value of the variable. Limited to 10,000 characters, or 50,000 characters for `file` ' \
+                    'variables.'
 
                 optional :protected,
                   type: Boolean,
-                  desc: 'Whether the variable is protected'
+                  desc: 'If `true`, the variable is protected.'
 
                 optional :masked,
                   type: Boolean,
-                  desc: 'Whether the variable is masked'
+                  desc: 'If `true`, the variable is masked.'
 
                 optional :raw,
                   type: Boolean,
-                  desc: 'Whether the variable will be expanded'
+                  desc: 'If `true`, the variable is treated as a raw string. If `false`, the value is ' \
+                    '[expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).'
 
                 optional :variable_type,
                   type: String,
                   values: ::Ci::InstanceVariable.variable_types.keys,
                   desc: 'The type of a variable. Available types are: env_var (default) and file'
               end
-              route_setting :authorization, permissions: :update_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :update_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               put ':key' do
                 variable = ::Ci::InstanceVariable.find_by_key(params[:key])
 
@@ -158,9 +170,11 @@ module API
                 tags %w[ci_variables]
               end
               params do
-                requires :key, type: String, desc: 'The key of a variable'
+                requires :key, type: String, desc: 'Key of the instance variable. Must be 255 characters or fewer ' \
+                                               'and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
               end
-              route_setting :authorization, permissions: :delete_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :delete_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               delete ':key' do
                 variable = ::Ci::InstanceVariable.find_by_key(params[:key])
                 not_found!('InstanceVariable') unless variable

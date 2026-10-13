@@ -97,7 +97,7 @@ The migration follows a four-milestone process to ensure zero-downtime deploymen
 
 **Milestone M (Initial Migration):**
 
-1. **Add temporary column**: Create a `tmp_<attribute>` column with `:jsonb` type:
+1. Add temporary column. Create a `tmp_<attribute>` column with `:jsonb` type:
 
    ```ruby
    class AddTmpSecretKeyToMyModel < Gitlab::Database::Migration[2.3]
@@ -109,7 +109,7 @@ The migration follows a four-milestone process to ensure zero-downtime deploymen
    end
    ```
 
-1. **Update model**: Replace `attr_encrypted` with `migrate_to_encrypts`:
+1. Update model. Replace `attr_encrypted` with `migrate_to_encrypts`:
 
    ```ruby
    class MyModel < ApplicationRecord
@@ -128,7 +128,7 @@ The migration follows a four-milestone process to ensure zero-downtime deploymen
    end
    ```
 
-1. **Create data migration**: Create a post-deployment migration to populate the new column:
+1. Create data migration. Create a post-deployment migration to populate the new column:
 
    ```ruby
    class MigrateSecretKeyToNewEncryptionFramework < Gitlab::Database::Migration[2.3]
@@ -166,22 +166,22 @@ The migration follows a four-milestone process to ensure zero-downtime deploymen
 
 **Milestone M+1 (Column Rename):**
 
-1. **Finalize migration**: Ensure the background migration has completed
-1. **Rename column**: Rename the `tmp_<attribute>` column to `<attribute>`
+1. Finalize migration. Ensure the background migration has completed.
+1. Rename column. Rename the `tmp_<attribute>` column to `<attribute>`.
    - [Add the regular migration](database/avoiding_downtime_in_migrations.md#add-the-regular-migration-release-m)
    - [Ignore the column](database/avoiding_downtime_in_migrations.md#ignore-the-column-release-m)
    - [Add a post-deployment migration](database/avoiding_downtime_in_migrations.md#add-a-post-deployment-migration-release-m)
-1. **Update model**: Replace the `migrate_to_encrypts` method call with [the native `encrypts` Rails method](https://guides.rubyonrails.org/active_record_encryption.html#declaration-of-encrypted-attributes)
-1. **Ignore old columns**: [Add `ignore_columns` for the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#ignoring-the-column-release-m)
+1. Update model. Replace the `migrate_to_encrypts` method call with [the native `encrypts` Rails method](https://guides.rubyonrails.org/active_record_encryption.html#declaration-of-encrypted-attributes).
+1. Ignore old columns. [Add `ignore_columns` for the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#ignoring-the-column-release-m).
 
 **Milestone M+2 (Cleanup):**
 
-1. **Drop old columns**: [Drop the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#dropping-the-column-release-m1)
-1. **Remove ignore rule**: [Remove the `ignore_column` for `tmp_<attribute>`](database/avoiding_downtime_in_migrations.md#remove-the-ignore-rule-release-m1)
+1. Drop old columns. [Drop the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#dropping-the-column-release-m1).
+1. Remove ignore rule. [Remove the `ignore_column` for `tmp_<attribute>`](database/avoiding_downtime_in_migrations.md#remove-the-ignore-rule-release-m1).
 
 **Milestone M+3 (Final Cleanup):**
 
-1. **Remove ignore rules**: [Remove the `ignore_columns` for the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#removing-the-ignore-rule-release-m2)
+1. Remove ignore rules. [Remove the `ignore_columns` for the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#removing-the-ignore-rule-release-m2).
 
 #### Testing migrations
 
@@ -207,11 +207,11 @@ This shared example verifies that:
 
 #### Best practices
 
-1. **Use JSONB columns**: Always use `:jsonb` type for new encrypted columns, not `:text`
-1. **Maintain encryption options**: Keep the same encryption options (mode, key, algorithm) during migration
-1. **Test thoroughly**: Use the provided shared examples to ensure both encryption methods work
-1. **Monitor performance**: Large tables may require [batched background migrations](database/batched_background_migrations.md) instead of regular post-deployment migrations
-1. **Validate data integrity**: Always verify that migrated data matches the original after migration
+- Use JSONB columns. Always use `:jsonb` type for new encrypted columns, not `:text`.
+- Maintain encryption options. Keep the same encryption options (mode, key, algorithm) during migration.
+- Test thoroughly. Use the provided shared examples to ensure both encryption methods work.
+- Monitor performance. Large tables may require [batched background migrations](database/batched_background_migrations.md) instead of regular post-deployment migrations.
+- Validate data integrity. Always verify that migrated data matches the original after migration.
 
 #### Example implementation
 
@@ -288,7 +288,7 @@ prior to changing this file.
          - `active_record_encryption_deterministic_key`
          - `active_record_encryption_key_derivation_salt`
 
-         **If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application will automatically generate the missing secrets.
+         If you have a multi-node configuration, you should ensure these secrets are the same on all nodes. Otherwise, the application will automatically generate the missing secrets.
 
          If you use the [GitLab helm chart](https://docs.gitlab.com/charts/) and disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/), you will need to [manually  create these secrets](https://docs.gitlab.com/charts/installation/secrets/#gitlab-rails-secret).
    ```

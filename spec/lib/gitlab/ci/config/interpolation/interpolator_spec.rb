@@ -13,12 +13,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
   subject { described_class.new(result, arguments, yaml_context, external_context) }
 
-  around do |example|
-    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-      example.run
-    end
-  end
-
   context 'when an input value contains a YAML tag' do
     let(:tag) do
       Gitlab::Ci::Config::Yaml::Tags::Reference.new.tap do |reference|
@@ -28,61 +22,57 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
     let(:content) { { test: '$[[ inputs.a ]]' } }
 
-    shared_examples 'a rejected input' do |message|
-      it 'surfaces an error and does not interpolate' do
-        subject.interpolate!
+    # A tag is only resolved by `Tags::Resolver`, which runs on the merged config after
+    # interpolation. Interpolation therefore passes the unresolved object through, and what
+    # happens next depends on the input type and on how the included file uses the value.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/607053.
+    context 'when the input type keeps the value a container' do
+      where(:case_name, :type, :value) do
+        'a tag as an array element' | 'array' | [ref(:tag), 'other']
+        'a tag as a hash key'       | 'array' | [{ ref(:tag) => 'other' }]
+      end
 
-        expect(subject).not_to be_valid
-        expect(subject.errors).to include(message)
+      with_them do
+        let(:header) { { spec: { inputs: { a: { type: type } } } } }
+        let(:arguments) { { a: value } }
+
+        it 'passes the unresolved tag through for the resolver to handle' do
+          subject.interpolate!
+
+          expect(subject).to be_valid
+          expect(subject.to_hash[:test]).to eq(value)
+        end
       end
     end
 
-    where(:case_name, :type, :value) do
-      'a string input'                    | 'string'  | ref(:tag)
-      'a number input'                    | 'number'  | ref(:tag)
-      'a boolean input'                   | 'boolean' | ref(:tag)
-      'an array input'                    | 'array'   | [ref(:tag), 'other']
-      'a tag in a hash key of an array'   | 'array'   | [{ ref(:tag) => 'other' }]
-    end
-
-    with_them do
-      let(:header) { { spec: { inputs: { a: { type: type } } } } }
-      let(:arguments) { { a: value } }
-
-      it_behaves_like 'a rejected input', '`a` input: provided value cannot contain a !reference tag'
-    end
-
-    context 'when the tag is in the default value' do
-      let(:header) { { spec: { inputs: { a: { type: 'array', default: [tag] } } } } }
-      let(:arguments) { {} }
-
-      it_behaves_like 'a rejected input', '`a` input: default value cannot contain a !reference tag'
-    end
-
-    context 'when an input with options receives a tag' do
-      let(:header) { { spec: { inputs: { a: { type: 'string', options: %w[one two] } } } } }
-      let(:arguments) { { a: tag } }
-
-      it 'reports only the tag error' do
-        subject.interpolate!
-
-        expect(subject).not_to be_valid
-        expect(subject.errors).to contain_exactly('`a` input: provided value cannot contain a !reference tag')
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_reject_yaml_tags_in_inputs: false)
-      end
-
+    context 'with a string input' do
       let(:header) { { spec: { inputs: { a: { type: 'string' } } } } }
       let(:arguments) { { a: tag } }
 
-      it 'does not reject the value' do
+      it 'coerces the tag to its string representation' do
         subject.interpolate!
 
         expect(subject).to be_valid
+        expect(subject.to_hash[:test]).to include('Gitlab::Ci::Config::Yaml::Tags::Reference')
+      end
+    end
+
+    context 'when the input type rejects the unresolved object' do
+      where(:case_name, :type, :message) do
+        'a number input'  | 'number'  | '`a` input: provided value is not a number'
+        'a boolean input' | 'boolean' | '`a` input: provided value is not a boolean'
+      end
+
+      with_them do
+        let(:header) { { spec: { inputs: { a: { type: type } } } } }
+        let(:arguments) { { a: tag } }
+
+        it 'reports a type error rather than naming the tag' do
+          subject.interpolate!
+
+          expect(subject).not_to be_valid
+          expect(subject.errors).to include(message)
+        end
       end
     end
   end

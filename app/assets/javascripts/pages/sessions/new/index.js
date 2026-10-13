@@ -2,7 +2,7 @@ import initVueAlerts from '~/vue_alerts';
 import NoEmojiValidator from '~/emoji/no_emoji_validator';
 import { initLanguageSwitcher } from '~/language_switcher';
 import LengthValidator from '~/validators/length_validator';
-import { initEmailVerification, initTwoFactorEmailOTP } from '~/sessions/new';
+import { initEmailVerification } from '~/sessions/new';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { initSignInForm } from '~/authentication/sign_in';
 import {
@@ -24,5 +24,4 @@ toggleRememberMeQuery();
 initVueAlerts();
 initLanguageSwitcher();
 initEmailVerification();
-initTwoFactorEmailOTP();
 renderGFM(document.getElementById('js-custom-sign-in-description'));

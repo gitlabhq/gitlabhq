@@ -50,7 +50,6 @@ module Types
       field :use_issue_view, GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates whether the work item type uses the issue view instead of work item view.',
-        method: :use_legacy_view?,
         experiment: { milestone: '18.8' }
 
       field :can_promote_to_objective, GraphQL::Types::Boolean,
@@ -137,6 +136,10 @@ module Types
 
       def widget_definitions
         object.widgets(context[:resource_parent])
+      end
+
+      def use_issue_view
+        object.use_legacy_view?(context[:resource_parent])
       end
 
       def supported_conversion_types

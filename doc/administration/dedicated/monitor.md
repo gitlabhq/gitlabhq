@@ -95,3 +95,10 @@ To enable S3 event notifications:
 1. After GitLab Support provides the required IAM policy, attach it to your SQS queue or SNS topic.
 
 GitLab Support then completes the S3 event notifications configuration on your S3 logs bucket.
+
+To automate the AWS setup, you can use the
+[`terraform-log-collection`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/terraform-log-collection)
+Terraform module. The module creates the notification destination, attaches the required
+destination policy, and creates a read-only IAM role. You then register the role's ARN as a log
+access ARN in Switchboard. The module also outputs the configuration details to include in your
+support request.

@@ -5,6 +5,8 @@ import {
   trackContextAccess,
   ariaCurrent,
   formatAsyncCount,
+  isPinnedGroupExpanded,
+  setPinnedGroupExpanded,
 } from '~/super_sidebar/utils';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -248,6 +250,24 @@ describe('Super sidebar utils spec', () => {
       ${100234}       | ${'100.2k'}
     `('returns `$result` when count is `$asyncCountValue`', ({ asyncCountValue, result }) => {
       expect(formatAsyncCount(asyncCountValue)).toBe(`${result}`);
+    });
+  });
+
+  describe('pinned group collapse state', () => {
+    describe('when local storage is not available', () => {
+      beforeEach(() => {
+        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+      });
+
+      it('isPinnedGroupExpanded defaults to expanded', () => {
+        expect(isPinnedGroupExpanded('project-code')).toBe(true);
+      });
+
+      it('setPinnedGroupExpanded is a no-op', () => {
+        setPinnedGroupExpanded('project-code', false);
+
+        expect(window.localStorage.setItem).not.toHaveBeenCalled();
+      });
     });
   });
 });

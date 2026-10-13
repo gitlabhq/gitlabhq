@@ -4,6 +4,14 @@ internal_events: true
 action: perform_search
 identifiers:
 - user
+additional_properties:
+  property:
+    description: >-
+      Search request ID, used to join this search to its result clicks. Uses the
+      built-in property slot so the ID lands in a dedicated Snowflake column (se_pr)
+      and is queryable without Data team work. Multi-match Zoekt code searches in the
+      web UI emit no perform_search, so they mint no ID and their result clicks cannot
+      be joined to a search.
 product_group: global_search
 product_categories:
 - global_search

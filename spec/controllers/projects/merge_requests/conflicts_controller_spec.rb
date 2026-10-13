@@ -302,11 +302,48 @@ RSpec.describe Projects::MergeRequests::ConflictsController, feature_category: :
       end
     end
 
+    context 'when the conflicts cannot be resolved in the UI' do
+      before do
+        allow(Gitlab::Git::Conflict::Parser).to receive(:parse)
+          .and_raise(Gitlab::Git::Conflict::Parser::UnmergeableFile)
+
+        resolve_conflicts([])
+      end
+
+      it 'returns a 404 without tracking the resolution', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to have_received(:track_resolve_conflict_action)
+      end
+    end
+
+    context 'when a file is not in conflict' do
+      before do
+        resolve_conflicts([
+          {
+            'new_path' => 'files/ruby/version_info.rb',
+            'old_path' => 'files/ruby/version_info.rb',
+            'content' => 'class VersionInfo; end'
+          }
+        ])
+      end
+
+      it 'returns a 400 naming the file without creating a commit', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('File files/ruby/version_info.rb is not in conflict.')
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+
     context 'when a git command error occurs (e.g. pre-receive hook rejection)' do
       before do
         allow_next_instance_of(MergeRequests::Conflicts::ResolveService) do |instance|
-          allow(instance).to receive(:execute)
-                  .and_raise(Gitlab::Git::PreReceiveError.new('GitLab: hook rejected the push'))
+          allow(instance).to receive(:execute).and_return(
+            ServiceResponse.error(
+              message: 'hook rejected the push',
+              reason: MergeRequests::Conflicts::ResolveService::REASON_PRE_RECEIVE
+            )
+          )
         end
 
         resolve_conflicts([])

@@ -34,7 +34,7 @@ These integrations have to do with using GitLab to build application workloads a
 
 [8/14/2023 AWS Release Announcement for GitLab.com](https://aws.amazon.com/about-aws/whats-new/2023/08/aws-codepipeline-supports-gitlab/)
 
-[12/28/2023 AWS Release Announcement for Self-Managed / Dedicated](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)
+[12/28/2023 AWS Release Announcement for GitLab Self-Managed and GitLab Dedicated](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)
 
 **AWS CodeStar Connections** - enables SCM connections to multiple AWS Services.
 [Configure GitLab](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-gitlab.html).
@@ -52,7 +52,7 @@ AWS Services that are supported directly by a CodeStar Connection in an AWS acco
 
 - **AWS Service Catalog** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 - **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
-- **AWS CodeBuild** - [for GitLab.com, self-managed and dedicated - click documentation tabs here](https://docs.aws.amazon.com/codebuild/latest/userguide/create-project-console.html#create-project-console-source). ([03/26/2024](https://aws.amazon.com/about-aws/whats-new/2024/03/aws-codebuild-gitlab-gitlab-self-managed/)) `[AWS Built]`
+- **AWS CodeBuild** - [for GitLab.com, GitLab Self-Managed, and GitLab Dedicated - click documentation tabs here](https://docs.aws.amazon.com/codebuild/latest/userguide/create-project-console.html#create-project-console-source). ([03/26/2024](https://aws.amazon.com/about-aws/whats-new/2024/03/aws-codebuild-gitlab-gitlab-self-managed/)) `[AWS Built]`
 
 Documentation and References:
 

@@ -247,6 +247,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     let(:project) { create(:project) }
 
     context 'when project has no default branch' do
+      let(:project) { build_stubbed(:project) }
+
       before do
         allow(project).to receive(:default_branch).and_return(nil)
       end
@@ -644,7 +646,7 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     context 'new project' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:project) { create(:project) }
+      let(:project) { build_stubbed(:project) }
 
       context 'when the group has set their own default_branch_protection level' do
         where(:default_branch_protection_level, :result) do

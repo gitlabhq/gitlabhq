@@ -23,7 +23,7 @@ RSpec.describe DesignManagement::VersionsFinder do
   describe '#execute' do
     shared_examples 'returns no results' do
       it 'returns no results when passed a DesignCollection' do
-        expect(design_or_collection).is_a?(DesignManagement::DesignCollection)
+        expect(design_or_collection).to be_a(DesignManagement::DesignCollection)
         is_expected.to be_empty
       end
 
@@ -52,7 +52,7 @@ RSpec.describe DesignManagement::VersionsFinder do
 
         describe 'passing a DesignCollection or a Design for the initial scoping' do
           it 'returns the versions scoped to the DesignCollection' do
-            expect(design_or_collection).is_a?(DesignManagement::DesignCollection)
+            expect(design_or_collection).to be_a(DesignManagement::DesignCollection)
             is_expected.to eq(issue.design_collection.versions.ordered)
           end
 

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::Groups::TransferWorker, feature_category: :organization do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:old_organization) { create(:organization) }
+  let_it_be(:group) { create(:group, organization: old_organization) }
   let_it_be(:organization) { create(:organization) }
   let_it_be(:user) { create(:user) }
 

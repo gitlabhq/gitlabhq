@@ -1,7 +1,17 @@
 export const hasCodeQualityReport = (mr) => Boolean(mr?.codequalityReportsPath);
 
+export const hasAccessibilityReport = (mr) => Boolean(mr?.accessibilityReportPath);
+
+export const hasTestSummaryReport = (mr) => Boolean(mr?.testResultsPath);
+
+export const hasTerraformReport = (mr) => Boolean(mr?.terraformReportsPath);
+
 export const hasLicenseComplianceReport = () => false;
+
+export const hasBrowserPerformanceReport = () => false;
 
 export const hasLoadPerformanceReport = () => false;
 
 export const hasMetricsReport = () => false;
+
+export const hasStatusChecksReport = () => false;

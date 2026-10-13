@@ -243,19 +243,36 @@ GitLab Duo features are enabled by default in VS Code when you meet the prerequi
 - For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
   and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
   needed.
+- For Code Suggestions, you meet the [additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
 - Your project is in a [group namespace](../../user/namespace/_index.md).
 - You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
   set or have a project open that has GitLab Duo access.
-- For GitLab Duo Code Suggestions:
-  - You use a [supported language and IDE](../../user/project/repository/code_suggestions/supported_extensions.md).
-  - Optional. To use outside of a GitLab project:
-    1. In VS Code, open the Settings editor:
-       - For macOS, select **Code** > **Preferences** > **Settings**.
-       - For Windows or Linux, select **File** > **Preferences** > **Settings**.
-    1. Select **Extensions** > **GitLab** > **GitLab Duo** > **GitLab › Duo: Enabled Without GitLab Project**.
 
 To approve Agentic Chat tools once per session instead of individually,
 see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
+
+#### Turn Code Suggestions on or off
+
+Code Suggestions is on by default when you meet the above prerequisites.
+
+To turn Code Suggestions on or off in VS Code:
+
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo**.
+1. Under **GitLab › Duo Code Suggestions: Enabled**, select or clear the checkbox.
+1. Optional. To turn off Code Suggestions for specific languages, see
+   [manage languages for Code Suggestions](../../user/project/repository/code_suggestions/supported_extensions.md#manage-languages-for-code-suggestions).
+
+Alternatively, you can [set `gitlab.duoCodeSuggestions.enabled`](settings.md#extension-settings) in the VS Code `settings.json` file.
+
+To use Code Suggestions outside of a GitLab project:
+
+1. In VS Code, open the Settings editor:
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+1. Select **Extensions** > **GitLab** > **GitLab Duo** > **GitLab › Duo: Enabled Without GitLab Project**.
 
 #### Turn off GitLab Duo
 

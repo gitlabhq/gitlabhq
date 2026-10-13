@@ -5,7 +5,7 @@
 # following resources are expected to be set (example):
 #  it_behaves_like 'rate limited service' do
 #    let(:key) { :issues_create }
-#    let(:key_scope) { %i[project current_user external_author] }
+#    let(:key_scope) { { project: :project, user: :current_user, external_author: :external_author } }
 #    let(:application_limit_key) { :issues_create_limit }
 #    let(:service) { described_class.new(project: project, current_user: user, params: { title: 'title' }) }
 #    let(:created_model) { Issue }

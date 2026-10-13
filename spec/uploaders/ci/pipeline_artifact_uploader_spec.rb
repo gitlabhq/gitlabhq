@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integration do
+  include DbKeyBaseHelpers
+
   let(:pipeline_artifact) { create(:ci_pipeline_artifact) }
   let(:uploader) { described_class.new(pipeline_artifact, :file) }
 
@@ -21,6 +23,66 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths', store_dir: %r[\h{2}/\h{2}/\h{64}/pipelines/\d+/artifacts/\d+]
+  end
+
+  describe '#stored_file_missing?' do
+    let(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_pipeline_variables, file_store: file_store) }
+    let(:uploader) { Ci::PipelineArtifact.find(pipeline_artifact.id).file }
+
+    subject(:stored_file_missing) { uploader.stored_file_missing? }
+
+    context 'with local storage' do
+      let(:file_store) { described_class::Store::LOCAL }
+
+      it { is_expected.to be(false) }
+
+      context 'when the file is missing' do
+        before do
+          pipeline_artifact.file.remove!
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    context 'with object storage' do
+      let(:file_store) { described_class::Store::REMOTE }
+
+      before do
+        stub_artifacts_object_storage(described_class)
+      end
+
+      it { is_expected.to be(false) }
+
+      context 'when the file is missing' do
+        before do
+          pipeline_artifact.file.remove!
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when a HEAD request returns no file but the file exists' do
+        before do
+          allow(uploader.file).to receive(:exists?).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the GET request fails' do
+        before do
+          allow(uploader.file).to receive(:exists?).and_return(false)
+          allow_next_instance_of(Fog::AWS::Storage::Files) do |files|
+            allow(files).to receive(:get).and_raise(Excon::Error::Timeout)
+          end
+        end
+
+        it 'raises the error' do
+          expect { stored_file_missing }.to raise_error(Excon::Error::Timeout)
+        end
+      end
+    end
   end
 
   context 'when file is stored in valid local_path' do
@@ -83,6 +145,33 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
     end
   end
 
+  describe 'db_key_base rotation' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    let(:old_key) { Settings.db_key_base_keys.last }
+    let(:new_key) { SecureRandom.hex(64) }
+    let(:content) { [{ key: 'TEST_VAR', value: 'test_value', variable_type: 'env_var', raw: false }].to_json }
+
+    def create_pipeline_artifact
+      create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+    end
+
+    it 'reads files encrypted with the previous key' do
+      pipeline_artifact = create_pipeline_artifact
+      stub_db_key_base_keys(old_key, new_key)
+
+      expect(Ci::PipelineArtifact.find(pipeline_artifact.id).file.read).to eq(content)
+    end
+
+    it 'encrypts new files with the current key' do
+      stub_db_key_base_keys(old_key, new_key)
+      pipeline_artifact = create_pipeline_artifact
+      stub_db_key_base_keys(new_key)
+
+      expect(Ci::PipelineArtifact.find(pipeline_artifact.id).file.read).to eq(content)
+    end
+  end
+
   describe '#encryption_key' do
     let(:pipeline_artifact) { create(:ci_pipeline_artifact) }
     let(:uploader) { described_class.new(pipeline_artifact, :file) }
@@ -92,6 +181,13 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
       key2 = uploader.send(:encryption_key)
 
       expect(key1).to eq(key2)
+    end
+
+    it 'derives the key from db_key_base and the project id' do
+      expect(uploader.send(:encryption_key)).to eq(
+        OpenSSL::HMAC.digest('SHA256', Settings.db_key_base_keys.last,
+          "pipeline_artifact:#{pipeline_artifact.project_id}")
+      )
     end
 
     it 'generates different keys for different projects' do

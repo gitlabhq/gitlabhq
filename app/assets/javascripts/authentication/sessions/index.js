@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { s__ } from '~/locale';
 import PasskeyAuthentication from './components/passkey_authentication.vue';
 import SessionExpireModal from './components/session_expire_modal.vue';
+import { BROADCAST_CHANNEL_SESSION_EXPIRY } from './constants';
 
 export const initPasskeyAuthentication = () => {
   const el = document.getElementById('js-passkey-authentication');
@@ -43,6 +44,8 @@ export const initExpireSessionModal = () => {
     render: (createElement) =>
       createElement(SessionExpireModal, {
         props: {
+          announceShown: true,
+          broadcastChannel: BROADCAST_CHANNEL_SESSION_EXPIRY,
           message,
           sessionTimeout: parseInt(sessionTimeout, 10),
           signInUrl,

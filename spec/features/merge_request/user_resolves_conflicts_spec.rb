@@ -5,12 +5,28 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category: :code_review_workflow do
   include Features::SourceEditorSpecHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { project.creator }
+  let_it_be(:project) { create(:project, :repository) }
+
+  # Re-found rather than `project.creator`: `let_it_be` deep-freezes the project's
+  # associations, and the autosave validation that runs when the user is assigned
+  # as a merge request reviewer writes to the record.
+  let(:user) { User.find(project.creator_id) }
+
+  before_all do
+    project.add_developer(project.creator)
+  end
 
   def create_merge_request(source_branch)
     create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project, merge_status: :unchecked, reviewers: [user]) do |mr|
       mr.mark_as_unmergeable
+    end
+  end
+
+  # Resolving conflicts commits to the source branch, so each example works on
+  # its own copy and `conflict-resolvable` itself stays conflicting.
+  def resolvable_branch_copy
+    "conflict-resolvable-#{SecureRandom.hex(4)}".tap do |name|
+      project.repository.create_branch(name, 'conflict-resolvable')
     end
   end
 
@@ -89,12 +105,11 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
   context 'can be resolved in the UI' do
     before do
-      project.add_developer(user)
       sign_in(user)
     end
 
     context 'the conflicts are resolvable' do
-      let(:merge_request) { create_merge_request('conflict-resolvable') }
+      let(:merge_request) { create_merge_request(resolvable_branch_copy) }
 
       before do
         visit project_merge_request_path(project, merge_request)
@@ -206,7 +221,6 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
       let(:merge_request) { create_merge_request(source_branch) }
 
       before do
-        project.add_developer(user)
         sign_in(user)
         visit project_merge_request_path(project, merge_request)
 

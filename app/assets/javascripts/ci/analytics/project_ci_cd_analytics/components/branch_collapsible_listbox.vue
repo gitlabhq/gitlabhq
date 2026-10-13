@@ -46,7 +46,6 @@ export default {
     projectBranchCount: {
       type: Number,
       required: true,
-      default: 0,
     },
   },
   emits: ['select'],

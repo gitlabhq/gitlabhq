@@ -17,6 +17,7 @@ title: Webhook callbacks
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249145) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
+- `flow.progress` events [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251157) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -29,6 +30,7 @@ When you trigger a flow with the [Flows API](../../../api/duo_agent_platform_flo
 send the flow lifecycle events to a webhook that you specify.
 You can then react when the flow starts, finishes, or fails, instead of polling the API for the
 flow status.
+While the flow runs, you also receive the agent's progress.
 
 You can use webhooks in a project or a group. Child projects inherit webhooks. This means that a
 webhook on a top-level group serves the flows of every project in that group.
@@ -107,18 +109,39 @@ Callbacks carry the same headers as every other webhook event, so configure a si
 the webhook and
 [verify the signature](../../project/integrations/webhooks.md#verify-the-signature).
 
-GitLab can deliver the same event more than once, so make your endpoint idempotent.
+GitLab can deliver the same `flow.started`, `flow.completed`, or `flow.failed` event more than
+once, so make your endpoint idempotent.
 If your endpoint does not return a success or redirect response, GitLab retries the delivery up
 to five times with a backoff.
 Retries repeat the `event_id` from the original payload, so store the `event_id` values you have
 processed and ignore an event you have already seen.
 After the retries are exhausted, GitLab stops trying to deliver that event.
 
-Repeated delivery failures count towards the webhook failure limits, and GitLab can
-[automatically disable the webhook](../../project/integrations/webhooks.md#auto-disabled-webhooks).
+GitLab sends each `flow.progress` event once and does not retry it, because the next progress
+event replaces it.
+Do not wait for a progress event that did not arrive.
+Use the latest progress event you received, and use the `flow.completed` or `flow.failed` event for
+the final outcome.
+For more information, see
+[progress events](../../project/integrations/webhook_events.md#progress-events).
+
+Progress events count towards the
+[webhook rate limit](../../project/integrations/webhooks.md#webhook-limits) of the top-level
+namespace, which all webhooks in the namespace share.
+GitLab drops `flow.progress` events while the namespace is over the limit.
+
+Every failed delivery counts towards the webhook failure limits, including a failed
+`flow.progress` event.
+When the webhook reaches these limits, GitLab
+[automatically disables the webhook](../../project/integrations/webhooks.md#auto-disabled-webhooks)
+for all of its events, not only flow events.
+To prevent this, return a success response for every flow event, including `flow.progress` events
+that your endpoint does not process.
+
 When a webhook is
 [temporarily disabled](../../project/integrations/webhooks.md#temporarily-disabled-webhooks),
-GitLab holds the flow events for that webhook and delivers them after the disabled period ends.
+GitLab drops `flow.progress` events for that webhook.
+GitLab holds the other flow events for that webhook and delivers them after the disabled period ends.
 GitLab holds an event a maximum of three times.
 If the webhook is still disabled, GitLab does not deliver the event.
 GitLab sends no flow events to a

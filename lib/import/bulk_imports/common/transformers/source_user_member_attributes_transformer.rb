@@ -6,7 +6,7 @@ module Import
       module Transformers
         class SourceUserMemberAttributesTransformer
           def transform(context, data)
-            return data if !context.importer_user_mapping_enabled? || data.nil?
+            return data if data.nil?
 
             # user is nil for pending member invitations
             return unless data['user']

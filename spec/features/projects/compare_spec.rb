@@ -130,7 +130,8 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
     wait_for_requests
 
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
-    dropdown.find(".compare-dropdown-toggle").click
+    # GlButton swallows clicks while loading, but only sets aria-disabled, not [disabled]
+    dropdown.find('.compare-dropdown-toggle:not([aria-disabled="true"])').click
     # find input before using to wait for the inputs visibility
     dropdown.find('.gl-new-dropdown-panel')
     dropdown.fill_in("Filter by Git revision", with: selection)

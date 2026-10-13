@@ -14,9 +14,7 @@ module Namespaces
     # Worker to prune pending rows on Namespace::AggregationSchedule
     # It's scheduled to run once a day at 1:05am.
     def perform
-      aggregation_schedules.find_each do |aggregation_schedule|
-        aggregation_schedule.schedule_root_storage_statistics
-      end
+      aggregation_schedules.find_each(&:schedule_root_storage_statistics) # rubocop:disable CodeReuse/ActiveRecord -- false positive, the block-pass is parsed as an argument
     end
 
     private

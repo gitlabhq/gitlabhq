@@ -39,11 +39,11 @@ Each metric is defined in a YAML file consisting of a number of fields:
 | `key_path`                   | yes      | JSON key path for the metric, location in Service Ping payload. |
 | `description`                | yes      |                        |
 | `product_group`              | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
-| `product_categories`         | yes   | `array`; The [feature categories](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml) that the metric represents usage of. |
+| `product_categories`         | yes      | `array`. The [feature categories](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml) that the metric represents usage of. Required for active metrics, except existing legacy exceptions. See [Product categories](#product-categories) for requirements. |
 | `value_type`                 | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type). |
 | `status`                     | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
 | `time_frame`                 | yes      | `string` or `array`; may be set to `7d`, `28d`, `all`, `none` or an array including any of these values except for `none`. |
-| `data_source`                | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`, `license`, `internal_events`. |
+| `data_source`                | yes      | `string`; may be set to a value like `database`, `clickhouse`, `redis`, `redis_hll`, `prometheus`, `system`, `license`, `internal_events`. Use `database` for metrics that query only PostgreSQL. |
 | `data_category`              | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`. |
 | `instrumentation_class`      | no       | `string`; used for metrics with `data_source` other than `internal_events`. See [the class that implements the metric](metrics_instrumentation.md). |
 | `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau`, `customer_health_score`, `devops_report`, `lighthouse`, or `leading_indicator`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
@@ -54,6 +54,19 @@ Each metric is defined in a YAML file consisting of a number of fields:
 | `removed_by_url`             | no       | The URL to the merge request that removed the metric. Required for removed metrics. |
 | `repair_issue_url`           | no       | The URL of the issue that was created to repair a metric with a `broken` status. |
 | `options`                    | no       | `object`: options information needed to calculate the metric value. |
+
+### Product categories
+
+For metrics with `status: active`, `product_categories` must be a non-empty array,
+except for the existing legacy metrics listed in the
+[validation schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema/product_categories.json).
+The field is optional for metrics with `status: broken` or `status: removed`.
+
+If `product_categories` is present on any active, broken, or removed metric,
+including metrics covered by legacy exceptions, every entry must be a string
+that names a valid feature category.
+Do not add new schema exceptions.
+Populate `product_categories` for legacy metrics instead.
 
 ### Metric `key_path`
 
@@ -101,6 +114,8 @@ A metric's time frame is calculated based on the `time_frame` field and the `dat
 | `database`             | `all`      | The whole time the metric has been active (all-time interval) |
 | `database`             | `7d`       | 9 days ago to 2 days ago |
 | `database`             | `28d`      | 30 days ago to 2 days ago |
+| `clickhouse`           | `all`      | The whole time the metric has been active (all-time interval) |
+| `clickhouse`           | `7d`, `28d` | Defined by the query in the instrumentation class |
 | `internal_events`      | `all`      | The whole time the metric has been active (all-time interval) |
 | `internal_events`      | `7d`       | Most recent complete week |
 | `internal_events`      | `28d`      | Most recent 4 complete weeks |

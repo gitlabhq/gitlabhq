@@ -307,7 +307,7 @@ RSpec.describe DeploymentPlatform do
       it { is_expected.to be_nil }
     end
 
-    context 'when project is the cluster\'s management project ' do
+    context "when project is the cluster's management project" do
       let(:another_project) { create(:project, namespace: project.namespace) }
 
       let!(:cluster_with_management_project) do
@@ -352,7 +352,7 @@ RSpec.describe DeploymentPlatform do
         is_expected.to eq(group_cluster.platform_kubernetes)
       end
 
-      context 'when project is the cluster\'s management project ' do
+      context "when project is the cluster's management project" do
         let(:another_project) { create(:project, namespace: project.namespace) }
 
         let!(:cluster_with_management_project) do

@@ -23,8 +23,8 @@ to a distilled principle also changes the automated review feedback Duo posts
 on every merge request that matches the principle's file filters.
 
 Fence regeneration is decoupled from distillation. A distilled principle's
-merge request updates only the `.ai/principles/distilled/*.md` file. A separate
-daily scheduled job reconciles the fences from the merged `master` distilled
+merge request updates only the `.ai/principles/distilled/*.md` file. After it
+merges, a separate CI/CD job reconciles the fences from the merged `master` distilled
 files by pure projection (it copies each file's `distilled_at_sha` and
 `source_checksum` front matter and never re-runs distillation) and opens its
 own merge request. This keeps a team's distilled merge request and the fence
@@ -188,14 +188,33 @@ The weekly distillation sync opens merge requests automatically, labeled
 must verify that the distilled changes faithfully reflect the source-doc
 updates before merging.
 
+Each per-team merge request opens as Draft, and stays Draft while GitLab Duo
+reviews it: automatic GitLab Duo review skips drafts, so the sync explicitly
+requests one. Human reviewers are still assigned at creation, but the Draft
+state is their signal to wait. A later sync run that publishes new distilled
+content to an adopted merge request re-drafts it, even if a human had already
+marked it ready, because the new content needs a fresh GitLab Duo review.
+
 Each per-team merge request's approval is routed to the SSOT-owning team
 through generated per-file CODEOWNERS rules. When reviewing one:
 
-- Compare the distilled diff against the referenced SSOT documentation
-  changes.
-- Confirm no still-valid, SSOT-supported rule was dropped, and no
-  unsupported rule was added.
+- Get the output's `distilled_at_sha` from the distilled file's front matter.
+- Read the principle's entry in `.ai/principles/manifest.yml` at that SHA, including its sources
+  and optional baseline. Read the relevant source sections and baseline at the same SHA.
+- Compare source and manifest changes with the prior `distilled_at_sha` when needed to verify
+  deliberate removals. Check for omitted rules and exceptions as well as unsupported additions.
+- Support each content-loss finding with the source path, SHA, and relevant passage.
+  For an unsupported rule, cite the contradictory passage or identify the source sections and
+  baseline checked and explain the absence of support.
+  Do not report guidance deliberately removed from the source as lost content.
+- If a required source cannot be retrieved, state the limitation in the review summary instead
+  of raising a speculative inline defect.
 - Confirm the front matter checksums were updated by the tool, not by hand.
+
+Code Review Flow retrieves [referenced files](../user/duo_agent_platform/customize/review_instructions.md#reference-files-in-instructions)
+on a best-effort basis and summarizes their contents.
+Keep the source-verification procedure inline in the generated review instructions through
+distillation and fence reconciliation, rather than relying only on a reference link.
 
 ### Acting on automated review feedback
 
@@ -207,6 +226,12 @@ through, not as noise to dismiss.
 If a weekly sync merge request has automated review findings, use the
 [`ai-principles-review-feedback` skill](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.claude/skills/ai-principles-review-feedback/SKILL.md)
 to work through every finding before the merge request is merged.
+
+The maintainer running the skill marks the merge request ready only after a
+GitLab Duo review of the latest revision has succeeded with no outstanding
+actionable findings. Keep the merge request Draft when the review is still
+running, failed, or does not cover the latest revision. Human reviewers start
+after the merge request is ready.
 
 For example:
 
@@ -254,7 +279,7 @@ otherwise recurs every week:
   tracks distillation content loss, so the failure rate is measurable rather
   than anecdotal.
 
-The daily fence-reconcile job opens a separate merge request that changes only
+The fence-reconcile job opens a separate merge request that changes only
 `.gitlab/duo/mr-review-instructions.yaml`. When reviewing one, confirm the
 fence directives match the front matter of the distilled files on `master`. The
 job runs no distillation, so the fence body should never diverge from the
@@ -269,8 +294,8 @@ regardless of the reconcile. Fence _staleness_ is treated by severity:
   guard script), where a stale fence is real drift the author can fix.
 - A non-blocking warning on `master` and on other merge requests caught by the
   broad manifest trigger (including a team's distilled merge request), where
-  staleness is expected transient state until the daily reconcile job catches
-  the fences up. So neither a team's distilled merge request nor an unrelated
+  staleness is expected transient state until the reconcile merge request
+  catches the fences up. So neither a team's distilled merge request nor an unrelated
   `doc/**/*.md` edit inherits a fence-stale failure it cannot fix on its own
   ref.
 

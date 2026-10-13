@@ -1,13 +1,13 @@
 ---
 table_name: packages_package_file_states
 classes:
-  - Geo::PackageFileState
+- Geo::PackageFileState
 feature_categories:
-  - geo_replication
+- geo_replication
 description: Separate table for package files containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520706
 milestone: '18.5'
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
-table_size: large
+table_size: small

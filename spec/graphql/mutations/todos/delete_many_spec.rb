@@ -20,7 +20,7 @@ RSpec.describe Mutations::Todos::DeleteMany, feature_category: :notifications do
     context 'when the action is not called too many times' do
       before do
         allow(Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:bulk_delete_todos, scope: [current_user]).and_return(false)
+          receive(:throttled?).with(:bulk_delete_todos, scope: { user: current_user }).and_return(false)
         )
       end
 
@@ -76,7 +76,7 @@ RSpec.describe Mutations::Todos::DeleteMany, feature_category: :notifications do
     context 'when the action is called too many times' do
       it 'raises error' do
         expect(Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:bulk_delete_todos, scope: [current_user]).and_return(true)
+          receive(:throttled?).with(:bulk_delete_todos, scope: { user: current_user }).and_return(true)
         )
 
         expect do

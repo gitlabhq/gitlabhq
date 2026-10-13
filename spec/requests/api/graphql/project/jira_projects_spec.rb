@@ -47,10 +47,17 @@ RSpec.describe 'query Jira projects', feature_category: :integrations do
     end
 
     before do
+      allow(Gitlab::GraphqlLogger).to receive(:info).and_call_original
+
       post_graphql(query, current_user: current_user)
     end
 
     it_behaves_like 'a working graphql query'
+
+    it 'logs the Jira integration and the Jira projects as connection nodes' do
+      expect(Gitlab::GraphqlLogger).to have_received(:info)
+        .with(a_hash_including(Labkit::Fields::GRAPHQL_CONNECTION_NODES => 3))
+    end
 
     it 'retuns list of jira projects' do
       project_keys = jira_projects.map { |jp| jp['key'] }

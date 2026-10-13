@@ -4,7 +4,7 @@ module Db
       class AbuseReport
         def self.seed
           Gitlab::Seeder.quiet do
-            organization = User.admins.first.organizations.first
+            organization = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin_organization
 
             (::AbuseReport.default_per_page + 3).times do |i|
               username = "#{::Gitlab::Seeder::REPORTED_USER_START}#{::Gitlab::Faker::Internet.unique_username}"
@@ -14,7 +14,8 @@ module Db
                   name: FFaker::Name.name,
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,
-                  password: ::User.random_password
+                  password: ::User.random_password,
+                  organization: organization
                 ) do |user|
                   user.assign_personal_namespace(organization)
                 end

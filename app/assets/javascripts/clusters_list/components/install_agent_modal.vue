@@ -61,7 +61,7 @@ export default {
     CodeBlockHighlighted,
   },
   mixins: [trackingMixin],
-  inject: ['fullPath', 'emptyStateImage'],
+  inject: ['fullPath'],
   props: {
     kasDisabled: {
       type: Boolean,

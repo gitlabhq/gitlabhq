@@ -23,7 +23,7 @@ module API
         tags %w[usage_data]
       end
       params do
-        requires :event, type: String, desc: 'The event name that should be tracked',
+        requires :event, type: String, desc: 'Event name that should be tracked.',
           documentation: { example: 'i_quickactions_page' }
       end
       route_setting :authorization, permissions: :increment_usage_data_metric, boundary_type: :instance
@@ -44,7 +44,7 @@ module API
         tags %w[usage_data]
       end
       params do
-        requires :event, type: String, desc: 'The event name that should be tracked',
+        requires :event, type: String, desc: 'Event name that should be tracked.',
           documentation: { example: 'i_quickactions_page' }
       end
       route_setting :authorization, permissions: :increment_usage_data_metric, boundary_type: :instance
@@ -68,7 +68,7 @@ module API
       end
       params do
         requires :events, type: Array[JSON],
-          desc: "An array of internal events. Maximum #{MAXIMUM_TRACKED_EVENTS} events allowed." do
+          desc: "Array of internal events to track. Maximum of #{MAXIMUM_TRACKED_EVENTS} events." do
           use :event_params
         end
       end
@@ -109,7 +109,7 @@ module API
         tags %w[metrics]
       end
       params do
-        optional :include_paths, type: Boolean, desc: 'Include file paths in the metric definitions',
+        optional :include_paths, type: Boolean, desc: 'If `true`, includes file paths in the metric definitions.',
           documentation: { example: true, default: false }
       end
       route_setting :authorization, skip_granular_token_authorization: :usage_data_auth

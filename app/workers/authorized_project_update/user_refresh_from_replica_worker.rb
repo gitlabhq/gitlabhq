@@ -15,6 +15,8 @@ module AuthorizedProjectUpdate
     deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
     def perform(user_id)
+      return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
+
       ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
         user = User.find_by_id(user_id)
 

@@ -177,14 +177,14 @@ The following table provides attribute mappings that are required for GitLab.
 | Source attribute                                                           | Target attribute               | Matching precedence |
 |:---------------------------------------------------------------------------|:-------------------------------|:--------------------|
 | `objectId`                                                                 | `externalId`                   | 1                   |
-| `userPrincipalName` OR `mail` <sup>1</sup>                                 | `emails[type eq "work"].value` |                     |
+| `userPrincipalName` OR `mail`[^mail-source-attribute]                                 | `emails[type eq "work"].value` |                     |
 | `mailNickname`                                                             | `userName`                     |                     |
-| `displayName` OR `Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
-| `Switch([IsSoftDeleted], , "False", "True", "True", "False")` <sup>3</sup> | `active`                       |                     |
+| `displayName` OR `Join(" ", [givenName], [surname])`[^join-expression]          | `name.formatted`               |                     |
+| `Switch([IsSoftDeleted], , "False", "True", "True", "False")`[^expression-mapping] | `active`                       |                     |
 
-1. Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
-1. Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
-1. This is an expression mapping type, not a direct mapping. Select `Expression` in the **Mapping type** dropdown list.
+[^mail-source-attribute]: Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
+[^join-expression]: Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
+[^expression-mapping]: This is an expression mapping type, not a direct mapping. Select `Expression` in the **Mapping type** dropdown list.
 
 Each attribute mapping has:
 
@@ -220,6 +220,7 @@ During the synchronization process, all new users:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/594044) in GitLab 19.5. Feature flag `bso_minimal_access_fallback` removed.
 
 {{< /history >}}
 
@@ -317,3 +318,8 @@ adding them to the SCIM identity provider.
 After the identity provider performs a sync based on its configured schedule,
 the user's SCIM identity is reactivated and their group memberships are restored.
 Because the linked SAML identity is retained during deprovisioning, users can immediately sign in using SSO.
+
+GitLab processes SCIM deprovisioning asynchronously.
+If you reactivate a user before the process completes, the reactivation request fails.
+For more information, see
+[Error: `User is pending deprovisioning`](troubleshooting_scim.md#error-user-is-pending-deprovisioning).

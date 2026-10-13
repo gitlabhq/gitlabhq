@@ -66,7 +66,8 @@ This file includes:
 
 ## Simple backup procedure
 
-As a rough guideline, if you are using a 1k reference architecture with less than 100 GB of data, then follow these steps:
+For GitLab environments with a PostgreSQL database smaller than 100 GB and where the backup command
+remains practical for your repository data, follow these steps:
 
 1. Run the backup command.
 1. Back up object storage, if applicable.
@@ -74,7 +75,6 @@ As a rough guideline, if you are using a 1k reference architecture with less tha
 
 See also:
 
-- [1k reference architecture](../reference_architectures/1k_users.md)
 - [Backup command details](#backup-command)
 - [Object storage configuration](#object-storage)
 - [Configuration files guide](#storing-configuration-files)
@@ -91,7 +91,7 @@ Further reading:
 
 - [Incremental repository backups](#incremental-repository-backups).
 - [Back up Git repositories concurrently](#back-up-git-repositories-concurrently).
-- [Back up and restore large reference architectures](backup_large_reference_architectures.md).
+- [Back up and restore large GitLab environments](backup_large_reference_architectures.md).
 - [Alternative backup strategies](#alternative-backup-strategies).
 - [Blog post about decreasing GitLab repository backup times](https://about.gitlab.com/blog/how-we-decreased-gitlab-repo-backup-times-from-48-hours-to-41-minutes/).
 

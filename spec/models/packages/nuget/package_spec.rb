@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Nuget::Package, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   describe 'relationships' do
@@ -48,17 +48,6 @@ RSpec.describe Packages::Nuget::Package, type: :model, feature_category: :packag
 
     with_them do
       it { is_expected.to match_array(expected) }
-    end
-  end
-
-  describe '.without_nuget_temporary_name' do
-    let!(:package1) { create(:nuget_package) }
-    let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
-
-    subject(:result) { described_class.without_nuget_temporary_name }
-
-    it 'does not include nuget temporary packages' do
-      expect(result).to eq([package1])
     end
   end
 

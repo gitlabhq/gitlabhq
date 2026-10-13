@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/projects/_project.html.haml', feature_category: :groups_and_projects do
-  let_it_be_with_reload(:project) { create(:project) }
+  let(:project) { build_stubbed(:project) }
 
   before do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)

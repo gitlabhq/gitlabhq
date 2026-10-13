@@ -1,10 +1,52 @@
 import * as ProseMirror from '@tiptap/pm/model';
 import { replaceCommentsWith } from '~/lib/utils/dom_utils';
 
+const CODE_FENCE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+
+const openingFence = (line) => {
+  const [, fence, info] = CODE_FENCE.exec(line) || [];
+
+  if (!fence || (fence.startsWith('`') && info.includes('`'))) return null;
+
+  return fence;
+};
+
+const closesFence = (line, fence) => {
+  const [, closing, rest] = CODE_FENCE.exec(line) || [];
+
+  return (
+    Boolean(closing) && closing[0] === fence[0] && closing.length >= fence.length && !rest.trim()
+  );
+};
+
+// ensure 3 newlines after all quick actions so that
+// any reference style links after it get correctly parsed
+const isolateQuickAction = (line) => line.replace(/^\/(.+)$/, '/$1\n\n');
+
 export const transformQuickActions = (markdown) => {
-  // ensure 3 newlines after all quick actions so that
-  // any reference style links after it get correctly parsed
-  return markdown.replace(/^\/(.+?)\n/gm, '/$1\n\n\n');
+  let fence = null;
+
+  return markdown
+    .split('\n')
+    .map((line, index, lines) => {
+      if (fence) {
+        if (closesFence(line, fence)) fence = null;
+
+        return line;
+      }
+
+      fence = openingFence(line);
+
+      // The final line is skipped deliberately. The regex this replaced,
+      // /^\/(.+?)\n/gm, needed a trailing newline to match, so a quick action
+      // on the last line of a document without one was never isolated. Keeping
+      // that behaviour avoids changing output here; the "a quick action without
+      // a trailing newline" spec pins it.
+      if (fence || index === lines.length - 1) return line;
+
+      return isolateQuickAction(line);
+    })
+    .join('\n');
 };
 
 /**

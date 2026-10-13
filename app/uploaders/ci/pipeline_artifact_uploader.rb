@@ -3,11 +3,12 @@
 module Ci
   class PipelineArtifactUploader < GitlabUploader
     include ObjectStorage::Concern
+    include Gitlab::Encryption::DbKeyBaseLockboxKeys
 
     storage_location :artifacts
 
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
-    encrypt(key: :encryption_key)
+    encrypt(key: :encryption_key, previous_versions: :previous_encryption_key_versions)
 
     alias_method :lockbox_encrypt, :encrypt
 
@@ -32,6 +33,15 @@ module Ci
       end
     end
 
+    # A HEAD request on some Fog providers returns no file for errors other than not found, such as a
+    # timeout on Google Cloud Storage. We confirm with a GET, which returns no file only for a 404.
+    def stored_file_missing?
+      return false if file.exists?
+      return true if file_storage?
+
+      storage.connection.directories.new(key: fog_directory).files.get(file.path).nil?
+    end
+
     def store_dir
       dynamic_segment
     end
@@ -43,11 +53,15 @@ module Ci
     end
 
     def encryption_key
-      OpenSSL::HMAC.digest(
-        'SHA256',
-        Gitlab::Application.credentials.db_key_base,
-        "pipeline_artifact:#{model.project_id}"
-      )
+      db_key_base_lockbox_key(encryption_key_context)
+    end
+
+    def previous_encryption_key_versions
+      db_key_base_lockbox_previous_versions(encryption_key_context)
+    end
+
+    def encryption_key_context
+      "pipeline_artifact:#{model.project_id}"
     end
   end
 end

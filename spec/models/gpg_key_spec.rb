@@ -103,6 +103,18 @@ RSpec.describe GpgKey, feature_category: :source_code_management do
 
       expect(gpg_key.verified_user_infos).to eq([])
     end
+
+    it 'does not include a uid that was revoked, even when the user has confirmed its email' do
+      user = create :user, email: GpgHelpers::UserWithRevokedUid.emails.first
+      create :email, :confirmed, user: user, email: GpgHelpers::UserWithRevokedUid.revoked_emails.first
+      user.reload
+      gpg_key = create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user
+
+      expect(gpg_key.verified_user_infos).to eq([{
+        name: GpgHelpers::UserWithRevokedUid.names.first,
+        email: GpgHelpers::UserWithRevokedUid.emails.first
+      }])
+    end
   end
 
   describe '#emails_with_verified_status' do
@@ -124,6 +136,17 @@ RSpec.describe GpgKey, feature_category: :source_code_management do
         'bette.cartwright@example.net' => true
       )
     end
+
+    it 'does not list an email whose uid was revoked, even when the user owns it' do
+      user = create :user, email: GpgHelpers::UserWithRevokedUid.emails.first
+      create :email, :confirmed, user: user, email: GpgHelpers::UserWithRevokedUid.revoked_emails.first
+      user.reload
+      gpg_key = create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user
+
+      expect(gpg_key.emails_with_verified_status).to eq(
+        GpgHelpers::UserWithRevokedUid.emails.first => true
+      )
+    end
   end
 
   describe '#verified?' do
@@ -138,6 +161,14 @@ RSpec.describe GpgKey, feature_category: :source_code_management do
       user = create :user, email: 'someone.else@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
 
+      expect(gpg_key.verified?).to be_falsey
+    end
+
+    it 'returns false if the only email address in the key belongs to a revoked uid', :aggregate_failures do
+      user = create :user, email: GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first
+      gpg_key = create :gpg_key, key: GpgHelpers::UserWithOnlyRevokedUid.public_key, user: user
+
+      expect(gpg_key.emails_with_verified_status).to eq({})
       expect(gpg_key.verified?).to be_falsey
     end
   end
@@ -173,6 +204,38 @@ RSpec.describe GpgKey, feature_category: :source_code_management do
 
       expect(gpg_key.verified?).to be_truthy
       expect(gpg_key.verified_and_belongs_to_email?('Bette.Cartwright@example.com')).to be_truthy
+    end
+
+    it 'returns false for the email of a revoked uid and true for the live one', :aggregate_failures do
+      user = create :user, email: GpgHelpers::UserWithRevokedUid.emails.first
+      create :email, :confirmed, user: user, email: GpgHelpers::UserWithRevokedUid.revoked_emails.first
+      user.reload
+      gpg_key = create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user
+
+      expect(gpg_key.verified?).to be_truthy
+      expect(gpg_key.verified_and_belongs_to_email?(GpgHelpers::UserWithRevokedUid.revoked_emails.first))
+        .to be_falsey
+      expect(gpg_key.verified_and_belongs_to_email?(GpgHelpers::UserWithRevokedUid.emails.first))
+        .to be_truthy
+    end
+
+    it 'returns false for the email of a revoked uid when that email belongs to another user', :aggregate_failures do
+      create :user, email: GpgHelpers::UserWithRevokedUid.revoked_emails.first
+      user = create :user, email: GpgHelpers::UserWithRevokedUid.emails.first
+      gpg_key = create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user
+
+      expect(gpg_key.verified?).to be_truthy
+      expect(gpg_key.verified_and_belongs_to_email?(GpgHelpers::UserWithRevokedUid.revoked_emails.first))
+        .to be_falsey
+    end
+
+    it 'returns false for every email when every uid of the key is revoked', :aggregate_failures do
+      user = create :user, email: GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first
+      gpg_key = create :gpg_key, key: GpgHelpers::UserWithOnlyRevokedUid.public_key, user: user
+
+      expect(gpg_key.verified?).to be_falsey
+      expect(gpg_key.verified_and_belongs_to_email?(GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first))
+        .to be_falsey
     end
   end
 

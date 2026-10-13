@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_management do
+  using RSpec::Parameterized::TableSyntax
+
   before do
     stub_const('MutatingConstantIterator', Class.new)
 
@@ -43,6 +45,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
   let(:max_lines) { 100 }
   let(:limits) { true }
   let(:expanded) { true }
+  let(:skip_charset_detection) { true }
 
   shared_examples 'overflow stuff' do
     it 'returns the expected overflow values' do
@@ -59,7 +62,8 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
       max_files: max_files,
       max_lines: max_lines,
       limits: limits,
-      expanded: expanded
+      expanded: expanded,
+      skip_charset_detection: skip_charset_detection
     )
   end
 
@@ -541,11 +545,12 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
           limits: limits,
           expanded: expanded,
           generated_files: generated_files,
-          offset_index: offset_index
+          offset_index: offset_index,
+          skip_charset_detection: skip_charset_detection
         )
       end
 
-      let(:iterator) { Gitlab::GitalyClient::DiffStitcher.new(diff_params) }
+      let(:iterator) { Gitlab::GitalyClient::DiffStitcher.new(diff_params, lookahead: true) }
       let(:diff_params) { [diff_1, diff_2, diff_3] }
       let(:diff_1) do
         OpenStruct.new(
@@ -606,6 +611,135 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
           subject { collection.empty? }
 
           it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'with generated_files matching the first patch in the stream' do
+        let(:generated_files) { [diff_1.from_path, diff_2.from_path] }
+        let(:expanded) { false }
+
+        it 'collapses every generated file' do
+          expect(collection.map { |d| [d.new_path, d.generated, d.collapsed?] }).to eq(
+            [
+              [diff_1.to_path, true, true],
+              [diff_2.to_path, true, true],
+              [diff_3.to_path, false, false]
+            ])
+        end
+      end
+
+      context 'with a single patch in the stream' do
+        let(:generated_files) { nil }
+        let(:expanded) { false }
+        let(:diff_params) { [diff_1] }
+
+        it 'auto-expands it' do
+          expect(collection.map(&:expanded)).to eq([true])
+        end
+
+        context 'when that patch is generated' do
+          let(:generated_files) { [diff_1.from_path] }
+
+          it 'collapses it rather than auto-expanding' do
+            expect(collection.map { |d| [d.generated, d.collapsed?] }).to eq([[true, true]])
+          end
+        end
+
+        context 'when that patch is generated and expansion was requested' do
+          let(:generated_files) { [diff_1.from_path] }
+          let(:expanded) { true }
+
+          it 'expands it' do
+            expect(collection.map { |d| [d.generated, d.collapsed?] }).to eq([[true, false]])
+          end
+        end
+      end
+
+      context 'with multiple patches in the stream' do
+        let(:generated_files) { nil }
+        let(:expanded) { false }
+
+        it 'does not auto-expand the first patch' do
+          expect(collection.map(&:expanded)).to eq([false, false, false])
+        end
+      end
+
+      # The generated precedence lives in both the expand_diff? fast path and
+      # legacy_expand_diff?, so pin that the two agree.
+      context 'when charset detection is not skipped' do
+        let(:skip_charset_detection) { false }
+        let(:expanded) { false }
+        let(:generated_files) { [diff_1.from_path, diff_2.from_path] }
+
+        it 'collapses every generated file' do
+          expect(collection.map { |d| [d.generated, d.collapsed?] }).to eq(
+            [
+              [true, true],
+              [true, true],
+              [false, false]
+            ])
+        end
+
+        context 'with a lone generated patch' do
+          let(:diff_params) { [diff_1] }
+
+          it 'collapses it rather than auto-expanding' do
+            expect(collection.map { |d| [d.generated, d.collapsed?] }).to eq([[true, true]])
+          end
+        end
+      end
+
+      # Gitaly emits the overflow marker once it has streamed up to the limit,
+      # so a marker ahead of real content is not expected. Pin the behaviour
+      # anyway: the marker stops iteration, matching what it did before the
+      # look-ahead buffer existed.
+      context 'when the overflow marker is the first patch in the stream' do
+        let(:generated_files) { nil }
+        let(:expanded) { false }
+        let(:overflow_patch) do
+          OpenStruct.new(
+            to_path: "",
+            from_path: "",
+            old_mode: 0100644,
+            new_mode: 0100644,
+            from_id: '357406f3075a57708d0163752905cc1576fceacc',
+            to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+            patch: '',
+            raw_patch_data: '',
+            end_of_patch: true,
+            overflow_marker: true
+          )
+        end
+
+        let(:diff_params) { [overflow_patch, diff_1] }
+
+        it 'stops at the marker and emits nothing after it' do
+          expect(collection.map(&:new_path)).to eq([])
+          expect(collection.overflow?).to be(true)
+        end
+      end
+
+      context 'when the stream cannot be replayed' do
+        let(:generated_files) { nil }
+        let(:expanded) { false }
+
+        # Gitaly's response is consumed once, unlike the Array the other
+        # examples wrap, so a patch read for the look-ahead and then dropped
+        # would be lost rather than re-read.
+        let(:iterator) do
+          patches = [diff_1, diff_2, diff_3]
+          stream = Object.new
+          stream.define_singleton_method(:each) do |&block|
+            block.call(patches.shift) while patches.any?
+          end
+
+          Gitlab::GitalyClient::DiffStitcher.new(stream, lookahead: true)
+        end
+
+        it 'yields every patch exactly once when iteration resumes' do
+          collection.empty? # stops after the first patch
+
+          expect(collection.map(&:new_path)).to eq([diff_1.to_path, diff_2.to_path, diff_3.to_path])
         end
       end
 
@@ -719,6 +853,28 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
           expect(diff.generated).to be true
         end
       end
+
+      # The precedence has to hold on the persisted path too, where `generated`
+      # arrives in the hash rather than from a path lookup.
+      context 'when it is the only file and expansion was not requested' do
+        let(:collection) do
+          described_class.new([{ diff: 'some content', generated: true }], expanded: false)
+        end
+
+        it 'collapses it rather than auto-expanding' do
+          expect(collection.map { |d| [d.generated, d.collapsed?] }).to eq([[true, true]])
+        end
+
+        context 'when the file is not generated' do
+          let(:collection) do
+            described_class.new([{ diff: 'some content', generated: false }], expanded: false)
+          end
+
+          it 'auto-expands it' do
+            expect(collection.map { |d| [d.generated, d.collapsed?] }).to eq([[false, false]])
+          end
+        end
+      end
     end
 
     context 'when diff are too large' do
@@ -739,6 +895,115 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
         end
 
         expect(diff.diff).to eq('')
+      end
+    end
+
+    context 'when deciding whether to expand diffs' do
+      let(:text_patch) { "@@ -1 +1 @@\n-a\n+b\n" }
+      let(:binary_patch) { "\x00\x01\x02\x03".b * 64 }
+      let(:binary_notice_patch) { "Binary files a/img.png and b/img.png differ\n" }
+      let(:iterator) { Array.new(file_count) { { diff: public_send(patch).dup } } }
+
+      # Expansion is allowed when limits are off or expanded is set; otherwise only a single non-binary file expands.
+      where(:expanded, :limits, :file_count, :patch, :expected) do
+        true  | true  | 2 | :binary_patch        | true
+        false | false | 2 | :binary_notice_patch | true
+        false | true  | 1 | :text_patch          | true
+        false | true  | 1 | :binary_patch        | false
+        false | true  | 1 | :binary_notice_patch | false
+        false | true  | 2 | :text_patch          | false
+        false | true  | 2 | :binary_patch        | false
+      end
+
+      with_them do
+        it 'expands the expected files' do
+          expect(subject.to_a.map(&:expanded?)).to all(be(expected))
+        end
+
+        context 'when skip_charset_detection is false' do
+          let(:skip_charset_detection) { false }
+
+          it 'expands the same files' do
+            expect(subject.to_a.map(&:expanded?)).to all(be(expected))
+          end
+        end
+      end
+
+      context 'when scanning patches for binary content' do
+        let(:expanded) { false }
+        let(:patch) { :text_patch }
+        let(:file_count) { 2 }
+
+        it 'skips every patch of a multi-file collection' do
+          expect(subject).not_to receive(:detect_binary?)
+
+          expect(subject.to_a.map(&:expanded?)).to all(be(false))
+        end
+
+        context 'with a single file' do
+          let(:file_count) { 1 }
+
+          it 'scans the patch once' do
+            expect(subject).to receive(:detect_binary?).once.and_call_original
+
+            expect(subject.to_a.map(&:expanded?)).to eq([true])
+          end
+        end
+
+        context 'when expansion is already allowed' do
+          let(:expanded) { true }
+
+          it 'skips every patch' do
+            expect(subject).not_to receive(:detect_binary?)
+
+            expect(subject.to_a.map(&:expanded?)).to all(be(true))
+          end
+        end
+
+        context 'when skip_charset_detection is false' do
+          let(:skip_charset_detection) { false }
+
+          it 'scans every patch' do
+            expect(subject).to receive(:detect_binary?).twice.and_call_original
+
+            expect(subject.to_a.map(&:expanded?)).to all(be(false))
+          end
+        end
+
+        context 'when skip_charset_detection is not passed' do
+          subject { described_class.new(iterator, expanded: expanded) }
+
+          it 'scans every patch' do
+            expect(subject).to receive(:detect_binary?).twice.and_call_original
+
+            expect(subject.to_a.map(&:expanded?)).to all(be(false))
+          end
+        end
+      end
+
+      context 'when building each diff' do
+        let(:patch) { :text_patch }
+        let(:file_count) { 2 }
+
+        it 'tells the diff to skip charset detection' do
+          expect(Gitlab::Git::Diff).to receive(:new)
+            .with(anything, hash_including(skip_charset_detection: true)).twice.and_call_original
+          expect(CharlockHolmes::EncodingDetector).not_to receive(:new)
+
+          expect(subject.to_a.map(&:diff)).to all(eq(text_patch))
+        end
+
+        context 'when skip_charset_detection is false' do
+          let(:skip_charset_detection) { false }
+
+          it 'lets the diff scan its patch' do
+            expect(Gitlab::Git::Diff).to receive(:new)
+              .with(anything, hash_including(skip_charset_detection: false)).twice.and_call_original
+            expect(CharlockHolmes::EncodingDetector).to receive(:new).at_least(:twice).and_call_original
+
+            expect(subject.to_a.map(&:diff)).to all(eq(text_patch))
+          end
+        end
       end
     end
 
@@ -1003,7 +1268,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
       end
 
       let(:diff_params) { [diff_1] }
-      let(:iterator) { Gitlab::GitalyClient::DiffStitcher.new(diff_params) }
+      let(:iterator) { Gitlab::GitalyClient::DiffStitcher.new(diff_params, lookahead: true) }
 
       it 'sets @collapsed_safe_limits' do
         subject.to_a

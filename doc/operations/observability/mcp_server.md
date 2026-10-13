@@ -11,13 +11,14 @@ title: Observability MCP server
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248200) in GitLab 19.3 as an [experiment](../../policy/development_stages_support.md#experiment).
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/632757) from experiment to [beta](../../policy/development_stages_support.md#beta) in GitLab 19.5.
 
 {{< /history >}}
 

@@ -1,7 +1,7 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { initFindFileShortcut } from '~/projects/behaviors';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl, { NAMESPACE_TYPES } from '~/namespaces/leave_by_url';
 import { initUploadFileTrigger } from '~/projects/upload_file';
@@ -11,7 +11,7 @@ import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { initHomePanel } from '~/projects/home_panel';
@@ -82,7 +82,18 @@ const initCodeDropdown = () => {
     projectId,
     projectPath,
     organizationId,
+    customCodeDropdownClients,
   } = codeDropdownEl.dataset;
+
+  let parsedCustomClients = [];
+  try {
+    const parsed = JSON.parse(customCodeDropdownClients || '[]');
+    if (Array.isArray(parsed)) {
+      parsedCustomClients = parsed.map((client) => convertObjectPropsToCamelCase(client));
+    }
+  } catch (_e) {
+    parsedCustomClients = [];
+  }
 
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
     convertObjectPropsToCamelCase(ideData ? JSON.parse(ideData) : {});
@@ -108,6 +119,7 @@ const initCodeDropdown = () => {
       userSettingsSshKeysPath,
       projectId,
       projectPath,
+      customClients: parsedCustomClients,
     },
   });
 };
@@ -128,7 +140,6 @@ const initWikiContent = () => {
 };
 
 initCodeDropdown();
-initFindFileShortcut();
 initEmptyProjectTabs();
 initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link') });
 initWikiContent();

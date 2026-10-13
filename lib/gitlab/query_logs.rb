@@ -30,7 +30,10 @@ module Gitlab
         { db_config_database: ->(context) { ::Gitlab::QueryLogs::Tags.db_config_database(context) } },
         { db_config_name: ->(context) { ::Gitlab::QueryLogs::Tags.db_config_name(context) } },
         { console_hostname: ->(context) { ::Gitlab::QueryLogs::Tags.console_hostname(context) } },
-        { console_username: ->(context) { ::Gitlab::QueryLogs::Tags.console_username(context) } }
+        { console_username: ->(context) { ::Gitlab::QueryLogs::Tags.console_username(context) } },
+        # StatActivitySampler parses this comment with a positional regexp:
+        # append new tags after db_config_database, never insert before it.
+        { feature_category: ->(context) { ::Gitlab::QueryLogs::Tags.feature_category(context) } }
       ]
 
       tags << LINE_TAG if line_enabled?

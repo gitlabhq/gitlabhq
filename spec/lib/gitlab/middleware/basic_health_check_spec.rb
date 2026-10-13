@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'rack'
 
 RSpec.describe Gitlab::Middleware::BasicHealthCheck do
   let(:app) { double(:app) }

@@ -341,8 +341,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, :stub_settings_source, feature_categ
 
         waiter_threads.each.with_index do |thread, i|
           allow(thread).to receive(:join)
-          allow(thread).to receive(:pid).and_return(sidekiq_worker_pids[i])
-          allow(thread).to receive(:value).and_return(process_status)
+          allow(thread).to receive_messages(pid: sidekiq_worker_pids[i], value: process_status)
         end
       end
 

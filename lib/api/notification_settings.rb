@@ -36,8 +36,8 @@ module API
         tags ['notification_settings']
       end
       params do
-        optional :level, type: String, desc: 'The global notification level'
-        optional :notification_email, type: String, desc: 'The email address to send notifications'
+        optional :level, type: String, desc: 'Global notification level.'
+        optional :notification_email, type: String, desc: 'Email address where notifications are sent.'
         NotificationSetting.email_events.each do |event|
           optional event, type: Boolean, desc: 'Enable/disable this notification'
         end
@@ -74,7 +74,7 @@ module API
       source_type = source_class.name.underscore
 
       params do
-        requires :id, type: String, desc: "The #{source_type} ID"
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
       end
       resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Retrieve notification settings for a #{source_type}" do

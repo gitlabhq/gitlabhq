@@ -1,0 +1,14 @@
+<%= docs_render 'page_metadata', title: 'Objects', description: 'Types that represent GitLab resources, such as projects, issues, and users.' %>
+
+An object is a GraphQL type with fields.
+
+<%= docs_render 'deprecation_warning_header' %>
+
+<% sorted_by_name(@objects).each do |type| %>
+
+## <%= name(type) %>
+
+<%= render_object_body(type) %>
+<% end %>
+
+<%= docs_render 'connections' %>

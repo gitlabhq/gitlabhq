@@ -7,19 +7,6 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 
-  let(:user) { create(:user) }
-  let(:target_project) { create(:project, :public, :repository) }
-  let(:source_project) do
-    fork_project(target_project, user, repository: true)
-  end
-
-  let(:merge_request) do
-    create(:merge_request, :simple,
-      source_project: source_project,
-      target_project: target_project,
-      author: user)
-  end
-
   before do
     controller.prepend_view_path('app/views/projects')
 
@@ -28,24 +15,37 @@ RSpec.describe 'projects/merge_requests/_commits.html.haml', :sidekiq_might_not_
     assign(:hidden_commit_count, 0)
   end
 
-  it 'shows commits from source project' do
-    render
+  context 'when MR has commits' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:target_project) { create(:project, :public, :repository) }
+    let_it_be(:source_project) { fork_project(target_project, user, repository: true) }
 
-    commit = merge_request.commits.first # HEAD
-    href = diffs_project_merge_request_path(target_project,
-      merge_request, commit_id: commit)
+    let_it_be(:merge_request) do
+      create(:merge_request, :simple,
+        source_project: source_project,
+        target_project: target_project,
+        author: user)
+    end
 
-    expect(rendered).to have_link(href: href)
-  end
+    it 'shows commits from source project' do
+      render
 
-  it 'shows signature verification badge' do
-    render
+      commit = merge_request.commits.first # HEAD
+      href = diffs_project_merge_request_path(target_project,
+        merge_request, commit_id: commit)
 
-    expect(rendered).to have_css('.js-loading-signature-badge')
+      expect(rendered).to have_link(href: href)
+    end
+
+    it 'shows signature verification badge' do
+      render
+
+      expect(rendered).to have_css('.js-loading-signature-badge')
+    end
   end
 
   context 'when MR has no commits' do
-    let(:merge_request) do
+    let_it_be(:merge_request) do
       create(:merge_request, source_project: create(:project, :custom_repo))
     end
 

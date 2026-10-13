@@ -19,7 +19,6 @@ jest.mock('~/api', () => ({
 
 jest.mock('~/tracking/utils', () => ({
   ...jest.requireActual('~/tracking/utils'),
-  getInternalEventHandlers: jest.fn(),
   isEventEligible: jest.fn(),
 }));
 
@@ -206,10 +205,12 @@ describe('InternalEvents', () => {
   describe('bindInternalEventDocument', () => {
     let disposeBind;
     let trackEventSpy;
+    let addEventListenerSpy;
 
     beforeEach(() => {
       Tracker.enabled.mockReturnValue(true);
       trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
+      addEventListenerSpy = jest.spyOn(document, 'addEventListener');
     });
 
     afterEach(() => {
@@ -222,18 +223,16 @@ describe('InternalEvents', () => {
       disposeBind = InternalEvents.bindInternalEventDocument();
 
       expect(disposeBind).toBe(null);
-      expect(utils.getInternalEventHandlers).not.toHaveBeenCalled();
+      expect(addEventListenerSpy).not.toHaveBeenCalled();
     });
 
     it('should not bind event handlers if already bound', () => {
       disposeBind = InternalEvents.bindInternalEventDocument();
 
-      utils.getInternalEventHandlers.mockReset();
-
       const nextDisposeBind = InternalEvents.bindInternalEventDocument();
 
       expect(nextDisposeBind).toBe(null);
-      expect(utils.getInternalEventHandlers).not.toHaveBeenCalled();
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should bind event handlers when not bound yet', () => {

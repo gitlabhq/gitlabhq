@@ -188,6 +188,53 @@ RSpec.describe HandlesGitalyErrors, feature_category: :source_code_management do
         get :index, format: :atom
       end
     end
+
+    context 'when re-rendering the gitaly-unavailable response itself raises' do
+      def stub_render_to_fail_once
+        call_count = 0
+
+        allow(controller).to receive(:render).and_wrap_original do |original, *args, **kwargs, &block|
+          call_count += 1
+
+          raise StandardError, 'secondary failure' if call_count == 1
+
+          original.call(*args, **kwargs, &block)
+        end
+      end
+
+      it 'tracks the secondary exception' do
+        stub_render_to_fail_once
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(Gitlab::Git::CommandError))
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(StandardError))
+
+        get :index, format: :atom
+      end
+
+      context 'with HTML format' do
+        before do
+          allow(controller.lookup_context).to receive(:exists?).and_return(true)
+        end
+
+        it 'falls back to a plain text 503 instead of raising a 500' do
+          stub_render_to_fail_once
+
+          get :index, format: :html
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+        end
+      end
+
+      context 'with Atom format' do
+        it 'falls back to a plain text 503 instead of raising a 500' do
+          stub_render_to_fail_once
+
+          get :index, format: :atom
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+        end
+      end
+    end
   end
 
   describe '#gitaly_unavailable_message' do

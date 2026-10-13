@@ -8,7 +8,7 @@ import { useServiceAccounts } from '~/service_accounts/stores/service_accounts';
 import CreateEditServiceAccountModal from '~/service_accounts/components/create_edit_service_account_modal.vue';
 import DeleteServiceAccountModal from '~/service_accounts/components/delete_service_account_modal.vue';
 import ServiceAccounts from '~/service_accounts/components/service_accounts.vue';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 
 Vue.use(PiniaVuePlugin);
@@ -16,8 +16,8 @@ Vue.use(PiniaVuePlugin);
 let wrapper;
 
 const findPagination = () => wrapper.findComponent(GlPagination);
-const findPageHeading = () => wrapper.findComponent(PageHeading);
-const findAddServiceAccountButton = () => findPageHeading().findComponent(GlButton);
+const findIndexLayout = () => wrapper.findComponent(IndexLayout);
+const findAddServiceAccountButton = () => findIndexLayout().findComponent(GlButton);
 const findTable = () => wrapper.findComponent(GlTable);
 const findDisclosure = () => wrapper.findComponent(GlDisclosureDropdown);
 const findDisclosureButton = (index) =>
@@ -266,7 +266,7 @@ describe('Service accounts', () => {
   describe('header', () => {
     it('shows the page heading', () => {
       createComponent();
-      const heading = findPageHeading();
+      const heading = findIndexLayout();
 
       expect(heading.text()).toContain(
         'Service accounts are non-human accounts that allow interactions between software applications, systems, or services. Learn more',

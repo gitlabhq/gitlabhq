@@ -19,7 +19,7 @@ module API
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       params do
-        requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: '11' }
+        requires :id, type: String, desc: 'ID or URL-encoded path of the project.', documentation: { example: '11' }
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all project pipelines' do
@@ -37,37 +37,37 @@ module API
         params do
           use :pagination
           optional :scope,    type: String, values: %w[running pending finished branches tags],
-            desc: 'The scope of pipelines',
+            desc: 'Return pipelines in the specified scope.',
             documentation: { example: 'pending' }
           optional :status,   type: String, values: ::Ci::HasStatus::AVAILABLE_STATUSES,
-            desc: 'The status of pipelines',
+            desc: 'Return pipelines with the specified status.',
             documentation: { example: 'pending' }
-          optional :ref,      type: String, desc: 'The ref of pipelines',
+          optional :ref,      type: String, desc: 'Return pipelines for the specified branch or tag.',
             documentation: { example: 'develop' }
-          optional :sha,      type: String, desc: 'The sha of pipelines',
+          optional :sha,      type: String, desc: 'Return pipelines for the specified commit SHA.',
             documentation: { example: 'a91957a858320c0e17f3a0eca7cfacbff50ea29a' }
-          optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations',
+          optional :yaml_errors, type: Boolean, desc: 'If `true`, returns only pipelines with invalid configurations.',
             documentation: { example: false }
-          optional :username, type: String, desc: 'The username of the user who triggered pipelines',
+          optional :username, type: String, desc: 'Return pipelines triggered by the specified username.',
             documentation: { example: 'root' }
-          optional :updated_before, type: DateTime, desc: 'Return pipelines updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :updated_before, type: DateTime, desc: 'Return pipelines updated on or before the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :updated_after, type: DateTime, desc: 'Return pipelines updated on or after the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :order_by, type: String, values: ::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
-            desc: 'Order pipelines',
+            desc: 'Sort results by the specified field.',
             documentation: { example: 'status' }
           optional :sort,     type: String, values: %w[asc desc], default: 'desc',
-            desc: 'Sort pipelines',
+            desc: 'Sort results in ascending or descending order.',
             documentation: { example: 'asc' }
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys,
             desc: 'The source of pipelines',
             documentation: { example: 'push' }
-          optional :name,     types: String, desc: 'Filter pipelines by name',
+          optional :name,     types: String, desc: 'Return pipelines with the specified name.',
             documentation: { example: 'Build pipeline' }
         end
 
@@ -140,7 +140,7 @@ module API
           tags ['pipelines']
         end
         params do
-          optional :ref, type: String, desc: 'Branch ref of pipeline. Uses project default branch if not specified.',
+          optional :ref, type: String, desc: 'Branch or tag to check for the latest pipeline. If omitted, uses the default branch.',
             documentation: { example: 'develop' }
         end
 
@@ -162,7 +162,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authentication, job_token_allowed: true
@@ -187,14 +187,17 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
-          optional :include_retried, type: Boolean, default: false, desc: 'Includes retried jobs'
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
+          optional :include_retried, type: Boolean, default: false, desc: 'If `true`, includes retried jobs in the response.'
           use :optional_scope
           use :pagination
         end
 
+        # Unlisted pending removal: superseded by get_pipeline with include: ["jobs"]
+        # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
         route_setting :mcp, tool_name: :get_pipeline_jobs, toolset: :ci,
-          params: [:id, :pipeline_id, :per_page, :page], resource_name: "pipeline"
+          params: [:id, :pipeline_id, :per_page, :page], resource_name: "pipeline",
+          unlisted: true
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds],
@@ -226,7 +229,7 @@ module API
           deprecated true
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
           use :optional_scope
           use :pagination
         end
@@ -252,7 +255,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
           use :optional_scope
           use :pagination
         end
@@ -267,8 +270,7 @@ module API
         end
 
         desc 'List all pipeline variables' do
-          detail 'Lists all pipeline variables for a specified pipeline. Use the `page` and `per_page` pagination ' \
-            'parameters to control the pagination of results.'
+          detail 'Lists all pipeline variables for a specified pipeline.'
           success status: 200, model: Entities::Ci::Variable
           failure [
             { code: 401, message: 'Unauthorized' },
@@ -279,7 +281,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :read_pipeline_variable, boundary_type: :project
@@ -300,7 +302,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :read_pipeline_test_report, boundary_type: :project
@@ -323,7 +325,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :read_pipeline_test_report_summary, boundary_type: :project
@@ -336,11 +338,11 @@ module API
         desc 'Delete a pipeline' do
           detail 'Deletes a specified pipeline for a project.'
           success code: 204, message: 'Pipeline was deleted'
-          failure [[403, 'Forbidden']]
+          failure [[403, 'Forbidden'], [429, 'Too Many Requests']]
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :mcp,
@@ -355,7 +357,13 @@ module API
           reject_if_build_artifacts_size_refreshing!(pipeline.project)
 
           destroy_conditionally!(pipeline) do
-            ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+            response = ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+
+            if response.reason == :rate_limited
+              too_many_requests!(
+                response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:pipeline_delete)
+              )
+            end
           end
         end
 
@@ -372,8 +380,8 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
-          requires :name, type: String, desc: 'The name of the pipeline', documentation: { example: 'Deployment to production' }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
+          requires :name, type: String, desc: 'New name of the pipeline.', documentation: { example: 'Deployment to production' }
         end
         route_setting :mcp,
           tool_name: :update_pipeline,
@@ -404,12 +412,14 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 409, message: 'Conflict' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :retry_pipeline, boundary_type: :project
@@ -431,12 +441,13 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :cancel_pipeline, boundary_type: :project
@@ -445,7 +456,11 @@ module API
 
           # TODO: inconsistent behavior: when pipeline is not cancelable we should return an error
           # Set to be fixed on V5 to avoid breaking changes: https://gitlab.com/gitlab-org/gitlab/-/issues/519143
-          ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
+          response = ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
+
+          if response.error? && response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:pipeline_cancel))
+          end
 
           status 200
           present pipeline.reset, with: Entities::Ci::Pipeline

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_house, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::ClickHouse::AcquiredCount, :click_house,
+  feature_category: :value_stream_management do
   include_context 'with agent_platform_sessions ClickHouse aggregation engine'
   include_context 'with 3-day agent_platform_sessions window data'
 

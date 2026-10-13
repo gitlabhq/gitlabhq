@@ -226,6 +226,33 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
     end
   end
 
+  context 'when a prefixed GraphQL resource header matches the stored ETag', :clean_gitlab_redis_cache do
+    let(:path) { '/api/graphql' }
+    let(:resource_header) { '/api/graphql:pipelines/id/1' }
+    let(:etag) { Gitlab::EtagCaching::Store.new.touch(resource_header) }
+    let(:if_none_match) { %(W/"#{etag}") }
+
+    # The frontend sends eTag-cached GraphQL queries as POST to avoid URL length limits,
+    # so a 304 on POST is intentional even though HTTP only defines it for GET and HEAD.
+    where(:request_method) { %w[GET POST] }
+
+    with_them do
+      it 'returns a cached 304 response without calling the app', :aggregate_failures do
+        env = build_request(path, if_none_match, request_method: request_method).merge(
+          'HTTP_X_GITLAB_GRAPHQL_RESOURCE_ETAG' => resource_header
+        )
+
+        expect(app).not_to receive(:call)
+
+        status, headers, body = middleware.call(env)
+
+        expect(status).to eq(304)
+        expect(headers).to include('ETag' => if_none_match, 'X-Gitlab-From-Cache' => 'true')
+        expect(body).to be_empty
+      end
+    end
+  end
+
   context 'when If-None-Match header does not match ETag in store' do
     let(:path) { enabled_path }
     let(:if_none_match) { 'W/"abc"' }
@@ -299,11 +326,11 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
     end
   end
 
-  def build_request(path, if_none_match)
+  def build_request(path, if_none_match, request_method: 'GET')
     { 'PATH_INFO' => path,
       'HTTP_IF_NONE_MATCH' => if_none_match,
       'rack.input' => '',
-      'REQUEST_METHOD' => 'GET',
+      'REQUEST_METHOD' => request_method,
       'REMOTE_ADDR' => '127.0.0.1' }
   end
 

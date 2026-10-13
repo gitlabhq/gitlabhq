@@ -10,13 +10,16 @@ title: Experiment rollouts and feature flags
 Each experiment should have an [experiment rollout](https://gitlab.com/groups/gitlab-org/-/boards/1352542) issue to track the experiment from rollout through to cleanup and removal.
 The rollout issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment.
 
-When an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
+Create the rollout issue from the [Experiment Rollout issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md) during implementation.
+Set its due date when you create it, to the planned end of the experiment run, and adjust it if the run slips.
 After the deadline, the issue must be resolved and either:
 
 - It was successful and the experiment becomes the new default.
 - It was not successful and all code related to the experiment is removed.
 
 In either case, an outcome of the experiment should be posted to the issue with the reasoning for the decision.
+The scoped `experiment::` label on the rollout issue tracks the experiment's status, and the cleanup issue follows the outcome label.
+For the `experiment::` labels, see the [Growth experimentation handbook](https://handbook.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-rollout-issue).
 
 ## Experiment validation approach
 
@@ -24,18 +27,23 @@ Validate an experiment at different stages of the development lifecycle:
 
 | Stage | What to validate | Tools |
 |-------|-----------------|-------|
-| Local development | Event structure (schema, fields, values). | [Snowplow Micro](../internal_analytics/internal_event_instrumentation/local_setup_and_debugging.md#snowplow-micro). |
-| Staging | Events are received in Snowplow. | [Growth Experiment Event Validation Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard). |
-| Production | Events flow into Snowflake correctly. | [GLEX Experiment Analysis Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard). |
+| Local development and CI | Event shape: which events fire for each variant, their category, action, and label, and the `gitlab_experiment` context. | A feature spec that asserts a [tracking journey contract](../internal_analytics/capturing_snowplow_events_in_specs.md#assert-a-tracking-journey-contract). Optionally, [Snowplow Micro](../internal_analytics/internal_event_instrumentation/local_setup_and_debugging.md#snowplow-micro). |
+| Staging | Each variant behaves as expected (user acceptance testing), and events are received. | [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/), to force each variant and check event counts. Optionally, the [Growth Experiment Event Validation Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard), which shows the same data. |
+| Production | Events flow into Snowflake correctly. | [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/). Optionally, the [GLEX Experiment Analysis Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard), which shows the same data. |
 
-Event structure validation must happen during local development.
-By the time an experiment reaches staging, the event structure should already be verified.
-Staging and production validation focuses only on confirming events flow through the pipeline.
+The feature spec proves the event shape before code review, and CI proves it again on every pipeline.
+Staging and production do not re-validate the shape.
+They confirm that events flow through the pipeline.
 
-Before deploying to staging, paste the raw Snowplow Micro output into the rollout issue
-as proof of correct event structure.
-For the expected format, see the
-[Experiment Rollout issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md).
+Before review, record the proof in the rollout issue.
+Include the contract and feature spec paths, the passing run, and the captured `events.yml` for each variant.
+The run writes these files.
+For more information, see [Read the events a spec captured](../internal_analytics/capturing_snowplow_events_in_specs.md#read-the-events-a-spec-captured).
+The rollout issue template shows the expected format.
+
+Staging user acceptance testing gates the production rollout.
+Event counts do not.
+The dashboard refreshes daily and events can take 24 hours or more to appear, so do not hold the rollout for them.
 
 ## Turn off all experiments
 

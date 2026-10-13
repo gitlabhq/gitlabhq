@@ -8,7 +8,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   include RapidDiffsDiscussionHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
@@ -16,7 +16,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   let(:user) { create(:user) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, so before_all cannot access it
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
@@ -81,13 +81,77 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
           # Check the same comments in the side-by-side view.
           select_parallel_view
-          wait_for_requests
 
           second_file = diff_file(sample_compare.changes[1][:file_path])
           expect(second_file).to have_content('Line is wrong')
 
           first_file = diff_file(sample_compare.changes[0][:file_path])
           expect(first_file).to have_content('Line is correct')
+        end
+      end
+
+      context 'when the comment sits at a repositioned line' do
+        let(:commented_diff_file) do
+          merge_request.diffs.diff_files.find { |file| file.text? && file.diff_lines.any?(&:added?) }
+        end
+
+        let(:commented_line) { commented_diff_file.diff_lines.find(&:added?).new_pos }
+
+        let(:created_position) do
+          build(:text_diff_position, :added,
+            file: commented_diff_file.new_path,
+            new_line: commented_line,
+            diff_refs: merge_request.diff_refs
+          )
+        end
+
+        let(:repositioned_position) do
+          build(:text_diff_position, :added,
+            file: commented_diff_file.new_path,
+            new_line: commented_line + 10,
+            diff_refs: project.commit('master').diff_refs
+          )
+        end
+
+        let(:commented_file) { diff_file(commented_diff_file.new_path) }
+
+        let(:note_traits) { [] }
+
+        before do
+          note = create(:diff_note_on_merge_request, *note_traits,
+            project: project,
+            noteable: merge_request,
+            position: created_position,
+            note: 'Line moved since this comment'
+          )
+          note.update!(position: repositioned_position)
+
+          visit(diffs_project_merge_request_path(project, merge_request))
+        end
+
+        it 'hides and shows a comment' do
+          expect(commented_file).to have_content('Line moved since this comment')
+
+          within(commented_file) { find_by_testid('collapse-toggle', match: :first).click }
+
+          expect(commented_file).not_to have_content('Line moved since this comment')
+
+          within(commented_file) { find_by_testid('gutter-avatar', match: :first).click }
+
+          expect(commented_file).to have_content('Line moved since this comment')
+        end
+
+        context 'when the comment is resolved and starts collapsed' do
+          let(:note_traits) { [:resolved] }
+
+          it 'shows a comment' do
+            expect(commented_file).to have_testid('gutter-avatar')
+            expect(commented_file).not_to have_content('Line moved since this comment')
+
+            within(commented_file) { find_by_testid('gutter-avatar', match: :first).click }
+
+            expect(commented_file).to have_content('Line moved since this comment')
+          end
         end
       end
     end

@@ -9,6 +9,4 @@ export const TIERS = Object.freeze({
   ADD_ON: 'add_on',
 });
 
-export const FEEDBACK_ISSUE_URL = 'https://gitlab.com/gitlab-org/gitlab/-/work_items/604008';
-
 export const ITEMS_PER_RENDER_FRAME = 18;

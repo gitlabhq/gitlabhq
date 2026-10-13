@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > User renames a project', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
   before do
@@ -75,7 +75,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
   end
 
   context 'when changing project path', :js do
-    let(:project) { create(:project, :repository, namespace: user.namespace, path: 'gitlabhq') }
+    let_it_be_with_refind(:project) { create(:project, :repository, namespace: user.namespace, path: 'gitlabhq') }
 
     before(:context) do
       TestEnv.clean_test_path

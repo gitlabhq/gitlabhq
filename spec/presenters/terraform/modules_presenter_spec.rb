@@ -6,8 +6,15 @@ RSpec.describe ::Terraform::ModulesPresenter do
   let_it_be(:project) { create(:project) }
   let_it_be(:module_system) { 'my-system' }
   let_it_be(:package_name) { "my-module/#{module_system}" }
-  let_it_be(:package1) { create(:terraform_module_package, version: '1.0.1', project: project, name: package_name) }
-  let_it_be(:package2) { create(:terraform_module_package, version: '1.0.10', project: project, name: package_name) }
+  let_it_be(:package1) do
+    create(:terraform_module_package, version: '1.0.1', project: project, name: package_name,
+      without_package_files: true)
+  end
+
+  let_it_be(:package2) do
+    create(:terraform_module_package, version: '1.0.10', project: project, name: package_name,
+      without_package_files: true)
+  end
 
   let(:packages) { ::Packages::TerraformModule::Package.for_projects(project).with_name(package_name) }
   let(:presenter) { described_class.new(packages, module_system) }

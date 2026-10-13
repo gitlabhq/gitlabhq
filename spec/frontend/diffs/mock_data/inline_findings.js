@@ -1,4 +1,4 @@
-export const multipleFindingsArrCodeQualityScale = [
+const multipleFindingsArrCodeQualityScale = [
   {
     severity: 'minor',
     description: 'mocked minor Issue',
@@ -38,7 +38,7 @@ export const multipleFindingsArrCodeQualityScale = [
   },
 ];
 
-export const multipleFindingsArrSastScale = [
+const multipleFindingsArrSastScale = [
   {
     severity: 'low',
     description: 'mocked low Issue',
@@ -85,49 +85,12 @@ export const multipleFindingsArrSastScale = [
   },
 ];
 
-export const diffCodeQuality = {
-  diffFile: { file_hash: '123' },
-  diffLines: [
-    {
-      left: {
-        type: 'old',
-        old_line: 1,
-        new_line: null,
-        codequality: [],
-        lineDrafts: [],
-      },
-    },
-    {
-      left: {
-        type: null,
-        old_line: 2,
-        new_line: 1,
-        codequality: [],
-        lineDrafts: [],
-      },
-    },
-    {
-      left: {
-        type: 'new',
-        old_line: null,
-        new_line: 2,
-
-        codequality: [multipleFindingsArrCodeQualityScale[0]],
-        lineDrafts: [],
-      },
-    },
-  ],
-};
-
 export const singularCodeQualityFinding = [multipleFindingsArrCodeQualityScale[0]];
 export const singularSastFinding = [multipleFindingsArrSastScale[0]];
 export const singularSastFindingDetected = [multipleFindingsArrSastScale[0]];
 export const singularSastFindingDismissed = [multipleFindingsArrSastScale[1]];
 
-export const twoSastFindings = multipleFindingsArrSastScale.slice(0, 2);
 export const fiveCodeQualityFindings = multipleFindingsArrCodeQualityScale.slice(0, 5);
-export const threeCodeQualityFindings = multipleFindingsArrCodeQualityScale.slice(0, 3);
-
 export const filePath = 'testPath';
 export const scale = 'exampleScale';
 

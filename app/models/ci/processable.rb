@@ -246,7 +246,7 @@ module Ci
     end
 
     def with_resource_group?
-      self.resource_group_id.present?
+      resource_group_id.present?
     end
 
     # Overriding scheduling_type enum's method for nil `scheduling_type`s
@@ -286,7 +286,7 @@ module Ci
       Ci::Build
         .id_in(build_ids)
         .in_partition(partition_ids)
-        .builds_with_accessible_artifacts(self.project_id)
+        .builds_with_accessible_artifacts(project_id)
     end
 
     def all_dependencies

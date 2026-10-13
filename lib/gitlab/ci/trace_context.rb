@@ -11,6 +11,7 @@ module Gitlab
     module TraceContext
       TRACE_ID_HEX_LENGTH = 32
       SPAN_ID_HEX_LENGTH = 16
+      EXPORT_JOB_SPAN_KIND = :export
 
       class << self
         # Deterministic trace ID from the root pipeline's database ID.
@@ -25,6 +26,10 @@ module Gitlab
         def span_id_for_job(root_pipeline_id, job_id, kind = :default)
           input = "#{root_pipeline_id}:#{job_id}:#{kind}"
           ::OpenSSL::Digest::SHA256.hexdigest(input)[0, SPAN_ID_HEX_LENGTH]
+        end
+
+        def export_job_span_id(root_pipeline_id, job_id)
+          span_id_for_job(root_pipeline_id, job_id, EXPORT_JOB_SPAN_KIND)
         end
 
         # Span ID for a pipeline span (used by PipelineToTraces export).

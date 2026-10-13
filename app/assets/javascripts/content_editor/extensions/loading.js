@@ -61,6 +61,10 @@ export default Node.create({
     };
   },
 
+  renderHTML() {
+    return ['span'];
+  },
+
   addProseMirrorPlugins() {
     return [loadingPlugin];
   },

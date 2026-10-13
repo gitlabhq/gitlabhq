@@ -8,6 +8,7 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { EXPLORE_PROJECTS_TABS } from '~/explore/projects/constants';
 
 Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 export const createRouter = (basePath) => {
   return new VueRouter({

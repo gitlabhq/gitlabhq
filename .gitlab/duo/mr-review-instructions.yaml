@@ -29,6 +29,16 @@ instructions:
          - Flag direct references to `EE::` namespaced classes in CE code
          - This prevents FOSS build failures
          - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md
+  - name: Code Comments
+    fileFilters:
+      - "**/*"
+    instructions: |
+      1. Prefer self-documenting code over comments (descriptive names, small single-purpose methods, extracted variables)
+      2. Flag comments that describe *what* or *how* the code works - suggest removing them or restructuring the code instead
+      3. Comments that explain *why* (workarounds, edge cases, constraints) are fine - suggest shortening them if they exceed a few lines
+      4. Do not flag required documentation comments in any language: documentation tags (YARD `@param`/`@return`, JSDoc tags) plus a one-line summary of the method, class, or module; linter directives with justifications such as `rubocop:disable` or `eslint-disable`; magic comments such as `frozen_string_literal`
+      5. Flag comments that describe future work (`TODO`, "to be removed") without a full issue URL; linter directives such as `rubocop:todo` are exempt as required documentation comments
+      - Reference: https://docs.gitlab.com/development/code_comments/
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"
@@ -55,8 +65,7 @@ instructions:
         - Verify the query returns expected records (not zero rows)
         - Check that maximum query execution time is under 100ms
         - Ensure the query plan reflects the complete query as executed by the database, including all chained scopes, pagination, ordering, and any other modifiers - not a partial or simplified version of the query
-      11. Flag comments that only describe what code does (e.g., "# Loop through users") rather than why. Suggest removing these comments and using better naming or method extraction instead
-      12. For ActiveRecord callbacks (before_validation, before_save, after_save, etc.):
+      11. For ActiveRecord callbacks (before_validation, before_save, after_save, etc.):
           - Verify callbacks only modify data on the current model, not associated records
           - Question if callback logic should be in a service layer instead
           - Ask: "Why use this callback instead of explicit method calls in the service/controller?"
@@ -64,7 +73,7 @@ instructions:
           - Flag bulk operations on associated records in callbacks (performance concern as associations grow)
           - Acceptable uses: data normalization on current model only (trimming whitespace, setting defaults)
           - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/backend/ruby_style_guide.md#avoid-activerecord-callbacks
-      13. To exclude records already loaded in memory, prefer `collection.excluding(record)` (alias `without`) over a hand-written `where.not(id: record)`.
+      12. To exclude records already loaded in memory, prefer `collection.excluding(record)` (alias `without`) over a hand-written `where.not(id: record)`.
           - Do not pass a relation to `excluding`; for query results use `where.not(id: relation)`, which runs as a single subquery.
           - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/backend/ruby_style_guide.md#prefer-excluding-for-records-already-loaded-in-memory
 
@@ -108,8 +117,8 @@ instructions:
       - Reference: https://docs.gitlab.com/development/database_review/#preparation-when-adding-tables
 
   # >>> generated: database-migrations — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
-  # source_checksum: 5af32b07ba97daf7
+  # distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
+  # source_checksum: 16011c5a8ddff0f8
   - name: Database Migrations
     fileFilters:
       - "db/migrate/**/*.rb"
@@ -181,6 +190,7 @@ instructions:
       - DO NOT use `change_column` to add/remove constraints — it rewrites the entire column definition inefficiently
       - Remove a non-nullable column's default value in a post-deployment migration, not in the same migration that adds the column
       - Follow the `SafelyChangeColumnDefault` two-release process when changing a column default that application code may explicitly write
+      - When a nullable column must never be written as `NULL` (for example, a `NULL` row would escape a partial unique index), assign the value in an unconditional `before_create` callback; DO NOT rely on a Rails `attribute` default, which does not override an explicit `nil`
       - When renaming or changing the type of a column referenced by a database view, recreate the view as part of the migration to point to the new column
 
       ### Dropping Tables
@@ -207,7 +217,7 @@ instructions:
       - Use `add_timestamps_with_timezone`, `timestamps_with_timezone`, or `datetime_with_timezone` instead of `add_timestamps`, `timestamps`, or `:datetime`
       - Store `encrypts` attributes as `:jsonb`, not `:text`
       - Add a length validation (≤ 510) for encrypted attributes stored in JSONB columns
-      - Use `JsonSchemaValidator` with a `size_limit` (recommended max 64 KB) for all JSONB columns
+      - Use `JsonSchemaValidator` with a `size_limit` (recommended max 64 KB) for all JSONB columns (enforced by the `JsonbSizeLimit` cop)
       - DO NOT store unbounded JSONB data; use object storage and store references for large datasets
       - Follow the multi-step process when adding/removing properties in JSONB columns validated with `additionalProperties: false`: add the property to the schema first (without marking it `required`), then add code that uses it after full deployment; for removal, remove code first, then data, then the schema entry — each step in a separate release for self-managed, or after full deployment for GitLab.com-only properties
 
@@ -291,8 +301,8 @@ instructions:
   # <<< end generated: database-migrations
 
   # >>> generated: cells-fundamentals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
-  # source_checksum: e72383a0b25128dc
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 605835c78bb55d12
   - name: Cells Architecture
     fileFilters:
       - "db/docs/**/*.yml"
@@ -451,8 +461,8 @@ instructions:
       - Reference: https://docs.gitlab.com/development/feature_flags/
 
   # >>> generated: authentication — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
-  # source_checksum: 4f4508ed3a4c3e52
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 8d322b6c0380b1f4
   - name: Authentication & Authorization Security
     fileFilters:
       # Controllers / entry points
@@ -585,15 +595,12 @@ instructions:
 
       ### SAML
 
-      - When modifying `extern_uid` through the API, set `trusted_extern_uid` to `false`; the base OAuth login class (`lib/gitlab/auth/o_auth/user.rb`) checks `trusted_extern_uid?` before resolving the user — when overriding user lookup in a subclass, verify the override also checks this flag.
       - Validate SAML `RelayState` parameters before using them as redirect targets (past incident: open redirect via unvalidated RelayState in SAML Single Logout).
       - Validate the XML signature on every SAML response and verify the signed element is the assertion being trusted — defends against XML signature wrapping (past incident: [#486565](https://gitlab.com/gitlab-org/gitlab/-/issues/486565) — unauthenticated SAML sign-in bypass).
 
       ### Identity Linking and extern_uid
 
-      - DO NOT update `extern_uid` without setting `trusted_extern_uid` to `false`; unverified `extern_uid` changes can enable account takeover.
-      - When overriding user lookup in OAuth subclasses (for example, `GroupSaml::User`), verify the override checks `trusted_extern_uid?`; the base class checks this but overrides can bypass it.
-      - DO NOT resolve users solely by `extern_uid` without verifying the identity is trusted (`trusted_extern_uid?`).
+      - DO NOT resolve users solely by `extern_uid` without verifying the identity is trusted (the provider must establish that the UID belongs to the account).
 
       ### Two-Factor Authentication
 
@@ -625,8 +632,11 @@ instructions:
       - DO NOT use the standard authorization code flow (browser consent) for composite identity service accounts; service accounts are bot users that cannot sign in interactively.
       - Ensure composite identity OAuth token scopes include the concrete dynamic scope `user:$ID` for the human user who originated the AI request, plus any required base scopes (for example, `api`).
       - Always use `Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)` to resolve the actor for any write operation; DO NOT determine the composite identity context manually.
-      - Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, issues/MRs, commits, pipeline user context).
+      - Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, system notes, pipeline user context). Exception: DO NOT use `resolve_composite_identity_actor` to set the author of a merge request — the MR author must always be the human user (`current_user` before composite identity resolution), even in the `:authentication` context, to preserve the self-approval guard (`merge_requests_author_approval` defaults to false).
+      - For human-initiated Git CLI commits in the `:authentication` context, set the human user as the commit `committer` and the service account as the commit `author`; DO NOT swap these roles — keeping the human as committer preserves segregation of duties when `merge_requests_disable_committers_approval` is enabled. Exception: for autonomous triggers with no human initiator, set the service account as both commit `author` and `committer`.
       - Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually. In the `:authentication` context, audit events store `author_name` as `<service account name> on behalf of @<human username>` truncated to 255 characters, and record `human_author_id`, `human_author_name`, and `human_author_username` in event `details`; in the `:permission_check` context the human remains the author and no `human_author_*` keys are added (GitLab 19.3 and later).
+      - Link at most one service account with `:authentication` per request; linking a second raises `Gitlab::Auth::Identity::TooManyIdentitiesLinkedError`. Allow any number of `:permission_check` links.
+      - Account for `Gitlab::Auth::Identity.currently_linked` selecting the authenticated identity, or the most recently linked identity when none is authenticated. When no authenticated identity exists, link the intended service account immediately before starting its work, because background jobs carry only one identity.
 
       ### Feature Flags
 
@@ -679,8 +689,8 @@ instructions:
            incident: #436084 — password-reset account takeover).
 
   # >>> generated: authentication-testing — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
-  # source_checksum: a867f168ccc28721
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 8c87bfd3ab60e89b
   - name: Authentication Test Quality
     fileFilters:
       - "spec/controllers/sessions_controller_spec.rb"
@@ -735,6 +745,10 @@ instructions:
       - "ee/spec/services/ee/personal_access_tokens/**/*_spec.rb"
       - "ee/spec/services/namespaces/service_accounts/**/*_spec.rb"
       - "ee/spec/services/users/service_accounts/**/*_spec.rb"
+      - "spec/requests/api/mcp/**/*_spec.rb"
+      - "ee/spec/requests/api/mcp/**/*_spec.rb"
+      - "spec/requests/labkit_rack_rate_limit_spec.rb"
+      - "ee/spec/requests/labkit_rack_rate_limit_spec.rb"
     instructions: |
       ### Token Edge Cases
 
@@ -770,12 +784,119 @@ instructions:
       ### Workhorse JWT Verification
 
       - DO NOT apply the `:verify_workhorse_jwt` tag to ordinary tests — a `before` hook in `spec/support/workhorse_jwt_injection.rb` auto-injects a valid JWT into every test request, so happy-path specs require no manual JWT setup. Use `:verify_workhorse_jwt` only when the test explicitly asserts the enforcement boundary (for example, a `403 Forbidden` response when the JWT header is absent); the tag opts out of both injection and detection.
+
+      ### Sign-In Race in Feature Specs
+
+      - DO NOT call `sign_in` after a page has already been visited in a nested context of a `:js` feature spec — the helper injects the session via `Warden.on_next_request`, and a background request still in flight from the first visit can consume that injection, leaving the intended user not signed in. Instead, keep a single `sign_in` and a single `visit` in the outermost `before` block and override the relevant `let` in nested contexts to vary the signed-in user.
       - Reference: doc/development/testing_guide/best_practices.md
   # <<< end generated: authentication-testing
 
+  # >>> generated: permissions-fundamentals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
+  # source_checksum: 615af46f58d924d1
+  - name: Permissions
+    fileFilters:
+      - "app/**/*.rb"
+      - "ee/app/**/*.rb"
+      - "lib/**/*.rb"
+      - "ee/lib/**/*.rb"
+      - "app/views/**/*.haml"
+      - "ee/app/views/**/*.haml"
+      - "config/authz/**/*.yml"
+      - "config/authz/**/*.txt"
+      - "ee/config/custom_abilities/**/*.yml"
+      - ".rubocop_todo/gitlab/authz/*.yml"
+      - "spec/**/*_spec.rb"
+      - "ee/spec/**/*_spec.rb"
+    instructions: |
+      ### Authorization Enforcement
+
+      - Enforce authorization using defense-in-depth: implement permission checks at multiple layers (finders, services, GraphQL, REST API, controllers).
+      - Enforce authorization in shared business logic (services and finders) as the primary layer, so checks are consistent across REST, GraphQL, and controllers.
+      - DO NOT rely solely on display-layer permission checks (such as showing/hiding buttons) as a security control — always back them with backend enforcement.
+      - Prefer domain logic (services or finders) as the source of truth when making exceptions to multi-layer enforcement.
+      - When a class accepts `current_user`, ensure it is responsible for authorization.
+      - When adding a new API endpoint, check an existing ability or add a new one; do not skip the authorization check.
+      - When using an ability check in UI elements, ensure the underlying backend code also performs the same ability check.
+      - Use `push_frontend_ability` (available on controllers inheriting from `ApplicationController`) to expose abilities to JavaScript; access them via `gon.abilities.<camelCaseName>` (DO NOT use `gon.abilities.<snake_case_name>`).
+
+      ### Permission Naming Conventions
+
+      - Introduce a new permission only when no existing permission covers the same subject and action; reuse existing permissions wherever possible.
+      - Ensure every new permission enables the principle of least privilege: grant only the access required for a single, well-defined action on a single resource; split permissions that would bundle more than one action or unrelated capabilities. If you cannot scope the permission this narrowly, reconsider the design before introducing it.
+      - Follow the naming pattern `action_resource(_subresource)` for all permissions (both assignable and raw).
+      - Use only the preferred actions — `create`, `read`, `update`, `delete` — unless a documented exception applies; obtain Authorization team approval for any action outside this set.
+      - DO NOT introduce disallowed actions: `admin`, `change`, `configure`, `destroy`, `edit`, `list`, `manage`, `modify`, `set`, `view`, or `write`.
+      - Use the singular form for the resource segment (e.g., `read_project`, not `read_projects`).
+      - Match the resource name to the domain object being acted upon, using user-facing terminology rather than implementation details.
+      - DO NOT encode the resource boundary (`project`, `group`, `user`) into the permission name; pass the subject in the `can?` call to determine scope instead (e.g., use `read_insights_dashboard` not `read_project_insights_dashboard`).
+      - Introduce a new action outside the preferred set only when it represents a distinct lifecycle transition (`archive_project`), a relationship change (`transfer_project`), or a high-impact/irreversible operation (`purge_maven_virtual_registry_cache`) already established in GitLab domain language.
+
+      ### Private Permissions
+
+      - Prefix private permissions with an underscore (`_`) following the pattern `_<action>_<qualifier>_<resource>` (e.g., `_read_authored_issue`).
+      - DO NOT check private permissions at enforcement points (controllers, services, finders, GraphQL); use them only inside policy files.
+      - Use private permissions when a role can perform an action only when a subject-level condition is met, or when different roles have different levels of access to the same action.
+      - DO NOT use private permissions for feature flag checks, license checks, or settings-based restrictions — use `prevent` rules instead.
+      - Create a definition file for every private permission under `config/authz/permissions/<resource>/_<action>_<qualifier>.yml`.
+      - Use qualifiers that correspond to a real attribute or relationship on the resource (e.g., `confidential`, `authored`, `assigned`); DO NOT use qualifiers that describe the actor.
+      - Prefer past-participle or adjective forms for qualifiers that read naturally as a description of the resource; introduce qualifiers only when the same action on the same resource requires different access levels depending on the resource's state.
+      - Declare a `conditionally_enables` field in every private permission YAML, listing the broader public permission(s) that imply it; use `null` when no public permission supersedes the private one (the validation task fails if this field is omitted).
+
+      ### Role Definition YAML Files
+
+      - Define default roles as YAML files under `config/authz/roles/` with the fields `name`, `description`, `inherits_from`, and optionally `raw_permissions` and `permissions`.
+      - Understand that the final permission set for a role is the union of its `raw_permissions`, expanded `permissions` (assignable groups), and all permissions inherited recursively from parent roles.
+      - When adding a permission to a role, prefer using an assignable permission group; use `raw_permissions` only for existing permissions that need to be moved into the role definition.
+      - When removing a permission from a role, verify it is not depended on by other features; use `GITLAB_DEBUG_POLICIES=true` to trace where a permission is checked.
+
+      ### Custom Roles
+
+      - Run `./ee/bin/custom-ability <ABILITY_NAME>` to generate the YAML configuration file for a new custom ability under `ee/config/custom_abilities/`.
+      - Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` to update the permissions validation schema and create a spec file.
+      - Define permissions declaratively in the custom ability YAML using `project_permissions` and `group_permissions` fields; DO NOT manually add policy rules to `ProjectPolicy` or `GroupPolicy` for custom abilities.
+      - Mark a custom ability as `wip: true` in its YAML when implementing across multiple MRs; remove the `wip:` key when the ability is ready to ship. Specs run with wip abilities visible by default (via `GITLAB_LOAD_WIP_CUSTOM_ABILITIES=true` in `spec_helper.rb`); use the `:disable_wip_custom_abilities` RSpec metadata to test production-like gating behavior.
+      - Consolidate custom role abilities to a minimum: use `read_*` for all view-related actions and `admin_*` for object updates; avoid introducing additional abilities unless necessary.
+      - Ensure `admin_*` custom abilities declare `read_*` as a requirement in the YAML `requirements` field.
+      - Add the ability as a trait in the `MemberRoles` factory (`ee/spec/factories/member_roles.rb`) and add request specs under `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb`.
+      - Run `bundle exec rake gitlab:custom_roles:compile_docs` and `bundle exec rake gitlab:graphql:compile_docs` to update documentation after adding a custom ability.
+      - Assess privilege escalation risk when adding new custom permissions that interact with GitLab artifacts (such as access tokens) that encode the base role.
+
+      ### Internal Permission Groups
+
+      - Define internal permission groups as YAML files under `config/authz/permission_groups/internal/<resource>/<name>.yml` with `description` and `permissions` fields.
+      - Use internal permission groups in `DeclarativePolicy` policies by calling `Authz::PermissionGroups::Internal.get('<identifier>')` and splatting the result into a `prevent` rule.
+      - Use internal permission groups when a resource state change (archiving, locking) should disable many permissions at once, or when the same permission set is referenced from multiple places.
+      - DO NOT use internal permission groups for role-based permission assignment (use role definitions or custom roles), or for token-scoped permissions (use assignable permissions).
+
+      ### Predefined Roles and Visibility
+
+      - Store project membership (with group membership already resolved) in the `project_authorizations` table; the highest permission across group and project membership is the effective access level.
+      - DO NOT grant subgroups a higher visibility level than their parent group.
+      - Design complex feature permissions as separate, granular permissions with explicit dependency relationships rather than reusing a single broad permission.
+
+      ### Policy Testing
+
+      - Place policy unit tests in `spec/policies/` (CE) or `ee/spec/policies/` (EE).
+      - Use one `describe` block per permission; DO NOT group multiple permissions into a single block.
+      - Use `where` table syntax to test each role explicitly, and include every role in the table — DO NOT omit roles expected to be disallowed.
+      - Define the subject explicitly inside each `describe` block using `let_it_be`; DO NOT rely on a subject defined at a higher scope.
+      - Use descriptively named fixtures that reflect the visibility or state under test (e.g., `private_project`, `archived_project`) rather than a generic `project`.
+      - Test both admin mode enabled (`:enable_admin_mode`) and admin mode disabled contexts for permissions that apply to admins.
+      - Test both feature flag disabled and licensed feature disabled contexts for every permission that is gated by either.
+      - Reference: doc/development/permissions/authorizations.md
+      - Reference: doc/development/permissions/conventions.md
+      - Reference: doc/development/permissions/role_definitions.md
+      - Reference: doc/development/permissions/predefined_roles.md
+      - Reference: doc/development/permissions/custom_roles.md
+      - Reference: doc/development/permissions/internal_permission_groups.md
+      - Reference: doc/development/permissions/testing_guidelines.md
+      - Reference: doc/development/permissions/review_guidelines.md
+  # <<< end generated: permissions-fundamentals
+
   # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
-  # source_checksum: c49a0e93d1f3e494
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 1d05b5c70ae44ff1
   - name: Documentation
     fileFilters:
       - "doc/**/*.md"
@@ -865,7 +986,9 @@ instructions:
       - Place the `Description` column as the right-most column when possible.
       - DO NOT realign an entire table when only changing a few rows (to keep diffs readable).
       - Use `{{< no >}}` and `{{< yes >}}` shortcodes for feature availability tables; DO NOT use these in API docs or inline text.
-      - Use `<sup>` tags for table footnotes; place footnotes below the table under `**Footnotes**:` as an ordered list.
+      - Use `[^label]` Markdown footnote syntax for table footnotes, with no space before the reference and a comma and space between multiple references (`[^a], [^b]`); place definitions directly below the table; indent continuation lines with four spaces.
+      - DO NOT put a footnote reference or definition inside a shortcode, such as tabs.
+      - Treat footnote labels as page-wide: reuse a label only to share one footnote, and DO NOT define the same label twice (the renderer silently keeps only the first definition).
 
       ### Links
 
@@ -957,6 +1080,7 @@ instructions:
       - When a feature changes from seat-based billing to usage-based billing with GitLab Credits, add a `Changed to usage-based billing` entry only to the feature's history; DO NOT add an entry to the GitLab Credits history.
       - Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
       - For tools released on their own schedule (e.g., editor extensions, CLI tools), include both the GitLab version and the tool version in history entries with a link to the tool's release page; nest tool version entries under the related instance history item when both change together, or use `during the GitLab X.Y release` phrasing when the change is tool-only.
+      - For GitLab Duo AI Gateway model changes that reach all versions immediately (not gated by a GitLab release), use a date instead of a milestone in the history entry and link the AI Gateway MR that made the change, not the GitLab issue or MR (e.g., `Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model on August 3, 2026`).
       - For GitLab Duo features available with self-hosted models, use the `{{< collapsible title="Model information" >}}` shortcode; DO NOT state that a feature is unavailable on self-hosted models unless necessary, and if you must, use "Not available on GitLab Duo with self-hosted models" without a link.
       - When documenting LLMs used by a GitLab Duo feature, include a link to the LLM and use separate entries for code generation vs. code completion or Amazon Q when they differ.
 
@@ -1022,8 +1146,8 @@ instructions:
   # <<< end generated: documentation
 
   # >>> generated: documentation-api — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
-  # source_checksum: 68dd734ecfa7b3dd
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 1cb02a9b9820f086
   - name: API documentation
     fileFilters:
       - "doc/api/**/*.md"
@@ -1056,7 +1180,8 @@ instructions:
       - List path attributes first, then required attributes, then sort remaining attributes alphabetically in request attribute tables.
       - Place attribute names in backtick code blocks in all attribute tables.
       - Document tier and offering restrictions (e.g. `GitLab Self-Managed, Premium and Ultimate only.`) in the attribute description; combine tier and offering information when possible.
-      - For conditionally required attributes, use the format `Required if \`attribute1\` is \`true\`.` in the description and set the Required column to `Conditional`.
+      - For an attribute required by another attribute's value, use the format `Required if \`attribute1\` is \`true\`.` in the description and set the Required column to `Conditional`.
+      - When at least one attribute from a group is required but no particular member is mandatory, set the Required column to `Conditional` and describe each alternative with `Required if none of \`attribute1\`, \`attribute2\`, or \`attribute3\` are provided.`
 
       ### REST API — Response Attributes
 
@@ -1084,6 +1209,38 @@ instructions:
       - Reference: doc/development/documentation/graphql_styleguide.md
   # <<< end generated: documentation-api
 
+  - name: Release note items
+    fileFilters:
+      - "doc/releases/**/*.md"
+      - "!doc/releases/**/index.md"
+      - "!doc/releases/**/_index.md"
+    instructions: |
+      1. These files are feature release notes written by product managers, not product documentation. The release note process is documented in `doc/development/documentation/release_notes.md`. Do not propose restructuring the file or moving content to another page.
+      2. Flag required frontmatter fields that are missing: `title`, `tier`, `offering`, `documentation_link`, `work_item`, `categories`, `stage`. `level`, `weight`, and `co_create` are optional. Do not flag their absence.
+      3. `tier` must be one or more of `Free`, `Premium`, `Ultimate`, in that order. `offering` must be one or more of `gitlab_com`, `self_managed`, `gitlab_dedicated`, `gitlab_dedicated_for_government`, in that order. Flag values outside these sets, or listed out of order.
+      4. `stage` must match a key in `data/release_post_groupings.yaml` in the `docs-gitlab-com` project. An unrecognized value files the note under the wrong heading with no error, so flag a value you cannot place. A `devops::` label does not always map to a valid stage value.
+      5. `documentation_link` is a relative path with no `.md` extension and no `_index`. If `https://docs.gitlab.com/` is used, add a note for the technical writer to confirm if this documentation is in the `gitlab` repository. Documentation outside the `gitlab` repository, like GitLab Runner or GitLab Orbit documentation, can use an absolute URL.
+      6. `work_item` must be an absolute `https://gitlab.com/` URL. Flag it if it is missing, relative, or does not start with `https://gitlab.com/`.
+      7. Review the note body against these rules:
+         - 125 words or fewer.
+         - Explain the value of the improvement, following the template's pattern: "In previous versions of GitLab, you couldn't... Now you can...".
+         - Present tense, conversational tone. Flag "we".
+         - No implementation details such as syntax, variable names, or API parameters. A brief activation step is fine.
+         - Several distinct capabilities read better as a bulleted list than as one paragraph.
+         - No images or videos.
+         - Links in the body should be relative and include `.md`.
+      8. Check that `documentation_link` points to the documentation for the feature. If any of the following conditions are true, skip step 9 and comment on the `documentation_link` line: "Documentation comparison skipped — see the reason above. If the documentation is still in progress, make this merge request depend on the documentation merge request and re-request a review with `/assign_reviewer @GitLabDuo` once it merges."
+         1. If `documentation_link` is an absolute URL, say you cannot read it.
+         2. If the path does not resolve, say the file was not found. Do not guess at its contents.
+         3. If the page does not yet cover the feature or update, say so in one sentence. Absent documentation is not contradicting documentation, so do not flag the note's capability claims, tier, or offering as unsupported.
+      9. Compare the release note `title` and body with the documentation linked in `documentation_link`. The documentation is correct and the release note should match it. Flag the following items. Quote the documentation line you compared against so the author can check it:
+         - Differences in terminology or feature names, including setting, menu, and UI names.
+         - Capability claims the documentation does not support, or that contradict its stated availability, prerequisites, or limitations.
+         - A `tier` or `offering` is inconsistent with the availability details in the documentation.
+         - Different wording for how the feature is used, turned on, or where it lives: a different verb for the same action, a different place for a setting, a different name for a step.
+         Do not flag differences in length, tone, or detail; a release note is deliberately shorter and more promotional.
+      10. Do not repeat a finding the Documentation instructions have already raised on this merge request.
+
   # >>> generated: testing-rspec — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
   # distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
   # source_checksum: 18d4e56345888662
@@ -1091,6 +1248,10 @@ instructions:
     fileFilters:
       - "spec/**/*_spec.rb"
       - "ee/spec/**/*_spec.rb"
+      - "spec/support/**/*.rb"
+      - "ee/spec/support/**/*.rb"
+      - "spec/factories/**/*.rb"
+      - "ee/spec/factories/**/*.rb"
       - "!spec/migrations/db/**/*_spec.rb"
       - "!ee/spec/migrations/db/**/*.rb"
       - "!ee/db/geo/migrate/**/*.rb"
@@ -1330,8 +1491,8 @@ instructions:
   # <<< end generated: testing-rspec
 
   # >>> generated: testing-e2e — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
-  # source_checksum: d7add367353684d2
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 7deece33b53964d5
   - name: E2E Testing
     fileFilters:
       - "qa/**/*"
@@ -1439,9 +1600,115 @@ instructions:
       - Reference: doc/development/testing_guide/end_to_end/best_practices/waits.md
   # <<< end generated: testing-e2e
 
+  # >>> generated: internationalization — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
+  # source_checksum: e1c27b0538b597c5
+  - name: Internationalization
+    fileFilters:
+      - "**/*.rb"
+      - "**/*.haml"
+      - "**/*.erb"
+      - "**/*.vue"
+      - "**/*.js"
+      - "**/*.ts"
+      - "locale/gitlab.pot"
+    instructions: |
+      ### Marking Strings for Translation
+
+      - Use `_()` in Ruby/HAML, `__()` in JavaScript/Vue, and `s__()`/`s_()` for namespaced strings to mark content for translation.
+      - Use `n_()` in Ruby/HAML and `n__()` in JavaScript/Vue to mark pluralized strings (see Pluralization section).
+      - DO NOT translate strings at the class or module level (constants or memoized class methods); keep translation calls in instance methods or lambdas so they are evaluated per request with the correct locale.
+      - Use a `Proc`/lambda for Rails model `:message` options instead of calling `_()` inline, to avoid translating at class-load time.
+      - DO NOT externalize strings from `lib/api/` or `app/graphql/`; API messages do not need to be translated.
+      - Always pass string literals to translation helpers (`_()`, `__()`, `s__()`, `n__()`); DO NOT pass variables, function calls, or interpolated strings — the `tooling/bin/gettext_extractor` parser cannot resolve them.
+      - In Vue `<template>` blocks, call `__()`, `s__()`, `n__()`, and `sprintf()` directly (the `translate` mixin provides them); import from `~/locale` only when translating inside component JavaScript.
+
+      ### Namespaces
+
+      - Add a namespace (PascalCase prefix followed by `|`) to all UI strings using `s__()`/`s_()` to provide translators with context.
+      - Use granular, specific namespaces rather than broad category names (e.g., `WorkItemsStatusConfigure|Add to` instead of `WorkItems|Add to`).
+      - DO NOT share the same English key across different UI contexts without namespacing; the same English string may require different translations in other languages.
+      - DO NOT put whitespace in a namespace, and use exactly one pipe (`|`) per namespaced string, the one that ends the namespace; DO NOT use doubled pipes (`ApprovalRule||year(s)`) or multi-part namespaces (`Pipeline|Source|Security Policy`) (enforced by `rake gettext:lint` in the `static-analysis` CI job).
+      - DO NOT use a pipe in the visible text of a namespaced string; GitLab treats it as the end of the namespace, and translators drop everything before it.
+
+      ### Interpolation
+
+      - Match placeholder style to the file type: use `%{snake_case}` in Ruby/HAML and `%{camelCase}` in JavaScript.
+      - In Vue, use the `GlSprintf` component when the translated string contains child components, HTML, or when passing `false` to `sprintf` to suppress escaping; use `sprintf` in computed properties for simpler cases.
+      - When using `sprintf` with markup and `false` as the third argument, manually escape all dynamic values (e.g., with `escape` from `lodash-es`) to prevent XSS.
+      - DO NOT split sentences across multiple translation calls or across multiple `GlSprintf` instances; externalize the whole sentence with placeholders for dynamic parts (including links) so translators can reorder words to match their language's grammar.
+      - For links inside translated strings, use `%{linkStart}…%{linkEnd}` placeholder pairs rather than passing a full `<a>` tag as a single placeholder.
+      - In Ruby/HAML, use `safe_format` with `tag_pair` to inject HTML formatting into translated strings; DO NOT embed raw HTML in the source string.
+      - DO NOT include raw HTML directly in strings submitted for translation (XSS risk and invalid-HTML risk); use placeholder pairs or `GlSprintf` instead.
+      - For angle brackets (`<`/`>`) that are not HTML, use the HTML entity codes (`&lt;`/`&gt;`) to avoid `rake gettext:lint` errors.
+
+      ### Pluralization
+
+      - Use `n_()` (Ruby/HAML) or `n__()` (JavaScript) when a noun or verb changes form based on a count; DO NOT use `__()` or `s__()` for strings where the noun must pluralize with the count.
+      - Use `n_()` and `n__()` only to select between plural forms of the same concept; DO NOT use them to switch between structurally different strings — use `if`/`else` with separate strings instead.
+      - DO NOT use `n__()` for strings that label a position, sequence, or identifier rather than a quantity (e.g., `Step %{currentStep}` never changes form regardless of the number); use `__()` instead.
+      - DO NOT place a zero-state phrase in the `one` (singular) slot of a plural string; handle the zero state as a separate string outside the `n__()` call.
+      - Pluralize whole sentences rather than extracting a single word and constructing the sentence around it, so translators have full context for all plural forms.
+      - Prefer named `%{count}` interpolation over positional `%d` in plural strings; for strings with multiple variables, always use named `%{placeholder}` syntax.
+      - Interpolate named placeholders in JavaScript `n__()` results with `sprintf()` or `GlSprintf`; `n__()` substitutes only `%d` automatically and leaves named placeholders and `%s` unchanged.
+      - Explicitly interpolate Ruby/HAML `n_()` results with `format()` for named placeholders, `safe_format()` when rendering HTML, or `%` for `%d`; `n_()` performs no automatic substitution.
+      - DO NOT hardcode the number `1` in the singular form of a plural string; use `%{count}` (preferred) or `%d` for a single count so that languages where the `one` CLDR category covers numbers other than 1 (e.g., Ukrainian: 21, 31, …) produce correct output. Exception: when a natural singular form without a number is desired, handle the exact count of 1 as a separate string outside the plural call (e.g., `if count == 1 … else n_(…) end`).
+      - Use `%s` in JavaScript plural strings only for the existing `Timeago|` strings, where `timeago.js` substitutes it after `n__()` returns; use named placeholders or `%d` elsewhere.
+      - DO NOT use `%d` in the singular form when the number adds no value (e.g., prefer `'Last day'` over `'Last 1 day'`).
+      - For strings with multiple independently pluralized nouns (e.g., hours and minutes), split into separate `n__()` calls and combine with a non-pluralized connector string via `sprintf`; DO NOT attempt to pluralize multiple nouns in a single `n__()` call.
+      - Interpolate each pluralized part before combining the parts; `sprintf()` does not recursively substitute placeholders inside interpolation values.
+      - DO NOT use Rails `pluralize` helper or `String#pluralize` on translated strings; they apply English-only rules and produce broken output in other locales. Use `n_()` with a whole-sentence pattern instead.
+      - In Vue, define pluralized strings that depend on runtime counts as functions accepting a `count` argument in the `i18n` constants object; DO NOT define them as static string constants.
+
+      ### Vue Single-File Components
+
+      - Place translation calls inline in the `<template>` by default; DO NOT move a single-use string into `$options.i18n` unless one of the documented exceptions applies.
+      - Use `$options.i18n` or a shared constant only when: the same string is reused across the template and component JavaScript and must stay in sync; the string requires processing (e.g., `sanitize()`); the string is a value in a runtime-keyed lookup map; or the string is shared across multiple components in the same module.
+      - DO NOT import translation constants from component files into specs; write the expected string literal directly in the assertion to avoid false positives from `undefined` imports.
+      - Place inline translations as close as possible to where they are used; prefer inline calls over variables with translations.
+
+      ### Numbers, Dates, and Times
+
+      - Use `formatNumber` from `~/locale` (backed by `toLocaleString()`) to format numbers for display; DO NOT format numbers as plain strings without locale awareness.
+      - In JavaScript, use `createDateTimeFormat` from `~/locale` (backed by `Intl.DateTimeFormat`) for locale-aware date/time formatting.
+      - In Ruby/HAML, use the `l` helper with a predefined format from `en.yml` for dates and times; use `strftime` only for one-off formats not worth adding to `en.yml`.
+
+      ### Case Transformation
+
+      - DO NOT call `downcase`, `toLocaleLowerCase()`, or similar methods on translatable strings; let translators control capitalization for their language.
+
+      ### Variables in Translatable Strings
+
+      - Avoid inserting text as variables into translatable strings when possible; prefer unique strings for each case to avoid gender-agreement, declension, and word-order issues across languages.
+      - When variable insertion cannot be avoided, use a topic-comment structure (e.g., `Related items: %{a} → %{b}`) rather than a full sentence with inserted variables.
+
+      ### Rails Model Error Messages
+
+      - Add error messages to `:base` with a complete sentence rather than to a specific attribute; Rails prepends the humanized attribute name to attribute-level messages, producing split sentences that are untranslatable.
+
+      ### Updating and Validating PO Files
+
+      - Run `tooling/bin/gettext_extractor locale/gitlab.pot` after marking new strings for translation to update the POT file; DO NOT push changes without updating it (pre-push checks and the CI `gettext` pipeline job will fail).
+      - DO NOT check in changes to `locale/[language]/gitlab.po` files manually; they are updated automatically when Crowdin translations are merged.
+      - Run `rake gettext:lint` locally to validate PO files before pushing; the same lint runs in CI as part of the `static-analysis` job and checks PO syntax, variable usage, and angle-bracket presence.
+      - If the `gitlab.pot` file has merge conflicts, delete it and regenerate with `tooling/bin/gettext_extractor locale/gitlab.pot`.
+
+      ### Test Files
+
+      - In RSpec tests, DO NOT hard-code expected translated strings; call the same translation helper (e.g., `_('…')`) in the expectation so tests pass under non-default locales.
+      - In Jest tests, DO NOT wrap expected strings in translation helpers (`__()` etc.); externalization is mocked in the frontend test environment, so use plain string literals in assertions.
+
+      ### Adding a New Language
+
+      - Add a new language to the UI only after at least 10% of strings have been translated and approved in Crowdin; languages below 2% are not shown in the UI.
+      - Register the new language in `lib/gitlab/i18n.rb` and run `bin/rake gettext:add_language[<locale>]` to create the locale directory and PO file.
+      - Reference: doc/development/i18n/externalization.md
+      - Reference: doc/development/i18n/pluralization.md
+  # <<< end generated: internationalization
+
   # >>> generated: cicd-internals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
-  # source_checksum: aff32136b0f97801
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: fe021b3e87a0029b
   - name: CI/CD Internals
     fileFilters:
       - "lib/gitlab/ci/**/*.rb"
@@ -1495,9 +1762,162 @@ instructions:
       - Reference: doc/development/cicd/keyword_reviews.md
   # <<< end generated: cicd-internals
 
+  # >>> generated: secrets-manager — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # <<< end generated: secrets-manager
+
+  # >>> generated: mcp-server — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: f0bf7eeb17980969
+  - name: MCP Server
+    fileFilters:
+      - "app/services/mcp/**/*.rb"
+      - "ee/app/services/mcp/**/*.rb"
+      - "ee/app/services/ee/mcp/**/*.rb"
+      - "lib/api/mcp/**/*.rb"
+      - "lib/api/helpers/mcp/**/*.rb"
+      - "lib/api/concerns/mcp_access.rb"
+      - "ee/lib/ee/api/mcp/**/*.rb"
+      - "ee/lib/ee/api/helpers/mcp_helpers.rb"
+      - "ee/lib/api/orbit/mcp.rb"
+      - "ee/lib/api/orbit/mcp_handlers/**/*.rb"
+      - "lib/gitlab/mcp/**/*.rb"
+      - "ee/lib/ee/gitlab/mcp/**/*.rb"
+      - "app/graphql/queries/mcp/**/*.graphql"
+      - "ee/app/graphql/queries/mcp/**/*.graphql"
+      - "ee/app/events/mcp/**/*.rb"
+      - "ee/app/workers/mcp/**/*.rb"
+      - "lib/tasks/gitlab/mcp.rake"
+      - "rubocop/cop/mcp/**/*.rb"
+      - "spec/services/mcp/**/*_spec.rb"
+      - "spec/requests/api/mcp/**/*_spec.rb"
+      - "spec/lib/api/mcp/**/*_spec.rb"
+      - "spec/lib/api/helpers/mcp/**/*_spec.rb"
+      - "spec/lib/gitlab/mcp/**/*_spec.rb"
+      - "ee/spec/services/mcp/**/*_spec.rb"
+      - "ee/spec/services/ee/mcp/**/*_spec.rb"
+      - "ee/spec/requests/api/mcp/**/*_spec.rb"
+      - "ee/spec/lib/ee/api/mcp/**/*_spec.rb"
+      - "ee/spec/lib/api/orbit/mcp_handlers/**/*_spec.rb"
+      - "ee/spec/lib/ee/gitlab/mcp/**/*_spec.rb"
+      - "ee/spec/workers/mcp/**/*_spec.rb"
+      - "spec/lib/api/concerns/mcp_access_spec.rb"
+      - "spec/tasks/gitlab/mcp_rake_spec.rb"
+      - "spec/rubocop/cop/mcp/**/*_spec.rb"
+      - "spec/support/shared_examples/requests/api/mcp_route_setting_shared_examples.rb"
+      - "ee/spec/requests/api/orbit/mcp_spec.rb"
+      - "ee/spec/requests/api/mcp_context_exclusion_spec.rb"
+      - "ee/spec/lib/ee/api/helpers/mcp_helpers_spec.rb"
+    instructions: |
+      ### Tool Proposal and Governance
+
+      - Submit a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal) and follow the template before implementing any new tool; the `mcp-tool-review-board` committee evaluates proposals before implementation.
+      - Implement tools that interact with GitLab resources in the MCP Server (or Agent Platform for short-term needs); implement tools that do not interact with GitLab resources in the Agent Platform.
+      - DO NOT add a new tool when an existing tool can handle the capability with parameter adjustments; prefer consolidation via an enum or parameter over proliferation.
+      - Declare container arguments on custom, GraphQL, and aggregated service classes with `container_arguments`, including lookups under `record:` for arguments that identify an owning container indirectly; use `ungovernable!` only when no argument identifies a project or group.
+      - For route-backed `ApiTool` tools, `:project` and `:group` authorization boundary types resolve the route's `:id`; with no boundary type, use the default declaration. Declare extra container arguments with route-level `container_arguments:`, using `record:` lookups for record or namespace arguments; the declaration merges with the boundary-derived kind. Pass EE-only declarations through a CE helper overridden in EE.
+      - Use the default `{ project: :project_id, group: :group_id, project_or_group: :url }` container declaration when those argument names fit the input schema; customize differing names with `container_arguments`, which replaces matching kinds while preserving other defaults.
+      - Use `:project_or_group` as the container kind when a single argument may name either a project or a group.
+      - Govern URL arguments by every project or group resolved by the supported URL parsers, so the most restrictive tool rule applies. Resolve every identifier in list arguments rather than only the first; skip identifiers that resolve to no project or group.
+      - When an argument names a record rather than a project or group directly, declare it under the `record:` kind with a lookup lambda (e.g., `container_arguments record: { vulnerability_id: ->(id) { ::Vulnerability.find_by_id(id)&.project } }`); a lookup returning `nil` still counts the argument, so a call naming a nonexistent record is refused rather than served ungoverned.
+      - DO NOT add a separate authorization check after calling `ResourceFinder#find_project!` or `#find_group!`; both finders fold authorization into the DB lookup and raise `"'<id>' not found or inaccessible"` on failure to prevent resource enumeration.
+      - Ensure `ee/spec/lib/ai/tool_rules/governable_tools_container_spec.rb` passes: every governed tool must declare a container argument or be marked `ungovernable!`, the declared argument must exist in the tool's input schema, the declaration must use a recognized container kind (`:project`, `:group`, `:project_or_group`, or `record:`), and every input property must be either declared or listed for that tool as never naming a project or group.
+
+      ### Tool Naming and Consolidation
+
+      - Use `verb_object` shape for all tool names: `get_` for a single object, `list_` for a collection, `save_` for create/update mutations, `delete_` for delete operations, and `add_` (or another deviation) for objects without a typical CRUD shape (e.g., commits, branches, sessions).
+      - DO NOT fold `delete_` operations into `save_` tools; keep them separate for governance handling.
+      - Use a `save_` tool's `action` parameter to fold non-field-mutation lifecycle actions (e.g., `retry`, `cancel`) on the same resource when they don't warrant a dedicated tool; route on the presence of the resource's own ID rather than the parent identifier, and document this as an intentional exception.
+      - Keep `project_id` and the resource's internal ID (e.g., `merge_request_iid`, `work_item_iid`, `commit_sha`) as separate parameters; DO NOT fold them into a single `id`.
+      - Accept either `url` (a full GitLab URL) or the ID group (`project_id` plus the resource's internal ID) as input; include `Mcp::Tools::Concerns::UrlParser` and `Mcp::Tools::Concerns::ResourceFinder` to resolve them. When both are supplied, cross-validate and raise an error on mismatch.
+      - Use plain project and group full paths in examples and `input_schema` descriptions. Accept encoded paths only through boundary decoding in `ResourceFinder` or `ApiTool`; tools passing paths directly to GraphQL require plain paths. DO NOT decode paths in `Gitlab::ResourceLookup`, which would allow double-encoded REST paths.
+      - Merge scoped search variants into the unified `search` tool with a `scope` parameter instead of adding per-resource search tools.
+      - Document intentional exceptions (one-off action verbs, a second write tool on one resource) in the tool proposal so they are not mistaken for oversights.
+
+      ### Tool Reads, Facets, and Pagination
+
+      - Fold facets scoped to one parent object into that object's `get_` tool via an `include` parameter (e.g., `get_merge_request` with `include: ["diffs"]`); declare `include` as an array of enum values bounded with `maxItems` even when only one facet per call is supported.
+      - Give independent collections their own `list_` tool (e.g., `list_merge_requests`, `list_pipelines`).
+      - Scope facet pagination to the `get_` reader; name parameters `<facet>_first`/`<facet>_after` (and `<facet>_last`/`<facet>_before` when reading from the end matters); build them with `Mcp::Tools::Concerns::CursorPagination.input_schema_params`; return the connection's `pageInfo` alongside the nodes.
+      - Add a `detail` enum (`none`/`stats`/`full_patch`) on diff-bearing reads where the diff dominates the payload; DO NOT retrofit `detail` where a better-suited knob already exists (file content uses line pagination `offset`/`limit`; job logs use byte pagination `byte_offset`/`byte_limit`).
+      - Prefer a filter parameter over a new facet or tool when one facet is a subset of another (e.g., `job_status: failed` instead of a separate `failing_jobs` facet).
+      - Mirror the pagination scheme of the endpoint the tool wraps; DO NOT translate between schemes (e.g., do not wrap offset pagination in an opaque cursor).
+      - Use offset pagination (`page`, `per_page` defaulting to 20 capped at 100, returning `metadata` with `page`, `per_page`, `has_more`) for REST-backed tools.
+      - Use native cursor pagination (`first` defaulting to 20 capped at 100, `after`, returning `pageInfo` with `endCursor` and `hasNextPage`) for GraphQL-backed tools.
+      - Unwrap GIDs to numeric integers in `process_result` for resources addressed by global numeric ID (groups, projects, pipelines) using `GlobalID.parse(node['id']).model_id.to_i`; DO NOT unwrap IDs of iid-addressed resources (work items, merge requests, issues) — expose `iid` alongside the GID instead.
+
+      ### REST API Tool Implementation
+
+      - Add `route_setting :mcp, tool_name: :name, params: [...], resource_name: "resource"` to an API route to expose it as an MCP tool; use a lowercase `resource_name` string for resource-specific 404 messages.
+      - Add the matching `allow_mcp_access_*` call (`allow_mcp_access_read`, `allow_mcp_access_create`, `allow_mcp_access_update`, `allow_mcp_access_delete`) to the API class for each HTTP method used by its MCP routes; include `::API::Concerns::McpAccess` in the class.
+      - Use `Base::AggregatedService` for aggregated REST tools that consolidate multiple related API endpoints (e.g., global, group, and project search into one tool); register underlying API tools with `aggregators: [AggregatorClass]` in their route settings.
+
+      ### GraphQL Tool Implementation
+
+      - Use the two-layer architecture for GraphQL-backed MCP tools: a `GraphqlTool` subclass (Layer 1) handles GraphQL execution, and a `GraphqlService` subclass (Layer 2) handles validation, versioning, and response formatting.
+      - Name service and tool subclasses after the operation without a `Graphql` prefix (e.g., `Mcp::Tools::Labels::SearchService`, `Mcp::Tools::Notes::SaveNoteTool`); only the base classes `GraphqlService` and `GraphqlTool` keep the prefix.
+      - Store each tool's GraphQL operation in a `.graphql` file under `app/graphql/queries/mcp/` in a subdirectory mirroring the tool's domain; load it with `GraphqlTool.load_graphql` using the direct form (not a lambda) in `register_version`. Exception: operations composed at load time from EE-overridden fragments must use a lambda (`graphql_operation: -> { build_query }`).
+      - Name `.graphql` files with a `.query.graphql` or `.mutation.graphql` suffix; use a verb-first name for queries (e.g., `getWorkItemTypes`) and mutations already use verb-first names (e.g., `createNote`).
+      - Start every `.graphql` file with a `# @feature_category:` comment; the `graphql_require_feature_category` lint rule fails CI without it.
+      - DO NOT embed GraphQL operations as inline strings or HEREDOCs; the `Mcp/UseGraphqlQueryFile` RuboCop rule flags inline strings or HEREDOCs passed as `graphql_operation:`.
+      - Register GraphQL tools in `Mcp::Tools::Manager` under `GRAPHQL_TOOLS` with the tool name as key and the service class as value.
+      - Override `graphql_tool_class` in the service wrapper to return the corresponding `GraphqlTool` subclass; call `execute_graphql_tool(arguments)` in version-specific `perform_v<X>_<Y>_<Z>` methods.
+      - DO NOT add `additionalProperties: false` to `input_schema`; the shared tool abstraction rejects unrecognized arguments by default. Set `additionalProperties: true` only to accept arbitrary arguments. Schemas using `oneOf`, `anyOf`, `allOf`, or `$ref` keep their own behavior.
+      - Call the `container_arguments` macro on GraphQL service classes to declare which input argument names the project or group (see Tool Proposal and Governance).
+      - Add unit tests for the GraphQL tool, integration tests for the service, and update `ee/spec/services/ee/mcp/tools/manager_spec.rb`, `spec/requests/api/mcp/handlers/list_tools_spec.rb`, and `ee/spec/requests/api/mcp/handlers/list_tools_spec.rb`.
+
+      ### Tool Versioning
+
+      - Register versions using `register_version '<semver>', { description:, input_schema: }` for aggregated, custom, and GraphQL tools; implement a corresponding `perform_v<X>_<Y>_<Z>` method and update `perform_default` to delegate to the latest version.
+      - DO NOT modify a tool's existing behavior without registering a new version; use the versioning system to avoid breaking cached tool schemas in LLM clients.
+      - For API tools, specify the version in the route setting (`version: '1.0.0'`) when needed; API tools default to `0.1.0`. For tools requiring multiple versions, implement as a custom tool instead.
+      - Follow [multi-version compatibility guidelines](https://docs.gitlab.com/development/multi_version_compatibility/) when deprecating versions.
+      - When adding a second version to a GraphQL tool, rename the existing `.graphql` file to include its version (e.g., `create_note.v0_1_0.mutation.graphql`) and add a new file for the new version; register each version against its own file.
+      - Define `build_variables_v<X>_<Y>_<Z>` methods for version-specific variable building; `build_variables_for_version` calls the version-specific method when it exists and falls back to `build_variables`.
+
+      ### Tool Renaming and Aliases
+
+      - Override `tool_aliases` on the tool class (or use `tool_aliases:` in the route setting for API tools) to include the old name when renaming a tool; DO NOT remove aliases until a dedicated identity mechanism decouples governance from rename aliases (tracked in [work item 609451](https://gitlab.com/gitlab-org/gitlab/-/work_items/609451)).
+      - Update all references to the new tool name in route settings, test files, documentation, and hardcoded references when renaming.
+      - DO NOT use `tool_aliases:` on a route that also sets `aggregators:`; aliases for aggregated tools come from the aggregator class's `self.tool_aliases`.
+
+      ### Tool Availability and Discovery
+
+      - Override `available?` on custom, GraphQL, or aggregated service classes to filter `tools/list` for a user (e.g., behind a feature flag); it runs after `set_cred(current_user:)`. DO NOT rely on it to block `tools/call` or hide tools from the AI Catalog picker; neither checks it. Route-backed API tools are always considered available.
+      - Override `unlisted?` (or set `unlisted: true` in the route setting for API tools) to hide a tool from `tools/list` and the AI Catalog picker while keeping it callable via `tools/call`; use this to stage a tool before it is ready to be advertised.
+      - Keep `unlisted?` static; DO NOT drive it from a per-user or credential-dependent check because the AI Catalog picker cannot evaluate one.
+
+      ### Categorizing Tool Errors
+
+      - Pass a `reason:` symbol to `Response.error` whenever the tool knows why it failed; use `BAD_REQUEST` for missing or invalid arguments, `UNAUTHORIZED` for access denials (keep the message vague), `NOT_FOUND` for genuinely absent resources or null GraphQL data, and `ERROR` (the default) for backend failures. DO NOT pass a reason when a response merely failed to find an expected key in an otherwise successful payload.
+      - Rely on `ResourceFinder#find_project!` and `#find_group!` to categorize project and group lookup failures (`ResourceNotFoundError` → `NOT_FOUND`, `ResourceForbiddenError` → `UNAUTHORIZED`); DO NOT add a separate `reason:` for those failures.
+
+      ### Declaring a Toolset
+
+      - Declare exactly one toolset from `Mcp::Tools::Toolsets::ALL` on every tool; add `toolset: :symbol` to the `register_version` metadata for custom, GraphQL, and aggregated tools, or to `route_setting :mcp` for API tools (enforced in CI by `spec/services/mcp/tools/toolset_coverage_spec.rb` — a missing or invalid declaration fails CI).
+      - Return HTTP 400 for unknown toolset names in `X-Gitlab-Enabled-Mcp-Server-Toolsets`; warn and ignore unknown tool names in `X-Gitlab-Enabled-Mcp-Server-Tools` to support clients across GitLab editions and versions.
+
+      ### Splitting Actions Out of Aggregated Tools
+
+      - When splitting a collection-reading action out of an aggregated tool into a dedicated `list_` tool, document the change with a `[Removed]` entry in the old tool's history block in [MCP server tools](https://docs.gitlab.com/user/model_context_protocol/mcp_server_tools/) noting which action moved and to which tool, alongside the `[Introduced]` entry for the new tool.
+
+      ### Custom Tool Implementation
+
+      - For tools with distinct functionality that should remain separate from API exposure, define a standalone class inheriting from `Base::CustomService`.
+
+      ### Development Environment and Debugging
+
+      - Enable and configure HTTPS in GDK, install `node` and `mcp-remote` globally (not the GDK-bundled version), and connect an AI assistant to the MCP server before developing MCP tools.
+      - Add `--debug` to the `mcp-remote` command for detailed logging; view MCP server logs in the Output panel under `MCP:SERVERNAME`.
+      - Clear `~/.mcp-auth` as a last resort to reset stored `mcp-remote` credentials when encountering authentication issues after switching branches.
+      - Use [MCP Inspector](https://modelcontextprotocol.io/legacy/tools/inspector) (`npx -y @modelcontextprotocol/inspector npx`) for interactive testing and debugging of MCP servers.
+      - Use the `gitlab-mcp-tool-builder` skill (located at `.claude/skills/gitlab-mcp-tool-builder/`) to scaffold a GraphQL-backed MCP tool; if the skill and the guidelines disagree, follow the guidelines and update the skill.
+      - Reference: doc/development/duo_agent_platform/mcp/_index.md
+      - Reference: doc/development/duo_agent_platform/mcp/graphql_integration.md
+  # <<< end generated: mcp-server
+
   # >>> generated: ai-instruction-files — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
-  # source_checksum: 543225a9ec264b32
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 381723803682f0be
   - name: AI Instruction Files
     fileFilters:
       - ".ai/**/*"
@@ -1546,9 +1966,13 @@ instructions:
 
       ### Reviewing Auto-Generated Sync Merge Requests
 
-      - Compare the distilled diff against the referenced SSOT documentation changes.
-      - Confirm no still-valid, SSOT-supported rule was dropped and no unsupported rule was added.
+      - Get the output's `distilled_at_sha` from the distilled file's front matter; read the principle's entry in `.ai/principles/manifest.yml` at that SHA, including its sources and optional baseline; read the relevant source sections and baseline at the same SHA.
+      - Compare source and manifest changes with the prior `distilled_at_sha` to verify deliberate removals; check for omitted rules and exceptions as well as unsupported additions.
+      - Support each content-loss finding with the source path, SHA, and relevant passage; for an unsupported rule, cite the contradictory passage or identify the source sections and baseline checked and explain the absence of support; DO NOT report guidance deliberately removed from the source as lost content.
+      - If a required source cannot be retrieved, state the limitation in the review summary instead of raising a speculative inline defect.
       - Confirm the front matter checksums were updated by the tool, not by hand.
+      - Keep the source-verification procedure inline in the generated review instructions through distillation and fence reconciliation, rather than relying only on a reference link.
+      - Keep sync MRs in Draft state while GitLab Duo reviews them; mark ready only after a Duo review of the latest revision succeeds with no outstanding actionable findings. Re-draft the MR if a later sync run publishes new distilled content, even if a human had already marked it ready.
       - Use the `ai-principles-review-feedback` skill to work through every automated review finding before merging a weekly sync merge request.
       - Classify each Duo finding into exactly one of four outcomes before acting: Content defect (distilled text misstates the source — fix on the sync branch), Content gap (distillation dropped a supported rule — restore on the sync branch), Distiller defect (root cause is the tooling — fix the output and open an issue against the distiller), or Judgment call (output is correct but could be closer — record it, no required action).
       - When fixing a finding, restore a baseline-derived rule verbatim (the sync tooling mechanically rejects any alteration); make a source-derived fix faithful and traceable but DO NOT copy source prose verbatim (distilled files hold concrete checkable rules, and a verbatim copy is rephrased on the next run).
@@ -1573,11 +1997,12 @@ instructions:
       - "doc-locale/**/*.md"
     instructions: |
       1. Write all review comments in English, even when the files under review are in another language.
-      2. Flag sentences in the target language that are grammatically incomplete or missing an expected word. A dangling particle or a missing noun usually means a word or phrase was dropped during translation. Check this against the translated file alone; the English source is not required. Point out that a word or phrase is missing; do not guess the specific missing word, since the source is not consulted here.
-      3. Repetition is out of scope. Do not flag a repeated word, or a list of near-synonyms, as evidence of machine-translation debris. The English source often contains a synonym list, and several English synonyms can map to one word in the target language, so the repetition can be faithful to the source.
-      4. Do not propose deleting, restructuring, or rewording content. Report what you observe and leave the decision to the assignee.
-      5. Do not judge terminology. Whether a term is the right one for this product is decided by human linguistic review, which has the glossary and the source.
-      6. The merge request description includes a `Source: <sha>` line giving the English commit the translation was made from. If you make any claim about the English source, cite that SHA and the file path you read. If you did not read the English source, say so, and do not assert what it contains.
+      2. Read the English source. The merge request description includes a `Source: <sha>` line giving the English commit the translation was made from, and the source of `doc-locale/<lang>/$PATH` is at `doc/$PATH`. Say in your review whether you were able to read it. If you could not, say so and do not assert what the English contains.
+      3. If you read the source, compare the translation against it and report where the two do not match in meaning or completeness. Cite the source file and line, and the `Source: <sha>` commit you read it at.
+      4. If you could not read the source, you can still flag language that is grammatically incomplete or missing an expected word. Do not name the missing word, since you have nothing to check it against.
+      5. A repeated word, or a list of near-synonyms, is not always evidence of machine-translation debris. The English source often contains a synonym list, and several English synonyms can map to one word in the target language, so the repetition can be faithful to the source.
+      6. Do not propose deleting, restructuring, or rewording content. Report what you observe and leave the decision to the assignee.
+      7. Do not judge terminology, unless there's a clear and serious inconsistency within the same page. Whether a term is the right one for a page is decided by human linguistic review, which has the glossary and the source.
 
   - name: Experiments
     fileFilters:

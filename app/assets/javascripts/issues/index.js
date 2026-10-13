@@ -6,7 +6,6 @@ import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
 import { initRelatedIssues } from '~/related_issues';
 import { initIssuableApp, initSentryErrorStackTrace } from '~/issues/show';
 import initNotesApp from '~/notes';
-import { store } from '~/notes/stores';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
@@ -18,7 +17,7 @@ export function initShow() {
   new ZenMode(); // eslint-disable-line no-new
 
   initAwardsApp(document.getElementById('js-vue-awards-block'));
-  initIssuableApp(store);
+  initIssuableApp();
   initIssuableSidebar();
   initNotesApp();
   initRelatedIssues();

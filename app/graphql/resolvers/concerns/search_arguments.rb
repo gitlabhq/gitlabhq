@@ -37,10 +37,10 @@ module SearchArguments
 
     if current_user.present?
       rate_limiter_key = :search_rate_limit
-      rate_limiter_scope = [current_user]
+      rate_limiter_scope = { user: current_user }
     else
       rate_limiter_key = :search_rate_limit_unauthenticated
-      rate_limiter_scope = [context[:request].ip]
+      rate_limiter_scope = { ip: context[:request].ip }
     end
 
     if ::Gitlab::ApplicationRateLimiter.throttled_request?(

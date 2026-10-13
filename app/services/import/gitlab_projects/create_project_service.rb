@@ -17,10 +17,17 @@ module Import
       # @param [User] current_user
       # @param [Hash] :params
       # @param [Import::GitlabProjects::FileAcquisitionStrategies::*] :file_acquisition_strategy
-      def initialize(current_user, params:, file_acquisition_strategy: FileAcquisitionStrategies::FileUpload)
+      # @param [Symbol] :request_channel how the import was initiated, see {Gitlab::Import::RequestChannel}
+      def initialize(
+        current_user,
+        params:,
+        file_acquisition_strategy: FileAcquisitionStrategies::FileUpload,
+        request_channel: ::Gitlab::Import::RequestChannel::API
+      )
         @current_user = current_user
         @params = params.dup
         @strategy = file_acquisition_strategy.new(current_user: current_user, params: params)
+        @request_channel = request_channel
       end
 
       # Creates a project with the strategy parameters
@@ -51,7 +58,7 @@ module Import
 
       private
 
-      attr_reader :current_user, :params, :strategy
+      attr_reader :current_user, :params, :strategy, :request_channel
 
       def error(messages)
         messages = Array.wrap(messages)
@@ -64,7 +71,8 @@ module Import
           current_user,
           project_params,
           params[:override],
-          import_type: 'gitlab_project'
+          import_type: 'gitlab_project',
+          request_channel: request_channel
         ).execute
       end
 

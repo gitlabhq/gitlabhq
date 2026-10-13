@@ -147,19 +147,6 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
           expect(WorkItem.find_by_id(work_item.id)).to be_present
         end
       end
-
-      context 'when the work_item_delete_rate_limit feature flag is disabled' do
-        before do
-          stub_feature_flags(work_item_delete_rate_limit: false)
-        end
-
-        it 'does not check the rate limit' do
-          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
-          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:work_item_delete, any_args)
-
-          expect(result).to be_success
-        end
-      end
     end
 
     # currently we don't expect destroy to fail. Mocking here for coverage and keeping

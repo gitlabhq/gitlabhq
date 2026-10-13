@@ -34,7 +34,7 @@ import {
   exceedsGroupLimit,
   toggleGroupVisibility,
 } from './grouping/visibility';
-import { orderGroups, reorderGroupIds } from './grouping/ordering';
+import { applyGroupSort, reorderGroupIds } from './grouping/ordering';
 import {
   boardColumnQuery,
   boardColumnQueryVariables,
@@ -44,6 +44,7 @@ import {
 import {
   addWorkItemToColumn,
   adjustWorkItemCountInColumn,
+  readWorkItemConnectionFromColumn,
   readWorkItemFromColumn,
   readWorkItemsFromColumn,
   removeWorkItemFromColumn,
@@ -51,6 +52,9 @@ import {
 import {
   I18N_MOVE_ERROR,
   I18N_MOVE_SUCCESS,
+  I18N_GROUP_MOVED,
+  I18N_GROUP_MOVED_LEFT,
+  I18N_GROUP_MOVED_RIGHT,
   MOVE_IN_PROGRESS_INDICATOR_DELAY,
   BOARD_COLUMN_DND_GROUP,
   BOARD_COLUMN_CLASS,
@@ -59,6 +63,7 @@ import {
 } from './constants';
 import { INHERITED_WIDGET_TYPES, resolveInheritedWidgetsDraft } from './filter_inheritance';
 import BoardColumn from './components/board_column.vue';
+import BoardColumnCount from './components/board_column_count.vue';
 
 export default {
   name: 'BoardView',
@@ -69,6 +74,7 @@ export default {
     GlEmptyState,
     GlLoadingIcon,
     BoardColumn,
+    BoardColumnCount,
     DraggableCompat,
     CreateWorkItemModal,
   },
@@ -110,6 +116,11 @@ export default {
       required: false,
       default: () => [],
     },
+    groupSort: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     visibleGroups: {
       type: Array,
       required: false,
@@ -145,6 +156,11 @@ export default {
       required: false,
       default: null,
     },
+    realtimeMatches: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     preselectedWorkItemType: {
       type: String,
       required: false,
@@ -156,6 +172,21 @@ export default {
       default: false,
     },
     hasActiveFilters: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showEmptyGroups: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    hasWorkItems: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    hasWorkItemsLoading: {
       type: Boolean,
       required: false,
       default: false,
@@ -174,6 +205,9 @@ export default {
     return {
       groupValues: [],
       gateData: null,
+      // Keyed by group value id. A missing entry means the count hasn't loaded
+      // yet; `null` means the count query failed (see BoardColumnCount).
+      groupCounts: {},
       renderedColumns: [],
       // The column value a new item targets; also gates the create modal's
       // mount so it re-reads the freshly-seeded draft each time it opens.
@@ -237,14 +271,38 @@ export default {
       return this.queryVariables.sort === RELATIVE_POSITION_ASC;
     },
     // Already scoped to the selected groups server-side, so just apply the
-    // persisted column order (grouping/ordering.js sends new groups to the end
-    // and drops stale ids).
+    // persisted sort (grouping/ordering.js sends new groups to the end and
+    // drops stale ids under manual sort).
     orderedGroupValues() {
-      return orderGroups({
+      return applyGroupSort({
+        groupSort: this.groupSort,
         groupOrder: this.groupOrder,
         groupBy: this.groupBy,
         values: this.groupValues,
       });
+    },
+    // A failed count (see BoardColumnCount) still counts as arrived, so one
+    // bad request can't stall the board forever.
+    countsPending() {
+      if (this.showEmptyGroups || this.needsGroupSelection) {
+        return false;
+      }
+      return this.orderedGroupValues.some((value) => !(value.id in this.groupCounts));
+    },
+    hasNoResults() {
+      return (
+        this.hasActiveFilters &&
+        !this.showEmptyGroups &&
+        !this.needsGroupSelection &&
+        this.orderedGroupValues.length > 0 &&
+        this.orderedGroupValues.every((value) => this.groupCounts[value.id] === 0)
+      );
+    },
+    displayedGroupValues() {
+      if (this.showEmptyGroups) {
+        return this.orderedGroupValues;
+      }
+      return this.orderedGroupValues.filter((value) => this.groupCounts[value.id] !== 0);
     },
     canReorderColumns() {
       return this.canManageColumns && this.orderedGroupValues.length > 1;
@@ -266,10 +324,6 @@ export default {
         }) ?? true
       );
     },
-    // Epics are a fixed type on their board, so the type selector is hidden there.
-    alwaysShowWorkItemTypeSelect() {
-      return this.preselectedWorkItemType !== WORK_ITEM_TYPE_NAME_EPIC;
-    },
     inheritedConfidential() {
       return this.queryVariables.confidential === true;
     },
@@ -278,7 +332,12 @@ export default {
     updatedWorkItem(workItem) {
       this.syncCardWithBoard(workItem);
     },
-    orderedGroupValues: {
+    realtimeMatches(matches) {
+      if (matches) {
+        this.applyRealtimeMatches(matches);
+      }
+    },
+    displayedGroupValues: {
       immediate: true,
       handler(values) {
         this.renderedColumns = values;
@@ -337,6 +396,9 @@ export default {
   methods: {
     groupId(value) {
       return getGroupId({ groupBy: this.groupBy, value });
+    },
+    onGroupCount({ valueId, count }) {
+      this.groupCounts = { ...this.groupCounts, [valueId]: count };
     },
     // Fills in the new item's draft with the column's grouped attribute (e.g.
     // status) and the board's active filters (e.g. labels), then opens the
@@ -731,11 +793,71 @@ export default {
         delta: 1,
       });
     },
+    // Realtime events for items already shown elsewhere on the board (list, drawer) still need
+    // moving or inserting into the right column here, since normalizing their fields doesn't
+    // touch which column's cached connection holds them.
+    applyRealtimeMatches({ created = [], updated = [] }) {
+      updated.forEach((workItem) => this.moveCardToMatchingColumn(workItem));
+      created.forEach((workItem) => this.insertRealtimeCreatedItem(workItem));
+    },
+    insertRealtimeCreatedItem(workItem) {
+      const valueId = this.strategy?.itemValueId?.(workItem);
+      const column = valueId && this.valueById(valueId);
+      if (!column) {
+        return;
+      }
+
+      const { cache } = this.$apollo.getClient();
+      const query = this.columnQuery;
+      const variables = this.columnVariables(column);
+
+      const connection = readWorkItemConnectionFromColumn({
+        cache,
+        query,
+        variables,
+        useRestApi: this.useRestApi,
+      });
+      const nodes = connection?.nodes ?? [];
+
+      // A repeat event for a card we already hold would otherwise double-count the column below.
+      if (nodes.some((node) => node.id === workItem.id)) {
+        return;
+      }
+
+      let index = 0;
+      if (this.isManualSort) {
+        // A new item's relative_position always sorts last. We only know where "last" is
+        // once the column has nothing left to paginate, so skip the insert otherwise.
+        index = connection?.pageInfo?.hasNextPage ? -1 : nodes.length;
+      }
+
+      if (index !== -1) {
+        addWorkItemToColumn({
+          cache,
+          query,
+          variables,
+          workItem,
+          index,
+          useRestApi: this.useRestApi,
+        });
+      }
+
+      // Runs even when index === -1 (card is in the column but past the last loaded page): the
+      // count query refetches after every realtime batch, so this just stops the header lagging.
+      adjustWorkItemCountInColumn({
+        cache,
+        query: getWorkItemsCountOnlyQuery,
+        variables: this.columnCountVariables(column),
+        delta: 1,
+      });
+    },
     onDragStart(workItem) {
       this.invalidValueIds = this.groupValues
         .filter((value) => !this.isDropAllowed({ item: workItem, value }))
         .map((value) => value.id);
     },
+    // Returns the moved column on success, or null when there was nothing to move
+    // (dropped in place, or past the first/last position).
     moveColumn(oldIndex, newIndex, reorderLabel) {
       if (
         oldIndex == null ||
@@ -744,7 +866,7 @@ export default {
         newIndex < 0 ||
         newIndex >= this.renderedColumns.length
       ) {
-        return;
+        return null;
       }
 
       this.trackEvent('configure_columns_on_work_item_board', { label: reorderLabel });
@@ -762,9 +884,14 @@ export default {
           currentOrder: this.groupOrder,
         }),
       );
+
+      return moved;
     },
     onColumnMove({ oldIndex, newIndex }) {
-      this.moveColumn(oldIndex, newIndex, 'reorder_drag');
+      const moved = this.moveColumn(oldIndex, newIndex, 'reorder_drag');
+      if (moved) {
+        this.$toast.show(sprintf(I18N_GROUP_MOVED, { groupName: moved.name }, false));
+      }
     },
     // `delta` is how many positions to shift by: -1 for left, +1 for right.
     // moveColumn ignores an out-of-range target, so this is safe on edge columns.
@@ -773,7 +900,11 @@ export default {
       if (oldIndex === -1) {
         return;
       }
-      this.moveColumn(oldIndex, oldIndex + delta, 'reorder_menu');
+      const moved = this.moveColumn(oldIndex, oldIndex + delta, 'reorder_menu');
+      if (moved) {
+        const message = delta < 0 ? I18N_GROUP_MOVED_LEFT : I18N_GROUP_MOVED_RIGHT;
+        this.$toast.show(sprintf(message, { groupName: moved.name }, false));
+      }
     },
     onColumnHide(value) {
       const visibleGroups = toggleGroupVisibility({
@@ -790,7 +921,7 @@ export default {
     isDropAllowed({ item, value }) {
       return this.strategy?.isDropAllowed?.({ item, value, gateData: this.gateData }) ?? true;
     },
-    async onCardMove({ from, to, item, oldIndex, newIndex }) {
+    onCardMove({ from, to, item, oldIndex, newIndex }) {
       this.invalidValueIds = [];
       const fromValueId = from?.dataset?.columnValueId;
       const toValueId = to?.dataset?.columnValueId;
@@ -806,7 +937,26 @@ export default {
         return;
       }
 
-      const valueChanged = fromValueId !== toValueId;
+      this.moveCard({ fromValue, toValue, workItemId, oldIndex, newIndex, source: 'drag' });
+    },
+    // A menu move is always a same-column reorder, so fromValue and toValue are
+    // the same column — moveCard already handles that case for drag reorders.
+    onCardMoveToPosition(value, { workItemId, oldIndex, newIndex }) {
+      if (!workItemId) {
+        return;
+      }
+
+      this.moveCard({
+        fromValue: value,
+        toValue: value,
+        workItemId,
+        oldIndex,
+        newIndex,
+        source: 'menu',
+      });
+    },
+    async moveCard({ fromValue, toValue, workItemId, oldIndex, newIndex, source }) {
+      const valueChanged = fromValue.id !== toValue.id;
 
       const { cache } = this.$apollo.getClient();
       const query = this.columnQuery;
@@ -904,15 +1054,19 @@ export default {
           throw new Error(data.workItemUpdate.errors.join(', '));
         }
 
-        this.trackEvent('move_card_on_work_item_board', { label: moveKind });
+        this.trackEvent('move_card_on_work_item_board', { label: moveKind, property: source });
 
         if (valueChanged) {
           this.$toast.show(
-            sprintf(I18N_MOVE_SUCCESS, { reference: node.reference, targetGroup: toValue.name }),
+            sprintf(
+              I18N_MOVE_SUCCESS,
+              { reference: node.reference, targetGroup: toValue.name },
+              false,
+            ),
           );
         }
       } catch (error) {
-        this.trackEvent('fail_card_move_on_work_item_board', { label: moveKind });
+        this.trackEvent('fail_card_move_on_work_item_board', { label: moveKind, property: source });
         this.$toast.show(I18N_MOVE_ERROR);
         Sentry.captureException(error);
       } finally {
@@ -930,7 +1084,29 @@ export default {
     class="gl-flex gl-w-full gl-overflow-x-auto gl-py-5"
     style="height: calc(100dvh - 220px - 2rem)"
   >
-    <gl-loading-icon v-if="isLoading && groupValues.length === 0" size="lg" class="gl-m-auto" />
+    <template v-if="!needsGroupSelection">
+      <board-column-count
+        v-for="value in orderedGroupValues"
+        :key="`count-${value.id}`"
+        :value="value"
+        :strategy="strategy"
+        :root-page-full-path="rootPageFullPath"
+        :base-query-variables="queryVariables"
+        @change="onGroupCount"
+      />
+    </template>
+    <gl-loading-icon
+      v-if="
+        (isLoading && groupValues.length === 0) ||
+        (hasWorkItemsLoading && !hasWorkItems) ||
+        (hasWorkItems && countsPending)
+      "
+      size="lg"
+      class="gl-m-auto"
+    />
+    <div v-else-if="!hasWorkItems || hasNoResults" class="gl-w-full gl-self-start">
+      <slot name="empty-state"></slot>
+    </div>
     <gl-empty-state
       v-else-if="needsGroupSelection"
       class="gl-m-auto"
@@ -963,6 +1139,7 @@ export default {
         :strategy="strategy"
         :root-page-full-path="rootPageFullPath"
         :base-query-variables="queryVariables"
+        :count="groupCounts[value.id] ?? 0"
         :drag-disabled="moveInProgress"
         :show-busy-indicator="showMoveInProgressIndicator"
         :drop-disabled="invalidValueIds.includes(value.id)"
@@ -976,8 +1153,10 @@ export default {
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"
         :detail-panel-enabled="detailPanelEnabled"
+        :can-reorder-cards="isManualSort && !moveInProgress"
         @drag-start="onDragStart"
         @card-move="onCardMove"
+        @card-move-to-position="onCardMoveToPosition(value, $event)"
         @move-column="onColumnShift({ value, delta: $event })"
         @hide-column="onColumnHide(value)"
         @set-active-item="$emit('set-active-item', $event)"
@@ -990,10 +1169,10 @@ export default {
       v-if="createColumnValue"
       visible
       hide-button
-      :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
       :confidential="inheritedConfidential"
       :creation-context="$options.CREATION_CONTEXT_BOARD"
       :full-path="rootPageFullPath"
+      :hide-namespace-selector="!queryVariables.isGroup"
       :is-group="queryVariables.isGroup"
       :preselected-work-item-type="preselectedWorkItemType"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"

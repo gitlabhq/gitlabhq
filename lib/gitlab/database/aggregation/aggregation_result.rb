@@ -13,11 +13,13 @@ module Gitlab
           @options = options
         end
 
+        # ClickHouse::Client::QueryBuilder#limit and #offset mutate the builder in place, so the
+        # query is cloned to keep a later count from counting only the loaded page.
         def limit(limit_value)
           self.class.new(
             engine,
             plan,
-            query.limit(limit_value),
+            query.clone.limit(limit_value),
             **options
           )
         end
@@ -26,7 +28,7 @@ module Gitlab
           self.class.new(
             engine,
             plan,
-            query.offset(offset_value),
+            query.clone.offset(offset_value),
             **options
           )
         end

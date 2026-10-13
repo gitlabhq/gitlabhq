@@ -14,12 +14,6 @@ title: Troubleshooting Code Quality
 
 When working with Code Quality, you might encounter the following issues.
 
-## The code cannot be found and the pipeline runs always with default configuration
-
-You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
-You should configure Code Quality checks to run on your worker as documented in
-[Use private runners](code_quality_codeclimate_scanning.md#use-private-runners).
-
 ## Changing the default configuration has no effect
 
 A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`
@@ -112,11 +106,6 @@ code_quality:
   variables:
     TIMEOUT_SECONDS: 3600
 ```
-
-## Using Code Quality with a Kubernetes or OpenShift runner
-
-CodeClimate-based scanning has special requirements.
-You may need to [Configure Kubernetes or OpenShift runners for CodeClimate-based scanning](code_quality_codeclimate_scanning.md#configure-kubernetes-or-openshift-runners) before scans work properly.
 
 ## Error: `x509: certificate signed by unknown authority`
 
@@ -228,5 +217,3 @@ To resolve this issue, either:
 
 - Use the [documented Runner configuration for Docker-in-Docker](../docker/using_docker_build.md#use-docker-in-docker), which uses privileged mode instead of Docker socket binding.
 - Apply the [community workaround in issue 32027](https://gitlab.com/gitlab-org/gitlab/-/issues/32027#note_1318822628) if you wish to continue using Docker socket binding.
-
-For more details, see [Change Runner configuration](code_quality_codeclimate_scanning.md#change-runner-configuration).

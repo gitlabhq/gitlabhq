@@ -76,6 +76,40 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         end
       end
 
+      describe 'embedded content' do
+        it 'enable embedded content providers' do
+          within_testid('admin-iframe-settings') do
+            click_unchecked_field('Enable embedded content')
+            click_unchecked_field('YouTube')
+
+            expect_save_settings
+
+            expect_field_checked('Enable embedded content')
+            expect_field_checked('YouTube')
+            expect_field_unchecked('Figma')
+          end
+
+          expect(current_settings.iframe_rendering_allowlist).to eq(%w[youtube])
+        end
+
+        it 'disable all embedded content providers' do
+          current_settings.update!(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[youtube figma])
+          visit general_admin_application_settings_path
+
+          within_testid('admin-iframe-settings') do
+            click_checked_field('YouTube')
+            click_checked_field('Figma')
+
+            expect_save_settings
+
+            expect_field_unchecked('YouTube')
+            expect_field_unchecked('Figma')
+          end
+
+          expect(current_settings.iframe_rendering_allowlist).to eq([])
+        end
+      end
+
       it 'change Visibility and Access Controls', :aggregate_failures do
         within_testid('admin-import-export-settings') do
           within_testid('project-export') do

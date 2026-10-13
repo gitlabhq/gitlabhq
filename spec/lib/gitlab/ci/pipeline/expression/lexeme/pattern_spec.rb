@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern, feature_category: :continuous_integration do
   describe '#initialize' do

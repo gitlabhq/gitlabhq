@@ -32,10 +32,6 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('shaMismatch');
 
-    context.detailedMergeStatus = 'CHECKING';
-
-    expect(bound()).toEqual('checking');
-
     context.commitsCount = 0;
 
     expect(bound()).toEqual('nothingToMerge');

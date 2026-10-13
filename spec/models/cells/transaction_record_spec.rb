@@ -166,7 +166,7 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
         end.to raise_error(described_class::Error, "Attributes can now only be claimed on main DB")
       end
 
-      context "when a transient GRPC error occurs" do
+      context "when a transient GRPC error occurs on BeginUpdate" do
         using RSpec::Parameterized::TableSyntax
 
         let(:model) { build(:organization) }
@@ -188,29 +188,16 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
         end
 
         with_them do
-          it "retries and succeeds" do
-            call_count = 0
-            allow(Cells::OutstandingLease).to receive(:create_from_request!) do
-              call_count += 1
-              raise error_class, "transient" if call_count == 1
+          it "does not retry and raises a generic Error" do
+            allow(Cells::OutstandingLease).to receive(:create_from_request!)
+              .and_raise(error_class.new("transient"))
 
-              lease
-            end
-
-            record.before_committed!
-            expect(record.send(:outstanding_lease)).to eq(lease)
-            expect(call_count).to eq(2)
+            expect { record.before_committed! }
+              .to raise_error(described_class::Error, /Failed to create lease/) do |error|
+                expect(error).not_to be_a(described_class::AlreadyClaimedError)
+              end
+            expect(Cells::OutstandingLease).to have_received(:create_from_request!).once
           end
-        end
-
-        it "raises generic Error (not AlreadyClaimedError) after exhausting retries on transient errors" do
-          allow(Cells::OutstandingLease).to receive(:create_from_request!)
-            .and_raise(GRPC::Unavailable.new("unavailable"))
-
-          expect { record.before_committed! }
-            .to raise_error(described_class::Error, /Failed to create lease/) do |error|
-              expect(error).not_to be_a(described_class::AlreadyClaimedError)
-            end
         end
 
         it "raises AlreadyClaimedError without retrying on ALREADY_EXISTS" do
@@ -244,6 +231,33 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
           expect { record.before_committed! }
             .to raise_error(described_class::AlreadyClaimedError, /Failed to create lease/)
           expect(model.errors[:base]).to include("path has already been taken")
+        end
+      end
+    end
+
+    describe "deadline" do
+      before do
+        record.create_record(metadata)
+        allow(Cells::OutstandingLease).to receive(:create_from_request!).and_return(lease)
+        allow(Gitlab::Runtime).to receive_messages(rake?: false, rails_runner?: false, console?: false)
+      end
+
+      it "uses the serving timeout in application processes" do
+        record.before_committed!
+
+        expect(GRPC::Core::TimeConsts).to have_received(:from_relative_time).with(described_class::TIMEOUT_IN_SECONDS)
+      end
+
+      where(:runtime) { %i[rake? rails_runner? console?] }
+
+      with_them do
+        it "uses the non-serving timeout" do
+          allow(Gitlab::Runtime).to receive(runtime).and_return(true)
+
+          record.before_committed!
+
+          expect(GRPC::Core::TimeConsts)
+            .to have_received(:from_relative_time).with(described_class::NON_SERVING_TIMEOUT_IN_SECONDS)
         end
       end
     end

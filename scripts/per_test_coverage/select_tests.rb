@@ -47,6 +47,10 @@ module PerTestCoverage
     STALE_INTERVAL_DAYS = 14
     STALE_RESCUE_LIMIT = 100
     EMPTY_QUEUE_EXIT_CODE = 2
+    # ClickHouse rejects a query over max_query_size (256 KiB by default), and a
+    # delta spanning weeks of master can change thousands of source files. 1,000
+    # paths keep each IN list well under the limit even for long paths.
+    SOURCE_FILE_BATCH_SIZE = 1_000
     # GitLab pipeline schedule (id 23503) that drives per-test-coverage capture
     # on master. The weekend bucket sweep counts prior pipelines from this
     # schedule to decide which slot of the weekend we're in.
@@ -58,17 +62,40 @@ module PerTestCoverage
     # though the values are bounded today (sha from CH, paths from a frozen
     # constant).
     class Git
+      Error = Class.new(StandardError)
+
       def diff_files(base_sha, paths)
         return [] if base_sha.nil? || base_sha.empty?
+
+        fetch_commit(base_sha) unless commit_present?(base_sha)
 
         # `--diff-filter=ACMR` so we catch added, copied, modified, and renamed
         # files but skip deleted ones (a removed test won't run anyway).
         cmd = ['git', 'diff', '--name-only', '--diff-filter=ACMR', "#{base_sha}..HEAD", '--', *paths]
-        stdout, _stderr, status = Open3.capture3(*cmd)
-        return [] unless status.success?
+        stdout, stderr, status = Open3.capture3(*cmd)
+        # A failed diff must raise, not return []: silently returning an empty
+        # delta once collapsed weekday queues to stale-rescue only for weeks
+        # before anyone noticed.
+        raise Error, "#{cmd.join(' ')} failed: #{stderr}" unless status.success?
 
         out = stdout.strip
         out.empty? ? [] : out.split("\n")
+      end
+
+      private
+
+      def commit_present?(sha)
+        _stdout, _stderr, status = Open3.capture3('git', 'cat-file', '-e', "#{sha}^{commit}")
+        status.success?
+      end
+
+      # The CI clone is shallow (GIT_DEPTH), so the base commit is usually
+      # absent. --depth=1 is enough: `git diff A..B` compares the two trees
+      # directly and needs no ancestry between them.
+      def fetch_commit(sha)
+        puts "[#{self.class.name}] Fetching missing base commit #{sha} before diffing"
+        _stdout, stderr, status = Open3.capture3('git', 'fetch', '--depth=1', 'origin', sha)
+        raise Error, "git fetch --depth=1 origin #{sha} failed: #{stderr}" unless status.success?
       end
     end
 
@@ -134,7 +161,8 @@ module PerTestCoverage
       git: Git.new,
       project_path: ENV.fetch('CI_PROJECT_PATH', PROJECT_DIR_DEFAULT),
       output_dir: OUTPUT_DIR_DEFAULT,
-      test_file_glob: method(:default_test_file_glob))
+      test_file_glob: method(:default_test_file_glob),
+      file_exists: File.method(:exist?))
       @clickhouse_client = clickhouse_client
       @gitlab_api = gitlab_api
       @now = now
@@ -142,12 +170,14 @@ module PerTestCoverage
       @project_path = project_path
       @output_dir = output_dir
       @test_file_glob = test_file_glob
+      @file_exists = file_exists
     end
 
     def run!
       queue = weekend_bucket_slot? ? weekend_bucket_queue : weekday_queue
+      queue = drop_unrunnable(queue.uniq)
 
-      jest, rspec = queue.uniq.partition { |path| jest_test?(path) }
+      jest, rspec = queue.partition { |path| jest_test?(path) }
       foss, ee = rspec.partition { |path| !path.start_with?('ee/') }
 
       FileUtils.mkdir_p(@output_dir)
@@ -253,6 +283,22 @@ module PerTestCoverage
       delta_tests + stale_rescue_tests
     end
 
+    # ClickHouse keeps coverage rows for deleted and renamed specs forever, so
+    # queued paths can point at files that are gone; qa/ specs exist on disk
+    # but no child pipeline can run them.
+    def drop_unrunnable(paths)
+      qa, rest = paths.partition { |path| path.start_with?('qa/') }
+      missing, runnable = rest.partition { |path| !@file_exists.call(path) }
+
+      unless missing.empty?
+        info "Dropped #{missing.size} queued file(s) that no longer exist on disk: #{missing.sort.join(', ')}"
+      end
+
+      info "Dropped #{qa.size} qa/ file(s) that no child pipeline can run: #{qa.sort.join(', ')}" unless qa.empty?
+
+      runnable
+    end
+
     def delta_tests
       changed_source_files = git.diff_files(last_capture_sha, SOURCE_FILE_PATHS)
       new_spec_files = git.diff_files(last_capture_sha, SPEC_FILE_PATHS)
@@ -260,12 +306,23 @@ module PerTestCoverage
       tests_for_sources = changed_source_files.empty? ? [] : query_tests_for_source_files(changed_source_files)
 
       tests_for_sources + new_spec_files
+    rescue Git::Error => e
+      # Raising would skip stale-rescue, so nothing would be captured and no new
+      # captured_sha would be written: the next run would read the same unusable
+      # base and fail identically, forever. Stale-rescue advances the base instead.
+      info "DEGRADED: delta diff against #{last_capture_sha} failed (#{e.message}). " \
+        "Falling back to stale-rescue only for this slot."
+      []
     end
 
+    # qa/ is excluded in SQL rather than by drop_unrunnable alone: a qa/ spec can
+    # never be captured, so it never leaves the stale set, and filtering after
+    # LIMIT would let it hold a rescue slot against a spec that could have run.
     def stale_rescue_tests
       sql = <<~SQL
         SELECT test_file FROM code_coverage.test_coverage_per_file FINAL
         WHERE ci_project_path = '#{escape_sql_string(project_path)}'
+          AND test_file NOT LIKE 'qa/%'
         GROUP BY test_file
         HAVING max(timestamp) < now() - INTERVAL #{STALE_INTERVAL_DAYS} DAY
         LIMIT #{STALE_RESCUE_LIMIT}
@@ -286,10 +343,17 @@ module PerTestCoverage
 
     def last_capture_sha
       @last_capture_sha ||= begin
+        # argMax picks the SHA of the newest capture by timestamp. A plain
+        # max(captured_sha) is a lexicographic string max, which freezes the
+        # base on whichever SHA happens to sort highest. qa/ rows come from the
+        # E2E export, which writes its own captured_sha on a separate schedule,
+        # so counting them would move the base past commits no rspec or jest
+        # capture has covered.
         sql = <<~SQL
-          SELECT max(captured_sha) AS sha
+          SELECT argMax(captured_sha, timestamp) AS sha
           FROM code_coverage.test_coverage_per_file FINAL
           WHERE ci_project_path = '#{escape_sql_string(project_path)}' AND captured_sha != ''
+            AND test_file NOT LIKE 'qa/%'
         SQL
         rows = clickhouse_client.query(sql, format: 'JSONEachRow')
         rows.dig(0, 'sha').to_s
@@ -297,13 +361,15 @@ module PerTestCoverage
     end
 
     def query_tests_for_source_files(source_files)
-      escaped = source_files.map { |f| "'#{escape_sql_string(f)}'" }.join(', ')
-      sql = <<~SQL
-        SELECT DISTINCT test_file FROM code_coverage.test_files_by_source_file FINAL
-        WHERE ci_project_path = '#{escape_sql_string(project_path)}'
-          AND source_file IN (#{escaped})
-      SQL
-      clickhouse_client.query(sql, format: 'JSONEachRow').map { |row| row['test_file'] } # rubocop:disable Rails/Pluck -- standalone script, ActiveSupport extensions not guaranteed
+      source_files.each_slice(SOURCE_FILE_BATCH_SIZE).flat_map do |batch|
+        escaped = batch.map { |f| "'#{escape_sql_string(f)}'" }.join(', ')
+        sql = <<~SQL
+          SELECT DISTINCT test_file FROM code_coverage.test_files_by_source_file FINAL
+          WHERE ci_project_path = '#{escape_sql_string(project_path)}'
+            AND source_file IN (#{escaped})
+        SQL
+        clickhouse_client.query(sql, format: 'JSONEachRow').map { |row| row['test_file'] }
+      end
     end
 
     # ClickHouse uses standard SQL single-quote escaping (doubled). Project paths come from

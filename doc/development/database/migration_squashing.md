@@ -18,9 +18,9 @@ Migration squashing combines multiple database migrations into a single schema d
 
 ## Automation
 
-Migration squashing is automated through `GitLab Housekeeper`. The [`Keeps::SquashMigrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/d00a116c765eb7968d925dbd86bf8ca6e21c300b/keeps/squash_migrations.rb) keep creates MRs automatically at scheduled milestones.
+Migration squashing is automated through `GitLab Housekeeper`. The [`Keeps::SquashMigrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/squash_migrations.rb) keep creates MRs automatically at scheduled milestones.
 
-The automation runs via a [scheduled pipeline job](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/.gitlab-ci.yml#L153-164) in the Engineering Productivity team's CI configuration.
+The automation runs via a pipeline schedule on the default branch, which runs the [`housekeeper:squash-migrations` job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/housekeeping.gitlab-ci.yml).
 
 ### Schedule
 

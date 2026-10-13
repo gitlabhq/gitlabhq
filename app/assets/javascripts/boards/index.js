@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BoardApp from '~/boards/components/board_app.vue';
 import { TYPE_ISSUE, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import {
   navigationType,
   isLoggedIn,
-  parseBoolean,
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
@@ -67,7 +67,7 @@ function mountBoardApp(el) {
     rootPath,
     wiHasScopedLabelsFeature,
     wiGroupPath,
-    wiCanAdminLabel,
+    wiCanCreateLabel,
     hasCustomFieldsFeature,
   } = el.dataset;
 
@@ -113,7 +113,7 @@ function mountBoardApp(el) {
       canAdminBoard: parseBoolean(el.dataset.canAdminBoard),
       allowLabelCreate: parseBoolean(el.dataset.canUpdate),
       isSignedIn: isLoggedIn(),
-      canAdminLabel: parseBoolean(wiCanAdminLabel),
+      canCreateLabel: parseBoolean(wiCanCreateLabel),
       // Features
       epicFeatureAvailable: parseBoolean(el.dataset.epicFeatureAvailable),
       iterationFeatureAvailable: parseBoolean(el.dataset.iterationFeatureAvailable),

@@ -21,13 +21,14 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:note_body) { 'This is my note' }
   let(:import_state) { create(:import_state, :started, project: project) }
+  let(:author) { Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice', email: 'alice@alice.com') }
 
   let(:github_note) do
     Gitlab::GithubImport::Representation::Note.new(
       note_id: 100,
       noteable_id: 1,
       noteable_type: 'Issue',
-      author: Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice', email: 'alice@alice.com'),
+      author: author,
       note: note_body,
       created_at: created_at,
       updated_at: updated_at
@@ -142,84 +143,15 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
         end
       end
 
-      context 'when user contribution mapping is disabled' do
-        before do
-          project.build_or_assign_import_data(data: {}).save!
-          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-          allow(importer.user_finder)
-            .to receive(:email_for_github_username)
-            .and_return('alice@alice.com')
-        end
+      context 'when the note has no author' do
+        let(:author) { nil }
+        let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
 
-        context 'when the author could be found' do
-          it 'imports the note with the found author as the note author and does not push a placeholder reference' do
-            expect(importer.user_finder)
-              .to receive(:author_id_for)
-              .with(github_note)
-              .and_return([user.id, true])
+        it 'imports the note as the ghost user and does not push a reference' do
+          expect { importer.execute }.to change { project.notes.count }.by(1)
 
-            expect(ApplicationRecord)
-              .to receive(:legacy_bulk_insert)
-              .with(
-                Note.table_name,
-                [
-                  {
-                    noteable_type: 'Issue',
-                    noteable_id: issue_row.id,
-                    project_id: project.id,
-                    author_id: user.id,
-                    note: 'This is my note',
-                    discussion_id: match(/\A[0-9a-f]{40}\z/),
-                    system: false,
-                    created_at: created_at,
-                    updated_at: updated_at,
-                    imported_from: imported_from
-                  }
-                ],
-                { return_ids: true }
-              )
-              .and_call_original
-
-            expect(::Import::PlaceholderReferences::PushService)
-              .not_to receive(:new)
-
-            importer.execute
-          end
-        end
-
-        context 'when the note author could not be found' do
-          it 'imports the note with the project creator as the note author' do
-            expect(importer.user_finder)
-              .to receive(:author_id_for)
-              .with(github_note)
-              .and_return([project.creator_id, false])
-
-            expect(ApplicationRecord)
-              .to receive(:legacy_bulk_insert)
-              .with(
-                Note.table_name,
-                [
-                  {
-                    noteable_type: 'Issue',
-                    noteable_id: issue_row.id,
-                    project_id: project.id,
-                    author_id: project.creator_id,
-                    note: "*Created by: alice*\n\nThis is my note",
-                    discussion_id: match(/\A[0-9a-f]{40}\z/),
-                    system: false,
-                    created_at: created_at,
-                    updated_at: updated_at,
-                    imported_from: imported_from
-                  }
-                ],
-                {
-                  return_ids: true
-                }
-              )
-              .and_call_original
-
-            importer.execute
-          end
+          expect(project.notes.last.author_id).to eq(Users::Internal.in_organization(project.organization).ghost.id)
+          expect(cached_references).to be_empty
         end
       end
 
@@ -314,6 +246,95 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
       end
 
       expect(importer.find_noteable_id).to eq(10)
+    end
+  end
+
+  describe '#imported_note_id' do
+    let!(:issue_row) { create(:issue, project: project, iid: 1) }
+
+    before do
+      allow(importer).to receive(:find_noteable_id).and_return(issue_row.id)
+    end
+
+    it 'is nil before the note is imported' do
+      expect(importer.imported_note_id).to be_nil
+    end
+
+    it 'is the id of the inserted note without changing the return value' do
+      result = importer.execute
+
+      expect(importer.imported_note_id).to eq(project.notes.take.id)
+      expect(result).not_to be_a(Note)
+    end
+
+    it 'does not query the notes table by id for a normal import' do
+      queries = ActiveRecord::QueryRecorder.new { importer.execute }.log
+
+      expect(queries.grep(/SELECT.*FROM "notes".*"notes"\."id"\s*(=|IN|ANY)/i)).to be_empty
+    end
+
+    it 'stays nil when nothing was inserted' do
+      allow(ApplicationRecord).to receive(:legacy_bulk_insert).and_return([])
+
+      importer.execute
+
+      expect(importer.imported_note_id).to be_nil
+    end
+  end
+
+  describe '#import_attributes' do
+    let!(:issue_row) { create(:issue, project: project, iid: 1) }
+
+    before do
+      allow(importer).to receive(:find_noteable_id).and_return(issue_row.id)
+    end
+
+    it 'looks up the noteable and the author only once when called repeatedly' do
+      expect(importer.user_finder).to receive(:author_id_for).once.and_call_original
+
+      2.times { importer.import_attributes }
+
+      expect(importer).to have_received(:find_noteable_id).once
+    end
+
+    it 'returns the attributes used to insert the note' do
+      expect(importer.import_attributes).to include(
+        noteable_type: 'Issue',
+        noteable_id: issue_row.id,
+        project_id: project.id,
+        author_id: source_user.mapped_user_id,
+        note: note_body,
+        system: false,
+        imported_from: imported_from
+      )
+    end
+
+    it 'raises when the noteable cannot be found' do
+      allow(importer).to receive(:find_noteable_id).and_return(nil)
+
+      expect { importer.import_attributes }.to raise_error(Gitlab::GithubImport::Exceptions::NoteableNotFound)
+    end
+  end
+
+  describe '#push_placeholder_references', :clean_gitlab_redis_shared_state do
+    let!(:issue_row) { create(:issue, project: project, iid: 1) }
+    let(:note) { create(:note, noteable: issue_row, project: project, author: source_user.placeholder_user) }
+
+    it 'pushes the author reference for an existing note' do
+      importer.push_placeholder_references(note)
+
+      expect(placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id))
+        .to contain_exactly(['Note', note.id, 'author_id', source_user.id])
+    end
+
+    context 'when the note has no author' do
+      let(:author) { nil }
+
+      it 'does not push a reference' do
+        importer.push_placeholder_references(note)
+
+        expect(placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)).to be_empty
+      end
     end
   end
 end

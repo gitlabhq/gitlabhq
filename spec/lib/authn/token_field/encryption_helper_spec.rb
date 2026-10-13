@@ -23,6 +23,19 @@ RSpec.describe Authn::TokenField::EncryptionHelper, feature_category: :system_ac
     end
   end
 
+  describe '.encrypt_token_candidates' do
+    include DbKeyBaseHelpers
+
+    it 'returns a value per db_key_base key, current key first, that each decrypts' do
+      stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+      candidates = described_class.encrypt_token_candidates('my-value')
+
+      expect(candidates.first).to eq(described_class.encrypt_token('my-value'))
+      expect(candidates.size).to eq(2)
+      expect(candidates.map { |candidate| described_class.decrypt_token(candidate) }).to all(eq('my-value'))
+    end
+  end
+
   describe '.decrypt_token' do
     it 'decrypts token with dynamic iv' do
       encrypted_token = described_class.encrypt_token('my-value')

@@ -72,9 +72,7 @@ describe('DeleteWithContributions', () => {
         await wrapper.find('button').trigger('click');
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-        // Vue 2 specs return 'disabled' while Vue 3 tests return true
-        // eslint-disable-next-line jest/no-restricted-matchers
-        expect(wrapper.attributes('disabled')).toBeTruthy();
+        expect(wrapper.attributes('aria-disabled')).toBe('true');
         expect(wrapper.attributes('aria-busy')).toBe('true');
         expect(wrapper.findComponent(GlDisclosureDropdownItem).props('variant')).toBe(null);
       });

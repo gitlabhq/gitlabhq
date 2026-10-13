@@ -113,7 +113,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
         # Rate-limit counter behaviour is covered in spec/requests/verifies_with_email_spec.rb.
         # Here we only verify the UI response when the limit is already exceeded.
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:user_sign_in, hash_including(scope: user)).and_return(true)
+          .with(:user_sign_in, hash_including(scope: { user: user })).and_return(true)
         submit_sign_in_form_for(user)
       end
 
@@ -153,7 +153,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
         # and_return(false, true) simulates: sign-in's send_rate_limited? check passes
         # (allowing the initial code to be sent), then the limit is exceeded on the next resend.
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:email_verification_code_send, hash_including(scope: user)).and_return(false, true)
+          .with(:email_verification_code_send, hash_including(scope: { user: user })).and_return(false, true)
 
         submit_sign_in_form_for(user)
         expect(page).to have_button s_('IdentityVerification|Resend code')

@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { pinia } from '~/pinia/instance';
 
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { setUTCTime } from '~/lib/utils/datetime_utility';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import Translate from '~/vue_shared/translate';

@@ -14,7 +14,8 @@ module Mutations
 
         authorize_granular_token permissions: :update_custom_attribute,
           boundary_argument: :group_path,
-          boundary_type: :group
+          boundary_type: :group,
+          assignable_when: [:admin]
 
         argument :group_path, GraphQL::Types::ID,
           required: true,

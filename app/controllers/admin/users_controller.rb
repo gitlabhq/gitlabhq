@@ -110,9 +110,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unblock
-    if user.ldap_blocked?
-      return redirect_back_or_admin_user(alert: _("This user cannot be unlocked manually from GitLab"))
-    end
+    return resync_ldap if user.ldap_blocked?
 
     result = Users::UnblockService.new(current_user).execute(user)
 
@@ -276,6 +274,28 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   protected
+
+  def resync_ldap
+    unless Gitlab::Auth::Ldap::Config.enabled?
+      return redirect_back_or_admin_user(alert: _("LDAP is not enabled for this instance."))
+    end
+
+    return redirect_back_or_admin_user(alert: _("This user does not have an LDAP identity.")) unless user.ldap_identity
+
+    unless Gitlab::Auth::Ldap::Config.valid_provider?(user.ldap_identity.provider)
+      message = format(
+        _("This user's LDAP provider (%{provider}) is no longer configured on this instance."),
+        provider: user.ldap_identity.provider
+      )
+      return redirect_back_or_admin_user(alert: message)
+    end
+
+    if Gitlab::Auth::Ldap::Access.allowed?(user)
+      redirect_back_or_admin_user(notice: _("Successfully synchronized with LDAP. User is now unblocked."))
+    else
+      redirect_back_or_admin_user(alert: _("User is still blocked according to LDAP."))
+    end
+  end
 
   def admin_making_changes_for_another_user?
     user != current_user

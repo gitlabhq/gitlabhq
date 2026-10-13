@@ -114,8 +114,14 @@ module Users
       return true if current_user.can_admin_all_resources?
       return false if organization_ids_invalid?
 
-      Organizations::Organization.id_in(organization_ids).all? do |organization|
-        current_user.can?(:update_organization, organization)
+      # Non-admins can only change memberships that already exist. Fewer memberships
+      # than organizations means the user is not a member of at least one of them.
+      organization_users = user.organization_users.in_organization(organization_ids).to_a
+      return false unless organization_users.size == organization_ids.size
+
+      # The membership is the policy subject so it can refuse to demote the last owner.
+      organization_users.all? do |organization_user|
+        current_user.can?(:update_organization_user, organization_user)
       end
     end
 
@@ -204,8 +210,36 @@ module Users
     def after_update(user_exists)
       notify_success(user_exists)
       remove_followers_and_followee!
+      sync_organization_admin_roles
 
       success({ user: @user })
+    end
+
+    # Nested organization_users_attributes rewrite owner rows as a side effect of
+    # saving the user, so no organization-user service hook sees them.
+    def sync_organization_admin_roles
+      return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      organization_users_crossing_owner_boundary.each do |organization_user|
+        worker = if organization_user.owner?
+                   ::Authz::Organizations::GrantOwnerRoleWorker
+                 else
+                   ::Authz::Organizations::RevokeOwnerRoleWorker
+                 end
+
+        worker.perform_async(organization_user.organization_id, @user.id, current_user.id)
+      end
+    end
+
+    # A new membership moves from nil to default, which is not a demotion.
+    def organization_users_crossing_owner_boundary
+      return [] if organization_users_attributes.blank?
+
+      @user.organization_users.select do |organization_user|
+        next false unless organization_user.saved_change_to_access_level?
+
+        organization_user.owner? || organization_user.access_level_before_last_save == 'owner'
+      end
     end
 
     def remove_followers_and_followee!

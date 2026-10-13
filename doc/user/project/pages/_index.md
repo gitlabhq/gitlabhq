@@ -35,7 +35,7 @@ To create a GitLab Pages website:
 
 | Document                                                                             | Description                                                                                  |
 |--------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| [Use the GitLab UI to create a simple `.gitlab-ci.yml`](getting_started/pages_ui.md) | Add a Pages site to an existing project. Use the UI to set up a simple `.gitlab-ci.yml`.     |
+| [Use the GitLab UI to create a `.gitlab-ci.yml`](getting_started/pages_ui.md)        | Add a Pages site to an existing project. Use the UI to set up a `.gitlab-ci.yml`.            |
 | [Create a `.gitlab-ci.yml` file from scratch](getting_started/pages_from_scratch.md) | Add a Pages site to an existing project. Learn how to create and configure your own CI file. |
 | [Use a `.gitlab-ci.yml` template](getting_started/pages_ci_cd_template.md)           | Add a Pages site to an existing project. Use a pre-populated CI template file.               |
 | [Fork a sample project](getting_started/pages_forked_sample_project.md)              | Create a new project with Pages already configured by forking a sample project.              |
@@ -87,7 +87,7 @@ automatically secure and available under HTTPS. If you're using your own custom
 domain, you can optionally secure it with SSL/TLS certificates.
 
 If you're using GitLab.com, your website is publicly available to the internet.
-To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
+To restrict access to your website, turn on [GitLab Pages Access Control](pages_access_control.md).
 
 If you're using a GitLab Self-Managed instance, your websites are published on your
 own server, according to the [Pages settings](../../../administration/pages/_index.md)
@@ -145,7 +145,7 @@ cookies manually with JavaScript.
 
 By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
 
-To ensure each project uses different cookies, enable the Pages [unique domains](#unique-domains) feature for your project.
+To ensure each project uses different cookies, turn on the Pages [unique domains](#unique-domains) feature for your project.
 
 ## Unique domains
 
@@ -158,7 +158,7 @@ To ensure each project uses different cookies, enable the Pages [unique domains]
 By default, every new project uses Pages unique domains to prevent projects in the same group
 from sharing cookies.
 
-The project maintainer can disable this feature:
+The project maintainer can turn off this feature:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Deploy** > **Pages**.

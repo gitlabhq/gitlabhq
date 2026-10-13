@@ -25,15 +25,13 @@ GitLab supports automatic response for the following types of secrets:
 
 | Secret type | Action taken | Supported on GitLab.com | Supported in GitLab Self-Managed |
 | ----- | --- | --- | --- |
-| GitLab [personal access tokens](../../profile/personal_access_tokens.md) | Immediately revoke token, send email to owner. <sup>1</sup> | ✅ | ✅ |
+| GitLab [personal access tokens](../../profile/personal_access_tokens.md) | Immediately revoke token, send email to owner.[^supported-personal-access] | ✅ | ✅ |
 | Amazon Web Services (AWS) [IAM access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) | Notify AWS. | ✅ | ⚙ |
 | Google Cloud [service account keys](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys), [API keys](https://cloud.google.com/docs/authentication/api-keys), and [OAuth client secrets](https://support.google.com/cloud/answer/6158849#rotate-client-secret) | Notify Google Cloud. | ✅ | ⚙ |
 | Postman [API keys](https://learning.postman.com/docs/developer/postman-api/authentication/) | Notify Postman. Postman [notifies the key owner](https://learning.postman.com/docs/administration/managing-your-team/secret-scanner/#protect-postman-api-keys-in-gitlab). | ✅ | ⚙ |
 
-**Footnotes**:
-
-1. Supported for the `gitlab_personal_access_token`, `gitlab_personal_access_token_routable`, and
-   `gitlab_personal_access_token_routable_versioned` [detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/3204c843e960cec1b26a6cf8f95f609c68400de8/rules/mit/gitlab/gitlab.toml).
+[^supported-personal-access]: Supported for the `gitlab_personal_access_token`, `gitlab_personal_access_token_routable`, and
+    `gitlab_personal_access_token_routable_versioned` [detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/3204c843e960cec1b26a6cf8f95f609c68400de8/rules/mit/gitlab/gitlab.toml).
 
 **Component legend**:
 

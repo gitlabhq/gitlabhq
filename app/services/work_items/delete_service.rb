@@ -21,7 +21,6 @@ module WorkItems
     private
 
     def check_rate_limit!
-      return unless ::Feature.enabled?(:work_item_delete_rate_limit, current_user)
       return unless ::Gitlab::ApplicationRateLimiter.throttled?(RATE_LIMIT_KEY, scope: { user: current_user })
 
       raise ::RateLimitedService::RateLimitedError.new(

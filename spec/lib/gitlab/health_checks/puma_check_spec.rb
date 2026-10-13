@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/context'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::HealthChecks::PumaCheck do
   let(:result_class) { Gitlab::HealthChecks::Result }
@@ -48,9 +50,7 @@ RSpec.describe Gitlab::HealthChecks::PumaCheck do
 
     context 'for Single mode' do
       before do
-        expect(Puma).to receive(:stats) do
-          '{}'
-        end
+        expect(Puma).to receive(:stats).and_return('{}')
       end
 
       it_behaves_like 'with state', true
@@ -58,9 +58,7 @@ RSpec.describe Gitlab::HealthChecks::PumaCheck do
 
     context 'for Cluster mode' do
       before do
-        expect(Puma).to receive(:stats) do
-          '{"workers":2}'
-        end
+        expect(Puma).to receive(:stats).and_return('{"workers":2}')
       end
 
       it_behaves_like 'with state', true

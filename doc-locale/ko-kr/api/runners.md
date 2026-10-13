@@ -54,7 +54,7 @@ GitLab과 러너가 연결됩니다.
 전제 조건:
 
 - 그룹 러너의 경우 소유자 네임스페이스에서 소유자 역할을 가져야 합니다.
-- 프로젝트 러너의 경우 러너에 할당된 프로젝트에서 보안 관리자, 유지 관리자 또는 소유자 역할을 가져야 합니다.
+- 프로젝트 러너의 경우, 러너가 할당된 프로젝트에서 보안 관리자, 유지보수자 또는 소유자 역할이 필요합니다.
 
 ```plaintext
 GET /runners
@@ -235,7 +235,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 - 사용자 액세스:  다음 중 하나를 가져야 합니다:
   - 그룹 러너의 경우:  소유자 네임스페이스에서 유지 관리자 또는 소유자 역할입니다.
-  - 프로젝트 러너의 경우:  러너를 소유하는 프로젝트에서 보안 관리자, 유지 관리자 또는 소유자 역할입니다.
+  - 프로젝트 러너의 경우:  러너를 소유하는 프로젝트에서 보안 관리자, 유지보수자 또는 소유자 역할입니다.
   - 관련 그룹 또는 프로젝트에서 `admin_runners` 권한이 있는 사용자 지정 역할입니다.
 - `manage_runner` 범위가 있는 액세스 토큰과 적절한 역할입니다.
 
@@ -428,6 +428,12 @@ curl --request PUT \
 
 ## 러너가 처리한 모든 작업 나열 {#list-all-jobs-processed-by-a-runner}
 
+{{< history >}}
+
+- 오름차순 키셋 페이지 매김이 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252032)되었습니다(GitLab 19.4).
+
+{{< /history >}}
+
 지정된 러너가 처리하고 있거나 처리한 모든 작업을 나열합니다. 작업 목록은 사용자가 기자, 개발자, 유지 관리자 또는 소유자 역할을 가진 프로젝트로 제한됩니다.
 
 ```plaintext
@@ -438,9 +444,19 @@ GET /runners/:id/jobs
 |-------------|---------|----------|-------------|
 | `id`        | 정수 | 예      | 러너의 ID |
 | `system_id` | 문자열  | 아니요       | 러너 관리자가 실행 중인 머신의 시스템 ID |
-| `status`    | 문자열  | 아니요       | 작업의 상태입니다. `running`, `success`, `failed`, `canceled` 중 하나입니다. |
+| `status`    | 문자열  | 아니요       | 작업의 상태입니다. 다음 중 하나: `created`, `waiting_for_resource`, `preparing`, `waiting_for_callback`, `pending`, `running`, `success`, `failed`, `canceling`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `order_by`  | 문자열  | 아니요       | `id`로 작업을 정렬합니다. |
 | `sort`      | 문자열  | 아니요       | `asc` 또는 `desc` 순서로 작업을 정렬합니다(기본값: `desc`). `sort`가 지정된 경우 `order_by`도 지정해야 합니다. |
+
+이 엔드포인트는 [키셋 페이지 매김](rest/_index.md#keyset-based-pagination)도 지원하며, 이것이 선호되는 페이지 매김 방법입니다. 키셋 페이지 매김은 `id`을(를) 기준으로 오름차순 또는 내림차순으로 정렬을 지원하며, `X-Total` 또는 `X-Total-Pages` 헤더를 반환하지 않습니다.
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/runners/1/jobs?status=success&pagination=keyset&per_page=20&order_by=id&sort=desc"
+```
+
+`Link` 응답 헤더 다음에 `rel="next"`을(를) 따라 다음 페이지를 검색합니다.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -735,7 +751,7 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 | 속성        | 유형         | 필수 | 설명 |
 |------------------|--------------|----------|-------------|
 | `id`             | 정수      | 예      | 그룹의 ID |
-| `type`           | 문자열       | 아니요       | 반환할 러너의 유형은 다음 중 하나입니다. `instance_type`, `group_type`, `project_type`. `project_type` 값은 [더 이상 사용되지 않으며](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) GitLab 15.0에서 제거될 예정입니다. |
+| `type`           | 문자열       | 아니요       | 반환할 러너의 유형은 다음 중 하나입니다. `instance_type`, `group_type`, `project_type`. `project_type` 값은 [더 이상 사용되지 않으며](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) REST API의 향후 버전에서 제거될 예정입니다. |
 | `status`         | 문자열       | 아니요       | 반환할 러너의 상태는 다음 중 하나입니다. `online`, `offline`, `stale` 또는 `never_contacted`.<br/>기타 가능한 값은 더 이상 사용되지 않는 `active` 및 `paused`입니다.<br/>`offline` 러너를 요청하면 `stale`이 `offline`에 포함되어 있기 때문에 `stale` 러너도 반환될 수 있습니다. |
 | `paused`         | 부울      | 아니요       | 새 작업을 수락하거나 무시하는 러너만 포함할지 여부 |
 | `tag_list`       | 문자열 배열 | 아니요       | 러너 태그 목록 |
@@ -1068,7 +1084,7 @@ curl --request POST \
 
 {{< history >}}
 
-- GitLab 18.7에서 [도입](https://gitlab.com/groups/gitlab-org/-/epics/19607) 되었으며 [기능 플래그](../administration/feature_flags/_index.md) `job_router` 및 `job_router_instance_runners` 명명됩니다. 기본적으로 비활성화됨.
+- GitLab 18.7에서 [도입](https://gitlab.com/groups/gitlab-org/-/work_items/19607)되었으며 [기능 플래그](../administration/feature_flags/_index.md) `job_router` 및 `job_router_instance_runners`로 명명되었습니다. 기본적으로 비활성화됨.
 
 {{< /history >}}
 

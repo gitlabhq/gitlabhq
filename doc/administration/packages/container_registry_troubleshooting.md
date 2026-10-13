@@ -487,15 +487,13 @@ curl "localhost:5001/metrics"
 
 | Metric name | Description | Labels | Buckets |
 |-------------|-------------|--------|---------|
-| `registry_database_query_duration_seconds` | A histogram of latencies for database queries. | `name` | Prometheus default buckets. <sup>1</sup> |
-| `registry_database_lb_lsn_cache_operation_duration_seconds` | A histogram of latencies for database load balancing LSN cache operations. | `operation`, `error` | `operation`: `set`, `get`<br>`error`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup> |
-| `registry_database_lb_lookup_seconds` | A histogram of latencies for database load balancing DNS lookups. | `lookup_type`, `error` | `lookup_type`: `srv`, `host`<br>`error`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup>  |
+| `registry_database_query_duration_seconds` | A histogram of latencies for database queries. | `name` | Prometheus default buckets.[^default-histogram-buckets] |
+| `registry_database_lb_lsn_cache_operation_duration_seconds` | A histogram of latencies for database load balancing LSN cache operations. | `operation`, `error` | `operation`: `set`, `get`<br>`error`: `true`, `false`<br>Prometheus default buckets.[^default-histogram-buckets] |
+| `registry_database_lb_lookup_seconds` | A histogram of latencies for database load balancing DNS lookups. | `lookup_type`, `error` | `lookup_type`: `srv`, `host`<br>`error`: `true`, `false`<br>Prometheus default buckets.[^default-histogram-buckets]  |
 | `registry_database_lb_lag_seconds` | A histogram of replication lag in seconds for each replica. | `replica` | `[0.001, 0.01, 0.1, 0.5, 1, 5, 10, 20, 30, 60]` (1ms to 60s) |
 | `registry_database_row_count_collection_duration_seconds` | A histogram of total duration for collecting all database row count queries in a single run. | None | `[0.1, 0.5, 1, 2, 5, 10, 30, 60]` (100ms to 60s) |
 
-**Footnotes**:
-
-1. Prometheus default buckets values: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` (seconds)
+[^default-histogram-buckets]: Prometheus default buckets values: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` (seconds)
 
 #### Garbage collection (GC) metrics
 
@@ -512,13 +510,11 @@ curl "localhost:5001/metrics"
 
 | Metric name | Description | Labels | Buckets |
 |-------------|-------------|--------|---------|
-| `registry_gc_run_duration_seconds` | A histogram of latencies for online GC worker runs. | `worker`, `noop`, `error`, `dangling`, `event` | `noop`: `true`, `false`<br>`error`: `true`, `false`<br>`dangling`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup> |
-| `registry_gc_delete_duration_seconds` | A histogram of latencies for artifact deletions during online GC. | `backend`, `artifact`, `error` | `backend`: `storage`, `database`<br>`artifact`: `blob`, `manifest`<br>`error`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup> |
+| `registry_gc_run_duration_seconds` | A histogram of latencies for online GC worker runs. | `worker`, `noop`, `error`, `dangling`, `event` | `noop`: `true`, `false`<br>`error`: `true`, `false`<br>`dangling`: `true`, `false`<br>Prometheus default buckets.[^histograms-default-histogram-buckets] |
+| `registry_gc_delete_duration_seconds` | A histogram of latencies for artifact deletions during online GC. | `backend`, `artifact`, `error` | `backend`: `storage`, `database`<br>`artifact`: `blob`, `manifest`<br>`error`: `true`, `false`<br>Prometheus default buckets.[^histograms-default-histogram-buckets] |
 | `registry_gc_sleep_duration_seconds` | A histogram of sleep durations between online GC worker runs. | `worker` | `[0.5, 1, 5, 15, 30, 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400]` (500ms to 24h) |
 
-**Footnotes**:
-
-1. Prometheus default buckets values: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` (seconds)
+[^histograms-default-histogram-buckets]: Prometheus default buckets values: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` (seconds)
 
 #### Storage metrics
 
@@ -631,7 +627,7 @@ such files as a tag that appears with no name in the GitLab UI and API. For more
 
 To fix this you can do one of two things:
 
-- Use the AWS CLI [`rm`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/rm.html)
+- Use the AWS CLI [`rm`](https://docs.aws.amazon.com/cli/latest/reference/s3/rm.html)
   command to remove the empty objects from the root of each affected repository. Pay special
   attention to the trailing `/` and make sure not to use the `--recursive` option:
 
@@ -639,7 +635,7 @@ To fix this you can do one of two things:
   aws s3 rm s3://<bucket>/docker/registry/v2/repositories/<path to repository>/
   ```
 
-- Use the AWS CLI [`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)
+- Use the AWS CLI [`sync`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
   command to copy the registry data to a new bucket and configure the registry to use it. This
   leaves the empty objects behind.
 

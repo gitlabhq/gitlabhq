@@ -26,7 +26,7 @@ For additional information for Helm chart installations, see
 - [PostgreSQL 12 is not supported starting from GitLab 16](../deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
-- Starting with 16.0, GitLab Self-Managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
+- Starting with 16.0, GitLab Self-Managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes GitLab Self-Managed instances behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for GitLab Self-Managed. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
   - [The second database connection can be disabled](#disable-the-second-database-connection).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
@@ -48,7 +48,7 @@ For additional information for Helm chart installations, see
   - For Linux package installations, a timeout occurs and a
     [manual workaround to complete the migrations](../package/package_troubleshooting.md#error-command-timed-out-after-3600s)
     is necessary.
-- GitLab 16.0 introduced changes around enforcing limits on project sizes. On self-managed, if you use
+- GitLab 16.0 introduced changes around enforcing limits on project sizes. On GitLab Self-Managed, if you use
   these limits, projects that have reached their limit causes error messages when pushing to unaffected Git
   repositories in the same group. The errors often refer to exceeding a limit of zero bytes (`limit of 0 B`).
 
@@ -357,7 +357,7 @@ planned for release in 16.9.1.
 ## 16.7.0
 
 - GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
-  in GitLab 16.7 and earlier have been implemented on all self-managed instances. Dependent changes can then be released
+  in GitLab 16.7 and earlier have been implemented on all GitLab Self-Managed instances. Dependent changes can then be released
   in GitLab 16.8 and later. [Issue 429611](https://gitlab.com/gitlab-org/gitlab/-/issues/429611) provides more details.
 
   - If you skip 16.6 in your upgrade path, you might experience performance issues after upgrading to 16.7
@@ -450,7 +450,7 @@ Specific information applies to Linux package installations:
   migration runs more aggressively than usual to ensure it takes a reasonable amount of time.
   Background migrations usually pause between batches of rows, but this migration does not.
 
-  This might cause performance issues in self-managed environments:
+  This might cause performance issues in GitLab Self-Managed environments:
 
   - Disk I/O will be higher than usual. This will be a particular issue for instances
     hosted by cloud providers where disk I/O is restricted.
@@ -617,7 +617,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
+- [Object storage verification](../../releases/16/gitlab-16-4-released.md#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -626,6 +626,13 @@ Specific information applies to installations using Geo:
 
   ```shell
   sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
+  ```
+
+  This issue was fixed by the patch releases listed in the following table, with a further fix in GitLab 16.7.0.
+  If you disabled object storage verification as a workaround, re-enable it after you upgrade to a fixed release:
+
+  ```shell
+  sudo gitlab-rails runner 'Feature.enable(:geo_object_storage_verification)'
   ```
 
   **Affected releases**:
@@ -802,7 +809,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
+- [Object storage verification](../../releases/16/gitlab-16-4-released.md#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -811,6 +818,13 @@ Specific information applies to installations using Geo:
 
   ```shell
   sudo gitlab-rails runner 'Feature.disable(:geo_object_storage_verification)'
+  ```
+
+  This issue was fixed by the patch releases listed in the following table, with a further fix in GitLab 16.7.0.
+  If you disabled object storage verification as a workaround, re-enable it after you upgrade to a fixed release:
+
+  ```shell
+  sudo gitlab-rails runner 'Feature.enable(:geo_object_storage_verification)'
   ```
 
   **Affected releases**:
@@ -903,7 +917,7 @@ Specific information applies to installations using Geo:
 
 Specific information applies to Linux package installations:
 
-- In GitLab 16.0, we [announced](https://about.gitlab.com/releases/2023/05/22/gitlab-16-0-released/#omnibus-improvements) an upgraded base Docker image,
+- In GitLab 16.0, we [announced](../../releases/16/gitlab-16-0-released.md#omnibus-improvements) an upgraded base Docker image,
   which has a new version of OpenSSH Server. An unintended consequence of the new version is that it disables accepting SSH RSA SHA-1 signatures by default. This issue should only
   impact users using very outdated SSH clients.
 
@@ -918,7 +932,7 @@ Specific information applies to Linux package installations:
 
   For more information, see:
 
-  - [OpenSSH 8.8 release notes](https://www.openssh.com/txt/release-8.8).
+  - [OpenSSH 8.8 release notes](https://www.openssh.org/txt/release-8.8).
   - [An informal explanation](https://gitlab.com/gitlab-org/gitlab/-/issues/416714#note_1482388504).
   - `omnibus-gitlab` [merge request 7035](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7035), which introduces the environment variable.
 
@@ -1223,7 +1237,7 @@ Specific information applies to Linux package installations:
 - This upgrades `openssh-server` to `1:8.9p1-3`.
 
   Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information is no longer viable because of
-  the deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.com/txt/release-8.7).
+  the deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.org/txt/release-8.7).
 
   Workaround is to make use of a different key type, or upgrade the client OpenSSH to a version >= 8.7.
 - [Migrate your Praefect configuration to the new structure](#praefect-configuration-structure-change)
@@ -1717,7 +1731,7 @@ At the end of the workaround process, Sidekiq and Puma are restarted to resolve 
 
 ## Undefined column error upgrading to 16.2 or later
 
-A bug in GitLab 15.11 incorrectly disabled a database change on self-managed instances.
+A bug in GitLab 15.11 incorrectly disabled a database change on GitLab Self-Managed instances.
 For more information, see [issue 408835](https://gitlab.com/gitlab-org/gitlab/-/issues/408835).
 
 If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is

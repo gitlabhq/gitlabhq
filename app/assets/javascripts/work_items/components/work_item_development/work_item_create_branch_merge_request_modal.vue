@@ -285,16 +285,27 @@ export default {
         this.createMergeRequest();
       }
     },
+    markBranchValidityCheckPending() {
+      this.checkingBranchValidity = true;
+      this.branchDescription = __('Checking branch validity…');
+    },
     fetchRefs(refValue) {
+      // A check that is still in flight is stale as soon as a newer one starts: its response
+      // would release the submit button while the newer name is unvalidated, and overwrite
+      // invalidBranch with the verdict for the older name.
+      this.refCancelToken?.cancel();
+      this.refCancelToken = null;
+
       if (!refValue || !refValue.trim().length) {
         this.invalidBranch = true;
+        this.checkingBranchValidity = false;
         return;
       }
 
-      this.checkingBranchValidity = true;
-      this.branchDescription = __('Checking branch validity…');
+      this.markBranchValidityCheckPending();
 
-      this.refCancelToken = axios.CancelToken.source();
+      const cancelToken = axios.CancelToken.source();
+      this.refCancelToken = cancelToken;
 
       const refsPath = createBranchMRApiPathHelper.getRefs({
         fullPath: this.projectFullPath,
@@ -302,7 +313,7 @@ export default {
 
       axios
         .get(`${refsPath}${encodeURIComponent(refValue)}`, {
-          cancelToken: this.refCancelToken.token,
+          cancelToken: cancelToken.token,
         })
         .then(({ data }) => {
           const branches = data?.Branches || [];
@@ -320,7 +331,9 @@ export default {
           return false;
         })
         .finally(() => {
-          this.checkingBranchValidity = false;
+          if (this.refCancelToken === cancelToken) {
+            this.checkingBranchValidity = false;
+          }
         });
     },
     async fetchTargetBranch(branchName) {
@@ -344,6 +357,18 @@ export default {
 
       return this.fetchRefs(refValue);
     }, 250),
+    // Mark the check as pending and cancel the one in flight synchronously, so the button
+    // stays disabled from the first keystroke until the latest name has been validated.
+    onBranchNameInput(refValue) {
+      this.refCancelToken?.cancel();
+      this.refCancelToken = null;
+
+      if (refValue && refValue.trim().length) {
+        this.markBranchValidityCheckPending();
+      }
+
+      this.checkBranchValidity(refValue);
+    },
     hideModal() {
       this.$emit('hide-modal');
       this.$nextTick(() => {
@@ -403,7 +428,7 @@ export default {
             required
             name="branch-name"
             type="text"
-            @input="checkBranchValidity($event)"
+            @input="onBranchNameInput($event)"
           >
             <template #append>
               <simple-copy-button :text="branchName" :title="__('Copy to clipboard')" />

@@ -44,13 +44,12 @@ describe('CiResourceReadme', () => {
     version: readmeMockData.data.ciCatalogResource.versions.nodes[0].name,
   };
 
-  const createComponent = ({ props = {}, data = {} } = {}) => {
+  const createComponent = ({ data = {} } = {}) => {
     const handlers = [[getCiCatalogResourceReadme, mockReadmeResponse]];
 
     wrapper = shallowMountExtended(CiResourceReadme, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
       data() {
         return {

@@ -309,7 +309,7 @@ For more information, see the [Microsoft Style Guide](https://learn.microsoft.co
 
 ## allowlist
 
-Do not use as a verb. Use only as a noun. 
+Do not use as a verb. Use only as a noun.
 
 Use:
 
@@ -1279,7 +1279,7 @@ You can also use `glab`.
 ## GitLab-managed model
 
 Use **GitLab-managed model** to refer to large language models that customers access through the GitLab
-AI Gateway through the [Cloud Connector](../../cloud_connector/architecture.md).
+AI Gateway through the [Cloud Connector](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/).
 
 Do not use this term for models that customers self-host on their own AI Gateway.
 
@@ -1353,7 +1353,7 @@ In marketing materials, like release posts or blogs, use
 For example:
 
 - [Blog: Unlocking AI for every GitLab Premium and Ultimate customer](https://about.gitlab.com/blog/gitlab-premium-with-duo/)
-- [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](https://about.gitlab.com/releases/2025/07/17/gitlab-18-2-released/#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
+- [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](../../../releases/18/gitlab-18-2-released.md#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
 
 ## GitLab Duo CLI
 

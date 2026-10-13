@@ -108,13 +108,17 @@ module API
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def set_current_organization(user: current_user)
-      return if ::Current.organization_assigned
-
-      ::Current.organization = Gitlab::Current::Organization.new(
+      # Resolved even when #organization is already assigned, so URL helpers
+      # can consult the resolver (e.g. the Organization header) for scoping.
+      ::Current.organization_resolver ||= Gitlab::Current::Organization.new(
         params: {},
         user: user,
         rack_env: request.env
-      ).organization
+      )
+
+      return if ::Current.organization_assigned
+
+      ::Current.organization = ::Current.organization_resolver.organization
 
       check_organization_maintenance_mode!
     end
@@ -987,10 +991,10 @@ module API
 
     def validate_search_rate_limit!
       if current_user
-        check_rate_limit!(:search_rate_limit, scope: [current_user],
+        check_rate_limit!(:search_rate_limit, scope: { user: current_user },
           users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist)
       else
-        check_rate_limit!(:search_rate_limit_unauthenticated, scope: [ip_address])
+        check_rate_limit!(:search_rate_limit_unauthenticated, scope: { ip: ip_address })
       end
     end
 
@@ -1077,8 +1081,9 @@ module API
       # Granular tokens bypass the :sudo scope check in AccessTokenValidationService
       # (scopes are only validated for non-granular tokens), so the `sudo` capability
       # is the sole gate for them. Do not remove this in favour of the scope check below.
-      if access_token.try(:granular?) && !access_token.sudo?
-        forbidden!('Fine-grained token must have sudo enabled to use sudo')
+      if access_token.try(:granular?)
+        forbidden!('Fine-grained OAuth tokens cannot be used with sudo') if access_token.is_a?(OauthAccessToken)
+        forbidden!('Fine-grained token must have sudo enabled to use sudo') unless access_token.sudo?
       end
 
       validate_and_save_access_token!(scopes: [:sudo])
@@ -1127,9 +1132,9 @@ module API
       body ''
     end
 
-    def send_git_diff(repository, diff_refs)
+    def send_git_diff(repository, diff_refs, client_name: nil)
       verify_workhorse_api!
-      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
+      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs, client_name: client_name))
 
       headers['Content-Disposition'] = 'inline'
 
@@ -1353,44 +1358,24 @@ module API
     end
 
     def authorize_granular_token?(token)
-      token.respond_to?(:granular?) && !authorization_settings[:skip_granular_token_authorization]
+      token.respond_to?(:granular?) &&
+        (token.granular? || token.subject_to_granular_enforcement?) &&
+        !authorization_settings[:skip_granular_token_authorization]
     end
 
     def authorize_granular_token_scopes!(token)
       return unless authorize_granular_token?(token)
 
-      granular_token_requirements.each do |boundaries, permissions|
-        result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-          boundaries: boundaries, permissions: permissions, token: token
-        ).execute
-        next unless result.error?
+      result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+        boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
+      ).execute
+      return unless result.error?
 
-        not_found! if result.reason == :resource_not_found
+      not_found! if result.reason == :resource_not_found
 
-        Current.add_granular_denied_permissions(result.payload[:denied_permissions])
+      Current.add_granular_denied_permissions(result.payload[:denied_permissions])
 
-        raise Gitlab::Auth::GranularPermissionsError, result.message
-      end
-    end
-
-    def granular_token_requirements
-      [[boundaries_for_endpoint, permissions_for_endpoint]] +
-        Array(authorization_settings[:additional_scopes]).map do |spec|
-          [resolve_additional_boundary(spec), Array(spec[:permissions])]
-        end
-    end
-
-    def resolve_additional_boundary(spec)
-      return build_boundary(spec[:boundary_type], spec[:boundary_param]) unless spec[:boundary].respond_to?(:call)
-
-      boundary_object = instance_exec(&spec[:boundary])
-      boundary = ::Authz::Boundary.for(boundary_object) if boundary_object
-      return unless boundary
-
-      # Mirrors GraphQL's BoundaryExtractor: a callable result whose type disagrees
-      # with the declared boundary_type resolves to no boundary, denying with 404.
-      expected_class = ::Authz::Boundary.strategy_for_type(spec[:boundary_type])
-      boundary if expected_class.nil? || boundary.instance_of?(expected_class)
+      raise Gitlab::Auth::GranularPermissionsError, result.message
     end
 
     def permissions_for_endpoint

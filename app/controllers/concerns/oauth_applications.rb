@@ -41,7 +41,8 @@ module OauthApplications
     [
       ::Gitlab::Auth::AI_WORKFLOW.to_s,
       ::Gitlab::Auth::DYNAMIC_USER.to_s,
-      ::Gitlab::Auth::SELF_ROTATE_SCOPE.to_s
+      ::Gitlab::Auth::SELF_ROTATE_SCOPE.to_s,
+      ::Gitlab::Auth::GRANULAR_SCOPE.to_s
     ]
   end
 

@@ -68,8 +68,8 @@ application, and configure CI/CD.
 
    include:
    - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-       inputs:
-         enable_static_reachability: true
+     inputs:
+       enable_static_reachability: true
    ```
 
    Filename: `package.json`

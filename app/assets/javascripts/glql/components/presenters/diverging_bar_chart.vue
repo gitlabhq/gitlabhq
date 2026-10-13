@@ -32,6 +32,9 @@ export default {
     DivergingBarChart,
     GlSkeletonLoader,
   },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: false,
@@ -51,6 +54,9 @@ export default {
   },
   emits: { error: null },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     dimensions() {
       return dimensionsOf(this.fields);
     },
@@ -115,6 +121,7 @@ export default {
       :data="rows"
       :series-names="seriesNames"
       :value-formatters="valueFormatters"
+      :accessible-title="visualizationTitle"
     />
   </div>
 </template>

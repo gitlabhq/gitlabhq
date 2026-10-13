@@ -95,6 +95,69 @@ RSpec.describe Gitlab::Git::KeepAround, feature_category: :gitaly do
     end
   end
 
+  context 'when the keep-around ref is dangling' do
+    before do
+      allow(repository).to receive(:ref_exists?).with(keep_around_ref_name).and_raise(
+        Gitlab::Git::ReferenceUnresolvableError.new('dangling', keep_around_ref_name, sample_commit.id)
+      )
+    end
+
+    it 'raises without deleting the dangling ref', :aggregate_failures do
+      expect(repository.raw_repository).not_to receive(:delete_refs)
+
+      expect { service.kept_around?(sample_commit.id) }.to raise_error(Gitlab::Git::ReferenceUnresolvableError)
+    end
+
+    it 'deletes the dangling ref, logs, and continues', :aggregate_failures do
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        message: 'Deleting dangling keep-around reference',
+        object_id: sample_commit.id,
+        ref: keep_around_ref_name,
+        target_oid: sample_commit.id
+      )
+      expect(repository.raw_repository).to receive(:delete_refs).with(keep_around_ref_name).ordered
+      expect(repository.raw_repository).to receive(:write_ref).with(keep_around_ref_name, sample_commit.id).ordered
+
+      expect(service.execute([sample_commit.id], source: 'keeparound_spec')).to be_empty
+    end
+
+    it 'deletes the dangling ref without reporting a genuinely missing commit', :aggregate_failures do
+      allow(repository).to receive(:commit_by).with(oid: sample_commit.id).and_return(nil)
+
+      expect(repository.raw_repository).to receive(:delete_refs).with(keep_around_ref_name)
+      expect(repository.raw_repository).not_to receive(:write_ref)
+
+      expect(service.execute([sample_commit.id], source: 'keeparound_spec')).to be_empty
+    end
+
+    context 'when deleting the dangling ref fails' do
+      where(:error_class) do
+        [
+          Gitlab::Git::CommandError,
+          Gitlab::Git::Repository::GitError,
+          Gitlab::Git::ReferencesLockedError,
+          Gitlab::Git::InvalidRefFormatError
+        ]
+      end
+
+      with_them do
+        it 'tracks the error and reports the SHA for retry', :aggregate_failures do
+          delete_error = error_class.new('delete failed')
+
+          allow(repository.raw_repository).to receive(:delete_refs)
+            .with(keep_around_ref_name).and_raise(delete_error)
+
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(delete_error, object_id: sample_commit.id)
+
+          expect(service.execute([sample_commit.id], source: 'keeparound_spec')).to eq([sample_commit.id])
+        end
+      end
+    end
+  end
+
   context 'for multiple SHAs' do
     it 'skips non-existent SHAs' do
       expect_metrics_change(1, 1) do

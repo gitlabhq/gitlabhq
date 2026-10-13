@@ -18,7 +18,7 @@ module Mutations
         required: false,
         description: 'Whether to archive the label. Introduced in GitLab 18.10.'
 
-      authorize :admin_label
+      authorize :update_label
       authorize_granular_token permissions: :update_label,
         boundaries: [
           { boundary_argument: :id, boundary: :project, boundary_type: :project },

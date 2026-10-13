@@ -35,6 +35,14 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       )
     end
 
+    it 'logs the data without opening a transaction' do
+      allow(WebHookLog.connection).to receive(:transaction).and_call_original
+
+      expect { service.execute }.to change { ::WebHookLog.count }.by(1)
+
+      expect(WebHookLog.connection).not_to have_received(:transaction)
+    end
+
     context 'when data contains unsafe YAML properties' do
       before do
         data[:request_data] = { data: described_class }

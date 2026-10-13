@@ -1,9 +1,0 @@
----
-Naming/HeredocDelimiterNaming:
-  Exclude:
-    - 'lib/gitlab/database/migration_helpers/v2.rb'
-    - 'spec/lib/gitlab/database/loose_foreign_keys_spec.rb'
-    - 'spec/lib/gitlab/webpack/file_loader_spec.rb'
-    - 'spec/services/ci/pipeline_processing/atomic_processing_service_spec.rb'
-    - 'spec/services/cloud_seed/google_cloud/generate_pipeline_service_spec.rb'
-    - 'spec/services/task_list_toggle_service_spec.rb'

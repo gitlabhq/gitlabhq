@@ -250,11 +250,49 @@ which correspond to:
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
   timed out and therefore returned partial results
 
+Search requests also log `meta.search.request_id`, a UUID that identifies a single
+search request. The same value is sent as the `property` of the `perform_search` and
+`click_search_result` events, so a result click can be attributed to the search that
+returned it. Requests that log no `meta.search.request_id` emitted no `perform_search`
+event.
+
+> [!flag]
+> The availability of `meta.search.request_id` is controlled by the `search_relevancy_join_key`
+> feature flag. This flag is disabled by default.
+
 Requests that read or write secrets with the [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md)
 additionally log `openbao_calls` and `openbao_duration_s`, which correspond to:
 
 - `openbao_calls`: Total number of calls to OpenBao
 - `openbao_duration_s`: Total time taken by OpenBao calls
+
+[In GitLab 19.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256645), requests that
+the LabKit rate limiter evaluates also log `rate_limit_state`. The field is added to the
+per-request structured logs, including `production_json.log` and `api_json.log`.
+The field is an array of strings with the format `<limiter>:<rule>:<result>`.
+The array has an entry for each rate limit rule that counted the request or ended the check. For example:
+
+```json
+"rate_limit_state": ["rack_request:unauthenticated_api:log"]
+```
+
+`<result>` is one of:
+
+- `allow`: The request did not exceed the limit of the rule.
+- `log`: The request exceeded the limit of a rule that only logs, like a throttle in
+  [dry run mode](../settings/user_and_ip_rate_limits.md#try-out-throttling-settings-before-enforcing-them).
+  GitLab does not block the request.
+- `block`: The request exceeded the limit of a rule that can block requests.
+  This result does not always mean that GitLab rejected the request.
+- `banned`: The request exceeded the limit of a rule that bans the client.
+- `skip`: A rule ended the rate limit check without counting the request
+  (for example, because the request bypassed the rate limiter).
+
+Requests that produce no LabKit rule result do not log `rate_limit_state`.
+A missing field means that no rule produced a result for the request, not that telemetry failed.
+
+The legacy `Rack::Attack` rate limiter does not log `rate_limit_state`.
+For its events, see [`auth.log`](#authlog).
 
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
@@ -995,7 +1033,7 @@ This log is located:
 ### `zoekt.log` fields
 
 Entries from the periodic metrics cron job are distinguished by the `metric`
-field (`node_metrics` or `indices_metrics`). Per-request log entries do not
+field (`node_metrics`, `indices_metrics`, or `enabled_namespaces_metrics`). Per-request log entries do not
 carry a `metric` field and instead append the Zoekt fields documented below
 to whichever Rails request or Sidekiq job log line they were captured in.
 
@@ -1024,6 +1062,17 @@ flat key name with dots, not a nested object path.
 | Field | Type | Description |
 |:------|:-----|:------------|
 | `meta.zoekt.with_stale_used_storage_bytes_updated_at` | Integer | Number of Zoekt indices whose `used_storage_bytes` value has not been updated recently |
+
+#### Enabled namespaces metrics entries (`metric: enabled_namespaces_metrics`)
+
+These entries are emitted once per metrics collection cycle.
+
+The key `meta.zoekt.enabled_namespaces_without_replicas` is a literal
+flat key name with dots, not a nested object path.
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `meta.zoekt.enabled_namespaces_without_replicas` | Integer | Number of namespaces enabled for exact code search that have no Zoekt replicas and are waiting for rollout |
 
 #### Per-request fields
 
@@ -1216,10 +1265,48 @@ The log file is located at:
 
 {{< /details >}}
 
+{{< history >}}
+
+- Logging of GitLab Duo session creation over MCP [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630113) in GitLab 19.5.
+
+{{< /history >}}
+
 The `mcp.log` file logs information related to the
 [GitLab MCP server](../../user/gitlab_duo/model_context_protocol/mcp_server.md). Logging includes
 MCP server availability denials, with a `denial_reason` field that explains why a request was
 refused.
+
+Tool calls are logged with a `tool_status` field that records how the call ended:
+
+| `tool_status` | Field description |
+| --- | --- |
+| `ok` | The tool ran successfully. |
+| `bad_request` | The agent sent missing, malformed, or invalid arguments. |
+| `unauthorized` | The user lacks access to the resource. The message returned to the agent might say the resource was not found. |
+| `not_found` | The resource does not exist, or could not be distinguished from one the user cannot see. |
+| `error` | A backend or downstream failure, or a failure the tool could not categorize. |
+
+When a tool raises an unexpected exception, it is reported to the error tracking service.
+`error_type` is recorded only for unknown tool names, with `not_found`.
+
+Tool calls also record a `gl_root_namespace_id` field with the ID of the top-level namespace
+of the project or group that the tool call targets. The field is empty if the tool does not target
+a project or group. The field is also empty if GitLab cannot find the project or group that the
+tool call names, for example because it does not exist or the lookup failed.
+
+The `initialize` and `tool_call` lines include `mcp_client_name` and `mcp_client_version` fields when the
+MCP client identifies itself. The values come from the `clientInfo` in the request `_meta`, or from
+the first product token of the `User-Agent` header, for example `Cursor/1.0.0`. The `initialize`
+line also has `declared_client_name` and `declared_client_version` fields from the `clientInfo` in
+the request. The values are reported by the client and are not verified. Each value is truncated
+to 64 characters.
+
+When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
+`duo_session_created` is logged. This line has `source_type` set to `mcp`.
+The `duo_workflow_id` field holds the session ID.
+The line also shows which flow or agent the session runs, in the fields `item_type`, `flow_name`,
+`component_name`, `custom_item_id`, `item_version`, and `item_schema_version`.
+Fields that do not apply are left out.
 
 The log file is located at:
 

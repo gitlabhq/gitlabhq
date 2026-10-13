@@ -7,12 +7,32 @@ RSpec.describe Types::PermissionTypes::Namespaces::Base, feature_category: :grou
   using RSpec::Parameterized::TableSyntax
 
   specify do
-    expected_permissions = [:admin_label, :read_namespace, :admin_issue, :create_work_item,
+    expected_permissions = [:admin_label, :create_label, :read_namespace, :admin_issue, :create_work_item,
       :import_issues, :read_crm_contact, :read_crm_organization, :create_projects, :set_new_work_item_metadata,
       :import_work_items, :admin_project]
 
     expected_permissions.each do |permission|
       expect(described_class).to have_graphql_field(permission)
+    end
+  end
+
+  describe 'label permissions' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:reporter) { create(:user, reporter_of: group) }
+    let_it_be(:guest) { create(:user, guest_of: group) }
+
+    where(:user, :expected_value) do
+      ref(:reporter) | true
+      ref(:guest)    | false
+    end
+
+    with_them do
+      it 'resolves createLabel and adminLabel' do
+        expect(resolve_field(:create_label, group, current_user: user, object_type: described_class))
+          .to eq(expected_value)
+        expect(resolve_field(:admin_label, group, current_user: user, object_type: described_class))
+          .to eq(expected_value)
+      end
     end
   end
 

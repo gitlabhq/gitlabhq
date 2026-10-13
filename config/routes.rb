@@ -122,6 +122,7 @@ InitializerConnections.warn_if_database_connection do
       scope path: '-' do
         # sandbox
         get '/sandbox/mermaid_v11' => 'sandbox#mermaid_v11'
+        get '/sandbox/mermaid_v12' => 'sandbox#mermaid_v12'
         get '/sandbox/swagger' => 'sandbox#swagger'
 
         get '/:model/:model_id/uploads/:secret/:filename',
@@ -287,10 +288,6 @@ InitializerConnections.warn_if_database_connection do
 
         if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
           mount Coverband::Reporters::Web.new, at: '/coverage'
-        end
-
-        namespace :experimental do
-          resources :o11y_service_settings, only: [:index, :new, :create, :edit, :update, :destroy]
         end
       end
       # End of the /-/ scope.

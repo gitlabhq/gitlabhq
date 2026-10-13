@@ -61,6 +61,7 @@ module Tasks
         def with_most_common_pat_expiration_dates
           # rubocop:disable CodeReuse/ActiveRecord -- Rake task specifically for fixing an issue
           ApplicationRecord.with_fast_read_statement_timeout(0) do # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- no subtransaction here
+            ::Gitlab::Database::TransactionTimeout.disable(ApplicationRecord.connection, local: true)
             PersonalAccessToken
               .select(:expires_at, Arel.sql('count(*)'))
               .group(:expires_at)
@@ -177,6 +178,7 @@ module Tasks
         def token_count(expiration_date)
           # rubocop:disable CodeReuse/ActiveRecord -- Rake task specifically for fixing an issue
           ApplicationRecord.with_fast_read_statement_timeout(0) do # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- no subtransaction here
+            ::Gitlab::Database::TransactionTimeout.disable(ApplicationRecord.connection, local: true)
             PersonalAccessToken.where(expires_at: expiration_date).count
           end
           # rubocop:enable CodeReuse/ActiveRecord

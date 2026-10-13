@@ -5,8 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::RateLimit::TargetKey, feature_category: :rate_limiting do
   using RSpec::Parameterized::TableSyntax
 
+  def key_for(path)
+    described_class.for(path)&.cache_key
+  end
+
   describe '.for' do
-    subject { described_class.for(path) }
+    subject { key_for(path) }
 
     # The first nine rows are the design document's derivation table verbatim.
     where(:path, :expected) do
@@ -126,26 +130,26 @@ RSpec.describe Gitlab::RateLimit::TargetKey, feature_category: :rate_limiting do
     it 'accepts a path exactly at the maximum depth' do
       at_boundary = Array.new(Namespace::NUMBER_OF_ANCESTORS_ALLOWED + 2) { |i| "s#{i}" }
 
-      expect(described_class.for("/#{at_boundary.join('/')}")).to eq("route:#{at_boundary.join('/')}")
+      expect(key_for("/#{at_boundary.join('/')}")).to eq("route:#{at_boundary.join('/')}")
     end
 
     it 'rejects a path deeper than a root namespace, its subgroups and a project' do
       too_deep = "/#{Array.new(Namespace::NUMBER_OF_ANCESTORS_ALLOWED + 3) { |i| "s#{i}" }.join('/')}"
 
-      expect(described_class.for(too_deep)).to be_nil
+      expect(key_for(too_deep)).to be_nil
     end
 
     it 'accepts an API path id exactly at the maximum depth' do
       at_boundary = Array.new(Namespace::NUMBER_OF_ANCESTORS_ALLOWED + 2) { |i| "s#{i}" }
 
-      expect(described_class.for("/api/v4/projects/#{at_boundary.join('%2F')}"))
+      expect(key_for("/api/v4/projects/#{at_boundary.join('%2F')}"))
         .to eq("route:#{at_boundary.join('/')}")
     end
 
     it 'caps an API path id at the same depth as a derived route' do
       too_deep = Array.new(Namespace::NUMBER_OF_ANCESTORS_ALLOWED + 3) { |i| "s#{i}" }.join('%2F')
 
-      expect(described_class.for("/api/v4/projects/#{too_deep}")).to be_nil
+      expect(key_for("/api/v4/projects/#{too_deep}")).to be_nil
     end
 
     context 'when the instance is mounted at a relative url root' do
@@ -162,48 +166,59 @@ RSpec.describe Gitlab::RateLimit::TargetKey, feature_category: :rate_limiting do
       end
 
       with_them do
-        it { expect(described_class.for(relative_path)).to eq(expected_key) }
+        it { expect(key_for(relative_path)).to eq(expected_key) }
       end
     end
 
     it 'returns nil for a path with malformed bytes rather than raising' do
-      expect(described_class.for("/gitlab-org/gitlab\xFF/-/issues/1")).to be_nil
+      expect(key_for("/gitlab-org/gitlab\xFF/-/issues/1")).to be_nil
     end
 
     it 'returns nil for a non-String, so no request object can be passed in' do
-      expect(described_class.for(nil)).to be_nil
-      expect(described_class.for(:'/gitlab-org/gitlab')).to be_nil
+      expect(key_for(nil)).to be_nil
+      expect(key_for(:'/gitlab-org/gitlab')).to be_nil
+    end
+  end
+
+  describe 'the derived target' do
+    it 'carries the type and the identifier, rather than a formatted string', :aggregate_failures do
+      expect(described_class.for('/api/v4/projects/278964'))
+        .to eq(Gitlab::RateLimit::Target.new(type: :project, identifier: '278964'))
+      expect(described_class.for('/api/v4/groups/9970'))
+        .to eq(Gitlab::RateLimit::Target.new(type: :group, identifier: '9970'))
+      expect(described_class.for('/GitLab-Org/GitLab'))
+        .to eq(Gitlab::RateLimit::Target.new(type: :route, identifier: 'gitlab-org/gitlab'))
     end
   end
 
   describe 'the key grammar' do
     it 'names an API project target by project id, which is not a namespace id' do
-      expect(described_class.for('/api/v4/projects/278964')).to eq('project:278964')
+      expect(key_for('/api/v4/projects/278964')).to eq('project:278964')
     end
 
     it 'names an API group target by group id, which is already a namespace id' do
-      expect(described_class.for('/api/v4/groups/9970')).to eq('group:9970')
+      expect(key_for('/api/v4/groups/9970')).to eq('group:9970')
     end
 
     it 'names every other target by lowercased full path, group and project alike' do
-      expect(described_class.for('/GitLab-Org')).to eq('route:gitlab-org')
-      expect(described_class.for('/GitLab-Org/GitLab')).to eq('route:gitlab-org/gitlab')
+      expect(key_for('/GitLab-Org')).to eq('route:gitlab-org')
+      expect(key_for('/GitLab-Org/GitLab')).to eq('route:gitlab-org/gitlab')
     end
 
     it 'returns nil when the path names no namespace, not when a lookup would fail' do
-      expect(described_class.for('/api/graphql')).to be_nil
-      expect(described_class.for('/explore')).to be_nil
-      expect(described_class.for('/nonexistent-group/nonexistent-project')).to eq(
+      expect(key_for('/api/graphql')).to be_nil
+      expect(key_for('/explore')).to be_nil
+      expect(key_for('/nonexistent-group/nonexistent-project')).to eq(
         'route:nonexistent-group/nonexistent-project'
       )
     end
 
     it 'starts every route identifier with the root namespace path' do
       derived = [
-        described_class.for('/gitlab-org/sub/proj/-/issues'),
-        described_class.for('/gitlab-org/sub/proj.wiki.git/info/refs'),
-        described_class.for('/api/v4/projects/gitlab-org%2Fsub%2Fproj'),
-        described_class.for('/o/acme/gitlab-org/sub/proj')
+        key_for('/gitlab-org/sub/proj/-/issues'),
+        key_for('/gitlab-org/sub/proj.wiki.git/info/refs'),
+        key_for('/api/v4/projects/gitlab-org%2Fsub%2Fproj'),
+        key_for('/o/acme/gitlab-org/sub/proj')
       ]
 
       expect(derived).to all(start_with('route:gitlab-org/'))
@@ -223,7 +238,7 @@ RSpec.describe Gitlab::RateLimit::TargetKey, feature_category: :rate_limiting do
 
       expect(request).not_to receive(:params)
 
-      expect(described_class.for(request.path)).to eq('project:278964')
+      expect(key_for(request.path)).to eq('project:278964')
     end
   end
 end

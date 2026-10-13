@@ -13,9 +13,11 @@ module Gitlab
       # `libsonnet/service-archetypes/helpers/gitaly.libsonnet`, which decides
       # what the server-side SLI counts as an error. Keep the two lists in sync.
       #
-      # Note: unlike the runbooks list, this SLI does not ignore
-      # `resource_exhausted` or `deadline_exceeded`. On the client side a `ResourceExhausted` means the call did not
-      # succeed for the caller, so we count it as an error.
+      # Note: unlike the runbooks list, this SLI ignores `resource_exhausted`
+      # but not `deadline_exceeded`. ResourceExhausted is ignored because Gitaly
+      # returns it when a request is dropped due to rate limiting. DeadlineExceeded
+      # on the other hand, is a sign that the Gitaly server is under resource
+      # contention due to some other cause, and can be investigated.
       #
       # Codes are matched against the snake_case names from
       # `Gitlab::Git::BaseError::GRPC_CODES`.
@@ -28,6 +30,7 @@ module Gitlab
         permission_denied
         failed_precondition
         unauthenticated
+        resource_exhausted
       ].freeze
 
       class << self
@@ -42,8 +45,11 @@ module Gitlab
           )
         end
 
+        # The label is the storage's Gitaly node even while the call is routed through gitway, so the series stays
+        # comparable across a rollout and lines up with the server-side fqdn. `gitaly_address` also never evaluates the
+        # routing flag, which would cost a flag lookup per recorded call.
         def node_label(storage)
-          uri = URI(::Gitlab::GitalyClient.address(storage))
+          uri = URI(::Gitlab::GitalyClient.gitaly_address(storage))
 
           uri.host.presence || storage
         rescue StandardError

@@ -167,9 +167,17 @@ RSpec.describe Ci::CreatePipelineService,
             untracked: true
             key:
               files:
-                - file.lock
-                - other-file.lock
-                - extra-file.lock
+                - file1.lock
+                - file2.lock
+                - file3.lock
+                - file4.lock
+                - file5.lock
+                - file6.lock
+                - file7.lock
+                - file8.lock
+                - file9.lock
+                - file10.lock
+                - file11.lock
               prefix: 'some-prefix'
         YAML
       end
@@ -177,8 +185,21 @@ RSpec.describe Ci::CreatePipelineService,
       it 'has errors' do
         expect(pipeline).to be_persisted
         expect(pipeline.error_messages[0].content).to eq(
-          "jobs:job:cache:key:files config has too many items (maximum is 2)")
+          "jobs:job:cache:key:files config has too many items (maximum is 10)")
         expect(job).to be_nil
+      end
+
+      context 'when increase_ci_cache_key_files_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(increase_ci_cache_key_files_limit: false)
+        end
+
+        it 'has errors with the previous limit' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.error_messages[0].content).to eq(
+            "jobs:job:cache:key:files config has too many items (maximum is 2)")
+          expect(job).to be_nil
+        end
       end
     end
   end

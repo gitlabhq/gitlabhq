@@ -263,7 +263,6 @@ describe('initLineRangeEditing', () => {
       expect(store.commitLineRangeEditing).toHaveBeenCalledWith({
         lineChange: { change: 'added', position: 'old' },
         lineCode: 'abc_0_8',
-        lines: ['line 6', 'line 7', 'line 8'],
       });
     });
 
@@ -284,7 +283,7 @@ describe('initLineRangeEditing', () => {
       mount(parallelFixture, 'text_parallel');
     });
 
-    it('commits the same lineChange position and content as the inline path', async () => {
+    it('commits the same lineChange position as the inline path', async () => {
       await startEditing(6, 7);
       dragHandleToRow('end', getRows()[3]);
 
@@ -295,7 +294,6 @@ describe('initLineRangeEditing', () => {
       expect(store.commitLineRangeEditing).toHaveBeenCalledWith({
         lineChange: { change: 'added', position: 'new' },
         lineCode: 'abc_0_8',
-        lines: ['line 6', 'line 7', 'line 8'],
       });
     });
   });

@@ -11,6 +11,12 @@ module Authn
 
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
+    has_many :oauth_consent_grants, class_name: 'Authz::OauthConsentGrant', foreign_key: :application_id,
+      inverse_of: :application
+    has_many :oauth_application_granular_scopes, class_name: 'Authz::OauthApplicationGranularScope',
+      foreign_key: :application_id, inverse_of: :application, autosave: true
+    has_many :granular_scopes, through: :oauth_application_granular_scopes, class_name: 'Authz::GranularScope'
+
     scope :dynamic, -> { where(dynamic: true) }
     scope :with_token_digests, ->(hashed_tokens) do
       return none if hashed_tokens.blank?
@@ -23,6 +29,9 @@ module Authn
     # which is so existing records have the option enabled but all new
     # applications should have device_code_enabled set to false.
     attribute :device_code_enabled, default: -> { false }
+
+    # Authorization and refresh need granular while a set is declared, and no other application may carry it.
+    before_validation :sync_granular_scope
 
     # Hashes raw token
     def self.encode(raw_token_value)
@@ -61,12 +70,26 @@ module Authn
       false
     end
 
+    def granular?
+      oauth_application_granular_scopes.any?
+    end
+
     def iam_routing_enabled?
       Feature.enabled?(:proxy_oauth_requests_to_iam_service, self)
     end
 
     def iam_outbox_delete_payload
       { uid: uid }
+    end
+
+    private
+
+    def sync_granular_scope
+      marker = ::Gitlab::Auth::GRANULAR_SCOPE.to_s
+      declared = granular?
+      return if declared == includes_scope?(marker)
+
+      self.scopes = declared ? scopes.to_a | [marker] : scopes.to_a - [marker]
     end
   end
 end

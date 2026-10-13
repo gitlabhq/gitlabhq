@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::RadioTagComponent, :aggregate_failures, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::RadioTagComponent, :aggregate_failures, feature_category: :design_system do
   let(:name) { :access_level }
   let(:label) { "Access Level" }
   let(:value) { :regular }

@@ -21,7 +21,7 @@ module Integrations
 
       def find_or_create_integration!
         GitlabSlackApplication
-          .for_instance
+          .for_organization(params[:organization_id])
           .first_or_create!(organization_id: params[:organization_id]) # rubocop:disable CodeReuse/ActiveRecord: -- legacy use
       end
     end

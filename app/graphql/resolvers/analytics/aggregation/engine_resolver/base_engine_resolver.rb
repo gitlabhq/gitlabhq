@@ -99,7 +99,8 @@ module Resolvers
             if inaccessible.any?
               raise_resource_not_available_error!(
                 format(s_("AggregationEngine|The following sources are not accessible: %{source_ids}"),
-                  source_ids: inaccessible.join(', '))
+                  source_ids: inaccessible.join(', ')),
+                { code: AggregationFieldResolver::BaseAggregationFieldResolver::NOT_AUTHORIZED_CODE }
               )
             end
 

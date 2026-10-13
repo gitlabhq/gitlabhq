@@ -22,7 +22,7 @@ are available on GitLab Self-Managed only.
 
 | Feature | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q |
 |---------|----------------|----------------------|--------------------------|
-| [Code Suggestions](../project/repository/code_suggestions/_index.md) <sup>1</sup> | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Code Suggestions](../project/repository/code_suggestions/_index.md)[^code-suggestions-available] | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [GitLab Duo Non-Agentic Chat](../gitlab_duo_chat/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Code Explanation](../gitlab_duo_chat/examples.md#explain-selected-code) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} |
@@ -30,18 +30,16 @@ are available on GitLab Self-Managed only.
 | [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Code Explanation](../project/repository/code_explain.md) in GitLab UI | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat) | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [Code Review](code_review.md) <sup>2</sup> | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Code Review](code_review.md)[^amazon-supports-different] | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Vulnerability Explanation](../application_security/analyze/duo.md) | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Vulnerability Resolution](../application_security/remediate/duo.md) | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | {{< no >}} | {{< yes >}} | {{< yes >}} |
 
-**Footnotes**:
-
-1. Code Suggestions is also available as part of the GitLab Duo Agent Platform, without an
-   additional add-on.
-1. Amazon Q supports a different version of this feature.
-   [View how to use Amazon Q to review code](../duo_amazon_q/_index.md#review-a-merge-request).
+[^code-suggestions-available]: Code Suggestions is also available as part of the GitLab Duo Agent Platform, without an
+    additional add-on.
+[^amazon-supports-different]: Amazon Q supports a different version of this feature.
+    [View how to use Amazon Q to review code](../duo_amazon_q/_index.md#review-a-merge-request).
 
 ## Beta and experimental features
 

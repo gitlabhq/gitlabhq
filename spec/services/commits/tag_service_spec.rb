@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Commits::TagService, feature_category: :source_code_management do
-  let(:project) { create(:project, :small_repo) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, group: group, creator: user, maintainers: user) }
 
   let(:commit) { project.commit }
 
@@ -13,10 +14,6 @@ RSpec.describe Commits::TagService, feature_category: :source_code_management do
       .notes
       .joins(:system_note_metadata)
       .where(system_note_metadata: { action: action })
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   describe '#execute' do
@@ -47,6 +44,9 @@ RSpec.describe Commits::TagService, feature_category: :source_code_management do
       end
 
       context 'when tagging succeeds' do
+        # This context creates a real git tag. A shared project would fail on the second example.
+        let(:project) { create(:project, :small_repo, group: group, creator: user, maintainers: user) }
+
         it 'returns a hash with the :success status and created tag' do
           result = service.execute(commit)
 

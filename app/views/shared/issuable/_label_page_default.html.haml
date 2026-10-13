@@ -17,7 +17,7 @@
   - if current_board_parent && show_footer
     = dropdown_footer do
       %ul.dropdown-footer-list
-        - if can?(current_user, :admin_label, current_board_parent)
+        - if can?(current_user, :create_label, current_board_parent)
           %li
             %a.dropdown-toggle-page{ href: "#" }
               = create_label_title(subject)

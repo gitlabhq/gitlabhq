@@ -1,4 +1,5 @@
 import {
+  readWorkItemConnectionFromColumn,
   readWorkItemFromColumn,
   readWorkItemsFromColumn,
   removeWorkItemFromColumn,
@@ -13,12 +14,12 @@ describe('board cache_updates', () => {
   const workItemB = { id: 'gid://gitlab/WorkItem/2', title: 'B' };
   const workItemC = { id: 'gid://gitlab/WorkItem/3', title: 'C' };
 
-  const buildRestData = (nodes) => ({
-    restWorkItems: { nodes },
+  const buildRestData = (nodes, pageInfo) => ({
+    restWorkItems: { nodes, ...(pageInfo ? { pageInfo } : {}) },
   });
 
-  const buildGraphqlData = (nodes) => ({
-    namespace: { workItems: { nodes } },
+  const buildGraphqlData = (nodes, pageInfo) => ({
+    namespace: { workItems: { nodes, ...(pageInfo ? { pageInfo } : {}) } },
   });
 
   const buildCountData = (count) => ({
@@ -102,6 +103,25 @@ describe('board cache_updates', () => {
           workItemId: workItemA.id,
           useRestApi,
         });
+
+        expect(result).toBeNull();
+      });
+    });
+
+    describe('readWorkItemConnectionFromColumn', () => {
+      it('returns the connection, including pageInfo', () => {
+        const pageInfo = { hasNextPage: true };
+        const cache = createCache(buildData([workItemA, workItemB], pageInfo));
+
+        const result = readWorkItemConnectionFromColumn({ cache, query, variables, useRestApi });
+
+        expect(result).toEqual({ nodes: [workItemA, workItemB], pageInfo });
+      });
+
+      it('returns null when the connection is missing', () => {
+        const cache = createCache({});
+
+        const result = readWorkItemConnectionFromColumn({ cache, query, variables, useRestApi });
 
         expect(result).toBeNull();
       });

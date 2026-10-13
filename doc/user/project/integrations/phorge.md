@@ -27,6 +27,9 @@ To configure Phorge in a GitLab project:
 1. In **Project URL**, enter the URL to the Phorge project.
 1. In **Issue URL**, enter the URL to the Phorge project issue.
    The URL must contain `:id`. GitLab replaces this token with the Maniphest task ID (for example, `T123`).
+   Because the task ID already includes the `T` prefix, GitLab removes an uppercase `T` typed directly in front
+   of `:id` (for example, `https://phorge.example.com/T:id` is saved as `https://phorge.example.com/:id`).
+   A lowercase `t` is kept, because it is more often the last letter of a path than a mistyped prefix.
 1. In **New issue URL**, enter the URL to a new Phorge project issue.
    To prefill tags related to this project, you can use `?tags=`.
 1. Optional. Select **Test settings**.

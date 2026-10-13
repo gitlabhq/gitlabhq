@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_server do
+  let(:not_found_error) { described_class::ResourceNotFoundError }
+  let(:forbidden_error) { described_class::ResourceForbiddenError }
+
   let_it_be(:user, freeze: true) { create(:user) }
   let_it_be(:public_group, freeze: true) { create(:group) }
   let_it_be(:private_group, freeze: true) { create(:group, :private) }
@@ -63,17 +66,21 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'finds by full path' do
         expect(service.test_find_project(public_project.full_path)).to eq(public_project)
       end
+
+      it 'finds by URL-encoded full path' do
+        expect(service.test_find_project(ERB::Util.url_encode(public_project.full_path))).to eq(public_project)
+      end
     end
 
     context 'when project does not exist' do
       it 'raises StandardError for non-existent ID' do
         expect { service.test_find_project(non_existing_record_id.to_s) }
-          .to raise_error(StandardError, /not found or inaccessible/)
+          .to raise_error(not_found_error, /not found or inaccessible/)
       end
 
       it 'raises StandardError for non-existent path' do
         expect { service.test_find_project('invalid/path') }
-          .to raise_error(StandardError, /not found or inaccessible/)
+          .to raise_error(not_found_error, /not found or inaccessible/)
       end
     end
 
@@ -83,13 +90,13 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'raises the same error as for a missing project, preventing enumeration' do
         identifier = private_project.full_path
         expect { service.test_find_project(identifier) }
-          .to raise_error(StandardError, "Project '#{identifier}' not found or inaccessible")
+          .to raise_error(forbidden_error, "Project '#{identifier}' not found or inaccessible")
       end
 
       it 'raises the same error when looking up by ID' do
         identifier = private_project.id.to_s
         expect { service.test_find_project(identifier) }
-          .to raise_error(StandardError, "Project '#{identifier}' not found or inaccessible")
+          .to raise_error(forbidden_error, "Project '#{identifier}' not found or inaccessible")
       end
     end
 
@@ -119,7 +126,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       end
 
       it 'raises StandardError' do
-        expect { find_project }.to raise_error(StandardError, /not found or inaccessible/)
+        expect { find_project }.to raise_error(not_found_error, /not found or inaccessible/)
       end
     end
 
@@ -141,7 +148,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         allow(Ability).to receive(:allowed?).with(user, :read_merge_request, public_project).and_return(false)
 
         expect { service.test_find_project(public_project.id.to_s, ability: :read_merge_request) }
-          .to raise_error(StandardError, /not found or inaccessible/)
+          .to raise_error(forbidden_error, /not found or inaccessible/)
       end
     end
   end
@@ -175,17 +182,25 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'finds by numeric ID' do
         expect(service.test_find_group(public_group.id.to_s)).to eq(public_group)
       end
+
+      it 'finds by integer ID without attempting to decode it' do
+        expect(service.test_find_group(public_group.id)).to eq(public_group)
+      end
+
+      it 'finds by URL-encoded full path' do
+        expect(service.test_find_group(ERB::Util.url_encode(public_group.full_path))).to eq(public_group)
+      end
     end
 
     context 'when group does not exist' do
       it 'raises StandardError for non-existent ID' do
         expect { service.test_find_group(non_existing_record_id.to_s) }
-          .to raise_error(StandardError, /not found or inaccessible/)
+          .to raise_error(not_found_error, /not found or inaccessible/)
       end
 
       it 'raises StandardError for non-existent path' do
         expect { service.test_find_group('invalid/path') }
-          .to raise_error(StandardError, /not found or inaccessible/)
+          .to raise_error(not_found_error, /not found or inaccessible/)
       end
     end
 
@@ -193,13 +208,13 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'raises the same error as for a missing group, preventing enumeration' do
         identifier = private_group.full_path
         expect { service.test_find_group(identifier) }
-          .to raise_error(StandardError, "Group '#{identifier}' not found or inaccessible")
+          .to raise_error(forbidden_error, "Group '#{identifier}' not found or inaccessible")
       end
 
       it 'raises the same error when looking up by ID' do
         identifier = private_group.id.to_s
         expect { service.test_find_group(identifier) }
-          .to raise_error(StandardError, "Group '#{identifier}' not found or inaccessible")
+          .to raise_error(forbidden_error, "Group '#{identifier}' not found or inaccessible")
       end
     end
 
@@ -235,7 +250,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
         it 'raises a uniform not-found error indistinguishable from a missing project' do
           expect { find_parent_by_id_or_path }
-            .to raise_error(StandardError, "Project '#{identifier}' not found or inaccessible")
+            .to raise_error(forbidden_error, "Project '#{identifier}' not found or inaccessible")
         end
       end
 
@@ -267,7 +282,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
         it 'raises a uniform not-found error indistinguishable from a missing group' do
           expect { find_parent_by_id_or_path }
-            .to raise_error(StandardError, "Group '#{identifier}' not found or inaccessible")
+            .to raise_error(forbidden_error, "Group '#{identifier}' not found or inaccessible")
         end
       end
 
@@ -290,7 +305,9 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     let(:work_item_iid) { work_item.iid }
     let(:service) { test_class.new(user) }
 
-    subject(:find_work_item_in_parent) { service.test_find_work_item_in_parent(project, work_item_iid) }
+    let(:parent) { project }
+
+    subject(:find_work_item_in_parent) { service.test_find_work_item_in_parent(parent, work_item_iid) }
 
     context 'with project parent' do
       it 'finds work item by iid' do
@@ -302,7 +319,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
         it 'raises error when work item not found' do
           expect { find_work_item_in_parent }
-            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found or inaccessible")
+            .to raise_error(not_found_error, "Work item ##{work_item_iid} not found or inaccessible")
         end
       end
 
@@ -312,10 +329,20 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         let(:work_item_iid) { confidential_item.iid }
         let(:user) { guest_user }
 
-        it 'restricts access' do
+        it 'restricts access, with the message a missing work item would give' do
           expect { find_work_item_in_parent }
-            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found or inaccessible")
+            .to raise_error(forbidden_error, "Work item ##{work_item_iid} not found or inaccessible")
         end
+      end
+    end
+
+    context 'when the parent has no work items association' do
+      let(:parent) { user }
+      let(:work_item_iid) { non_existing_record_iid }
+
+      it 'reports not found rather than raising on the existence probe' do
+        expect { find_work_item_in_parent }
+          .to raise_error(not_found_error, "Work item ##{work_item_iid} not found or inaccessible")
       end
     end
   end

@@ -8,29 +8,34 @@ module API
       GRANULAR_SCOPE_ACCESS_VALUES = ::Authz::GranularScope::Access::LEVELS.keys.map(&:to_s).freeze
 
       params :access_token_params do
-        optional :revoked, type: Boolean, desc: 'Filter tokens where revoked state matches parameter',
+        optional :revoked, type: Boolean, desc: 'If `true`, only returns revoked tokens. If `false`, ' \
+                                            'only returns tokens that are not revoked.',
           documentation: { example: false }
-        optional :state, type: String, desc: 'Filter tokens which are either active or not',
+        optional :state, type: String, desc: 'Return tokens with the specified state.',
           values: %w[active inactive], documentation: { example: 'active' }
-        optional :created_before, type: DateTime, desc: 'Filter tokens which were created before given datetime',
+        optional :created_before, type: DateTime, desc: 'Return tokens created on or before the specified time.',
           documentation: { example: '2022-01-01T00:00:00Z' }
-        optional :created_after, type: DateTime, desc: 'Filter tokens which were created after given datetime',
+        optional :created_after, type: DateTime, desc: 'Return tokens created on or after the specified time.',
           documentation: { example: '2021-01-01T00:00:00Z' }
-        optional :last_used_before, type: DateTime, desc: 'Filter tokens which were used before given datetime',
+        optional :last_used_before, type: DateTime, desc: 'Return tokens last used on or before the specified time.',
           documentation: { example: '2021-01-01T00:00:00Z' }
-        optional :last_used_after, type: DateTime, desc: 'Filter tokens which were used after given datetime',
+        optional :last_used_after, type: DateTime, desc: 'Return tokens last used on or after the specified time.',
           documentation: { example: '2022-01-01T00:00:00Z' }
-        optional :expires_before, type: Date, desc: 'Filter tokens which expire before given datetime',
+        optional :expires_before, type: Date, desc: 'Return tokens that expire before the specified date.',
           documentation: { example: '2022-01-01' }
-        optional :expires_after, type: Date, desc: 'Filter tokens which expire after given datetime',
+        optional :expires_after, type: Date, desc: 'Return tokens that expire on or after the specified date.',
           documentation: { example: '2021-01-01' }
-        optional :search, type: String, desc: 'Filters tokens by name', documentation: { example: 'token' }
-        optional :sort, type: String, desc: 'Sort tokens', documentation: { example: 'created_at_desc' }
+        optional :search, type: String, desc: 'Return tokens that include the specified value in their ' \
+                                          'name.', documentation: { example: 'token' }
+        optional :sort, type: String, desc: 'Sort results by the specified field and direction. Possible ' \
+                                        'values are `created_asc`, `created_desc`, `expires_asc`, ' \
+                                        '`expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, ' \
+                                        'and `name_desc`.', documentation: { example: 'created_desc' }
       end
 
       params :create_personal_access_token_params do
-        requires :name, type: String, desc: 'The name of the access token', documentation: { example: 'My token' }
-        optional :description, type: String, desc: 'The description of the access token',
+        requires :name, type: String, desc: 'Name of the access token.', documentation: { example: 'My token' }
+        optional :description, type: String, desc: 'Description of the access token. Limited to 255 characters.',
           documentation: { example: 'A token used for k8s' }
         optional :expires_at, type: Date, desc: "Expiration date of the access token in ISO format (YYYY-MM-DD). " \
                                             "If undefined, the date is set to the maximum allowable lifetime limit.",
@@ -38,14 +43,14 @@ module API
       end
 
       params :granular_scope_params do
-        optional :granular_scopes, type: Array, desc: 'List of granular scopes to assign to the token' do
+        optional :granular_scopes, type: Array, desc: 'List of granular scopes to assign to the token.' do
           requires :access, type: String, values: GRANULAR_SCOPE_ACCESS_VALUES,
             desc: 'Access to configure for the granular scope.'
-          requires :permissions, type: Array[String], desc: 'List of permissions for the granular scope'
+          requires :permissions, type: Array[String], desc: 'List of permissions for the granular scope.'
           optional :project_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-            desc: 'IDs of projects to associate with the granular scope, when access is `selected_memberships`'
+            desc: 'IDs of projects to associate with the granular scope, when access is `selected_memberships`.'
           optional :group_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-            desc: 'IDs of groups to associate with the granular scope, when access is `selected_memberships`'
+            desc: 'IDs of groups to associate with the granular scope, when access is `selected_memberships`.'
         end
       end
 
@@ -98,39 +103,57 @@ module API
         ::Project.ids_by_project_namespace_id(project_namespace_ids)
       end
 
+      # Returns the options API::Entities::PersonalAccessToken, and every entity that inherits from it,
+      # needs to expose the granular scopes of the given tokens, after preloading those scopes with their
+      # namespaces. Only a granular token has scopes to present, so a token that is not granular is left
+      # out of the preload, and tokens with none among them get no options and run no query. Scopes that
+      # are already loaded, such as through PersonalAccessToken.preload_granular_scopes, are not reloaded.
+      #
+      # The namespaces are preloaded on the scopes each token holds, in a second step. Preloading
+      # { granular_scopes: :namespace } in one step would load them onto other copies of the scopes,
+      # read through the join rows, whenever a token already holds its scopes without their namespaces,
+      # as a token that CreateGranularService returns does, and the entity would then load the namespace
+      # of each scope it presents.
+      def granular_scopes_options_for(tokens)
+        granular_tokens = Array(tokens).select(&:granular?)
+        return {} if granular_tokens.empty?
+
+        ActiveRecord::Associations::Preloader.new(records: granular_tokens, associations: :granular_scopes).call
+        ActiveRecord::Associations::Preloader.new(
+          records: granular_tokens.flat_map(&:granular_scopes), associations: :namespace
+        ).call
+
+        {
+          with_granular_scopes: true,
+          project_ids_by_namespace_id: project_ids_by_namespace_id_for(granular_tokens)
+        }
+      end
+
       def build_granular_scopes(current_user, inputs)
-        inputs.flat_map { |input| granular_scope_attrs(current_user, input) }.map { |attrs| ::Authz::GranularScope.new(attrs) }
+        boundary_rule = ::Authz::GranularScopes::ReadBoundaryRule.new(current_user)
+        builder_inputs = inputs.map { |input| granular_scope_builder_input(input) }
+
+        ::Authz::GranularScopes::Builder.new(builder_inputs, boundary_rule: boundary_rule).build
+      rescue ::Authz::GranularScopes::Builder::ResourceNotAllowedError
+        not_found!
       end
 
-      def granular_scope_attrs(current_user, input)
-        base_attrs = { access: input[:access], permissions: input[:permissions] }
-
-        case input[:access].to_s
-        when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS.to_s
-          selected_memberships_attrs(current_user, input, base_attrs)
-        when ::Authz::GranularScope::Access::PERSONAL_PROJECTS.to_s
-          [base_attrs.merge(namespace: current_user.namespace)]
-        else
-          [base_attrs]
-        end
+      def granular_scope_builder_input(input)
+        {
+          access: input[:access],
+          permissions: input[:permissions],
+          resources: granular_scope_resources(input)
+        }
       end
 
-      def selected_memberships_attrs(current_user, input, base_attrs)
+      def granular_scope_resources(input)
+        return [] unless input[:access].to_s == ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS.to_s
+
         groups = Group.id_in(Array(input[:group_ids]))
         projects = Project.id_in(Array(input[:project_ids]))
           .preload(:project_namespace) # rubocop:disable CodeReuse/ActiveRecord -- avoids N+1 loading project_namespace per project
 
-        resource_scope_attrs(current_user, groups, base_attrs) +
-          resource_scope_attrs(current_user, projects, base_attrs)
-      end
-
-      def resource_scope_attrs(current_user, resources, base_attrs)
-        resources.map do |resource|
-          boundary = ::Authz::Boundary.for(resource)
-          not_found! unless boundary.member?(current_user)
-
-          base_attrs.merge(namespace: boundary.namespace)
-        end
+        groups.to_a + projects.to_a
       end
 
       def create_granular_token(current_user, granular_scopes, token_params, target_user: current_user)

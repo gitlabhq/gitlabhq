@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Nuget::Metadatum, feature_category: :package_registry do
   it { is_expected.to be_a Packages::Nuget::VersionNormalizable }
 
   describe 'relationships' do

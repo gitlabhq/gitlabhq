@@ -6,7 +6,6 @@ const loadMarkdownTable = memoize(
   () => import(/* webpackChunkName: 'gfm_markdown_table' */ '../components/markdown_table.vue'),
 );
 
-const mountedTables = new WeakMap();
 const mountedApps = new Set();
 let removalObserver;
 
@@ -23,7 +22,8 @@ function observeRemoval(table, app) {
       if (entry.app.$el.isConnected) return;
 
       entry.app.$destroy();
-      mountedTables.delete(entry.table);
+      // eslint-disable-next-line no-param-reassign
+      delete entry.table.dataset.markdownTableApplied;
       mountedApps.delete(entry);
     });
 
@@ -39,6 +39,7 @@ function observeRemoval(table, app) {
 function parseTable(table) {
   // Take care to grab only *this* table's cells, and not any nested tables'.
   const thead = table.tHead;
+  const { caption } = table;
 
   // A table without a declared header (e.g. hand-authored HTML) is left as-is;
   // promoting the first body row would fabricate a header that was never authored.
@@ -47,6 +48,7 @@ function parseTable(table) {
   const [tbody] = table.tBodies;
   const [headerRow] = thead.rows;
   const bodyRows = tbody ? Array.from(tbody.rows) : [];
+  const footerRows = Array.from(table.tFoot?.rows ?? [], (row) => Array.from(row.cells));
 
   if (!headerRow) return null;
 
@@ -56,7 +58,6 @@ function parseTable(table) {
   const fields = headerCells.map((cell, index) => ({
     key: `col_${index}`,
     cell,
-    isSortable: true,
   }));
 
   const items = bodyRows.map((row, rowIndex) => {
@@ -68,7 +69,7 @@ function parseTable(table) {
     return item;
   });
 
-  return { fields, items };
+  return { fields, items, footerRows, caption };
 }
 
 /**
@@ -79,23 +80,17 @@ function parseTable(table) {
  *   there is nothing to render.
  */
 export default function renderMarkdownTables(els) {
-  const isSticky = window.gon?.features?.editorStickyTableHeaders;
-  const isSortable = window.gon?.features?.markdownSortableTableColumns;
-
-  if (!isSticky && !isSortable) {
-    return null;
-  }
-
   const claimed = [];
 
   els.forEach((table) => {
-    if (mountedTables.has(table)) return;
+    if (table.dataset.markdownTableApplied === 'true') return;
     if (!table.parentNode) return;
 
     const parsed = parseTable(table);
     if (!parsed) return;
 
-    mountedTables.set(table, null);
+    // eslint-disable-next-line no-param-reassign
+    table.dataset.markdownTableApplied = 'true';
     claimed.push({ table, ...parsed });
   });
 
@@ -104,19 +99,19 @@ export default function renderMarkdownTables(els) {
   }
 
   return loadMarkdownTable().then(({ default: MarkdownTable }) => {
-    claimed.forEach(({ table, fields, items }) => {
+    claimed.forEach(({ table, fields, items, footerRows, caption }) => {
       if (!table.parentNode) {
-        mountedTables.delete(table);
+        // eslint-disable-next-line no-param-reassign
+        delete table.dataset.markdownTableApplied;
         return;
       }
 
       const app = new Vue({
         el: table,
         name: 'MarkdownTableRoot',
-        render: (h) => h(MarkdownTable, { props: { fields, items, isSortable, isSticky } }),
+        render: (h) => h(MarkdownTable, { props: { fields, items, footerRows, caption } }),
       });
 
-      mountedTables.set(table, app);
       observeRemoval(table, app);
     });
   });

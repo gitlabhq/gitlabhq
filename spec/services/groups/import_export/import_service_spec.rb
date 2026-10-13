@@ -40,6 +40,24 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
       it 'returns truthy' do
         expect(import_service.async_execute).to be_truthy
       end
+
+      describe 'request_channel', :clean_gitlab_redis_shared_state do
+        it 'defaults to :api' do
+          import_service.async_execute
+
+          expect(group.import_state.request_channel).to eq('api')
+        end
+
+        it 'stores the given channel before enqueuing the import job' do
+          expect(GroupImportWorker).to receive(:perform_async) do
+            expect(GroupImportState.find_by(group: group).request_channel).to eq('ui')
+
+            'jid'
+          end
+
+          described_class.new(group: group, user: user, request_channel: :ui).async_execute
+        end
+      end
     end
 
     context 'when the job cannot be scheduled' do

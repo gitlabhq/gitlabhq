@@ -41,7 +41,7 @@ POST /projects/:id/fork
 | `namespace_path`         | string            | No       | The path of the namespace that the project is forked to. |
 | `namespace`              | integer or string | No       | _(Deprecated)_ The ID or path of the namespace that the project is forked to. |
 | `path`                   | string            | No       | The path assigned to the resultant project after forking. |
-| `visibility`             | string            | No       | The [visibility level](projects.md#project-visibility-level) assigned to the resultant project after forking. |
+| `visibility`             | string            | No       | The [visibility level](projects.md#project-visibility-level) assigned to the resultant project after forking. The resulting visibility is never less restrictive than the upstream project's visibility or the target namespace's visibility. If you pass a less restrictive value, GitLab uses a more restrictive value instead. |
 
 > [!note]
 > When using a service account to fork a project, you must provide either `namespace_id` or `namespace_path`.

@@ -97,21 +97,29 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
       super().merge(repository_path_pattern: other_existing_container_registry_protection_rule.repository_path_pattern)
     end
 
-    it { is_expected.tap { expect_graphql_errors_to_be_empty } }
+    it { post_graphql_mutation_update_container_registry_protection_rule.tap { expect_graphql_errors_to_be_empty } }
 
     it 'returns a blank container registry protection rule' do
-      is_expected.tap { expect(mutation_response['containerProtectionRepositoryRule']).to be_blank }
+      post_graphql_mutation_update_container_registry_protection_rule
+
+      expect(mutation_response['containerProtectionRepositoryRule']).to be_blank
     end
 
     it 'includes error message in response' do
-      is_expected.tap { expect(mutation_response['errors']).to eq ['Repository path pattern has already been taken'] }
+      post_graphql_mutation_update_container_registry_protection_rule
+
+      expect(mutation_response['errors']).to eq ['Repository path pattern has already been taken']
     end
   end
 
   context 'with invalid input param `minimumAccessLevelForPush`' do
     let(:input) { super().merge(minimum_access_level_for_push: 'INVALID_ACCESS_LEVEL') }
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForPush/) } }
+    it 'returns an invalid value error for minimumAccessLevelForPush' do
+      post_graphql_mutation_update_container_registry_protection_rule
+
+      expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForPush/)
+    end
 
     it do
       expect { post_graphql_mutation_update_container_registry_protection_rule }
@@ -151,7 +159,11 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     end
 
     with_them do
-      it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
+      it 'returns a permission error' do
+        post_graphql_mutation_update_container_registry_protection_rule
+
+        expect_graphql_errors_to_include(/you don't have permission to perform this action/)
+      end
     end
   end
 end

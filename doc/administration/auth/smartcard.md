@@ -126,10 +126,6 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 {{< /history >}}
 
-> [!flag]
-> The functionality of this feature is controlled by a feature flag.
-> For more information, see the history.
-
 Active Directory does not support the `certificateExactMatch` rule or the `userCertificate` attribute. Most tools for certificate-based authentication such as smart cards use the `altSecurityIdentities` attribute, which can contain multiple certificates for each user. The data in the field must match [one of the formats Microsoft recommends](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-certificate-based-authentication-certificateuserids#supported-patterns-for-certificate-user-ids).
 
 Use the following attributes to customize the field GitLab checks and the format for certificate data:

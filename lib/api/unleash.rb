@@ -10,9 +10,9 @@ module API
     namespace :feature_flags do
       resource :unleash, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :project_id, type: String, desc: 'The ID of a project'
-          optional :instance_id, type: String, desc: 'The instance ID of Unleash Client'
-          optional :app_name, type: String, desc: 'The application name of Unleash Client'
+          requires :project_id, type: String, desc: 'ID of the project.'
+          optional :instance_id, type: String, desc: 'Instance ID of Unleash Client.'
+          optional :app_name, type: String, desc: 'Application name of Unleash Client.'
         end
         route_param :project_id do
           before do

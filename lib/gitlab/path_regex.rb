@@ -292,6 +292,13 @@ module Gitlab
       @dependency_proxy_route_regex ||= %r{\A/v2/#{full_namespace_route_regex}/dependency_proxy/containers/#{container_image_regex}/(manifests|blobs)/#{container_image_blob_sha_regex}\z}
     end
 
+    # Unlike dependency_proxy_route_regex, also covers the GET /v2 auth ping and the cache-write uploads.
+    # Virtual registry clients send the same GET /v2 ping, so it matches for them too.
+    def dependency_proxy_containers_route_regex
+      @dependency_proxy_containers_route_regex ||=
+        %r{\A/v2(?:/?\z|/#{full_namespace_route_regex}/dependency_proxy/containers/)}
+    end
+
     private
 
     def personal_snippet_path_regex

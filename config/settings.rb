@@ -16,7 +16,6 @@ end
 file = ENV.fetch('GITLAB_CONFIG') { Rails.root.join('config/gitlab.yml') }
 
 GITLAB_INSTANCE_UUID_NOT_SET = 'uuid-not-set'
-MultipleDbKeyBaseError = Class.new(StandardError)
 
 Settings = Gitlab::Configs.load(file, Rails.env) do
   def gitlab_on_standard_port?
@@ -167,9 +166,7 @@ Settings = Gitlab::Configs.load(file, Rails.env) do
   # generate a hash of the password:
   # https://github.com/attr-encrypted/encryptor/blob/c3a62c4a9e74686dd95e0548f9dc2a361fdc95d1/lib/encryptor.rb#L77
   def db_key_base_keys
-    @db_key_base_keys ||= Array(Gitlab::Application.credentials.db_key_base).tap do |keys|
-      raise(MultipleDbKeyBaseError, "Defining multiple `db_key_base` keys isn't supported yet.") if keys.size > 1
-    end
+    @db_key_base_keys ||= Array(Gitlab::Application.credentials.db_key_base)
   end
 
   def encrypted(path)

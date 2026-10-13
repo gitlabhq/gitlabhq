@@ -186,14 +186,6 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
 
         it_behaves_like 'destroying memberships with a refresh priority of',
           UserProjectAccessChangedService::MEDIUM_PRIORITY
-
-        context 'when deprioritize_destroyed_project_bot_user_project_authorizations_refresh is disabled' do
-          before do
-            stub_feature_flags(deprioritize_destroyed_project_bot_user_project_authorizations_refresh: false)
-          end
-
-          it_behaves_like 'destroying memberships with a refresh priority of', nil
-        end
       end
 
       context 'when the user is not a project bot' do

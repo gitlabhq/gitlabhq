@@ -7,8 +7,8 @@ module Gitlab
 
     RequestDeadlineExceeded = Class.new(StandardError)
 
-    attr_accessor :client_ip, :spam_params, :start_thread_cpu_time, :request_start_time, :thread_memory_allocations,
-      :gvl_local_timer_start, :request_start_monotonic_time, :request_timeout_at
+    attr_accessor :client_ip, :user_agent, :spam_params, :start_thread_cpu_time, :request_start_time,
+      :thread_memory_allocations, :gvl_local_timer_start, :request_start_monotonic_time, :request_timeout_at
 
     class << self
       def instance
@@ -21,6 +21,7 @@ module Gitlab
         # Hosts behind a load balancer will only see 127.0.0.1 for the load balancer's IP.
         rack_req = Rack::Request.new(request.env)
         instance.client_ip = rack_req.ip
+        instance.user_agent = rack_req.user_agent
 
         instance.spam_params = ::Spam::SpamParams.new_from_request(request: request)
         instance.request_start_time = Gitlab::Metrics::System.real_time

@@ -394,6 +394,8 @@ module Ci
           build.ensure_persistent_ref
 
           build.execute_hooks
+
+          build.protect_pipeline_from_auto_cancellation
         end
       end
 
@@ -420,7 +422,7 @@ module Ci
           if build.auto_retry_allowed?
             begin
               # rubocop: disable CodeReuse/ServiceClass -- https://gitlab.com/gitlab-org/gitlab/-/issues/494865
-              Ci::RetryJobService.new(build.project, build.user).execute(build)
+              Ci::RetryJobService.new(build.project, build.user, rate_limit: false).execute(build)
               # rubocop: enable CodeReuse/ServiceClass
             rescue Gitlab::Access::AccessDeniedError => e
               Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
@@ -520,15 +522,13 @@ module Ci
     end
 
     def trigger_stage_subscription
-      return unless Feature.enabled?(:ci_stage_subscription, project)
-
       GraphqlTriggers.ci_stage_updated(self)
     end
 
     def ci_job_processed_rate_limited?
       Gitlab::ApplicationRateLimiter.throttled?(
         :ci_job_processed_subscription,
-        scope: project
+        scope: { project: project }
       )
     end
 
@@ -635,6 +635,19 @@ module Ci
       super && run_steps.blank?
     end
 
+    # The cache answers now and the column outlives it, so both must miss this
+    # before a pipeline loses its protection.
+    def protect_pipeline_from_auto_cancellation
+      return unless Feature.enabled?(:ci_redundant_pipeline_candidates_cache, Project.actor_from_id(project_id))
+      return if interruptible
+
+      Gitlab::Ci::RedundantPipelines::CandidateCache
+        .for(project_id: project_id, ref: ref)
+        .protect(Gitlab::Ci::RedundantPipelines::PipelineKey.new(pipeline_id, partition_id)) do
+          Ci::RedundantPipelines::ProtectPipelineWorker.perform_async(pipeline_id, partition_id)
+        end
+    end
+
     def playable?
       action? && !archived? && (manual? || scheduled? || retryable?)
     end
@@ -657,12 +670,13 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    def play(current_user, job_variables_attributes = nil, job_inputs = {})
+    def play(current_user, job_variables_attributes = nil, job_inputs = {}, rate_limit: true)
       Ci::PlayBuildService.new(
         current_user: current_user,
         build: self,
         variables: job_variables_attributes,
-        inputs: job_inputs
+        inputs: job_inputs,
+        rate_limit: rate_limit
       ).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
@@ -829,6 +843,8 @@ module Ci
     end
 
     def update_coverage
+      return unless coverage_regex.present?
+
       coverage = trace.extract_coverage(coverage_regex)
       update(coverage: coverage) if coverage.present?
     end
@@ -960,7 +976,7 @@ module Ci
 
       return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
 
-      Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
+      Ci::ExecuteBuildHooksWorker.perform_async(project.id, id, hook_state_attrs)
     end
 
     def browsable_artifacts?
@@ -1428,6 +1444,17 @@ module Ci
 
     private
 
+    def hook_state_attrs
+      {
+        build_status: status,
+        build_started_at: started_at,
+        build_finished_at: finished_at,
+        build_duration: duration,
+        build_queued_duration: queued_duration,
+        build_failure_reason: failure_reason
+      }
+    end
+
     def with_pending_build_args
       prepare_pending_build_args
       yield
@@ -1501,13 +1528,6 @@ module Ci
     def auto_retry
       strong_memoize(:auto_retry) do
         Gitlab::Ci::Build::AutoRetry.new(self)
-      end
-    end
-
-    def build_data
-      strong_memoize(:build_data) do
-        ActiveRecord::Associations::Preloader.new(records: [self], associations: { runner: :tags }).call
-        Gitlab::DataBuilder::Build.build(self)
       end
     end
 

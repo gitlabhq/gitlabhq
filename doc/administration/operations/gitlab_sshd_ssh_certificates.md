@@ -50,16 +50,16 @@ still called for authorization, as with any SSH connection.
 
 GitLab supports several SSH certificate authentication approaches:
 
-| Feature | Instance-level (`gitlab-sshd`) | Instance-level (OpenSSH) | Group-level |
-|---|---|---|---|
-| Configuration location | `config.yml` | `sshd_config` | GitLab API/UI |
-| SSH server | `gitlab-sshd` | OpenSSH | `gitlab-sshd` |
-| Offering | GitLab Self-Managed | GitLab Self-Managed | GitLab.com |
-| Tier | Free, Premium, Ultimate | Free, Premium, Ultimate | Premium, Ultimate |
-| Scope | Instance-wide (no namespace restriction) | Instance-wide (no namespace restriction) | Top-level group |
-| Username mapping | Certificate `KeyId` | Certificate Key ID through `AuthorizedPrincipalsCommand` | Certificate identity through API |
-| Enterprise user requirement | No | No | Yes |
-| Documentation | This page | [OpenSSH `AuthorizedPrincipalsCommand`](ssh_certificates.md) | [Group SSH certificates](../../user/group/ssh_certificates.md) |
+| Attribute | `gitlab-sshd` configuration file | **Admin** area (beta) | OpenSSH | Top-level group |
+|---|---|---|---|---|
+| Where you add the CA | `config.yml` | **Admin** area or REST API | `sshd_config` | REST API |
+| SSH server | `gitlab-sshd` | `gitlab-sshd` | OpenSSH | `gitlab-sshd` |
+| Offering | GitLab Self-Managed | GitLab Self-Managed | GitLab Self-Managed | GitLab.com |
+| Tier | Free, Premium, Ultimate | Free, Premium, Ultimate | Free, Premium, Ultimate | Premium, Ultimate |
+| Scope | Entire instance | Entire instance | Entire instance | Top-level group and its subgroups |
+| Username mapping | Certificate `KeyId` | Certificate `KeyId` | Certificate `KeyId` through `AuthorizedPrincipalsCommand` | Certificate identity through API |
+| Enterprise user requirement | No | No | No | Yes |
+| Documentation | [Configure trusted CA keys](#configure-trusted-ca-keys) | [Manage trusted CA keys in the Admin area](#manage-trusted-ca-keys-in-the-admin-area) | [OpenSSH `AuthorizedPrincipalsCommand`](ssh_certificates.md) | [Group SSH certificates](../../user/group/ssh_certificates.md) |
 
 ## Prerequisites
 
@@ -169,6 +169,69 @@ To configure instance-level SSH certificate authentication:
    ```plaintext
    Loaded trusted user CA keys for instance-level SSH certificates count=1
    ```
+
+## Manage trusted CA keys in the Admin area
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/611319) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `instance_ssh_certificates`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+As an alternative to `config.yml`, you can add trusted CA keys in the **Admin** area
+or with the [instance SSH certificates API](../../api/instance_ssh_certificates.md).
+Changes apply to all `gitlab-sshd` nodes immediately, without a restart.
+
+You can use both methods at the same time. `gitlab-sshd` checks CA keys in
+`config.yml` first, and checks CA keys added in the **Admin** area only when the
+signing CA is not in `config.yml`.
+
+Prerequisites:
+
+- Administrator access.
+- `gitlab-sshd` enabled. For more information, see
+  [enable `gitlab-sshd`](gitlab_sshd.md#enable-gitlab-sshd).
+- The `FF_GITLAB_SHELL_SSH_CERTIFICATES` environment variable set to `1`
+  for `gitlab-sshd` on every node. Otherwise, `gitlab-sshd` does not check CA keys
+  stored in the database.
+
+To add a trusted CA key:
+
+1. Generate a CA key pair, as described in [configure trusted CA keys](#configure-trusted-ca-keys).
+   You don't need to copy the public key to the GitLab server.
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Access** > **Certificate authorities**.
+1. Select **Add certificate authority**.
+1. In **Title**, enter a name for the CA.
+1. In **Public key**, paste the contents of the CA public key file, for example `ssh_user_ca.pub`.
+1. Select **Add certificate authority**.
+
+GitLab rejects CA public keys that don't meet the instance's
+[SSH key restrictions](../../security/ssh_keys_restrictions.md), including the
+stricter defaults on FIPS-enabled instances.
+
+To delete a trusted CA key:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Access** > **Certificate authorities**.
+1. Next to the CA, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Delete certificate authority**.
+1. In the confirmation dialog, select **Delete certificate authority**.
+
+When you delete a CA, GitLab revokes trust immediately, and certificates it signed stop working.
+
+On GitLab Premium and Ultimate, GitLab records an
+[audit event](../../user/compliance/audit_event_types.md) when you add or delete a CA.
 
 ## Issue SSH certificates for users
 

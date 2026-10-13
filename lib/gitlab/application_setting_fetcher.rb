@@ -19,6 +19,14 @@ module Gitlab
         ::ApplicationSetting.expire
       end
 
+      # Whether the application settings database has migrations pending, including
+      # post-deployment ones.
+      #
+      # @return [Boolean]
+      def needs_migration?
+        ::ApplicationSetting.connection_pool.migration_context.needs_migration?
+      end
+
       private
 
       def cached_application_settings
@@ -46,10 +54,6 @@ module Gitlab
         end
       rescue ::ApplicationSetting::Recursion
         in_memory_application_settings
-      end
-
-      def needs_migration?
-        ::ApplicationSetting.connection_pool.migration_context.needs_migration?
       end
 
       def in_memory_application_settings

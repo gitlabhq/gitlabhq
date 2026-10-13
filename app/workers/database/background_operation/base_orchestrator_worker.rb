@@ -101,3 +101,5 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best pla
     end
   end
 end
+
+Database::BackgroundOperation::BaseOrchestratorWorker.prepend_mod

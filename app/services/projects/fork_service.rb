@@ -104,7 +104,7 @@ module Projects
 
       new_params[:mr_default_target_self] = target_mr_default_target_self unless target_mr_default_target_self.nil?
 
-      if !@project.forked? && @project.git_objects_poolable?
+      if !@project.forked? && @project.git_objects_poolable? && @project.pool_repository_reusable?
         new_params[:pool_repository] = @project.ensure_pool_repository
       end
 

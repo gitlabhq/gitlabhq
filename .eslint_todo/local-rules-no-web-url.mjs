@@ -4,7 +4,7 @@
 export default {
   files: [
     'app/assets/javascripts/ci/admin/jobs_table/components/cells/project_cell.vue',
-    'app/assets/javascripts/ci/job_details/components/job_header.vue',
+    'app/assets/javascripts/ci/job_details/job_app.vue',
     'app/assets/javascripts/ci/runner/components/runner_jobs_table.vue',
     'app/assets/javascripts/contribution_events/components/target_link.vue',
     'app/assets/javascripts/environments/helpers/deployment_data_transformation_helper.js',

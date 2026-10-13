@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::Resources::SyncEvent, type: :model, feature_category: :pipeline_composition do
+RSpec.describe Ci::Catalog::Resources::SyncEvent, feature_category: :pipeline_composition do
   let_it_be_with_reload(:project1) { create(:project) }
   let_it_be_with_reload(:project2) { create(:project) }
   let_it_be(:resource1) { create(:ci_catalog_resource, project: project1) }

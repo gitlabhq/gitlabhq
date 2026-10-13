@@ -14,9 +14,6 @@ export default function deviseState() {
   if (this.branchMissing) {
     return stateKey.missingBranch;
   }
-  if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CHECKING) {
-    return stateKey.checking;
-  }
   if (this.canMerge && this.isSHAMismatch) {
     return stateKey.shaMismatch;
   }

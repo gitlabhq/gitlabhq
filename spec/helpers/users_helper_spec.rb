@@ -6,7 +6,8 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   include TermsHelper
 
   let_it_be(:user) { create(:user, timezone: ActiveSupport::TimeZone::MAPPING['UTC']) }
-  let_it_be(:admin) { create(:admin) }
+
+  let(:admin) { build_stubbed(:admin) }
 
   def filter_ee_badges(badges)
     badges.reject { |badge| badge[:text] == 'Is using seat' }
@@ -16,45 +17,45 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     subject { helper.has_contact_info?(user) }
 
     context 'when user has bluesky profile' do
-      let_it_be(:user) { create(:user, bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz') }
+      let(:user) { build_stubbed(:user, bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz') }
 
       it { is_expected.to be true }
     end
 
     context 'when user has ORCID' do
-      let_it_be(:user) { create(:user, orcid: '1234-1234-1234-1234') }
+      let(:user) { build_stubbed(:user, orcid: '1234-1234-1234-1234') }
 
       it { is_expected.to be true }
     end
 
     context 'when user has public email' do
-      let_it_be(:user) { create(:user, :public_email) }
+      let(:user) { build_stubbed(:user, :public_email) }
 
       it { is_expected.to be true }
     end
 
     context 'when user public email is blank' do
-      let_it_be(:user) { create(:user, public_email: '') }
+      let(:user) { build_stubbed(:user, public_email: '') }
 
       it { is_expected.to be false }
     end
 
     context 'when user ORCID is blank' do
-      let_it_be(:user) { create(:user, orcid: '') }
+      let(:user) { build_stubbed(:user, orcid: '') }
 
       it { is_expected.to be false }
     end
   end
 
   describe 'display_public_email?' do
-    let_it_be(:user) { create(:user, :public_email) }
+    let(:user) { build_stubbed(:user, :public_email) }
 
     subject { helper.display_public_email?(user) }
 
     it { is_expected.to be true }
 
     context 'when user public email is blank' do
-      let_it_be(:user) { create(:user, public_email: '') }
+      let(:user) { build_stubbed(:user, public_email: '') }
 
       it { is_expected.to be false }
     end
@@ -104,7 +105,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   describe '#profile_actions' do
     subject(:profile_actions) { helper.profile_actions(other_user) }
 
-    let_it_be(:other_user) { create(:user) }
+    let(:other_user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -129,7 +130,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'with a public bot user' do
-      let_it_be(:other_user) { create(:user, :bot) }
+      let(:other_user) { build_stubbed(:user, :bot) }
 
       it 'contains bot profile actions' do
         expect(profile_actions).to match_array [:overview, :activity]
@@ -178,13 +179,13 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   end
 
   describe '#can_impersonate_user' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:impersonation_in_progress) { false }
 
     subject { helper.can_impersonate_user(user, impersonation_in_progress) }
 
     context 'when password is expired' do
-      let(:user) { create(:user, password_expires_at: 1.minute.ago) }
+      let(:user) { build_stubbed(:user, password_expires_at: 1.minute.ago) }
 
       it { is_expected.to be false }
     end
@@ -196,13 +197,13 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'when user is blocked' do
-      let(:user) { create(:user, :blocked) }
+      let(:user) { build_stubbed(:user, state: 'blocked') }
 
       it { is_expected.to be false }
     end
 
     context 'when user is internal' do
-      let(:user) { create(:user, :bot) }
+      let(:user) { build_stubbed(:user, :bot) }
 
       it { is_expected.to be false }
     end
@@ -211,13 +212,12 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   end
 
   describe '#impersonation_error_text' do
-    let(:user) { create(:user) }
     let(:impersonation_in_progress) { false }
 
     subject { helper.impersonation_error_text(user, impersonation_in_progress) }
 
     context 'when password is expired' do
-      let(:user) { create(:user, password_expires_at: 1.minute.ago) }
+      let(:user) { build_stubbed(:user, password_expires_at: 1.minute.ago) }
 
       it { is_expected.to eq(_("You cannot impersonate a user with an expired password")) }
     end
@@ -229,69 +229,163 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'when user is blocked' do
-      let(:user) { create(:user, :blocked) }
+      let(:user) { build_stubbed(:user, state: 'blocked') }
 
       it { is_expected.to eq(_("You cannot impersonate a blocked user")) }
     end
 
     context 'when user is internal' do
-      let(:user) { create(:user, :bot) }
+      let(:user) { build_stubbed(:user, :bot) }
 
       it { is_expected.to eq(_("You cannot impersonate an internal user")) }
     end
 
     context 'when user is inactive' do
-      let(:user) { create(:user, :deactivated) }
+      let(:user) { build_stubbed(:user, state: 'deactivated') }
 
       it { is_expected.to eq(_("You cannot impersonate a user who cannot log in")) }
     end
   end
 
-  describe '#user_badges_in_admin_section' do
+  describe '#user_badges_in_admin_section', :enable_admin_mode do
     before do
       allow(helper).to receive(:current_user).and_return(admin)
     end
 
-    subject(:badges) { filter_ee_badges(helper.user_badges_in_admin_section(user)) }
+    let(:authorization_context) { nil }
+
+    subject(:badges) { filter_ee_badges(helper.user_badges_in_admin_section(user, authorization_context)) }
 
     context 'with a blocked user' do
-      let(:user) { create(:user, state: 'blocked') }
+      let(:user) { build_stubbed(:user, state: 'blocked') }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|Blocked"), variant: "danger" }]) }
     end
 
     context 'with a pending approval user' do
-      let(:user) { create(:user, :blocked_pending_approval) }
+      let(:user) { build_stubbed(:user, state: 'blocked_pending_approval') }
 
       it { is_expected.to match_array([{ text: s_('AdminUsers|Pending approval'), variant: 'info' }]) }
     end
 
     context 'with a banned user' do
-      let(:user) { create(:user, :banned) }
+      let(:user) { build_stubbed(:user, state: 'banned') }
 
       it { is_expected.to match_array([{ text: s_('AdminUsers|Banned'), variant: 'danger' }]) }
     end
 
     context 'with an admin user' do
-      let(:user) { create(:admin) }
+      let(:user) { build_stubbed(:admin) }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|Admin"), variant: "success" }]) }
+
+      context 'when the viewer is not an instance admin' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
+        end
+
+        it 'does not expose the instance Admin badge' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when the viewer is an organization admin' do
+        before do
+          organization = create(:organization)
+          allow(helper).to receive(:current_user)
+            .and_return(create(:organization_owner, organization: organization).user)
+        end
+
+        it 'does not expose the instance Admin badge without an organization context' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'when an organization admin' do
+      let(:user) { create(:user) }
+      let(:authorization_context) { create(:organization, owners: user) }
+
+      it { is_expected.to match_array([{ text: s_("AdminUsers|Organization admin"), variant: "success" }]) }
+
+      context 'when the viewer cannot read admin users in the organization' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
+        end
+
+        it 'does not expose the Organization admin badge' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'in the organization admin area' do
+      let_it_be(:authorization_context) { create(:organization) }
+
+      context 'with an instance admin user' do
+        let(:user) { build_stubbed(:admin) }
+
+        it 'does not expose the instance Admin badge' do
+          is_expected.not_to include({ text: s_("AdminUsers|Admin"), variant: "success" })
+        end
+      end
+
+      context 'with an external user' do
+        let(:user) { build_stubbed(:user, external: true) }
+
+        it 'does not expose the External badge' do
+          is_expected.not_to include({ text: s_("AdminUsers|External"), variant: "neutral" })
+        end
+      end
+
+      context 'with a placeholder user' do
+        let(:user) { build_stubbed(:user, :placeholder) }
+
+        it 'still exposes the Placeholder badge' do
+          is_expected.to include({ text: s_("UserMapping|Placeholder"), variant: "neutral" })
+        end
+      end
+
+      context 'with an LDAP user' do
+        let(:user) { create(:omniauth_user, provider: "ldapmain") }
+
+        it 'still exposes the LDAP badge' do
+          is_expected.to include({ text: 'LDAP', variant: 'info' })
+        end
+      end
+
+      context 'with a blocked user' do
+        let(:user) { build_stubbed(:user, state: 'blocked') }
+
+        it 'still exposes the Blocked badge' do
+          is_expected.to include({ text: s_("AdminUsers|Blocked"), variant: "danger" })
+        end
+      end
+
+      context 'with an organization owner' do
+        let(:user) { create(:user) }
+        let(:authorization_context) { create(:organization, owners: user) }
+
+        it 'exposes only the Organization admin badge' do
+          is_expected.to match_array([{ text: s_("AdminUsers|Organization admin"), variant: "success" }])
+        end
+      end
     end
 
     context 'with a bot' do
-      let(:user) { create(:user, :bot) }
+      let(:user) { build_stubbed(:user, :bot) }
 
       it { is_expected.to match_array([{ text: s_('AdminUsers|Bot'), variant: "neutral" }]) }
     end
 
     context 'with a deactivated user' do
-      let(:user) { create(:user, :deactivated) }
+      let(:user) { build_stubbed(:user, state: 'deactivated') }
 
       it { is_expected.to match_array([{ text: s_('AdminUsers|Deactivated'), variant: "danger" }]) }
     end
 
     context 'with an external user' do
-      let(:user) { create(:user, external: true) }
+      let(:user) { build_stubbed(:user, external: true) }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|External"), variant: "neutral" }]) }
     end
@@ -309,7 +403,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'with an external blocked admin' do
-      let(:user) { create(:admin, state: 'blocked', external: true) }
+      let(:user) { build_stubbed(:admin, state: 'blocked', external: true) }
 
       it 'returns the blocked, admin and external badges' do
         is_expected.to match_array(
@@ -322,26 +416,24 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'with a locked user', time_travel_to: '2020-02-25 10:30:45 -0700' do
-      let(:user) { create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700')) }
+      let(:user) { build_stubbed(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700')) }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|Locked"), variant: "warning" }]) }
     end
 
     context 'with a placeholder user' do
-      let(:user) { create(:user, :placeholder) }
+      let(:user) { build_stubbed(:user, :placeholder) }
 
       it { is_expected.to match_array([{ text: s_("UserMapping|Placeholder"), variant: "neutral" }]) }
     end
 
     context 'with an LDAP user' do
-      let(:user) { create(:omniauth_user, provider: "ldapmain") }
+      let(:user) { build(:user, identities: [build(:identity, user: nil)]) }
 
       it { is_expected.to match_array([{ text: 'LDAP', variant: 'info' }]) }
     end
 
     context 'get badges for normal user' do
-      let(:user) { create(:user) }
-
       it { is_expected.to be_empty }
     end
   end
@@ -354,7 +446,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'for a user that is not confirmed' do
-      let(:user) { create(:user, :unconfirmed) }
+      let(:user) { build_stubbed(:user, :unconfirmed) }
 
       it { is_expected.to be(true) }
     end
@@ -438,8 +530,6 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'for a confirmed user' do
-      let(:user) { create(:user) }
-
       before do
         stub_profile_permission_allowed(true)
       end
@@ -448,7 +538,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'for an unconfirmed user' do
-      let(:user) { create(:user, :unconfirmed) }
+      let(:user) { build_stubbed(:user, :unconfirmed) }
 
       before do
         stub_profile_permission_allowed(false)
@@ -458,7 +548,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
       context 'when current user is an admin' do
         before do
-          admin_user = create(:admin)
+          admin_user = build_stubbed(:admin)
           stub_current_user(admin_user)
           stub_profile_permission_allowed(true, admin_user)
         end
@@ -477,7 +567,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'for a blocked user' do
-      let(:user) { create(:user, :blocked) }
+      let(:user) { build_stubbed(:user, state: 'blocked') }
 
       it { is_expected.to eq('Blocked user') }
     end
@@ -531,7 +621,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'when `user.unconfirmed_email` is set' do
-      let(:user) { create(:user, :unconfirmed, unconfirmed_email: 'foo@bar.com') }
+      let(:user) { build_stubbed(:user, :unconfirmed, unconfirmed_email: 'foo@bar.com') }
 
       it 'sets `modal_attributes.messageHtml` correctly' do
         expect(Gitlab::Json.parse(confirm_user_data[:modal_attributes])['messageHtml']).to eq('This user has an unconfirmed email address (foo@bar.com). You may force a confirmation.')
@@ -555,7 +645,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'when `user.unconfirmed_email` is set' do
-      let(:user) { create(:user, :unconfirmed, unconfirmed_email: 'foo@bar.com') }
+      let(:user) { build_stubbed(:user, :unconfirmed, unconfirmed_email: 'foo@bar.com') }
 
       it 'contains resend confirmation e-mail text' do
         expect(user_email_help_text).to include _('Resend confirmation e-mail')
@@ -634,8 +724,6 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   end
 
   describe '#moderation_status', feature_category: :instance_resiliency do
-    let(:user) { create(:user) }
-
     subject { moderation_status(user) }
 
     context 'when user is nil' do
@@ -645,17 +733,13 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'when a user is banned' do
-      before do
-        user.ban!
-      end
+      let(:user) { build_stubbed(:user, state: 'banned') }
 
       it { is_expected.to eq('Banned') }
     end
 
     context 'when a user is blocked' do
-      before do
-        user.block!
-      end
+      let(:user) { build_stubbed(:user, state: 'blocked') }
 
       it { is_expected.to eq('Blocked') }
     end
@@ -666,15 +750,14 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   end
 
   describe '#user_profile_actions_data' do
-    let(:user_1) { create(:user) }
-    let(:user_2) { create(:user) }
+    let_it_be(:user_1) { create(:user) }
+
     let(:user_path) { '/users/root' }
 
     subject { helper.user_profile_actions_data(user_1) }
 
     before do
-      allow(helper).to receive(:user_path).and_return(user_path)
-      allow(helper).to receive(:user_url).and_return(user_path)
+      allow(helper).to receive_messages(user_path: user_path, user_url: user_path)
     end
 
     shared_examples 'user cannot report' do
@@ -696,7 +779,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
     context 'user is not current user' do
       before do
-        allow(helper).to receive(:current_user).and_return(user_2)
+        allow(helper).to receive(:current_user).and_return(user)
       end
 
       it 'returns data for reporting related data' do
@@ -720,9 +803,14 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   end
 
   describe '#user_activity_calendar_data' do
-    let_it_be(:user) { create(:user, timezone: 'America/New_York') }
+    let(:user) { build_stubbed(:user, timezone: 'America/New_York') }
 
     subject(:data) { helper.user_activity_calendar_data(user) }
+
+    before do
+      # Helper specs run without a Warden env, so stub the visitor by default.
+      allow(helper).to receive(:current_user).and_return(nil)
+    end
 
     it 'returns the username' do
       expect(data[:username]).to eq(user.username)
@@ -735,6 +823,40 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     it 'falls back to the instance timezone when the user has none' do
       expect(helper.user_activity_calendar_data(build(:user, timezone: nil))[:utc_offset])
         .to eq(Time.zone.now.utc_offset)
+    end
+
+    it 'returns the activity feed paths' do
+      expect(data).to include(
+        calendar_activities_path: user_calendar_activities_path(user, :json),
+        activity_path: user_activity_path(user, :json),
+        view_all_activity_path: user_activity_path(user),
+        new_group_path: new_group_path,
+        explore_groups_path: explore_groups_path
+      )
+    end
+
+    it 'returns the empty state svg path' do
+      expect(data[:empty_state_svg_path]).to match(/empty-activity-md.*\.svg/)
+    end
+
+    context 'when viewing your own profile' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'flags the profile as the current user' do
+        expect(data[:is_current_user_profile]).to eq('true')
+      end
+    end
+
+    context "when viewing another user's profile" do
+      before do
+        allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
+      end
+
+      it 'does not flag the profile as the current user' do
+        expect(data[:is_current_user_profile]).to eq('false')
+      end
     end
   end
 end

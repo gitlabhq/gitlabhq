@@ -141,6 +141,22 @@ RSpec.describe Projects::Alerting::NotifyService, feature_category: :groups_and_
 
         it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
       end
+
+      context 'with nil token' do
+        let(:token) { nil }
+
+        it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
+      end
+
+      context 'when integration token is nil' do
+        let(:token) { 'some-token' }
+
+        before do
+          allow(integration).to receive(:token).and_return(nil)
+        end
+
+        it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
+      end
     end
 
     context 'without HTTP integration' do

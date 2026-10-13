@@ -3,7 +3,6 @@ import $ from 'jquery';
 import htmlMergeRequestsWithTaskList from 'test_fixtures/merge_requests/merge_request_with_task_list.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
-import { stubPerformanceWebAPI } from 'helpers/performance';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import axios from '~/lib/utils/axios_utils';
@@ -26,7 +25,10 @@ jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),
 }));
 
-jest.mock('ee_else_ce/merge_requests/ai_overview');
+jest.mock('ee_else_ce/merge_requests/ai_overview', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -52,8 +54,6 @@ describe('MergeRequestTabs', () => {
   };
 
   beforeEach(() => {
-    stubPerformanceWebAPI();
-
     initMrPage();
 
     testContext.class = new MergeRequestTabs({ stubLocation });

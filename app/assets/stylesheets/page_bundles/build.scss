@@ -5,6 +5,14 @@
     @include build-log();
   }
 
+  .job-log-top-bar-sentinel {
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+  }
+
   .top-bar {
     @include job-log-top-bar;
 
@@ -30,55 +38,32 @@
   }
 }
 
-.right-sidebar.build-sidebar {
-  padding: 0;
-  top: $calc-application-header-height;
-
-  @include gl-container-width-up(lg, panel) {
-    border-left-width: 0;
+// stylelint-disable-next-line gitlab/no-gl-class
+.gl-detail-layout-container-has-sidebar {
+  // stylelint-disable-next-line gitlab/no-gl-class
+ .gl-detail-layout-content {
+  @include gl-container-width-down(lg, panel) {
+    grid-column: 1 / -1;
   }
+ }
 
-  &.right-sidebar-collapsed {
-    display: none;
-  }
-
-  .sidebar-container {
-    max-height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .trigger-build-value {
-    padding: 2px 4px;
-    color: var(--black, $black);
-  }
-
-  .blocks-container {
-    width: 289px;
-  }
-
-  .builds-container {
-    overflow: auto;
-
-    .icon-arrow-right {
-      @apply gl-top-3;
-      @apply gl-left-3;
-    }
-
-    .build-job {
-      &.retried {
-        @apply gl-bg-subtle;
-      }
-
-      &:hover {
-        @apply gl-bg-strong;
-      }
-
-      a:focus-visible {
-        @apply gl-relative;
-        @apply gl-z-2;
-      }
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-detail-layout-sidebar {
+    @include gl-container-width-down(lg, panel) {
+      @apply gl-z-9999;
+      @apply gl-fixed;
+      @apply gl-top-1;
+      @apply gl-right-0;
+      @apply gl-px-5;
+      @apply gl-py-3;
+      @apply gl-bg-default;
+      @apply gl-rounded-l-lg;
+      @apply gl-shadow-md;
+      @apply gl-overflow-y-auto;
+      width: $right-sidebar-width;
+      // stylelint-disable-next-line value-no-vendor-prefix
+      height: -webkit-fill-available;
+      height: stretch;
     }
   }
 }
@@ -87,36 +72,42 @@
   .container-fluid.container-limited {
     max-width: 100%;
   }
+
+  .icon-arrow-right {
+    @apply gl-top-3;
+    @apply gl-left-3;
+  }
+
+  .build-job {
+    &.retried {
+      @apply gl-bg-subtle;
+    }
+
+    &:hover {
+      @apply gl-bg-strong;
+    }
+
+    a:focus-visible {
+      @apply gl-relative;
+      @apply gl-z-2;
+    }
+  }
 }
 
 .build-sidebar-item {
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-}
+  @apply gl-mb-4;
 
-.build-detail-row {
-  margin-bottom: 5px;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-}
-
-.with-job-sidebar-expanded {
-  padding-right: 0;
-}
-
-@include gl-container-width-up(lg, panel) {
-  .with-job-sidebar-expanded {
-    padding-right: $right-sidebar-width;
+  &:not(:first-child) {
+    @apply gl-pt-4;
+    @apply gl-border-t;
+    @apply gl-border-subtle;
   }
 }
 
 .job-log {
   font-family: $monospace-font;
   padding: $gl-padding-8 $input-horizontal-padding;
-  margin: 0 0 $gl-padding-8;
+  margin: 0;
   font-size: $code-font-size-fixed;
   word-break: break-all;
   word-wrap: break-word;
@@ -244,17 +235,6 @@
   .arrow {
     left: $highlight-extra-x-padding;
   }
-}
-
-.rca-bar-component {
-  bottom: $calc-application-footer-height; // Note: this should be removed once paneled architecture is in GA
-}
-
-.rca-bar-component.rca-bar-component-fullscreen {
-  left: 0;
-  width: 100%;
-  padding-left: .5rem;
-  transition: left 0.3s ease, width 0.3s ease, padding 0.3s ease;
 }
 
 .loader-animation {

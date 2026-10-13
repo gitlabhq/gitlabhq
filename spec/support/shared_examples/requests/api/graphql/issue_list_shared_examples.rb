@@ -465,6 +465,10 @@ RSpec.shared_examples 'graphql issue list request spec' do
   end
 
   describe 'N+1 query checks' do
+    before do
+      User.where(id: current_user.id).update_all(last_activity_on: Time.zone.today)
+    end
+
     let(:extra_iid_for_second_query) { issue_b.iid.to_s }
     let(:search_params) { { iids: [issue_a.iid.to_s] } }
     let(:issue_filter_params) { search_params }
@@ -496,8 +500,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       let(:requested_fields) { 'mergeRequestsCount' }
 
       before do
-        create_list(:merge_requests_closing_issues, 2, issue: issue_a)
-        create_list(:merge_requests_closing_issues, 3, issue: issue_b)
+        create_list(:merge_request_issue, 2, issue: issue_a)
+        create_list(:merge_request_issue, 3, issue: issue_b)
         # Warm up sign-in side effects so they don't pollute control vs. test runs
         post_graphql(query, current_user: current_user)
       end
@@ -739,7 +743,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
         alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
         expected_titles = issues.map { |issue| issue.alert_management_alerts.first&.title }
 
-        expect(alert_titles).to contain_exactly(*expected_titles)
+        expect(alert_titles).to match_array(expected_titles)
       end
 
       it 'returns the alerts data' do
@@ -750,7 +754,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
           issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
         end
 
-        expect(alert_titles).to contain_exactly(*expected_titles)
+        expect(alert_titles).to match_array(expected_titles)
       end
     end
 
@@ -809,6 +813,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     before do
+      User.where(id: current_user.id).update_all(last_activity_on: Time.zone.today)
+
       issues.each do |issue|
         # create a label for each issue we have to properly test N+1
         label = create(:label, project: issue.project)
@@ -860,6 +866,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     before do
+      User.where(id: current_user.id).update_all(last_activity_on: Time.zone.today)
+
       issues.each do |issue|
         # create an assignee for each issue we have to properly test N+1
         assignee = create(:user)
@@ -925,9 +933,9 @@ RSpec.shared_examples 'graphql issue list request spec' do
   it 'includes discussion locked' do
     post_query
 
-    expect(issues_data).to contain_exactly(
-      *locked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => true) },
-      *unlocked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => false) }
+    expect(issues_data).to match_array(
+      locked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => true) } +
+        unlocked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => false) }
     )
   end
 

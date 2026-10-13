@@ -1064,6 +1064,32 @@ RSpec.shared_examples 'wiki_page' do |container_type|
     end
   end
 
+  describe '#as_version_of' do
+    let(:wiki) { container.wiki }
+    let(:old_version) { wiki.find_page('old-title').version.id }
+    let(:current_page) { wiki.find_page('new-title') }
+
+    subject(:page) { wiki.find_page('old-title', old_version) }
+
+    before do
+      create_wiki_page(container, title: 'old-title', content: 'old content')
+      old_version
+      wiki.find_page('old-title').update(title: 'new-title', content: 'new content')
+    end
+
+    it 'presents the old version as a version of the current page', :aggregate_failures do
+      expect(page.as_version_of(current_page)).to be(page)
+      expect(page).to have_attributes(
+        slug: current_page.slug,
+        title: current_page.title,
+        last_commit_sha: current_page.last_commit_sha,
+        path: 'old-title.md',
+        content: 'old content'
+      )
+      expect(page).to be_historical
+    end
+  end
+
   describe '#persisted?' do
     it 'returns true for a persisted page' do
       expect(create_wiki_page(container)).to be_persisted

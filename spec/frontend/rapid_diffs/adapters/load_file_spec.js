@@ -9,6 +9,7 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { pinia } from '~/pinia/instance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
 jest.mock('~/alert');
 
@@ -85,6 +86,7 @@ describe('loadFileAdapter', () => {
 
   beforeEach(() => {
     mockAdapter = new MockAxiosAdapter(axios);
+    useDiffsView(pinia).viewType = INLINE_DIFF_VIEW_TYPE;
   });
 
   it.each([true, false])('expands file with hide whitespace %s', async (whitespace) => {
@@ -101,6 +103,27 @@ describe('loadFileAdapter', () => {
     mount();
     delegatedClick(getChangesButton());
     expect(getChangesButton().disabled).toBe(true);
+    await waitForPromises();
+    expect(getExpandedContent()).not.toBeFalsy();
+  });
+
+  it.each`
+    viewType                   | viewParam
+    ${INLINE_DIFF_VIEW_TYPE}   | ${''}
+    ${PARALLEL_DIFF_VIEW_TYPE} | ${'&view=parallel'}
+  `('expands file in $viewType view', async ({ viewType, viewParam }) => {
+    useDiffsView(pinia).viewType = viewType;
+    mockAdapter
+      .onGet(`${getRequestUrl()}${viewParam}`)
+      .reply(
+        HTTP_STATUS_OK,
+        createComponentHtml(
+          'new-diff-file',
+          '<div id="expanded">Expanded Content<button></button></div>',
+        ),
+      );
+    mount();
+    delegatedClick(getChangesButton());
     await waitForPromises();
     expect(getExpandedContent()).not.toBeFalsy();
   });

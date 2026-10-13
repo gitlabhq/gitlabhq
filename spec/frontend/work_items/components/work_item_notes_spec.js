@@ -192,11 +192,16 @@ describe('WorkItemNotes component', () => {
   };
 
   beforeEach(() => {
+    delete document.body.dataset.shortcutsReady;
     createComponent();
   });
 
   afterEach(() => {
     resetHTMLFixture();
+  });
+
+  it('does not mark ShortcutsWorkItemNotes ready when the user cannot create a note', () => {
+    expect(document.body.dataset.shortcutsReady).toBeUndefined();
   });
 
   it('has the work item note activity header', () => {
@@ -540,6 +545,15 @@ describe('WorkItemNotes component', () => {
     ]);
   });
 
+  it('emits `duo-question-answered` when a discussion emits it', async () => {
+    createComponent({ defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler });
+    await waitForPromises();
+
+    findWorkItemDiscussionAtIndex(0).vm.$emit('duo-question-answered');
+
+    expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
+  });
+
   describe('Notes subscriptions', () => {
     beforeEach(async () => {
       createComponent({
@@ -682,6 +696,7 @@ describe('WorkItemNotes component', () => {
     };
 
     beforeEach(async () => {
+      delete document.body.dataset.shortcutsReady;
       window.gon.current_user_id = 1;
       createComponent({
         defaultWorkItemNotesQueryHandler: jest
@@ -696,6 +711,10 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
     });
 
+    it('marks ShortcutsWorkItemNotes ready in the shortcuts-ready marker', () => {
+      expect(document.body.dataset.shortcutsReady).toBe('ShortcutsWorkItemNotes');
+    });
+
     it('emits `quote-reply` event on $root when reply quotes an existing discussion', async () => {
       jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
       jest.spyOn(wrapper.vm, 'getDiscussionIdFromSelection').mockReturnValue('discussion-1');
@@ -706,6 +725,18 @@ describe('WorkItemNotes component', () => {
         text: 'foo',
         event: expect.any(Object),
       });
+    });
+
+    it('quotes selections inside the split-view panel, which is outside #content-body', async () => {
+      createComponent({ canCreateNote: true, isDrawer: true });
+      const panel = document.querySelector('.work-item-overview');
+      panel.classList.add('work-item-detail-panel');
+      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockResolvedValueOnce('foo');
+      jest.spyOn(wrapper.vm, 'getDiscussionIdFromSelection').mockReturnValue('discussion-1');
+
+      await triggerReplyShortcut();
+
+      expect(CopyAsGFM.selectionToGfm).toHaveBeenCalledWith(panel);
     });
 
     it.each`

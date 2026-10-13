@@ -30,21 +30,26 @@ module API
     end
 
     params do
-      requires :bitbucket_email, type: String, desc: 'BitBucket email'
-      requires :bitbucket_api_token, type: String, desc: 'BitBucket API token'
-      requires :repo_path, type: String, desc: 'Repository path'
-      requires :target_namespace, type: String, desc: 'Target namespace'
-      optional :new_name, type: String, desc: 'New repository name'
+      requires :bitbucket_email, type: String, desc: 'Bitbucket Cloud email.'
+      requires :bitbucket_api_token, type: String, desc: 'Bitbucket Cloud API token.'
+      requires :repo_path, type: String, desc: 'Path to the repository.'
+      requires :target_namespace, type: String, desc: 'Namespace to import the repository into. Supports subgroups, ' \
+                                                  'for example `/namespace/subgroup`.'
+      optional :new_name, type: String, desc: 'Name of the new project. Also used as the new path, so it must not ' \
+                                          'start or end with a special character and must not contain ' \
+                                          'consecutive special characters.'
     end
 
     route_setting :authorization, permissions: :create_bitbucket_import,
       boundary: -> { bitbucket_import_boundary },
       boundaries: [{ boundary_type: :group }, { boundary_type: :user }]
     post 'import/bitbucket' do
-      result = Import::BitbucketService.new(
+      import_service = Import::BitbucketService.new(
         current_user,
         params.merge(organization_id: Current.organization.id)
-      ).execute
+      )
+      import_service.request_channel = ::Gitlab::Import::RequestChannel.detect(request)
+      result = import_service.execute
 
       if result[:status] == :success
         present ProjectSerializer.new.represent(result[:project], serializer: :import)

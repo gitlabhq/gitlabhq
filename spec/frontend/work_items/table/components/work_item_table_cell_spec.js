@@ -137,6 +137,12 @@ describe('WorkItemTableCell', () => {
         expect(findAssignees().props('assignees')).toEqual([mockAssignees[0]]);
         expect(findTruncatedText().props('text')).toBe(mockAssignees[0].name);
       });
+
+      it('links the name to the assignee, as the avatar beside it is linked', () => {
+        expect(wrapper.findByTestId('assignee-name-link').attributes('href')).toBe(
+          mockAssignees[0].webPath,
+        );
+      });
     });
   });
 

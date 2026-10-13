@@ -92,6 +92,10 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       end
 
       context 'when user contribution mapping is disabled' do
+        before_all do
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        end
+
         before do
           allow(client).to receive(:user).and_return(gitea_user)
           project.build_or_assign_import_data(data: {}).save!

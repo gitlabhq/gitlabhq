@@ -367,7 +367,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   describe 'GpgKeys' do
     describe '#new_gpg_key' do
       let(:key_options) { {} }
-      let(:key) { create(:gpg_key, key_options) }
+      let(:key) { build_stubbed(:gpg_key, key_options) }
 
       subject { notification.new_gpg_key(key) }
 
@@ -1119,8 +1119,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           allow(Notify).to receive(:service_desk_new_note_email)
                              .with(Integer, Integer, IssueEmailParticipant).and_return(mailer)
 
-          allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
-          allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+          allow(::Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
         end
 
         let_it_be_with_reload(:project) { create(:project) }
@@ -1675,7 +1674,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe '#new_mentions_in_note' do
-        let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: "Hello @#{u_mentioned.to_reference}") }
+        let(:note_attributes) { { author: author, noteable: issue, project_id: issue.project_id, note: "Hello @#{u_mentioned.to_reference}" } }
+        let(:note) { create(:note_on_issue, note_attributes) }
 
         it 'sends email to newly mentioned users' do
           expect do
@@ -1705,6 +1705,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         context 'when the author is blocked' do
           let(:blocked_author) { blocked_user }
+          let(:note) { build_stubbed(:note_on_issue, note_attributes) }
 
           it 'does not send any notification' do
             expect do
@@ -1715,6 +1716,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         context 'when the author is a ghost' do
           let(:ghost_author) { ghost_user }
+          let(:note) { build_stubbed(:note_on_issue, note_attributes) }
 
           it 'does not send any notification' do
             expect do
@@ -1724,6 +1726,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
 
         context 'when the note has no noteable_type' do
+          let(:note) { build_stubbed(:note_on_issue, note_attributes) }
+
           it 'returns true without sending notifications' do
             allow(note).to receive(:noteable_type).and_return(nil)
 
@@ -2638,7 +2642,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe '#removed_milestone on Issue' do
       let(:mailer_method) { :removed_milestone_issue_email }
 
-      context do
+      context 'when the issue is removed from a milestone' do
         let(:milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
@@ -2695,7 +2699,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe '#changed_milestone on Issue' do
       let(:mailer_method) { :changed_milestone_issue_email }
 
-      context do
+      context 'when the issue is moved to a new milestone' do
         let(:new_milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
@@ -5080,6 +5084,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       expect(Notify).to receive(:new_review_email).with(subscribed_participant.id, review.id).and_call_original
 
       subject.new_review(review)
+    end
+
+    it 'passes the summary note id to the email' do
+      allow(Notify).to receive(:new_review_email).and_call_original
+      expect(Notify).to receive(:new_review_email).with(merge_request.author.id, review.id, note.id).and_call_original
+
+      subject.new_review(review, note.id)
     end
 
     it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do

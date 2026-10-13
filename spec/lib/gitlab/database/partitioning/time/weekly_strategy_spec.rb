@@ -355,6 +355,10 @@ RSpec.describe Gitlab::Database::Partitioning::Time::WeeklyStrategy, feature_cat
       })
     end
 
+    it_behaves_like 'a partitioning strategy with a default analyze_interval' do
+      let(:strategy_args) { { retain_for: retain_for } }
+    end
+
     context 'with shared model' do
       include_context 'with shared model setup'
 

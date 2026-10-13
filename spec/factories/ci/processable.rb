@@ -8,7 +8,7 @@ FactoryBot.define do
     stage_idx { ci_stage.try(:position) || 0 }
     ref { 'master' }
     tag { false }
-    pipeline factory: :ci_pipeline
+    pipeline { association(:ci_pipeline, **@overrides.slice(:project).compact) }
     project { pipeline.project }
     scheduling_type { 'stage' }
     partition_id { pipeline.partition_id }
@@ -102,10 +102,7 @@ FactoryBot.define do
 
     trait :resource_group do
       waiting_for_resource_at { 5.minutes.ago }
-
-      after(:build) do |processable, evaluator|
-        processable.resource_group = create(:ci_resource_group, project: processable.project)
-      end
+      resource_group { association(:ci_resource_group, project: project) }
     end
 
     trait :interruptible do

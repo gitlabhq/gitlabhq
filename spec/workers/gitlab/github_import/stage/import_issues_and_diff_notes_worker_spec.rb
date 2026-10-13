@@ -20,7 +20,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker, feat
     it 'imports the issues and diff notes' do
       client = double(:client)
 
-      worker.importers(project).each do |klass|
+      worker.importers.each do |klass|
         importer = double(:importer)
         waiter = Gitlab::JobWaiter.new(2, '123')
 
@@ -43,31 +43,11 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker, feat
   end
 
   describe '#importers' do
-    context 'when optional stage single_endpoint_notes_import is enabled' do
-      it 'includes single endpoint diff notes importer' do
-        expect(worker.importers(project)).to contain_exactly(
-          Gitlab::GithubImport::Importer::IssuesImporter,
-          Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter
-        )
-      end
-    end
-
-    # single_endpoint_notes_import is hardcoded to enabled in Settings#write for new imports,
-    # so this context stubs Settings#enabled? directly to keep the disabled branch (kept as a
-    # rollback safety net) covered even though it's currently unreachable in production.
-    context 'when optional stage single_endpoint_notes_import is disabled' do
-      before do
-        allow_next_instance_of(Gitlab::GithubImport::Settings) do |settings|
-          allow(settings).to receive(:enabled?).with(:single_endpoint_notes_import).and_return(false)
-        end
-      end
-
-      it 'includes default diff notes importer' do
-        expect(worker.importers(project)).to contain_exactly(
-          Gitlab::GithubImport::Importer::IssuesImporter,
-          Gitlab::GithubImport::Importer::DiffNotesImporter
-        )
-      end
+    it 'includes single endpoint diff notes importer' do
+      expect(worker.importers).to contain_exactly(
+        Gitlab::GithubImport::Importer::IssuesImporter,
+        Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter
+      )
     end
   end
 end

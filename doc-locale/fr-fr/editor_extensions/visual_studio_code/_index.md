@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Editor Extensions
+stage: AI Clients
+group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Utilisez l'extension GitLab pour VS Code pour gérer les tâches GitLab courantes directement dans VS Code."
 title: Extension GitLab pour VS Code
@@ -38,11 +38,11 @@ Si ces fonctionnalités n'apparaissent pas, consultez la section [dépannage](tr
 
 ## Personnaliser les raccourcis clavier {#customize-keyboard-shortcuts}
 
-Vous pouvez attribuer différents raccourcis clavier pour **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion** ou **Accept Next Line Of Inline Suggestion** :
+Vous pouvez attribuer différents raccourcis clavier pour **Accepter la suggestion intégrée**, **Accepter le mot suivant de la suggestion intégrée** ou **Accepter la ligne suivante d'une suggestion intégrée** :
 
 1. Dans VS Code, exécutez la commande `Preferences: Open Keyboard Shortcuts`.
-1. Trouvez le raccourci que vous souhaitez modifier et sélectionnez **Change keybinding** ({{< icon name="pencil" >}}).
-1. Attribuez vos raccourcis préférés à **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion** ou **Accept Next Line Of Inline Suggestion**.
+1. Trouvez le raccourci que vous souhaitez modifier et sélectionnez **Changer de combinaison de touches** ({{< icon name="pencil" >}}).
+1. Attribuez vos raccourcis préférés à **Accepter la suggestion intégrée**, **Accepter le mot suivant de la suggestion intégrée** ou **Accepter la ligne suivante d'une suggestion intégrée**.
 1. Appuyez sur <kbd>Enter</kbd> pour enregistrer vos modifications.
 
 ## Mettre à jour l'extension {#update-the-extension}
@@ -51,8 +51,8 @@ Pour mettre à jour votre extension vers la dernière version :
 
 1. Dans Visual Studio Code, accédez à **Paramètres** > **Extensions**.
 1. Recherchez **GitLab** publié par **GitLab (`gitlab.com`)**.
-1. Depuis **Extension : GitLab**, sélectionnez **Update to {later version}**.
-1. Facultatif. Pour activer les mises à jour automatiques à l'avenir, sélectionnez **Auto-Update**.
+1. Depuis **Extension : GitLab**, sélectionnez **Mise à jour vers {later version}**.
+1. Facultatif. Pour activer les mises à jour automatiques à l'avenir, sélectionnez **Mise à jour automatique**.
 
 ## Installer la version pré-release {#install-the-pre-release-version}
 
@@ -61,8 +61,8 @@ GitLab publie des versions pré-release de l'extension sur le VS Code Extension 
 Pour installer la version pré-release :
 
 1. Ouvrez VS Code.
-1. Sous **Extensions** > **GitLab**, sélectionnez **Switch to Pre-release Version**.
-1. Sélectionnez **Restart Extensions**.
+1. Sous **Extensions** > **GitLab**, sélectionnez **Passer à la pré-release**.
+1. Sélectionnez **Redémarrer les extensions**.
 
 ## Vérifier le statut de GitLab Duo {#check-gitlab-duo-status}
 

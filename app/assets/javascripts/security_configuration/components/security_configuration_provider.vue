@@ -6,10 +6,10 @@ import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
+import SecurityConfigurationApp from 'ee_else_ce/security_configuration/components/app.vue';
 import securityConfigurationQuery from '../graphql/security_configuration.query.graphql';
 import projectMergeRequestsEnabledQuery from '../graphql/project_merge_requests_enabled.query.graphql';
 import { augmentFeatures } from '../utils';
-import SecurityConfigurationApp from './app.vue';
 
 export default {
   name: 'SecurityConfigurationProvider',

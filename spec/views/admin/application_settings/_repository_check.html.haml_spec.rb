@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/_repository_check.html.haml', feature_category: :source_code_management do
-  let_it_be(:user) { create(:admin) }
   let_it_be(:application_setting) { build(:application_setting) }
+
+  let(:user) { build_stubbed(:admin) }
 
   before do
     assign(:application_setting, application_setting)

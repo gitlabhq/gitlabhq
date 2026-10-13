@@ -54,8 +54,8 @@ export default {
       'AccessTokens|Required only if you add group and project resources.',
     ),
     personalProjects: s__('AccessTokens|Only my personal projects'),
-    allMemberships: s__("AccessTokens|All groups and projects that I'm a member of"),
-    selectedMemberships: s__("AccessTokens|Only specific groups or projects that I'm a member of"),
+    allMemberships: s__('AccessTokens|All groups and projects I have access to'),
+    selectedMemberships: s__('AccessTokens|Only specific groups or projects I have access to'),
     selectedMembershipsHelpText: s__(
       'AccessTokens|Adding a group includes its subgroups and projects',
     ),

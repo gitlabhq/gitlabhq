@@ -15,5 +15,6 @@ const Template = (args) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  actionLabel: 'Actions',
+  actionLabel: 'More actions for My dashboard',
+  dashboardUrl: '/dashboards/my-dashboard',
 };

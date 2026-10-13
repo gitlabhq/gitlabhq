@@ -161,7 +161,7 @@ GitLab has validated and tested the following providers. The AI Gateway supports
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 - [Amazon Bedrock Mantle](#configure-amazon-bedrock-mantle)
 - [Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform)
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard&pivots=azure-openai)
+- [Azure OpenAI](#configure-azure-openai)
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [OpenAI](https://developers.openai.com/api/docs/models)
 
@@ -332,6 +332,118 @@ For Kubernetes clusters other than Amazon EKS, you can use Kubernetes secrets to
        value: us-east-1
    ```
 
+#### Assume an IAM role with AWS Bedrock
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259000) in GitLab 19.5.
+
+{{< /history >}}
+
+By default, the AI Gateway calls Bedrock with the credentials it already has
+(for example, the IRSA role or environment variables).
+To call Bedrock with a different role (for example, a role in another AWS account),
+provide an IAM role for each self-hosted model.
+The AI Gateway uses its own credentials to assume that role through the
+AWS Security Token Service (STS) [`AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) action.
+The AI Gateway then uses the temporary credentials to call Bedrock.
+
+Prerequisites:
+
+- Administrator access.
+- [The AI Gateway authenticated with AWS](#configure-authentication-with-aws-bedrock).
+  The AWS identity the AI Gateway runs as can call `sts:AssumeRole` on the role.
+
+To assume an IAM role when you call Bedrock:
+
+1. In the target AWS account, create an IAM role with the following
+   trust relationship policy. Replace:
+
+   - `AI_GATEWAY_PRINCIPAL_ARN` with the ARN of the AWS identity the AI Gateway runs as
+     (for example, the `arn:aws:iam::AI_GATEWAY_ACCOUNT_ID:role/eks-ai-gateway-bedrock` IRSA role).
+   - `GITLAB_INSTANCE_ID` with the ID of your GitLab instance as it appears
+     in the **IAM role to assume** text box.
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "AWS": "AI_GATEWAY_PRINCIPAL_ARN"
+         },
+         "Action": "sts:AssumeRole",
+         "Condition": {
+           "StringEquals": {
+             "sts:ExternalId": "GITLAB_INSTANCE_ID"
+           }
+         }
+       }
+     ]
+   }
+   ```
+
+   The AI Gateway sends the instance ID as the STS external ID when it assumes the role.
+   The condition prevents another AI Gateway customer who knows the role ARN from using
+   the AI Gateway's identity to assume your role (the confused deputy problem).
+   The instance ID is not a secret.
+
+1. To invoke Bedrock models, attach a permission policy to the role.
+   You can scope `Resource` to specific models:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "bedrock:InvokeModel",
+           "bedrock:InvokeModelWithResponseStream"
+         ],
+         "Resource": "arn:aws:bedrock:*::foundation-model/*"
+       }
+     ]
+   }
+   ```
+
+1. If the AI Gateway runs in a different account than the role, also allow the AI Gateway
+   identity to call `sts:AssumeRole` on the role with an identity-based policy:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": "sts:AssumeRole",
+         "Resource": "arn:aws:iam::ROLE_ACCOUNT_ID:role/YOUR_ROLE_NAME"
+       }
+     ]
+   }
+   ```
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Configure models for GitLab Duo**.
+1. For the **Amazon Bedrock** platform, add or edit a self-hosted model.
+1. Optional. In the **IAM role to assume** text box, enter the ARN of the role
+   (for example, `arn:aws:iam::123456789012:role/YOUR_ROLE_NAME`).
+   When you leave it empty, the AI Gateway uses its own credentials.
+1. Optional. Select **Test connection**.
+1. Select **Add self-hosted model**.
+
+An IAM role and an API key (bearer token) are mutually exclusive.
+GitLab does not accept an IAM role for a model that has an API key,
+and the AI Gateway rejects a request that contains both.
+
+> [!note]
+> To send the STS external ID, the AI Gateway version must include
+> [support for `AssumeRole` for Amazon Bedrock models](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7210).
+> With an earlier AI Gateway version, the AI Gateway does not send the STS external ID,
+> and role assumption fails if the trust policy requires `sts:ExternalId`.
+
 #### AWS Bedrock API keys
 
 To use AWS Bedrock API keys as an alternative to IAM credentials:
@@ -434,6 +546,7 @@ For more information, see [Amazon Bedrock Guardrails](https://docs.aws.amazon.co
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22787) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 19.3.
+- GPT-5 and later models [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6956) as supported models on September 16, 2026.
 
 {{< /history >}}
 
@@ -441,19 +554,73 @@ For more information, see [Amazon Bedrock Guardrails](https://docs.aws.amazon.co
 OpenAI API-compatible inference service from AWS.
 Configure Amazon Bedrock Mantle with the API platform like other OpenAI-compatible endpoints.
 
-Only GPT OSS 120B is validated and supported on Amazon Bedrock Mantle.
+The following models are validated and supported on Amazon Bedrock Mantle:
+
+| Model | Model identifier |
+|-------|------------------|
+| GPT-5.4 | `bedrock_mantle/openai.gpt-5.4` |
+| GPT-5.5 | `bedrock_mantle/openai.gpt-5.5` |
+| GPT-5.6 Luna | `bedrock_mantle/openai.gpt-5.6-luna` |
+| GPT-5.6 Sol | `bedrock_mantle/openai.gpt-5.6-sol` |
+| GPT-5.6 Terra | `bedrock_mantle/openai.gpt-5.6-terra` |
+| GPT-6 Astra | `bedrock_mantle/openai.gpt-6-astra` |
+| GPT-6 Luna | `bedrock_mantle/openai.gpt-6-luna` |
+| GPT-6 Sol | `bedrock_mantle/openai.gpt-6-sol` |
+| GPT-6.1 Sol | `bedrock_mantle/openai.gpt-6.1-sol` |
+| GPT OSS 120B | `bedrock_mantle/openai.gpt-oss-120b` |
+
+The AI Gateway sends requests for GPT-5 and later models to the Responses API of Amazon Bedrock Mantle.
+Use the same `bedrock_mantle/` prefix for all models.
+
+Anthropic models are not supported on Amazon Bedrock Mantle.
+Amazon Bedrock Mantle serves these models through the Anthropic Messages API only,
+and the AI Gateway does not use that API for this platform.
+To use Anthropic models on AWS, [add an Amazon Bedrock model](configure_duo_features.md#add-an-amazon-bedrock-model) instead.
 
 To configure an Amazon Bedrock Mantle model,
 [add a self-hosted model](configure_duo_features.md#add-a-self-hosted-model) with the following values:
 
 - For **Model family**, select the family that matches the model.
-  For GPT OSS 120B, select **GPT**.
+  For OpenAI models, select **GPT**.
 - For **Endpoint**, enter the regional endpoint in the form `https://bedrock-mantle.<region>.api.aws/v1`
   (for example, `https://bedrock-mantle.us-east-1.api.aws/v1`).
 - For **Model identifier**, use the `bedrock_mantle/` prefix
   (for example, `bedrock_mantle/openai.gpt-oss-120b`).
 - For **API key**, enter an Amazon Bedrock Mantle API key.
   For more information, see [AWS Bedrock API keys](#aws-bedrock-api-keys).
+
+### Configure Azure OpenAI
+
+[Azure OpenAI](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard&pivots=azure-openai)
+serves models through the Chat Completions API and the
+[Responses API](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses).
+Most models support the Chat Completions API.
+Some newer models are available only through the Responses API.
+
+To configure an Azure OpenAI model,
+[add a self-hosted model](configure_duo_features.md#add-a-self-hosted-model) with the following values:
+
+- For **Model family**, select the family that matches the model.
+  For GPT-5, select **GPT**.
+- For **Endpoint**, enter the endpoint of your Azure OpenAI resource in the
+  `https://<resource-name>.openai.azure.com` format. Do not add a path or an API version.
+- For **Model identifier**, use the `azure/` prefix followed by the name of your deployment
+  (for example, `azure/gpt-4o`). This identifier sends requests to the Chat Completions API.
+  To send requests to the Responses API instead,
+  see [use the Responses API](#use-the-responses-api).
+- For **API key**, enter an API key for your Azure OpenAI resource.
+
+#### Use the Responses API
+
+For a deployment that is available only through the Responses API,
+use the `azure/responses/` prefix.
+For **Model identifier**, enter the prefix followed by the name of your deployment
+(for example, `azure/responses/gpt-5`).
+
+The AI Gateway sends requests to the `/openai/responses` path of your resource.
+The AI Gateway converts each request to the Responses API format and converts the response back.
+The conversion supports streamed responses and tool calls.
+You do not need a proxy to translate between the two APIs.
 
 ### Configure authentication with Gemini Enterprise Agent Platform
 

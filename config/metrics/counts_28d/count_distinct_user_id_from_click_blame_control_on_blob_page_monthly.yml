@@ -6,7 +6,9 @@ product_categories:
 - source_code_management
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257407
+milestone_removed: '19.5'
 milestone: '16.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147673
 time_frame: 28d

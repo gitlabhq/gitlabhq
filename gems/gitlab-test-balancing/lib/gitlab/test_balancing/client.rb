@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'net/http'
+require 'openssl'
 require 'json'
 require 'uri'
 
@@ -20,6 +21,9 @@ module Gitlab
       # Callers use this to fall back to a static split.
       FeatureUnavailableError = Class.new(Error)
 
+      ServerError = Class.new(Error)
+      private_constant :ServerError
+
       Result = Struct.new(:mode, :test_splits, keyword_init: true)
 
       OPEN_TIMEOUT = 10
@@ -27,8 +31,8 @@ module Gitlab
       MAX_ATTEMPTS = 3
       RETRY_BACKOFF = 2 # seconds, multiplied by the attempt number
 
-      # Transient network errors worth retrying. Excludes HTTP error responses
-      # (e.g. 404/422), which are not retried.
+      # Transient errors worth retrying: network failures and 5xx responses.
+      # Other HTTP error responses (e.g. 404/422) are not retried.
       RETRIABLE_ERRORS = [
         Net::OpenTimeout,
         Net::ReadTimeout,
@@ -37,7 +41,9 @@ module Gitlab
         Errno::EHOSTUNREACH,
         Errno::ENETUNREACH,
         SocketError,
-        IOError
+        IOError,
+        OpenSSL::SSL::SSLError,
+        ServerError
       ].freeze
 
       def initialize(api_url: ENV['CI_API_V4_URL'], job_token: ENV['CI_JOB_TOKEN'], logger: nil)
@@ -77,7 +83,9 @@ module Gitlab
             uri.hostname, uri.port,
             use_ssl: uri.scheme == 'https', open_timeout: OPEN_TIMEOUT, read_timeout: READ_TIMEOUT
           ) do |http|
-            http.request(request)
+            http.request(request).tap do |res|
+              raise ServerError, "#{res.code} #{res.body}" if res.is_a?(Net::HTTPServerError)
+            end
           end
         end
 
@@ -91,9 +99,9 @@ module Gitlab
         JSON.parse(response.body)
       end
 
-      # Retry the HTTP request on transient network errors with linear backoff.
-      # Only network-level failures are retried; HTTP error responses are handled
-      # by the caller and are not retried here.
+      # Retry the HTTP request on transient errors with linear backoff.
+      # Network failures and 5xx responses are retried; other HTTP error
+      # responses are handled by the caller and are not retried here.
       def with_retries(action)
         attempt = 0
 

@@ -3,11 +3,14 @@ import { GlPopover } from '@gitlab/ui';
 import { GlChart } from '@gitlab/ui/src/charts';
 import { colorFromBackground } from '@gitlab/ui/src/utils/utils';
 import { labelColorOptions } from '@gitlab/ui/src/utils/constants';
-import { heatmapHues } from '@gitlab/ui/src/utils/charts/theme';
 import { defaultHeight as DEFAULT_CHART_HEIGHT_PX } from '@gitlab/ui/src/utils/charts/config';
 import {
-  GL_COLOR_DATA_BLUE_100,
   GL_COLOR_DATA_BLUE_50,
+  GL_COLOR_DATA_BLUE_100,
+  GL_COLOR_DATA_BLUE_200,
+  GL_COLOR_DATA_BLUE_400,
+  GL_COLOR_DATA_BLUE_600,
+  GL_COLOR_DATA_BLUE_800,
   GL_COLOR_NEUTRAL_0,
   GL_COLOR_NEUTRAL_50,
   GL_COLOR_NEUTRAL_800,
@@ -38,11 +41,17 @@ const MAX_COLUMN_LABEL_WIDTH_PX = 160;
 // caller merges in through `options` cannot drive the tooltip.
 const CELL_QUERY = { seriesIndex: 0 };
 
-// heatmapHues starts at data blue 200, too dark to separate small counts, so
-// its blues are extended with the two lighter steps of the same scale. The
-// ramp reverses in dark mode and its neutral darkens, as the contribution
-// calendar's does, so a busier cell is always the more prominent one.
-const LIGHT_HUES = [GL_COLOR_DATA_BLUE_50, GL_COLOR_DATA_BLUE_100, ...heatmapHues.slice(1)];
+// The pale 50/100 steps stay in: without them small counts are too dark to tell apart.
+// Dark mode reverses the ramp and darkens the empty cell, as the contribution calendar does,
+// so a busier cell is the more prominent one in either color scheme.
+const LIGHT_HUES = [
+  GL_COLOR_DATA_BLUE_50,
+  GL_COLOR_DATA_BLUE_100,
+  GL_COLOR_DATA_BLUE_200,
+  GL_COLOR_DATA_BLUE_400,
+  GL_COLOR_DATA_BLUE_600,
+  GL_COLOR_DATA_BLUE_800,
+];
 
 const RAMPS = {
   light: { empty: GL_COLOR_NEUTRAL_50, gap: GL_COLOR_NEUTRAL_0, values: LIGHT_HUES },

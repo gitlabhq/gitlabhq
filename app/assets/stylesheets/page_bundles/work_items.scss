@@ -36,7 +36,7 @@ $work-item-overview-gap-width: 2rem;
   transition: none;
 }
 
-.work-plan-editor {
+.workplan-editor {
   margin-inline: calc(var(--container-padding-x) * -1);
 }
 
@@ -134,7 +134,7 @@ $work-item-overview-gap-width: 2rem;
     padding-inline: $gl-spacing-scale-3;
   }
 
-  .work-item-overview-right-sidebar {
+  .work-item-overview .work-item-overview-right-sidebar {
     margin-top: 0;
     grid-row-start: 1;
     grid-column-start: 2;
@@ -352,6 +352,26 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
+// An empty column has only one drop slot, so while a card is over it the whole
+// empty state becomes the drop layer and the insertion line is hidden.
+.board-card-list.is-drop-target > .board-column-empty-state {
+  border: 2px solid var(--gl-focus-ring-outer-color);
+  border-radius: var(--gl-border-radius-lg);
+  color: var(--gl-text-color-default);
+
+  > * {
+    display: none;
+  }
+
+  &::after {
+    content: attr(data-drop-text);
+  }
+}
+
+.board-card-list.is-drop-target > .board-card-drop-indicator::after {
+  display: none;
+}
+
 .design-scaler-wrapper {
   bottom: 0;
   left: 50%;
@@ -508,6 +528,12 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
         @apply gl-hidden
       }
     }
+
+    @include gl-container-width-up(sm, panel) {
+      .note-only-xs {
+        @apply gl-hidden
+      }
+    }
   }
 }
 
@@ -622,6 +648,7 @@ pre[data-lang-params='duo-question'] {
   }
 
   .multiple-choice-selector-item {
+    @apply gl-overflow-hidden;
     @apply gl-rounded-lg;
     @apply gl-border-1;
     @apply gl-border-solid;

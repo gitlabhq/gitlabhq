@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class Import::BitbucketProviderRepoEntity < Import::BaseProviderRepoEntity
-  expose :id, override: true do |repo|
-    repo.full_name
-  end
+  expose :id, override: true, &:full_name
 
   expose :sanitized_name, override: true do |repo|
     repo.name.gsub(/[^\s\w.-]/, '')

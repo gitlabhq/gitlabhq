@@ -25,6 +25,9 @@ module SupplyChain
     validates :active, uniqueness: { scope: :project_id }, if: :active
     validate :validate_matching_key, if: -> { certificate.present? && private_key.present? }
 
+    scope :for_project, ->(project) { where(project: project) }
+    scope :with_active, -> { where(active: true) }
+
     def certificate=(value)
       super
 

@@ -126,6 +126,58 @@ describe('Pipeline operations', () => {
     });
   });
 
+  describe('data passed to the stop modal', () => {
+    const restPipeline = {
+      id: 329,
+      project: { full_path: 'root/ci-project' },
+      flags: { cancelable: true },
+      ref: { name: 'main', path: '/root/ci-project/-/commits/main' },
+      commit: {
+        short_id: 'abc1234',
+        commit_path: '/root/ci-project/-/commit/abc1234',
+        title: 'Add a thing',
+      },
+      details: { status: { icon: 'status_running', text: 'Running' } },
+    };
+
+    const findModalPipeline = () => findPipelineStopModal().props('pipeline');
+
+    it('passes a GraphQL pipeline to the modal unchanged', () => {
+      createComponent(graphqlProps);
+
+      expect(findModalPipeline()).toBe(graphqlProps.pipeline);
+    });
+
+    describe('with a REST pipeline', () => {
+      beforeEach(() => {
+        createComponent({ pipeline: restPipeline });
+      });
+
+      it('maps ref.name and ref.path to ref and refUrl', () => {
+        expect(findModalPipeline().ref).toBe('main');
+        expect(findModalPipeline().refUrl).toBe('/root/ci-project/-/commits/main');
+      });
+
+      it('maps the commit to shortId and webPath', () => {
+        expect(findModalPipeline().commit).toMatchObject({
+          shortId: 'abc1234',
+          webPath: '/root/ci-project/-/commit/abc1234',
+        });
+      });
+
+      it('maps details.status to detailedStatus', () => {
+        expect(findModalPipeline().detailedStatus).toEqual(restPipeline.details.status);
+      });
+
+      it('emits the pipeline with its REST shape intact', async () => {
+        await findCancelBtn().vm.$emit('click');
+        await findPipelineStopModal().vm.$emit('submit');
+
+        expect(wrapper.emitted('cancel-pipeline')).toEqual([[restPipeline]]);
+      });
+    });
+  });
+
   describe('when cancelling a pipeline', () => {
     beforeEach(async () => {
       createComponent();

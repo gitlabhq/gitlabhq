@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
 
 RSpec.describe Atlassian::Jira::PayloadSanitizer, feature_category: :integrations do
   let(:nul) { [0x0].pack('U') } # control char, rejected by Atlassian

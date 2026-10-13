@@ -184,6 +184,29 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
         end
       end
 
+      # A String result is the downloader's login-redirect signal, which only a GHE
+      # server produces. Pinned on github.com because the check is no longer scoped by
+      # web_endpoint: the URL is kept rather than handed to UploadService, which is what
+      # the old guard let happen here.
+      context 'when the downloader returns a URL instead of a file' do
+        let(:text) { "![img](#{user_attachment_url})" }
+        let(:record) { create(:note, project: project, note: text) }
+
+        before do
+          allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+            .with(user_attachment_url, options: options, web_endpoint: web_endpoint)
+            .and_return(downloader_stub)
+          allow(downloader_stub).to receive(:perform).and_return(user_attachment_url)
+        end
+
+        it 'keeps the original link and does not upload the String' do
+          expect(UploadService).not_to receive(:new)
+
+          expect { importer.execute }.not_to raise_error
+          expect(record.reload.note).to eq(text)
+        end
+      end
+
       context 'with GHE domain' do
         let(:web_endpoint) { 'https://github.enterprise.com' }
         let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: web_endpoint) }
@@ -253,6 +276,25 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             record.reload
             expect(record.note).to include(pdf_file_url)
             expect(record.note).to include(zip_file_url)
+          end
+        end
+
+        context 'when an asset URL redirects to the GHE login page' do
+          let(:text) { "![img](#{ghe_image_url})" }
+          let(:record) { create(:note, project: project, note: text) }
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(ghe_image_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            # the downloader hands back the URL instead of a file when it hits login?return_to=
+            allow(downloader_stub).to receive(:perform).and_return(ghe_image_url)
+          end
+
+          it 'keeps the original attachment link instead of raising' do
+            expect { importer.execute }.not_to raise_error
+
+            expect(record.reload.note).to eq(text)
           end
         end
 

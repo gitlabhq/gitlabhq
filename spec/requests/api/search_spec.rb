@@ -723,6 +723,44 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         get api(endpoint, user), params: { scope: 'issues', search: 'bad query' }
       end
 
+      context 'when the request short-circuits before the search is attempted' do
+        it 'does not record the error rate when global search is disabled for the scope' do
+          allow_next_instance_of(SearchService) do |instance|
+            allow(instance).to receive(:global_search_enabled_for_scope?).and_return false
+          end
+
+          expect(Gitlab::Metrics::GlobalSearchSlis).not_to receive(:record_error_rate)
+
+          get api(endpoint, user), params: { scope: 'issues', search: 'awesome' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'does not record the error rate when the requested scope is unavailable' do
+          allow_next_instance_of(SearchService) do |instance|
+            allow(instance).to receive(:scope).and_return('milestones')
+          end
+
+          expect(Gitlab::Metrics::GlobalSearchSlis).not_to receive(:record_error_rate)
+
+          get api(endpoint, user), params: { scope: 'issues', search: 'awesome' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'does not record the error rate when the search type is invalid' do
+          allow_next_instance_of(SearchService) do |instance|
+            allow(instance).to receive(:search_type_errors).and_return('search type error')
+          end
+
+          expect(Gitlab::Metrics::GlobalSearchSlis).not_to receive(:record_error_rate)
+
+          get api(endpoint, user), params: { scope: 'issues', search: 'awesome' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
       it 'sets global search information for logging' do
         expect(Gitlab::Instrumentation::GlobalSearchApi).to receive(:set_information).with(
           type: 'basic',

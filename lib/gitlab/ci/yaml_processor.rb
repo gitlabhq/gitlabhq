@@ -32,7 +32,9 @@ module Gitlab
 
         run_logical_validations!
 
-        Result.new(ci_config: @ci_config, warnings: @ci_config&.warnings)
+        Result.new(ci_config: @ci_config, warnings: @ci_config.warnings)
+      rescue Gitlab::Ci::Config::TimeoutError => e
+        Result.new(errors: [e.message], timed_out: true)
       rescue Gitlab::Ci::Config::ConfigError => e
         Result.new(ci_config: @ci_config, errors: [e.message], warnings: @ci_config&.warnings)
       rescue ValidationError => e

@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import AmbiguousRefModal from './components/ambiguous_ref_modal.vue';
 import { REF_TYPE_PARAM_NAME, TAG_REF_TYPE, BRANCH_REF_TYPE } from './constants';

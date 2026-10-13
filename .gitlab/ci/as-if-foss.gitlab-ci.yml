@@ -47,8 +47,14 @@ prepare-as-if-foss-env:
     BUILD_ENV: build.env
     FILES_TO_DOWNLOAD: >
       scripts/setup/generate-as-if-foss-env.rb
+      scripts/setup/decide-test-balancing.rb
   script:
     - install_gitlab_gem
+    # Compute the parent's test balancing decision here and export it, so
+    # generate-as-if-foss-env.rb forwards it to the child, which honors it. Kept
+    # off a needs: on retrieve-tests-metadata so a metadata failure can't block
+    # the child pipeline.
+    - export GLCI_USE_TEST_BALANCING="$(ruby scripts/setup/decide-test-balancing.rb | cut -d= -f2)"
     - ruby scripts/setup/generate-as-if-foss-env.rb | tee "${BUILD_ENV}"
   artifacts:
     expire_in: 3 days
@@ -99,6 +105,7 @@ start-as-if-foss:
     ENABLE_RSPEC_SINGLE_REDIS: $ENABLE_RSPEC_SINGLE_REDIS
     ENABLE_RSPEC_UNIT: $ENABLE_RSPEC_UNIT
     ENABLE_RSPEC_INTEGRATION: $ENABLE_RSPEC_INTEGRATION
+    ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION: $ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION
     ENABLE_RSPEC_SYSTEM: $ENABLE_RSPEC_SYSTEM
     ENABLE_RSPEC_MIGRATION: $ENABLE_RSPEC_MIGRATION
     ENABLE_RSPEC_BACKGROUND_MIGRATION: $ENABLE_RSPEC_BACKGROUND_MIGRATION
@@ -112,7 +119,6 @@ start-as-if-foss:
     ENABLE_GRAPHQL_SCHEMA_DUMP: $ENABLE_GRAPHQL_SCHEMA_DUMP
     ENABLE_JEST: $ENABLE_JEST
     ENABLE_JEST_INTEGRATION: $ENABLE_JEST_INTEGRATION
-    ENABLE_JEST_MSW_INTEGRATION: $ENABLE_JEST_MSW_INTEGRATION
     ENABLE_JEST_PREDICTIVE: $ENABLE_JEST_PREDICTIVE
     ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE: $ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE
     ENABLE_RSPEC_PREDICTIVE_TRIGGER: $ENABLE_RSPEC_PREDICTIVE_TRIGGER

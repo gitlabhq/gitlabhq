@@ -3,17 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_review_workflow do
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+
   let(:merge_commit_template) { nil }
   let(:squash_commit_template) { nil }
-  let(:project) do
-    create(
-      :project,
-      :public,
-      :repository,
-      merge_commit_template: merge_commit_template,
-      squash_commit_template: squash_commit_template
-    )
-  end
 
   let(:current_user) { create(:user, name: 'John Doe', email: 'john.doe@example.com') }
   let(:author) { current_user }
@@ -35,6 +28,10 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
   end
 
   subject { described_class.new(merge_request: merge_request, current_user: current_user) }
+
+  before do
+    project.update!(merge_commit_template: merge_commit_template, squash_commit_template: squash_commit_template)
+  end
 
   shared_examples_for 'commit message with template' do |message_template_name|
     it 'returns nil when template is not set in target project' do
@@ -690,6 +687,22 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
       end
     end
 
+    context 'when project has commit template with commits_count' do
+      let(message_template_name) { "Merging %{commits_count} commit(s)" }
+
+      it 'returns the number of commits in the merge request' do
+        expect(result_message).to eq('Merging 1 commit(s)')
+      end
+
+      context 'with 2 commits' do
+        let(:source_branch) { 'fix' }
+
+        it 'returns the number of commits in the merge request' do
+          expect(result_message).to eq('Merging 2 commit(s)')
+        end
+      end
+    end
+
     context 'when project has template with all variables' do
       let(message_template_name) { <<~MSG.rstrip }
         source_branch:%{source_branch}
@@ -707,6 +720,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         co_authored_by:%{co_authored_by}
         merge_request_author:%{merge_request_author}
         all_commits:%{all_commits}
+        commits_count:%{commits_count}
       MSG
 
       it 'uses custom template' do
@@ -733,6 +747,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           all_commits:* Feature added
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          commits_count:1
         MSG
       end
     end
@@ -1167,6 +1182,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
         co_authored_by:%{co_authored_by}
         merge_request_author:%{merge_request_author}
         all_commits:%{all_commits}
+        commits_count:%{commits_count}
       MSG
 
       it 'renders only variables specific to a new non-persisted merge request' do
@@ -1191,6 +1207,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
           all_commits:* Feature added
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          commits_count:1
         MSG
       end
 
@@ -1213,6 +1230,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
             co_authored_by:
             merge_request_author:
             all_commits:
+            commits_count:0
           MSG
         end
       end

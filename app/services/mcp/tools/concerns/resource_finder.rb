@@ -6,14 +6,17 @@ module Mcp
       module ResourceFinder
         include Gitlab::ResourceLookup
 
+        ResourceNotFoundError = Class.new(StandardError)
+        ResourceForbiddenError = Class.new(StandardError)
+
         private
 
         def find_project!(project_id, ability: :read_project)
           project = find_project(project_id)
+          message = "Project '#{project_id}' not found or inaccessible"
 
-          unless project && Ability.allowed?(current_user, ability, project)
-            raise StandardError, "Project '#{project_id}' not found or inaccessible"
-          end
+          raise ResourceNotFoundError, message unless project
+          raise ResourceForbiddenError, message unless Ability.allowed?(current_user, ability, project)
 
           project
         end
@@ -21,17 +24,21 @@ module Mcp
         def find_project(project_id)
           raise ArgumentError, "project_id must be a string" unless project_id.is_a?(String)
 
-          lookup_project(project_id)
+          lookup_project(decode_identifier(project_id))
         end
 
         def find_group!(group_id, ability: :read_group)
-          group = lookup_group(group_id)
+          group = lookup_group(decode_identifier(group_id))
+          message = "Group '#{group_id}' not found or inaccessible"
 
-          unless group && Ability.allowed?(current_user, ability, group)
-            raise StandardError, "Group '#{group_id}' not found or inaccessible"
-          end
+          raise ResourceNotFoundError, message unless group
+          raise ResourceForbiddenError, message unless Ability.allowed?(current_user, ability, group)
 
           group
+        end
+
+        def decode_identifier(value)
+          value.is_a?(String) ? Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) : value
         end
 
         def find_parent_by_id_or_path!(parent_type, identifier)
@@ -46,9 +53,12 @@ module Mcp
             finder_params
           ).execute.find_by_iid(iid)
 
-          raise ArgumentError, "Work item ##{iid} not found or inaccessible" unless work_item
+          return work_item if work_item
 
-          work_item
+          message = "Work item ##{iid} not found or inaccessible"
+          raise ResourceForbiddenError, message if parent.try(:work_items)&.exists?(iid: iid)
+
+          raise ResourceNotFoundError, message
         end
 
         def build_work_item_finder_params(parent)

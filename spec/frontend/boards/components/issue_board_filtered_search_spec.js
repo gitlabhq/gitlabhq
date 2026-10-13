@@ -17,7 +17,7 @@ describe('IssueBoardFilter', () => {
 
   const findBoardsFilteredSearch = () => wrapper.findComponent(BoardFilteredSearch);
 
-  const createComponent = ({ isSignedIn = false, workItemTasksOnBoardsEnabled = false } = {}) => {
+  const createComponent = ({ isSignedIn = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
       propsData: {
         boardId: 'gid://gitlab/Board/1',
@@ -28,9 +28,6 @@ describe('IssueBoardFilter', () => {
         releasesFetchPath: '/releases',
         fullPath: 'gitlab-org',
         isGroupBoard: true,
-        glFeatures: {
-          workItemTasksOnBoards: workItemTasksOnBoardsEnabled,
-        },
       },
       apolloProvider: createMockApollo([]),
     });

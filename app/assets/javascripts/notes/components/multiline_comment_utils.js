@@ -14,7 +14,7 @@ function getLineNumber(lineRange, key) {
   // By default we want to see the "old" or "left side" line number
   // The exception is if the "end" line is on the "right" side
   // `otherLineType` is only used if `type` is null to make sure the line
-  // number relfects the "right" side number, if that is the side
+  // number reflects the "right" side number, if that is the side
   // the comment form is located on
   const otherLineType = !type ? lineRange[otherKey]?.type : null;
   const lineType = type || '';
@@ -56,7 +56,7 @@ export function commentLineOptions(diffLines, startingLine, lineCode, side = 'le
   const currentIndex = linesCopy.findIndex((line) => line.line_code === lineCode);
 
   // We're limiting adding comments to only lines above the current line
-  // to make rendering simpler. Future interations will use a more
+  // to make rendering simpler. Future iterations will use a more
   // intuitive dragging interface that will make this unnecessary
   const upToSelected = linesCopy.slice(0, currentIndex + 1);
 

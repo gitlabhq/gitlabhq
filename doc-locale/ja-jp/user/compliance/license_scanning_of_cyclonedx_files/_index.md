@@ -21,7 +21,7 @@ title: CycloneDXファイルのライセンススキャン
 
 {{< /history >}}
 
-使用中のライセンスを検出するために、ライセンスコンプライアンスは、[依存関係スキャンジョブ](../../application_security/dependency_scanning/_index.md)の実行と、それらのジョブによって生成される[CycloneDX](https://cyclonedx.org/)ソフトウェア部品表 (SBOM) の解析に依存しています。このスキャン方法は、[SPDXリスト](https://spdx.org/licenses/)で定義されているように、600種類以上の異なるライセンスタイプを解析および識別できます。サードパーティのスキャナーは、[サポート言語](#supported-languages-and-package-managers)向けのCycloneDXレポートアーティファクトを生成し、GitLab CycloneDXのプロパティ分類に従う限り、依存関係のリストを生成するために使用できます。他のライセンスを提供する機能は、[エピック10861](https://gitlab.com/groups/gitlab-org/-/epics/10861)で追跡されています。
+使用中のライセンスを検出するために、ライセンスコンプライアンスは、[依存関係スキャンジョブ](../../application_security/dependency_scanning/_index.md)の実行と、それらのジョブによって生成される[CycloneDX](https://cyclonedx.org/)ソフトウェア部品表（SBOM）の解析に依存しています。このスキャン方法は、[SPDXリスト](https://spdx.org/licenses/)で定義されているように、600種類以上の異なるライセンスタイプを解析および識別できます。サードパーティのスキャナーは、[サポート言語](#supported-languages-and-package-managers)向けのCycloneDXレポートアーティファクトを生成し、GitLab CycloneDXのプロパティ分類に従う限り、依存関係のリストを生成するために使用できます。他のライセンスを提供する機能は、[エピック10861](https://gitlab.com/groups/gitlab-org/-/epics/10861)で追跡されています。
 
 > [!note]
 > ライセンススキャン機能は、外部データベースで収集され、GitLabインスタンスと自動的に同期される公開パッケージメタデータに依存しています。このデータベースは、米国でホストされているマルチリージョンのGoogle Cloud Storageバケットです。スキャンはGitLabインスタンス内でのみ実行されます。コンテキスト情報（例: プロジェクトの依存関係のリスト）は、外部サービスには送信されません。
@@ -32,7 +32,7 @@ CycloneDXファイルのライセンススキャンを有効にするには、�
 
 - 依存関係スキャンテンプレートを使用する
   - [依存関係スキャン](../../application_security/dependency_scanning/dependency_scanning_sbom/_index.md#turn-on-dependency-scanning)を有効にし、その前提条件が満たされていることを確認します。
-  - GitLab Self-Managedでは、GitLabインスタンスの**管理者**エリアで[パッケージレジストリメタデータを同期するように選択](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)できます。このデータ同期を機能させるには、GitLabインスタンスからドメイン`storage.googleapis.com`への送信ネットワークトラフィックを許可する必要があります。ネットワーク接続が制限されているか、まったくない場合の詳細なガイダンスについては、ドキュメントセクションの[オフライン環境で実行する](#running-in-an-offline-environment)を参照してください。
+  - GitLab Self-Managedでは、GitLabインスタンスの**管理者**エリアで[パッケージレジストリメタデータを同期するように選択](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)できます。このデータ同期を機能させるには、お使いのGitLabインスタンスから`storage.googleapis.com`および`pmdb-dist-svc.runway.gitlab.net`ドメインへの送信ネットワークトラフィックを許可する必要があります。ネットワーク接続が制限されているか、まったくない場合の詳細なガイダンスについては、ドキュメントセクションの[オフライン環境で実行する](#running-in-an-offline-environment)を参照してください。
 - または、該当するパッケージレジストリには[CI/CDコンポーネント](../../../ci/components/_index.md)を使用します。
 
 ## サポートされている言語とパッケージマネージャー {#supported-languages-and-package-managers}
@@ -46,7 +46,6 @@ CycloneDXファイルのライセンススキャンを有効にするには、�
 
 ライセンススキャンは、以下の言語とパッケージマネージャーでサポートされています:
 
-<!-- markdownlint-disable MD044 -->
 <table class="supported-languages">
   <thead>
     <tr>
@@ -176,7 +175,6 @@ CycloneDXファイルのライセンススキャンを有効にするには、�
     </tr>
   </tbody>
 </table>
-<!-- markdownlint-enable MD044 -->
 
 **脚注**: 
 
@@ -205,11 +203,12 @@ CycloneDXファイルのライセンススキャンを有効にするには、�
 
 {{< history >}}
 
-- SBOMにおけるSPDXライセンス表現のサポートがGitLab 19.3で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225)。
+- GitLab 19.3でSBOMにおけるSPDXライセンス表現のサポートが[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225)されました。
+- GitLab 19.4でPMDBにおけるSPDXライセンス表現のサポートが[導入](https://gitlab.com/groups/gitlab-org/-/work_items/22880)されました。
 
 {{< /history >}}
 
-GitLabは、カスタムの非SPDXライセンス用の`LicenseRef-[NAME]`構文を含め、CycloneDX SBOMの`expression`フィールドからSPDXの[ライセンス表現](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/)を読み取ります。コンポーネントのSBOMエントリに`expression`が含まれている場合、GitLabは完全な表現を保存および評価します。以前は、ライセンス表現を持つコンポーネントは`unknown`ライセンスとして表示されていました。
+GitLabは、カスタムの非SPDXライセンス用の`LicenseRef-[NAME]`構文を含め、CycloneDX SBOMの`expression`フィールドからSPDXの[ライセンス表現](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/)を読み取ります。コンポーネントのSBOMエントリに`expression`が含まれている場合、GitLabは完全な表現を保存および評価します。CycloneDX SBOMにライセンス情報が含まれていない場合、GitLabはライセンス表現をサポートするPMDBライセンスデータとコンポーネントを照合します。
 
 ライセンス表現は[ライセンス承認ポリシー](../license_approval_policies.md)でサポートされています。ポリシーがコンポーネントの表現の用語として表示されるライセンスをターゲットとする場合、ポリシーは完全な表現に対して正しく評価されます。
 
@@ -232,7 +231,7 @@ GitLabは、カスタムの非SPDXライセンス用の`LicenseRef-[NAME]`構文
 
 {{< history >}}
 
-- GitLab 17.5で、`license_scanning_with_sbom_licenses`という名前の[機能フラグ](../../../administration/feature_flags/_index.md)とともに導入されました。デフォルトでは無効になっています。
+- GitLab 17.5で`license_scanning_with_sbom_licenses`[機能フラグ](../../../administration/feature_flags/_index.md)とともに導入されました。デフォルトでは無効になっています。
 - GitLab 17.6のGitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました。
 - GitLab 17.8で一般公開されました。機能フラグ`license_scanning_with_sbom_licenses`は削除されました。
 - SPDXライセンス表現のサポートがGitLab 19.3で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/work_items/606225)。

@@ -262,5 +262,46 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
         end
       end
     end
+
+    describe 'finder selection' do
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(namespaces_advanced_groups_finder: false)
+        end
+
+        it 'uses GroupsFinder' do
+          expect(GroupsFinder).to receive(:new).and_call_original
+          expect(Namespaces::GroupsFinder).not_to receive(:new)
+
+          subject
+        end
+      end
+
+      context 'when namespaces_advanced_groups_finder is enabled' do
+        before do
+          stub_feature_flags(namespaces_advanced_groups_finder: true)
+        end
+
+        it 'uses Namespaces::GroupsFinder' do
+          expect(Namespaces::GroupsFinder).to receive(:new).and_call_original
+
+          subject
+        end
+
+        it 'returns the same groups' do
+          private_group.add_developer(user)
+
+          expect(subject).to contain_exactly(public_group, private_group)
+        end
+
+        context 'with a search term' do
+          let(:params) { { search: 'public' } }
+
+          it 'returns the same groups' do
+            expect(subject).to contain_exactly(public_group)
+          end
+        end
+      end
+    end
   end
 end

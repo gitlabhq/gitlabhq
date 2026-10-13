@@ -3,9 +3,10 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import workItemCurrentUserTodosQuery from '../graphql/work_item_current_user_todos.query.graphql';
 import workItemCurrentUserTodosUpdatedSubscription from '../graphql/work_item_current_user_todos.subscription.graphql';
-import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
+import updateWorkItemCurrentUserTodosMutation from '../graphql/update_work_item_current_user_todos.mutation.graphql';
 import { findCurrentUserTodosWidget } from '../utils';
 import TodosToggle from './shared/todos_toggle.vue';
 
@@ -33,6 +34,7 @@ export default {
   data() {
     return {
       workItem: {},
+      isUpdating: false,
     };
   },
   apollo: {
@@ -80,29 +82,54 @@ export default {
       return this.$apollo.queries.workItem.loading;
     },
     currentUserTodos() {
-      return findCurrentUserTodosWidget(this.workItem)?.currentUserTodos?.nodes;
+      return findCurrentUserTodosWidget(this.workItem)?.currentUserTodos?.nodes ?? [];
     },
   },
   methods: {
-    updateCache({ cache, todos }) {
-      updateWorkItemCurrentTodosWidget({
-        cache,
-        todos,
-        fullPath: this.fullPath,
-        iid: this.workItemIid,
-      });
+    onToggle() {
+      // The mutation result empties `currentUserTodos`, so the count has to be read up front.
+      const todoCount = this.currentUserTodos.length;
+      const isMarkingDone = todoCount > 0;
+      this.isUpdating = true;
+
+      this.$apollo
+        .mutate({
+          mutation: updateWorkItemCurrentUserTodosMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              currentUserTodosWidget: { action: isMarkingDone ? 'MARK_AS_DONE' : 'ADD' },
+            },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
+          },
+        })
+        .then(({ data }) => {
+          const { errors } = data.workItemUpdate;
+
+          if (errors?.length) {
+            throw new Error(errors[0]);
+          }
+
+          updateGlobalTodoCount(isMarkingDone ? -todoCount : 1);
+        })
+        .catch((error) => {
+          this.$emit('error', error.message);
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.isUpdating = false;
+        });
     },
   },
 };
 </script>
 
 <template>
-  <!-- TodosToggle reads its label once on creation, so wait for the to-do items to land -->
+  <!-- Rendering before the to-do items land would offer "Add" on an item that already has one -->
   <todos-toggle
     v-if="!isLoading"
-    :item-id="workItemId"
     :current-user-todos="currentUserTodos"
-    @todos-updated="updateCache"
-    @error="$emit('error', $event)"
+    :is-updating="isUpdating"
+    @toggle="onToggle"
   />
 </template>

@@ -55,6 +55,12 @@ module Gitlab
         Labkit::Context.current&.get_attribute(:caller_id)
       end
 
+      # Returns the feature category from the Labkit context. Set for web
+      # requests and Sidekiq jobs via Gitlab::ApplicationContext.
+      def self.feature_category(_context)
+        Labkit::Context.current&.get_attribute(:feature_category)
+      end
+
       # Returns the database config name for the connection used in the query
       # (e.g. "main", "ci", "main_replica").
       def self.db_config_name(context)

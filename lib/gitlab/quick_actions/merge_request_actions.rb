@@ -215,6 +215,7 @@ module Gitlab
             approval_success = ::MergeRequests::ApprovalService
               .new(project: quick_action_target.project, current_user: current_user)
               .execute(quick_action_target)
+              .success?
 
             @execution_message[:submit_review] << if approval_success
                                                     _('Approved the current merge request.')
@@ -275,7 +276,7 @@ module Gitlab
                                            end
           end
 
-          success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
+          success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target).success?
 
           next unless success
 

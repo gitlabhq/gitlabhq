@@ -219,6 +219,28 @@ RSpec.describe Noteable, feature_category: :code_review_workflow do
       end
     end
 
+    it 'excludes synthetic note ids when include_synthetic_notes is false' do
+      discussions = subject.discussion_root_note_ids(
+        notes_filter: UserPreference::NOTES_FILTERS[:all_notes], include_synthetic_notes: false
+      ).map { |n| { table_name: n.table_name, id: n.id } }
+
+      expect(discussions).to match(
+        [
+          a_hash_including(table_name: 'notes', id: active_diff_note1.id),
+          a_hash_including(table_name: 'notes', id: active_diff_note3.id),
+          a_hash_including(table_name: 'notes', id: outdated_diff_note1.id),
+          a_hash_including(table_name: 'notes', id: discussion_note1.id),
+          a_hash_including(table_name: 'notes', id: commit_diff_note1.id),
+          a_hash_including(table_name: 'notes', id: commit_note1.id),
+          a_hash_including(table_name: 'notes', id: commit_note2.id),
+          a_hash_including(table_name: 'notes', id: commit_discussion_note1.id),
+          a_hash_including(table_name: 'notes', id: commit_discussion_note3.id),
+          a_hash_including(table_name: 'notes', id: note1.id),
+          a_hash_including(table_name: 'notes', id: note2.id),
+          a_hash_including(table_name: 'notes', id: system_note.id)
+        ])
+    end
+
     it 'filters by comments only' do
       discussions = subject.discussion_root_note_ids(notes_filter: UserPreference::NOTES_FILTERS[:only_comments]).map do |n|
         { table_name: n.table_name, id: n.id }

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ActiveRecordArrayConnection do
 
   let_it_be(:items) { create_list(:package_build_info, 3) }
 
-  let_it_be(:context) do
+  let(:context) do
     GraphQL::Query::Context.new(
       query: GraphQL::Query.new(GitlabSchema, document: nil, context: {}, variables: {}),
       values: {}

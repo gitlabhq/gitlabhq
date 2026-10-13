@@ -1,12 +1,8 @@
-import {
-  DATE_ONLY_REGEX,
-  newDate,
-  nDaysAfter,
-} from '~/lib/utils/datetime/date_calculation_utility';
-import { toISODateFormat } from '~/lib/utils/datetime/date_format_utility';
-import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import { newDate, nDaysAfter } from '~/lib/utils/datetime/date_calculation_utility';
 import { __ } from '~/locale';
 import { FIELD_TYPES, DISPLAY_TYPES } from '../constants';
+import { bucketDateOf, bucketSpanDays, formatBucketDate } from './date_bucket';
+import { tierBandFormatter } from './tier_band';
 
 export const dimensionsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.DIMENSION);
 export const metricsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.METRIC);
@@ -23,8 +19,9 @@ const parameterValuesOf = (field) =>
 /**
  * Returns a human-readable label for the given field.
  * Appends the field's parameter values to the label, e.g. `created(weekly)`
- * renders as "Created (weekly)" and `durationQuantile(0.5)` as
- * "Duration quantile (0.5)". An explicit alias takes precedence: aliased
+ * renders as "Created (weekly)", `durationQuantile(0.5)` as
+ * "Duration quantile (0.5)" and `userTier(thresholds=[4, 25, 100])` as
+ * "User tier (4, 25, 100)". An explicit alias takes precedence: aliased
  * fields render their alias label as-is.
  *
  * Doubles as the series identity for parameterised metrics: series names and
@@ -34,7 +31,7 @@ export const labelWithParameter = (field) => {
   if (!field) return undefined;
   if (!field.label || isAliased(field)) return field.label;
 
-  const suffix = parameterValuesOf(field).map(String).join(', ');
+  const suffix = parameterValuesOf(field).flat().map(String).join(', ');
 
   // The label match is defensive: aliased fields return early above, but an
   // unaliased field's backend-supplied label could match its parameter value,
@@ -54,39 +51,8 @@ export const labelWithParameter = (field) => {
 const labelByObjectType = {
   UserCore: (value) => value.name ?? value.username,
   Project: (value) => value.nameWithNamespace ?? value.fullPath ?? value.name,
-};
-
-// The round trip rejects shape-only matches like "2026-02-30" that Date would
-// silently roll over to another day.
-const isRealCalendarDate = (value) =>
-  DATE_ONLY_REGEX.test(value) && toISODateFormat(newDate(value)) === value;
-
-// Bucket starts arrive date-only for weekly/monthly but as ISO datetimes
-// for daily (ClickHouse's toStartOfInterval returns DateTime for day), so
-// extract and validate the date part; anything else is not a bucket value.
-const BUCKET_TIME_SUFFIX_REGEX = /^T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
-
-const bucketDateOf = (value) => {
-  if (typeof value !== 'string') return null;
-  const datePart = value.slice(0, 10);
-  if (!isRealCalendarDate(datePart)) return null;
-  const timePart = value.slice(10);
-  if (timePart && !BUCKET_TIME_SUFFIX_REGEX.test(timePart)) return null;
-  return datePart;
-};
-
-// newDate parses "YYYY-MM-DD" as a local date, keeping the label on the
-// bucket's own day in every viewer timezone. Daily and weekly labels drop
-// the year unless `includeYear` is set - the axis carries the year context.
-const formatDateLabel = (value, granularity, includeYear) => {
-  const date = newDate(value);
-  const dayFormat = includeYear ? localeDateFormat.asDate : localeDateFormat.asDateWithoutYear;
-  if (granularity === 'weekly') {
-    return dayFormat.formatRange(date, nDaysAfter(date, 6));
-  }
-  if (granularity === 'monthly') return localeDateFormat.asMonthYear.format(date);
-  if (granularity === 'yearly') return String(date.getFullYear());
-  return dayFormat.format(date);
+  Group: (value) => value.fullName ?? value.fullPath,
+  DuoWorkflowsModelMetadata: (value) => value.name,
 };
 
 export const dimensionValue = (node, dimension) => {
@@ -104,18 +70,19 @@ export const dimensionValue = (node, dimension) => {
 };
 
 // Year-less labels are ambiguous when a series crosses a calendar year, so
-// once buckets span two years (weekly: range ends included), all labels
-// carry the year. Cosmetic only - bucket identity is the raw value.
+// once buckets span two years (weekly and fixed-day: range ends included),
+// all labels carry the year. Cosmetic only - bucket identity is the raw value.
 const spansMultipleYears = (nodes, dimension) => {
   const granularity = dimension?.parameters?.granularity;
   if (!granularity) return false;
+  const spanDays = bucketSpanDays(granularity);
   const years = new Set();
   for (const node of nodes ?? []) {
     const bucketDate = bucketDateOf(node[dimension.key]);
     if (bucketDate) {
       years.add(bucketDate.slice(0, 4));
-      if (granularity === 'weekly') {
-        years.add(String(nDaysAfter(newDate(bucketDate), 6).getFullYear()));
+      if (spanDays > 1) {
+        years.add(String(nDaysAfter(newDate(bucketDate), spanDays - 1).getFullYear()));
       }
     }
     if (years.size > 1) return true;
@@ -126,13 +93,13 @@ const spansMultipleYears = (nodes, dimension) => {
 // Maps raw category values to display labels (axis formatters, tooltip
 // titles, sizing). A factory: the year decision needs the whole series.
 export const dimensionLabelFormatter = (nodes, dimension) => {
-  const granularity = dimension?.parameters?.granularity;
-  if (!granularity) return (value) => String(value);
+  const { granularity, thresholds } = dimension?.parameters ?? {};
+  if (thresholds?.length) return tierBandFormatter(thresholds);
+  // An empty dimension value still labels its row, so absent attribution stays visible.
+  if (!granularity)
+    return (value) => (value == null || value === '' ? __('Unknown') : String(value));
   const includeYear = spansMultipleYears(nodes, dimension);
-  return (value) => {
-    const bucketDate = bucketDateOf(value);
-    return bucketDate ? formatDateLabel(bucketDate, granularity, includeYear) : String(value);
-  };
+  return (value) => formatBucketDate(value, granularity, includeYear);
 };
 
 export const buildSeries = (nodes, dimension, metric) => {
@@ -176,7 +143,15 @@ const seriesNamesFor = (values, nodes, dimension) => {
   return names;
 };
 
-export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metric }) => {
+// `missingValue` fills pairs the query returned no row for. Bar-type charts pass
+// an empty value so those pairs draw no segment; 0 would still draw a border.
+export const buildStackedByDimension = ({
+  nodes,
+  primaryDim,
+  secondaryDim,
+  metric,
+  missingValue = 0,
+}) => {
   if (!nodes?.length || !primaryDim || !secondaryDim || !metric) {
     return { groups: [], bars: [] };
   }
@@ -203,7 +178,7 @@ export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metri
 
   const bars = [...valuesBySecondary.entries()].map(([value, valuesByIndex]) => ({
     name: names.get(value),
-    data: groups.map((_, i) => valuesByIndex[i] ?? 0),
+    data: groups.map((_, i) => valuesByIndex[i] ?? missingValue),
   }));
 
   return { groups, bars };
@@ -244,16 +219,30 @@ export const tooltipTitleFromParams = (
   return axisName ? `${title} (${axisName})` : title;
 };
 
+const toTooltipContent = (rows) =>
+  Object.fromEntries(rows.map(({ seriesName, value, color }) => [seriesName, { value, color }]));
+
+// Within each stack, list the largest value first. Bar charts and unstacked
+// series keep series order.
 export const tooltipContentFromParams = (params, displayType = DISPLAY_TYPES.COLUMN_CHART) => {
   if (!params?.seriesData) return {};
   const valueIndex = displayType === DISPLAY_TYPES.BAR_CHART ? 0 : 1;
-  return Object.fromEntries(
-    params.seriesData.map(({ seriesName, value, color, borderColor }) => [
+  const rows = params.seriesData.map(
+    ({ seriesName, value, color, borderColor, stack, seriesIndex }) => ({
       seriesName,
-      {
-        value: (Array.isArray(value) ? value[valueIndex] : value) ?? 0,
-        color: borderColor ?? color,
-      },
-    ]),
+      groupKey: stack ?? seriesIndex,
+      value: (Array.isArray(value) ? value[valueIndex] : value) ?? 0,
+      color: borderColor ?? color,
+    }),
   );
+  if (displayType === DISPLAY_TYPES.BAR_CHART) return toTooltipContent(rows);
+
+  // A Map keeps first-seen group order; a plain object would put numeric
+  // seriesIndex keys ahead of named stacks.
+  const stacks = new Map();
+  rows.forEach((row) => stacks.set(row.groupKey, [...(stacks.get(row.groupKey) ?? []), row]));
+  const ordered = [...stacks.values()].flatMap((stack) =>
+    stack.toSorted((a, b) => b.value - a.value),
+  );
+  return toTooltipContent(ordered);
 };

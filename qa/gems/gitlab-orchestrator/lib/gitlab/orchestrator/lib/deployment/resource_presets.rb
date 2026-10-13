@@ -98,7 +98,8 @@ module Gitlab
                 sidekiq: {
                   concurrency: 30,
                   minReplicas: 1,
-                  resources: resources("1200m", "2Gi"),
+                  # Coverage recording adds ~120Mi, enough to hit a 2Gi cap and restart sidekiq
+                  resources: resources("1200m", "2Gi", "1200m", "2304Mi"),
                   hpa: cpu_utilization
                 },
                 kas: {

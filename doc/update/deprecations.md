@@ -45,6 +45,32 @@ For deprecation reviewers (Technical Writers only):
   <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 -->
 
+## GitLab 21.0
+
+### Code Suggestions v2 and v3 AI Gateway endpoints
+
+- Announced in GitLab 19.5
+- Removal in GitLab 21.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/605661).
+
+The AI Gateway endpoints `/v2/completions`, `/v2/code/completions`, `/v2/code/generations`, and
+`/v3/code/completions` are deprecated in GitLab 19.5 and will be removed in GitLab 21.0.
+Code Suggestions requests should use `/v4/code/suggestions` instead.
+
+GitLab.com has used `/v4/code/suggestions` since GitLab 19.1.
+No action is required for GitLab.com.
+
+GitLab Self-Managed, GitLab Dedicated, and GitLab editor extensions will switch to the v4 endpoint
+in upcoming releases. To track the versions that include this change, see
+[issue 605661](https://gitlab.com/gitlab-org/gitlab/-/issues/605661).
+If you run a self-hosted AI Gateway, the AI Gateway image for GitLab 21.0 also removes these endpoints.
+
+To avoid disruption, before GitLab 21.0 is released:
+
+- Upgrade your instance to the latest version of GitLab.
+- Update your editor extensions to the latest version.
+- Update any custom clients that call the AI Gateway directly to use `/v4/code/suggestions`.
+
 ## GitLab 20.0
 
 ### Compliance pipelines
@@ -105,6 +131,24 @@ In GitLab 20.0, GitLab will begin deprecation of Design Management. Design Manag
 The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 20.0
 we will enforce keyset pagination on these APIs.
 
+### GitLab Helm chart value `gitlab.kas.ingress.grpc.enabled`
+
+- Announced in GitLab 19.5
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/work_items/6663).
+
+In the GitLab Helm chart, the KAS gRPC Ingress is now controlled by `global.kas.ingress.grpc.enabled`,
+which also decides whether the address advertised to the agent for Kubernetes uses native gRPC (`grpcs://`)
+or WebSocket (`wss://`).
+
+The `kas` chart's local value `gitlab.kas.ingress.grpc.enabled` is deprecated and will be removed in chart 11.0
+(GitLab 20.0). It still controls whether the gRPC Ingress is rendered, but the other charts cannot see it when
+they derive the advertised address, so the Ingress and the address can disagree.
+
+If you set `gitlab.kas.ingress.grpc.enabled`, move the value to `global.kas.ingress.grpc.enabled` before
+upgrading to chart 11.0. Leaving both unset keeps the default. The gRPC Ingress is rendered for the NGINX
+Ingress provider, and agents are pointed at `grpcs://` when the chart routes gRPC to KAS.
+
 ### Go module proxy (experimental) is deprecated
 
 - Announced in GitLab 19.1
@@ -116,6 +160,18 @@ The experimental Go module proxy in the GitLab package registry is deprecated an
 It will be replaced by a **Go virtual registry**, which will provide a more complete and reliable experience for resolving Go modules through GitLab.
 
 **Action required:** If you are using GitLab as a Go module proxy, plan to migrate to the Go virtual registry once it becomes available. In the interim, you may configure an alternative proxy (such as `proxy.golang.org` or a self-hosted solution) by updating your `GOPROXY` environment variable.
+
+### GraphQL `useWorkItemsView` user preference
+
+- Announced in GitLab 19.5
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/550770).
+
+The `useWorkItemsView` field on the `UserPreferences` type and the `useWorkItemsView` argument on the
+`userPreferencesUpdate` mutation are deprecated in GitLab 19.5 and will be removed in GitLab 20.0. The
+issue-to-work-item migration is complete and the work item view is always used, making this preference
+unnecessary. As of GitLab 19.5, the argument is accepted but ignored and the field always returns `true`.
+Remove the argument from your mutations and the field from your queries. There is no replacement.
 
 ### Legacy `retry:when` failure reasons `stuck_or_timeout_failure` and `job_execution_timeout` are deprecated
 
@@ -236,6 +292,22 @@ call these commands. The option accepts the same value: the name of the
 current leader node. Until removal, `--master` keeps its behavior and
 prints a deprecation warning.
 
+### `kpt`-based `agentk` is deprecated
+
+- Announced in GitLab 17.9
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656).
+
+We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+The `kpt` package is broken and outdated. It has been unmaintained since 2022, lacks features added to the Helm chart since then, and has no known users.
+Instead, you should install the agent with one of the supported installation methods:
+
+- Helm (recommended)
+- GitLab CLI
+- Flux
+
+To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
+
 ## GitLab 19.5
 
 ### Bitbucket Cloud issue and wiki import
@@ -257,6 +329,32 @@ August 20, 2026 due date, or use the
 [CSV import](https://docs.gitlab.com/user/project/issues/csv_import/)
 after exporting from Bitbucket. For wikis, clone the Bitbucket wiki repository
 locally before the due date.
+
+### GraphQL `secretPermissionUpdate` and `secretPermissionDelete` mutations
+
+- Announced in GitLab 19.5
+- Removal in GitLab 19.5 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/630579).
+
+As part of moving the GitLab Secrets Manager from Beta to Generally Available, GitLab removes the
+`secretPermissionUpdate` and `secretPermissionDelete` GraphQL mutations in GitLab 19.5.
+Use `projectSecretsPermissionUpdate` and `projectSecretsPermissionDelete` instead. The replacement mutations
+call the same services as the old mutations.
+
+The new mutations take an `actions` argument in place of the old `permissions` argument,
+which took lowercase string values. The new `actions` argument takes a `SecretsManagementAction` enum. Each
+value in this enum is upper case. Map each old value to a new value:
+
+- `"read"` maps to `READ`.
+- `"create"` on its own maps to `CREATE`.
+- `"update"`, with or without `"create"`, maps to `WRITE`.
+- `"delete"` maps to `DELETE`.
+
+The response shape also changes. Update your code to match these changes:
+
+- The payload field changes name from `secretPermission` to `secretsPermission`.
+- The payload type changes name from `SecretPermission` to `ProjectSecretsPermission`.
+- The new type has no `permissions` field. Read the `actions` field instead.
 
 ## GitLab 19.3
 
@@ -842,8 +940,8 @@ If you've previously used the `certmanager.install` setting:
 
 Also review the cert-manager release notes:
 
-- [Release Notes 1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12)
-- [Release Notes 1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17)
+- [Release Notes 1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12/)
+- [Release Notes 1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17/)
 
 ## GitLab 18.1
 
@@ -954,7 +1052,7 @@ To prepare for this change, project maintainers using job tokens for cross-proje
 should populate their project's **Authorized groups and projects** allowlists. They should then change
 the setting to **Only this project and any groups and projects in the allowlist**.
 
-To help identify projects that need access to your project by authenticating with a CI/CD job token, in GitLab 17.6 we also introduced a method to [track job token authentications](https://about.gitlab.com/releases/2024/11/21/gitlab-17-6-released/#track-cicd-job-token-authentications) to your projects. You can use that data to populate your CI/CI job token allowlist.
+To help identify projects that need access to your project by authenticating with a CI/CD job token, in GitLab 17.6 we also introduced a method to [track job token authentications](https://docs.gitlab.com/releases/17/gitlab-17-6-released/#track-cicd-job-token-authentications) to your projects. You can use that data to populate your CI/CI job token allowlist.
 
 From GitLab 17.10 to 18.6, you can use [migration tooling](https://archives.docs.gitlab.com/18.6/ci/jobs/ci_job_token/#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/update/deprecations/?removal_milestone=18.0#cicd-job-token-authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
 
@@ -4927,7 +5025,7 @@ The following changes have been removed from their original milestone and are be
 > [!note]
 > This change has been removed from its original milestone and is being reassessed.
 
-In GitLab 19.0, we will remove CodeClimate-based Code Quality scanning.
+We will remove CodeClimate-based Code Quality scanning in a future release.
 This change was previously scheduled for GitLab 18.0 and has now been delayed.
 
 In its place, you should use quality tools directly in your CI/CD pipeline and [provide the tool's report as an artifact](https://docs.gitlab.com/ci/testing/code_quality/#import-code-quality-results-from-a-cicd-job).
@@ -4935,11 +5033,11 @@ We've already documented how to integrate many tools directly, and you can integ
 
 We expect to implement this change by:
 
-1. Changing the [`Code-Quality.gitlab-ci.yml` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) to no longer execute scans. Today, this template runs CodeClimate-based scans. (We plan to change the template rather than delete it to reduce the impact on any pipelines that still `include` the template after 19.0.)
+1. Changing the [`Code-Quality.gitlab-ci.yml` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) to no longer execute scans. Today, this template runs CodeClimate-based scans. (We plan to change the template rather than delete it to reduce the impact on any pipelines that still `include` the template after removal.)
 1. No longer running CodeClimate-based scanning as part of Auto DevOps.
 
 Effective immediately, CodeClimate-based scanning will receive only [limited updates](https://docs.gitlab.com/update/terminology/#deprecation).
-After End of Support in GitLab 19.0, we won't provide further updates.
+After End of Support, we won't provide further updates.
 However, we won't delete previously published container images or remove the ability to run them by using custom CI/CD pipeline job definitions.
 
 For more details, see [Scan code for quality violations](https://docs.gitlab.com/ci/testing/code_quality/#scan-code-for-quality-violations).
@@ -5324,23 +5422,6 @@ Support for using `bin_path` and `use_bundled_binaries` configuration options in
 removed in GitLab 19.0.
 
 The Git binaries provided by Gitaly will be the only supported way to execute Git.
-
-### `kpt`-based `agentk` is deprecated
-
-- Announced in GitLab 17.9
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656).
-
-> [!note]
-> This change has been removed from its original milestone and is being reassessed.
-
-We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
-Instead, you should install the agent with one of the supported installation methods:
-
-- Helm (recommended)
-- GitLab CLI
-- Flux
-
-To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
 
 ### `mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated
 

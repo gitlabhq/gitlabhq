@@ -43,7 +43,6 @@ project:
   - read_label
   - read_milestone
   - read_namespace
-  - read_namespace_via_membership
   - read_note
   - read_project
   - read_project_member
@@ -62,6 +61,7 @@ project:
 group:
   permissions: []
   raw_permissions:
+  - _delete_authored_timelog
   - request_access
   - update_work_item_user_preference
   - upload_file

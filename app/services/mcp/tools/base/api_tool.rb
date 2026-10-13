@@ -4,7 +4,10 @@ module Mcp
   module Tools
     module Base
       class ApiTool
-        include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+        extend ::Gitlab::Utils::Override
+
+        include Mcp::Tools::Concerns::GovernanceContainerResolver
+        include Mcp::Tools::Base::RateLimitedResponse
 
         attr_reader :name, :route, :settings, :version
 
@@ -34,12 +37,22 @@ module Mcp
           @version = @settings[:version] || "0.1.0"
         end
 
-        def namespace_arguments
-          case route_boundary_type
-          when :project then { project: :id }
-          when :group then { group: :id }
-          else super
-          end
+        override :container_arguments
+        def container_arguments
+          base = case route_boundary_type
+                 when :project then { project: :id }
+                 when :group then { group: :id }
+                 else super
+                 end
+
+          base.merge(settings.fetch(:container_arguments, {}))
+        end
+
+        override :run_record_resolver
+        def run_record_resolver(resolver, value)
+          value = Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) if value.is_a?(String)
+
+          super
         end
 
         def description
@@ -78,16 +91,17 @@ module Mcp
 
         def execute(request: nil, params: nil)
           args = params[:arguments]&.slice(*settings[:params]) || {}
+          decode_container_arguments!(args)
           request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)
           request.env[Rack::REQUEST_METHOD] = route.request_method
 
           original_format = request.env['api.format']
           begin
-            status, _, body = route.app.call(request.env)
+            status, headers, body = route.app.call(request.env)
           ensure
             request.env['api.format'] = original_format
           end
-          process_response(status, Array(body)[0])
+          process_response(status, Array(body)[0], headers)
         end
 
         def tool_aliases
@@ -110,7 +124,23 @@ module Mcp
           settings[:unlisted].present?
         end
 
+        def available?(_current_user)
+          true
+        end
+
         private
+
+        # Rack percent-decodes path segments before Grape sees them; this in-process call
+        # skips Rack, so the URL-encoded path the route docs advertise is decoded here.
+        # A '%' is data in any other argument.
+        def decode_container_arguments!(args)
+          declared_argument_names.each do |name|
+            key = args.key?(name) ? name : name.to_sym
+            value = args[key]
+
+            args[key] = Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) if value.is_a?(String)
+          end
+        end
 
         def route_boundary_type
           authorization = route.app.route_setting(:authorization)
@@ -143,7 +173,9 @@ module Mcp
           nil
         end
 
-        def process_response(status, body)
+        def process_response(status, body, headers = nil)
+          return rate_limited_response(body, headers) if status == TOO_MANY_REQUESTS
+
           parsed_response = Gitlab::Json.safe_parse(body)
           if status >= 400
             message =
@@ -153,14 +185,18 @@ module Mcp
                 parsed_response['error'] || parsed_response['message'] || "HTTP #{status}"
               end
 
-            ::Mcp::Tools::Base::Response.error(message, parsed_response)
+            ::Mcp::Tools::Base::Response.error(
+              message, parsed_response, reason: ::Mcp::Tools::Base::Response.reason_for_http_status(status)
+            )
           else
             formatted_content = [{ type: 'text', text: body }]
             ::Mcp::Tools::Base::Response.success(formatted_content, parsed_response)
           end
         rescue JSON::ParserError
           if status >= 400
-            ::Mcp::Tools::Base::Response.error("HTTP #{status}", { body: body })
+            ::Mcp::Tools::Base::Response.error(
+              "HTTP #{status}", { body: body }, reason: ::Mcp::Tools::Base::Response.reason_for_http_status(status)
+            )
           else
             # Plain text response (e.g. job trace); return as-is
             formatted_content = [{ type: 'text', text: body }]

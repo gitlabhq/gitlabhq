@@ -23,6 +23,10 @@ module Resolvers
         required: false,
         description: "SHA256 of a specific version."
 
+      def self.single
+        self
+      end
+
       def resolve(version_id: nil, sha: nil)
         check_args(version_id, sha)
 
@@ -30,10 +34,6 @@ module Resolvers
           .new(collection, current_user, sha: sha, version_id: version_id&.model_id)
           .execute
           .first
-      end
-
-      def self.single
-        self
       end
 
       private

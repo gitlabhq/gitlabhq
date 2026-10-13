@@ -162,6 +162,35 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
       # rubocop:enable RSpec/AnyInstanceOf
     end
 
+    describe 'created_at' do
+      let(:source_created_at) { Time.zone.parse('2019-11-20 17:01:53 UTC') }
+      let(:attributes) { relation_reader.consume_attributes(importable_name).merge('created_at' => source_created_at) }
+
+      context 'when importing from a project template' do
+        before do
+          importable.update!(import_type: 'gitlab_built_in_project_template')
+        end
+
+        it 'preserves the destination project created_at' do
+          destination_created_at = importable.created_at
+
+          expect(relation_tree_restorer.restore).to be(true)
+          expect(importable.reload.created_at).to eq(destination_created_at)
+        end
+      end
+
+      context 'when importing from a project export' do
+        before do
+          importable.update!(import_type: 'gitlab_project')
+        end
+
+        it 'imports the source project created_at' do
+          expect(relation_tree_restorer.restore).to be(true)
+          expect(importable.reload.created_at).to eq(source_created_at)
+        end
+      end
+    end
+
     describe '#update_archived_state!' do
       let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => true) }
 

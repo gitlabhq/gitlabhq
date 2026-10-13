@@ -20,6 +20,7 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
@@ -74,7 +75,10 @@ func (m *mockWebSocketConn) WriteMessage(_ int, data []byte) error {
 	if m.writeError != nil {
 		return m.writeError
 	}
-	m.writeMessages = append(m.writeMessages, data)
+	// Copy rather than alias: gorilla writes the caller's slice out
+	// synchronously and never retains it, and WriteAction returns its buffer
+	// to a shared pool once the write completes.
+	m.writeMessages = append(m.writeMessages, append([]byte(nil), data...))
 	return nil
 }
 
@@ -134,13 +138,14 @@ func (m *mockWebSocketConn) getPongHandler() func(string) error {
 }
 
 type mockWorkflowStream struct {
-	sendEvents  []*pb.ClientEvent
-	sendMu      sync.Mutex
-	recvActions []*pb.Action
-	recvIndex   int
-	sendError   error
-	recvError   error
-	blockCh     chan bool
+	sendEvents     []*pb.ClientEvent
+	sendMu         sync.Mutex
+	closeSendCalls int
+	recvActions    []*pb.Action
+	recvIndex      int
+	sendError      error
+	recvError      error
+	blockCh        chan bool
 }
 
 func (m *mockWorkflowStream) getSendEvents() []*pb.ClientEvent {
@@ -178,6 +183,7 @@ func (m *mockWorkflowStream) Recv() (*pb.Action, error) {
 }
 
 func (m *mockWorkflowStream) CloseSend() error {
+	m.closeSendCalls++
 	return nil
 }
 
@@ -729,6 +735,7 @@ func TestRunner_handleClientEvent(t *testing.T) {
 		mcpManager         *mockMcpManager
 		expectedErrMsg     string
 		expectMcpTools     bool
+		expectServerTrust  bool
 	}{
 		{
 			name:           "send error",
@@ -758,6 +765,19 @@ func TestRunner_handleClientEvent(t *testing.T) {
 			},
 			expectMcpTools: true,
 			expectedErrMsg: "",
+		},
+		{
+			name:               "start request strips trusted from client mcp tools",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "mcpTools": [{"name": "get_issue", "trusted": true}]}}`),
+			clientCapabilities: []string{},
+			mcpManager: &mockMcpManager{
+				tools: []*pb.McpTool{
+					{Name: "test_tool", Description: "A test tool", Trusted: proto.Bool(true)},
+				},
+			},
+			expectMcpTools:    true,
+			expectServerTrust: true,
+			expectedErrMsg:    "",
 		},
 		{
 			name:               "start request without mcp manager",
@@ -864,8 +884,14 @@ func TestRunner_handleClientEvent(t *testing.T) {
 					require.NotNil(t, startReq)
 					require.Len(t, startReq.McpTools, 2)
 					assert.Equal(t, "get_issue", startReq.McpTools[0].Name)
+					assert.Nil(t, startReq.McpTools[0].Trusted)
 					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
 					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
+					assert.Equal(t, tt.expectServerTrust, startReq.McpTools[1].GetTrusted())
+					assert.True(t, startReq.McpTools[0].GetClientInjected(),
+						"the client's own tool must be stamped")
+					assert.False(t, startReq.McpTools[1].GetClientInjected(),
+						"tools Workhorse fetched stay unstamped so DWS keeps governing them")
 				}
 
 				if tt.clientCapabilities != nil {
@@ -1026,24 +1052,6 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			},
 			shouldCallWS: true,
 		},
-		{
-			name: "MCP tool action with call error",
-			action: &pb.Action{
-				RequestID: "req-mcp-error",
-				Action: &pb.Action_RunMCPTool{
-					RunMCPTool: &pb.RunMCPTool{
-						Name: "gitlab_get_issue",
-						Args: `{"issue_id": "123"}`,
-					},
-				},
-			},
-			mcpManager: &mockMcpManager{
-				hasToolResult: true,
-				callToolError: errors.New("mcp call failed"),
-			},
-			shouldCallMcp:  true,
-			expectedErrMsg: "handleAgentAction: failed to call MCP tool: mcp call failed",
-		},
 	}
 
 	for _, tt := range tests {
@@ -1198,6 +1206,41 @@ func TestRunner_handleAgentAction_UnknownMcpToolUnsupportedByClient(t *testing.T
 	require.NotEmpty(t, sendEvents[0].GetActionResponse().GetPlainTextResponse().Error)
 }
 
+func TestRunner_handleAgentAction_McpToolCallFails(t *testing.T) {
+	mockWf := &mockWorkflowStream{}
+	mcpManager := &mockMcpManager{
+		hasToolResult: true,
+		callToolError: errors.New("CallTool: failed to call MCP tool: 504 Gateway Timeout"),
+	}
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	r := &runner{
+		originalReq:   req,
+		client:        newWsManager(&mockWebSocketConn{}),
+		streamManager: newTestStreamManager(t, mockWf),
+		mcpManager:    mcpManager,
+	}
+
+	action := &pb.Action{
+		RequestID: "req-mcp-error",
+		Action: &pb.Action_RunMCPTool{
+			RunMCPTool: &pb.RunMCPTool{Name: "orbit_invoke_command", Args: `{"command_name": "query_graph"}`},
+		},
+	}
+
+	require.NoError(t, r.handleAgentAction(context.Background(), action), "a failed tool call must not end the workflow")
+
+	require.Len(t, mcpManager.callToolInvocations, 1)
+
+	sendEvents := mockWf.getSendEvents()
+	require.Len(t, sendEvents, 1, "DWS must get a response so the workflow does not stall")
+
+	response := sendEvents[0].GetActionResponse()
+	require.Equal(t, "req-mcp-error", response.RequestID)
+	require.Equal(t, "CallTool: failed to call MCP tool: 504 Gateway Timeout", response.GetPlainTextResponse().Error)
+	require.Empty(t, response.GetPlainTextResponse().Response)
+}
+
 func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
 	transport := &unsupportedActionTransport{}
 	mockWf := &mockWorkflowStream{sendError: errors.New("stream closed")}
@@ -1218,7 +1261,7 @@ func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
 	require.EqualError(
 		t,
 		r.handleAgentAction(context.Background(), action),
-		"writeActionToClient: failed to send gRPC message: stream closed",
+		"sendActionError: failed to send gRPC message: stream closed",
 	)
 }
 
@@ -1252,6 +1295,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 				client:             mainClient,
 				cloudServiceStream: mockCloudStream,
 				cloudServiceClient: cloudClient,
+				originalReq:        httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 		}
@@ -1280,6 +1324,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 				client:             mainClient,
 				cloudServiceStream: nil,
 				cloudServiceClient: nil,
+				originalReq:        httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 		}
@@ -1309,6 +1354,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 				client:             mainClient,
 				cloudServiceStream: mockCloudStream,
 				cloudServiceClient: nil,
+				originalReq:        httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 		}
@@ -1404,6 +1450,16 @@ func Test_intersectClientCapabilities(t *testing.T) {
 			name:       "unknown web_search variant is filtered out",
 			fromClient: []string{"web_search_unknown"},
 			expected:   []string{},
+		},
+		{
+			name:       "read_file_image capability passes through",
+			fromClient: []string{"read_file_chunked", "read_file_image"},
+			expected:   []string{"read_file_chunked", "read_file_image"},
+		},
+		{
+			name:       "auto_mode capability passes through",
+			fromClient: []string{"shell_command", "auto_mode"},
+			expected:   []string{"shell_command", "auto_mode"},
 		},
 	}
 
@@ -1907,8 +1963,9 @@ func TestRunner_Close_waitsForAgentDone(t *testing.T) {
 		r := &runner{
 			client: newWsManager(&mockWebSocketConn{}),
 			streamManager: &streamManager{
-				wf:     &mockWorkflowStream{},
-				client: mainClient,
+				wf:          &mockWorkflowStream{},
+				client:      mainClient,
+				originalReq: httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 			stop: stopCoordinator{
@@ -1986,8 +2043,9 @@ func TestRunner_Close_shutdownCoordination(t *testing.T) {
 		return &runner{
 			client: newWsManager(&mockWebSocketConn{}),
 			streamManager: &streamManager{
-				wf:     &mockWorkflowStream{},
-				client: mainClient,
+				wf:          &mockWorkflowStream{},
+				client:      mainClient,
+				originalReq: httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 			stop: stopCoordinator{
@@ -2042,6 +2100,27 @@ func TestRunner_Close_shutdownCoordination(t *testing.T) {
 			require.NoError(t, err)
 		case <-time.After(2 * time.Second):
 			t.Fatal("Close should return after shutdownDone is closed")
+		}
+	})
+
+	// A session that finishes while the instance drains has nothing left for
+	// Shutdown to tell the client, and Shutdown only wakes on the drain deadline.
+	// Waiting for it held the client's connection open for the whole grace period.
+	t.Run("does not wait for shutdownDone when the workflow already ended", func(t *testing.T) {
+		r := newRunnerForClose(t)
+		r.stop.shutdownStarted.Store(true)
+		r.stop.workflowEnded.Store(true)
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should not wait for shutdownDone once the workflow has ended")
 		}
 	})
 }
@@ -2239,6 +2318,31 @@ func TestRunner_isUsageQuotaExceededError(t *testing.T) {
 			sm := &streamManager{}
 			result := sm.isUsageQuotaExceededError(tt.err)
 			require.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestStreamManager_Close(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	tests := []struct {
+		name               string
+		ctx                context.Context
+		wantCloseSendCalls int
+	}{
+		{name: "active context", ctx: context.Background(), wantCloseSendCalls: 1},
+		{name: "canceled context", ctx: ctx},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			wf := &mockWorkflowStream{}
+			sm := newTestStreamManager(t, wf)
+			sm.originalReq = sm.originalReq.WithContext(tt.ctx)
+
+			require.NoError(t, sm.Close())
+			require.Equal(t, tt.wantCloseSendCalls, wf.closeSendCalls)
 		})
 	}
 }
@@ -2713,4 +2817,18 @@ func (p *pingTrackingConn) WriteControl(msgType int, data []byte, deadline time.
 
 func (p *pingTrackingConn) SetPongHandler(h func(string) error) {
 	p.mockWebSocketConn.SetPongHandler(h)
+}
+
+func TestMarkClientInjected(t *testing.T) {
+	tools := []*pb.McpTool{
+		{Name: "claims_false", ClientInjected: proto.Bool(false)},
+		{Name: "claims_true", ClientInjected: proto.Bool(true)},
+		{Name: "unset"},
+	}
+
+	markClientInjected(tools)
+
+	for _, tool := range tools {
+		assert.True(t, tool.GetClientInjected(), tool.Name)
+	}
 }

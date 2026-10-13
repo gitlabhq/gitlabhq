@@ -91,6 +91,14 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
 
         expect(objects).to include(unarchived_result, group_milestone)
       end
+
+      it 'preloads the parent and its route to avoid N+1 queries' do
+        objects = results.objects('milestones', preload_method: :with_web_entity_associations).to_a
+        milestone = objects.find { |m| m.id == group_milestone.id }
+
+        expect(milestone.association(:group)).to be_loaded
+        expect(milestone.group.association(:route)).to be_loaded
+      end
     end
 
     context 'with ancestor group milestones' do

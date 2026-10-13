@@ -202,30 +202,6 @@ RSpec.describe 'Gitaly unavailable graceful degradation', feature_category: :sou
 
       it_behaves_like 'handles Gitaly errors for request specs'
     end
-
-    describe '#streaming' do
-      let(:make_request) do
-        get namespace_project_blame_streaming_path(
-          namespace_id: project.namespace,
-          project_id: project,
-          id: 'master/README.md'
-        )
-      end
-
-      it_behaves_like 'handles Gitaly errors for request specs'
-    end
-
-    describe '#page' do
-      let(:make_request) do
-        get namespace_project_blame_page_path(
-          namespace_id: project.namespace,
-          project_id: project,
-          id: 'master/README.md'
-        )
-      end
-
-      it_behaves_like 'handles Gitaly errors for request specs'
-    end
   end
 
   describe 'Projects::CommitsController' do

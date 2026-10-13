@@ -36,6 +36,8 @@ module Organizations
             "AntiAbuse::Event",
             "Authz::AdminRole",
             "Authz::GranularScope",
+            "Authz::OauthApplicationGranularScope",
+            "Authz::OauthConsentGrantGranularScope",
             "Authz::PersonalAccessTokenGranularScope",
             # BulkImports::Export is scoped to a project or group, so it must not follow the user
             # to a new organization, otherwise it would diverge from its project/group. The model
@@ -57,6 +59,10 @@ module Organizations
             "Govern::PolicyEvaluation",
             "Group", # migrated by a dedicated service
             "ImportFailure",
+            # Import::Sync::Repository follows the project instead of connected_by_user. It
+            # declares no organization association today, so it's already excluded; this entry
+            # makes the intent explicit.
+            "Import::Sync::Repository",
             "MemberRole",
             "Project", # migrated by a dedicated service
             "ProjectSnippet",
@@ -142,12 +148,15 @@ module Organizations
           update_todos(user_ids)
           update_import_failures(user_ids)
           update_granular_scopes(user_ids)
+          update_oauth_consent_grant_granular_scopes(user_ids)
           update_associated_organization_ids(user_ids)
           update_personal_snippet_notes(user_ids)
           update_user_agent_details(user_ids)
           update_clusters(user_ids)
+          update_oauth_application_granular_scopes(user_ids)
           update_oauth_applications(user_ids)
           update_abuse_reports(user_ids)
+          transfer_ee_associations(user_ids)
           fire_upload_triggers(user_ids)
         end
       end
@@ -261,13 +270,30 @@ module Organizations
       # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
       def update_granular_scopes(user_ids)
         token_ids = PersonalAccessToken.where(user_id: user_ids, organization_id: old_organization.id).select(:id)
-        join_table_scope = Authz::PersonalAccessTokenGranularScope.where(personal_access_token_id: token_ids)
 
-        update_organization_id_for(Authz::PersonalAccessTokenGranularScope) do |relation|
-          relation.where(personal_access_token_id: token_ids)
+        update_granular_scopes_through(Authz::PersonalAccessTokenGranularScope, personal_access_token_id: token_ids)
+      end
+
+      def update_oauth_consent_grant_granular_scopes(user_ids)
+        grant_ids = Authz::OauthConsentGrant.where(user_id: user_ids, organization_id: old_organization.id).select(:id)
+
+        update_granular_scopes_through(Authz::OauthConsentGrantGranularScope, oauth_consent_grant_id: grant_ids)
+      end
+
+      def update_oauth_application_granular_scopes(user_ids)
+        application_ids = Authn::OauthApplication
+          .where(owner_type: 'User', owner_id: user_ids, organization_id: old_organization.id)
+          .select(:id)
+
+        update_granular_scopes_through(Authz::OauthApplicationGranularScope, application_id: application_ids)
+      end
+
+      def update_granular_scopes_through(join_model, owner_condition)
+        update_organization_id_for(join_model) do |relation|
+          relation.where(owner_condition)
         end
 
-        granular_scope_ids = join_table_scope.select(:granular_scope_id)
+        granular_scope_ids = join_model.where(owner_condition).select(:granular_scope_id)
 
         update_organization_id_for(Authz::GranularScope) do |relation|
           relation.where(id: granular_scope_ids)
@@ -381,6 +407,8 @@ module Organizations
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord
+
+      def transfer_ee_associations(user_ids); end
 
       def fire_upload_triggers(user_ids); end
 

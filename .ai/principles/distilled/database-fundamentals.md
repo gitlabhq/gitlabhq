@@ -1,8 +1,7 @@
 ---
-source_checksum: 4392aea8be780250
-distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
+source_checksum: 2a3cdccad3e14268
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
-
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
 # Database Principles
@@ -47,7 +46,7 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 - Order columns per the [Ordering Table Columns](https://docs.gitlab.com/development/database/ordering_table_columns/) guidelines.
 - Ensure foreign keys exist for all columns referencing other tables, with accompanying indexes.
 - Add indexes for columns used in `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN` clauses.
-- Require new tables to be seeded by a file in `db/fixtures/development/`.
+- Require new tables to be seeded by a file in `db/fixtures/development/` (the `run-dev-fixtures-ee` CI job fails when a new table holds no rows after seeding).
 - DO NOT use database tables to store [static data](https://docs.gitlab.com/development/cells/#static-data); use a [fixed items model](https://docs.gitlab.com/development/fixed_items_model/) instead.
 - For column removals, verify the column was [ignored in a previous release](https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/#dropping-columns) before being dropped.
 - When adding a composite index, remove any indexes that become redundant (e.g., adding `index(A, B, C)` makes `index(A, B)` and `index(A)` redundant).
@@ -103,3 +102,4 @@ For the full picture, see:
 
 - doc/development/database_review.md
 - doc/development/database/multiple_databases.md
+

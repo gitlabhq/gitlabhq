@@ -1,0 +1,10 @@
+---
+name: github_continuous_import
+description: Add optional GitHub updates to the existing importer
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23553
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254995
+rollout_issue_url:
+milestone: '19.4'
+group: group::import
+type: wip
+default_enabled: false

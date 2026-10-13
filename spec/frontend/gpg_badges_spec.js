@@ -138,6 +138,8 @@ describe('GpgBadges', () => {
 
     expect(parentContainer.innerHTML).not.toContain('<script>');
     expect(parentContainer.innerHTML).not.toContain('alert("xss")');
+
+    expect(document.querySelector(`[data-commit-sha="${dummyCommitSha}"]`)).toBeNull();
   });
 
   it('fetches commit signatures when the container is not a form element', async () => {

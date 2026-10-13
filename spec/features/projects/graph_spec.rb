@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Graph', :js, feature_category: :source_code_management do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, namespace: user.namespace, maintainers: user)
+  end
+
   let(:branch_name) { 'master' }
 
   before do
     ::Projects::DetectRepositoryLanguagesService.new(project, user).execute
-
-    project.add_maintainer(user)
 
     sign_in(user)
   end
@@ -47,6 +48,8 @@ RSpec.describe 'Project Graph', :js, feature_category: :source_code_management d
   end
 
   context 'chart graph with HTML escaped branch name' do
+    # Creating a branch mutates the repository, so this context needs its own project.
+    let(:project) { create(:project, :repository, namespace: user.namespace, maintainers: user) }
     let(:branch_name) { '<h1>evil</h1>' }
 
     before do

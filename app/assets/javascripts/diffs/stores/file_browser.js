@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { getCookie, parseBoolean, setCookie } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import {
   FILE_BROWSER_VISIBLE,
   TRACKING_CLICK_FILE_BROWSER_SETTING,

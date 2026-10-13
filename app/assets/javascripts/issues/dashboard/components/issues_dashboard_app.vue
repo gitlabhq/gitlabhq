@@ -58,7 +58,6 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { AutocompleteCache } from '../utils';
@@ -93,7 +92,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: [
     'autocompleteAwardEmojisPath',
     'autocompleteUsersPath',
@@ -105,9 +103,7 @@ export default {
     'hasBlockedIssuesFeature',
     'hasIssuableHealthStatusFeature',
     'hasIssueWeightsFeature',
-    'hasOkrsFeature',
-    'hasStatusFeature',
-    'hasQualityManagementFeature',
+    'hasStatusSortFeature',
     'hasScopedLabelsFeature',
     'hasStatusFeature',
     'initialSort',
@@ -407,7 +403,7 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
-        hasStatusFeature: this.glFeatures.workItemStatusOnDashboard && this.hasStatusFeature,
+        hasStatusFeature: this.hasStatusSortFeature,
         hasManualSort: false,
       });
     },

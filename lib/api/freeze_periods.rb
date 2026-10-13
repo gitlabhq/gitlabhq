@@ -13,7 +13,7 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -51,7 +51,7 @@ module API
         tags freeze_periods_tags
       end
       params do
-        requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
+        requires :freeze_period_id, type: Integer, desc: 'ID of the freeze period.'
       end
       route_setting :authorization, permissions: :read_freeze_period, boundary_type: :project
       get ":id/freeze_periods/:freeze_period_id" do
@@ -71,11 +71,12 @@ module API
         tags freeze_periods_tags
       end
       params do
-        requires :freeze_start, type: String, desc: 'Start of the freeze period in cron format.'
-        requires :freeze_end, type: String, desc: 'End of the freeze period in cron format'
+        requires :freeze_start, type: String, desc: 'Start of the freeze period in [cron](https://crontab.guru/) ' \
+                                                'format.'
+        requires :freeze_end, type: String, desc: 'End of the freeze period in [cron](https://crontab.guru/) format.'
         optional :cron_timezone,
           type: String,
-          desc: 'The time zone for the cron fields, defaults to UTC if not provided'
+          desc: 'Time zone for the cron fields.'
       end
       route_setting :authorization, permissions: :create_freeze_period, boundary_type: :project
       post ':id/freeze_periods' do
@@ -103,9 +104,10 @@ module API
         tags freeze_periods_tags
       end
       params do
-        optional :freeze_start, type: String, desc: 'Start of the freeze period in cron format'
-        optional :freeze_end, type: String, desc: 'End of the freeze period in cron format'
-        optional :cron_timezone, type: String, desc: 'The time zone for the cron fields'
+        optional :freeze_start, type: String, desc: 'Start of the freeze period in [cron](https://crontab.guru/) ' \
+                                                'format.'
+        optional :freeze_end, type: String, desc: 'End of the freeze period in [cron](https://crontab.guru/) format.'
+        optional :cron_timezone, type: String, desc: 'Time zone for the cron fields.'
       end
       route_setting :authorization, permissions: :update_freeze_period, boundary_type: :project
       put ':id/freeze_periods/:freeze_period_id' do
@@ -130,7 +132,7 @@ module API
         tags freeze_periods_tags
       end
       params do
-        requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
+        requires :freeze_period_id, type: Integer, desc: 'ID of the freeze period.'
       end
       route_setting :authorization, permissions: :delete_freeze_period, boundary_type: :project
       delete ':id/freeze_periods/:freeze_period_id' do

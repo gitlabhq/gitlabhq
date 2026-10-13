@@ -68,9 +68,11 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
 
         expect_admin_sign_in_success
 
-        # Go to non-admin page
+        # Go to non-admin page. An admin with no authorized projects is excluded
+        # from the flipped homepage dashboard mapping, so root redirects to the
+        # projects dashboard rather than rendering the personal homepage.
         visit root_path
-        expect(page).to have_current_path root_path, ignore_query: true
+        expect(page).to have_current_path dashboard_projects_path, ignore_query: true
 
         # Return to admin area
         visit admin_root_path

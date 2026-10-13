@@ -70,7 +70,10 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateProjectAuthorizations, '#perf
 
     context 'with varying access levels' do
       before do
-        src_table.create!(values.merge(access_level: maintainer_access))
+        # Legacy duplicates predate the is_unique backfill, so they carry NULL and fall
+        # outside index_unique_project_authorizations_on_unique_project_user. The column
+        # now defaults to true, so the duplicate has to say so explicitly.
+        src_table.create!(values.merge(access_level: maintainer_access, is_unique: nil))
         dest_table.where(values.merge(access_level: maintainer_access)).delete_all
       end
 

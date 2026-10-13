@@ -192,7 +192,7 @@ Self-hosted models are AI models [hosted on your own infrastructure](gitlab_duo_
 To select a self-hosted model:
 
 1. Set up [GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md).
-1. [Add a self-hosted model](gitlab_duo_self_hosted/configure_duo_features.md#add-a-self-hosted-model) with an `EMBEDDING` model family.
+1. [Add a self-hosted model](gitlab_duo_self_hosted/configure_duo_features.md#add-a-self-hosted-model) with an [embedding model family](gitlab_duo_self_hosted/configure_duo_features.md#embedding-model).
 
 ### Batch size for embedding requests
 

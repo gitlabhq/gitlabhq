@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 RSpec.describe Gitlab::Database::Migrations::Squasher, feature_category: :database do
   let(:git_output) do
     <<~FILES
@@ -82,7 +82,8 @@ RSpec.describe Gitlab::Database::Migrations::Squasher, feature_category: :databa
       'lib/gitlab/background_migration/background_migration1.rb',
       'ee/lib/ee/gitlab/background_migration/background_migration1.rb',
       'spec/lib/gitlab/background_migration/background_migration1_spec.rb',
-      'ee/spec/lib/ee/gitlab/background_migration/background_migration1_spec.rb'
+      'ee/spec/lib/ee/gitlab/background_migration/background_migration1_spec.rb',
+      'ee/spec/lib/gitlab/background_migration/background_migration1_spec.rb'
     ]
   end
 

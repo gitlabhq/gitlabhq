@@ -22,8 +22,8 @@ module Gitlab
       DEFAULT_PER_PAGE = 100
       CLIENT_CONNECTION_ERROR = ::Faraday::ConnectionFailed # used/set in sawyer agent which octokit uses
 
-      # A single page of data and the corresponding URL.
-      Page = Struct.new(:objects, :url)
+      # A single page of data, its URL, and the URL of the next page (nil on the last page).
+      Page = Struct.new(:objects, :url, :next_url)
 
       # The minimum number of requests we want to keep available.
       #
@@ -45,18 +45,18 @@ module Gitlab
       #            this value to `true` for parallel importing is crucial as
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
-      def initialize(token, host: nil, per_page: DEFAULT_PER_PAGE, parallel: true)
+      #
+      # token_refresher - An optional zero-argument callable that mints a fresh
+      #                    token. When given, one Octokit::Unauthorized response
+      #                    triggers exactly one in-place credential refresh and
+      #                    retry per token generation; without it, Unauthorized
+      #                    propagates unchanged as before.
+      def initialize(token, host: nil, per_page: DEFAULT_PER_PAGE, parallel: true, token_refresher: nil)
         @host = host
-        @octokit = ::Octokit::Client.new(
-          access_token: token,
-          per_page: per_page,
-          api_endpoint: api_endpoint,
-          web_endpoint: web_endpoint
-        )
-
-        @octokit.connection_options[:ssl] = { verify: verify_ssl }
-
+        @per_page = per_page
         @parallel = parallel
+        @token_refresher = token_refresher
+        @octokit = build_octokit(token)
       end
 
       def parallel?
@@ -99,6 +99,14 @@ module Gitlab
 
       def pull_request(repo_name, iid)
         with_rate_limit { octokit.pull_request(repo_name, iid).to_h }
+      end
+
+      def create_hook(repo, config, options = {})
+        with_rate_limit { octokit.create_hook(repo, 'web', config, options).to_h }
+      end
+
+      def delete_hook(repo, hook_id)
+        with_rate_limit { octokit.remove_hook(repo, hook_id) }
       end
 
       def labels(*args)
@@ -147,18 +155,18 @@ module Gitlab
           end
         end
 
-        yield Page.new(collection, resume_url)
-
         next_page = octokit.last_response.rels[:next]
+
+        yield Page.new(collection, resume_url, exposed_next_url(next_page))
 
         while next_page
           raise Exceptions::InvalidURLError, 'Invalid pagination URL' unless valid_next_url?(next_page.href)
 
           response = with_rate_limit { next_page.get }
-
-          yield Page.new(response.data, next_page.href)
-
+          page_url = next_page.href
           next_page = response.rels[:next]
+
+          yield Page.new(response.data, page_url, exposed_next_url(next_page))
         end
       end
 
@@ -181,7 +189,11 @@ module Gitlab
       # The exact strategy used for handling rate limiting errors depends on
       # whether we are running in parallel mode or not. For more information see
       # `#rate_or_wait_for_rate_limit`.
-      def with_rate_limit
+      def with_rate_limit(&block)
+        with_authentication_retry { with_rate_limit_handling(&block) }
+      end
+
+      def with_rate_limit_handling
         return with_retry { yield } unless rate_limiting_enabled?
 
         request_count_counter.increment
@@ -297,6 +309,45 @@ module Gitlab
 
       private
 
+      # Retries one failed GitHub App request with a freshly minted credential.
+      # Ordinary OAuth/PAT clients have no refresher and re-raise unchanged. A
+      # second unauthorized response is never retried by this invocation.
+      def with_authentication_retry
+        yield
+      rescue ::Octokit::Unauthorized
+        raise unless refreshable?
+
+        refresh_token!
+        yield
+      end
+
+      # Replaces the in-memory Octokit client with a freshly minted credential.
+      # No credential is persisted, logged, cached, or returned to the caller.
+      def refresh_token!
+        refreshed_token = @token_refresher.call
+        raise ArgumentError, 'GitHub installation token refresh returned no credential' if refreshed_token.blank?
+
+        @octokit = build_octokit(refreshed_token)
+      end
+
+      # Reports whether this client owns a JIT installation-token callback.
+      def refreshable?
+        @token_refresher.respond_to?(:call)
+      end
+
+      # Builds an Octokit client from an ephemeral credential held only in
+      # memory. Rebuilding uses the same host, page size, and TLS policy.
+      def build_octokit(token)
+        client = ::Octokit::Client.new(
+          access_token: token,
+          per_page: @per_page,
+          api_endpoint: api_endpoint,
+          web_endpoint: web_endpoint
+        )
+        client.connection_options[:ssl] = { verify: verify_ssl }
+        client
+      end
+
       def formatted_api_endpoint
         strong_memoize(:formatted_api_endpoint) do
           next if @host.nil?
@@ -323,10 +374,17 @@ module Gitlab
         end
       end
 
+      # Never hands an unvalidated URL to callers; an invalid one still raises when followed.
+      def exposed_next_url(next_page)
+        next_page.href if next_page && valid_next_url?(next_page.href)
+      end
+
       def valid_next_url?(next_url)
         next_url_host = URI.parse(next_url).host
 
         next_url_host == api_endpoint_host
+      rescue URI::InvalidURIError
+        false
       end
 
       def with_retry

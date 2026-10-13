@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
-  let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:seed_attributes) do
     {
       name: 'some-job',
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
   let(:logger) { instance_double(Gitlab::Ci::Pipeline::Logger, instrument: nil) }
 
   before_all do
-    create(:cluster_agent, project: project)
+    create(:cluster_agent, project: project, created_by_user: user)
   end
 
   before do
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     it_behaves_like 'variables collection'
 
     context 'when the pipeline has a trigger request' do
-      let!(:trigger) { create(:ci_trigger, project: project) }
+      let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project, user: user) }
 
       it 'includes trigger variables' do
@@ -126,18 +126,20 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
         }
       end
 
-      let!(:default_cluster) do
+      let_it_be(:default_cluster) do
         create(
           :cluster,
           :not_managed,
           platform_type: :kubernetes,
           projects: [project],
           environment_scope: '*',
-          platform_kubernetes: default_cluster_kubernetes
+          user: user
         )
       end
 
-      let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+      let_it_be(:default_cluster_kubernetes) do
+        create(:cluster_platform_kubernetes, token: 'default-AAA', cluster: default_cluster)
+      end
 
       it 'returns a collection of variables' do
         is_expected.to include('CI_ENVIRONMENT_NAME' => 'env-main')
@@ -178,18 +180,20 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
         }
       end
 
-      let!(:default_cluster) do
+      let_it_be(:default_cluster) do
         create(
           :cluster,
           :not_managed,
           platform_type: :kubernetes,
           projects: [project],
           environment_scope: '*',
-          platform_kubernetes: default_cluster_kubernetes
+          user: user
         )
       end
 
-      let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+      let_it_be(:default_cluster_kubernetes) do
+        create(:cluster_platform_kubernetes, token: 'default-AAA', cluster: default_cluster)
+      end
 
       it 'does not expand the nested variable' do
         is_expected.to include('KUBE_NAMESPACE' => "k8s-nested-$CI_PROJECT_PATH")

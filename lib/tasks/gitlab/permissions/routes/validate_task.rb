@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'spec_permission_scanner'
-
 module Tasks
   module Gitlab
     module Permissions
@@ -17,9 +15,7 @@ module Tasks
               boundary_mismatch: [],
               missing_authorization: [],
               invalid_skip_reason: [],
-              invalid_additional_scope: [],
-              invalid_condition: [],
-              insufficient_tests: []
+              invalid_condition: []
             }
             @source_locations = {}.compare_by_identity
           end
@@ -30,8 +26,6 @@ module Tasks
 
           def validate!
             routes.each { |route| validate_route(route) }
-
-            violations[:insufficient_tests] = spec_permission_scanner.insufficient_test_coverage
 
             super
           end
@@ -73,50 +67,9 @@ module Tasks
               validate_permission_defined(route, permission)
               validate_boundary_defined(route, permission, boundary_types)
               validate_assignable_permission(route, permission, boundary_types)
-
-              unless authorization[:skip_granular_token_authorization]
-                register_test_coverage(route, permission, boundary_types)
-              end
             end
 
-            validate_additional_scopes(route, authorization)
             validate_skip_reason(route, authorization)
-          end
-
-          # A malformed entry fails silently at request time: without permissions or a
-          # resolvable boundary it 404s every granular token, and a :project/:group entry
-          # without boundary_param/boundary falls back to the primary boundary's params
-          # and re-checks the same container instead of the second one.
-          def validate_additional_scopes(route, authorization)
-            Array(authorization[:additional_scopes]).each do |scope|
-              boundary_types = Array(scope[:boundary_type])
-              permissions = Array(scope[:permissions])
-
-              if permissions.empty?
-                violations[:invalid_additional_scope] << base_error(route).merge(reason: 'missing permissions')
-                next
-              end
-
-              validate_additional_scope_boundary_source(route, scope)
-
-              permissions.each do |permission|
-                validate_permission_defined(route, permission)
-                validate_boundary_defined(route, permission, boundary_types)
-                validate_assignable_permission(route, permission, boundary_types)
-
-                unless authorization[:skip_granular_token_authorization]
-                  register_test_coverage(route, permission, boundary_types, scope_suffix: 'additional')
-                end
-              end
-            end
-          end
-
-          def validate_additional_scope_boundary_source(route, scope)
-            return unless [:project, :group].include?(scope[:boundary_type])
-            return if scope[:boundary_param] || scope[:boundary].respond_to?(:call)
-
-            violations[:invalid_additional_scope] <<
-              base_error(route).merge(reason: 'missing boundary_param or boundary')
           end
 
           def has_authorization?(authorization)
@@ -204,33 +157,6 @@ module Tasks
             )
           end
 
-          # Routes generated from the same endpoint declaration (for example a shared
-          # concern mounted at both instance and project level, or an endpoint defined
-          # in a loop) share one decorator and one code path, so they are counted as a
-          # single endpoint per boundary type. The scope_suffix keeps an additional
-          # scope's requirement countable even when it repeats the primary permission.
-          def register_test_coverage(route, permission, boundary_types, scope_suffix: nil)
-            location = @source_locations[route]
-            return unless location
-
-            source_file = relative_path(location.first)
-            scanner = spec_permission_scanner
-
-            scanner.add_endpoint(
-              endpoint_id: ["#{source_file}:#{location.last}", boundary_types.sort.join(','),
-                scope_suffix].compact.join(' '),
-              permission: permission,
-              details: base_error(route).merge(
-                permission: permission,
-                spec_file: scanner.derive_spec_path(source_file)
-              )
-            )
-          end
-
-          def spec_permission_scanner
-            @spec_permission_scanner ||= SpecPermissionScanner.new
-          end
-
           def format_all_errors
             out = format_route_errors(:undefined_permission)
             out += format_route_errors(:missing_boundary)
@@ -238,9 +164,7 @@ module Tasks
             out += format_boundary_mismatch_errors
             out += format_route_errors(:missing_authorization)
             out += format_invalid_skip_reason_errors
-            out += format_route_errors(:invalid_additional_scope)
-            out += format_invalid_condition_errors
-            out + format_insufficient_test_errors
+            out + format_invalid_condition_errors
           end
 
           def format_route_errors(kind)
@@ -251,7 +175,6 @@ module Tasks
             violations[kind].each do |violation|
               out += "  - #{violation[:method]} #{violation[:path]}"
               out += ": #{violation[:permission]}" if violation[:permission]
-              out += ": #{violation[:reason]}" if violation[:reason]
               out += " (#{violation[:source]})\n"
             end
 
@@ -297,22 +220,6 @@ module Tasks
             "#{out}\n"
           end
 
-          def format_insufficient_test_errors
-            return '' if violations[:insufficient_tests].empty?
-
-            out = "#{error_messages[:insufficient_tests]}\n\n"
-
-            violations[:insufficient_tests].each do |v|
-              out += "  - #{v[:permission]}: #{v[:endpoint_count]} endpoints, #{v[:test_count]} tests\n"
-              v[:endpoints].each do |route|
-                out += "      #{route[:method]} #{route[:path]} (#{route[:source]})\n"
-                out += "        Suggested spec: #{route[:spec_file]}\n"
-              end
-            end
-
-            "#{out}\n"
-          end
-
           def error_messages
             {
               undefined_permission: <<~MSG.chomp,
@@ -324,13 +231,6 @@ module Tasks
                 The following API routes define permissions but are missing a boundary_type.
                 Add boundary_type to the route_setting :authorization.
                 #{implementation_guide_link(anchor: 'step-5-add-authorization-decorators-to-api-endpoints')}
-              MSG
-              invalid_additional_scope: <<~MSG.chomp,
-                The following API routes have an invalid additional_scopes entry.
-                Each entry must declare its own permissions, because they differ from the primary boundary's.
-                A :project or :group entry must also declare boundary_param or boundary to locate its container.
-                Otherwise it silently falls back to the primary boundary's own params and re-checks the same container.
-                #{implementation_guide_link(anchor: 'additional-required-scopes')}
               MSG
               missing_assignable: <<~MSG.chomp,
                 The following API routes reference permissions not included in any assignable permission.
@@ -351,16 +251,10 @@ module Tasks
                 The following API routes use a missing or invalid skip_granular_token_authorization reason.
                 Use one of: #{VALID_SKIP_REASONS.map { |r| ":#{r}" }.join(', ')}
               MSG
-              invalid_condition: <<~MSG.chomp,
+              invalid_condition: <<~MSG.chomp
                 The following API routes use an unknown assignable_when condition.
                 Use one of: #{::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys.map { |c| ":#{c}" }.join(', ')}
                 #{assignable_permissions_link(anchor: 'conditionally-assignable-permissions')}
-              MSG
-              insufficient_tests: <<~MSG.chomp
-                The following permissions have fewer tests than endpoints using them.
-                Each endpoint declaration should have its own `it_behaves_like 'authorizing granular token permissions'`
-                test per boundary type. Add test coverage.
-                #{implementation_guide_link(anchor: 'step-6-add-authorization-tests')}
               MSG
             }
           end

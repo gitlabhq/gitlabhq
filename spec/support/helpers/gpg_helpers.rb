@@ -784,4 +784,348 @@ module GpgHelpers
       '08748B360CD25C2ECC99D59407016CF9E13A3F9B'
     end
   end
+
+  # A key carrying one live UID, one revoked UID and a signing subkey. The
+  # revoked UID is still part of the key, since revoking a UID adds a
+  # revocation signature rather than removing the UID. Both signatures were
+  # made under the live UID: one with the primary key, one with the subkey.
+  module UserWithRevokedUid
+    extend self
+
+    def signed_commit_signature
+      <<~SIGNATURE
+        -----BEGIN PGP SIGNATURE-----
+
+        iQEzBAABCgAdFiEE2C1NbV0gUVARQOIy1UJijUNKz+MFAmqnurEACgkQ1UJijUNK
+        z+PjUQgAt9e4fz2J4USLD6eL9tmPqpFdak3eQ6uBKgtT/hQZ13Nkbip6JgtKiDpS
+        CK/IKKQTnvR271CGK+xA0ClKHupI0bPxQhdgNZTT3fkPRB9xDnuVLteJ1bFMXuQj
+        8T/zGkImZLSsX1+o2DRztmL7il4AL+epWkbtMfTotls9hNFnFZkxWwOYcNhYIQ5Q
+        /EFFpnPnHxEf266cYRA8AFqDOdpysFIiyZmXg/erLu9X7D58wSPi8l2tTOmi3S9p
+        LICbat2+aKbtX8nyKth3IZPtSmS5CXt3LkEG3FqFcCChSPf586EmHkX8fJWN3TdO
+        Y+tTSM0dGOeqlx7uvoA6A4aleas1/Q==
+        =t108
+        -----END PGP SIGNATURE-----
+      SIGNATURE
+    end
+
+    def signed_commit_base_data
+      <<~SIGNEDDATA
+        tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+        parent 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
+        author Sarah Mueller <sarah.mueller@example.com> 1789372255 +0200
+        committer Sarah Mueller <sarah.mueller@example.com> 1789372255 +0200
+
+        Commit signed by Sarah Mueller with her primary key
+      SIGNEDDATA
+    end
+
+    def subkey_signed_commit_signature
+      <<~SIGNATURE
+        -----BEGIN PGP SIGNATURE-----
+
+        iQEzBAABCgAdFiEE1S0LJ7glxRBwlV0F3v68vjWScA8FAmqnurEACgkQ3v68vjWS
+        cA8LkAf/dpy3BQ9aC3TMf1mlEpywo3OFv09r7V8Q+eUtufZpXbS0YsK10jYRxwHh
+        N2z+Tx/PIxAaFN8Ydxido5bYCyB90AJLYWHp5y9g/4QwxGpyqEHzWztf1/W9UTKp
+        j7pNCY5+He4RjOQB1DB5EaQdFhwvwvRvCd75+scuNZ9tQmwGaJ5FQnZOK6DtGcsU
+        W2mKZcw8xUlb/lF/JuMb6l3F3b3Izc9WJWVS9l0qHZKYOATNWlMysA8MLwsrF3/U
+        oOzn+QiyiNlcg7Cg9lTzkTDYADwjWqD3tn4IcN72oPHmRYXvn3ZqOWMI7R+m6ZND
+        hi62HcnkZIaLV9o0dhIWDi+zNDJJXg==
+        =LS94
+        -----END PGP SIGNATURE-----
+      SIGNATURE
+    end
+
+    def subkey_signed_commit_base_data
+      <<~SIGNEDDATA
+        tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+        parent 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
+        author Sarah Mueller <sarah.mueller@example.com> 1789372256 +0200
+        committer Sarah Mueller <sarah.mueller@example.com> 1789372256 +0200
+
+        Commit signed by Sarah Mueller with her signing subkey
+      SIGNEDDATA
+    end
+
+    def public_key
+      <<~KEY.strip
+        -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+        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
+        =Gqdc
+        -----END PGP PUBLIC KEY BLOCK-----
+      KEY
+    end
+
+    def secret_key
+      <<~KEY.strip
+        -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+        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
+        =5Oal
+        -----END PGP PRIVATE KEY BLOCK-----
+      KEY
+    end
+
+    def primary_keyid
+      fingerprint[-16..]
+    end
+
+    def fingerprint
+      'D82D4D6D5D2051501140E232D542628D434ACFE3'
+    end
+
+    def subkey_fingerprints
+      %w[D52D0B27B825C51070955D05DEFEBCBE3592700F]
+    end
+
+    def names
+      ['Sarah Mueller']
+    end
+
+    def emails
+      ['sarah.mueller@example.com']
+    end
+
+    def revoked_emails
+      ['sarah.mueller@oldcompany.example.com']
+    end
+  end
+
+  # A key whose only remaining UID is revoked. GnuPG refuses to revoke the last
+  # valid UID of a key, so this one was built by revoking one UID and deleting
+  # the other. GnuPG still signs with such a key, and the signature verifies.
+  module UserWithOnlyRevokedUid
+    extend self
+
+    def signed_commit_signature
+      <<~SIGNATURE
+        -----BEGIN PGP SIGNATURE-----
+
+        iQEzBAABCgAdFiEERdlyqGGNKFRgqBfj17YqrefBT8kFAmqnutUACgkQ17YqrefB
+        T8lShgf/eCZg98kZrsUrgbi7pTC0J6nkV2NAUwN/SYOvl4AALwxwn54X1zcgoy4Z
+        ToFap3TPgYtJ1YhdUnap09at3fC9tpImxJsFoh8S5tRPPTA/OhrBFFOqKSg+9U2O
+        T1fZcZWMbASioNnm5IXf5j/bf875l+VbqMF0enXT1hg++d449Yt/cMUGAF9Q107c
+        cQe5sVviT2YraLxDt39gUhcyNN7faMmEgew4pCaRRWg4o5GAvRSvPXKhvbswndai
+        VDo3wwF+vXPNWbbgOFM9Eprdyc3U5iZDmDnVGSAYG2w9RxJI2M/bW0RaeWLawQVN
+        CTg6Ne61jebRrlB3IsKH6ykEB9K6Cg==
+        =2Ufq
+        -----END PGP SIGNATURE-----
+      SIGNATURE
+    end
+
+    def signed_commit_base_data
+      <<~SIGNEDDATA
+        tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+        parent 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33
+        author Tomas Novak <tomas.novak@former.example.com> 1789372314 +0200
+        committer Tomas Novak <tomas.novak@former.example.com> 1789372314 +0200
+
+        Commit signed by Tomas Novak under a uid he has since revoked
+      SIGNEDDATA
+    end
+
+    def public_key
+      <<~KEY.strip
+        -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+        mQENBGqnutUBCADQeo0YkEfLPtA24+YPhyZzg7cWZ4vQsvoCUnGwnARYopF0OxWe
+        ONCkP4NJQX0FBwPjslUSbSDiVWapcOjyKlHWffZxzlViqz9lORPRL4ECLX62Bak5
+        0UCBQPh7PlMZ1i33ABLn34gDPSXqW25biHeRAH6lzIGnYWkgjJyQU//5aKvy5ndK
+        VilYX+LsLCcM8CLvVf87nSl3n+9oXqpQOAQ9Pmqbmk4EU/jU9iKJL6p8ft2Yda10
+        ZTqi9ClgUtdvQy2kJS1YVErL0rHmCWDFMeHHuysuKoY78/UUxFdl9KPeZqO6ReE/
+        AkVB64R50nOr7sAoRED0EQXZg5we+Q0wi1HpABEBAAG0LFRvbWFzIE5vdmFrIDx0
+        b21hcy5ub3Zha0Bmb3JtZXIuZXhhbXBsZS5jb20+iQE2BDABCgAgFiEERdlyqGGN
+        KFRgqBfj17YqrefBT8kFAmqnutYCHSAACgkQ17YqrefBT8mfdQf/TenAiOygIX+o
+        MILj5k7gweT/Mee5D3Z3CgIVcTe0dX3w0IDwmXdgm0v2/nkMaj4ROXd9w3CE+ogn
+        dWhnY0D9Z7k/NbtKK4/sSLAW9HSAZijMPnfFE9kHTSA51jQRHHzedg4SHx3jBSaC
+        eK5/3D8ytKUkqANL0heeDUGzyGU/Ya8HATVyuznIRhjImzKBNLmrKSeaMraNq02+
+        qWRIgDguaywe7Pi5pv7dy7chCEt4mkGxEmhWiyT3wDwcTXJv7zzb7SjwB4Hu5Nxs
+        +mc62bMVbnwYJPa9nAmMYvM6soJVqArAnkoZjLc8DmbjZDFieoAAB3kE2iTiyXFa
+        BJ1CEmVfV4kBTgQTAQoAOBYhBEXZcqhhjShUYKgX49e2Kq3nwU/JBQJqp7rVAhsD
+        BQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJENe2Kq3nwU/Jnh4H/iyOH+xcIBQF
+        xnCr5SM+vTAruwA3jX/nbakSZP0siDhtKttetAA9ldUnd1hqJcEX4bH/LV9WBZgY
+        3TV8MDOsxy9a8zXyASmWLphY+JpKrDKJ7HJnd/vJhy33cTaXxGJj5cxRqFqEKbZn
+        +9NLSOrn02JYzu5CFMpZnst0fHQqgzCa49x7qP8Kl7FyYyA2S2b0mDNb2zYNEwsq
+        wxfDdKlq4tMrwWALBDy5o8qlU8uyqW7hRFPjd4msFybHXuA2boZA3QNc/bAUHAyQ
+        d5/T4wGkSC2ZBMBlg2aC4FiCpX91TyMJxWxDrUuppbkW1L4gRCyM4R1SXuHzVYIL
+        xTJTP+UN0Xk=
+        =T3j4
+        -----END PGP PUBLIC KEY BLOCK-----
+      KEY
+    end
+
+    def secret_key
+      <<~KEY.strip
+        -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+        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
+        =YnHn
+        -----END PGP PRIVATE KEY BLOCK-----
+      KEY
+    end
+
+    def primary_keyid
+      fingerprint[-16..]
+    end
+
+    def fingerprint
+      '45D972A8618D285460A817E3D7B62AADE7C14FC9'
+    end
+
+    def revoked_emails
+      ['tomas.novak@former.example.com']
+    end
+  end
 end

@@ -1,11 +1,19 @@
 <script>
 import { GlLink, GlTruncate, GlTooltipDirective } from '@gitlab/ui';
 
-import { DATE_TIME_FORMATS, DEFAULT_DATE_TIME_FORMAT } from '~/lib/utils/datetime_utility';
+import {
+  DATE_TIME_FORMATS,
+  DEFAULT_DATE_TIME_FORMAT,
+  isValidDate,
+  newDate,
+} from '~/lib/utils/datetime_utility';
 import timeagoMixin from '../mixins/timeago';
 
 /**
  * Port of ruby helper time_ago_with_tooltip
+ *
+ * A `time` that cannot be parsed (for example a commit date beyond the range of `Date`)
+ * renders as its raw value, with no tooltip.
  */
 
 export default {
@@ -57,13 +65,24 @@ export default {
   },
   emits: ['click'],
   computed: {
+    isParsable() {
+      return isValidDate(newDate(this.time));
+    },
     timeAgo() {
+      if (!this.isParsable) {
+        return String(this.time);
+      }
+
       return this.timeFormatted(this.time, this.dateTimeFormat, {
         showDateWhenOverAYear: this.showDateWhenOverAYear,
       });
     },
     tooltipText() {
-      return this.enableTruncation ? undefined : this.tooltipTitle(this.time);
+      if (this.enableTruncation || !this.isParsable) {
+        return undefined;
+      }
+
+      return this.tooltipTitle(this.time);
     },
   },
 };

@@ -33,24 +33,54 @@ module Gitlab
 
       def all_foreign_keys
         @all_foreign_keys ||= @tables.each_with_object(Hash.new { |h, k| h[k] = [] }) do |table, hash|
-          foreign_keys_for(table).each do |fk|
-            hash[fk.referenced_table_name] << table
+          foreign_keys_for(table).each { |fk| record_dependency(hash, fk, table) }
 
-            # When the FK targets an attached partition, also record the
-            # dependency against the partitioned parent. TRUNCATE on the parent
-            # cascades to every partition, so any referencing table must be
-            # truncated before the parent's batch--otherwise PostgreSQL raises
-            # a feature-not-supported error on the implicit partition truncate.
-            parent = partition_parents[fk.referenced_table_name]
-            hash[parent] << table if parent
-          end
+          # FKs held by an attached partition live on the partition, not the
+          # partitioned parent, and the partition is not listed in @tables (its
+          # rows are cleared by TRUNCATE cascading from the parent). Attribute
+          # those FKs to the parent so a table the partition references is
+          # ordered before the parent's batch--otherwise PostgreSQL raises a
+          # feature-not-supported error when the parent's TRUNCATE cascade hits
+          # the still-referenced partition.
+          attached_partition_foreign_keys_for(table).each { |fk| record_dependency(hash, fk, table) }
         end
       end
 
+      def record_dependency(hash, fk, table)
+        hash[fk.referenced_table_name] << table
+
+        # When the FK targets an attached partition, also record the
+        # dependency against the partitioned parent. TRUNCATE on the parent
+        # cascades to every partition, so any referencing table must be
+        # truncated before the parent's batch--otherwise PostgreSQL raises
+        # a feature-not-supported error on the implicit partition truncate.
+        parent = partition_parents[fk.referenced_table_name]
+        hash[parent] << table if parent
+      end
+
       def partition_parents
-        @partition_parents ||= Gitlab::Database::SharedModel.using_connection(@connection) do
-          Gitlab::Database::PostgresPartition.all.each_with_object({}) do |partition, hash|
-            hash[partition.name] = partition.parent_identifier.split('.', 2).last
+        partition_metadata[:parents]
+      end
+
+      def partitions_by_parent
+        partition_metadata[:children]
+      end
+
+      # Loads every partition once and derives two maps: partition name to its
+      # parent's unqualified name, and parent's unqualified name to its
+      # partition names. Both callers reuse this single query instead of
+      # issuing a per-parent-table partition lookup.
+      def partition_metadata
+        @partition_metadata ||= Gitlab::Database::SharedModel.using_connection(@connection) do
+          empty_metadata = { parents: {}, children: Hash.new { |h, k| h[k] = [] } }
+
+          # Load all partitions in a single query on purpose; find_each would
+          # split this into batches, defeating the point of caching it once.
+          Gitlab::Database::PostgresPartition.all.to_a.each_with_object(empty_metadata) do |partition, metadata|
+            parent = partition.parent_identifier.split('.', 2).last
+
+            metadata[:parents][partition.name] = parent
+            metadata[:children][parent] << partition.name
           end
         end
       end
@@ -65,6 +95,20 @@ module Gitlab
 
         Gitlab::Database::SharedModel.using_connection(@connection) do
           Gitlab::Database::PostgresForeignKey.by_constrained_table_name_or_identifier(table.identifier).load
+        end
+      end
+
+      # Foreign keys constrained on the attached partitions of a partitioned
+      # +table+. Returns [] for non-partitioned tables. Reuses the partitions
+      # already loaded in partition_metadata and issues one batched FK query,
+      # rather than a partition lookup per table and an FK query per partition.
+      def attached_partition_foreign_keys_for(table)
+        name = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils.extract_schema_qualified_name(table).identifier
+        partition_names = partitions_by_parent[name]
+        return [] if partition_names.empty?
+
+        Gitlab::Database::SharedModel.using_connection(@connection) do
+          Gitlab::Database::PostgresForeignKey.by_constrained_table_name(partition_names).to_a
         end
       end
     end

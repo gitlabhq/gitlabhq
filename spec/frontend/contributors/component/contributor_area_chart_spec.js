@@ -38,11 +38,13 @@ describe('Contributor area chart', () => {
 
   const findAreaChart = () => wrapper.findComponent(GlAreaChart);
   const findTooltipTitle = () => wrapper.findByTestId('tooltip-title').text();
-  const findTooltipLabel = () => wrapper.findByTestId('tooltip-label').text();
-  const findTooltipValue = () => wrapper.findByTestId('tooltip-value').text();
+  const findTooltipLabels = () =>
+    wrapper.findAllByTestId('tooltip-label').wrappers.map((w) => w.text());
+  const findTooltipValues = () =>
+    wrapper.findAllByTestId('tooltip-value').wrappers.map((w) => w.text());
 
-  const setTooltipData = async (title, value) => {
-    findAreaChart().vm.formatTooltipText({ seriesData: [{ data: [title, value] }] });
+  const setTooltipData = async (seriesData = [{ data: ['01-01-2000', 10] }]) => {
+    findAreaChart().vm.formatTooltipText({ seriesData });
     await nextTick();
   };
 
@@ -65,11 +67,22 @@ describe('Contributor area chart', () => {
     });
 
     it('shows the tooltip with the formatted chart data', async () => {
-      await setTooltipData('01-01-2000', 10);
+      await setTooltipData();
 
       expect(findTooltipTitle()).toBe('Jan 1, 2000');
-      expect(findTooltipLabel()).toBe(defaultProps.option.yAxis.name);
-      expect(findTooltipValue()).toBe('10');
+      expect(findTooltipLabels()).toEqual([defaultProps.option.yAxis.name]);
+      expect(findTooltipValues()).toEqual(['10']);
+    });
+
+    it('shows the tooltip with all formatted chart series', async () => {
+      await setTooltipData([
+        { seriesName: 'Additions', data: ['01-01-2000', 10] },
+        { seriesName: 'Deletions', data: ['01-01-2000', 5] },
+      ]);
+
+      expect(findTooltipTitle()).toBe('Jan 1, 2000');
+      expect(findTooltipLabels()).toEqual(['Additions', 'Deletions']);
+      expect(findTooltipValues()).toEqual(['10', '5']);
     });
   });
 
@@ -84,9 +97,9 @@ describe('Contributor area chart', () => {
     });
 
     it('shows a default tooltip label if the Y axis name is missing', async () => {
-      await setTooltipData('01-01-2000', 10);
+      await setTooltipData();
 
-      expect(findTooltipLabel()).toEqual('Value');
+      expect(findTooltipLabels()).toEqual(['Value']);
     });
   });
 });

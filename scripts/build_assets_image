@@ -65,7 +65,7 @@ else
   fi
 fi
 
-if docker buildx imagetools inspect "${COMMIT_ASSETS_HASH_DESTINATION}" >/dev/null 2>&1; then
+if [ "${GLCI_REBUILD_ASSETS_IMAGE}" != "true" ] && docker buildx imagetools inspect "${COMMIT_ASSETS_HASH_DESTINATION}" >/dev/null 2>&1; then
   if [ -n "${DESTINATIONS}" ]; then
     echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, only re-tagging with other destination tags" "yes"
     docker buildx imagetools create ${DESTINATIONS} "$COMMIT_ASSETS_HASH_DESTINATION"

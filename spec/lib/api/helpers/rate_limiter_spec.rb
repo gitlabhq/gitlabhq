@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Helpers::RateLimiter do
   let(:key) { :some_key }
-  let(:scope) { [:some, :scope] }
+  let(:scope) { { user: :some_scope } }
   let(:request) { instance_double('Rack::Request') }
   let(:user) { build_stubbed(:user) }
   let(:ip) { '0.0.0.0' }
@@ -22,6 +22,10 @@ RSpec.describe API::Helpers::RateLimiter do
       end
 
       def too_many_requests!(message, retry_after:); end
+
+      def header
+        @header ||= {}
+      end
     end
   end
 
@@ -52,6 +56,15 @@ RSpec.describe API::Helpers::RateLimiter do
       rate_limit
     end
 
+    it 'names the throttle that tripped in the RateLimit-Name header' do
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:period_for).with(key).and_return(5.minutes)
+
+      rate_limit
+
+      expect(rate_limiter.header['RateLimit-Name']).to eq(key.to_s)
+    end
+
     context 'when the bypass header is set' do
       before do
         allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
@@ -77,13 +90,13 @@ RSpec.describe API::Helpers::RateLimiter do
     subject(:rate_limit) { rate_limiter.check_rate_limit_by_user_or_ip!(key) }
 
     context 'when current user is present' do
-      let(:scope) { user }
+      let(:scope) { { user: user } }
 
       it_behaves_like 'checks rate limit by scope'
     end
 
     context 'when current user is not present rate limits by IP address' do
-      let(:scope) { ip }
+      let(:scope) { { ip: ip } }
       let(:user) { nil }
 
       it_behaves_like 'checks rate limit by scope'

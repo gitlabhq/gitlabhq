@@ -1,0 +1,10 @@
+---
+name: bl_security_analyzer
+description: Gate the Business Logic Security Analyzer surfaces (security configuration, scan profiles, scanners list) and its foundational flows, default off until the paired engine work ships
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630266
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257091
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630266
+milestone: '19.5'
+type: experiment
+group: group::code security
+default_enabled: false

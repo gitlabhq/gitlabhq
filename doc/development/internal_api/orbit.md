@@ -28,16 +28,49 @@ To authenticate using the JWT, clients:
 1. Use the signing key to generate a JSON Web Token (`JWT`) with the `gkg-indexer:` subject prefix.
 1. Pass the JWT in the `Gitlab-Orbit-Api-Request` header.
 
-All endpoints require the `knowledge_graph_infra` feature flag to be enabled.
+Project endpoints require both Workhorse internal API authentication and a valid knowledge graph JWT.
+The JWT identifies a service, not a GitLab user. Rails API request logs identify authenticated
+indexer traffic with `meta.client_service=orbit-indexer`, alongside the endpoint's `meta.caller_id`.
+The request does not populate a user name in Rails or Gitaly logs.
 
-> [!note]
-> When the knowledge graph service calls these endpoints, the request executes
-> in an authenticated user context. As a result, project [audit events](../../user/compliance/audit_events.md)
-> can show an authenticated user performing repository operations (for example,
-> `repository_download_operation`) that were triggered by indexer activity rather
-> than by a direct user action.
+Repository archive [audit events](../../user/compliance/audit_events.md) use the
+`GitLab Orbit Indexer` audit author rather than a user. For Workhorse-assisted archive,
+changed-path, blob, and raw-diff requests, Gitaly receives `client_name=orbit-indexer`.
+Direct Rails calls to Gitaly use the Rails client name instead.
 
 ## Internal Endpoints
+
+### Cloud Connector
+
+#### Fetch the Cloud Connector token
+
+Use a GET request to retrieve the Cloud Connector token for authenticating billing-event emission on Self-Managed and Dedicated instances where workload-identity authentication is unavailable.
+
+```plaintext
+GET /internal/orbit/cloud_connector_token
+```
+
+Example request:
+
+```shell
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/cloud_connector_token"
+```
+
+Example response:
+
+```json
+{
+  "token": "<json-web-token>"
+}
+```
+
+The token carries its own `exp` claim.
+Callers that need the expiry decode it from the token instead of relying on a separate field.
+
+If no Cloud Connector token is available or the token is malformed, the endpoint returns `503`.
+
+> [!note]
+> A successful call to this endpoint is recorded as an `orbit_cloud_connector_token_issued` [audit event](../../user/compliance/audit_events.md), attributed to the Orbit indexer at the instance scope rather than to a direct user action.
 
 ### Project
 

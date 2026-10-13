@@ -25,10 +25,10 @@ module WorkItemResourceEvent
     # System notes for label resource events are handled in batches,
     # so that we have single system note for multiple label changes.
     if is_a?(ResourceLabelEvent) && events.present?
-      return synthetic_note_class.from_events(events, resource: work_item, resource_parent: work_item.project)
+      return synthetic_note_class.from_events(events, resource: work_item, resource_parent: work_item.resource_parent)
     end
 
-    synthetic_note_class.from_event(self, resource: work_item, resource_parent: work_item.project)
+    synthetic_note_class.from_event(self, resource: work_item, resource_parent: work_item.resource_parent)
   end
 
   # Class used to create the even synthetic note

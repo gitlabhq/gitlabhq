@@ -40,7 +40,7 @@ module MergeRequests
         ],
         milestone: [:milestone, { milestone: [:project, :group] }],
         security_auto_fix: [:author],
-        head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],
+        head_pipeline: [:latest_merge_request_diff, { head_pipeline: [:merge_request, :project] }],
         timelogs: [:timelogs],
         pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
         committers: [merge_request_diff: [:merge_request_diff_commits]],
@@ -48,6 +48,7 @@ module MergeRequests
         diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]],
         source_branch_exists: [:source_project, { source_project: [:route] }],
         squash_read_only: { target_project: :project_setting },
+        web_path: { target_project: [:route, { namespace: [:route] }] },
         web_url: { target_project: [:route, { namespace: [:route] }] },
         reference: { target_project: [:route, { namespace: [:route] }] },
         project: { target_project: [:route, { namespace: [:route] }] },

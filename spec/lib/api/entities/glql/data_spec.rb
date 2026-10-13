@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_entity'
 
 RSpec.describe API::Entities::Glql::Data, feature_category: :custom_dashboards_foundation do
   let(:data) do

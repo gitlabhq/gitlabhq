@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Create a GitLab Pages website from scratch'
+description: Create a GitLab Pages website from a blank project with Jekyll and a custom CI/CD configuration.
 ---
 
 {{< details >}}
@@ -35,7 +36,7 @@ To create a GitLab Pages website:
 - [Step 5: Specify the `public` directory for artifacts](#specify-the-public-directory-for-artifacts)
 - [Step 6: Deploy and view your website](#deploy-and-view-your-website)
 
-## Prerequisites
+## Before you begin
 
 You must have a [blank project](../../_index.md#create-a-blank-project) in GitLab.
 

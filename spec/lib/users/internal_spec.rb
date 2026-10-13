@@ -6,46 +6,46 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   let_it_be(:first_organization) { create(:organization) }
   let_it_be(:organization) { create(:organization) }
 
-  shared_examples 'bot users' do |bot_type, username, email|
+  shared_examples 'bot users' do |bot_type, username, email, avatar_filename = nil|
     subject(:bot_user) { described_class.in_organization(organization).public_send(bot_type) }
 
-    let(:bot_username) do
+    let_it_be(:bot_username) do
       described_class.in_organization(organization).send(
         :username_with_organization_suffix, username
       )
     end
 
-    it 'creates the user if it does not exist' do
+    it 'creates the bot user with expected attributes', :aggregate_failures do
       expect do
-        described_class.in_organization(organization).public_send(bot_type)
+        bot_user
       end.to change { User.where(user_type: bot_type).count }.by(1)
-    end
 
-    it 'creates a route for the namespace of the created user' do
       expect(bot_user.namespace.route).to be_present
       expect(bot_user.namespace.organization).to eq(organization)
-    end
 
-    it 'creates a user with a global username suffixed with the organization name' do
       expect(bot_user.username).to include(username)
       expect(bot_user.username).to include(organization.path)
       expect(bot_user.name).not_to include("(#{organization.name})")
-    end
 
-    it 'assigns the organization to the created user' do
       expect(bot_user.organizations).to eq([organization])
-    end
 
-    it 'creates an organization_user_detail with a per-organization username' do
       expect(bot_user.organization_user_details.count).to eq(1)
 
       detail = bot_user.organization_user_details.first
       expect(detail.username).to eq(username)
       expect(detail.display_name).to include("(#{organization.name})")
-    end
 
-    it 'does not create a new user if it already exists' do
-      described_class.in_organization(organization).public_send(bot_type)
+      if avatar_filename
+        expect(bot_user.avatar.url).to be_present
+        expect(bot_user.avatar.filename).to eq(avatar_filename)
+      end
+
+      expect(bot_user).to be_confirmed if bot_type == :support_bot
+
+      if bot_type == :admin_bot
+        expect(bot_user).to be_admin
+        expect(bot_user).to be_confirmed
+      end
 
       expect do
         described_class.in_organization(organization).public_send(bot_type)
@@ -55,13 +55,11 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     context 'when a regular user exists with the bot username' do
       let!(:user) { create(:user, :with_namespace, username: bot_username) }
 
-      it 'creates a user with a non-conflicting username' do
+      it 'creates a user with non-conflicting username and organization_user_detail', :aggregate_failures do
         expect do
           bot_user
         end.to change { User.where(user_type: bot_type).count }.by(1)
-      end
 
-      it 'creates organization_user_detail with non-conflicting username' do
         expect(bot_user.organization_user_details.count).to eq(1)
 
         detail = bot_user.organization_user_details.first
@@ -99,13 +97,11 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     context 'when a group namespace exists with path that is equal to the bot username' do
       let!(:group) { create(:group, path: bot_username) }
 
-      it 'creates a user with a non-conflicting username' do
+      it 'creates a user with non-conflicting username and organization_user_detail', :aggregate_failures do
         expect do
           bot_user
         end.to change { User.where(user_type: bot_type).count }.by(1)
-      end
 
-      it 'creates organization_user_detail with non-conflicting username' do
         expect(bot_user.organization_user_details.count).to eq(1)
 
         detail = bot_user.organization_user_details.first
@@ -145,52 +141,58 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     context 'when no organization is passed' do
       subject(:bot_user) { described_class.public_send(bot_type) }
 
-      it 'sets username without suffix' do
+      it 'sets username and display name without suffix', :aggregate_failures do
         expect(bot_user.username).to eq(username)
-      end
-
-      it 'sets display name without suffix' do
         expect(bot_user.name).not_to include(organization.name)
       end
     end
-  end
 
-  shared_examples 'bot user avatars' do |bot_type, avatar_filename|
-    it 'sets the custom avatar for the created bot' do
-      bot_user = described_class.in_organization(organization).public_send(bot_type)
+    context 'when cells are enabled' do
+      before do
+        stub_config_cell(enabled: true, id: 9)
+        # Keep the save-time claim callbacks from reaching Topology Service.
+        allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
+      end
 
-      expect(bot_user.avatar.url).to be_present
-      expect(bot_user.avatar.filename).to eq(avatar_filename)
+      context 'when the organization is not the default organization' do
+        it 'derives the username and email from the organization path', :aggregate_failures do
+          expect(bot_user.username).to eq("#{username}_#{organization.path}")
+          expect(bot_user.email).to match(/-#{Regexp.escape(organization.path)}@/)
+          expect(bot_user.organization_user_details.first.username).to eq(username)
+        end
+      end
+
+      context 'when the organization is the default organization' do
+        # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to exercise default organization behavior
+        let_it_be(:default_organization) { create(:organization, :default) }
+        # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
+
+        subject(:bot_user) { described_class.in_organization(default_organization).public_send(bot_type) }
+
+        it 'keeps the plain username and email', :aggregate_failures do
+          expect(bot_user.username).to eq(username)
+          expect(bot_user.email).not_to include(default_organization.path)
+        end
+      end
+
+      context 'when no organization is passed' do
+        subject(:bot_user) { described_class.public_send(bot_type) }
+
+        it 'derives the suffix from the first organization', :aggregate_failures do
+          expect(bot_user.username).to eq("#{username}_#{first_organization.path}")
+          expect(bot_user.email).to match(/-#{Regexp.escape(first_organization.path)}@/)
+        end
+      end
     end
   end
 
-  it_behaves_like 'bot users', :alert_bot, 'alert-bot', 'alert@example.com'
-  it_behaves_like 'bot users', :support_bot, 'support-bot', 'support@example.com'
-  it_behaves_like 'bot users', :security_bot, 'GitLab-Security-Bot', 'security-bot@example.com'
+  it_behaves_like 'bot users', :alert_bot, 'alert-bot', 'alert@example.com', 'alert-bot.png'
+  it_behaves_like 'bot users', :support_bot, 'support-bot', 'support@example.com', 'support-bot.png'
+  it_behaves_like 'bot users', :security_bot, 'GitLab-Security-Bot', 'security-bot@example.com', 'security-bot.png'
   it_behaves_like 'bot users', :ghost, 'ghost', 'ghost@example.com'
-  it_behaves_like 'bot users', :automation_bot, 'automation-bot', 'automation@example.com'
-  it_behaves_like 'bot users', :duo_code_review_bot, 'GitLabDuo', 'gitlab-duo@example.com'
-  it_behaves_like 'bot users', :admin_bot, 'GitLab-Admin-Bot', 'admin-bot@example.com'
-
-  it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
-  it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
-  it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
-  it_behaves_like 'bot user avatars', :automation_bot, 'support-bot.png'
-  it_behaves_like 'bot user avatars', :duo_code_review_bot, 'duo-bot.png'
-  it_behaves_like 'bot user avatars', :admin_bot, 'admin-bot.png'
-
-  context 'when bot is the support_bot' do
-    subject { described_class.in_organization(organization).support_bot }
-
-    it { is_expected.to be_confirmed }
-  end
-
-  context 'when bot is the admin bot' do
-    subject { described_class.in_organization(organization).admin_bot }
-
-    it { is_expected.to be_admin }
-    it { is_expected.to be_confirmed }
-  end
+  it_behaves_like 'bot users', :automation_bot, 'automation-bot', 'automation@example.com', 'support-bot.png'
+  it_behaves_like 'bot users', :duo_code_review_bot, 'GitLabDuo', 'gitlab-duo@example.com', 'duo-bot.png'
+  it_behaves_like 'bot users', :admin_bot, 'GitLab-Admin-Bot', 'admin-bot@example.com', 'admin-bot.png'
 
   describe '.support_bot_id' do
     context 'when organization is not used' do

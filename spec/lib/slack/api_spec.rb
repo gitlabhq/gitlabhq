@@ -154,7 +154,7 @@ RSpec.describe Slack::API, feature_category: :integrations do
       subject { api.post_ephemeral(**payload) }
     end
 
-    context 'with thread_ts' do
+    context 'with optional payload fields' do
       let(:slack_installation) { build(:slack_integration) }
       let(:api) { described_class.new(slack_installation) }
       let(:api_url) { "#{described_class::BASE_URL}/chat.postEphemeral" }
@@ -166,25 +166,45 @@ RSpec.describe Slack::API, feature_category: :integrations do
         )
       end
 
-      it 'includes thread_ts in the payload when provided' do
-        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', thread_ts: '123.456')
+      context 'with thread_ts' do
+        it 'includes thread_ts in the payload when provided' do
+          api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', thread_ts: '123.456')
 
-        expect(WebMock).to have_requested(:post, api_url)
-          .with(body: hash_including('thread_ts' => '123.456'))
+          expect(WebMock).to have_requested(:post, api_url)
+            .with(body: hash_including('thread_ts' => '123.456'))
+        end
+
+        it 'omits thread_ts from the payload when not provided' do
+          api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello')
+
+          expect(WebMock).to have_requested(:post, api_url)
+            .with { |req| req.body.exclude?('thread_ts') }
+        end
+
+        it 'omits thread_ts from the payload when nil' do
+          api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', thread_ts: nil)
+
+          expect(WebMock).to have_requested(:post, api_url)
+            .with { |req| req.body.exclude?('thread_ts') }
+        end
       end
 
-      it 'omits thread_ts from the payload when not provided' do
-        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello')
+      context 'with blocks' do
+        it 'includes blocks in the payload when provided' do
+          blocks = [{ type: 'markdown', text: 'hello' }]
 
-        expect(WebMock).to have_requested(:post, api_url)
-          .with { |req| req.body.exclude?('thread_ts') }
-      end
+          api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', blocks: blocks)
 
-      it 'omits thread_ts from the payload when nil' do
-        api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', thread_ts: nil)
+          expect(WebMock).to have_requested(:post, api_url)
+            .with(body: hash_including('blocks' => [{ 'type' => 'markdown', 'text' => 'hello' }]))
+        end
 
-        expect(WebMock).to have_requested(:post, api_url)
-          .with { |req| req.body.exclude?('thread_ts') }
+        it 'omits blocks from the payload when empty' do
+          api.post_ephemeral(channel: 'C123', user: 'U456', text: 'hello', blocks: [])
+
+          expect(WebMock).to have_requested(:post, api_url)
+            .with { |req| req.body.exclude?('blocks') }
+        end
       end
     end
   end

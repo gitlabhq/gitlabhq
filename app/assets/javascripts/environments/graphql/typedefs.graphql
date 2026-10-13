@@ -169,7 +169,7 @@ input ResourceTypeParam {
 }
 
 extend type Mutation {
-  stopEnvironmentREST(environment: LocalEnvironmentInput): LocalErrors
+  stopEnvironmentREST(environment: LocalEnvironmentInput, force: Boolean): LocalErrors
   deleteEnvironment(environment: LocalEnvironmentInput): LocalErrors
   rollbackEnvironment(environment: LocalEnvironmentInput): LocalErrors
   cancelAutoStop(autoStopUrl: String!): LocalErrors

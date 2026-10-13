@@ -574,12 +574,10 @@ RSpec.describe UserDetail, feature_category: :system_access do
       it_behaves_like 'standard sanitization tests'
 
       where(:field, :input, :expected) do
-        # HTML entities encoding - fields that encode & to &amp;
-        :linkedin     | 'test&attr'                                 | 'test&amp;attr'
-        :twitter      | 'test&attr'                                 | 'test&amp;attr'
-        :github       | 'test&attr'                                 | 'test&amp;attr'
-
-        # HTML entities NOT encoded - location, company, website_url preserve &
+        # HTML entities NOT encoded - all fields preserve &
+        :linkedin     | 'test&attr'                                 | 'test&attr'
+        :twitter      | 'test&attr'                                 | 'test&attr'
+        :github       | 'test&attr'                                 | 'test&attr'
         :location     | 'test&attr'                                 | 'test&attr'
         :company      | 'test&attr'                                 | 'test&attr'
         :website_url  | 'http://example.com?test&attr'              | 'http://example.com?test&attr'
@@ -588,6 +586,10 @@ RSpec.describe UserDetail, feature_category: :system_access do
         :twitter      | '&lt;script&gt;alert(1)&lt;/script&gt;'     | '&lt;script&gt;alert(1)&lt;/script&gt;'
         :linkedin     | '%2526lt%253Bscript%2526gt%253B'            | '%2526lt%253Bscript%2526gt%253B'
         :github       | 'main../../../../../../api/v4/projects/1'   | 'main../../../../../../api/v4/projects/1'
+
+        # Strips tags when the input also contains HTML entities
+        :twitter      | '<script>alert(1)</script>&amp;'            | '&'
+        :linkedin     | '<b>test</b>&lt;'                           | 'test&lt;'
       end
 
       with_them do

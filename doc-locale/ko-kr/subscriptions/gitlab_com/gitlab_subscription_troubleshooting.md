@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Subscription Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: "사용량, 컴퓨팅 분, 저장소 제한, 갱신 정보."
+description: "사용자 사용량, 컴퓨팅 분, 저장소 제한, 갱신 정보."
 gitlab_dedicated: yes
 title: GitLab 구독 문제 해결
 ---
@@ -20,7 +20,7 @@ GitLab 구독을 구매하거나 사용할 때 다음과 같은 문제가 발생
 
 ### 오류: 신용카드 거절 {#error-credit-card-declined}
 
-GitLab 구독을 구매할 때 신용카드가 거절될 수 있는 이유는 다음과 같습니다:
+GitLab 구독을 구매할 때 신용카드가 거절될 수 있는 이유는 다음과 같습니다.
 
 - 신용카드 세부 정보가 잘못되었습니다. 이 문제의 가장 일반적인 원인은 불완전하거나 가짜 주소입니다.
 - 신용카드 계정에 자금이 부족합니다.
@@ -32,35 +32,35 @@ GitLab 구독을 구매할 때 신용카드가 거절될 수 있는 이유는 �
 
 #### 오류: `transaction_not_allowed` {#error-transaction_not_allowed}
 
-GitLab 구독을 구매할 때 다음과 같은 오류가 표시될 수 있습니다:
+GitLab 구독을 구매할 때 다음과 같은 오류가 표시될 수 있습니다.
 
 ```plaintext
 Transaction declined.402 - [card_error/card_declined/transaction_not_allowed]
 Your card does not support this type of purchase.
 ```
 
-이 오류는 귀사가 수행하는 거래 유형이 카드 발급사에 의해 제한됨을 의미합니다. 이는 귀사의 계정을 보호하도록 설계된 보안 조치입니다.
+이 오류는 귀하가 수행하는 거래 유형이 카드 발급사에 의해 제한됨을 의미합니다. 이는 귀하의 계정을 보호하도록 설계된 보안 조치입니다.
 
-거래가 다음과 같은 하나 이상의 이유로 거절될 수 있습니다:
+귀하의 거래가 다음과 같은 하나 이상의 이유로 거절될 수 있습니다.
 
-- 귀사의 카드가 인도에서 발급되었고 거래가 [RBI의 전자 위임장 규칙](https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12051&Mode=0)을 준수하지 않습니다.
-- 귀사의 카드가 온라인 구매에 대해 활성화되지 않았습니다.
-- 귀사의 카드에는 특정 사용 제한이 있습니다. 예를 들어 현지 거래만으로 제한된 직불카드입니다.
-- 거래가 귀사의 은행 보안 프로토콜을 트리거합니다.
+- 귀하의 카드가 인도에서 발급되었고 거래가 [RBI의 전자 위임장 규칙](https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12051&Mode=0)을 준수하지 않습니다.
+- 귀하의 카드가 온라인 구매에 대해 활성화되지 않았습니다.
+- 귀하의 카드에는 특정 사용 제한이 있습니다. 예를 들어 현지 거래만으로 제한된 직불카드입니다.
+- 거래가 귀하의 은행 보안 프로토콜을 트리거합니다.
 
-이 문제를 해결하려면 다음을 시도하세요:
+이 문제를 해결하려면 다음을 시도하세요.
 
-- 인도에서 발급된 카드의 경우: 인증된 현지 리셀러를 통해 거래를 처리하세요. 인도의 다음 GitLab 파트너 중 하나에 문의하세요:
+- 인도에서 발급된 카드의 경우: 인증된 현지 리셀러를 통해 거래를 처리하세요. 인도의 다음 GitLab 파트너 중 하나에 문의하세요.
   - [Datamato Technologies Private Limited](https://about.gitlab.com/partners/channel-partners/#/1345598)
   - [FineShift Software Private Limited](https://about.gitlab.com/partners/channel-partners/#/1737250)
 - 미국 외부에서 발급된 카드의 경우: 카드가 국제 거래에 사용 가능하도록 설정되어 있는지 확인하고 국가별 제한이 있는지 확인하세요.
-- 금융 기관에 문의하세요: 거래가 거절된 이유를 물어보고 이러한 유형의 거래에 대해 카드가 활성화되도록 요청하세요.
+- 금융 기관에 문의하세요. 거래가 거절된 이유를 물어보고 이러한 유형의 거래에 대해 카드가 활성화되도록 요청하세요.
 
 #### 오류: `Attempt_Exceed_Limitation` {#error-attempt_exceed_limitation}
 
 GitLab 구독을 구매할 때 `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` 오류가 나타날 수 있습니다.
 
-이 문제는 신용카드 양식이 1분 내에 3회 또는 1시간 내에 6회 재제출될 때 발생합니다. 이 문제를 해결하려면 몇 분 기다린 후 구매를 다시 시도하세요.
+이 문제는 신용카드 양식이 1분 내에 3회 또는 1시간 내에 6회 다시 제출될 때 발생합니다. 이 문제를 해결하려면 몇 분 기다린 후 구매를 다시 시도하세요.
 
 ## 인증 및 계정 문제 {#authentication-and-account-issues}
 
@@ -72,7 +72,7 @@ GitLab 구독을 구매할 때 `Attempt_Exceed_Limitation - Attempt exceed the l
 
 ### 오류: Customers Portal 계정에 나열된 구매가 없습니다 {#error-no-purchases-listed-in-the-customers-portal-account}
 
-Customers Portal의 **Subscriptions & purchases** 페이지에서 구매를 보려면 구독 조직의 연락처로 추가되어야 합니다.
+고객 포털의 **구독 및 구매** 페이지에서 구매를 보려면 해당 구독에 대해 귀하의 조직의 연락처로 추가되어야 합니다.
 
 연락처로 추가되려면 [GitLab 지원팀에 티켓을 생성하세요](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
@@ -106,7 +106,7 @@ GitLab.com에서 GitLab 구독을 구매할 때 구매를 완료할 수 없도�
 
 ### 오류: `GitLab namespace is not valid` {#error-gitlab-namespace-is-not-valid}
 
-네임스페이스가 다음인 경우 이 오류가 표시될 수 있습니다:
+네임스페이스가 다음인 경우 이 오류가 표시될 수 있습니다.
 
 - 구매 URL에 지정되지 않았습니다.
 - GitLab.com에 존재하지 않습니다.
@@ -117,7 +117,7 @@ GitLab.com에서 GitLab 구독을 구매할 때 구매를 완료할 수 없도�
 이 이슈를 해결하려면:
 
 - 네임스페이스가 존재하고 [소유자 역할](../../user/permissions.md#roles)을 가지고 있는지 확인하세요. 기존 소유자에게 귀사를 추가해 달라고 요청하세요.
-- 네임스페이스가 최상위 그룹인지 확인하세요. 구독을 하위 그룹이나 프로젝트에 적용할 수 없으며, 대신 상위 그룹에 구독을 적용하세요.
+- 네임스페이스가 최상위 그룹인지 확인하세요. 구독은 하위 그룹이나 프로젝트에 적용할 수 없습니다. 대신 상위 그룹에 구독을 적용하세요.
 - [네임스페이스에 최소 하나의 청구 가능한 사용자가 있는지 확인하세요](../manage_seats.md#billable-users). 필요한 경우 구성원을 추가하세요.
 - 구매 URL에 올바른 `gl_namespace_id` 매개변수가 포함되어 있는지 확인하세요(예: `?gl_namespace_id=123`).
 
@@ -147,33 +147,33 @@ GitLab.com에서 GitLab 구독을 구매할 때 구매를 완료할 수 없도�
 
 구독 추가 기능(예: 추가 사용자, 컴퓨팅 분, 저장소 또는 GitLab Duo Pro)을 구매할 때 이 오류가 표시될 수 있습니다.
 
-활성 구독이 있을 때 이 문제가 발생합니다:
+활성 구독이 있을 때 이 문제가 발생합니다.
 
 - [리셀러를 통해 구매](../billing_account.md#subscription-purchased-through-a-reseller)했습니다.
 - 다년간 구독입니다.
 
-이 문제를 해결하려면 귀사의 [GitLab 영업 담당자](https://customers.gitlab.com/contact_us)에게 문의하여 지원을 받으세요.
+이 문제를 해결하려면 담당 [GitLab 영업 담당자](https://customers.gitlab.com/contact_us)에게 문의하여 지원을 받으세요.
 
 ### 오류: `Product is not available in this purchase flow` {#error-product-is-not-available-in-this-purchase-flow}
 
-구매하려는 제품을 셀프 서비스 구매 흐름을 통해 사용할 수 없을 때 이 오류가 표시될 수 있습니다.
+구매하려는 제품을 셀프 서비스 구매 플로우를 통해 사용할 수 없을 때 이 오류가 표시될 수 있습니다.
 
-다음과 같은 이유로 발생할 수 있습니다:
+다음과 같은 이유로 발생할 수 있습니다.
 
 - 제품에는 특수한 구성이나 승인이 필요합니다.
 - 제품은 직접 영업을 통해서만 사용 가능합니다.
-- 귀사의 계정이 이 제품의 요구 사항을 충족하지 않습니다.
+- 귀하의 계정이 이 제품의 요구 사항을 충족하지 않습니다.
 
-이 문제를 해결하려면 귀사의 [GitLab 영업 담당자](https://customers.gitlab.com/contact_us)에게 문의하여 구매 지원을 받으세요.
+이 문제를 해결하려면 담당 [GitLab 영업 담당자](https://customers.gitlab.com/contact_us)에게 문의하여 구매 지원을 받으세요.
 
 #### 오류: `Product is not available for sale through the Customers Portal` {#error-product-is-not-available-for-sale-through-the-customers-portal}
 
-다음과 같은 경우 이 오류가 표시될 수 있습니다:
+다음과 같은 경우 이 오류가 표시될 수 있습니다.
 
-- 제품 가격 책정 계획에는 셀프 서비스 구매 흐름에서 지원하지 않는 여러 청구가 있습니다.
+- 제품 가격 책정 계획에는 셀프 서비스 구매 플로우에서 지원하지 않는 여러 청구가 있습니다.
 - 제품 가격 책정 계획은 셀프 서비스 구매에 사용할 수 없습니다.
 
-이 문제를 해결하려면 귀사의 [GitLab 영업 담당자](https://customers.gitlab.com/contact_us)에게 문의하여 지원을 받으세요.
+이 문제를 해결하려면 담당 [GitLab 영업 담당자](https://customers.gitlab.com/contact_us)에게 문의하여 지원을 받으세요.
 
 ## 배포 및 구성 문제 {#deployment-and-configuration-issues}
 

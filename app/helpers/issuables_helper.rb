@@ -226,7 +226,7 @@ module IssuablesHelper
 
   def sidebar_labels_data(issuable_sidebar, project)
     {
-      allow_label_create: issuable_sidebar.dig(:current_user, :can_admin_label).to_s,
+      allow_label_create: issuable_sidebar.dig(:current_user, :can_create_label).to_s,
       allow_scoped_labels: issuable_sidebar[:scoped_labels_available].to_s,
       can_edit: issuable_sidebar.dig(:current_user, :can_edit).to_s,
       iid: issuable_sidebar[:iid],

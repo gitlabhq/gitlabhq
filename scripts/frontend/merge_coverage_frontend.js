@@ -31,7 +31,7 @@ if (jestCoverageFiles.length > 0) {
   jestCoverageFiles
     .map((reportFile) => {
       console.log(`  Processing: ${reportFile}`);
-      // eslint-disable-next-line global-require, import/no-dynamic-require
+      // eslint-disable-next-line global-require, import-x/no-dynamic-require
       return require(reportFile);
     })
     .map(normalizeReport)
@@ -44,7 +44,7 @@ if (e2eCoverageFile.length > 0) {
   console.log(`Found E2E coverage file: ${e2eCoverageFile[0]}`);
   e2eCoverageFile
     .map((reportFile) => {
-      // eslint-disable-next-line global-require, import/no-dynamic-require
+      // eslint-disable-next-line global-require, import-x/no-dynamic-require
       return require(reportFile);
     })
     .map(normalizeReport)

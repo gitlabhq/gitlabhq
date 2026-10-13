@@ -2,9 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integration do
+RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integration, factory_default: :keep do
   include Ci::JobTokenScopeHelpers
   using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:project) { create_default(:project) }
+  let_it_be(:user) { create_default(:user) }
+  let_it_be(:namespace) { create_default(:namespace) }
 
   let_it_be(:source_project) { create(:project) }
 

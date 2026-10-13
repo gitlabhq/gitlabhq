@@ -20,6 +20,7 @@ require_relative 'api/default_options'
 class PipelineTestReportBuilder
   DEFAULT_OPTIONS = {
     target_project: Host::DEFAULT_OPTIONS[:target_project] || API::DEFAULT_OPTIONS[:project],
+    current_project: API::DEFAULT_OPTIONS[:project],
     current_pipeline_id: API::DEFAULT_OPTIONS[:pipeline_id],
     mr_iid: Host::DEFAULT_OPTIONS[:mr_iid],
     api_endpoint: API::DEFAULT_OPTIONS[:endpoint],
@@ -33,6 +34,7 @@ class PipelineTestReportBuilder
 
   def initialize(options)
     @target_project = options.delete(:target_project)
+    @current_project = options.delete(:current_project)
     @current_pipeline_id = options.delete(:current_pipeline_id)
     @mr_iid = options.delete(:mr_iid)
     @api_endpoint = options.delete(:api_endpoint).to_s
@@ -65,7 +67,7 @@ class PipelineTestReportBuilder
   end
 
   def latest_pipeline
-    fetch("#{target_project_api_base_url}/pipelines/#{current_pipeline_id}")
+    fetch("#{api_endpoint}/projects/#{current_project}/pipelines/#{current_pipeline_id}")
   end
 
   def previous_pipeline
@@ -76,7 +78,8 @@ class PipelineTestReportBuilder
 
   private
 
-  attr_reader :target_project, :current_pipeline_id, :mr_iid, :api_endpoint, :output_file_path, :pipeline_index
+  attr_reader :target_project, :current_project, :current_pipeline_id, :mr_iid, :api_endpoint,
+    :output_file_path, :pipeline_index
 
   def pipeline
     @pipeline ||=

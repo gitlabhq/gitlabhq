@@ -11,7 +11,9 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { projectPreviewMarkdownPath } from '~/lib/utils/path_helpers/project';
+import todosMarkAllDoneMutation from '~/sidebar/queries/todos_mark_all_done.mutation.graphql';
 import { ROUTES } from '../../../constants';
+import createWorkItemTodosMutation from '../../../graphql/create_work_item_todos.mutation.graphql';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
 import createImageDiffNoteMutation from '../graphql/create_image_diff_note.mutation.graphql';
@@ -114,6 +116,7 @@ export default {
       maxScale: DEFAULT_MAX_SCALE,
       isSidebarOpen: true,
       previouslyFocused: null,
+      isTodoUpdating: false,
     };
   },
   apollo: {
@@ -337,7 +340,7 @@ export default {
     toggleResolvedComments(newValue) {
       this.resolvedDiscussionsExpanded = newValue;
     },
-    updateWorkItemDesignCurrentTodosWidgetCache({ cache, todos }) {
+    writeDesignTodos(cache, todos) {
       updateWorkItemDesignCurrentTodosWidget({
         store: cache,
         todos,
@@ -346,6 +349,52 @@ export default {
           variables: this.designVariables,
         },
       });
+    },
+    onToggleTodo() {
+      // A design is not a work item, so `workItemUpdate` cannot target it: its to-dos are
+      // addressed directly, which is why this path still needs a cache hook.
+      const pendingCount = this.currentUserDesignTodos?.length ?? 0;
+      const isMarkingDone = pendingCount > 0;
+      this.isTodoUpdating = true;
+
+      this.$apollo
+        .mutate({
+          mutation: isMarkingDone ? todosMarkAllDoneMutation : createWorkItemTodosMutation,
+          variables: { input: { targetId: this.design.id } },
+          // `update` runs before the `errors` check below, so a rejected mutation would
+          // otherwise clear the design's to-do items and flip the toggle.
+          update: (cache, { data: { todoMutation } }) => {
+            if (todoMutation?.errors?.length) {
+              return;
+            }
+
+            // `todosMarkAllDone` returns `todos` and `todoCreate` returns `todo`, so an absent
+            // `todo` is the mark-done case and clears the list.
+            const todo = todoMutation?.todo;
+            this.writeDesignTodos(
+              cache,
+              todo ? [{ __typename: 'Todo', id: todo.id, state: todo.state }] : [],
+            );
+          },
+        })
+        .then(({ data }) => {
+          const { errors } = data.todoMutation;
+
+          if (errors?.length) {
+            throw new Error(errors[0]);
+          }
+
+          // `todosMarkAllDone` reports what it actually marked done, which beats the design
+          // query's list if that has gone stale.
+          updateGlobalTodoCount(isMarkingDone ? -data.todoMutation.todos.length : 1);
+        })
+        .catch((error) => {
+          this.errorMessage = error.message;
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.isTodoUpdating = false;
+        });
     },
     async onArchiveDesign() {
       try {
@@ -406,9 +455,10 @@ export default {
           :all-designs="allDesigns"
           :current-user-design-todos="currentUserDesignTodos"
           :can-update-design="canUpdateDesign"
+          :is-todo-updating="isTodoUpdating"
           @toggle-sidebar="toggleSidebar"
           @archive-design="onArchiveDesign"
-          @todos-updated="updateWorkItemDesignCurrentTodosWidgetCache"
+          @toggle-todo="onToggleTodo"
         />
         <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
           <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">

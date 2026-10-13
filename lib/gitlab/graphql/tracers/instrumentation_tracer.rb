@@ -12,10 +12,8 @@ module Gitlab
         # All queries pass through a multiplex, even if only one query is executed
         # https://github.com/rmosolgo/graphql-ruby/blob/43e377b5b743a9102381d6ad3adaaed13ff5b6dd/lib/graphql/schema.rb#L1303
         #
-        # Instrumenting the multiplex ensures that all queries have been fully exectued
-        # meaning that `query.result` is present.
-        # We need `query.result` to know if the query was successful or not in metrics and
-        # to include the errors in the logs.
+        # Hooking the multiplex rather than `execute_query` means even queries that failed
+        # validation reach here with `query.result` set; `result_errors` covers the exception.
         def execute_multiplex(multiplex:)
           start_time = ::Gitlab::Metrics::System.monotonic_time
           super
@@ -63,11 +61,13 @@ module Gitlab
         end
 
         def error_type(query:, exception:)
-          errors = query.result['errors']&.pluck('message')
+          return :error if exception || !query.executed?
+
+          errors = result_errors(query)&.pluck('message')
 
           return if errors.blank?
 
-          if exception || (errors - IGNORED_ERRORS).present?
+          if (errors - IGNORED_ERRORS).present?
             :error
           else
             :ignored
@@ -79,12 +79,17 @@ module Gitlab
           return unless query
 
           analysis_info = query.context[:gl_analysis]&.transform_keys { |key| "query_analysis.#{key}" }
+          logging = query.context.namespace(:gl_logging)
+          connection_nodes = logging.fetch(:connection_nodes, 0)
+          logging[:request_log]&.store(Labkit::Fields::GRAPHQL_CONNECTION_NODES, connection_nodes)
+
           info = {
             query_fingerprint: query.fingerprint,
             duration_s: duration_s,
             operation_name: query.operation_name,
             operation_fingerprint: query.operation_fingerprint,
             is_mutation: query.mutation?,
+            Labkit::Fields::GRAPHQL_CONNECTION_NODES => connection_nodes,
             variables: ::Gitlab::Graphql::LogSanitizer.variables(query.provided_variables, query.operation_name),
             query_string: ::Gitlab::Graphql::LogSanitizer.query_string(query)
           }
@@ -92,7 +97,8 @@ module Gitlab
           token_info = ::Current.token_info
           info.merge!(token_info) if token_info
 
-          info[:graphql_errors] = query.result['errors'] if query.result['errors']
+          graphql_errors = result_errors(query)
+          info[:graphql_errors] = graphql_errors if graphql_errors
 
           Gitlab::ExceptionLogFormatter.format!(exception, info)
 
@@ -100,6 +106,13 @@ module Gitlab
           info.merge!(analysis_info) if analysis_info
 
           ::Gitlab::GraphqlLogger.info(info)
+        end
+
+        # `query.result` executes the query if it hasn't run yet. We only want to read errors,
+        # not trigger execution, so skip queries that never executed (e.g. analysis raised).
+        # ref: https://www.rubydoc.info/github/rmosolgo/graphql-ruby/GraphQL/Query#result-instance_method
+        def result_errors(query)
+          query.result['errors'] if query.executed?
         end
       end
     end

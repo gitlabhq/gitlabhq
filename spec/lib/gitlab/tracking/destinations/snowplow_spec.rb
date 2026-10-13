@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
           expect(tracker)
             .to have_received(:track_struct_event)
                   .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5,
-                    context: nil, tstamp: (Time.now.to_f * 1000).to_i)
+                    context: nil, subject: nil, tstamp: (Time.now.to_f * 1000).to_i)
         end
 
         it 'increase total snowplow events counter' do
@@ -90,6 +90,40 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
                                        .and_return(counter)
 
           subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
+
+        context 'when the current request carries a User-Agent', :request_store do
+          let(:user_agent) { 'GitLabMobile/1.2.0 (iOS 26.0.1; build 45)' }
+
+          before do
+            Gitlab::RequestContext.instance.user_agent = user_agent
+          end
+
+          it 'attributes the event to that client' do
+            subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+            expect(tracker)
+              .to have_received(:track_struct_event)
+                    .with(hash_including(
+                      subject: an_object_having_attributes(details: hash_including('ua' => user_agent))
+                    ))
+          end
+
+          context 'when the User-Agent is oversized and contains control characters' do
+            let(:user_agent) { "GitLabMobile/1.2.0\u0000 #{'x' * 300}" }
+
+            it 'sends the sanitised value' do
+              subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+              expect(tracker)
+                .to have_received(:track_struct_event)
+                      .with(hash_including(
+                        subject: an_object_having_attributes(
+                          details: hash_including('ua' => "GitLabMobile/1.2.0 #{'x' * 231}")
+                        )
+                      ))
+            end
+          end
         end
       end
 
@@ -131,6 +165,47 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
               .and_return(emitter)
 
       subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+    end
+  end
+
+  describe '#event return value' do
+    it 'returns true when the event is handed to the emitter' do
+      expect(subject.event('category', 'action')).to be(true)
+    end
+
+    context 'when event is ineligible' do
+      let(:event_eligible) { false }
+
+      it 'returns false' do
+        expect(subject.event('category', 'action')).to be(false)
+      end
+    end
+  end
+
+  context 'with snowplow and product usage data disabled' do
+    before do
+      allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:new).and_call_original
+      stub_application_setting(snowplow_enabled?: false)
+      stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
+
+      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
+      allow(tracker).to receive(:track_struct_event).and_call_original
+    end
+
+    it 'drops events on the regular destination', :aggregate_failures do
+      expect(subject.event('category', 'action')).to be(false)
+      expect(tracker).not_to have_received(:track_struct_event)
+    end
+
+    context 'with a billing destination configuration' do
+      subject(:billing_destination) do
+        described_class.new(Gitlab::Tracking::Destinations::DestinationConfiguration.billing_configuration)
+      end
+
+      it 'emits the event', :aggregate_failures do
+        expect(billing_destination.event('category', 'secrets_read')).to be(true)
+        expect(tracker).to have_received(:track_struct_event).with(hash_including(action: 'secrets_read'))
+      end
     end
   end
 

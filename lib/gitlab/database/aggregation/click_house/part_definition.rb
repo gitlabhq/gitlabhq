@@ -15,6 +15,12 @@ module Gitlab
           def secondary_arel(_context)
             secondary_expression&.call
           end
+
+          def format_value(value)
+            return super if formatter || type != :boolean
+
+            ActiveModel::Type::Boolean.new.cast(value)
+          end
         end
       end
     end

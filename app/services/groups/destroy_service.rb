@@ -2,6 +2,8 @@
 
 module Groups
   class DestroyService < Groups::BaseService
+    include Namespaces::DeletionFailureTracking
+
     DestroyError = Class.new(StandardError)
 
     def async_execute
@@ -60,18 +62,7 @@ module Groups
 
       group
     rescue Exception => e # rubocop:disable Lint/RescueException -- Namespace.transaction can raise Exception
-      log_payload = {
-        group_id: group.id,
-        current_user: current_user&.id,
-        error_class: e.class,
-        error_message: e.message,
-        error_backtrace: e.backtrace
-      }
-
-      reschedule_deletion
-      Gitlab::AppLogger.error(log_payload.merge(message: "Rescheduling group deletion"))
-
-      raise e
+      handle_destroy_failure(e)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -89,9 +80,39 @@ module Groups
       end
     end
 
-    def reschedule_deletion
+    def handle_destroy_failure(error)
+      log_payload = {
+        group_id: group.id,
+        current_user: current_user&.id,
+        error_class: error.class,
+        error_message: error.message,
+        error_backtrace: error.backtrace
+      }
+
+      begin
+        # Capture before reschedule_deletion! overwrites it with the current time.
+        previous_failed_at = group.deletion_last_failed_at
+        reschedule_deletion(error_message: error.message)
+        track_destroy_failure(group, error, previous_failed_at, group_id: group.id)
+        Gitlab::AppLogger.error(log_payload.merge(
+          message: "Rescheduling group deletion",
+          deletion_attempt_count: group.deletion_attempt_count.to_i
+        ))
+      rescue StandardError => reschedule_error
+        Gitlab::AppLogger.error(log_payload.merge(
+          message: "Rescheduling group deletion failed",
+          reschedule_error_class: reschedule_error.class,
+          reschedule_error_message: reschedule_error.message
+        ))
+        Gitlab::ErrorTracking.track_exception(reschedule_error, group_id: group.id)
+      end
+
+      raise error
+    end
+
+    def reschedule_deletion(error_message: nil)
       Group.transaction do
-        group.reschedule_deletion!(transition_user: current_user)
+        group.reschedule_deletion!(transition_user: current_user, deletion_error: error_message)
       end
     end
 

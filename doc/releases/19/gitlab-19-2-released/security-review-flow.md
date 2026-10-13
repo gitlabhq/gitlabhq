@@ -4,7 +4,7 @@ stage: ai-powered
 level: primary
 tier: [ Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
-documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/security_review/"
+documentation_link: "../../../user/application_security/security_review/"
 work_item: "https://gitlab.com/gitlab-org/gitlab/-/work_items/600477"
 categories: [ DAP Code Review ]
 ---

@@ -2,9 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :click_house, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :click_house,
+  feature_category: :value_stream_management do
   include GraphqlHelpers
   include ClickHouseHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -58,6 +60,8 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
     before do
       insert_events_into_click_house
     end
+
+    it_behaves_like 'a connection that counts its nodes'
 
     context 'when requesting without pagination params' do
       let(:arguments) { {} }
@@ -176,13 +180,85 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
     end
 
     describe '#count' do
-      it 'returns the total number of aggregated rows via a database query' do
-        expect(connection.count).to eq(3)
+      shared_examples 'a count derived from the page' do |expected_count|
+        it 'returns the total without a count query' do
+          expect(nodes).not_to receive(:count)
+
+          expect(connection.count).to eq(expected_count)
+        end
       end
 
-      it 'does not load rows into memory' do
-        expect(nodes).not_to receive(:load_data)
-        connection.count
+      shared_examples 'a count from a count query' do
+        it 'returns the total from a count query' do
+          expect(nodes).to receive(:count).and_call_original
+
+          expect(connection.count).to eq(3)
+        end
+      end
+
+      context 'when the first page holds every row' do
+        it_behaves_like 'a count derived from the page', 3
+      end
+
+      context 'when a later page reaches the end' do
+        let(:arguments) { { first: 2, after: encode_cursor(0) } }
+
+        it_behaves_like 'a count derived from the page', 3
+      end
+
+      context 'when there are no rows' do
+        let(:query_builder) { query.where(author_id: non_existing_record_id) }
+
+        it_behaves_like 'a count derived from the page', 0
+      end
+
+      context 'when there is a next page' do
+        let(:arguments) { { first: 2 } }
+
+        it_behaves_like 'a count from a count query'
+      end
+
+      context 'when "after" is past the last row' do
+        let(:arguments) { { first: 2, after: encode_cursor(3) } }
+
+        it_behaves_like 'a count from a count query'
+      end
+
+      context 'when using last and before' do
+        let(:arguments) { { last: 1, before: encode_cursor(2) } }
+
+        it_behaves_like 'a count from a count query'
+      end
+    end
+  end
+
+  describe '#max_page_size' do
+    let(:ctx) do
+      GraphQL::Query::Context.new(query: query_double(schema: GitlabSchema), values: { current_user: user1 })
+    end
+
+    subject(:connection) { described_class.new([], context: ctx, max_page_size: 250, **arguments) }
+
+    before do
+      stub_feature_flags(larger_clickhouse_aggregation_pages: flag_enabled ? user1 : user2)
+    end
+
+    where(:flag_enabled, :arguments, :expected_cap, :expected_first, :expected_last) do
+      true  | { first: 200 } | 250 | 200 | nil
+      false | { first: 200 } | 100 | 100 | nil
+      true  | {}             | 250 | 250 | nil
+      false | {}             | 100 | 100 | nil
+      true  | { first: 500 } | 250 | 250 | nil
+      false | { first: 500 } | 100 | 100 | nil
+      true  | { last: 500 }  | 250 | nil | 250
+      false | { last: 500 }  | 100 | nil | 100
+    end
+
+    with_them do
+      it 'applies the effective cap for the current user', :aggregate_failures do
+        expect(connection.max_page_size).to eq(expected_cap)
+        expect(connection.first).to eq(expected_first)
+        expect(connection.last).to eq(expected_last)
       end
     end
   end

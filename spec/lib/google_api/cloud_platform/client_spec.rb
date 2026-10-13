@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'webmock/rspec'
 require 'google/apis/sqladmin_v1beta4'
 
 RSpec.describe GoogleApi::CloudPlatform::Client do

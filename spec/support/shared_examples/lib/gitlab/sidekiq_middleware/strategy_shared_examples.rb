@@ -12,9 +12,11 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
   describe '#schedule' do
     before do
       allow(Gitlab::SidekiqLogging::DeduplicationLogger.instance).to receive(:deduplicated_log)
-      allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
-      allow(fake_duplicate_job).to receive(:strategy).and_return(:until_executed)
-      allow(fake_duplicate_job).to receive(:reschedulable?).and_return(true)
+      allow(fake_duplicate_job).to receive_messages(
+        idempotency_key: 'abc123',
+        strategy: :until_executed,
+        reschedulable?: true
+      )
     end
 
     it 'checks for duplicates before yielding' do
@@ -48,12 +50,14 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
     context 'job marking' do
       it 'adds the jid of the existing job to the job hash' do
-        allow(fake_duplicate_job).to receive(:scheduled?).and_return(false)
-        allow(fake_duplicate_job).to receive(:concurrency_limit_resumed?).and_return(false)
-        allow(fake_duplicate_job).to receive(:check!).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
         allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
-        allow(fake_duplicate_job).to receive(:options).and_return({})
+        allow(fake_duplicate_job).to receive_messages(
+          scheduled?: false,
+          concurrency_limit_resumed?: false,
+          check!: 'the jid',
+          idempotent?: true,
+          options: {}
+        )
         job_hash = {}
 
         expect(fake_duplicate_job).to receive(:duplicate?).and_return(true)
@@ -71,13 +75,15 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         context 'scheduled in the past' do
           it 'adds the jid of the existing job to the job hash' do
             allow(fake_duplicate_job).to receive(:scheduled?).exactly(4).times.and_return(true)
-            allow(fake_duplicate_job).to receive(:scheduled_at).and_return(Time.now - time_diff)
-            allow(fake_duplicate_job).to receive(:options).and_return({ including_scheduled: true })
             allow(fake_duplicate_job).to(
               receive(:check!)
                 .with(fake_duplicate_job.duplicate_key_ttl)
                 .and_return('the jid'))
-            allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
+            allow(fake_duplicate_job).to receive_messages(
+              scheduled_at: Time.now - time_diff,
+              options: { including_scheduled: true },
+              idempotent?: true
+            )
             allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
             allow(fake_duplicate_job).to receive(:deferred?)
             allow(fake_duplicate_job).to receive(:concurrency_limit_resumed?)
@@ -97,11 +103,13 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
           it 'adds the jid of the existing job to the job hash' do
             freeze_time do
               allow(fake_duplicate_job).to receive(:scheduled?).exactly(4).times.and_return(true)
-              allow(fake_duplicate_job).to receive(:scheduled_at).and_return(Time.now + time_diff)
-              allow(fake_duplicate_job).to receive(:options).and_return({ including_scheduled: true })
               allow(fake_duplicate_job).to(
                 receive(:check!).with(time_diff.to_i + fake_duplicate_job.duplicate_key_ttl).and_return('the jid'))
-              allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
+              allow(fake_duplicate_job).to receive_messages(
+                scheduled_at: Time.now + time_diff,
+                options: { including_scheduled: true },
+                idempotent?: true
+              )
               allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
               allow(fake_duplicate_job).to receive(:deferred?)
               allow(fake_duplicate_job).to receive(:concurrency_limit_resumed?)
@@ -136,13 +144,15 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
     context "when the job is not duplicate" do
       before do
-        allow(fake_duplicate_job).to receive(:scheduled?).and_return(false)
-        allow(fake_duplicate_job).to receive(:concurrency_limit_resumed?).and_return(false)
-        allow(fake_duplicate_job).to receive(:check!).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:duplicate?).and_return(false)
-        allow(fake_duplicate_job).to receive(:options).and_return({})
-        allow(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
+        allow(fake_duplicate_job).to receive_messages(
+          scheduled?: false,
+          concurrency_limit_resumed?: false,
+          check!: 'the jid',
+          duplicate?: false,
+          options: {},
+          existing_jid: 'the jid',
+          idempotency_key: 'abc123'
+        )
       end
 
       it 'does not return false nor drop the job' do
@@ -158,15 +168,17 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
     context "when the job is droppable" do
       before do
-        allow(fake_duplicate_job).to receive(:scheduled?).and_return(false)
-        allow(fake_duplicate_job).to receive(:concurrency_limit_resumed?).and_return(false)
-        allow(fake_duplicate_job).to receive(:check!).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:duplicate?).and_return(true)
-        allow(fake_duplicate_job).to receive(:options).and_return({})
-        allow(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
-        allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
         allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
-        allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
+        allow(fake_duplicate_job).to receive_messages(
+          scheduled?: false,
+          concurrency_limit_resumed?: false,
+          check!: 'the jid',
+          duplicate?: true,
+          options: {},
+          existing_jid: 'the jid',
+          idempotent?: true,
+          idempotency_key: 'abc123'
+        )
       end
 
       it 'updates latest wal location' do
@@ -219,9 +231,11 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
       allow(fake_duplicate_job).to receive(:delete!)
       allow(fake_duplicate_job).to receive(:scheduled?) { false }
       allow(fake_duplicate_job).to receive(:options) { {} }
-      allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return(wal_locations)
-      allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
-      allow(fake_duplicate_job).to receive(:strategy).and_return(:until_executed)
+      allow(fake_duplicate_job).to receive_messages(
+        latest_wal_locations: wal_locations,
+        idempotency_key: 'abc123',
+        strategy: :until_executed
+      )
       allow(fake_duplicate_job).to receive(:reschedulable?) { false }
     end
 

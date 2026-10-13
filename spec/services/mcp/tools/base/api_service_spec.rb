@@ -102,6 +102,55 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
       expect(result[:content]).to include(hash_including(text: 'Invalid JSON response'))
     end
 
+    context 'with a throttled response' do
+      let(:success) { false }
+      let(:response_code) { 429 }
+      let(:response_body) { { 'error' => 'This endpoint has been requested too many times. Try again later.' }.to_json }
+      let(:response_headers) { { 'Retry-After' => '60', 'RateLimit-Name' => 'search_rate_limit' } }
+
+      let(:api_response) do
+        instance_double(Gitlab::HTTP::Response,
+          body: response_body, success?: success, code: response_code, headers: response_headers)
+      end
+
+      it 'reports the delay and the throttle name' do
+        result = service.execute(request: nil, params: arguments)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to eq('Rate limited by search_rate_limit. Retry after 60 seconds.')
+        expect(result[:structuredContent][:error]).to include(
+          type: 'rate_limited', retry_after_seconds: 60, limit: 'search_rate_limit'
+        )
+      end
+
+      context 'with headers as HTTParty returns them' do
+        let(:response_headers) do
+          HTTParty::Response::Headers.new('Retry-After' => ['60'], 'RateLimit-Name' => ['search_rate_limit'])
+        end
+
+        it 'reports the delay and the throttle name' do
+          result = service.execute(request: nil, params: arguments)
+
+          expect(result[:structuredContent][:error]).to include(
+            type: 'rate_limited', retry_after_seconds: 60, limit: 'search_rate_limit'
+          )
+        end
+      end
+
+      context 'when the response carries no rate limit headers' do
+        let(:response_headers) { {} }
+
+        it 'still marks the result as a throttle' do
+          result = service.execute(request: nil, params: arguments)
+
+          expect(result[:structuredContent][:error]).to eq(
+            type: 'rate_limited',
+            message: 'This endpoint has been requested too many times. Try again later.'
+          )
+        end
+      end
+    end
+
     context 'with error response and nil parsed_response' do
       let(:success) { false }
       let(:response_code) { 500 }
@@ -117,7 +166,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: {},
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -137,7 +187,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: { error: { 'not_message' => 'value' } },
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -181,7 +232,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'Bad request' }],
           structuredContent: { error: { 'message' => 'Bad request' } },
-          isError: true
+          isError: true,
+          reason: :bad_request
         })
       end
     end
@@ -197,7 +249,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: { error: {} },
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -284,7 +337,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
       expect(result).to eq({
         content: [{ text: "ApiService: access token is not set", type: "text" }],
         structuredContent: {},
-        isError: true
+        isError: true,
+        reason: :unauthorized
       })
     end
   end

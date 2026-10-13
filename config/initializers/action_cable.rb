@@ -53,3 +53,4 @@ Gitlab::ActionCable::RequestStoreCallbacks.install
 Gitlab::ActionCable::InstrumentationCallback.install
 Gitlab::Database::LoadBalancing::ActionCableCallbacks.install
 Gitlab::ActionCable::IpAddressStateCallback.install
+Gitlab::ActionCable::BatchLoaderCallbacks.install

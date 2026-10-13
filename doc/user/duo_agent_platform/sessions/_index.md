@@ -17,9 +17,9 @@ Sessions show the status and execution data for the agents and flows you've run.
 
 Sessions are created by GitLab Duo Agentic Chat and foundational flows in the IDE or UI. Examples include:
 
-- Flows that are executed on a runner, like the [Fix CI/CD Pipeline Flow](../flows/foundational_flows/fix_pipeline.md).
+- Flows that are executed on a runner, like the [Fix CI/CD Pipeline Flow](../../../ci/pipelines/fix_pipeline.md).
   These sessions are visible in the UI under **AI** > **Sessions**.
-- Flows that run in the IDE, like the [Software Development Flow](../flows/foundational_flows/software_development.md).
+- Flows that run in the IDE, like the [Software Development Flow](../../../editor_extensions/software_development.md).
   These sessions are visible in the IDE, on the **Flows** tab, under **Sessions**.
 - Sessions created by GitLab Duo Chat. These sessions are visible on the right sidebar
   by selecting **GitLab Duo Chat history**.
@@ -44,6 +44,32 @@ To view sessions you've triggered:
 1. In the right sidebar, select **GitLab Duo sessions**.
 1. Select any session to view more details.
 1. Optional. Filter the details to show all logs or a concise subset only.
+
+### Triage sessions in the session inbox
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/616493) in GitLab 19.4 as an
+  [experiment](../../../policy/development_stages_support.md#experiment)
+  [with a feature flag](../../../administration/feature_flags/_index.md) named
+  `duo_panel_session_inbox`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/621748) in GitLab 19.5 to also
+  require the GitLab Duo experiment and beta features setting.
+
+{{< /history >}}
+
+The session list in the right sidebar has two tabs: **Needs a decision** and **All**.
+**Needs a decision** shows sessions that wait for you to approve or respond to an agent action.
+**All** shows every session you've triggered.
+
+To see the tabs, [GitLab Duo experiment and beta features](../../gitlab_duo/turn_on_off.md)
+must be turned on. Without it, the sidebar shows a single list of sessions.
 
 ## GitLab Duo Agentic Chat sessions
 

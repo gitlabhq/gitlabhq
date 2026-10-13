@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromStorage, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
-  describe '#orphan_objects' do
+  describe '#orphan_objects', factory_default: :keep do
+    let_it_be(:job_artifact_project) { create_default(:project) }
+
     let(:remote_directory) { 'artifacts' }
     let(:bucket_prefix) { nil }
 

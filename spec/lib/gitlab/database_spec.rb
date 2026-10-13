@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
 
     it 'contains as many entries as YAML files' do
       expect(described_class.all_database_connections.values.map(&:file_path))
-        .to contain_exactly(*described_class.all_database_connection_files)
+        .to match_array(described_class.all_database_connection_files)
     end
   end
 
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
   describe '.all_gitlab_schemas' do
     it 'contains as many entries as YAML files' do
       expect(described_class.all_gitlab_schemas.values.map(&:file_path))
-        .to contain_exactly(*described_class.all_gitlab_schema_files)
+        .to match_array(described_class.all_gitlab_schema_files)
     end
   end
 

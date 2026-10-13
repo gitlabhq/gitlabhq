@@ -496,6 +496,19 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
         end
 
+        it 'includes relative_position in the published event updated attributes' do
+          opts[:move_between_ids] = [issue1.id, issue2.id]
+
+          published_events = []
+          allow(Gitlab::EventStore).to receive(:publish) { |event| published_events << event }
+
+          update_issue(opts)
+
+          event = published_events.find { |e| e.is_a?(::WorkItems::WorkItemUpdatedEvent) }
+
+          expect(event.data[:updated_attributes]).to include('relative_position')
+        end
+
         context 'when block_issue_positioning flag is enabled' do
           before do
             stub_feature_flags(block_issue_repositioning: true)
@@ -1721,7 +1734,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
       end
     end
 
-    context 'when changing relative position of an issue ' do
+    context 'when changing relative position of an issue' do
       it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
 

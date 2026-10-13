@@ -1,0 +1,1341 @@
+import { nextTick } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import GitlabDuoSettings from '~/ai/settings/pages/gitlab_duo_settings.vue';
+import ExclusionSettings from '~/ai/settings/components/exclusion_settings.vue';
+import DuoLocalSetupSection from '~/ai/settings/readiness/components/duo_local_setup_section.vue';
+import { ALL_SETTINGS } from '~/ai/constants';
+
+const defaultProps = {
+  projectId: 123,
+  projectFullPath: 'namespace/project',
+  duoFeaturesEnabled: true,
+  duoReadinessAvailable: true,
+  duoReadiness: { platformEnabled: true },
+  amazonQAvailable: false,
+  amazonQAutoReviewEnabled: false,
+  duoFeaturesLocked: false,
+  licensedAiFeaturesAvailable: true,
+  ultimateFeaturesAvailable: true,
+  duoContextExclusionSettings: {
+    exclusionRules: ['*.log', 'node_modules/'],
+  },
+  initialDuoRemoteFlowsAvailability: false,
+  initialDuoFoundationalFlowsAvailability: false,
+  initialDuoSastFalsePositiveDetectionEnabled: false,
+  initialDuoSecretDetectionFpEnabled: false,
+  initialDuoDependencyBumpBreakingChangesEnabled: false,
+  initialDuoSastVrWorkflowEnabled: false,
+};
+
+describe('GitlabDuoSettings', () => {
+  let wrapper;
+
+  const createWrapper = (props = {}) => {
+    const propsData = {
+      ...defaultProps,
+      ...props,
+    };
+
+    return mountExtended(GitlabDuoSettings, {
+      propsData,
+    });
+  };
+
+  const findCard = () => wrapper.findByTestId('gitlab-duo-settings');
+  const findSaveButton = () => wrapper.findComponentByTestId('gitlab-duo-save-button');
+  const findDuoSettings = () => wrapper.findComponentByTestId('duo-settings');
+  const findReadinessBlock = () => wrapper.findByTestId('duo-readiness-block');
+  const findLocalSetupSection = () => wrapper.findComponent(DuoLocalSetupSection);
+  const findDuoRow = () => wrapper.findComponentByTestId('duo-row');
+  const findFlowExecutionRow = () => wrapper.findComponentByTestId('flow-execution-row');
+  const findFoundationalFlowsRow = () => wrapper.findComponentByTestId('foundational-flows-row');
+  const findDuoEnabledToggle = () => wrapper.findByTestId('duo_features_enabled_toggle');
+  const findDuoCascadingLockIcon = () => wrapper.findComponentByTestId('duo-cascading-lock-icon');
+  const findDuoFeaturesEnabledToggle = () =>
+    wrapper.findComponentByTestId('duo_features_enabled_toggle');
+  const findExclusionSettings = () => wrapper.findComponent(ExclusionSettings);
+  const findExclusionRulesHiddenInputs = () =>
+    wrapper.findAll(
+      'input[name="project[project_setting_attributes][duo_context_exclusion_settings][exclusion_rules][]"]',
+    );
+  const findDuoRemoteFlowsHiddenInput = () =>
+    wrapper.find('input[name="project[project_setting_attributes][duo_remote_flows_enabled]"]');
+  const findDuoFoundationalFlowsHiddenInput = () =>
+    wrapper.find(
+      'input[name="project[project_setting_attributes][duo_foundational_flows_enabled]"]',
+    );
+  const findDuoRemoteFlowsToggle = () => wrapper.findComponentByTestId('duo-remote-flows-enabled');
+  const findDuoFoundationalFlowsToggle = () =>
+    wrapper.findComponentByTestId('duo-foundational-flows-enabled');
+  const findDuoFoundationalFlowsCascadingLockIcon = () =>
+    wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
+  const findDuoSastFpDetectionToggle = () =>
+    wrapper.findComponentByTestId('duo-sast-fp-detection-enabled');
+  const findDuoSecretDetectionFpToggle = () =>
+    wrapper.findComponentByTestId('duo-secret-detection-fp-enabled');
+  const findDuoDependencyBumpToggle = () =>
+    wrapper.findByTestId('duo-dependency-bump-breaking-changes-enabled');
+  const findDuoSastVrWorkflowToggle = () =>
+    wrapper.findComponentByTestId('duo-sast-vr-workflow-enabled');
+  const findDuoVulnerabilityContextAnalysisToggle = () =>
+    wrapper.findComponentByTestId('duo-vulnerability-context-analysis-enabled');
+  const findAutoReviewToggle = () => wrapper.findComponentByTestId('amazon-q-auto-review-enabled');
+  const findToolApprovalToggle = () =>
+    wrapper.findComponentByTestId('tool-approval-for-session-enabled');
+  const findToolApprovalCascadingLockIcon = () =>
+    wrapper.findByTestId('tool-approval-cascading-lock-icon');
+  const findDuoAutoModeToggle = () => wrapper.findComponentByTestId('duo-auto-mode-enabled');
+  const findDuoAutoModeCascadingLockIcon = () =>
+    wrapper.findByTestId('duo-auto-mode-cascading-lock-icon');
+  const findDapSessionTrackingToggle = () =>
+    wrapper.findComponentByTestId('dap-session-tracking-enabled');
+  const findAuditEventsStorageToggle = () =>
+    wrapper.findComponentByTestId('ai-audit-events-storage-enabled');
+  const findAuditEventsStorageHiddenInput = () =>
+    wrapper.find(
+      'input[name="project[project_setting_attributes][ai_audit_events_storage_enabled]"]',
+    );
+  const findAuditEventsStorageCascadingLockIcon = () =>
+    wrapper.findByTestId('ai-audit-events-storage-cascading-lock-icon');
+  const findGovernanceCard = () => wrapper.findByTestId('duo-governance-info-card-header');
+  const findGovernanceLink = () => wrapper.findByTestId('duo-governance-link');
+  const findRemoteFlowsDapDisabledIcon = () =>
+    wrapper.findByTestId('duo-remote-flows-dap-disabled-icon');
+  const findFoundationalFlowsDapDisabledIcon = () =>
+    wrapper.findByTestId('duo-foundational-flows-dap-disabled-icon');
+
+  beforeEach(() => {
+    wrapper = createWrapper();
+  });
+
+  it('renders the component correctly', () => {
+    expect(findCard().exists()).toBe(true);
+    expect(findSaveButton().exists()).toBe(true);
+  });
+
+  // The toggles moved into the card, so the flag-off path has to keep rendering them where
+  // they were. Losing them would silently remove two settings from every project.
+  describe('when the readiness card is off', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ duoReadinessAvailable: false });
+    });
+
+    it('hides the card and keeps the original Duo row', () => {
+      expect(findReadinessBlock().exists()).toBe(false);
+      expect(findDuoSettings().exists()).toBe(true);
+    });
+
+    it('still renders the flow toggles in the flat list', () => {
+      expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
+      expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
+      expect(findDuoRemoteFlowsHiddenInput().exists()).toBe(true);
+    });
+
+    it('does not group the remaining settings under a heading', () => {
+      expect(wrapper.text()).not.toContain('Other GitLab Duo settings');
+    });
+
+    it('hides the local setup section', () => {
+      expect(findLocalSetupSection().exists()).toBe(false);
+    });
+
+    describe('when DAP is disabled at the instance level', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoReadinessAvailable: false,
+          duoFeaturesEnabled: true,
+          duoAgentPlatformEnabled: false,
+          initialDuoRemoteFlowsAvailability: true,
+        });
+      });
+
+      it('disables the Allow flow execution toggle', () => {
+        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+      });
+
+      it('disables the Allow foundational flows toggle', () => {
+        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+      });
+
+      it('shows the DAP disabled tooltip icon on the Allow flow execution row', () => {
+        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(true);
+      });
+
+      it('shows the DAP disabled tooltip icon on the Allow foundational flows row', () => {
+        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(true);
+      });
+    });
+
+    describe('when DAP is enabled at the instance level', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoReadinessAvailable: false,
+          duoFeaturesEnabled: true,
+          duoAgentPlatformEnabled: true,
+          initialDuoRemoteFlowsAvailability: true,
+        });
+      });
+
+      it('does not disable the Allow flow execution toggle', () => {
+        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(false);
+      });
+
+      it('does not disable the Allow foundational flows toggle', () => {
+        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
+      });
+
+      it('does not show the DAP disabled tooltip icon on the Allow flow execution row', () => {
+        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(false);
+      });
+
+      it('does not show the DAP disabled tooltip icon on the Allow foundational flows row', () => {
+        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when the readiness card is on', () => {
+    it('groups the remaining settings under a heading', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(wrapper.text()).toContain('Other GitLab Duo settings');
+    });
+  });
+
+  describe('when the Agent Platform is off above the project', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ duoReadiness: { platformEnabled: false } });
+    });
+
+    it('keeps the card rendered', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+    });
+
+    it('blocks the agent-only flow rows', () => {
+      expect(findFlowExecutionRow().props('status')).toBe('blocked');
+      expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
+      expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+      expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+    });
+
+    it('keeps the GitLab Duo row live, because it also governs Chat and Code Suggestions', () => {
+      expect(findDuoRow().props('status')).toBe('done');
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(false);
+    });
+  });
+
+  describe('local setup section', () => {
+    it('renders inside the readiness card', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findLocalSetupSection().exists()).toBe(true);
+    });
+  });
+
+  it('displays the correct header text', () => {
+    expect(findDuoRow().props('title')).toContain('GitLab Duo');
+  });
+
+  it('has the correct save button properties', () => {
+    expect(findSaveButton().props()).toMatchObject({
+      variant: 'confirm',
+    });
+    expect(findSaveButton().attributes('data-testid')).toBe('gitlab-duo-save-button');
+  });
+
+  describe('Duo', () => {
+    it('shows duo toggle inside the readiness card', () => {
+      wrapper = createWrapper({});
+
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findDuoRow().props()).toMatchObject({
+        title: 'GitLab Duo',
+        status: 'done',
+      });
+      expect(findDuoRow().text()).toContain('Turn on AI-native features for this project.');
+      expect(findDuoRow().text()).toContain('Learn more');
+      expect(findDuoEnabledToggle().exists()).toBe(true);
+    });
+
+    // Duo being off is the state the card exists to fix, so it has to survive a reload: the
+    // toggle that turns Duo back on lives inside the card.
+    it('keeps the card, and marks the rows below as blocked, when Duo is off', () => {
+      wrapper = createWrapper({ duoFeaturesEnabled: false });
+
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findDuoRow().props('status')).toBe('todo');
+      expect(findFlowExecutionRow().props('status')).toBe('blocked');
+      expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
+    });
+
+    describe('Auto review settings', () => {
+      it('hides auto review toggle within Duo settings when Amazon Q is not available', () => {
+        wrapper = createWrapper({ amazonQAvailable: false });
+
+        expect(findAutoReviewToggle().exists()).toBe(false);
+      });
+
+      it('shows auto review toggle within Duo settings', () => {
+        wrapper = createWrapper({ amazonQAvailable: true });
+
+        expect(findAutoReviewToggle().exists()).toBe(true);
+      });
+
+      it('disables auto review toggle when Duo features are locked', () => {
+        wrapper = createWrapper({
+          amazonQAvailable: true,
+          duoFeaturesLocked: true,
+        });
+
+        expect(findAutoReviewToggle().props('disabled')).toBe(true);
+      });
+
+      it('disables auto review toggle when Duo features are not enabled', () => {
+        wrapper = createWrapper({
+          amazonQAvailable: true,
+          duoFeaturesEnabled: false,
+        });
+
+        expect(findAutoReviewToggle().props('disabled')).toBe(true);
+      });
+
+      it('enables auto review toggle when Amazon Q and Duo features are enabled', () => {
+        wrapper = createWrapper({
+          amazonQAvailable: true,
+          duoFeaturesEnabled: true,
+        });
+
+        expect(findAutoReviewToggle().props('disabled')).toBe(false);
+      });
+
+      it('updates the hidden input value when toggled', async () => {
+        wrapper = createWrapper({
+          amazonQAvailable: true,
+          amazonQAutoReviewEnabled: true,
+          duoFeaturesEnabled: true,
+          initialDuoRemoteFlowsAvailability: false,
+        });
+
+        const findHiddenInput = () =>
+          wrapper.find('input[name="project[amazon_q_auto_review_enabled]"]');
+
+        expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+        await findAutoReviewToggle().vm.$emit('change', false);
+
+        // Vue 3 returns an empty string, while Vue 2 returns 'false'
+        // That's why we parse a boolean to verify the value both for Vue 2 and Vue 3
+        expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+      });
+    });
+
+    describe('Duo Flow settings', () => {
+      describe.each`
+        amazonQAvailable | duoFeaturesEnabled | shouldRender | scenario
+        ${true}          | ${true}            | ${false}     | ${'Amazon Q is enabled'}
+        ${false}         | ${false}           | ${true}      | ${'Duo features are not enabled'}
+        ${false}         | ${true}            | ${true}      | ${'all conditions are met'}
+      `('when $scenario', ({ amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
+        beforeEach(() => {
+          wrapper = createWrapper(
+            { amazonQAvailable, duoFeaturesEnabled },
+            { duoFoundationalFlows: true },
+          );
+        });
+
+        it(`${shouldRender ? 'renders' : 'does not render'} the Duo remote flows toggle`, () => {
+          expect(findDuoRemoteFlowsToggle().exists()).toBe(shouldRender);
+        });
+
+        it(`${shouldRender ? 'renders' : 'does not render'} the Duo foundational flows toggle`, () => {
+          expect(findDuoFoundationalFlowsToggle().exists()).toBe(shouldRender);
+        });
+      });
+
+      // The card lists every requirement, so a prerequisite that is off leaves the row visible
+      // and disabled rather than removing it.
+      describe('when GitLab Duo is off', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({ amazonQAvailable: false, duoFeaturesEnabled: false });
+        });
+
+        it('keeps the flow toggles visible but disabled', () => {
+          expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+        });
+      });
+
+      describe('when Duo remote flows toggle is rendered', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false }, {});
+        });
+
+        it('is not disabled when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(false);
+        });
+
+        it('clicking on the remote flows checkbox and submitting passes along the data', async () => {
+          const duoRemoteFlowsToggle = findDuoRemoteFlowsToggle();
+          const hiddenInput = findDuoRemoteFlowsHiddenInput();
+
+          expect(duoRemoteFlowsToggle.exists()).toBe(true);
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
+
+          await duoRemoteFlowsToggle.vm.$emit('change', true);
+
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
+        });
+      });
+
+      describe('when Duo foundational flows toggle is rendered', () => {
+        beforeEach(() => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoRemoteFlowsAvailability: true,
+            },
+            { duoFoundationalFlows: true },
+          );
+        });
+
+        it('renders the foundational flows toggle', () => {
+          expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
+        });
+
+        it('is disabled when remote flows is disabled', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoRemoteFlowsAvailability: false,
+            },
+            { duoFoundationalFlows: true },
+          );
+
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+        });
+
+        it('is enabled when remote flows is enabled', () => {
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
+        });
+
+        it('clicking on the foundational flows checkbox updates the hidden input', async () => {
+          const duoFoundationalFlowsToggle = findDuoFoundationalFlowsToggle();
+          const hiddenInput = findDuoFoundationalFlowsHiddenInput();
+
+          expect(duoFoundationalFlowsToggle.exists()).toBe(true);
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
+
+          await duoFoundationalFlowsToggle.vm.$emit('change', true);
+
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          const duoFoundationalFlowsToggle = findDuoFoundationalFlowsToggle();
+          const hiddenInput = findDuoFoundationalFlowsHiddenInput();
+
+          expect(duoFoundationalFlowsToggle.exists()).toBe(true);
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
+
+          await duoFoundationalFlowsToggle.vm.$emit('change', true);
+
+          expect(parseBoolean(hiddenInput.attributes('value'))).toBe(true);
+        });
+
+        it('is not disabled when Duo features are locked on', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              duoFeaturesLocked: true,
+              initialDuoRemoteFlowsAvailability: true,
+            },
+            { duoFoundationalFlows: true },
+          );
+
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
+        });
+
+        it('is disabled when cascading lock is active', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              initialDuoRemoteFlowsAvailability: true,
+              duoFoundationalFlowsCascadingSettings: {
+                lockedByAncestor: true,
+                lockedByApplicationSetting: false,
+              },
+            },
+            { duoFoundationalFlows: true },
+          );
+
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+          expect(findDuoFoundationalFlowsCascadingLockIcon().exists()).toBe(true);
+        });
+      });
+
+      describe('Duo SAST FP Detection settings', () => {
+        it('shows SAST FP Detection toggle', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show SAST FP Detection toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        });
+
+        it('does not disable SAST FP Detection toggle when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render SAST FP Detection toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: false,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoSastFalsePositiveDetectionEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoSastFpDetectionToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Duo Secret Detection FP Detection settings', () => {
+        it('shows Secret Detection FP Detection toggle when feature flag is enabled', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().exists()).toBe(true);
+          expect(findDuoSecretDetectionFpToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show SAST FP Detection toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
+
+          expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        });
+
+        it('does not disable Secret Detection FP Detection toggle when Duo features are locked on', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              duoFeaturesLocked: true,
+              amazonQAvailable: false,
+            },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render Secret Detection FP Detection toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: false,
+              amazonQAvailable: false,
+            },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoSecretDetectionFpEnabled: true,
+            },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_secret_detection_fp_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoSecretDetectionFpToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Tool approval for session settings', () => {
+        it('renders the tool approval toggle when Duo features are enabled', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findToolApprovalToggle().exists()).toBe(true);
+          expect(findToolApprovalToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render the tool approval toggle when Duo features are disabled', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: false });
+
+          expect(findToolApprovalToggle().exists()).toBe(false);
+        });
+
+        it('does not render the tool approval toggle when Amazon Q is available', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: true });
+
+          expect(findToolApprovalToggle().exists()).toBe(false);
+        });
+
+        it('does not disable the toggle when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findToolApprovalToggle().props('disabled')).toBe(false);
+        });
+
+        it('disables the toggle when cascading lock is active', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            toolApprovalForSessionLocked: true,
+            toolApprovalForSessionCascadingSettings: {
+              lockedByAncestor: true,
+              lockedByApplicationSetting: false,
+            },
+          });
+
+          expect(findToolApprovalToggle().props('disabled')).toBe(true);
+          expect(findToolApprovalCascadingLockIcon().exists()).toBe(true);
+        });
+
+        it('does not show cascading lock icon when not locked', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findToolApprovalCascadingLockIcon().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialToolApprovalForSessionEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][tool_approval_for_session_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findToolApprovalToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Auto mode settings', () => {
+        it.each`
+          scenario                       | props                                                                                | exists   | disabled
+          ${'available and Duo enabled'} | ${{ duoFeaturesEnabled: true, duoAutoModeAvailable: true }}                          | ${true}  | ${false}
+          ${'not available'}             | ${{ duoFeaturesEnabled: true, duoAutoModeAvailable: false }}                         | ${false} | ${undefined}
+          ${'Duo features disabled'}     | ${{ duoFeaturesEnabled: false, duoAutoModeAvailable: true }}                         | ${false} | ${undefined}
+          ${'Duo features locked'}       | ${{ duoFeaturesEnabled: true, duoAutoModeAvailable: true, duoFeaturesLocked: true }} | ${true}  | ${false}
+        `('renders correctly when $scenario', ({ props, exists, disabled }) => {
+          wrapper = createWrapper({ amazonQAvailable: false, ...props });
+
+          expect(findDuoAutoModeToggle().exists()).toBe(exists);
+          if (exists) {
+            expect(findDuoAutoModeToggle().props('disabled')).toBe(disabled);
+          }
+        });
+
+        it('disables the toggle when cascading lock is active', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoAutoModeAvailable: true,
+            amazonQAvailable: false,
+            duoAutoModeLocked: true,
+            duoAutoModeCascadingSettings: {
+              lockedByAncestor: true,
+              lockedByApplicationSetting: false,
+            },
+          });
+
+          expect(findDuoAutoModeToggle().props('disabled')).toBe(true);
+          expect(findDuoAutoModeCascadingLockIcon().exists()).toBe(true);
+        });
+
+        it('does not show cascading lock icon when not locked', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoAutoModeAvailable: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoAutoModeCascadingLockIcon().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoAutoModeAvailable: true,
+            amazonQAvailable: false,
+            initialDuoAutoModeEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_auto_mode_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoAutoModeToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('DAP session tracking settings', () => {
+        it.each`
+          scenario                       | props                                                                                       | exists   | disabled
+          ${'available and Duo enabled'} | ${{ duoFeaturesEnabled: true, dapSessionTrackingAvailable: true }}                          | ${true}  | ${false}
+          ${'not available'}             | ${{ duoFeaturesEnabled: true, dapSessionTrackingAvailable: false }}                         | ${false} | ${undefined}
+          ${'Duo features disabled'}     | ${{ duoFeaturesEnabled: false, dapSessionTrackingAvailable: true }}                         | ${false} | ${undefined}
+          ${'Duo features locked'}       | ${{ duoFeaturesEnabled: true, dapSessionTrackingAvailable: true, duoFeaturesLocked: true }} | ${true}  | ${true}
+        `('renders correctly when $scenario', ({ props, exists, disabled }) => {
+          wrapper = createWrapper({ amazonQAvailable: false, ...props });
+
+          expect(findDapSessionTrackingToggle().exists()).toBe(exists);
+          if (exists) {
+            expect(findDapSessionTrackingToggle().props('disabled')).toBe(disabled);
+          }
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            dapSessionTrackingAvailable: true,
+            initialDapSessionTrackingEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][dap_session_tracking_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDapSessionTrackingToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('AI audit event storage settings', () => {
+        describe('when the setting is not available', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: false,
+            });
+          });
+
+          it('does not render the toggle', () => {
+            expect(findAuditEventsStorageToggle().exists()).toBe(false);
+          });
+        });
+
+        describe('when the setting is available', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: true,
+            });
+          });
+
+          it('renders the toggle off by default', () => {
+            expect(findAuditEventsStorageToggle().exists()).toBe(true);
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              false,
+            );
+          });
+
+          it('does not show cascading lock icon', () => {
+            expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(false);
+          });
+
+          it('updates the hidden input value when toggled', async () => {
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              false,
+            );
+
+            await findAuditEventsStorageToggle().vm.$emit('change', true);
+
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              true,
+            );
+          });
+        });
+
+        describe('when aiAuditEventsStorageEnabled is true', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: true,
+              aiAuditEventsStorageEnabled: true,
+            });
+          });
+
+          it('renders the toggle on', () => {
+            expect(parseBoolean(findAuditEventsStorageHiddenInput().attributes('value'))).toBe(
+              true,
+            );
+          });
+        });
+
+        describe('when the setting is locked', () => {
+          beforeEach(() => {
+            wrapper = createWrapper({
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              aiAuditEventsStorageAvailable: true,
+              aiAuditEventsStorageCascadingSettings: {
+                lockedByAncestor: true,
+                lockedByApplicationSetting: false,
+              },
+            });
+          });
+
+          it('shows cascading lock icon and disables the toggle', () => {
+            expect(findAuditEventsStorageCascadingLockIcon().exists()).toBe(true);
+            expect(findAuditEventsStorageToggle().props('disabled')).toBe(true);
+          });
+        });
+      });
+
+      describe('Duo SAST VR Workflow settings', () => {
+        it('shows SAST VR Workflow toggle', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findDuoSastVrWorkflowToggle().exists()).toBe(true);
+          expect(findDuoSastVrWorkflowToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show SAST VR Workflow toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
+
+          expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        });
+
+        it('does not disable SAST VR Workflow toggle when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoSastVrWorkflowToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render SAST VR Workflow toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: false,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoSastVrWorkflowEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_sast_vr_workflow_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoSastVrWorkflowToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Duo Vulnerability Context Analysis settings', () => {
+        it('shows Vulnerability Context Analysis toggle', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(true);
+          expect(findDuoVulnerabilityContextAnalysisToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show Vulnerability Context Analysis toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        });
+
+        it('does not disable Vulnerability Context Analysis toggle when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render Vulnerability Context Analysis toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: false,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoVulnerabilityContextAnalysisEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_vulnerability_context_analysis_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoVulnerabilityContextAnalysisToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+    });
+  });
+
+  describe('when areDuoSettingsLocked is false', () => {
+    it('does not show CascadingLockIcon', () => {
+      wrapper = createWrapper({ duoFeaturesLocked: false });
+      expect(findDuoCascadingLockIcon().exists()).toBe(false);
+    });
+
+    it('does not disable the main Duo toggle', () => {
+      wrapper = createWrapper({ duoFeaturesLocked: false });
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(false);
+    });
+  });
+
+  describe('when areDuoSettingsLocked is true', () => {
+    it('disables the main Duo toggle', () => {
+      wrapper = createWrapper({ duoFeaturesEnabled: true, duoFeaturesLocked: true });
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(true);
+    });
+
+    it('shows CascadingLockIcon when duoAvailabilityCascadingSettings is provided', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: {
+          lockedByAncestor: false,
+          lockedByApplicationSetting: false,
+          ancestorNamespace: null,
+        },
+        duoFeaturesLocked: true,
+      });
+      expect(findDuoCascadingLockIcon().exists()).toBe(true);
+    });
+
+    it('passes correct props to CascadingLockIcon', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: {
+          lockedByAncestor: false,
+          lockedByApplicationSetting: false,
+          ancestorNamespace: null,
+        },
+        duoFeaturesLocked: true,
+      });
+      expect(findDuoCascadingLockIcon().props()).toMatchObject({
+        isLockedByGroupAncestor: false,
+        isLockedByApplicationSettings: false,
+        ancestorNamespace: null,
+      });
+    });
+
+    it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is empty', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: {},
+        duoFeaturesLocked: true,
+      });
+      expect(findDuoCascadingLockIcon().exists()).toBe(false);
+    });
+
+    it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is null', () => {
+      wrapper = createWrapper({
+        duoAvailabilityCascadingSettings: null,
+        duoFeaturesLocked: true,
+      });
+      expect(findDuoCascadingLockIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('Amazon Q', () => {
+    it('shows Amazon Q text for duo field when Amazon Q is enabled', () => {
+      wrapper = createWrapper({ amazonQAvailable: true });
+
+      expect(findDuoSettings().exists()).toBe(true);
+      expect(findDuoSettings().props()).toEqual({
+        helpPath: '/help/user/duo_amazon_q/_index.md',
+        helpText: 'This project can use Amazon Q.',
+        label: 'Amazon Q',
+        labelFor: null,
+        locked: false,
+      });
+    });
+  });
+
+  describe('ExclusionSettings', () => {
+    it('renders ExclusionSettings component', () => {
+      wrapper = createWrapper();
+
+      expect(findExclusionSettings().exists()).toBe(true);
+      expect(findExclusionSettings().props('exclusionRules')).toEqual(['*.log', 'node_modules/']);
+    });
+
+    it('updates exclusion rules when ExclusionSettings emits update', async () => {
+      wrapper = createWrapper();
+      const newRules = ['*.log', 'node_modules/', '*.tmp'];
+
+      const exclusionSettings = findExclusionSettings();
+      expect(exclusionSettings.exists()).toBe(true);
+
+      await exclusionSettings.vm.$emit('update', newRules);
+
+      expect(wrapper.vm.exclusionRules).toEqual(newRules);
+    });
+
+    it('renders hidden inputs for exclusion rules form submission', () => {
+      wrapper = createWrapper();
+      const hiddenInputs = findExclusionRulesHiddenInputs();
+
+      expect(hiddenInputs).toHaveLength(2);
+      expect(hiddenInputs.at(0).attributes('value')).toBe('*.log');
+      expect(hiddenInputs.at(1).attributes('value')).toBe('node_modules/');
+    });
+
+    it('updates hidden inputs when exclusion rules change', async () => {
+      wrapper = createWrapper();
+      const newRules = ['*.tmp', 'cache/'];
+
+      const exclusionSettings = findExclusionSettings();
+      expect(exclusionSettings.exists()).toBe(true);
+
+      await exclusionSettings.vm.$emit('update', newRules);
+
+      const hiddenInputs = findExclusionRulesHiddenInputs();
+      expect(hiddenInputs).toHaveLength(2);
+      expect(hiddenInputs.at(0).attributes('value')).toBe('*.tmp');
+      expect(hiddenInputs.at(1).attributes('value')).toBe('cache/');
+
+      const nullHiddenInput = wrapper.findByTestId('exclusion-rule-input-null');
+      expect(nullHiddenInput.exists()).toBe(false);
+    });
+
+    it('handles empty exclusion rules', () => {
+      wrapper = createWrapper({
+        duoContextExclusionSettings: { exclusionRules: [] },
+      });
+
+      expect(findExclusionSettings().exists()).toBe(true);
+      expect(findExclusionSettings().props('exclusionRules')).toEqual([]);
+      expect(findExclusionRulesHiddenInputs()).toHaveLength(0);
+
+      // Check that a null hidden input is created for empty exclusion rules
+      const nullHiddenInput = wrapper.findByTestId('exclusion-rule-input-null');
+      expect(nullHiddenInput.exists()).toBe(true);
+    });
+
+    it('handles missing duo context exclusion settings', () => {
+      wrapper = createWrapper({
+        duoContextExclusionSettings: {},
+      });
+
+      expect(findExclusionSettings().exists()).toBe(true);
+      expect(findExclusionSettings().props('exclusionRules')).toEqual([]);
+    });
+
+    it('submits form after DOM is updated when exclusion rules are updated', async () => {
+      // Create a mock form element
+      const mockForm = document.createElement('form');
+      const mockSubmit = jest.fn();
+      mockForm.submit = mockSubmit;
+
+      // Mock the closest method to return our mock form
+      const mockClosest = jest.fn().mockReturnValue(mockForm);
+
+      wrapper = createWrapper();
+
+      // Mock the $el.closest method
+      wrapper.vm.$el.closest = mockClosest;
+
+      const newRules = ['*.log', 'node_modules/', '*.tmp'];
+      const exclusionSettings = findExclusionSettings();
+
+      // Emit the update event
+      await exclusionSettings.vm.$emit('update', newRules);
+
+      // Wait for nextTick to ensure DOM updates are processed
+      await nextTick();
+
+      // Verify that closest was called with 'form'
+      expect(mockClosest).toHaveBeenCalledWith('form');
+
+      // Verify that form.submit() was called
+      expect(mockSubmit).toHaveBeenCalled();
+
+      // Verify that exclusion rules were updated
+      expect(wrapper.vm.exclusionRules).toEqual(newRules);
+    });
+  });
+
+  describe('governance card', () => {
+    const governancePath = '/group/project/-/automate/governance';
+
+    it('is hidden when no governancePath is provided', () => {
+      wrapper = createWrapper();
+
+      expect(findGovernanceCard().exists()).toBe(false);
+    });
+
+    it('renders the governance card before the save button when governancePath is set', () => {
+      wrapper = createWrapper({ governancePath });
+
+      expect(findGovernanceCard().exists()).toBe(true);
+      expect(findGovernanceLink().attributes('href')).toBe(governancePath);
+    });
+  });
+
+  describe('visibleSettings allowlist', () => {
+    describe('when restricted to the SAST VR workflow setting', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoFeaturesEnabled: true,
+          amazonQAvailable: false,
+          visibleSettings: ['duoSastVrWorkflowEnabled'],
+        });
+      });
+
+      it('renders only the SAST VR workflow toggle and the save button', () => {
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and every other Duo setting', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        expect(findDuoDependencyBumpToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to the SAST FP detection setting', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSastFalsePositiveDetectionEnabled'],
+          },
+          { enableVulnerabilityResolution: true },
+        );
+      });
+
+      it('renders only the SAST FP detection toggle and the save button', () => {
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and every other Duo setting', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to the Secret Detection FP setting', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSecretDetectionFpEnabled'],
+          },
+          { duoSecretDetectionFalsePositive: true },
+        );
+      });
+
+      it('renders only the Secret Detection FP toggle and the save button', () => {
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and every other Duo setting', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to both SAST VR and SAST FP detection settings', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: ['duoSastVrWorkflowEnabled', 'duoSastFalsePositiveDetectionEnabled'],
+          },
+          { enableVulnerabilityResolution: true },
+        );
+      });
+
+      it('renders both the SAST VR and SAST FP detection toggles', () => {
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(true);
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and non-allowed settings', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when restricted to both SAST FP and Secret Detection FP settings', () => {
+      beforeEach(() => {
+        wrapper = createWrapper(
+          {
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            visibleSettings: [
+              'duoSastFalsePositiveDetectionEnabled',
+              'duoSecretDetectionFpEnabled',
+            ],
+          },
+          { duoSecretDetectionFalsePositive: true },
+        );
+      });
+
+      it('renders both the SAST FP and Secret Detection FP toggles', () => {
+        expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
+        expect(findDuoSecretDetectionFpToggle().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+      });
+
+      it('hides the Duo enable toggle and non-allowed settings', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(false);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
+        expect(findToolApprovalToggle().exists()).toBe(false);
+        expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        expect(findExclusionSettings().exists()).toBe(false);
+      });
+    });
+
+    describe('when the allowlist contains ALL_SETTINGS', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          duoFeaturesEnabled: true,
+          amazonQAvailable: false,
+          visibleSettings: [ALL_SETTINGS],
+        });
+      });
+
+      it('renders the full set of Duo settings', () => {
+        expect(findDuoEnabledToggle().exists()).toBe(true);
+        expect(findDuoSastVrWorkflowToggle().exists()).toBe(true);
+        expect(findExclusionSettings().exists()).toBe(true);
+      });
+    });
+  });
+});

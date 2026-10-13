@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
       expect(payload[:findings]).to be_an(Array)
     end
 
-    it 'merges the check result with the vacuum and autovacuum snapshots', :aggregate_failures do
+    it 'merges the check result with the timeout, vacuum and autovacuum snapshots', :aggregate_failures do
       check_result = { search_path: 'public', findings: [], severity: nil, counts: {} }
 
       expect_next_instance_of(Gitlab::Database::Diagnostics::Checks::SchemaResolution) do |check|
@@ -32,6 +32,7 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
       payload = result[:databases]['main']
 
       expect(payload).to include(check_result)
+      expect(payload[:timeouts]).to include(:settings, :overrides, :findings)
       expect(payload[:vacuums]).to eq([])
       expect(payload[:autovacuum_config]).to include(:settings)
     end
@@ -78,9 +79,9 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           .with(a_string_matching(/is_superuser/)).and_return(true)
 
         # Keep this context focused on vacuum progress: stub the sibling
-        # autovacuum-config collection so its queries don't hit the real DB.
+        # collections so their queries don't hit the real DB.
         allow_next_instance_of(described_class) do |info|
-          allow(info).to receive(:collect_autovacuum_config).and_return({})
+          allow(info).to receive_messages(collect_autovacuum_config: {}, collect_timeouts: {})
         end
       end
 
@@ -233,9 +234,9 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
 
       before do
         # Keep this context focused on autovacuum config: stub the sibling
-        # vacuum-progress collection so its query doesn't hit the real DB.
+        # collections so their queries don't hit the real DB.
         allow_next_instance_of(described_class) do |info|
-          allow(info).to receive(:collect_vacuums).and_return([])
+          allow(info).to receive_messages(collect_vacuums: [], collect_timeouts: {})
         end
       end
 

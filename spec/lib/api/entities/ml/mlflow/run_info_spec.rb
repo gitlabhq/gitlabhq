@@ -82,7 +82,7 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
     end
 
     context 'when candidate has already a generic package' do
-      let!(:candidate) { create(:ml_candidates, :with_generic_package, name: 'run1') }
+      let(:candidate) { build_stubbed(:ml_candidates, :with_generic_package, internal_id: 1, name: 'run1') }
 
       it 'returns the generic version format of the artifact_uri' do
         expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/generic#{candidate.artifact_root}")
@@ -90,7 +90,7 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
     end
 
     context 'when candidate has no file or generic package' do
-      let!(:candidate) { create(:ml_candidates, :with_ml_model, name: 'candidate_1') }
+      let(:candidate) { build_stubbed(:ml_candidates, :with_ml_model, internal_id: 1, name: 'candidate_1') }
 
       it 'returns a string with no package' do
         expect(subject[:artifact_uri]).to eq("mlflow-artifacts:/candidate:#{candidate.iid}")

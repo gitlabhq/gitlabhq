@@ -461,7 +461,7 @@ RSpec.describe HelpController do
   end
 
   def stub_two_factor_required
-    allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-    allow(controller).to receive(:current_user_requires_two_factor?).and_return(true)
+    allow(controller).to receive_messages(two_factor_authentication_required?: true,
+      current_user_requires_two_factor?: true)
   end
 end

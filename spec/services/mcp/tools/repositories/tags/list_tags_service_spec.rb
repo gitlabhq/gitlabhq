@@ -25,12 +25,39 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
       expect(described_class.available_versions).to include('0.1.0')
       expect(described_class.version_metadata('0.1.0')[:annotations]).to eq({ readOnlyHint: true })
     end
+  end
 
-    it 'derives the first bounds and description from the constants', :aggregate_failures do
-      first = described_class.version_metadata('0.1.0')[:input_schema][:properties][:first]
-
-      expect(first[:maximum]).to eq(described_class::MAX_FIRST)
-      expect(first[:description]).to eq('Number of tags to return. Default is 20, maximum is 100.')
+  describe 'input schema' do
+    it 'locks the full input schema for version 0.1.0' do
+      expect(described_class.version_metadata('0.1.0')[:input_schema]).to eq({
+        type: 'object',
+        required: [],
+        properties: {
+          url: {
+            type: 'string',
+            description: 'GitLab URL of the project.'
+          },
+          project_id: {
+            type: 'string',
+            description: 'ID or full path of the project.'
+          },
+          search: {
+            type: 'string',
+            description: 'Filter tags by name. Supports ^ to anchor the start, $ to anchor the end, and * as a ' \
+              'wildcard.'
+          },
+          after: {
+            type: 'string',
+            description: 'Cursor for forward pagination. Use metadata.end_cursor from the previous response.'
+          },
+          first: {
+            type: 'integer',
+            minimum: 1,
+            maximum: 100,
+            description: 'Number of tags to return. Default is 20, maximum is 100.'
+          }
+        }
+      })
     end
   end
 
@@ -210,6 +237,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('Provide exactly one of: url or project_id')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'rejects a call without arguments' do
@@ -222,6 +250,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
         result = execute({ url: project.web_url, project_id: project.full_path })
 
         expect(result[:content].first[:text]).to include('Provide exactly one of: url or project_id')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'reports a url pointing at a project that does not exist' do
@@ -243,6 +272,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('must point to a project')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 

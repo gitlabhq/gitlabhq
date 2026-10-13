@@ -88,8 +88,8 @@ RSpec.describe GroupLink::GroupGroupLinkEntity, feature_category: :groups_and_pr
     context 'when shared with group is private' do
       let_it_be(:shared_with_group) { create(:group, :private) }
 
-      let_it_be(:group_group_link) do
-        create(
+      let(:group_group_link) do
+        build_stubbed(
           :group_group_link,
           {
             shared_group: shared_group,

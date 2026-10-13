@@ -164,8 +164,22 @@ A caller provides either:
 
 - `url` - a full GitLab URL that encodes the whole path (for example
   `https://gitlab.com/group/project/-/merge_requests/1`), or
-- The ID group - `project_id` (numeric ID or URL-encoded path such as `gitlab-org%2Fgitlab`) plus
+- The ID group - `project_id` (numeric ID or full path such as `gitlab-org/gitlab`) plus
   the resource's internal ID (`merge_request_iid`, `work_item_iid`, `commit_sha`, and so on).
+
+Both the plain full path (`gitlab-org/gitlab`) and the URL-encoded form (`gitlab-org%2Fgitlab`)
+work as a project or group argument for any tool that resolves it through `ResourceFinder` or
+`ApiTool`. The MCP boundary percent-decodes the value before it reaches lookup logic: in
+`ResourceFinder#find_project!` and `#find_group!` for GraphQL-backed and custom tools, and in
+`ApiTool#execute` for REST-backed tools, mirroring the decoding Rack applies to a path segment in
+a REST request. A tool that passes a path straight to GraphQL (for example `search_labels` or
+`list_vulnerabilities`) skips both decode sites and takes the plain form only.
+
+Use the plain full path in examples and in a tool's own `input_schema` description. The decode
+exists only so that Grape-derived descriptions copied from REST routes, which advertise the
+URL-encoded form, don't become wrong. `Gitlab::ResourceLookup`, which the REST API also uses,
+doesn't decode: its callers already receive a decoded value, and decoding there would let the
+REST API accept a double-encoded path.
 
 Keep the project identifier and the internal ID as separate parameters.
 Do not fold them into a
@@ -202,8 +216,9 @@ still passes validation for an optional `enum` parameter.
   `<facet>_after`, and add `<facet>_last`/`<facet>_before` when reading from the end matters
   (for example the newest notes). Build these parameters with
   `Mcp::Tools::Concerns::CursorPagination.input_schema_params`, which enforces the shared bounds.
-  Return the connection's `pageInfo` alongside the nodes. See the `notes` facet of
-  `get_merge_request` (forward-only) and of `get_work_item` (bidirectional) for worked examples.
+  Return the connection's `pageInfo` alongside the nodes. See the `commits` facet of
+  `get_merge_request` (forward-only) and the `notes` facets of `get_merge_request` and
+  `get_work_item` (bidirectional) for worked examples.
 - Add a `detail` enum (`none`/`stats`/`full_patch`) on diff-bearing reads where the diff dominates
   the payload (for example the `diff` facet of `get_commit` and the `diffs` facet of
   `get_merge_request`). Do not retrofit `detail` where a better-suited knob already exists: file
@@ -232,8 +247,9 @@ gaining cursor stability, and misleads the caller about the guarantees the endpo
   (`byte_offset`/`byte_limit`). Return a `system_instruction` telling the caller how to fetch the
   next window.
 - Facet-scoped pagination on a `get_` reader is prefixed with the facet name (for example
-  `notes_page`/`notes_per_page` on `get_merge_request`, `comments_page`/`comments_per_page` on
-  `get_commit`) and follows the scheme of the endpoint backing that facet.
+  `notes_first`/`notes_after`/`notes_last`/`notes_before` on `get_merge_request`,
+  `notes_first`/`notes_after` on `get_commit`) and follows the scheme of the endpoint backing that
+  facet.
 
 **Output IDs (GraphQL-backed tools):** unwrap GIDs to numeric integers in `process_result` for
 resources that tools address by their global numeric ID — groups, projects, and pipelines — so
@@ -406,32 +422,31 @@ names its project with `project_full_path` while `search_labels` names it with `
 A tool that declares nothing usable resolves no namespace. It is served ungoverned, and no
 tool rule ever applies to its calls.
 
-The contract lives in `Mcp::Tools::Concerns::GovernanceNamespaceResolver`, which every tool
-includes. It exposes a class-level `namespace_arguments` method and the `resolve_governance_containers`
+The contract lives in `Mcp::Tools::Concerns::GovernanceContainerResolver`, which every tool
+includes. It exposes a class-level `container_arguments` macro and the `governed_containers`
 method that reads it.
 
 **The default.** Every tool inherits:
 
 ```ruby
-{ project: :project_id, group: :group_id }
+{ project: :project_id, group: :group_id, project_or_group: :url }
 ```
 
 If your tool's input schema already names its arguments `project_id` or `group_id`, you don't
 need to change anything. The resolver accepts a numeric ID, a full path, or a Global ID for
 either argument.
 
-**Overriding.** When your tool names its arguments differently, override
-`self.namespace_arguments` on the service class and return a hash. For example,
-`list_vulnerabilities` identifies its project with `project_full_path` instead of `project_id`:
+**Overriding.** When your tool names its arguments differently, call the `container_arguments`
+macro on the service class. The kinds you pass replace the matching default keys, and the
+other defaults stay. For example, `list_vulnerabilities` identifies its project with
+`project_full_path` instead of `project_id`:
 
 ```ruby
 module Mcp
   module Tools
     module Security
       class ListVulnerabilitiesService < Base::GraphqlService
-        def self.namespace_arguments
-          { project: :project_full_path }
-        end
+        container_arguments project: :project_full_path
 
         # ...
       end
@@ -446,9 +461,7 @@ entry instead:
 
 ```ruby
 class SearchService < Base::GraphqlService
-  def self.namespace_arguments
-    { project_or_group: :full_path }
-  end
+  container_arguments project_or_group: :full_path
 end
 ```
 
@@ -466,10 +479,36 @@ A Global ID's own class must match the declared kind. A group's Global ID given 
 ID. For a `:project_or_group` argument, a full path can't collide between the two, so an
 identifier the project lookup doesn't claim is offered to the group lookup.
 
-**Route-backed tools.** A tool created from a REST route with `route_setting :mcp` needs no
-declaration. `ApiTool` reads `boundary_type` from the route's `route_setting :authorization`
+**Route-backed tools.** A tool created from a REST route with `route_setting :mcp` usually
+needs no declaration. `ApiTool` reads `boundary_type` from the route's `route_setting :authorization`
 and maps `:project` and `:group` onto the route's `:id` parameter. When the route sets no
-boundary type, `ApiTool` falls back to the default `{ project: :project_id, group: :group_id }`.
+boundary type, `ApiTool` falls back to the default declaration.
+
+When a route takes another argument that names a container, declare it on the route with
+`container_arguments:`. `ApiTool` merges it with the boundary-derived kind. `fork_repository`
+is governed by the source project from its boundary and by the namespace it forks into:
+
+```ruby
+route_setting :mcp, tool_name: :fork_repository, toolset: :repository,
+  params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
+  container_arguments: {
+    record: {
+      namespace_id: ->(id) { ::Namespace.without_project_namespaces.find_by_id(id) },
+      namespace_path: ->(path) { ::Namespace.without_project_namespaces.find_by_full_path(path) }
+    }
+  }
+```
+
+When only EE adds the argument, pass the declaration through a CE helper that EE overrides,
+the same way the route passes its parameters. `create_issue` uses
+`Helpers::IssuesHelpers.create_issue_mcp_container_arguments`, which EE extends with an
+`epic_id` resolver.
+
+**URL arguments.** Tools read a `url` with different parsers. A merge request tool matches
+`MergeRequest.link_reference_pattern`, a commit tool matches `Commit.link_reference_pattern`,
+and other tools take the path in front of `/-/`. One URL can contain text that each parser
+reads as a different project. The resolver applies all three and governs the call by every
+project or group they return, so the most restrictive rule wins.
 
 **List arguments.** An argument can hold a list of identifiers instead of a single one. The
 resolver looks up every entry in the list, not just the first, and skips any entry that
@@ -479,14 +518,14 @@ one call:
 
 ```ruby
 class AttachScanProfileService < Base::GraphqlService
-  def self.namespace_arguments
-    { project: :project_ids, group: :group_ids }
-  end
+  container_arguments project: :project_ids,
+    group: :group_ids,
+    record: { security_scan_profile_id: ->(id) { container_from_scan_profile(id) } }
 end
 ```
 
 **Tools that cannot be governed.** When no argument on a tool names a project or a group, mark
-the class `ungovernable!` instead of declaring `namespace_arguments`. `GetServerVersionService`
+the class `ungovernable!` instead of declaring `container_arguments`. `GetServerVersionService`
 is an example, since it takes no arguments at all:
 
 ```ruby
@@ -497,20 +536,36 @@ class GetServerVersionService < Base::CustomService
 end
 ```
 
-> [!note]
-> Tools that take only a record ID, such as `get_duo_session` and `get_vulnerability`, are
-> currently marked `ungovernable!` too. Resolving their owning project would mean loading the
-> record first, and the resolver doesn't do that today. This is tracked in [issue 628447](https://gitlab.com/gitlab-org/gitlab/-/issues/628447).
+**Tools reached through a record.** When an argument names a record rather than a project or
+group, declare it under the `record:` kind and attach the lookup. The resolver runs it and
+counts the argument for you, so no override is needed:
 
-**The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_namespace_spec.rb` asserts, for
+```ruby
+class GetVulnerabilityService < Base::GraphqlService
+  container_arguments record: { vulnerability_id: ->(id) { ::Vulnerability.find_by_id(id)&.project } }
+
+  # ...
+end
+```
+
+The lookup can return a project, a group, or a namespace. The resolver turns a project
+namespace into its project. A personal namespace is not counted, because no tool rules apply
+to it. A lookup that returns `nil` still counts the argument, so a call that names a record
+that doesn't exist is refused instead of served ungoverned.
+
+**The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_container_spec.rb` asserts, for
 every governed tool:
 
-- The tool declares a namespace argument or is marked `ungovernable!`.
+- The tool declares a container argument or is marked `ungovernable!`.
 - The declared argument is one the tool actually accepts.
 - The declaration is keyed on a recognized kind.
+- Every input property is either declared or listed for that tool as never naming a project
+  or group. The list is kept per tool, so an argument that is safe on one tool is not
+  exempted on another.
 
 If this spec fails on your tool, declare the argument that actually carries the project or
-group, or mark the tool `ungovernable!` if nothing on it names a container.
+group, add the argument to the tool's entry in the list if it never names one, or mark the
+tool `ungovernable!` if nothing on it names a container.
 
 ### Implement a custom tool
 
@@ -724,7 +779,9 @@ route_setting :mcp, tool_name: :new_name,
    - Any hardcoded tool name references
 
 1. The `Mcp::Tools::Manager` automatically resolves aliases during `get_tool` calls, so clients
-   using the old name continue to work.
+   using the old name continue to work. `tools/list` also resolves aliases when it filters the
+   response against the `X-Gitlab-Enabled-Mcp-Server-Tools` header, so a header that names a tool
+   by an old name still returns that tool.
 
 **Important notes:**
 
@@ -748,23 +805,155 @@ governance from rename aliases
 ([work item 609451](https://gitlab.com/gitlab-org/gitlab/-/work_items/609451)), keep
 every alias in place.
 
+### Categorizing tool errors
+
+`Response.error` takes an optional `reason:` symbol, which is recorded as `tool_status`
+in `mcp.log`. Pass one whenever the tool knows why it failed, so the failure mode is
+visible in structured logs without expanded logging turned on.
+
+```ruby
+::Mcp::Tools::Base::Response.error(
+  'Work item not found or inaccessible.', reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+)
+```
+
+| `Reason` constant | Use for |
+| --- | --- |
+| `BAD_REQUEST` | The agent sent missing, malformed, or invalid arguments. |
+| `UNAUTHORIZED` | The user lacks access. Keep the message vague so it does not reveal whether the resource exists; the reason records the truth. |
+| `NOT_FOUND` | The resource genuinely does not exist, or a GraphQL query resolved with null data and cannot tell absence from invisibility. |
+| `ERROR` | A backend or downstream failure. This is the default when no reason is given. |
+
+Only these four values are recorded; `Response::Reason::ALL` is the allow-list, and
+anything else falls back to `ERROR`. The reason is stripped from the response before it reaches
+the agent, so adding one never changes what the agent sees.
+
+Tools that resolve a project or group through `ResourceFinder#find_project!` or
+`#find_group!` get this for free: those raise `ResourceNotFoundError` when the resource
+does not exist and `ResourceForbiddenError` when it exists but the user cannot see it,
+and the base services categorize each. Both carry the same message, so the agent cannot
+tell them apart.
+
+Do not pass a reason for a response that merely failed to find an expected key in an
+otherwise successful payload. That is a malformed response, which is what `ERROR` means.
+
+When a tool's error wraps a result from another tool, forward that result's reason with
+`Response.error_reason`. It returns the result's reason, or `ERROR` when it carries none. A
+wrapper that builds its own error without a reason logs `ERROR` for a condition the inner tool
+had already categorized. To keep your own default for inner failures that carry no reason, read
+`result[:reason]` instead.
+
+```ruby
+response = inner_tool.execute
+return response unless ::Mcp::Tools::Base::Response.error?(response)
+
+::Mcp::Tools::Base::Response.error(
+  'Actionable guidance for the agent',
+  reason: ::Mcp::Tools::Base::Response.error_reason(response)
+)
+```
+
+A route-backed inner tool takes its reason from the HTTP status, which is not always the real
+cause. For example, the workflows API refuses a caller who cannot run an AI Catalog flow with
+`400 Bad request`, which forwards as `BAD_REQUEST`. A wrapper that recognizes a specific refusal
+and replaces its message knows more than the status does. Give each entry in its table of
+refusal messages its own reason, and read it with `fetch`. An entry added without one then
+raises in its specs instead of silently logging the status.
+
+```ruby
+KNOWN_REFUSALS = {
+  ::Ai::Catalog::BaseService::INSUFFICIENT_PERMISSIONS_MESSAGE => {
+    guidance: 'You need at least the Developer role on the project to run this flow.',
+    reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+  }
+}.freeze
+
+def error_response(response)
+  message = ::Mcp::Tools::Base::Response.error_message(response).to_s
+  _, entry = KNOWN_REFUSALS.find { |fragment, _| message.include?(fragment) }
+  return response unless entry
+
+  ::Mcp::Tools::Base::Response.error(entry.fetch(:guidance), reason: entry.fetch(:reason))
+end
+```
+
+### Filter Duo sessions by MCP origin
+
+A GitLab Duo session created through `/api/v4/mcp` has `source_type` set to `mcp`.
+You can find these sessions in the following places:
+
+| Where | How to filter |
+| --- | --- |
+| GitLab database | In the `duo_workflows_workflows` table, use `source_type = 2`, the value of `mcp`. In Rails, use `Ai::DuoWorkflows::Workflow.source_mcp`. |
+| Snowflake | Use the `agent_platform_session_created` event with `source` = `mcp`. The event `value` is the session ID. |
+| Kibana | Search `mcp.log` for `event_name` = `duo_session_created`. For example: `json.subcomponent: "mcp" and json.event_name: "duo_session_created"`. |
+
+The `correlation_id` links the `duo_session_created` line to the `tool_call` line of the tool that started the session.
+
+The `duo_session_created` line also records which flow or agent the session runs.
+The `agent_platform_session_created` event has the same fields as additional properties.
+The field names match the `trigger_ai_catalog_item` event.
+Fields that do not apply to the session are left out.
+
+| Field | Meaning |
+| --- | --- |
+| `item_type` | The kind of item. One of `foundational_flow`, `foundational_agent`, `foundational_external_agent`, `custom_flow`, `custom_agent`, or `custom_external_agent`. |
+| `flow_name` | The GitLab flow name, for example `developer`. For foundational agents, the value is `chat`. |
+| `component_name` | The foundational agent reference, for example `analytics_agent`. |
+| `custom_item_id` | The AI Catalog item ID. Not set for GitLab flows and foundational agents. |
+| `item_version` | The version of the item. For GitLab flows and agents, this can be a version constraint such as `^3.0.0`. |
+| `item_schema_version` | The flow schema version, for example `v1`. |
+
+For example, to find sessions that run the `developer` flow, use this query in Kibana:
+`json.event_name: "duo_session_created" and json.flow_name: "developer"`.
+
+### Identify the MCP client
+
+The `initialize_mcp_connection`, `start_mcp_tool_call`, and `finish_mcp_tool_call` events
+record the client in the `mcp_client_name` and `mcp_client_version` additional properties.
+The `initialize` and `tool_call` lines in `mcp.log` have fields with the same names.
+
+These are not the `client_name` and `client_type` fields of the standard context.
+Those come from [client identity](../../internal_analytics/internal_event_instrumentation/client_identity.md),
+which accepts only allowlisted values and sets `integration` and `mcp` for every MCP request.
+MCP clients report free-text names, so they are kept in separate properties.
+`Gitlab::Mcp::ClientInfo` resolves the client from the first source that has a name:
+
+1. `params._meta["io.modelcontextprotocol/clientInfo"]`, which the `2026-07-28` revision sends on every request.
+1. The first product token of the `User-Agent` header, for example `Cursor/1.0.0` or `node`.
+
+Both sources can be present on every request, so `initialize` and `tools/call` from the same
+client get the same value. The server is stateless and has no session to link the two requests.
+
+The `clientInfo` that a handshake-revision client sends on `initialize` is recorded separately,
+as `declared_client_name` and `declared_client_version`. These are additional properties of the
+`initialize_mcp_connection` event and fields on the `initialize` line in `mcp.log`.
+It is not used for `mcp_client_name`, because later `tools/call` requests do not send it.
+For example, GitLab Duo Agent Platform sessions declare `mcp-client` but send the
+`GitLab-Workhorse-Mcp-Client` User-Agent.
+
+All values are reported by the client. Only the name and version are kept. Control characters
+are removed, and each value is truncated to 64 characters.
+
 ### Gating a tool's availability
 
 Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.
-Before `available?` is called, the request sets the tool's credentials with `set_cred(current_user:)`,
-so the check can depend on the current user, licensing, or other request state:
+The method receives the current user as an argument, so the check can depend on the user, licensing, or other request state:
 
 ```ruby
 module Mcp
   module Tools
     class ExampleService < Base::CustomService
-      def available?
+      def available?(current_user)
         Feature.enabled?(:example_tool, current_user)
       end
     end
   end
 end
 ```
+
+Tool instances are shared across concurrent requests, so use the `current_user` argument rather than
+instance state. Toolsets are static, so per-user filtering belongs in `available?(current_user)`.
 
 `available?` filters the `tools/list` response only:
 
@@ -781,6 +970,15 @@ Mark a tool as *unlisted* to hide it from discovery while keeping it fully calla
 tool is omitted from the `tools/list` response and from the AI Catalog tool picker, but it stays
 resolvable through `get_tool`, remains in the Duo Workflow allowlist, and can still be called
 through `tools/call`. Use this to stage a tool before it is ready to be advertised.
+
+Workhorse sends the `X-Gitlab-Enabled-Mcp-Server-Tools` header with the tools a custom agent
+selected, so an agent that selected a tool before it was unlisted keeps it. Only a token with the
+`ai_workflows` scope gets an unlisted tool from `tools/list` by naming it in that header. Other
+clients that name one still don't see it.
+
+The picker doesn't offer unlisted tools, but an agent created through the API can still name one,
+and then it gets the tool. So don't mark a tool unlisted to keep users from calling it: that hides
+the tool, it doesn't block it.
 
 `unlisted?` differs from [`available?`](#gating-a-tools-availability): `available?` is a per-user
 check that gates whether a user is offered a tool in `tools/list`, whereas `unlisted?` is a static
@@ -813,6 +1011,36 @@ The default is `false`, so existing tools remain listed until they opt in.
 > [!note]
 > Keep `unlisted?` static. Do not drive it from a per-user or credential-dependent check, because
 > the AI Catalog picker cannot evaluate one.
+
+### Declaring a toolset
+
+Every tool must declare exactly one toolset from
+[`Mcp::Tools::Toolsets::ALL`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/mcp/tools/toolsets.rb).
+A tool without a declared toolset becomes unreachable through any toolset:
+`spec/services/mcp/tools/toolset_coverage_spec.rb` asserts every registered tool declares a valid
+toolset, so a missing or invalid declaration fails CI rather than surfacing as a runtime error.
+
+For custom, GraphQL, and aggregated tools, add `toolset: :symbol` to the `register_version`
+metadata:
+
+```ruby
+register_version '0.1.0', {
+  toolset: :work_items,
+  description: 'Example description',
+  # ...
+}
+```
+
+For API tools, add `toolset: :symbol` to the `route_setting :mcp`:
+
+```ruby
+route_setting :mcp, tool_name: :example_tool, toolset: :work_items, params: [:id]
+```
+
+Unknown toolset names in the `X-Gitlab-Enabled-Mcp-Server-Toolsets` header return a `400` error
+because toolsets are a closed enum. Unknown tool names in `X-Gitlab-Enabled-Mcp-Server-Tools` are
+logged as a warning and ignored because tool names are an open, evolving set that varies across
+GitLab editions and versions.
 
 ### Splitting an action out of an aggregated tool
 

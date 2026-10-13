@@ -267,7 +267,7 @@ migrations should run on only one Praefect node. To do this, designate a **Praef
 
 Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), Workhorse, and NGINX.
 
-Each of these components have different behaviours when it comes to doing a live upgrade. While Puma can allow
+Each of these components have different behaviors when it comes to doing a live upgrade. While Puma can allow
 for a graceful reload, Workhorse doesn't. The best approach is to drain the node gracefully through other means,
 such as by using your load balancer. You can also do this by using NGINX on the node through its graceful shutdown
 functionality. This section explains the NGINX approach.

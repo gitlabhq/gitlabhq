@@ -48,6 +48,9 @@ module API
       urgency :low
 
       before do
+        # MCP clients' User-Agents vary too much for ClientIdentity to recognise.
+        Gitlab::ApplicationContext.push(client_type: 'integration', client_name: 'mcp')
+
         authenticate!
 
         unless feature_available?
@@ -59,7 +62,7 @@ module API
             Labkit::Fields::GL_USER_ID => current_user.id
           )
 
-          not_found!
+          forbidden!(mcp_denial_message)
         end
 
         forbidden! unless AccessTokenValidationService.new(access_token)
@@ -86,14 +89,28 @@ module API
         end
         strong_memoize_attr :mcp_denial_reason
 
-        # Returns the allowed MCP tool names for this request, as set by the Duo Workflow
-        # executor via the `x-gitlab-enabled-mcp-server-tools` header.
-        # Returns nil when the header is absent or blank (no restriction -- all tools allowed).
+        def mcp_denial_message
+          'MCP server disabled for this instance'
+        end
+
+        # Allowed MCP tool names, as set by the Duo Workflow executor.
+        #
+        # @return [Array<String>, nil] names from the `X-Gitlab-Enabled-Mcp-Server-Tools` header,
+        #   or nil when the header is absent or lists no names
         def enabled_mcp_server_tools
           header_value = headers['X-Gitlab-Enabled-Mcp-Server-Tools']
           return if header_value.blank?
 
-          header_value.split(',').map(&:strip).reject(&:blank?)
+          names = header_value.split(',').map(&:strip).reject(&:blank?)
+          return if names.empty?
+
+          names
+        end
+
+        # Workhorse's Duo Workflow token always carries ai_workflows, and the documented MCP
+        # clients can't get that scope, so only it may list an unlisted tool by naming it.
+        def list_named_unlisted_tools?
+          Array(access_token.scopes).map(&:to_sym).include?(::Gitlab::Auth::AI_WORKFLOW)
         end
 
         # Returns the prefix for all MCP tool names for this request.
@@ -110,9 +127,15 @@ module API
         def invoke_basic_handler
           method_name = params[:method]
           handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
-          handler = handler_class.new(params[:params] || {}, oauth_access_token, current_user)
+          handler = handler_class.new(params[:params] || {}, oauth_access_token, current_user,
+            client_info: mcp_client_info)
           handler.invoke
         end
+
+        def mcp_client_info
+          ::Gitlab::Mcp::ClientInfo.from_request(params[:params], user_agent: headers['User-Agent'])
+        end
+        strong_memoize_attr :mcp_client_info
 
         def method_not_found!(method_name)
           # render error used to stop request and return early
@@ -168,7 +191,7 @@ module API
           optional :id, types: [Integer, String], coerce_with: ->(value) { value },
             desc: 'ID of the JSON-RPC request returned in the response.',
             allow_blank: false
-          optional :params, desc: 'Object or array that contains parameters passed to the specified JSON-RPC method',
+          optional :params, desc: 'Parameters for the JSON-RPC method specified in `method`.',
             types: [Hash, Array]
         end
 
@@ -195,7 +218,7 @@ module API
             { code: 400, message: 'Bad request' },
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Method not found' }
           ]
           tags ['mcp']
         end
@@ -207,10 +230,15 @@ module API
             case params[:method]
             when 'tools/call'
               Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user,
-                tool_name_prefix: mcp_server_tool_name_prefix)
+                tool_name_prefix: mcp_server_tool_name_prefix, client_info: mcp_client_info)
             when 'tools/list'
+              allowed_tools = enabled_mcp_server_tools
+              allowed_toolsets = ::Mcp::Tools::Toolsets.parse(headers['X-Gitlab-Enabled-Mcp-Server-Toolsets'])
+              allowed_toolsets = ::Mcp::Tools::Toolsets.defaults if allowed_toolsets.blank? && allowed_tools.blank?
+
               Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user,
-                allowed_tools: enabled_mcp_server_tools, tool_name_prefix: mcp_server_tool_name_prefix)
+                allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,
+                tool_name_prefix: mcp_server_tool_name_prefix, include_named_unlisted: list_named_unlisted_tools?)
             else
               invoke_basic_handler
             end
@@ -224,7 +252,6 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' },
             { code: 405, message: 'Method not allowed' }
           ]
           tags ['mcp']

@@ -5,7 +5,7 @@ export const proxyData = () => ({
   dependencyProxySetting: { enabled: true, __typename: 'DependencyProxySetting' },
 });
 
-export const proxySettings = (extend = {}) => ({ enabled: true, ...extend });
+const proxySettings = (extend = {}) => ({ enabled: true, ...extend });
 
 export const proxyManifests = () => [
   {

@@ -55,6 +55,30 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
     end
   end
 
+  describe 'GET #show when unauthenticated' do
+    let_it_be(:public_project) { create(:project, :public, namespace: namespace) }
+
+    context 'when rendering an unpublished catalog resource' do
+      it 'returns not found error' do
+        unpublished_catalog_resource = create(:ci_catalog_resource, project: public_project, state: :unpublished)
+
+        get explore_catalog_path(unpublished_catalog_resource)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when rendering a published catalog resource' do
+      it 'returns success response' do
+        published_catalog_resource = create(:ci_catalog_resource, :published, project: public_project)
+
+        get explore_catalog_path(published_catalog_resource)
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
+    end
+  end
+
   describe 'GET #index' do
     let_it_be(:event) { 'unique_users_visiting_ci_catalog' }
 

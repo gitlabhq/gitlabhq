@@ -3,7 +3,12 @@
 query projectLabels($fullPath: ID!, $searchTerm: String) {
   namespace: project(fullPath: $fullPath) {
     id
-    labels(searchIn: TITLE, searchTerm: $searchTerm, includeAncestorGroups: true) {
+    labels(
+      searchIn: TITLE
+      searchTerm: $searchTerm
+      includeAncestorGroups: true
+      fuzzySearch: true
+    ) {
       nodes {
         ...Label
       }

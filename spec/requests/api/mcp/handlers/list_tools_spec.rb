@@ -54,55 +54,53 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     it 'locks each tool to its publicly-contracted annotations', :aggregate_failures, unless: Gitlab.ee? do
-      post_list_tools
+      post api('/mcp', user, oauth_access_token: access_token),
+        params: params,
+        headers: { 'X-Gitlab-Enabled-Mcp-Server-Toolsets' => 'all' }
 
       expected_annotations = {
         # write, non-destructive
-        'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'save_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'fork_repository' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'save_merge_request_review' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'save_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },
-        'save_work_item' => { 'readOnlyHint' => false, 'destructiveHint' => false },
+        'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false, 'toolset' => 'repository' },
+        'save_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false,
+                                  'toolset' => 'merge_requests' },
+        'fork_repository' => { 'readOnlyHint' => false, 'destructiveHint' => false, 'toolset' => 'repository' },
+        'link_work_items' => { 'readOnlyHint' => false, 'destructiveHint' => false, 'toolset' => 'work_items' },
+        'save_merge_request_review' => { 'readOnlyHint' => false, 'destructiveHint' => false,
+                                         'toolset' => 'merge_requests' },
+        'save_note' => { 'readOnlyHint' => false, 'destructiveHint' => false, 'toolset' => 'core' },
+        'save_work_item' => { 'readOnlyHint' => false, 'destructiveHint' => false, 'toolset' => 'work_items' },
         # write, destructive
-        'accept_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => true },
-        'add_commit' => { 'readOnlyHint' => false, 'destructiveHint' => true },
-        'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
-        'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true },
+        'accept_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => true,
+                                    'toolset' => 'merge_requests' },
+        'add_commit' => { 'readOnlyHint' => false, 'destructiveHint' => true, 'toolset' => 'repository' },
+        'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true, 'toolset' => 'ci' },
         # read-only
-        'get_commit' => { 'readOnlyHint' => true },
-        'get_issue' => { 'readOnlyHint' => true },
-        'get_job' => { 'readOnlyHint' => true },
-        'get_mcp_server_version' => { 'readOnlyHint' => true },
-        'get_merge_request' => { 'readOnlyHint' => true },
-        'get_merge_request_commits' => { 'readOnlyHint' => true },
-        'get_merge_request_conflicts' => { 'readOnlyHint' => true },
-        'get_merge_request_diffs' => { 'readOnlyHint' => true },
-        'get_merge_request_notes' => { 'readOnlyHint' => true },
-        'get_merge_request_pipelines' => { 'readOnlyHint' => true },
-        'get_pipeline' => { 'readOnlyHint' => true },
-        'get_pipeline_jobs' => { 'readOnlyHint' => true },
-        'get_project' => { 'readOnlyHint' => true },
-        'get_repository_file' => { 'readOnlyHint' => true },
-        'get_saved_view_work_items' => { 'readOnlyHint' => true },
-        'get_user' => { 'readOnlyHint' => true },
-        'get_work_item' => { 'readOnlyHint' => true },
-        'get_work_item_types' => { 'readOnlyHint' => true },
-        'list_commits' => { 'readOnlyHint' => true },
-        'list_branches' => { 'readOnlyHint' => true },
-        'list_groups' => { 'readOnlyHint' => true },
-        'list_merge_requests' => { 'readOnlyHint' => true },
-        'list_project_members' => { 'readOnlyHint' => true },
-        'list_pipelines' => { 'readOnlyHint' => true },
-        'list_projects' => { 'readOnlyHint' => true },
-        'list_releases' => { 'readOnlyHint' => true },
-        'list_repository_tree' => { 'readOnlyHint' => true },
-        'list_tags' => { 'readOnlyHint' => true },
-        'list_work_items' => { 'readOnlyHint' => true },
-        'search' => { 'readOnlyHint' => true },
-        'search_labels' => { 'readOnlyHint' => true },
-        'list_wiki_pages' => { 'readOnlyHint' => true }
+        'get_artifact_file' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
+        'get_commit' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'get_job' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
+        'get_mcp_server_version' => { 'readOnlyHint' => true, 'toolset' => 'meta' },
+        'get_merge_request' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
+        'get_pipeline' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
+        'get_project' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'get_repository_file' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'get_saved_view_work_items' => { 'readOnlyHint' => true, 'toolset' => 'work_items' },
+        'get_user' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'get_work_item' => { 'readOnlyHint' => true, 'toolset' => 'work_items' },
+        'get_work_item_types' => { 'readOnlyHint' => true, 'toolset' => 'work_items' },
+        'list_branches' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'list_commits' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'list_groups' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'list_merge_requests' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
+        'list_project_members' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'list_pipelines' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
+        'list_projects' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'list_releases' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'list_repository_tree' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'list_tags' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
+        'list_work_items' => { 'readOnlyHint' => true, 'toolset' => 'work_items' },
+        'search' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'search_labels' => { 'readOnlyHint' => true, 'toolset' => 'core' },
+        'list_wiki_pages' => { 'readOnlyHint' => true, 'toolset' => 'wikis' }
       }
 
       actual_annotations = json_response['result']['tools'].to_h { |tool| [tool['name'], tool['annotations']] }
@@ -275,7 +273,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       before do
         # We have to use `allow_any_instance_of` since tools are initialized
         # *on class definition time* in Mcp::Tools::Manager
-        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:available?).and_return(false) # rubocop: disable RSpec/AnyInstanceOf -- see explanation above
+        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:available?).with(user).and_return(false) # rubocop: disable RSpec/AnyInstanceOf -- see explanation above
       end
 
       it 'is excluded from the list' do
@@ -287,14 +285,19 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     context 'with tools retired from the catalog' do
-      it 'does not advertise retired tools but keeps them callable' do
+      it 'does not advertise retired tools but keeps them callable', :aggregate_failures do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('create_issue', 'get_workitem_notes')
         manager = ::Mcp::Tools::Manager.new
-        expect(manager.get_tool(name: 'create_issue')).to be_present
-        expect(manager.get_tool(name: 'get_workitem_notes')).to be_present
+
+        %w[create_issue get_workitem_notes get_issue get_merge_request_conflicts
+          get_merge_request_commits get_merge_request_pipelines
+          get_merge_request_diffs get_pipeline_jobs get_merge_request_notes
+          manage_pipeline].each do |tool_name|
+          expect(tool_names).not_to include(tool_name)
+          expect(manager.get_tool(name: tool_name)).to be_present
+        end
       end
     end
 
@@ -316,9 +319,61 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         tool_names = json_response['result']['tools'].pluck('name')
         expect(tool_names).not_to include('get_mcp_server_version')
       end
+
+      it 'is listed when a Duo Workflow token names it in x-gitlab-enabled-mcp-server-tools' do
+        ai_workflows_token = create(:oauth_access_token, user: user, scopes: [:ai_workflows, :mcp])
+
+        post api('/mcp', user, oauth_access_token: ai_workflows_token),
+          params: params,
+          headers: { 'X-Gitlab-Enabled-Mcp-Server-Tools' => 'get_mcp_server_version,get_issue' }
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to contain_exactly('get_mcp_server_version', 'get_issue')
+      end
+
+      it 'stays hidden when an mcp-only token names it in x-gitlab-enabled-mcp-server-tools' do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params,
+          headers: { 'X-Gitlab-Enabled-Mcp-Server-Tools' => 'get_mcp_server_version,get_issue' }
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to be_empty
+      end
+    end
+
+    context 'when a tool declares no annotations' do
+      let(:manager) do
+        ::Mcp::Tools::Manager.new.tap do |m|
+          allow(m.list_tools['get_mcp_server_version']).to receive(:annotations).and_return(nil)
+        end
+      end
+
+      before do
+        handler = ::API::Mcp::Handlers::ListTools.new(manager)
+        allow(::API::Mcp::Handlers::ListTools).to receive(:new).and_return(handler)
+      end
+
+      def unannotated_tool
+        json_response['result']['tools'].find { |tool| tool['name'] == 'get_mcp_server_version' }
+      end
+
+      it 'annotates it with the toolset alone', :aggregate_failures do
+        post_list_tools
+
+        expect(unannotated_tool).to be_present
+        expect(unannotated_tool['annotations']).to eq({ 'toolset' => 'meta' })
+      end
     end
 
     context 'when x-gitlab-enabled-mcp-server-tools header is present' do
+      # The filter only needs some advertised tools, not specific ones. Deriving
+      # the fixtures from the live catalog keeps tool retirements from churning
+      # these examples.
+      let(:advertised_tools) do
+        post_list_tools
+        json_response['result']['tools'].pluck('name')
+      end
+
       def post_list_tools_with_allowed(allowed_tools)
         post api('/mcp', user, oauth_access_token: access_token),
           params: params,
@@ -326,24 +381,34 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
 
       it 'returns only the tools listed in the header' do
-        post_list_tools_with_allowed('get_issue,get_pipeline')
+        allowed = advertised_tools.first(2)
+        post_list_tools_with_allowed(allowed.join(','))
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to contain_exactly('get_issue', 'get_pipeline')
+        expect(tool_names).to match_array(allowed)
       end
 
       it 'excludes tools not in the allowed list' do
-        post_list_tools_with_allowed('get_issue')
+        allowed, *rest = advertised_tools
+        post_list_tools_with_allowed(allowed)
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('get_pipeline', 'search', 'get_merge_request')
+        expect(tool_names).not_to include(*rest)
+      end
+
+      it 'returns a named tool from an opt-in toolset' do
+        post_list_tools_with_allowed('list_wiki_pages')
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to contain_exactly('list_wiki_pages')
       end
 
       it 'handles a single tool correctly' do
-        post_list_tools_with_allowed('search')
+        allowed = advertised_tools.last
+        post_list_tools_with_allowed(allowed)
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to contain_exactly('search')
+        expect(tool_names).to contain_exactly(allowed)
       end
 
       it 'returns an empty tool list when no allowed tools match' do
@@ -353,12 +418,39 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         expect(tools).to be_empty
       end
 
+      context 'when the header names a tool by one of its aliases' do
+        let(:mcp_logger) { instance_double(Gitlab::Mcp::Logger, warn: nil, conditional_info: nil) }
+
+        before do
+          allow(Gitlab::Mcp::Logger).to receive(:build).and_return(mcp_logger)
+        end
+
+        it 'returns the tool under its canonical name' do
+          post_list_tools_with_allowed('gitlab_merge_request_search,get_work_item')
+
+          tool_names = json_response['result']['tools'].pluck('name')
+          expect(tool_names).to contain_exactly('list_merge_requests', 'get_work_item')
+        end
+
+        it 'does not log the alias as unknown' do
+          post_list_tools_with_allowed('gitlab_merge_request_search')
+
+          expect(mcp_logger).not_to have_received(:warn).with(hash_including(message: /Unknown MCP tool names/))
+        end
+
+        it 'still logs a name that is neither a tool nor an alias' do
+          post_list_tools_with_allowed('nonexistent_tool')
+
+          expect(mcp_logger).to have_received(:warn).with(hash_including(names: ['nonexistent_tool']))
+        end
+      end
+
       context 'when the header is blank' do
         it 'returns all available tools' do
           post_list_tools_with_allowed('')
 
           tool_names = json_response['result']['tools'].pluck('name')
-          expect(tool_names).to include('get_issue', 'get_pipeline', 'search', 'get_merge_request')
+          expect(tool_names).to match_array(advertised_tools)
         end
       end
     end
@@ -368,7 +460,127 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to include('get_issue', 'get_pipeline', 'search', 'get_merge_request')
+        expect(tool_names).to include('get_commit', 'get_pipeline', 'search', 'get_merge_request')
+      end
+    end
+
+    context 'when x-gitlab-enabled-mcp-server-toolsets header is present' do
+      def post_list_tools_with_toolsets(toolsets)
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params,
+          headers: { 'X-Gitlab-Enabled-Mcp-Server-Toolsets' => toolsets }
+      end
+
+      it 'returns only tools from the requested toolsets plus ALWAYS_ON' do
+        post_list_tools_with_toolsets('ci')
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to include('get_pipeline', 'get_mcp_server_version')
+        expect(tool_names).not_to include('get_merge_request', 'get_work_item')
+      end
+
+      it 'accepts multiple toolsets' do
+        post_list_tools_with_toolsets('ci,merge_requests')
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to include('get_pipeline', 'get_merge_request', 'get_mcp_server_version')
+        expect(tool_names).not_to include('get_work_item')
+      end
+
+      it 'returns 400 for invalid toolset names' do
+        post_list_tools_with_toolsets('ci,bogus')
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response.dig('error', 'data', 'params')).to include('Unknown toolsets: bogus')
+      end
+
+      it 'returns 400 when all toolsets are invalid' do
+        post_list_tools_with_toolsets('bogus')
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns 400 for an invalid toolset name alongside the "all" pseudo-value' do
+        post_list_tools_with_toolsets('all,bogus')
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response.dig('error', 'data', 'params')).to include('Unknown toolsets: bogus')
+      end
+
+      it 'falls back to defaults when header contains only commas' do
+        post_list_tools_with_toolsets(' , , ')
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to include('get_pipeline', 'get_mcp_server_version')
+        expect(tool_names).not_to include('list_wiki_pages')
+      end
+
+      it 'falls back to defaults when the tools header contains only commas' do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params,
+          headers: { 'X-Gitlab-Enabled-Mcp-Server-Tools' => ' , , ' }
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to include('get_pipeline', 'get_mcp_server_version')
+        expect(tool_names).not_to include('list_wiki_pages')
+      end
+
+      context 'with the "all" pseudo-value' do
+        it 'returns tools from every toolset including opt-in', unless: Gitlab.ee? do
+          post_list_tools_with_toolsets('all')
+
+          tool_names = json_response['result']['tools'].pluck('name')
+          expect(tool_names).to include('get_pipeline', 'get_merge_request', 'get_work_item',
+            'get_mcp_server_version', 'list_wiki_pages')
+        end
+      end
+
+      context 'when combined with x-gitlab-enabled-mcp-server-tools' do
+        it 'returns the union of both filters' do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: params,
+            headers: {
+              'X-Gitlab-Enabled-Mcp-Server-Toolsets' => 'ci',
+              'X-Gitlab-Enabled-Mcp-Server-Tools' => 'get_work_item'
+            }
+
+          tool_names = json_response['result']['tools'].pluck('name')
+          expect(tool_names).to include('get_pipeline', 'get_work_item', 'get_mcp_server_version')
+          expect(tool_names).not_to include('get_merge_request')
+        end
+      end
+    end
+
+    context 'when no toolset header is present' do
+      it 'returns only DEFAULT + ALWAYS_ON toolset tools' do
+        post_list_tools
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        default_toolsets = Mcp::Tools::Toolsets::DEFAULT + Mcp::Tools::Toolsets::ALWAYS_ON
+        manager = Mcp::Tools::Manager.new
+
+        manager.tools.each do |name, tool|
+          next if tool.unlisted? || !tool.available?(user)
+
+          if default_toolsets.include?(tool.toolset)
+            expect(tool_names).to include(name), "Expected DEFAULT tool '#{name}' to be present"
+          else
+            expect(tool_names).not_to include(name),
+              "Expected OPT_IN tool '#{name}' (toolset :#{tool.toolset}) to be excluded"
+          end
+        end
+      end
+    end
+
+    it 'includes toolset annotation on every tool' do
+      post_list_tools
+
+      tools = json_response['result']['tools']
+      valid_toolsets = Mcp::Tools::Toolsets::ALL.map(&:to_s)
+
+      tools.each do |tool|
+        expect(tool.dig('annotations', 'toolset')).to be_in(valid_toolsets),
+          "Tool '#{tool['name']}' missing or invalid toolset annotation"
       end
     end
 

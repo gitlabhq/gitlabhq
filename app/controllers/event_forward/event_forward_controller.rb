@@ -9,6 +9,7 @@ module EventForward
     EDITOR_TELEMETRY_HEADER = 'HTTP_X_GITLAB_EDITOR_TELEMETRY'
 
     before_action :authenticate_sessionless_user!, if: :editor_extension_request?
+    before_action :prevent_session_extension
 
     def forward
       process_events
@@ -16,6 +17,13 @@ module EventForward
     end
 
     private
+
+    # Telemetry beacons authenticate through the session but must not refresh its expiry.
+    # A page that pings on a heartbeat (Snowplow activity tracking) would otherwise keep its
+    # session alive indefinitely, defeating inactivity-based session expiry.
+    def prevent_session_extension
+      request.session_options[:skip] = true
+    end
 
     def authenticate_sessionless_user!
       super(:editor_extension)

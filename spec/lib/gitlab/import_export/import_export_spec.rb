@@ -22,6 +22,12 @@ RSpec.describe Gitlab::ImportExport do
     end
   end
 
+  describe '.export_download_content_type' do
+    it 'uses octet-stream to preserve tar.gz filenames in browsers' do
+      expect(described_class.export_download_content_type).to eq('application/octet-stream')
+    end
+  end
+
   describe '#snippet_repo_bundle_filename_for' do
     let(:snippet) { build(:personal_snippet, id: 1) }
 

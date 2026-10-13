@@ -199,9 +199,9 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       expect(page.find(':focus')['aria-label']).to eq('Unpin Work items')
       page.find(':focus').send_keys(:space)
 
-      # Unpinning moves focus to "More features", so tab back into the
+      # Unpinning moves focus to "Feature catalog", so tab back into the
       # Pinned section to reach Activity's unpin button.
-      expect(page).to have_button('More features', focused: true)
+      expect(page).to have_button('Feature catalog', focused: true)
 
       pinned_button.base.send_keys(:tab, :tab)
       expect(page.find(':focus')['aria-label']).to eq('Unpin Activity')

@@ -15,6 +15,8 @@
 # (override with BASE_REF, or CI_MERGE_REQUEST_DIFF_BASE_SHA in CI). A skill
 # "changed" if any tracked file under its directory differs from the baseline.
 # The new version must be strictly greater than the baseline version.
+# Merged-results pipelines compare against the target tip instead, so a version
+# already taken there must be bumped past.
 #
 # Exit non-zero on any skill that changed without a (forward) version bump.
 
@@ -32,10 +34,13 @@ fail() {
 
 # Determine the baseline ref to diff against:
 #   1. An explicit BASE_REF (tests / manual runs).
-#   2. CI_MERGE_REQUEST_DIFF_BASE_SHA (GitLab CI merge request pipelines).
-#   3. The merge-base with origin/master (local pre-push hook).
+#   2. CI_MERGE_REQUEST_TARGET_BRANCH_SHA (merged-results pipelines).
+#   3. CI_MERGE_REQUEST_DIFF_BASE_SHA (detached merge request pipelines).
+#   4. The merge-base with origin/master (local pre-push hook).
 if [ -n "${BASE_REF:-}" ]; then
   base="${BASE_REF}"
+elif [ "${CI_MERGE_REQUEST_EVENT_TYPE:-}" = "merged_result" ] && [ -n "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-}" ]; then
+  base="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}"
 elif [ -n "${CI_MERGE_REQUEST_DIFF_BASE_SHA:-}" ]; then
   base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}"
 else

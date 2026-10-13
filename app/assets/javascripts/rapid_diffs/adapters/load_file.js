@@ -3,6 +3,7 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { pinia } from '~/pinia/instance';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+import { PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
 function htmlToElement(html) {
   const parser = new DOMParser();
@@ -11,13 +12,13 @@ function htmlToElement(html) {
 }
 
 async function loadFile(params = {}) {
-  const { parallelView, showWhitespace } = useDiffsView(pinia);
+  const { viewType, showWhitespace } = useDiffsView(pinia);
   const url = new URL(this.appData.diffFileEndpoint, window.location.origin);
   const { oldPath, newPath } = this.data;
   if (oldPath) url.searchParams.set('old_path', oldPath);
   if (newPath) url.searchParams.set('new_path', newPath);
   url.searchParams.set('ignore_whitespace_changes', !showWhitespace);
-  if (parallelView) url.searchParams.set('view', 'parallel');
+  if (viewType === PARALLEL_DIFF_VIEW_TYPE) url.searchParams.set('view', 'parallel');
   Object.keys(params).forEach((key) => {
     url.searchParams.set(key, params[key]);
   });

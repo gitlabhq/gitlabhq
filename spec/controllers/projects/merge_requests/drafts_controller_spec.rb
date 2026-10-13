@@ -37,6 +37,27 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(json_response.first['author']['id']).to eq(user.id)
       expect(json_response.first['note_html']).not_to be_empty
     end
+
+    # Tracing itself is covered by the service spec; this only asserts the controller delegates to it.
+    it 'retraces draft note positions onto the merge_head diff before serializing' do
+      expect_next_instance_of(DraftNotes::TraceMergeHeadPositionService) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      get :index, params: params
+    end
+
+    context 'when the draft_note_merge_head_line_code feature flag is disabled' do
+      before do
+        stub_feature_flags(draft_note_merge_head_line_code: false)
+      end
+
+      it 'does not retrace draft note positions' do
+        expect(DraftNotes::TraceMergeHeadPositionService).not_to receive(:new)
+
+        get :index, params: params
+      end
+    end
   end
 
   describe 'POST #create' do
@@ -307,8 +328,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         errors.add(:base, 'Error 2')
 
         allow_next_found_instance_of(DraftNote) do |instance|
-          allow(instance).to receive(:update).and_return(false)
-          allow(instance).to receive(:errors).and_return(errors)
+          allow(instance).to receive_messages(update: false, errors: errors)
         end
       end
 
@@ -348,13 +368,22 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect { post :publish, params: params }
           .not_to complete_user_experience(:submit_and_notify_mr_review_ui)
       end
+
+      it 'does not start the submit_and_notify_mr_review_ui experience when deferring notifications' do
+        expect { post :publish, params: params.merge(defer_notifications: 'true') }
+          .not_to start_user_experience(:submit_and_notify_mr_review_ui)
+      end
     end
 
-    context 'when nothing is delivered asynchronously' do
-      it 'completes both user experiences in the request' do
+    context 'without draft notes to publish' do
+      it 'completes the submit_mr_review_ui user experience in the request' do
         expect { post :publish, params: params }
           .to complete_user_experience(:submit_mr_review_ui)
-          .and complete_user_experience(:submit_and_notify_mr_review_ui)
+      end
+
+      it 'does not start the submit_and_notify_mr_review_ui user experience' do
+        expect { post :publish, params: params }
+          .not_to start_user_experience(:submit_and_notify_mr_review_ui)
       end
     end
 
@@ -423,6 +452,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect { post :publish, params: params }
           .to complete_user_experience(:submit_mr_review_ui, error: true)
           .and complete_user_experience(:submit_and_notify_mr_review_ui, error: true)
+      end
+
+      context 'without draft notes to publish' do
+        before do
+          expect_next_instance_of(DraftNotes::PublishService) do |service|
+            allow(service).to receive(:execute).and_return({ message: 'boom', status: :error })
+          end
+        end
+
+        it 'completes the submit_mr_review_ui user experience with an error' do
+          expect { post :publish, params: params }
+            .to complete_user_experience(:submit_mr_review_ui, error: true)
+        end
+
+        it 'does not start the submit_and_notify_mr_review_ui user experience' do
+          expect { post :publish, params: params }
+            .not_to start_user_experience(:submit_and_notify_mr_review_ui)
+        end
       end
     end
 
@@ -504,6 +551,19 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'publishes batches of draft notes into one review' do
+      draft1, draft2 = create_list(:draft_note, 2, merge_request: merge_request, author: user)
+
+      allow(Gitlab::EventStore).to receive(:publish).and_call_original
+      expect(Gitlab::EventStore).to receive(:publish)
+        .with(an_instance_of(MergeRequests::DraftNotePublishedEvent)).once
+
+      post :publish, params: params.merge(ids: [draft1.id], defer_notifications: 'true')
+      post :publish, params: params.merge(ids: [draft2.id], review_id: json_response['review_id'])
+
+      expect(merge_request.reviews.sole.notes.count).to eq(2)
+    end
+
     it 'can publish just a single draft note' do
       draft_params = { merge_request: merge_request, author: user }
 
@@ -568,6 +628,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(merge_request.notes.reload.size).to be(2)
       end
 
+      it 'adds the note to the review' do
+        post :publish, params: params.merge!(note: 'Hello world')
+
+        expect(merge_request.notes.find_by(note: 'Hello world').review).to eq(merge_request.reviews.sole)
+      end
+
+      context 'when improved_review_email is disabled' do
+        before do
+          stub_feature_flags(improved_review_email: false)
+        end
+
+        it 'does not add the note to the review' do
+          post :publish, params: params.merge!(note: 'Hello world')
+
+          expect(merge_request.notes.find_by(note: 'Hello world').review).to be_nil
+        end
+      end
+
       it 'does not create note when note param is empty' do
         post :publish, params: params.merge!(note: '')
 
@@ -621,6 +699,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         post :publish, params: params.merge!(reviewer_state: 'approved')
 
         expect(merge_request.approvals.reload.size).to be(1)
+        expect(json_response).not_to have_key('reviewer_state_error')
       end
 
       it 'does not approve merge request' do
@@ -645,9 +724,33 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
           post :publish, params: params.merge!(reviewer_state: 'approved')
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).not_to have_key('reviewer_state_error')
 
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to have_received(:track_submit_review_approve).with(user: user)
+        end
+      end
+
+      context 'when merge request is merged' do
+        before do
+          merge_request.mark_as_merged!
+        end
+
+        it 'publishes the review and returns the approval error' do
+          expect { post :publish, params: params.merge!(reviewer_state: 'approved') }
+            .to change { Note.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['review_id']).to eq(merge_request.reviews.sole.id)
+          expect(json_response['reviewer_state_error']).to eq('Merge request is already merged')
+          expect(merge_request.approvals.reload).to be_empty
+        end
+
+        it 'does not track merge request activity' do
+          post :publish, params: params.merge!(reviewer_state: 'approved')
+
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .not_to have_received(:track_submit_review_approve)
         end
       end
     end

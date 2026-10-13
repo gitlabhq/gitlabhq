@@ -25,7 +25,7 @@ RSpec.describe PagesDeployment, feature_category: :pages do
     it { is_expected.to validate_inclusion_of(:file_store).in_array(ObjectStorage::SUPPORTED_STORES) }
 
     it 'is valid when created from the factory' do
-      expect(create(:pages_deployment)).to be_valid
+      expect(build(:pages_deployment)).to be_valid
     end
   end
 
@@ -278,7 +278,7 @@ RSpec.describe PagesDeployment, feature_category: :pages do
   end
 
   it 'saves size along with the file' do
-    deployment = create(:pages_deployment)
+    deployment = create(:pages_deployment, project: project)
     expect(deployment.size).to eq(deployment.file.size)
   end
 

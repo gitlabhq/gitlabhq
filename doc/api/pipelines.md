@@ -376,9 +376,6 @@ Retrieves the [pipeline variables](../ci/variables/_index.md#use-pipeline-variab
 GET /projects/:id/pipelines/:pipeline_id/variables
 ```
 
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
-control the pagination of results.
-
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `id`          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
@@ -595,7 +592,24 @@ Example of response
 
 ## Retry jobs in a pipeline
 
+{{< history >}}
+
+- `409 Conflict` response for concurrent retries of the same pipeline [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627233) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `lock_concurrent_pipeline_retries`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `409 Conflict` response is controlled by a feature flag. For more information, see the history.
+
 Retries failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
+
+If you exceed the [pipeline retry rate limits](../administration/cicd/limits.md#pipeline-retry-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code.
+
+Only one retry of a given pipeline runs at a time.
+If a retry of the same pipeline is already in progress,
+this endpoint returns a `409 Conflict` status code.
+Wait for the retry to finish, then send the request again.
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry
@@ -656,6 +670,9 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 > This endpoint returns a success response `200` regardless of the pipeline's state.
 > For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
 
+If you exceed the [pipeline cancellation rate limits](../administration/cicd/limits.md#pipeline-cancellation-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code with a `Retry-After` header.
+
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `id`          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
@@ -706,6 +723,9 @@ Response:
 Deleting a pipeline expires all pipeline caches, and deletes all immediately
 related objects, such as builds, logs, artifacts, and triggers.
 This action cannot be undone.
+
+This endpoint is [rate limited](../administration/cicd/limits.md#pipeline-deletion-rate-limits) and returns
+`429 Too Many Requests` with a `Retry-After` header when a limit is exceeded.
 
 Deleting a pipeline does not automatically delete its
 [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).

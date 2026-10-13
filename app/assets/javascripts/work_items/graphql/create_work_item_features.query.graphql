@@ -1,0 +1,9 @@
+# @feature_category: team_planning
+query createWorkItemFeatures($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    availableFeatures {
+      hasEpicsFeature
+    }
+  }
+}

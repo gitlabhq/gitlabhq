@@ -17,8 +17,10 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
   before do
     stub_uploads_object_storage(ImportExportUploader, enabled: false)
 
-    allow(project_export_job.project.import_export_shared).to receive(:export_path).and_return(export_path)
-    allow(project_export_job.project.import_export_shared).to receive(:archive_path).and_return(archive_path)
+    allow(project_export_job.project.import_export_shared).to receive_messages(
+      export_path: export_path,
+      archive_path: archive_path
+    )
     allow(FileUtils).to receive(:rm_rf).with(any_args).and_call_original
   end
 
@@ -58,6 +60,7 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
     describe 'relation name and saver class' do
       where(:relation_name, :saver) do
         Projects::ImportExport::RelationExport::UPLOADS_RELATION | Gitlab::ImportExport::UploadsSaver
+        Projects::ImportExport::RelationExport::AVATAR_RELATION | Gitlab::ImportExport::AvatarSaver
         Projects::ImportExport::RelationExport::REPOSITORY_RELATION | Gitlab::ImportExport::RepoSaver
         Projects::ImportExport::RelationExport::WIKI_REPOSITORY_RELATION | Gitlab::ImportExport::WikiRepoSaver
         Projects::ImportExport::RelationExport::LFS_OBJECTS_RELATION | Gitlab::ImportExport::LfsSaver

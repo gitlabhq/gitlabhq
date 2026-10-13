@@ -17,9 +17,9 @@
         %span.input-group-append
           = render Pajamas::ButtonComponent.new(icon: 'search', button_options: { type: "submit", "aria-label" => _('Submit search') })
     = render 'shared/labels/sort_dropdown'
-    - if labels_or_filters && can_admin_label && @project
+    - if labels_or_filters && can_create_label && @project
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_project_label_path(@project), button_options: { data: { testid: 'create-new-label-button' } }) do
         = _('New label')
-    - if labels_or_filters && can_admin_label && @group
+    - if labels_or_filters && can_create_label && @group
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_group_label_path(@group), button_options: { data: { testid: 'create-new-label-button' } }) do
         = _('New label')

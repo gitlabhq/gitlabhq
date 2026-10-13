@@ -78,6 +78,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['runner_token_expiration_interval']).to be_nil
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
+      expect(json_response['ci_job_trace_update_interval']).to eq(60)
+      expect(json_response['ci_job_trace_update_interval_when_being_watched']).to eq(3)
       expect(json_response['max_export_size']).to eq(0)
       expect(json_response['max_decompressed_archive_size']).to eq(25600)
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
@@ -113,6 +115,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['failed_login_attempts_unlock_period_in_minutes']).to be_nil
       expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to eq(25)
       expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to eq(0)
+      expect(json_response['pipeline_cancel_limit_per_user_project']).to eq(120)
+      expect(json_response['pipeline_retry_limit_per_user_project']).to eq(200)
+      expect(json_response['job_retry_limit_per_user_project']).to eq(320)
+      expect(json_response['job_play_limit_per_user_project']).to eq(200)
+      expect(json_response['pipeline_delete_limit_per_user_project']).to eq(400)
+      expect(json_response['job_erase_limit_per_user_project']).to eq(400)
       expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
@@ -196,6 +204,56 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'job log trace update interval settings' do
+      it 'updates trace update intervals' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 10,
+          ci_job_trace_update_interval_when_being_watched: 5
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['ci_job_trace_update_interval']).to eq(10)
+        expect(json_response['ci_job_trace_update_interval_when_being_watched']).to eq(5)
+        expect(ApplicationSetting.current.ci_job_trace_update_interval).to eq(10)
+        expect(ApplicationSetting.current.ci_job_trace_update_interval_when_being_watched).to eq(5)
+      end
+
+      it 'rejects invalid trace update intervals' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 2,
+          ci_job_trace_update_interval_when_being_watched: 3601
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_job_trace_update_interval'])
+          .to include('must be greater than or equal to 3')
+        expect(json_response['message']['ci_job_trace_update_interval_when_being_watched'])
+          .to include('must be less than or equal to 3600')
+      end
+
+      it 'does not reject the watched interval when only the default interval is invalid' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 2
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_job_trace_update_interval'])
+          .to include('must be greater than or equal to 3')
+        expect(json_response['message']).not_to have_key('ci_job_trace_update_interval_when_being_watched')
+      end
+
+      it 'rejects watched trace update intervals greater than default trace update intervals' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 10,
+          ci_job_trace_update_interval_when_being_watched: 11
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_job_trace_update_interval_when_being_watched'])
+          .to include('must be less than or equal to 10')
+      end
+    end
+
     context 'with a managed setting' do
       before do
         Gitlab::ManagedSettings.reset!
@@ -227,39 +285,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         put api('/application/settings', admin),
           params: {
             iframe_rendering_enabled: true,
-            iframe_rendering_allowlist: ['example.com', 'videos.example.com:443', 'https://example.net/']
+            iframe_rendering_allowlist: %w[youtube figma]
           }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['iframe_rendering_enabled']).to be(true)
-        expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443', 'example.net'])
+        expect(json_response['iframe_rendering_allowlist']).to match_array(%w[youtube figma])
         expect(ApplicationSetting.current.iframe_rendering_enabled?).to be(true)
-        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443', 'example.net'])
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(%w[youtube figma])
       end
 
-      it 'denies bad allowlist entries' do
+      it 'denies unknown provider IDs' do
         put api('/application/settings', admin),
           params: {
             iframe_rendering_enabled: true,
-            iframe_rendering_allowlist: ['gopher://gopherz.tv']
+            iframe_rendering_allowlist: %w[youtube www.youtube.com]
           }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['iframe_rendering_allowlist']).to include("'gopher://gopherz.tv' is not a valid domain name")
-        expect(ApplicationSetting.current.iframe_rendering_allowlist.join(',')).not_to include('gopherz')
+        expect(json_response['message']['iframe_rendering_allowlist'])
+          .to include("'www.youtube.com' is not a known embed provider")
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to eq([])
       end
 
       it 'allows a raw string for iframe_rendering_allowlist_raw' do
-        raw = "example.com\nvideos.example.com:443"
+        raw = "youtube\nfigma"
         put api('/application/settings', admin),
           params: {
             iframe_rendering_allowlist_raw: raw
           }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443'])
+        expect(json_response['iframe_rendering_allowlist']).to match_array(%w[youtube figma])
         expect(json_response['iframe_rendering_allowlist_raw']).to eq(raw)
-        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443'])
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(%w[youtube figma])
       end
     end
 
@@ -414,6 +473,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             max_import_remote_file_size: 2,
             security_txt_content: nil,
             downstream_pipeline_trigger_limit_per_project_user_sha: 300,
+            pipeline_cancel_limit_per_user_project: 90,
+            pipeline_retry_limit_per_user_project: 100,
+            job_retry_limit_per_user_project: 20,
+            job_play_limit_per_user_project: 10,
+            pipeline_delete_limit_per_user_project: 500,
+            job_erase_limit_per_user_project: 40,
             concurrent_github_import_jobs_limit: 2,
             concurrent_bitbucket_import_jobs_limit: 2,
             concurrent_bitbucket_server_import_jobs_limit: 2,
@@ -522,6 +587,12 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['security_txt_content']).to be_nil
         expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to be(2)
         expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to be(300)
+        expect(json_response['pipeline_cancel_limit_per_user_project']).to be(90)
+        expect(json_response['pipeline_retry_limit_per_user_project']).to be(100)
+        expect(json_response['job_retry_limit_per_user_project']).to be(20)
+        expect(json_response['job_play_limit_per_user_project']).to be(10)
+        expect(json_response['pipeline_delete_limit_per_user_project']).to be(500)
+        expect(json_response['job_erase_limit_per_user_project']).to be(40)
         expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)
@@ -1489,6 +1560,26 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to have_key('ci_partitions_in_seconds_limit_human_readable')
         expect(json_response).not_to have_key('ci_partitions_in_seconds_limit')
+      end
+    end
+
+    %w[
+      job_retry_limit_per_user_project job_play_limit_per_user_project job_erase_limit_per_user_project
+    ].each do |setting|
+      context "with #{setting}" do
+        it 'updates the settings' do
+          put api("/application/settings", admin), params: { setting => 200 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include(setting => 200)
+        end
+
+        it 'allows a zero value' do
+          put api("/application/settings", admin), params: { setting => 0 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include(setting => 0)
+        end
       end
     end
 

@@ -11,4 +11,4 @@ gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
   organization_id: organizations
-table_size: small
+table_size: medium

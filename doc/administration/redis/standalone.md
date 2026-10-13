@@ -1,6 +1,6 @@
 ---
-stage: Tenant Scale
-group: Tenant Services
+stage: Async
+group: Async
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure a standalone Redis server with the Linux package. Use this setup for small GitLab installations that do not require Redis replication or failover.
 title: Standalone Redis using the Linux package

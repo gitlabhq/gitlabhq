@@ -241,6 +241,38 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     )
   end
 
+  context 'when findings share only an OWASP identifier' do
+    let(:identifier_owasp) { build(:ci_reports_security_identifier, external_id: 'A1:2017', external_type: 'owasp') }
+
+    let(:finding_owasp_1) do
+      build(
+        :ci_reports_security_finding,
+        identifiers: [identifier_owasp],
+        scanner: scanner_1,
+        severity: :high,
+        uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94619'
+      )
+    end
+
+    let(:finding_owasp_2) do
+      build(
+        :ci_reports_security_finding,
+        identifiers: [identifier_owasp],
+        scanner: scanner_2,
+        severity: :medium,
+        uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94620'
+      )
+    end
+
+    let(:report_1_findings) { [finding_owasp_1] }
+    let(:report_2_findings) { [finding_owasp_2] }
+    let(:report_3_findings) { [] }
+
+    it 'does not deduplicate them' do
+      expect(merged_report.findings).to contain_exactly(finding_owasp_1, finding_owasp_2)
+    end
+  end
+
   context 'ordering reports for sast analyzers' do
     let(:bandit_scanner) { build(:ci_reports_security_scanner, external_id: 'bandit', name: 'Bandit') }
     let(:semgrep_scanner) { build(:ci_reports_security_scanner, external_id: 'semgrep', name: 'Semgrep') }

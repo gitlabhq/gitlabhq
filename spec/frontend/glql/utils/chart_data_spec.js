@@ -23,6 +23,13 @@ const CREATED = {
   type: 'dimension',
   parameters: { granularity: 'daily' },
 };
+const USER_TIER = {
+  key: 'userTier',
+  label: 'User tier',
+  name: 'userTier',
+  type: 'dimension',
+  parameters: { thresholds: ['5', '25', '100'] },
+};
 const TOTAL_COUNT = { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' };
 const ACCEPTANCE_RATE = {
   key: 'acceptanceRate',
@@ -138,6 +145,28 @@ describe('labelWithParameter', () => {
     expect(labelWithParameter(field)).toBe('Language');
   });
 
+  it('lists the items of a list-valued parameter separated by commas', () => {
+    const field = {
+      key: 'userTier',
+      field: 'userTier',
+      label: 'User tier',
+      type: 'dimension',
+      parameters: { thresholds: ['4', '25', '100'] },
+    };
+    expect(labelWithParameter(field)).toBe('User tier (4, 25, 100)');
+  });
+
+  it('flattens a list-valued parameter next to scalar ones', () => {
+    const field = {
+      key: 'totalCount',
+      field: 'totalCount',
+      label: 'Total count',
+      type: 'metric',
+      parameters: { status: ['paused', 'input_required'], granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBe('Total count (paused, input_required, weekly)');
+  });
+
   it('returns the alias label as-is for an aliased time dimension field', () => {
     const field = {
       key: 'foo',
@@ -237,6 +266,38 @@ describe('dimensionValue', () => {
     );
   });
 
+  it('formats Group values via fullName, falling back to fullPath', () => {
+    const group = {
+      __typename: 'Group',
+      fullPath: 'gitlab-org/quality',
+      fullName: 'GitLab.org / Quality',
+    };
+    expect(dimensionValue({ language: group }, LANGUAGE)).toBe('GitLab.org / Quality');
+
+    expect(
+      dimensionValue(
+        { language: { __typename: 'Group', fullPath: 'gitlab-org/quality' } },
+        LANGUAGE,
+      ),
+    ).toBe('gitlab-org/quality');
+  });
+
+  it('formats DuoWorkflowsModelMetadata values via their catalog name', () => {
+    const model = {
+      __typename: 'DuoWorkflowsModelMetadata',
+      name: 'Claude Sonnet 4.6',
+      provider: null,
+      hosting: 'GITLAB',
+      isDefault: true,
+    };
+    expect(dimensionValue({ language: model }, LANGUAGE)).toBe('Claude Sonnet 4.6');
+  });
+
+  it('returns an empty label when the model metadata has no name', () => {
+    const model = { __typename: 'DuoWorkflowsModelMetadata', name: null, hosting: null };
+    expect(dimensionValue({ language: model }, LANGUAGE)).toBe('');
+  });
+
   it('returns an empty label for object shapes without a registered formatter', () => {
     const value = { __typename: 'SomeUnregisteredType', title: 'whatever' };
     expect(dimensionValue({ language: value }, LANGUAGE)).toBe('');
@@ -264,49 +325,28 @@ describe('dimensionLabelFormatter', () => {
       value,
     );
 
-  it.each`
-    granularity  | value           | expected
-    ${'daily'}   | ${'2026-06-01'} | ${'Jun 1'}
-    ${'weekly'}  | ${'2026-01-12'} | ${'Jan 12 – 18'}
-    ${'weekly'}  | ${'2026-06-29'} | ${'Jun 29 – Jul 5'}
-    ${'monthly'} | ${'2026-06-01'} | ${'Jun 2026'}
-    ${'yearly'}  | ${'2026-01-01'} | ${'2026'}
-  `('formats a $granularity bucket start as $expected', ({ granularity, value, expected }) => {
-    expect(format(granularity, value)).toBe(expected);
+  // Formatting itself is covered in utils/date_bucket_spec.js; this checks the delegation.
+  it('formats bucket values through formatBucketDate', () => {
+    expect(format('monthly', '2026-06-01')).toBe('Jun 2026');
   });
 
-  // Daily bucket starts arrive as ISO datetimes (ClickHouse's
-  // toStartOfInterval returns DateTime for day intervals) while weekly and
-  // monthly arrive date-only, so ISO datetime bucket values format too.
-  it.each`
-    granularity  | value                         | expected
-    ${'daily'}   | ${'2026-08-03T00:00:00Z'}     | ${'Aug 3'}
-    ${'daily'}   | ${'2026-08-03T00:00:00.000Z'} | ${'Aug 3'}
-    ${'monthly'} | ${'2026-06-01T00:00:00Z'}     | ${'Jun 2026'}
-  `('formats the ISO datetime bucket $value as $expected', ({ granularity, value, expected }) => {
-    expect(format(granularity, value)).toBe(expected);
-  });
-
-  it.each([
-    '2026-01-01 00:00:00',
-    '2026-01-01Tjunk',
-    '2026-02-30T00:00:00Z',
-    '2026-01-01T00:00:00+junk',
-    '2026-01',
-    '2026-01-01-hotfix',
-    'v2026-01-01',
-    '20260101',
-    '2026-02-30',
-    '2027-02-29',
-    '0099-01-01',
-    '2026-01-01 release notes',
-  ])('passes the non-bucket string %s through unchanged', (value) => {
-    expect(format('daily', value)).toBe(value);
+  it('passes non-bucket values through unchanged', () => {
+    expect(format('daily', '2026-02-30')).toBe('2026-02-30');
   });
 
   it('is plain stringification for non-time dimensions', () => {
     expect(dimensionLabelFormatter([], LANGUAGE)('2026-01-01')).toBe('2026-01-01');
     expect(dimensionLabelFormatter([], LANGUAGE)(42)).toBe('42');
+  });
+
+  it('labels an empty dimension value as Unknown', () => {
+    expect(dimensionLabelFormatter([], LANGUAGE)('')).toBe('Unknown');
+    expect(dimensionLabelFormatter([], LANGUAGE)(null)).toBe('Unknown');
+  });
+
+  // Formatting itself is covered in utils/tier_band_spec.js; this checks the delegation.
+  it('formats tier values through tierBandFormatter', () => {
+    expect(dimensionLabelFormatter([], USER_TIER)('tier_3')).toBe('Power (100+)');
   });
 });
 
@@ -333,6 +373,21 @@ describe('multi-year time dimensions', () => {
     expect(bars).toEqual([{ name: 'ruby', data: [5, 7] }]);
   });
 
+  it('buildStackedByDimension fills missing pairs with missingValue', () => {
+    const nodes = [...MULTI_YEAR_NODES, { created: '2026-06-01', language: 'go', totalCount: 3 }];
+    const build = (options) =>
+      buildStackedByDimension({
+        nodes,
+        primaryDim: DAILY,
+        secondaryDim: LANGUAGE,
+        metric: METRIC,
+        ...options,
+      }).bars;
+
+    expect(build()[1].data).toEqual([0, 3]);
+    expect(build({ missingValue: null })[1].data).toEqual([null, 3]);
+  });
+
   it('daily labels carry the year when buckets span multiple years', () => {
     const format = dimensionLabelFormatter(MULTI_YEAR_NODES, DAILY);
 
@@ -354,6 +409,27 @@ describe('multi-year time dimensions', () => {
 
     expect(format('2026-12-14')).toBe('Dec 14 – 20, 2026');
     expect(format('2026-12-28')).toBe('Dec 28, 2026 – Jan 3, 2027');
+  });
+
+  it('includes years when a fixed-day bucket straddles the year boundary', () => {
+    const nodes = [{ created: '2026-11-15' }, { created: '2026-12-15' }];
+    const format = dimensionLabelFormatter(nodes, {
+      ...CREATED,
+      parameters: { granularity: '30d' },
+    });
+
+    expect(format('2026-11-15')).toBe('Nov 15 – Dec 14, 2026');
+    expect(format('2026-12-15')).toBe('Dec 15, 2026 – Jan 13, 2027');
+  });
+
+  it('keeps fixed-day labels compact when the buckets stay in one year', () => {
+    const nodes = [{ created: '2026-10-03' }, { created: '2026-11-02' }];
+    const format = dimensionLabelFormatter(nodes, {
+      ...CREATED,
+      parameters: { granularity: '30d' },
+    });
+
+    expect(format('2026-10-03')).toBe('Oct 3 – Nov 1');
   });
 
   it('labels stay compact when all buckets share one year', () => {
@@ -788,6 +864,47 @@ describe('tooltipContentFromParams', () => {
       'scalar undefined': { value: 0, color: '#aaa' },
       'scalar null': { value: 0, color: '#bbb' },
       'tuple missing num': { value: 0, color: '#ccc' },
+    });
+  });
+
+  describe('row order', () => {
+    const mockStackedSeriesData = [
+      { seriesName: 'bottom', seriesIndex: 0, stack: 'mock-stack', value: 2 },
+      { seriesName: 'middle', seriesIndex: 1, stack: 'mock-stack', value: 3 },
+      { seriesName: 'top', seriesIndex: 2, stack: 'mock-stack', value: 1 },
+    ];
+
+    it('lists stacked series from the largest value down', () => {
+      const content = tooltipContentFromParams({ seriesData: mockStackedSeriesData });
+
+      expect(Object.keys(content)).toEqual(['middle', 'bottom', 'top']);
+    });
+
+    it('keeps series order for unstacked series', () => {
+      const seriesData = mockStackedSeriesData.map(({ stack, ...series }) => series);
+      const content = tooltipContentFromParams({ seriesData });
+
+      expect(Object.keys(content)).toEqual(['bottom', 'middle', 'top']);
+    });
+
+    it('keeps unstacked series in place between stacked ones', () => {
+      const seriesData = [
+        { seriesName: 'stacked small', seriesIndex: 0, stack: 'mock-stack', value: 1 },
+        { seriesName: 'unstacked', seriesIndex: 1, value: 5 },
+        { seriesName: 'stacked large', seriesIndex: 2, stack: 'mock-stack', value: 3 },
+      ];
+      const content = tooltipContentFromParams({ seriesData });
+
+      expect(Object.keys(content)).toEqual(['stacked large', 'stacked small', 'unstacked']);
+    });
+
+    it('keeps series order for bar charts', () => {
+      const content = tooltipContentFromParams(
+        { seriesData: mockStackedSeriesData },
+        DISPLAY_TYPES.BAR_CHART,
+      );
+
+      expect(Object.keys(content)).toEqual(['bottom', 'middle', 'top']);
     });
   });
 });

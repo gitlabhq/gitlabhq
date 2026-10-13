@@ -22,7 +22,7 @@ RSpec.shared_examples 'connection with paged nodes' do
     let(:arguments) { { last: 2 } }
 
     it 'returns only the last elements' do
-      expect(paged_nodes).to contain_exactly(*all_nodes.last(2))
+      expect(paged_nodes).to match_array(all_nodes.last(2))
     end
   end
 end

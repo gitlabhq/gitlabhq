@@ -1,0 +1,22 @@
+---
+key_path: settings.database.search_path_contains_partition_schema
+description: Whether the search_path includes a GitLab partition schema, which GitLab expects to reference fully qualified instead.
+product_group: database_health
+product_categories:
+- database
+value_type: boolean
+status: active
+milestone: "19.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255268
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: DatabaseDiagnosticsFindingMetric
+options:
+  check: search_path
+  finding_code: search_path_contains_partition_schema
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

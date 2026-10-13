@@ -81,6 +81,8 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SanitizerProcessor, :sentry do
           'HTTP_AUTHORIZATION' => 'Bearer 123456',
           'HTTP_PRIVATE_TOKEN' => 'abcdef',
           'HTTP_JOB_TOKEN' => 'secret123',
+          'HTTP_X_FORGE_OAUTH_SYSTEM' => 'forge-system-token',
+          'HTTP_X_GITLAB_JIRA_USER_DELEGATION' => 'delegation-jwt',
           'HTTP_GITLAB_WORKHORSE_PROXY_START' => 123456,
           'HTTP_COOKIE' => 'yummy_cookie=choco; tasty_cookie=strawberry',
           'QUERY_STRING' => 'token=secret&access_token=secret&job_token=secret&private_token=secret',
@@ -94,6 +96,8 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SanitizerProcessor, :sentry do
           'Authorization' => '[FILTERED]',
           'Private-Token' => '[FILTERED]',
           'Job-Token' => '[FILTERED]',
+          'X-Forge-Oauth-System' => '[FILTERED]',
+          'X-Gitlab-Jira-User-Delegation' => '[FILTERED]',
           'Gitlab-Workhorse-Proxy-Start' => '123456'
         )
       end

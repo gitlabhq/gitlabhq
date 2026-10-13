@@ -35,18 +35,29 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     create(:support_bot)
   end
 
-  context 'when Gitlab is FOSS only' do
-    unless Gitlab.ee?
-      context 'when full_path is a group' do
-        let(:base_arguments) { { full_path: group.full_path, ids: updatable_work_item_ids } }
+  context 'when full_path is a group' do
+    let(:parent) { group }
 
-        it 'does not allow bulk updating work items at the group level' do
-          post_graphql_mutation(mutation, current_user: current_user)
+    it 'updates work items in the group hierarchy' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+        updatable_work_items.each(&:reload)
+      end.to change { updatable_work_items.flat_map(&:label_ids) }.from([label1.id] * 2).to([label2.id] * 2)
 
-          expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you " \
-            "don't have permission to perform this action")
-        end
-      end
+      expect(mutation_response).to include('updatedWorkItemCount' => updatable_work_items.count)
+    end
+  end
+
+  context 'when full_path is a user namespace' do
+    let_it_be(:user_with_namespace) { create(:user, :with_namespace, developer_of: group) }
+    let(:current_user) { user_with_namespace }
+    let(:parent) { user_with_namespace.namespace }
+
+    it 'returns a resource not available error' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you " \
+        "don't have permission to perform this action")
     end
   end
 
@@ -89,6 +100,20 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
 
     context 'when current user cannot read the specified project' do
       let(:parent) { private_project }
+
+      it 'returns a resource not found error' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect_graphql_errors_to_include(
+          "The resource that you are attempting to access does not exist or you don't have " \
+            'permission to perform this action'
+        )
+      end
+    end
+
+    context 'when current user cannot read the specified group' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let(:parent) { private_group }
 
       it 'returns a resource not found error' do
         post_graphql_mutation(mutation, current_user: current_user)

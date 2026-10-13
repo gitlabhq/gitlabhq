@@ -6,7 +6,7 @@ module Badges
     def execute(source)
       badge = Badges::BuildService.new(params).execute(source)
 
-      badge.tap { |b| b.save }
+      badge.tap(&:save)
     end
   end
 end

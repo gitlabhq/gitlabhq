@@ -124,8 +124,8 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       end
     end
 
-    # PlanRules returns [] until the EE rules land, so ordering is pinned here
-    # with a stand-in probe rather than in the EE spec.
+    # Ordering is pinned here with a stand-in probe so it holds under FOSS too,
+    # where PlanRules returns []; the EE spec asserts the real rules' order.
     describe 'plan rules' do
       let(:probe_name) { 'plan_rule_probe' }
 
@@ -292,14 +292,14 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
     # facts a representative request of that throttle carries. Keys come from the
     # classifier, so a renamed fact surfaces here too.
     def facts(**overrides)
-      keys = Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest
-        .new(Rack::MockRequest.env_for('/')).labkit_facts.keys
-      keys.index_with { false }
-        .merge(
-          ip: '1.2.3.4',
-          requester_id: nil, requester_type: nil, runner_id: nil,
-          aid: nil, path: '/', method: 'GET', **overrides
-        )
+      request = Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest.new(Rack::MockRequest.env_for('/'))
+      identity = request.send(:identity_facts).keys
+      # Identity facts are Strings or nil in production and must not default to
+      # false: labkit's regex matcher stringifies, so /./ would match "false".
+      # Everything else is a boolean predicate, so false is the right default.
+      request.labkit_facts.keys.excluding(*identity).index_with { false }
+        .merge(identity.index_with(nil))
+        .merge(ip: '1.2.3.4', path: '/', method: 'GET', **overrides)
     end
 
     # The rule that terminated evaluation. An enforced throttle terminates on its

@@ -48,7 +48,8 @@ module Organizations
     def organization_groups_and_projects_app_data(organization)
       {
         user_preference_sort: current_user&.user_preference&.organization_groups_projects_sort,
-        user_preference_display: current_user&.user_preference&.organization_groups_projects_display
+        user_preference_display: current_user&.user_preference&.organization_groups_projects_display,
+        base_path: groups_and_projects_organization_path(organization)
       }.merge(shared_groups_and_projects_app_data(organization)).to_json
     end
 
@@ -111,7 +112,7 @@ module Organizations
     def shared_groups_and_projects_app_data(organization)
       {
         organization_gid: organization.to_global_id,
-        new_group_path: new_groups_organization_path(organization),
+        new_group_path: new_group_path,
         new_project_path: new_project_path,
         can_create_group: can?(current_user, :create_group, organization),
         can_create_project: current_user&.can_create_project?,

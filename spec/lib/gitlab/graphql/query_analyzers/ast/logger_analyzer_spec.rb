@@ -35,6 +35,7 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer, feature_cat
       expect(result[:duration_s]).to eq monotonic_time_duration
       expect(result[:depth]).to eq 3
       expect(result[:complexity]).to eq 3
+      expect(result[Labkit::Fields::GRAPHQL_COMPLEXITY_RAW]).to be_a(Float).and eq(3)
       expect(result[:used_fields]).to eq ['Note.id', 'CreateNotePayload.note', 'Mutation.createNote']
       expect(result[:used_deprecated_fields]).to eq []
       expect(result[:used_deprecated_arguments]).to eq []
@@ -45,6 +46,21 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer, feature_cat
       })
 
       expect(RequestStore.store[:graphql_logs]).to match([request])
+    end
+
+    context 'when the complexity score is fractional' do
+      let(:document) do
+        # Query.currentUser has no resolver, so nothing truncates the 0.2 that __typename costs
+        GraphQL.parse('{ currentUser { id __typename } }')
+      end
+
+      it 'logs the exact score and the score rounded down to an integer', :aggregate_failures do
+        results = GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])
+
+        # 1 for currentUser, 1 for id, 0.2 for __typename
+        expect(results.first[Labkit::Fields::GRAPHQL_COMPLEXITY_RAW]).to eq 2.2
+        expect(results.first[:complexity]).to eq 2
+      end
     end
 
     context 'when variables contain pipeline schedule inputs' do
@@ -111,6 +127,7 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer, feature_cat
       expect(result[:duration_s]).to eq monotonic_time_duration
       expect(RequestStore.store[:graphql_logs]).to match([hash_including(operation_name: 'createNote')])
       expect(result[:complexity]).to be_nil
+      expect(result[Labkit::Fields::GRAPHQL_COMPLEXITY_RAW]).to be_nil
       expect(result[:analysis_error]).to eq "Timeout on validation of query"
     end
   end

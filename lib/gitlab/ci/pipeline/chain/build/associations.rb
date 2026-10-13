@@ -29,13 +29,13 @@ module Gitlab
             end
 
             # Measures the raw input, before permission filtering and deduplication, because
-            # that is the layer a limit would apply to. Push options pass string keys.
+            # that is the layer a limit would apply to.
             def observe_pipeline_variables
               variables = Array(@command.variables_attributes)
 
               logger.observe(:pipeline_variables_count, variables.size, once: true)
 
-              max_value_bytesize = variables.map { |var| (var[:value] || var['value']).to_s.bytesize }.max.to_i
+              max_value_bytesize = variables.map { |var| var[:value].to_s.bytesize }.max.to_i
               logger.observe(:pipeline_variables_max_value_bytesize, max_value_bytesize, once: true)
             end
 

@@ -65,7 +65,7 @@ variables:
   stage: distill
   needs: []
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
-  # A single principle's worst case is 3 x 1500s poll timeout + 300s + 900s backoff ~= 95 min.
+  # A single principle's worst case is 3 x 1800s poll timeout + 300s + 900s backoff ~= 110 min.
   # This leaves headroom above that.
   # Unlike the old shared budget, hitting it costs only this principle: the others publish regardless.
   timeout: 2h

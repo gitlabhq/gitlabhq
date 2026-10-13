@@ -7,7 +7,7 @@ RSpec.describe 'projects/pages/show' do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: user) }
-  let(:domain) { create(:pages_domain, project: project) }
+  let(:domain) { build_stubbed(:pages_domain, project: project) }
 
   before do
     allow(project).to receive(:pages_deployed?).and_return(true)
@@ -32,9 +32,7 @@ RSpec.describe 'projects/pages/show' do
     end
 
     context "when domain is not verified" do
-      before do
-        domain.update!(verified_at: nil)
-      end
+      let(:domain) { build_stubbed(:pages_domain, :unverified, project: project) }
 
       it 'shows auto ssl error warning' do
         render
@@ -57,9 +55,7 @@ RSpec.describe 'projects/pages/show' do
     end
 
     context "when we failed to obtain Let's Encrypt's certificate" do
-      before do
-        domain.update!(auto_ssl_failed: true)
-      end
+      let(:domain) { build_stubbed(:pages_domain, project: project, auto_ssl_failed: true) }
 
       it 'shows auto ssl error warning' do
         render

@@ -56,6 +56,28 @@ describe('ToolbarMoreDropdown', () => {
     expect(findGlTooltip().exists()).toBe(false);
   });
 
+  it.each`
+    name                     | icon
+    ${'Alert'}               | ${'warning'}
+    ${'Code block'}          | ${'code'}
+    ${'Collapsible section'} | ${'details-block'}
+    ${'Bullet list'}         | ${'list-bulleted'}
+    ${'Ordered list'}        | ${'list-numbered'}
+    ${'Task list'}           | ${'list-task'}
+    ${'Horizontal rule'}     | ${'dash'}
+    ${'Embedded view'}       | ${'kind'}
+    ${'Mermaid diagram'}     | ${'diagram'}
+    ${'PlantUML diagram'}    | ${'diagram'}
+    ${'Table of contents'}   | ${'title'}
+    ${'Reformat table'}      | ${'table'}
+  `('sets the $name option icon to $icon', ({ name, icon }) => {
+    const item = findGlDisclosureDropdown()
+      .props('items')
+      .find((i) => i.text === name);
+
+    expect(item.icon).toBe(icon);
+  });
+
   describe.each`
     name                     | expectedMarkdown                                                                                                                          | trackingProperty
     ${'Alert'}               | ${'> [!NOTE]\n> {text}'}                                                                                                                  | ${'alert'}

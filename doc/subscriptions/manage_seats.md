@@ -203,11 +203,12 @@ You cannot turn off restricted access when your subscription does not allow over
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/594044) in GitLab 19.5. Feature flag `bso_minimal_access_fallback` removed.
 
 {{< /history >}}
 
 When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
-This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
+This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and GitLab Self-Managed Ultimate.
 
 Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../user/permissions.md#users-with-minimal-access).
 When seats become available, they can be promoted to their intended access level.
@@ -220,7 +221,7 @@ You can view seat usage and manage users with Minimal Access.
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the Minimal Access fallback feature is enabled, users are assigned Minimal Access instead of being blocked.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. Users are assigned Minimal Access instead of being blocked.
   - Multiple users with the Owner role or administrator access add members simultaneously.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your

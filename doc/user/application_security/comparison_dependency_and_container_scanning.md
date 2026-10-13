@@ -23,11 +23,11 @@ The following table summarizes which types of dependencies each scanning tool ca
 |----------------------------------------------------------------------------------------------|---------------------|--------------------|
 | Identify the manifest, lock file, or static file that introduced the dependency              | {{< yes >}}         | {{< no >}}         |
 | Development dependencies                                                                     | {{< yes >}}         | {{< no >}}         |
-| Dependencies in a lock file committed to your repository                                     | {{< yes >}}         | {{< yes >}} <sup>1</sup> |
-| Binaries built by Go                                                                         | {{< no >}}          | {{< yes >}} <sup>2</sup> |
+| Dependencies in a lock file committed to your repository                                     | {{< yes >}}         | {{< yes >}}[^lock-file-must] |
+| Binaries built by Go                                                                         | {{< no >}}          | {{< yes >}}[^report-language-specific] |
 | Dynamically linked language-specific dependencies installed by the operating system          | {{< no >}}          | {{< yes >}}        |
 | Operating system dependencies                                                                | {{< no >}}          | {{< yes >}}        |
 | Language-specific dependencies installed on the operating system (not built by your project) | {{< no >}}          | {{< yes >}}        |
 
-1. Lock file must be present in the image to be detected.
-1. [Report language-specific findings](container_scanning/_index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.
+[^lock-file-must]: Lock file must be present in the image to be detected.
+[^report-language-specific]: [Report language-specific findings](container_scanning/_index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.

@@ -165,6 +165,17 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
     expect(container_repositories_count_response).to eq(container_repositories.size)
   end
 
+  it 'returns a zero count for a project without container repositories' do
+    empty_project = create(:project, :private)
+
+    post_graphql(
+      graphql_query_for('project', { 'fullPath' => empty_project.full_path }, 'containerRepositoriesCount'),
+      current_user: empty_project.first_owner
+    )
+
+    expect(graphql_data.dig('project', 'containerRepositoriesCount')).to eq(0)
+  end
+
   describe 'sorting and pagination' do
     let_it_be(:data_path) { [:project, :container_repositories] }
     let_it_be(:sort_project) { create(:project, :public) }
@@ -281,6 +292,57 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
 
         query2 = graphql_query_for('project', { 'fullPath' => project2.full_path }, fields)
         expect { post_graphql(query2, current_user: user2) }.not_to exceed_query_limit(control_count1)
+      end
+    end
+  end
+
+  describe 'containerRepositoriesCount' do
+    describe 'efficient database queries' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:project_container_repositories) { create_list(:container_repository, 2, project: project) }
+
+      let(:fields) do
+        <<~GQL
+          containerRepositories {
+            nodes {
+              project {
+                id
+                containerRepositoriesCount
+              }
+            }
+          }
+        GQL
+      end
+
+      before do
+        project_container_repositories.each do |repository|
+          stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+      end
+
+      # Counts cached queries too, because GitLab's db_*_count metrics include
+      # query-cache hits, so a repeated identical count still shows up in production.
+      it 'avoids N+1 database queries', :use_sql_query_cache do
+        query = graphql_query_for('project', { 'fullPath' => project.full_path }, fields)
+        current_organization.organization_detail # warm up cache so control query doesn't record an additional query
+
+        first_user = create(:user, developer_of: project)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: first_user)
+        end
+
+        second_user = create(:user, developer_of: project)
+        new_repositories = create_list(:container_repository, 3, project: project)
+        new_repositories.each do |repository|
+          stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+
+        expect do
+          post_graphql(query, current_user: second_user)
+        end.to issue_same_number_of_queries_as(control)
+
+        expect(graphql_data.dig('project', 'containerRepositories', 'nodes').size).to eq(5)
       end
     end
   end

@@ -93,7 +93,9 @@ export default {
       } catch (error) {
         this.$emit('change', false);
         createAlert({
-          message: s__('Organization|An error occurred while leaving the organization.'),
+          message: s__(
+            'Organization|An error occurred while leaving the organization. Please try again.',
+          ),
           error,
           captureError: true,
         });

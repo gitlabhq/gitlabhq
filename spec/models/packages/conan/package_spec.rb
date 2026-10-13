@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Conan::Package, feature_category: :package_registry do
   let_it_be_with_reload(:package) { create(:conan_package, without_package_files: true) }
 
   describe 'relationships' do

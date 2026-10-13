@@ -67,7 +67,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :markdown_maintain_indentation,
       :use_new_navigation,
       :enabled_following,
-      :use_work_items_view,
       :text_editor
     ]
   end

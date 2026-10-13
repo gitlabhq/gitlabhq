@@ -3,11 +3,14 @@ import { GlLoadingIcon, GlListboxItem, GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import ReferenceBubbleMenu from '~/content_editor/components/bubble_menus/reference_bubble_menu.vue';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import Reference from '~/content_editor/extensions/reference';
 import { createTestEditor, emitEditorEvent } from '../../test_utils';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
 
 const mockWorkItem = {
   href: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/12',
@@ -241,14 +244,10 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
 
   describe('copy URL button', () => {
     it('copies the reference link to clipboard', async () => {
-      jest.spyOn(navigator.clipboard, 'writeText');
-
       await buildWrapperAndDisplayMenu();
       await wrapper.findByTestId('copy-reference-url').trigger('click');
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        'https://gitlab.com/gitlab-org/gitlab/issues/1',
-      );
+      expect(copyToClipboard).toHaveBeenCalledWith('https://gitlab.com/gitlab-org/gitlab/issues/1');
     });
   });
 

@@ -18,6 +18,8 @@ describe('extractGroupOrProject', () => {
     ${'https://gitlab.com/gitlab-org/gitlab-test/-/issues'}        | ${undefined}                | ${'gitlab-org/gitlab-test'}
     ${'https://gitlab.com/groups/gitlab-org/-/issues'}             | ${'gitlab-org'}             | ${undefined}
     ${'https://gitlab.com/groups/gitlab-org/gitlab-test/-/issues'} | ${'gitlab-org/gitlab-test'} | ${undefined}
+    ${'https://gitlab.com/gitlab-org/gitlab-test?view=1&scope=x'}  | ${undefined}                | ${'gitlab-org/gitlab-test'}
+    ${'https://gitlab.com/groups/gitlab-org#panel-2'}              | ${'gitlab-org'}             | ${undefined}
   `('returns the correct group or project', ({ url, group, project }) => {
     window.location.origin = 'https://gitlab.com';
 

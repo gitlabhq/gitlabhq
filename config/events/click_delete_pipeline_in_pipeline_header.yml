@@ -1,0 +1,20 @@
+---
+description: Tracks when a user confirms deleting a pipeline from the pipeline header
+internal_events: true
+action: click_delete_pipeline_in_pipeline_header
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: The source of the pipeline (for example, push or merge_request_event)
+product_group: pipeline_execution
+product_categories:
+- continuous_integration
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259761
+tiers:
+- free
+- premium
+- ultimate

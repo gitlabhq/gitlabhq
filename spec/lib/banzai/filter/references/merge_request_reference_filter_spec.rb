@@ -314,6 +314,26 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
     end
   end
 
+  context 'URL reference with a diff line anchor' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:anchor) do
+      %w[line_461c8d07f_A603 line_461c8d07f_603]
+    end
+
+    with_them do
+      let(:reference) { urls.project_merge_request_url(project, merge) + "/diffs##{anchor}" }
+
+      it 'links to the full URL without leaking the anchor into the text', :aggregate_failures do
+        doc = reference_filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).to eq(reference)
+        expect(doc.css('a').first.text).to eq("#{merge.to_reference} (diffs)")
+        expect(doc.text).to eq("See #{merge.to_reference} (diffs)")
+      end
+    end
+  end
+
   context 'group context' do
     it 'links to a valid reference' do
       reference = "#{project.full_path}!#{merge.iid}"

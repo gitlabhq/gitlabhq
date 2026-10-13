@@ -194,9 +194,8 @@ export default {
 
 <template>
   <list-item v-bind="$attrs" :selected="selected">
-    <template #left-action>
+    <template v-if="canDelete" #left-action>
       <gl-form-checkbox
-        v-if="canDelete"
         :aria-label="s__('ContainerRegistry|Select tag')"
         :disabled="disabled || !selectable"
         class="gl-m-0"
@@ -244,6 +243,7 @@ export default {
 
         <clipboard-button
           v-if="tag.location"
+          data-testid="location-clipboard-button"
           :title="$options.i18n.COPY_IMAGE_PATH_TITLE"
           :text="tag.location"
           category="tertiary"
@@ -255,6 +255,7 @@ export default {
         <gl-icon
           v-if="isInvalidTag"
           v-gl-tooltip.d0="$options.i18n.MISSING_MANIFEST_WARNING_TOOLTIP"
+          data-testid="warning-icon"
           name="warning"
           class="gl-mr-2"
           variant="warning"

@@ -232,9 +232,6 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-For complex Docker-in-Docker setups like [Code Quality scanning using CodeClimate](../testing/code_quality_codeclimate_scanning.md), you must match host and container paths for proper execution. For more details, see
-[Use private runners for CodeClimate-based scanning](../testing/code_quality_codeclimate_scanning.md#use-private-runners).
-
 ## Use Docker pipe binding
 
 Windows Containers run Windows executables compiled for the Windows Server kernel and userland

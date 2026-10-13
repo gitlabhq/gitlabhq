@@ -21,12 +21,12 @@ module API
             tags ['mlops']
           end
           params do
-            requires :run_id, type: String, desc: 'UUID of the run'
-            requires :metric_key, type: String, desc: 'Name of the metric'
+            requires :run_id, type: String, desc: 'UUID of the run.'
+            requires :metric_key, type: String, desc: 'Name of the metric.'
             optional :max_results, type: Integer,
-              desc: 'Maximum number of metrics to return. Default is 1000.',
+              desc: 'Maximum number of metrics to return.',
               default: 1_000
-            optional :page_token, type: String, desc: 'Token for pagination'
+            optional :page_token, type: String, desc: 'Token for pagination.'
           end
           route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'get-history', urgency: :low do

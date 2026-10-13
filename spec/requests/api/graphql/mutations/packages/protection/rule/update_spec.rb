@@ -40,7 +40,9 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
   let(:mutation_response) { graphql_mutation_response(:update_packages_protection_rule) }
   let(:mutation_response_errors) { mutation_response['errors'] }
 
-  subject { post_graphql_mutation(mutation, current_user: current_user) }
+  subject(:post_graphql_mutation_update_package_protection_rule) do
+    post_graphql_mutation(mutation, current_user: current_user)
+  end
 
   shared_examples 'a successful response' do
     it { subject.tap { expect_graphql_errors_to_be_empty } }
@@ -104,9 +106,9 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
       let(:input) { super().merge(minimum_access_level_for_push: nil) }
 
       it 'includes error message in response' do
-        is_expected.tap do
-          expect(mutation_response_errors).to include(/at least a minimum access role for push or delete/)
-        end
+        post_graphql_mutation_update_package_protection_rule
+
+        expect(mutation_response_errors).to include(/at least a minimum access role for push or delete/)
       end
     end
   end
@@ -121,31 +123,41 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
 
     let(:input) { super().merge(package_name_pattern: other_existing_package_protection_rule.package_name_pattern) }
 
-    it { is_expected.tap { expect_graphql_errors_to_be_empty } }
+    it { post_graphql_mutation_update_package_protection_rule.tap { expect_graphql_errors_to_be_empty } }
 
     it 'returns a blank package protection rule' do
-      is_expected.tap { expect(mutation_response['packageProtectionRule']).to be_blank }
+      post_graphql_mutation_update_package_protection_rule
+
+      expect(mutation_response['packageProtectionRule']).to be_blank
     end
 
     it 'includes error message in response' do
-      is_expected.tap do
-        expect(mutation_response_errors).to eq(
-          ['Package name pattern has already been taken', 'Pattern has already been taken']
-        )
-      end
+      post_graphql_mutation_update_package_protection_rule
+
+      expect(mutation_response_errors).to eq(
+        ['Package name pattern has already been taken', 'Pattern has already been taken']
+      )
     end
   end
 
   context 'with invalid input param `minimumAccessLevelForPush`' do
     let(:input) { super().merge(minimum_access_level_for_push: 'INVALID_ACCESS_LEVEL') }
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForPush/) } }
+    it 'returns an invalid value error for minimumAccessLevelForPush' do
+      post_graphql_mutation_update_package_protection_rule
+
+      expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForPush/)
+    end
   end
 
   context 'with invalid input param `minimumAccessLevelForDelete`' do
     let(:input) { super().merge(minimum_access_level_for_delete: 'INVALID_ACCESS_LEVEL') }
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForDelete/) } }
+    it 'returns an invalid value error for minimumAccessLevelForDelete' do
+      post_graphql_mutation_update_package_protection_rule
+
+      expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForDelete/)
+    end
   end
 
   context 'with invalid input param `packageNamePattern`' do
@@ -153,16 +165,20 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
 
     it_behaves_like 'an erroneous response'
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/packageNamePattern can't be blank/) } }
+    it 'returns a blank package name pattern error' do
+      post_graphql_mutation_update_package_protection_rule
+
+      expect_graphql_errors_to_include(/packageNamePattern can't be blank/)
+    end
   end
 
   context 'with blank input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do
     let(:input) { super().merge(minimum_access_level_for_push: nil, minimum_access_level_for_delete: nil) }
 
     it 'includes error message in response' do
-      is_expected.tap do
-        expect(mutation_response_errors).to include(/at least a minimum access role for push or delete/)
-      end
+      post_graphql_mutation_update_package_protection_rule
+
+      expect(mutation_response_errors).to include(/at least a minimum access role for push or delete/)
     end
   end
 
@@ -176,9 +192,9 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     end
 
     it 'updates the package protection rule to wildcard pattern' do
-      is_expected.tap do
-        expect(mutation_response['packageProtectionRule']['packageNamePattern']).to eq('*')
-      end
+      post_graphql_mutation_update_package_protection_rule
+
+      expect(mutation_response['packageProtectionRule']['packageNamePattern']).to eq('*')
     end
   end
 
@@ -193,7 +209,11 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     end
 
     with_them do
-      it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
+      it 'returns a permission error' do
+        post_graphql_mutation_update_package_protection_rule
+
+        expect_graphql_errors_to_include(/you don't have permission to perform this action/)
+      end
     end
   end
 end

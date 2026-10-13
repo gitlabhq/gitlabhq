@@ -121,9 +121,14 @@ The **Admin** area is available in the upper-right corner:
 
 The **What's new** feature shows users some of the highlights of new features from the last 10 GitLab versions.
 
-To access the unread **What's new** items, in the left sidebar, at the bottom, select **What's new**.
+If you're signed in:
 
-To access previously read **What's new** items:
+1. In the upper-right corner, select your avatar.
+1. Select **What's new for you**.
+
+If you're not signed in:
 
 1. In the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}).
-1. Select **What's new** from the menu.
+1. Select **What's new for you**.
+
+The **What's new for you** menu item shows the number of items you haven't read yet.

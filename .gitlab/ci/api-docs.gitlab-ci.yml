@@ -4,5 +4,5 @@ trigger-api-docs-pipeline:
   stage: notify
   allow_failure: true
   trigger:
-    project: gitlab-com/gl-infra/api-docs
+    project: gitlab-org/api-docs
     branch: main

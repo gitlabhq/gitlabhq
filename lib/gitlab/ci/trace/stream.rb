@@ -213,13 +213,14 @@ module Gitlab
         def has_timestamps?
           return @timestamped unless @timestamped.nil?
 
+          # The header is exactly TIMESTAMP_HEADER_LENGTH bytes, so the prefix is enough.
+          # readline would scan forward to the first newline, which can be the whole trace.
           cur_offset = stream.tell
           stream.seek(0, IO::SEEK_SET)
-          line = stream.readline.chomp
+          header = stream.read(TIMESTAMP_HEADER_LENGTH)
           stream.seek(cur_offset, IO::SEEK_SET)
 
-          @timestamped = TIMESTAMP_HEADER_REGEX.match?(line)
-          @timestamped
+          @timestamped = TIMESTAMP_HEADER_REGEX.match?(header.to_s)
         end
       end
     end

@@ -35,6 +35,13 @@ module Cells
       # message the existing mailroom, or another cells-mailroom pod, has taken.
       ARBITRATION_NAMESPACE = 'mail_room:gitlab'
 
+      # Bind address used when a health check port is configured without an
+      # explicit address. Binds all interfaces so a container probe can reach it.
+      DEFAULT_HEALTH_CHECK_ADDRESS = '0.0.0.0'
+
+      # Scheme used to reach a cell's internal API when none is configured.
+      DEFAULT_CELL_ENDPOINT_SCHEME = 'https'
+
       def initialize(rails_root:, rails_env: nil)
         @rails_root = rails_root
         @rails_env = rails_env || ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
@@ -66,13 +73,26 @@ module Cells
         gitlab_yml.dig('gitlab', 'host')
       end
 
-      # URL scheme used to reach cells when forwarding email. Cell addresses
-      # returned by the Topology Service are bare hosts, so the scheme is chosen
-      # here: "https" in production, "http" for local environments. Configured
-      # via `cell.email_forwarding.scheme` in config/gitlab.yml, defaulting to
-      # "https".
-      def cell_scheme
-        cell_config.dig('email_forwarding', 'scheme') || 'https'
+      # URL scheme used to reach a cell's internal API when forwarding email.
+      # Cell addresses returned by the Topology Service are bare hosts, so the
+      # scheme is chosen here rather than carried in the address. Configured via
+      # `cell.email_forwarding.cell_endpoint.scheme`, defaulting to "https".
+      def cell_endpoint_scheme
+        cell_endpoint_config['scheme'] || DEFAULT_CELL_ENDPOINT_SCHEME
+      end
+
+      # Port of a cell's internal API. When set it replaces any port the
+      # Topology Service returns with the cell address, which lets a deployment
+      # pin the internal API port independently of what is registered in the
+      # Topology Service. This mirrors GitLab Shell, whose Topology Service
+      # client takes the same cell_endpoint scheme and port, and whose port
+      # likewise always overrides the one returned by the Topology Service.
+      # Configured via `cell.email_forwarding.cell_endpoint.port`; when unset
+      # the Topology Service address is used as-is.
+      #
+      # @return [Integer, nil]
+      def cell_endpoint_port
+        cell_endpoint_config['port']
       end
 
       # Whether emails that cannot be identified should be routed to the default
@@ -88,6 +108,20 @@ module Cells
       def route_unidentified_to_default_cell?
         value = cell_config.dig('email_forwarding', 'route_unidentified_to_default_cell')
         value.nil? ? true : value
+      end
+
+      # Address and port for mail_room's built-in health check server, which
+      # serves /liveness. Configured via `cell.email_forwarding.health_check` in
+      # config/gitlab.yml; when unset no server is started, so local runs do not
+      # bind a port.
+      #
+      # @return [Hash, nil] `{ address:, port: }`, or nil when not configured
+      def health_check_attributes
+        settings = cell_config.dig('email_forwarding', 'health_check') || {}
+        port = settings['port']
+        return unless port
+
+        { address: settings['address'] || DEFAULT_HEALTH_CHECK_ADDRESS, port: port }
       end
 
       # Path to the PEM-encoded EC private key used to sign requests to the cells'
@@ -154,10 +188,18 @@ module Cells
         cell_config.dig('email_forwarding', 'arbitration') || {}
       end
 
+      def cell_endpoint_config
+        cell_config.dig('email_forwarding', 'cell_endpoint') || {}
+      end
+
       def enabled?(settings)
         settings.is_a?(Hash) && settings['enabled'] && !settings['address'].to_s.empty?
       end
 
+      # `delete_after_delivery` and `expunge_deleted` are passed through
+      # explicitly: mail_room defaults both to false, so omitting them would
+      # leave delivered mail in the mailbox forever, unlike the existing GitLab
+      # mailroom which flags delivered messages as deleted.
       def mailbox_attributes(mailbox_type, settings)
         {
           email: settings['user'],
@@ -168,6 +210,8 @@ module Cells
           start_tls: settings['start_tls'],
           name: settings['mailbox'] || 'inbox',
           idle_timeout: settings['idle_timeout'],
+          delete_after_delivery: settings['delete_after_delivery'],
+          expunge_deleted: settings['expunge_deleted'],
           delivery_options: {
             mailbox_type: mailbox_type,
             wildcard_address: settings['address']

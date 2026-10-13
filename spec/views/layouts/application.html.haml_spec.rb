@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'layouts/application', :with_current_organization do
   context 'when user is signed in' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     before do
       allow(view).to receive_messages(current_user: user, current_user_mode: Gitlab::Auth::CurrentUserMode.new(user))

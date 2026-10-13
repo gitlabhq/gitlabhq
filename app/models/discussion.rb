@@ -121,9 +121,9 @@ class Discussion
 
   def ==(other)
     other.class == self.class &&
-      other.context_noteable == self.context_noteable &&
-      other.id == self.id &&
-      other.notes == self.notes
+      other.context_noteable == context_noteable &&
+      other.id == id &&
+      other.notes == notes
   end
 
   def last_updated_at

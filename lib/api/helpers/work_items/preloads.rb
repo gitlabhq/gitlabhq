@@ -21,7 +21,7 @@ module API
           description: [:last_edited_by],
           assignees: [:assignees],
           labels: [:labels],
-          milestone: [:milestone],
+          milestone: [{ milestone: [{ group: :route }, { project: { namespace: :route } }] }],
           start_and_due_date: [:dates_source],
           time_tracking: [{ timelogs: :user }],
           error_tracking: [:sentry_issue],
@@ -29,13 +29,9 @@ module API
           notifications: [:issue_assignees]
         }.freeze
 
-        PROJECT_FEATURE_PRELOADS = {
-          milestone: [{ milestone: :project }]
-        }.freeze
+        PROJECT_FEATURE_PRELOADS = {}.freeze
 
-        GROUP_FEATURE_PRELOADS = {
-          milestone: [{ milestone: :group }]
-        }.freeze
+        GROUP_FEATURE_PRELOADS = {}.freeze
 
         FIELD_PRELOADS = {
           author: [:author],
@@ -194,6 +190,15 @@ module API
             .reorder(order_options_with_tie_breaker) # rubocop:disable CodeReuse/ActiveRecord -- needed for stable ordering on `order_by` + `sort`
         end
 
+        def build_discussion_notes_relation(parent_work_item, discussion_id)
+          # Sort by id because keyset pagination needs a column with unique values, and created_at can repeat.
+          # IDs increase in creation order, so this still returns the thread oldest first.
+          parent_work_item.notes
+            .with_discussion_ids(discussion_id)
+            .preload(NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+            .reorder(id: :asc) # rubocop:disable CodeReuse/ActiveRecord -- keyset pagination needs a unique sort column
+        end
+
         # Bulk-fetches Subscription rows for the given work items and current user so the
         # notifications feature entity can read each work item's subscribed state from memory
         # rather than triggering one query per item.
@@ -223,7 +228,7 @@ module API
         def preload_closing_merge_requests_counts(work_items)
           return {} if work_items.empty?
 
-          ::MergeRequestsClosingIssues.count_for_collection(work_items.map(&:id), current_user).to_h
+          ::MergeRequestIssue.count_for_collection(work_items.map(&:id), current_user).to_h
         end
 
         # Bulk-resolves will_auto_close_by_merge_request for the whole page (open + project auto-closes +
@@ -232,7 +237,7 @@ module API
           eligible = work_items.select(&:eligible_for_autoclose_by_merge_request?)
           return Set.new if eligible.empty?
 
-          ::MergeRequestsClosingIssues.auto_close_issue_ids(eligible.map(&:id))
+          ::MergeRequestIssue.auto_close_issue_ids(eligible.map(&:id))
         end
 
         def preload_award_emoji_counts(work_items)

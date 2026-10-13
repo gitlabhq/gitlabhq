@@ -5,12 +5,11 @@ require 'spec_helper'
 RSpec.describe IssueBoardEntity do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:project) { create(:project) }
-  let_it_be_with_reload(:resource) { create(:issue, project: project) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:label) { create(:label, project: project, title: 'Test Label') }
-
+  let(:project) { build_stubbed(:project) }
+  let(:resource) { build_stubbed(:issue, project: project) }
+  let(:user) { build_stubbed(:user) }
+  let(:milestone) { build_stubbed(:milestone, project: project) }
+  let(:label) { build_stubbed(:label, project: project, title: 'Test Label') }
   let(:request) { double('request', current_user: user) }
 
   subject { described_class.new(resource, request: request).as_json }
@@ -36,13 +35,13 @@ RSpec.describe IssueBoardEntity do
   end
 
   it 'has assignee attributes' do
-    resource.assignees = [user]
+    allow(resource).to receive(:assignees).and_return([user])
 
     expect(subject).to include(assignees: array_including(hash_including(:id, :name, :username, :avatar_url)))
   end
 
   it 'has label attributes' do
-    resource.labels = [label]
+    allow(resource).to receive(:labels).and_return([label])
 
     expect(subject).to include(labels: array_including(hash_including(:id, :title, :color, :description, :text_color, :priority)))
   end

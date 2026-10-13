@@ -86,6 +86,7 @@ class SearchController < ApplicationController
     @search_type = search_type
 
     count = 0
+    @search_attempted = true
     @global_search_duration_s = Benchmark.realtime do
       count = if @search_type == 'basic'
                 ApplicationRecord.with_fast_read_statement_timeout do
@@ -145,6 +146,7 @@ class SearchController < ApplicationController
     expires_in 1.minute
 
     results = nil
+    @search_attempted = true
     @global_search_duration_s = Benchmark.realtime do
       results = search_autocomplete_opts(term, filter: @filter, scope: autocomplete_scope)
     end
@@ -160,6 +162,10 @@ class SearchController < ApplicationController
 
   private
 
+  def processing_action_is_opensearch?
+    action_name == 'opensearch'
+  end
+
   def record_search_apdex
     Gitlab::Metrics::GlobalSearchSlis.record_apdex(
       elapsed: @global_search_duration_s,
@@ -170,6 +176,8 @@ class SearchController < ApplicationController
   end
 
   def record_search_error
+    return unless @search_attempted
+
     # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
     # with a 200 status code, but an empty @global_search_duration_s.
     Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
@@ -181,7 +189,7 @@ class SearchController < ApplicationController
   end
 
   def authenticate?
-    return false if action_name == 'opensearch'
+    return false if processing_action_is_opensearch?
     return true if public_visibility_restricted?
 
     if search_service.global_search? && ::Gitlab::CurrentSettings.global_search_block_anonymous_searches_enabled?
@@ -198,6 +206,7 @@ class SearchController < ApplicationController
   end
 
   def haml_search_results
+    @search_attempted = true
     @global_search_duration_s = Benchmark.realtime do
       @search_results = @search_service_presenter.search_results
       @search_objects = @search_service_presenter.search_objects
@@ -271,11 +280,28 @@ class SearchController < ApplicationController
   end
 
   def increment_search_counters
-    track_internal_event('perform_search', user: current_user)
+    if search_relevancy_join_key_enabled?
+      @search_request_id = SecureRandom.uuid
+
+      track_internal_event('perform_search', user: current_user,
+        additional_properties: { property: @search_request_id })
+    else
+      # No additional_properties: the flag-off payload must stay byte-identical to what
+      # this event emitted before the join key existed, so turning the flag off is a
+      # true rollback. `property` is optional in the event definition. Only the join key
+      # is flag-gated: any unflagged property added here later belongs in both branches.
+      track_internal_event('perform_search', user: current_user)
+    end
 
     return if search_params[:nav_source] != 'navbar'
 
     track_internal_event('perform_navbar_search', user: current_user)
+  end
+
+  # The actor is the request, not current_user: anonymous search is supported, and a nil
+  # actor never matches a percentage-of-actors gate.
+  def search_relevancy_join_key_enabled?
+    Feature.enabled?(:search_relevancy_join_key, Feature.current_request)
   end
 
   def append_info_to_payload(payload)
@@ -301,6 +327,7 @@ class SearchController < ApplicationController
   end
 
   def abuse_payload_metadata
+    return {} if processing_action_is_opensearch?
     return {} unless search_service.abuse_detected?
 
     {
@@ -323,6 +350,7 @@ class SearchController < ApplicationController
     }.tap do |metadata|
       metadata['meta.search.type']        = @search_type         if @search_type.present?
       metadata['meta.search.level']       = @search_level        if @search_level.present?
+      metadata['meta.search.request_id']  = @search_request_id   if @search_request_id
       metadata[:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
     end
   end

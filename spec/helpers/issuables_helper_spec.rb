@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe IssuablesHelper, feature_category: :team_planning do
   let(:label)  { build_stubbed(:label) }
   let(:label2) { build_stubbed(:label) }
+  let(:project_namespace) { build_stubbed(:project_namespace) }
+  let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
+  let(:issue) { build_stubbed(:issue, project: project) }
 
   describe '#users_dropdown_label' do
     let(:user) { build_stubbed(:user) }
@@ -78,8 +81,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuables_state_counter_text' do
-    let_it_be(:user) { create(:user) }
-
     describe 'state text' do
       context 'when number of issuables can be generated' do
         before do
@@ -116,11 +117,10 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       end
 
       context 'when count is over the threshold' do
-        let_it_be(:group) { create(:group) }
+        let(:group) { build_stubbed(:group) }
 
         before do
-          allow(helper).to receive(:issuables_count_for_state).and_return(1100)
-          allow(helper).to receive(:parent).and_return(group)
+          allow(helper).to receive_messages(issuables_count_for_state: 1100, parent: group)
           stub_const("Gitlab::IssuablesCountForState::THRESHOLD", 1000)
         end
 
@@ -133,13 +133,9 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_reference' do
-    let(:project_namespace) { build_stubbed(:project_namespace) }
-    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
-
     context 'when show_full_reference truthy' do
       it 'display issuable full reference' do
         assign(:show_full_reference, true)
-        issue = build_stubbed(:issue, project: project)
 
         expect(helper.issuable_reference(issue)).to eql(issue.to_reference(full: true))
       end
@@ -151,8 +147,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           assign(:show_full_reference, nil)
           assign(:group, project.namespace)
 
-          issue = build_stubbed(:issue, project: project)
-
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project.namespace))
         end
       end
@@ -163,8 +157,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           assign(:group, nil)
           assign(:project, project)
 
-          issue = build_stubbed(:issue, project: project)
-
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project))
         end
       end
@@ -172,12 +164,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_project_reference' do
-    let(:project_namespace) { build_stubbed(:project_namespace) }
-    let(:project) { build_stubbed(:project, project_namespace: project_namespace) }
-
     it 'display project name and simple reference with `#` to an issue' do
-      issue = build_stubbed(:issue, project: project)
-
       expect(helper.issuable_project_reference(issue)).to eq("#{issue.project.full_name} ##{issue.iid}")
     end
 
@@ -189,11 +176,11 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_initial_data' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_refind(:issue) { create(:issue, author: user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: user, can?: true)
       stub_commonmark_sourcepos_disabled
     end
 
@@ -292,7 +279,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     context 'for ticket' do
-      let(:ticket) { create(:issue, :ticket) }
+      let_it_be(:ticket) { create(:issue, :ticket) }
 
       it 'includes ticket attributes' do
         @project = ticket.project
@@ -305,25 +292,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
         expect(helper.issuable_initial_data(ticket)).to match(hash_including(expected_data))
       end
-    end
-
-    context 'when work_item_type is nil' do
-      let(:issue) { create(:issue) }
-
-      it 'defaults isIncidentManagement and isServiceDesk to false' do
-        @project = issue.project
-        allow(issue).to receive(:work_item_type).and_return(nil)
-
-        expect(helper.issuable_initial_data(issue)).to match(hash_including(
-          isIncidentManagement: false,
-          isServiceDesk: false
-        ))
-      end
-    end
-
-    context 'for a ticket' do
-      let(:project) { create(:project) }
-      let(:ticket) { create(:issue, :ticket, project: project) }
 
       it 'sets isServiceDesk to true from the work item type' do
         @project = ticket.project
@@ -334,6 +302,18 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         }
 
         expect(helper.issuable_initial_data(ticket)).to match(hash_including(expected_data))
+      end
+    end
+
+    context 'when work_item_type is nil' do
+      it 'defaults isIncidentManagement and isServiceDesk to false' do
+        @project = issue.project
+        allow(issue).to receive(:work_item_type).and_return(nil)
+
+        expect(helper.issuable_initial_data(issue)).to match(hash_including(
+          isIncidentManagement: false,
+          isServiceDesk: false
+        ))
       end
     end
 
@@ -379,8 +359,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     describe '#zoomMeetingUrl in issue' do
-      let(:issue) { create(:issue, author: user) }
-
       before do
         assign(:project, issue.project)
       end
@@ -431,16 +409,13 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     describe '#duplicatedToIssueUrl' do
-      let(:issue) { create(:issue, author: user) }
-
       before do
         assign(:project, issue.project)
       end
 
       context 'when issue is duplicated' do
         before do
-          allow(issue).to receive(:duplicated?).and_return(true)
-          allow(issue).to receive(:duplicated_to).and_return(issue)
+          allow(issue).to receive_messages(duplicated?: true, duplicated_to: issue)
         end
 
         it 'returns url' do
@@ -460,16 +435,13 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     describe '#movedToIssueUrl' do
-      let(:issue) { create(:issue, author: user) }
-
       before do
         assign(:project, issue.project)
       end
 
       context 'when issue is moved' do
         before do
-          allow(issue).to receive(:moved?).and_return(true)
-          allow(issue).to receive(:moved_to).and_return(issue)
+          allow(issue).to receive_messages(moved?: true, moved_to: issue)
         end
 
         it 'returns url' do
@@ -513,7 +485,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       let_it_be(:label) { create(:label, name: 'Bug') }
       let_it_be(:label2) { create(:label, name: 'Community contribution') }
       let_it_be(:issuable) do
-        create(:merge_request, source_project: project, target_project: project, labels: [label, label2])
+        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project, labels: [label, label2])
       end
 
       it 'returns the expected data' do

@@ -1173,4 +1173,31 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
       end
     end
   end
+
+  describe '#governed_containers' do
+    let_it_be(:saved_view) { create(:saved_view, namespace: group) }
+
+    it 'governs by the namespace holding the saved view', :aggregate_failures do
+      resolved = service.governed_containers({ saved_view_id: saved_view.id.to_s }.with_indifferent_access)
+
+      expect(resolved.containers).to contain_exactly(group)
+      expect(resolved.named).to eq(1)
+    end
+
+    it 'reads a Global ID as the record it names', :aggregate_failures do
+      arguments = { saved_view_id: saved_view.to_global_id.to_s }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.containers).to contain_exactly(group)
+      expect(resolved.named).to eq(1)
+    end
+
+    it 'counts an unknown saved view as named so the call is refused', :aggregate_failures do
+      resolved = service.governed_containers({ saved_view_id: non_existing_record_id.to_s }
+        .with_indifferent_access)
+
+      expect(resolved.containers).to be_empty
+      expect(resolved.named).to eq(1)
+    end
+  end
 end

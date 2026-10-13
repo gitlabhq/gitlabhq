@@ -8,7 +8,6 @@ const POSITIVE_DIRECTION_BY_UNIT = {
   count: 'up',
   rate: 'up',
   duration: 'down',
-  durationMs: 'down',
 };
 
 // Keyed by the source `glql.compile` resolves, because one metric name has a different
@@ -34,7 +33,7 @@ const METRIC_PRESENTATION = {
     returningUsersCount: {
       description: __('Number of users active in both the current and previous period.'),
     },
-    totalCount: { description: __('Total number of events.') },
+    totalCount: { description: __('Total number of events, optionally filtered by event.') },
     usersCount: { description: __('Number of unique users.') },
   },
   Pipelines: {
@@ -42,7 +41,11 @@ const METRIC_PRESENTATION = {
       description: __('Ratio of canceled pipelines to finished pipelines.'),
       positiveDirection: 'down',
     },
+    durationMax: { description: __('Longest pipeline duration, in seconds.') },
+    durationMean: { description: __('Average pipeline duration, in seconds.') },
+    durationMin: { description: __('Shortest pipeline duration, in seconds.') },
     durationQuantile: { description: __('Pipeline duration quantile, in seconds.') },
+    durationSum: { description: __('Total duration of all pipelines, in seconds.') },
     failureRate: {
       description: __('Ratio of failed pipelines to finished pipelines.'),
       positiveDirection: 'down',
@@ -57,13 +60,95 @@ const METRIC_PRESENTATION = {
     },
   },
   MergeRequests: {
+    acceptanceRate: { description: __('Share of merge requests that were merged.') },
     throughputCount: { description: __('Number of merged merge requests.') },
-    timeToMergeQuantile: { description: __('Time from creation to merge.') },
+    timeToMergeMax: { description: __('Longest time from creation to merge, in seconds.') },
+    timeToMergeMean: { description: __('Average time from creation to merge, in seconds.') },
+    timeToMergeMin: { description: __('Shortest time from creation to merge, in seconds.') },
+    timeToMergeQuantile: { description: __('Time from creation to merge, in seconds.') },
+    timeToMergeSum: {
+      description: __(
+        'Total time from creation to merge across all merged merge requests, in seconds.',
+      ),
+    },
     totalCount: { description: __('Total number of merge requests.') },
   },
   Contributions: {
     totalCount: { description: __('Total number of contributions.') },
     usersCount: { description: __('Number of unique contributors.') },
+  },
+  DuoWorkflows: {
+    churnedUsersCount: {
+      description: __(
+        'Number of unique users who ran a flow in the previous period but not in this one.',
+      ),
+      positiveDirection: 'down',
+    },
+    closedMrCountMax: {
+      description: __('Most closed merge requests created by a single flow.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountMean: {
+      description: __('Average closed merge requests created per flow.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountMin: {
+      description: __('Fewest closed merge requests created by a single flow.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountQuantile: {
+      description: __('Closed merge requests created per flow at a given quantile.'),
+      positiveDirection: 'down',
+    },
+    closedMrCountSum: {
+      description: __('Total closed merge requests created by all flows.'),
+      positiveDirection: 'down',
+    },
+    createdMrCountMax: { description: __('Most merge requests created by a single flow.') },
+    createdMrCountMean: { description: __('Average merge requests created per flow.') },
+    createdMrCountMin: { description: __('Fewest merge requests created by a single flow.') },
+    createdMrCountQuantile: {
+      description: __('Merge requests created per flow at a given quantile.'),
+    },
+    createdMrCountSum: { description: __('Total merge requests created by all flows.') },
+    creditsPerMergedMrRatio: {
+      description: __('Credits used per merge request created by a flow and later merged.'),
+      positiveDirection: 'down',
+    },
+    creditsUsedMax: { description: __('Most credits used by a single flow.') },
+    creditsUsedMean: { description: __('Average credits used per flow.') },
+    creditsUsedMin: { description: __('Fewest credits used by a single flow.') },
+    creditsUsedQuantile: { description: __('Credits used per flow at a given quantile.') },
+    creditsUsedSum: { description: __('Total credits used by all flows.') },
+    flowTypesCount: { description: __('Number of unique flow types.') },
+    joinedUsersCount: {
+      description: __(
+        'Number of unique users who ran a flow in this period but not in the previous one.',
+      ),
+    },
+    mergedMrCountMax: { description: __('Most merged merge requests created by a single flow.') },
+    mergedMrCountMean: { description: __('Average merged merge requests created per flow.') },
+    mergedMrCountMin: { description: __('Fewest merged merge requests created by a single flow.') },
+    mergedMrCountQuantile: {
+      description: __('Merged merge requests created per flow at a given quantile.'),
+    },
+    mergedMrCountSum: { description: __('Total merged merge requests created by all flows.') },
+    openMrCountMax: { description: __('Most open merge requests created by a single flow.') },
+    openMrCountMean: { description: __('Average open merge requests created per flow.') },
+    openMrCountMin: { description: __('Fewest open merge requests created by a single flow.') },
+    openMrCountQuantile: {
+      description: __('Open merge requests created per flow at a given quantile.'),
+    },
+    openMrCountSum: { description: __('Total open merge requests created by all flows.') },
+    previousPeriodUsersCount: { description: __('Number of unique users in the previous period.') },
+    projectsCount: { description: __('Number of unique projects.') },
+    returningUsersCount: {
+      description: __('Number of unique users who also ran a flow in the previous period.'),
+    },
+    totalCount: {
+      description: __('Total number of flows, optionally filtered by status.'),
+    },
+    usersCount: { description: __('Number of unique users.') },
   },
 };
 
@@ -144,6 +229,10 @@ export const trendPresentationFor = (source, metric, { value, previousValue }) =
   };
 };
 
+// Rendered in place of a value the query did not return. Aggregations over an empty set
+// can omit the node entirely, so this distinguishes "no data" from a 0.
+export const NO_VALUE = '\u2014';
+
 /**
  * Resolves the GlSingleStat props for a stat display. `displayConfig` always wins over a
  * derived default, and an empty `description` suppresses the derived copy.
@@ -157,7 +246,8 @@ export const statPresentationFor = (source, metric, displayConfig) => {
 
   return {
     // A block's own `title:` and a dashboard panel each render a heading already, so the
-    // stat's title stays empty unless a block asks for one.
+    // stat's title stays empty unless a block asks for one. "Copy contents" supplies the
+    // metric label separately, since that heading is outside the copied element.
     title: asString(config.title) ?? '',
     unit: asString(config.unit),
     description:

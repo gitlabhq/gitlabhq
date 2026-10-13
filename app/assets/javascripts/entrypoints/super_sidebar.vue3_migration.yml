@@ -1,0 +1,4 @@
+---
+status: rollout
+feature_flag: vue3_migrate_super_sidebar
+group: group::foundations

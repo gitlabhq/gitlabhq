@@ -6,7 +6,9 @@ RSpec.describe Gitlab::Audit::OrbitIndexerAuthor, feature_category: :knowledge_g
   subject(:author) { described_class.new }
 
   it 'is attributed to the Orbit indexer with its own sentinel id' do
-    expect(author).to have_attributes(id: -4, name: 'GitLab Orbit Indexer')
+    expect(author).to have_attributes(
+      id: Gitlab::Audit::NullAuthor::ORBIT_INDEXER_AUTHOR_ID, name: 'GitLab Orbit Indexer'
+    )
   end
 
   it 'is not impersonated' do

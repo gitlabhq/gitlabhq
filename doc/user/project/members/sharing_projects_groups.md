@@ -43,13 +43,11 @@ The following table provides an overview of the group members that get access to
 |----------------------------------------------------------------------|--------------------------|
 | Direct member of the group that is invited                           | {{< yes >}}              |
 | Inherited member of the group that is invited                        | {{< yes >}}              |
-| Shared member of the group that is invited <sup>1</sup>              | {{< yes >}}              |
+| Shared member of the group that is invited[^supports-extending-project]              | {{< yes >}}              |
 | Direct member of a subgroup, but not of the group that is invited    | {{< no >}}               |
 | Inherited member of a subgroup, but not of the group that is invited | {{< no >}}               |
 
-**Footnotes**:
-
-1. GitLab supports extending project access to shared group members, but this approach is not recommended. [Epic 122](https://gitlab.com/groups/gitlab-org/-/epics/122) proposes changing this behavior and transitioning to a teams model for sharing groups.
+[^supports-extending-project]: GitLab supports extending project access to shared group members, but this approach is not recommended. [Epic 122](https://gitlab.com/groups/gitlab-org/-/epics/122) proposes changing this behavior and transitioning to a teams model for sharing groups.
 
 The [visibility level](../../public_access.md) of the group you're inviting can't be more restrictive than the project.
 For example, you can invite:

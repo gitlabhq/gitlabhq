@@ -21,6 +21,7 @@ setup-test-env:
       optional: true
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   script:
     - source scripts/gitlab_component_helpers.sh
     - setup_test_env
@@ -133,6 +134,29 @@ rspec unit pg17:
     - .rspec-base-pg17
     - .rspec-unit-parallel
     - .rails:rules:ee-and-foss-unit
+
+rspec graphql-query-documents pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rails:rules:graphql-query-documents
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "-- spec/graphql/all_queries_spec.rb"
+
+rspec graphql-document-integration pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rails:rules:graphql-document-integration
+  script:
+    - !reference [.base-script, script]
+    - |
+      set -e
+      tests="$(tooling/ci/graphql_query_document_specs.rb foss)"
+      if [ -z "${tests}" ]; then
+        echo "No backend specs read the changed GraphQL query documents. Skipping."
+      else
+        rspec_section rspec_simple_job_with_retry "${RSPEC_TAGS} -- ${tests}"
+      fi
 
 rspec unit pg17 single-redis:
   extends:
@@ -498,7 +522,7 @@ gitlab:setup:
   stage: post-test
   variables:
     GIT_STRATEGY: none
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3.17
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3
   script:
     - ls -R
 
@@ -507,7 +531,7 @@ rspec:artifact-collector unit:
     - .artifact-collector
     - .rails:rules:artifact-collector-unit
   needs:
-    - job: rspec unit pg17  # 44 jobs
+    - job: rspec unit pg17  # 35 jobs
       optional: true
     - job: rspec unit clickhouse26  # 1 job
       optional: true
@@ -519,9 +543,9 @@ rspec:artifact-collector part-a:
     - .artifact-collector
     - .rails:rules:artifact-collector-part-a
   needs:
-    - job: rspec system pg17  # 32 jobs
+    - job: rspec system pg17  # 27 jobs
       optional: true
-    - job: rspec background_migration pg17  # 17 jobs
+    - job: rspec background_migration pg17  # 12 jobs
       optional: true
 
 rspec:artifact-collector part-c:
@@ -541,7 +565,9 @@ rspec:artifact-collector part-b:
       optional: true
     - job: rspec integration pg17 clickhouse25  # 1 job
       optional: true
-    - job: rspec migration pg17  # 26 jobs
+    - job: rspec migration pg17  # 8 jobs
+      optional: true
+    - job: rspec graphql-document-integration pg17  # 1 job
       optional: true
 
 rspec:artifact-collector unit single-redis:
@@ -549,7 +575,7 @@ rspec:artifact-collector unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec unit pg17 single-redis  # 44 jobs
+    - job: rspec unit pg17 single-redis  # 35 jobs
       optional: true
 
 rspec:artifact-collector system single-redis:
@@ -557,7 +583,7 @@ rspec:artifact-collector system single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec system pg17 single-redis  # 32 jobs
+    - job: rspec system pg17 single-redis  # 27 jobs
       optional: true
 
 rspec:artifact-collector remainder single-redis:
@@ -573,7 +599,7 @@ rspec:artifact-collector ee unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee unit pg17 single-redis  # 39 jobs
+    - job: rspec-ee unit pg17 single-redis  # 47 jobs
       optional: true
 
 rspec:artifact-collector ee remainder single-redis:
@@ -581,16 +607,16 @@ rspec:artifact-collector ee remainder single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee integration pg17 single-redis  # 9 jobs
+    - job: rspec-ee integration pg17 single-redis  # 12 jobs
       optional: true
-    - job: rspec-ee system pg17 single-redis  # 16 jobs
+    - job: rspec-ee system pg17 single-redis  # 15 jobs
       optional: true
 
 rspec:artifact-collector ee unit:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec-ee unit pg17  # 39 jobs
+    - job: rspec-ee unit pg17  # 47 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-unit', rules]
@@ -607,17 +633,19 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
-    - job: rspec-ee integration pg17  # 9 jobs
+    - job: rspec-ee integration pg17  # 12 jobs
       optional: true
     - job: rspec-ee integration pg17 clickhouse25  # 1 job
       optional: true
-    - job: rspec-ee system pg17  # 16 jobs
+    - job: rspec-ee system pg17  # 15 jobs
       optional: true
     - job: rspec-ee system clickhouse25  # 1 job
       optional: true
     - job: rspec fail-fast  # 1 job
       optional: true
     - job: rspec-ee fail-fast  # 1 job
+      optional: true
+    - job: rspec-ee graphql-document-integration pg17  # 1 job
       optional: true
   rules:
     - !reference ['.rails:rules:rspec fail-fast', rules]
@@ -626,6 +654,7 @@ rspec:artifact-collector ee remainder:
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
     - !reference ['.rails:rules:ee-only-clickhouse-system-changes', rules]
+    - !reference ['.rails:rules:graphql-document-integration-ee', rules]
 
 rspec:predictive artifact-collector:
   stage: post-test
@@ -694,9 +723,11 @@ rspec-ee:predictive artifact-collector:
 rspec:coverage:
   extends:
     - .coverage-base
+    - .repo-from-artifacts
     - .rails:rules:rspec-coverage
   stage: post-test
   needs:
+    - !reference [.repo-from-artifacts, needs]
     - job: setup-test-env
       artifacts: false
     # FOSS/EE jobs
@@ -741,7 +772,7 @@ rspec:coverage:
       else
         echo "Warning: coverage/coverage.xml not found, skipping whitespace stripping"
       fi
-  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
+  coverage: '/Line Coverage: (\d+\.\d+%)/'
   artifacts:
     name: coverage
     expire_in: 31d
@@ -819,9 +850,12 @@ rspec:test-summary:
 rspec:undercoverage:
   extends:
     - .coverage-base
+    - .repo-from-artifacts
     - .rails:rules:rspec-undercoverage
   stage: post-test
-  needs: ["rspec:coverage"]
+  needs:
+    - !reference [.repo-from-artifacts, needs]
+    - job: rspec:coverage
   script:
     - if [[ ",${CI_MERGE_REQUEST_LABELS}," == *",pipeline:skip-undercoverage,"* ]]; then
         echo "The 'pipeline:skip-undercoverage' label is set on the MR, exiting early.";
@@ -843,11 +877,13 @@ rspec:undercoverage:
 
 rspec:feature-flags:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:rspec-feature-flags
   stage: post-test
   needs:
     - job: "feature-flags-usage"
     - job: "haml-lint"
+    - !reference [.repo-from-artifacts, needs]
   before_script:
     - source scripts/utils.sh
   script:
@@ -923,8 +959,10 @@ rspec:flaky-tests-report:
 
 rspec:merge-auto-explain-logs:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:rspec-merge-auto-explain-logs
   stage: post-test
+  # rspec:coverage's needs already include clone-gitlab-repo via .repo-from-artifacts
   needs: !reference ["rspec:coverage", "needs"]
   script:
     - scripts/merge-auto-explain-logs
@@ -950,12 +988,14 @@ rspec:merge-auto-explain-logs:
 # distinguish from app code. Revisit if the CI database has another LWLock incident.
 rspec:check-ci-partition-pruning:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:check-ci-partition-pruning
   stage: post-test
   needs:
     - job: "rspec:merge-auto-explain-logs"
       artifacts: true
       optional: true
+    - !reference [.repo-from-artifacts, needs]
   allow_failure: true
   script:
     - scripts/database/check_ci_partition_pruning.rb "$RSPEC_AUTO_EXPLAIN_LOG_PATH"
@@ -967,6 +1007,7 @@ rspec:check-ci-partition-pruning:
 # EE: default refs (MRs, default branch, schedules) jobs #
 rspec-predictive:pipeline-generate:
   extends:
+    - .repo-from-artifacts
     - .rails:rules:rspec-predictive:pipeline-generate
   stage: prepare
   needs:
@@ -974,6 +1015,7 @@ rspec-predictive:pipeline-generate:
     - job: "retrieve-tests-metadata"
     - job: "detect-system-tests-duo"
       optional: true
+    - !reference [.repo-from-artifacts, needs]
   script:
     - scripts/prepare_predictive_system_pipeline.rb
     - |
@@ -1076,6 +1118,23 @@ rspec-ee:predictive:trigger single-db-ci-connection:
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
 
+# Proof of concept: prints the specs the coverage map would select. It does not run them.
+rspec:file-based-selection:print:
+  extends:
+    - .rails-job-base
+    - .rails:rules:file-based-spec-selection
+  stage: test
+  needs: []
+  allow_failure: true
+  variables:
+    SETUP_DB: "false"
+  script:
+    - bundle exec tooling/bin/file_based_spec_selection
+  artifacts:
+    expire_in: 7d
+    paths:
+      - file_based_selection.json
+
 rspec:predictive:system-full:trigger:
   extends:
     - .rails:rules:rspec-predictive:system-full:trigger
@@ -1172,6 +1231,29 @@ rspec-ee unit pg17:
     - .rspec-ee-base-pg17
     - .rspec-ee-unit-parallel
     - .rails:rules:ee-only-unit
+
+rspec-ee graphql-query-documents pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rails:rules:graphql-query-documents-ee
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "-- ee/spec/graphql/all_queries_spec.rb"
+
+rspec-ee graphql-document-integration pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rails:rules:graphql-document-integration-ee
+  script:
+    - !reference [.base-script, script]
+    - |
+      set -e
+      tests="$(tooling/ci/graphql_query_document_specs.rb ee)"
+      if [ -z "${tests}" ]; then
+        echo "No backend specs read the changed GraphQL query documents. Skipping."
+      else
+        rspec_section rspec_simple_job_with_retry "${RSPEC_TAGS} -- ${tests}"
+      fi
 
 rspec-ee unit pg17 single-db:
   extends:
@@ -1301,7 +1383,7 @@ rspec-ee system pg17 duo_workflow_service:
   variables:
     RSPEC_TAGS: "--tag duo_workflow_service"
     RSPEC_DRY_RUN_TAGS: "duo_workflow_service"
-  parallel: 1  # override parallel: 16 inherited from `rspec-ee system pg17` (.rspec-ee-system-parallel)
+  parallel: 1  # override parallel: 15 inherited from `rspec-ee system pg17` (.rspec-ee-system-parallel)
   rules:
     - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - !reference [".rails:rules:tier-2-with-backend-spec", rules]
@@ -1314,14 +1396,14 @@ rspec-ee unit pg17 es9:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-ee-base-pg17-es9
-    - .rspec-ee-unit-parallel
+  parallel: 9
   rules:
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 rspec-ee integration pg17 es9:
   extends:
     - .rspec-ee-base-pg17-es9
-    - .rspec-ee-integration-parallel
+  parallel: 1
   rules:
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
@@ -1331,7 +1413,7 @@ rspec-ee system pg17 es9:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-ee-base-pg17-es9
-    - .rspec-ee-system-parallel
+  parallel: 2
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:run-search-tests", rules]

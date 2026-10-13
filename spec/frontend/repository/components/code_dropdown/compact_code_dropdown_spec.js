@@ -18,6 +18,8 @@ import {
   OPEN_INTELLIJ_HTTPS,
   COPY_SSH_CLONE_URL,
   COPY_HTTPS_CLONE_URL,
+  OPEN_CUSTOM_IDE_LINK,
+  EXTERNAL_LINK_REL,
 } from '~/repository/components/code_dropdown/constants';
 
 jest.mock('~/tracking', () => ({
@@ -318,6 +320,65 @@ describe('Compact Code Dropdown component', () => {
     it('closes dropdown when event is emitted', () => {
       findCodeDropdownDownloadItemAtIndex(1).vm.$emit('close-dropdown');
       expect(closeDropdown).toHaveBeenCalled();
+    });
+  });
+
+  describe('custom clients', () => {
+    const findCustomClient = (name) =>
+      findCodeDropdownIdeItems()
+        .wrappers.map((item) => item.props('ideItem'))
+        .find((ideItem) => ideItem.text === name);
+
+    it('renders an SSH and an HTTPS link for a client with both URLs', () => {
+      createComponent({
+        customClients: [
+          {
+            name: 'VSCodium',
+            sshUrl: 'vscodium://clone?url=ssh',
+            httpUrl: 'vscodium://clone?url=https',
+          },
+        ],
+      });
+
+      expect(findCustomClient('VSCodium').items).toEqual([
+        {
+          text: 'SSH',
+          href: 'vscodium://clone?url=ssh',
+          tracking: { action: OPEN_CUSTOM_IDE_LINK, additionalProperties: { protocol: 'ssh' } },
+          extraAttrs: { isUnsafeLink: true, rel: EXTERNAL_LINK_REL },
+        },
+        {
+          text: 'HTTPS',
+          href: 'vscodium://clone?url=https',
+          tracking: { action: OPEN_CUSTOM_IDE_LINK, additionalProperties: { protocol: 'https' } },
+          extraAttrs: { isUnsafeLink: true, rel: EXTERNAL_LINK_REL },
+        },
+      ]);
+    });
+
+    it.each`
+      url          | text
+      ${'sshUrl'}  | ${'SSH'}
+      ${'httpUrl'} | ${'HTTPS'}
+    `('renders only the $text link when only $url is set', ({ url, text }) => {
+      createComponent({ customClients: [{ name: 'Tower', [url]: 'gittower://open' }] });
+
+      expect(findCustomClient('Tower').items.map((item) => item.text)).toEqual([text]);
+    });
+
+    it('skips a client with no URLs', () => {
+      createComponent({ customClients: [{ name: 'Empty' }] });
+
+      expect(findCustomClient('Empty')).toBeUndefined();
+    });
+
+    it('adds clients after the built-in IDE items', () => {
+      createComponent({ customClients: [{ name: 'Tower', httpUrl: 'gittower://open' }] });
+
+      expect(findCodeDropdownIdeItems()).toHaveLength(mockIdeItems.length + 1);
+      expect(findCodeDropdownIdeItemAtIndex(mockIdeItems.length).props('ideItem').text).toBe(
+        'Tower',
+      );
     });
   });
 });

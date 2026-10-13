@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../support/helpers/kubernetes_helpers'
 
 RSpec.describe Gitlab::Kubernetes::Ingress do
   include KubernetesHelpers

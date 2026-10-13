@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_entity'
 
 RSpec.describe API::Entities::Changelog do
   let(:changelog) { "This is a changelog" }

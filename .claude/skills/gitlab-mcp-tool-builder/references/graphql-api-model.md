@@ -89,6 +89,10 @@ to its resolver/method. You never call resolvers yourself.
   use it. **Client-side post-filtering breaks pagination** — the page boundary is
   applied before your filter, so a page of N can return far fewer items, and "next
   page" is meaningless. Only post-filter when the API offers no server-side arg.
+- `discussions` has no server-side system-note filter. Page flat `notes(filter:)` instead and,
+  if you need threads, group by `discussion.id` client-side.
+- There is no single-discussion fetch (no `discussions(id:)`, root `node(id:)`, or
+  `Query.discussion(id:)`). Don't page-then-filter to emulate one.
 
 ## How to discover the API (never guess)
 

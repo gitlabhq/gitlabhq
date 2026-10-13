@@ -7,8 +7,8 @@ RSpec.describe DiffDiscussion do
 
   subject { described_class.new([diff_note]) }
 
-  let(:project) { create(:project, :repository) }
-  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
 
   describe '#reply_attributes' do
@@ -33,10 +33,10 @@ RSpec.describe DiffDiscussion do
   end
 
   describe '#merge_request_version_params' do
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
-    let!(:merge_request_diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-    let!(:merge_request_diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: nil) }
-    let!(:merge_request_diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
+    let_it_be(:merge_request_diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let_it_be(:merge_request_diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: nil) }
+    let_it_be(:merge_request_diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
     context 'when the discussion is active' do
       it 'returns an empty hash, which will end up showing the latest version' do

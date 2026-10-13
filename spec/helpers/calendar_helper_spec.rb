@@ -24,7 +24,7 @@ RSpec.describe CalendarHelper, feature_category: :planning_views do
 
     context 'when feed token disabled' do
       it "does not have a feed_token" do
-        current_user = create(:user)
+        current_user = build_stubbed(:user)
         allow(helper).to receive(:current_user).and_return(current_user)
         allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
         expect(helper.calendar_url_options[:feed_token]).to be_nil

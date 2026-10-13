@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundMigration::RakeTask, feature_category: :database do
   subject(:task) { Class.new.extend(described_class) }

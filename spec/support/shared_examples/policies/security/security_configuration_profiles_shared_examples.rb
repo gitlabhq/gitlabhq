@@ -23,7 +23,7 @@ RSpec.shared_examples 'sets Security Configuration Profiles permissions for the 
         :maintainer       | true
         :owner            | true
         :admin            | true
-        :auditor          | false
+        :auditor          | true
       end
 
       with_them do
@@ -113,6 +113,7 @@ RSpec.shared_examples 'sets Security Configuration Profiles permissions for the 
       :reporter         | true   | false
       :planner          | true   | false
       :guest            | true   | false
+      :auditor          | true   | true
       :owner            | false  | false
       :maintainer       | false  | false
       :developer        | false  | false
@@ -120,6 +121,7 @@ RSpec.shared_examples 'sets Security Configuration Profiles permissions for the 
       :reporter         | false  | false
       :planner          | false  | false
       :guest            | false  | false
+      :auditor          | false  | false
     end
 
     with_them do

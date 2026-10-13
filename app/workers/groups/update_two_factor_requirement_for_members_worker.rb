@@ -16,7 +16,7 @@ module Groups
 
       return unless group
 
-      group.update_two_factor_requirement_for_members
+      ::Authn::Groups::UpdateTwoFactorRequirementService.new(group: group).execute
     end
   end
 end

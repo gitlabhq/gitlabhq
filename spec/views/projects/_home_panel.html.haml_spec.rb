@@ -6,7 +6,7 @@ RSpec.describe 'projects/_home_panel' do
   include ProjectForksHelper
 
   describe 'home panel' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     before do
       assign(:project, project)
@@ -22,7 +22,7 @@ RSpec.describe 'projects/_home_panel' do
   describe 'forks' do
     let(:source_project) { create(:project) }
     let(:project) { fork_project(source_project) }
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     before do
       assign(:project, project)

@@ -452,6 +452,10 @@ RSpec.describe SandboxController, 'routing' do
   specify 'to #mermaid_v11' do
     expect(get("/-/sandbox/mermaid_v11")).to route_to('sandbox#mermaid_v11')
   end
+
+  specify 'to #mermaid_v12' do
+    expect(get("/-/sandbox/mermaid_v12")).to route_to('sandbox#mermaid_v12')
+  end
 end
 
 RSpec.describe Snippets::BlobsController, "routing" do

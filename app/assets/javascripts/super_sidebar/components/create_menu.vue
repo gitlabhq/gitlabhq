@@ -121,13 +121,11 @@ export default {
     </gl-disclosure-dropdown-group>
     <create-work-item-modal
       v-if="loadCreateWorkItemModal"
-      :always-show-work-item-type-select="!isGroup"
       :creation-context="$options.CREATION_CONTEXT_SUPER_SIDEBAR"
       :full-path="fullPath"
       hide-button
       :is-group="isGroup"
       :visible="isCreateWorkItemModalVisible"
-      allow-any-namespace
       data-testid="new-work-item-modal"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV"
       @hide-modal="isCreateWorkItemModalVisible = false"

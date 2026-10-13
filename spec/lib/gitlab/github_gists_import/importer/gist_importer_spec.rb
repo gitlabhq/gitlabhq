@@ -80,8 +80,10 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
         before do
           files = [{ "file1.txt" => {} }, { "file2.txt" => {} }]
 
-          allow(gist_object).to receive(:files).and_return(files)
-          allow(gist_object).to receive(:total_files_size).and_return(Gitlab::CurrentSettings.snippet_size_limit + 1)
+          allow(gist_object).to receive_messages(
+            files: files,
+            total_files_size: Gitlab::CurrentSettings.snippet_size_limit + 1
+          )
         end
 
         it 'validates input and returns error' do
@@ -167,12 +169,11 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
 
       context 'when local network is allowed' do
         before do
-          allow(::Gitlab::CurrentSettings)
-            .to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
-          allow(::Gitlab::CurrentSettings)
-            .to receive(:deny_all_requests_except_allowed?).and_return(true)
-          allow(::Gitlab::CurrentSettings)
-            .to receive(:outbound_local_requests_allowlist?).and_return([])
+          allow(::Gitlab::CurrentSettings).to receive_messages(
+            allow_local_requests_from_web_hooks_and_services?: true,
+            deny_all_requests_except_allowed?: true,
+            outbound_local_requests_allowlist?: []
+          )
         end
 
         it 'raises error' do
@@ -190,12 +191,11 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
 
       context 'when local network is not allowed' do
         before do
-          allow(::Gitlab::CurrentSettings)
-            .to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(false)
-          allow(::Gitlab::CurrentSettings)
-            .to receive(:deny_all_requests_except_allowed?).and_return(true)
-          allow(::Gitlab::CurrentSettings)
-            .to receive(:outbound_local_requests_allowlist?).and_return([])
+          allow(::Gitlab::CurrentSettings).to receive_messages(
+            allow_local_requests_from_web_hooks_and_services?: false,
+            deny_all_requests_except_allowed?: true,
+            outbound_local_requests_allowlist?: []
+          )
         end
 
         it 'raises error' do

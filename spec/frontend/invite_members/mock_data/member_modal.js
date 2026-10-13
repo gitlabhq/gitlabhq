@@ -17,7 +17,7 @@ export const rootGroupPropsData = {
   canInviteToRootGroup: true,
 };
 
-export const inviteSource = 'unknown';
+const inviteSource = 'unknown';
 export const newProjectPath = 'projects/new';
 export const freeUsersLimit = 5;
 export const remainingSeats = 2;

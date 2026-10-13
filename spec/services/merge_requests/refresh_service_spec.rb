@@ -467,18 +467,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         # A divergent newrev, so Gitlab::Git::Push actually reports a force push.
         refresh_service.execute(@oldrev, @project.commit('feature').id, 'refs/heads/master')
       end
-
-      context 'when the merge_request_refresh_batched_commit_lookup feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_refresh_batched_commit_lookup: false)
-        end
-
-        it 'falls back to asking each merge request in turn' do
-          expect(MergeRequestDiff).not_to receive(:ids_including_any_commits)
-
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        end
-      end
     end
 
     context 'push to origin repo target branch' do
@@ -496,6 +484,34 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
           expect(@merge_request.resource_state_events.last.state).to eq('merged')
           expect(@fork_merge_request.resource_state_events.last.state).to eq('merged')
+        end
+      end
+
+      context 'when marking one merge request as merged fails' do
+        before do
+          allow_next_instances_of(MergeRequests::PostMergeService, 2) do |post_merge_service|
+            allow(post_merge_service).to receive(:execute).and_call_original
+            allow(post_merge_service).to receive(:execute)
+              .with(@merge_request, anything)
+              .and_raise(ActiveRecord::QueryCanceled)
+          end
+        end
+
+        it 'marks the remaining merge requests as merged, then re-raises so the worker retries the failed one' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(ActiveRecord::QueryCanceled),
+            { merge_request_id: @merge_request.id, project_id: @project.id },
+            { merged_manually_detection: 'post_merge_batch' }
+          )
+
+          expect do
+            service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          end.to raise_error(ActiveRecord::QueryCanceled)
+
+          reload_mrs
+
+          expect(@merge_request).to be_open
+          expect(@fork_merge_request).to be_merged
         end
       end
 
@@ -568,52 +584,20 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end
       end
 
-      context 'when open MRs target the branch' do
-        # Preloading the diff commit graph costs a scope evaluation per diff commit for
-        # every open merge request on the branch, and nothing on this path reads it.
-        context 'with merge_request_refresh_skip_diff_commit_preload enabled' do
-          it 'does not eagerly load the diff commit graph' do
-            expect(MergeRequest).not_to receive(:preload_latest_diff_commit)
-
-            service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-          end
+      # Diffs created before GitLab 8.4 have no head_commit_sha, so diff_head_sha falls
+      # back to reading the commit rows, which are no longer preloaded.
+      context 'when a diff predates the head_commit_sha column' do
+        before do
+          @merge_request.merge_request_diff.update_column(:head_commit_sha, nil)
         end
 
-        context 'with merge_request_refresh_skip_diff_commit_preload disabled' do
-          before do
-            stub_feature_flags(merge_request_refresh_skip_diff_commit_preload: false)
-          end
+        it 'still detects the merge request as manually merged' do
+          expect(@merge_request.merge_request_diff.reload[:head_commit_sha]).to be_nil
 
-          it 'still eagerly loads the diff commit graph' do
-            expect(MergeRequest).to receive(:preload_latest_diff_commit).and_call_original
+          service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
 
-            service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-          end
-        end
-
-        # Diffs created before GitLab 8.4 have no head_commit_sha, so diff_head_sha falls
-        # back to reading the commit rows. That fallback is the only consumer of the graph.
-        context 'and a diff predates the head_commit_sha column' do
-          before do
-            @merge_request.merge_request_diff.update_column(:head_commit_sha, nil)
-          end
-
-          [true, false].each do |flag_enabled|
-            context "with the preload skipped: #{flag_enabled}" do
-              before do
-                stub_feature_flags(merge_request_refresh_skip_diff_commit_preload: flag_enabled)
-              end
-
-              it 'still detects the merge request as manually merged' do
-                expect(@merge_request.merge_request_diff.reload[:head_commit_sha]).to be_nil
-
-                service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-                reload_mrs
-
-                expect(@merge_request).to be_merged
-              end
-            end
-          end
+          expect(@merge_request).to be_merged
         end
       end
 
@@ -826,19 +810,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
-      context 'when the merge_request_refresh_batched_commit_lookup feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_refresh_batched_commit_lookup: false)
-        end
-
-        it 'reloads a new diff for a push to the target project that contains a commit in the MR' do
-          expect do
-            service.new(project: @project, current_user: @user).execute(@oldrev, first_commit, 'refs/heads/master')
-            reload_mrs
-          end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
-        end
-      end
-
       it 'does not increase the diff count for a new push to target branch' do
         new_commit = @project.repository.create_file(
           @user,
@@ -911,7 +882,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
 
       context 'when the merge request is sourced from the same project' do
-        it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
+        it 'creates a `MergeRequestIssue` record for each issue closed by a commit' do
           allow_any_instance_of(MergeRequest).to receive(:commits).and_return(
             CommitCollection.new(project, [commit], 'close-by-commit')
           )
@@ -926,14 +897,14 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           refresh_service = service.new(project: project, current_user: user)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          expect(MergeRequestIssue.where(merge_request: merge_request)).to contain_exactly(
             have_attributes(issue_id: issue.id, from_mr_description: true)
           )
         end
       end
 
       context 'when the merge request is sourced from a different project' do
-        it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
+        it 'creates a `MergeRequestIssue` record for each issue closed by a commit' do
           forked_project = fork_project(project, user, repository: true)
 
           allow_any_instance_of(MergeRequest).to receive(:commits).and_return(
@@ -951,7 +922,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           refresh_service = service.new(project: forked_project, current_user: user)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          expect(MergeRequestIssue.where(merge_request: merge_request)).to contain_exactly(
             have_attributes(issue_id: issue.id, from_mr_description: true)
           )
         end
@@ -1289,18 +1260,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
       expect(merge_request.auto_merge_enabled?).to be_falsey
       expect(merge_request.merge_user).to be_nil
-    end
-
-    context 'when auto_merge_abort_uses_target_project is disabled' do
-      before do
-        stub_feature_flags(auto_merge_abort_uses_target_project: false)
-      end
-
-      it 'does not persist the abort note' do
-        refresh
-
-        expect(abort_note).to be_nil
-      end
     end
   end
 end

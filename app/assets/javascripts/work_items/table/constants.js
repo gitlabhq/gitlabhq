@@ -14,6 +14,8 @@ export const COLUMN_DUE_DATE = 'dueDate';
 export const COLUMN_HEALTH_STATUS = 'healthStatus';
 export const COLUMN_CREATED_AT = 'createdAt';
 
+export const CURSOR_VARIABLES = ['afterCursor', 'beforeCursor', 'lastPageSize'];
+
 /**
  * The columns the table renders, in order.
  *

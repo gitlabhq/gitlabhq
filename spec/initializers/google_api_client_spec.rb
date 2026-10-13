@@ -2,7 +2,8 @@
 
 # Extracted from https://github.com/googleapis/google-api-ruby-client/blob/main/google-apis-core/spec/google/apis/core/http_command_spec.rb
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'webmock/rspec'
 require 'google/apis/core/base_service'
 
 RSpec.describe Google::Apis::Core::HttpCommand do # rubocop:disable RSpec/SpecFilePathFormat

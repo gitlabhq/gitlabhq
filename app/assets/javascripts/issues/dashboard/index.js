@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import IssuesDashboardApp from 'ee_else_ce/issues/dashboard/components/issues_dashboard_app.vue';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 export function mountIssuesDashboardApp() {
   const el = document.querySelector('.js-issues-dashboard');
@@ -26,8 +26,6 @@ export function mountIssuesDashboardApp() {
     hasIssuableHealthStatusFeature,
     hasIterationsFeature,
     hasIssueWeightsFeature,
-    hasOkrsFeature,
-    hasQualityManagementFeature,
     hasScopedLabelsFeature,
     hasStatusFeature,
     initialSort,
@@ -52,10 +50,9 @@ export function mountIssuesDashboardApp() {
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
-      hasOkrsFeature: parseBoolean(hasOkrsFeature),
-      hasQualityManagementFeature: parseBoolean(hasQualityManagementFeature),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       hasStatusFeature: parseBoolean(hasStatusFeature),
+      hasStatusSortFeature: false,
       initialSort,
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),

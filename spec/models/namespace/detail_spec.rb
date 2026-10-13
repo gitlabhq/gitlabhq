@@ -52,6 +52,14 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
         expect(namespace_detail).to be_valid
       end
 
+      it 'accepts organization_transfer_source_id in state_metadata' do
+        namespace_detail.state_metadata = {
+          organization_transfer_source_id: 7
+        }
+
+        expect(namespace_detail).to be_valid
+      end
+
       it 'accepts schedule_transfer in preserved_states' do
         namespace_detail.state_metadata = {
           preserved_states: { schedule_transfer: 'archived' }
@@ -122,6 +130,24 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
         expect(result).to include(scheduled_before, scheduled_on_cutoff)
         expect(result).not_to include(scheduled_after, not_scheduled)
       end
+    end
+  end
+
+  describe '.oldest_deletion_scheduled_at', :freeze_time do
+    subject { described_class.oldest_deletion_scheduled_at }
+
+    it 'returns the oldest deletion_scheduled_at among scheduled namespaces' do
+      create(:namespace, deletion_scheduled_at: 1.day.ago)
+      create(:namespace, deletion_scheduled_at: 5.days.ago)
+      create(:namespace, deletion_scheduled_at: nil)
+
+      is_expected.to eq(5.days.ago)
+    end
+
+    it 'returns nil when no namespace is scheduled for deletion' do
+      create(:namespace, deletion_scheduled_at: nil)
+
+      is_expected.to be_nil
     end
   end
 

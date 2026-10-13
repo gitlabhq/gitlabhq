@@ -1,7 +1,6 @@
 ---
 Gitlab/AvoidUserOrganization:
   Exclude:
-    - 'app/helpers/admin/users_helper.rb'
     - 'app/models/todo.rb'
     - 'app/services/keys/create_service.rb'
     - 'app/workers/anti_abuse/spam_abuse_events_worker.rb'

@@ -1,0 +1,3 @@
+---
+name: read_user_admin_note
+description: Grants the ability to read the admin note on a user account

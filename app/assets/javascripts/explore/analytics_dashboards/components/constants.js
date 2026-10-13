@@ -27,7 +27,7 @@ export const DEFAULT_DATE_RANGE_OPTIONS = [
   DATE_RANGE_OPTION_CUSTOM,
 ];
 
-export const DEFAULT_SELECTED_DATE_RANGE_OPTION = DATE_RANGE_OPTION_LAST_7_DAYS;
+export const DEFAULT_SELECTED_DATE_RANGE_OPTION = DATE_RANGE_OPTION_LAST_30_DAYS;
 
 /**
  * The default options to display in the date_range_filter.
@@ -124,6 +124,31 @@ export const DATE_RANGE_OPTIONS = {
 
 export const DATE_RANGE_OPTION_KEYS = Object.keys(DATE_RANGE_OPTIONS);
 
+export const DATE_RANGE_GRANULARITY_DAILY = 'daily';
+export const DATE_RANGE_GRANULARITY_WEEKLY = 'weekly';
+export const DATE_RANGE_GRANULARITY_MONTHLY = 'monthly';
+
+// Bounds are inclusive: 30d option spans 31 days and draws 31 daily buckets.
+export const DATE_RANGE_GRANULARITY_DAILY_MAX_DAYS = 31;
+export const DATE_RANGE_GRANULARITY_WEEKLY_MAX_DAYS = 91;
+
+export const DATE_RANGE_QUERY_NAME = 'date_range';
+export const START_DATE_QUERY_NAME = 'start_date';
+export const END_DATE_QUERY_NAME = 'end_date';
+
 export const PROJECT_FILTER_QUERY_NAME = 'projects';
 export const GROUP_FILTER_QUERY_NAME = 'groups';
 export const SCOPE_FILTER_QUERY_NAME = 'scope';
+
+export const SCOPE_PICKER_ITEM_TYPE_GROUP = 'group';
+export const SCOPE_PICKER_ITEM_TYPE_PROJECT = 'project';
+export const SCOPE_PICKER_ITEM_TYPE_LOAD_MORE = 'load-more';
+
+// Selected namespaces are listed twice, pinned at the top and in place below.
+export const SCOPE_PICKER_SELECTED_ITEM_SUFFIX = '::selected';
+
+export const SCOPE_PICKER_ITEM_TYPES = [
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+];

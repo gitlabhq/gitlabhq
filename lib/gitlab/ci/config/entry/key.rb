@@ -33,15 +33,20 @@ module Gitlab
 
             ALLOWED_KEYS = %i[files files_commits prefix].freeze
 
+            MAX_FILES = 10
+            MAX_FILES_COMMITS = 2
+
             validations do
               validates :config, allowed_keys: ALLOWED_KEYS
               validates :config, only_one_of_keys: { in: %i[files files_commits] }
             end
 
             entry :files, Entry::Files,
-              description: 'Files that should be used to build the key'
+              description: 'Files that should be used to build the key',
+              metadata: { max_size: MAX_FILES }
             entry :files_commits, Entry::Files,
-              description: 'Files that should be used to build the key using commit hash'
+              description: 'Files that should be used to build the key using commit hash',
+              metadata: { max_size: MAX_FILES_COMMITS }
             entry :prefix, Entry::Prefix,
               description: 'Prefix that is added to the final cache key'
           end

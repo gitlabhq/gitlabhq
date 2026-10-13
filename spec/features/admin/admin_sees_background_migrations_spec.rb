@@ -106,6 +106,27 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
     end
   end
 
+  context 'when progress cannot be calculated' do
+    let_it_be(:migration_without_estimate) do
+      create(:batched_background_migration, :active, table_name: 'no_estimate', total_tuple_count: nil)
+    end
+
+    before_all do
+      create(:batched_background_migration_job, :succeeded, batched_migration: migration_without_estimate, batch_size: 5)
+    end
+
+    it 'shows progress as unavailable with an explanatory tooltip' do
+      visit admin_background_migrations_path
+
+      within '#content-body' do
+        expect(page).to have_selector(
+          '.has-tooltip[title*="Progress cannot be calculated"]',
+          text: 'Progress unavailable'
+        )
+      end
+    end
+  end
+
   context 'when there are failed migrations' do
     before do
       allow_next_instance_of(Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy) do |batch_class|

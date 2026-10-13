@@ -14,22 +14,34 @@ export default {
       type: String,
       required: true,
     },
+    isExit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  i18n: {
-    text: s__('Organization|Manage organization'),
+  computed: {
+    text() {
+      return this.isExit
+        ? s__('Organization|Back to organization')
+        : s__('Organization|Manage organization');
+    },
+    icon() {
+      return this.isExit ? 'go-back' : 'admin';
+    },
   },
 };
 </script>
 
 <template>
   <gl-nav-item
-    v-gl-tooltip.right="isIconOnly ? $options.i18n.text : ''"
+    v-gl-tooltip.right="isIconOnly ? text : ''"
     :is-icon-only="isIconOnly"
     :href="href"
-    icon="admin"
-    :aria-label="$options.i18n.text"
+    :icon="icon"
+    :aria-label="text"
     data-testid="manage-organization-button"
   >
-    {{ $options.i18n.text }}
+    {{ text }}
   </gl-nav-item>
 </template>

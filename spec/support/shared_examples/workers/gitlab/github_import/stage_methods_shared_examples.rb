@@ -2,14 +2,15 @@
 
 RSpec.shared_examples Gitlab::GithubImport::StageMethods do
   let_it_be(:project, freeze: false) { create(:project, :import_started, import_url: 'https://t0ken@github.com/repo/repo.git') }
+  let(:fail_import_on_exhaustion) { true }
 
   describe '.sidekiq_retries_exhausted' do
-    it 'tracks the exception and marks the import as failed' do
+    it 'tracks the exception' do
       expect(Gitlab::Import::ImportFailureService).to receive(:track)
         .with(
           project_id: project.id,
           exception: StandardError,
-          fail_import: true,
+          fail_import: fail_import_on_exhaustion,
           error_source: anything
         )
 

@@ -375,25 +375,12 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
             branch_name: 'master')
         end
 
-        context 'when the flag is enabled' do
-          it 'rejects the tagged default' do
-            result = service.execute
+        # The tag is resolved by `Tags::Resolver` on the merged config, long after the
+        # inputs are read here, so it is passed through rather than rejected.
+        it 'does not reject the tagged default' do
+          result = service.execute
 
-            expect(result).to be_error
-            expect(result.message).to include('default value cannot contain a !reference tag')
-          end
-        end
-
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(ci_reject_yaml_tags_in_inputs: false)
-          end
-
-          it 'does not reject the tagged default' do
-            result = service.execute
-
-            expect(result).to be_success
-          end
+          expect(result).to be_success
         end
       end
 

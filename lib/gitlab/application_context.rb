@@ -44,7 +44,11 @@ module Gitlab
       :auth_fail_auth_header_type,
       :mvcc_manifest,
       :duo_workflow_id,
-      :organization_source
+      :organization_source,
+      :client_service,
+      :client_type,
+      :client_name,
+      :client_version
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -57,7 +61,8 @@ module Gitlab
       :auth_fail_token_type,
       :auth_fail_auth_header_type,
       :duo_workflow_id,
-      :organization_source
+      :organization_source,
+      :client_service
     ].freeze
     private_constant :WEB_ONLY_KEYS
 
@@ -87,7 +92,11 @@ module Gitlab
       Attribute.new(:kubernetes_agent, ::Clusters::Agent),
       Attribute.new(:mvcc_manifest, String),
       Attribute.new(:duo_workflow_id, String),
-      Attribute.new(:organization_source, String)
+      Attribute.new(:organization_source, String),
+      Attribute.new(:client_service, String),
+      Attribute.new(:client_type, String),
+      Attribute.new(:client_name, String),
+      Attribute.new(:client_version, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -96,7 +105,7 @@ module Gitlab
     end
 
     # Sidekiq jobs may be deleted by matching keys in ApplicationContext.
-    # Filter out keys that aren't available in Sidekiq jobs.
+    # Exclude request-specific keys, even when enqueued jobs inherit their values.
     def self.allowed_job_keys
       known_keys - WEB_ONLY_KEYS
     end
@@ -166,6 +175,10 @@ module Gitlab
         assign_hash_if_value(hash, :mvcc_manifest)
         assign_hash_if_value(hash, :duo_workflow_id)
         assign_hash_if_value(hash, :organization_source)
+        assign_hash_if_value(hash, :client_service)
+        assign_hash_if_value(hash, :client_type)
+        assign_hash_if_value(hash, :client_name)
+        assign_hash_if_value(hash, :client_version)
 
         hash[:user] = -> { username } if include_user?
         hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?

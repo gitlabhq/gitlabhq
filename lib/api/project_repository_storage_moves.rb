@@ -28,7 +28,8 @@ module API
       params do
         use :pagination
       end
-      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance,
+        assignable_when: [:admin]
       get do
         storage_moves = ::Projects::RepositoryStorageMove.with_projects.order_created_at_desc
 
@@ -41,9 +42,10 @@ module API
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
       params do
-        requires :repository_storage_move_id, type: Integer, desc: 'The ID of a project repository storage move'
+        requires :repository_storage_move_id, type: Integer, desc: 'ID of the project repository storage move.'
       end
-      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance,
+        assignable_when: [:admin]
       get ':repository_storage_move_id' do
         storage_move = ::Projects::RepositoryStorageMove.find(params[:repository_storage_move_id])
 
@@ -59,12 +61,13 @@ module API
 
       # rubocop:disable API/ParameterValuesProc -- storage shards are instance-specific
       params do
-        requires :source_storage_name, type: String, desc: 'The source storage shard', values: -> { Gitlab.config.repositories.storages.keys }
-        optional :destination_storage_name, type: String, desc: 'The destination storage shard', values: -> { Gitlab.config.repositories.storages.keys }
+        requires :source_storage_name, type: String, desc: 'Name of the source storage shard.', values: -> { Gitlab.config.repositories.storages.keys }
+        optional :destination_storage_name, type: String, desc: 'Name of the destination storage shard. If not provided, the storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).', values: -> { Gitlab.config.repositories.storages.keys }
       end
       # rubocop:enable API/ParameterValuesProc
 
-      route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :instance
+      route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :instance,
+        assignable_when: [:admin]
       post do
         ::Projects::ScheduleBulkRepositoryShardMovesService.enqueue(
           declared_params[:source_storage_name],
@@ -76,7 +79,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all repository storage moves for a project' do
@@ -88,7 +91,8 @@ module API
       params do
         use :pagination
       end
-      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :project
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :project,
+        assignable_when: [:admin]
       get ':id/repository_storage_moves' do
         storage_moves = user_project.repository_storage_moves.with_projects.order_created_at_desc
 
@@ -101,9 +105,10 @@ module API
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
       params do
-        requires :repository_storage_move_id, type: Integer, desc: 'The ID of a project repository storage move'
+        requires :repository_storage_move_id, type: Integer, desc: 'ID of the project repository storage move.'
       end
-      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :project
+      route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :project,
+        assignable_when: [:admin]
       get ':id/repository_storage_moves/:repository_storage_move_id' do
         storage_move = user_project.repository_storage_moves.find(params[:repository_storage_move_id])
 
@@ -116,9 +121,10 @@ module API
         success code: 201, model: Entities::Projects::RepositoryStorageMove
       end
       params do
-        optional :destination_storage_name, type: String, desc: 'The destination storage shard'
+        optional :destination_storage_name, type: String, desc: 'Name of the destination storage shard. If not provided, the storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).'
       end
-      route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :project
+      route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :project,
+        assignable_when: [:admin]
       post ':id/repository_storage_moves' do
         storage_move = user_project.repository_storage_moves.build(
           declared_params.compact.merge(source_storage_name: user_project.repository_storage)

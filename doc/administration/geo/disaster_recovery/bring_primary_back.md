@@ -170,3 +170,48 @@ When you add a secondary site which has preexisting blobs data, then the seconda
 If the secondary site's copy is actually corrupted, then background verification will eventually fail, and the blob will be resynced.
 
 Blobs will only be skipped in this manner if they do not have a corresponding registry record in the Geo tracking database. The conditions are strict because resyncing is almost always intentional, and we cannot risk mistakenly skipping a transfer.
+
+## Troubleshooting
+
+### Error: `too many replication slots active before shutdown`
+
+When you configure the former primary site as a secondary site, `sudo gitlab-ctl reconfigure`
+might fail because PostgreSQL does not start. The PostgreSQL logs show an error like:
+
+```plaintext
+FATAL:  too many replication slots active before shutdown
+HINT:  Increase max_replication_slots and try again.
+```
+
+This issue occurs when the former primary site still has replication slots from its previous
+role, and the secondary site configuration sets `max_replication_slots` to `0`, which is common for
+single-node secondary sites. PostgreSQL refuses to start while the leftover slots exist.
+
+To prevent this issue, before you reconfigure the former primary site as a secondary site,
+remove its leftover replication slots. For more information, see
+[removing an inactive replication slot](../replication/troubleshooting/postgresql_replication.md#removing-an-inactive-replication-slot).
+
+If PostgreSQL has already failed to start:
+
+1. In `/etc/gitlab/gitlab.rb`, temporarily set `postgresql['max_replication_slots']` to a value
+   that is at least the number of leftover replication slots.
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Start a PostgreSQL console session:
+
+   ```shell
+   sudo gitlab-psql -d gitlabhq_production
+   ```
+
+1. Remove all replication slots:
+
+   ```sql
+   SELECT pg_drop_replication_slot(slot_name) FROM pg_replication_slots;
+   ```
+
+1. In `/etc/gitlab/gitlab.rb`, remove the temporary `postgresql['max_replication_slots']` setting
+   and reconfigure GitLab again.

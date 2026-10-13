@@ -19,6 +19,7 @@ module Organizations
         return error_home_organization_isolated if home_organization_isolated?
 
         organization_user = create_organization_user!(user_to_add)
+        grant_organization_admin_role(organization_user)
 
         ServiceResponse.success(payload: { organization_user: organization_user })
       rescue ActiveRecord::RecordInvalid => e
@@ -28,6 +29,16 @@ module Organizations
       private
 
       attr_reader :organization, :current_user, :params
+
+      # A membership created as owner never crosses the owner boundary, so the
+      # promotion-time sync in UpdateService would never run for it.
+      def grant_organization_admin_role(organization_user)
+        return unless organization_user.owner?
+        return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+        ::Authz::Organizations::GrantOwnerRoleWorker.perform_async(
+          organization_user.organization_id, organization_user.user_id, current_user.id)
+      end
 
       def user_to_add
         user_by_username

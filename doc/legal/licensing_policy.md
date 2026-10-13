@@ -79,7 +79,7 @@ For the Free tier of GitLab.com, [there is a five-user maximum on a top-level na
 This five-user maximum is in the aggregate of any Free tier instances. So, for example, if a customer has one Free tier instance with five users,
 that customer is prohibited from activating an additional Free tier instance of any user level because the five-user maximum has been met.
 
-For the Free tier of self-managed, there is no five-user maximum.
+For the Free tier of GitLab Self-Managed, there is no five-user maximum.
 
 ### Customers' ability to have multiple instances of GitLab.com or Dedicated
 

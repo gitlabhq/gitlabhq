@@ -200,7 +200,7 @@ export default {
     />
 
     <gl-form-group
-      :label="s__('Deployment Target|Project deployment target (optional)')"
+      :label="s__('DeploymentTarget|Project deployment target (optional)')"
       label-for="deployment-target-select"
       data-testid="deployment-target-form-group"
     >
@@ -213,7 +213,7 @@ export default {
       >
         <template #first>
           <option :value="null" disabled>
-            {{ s__('Deployment Target|Select the deployment target') }}
+            {{ s__('DeploymentTarget|Select the deployment target') }}
           </option>
         </template>
       </gl-form-select>
@@ -222,7 +222,7 @@ export default {
         <gl-sprintf
           :message="
             s__(
-              'Deployment Target|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}',
+              'DeploymentTarget|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}',
             )
           "
         >

@@ -17,7 +17,9 @@ module Routing
     #    inescapable, see Gitlab::Current::DataContext.
     # 2. `foo_path(organization_path: ...)`, an explicit per-call override
     #    (including `nil`, to force the global path).
-    # 3. The request's own URL, if it already names an organization_path.
+    # 3. The request itself: the URL's /o/:organization_path segment, or the
+    #    X-GitLab-Organization-ID header that frontend API calls send (REST
+    #    and GraphQL endpoints are never /o/-scoped themselves).
     class MappedHelpers
       ORGANIZATION_PATH_PATTERN = '/o/:organization_path'
       ORGANIZATION_PATH_REGEX = %r{(?<=^|_)organizations?_}
@@ -29,7 +31,8 @@ module Routing
       def self.install
         return if already_installed
 
-        url_helpers = Gitlab::Application.routes.url_helpers
+        routes = Gitlab::Application.routes
+        url_helpers = routes.url_helpers
 
         # Preserve original paths for use in specific circumstances.
         alias_unscoped(url_helpers, :root_url)
@@ -41,6 +44,16 @@ module Routing
         route_pairs = find_route_pairs
         override_module = build_override_module(route_pairs)
         url_helpers.prepend(override_module)
+        # Module-level calls (Gitlab::Routing.url_helpers.foo_path) dispatch
+        # through the singleton, where Rails `extend`s the raw helpers, so the
+        # prepend above doesn't reach them - cover that path too.
+        url_helpers.singleton_class.prepend(override_module)
+        # url_for and polymorphic_url delegate to Rails' internal proxy, which
+        # includes only these inner modules (undocumented Rails internals; the
+        # polymorphic examples in organizations_helper_spec.rb are the canary).
+        named_routes = routes.named_routes
+        named_routes.url_helpers_module.prepend(override_module)
+        named_routes.path_helpers_module.prepend(override_module)
 
         self.already_installed = true
       end
@@ -50,6 +63,7 @@ module Routing
         return unless url_helpers.respond_to?(existing_method)
 
         url_helpers.alias_method(unscoped_method, existing_method)
+        url_helpers.singleton_class.alias_method(unscoped_method, existing_method)
       end
 
       def self.find_route_pairs
@@ -87,16 +101,27 @@ module Routing
       end
 
       # The organization_path to nest under, if any - see the class comment
-      # above for the rule order. from_organization_params, not from_request:
-      # the latter also infers an Organization from a group/project's own
-      # namespace, which isn't what the URL itself named.
+      # above for the rule order. from_organization_params/from_headers, not
+      # from_request: that one also infers an Organization from a group or
+      # project's own namespace, which isn't what the request itself named.
       def self.scoped_path_for(kwargs)
         data_context = ::Current.data_context
         return data_context.context.path if data_context&.type == :organization
 
         return kwargs[:organization_path] if kwargs.key?(:organization_path)
 
-        ::Current.organization_resolver&.from_organization_params&.path
+        resolver = ::Current.organization_resolver
+        return unless resolver
+
+        (resolver.from_organization_params || header_organization(resolver))&.path
+      end
+
+      # Unlike a /o/ URL, the header is sent by all frontend API calls, also
+      # for Organizations that never use scoped paths (e.g. the default
+      # Organization) - it must not force scoping for those.
+      def self.header_organization(resolver)
+        organization = resolver.from_headers
+        organization if organization&.scoped_paths?
       end
 
       # Build a module that overrides URL helpers with organization-aware versions
@@ -113,9 +138,9 @@ module Routing
                 kwargs = args.pop if kwargs.empty? && args.last.is_a?(Hash) && !args.last.frozen?
 
                 scoped_path = Routing::OrganizationsHelper::MappedHelpers.scoped_path_for(kwargs)
-                kwargs[:organization_path] = scoped_path if scoped_path.present?
 
-                if kwargs[:organization_path]
+                if scoped_path.present?
+                  kwargs[:organization_path] = scoped_path
                   # Call the Organization helper method
                   method(org_method_name).call(*args, **kwargs)
                 else

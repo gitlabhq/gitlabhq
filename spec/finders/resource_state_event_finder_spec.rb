@@ -58,7 +58,7 @@ RSpec.describe ResourceStateEventFinder do
     end
 
     context 'when eventable is a MergeRequest' do
-      let(:eventable) { create(:merge_request, source_project: project) }
+      let(:eventable) { create(:merge_request, :skip_diff_creation, source_project: project) }
 
       context 'when merge request is readable' do
         before do

@@ -2,14 +2,8 @@
 
 class ProjectFeature < ApplicationRecord
   include Featurable
-  include SafelyChangeColumnDefault
   extend Gitlab::ConfigHelper
   extend ::Gitlab::Utils::Override
-
-  # The DB default on these columns is being dropped (see the post-deploy migration).
-  # Remove this and the SafelyChangeColumnDefault include in the next minor release:
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/603381
-  columns_changing_default :model_registry_access_level, :model_experiments_access_level
 
   # When updating this array, make sure to update rubocop/cop/gitlab/feature_available_usage.rb as well.
   FEATURES = %i[

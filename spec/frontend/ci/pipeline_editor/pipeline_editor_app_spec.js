@@ -67,6 +67,8 @@ const defaultProvide = {
   projectFullPath: mockProjectFullPath,
   usesExternalConfig: false,
   newPipelinePath: '',
+  identityVerificationRequired: false,
+  identityVerificationPath: '',
 };
 
 Vue.use(VueApollo);

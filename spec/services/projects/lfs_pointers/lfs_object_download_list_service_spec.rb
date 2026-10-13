@@ -3,13 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_category: :source_code_management do
-  let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
+  let_it_be(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
+  let_it_be(:group) { create(:group, lfs_enabled: true) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be_with_reload(:project) do
+    create(:project, namespace: group, creator: owner, import_url: import_url, lfs_enabled: true)
+  end
+
+  let_it_be(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
+  let_it_be(:existing_lfs_objects) { LfsObject.pluck(:oid, :size).to_h }
+
   let(:default_endpoint) { "#{import_url}/info/lfs/objects/batch" }
-  let(:group) { create(:group, lfs_enabled: true) }
-  let!(:project) { create(:project, namespace: group, import_url: import_url, lfs_enabled: true) }
-  let(:user) { project.creator }
-  let!(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
-  let!(:existing_lfs_objects) { LfsObject.pluck(:oid, :size).to_h }
+  let(:user) { owner }
   let(:oids) { { 'oid1' => 123, 'oid2' => 125 } }
   let(:oid_download_links) do
     [
@@ -126,7 +131,11 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_cate
         end
 
         context 'when import url has credentials' do
-          let(:import_url) { 'http://user:password@www.gitlab.com/demo/repo.git' }
+          let_it_be(:import_url) { 'http://user:password@www.gitlab.com/demo/repo.git' }
+
+          let_it_be_with_reload(:project) do
+            create(:project, namespace: group, creator: owner, import_url: import_url, lfs_enabled: true)
+          end
 
           it 'adds the credentials to the new endpoint' do
             expect(Projects::LfsPointers::LfsDownloadLinkListService)
@@ -175,7 +184,10 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_cate
   end
 
   describe '#default_endpoint_uri' do
-    let(:import_url) { 'http://www.gitlab.com/demo/repo' }
+    let_it_be(:import_url) { 'http://www.gitlab.com/demo/repo' }
+    let_it_be_with_reload(:project) do
+      create(:project, namespace: group, creator: owner, import_url: import_url, lfs_enabled: true)
+    end
 
     it 'adds suffix .git if the url does not have it' do
       expect(subject.send(:default_endpoint_uri).path).to match(/repo.git/)

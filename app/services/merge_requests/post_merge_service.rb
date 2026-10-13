@@ -45,6 +45,7 @@ module MergeRequests
       deactivate_pages_deployments(merge_request)
       cancel_auto_merges_targeting_source_branch(merge_request)
       trigger_user_merge_request_updated(merge_request)
+      trigger_merge_request_merge_status_updated(merge_request)
 
       execute_hooks(merge_request, 'merge')
 
@@ -121,11 +122,14 @@ module MergeRequests
     end
 
     def create_event(merge_request)
+      metrics_service = merge_request_metrics_service(merge_request)
+      metrics_service.prepare_merge_data
+
       # Making sure MergeRequest::Metrics updates are in sync with
       # Event creation.
       Event.transaction do
         merge_event = create_merge_event(merge_request, current_user)
-        merge_request_metrics_service(merge_request).merge(merge_event)
+        metrics_service.merge(merge_event)
       end
     end
 

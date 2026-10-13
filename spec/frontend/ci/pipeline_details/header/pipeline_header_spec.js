@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineHeader from '~/ci/pipeline_details/header/pipeline_header.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -38,6 +39,8 @@ Vue.use(VueApollo);
 describe('Pipeline header', () => {
   let wrapper;
   let apolloProvider;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
@@ -111,6 +114,7 @@ describe('Pipeline header', () => {
       },
       stubs: {
         GlSprintf,
+        PanelActionsPortal: { template: '<div><slot /></div>' },
         TimeAgoTooltip: {
           props: ['time'],
           template: '<span>{{time}}</span>',
@@ -121,6 +125,32 @@ describe('Pipeline header', () => {
 
     return waitForPromises();
   };
+
+  describe('when the commit is not readable', () => {
+    const commitTitle = 'Fix the build';
+    const { project } = pipelineHeaderSuccess.data;
+    const pipelineWithoutCommit = {
+      data: {
+        project: {
+          ...project,
+          pipeline: { ...project.pipeline, commit: null, commitTitle },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      return createComponent({
+        handlers: [
+          [getPipelineDetailsQuery, jest.fn().mockResolvedValue(pipelineWithoutCommit)],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
+        ],
+      });
+    });
+
+    it('displays the commit title from the pipeline', () => {
+      expect(findCommitTitle().text()).toBe(commitTitle);
+    });
+  });
 
   describe('loading state', () => {
     it('shows a loading state while graphQL is fetching initial data', () => {
@@ -207,6 +237,34 @@ describe('Pipeline header', () => {
       expect(findPipelineUserLink().attributes('data-user-id')).toBe(userId);
       expect(findPipelineUserLink().attributes('data-username')).toBe(user.username);
       expect(findPipelineUserLink().attributes('href')).toBe(user.webUrl);
+    });
+  });
+
+  describe('when the pipeline is no longer found', () => {
+    const pipelineNotFound = {
+      data: { project: { ...pipelineHeaderSuccess.data.project, pipeline: null } },
+    };
+    const notFoundAfterLoadHandler = jest
+      .fn()
+      .mockResolvedValueOnce(pipelineHeaderSuccess)
+      .mockResolvedValue(pipelineNotFound);
+
+    beforeEach(async () => {
+      await createComponent({
+        handlers: [
+          [getPipelineDetailsQuery, notFoundAfterLoadHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
+        ],
+      });
+
+      await wrapper.vm.$apollo.queries.pipeline.refetch();
+      await waitForPromises();
+    });
+
+    it('keeps showing the last loaded pipeline', () => {
+      expect(notFoundAfterLoadHandler).toHaveBeenCalledTimes(2);
+      expect(findStatus().exists()).toBe(true);
+      expect(findBadges().props('pipeline')).toEqual(pipelineHeaderSuccess.data.project.pipeline);
     });
   });
 
@@ -355,6 +413,18 @@ describe('Pipeline header', () => {
 
         expect(findHeaderActions().props('isRetrying')).toBe(false);
       });
+
+      it('tracks the retry button click', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        clickActionButton('retry-pipeline', pipelineHeaderFailed.data.project.pipeline.id);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_retry_pipeline_in_pipeline_header',
+          { label: pipelineHeaderFailed.data.project.pipeline.source },
+          undefined,
+        );
+      });
     });
 
     describe('retry action failed', () => {
@@ -449,6 +519,19 @@ describe('Pipeline header', () => {
         await waitForPromises();
 
         expect(findHeaderActions().props('isDeleting')).toBe(false);
+      });
+
+      it('tracks the delete pipeline confirmation', async () => {
+        await createComponent();
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        clickActionButton('delete-pipeline', pipelineHeaderSuccess.data.project.pipeline.id);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_delete_pipeline_in_pipeline_header',
+          { label: pipelineHeaderSuccess.data.project.pipeline.source },
+          undefined,
+        );
       });
 
       it('should display error message on failure', async () => {

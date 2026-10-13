@@ -82,6 +82,8 @@ module Types
 
     field :relative_position, GraphQL::Types::Int, null: true,
       description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
+    field :start_date, Types::TimeType, null: true,
+      description: 'Start date of the issue.'
     field :upvotes, GraphQL::Types::Int,
       null: false,
       description: 'Number of upvotes the issue has received.',

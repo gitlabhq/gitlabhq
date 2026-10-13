@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
+class AutoMergeProcessWorker
   include ApplicationWorker
 
   data_consistency :sticky
@@ -9,6 +9,7 @@ class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
   # Avoid _simultaneous execution_ of this job for the same MR,
   # but reschedule the second job just in case the first fails.
   deduplicate :until_executed, if_deduplicated: :reschedule_once
+  idempotent!
 
   queue_namespace :auto_merge
   feature_category :continuous_delivery

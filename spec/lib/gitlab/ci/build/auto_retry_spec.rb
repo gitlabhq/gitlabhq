@@ -42,6 +42,7 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
       "missing dependencies" | 0 | { max: 2 } | :missing_dependency_failure | nil | false
       "forward deployment failure" | 0 | { max: 2 } | :forward_deployment_failure | nil | false
       "environment creation failure" | 0 | { max: 2 } | :environment_creation_failure | nil | false
+      "pipeline variables file missing" | 0 | { max: 2 } | :pipeline_variables_file_missing | nil | false
     end
 
     with_them do

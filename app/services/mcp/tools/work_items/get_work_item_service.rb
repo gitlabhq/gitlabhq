@@ -8,8 +8,8 @@ module Mcp
           toolset: :work_items,
           description:
             'Get a single work item (issue, epic, task, incident, objective, key result) with its ' \
-            'type, dates, assignees, labels, milestone, and parent. Optionally include its notes ' \
-            'or the merge requests related to it. Identify the work item by url, or by ' \
+            'type, dates, assignees, labels, milestone, and parent. Optionally include its notes, ' \
+            'its discussions, or the merge requests related to it. Identify the work item by url, or by ' \
             'work_item_iid plus group_id or project_id. Widgets the work item type does not ' \
             'support are omitted.',
           input_schema: {
@@ -36,13 +36,17 @@ module Mcp
                 type: 'array',
                 items: {
                   type: 'string',
-                  enum: %w[notes related_merge_requests]
+                  enum: %w[notes discussions related_merge_requests]
                 },
                 maxItems: 1,
                 description: 'Associated data to return with the work item, one facet per call. ' \
                   'notes returns up to 100 notes per call and paginates with the notes_* ' \
                   'parameters; for the newest notes, use notes_last without notes_first or ' \
-                  'notes_after. related_merge_requests paginates with the ' \
+                  'notes_after. discussions returns threads with their resolvable and resolved ' \
+                  'state and the notes of each thread, and paginates forward with the ' \
+                  'discussions_* parameters; use it for thread structure or unresolved threads. ' \
+                  'An unresolved thread has resolvable true and resolved false. Use notes for a ' \
+                  'flat chronological history. related_merge_requests paginates with the ' \
                   'related_merge_requests_* parameters and is empty for group-level work items ' \
                   'such as epics.'
               },
@@ -52,6 +56,18 @@ module Mcp
                 prefix: 'notes_',
                 applies_to: 'notes is in include'
               ),
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'discussions',
+                prefix: 'discussions_',
+                applies_to: 'discussions is in include'
+              ),
+              discussions_filter: {
+                type: 'string',
+                enum: ::UserPreference::NOTES_FILTERS.keys.map(&:to_s),
+                description: 'Which discussions to return: all_notes, only_comments to leave out ' \
+                  'system notes, or only_activity for system notes only. ' \
+                  'Applies only when discussions is in include.'
+              },
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'related merge requests',
                 prefix: 'related_merge_requests_',

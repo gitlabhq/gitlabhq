@@ -55,6 +55,9 @@ class MergeRequestDiffCommit < ApplicationRecord
 
   BULK_INSERT_BATCH_SIZE = 1000
 
+  # Pre-partitioning table, kept on GitLab.com after SwapMergeRequestDiffCommitsTable.
+  ARCHIVED_TABLE = 'merge_request_diff_commits_archived'
+
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
@@ -166,6 +169,38 @@ class MergeRequestDiffCommit < ApplicationRecord
     # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limit may be applied in the caller
     relation.pluck(shas_sql)
     # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+  end
+
+  def self.archived_table_exists?
+    connection.table_exists?(ARCHIVED_TABLE)
+  end
+
+  # Copies one diff's rows back from the archived table. The partitioning backfill
+  # skipped deduplicated rows (NULL sha, only a metadata pointer), which still
+  # exist there, so this is a straight copy of the four reference columns.
+  # Same statement as BackfillMissedDiffCommitsToPartitioned, scoped to a diff and
+  # inserting in the same order, so the two never deadlock on the same keys.
+  def self.restore_from_archived(merge_request_diff_id)
+    connection.exec_update(sanitize_sql_array([<<~SQL, merge_request_diff_id]))
+      INSERT INTO #{table_name} (
+        merge_request_commits_metadata_id,
+        merge_request_diff_id,
+        project_id,
+        relative_order
+      )
+      SELECT
+        archived.merge_request_commits_metadata_id,
+        archived.merge_request_diff_id,
+        mr_diffs.project_id,
+        archived.relative_order
+      FROM #{ARCHIVED_TABLE} AS archived
+      INNER JOIN merge_request_diffs AS mr_diffs
+        ON mr_diffs.id = archived.merge_request_diff_id
+      WHERE archived.merge_request_diff_id = ?
+        AND archived.merge_request_commits_metadata_id IS NOT NULL
+      ORDER BY archived.relative_order
+      ON CONFLICT DO NOTHING
+    SQL
   end
 
   def self.read_new_commits_table?(project_id)

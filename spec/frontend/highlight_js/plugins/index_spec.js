@@ -1,10 +1,10 @@
 import { highlightPlugins, registerPlugins } from '~/highlight_js/plugins';
-import wrapChildNodes from '~/vue_shared/components/source_viewer/plugins/wrap_child_nodes';
-import wrapBidiChars from '~/vue_shared/components/source_viewer/plugins/wrap_bidi_chars';
+import wrapChildNodes from '~/highlight_js/plugins/wrap_child_nodes';
+import wrapBidiChars from '~/highlight_js/plugins/wrap_bidi_chars';
 
-jest.mock('~/vue_shared/components/source_viewer/plugins/wrap_child_nodes', () => 'wrapChildNodes');
-jest.mock('~/vue_shared/components/source_viewer/plugins/wrap_bidi_chars', () => 'wrapBidiChars');
-jest.mock('~/vue_shared/components/source_viewer/plugins/wrap_lines', () => 'wrapLines');
+jest.mock('~/highlight_js/plugins/wrap_child_nodes', () => 'wrapChildNodes');
+jest.mock('~/highlight_js/plugins/wrap_bidi_chars', () => 'wrapBidiChars');
+jest.mock('~/highlight_js/plugins/wrap_lines', () => 'wrapLines');
 
 describe('index.js', () => {
   describe('highlightPlugins', () => {

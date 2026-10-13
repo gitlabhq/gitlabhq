@@ -13,7 +13,7 @@ module API
       requires :database_name,
         type: String,
         values: Gitlab::Database.all_database_names,
-        desc: 'The database name'
+        desc: 'Name of the database.'
     end
     resources 'databases/:database_name/dictionary/tables' do
       desc 'List dictionary tables' do
@@ -30,12 +30,12 @@ module API
         requires :database_name,
           type: String,
           values: Gitlab::Database.all_database_names,
-          desc: 'The database name'
+          desc: 'Name of the database.'
 
         optional :table_size,
           type: String,
           values: %w[small medium large over_limit],
-          desc: 'Filter by table size classification'
+          desc: 'Filter by table size classification.'
       end
       route_setting :authorization, permissions: :read_database_dictionary, boundary_type: :instance
       get do

@@ -3,6 +3,7 @@
 - target_url = local_assigns.fetch(:target_url, @target_url)
 - note_style = local_assigns.fetch(:note_style, "")
 - include_stylesheet_link = local_assigns.fetch(:include_stylesheet_link, true)
+- show_header = local_assigns.fetch(:show_header, true)
 
 - author = local_assigns.fetch(:author) { note.author }
 - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
@@ -21,21 +22,22 @@
   %p{ style: "color: #8c4a00; background-color: #fff8f0; border: 1px solid #e8a44a; border-radius: 4px; padding: 6px 10px; margin-bottom: 10px; font-size: 13px;" }
     = s_('Notify|Internal note')
 
-%p{ style: "color: #777777;" }
-  = succeed ':' do
-    = link_to author.name, user_url(author)
-    - if discussion.nil?
-      = link_to 'commented', target_url
-    - else
-      - if discussion.first_note == note
-        started a new
+- if show_header
+  %p{ style: "color: #777777;" }
+    = succeed ':' do
+      = link_to author.name, user_url(author)
+      - if discussion.nil?
+        = link_to 'commented', target_url
       - else
-        commented on a
+        - if discussion.first_note == note
+          started a new
+        - else
+          commented on a
 
-      - if discussion&.diff_discussion?
-        discussion on #{link_to(discussion.file_path, target_url)}
-      - else
-        = link_to 'discussion', target_url
+        - if discussion&.diff_discussion?
+          discussion on #{link_to(discussion.file_path, target_url)}
+        - else
+          = link_to 'discussion', target_url
 
 - if discussion&.diff_discussion? && discussion.on_text? && project.show_diff_preview_in_email?
   - if include_stylesheet_link

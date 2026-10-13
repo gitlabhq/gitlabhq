@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Diagnostics
       module Checks
-        class AutovacuumSettings
+        class AutovacuumSettings < Base
           # Worker counts are only flagged below the PostgreSQL default of 3, since most
           # instances run with the default and warning on it would be noise.
           MAX_WORKERS_WARN_THRESHOLD = 3
@@ -120,26 +120,15 @@ module Gitlab
           SQL
           .freeze
 
-          def initialize(connection)
-            @connection = connection
-          end
-
           def execute
-            findings = settings_findings + table_findings
-
             {
               settings: settings,
               table_overrides: table_overrides,
-              scale_factor_risks: scale_factor_risks,
-              findings: Findings.sort(findings),
-              severity: Findings.worst(findings.pluck(:severity)),
-              counts: Findings.counts(findings)
-            }
+              scale_factor_risks: scale_factor_risks
+            }.merge(verdict(settings_findings + table_findings))
           end
 
           private
-
-          attr_reader :connection
 
           # Re-keyed in SETTING_NAMES order so views can render settings by simply
           # iterating the hash, without their own copy of the name list. Settings
@@ -158,9 +147,9 @@ module Gitlab
           end
 
           def fetch_settings
-            names = SETTING_NAMES.map { |name| connection.quote(name) }.join(', ')
+            sql = format(SETTINGS_SQL, names: quoted_names(SETTING_NAMES))
 
-            connection.select_all(format(SETTINGS_SQL, names: names)).each_with_object({}) do |row, rows|
+            connection.select_all(sql).each_with_object({}) do |row, rows|
               rows[row['name']] = { value: row['setting'], unit: row['unit'] }
             end
           end

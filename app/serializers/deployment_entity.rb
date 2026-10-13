@@ -8,9 +8,7 @@ class DeploymentEntity < Grape::Entity
   expose :sha
 
   expose :ref do
-    expose :name do |deployment|
-      deployment.ref
-    end
+    expose :name, &:ref
 
     expose :ref_path do |deployment|
       project_tree_path(deployment.project, id: deployment.ref)

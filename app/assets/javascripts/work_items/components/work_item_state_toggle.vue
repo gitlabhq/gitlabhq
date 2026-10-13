@@ -1,12 +1,5 @@
 <script>
-import {
-  GlIcon,
-  GlButton,
-  GlDisclosureDropdownItem,
-  GlLoadingIcon,
-  GlModal,
-  GlLink,
-} from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdownItem, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __, s__, sprintf } from '~/locale';
@@ -36,7 +29,6 @@ import workItemOpenChildCountQuery from '../graphql/open_child_count.query.graph
 export default {
   name: 'WorkItemStateToggle',
   components: {
-    GlIcon,
     GlButton,
     GlDisclosureDropdownItem,
     GlLoadingIcon,
@@ -268,6 +260,9 @@ export default {
         }),
       };
     },
+    dropdownItem() {
+      return { text: this.toggleWorkItemStateText, icon: this.toggleWorkItemStateIcon };
+    },
   },
   methods: {
     async updateWorkItem() {
@@ -319,16 +314,10 @@ export default {
 
 <template>
   <span>
-    <gl-disclosure-dropdown-item v-if="showAsDropdownItem" @action="action">
-      <template #list-item>
-        <template v-if="updateInProgress">
-          <gl-loading-icon inline size="sm" />
-          {{ toggleInProgressText }}
-        </template>
-        <template v-else>
-          <gl-icon :name="toggleWorkItemStateIcon" class="gl-mr-2" variant="subtle" />
-          {{ toggleWorkItemStateText }}
-        </template>
+    <gl-disclosure-dropdown-item v-if="showAsDropdownItem" :item="dropdownItem" @action="action">
+      <template v-if="updateInProgress" #list-item>
+        <gl-loading-icon inline size="sm" class="gl-mr-2" />
+        {{ toggleInProgressText }}
       </template>
     </gl-disclosure-dropdown-item>
 

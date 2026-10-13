@@ -31,6 +31,8 @@ export const initHeader = () => {
         id: Number(dataset.id),
         externalUrl: dataset.externalUrl,
         isAvailable: dataset.isEnvironmentAvailable,
+        state: dataset.state,
+        hasStopAction: dataset.hasStopAction,
         hasTerminals: dataset.hasTerminals,
         autoStopAt: dataset.autoStopAt,
         onSingleEnvironmentPage: true,

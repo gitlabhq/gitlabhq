@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/pages_domains/show' do
-  let_it_be(:project) { create(:project) }
+  let(:project) { build_stubbed(:project) }
 
   shared_examples 'pages domain tests' do
     context 'when auto_ssl is enabled' do
       context 'when domain is disabled' do
-        let(:domain) { create(:pages_domain, :disabled, project: project, auto_ssl_enabled: true) }
+        let(:domain) { build_stubbed(:pages_domain, :disabled, project: project, auto_ssl_enabled: true) }
 
         it 'shows verification warning' do
           render
@@ -18,7 +18,7 @@ RSpec.describe 'projects/pages_domains/show' do
       end
 
       context 'when certificate is absent' do
-        let(:domain) { create(:pages_domain, :without_key, :without_certificate, project: project, auto_ssl_enabled: true) }
+        let(:domain) { build_stubbed(:pages_domain, :without_key, :without_certificate, project: project, auto_ssl_enabled: true) }
 
         it 'shows alert about time of obtaining certificate' do
           render

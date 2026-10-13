@@ -3,19 +3,18 @@
 ## Table of Contents
 
 1. [Happy Path Scenarios](#1-happy-path-scenarios)
-2. [Parity Check Scenarios](#2-parity-check-scenarios)
-3. [.ai/ Reference Scenarios](#3-ai-reference-scenarios)
-4. [.gitignore Scenarios](#4-gitignore-scenarios)
-5. [Forbidden Files Scenarios](#5-forbidden-files-scenarios)
-6. [Combined Scenarios](#6-combined-scenarios)
-7. [Argument Parsing Scenarios](#7-argument-parsing-scenarios)
+2. [.ai/ Reference Scenarios](#2-ai-reference-scenarios)
+3. [.gitignore Scenarios](#3-gitignore-scenarios)
+4. [Forbidden Files Scenarios](#4-forbidden-files-scenarios)
+5. [Combined Scenarios](#5-combined-scenarios)
+6. [Argument Parsing Scenarios](#6-argument-parsing-scenarios)
 
 Each scenario describes a state of the repository and the expected doctor
 behavior. Scenarios are organized by check and by happy-path vs error cases.
 
 Scenario headings use `category: description` format. Cross-references
 within this file use the heading text (e.g., "same Given as
-`parity: missing CLAUDE.md at root`").
+`references: missing reference target`").
 
 ---
 
@@ -25,7 +24,7 @@ within this file use the heading text (e.g., "same Given as
 
 **Given:** A repo with:
 
-- `AGENTS.md` and `CLAUDE.md` at root with identical content
+- `AGENTS.md` at root
 - `AGENTS.md` references `.ai/git.md` and `.ai/testing.md`
 - `.ai/git.md` and `.ai/testing.md` exist
 - `.gitignore` contains `CLAUDE.local.md`, `AGENTS.local.md`, and `.ai/*`
@@ -39,7 +38,7 @@ within this file use the heading text (e.g., "same Given as
 
 **Given:** Same as `happy: clean repo passes all checks`, plus:
 
-- `sub/AGENTS.md` and `sub/CLAUDE.md` with identical content
+- `sub/AGENTS.md` exists
 
 **When:** `scripts/ai_harness/doctor`
 
@@ -75,142 +74,7 @@ ok path. `HandleAction` sets `stdout_text` from `HelpText` and skips the
 
 ---
 
-## 2. Parity Check Scenarios
-
-### parity: missing CLAUDE.md at root
-
-**Given:** `AGENTS.md` exists at root, `CLAUDE.md` does not
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with detail
-`CLAUDE.md not found (AGENTS.md exists)` — no directory prefix for root-level
-issues. Exit code 1.
-
-### parity: missing AGENTS.md at root
-
-**Given:** `CLAUDE.md` exists at root, `AGENTS.md` does not
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with detail
-`AGENTS.md not found (CLAUDE.md exists)` — no directory prefix for root-level
-issues. Exit code 1.
-
-### parity: content differs at root
-
-**Given:** Both exist at root but have different content
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with "differs from AGENTS.md" — no
-directory prefix for root-level issues. Exit code 1.
-
-### parity: subdirectory pair content differs
-
-**Given:** Root pair is valid. `sub/AGENTS.md` and `sub/CLAUDE.md` exist
-with different content
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with "sub/" in details, exit code 1
-
-### parity: subdirectory file missing
-
-**Given:** Root pair is valid. `sub/AGENTS.md` exists but `sub/CLAUDE.md`
-does not
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with "sub/" in details, exit code 1
-
-### parity: deeply nested subdirectory shows full relative path
-
-**Given:** Root pair is valid. `a/b/c/AGENTS.md` exists but
-`a/b/c/CLAUDE.md` does not
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with "a/b/c/" in details (full relative
-path from repo root, not just the leaf directory name). Exit code 1.
-
-### parity: --fix syncs CLAUDE.md from AGENTS.md
-
-**Given:** Both exist at root, content differs
-
-**When:** `scripts/ai_harness/doctor --fix`
-
-**Then:** CLAUDE.md content now matches AGENTS.md, parity check shows `FIXED`
-
-### parity: --fix creates missing CLAUDE.md
-
-**Given:** `AGENTS.md` exists at root, `CLAUDE.md` does not
-
-**When:** `scripts/ai_harness/doctor --fix`
-
-**Then:** `CLAUDE.md` created with AGENTS.md content, parity check shows `FIXED`
-
-### parity: --fix creates missing AGENTS.md from CLAUDE.md
-
-**Given:** `CLAUDE.md` exists at root, `AGENTS.md` does not
-
-**When:** `scripts/ai_harness/doctor --fix`
-
-**Then:** `AGENTS.md` created with CLAUDE.md content, parity check shows `FIXED`
-
-### parity: --fix repairs subdirectory pair
-
-**Given:** Root pair is valid. `sub/AGENTS.md` exists but `sub/CLAUDE.md`
-does not
-
-**When:** `scripts/ai_harness/doctor --fix`
-
-**Then:** `sub/CLAUDE.md` created with `sub/AGENTS.md` content, parity
-check shows `FIXED`
-
-### parity: CLAUDE.md is a symlink to AGENTS.md
-
-**Given:** `AGENTS.md` exists at root as a regular file. `CLAUDE.md` is a
-symlink pointing to `AGENTS.md`.
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with detail including "symlink" and
-"CLAUDE.md". Exit code 1.
-
-### parity: AGENTS.md is a symlink
-
-**Given:** `CLAUDE.md` exists at root as a regular file. `AGENTS.md` is a
-symlink pointing to `CLAUDE.md`.
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with detail including "symlink" and
-"AGENTS.md". Exit code 1.
-
-### parity: subdirectory symlink detected
-
-**Given:** Root pair is valid. `sub/AGENTS.md` is a regular file.
-`sub/CLAUDE.md` is a symlink.
-
-**When:** `scripts/ai_harness/doctor`
-
-**Then:** Parity check shows `FAIL` with "sub/" prefix and "symlink" in
-details. Exit code 1.
-
-### parity: --fix replaces symlink with regular file
-
-**Given:** `AGENTS.md` exists at root as a regular file. `CLAUDE.md` is a
-symlink pointing to `AGENTS.md`.
-
-**When:** `scripts/ai_harness/doctor --fix`
-
-**Then:** Symlink is replaced with a regular file containing the same
-content. Parity check shows `FIXED`. `CLAUDE.md` is no longer a symlink.
-
----
-
-## 3. .ai/ Reference Scenarios
+## 2. .ai/ Reference Scenarios
 
 ### references: missing reference target
 
@@ -269,7 +133,7 @@ repo root.
 
 ---
 
-## 4. .gitignore Scenarios
+## 3. .gitignore Scenarios
 
 ### gitignore: missing CLAUDE.local.md entry
 
@@ -328,7 +192,7 @@ be non-rooted to match at all directory levels.
 
 ---
 
-## 5. Forbidden Files Scenarios
+## 4. Forbidden Files Scenarios
 
 ### forbidden: .claude/rules/ file committed
 
@@ -471,26 +335,18 @@ exit code 1
 
 ---
 
-## 6. Combined Scenarios
+## 5. Combined Scenarios
 
 ### combined: multiple failures reported
 
-**Given:** CLAUDE.md missing AND .gitignore missing `CLAUDE.local.md` entry
+**Given:** `AGENTS.md` references `.ai/missing.md` (which does not exist)
+AND .gitignore is missing entirely
 
 **When:** `scripts/ai_harness/doctor`
 
-**Then:** Both parity check and gitignore check show `FAIL`, exit code 1.
-All four checks run — the chain does not short-circuit on individual failures.
-
-### combined: --fix fixes what it can, reports what it can't
-
-**Given:** CLAUDE.md content differs (fixable) AND `.claude/rules/foo.md`
-committed (not fixable)
-
-**When:** `scripts/ai_harness/doctor --fix`
-
-**Then:** Parity check shows `FIXED`, forbidden files check shows `FAIL`,
-exit code 1. All checks run regardless of individual outcomes.
+**Then:** Both .ai/ reference check and gitignore check show `FAIL`, exit
+code 1. All three checks run — the chain does not short-circuit on
+individual failures.
 
 ### combined: unmatched result raises error
 
@@ -504,7 +360,7 @@ type is added to `ParseArgv` but not handled in Main)
 
 ---
 
-## 7. Argument Parsing Scenarios
+## 6. Argument Parsing Scenarios
 
 ### args: unknown option
 

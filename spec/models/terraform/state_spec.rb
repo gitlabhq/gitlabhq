@@ -43,6 +43,29 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
 
       it { is_expected.to contain_exactly(matching_name) }
     end
+
+    describe '.ready_for_destruction' do
+      let_it_be(:not_deleted) { create(:terraform_state) }
+
+      let_it_be(:within_grace_period) do
+        create(:terraform_state, deleted_at: (described_class::GRACE_PERIOD - 1.minute).ago)
+      end
+
+      let(:exactly_at_grace_boundary) do
+        create(:terraform_state, deleted_at: described_class::GRACE_PERIOD.ago)
+      end
+
+      let_it_be(:past_grace_period) do
+        create(:terraform_state, deleted_at: (described_class::GRACE_PERIOD + 1.minute).ago)
+      end
+
+      subject { described_class.ready_for_destruction }
+
+      it { is_expected.not_to include(not_deleted) }
+      it { is_expected.not_to include(within_grace_period) }
+      it('state deleted exactly at the boundary', :freeze_time) { is_expected.to include(exactly_at_grace_boundary) }
+      it { is_expected.to include(past_grace_period) }
+    end
   end
 
   describe '#latest_file' do
@@ -142,6 +165,72 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
         )
 
         subject
+      end
+    end
+  end
+
+  describe '#permanent_deletion_at' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when deleted_at is nil' do
+      let_it_be(:state) { create(:terraform_state, project: project, deleted_at: nil) }
+
+      it 'returns nil' do
+        expect(state.permanent_deletion_at).to be_nil
+      end
+    end
+
+    context 'when deleted_at is set' do
+      let_it_be(:deleted_at) { 2.days.ago }
+      let_it_be(:state) { create(:terraform_state, project: project, deleted_at: deleted_at) }
+
+      it 'returns deleted_at plus GRACE_PERIOD' do
+        expect(state.permanent_deletion_at)
+          .to be_within(1.second).of(deleted_at + described_class::GRACE_PERIOD)
+      end
+    end
+  end
+
+  describe '#within_grace_period?' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when deleted_at is nil' do
+      let(:state) { build(:terraform_state, project: project, deleted_at: nil) }
+
+      it 'returns false' do
+        expect(state.within_grace_period?).to be(false)
+      end
+    end
+
+    context 'around the grace period boundary', :freeze_time do
+      let(:boundary) { described_class::GRACE_PERIOD.ago }
+
+      let(:state_before) { create(:terraform_state, project: project, deleted_at: boundary - 1.second) }
+      let(:state_at) { create(:terraform_state, project: project, deleted_at: boundary) }
+      let(:state_after) { create(:terraform_state, project: project, deleted_at: boundary + 1.second) }
+
+      it 'agrees with .ready_for_destruction and never both match or both miss a state' do
+        states = [state_before, state_at, state_after]
+        ready_states = described_class.ready_for_destruction
+
+        states.each do |state|
+          in_scope = ready_states.include?(state)
+          in_predicate = state.within_grace_period?
+
+          expect(in_scope).not_to eq(in_predicate)
+        end
+      end
+
+      it 'returns false at exactly GRACE_PERIOD.ago' do
+        expect(state_at.within_grace_period?).to be(false)
+      end
+
+      it 'returns false 1 second before GRACE_PERIOD.ago' do
+        expect(state_before.within_grace_period?).to be(false)
+      end
+
+      it 'returns true 1 second after GRACE_PERIOD.ago' do
+        expect(state_after.within_grace_period?).to be(true)
       end
     end
   end

@@ -8,7 +8,7 @@ RSpec.describe Import::Offline::Imports::MetadataFileReader, feature_category: :
 
     let(:metadata) do
       {
-        instance_version: '19.0.0',
+        instance_version: '19.4.0',
         instance_enterprise: true,
         export_prefix: configuration.export_prefix,
         source_hostname: 'https://gitlab.example.com'
@@ -82,7 +82,7 @@ RSpec.describe Import::Offline::Imports::MetadataFileReader, feature_category: :
     end
 
     context 'when the instance version is below the minimum supported version' do
-      let(:metadata) { super().merge(instance_version: '18.11.0') }
+      let(:metadata) { super().merge(instance_version: '19.3.0') }
 
       it 'raises a MetadataError' do
         expect { reader.read }.to raise_error(

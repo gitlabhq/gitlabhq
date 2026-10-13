@@ -130,8 +130,17 @@ RPC failed; curl 92 HTTP/2 stream 0 was not closed cleanly: INTERNAL_ERROR (err 
 
 If you use Git over HTTP instead of SSH, try one of these fixes:
 
-- Increase the POST buffer size in the Git configuration with `git config http.postBuffer 52428800`.
-- Switch to the `HTTP/1.1` protocol with `git config http.version HTTP/1.1`.
+- Increase the POST buffer size in the Git configuration:
+
+  ```shell
+  git config http.postBuffer 52428800
+  ```
+
+- Switch to the `HTTP/1.1` protocol:
+
+  ```shell
+  git config http.version HTTP/1.1
+  ```
 
 If neither approach fixes the error, you may need a different internet service provider.
 
@@ -467,7 +476,7 @@ fatal: unable to access 'https://gitlab.com/group/project.git/': The requested U
 
 The failed authentication ban limits differ depending on whether you are using a
 [GitLab Self-Managed](../../rate_limits/abuse_bans.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab.com](../../user/gitlab_com/_index.md#ip-blocks).
+or [GitLab.com](../../user/gitlab_com/rate_limits.md#ip-blocks).
 
 ### Check logs for failed authentications
 

@@ -1,0 +1,10 @@
+---
+name: rate_limit_pipeline_retry
+description: Rate limits pipeline retries per user and pipeline, and per user and project
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627233
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254367
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/629514
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

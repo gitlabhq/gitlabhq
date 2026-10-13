@@ -207,7 +207,7 @@ docker build:
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
-  `changes` can't determine if a given file is new or old and always returns `true`.
+  `changes` cannot determine if a given file is new or old and always returns `true`.
 - If you use `only: changes` with other refs, jobs ignore the changes and always run.
 - If you use `except: changes` with other refs, jobs ignore the changes and never run.
 

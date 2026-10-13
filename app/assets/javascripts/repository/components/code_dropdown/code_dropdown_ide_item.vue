@@ -27,9 +27,11 @@ export default {
     closeDropdown() {
       this.$emit('close-dropdown');
     },
-    trackAndClose({ action, label } = {}) {
+    trackAndClose({ action, label, additionalProperties } = {}) {
       if (action) {
-        this.trackEvent(action, label && { label });
+        const payload = { ...(additionalProperties || {}) };
+        if (label) payload.label = label;
+        this.trackEvent(action, Object.keys(payload).length ? payload : undefined);
       }
       this.closeDropdown();
     },
@@ -52,6 +54,7 @@ export default {
         is-unsafe-link
         target="_blank"
         size="small"
+        v-bind="ideOption.extraAttrs"
         @click="trackAndClose(ideOption.tracking)"
       >
         {{ ideOption.text }}

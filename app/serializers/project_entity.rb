@@ -10,15 +10,11 @@ class ProjectEntity < Grape::Entity
     project_path(project)
   end
 
-  expose :full_name, documentation: { type: 'string', example: 'GitLab Org / GitLab' } do |project|
-    project.full_name
-  end
+  expose :full_name, documentation: { type: 'string', example: 'GitLab Org / GitLab' }, &:full_name
 
   expose :refs_url do |project|
     refs_project_path(project)
   end
 
-  expose :forked, documentation: { type: 'boolean', example: true } do |project|
-    project.forked?
-  end
+  expose :forked, documentation: { type: 'boolean', example: true }, &:forked?
 end

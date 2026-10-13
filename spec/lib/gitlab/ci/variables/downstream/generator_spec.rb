@@ -86,14 +86,16 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
 
       ]
 
-      expect(generator.calculate).to contain_exactly(*expected)
+      expect(generator.calculate).to match_array(expected)
     end
 
     it 'returns empty array when bridge has no variables' do
-      allow(bridge).to receive(:yaml_variables).and_return([])
-      allow(bridge).to receive(:pipeline_variables).and_return([])
-      allow(bridge).to receive(:pipeline_schedule_variables).and_return([])
-      allow(bridge).to receive(:dependency_variables).and_return([])
+      allow(bridge).to receive_messages(
+        yaml_variables: [],
+        pipeline_variables: [],
+        pipeline_schedule_variables: [],
+        dependency_variables: []
+      )
 
       expect(generator.calculate).to be_empty
     end
@@ -133,7 +135,7 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
           { key: 'FILE_REF3', value: 'ref 3', variable_type: :file }
         ]
 
-        expect(generator.calculate).to contain_exactly(*expected)
+        expect(generator.calculate).to match_array(expected)
       end
     end
 
@@ -151,7 +153,7 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
           { key: 'PIPELINE_DOTENV_NIL_VAR', value: nil }
         ]
 
-        expect(generator.calculate).to contain_exactly(*expected)
+        expect(generator.calculate).to match_array(expected)
       end
     end
   end

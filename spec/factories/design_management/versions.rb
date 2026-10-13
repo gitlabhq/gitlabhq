@@ -32,7 +32,7 @@ FactoryBot.define do
       version.designs += specific_designs
 
       unless evaluator.designs_count == 0 || version.designs.present?
-        version.designs << create(:design, issue: version.issue)
+        version.designs << evaluator.association(:design, issue: version.issue)
       end
     end
 

@@ -23,6 +23,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
   before do
     allow(app).to receive(:route_setting).with(:mcp).and_return(mcp_settings)
+    allow(app).to receive(:route_setting).with(:authorization).and_return(nil)
   end
 
   subject(:api_tool) { described_class.new(name: 'test_tool', route: route) }
@@ -70,6 +71,12 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
       expect(icons).to be_an(Array)
       expect(icons.first).to include(:mimeType, :src, :theme)
+    end
+  end
+
+  describe '#available?' do
+    it 'returns true' do
+      expect(api_tool.available?(build(:user))).to be(true)
     end
   end
 
@@ -260,6 +267,22 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       end
     end
 
+    context 'when the namespace argument is URL-encoded' do
+      let(:mcp_settings) { { params: [:id, :search], tool_name: 'test_tool' } }
+      let(:params) { { arguments: { id: 'gitlab-org%2Fgitlab', search: '100%25 match' } } }
+
+      before do
+        allow(app).to receive(:route_setting).with(:authorization).and_return({ boundary_type: :project })
+        allow(app).to receive(:call).with(request_env).and_return([200, {}, ['{"result": "success"}']])
+      end
+
+      it 'decodes only the project argument before routing', :aggregate_failures do
+        api_tool.execute(request: request, params: params)
+
+        expect(request_env['grape.routing_args']).to include(id: 'gitlab-org/gitlab', search: '100%25 match')
+      end
+    end
+
     context 'with different HTTP methods' do
       let(:route) do
         instance_double(Grape::Router::Route,
@@ -289,7 +312,106 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(request_env[Rack::REQUEST_METHOD]).to eq('POST')
-        expect(result).to eq(Mcp::Tools::Base::Response.error('Bad request', { 'error' => 'Bad request' }))
+        expect(result).to eq(Mcp::Tools::Base::Response.error('Bad request', { 'error' => 'Bad request' },
+          reason: :bad_request))
+      end
+    end
+
+    context 'with a throttled response' do
+      let(:throttle_body) { ['{"error": "This endpoint has been requested too many times. Try again later."}'] }
+
+      before do
+        allow(app).to receive(:call).with(request_env).and_return(
+          [429, { 'Retry-After' => '60', 'RateLimit-Name' => 'search_rate_limit' }, throttle_body]
+        )
+      end
+
+      it 'reports the delay and the throttle name instead of flattening to prose' do
+        result = api_tool.execute(request: request, params: params)
+
+        expect(result).to eq(
+          Mcp::Tools::Base::Response.rate_limited_error(
+            'This endpoint has been requested too many times. Try again later.',
+            retry_after: '60',
+            limit: 'search_rate_limit'
+          )
+        )
+        expect(result[:structuredContent][:error]).to include(
+          type: 'rate_limited', retry_after_seconds: 60, limit: 'search_rate_limit'
+        )
+      end
+
+      context 'when the headers use a different casing' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return(
+            [429, { 'retry-after' => '60', 'ratelimit-name' => 'search_rate_limit' }, throttle_body]
+          )
+        end
+
+        it 'still reads them' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(
+            retry_after_seconds: 60, limit: 'search_rate_limit'
+          )
+        end
+      end
+
+      context 'when the endpoint sets no rate limit headers' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return([429, {}, throttle_body])
+        end
+
+        it 'still marks the result as a throttle' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to eq(
+            type: 'rate_limited',
+            message: 'This endpoint has been requested too many times. Try again later.'
+          )
+        end
+      end
+
+      context 'when the body is shaped as check_rate_limit! renders it' do
+        let(:throttle_body) do
+          [{ message: { error: 'This endpoint has been requested too many times. Try again later.' } }.to_json]
+        end
+
+        it 'reports the sentence rather than the nested hash' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(
+            message: 'This endpoint has been requested too many times. Try again later.'
+          )
+        end
+      end
+
+      context 'when the response carries no body' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return(
+            [429, { 'Retry-After' => '60' }, []]
+          )
+        end
+
+        it 'falls back to the status, since there is no message to read' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(type: 'rate_limited', message: 'HTTP 429')
+        end
+      end
+
+      context 'when the body is not JSON' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return(
+            [429, { 'Retry-After' => '60' }, ['<html>Too Many Requests</html>']]
+          )
+        end
+
+        it 'falls back to the status rather than raising' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(type: 'rate_limited', message: 'HTTP 429')
+        end
       end
     end
 
@@ -301,7 +423,8 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       it 'uses message field for error' do
         result = api_tool.execute(request: request, params: params)
 
-        expected = Mcp::Tools::Base::Response.error('Validation failed', { 'message' => 'Validation failed' })
+        expected = Mcp::Tools::Base::Response.error('Validation failed', { 'message' => 'Validation failed' },
+          reason: :bad_request)
         expect(result).to eq(expected)
       end
     end
@@ -314,7 +437,8 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       it 'falls back to HTTP status message' do
         result = api_tool.execute(request: request, params: params)
 
-        expect(result).to eq(Mcp::Tools::Base::Response.error('HTTP 500', { 'details' => 'Internal error' }))
+        expect(result).to eq(Mcp::Tools::Base::Response.error('HTTP 500', { 'details' => 'Internal error' },
+          reason: :error))
       end
     end
 
@@ -329,7 +453,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Base::Response.error(expected_error_message, { 'message' => '404 Not Found' })
+          Mcp::Tools::Base::Response.error(expected_error_message, { 'message' => '404 Not Found' }, reason: :not_found)
         )
       end
     end
@@ -367,7 +491,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Base::Response.error('HTTP 404', { 'details' => 'extra info' })
+          Mcp::Tools::Base::Response.error('HTTP 404', { 'details' => 'extra info' }, reason: :not_found)
         )
       end
     end
@@ -385,7 +509,8 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Base::Response.error('404 Project Not Found', { 'message' => '404 Project Not Found' })
+          Mcp::Tools::Base::Response.error('404 Project Not Found', { 'message' => '404 Project Not Found' },
+            reason: :not_found)
         )
       end
     end
@@ -403,7 +528,8 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(
-          Mcp::Tools::Base::Response.error('Validation failed', { 'message' => 'Validation failed' })
+          Mcp::Tools::Base::Response.error('Validation failed', { 'message' => 'Validation failed' },
+            reason: :bad_request)
         )
       end
     end
@@ -680,10 +806,10 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
     end
   end
 
-  describe '#namespace_arguments' do
-    subject(:declared) { described_class.new(name: 'test_tool', route: route).namespace_arguments }
+  describe '#container_arguments' do
+    subject(:declared) { described_class.new(name: 'test_tool', route: route).container_arguments }
 
-    let(:default) { Mcp::Tools::Concerns::GovernanceNamespaceResolver::DEFAULT_NAMESPACE_ARGUMENTS }
+    let(:default) { Mcp::Tools::Concerns::GovernanceContainerResolver::DEFAULT_CONTAINER_ARGUMENTS }
 
     before do
       allow(app).to receive(:route_setting).with(:authorization).and_return(authorization)
@@ -717,6 +843,98 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:authorization) { nil }
 
       it { is_expected.to eq(default) }
+    end
+
+    context 'when the route declares container arguments of its own' do
+      let(:authorization) { { permissions: :create_fork, boundary_type: :project } }
+      let(:resolver) { ->(id) { id } }
+      let(:mcp_settings) do
+        {
+          params: [:id, :namespace_id],
+          tool_name: 'test_tool',
+          container_arguments: { record: { namespace_id: resolver } }
+        }
+      end
+
+      it { is_expected.to eq({ project: :id, record: { namespace_id: resolver } }) }
+    end
+  end
+
+  describe '#execute with a declared record argument' do
+    let(:request) { instance_double(Rack::Request, env: request_env) }
+    let(:request_env) { { 'grape.routing_args' => {} } }
+    let(:mcp_settings) do
+      {
+        params: [:id, :namespace_path],
+        tool_name: 'test_tool',
+        container_arguments: { record: { namespace_path: ->(path) { path } } }
+      }
+    end
+
+    before do
+      allow(app).to receive(:route_setting).with(:authorization).and_return({ boundary_type: :project })
+      allow(app).to receive(:call).with(request_env).and_return([200, {}, ['{"result": "success"}']])
+    end
+
+    it 'decodes a URL-encoded record argument before routing' do
+      api_tool.execute(request: request, params: { arguments: { id: '1', namespace_path: 'new_path%2Fgitlab' } })
+
+      expect(request_env['grape.routing_args']).to include(namespace_path: 'new_path/gitlab')
+    end
+  end
+
+  describe '#governed_containers' do
+    let_it_be(:source_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: source_group) }
+    let_it_be(:target_group) { create(:group) }
+    let_it_be(:user) { create(:user, :with_namespace) }
+
+    let(:fork_tool) { Mcp::Tools::Manager.new.list_tools['fork_repository'] }
+
+    subject(:resolved) { fork_tool.governed_containers(arguments.with_indifferent_access) }
+
+    context 'when a fork names its target group by id' do
+      let(:arguments) { { id: project.id.to_s, namespace_id: target_group.id } }
+
+      it 'governs the call by the source project and the target group', :aggregate_failures do
+        expect(resolved.containers).to contain_exactly(project, target_group)
+        expect(resolved.named).to eq(2)
+      end
+    end
+
+    context 'when a fork names its target group by a URL-encoded path' do
+      let(:arguments) { { id: project.id.to_s, namespace_path: ERB::Util.url_encode(target_group.full_path) } }
+
+      it 'governs the call by the target group' do
+        expect(resolved.containers).to contain_exactly(project, target_group)
+      end
+    end
+
+    context 'when a fork names a target that does not exist' do
+      let(:arguments) { { id: project.id.to_s, namespace_id: non_existing_record_id } }
+
+      it 'counts the target so the call is refused rather than ungoverned', :aggregate_failures do
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(2)
+      end
+    end
+
+    context 'when a fork names a personal namespace' do
+      let(:arguments) { { id: project.id.to_s, namespace_path: user.namespace.full_path } }
+
+      it 'governs the call by the source project alone', :aggregate_failures do
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(1)
+      end
+    end
+
+    context 'when a fork names no target' do
+      let(:arguments) { { id: project.id.to_s } }
+
+      it 'governs the call by the source project alone', :aggregate_failures do
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(1)
+      end
     end
   end
 end

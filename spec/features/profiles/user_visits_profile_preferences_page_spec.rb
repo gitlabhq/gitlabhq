@@ -26,10 +26,10 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
     end
   end
 
-  it 'sets default dashboard preference to Your Contributed Projects (default)' do
+  it 'sets default dashboard preference to Personal homepage (default)' do
     visit(profile_preferences_path)
 
-    expect(page).to have_button('Your Contributed Projects (default)')
+    expect(page).to have_button('Personal homepage (default)')
   end
 
   describe 'User changes their default dashboard', :js do
@@ -38,7 +38,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
     end
 
     it 'creates a flash message' do
-      select_from_listbox 'Starred Projects', from: 'Your Contributed Projects (default)', exact_item_text: true
+      select_from_listbox 'Starred Projects', from: 'Personal homepage (default)', exact_item_text: true
       click_button 'Save changes'
 
       wait_for_requests
@@ -47,7 +47,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
     end
 
     it 'updates their preference' do
-      select_from_listbox 'Starred Projects', from: 'Your Contributed Projects (default)', exact_item_text: true
+      select_from_listbox 'Starred Projects', from: 'Personal homepage (default)', exact_item_text: true
       click_button 'Save changes'
 
       wait_for_requests

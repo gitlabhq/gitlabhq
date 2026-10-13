@@ -32,7 +32,9 @@ module Mcp
                   'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
                   'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
                   '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
-                  'push to the source branch. notes supports pagination (notes_after/notes_first). ' \
+                  'push to the source branch. diffs, notes, commits, and pipelines support pagination ' \
+                  '(diffs_*, notes_*, commits_*, pipelines_*); for the newest notes, use notes_last ' \
+                  'without notes_first or notes_after. ' \
                   'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
                   'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
                   'these keys are present but zeroed or empty, not omitted.',
@@ -56,8 +58,19 @@ module Mcp
               ),
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'notes',
+                params: %i[first after last before],
                 prefix: 'notes_',
                 applies_to: 'notes is in include'
+              ),
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'commits',
+                prefix: 'commits_',
+                applies_to: 'commits is in include'
+              ),
+              **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
+                items: 'pipelines',
+                prefix: 'pipelines_',
+                applies_to: 'pipelines is in include'
               )
             }
           },

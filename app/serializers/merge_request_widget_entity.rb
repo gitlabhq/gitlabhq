@@ -119,9 +119,7 @@ class MergeRequestWidgetEntity < Grape::Entity
     help_page_path('user/application_security/detect/security_scanning_results.md', anchor: 'merge-request-reports')
   end
 
-  expose :enabled_reports do |merge_request|
-    merge_request.enabled_reports
-  end
+  expose :enabled_reports, &:enabled_reports
 
   expose :show_gitpod_button do |merge_request|
     Gitlab::CurrentSettings.gitpod_enabled

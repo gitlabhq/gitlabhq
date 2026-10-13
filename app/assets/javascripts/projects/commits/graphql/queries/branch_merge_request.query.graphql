@@ -6,6 +6,12 @@ query getBranchMergeRequest($projectPath: ID!, $sourceBranch: String!, $targetBr
       createMergeRequestFrom
       createMergeRequestIn
     }
+    defaultMergeRequestTarget @gl_introduced(version: "19.5.0") {
+      id
+      userPermissions {
+        createMergeRequestIn
+      }
+    }
     mergeRequests(
       state: opened
       sourceBranches: [$sourceBranch]
@@ -16,6 +22,16 @@ query getBranchMergeRequest($projectPath: ID!, $sourceBranch: String!, $targetBr
         id
         webPath
       }
+    }
+    sourcedMergeRequests(state: opened, sourceBranches: [$sourceBranch], first: 1)
+      @gl_introduced(version: "19.5.0") {
+      nodes {
+        id
+        webPath
+      }
+    }
+    forkedFrom {
+      id
     }
   }
 }

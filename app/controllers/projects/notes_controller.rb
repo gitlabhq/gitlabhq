@@ -91,10 +91,6 @@ class Projects::NotesController < Projects::ApplicationController
     )
   end
 
-  def authorize_admin_note!
-    access_denied! unless can?(current_user, :admin_note, note)
-  end
-
   def authorize_resolve_note!
     access_denied! unless can?(current_user, :resolve_note, note)
   end

@@ -31,6 +31,7 @@ export const paths = {
   approve: '/admin/users/id/approve',
   reject: '/admin/users/id/reject',
   unblock: '/admin/users/id/unblock',
+  resyncLdap: '/admin/users/id/unblock',
   block: '/admin/users/id/block',
   deactivate: '/admin/users/id/deactivate',
   activate: '/admin/users/id/activate',
@@ -40,6 +41,8 @@ export const paths = {
   adminUser: '/admin/users/id',
   ban: '/admin/users/id/ban',
   unban: '/admin/users/id/unban',
+  trust: '/admin/users/id/trust',
+  untrust: '/admin/users/id/untrust',
 };
 
 export const createMembershipCountResponse = (data) => ({

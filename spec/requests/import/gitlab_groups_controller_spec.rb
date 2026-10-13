@@ -71,6 +71,13 @@ RSpec.describe Import::GitlabGroupsController, :with_current_organization, featu
         expect(group.description).to eq 'A voluptate non sequi temporibus quam at.'
         expect(group.visibility_level).to eq Gitlab::VisibilityLevel::PUBLIC
       end
+
+      it 'passes request_channel: :ui to the import service' do
+        expect(Groups::ImportExport::ImportService)
+          .to receive(:new).with(hash_including(request_channel: :ui)).and_call_original
+
+        import_request
+      end
     end
 
     context 'when importing to a parent group' do

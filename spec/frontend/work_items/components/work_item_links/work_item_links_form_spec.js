@@ -75,7 +75,6 @@ describe('WorkItemLinksForm', () => {
     addMutation = addMutationResolver,
     createMutation = createMutationResolver,
     isGroup = false,
-    createGroupLevelWorkItems = true,
     workItemFeaturesField = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
@@ -96,9 +95,6 @@ describe('WorkItemLinksForm', () => {
         parentWorkItemType,
         childrenType,
         formType,
-        glFeatures: {
-          createGroupLevelWorkItems,
-        },
       },
       provide: {
         projectNamespaceFullPath: 'full-path',
@@ -429,13 +425,12 @@ describe('WorkItemLinksForm', () => {
       );
     });
 
-    it('requires project selection if group level work item creation is disabled', async () => {
+    it('requires project selection when adding a child issue to a group level epic', async () => {
       await createComponent({
         parentConfidential: false,
         isGroup: true,
         parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
         childrenType: { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
-        createGroupLevelWorkItems: false,
       });
 
       findInput().vm.$emit('input', 'Example title');

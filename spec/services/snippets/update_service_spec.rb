@@ -302,8 +302,7 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
       end
 
       it 'returns error if snippet does not have a snippet_repository' do
-        allow(snippet).to receive(:snippet_repository).and_return(nil)
-        allow(snippet).to receive(:track_snippet_repository).and_return(nil)
+        allow(snippet).to receive_messages(snippet_repository: nil, track_snippet_repository: nil)
 
         expect(subject).to be_error
       end

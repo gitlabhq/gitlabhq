@@ -1,0 +1,13 @@
+---
+table: dependency_firewall_prevented_packages
+database: main
+replication_targets:
+- name: clickhouse_main
+  target: siphon_dependency_firewall_prevented_packages
+  dedup_by:
+  - id
+  dedup_by_columns_lookup_table: siphon_dependency_firewall_prevented_packages_pg_pkey_ordered
+  reconcile:
+    column: traversal_path
+    expression_key_columns:
+    - project_id

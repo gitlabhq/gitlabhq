@@ -1,0 +1,15 @@
+---
+table_name: import_sync_repository_states
+classes:
+- Import::Sync::RepositoryState
+feature_categories:
+- importers
+description: One row per repository per continuous-sync domain (inventory, source,
+  work_items), holding the generation counters and sanitized health used to detect
+  lagging or degraded sync.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255079
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

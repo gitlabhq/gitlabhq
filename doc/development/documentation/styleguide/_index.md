@@ -1051,63 +1051,56 @@ For example, use footnotes when you must:
 
 #### Footnote format
 
-In the table, use the HTML superscript tag `<sup>` for each footnote.
-Put the tag at the end of the sentence. Leave one space between the sentence and the tag.
+In the table cell, write a footnote reference as `[^label]`.
+Add the reference at the end of the sentence, with no space before it.
+If a cell or sentence needs more than one footnote reference, separate them with a comma and a space.
+For example, `[^registration-shell], [^default-shell]`.
+Write the matching definition as `[^label]: Footnote text.`
 
 For example:
 
 ```markdown
 | App name | Description |
 |:---------|:------------|
-| App A    | Description text. <sup>1</sup> |
-| App B    | Description text. <sup>2</sup> |
+| App A    | Description text.[^rate-limit] |
+| App B    | Description text.[^retention] |
+
+[^rate-limit]: This is the first footnote.
+[^retention]: This is the second footnote.
 ```
 
-When you add a footnote, do not re-sort the existing tags in the table.
+Add a table's definitions directly below that table, so the source stays readable.
+Do not put a footnote reference or definition inside a shortcode, like tabs (`{{</* tabs */>}}`).
 
-For the footnotes below the table, use `**Footnotes**:` followed by an ordered list.
+The renderer numbers the footnotes and adds a `Footnotes` heading below the table.
+
+#### Footnote indentation
+
+If a footnote definition contains more than one line, indent every line after the first with
+four spaces.
+This applies to lines in the same paragraph and to additional paragraphs or lists.
+
+The indent is required after a blank line.
+If you don't add the indent, all text after the blank line is not included in the footnote and renders as ordinary text.
 
 For example:
 
 ```markdown
-**Footnotes**:
+[^rate-limit]: This is the first footnote description sentence.
+    This is the second sentence.
 
-1. This is the first footnote.
-1. This is the second footnote.
+    This is the second paragraph of the same footnote.
 ```
 
-The table and footnotes would render as follows:
+#### Footnote numbering
 
-| App name | Description |
-|:---------|:------------|
-| App A    | Description text. <sup>1</sup> |
-| App B    | Description text. <sup>2</sup> |
+Footnotes are numbered in the order they're first referenced.
+The count is page-wide and includes every table and paragraph on the page.
 
-**Footnotes**:
-
-1. This is the first footnote.
-1. This is the second footnote.
-
-##### Five or more footnotes
-
-If you have five or more footnotes that you cannot include in the table itself,
-use consecutive numbers for the list items.
-If you use consecutive numbers, you must disable Markdown rule `029`:
-
-```markdown
-**Footnotes**:
-
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD029 -->
-
-1. This is the first footnote.
-2. This is the second footnote.
-3. This is the third footnote.
-4. This is the fourth footnote.
-5. This is the fifth footnote.
-
-<!-- markdownlint-enable MD029 -->
-```
+Footnote labels are also page-wide.
+Use the same label in several references when you want them to share one footnote.
+Otherwise, give each footnote a unique label.
+If you define the same label twice, the renderer keeps the first definition and discards the second without a warning.
 
 ## Links
 
@@ -2408,8 +2401,8 @@ We cannot guarantee future feature work, and promises
 like these can raise legal issues. Instead, say that an issue exists.
 For example:
 
-- Support for improvements is proposed in `[issue <issue_number>](https://link-to-issue)`.
-- You cannot do this thing, but `[issue 12345](https://link-to-issue)` proposes to change this behavior.
+- Support for improvements is proposed in `[issue <issue_number>](https://work-item-link)`.
+- You cannot do this thing, but `[issue 12345](https://work-item-link)` proposes to change this behavior.
 
 You can say that we plan to remove a feature.
 

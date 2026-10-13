@@ -1,0 +1,19 @@
+- title: "GraphQL `useWorkItemsView` user preference"
+  removal_milestone: "20.0"
+  announcement_milestone: "19.5"
+  breaking_change: true
+  window:
+  reporter: cngo
+  stage: plan
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/550770
+  impact: low
+  impact_offering: GitLab.com, Dedicated, self-managed
+  scope: instance
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    The `useWorkItemsView` field on the `UserPreferences` type and the `useWorkItemsView` argument on the
+    `userPreferencesUpdate` mutation are deprecated in GitLab 19.5 and will be removed in GitLab 20.0. The
+    issue-to-work-item migration is complete and the work item view is always used, making this preference
+    unnecessary. As of GitLab 19.5, the argument is accepted but ignored and the field always returns `true`.
+    Remove the argument from your mutations and the field from your queries. There is no replacement.

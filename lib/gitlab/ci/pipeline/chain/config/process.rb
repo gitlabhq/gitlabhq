@@ -17,15 +17,14 @@ module Gitlab
               end
 
               add_warnings_to_pipeline(result.warnings)
+              @command.yaml_processor_result = result
 
-              if result.valid?
-                @command.yaml_processor_result = result
-              elsif empty_because_includes_filtered?(result)
+              if empty_because_includes_filtered?(result)
                 # include:rules: removed every include, leaving no jobs. That is a
                 # filtering outcome, not a config error, so we must not persist a
                 # failed pipeline for it.
                 error(::Ci::Pipeline.rules_failure_message, failure_reason: :filtered_by_rules)
-              else
+              elsif !result.valid?
                 error(result.errors.first, failure_reason: :config_error)
               end
 

@@ -171,5 +171,70 @@ RSpec.describe Integrations::UpdateService, feature_category: :integrations do
         it_behaves_like 'error request', 'Integration not found.'
       end
     end
+
+    describe 'logging' do
+      let(:attributes) { { thread: 123 } }
+      let(:expected_payload) do
+        {
+          'class_name' => described_class.name,
+          'integration_id' => integration.id,
+          'integration_class' => integration.class.name,
+          Labkit::Fields::GL_ORGANIZATION_ID => integration.organization_id_for_logging
+        }
+      end
+
+      before do
+        allow(Gitlab::IntegrationsLogger).to receive(:info)
+        allow(PropagateIntegrationWorker).to receive(:perform_async)
+      end
+
+      it 'logs the organization id when the update succeeds' do
+        result
+
+        expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+          hash_including(expected_payload.merge('message' => 'Integration updated'))
+        )
+      end
+
+      it 'does not include the attributes in the log' do
+        result
+
+        expect(Gitlab::IntegrationsLogger).to have_received(:info).with(hash_excluding('thread'))
+      end
+
+      context 'when the update fails' do
+        let(:attributes) { { thread: 'invalid' } }
+
+        it 'logs the organization id' do
+          result
+
+          expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+            hash_including(expected_payload.merge('message' => 'Integration update failed'))
+          )
+        end
+      end
+
+      context 'with an instance-level integration' do
+        let_it_be_with_reload(:integration) { create(:telegram_integration, :instance) }
+
+        it 'logs the organization of the integration' do
+          result
+
+          expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+            hash_including(Labkit::Fields::GL_ORGANIZATION_ID => integration.organization_id)
+          )
+        end
+      end
+
+      context 'when the integration is not present' do
+        let(:integration) { nil }
+
+        it 'does not log' do
+          result
+
+          expect(Gitlab::IntegrationsLogger).not_to have_received(:info)
+        end
+      end
+    end
   end
 end

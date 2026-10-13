@@ -1,0 +1,10 @@
+---
+name: deletion_scheduled_backlog_metric
+description: Enables the sampler that exports the age of the oldest record and the overdue count in the deletion-scheduled backlog.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/621640
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252036
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/623369
+milestone: '19.4'
+group: group::organizations
+type: ops
+default_enabled: false

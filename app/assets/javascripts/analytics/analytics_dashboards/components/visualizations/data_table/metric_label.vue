@@ -2,7 +2,6 @@
 import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { InternalEvents } from '~/tracking';
-import glFeaturesMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   EVENT_LABEL_CLICK_METRIC_IN_DASHBOARD_TABLE,
   VALUE_STREAM_METRIC_METADATA,
@@ -17,7 +16,7 @@ export default {
     GlLink,
     GlPopover,
   },
-  mixins: [InternalEvents.mixin(), glFeaturesMixin()],
+  mixins: [InternalEvents.mixin()],
   props: {
     identifier: {
       type: String,

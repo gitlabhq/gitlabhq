@@ -1,0 +1,84 @@
+# Scheduled gitlab-housekeeper keeps.
+#
+# Each keep runs from its own pipeline schedule on the default branch. Create one
+# schedule per keep with:
+#   SCHEDULE_TYPE=housekeeping
+#   HOUSEKEEPING_KEEP=<keep name>   (see the per-job `rules` below)
+# and the cron of your choice (for example weekly for the RuboCop keeps and
+# monthly for squash-migrations).
+#
+# Required CI/CD variables:
+#   HOUSEKEEPER_GITLAB_API_TOKEN  API token (gitlab-bot) used to open MRs. The
+#                                 gitlab-housekeeper CLI fails the job when it
+#                                 is missing.
+#
+# The jobs reuse the standard Rails + DB CI setup: .rails-job-base runs
+# scripts/prepare_build.sh, and .use-pg17 provides the postgres and redis
+# services. The gitlab-housekeeper CLI loads every keep in keeps/, some of which
+# boot the full Rails application, so a database is always required even for the
+# RuboCop keeps.
+
+.housekeeping-keep:
+  extends:
+    - .rails-job-base
+    - .use-pg17
+  stage: prepare
+  needs: []
+  variables:
+    # Not "test": gitlab-http wires Gitlab::HTTP_V2 onto WebMock in that
+    # environment, which blocks the reviewer roulette lookup.
+    RAILS_ENV: "development"
+    BUNDLE_WITHOUT: ""
+    GIT_USER_NAME: "GitLab Housekeeping Bot"
+    GIT_USER_EMAIL: "gitlab-housekeeping-bot@gitlab.com"
+    HOUSEKEEPER_TARGET_PROJECT_ID: "$CI_PROJECT_ID"
+  script:
+    - scripts/run-gitlab-housekeeper.sh
+
+housekeeper:generate-rubocop-todos:
+  extends: .housekeeping-keep
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "generate_rubocop_todos"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::GenerateRubocopTodos"
+
+housekeeper:rubocop-fixer:
+  extends: .housekeeping-keep
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "rubocop_fixer"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::RubocopFixer"
+
+housekeeper:squash-migrations:
+  extends: .housekeeping-keep
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "squash_migrations"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::SquashMigrations"
+    # Runs only at required stops, so an approved but stale MR still needs the
+    # new squash.
+    EXTRA_FLAGS: "--push-when-approved"
+
+# Monthly, early in each milestone. See keeps/cleanup_gl_introduced.rb.
+housekeeper:cleanup-gl-introduced:
+  extends:
+    - .housekeeping-keep
+    - .ruby-node-cache
+  # The keep runs Prettier on the files it changes.
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "cleanup_gl_introduced"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::CleanupGlIntroduced"

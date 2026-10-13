@@ -27,6 +27,9 @@ module Organizations
             payload: { failed: validation_errors })
         end
 
+        transfer_error = transfer_validation_error
+        return ServiceResponse.error(message: transfer_error) if transfer_error
+
         # The event payload needs each group's pre-transfer organization, so snapshot it here.
         original_organizations_by_group_id = groups.to_h { |group| [group.id, group.organization_id] }
 
@@ -35,6 +38,7 @@ module Organizations
         Group.transaction do
           groups.each_slice(BATCH_SIZE) do |batch|
             batch_ids = batch.map(&:id)
+            persist_transfer_source_organization(batch)
             Group.id_in(batch_ids).update_all(
               organization_id: new_organization.id,
               visibility_level: clamped_visibility_sql
@@ -43,6 +47,7 @@ module Organizations
           end
         end
 
+        schedule_sync_worker
         groups.each { |group| log_transfer_success(group) }
 
         publish_transferred_events(original_organizations_by_group_id)
@@ -53,6 +58,18 @@ module Organizations
       private
 
       attr_reader :groups, :new_organization, :current_user, :skip_authorization
+
+      # Record the source so GroupsService can recover it when it transfers the
+      # descendants later, after this moves the root off its source. The batch is
+      # bounded and holds only top-level groups, so a save per group is acceptable.
+      def persist_transfer_source_organization(batch)
+        batch.each do |group|
+          next if group.organization_id == new_organization.id
+
+          group.state_metadata['organization_transfer_source_id'] = group.organization_id
+          group.namespace_details.save!
+        end
+      end
 
       # Only the root group row moves here. Descendants follow later via
       # Organizations::Transfer::GroupsService, which publishes its own event.
@@ -75,6 +92,12 @@ module Organizations
         # back, so defer to the outermost commit instead.
         ActiveRecord.after_all_transactions_commit do
           Gitlab::EventStore.publish_group(events)
+        end
+      end
+
+      def schedule_sync_worker
+        ActiveRecord.after_all_transactions_commit do
+          ::Namespaces::SyncEvent.enqueue_worker
         end
       end
 
@@ -145,6 +168,8 @@ module Organizations
 
         errors
       end
+
+      def transfer_validation_error; end
 
       def error_message_for_group(group)
         return group_not_root_error unless group_is_root?(group)

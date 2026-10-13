@@ -1,4 +1,4 @@
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class Autosave {

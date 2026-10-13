@@ -32,7 +32,7 @@ title: 'Topic title'
 
 {{</* history */>}}
 
-- [Introduced](https://link-to-issue) in GitLab 16.3.
+- [Introduced](https://work-item-link) in GitLab 16.3.
 - Updated in GitLab 16.4.
 
 {{</* /history */>}}
@@ -148,8 +148,8 @@ for example:
 ```markdown
 {{</* history */>}}
 
-- [Introduced](https://issue-link) in GitLab 16.3.
-- [Changed](https://issue-link) in GitLab 16.4.
+- [Introduced](https://work-item-link) in GitLab 16.3.
+- [Changed](https://work-item-link) in GitLab 16.4.
 
 {{</* /history */>}}
 ```
@@ -174,15 +174,15 @@ Start the sentence with the feature name or a gerund.
 For example:
 
 ```markdown
-- [Introduced](https://issue-link) in GitLab 13.1.
-- Creating an issue from an issue board [introduced](https://issue-link) in GitLab 14.1.
+- [Introduced](https://work-item-link) in GitLab 13.1.
+- Creating an issue from an issue board [introduced](https://work-item-link) in GitLab 14.1.
 ```
 
 Or:
 
 ```markdown
-- [Introduced](https://issue-link) in GitLab 13.1.
-- Notifications for expiring tokens [introduced](https://issue-link) in GitLab 14.3.
+- [Introduced](https://work-item-link) in GitLab 13.1.
+- Notifications for expiring tokens [introduced](https://work-item-link) in GitLab 14.3.
 ```
 
 #### Moved subscription tiers
@@ -190,8 +190,8 @@ Or:
 For features that move to another subscription tier, use `moved`:
 
 ```markdown
-- [Moved](https://issue-link) from GitLab Ultimate to GitLab Premium in 11.8.
-- [Moved](https://issue-link) from GitLab Premium to GitLab Free in 12.0.
+- [Moved](https://work-item-link) from GitLab Ultimate to GitLab Premium in 11.8.
+- [Moved](https://work-item-link) from GitLab Premium to GitLab Free in 12.0.
 ```
 
 #### Changed billing method
@@ -200,7 +200,7 @@ For features that change from seat-based billing to usage-based billing with
 [GitLab Credits](../../../subscriptions/gitlab_credits.md), use `changed to usage-based billing`:
 
 ```markdown
-- [Changed](https://issue-link) to usage-based billing in GitLab 19.0.
+- [Changed](https://work-item-link) to usage-based billing in GitLab 19.0.
 ```
 
 Add this entry only to the history for the feature.
@@ -208,24 +208,34 @@ Do not add an entry to the GitLab Credits history, because the functionality of 
 
 #### Changed feature status
 
+For a feature introduced as an experiment or beta, add the status to the `Introduced` item:
+
+```markdown
+- [Introduced](https://work-item-link) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 15.7.
+```
+
+```markdown
+- [Introduced](https://work-item-link) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.7.
+```
+
 For a feature status change from experiment to beta, use `changed`:
 
 ```markdown
-- [Introduced](https://issue-link) as an [experiment](../../policy/development_stages_support.md) in GitLab 15.7.
-- [Changed](https://issue-link) from experiment to beta in GitLab 16.0.
+- [Introduced](https://work-item-link) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 15.7.
+- [Changed](https://work-item-link) from experiment to beta in GitLab 16.0.
 ```
 
 For a feature status change from beta to limited availability, use `changed`:
 
 ```markdown
-- [Changed](https://issue-link) from experiment to beta in GitLab 16.0.
-- [Changed](https://issue-link) from beta to limited availability in GitLab 16.3.
+- [Changed](https://work-item-link) from experiment to beta in GitLab 16.0.
+- [Changed](https://work-item-link) from beta to limited availability in GitLab 16.3.
 ```
 
 For a change to generally available, use:
 
 ```markdown
-- [Generally available](https://issue-link) in GitLab 16.10.
+- [Generally available](https://work-item-link) in GitLab 16.10.
 ```
 
 #### Features made available as part of a program
@@ -233,8 +243,8 @@ For a change to generally available, use:
 For features made available to users as part of a program, add a new list item and link to the program.
 
 ```markdown
-- [Introduced](https://issue-link) in GitLab 15.1.
-- Merged results pipelines [added](https://issue-link) to the [Registration Features Program](https://page-link) in GitLab 16.7.
+- [Introduced](https://work-item-link) in GitLab 15.1.
+- Merged results pipelines [added](https://work-item-link) to the [Registration Features Program](https://page-link) in GitLab 16.7.
 ```
 
 #### Features behind feature flags
@@ -253,7 +263,7 @@ When a feature requires both a GitLab instance change and a tool update, nest th
 entries under the related instance history item:
 
 ```markdown
-- Access to user default namespaces for IDEs [introduced](https://issue-link) in GitLab 18.10.
+- Access to user default namespaces for IDEs [introduced](https://work-item-link) in GitLab 18.10.
   - [Introduced](https://release-page-link) in GitLab for VS Code 6.71.7.
   - [Introduced](https://release-page-link) in GitLab Duo CLI 8.76.0.
 ```
@@ -272,8 +282,8 @@ The models available for GitLab Duo features, including default models, are defi
 [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). In most
 cases, model changes reach all GitLab versions immediately and are not gated by GitLab releases.
 
-In the history item, use a date instead of a milestone. Link the AI Gateway merge
-request that made the change, not the documentation merge request.
+In the history item, use a date instead of a milestone. Link to the AI Gateway merge
+request that made the change.
 
 ```markdown
 - Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model for Code Review Flow on August 3, 2026.
@@ -401,6 +411,6 @@ inline with the existing text. If possible, include a link to the related issue,
 merge request, or epic. For example:
 
 ```markdown
-The voting strategy [in GitLab 13.4 and later](https://issue-link) requires the primary and secondary
+The voting strategy [in GitLab 13.4 and later](https://work-item-link) requires the primary and secondary
 voters to agree.
 ```

@@ -48,7 +48,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
 
       it 'triggers the export job' do
-        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { exported_by_admin: false })
+        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { 'exported_by_admin' => false })
 
         post :export, params: { id: group.to_param }
       end
@@ -66,7 +66,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
 
       it 'triggers the export job, and passes `exported_by_admin` correctly in the `params` hash' do
-        expect(GroupExportWorker).to receive(:perform_async).with(admin_with_admin_mode.id, group.id, { exported_by_admin: true })
+        expect(GroupExportWorker).to receive(:perform_async).with(admin_with_admin_mode.id, group.id, { 'exported_by_admin' => true })
 
         post :export, params: { id: group.to_param }
       end
@@ -103,10 +103,12 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         create(:import_export_upload, group: group, export_file: export_file, user: admin)
       end
 
-      it 'sends the file' do
+      it 'sends the file with import-compatible download headers' do
         get :download_export, params: { id: group.to_param }
 
         expect(response.body).to eq export_file.tempfile.read
+        expect(response.header['Content-Disposition']).to include('group_export.tar.gz')
+        expect(response.header['Content-Type']).to eq('application/octet-stream')
       end
     end
 
@@ -158,7 +160,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         sign_in(admin)
 
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:group_download_export, scope: [admin, group]).and_return(true)
+          .with(:group_download_export, scope: { user: admin, group: group }).and_return(true)
       end
 
       it 'throttles the endpoint' do

@@ -124,5 +124,43 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
           .to be < flat.index('_test_attached_partition_part')
       end
     end
+
+    context 'when an attached partition holds a foreign key to a listed table' do
+      # Mirrors the sec-database failure: `web_hook_logs_daily` attached
+      # partitions hold an FK to `projects`, which is not on the parent.
+      # `target` sorts alphabetically before the parent, so without the fix it
+      # lands in an earlier SCC and its TRUNCATE cascade trips the FK check.
+      let(:tables) do
+        %w[_test_held_aaa_target _test_held_zzz_parent]
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE _test_held_aaa_target (id bigserial NOT NULL PRIMARY KEY);
+
+          CREATE TABLE _test_held_zzz_parent (
+            id bigserial NOT NULL,
+            kind text NOT NULL,
+            target_id bigint,
+            PRIMARY KEY (id, kind)
+          ) PARTITION BY LIST(kind);
+
+          CREATE TABLE _test_held_zzz_parent_part
+            PARTITION OF _test_held_zzz_parent
+            FOR VALUES IN ('foo');
+
+          ALTER TABLE _test_held_zzz_parent_part
+            ADD CONSTRAINT fk_test_held_partition FOREIGN KEY(target_id)
+              REFERENCES _test_held_aaa_target(id);
+        SQL
+      end
+
+      it 'sorts the partition parent before the referenced target so TRUNCATE cascade is safe' do
+        flat = sorted_tables.flatten
+
+        expect(flat.index('_test_held_zzz_parent'))
+          .to be < flat.index('_test_held_aaa_target')
+      end
+    end
   end
 end

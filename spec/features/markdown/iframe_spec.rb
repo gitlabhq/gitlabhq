@@ -16,7 +16,7 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
   end
 
   let(:expected_selector) do
-    'iframe[src="https://iframe.example/some-video"][sandbox]'
+    'iframe[src="https://iframe.example/embed/some-video"][sandbox="allow-scripts"]'
   end
 
   let(:untouched_selector) do
@@ -24,9 +24,22 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
      img[src="https://iframe.example/some-video"]'
   end
 
+  let(:require_activation) { false }
+
+  before do
+    stub_iframe_providers(
+      'example' => {
+        'name' => 'Example',
+        'matches' => [{ 'host' => 'iframe.example', 'path' => '/{id}' }],
+        'src' => 'https://iframe.example/embed/{id}',
+        'sandbox' => %w[allow-scripts],
+        'require_activation' => require_activation
+      })
+  end
+
   shared_examples_for 'an iframe renderer' do
     before do
-      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: ['iframe.example'])
+      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
     end
 
     context 'in an issue' do
@@ -34,9 +47,26 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
       it 'includes iframe embed correctly' do
         visit project_issue_path(project, issue)
-        wait_for_requests
 
         expect(page).to have_css(expected_selector)
+        expect(page).to have_content(
+          'You are viewing external content from iframe.example. GitLab does not control this content.'
+        )
+      end
+
+      context 'when the provider requires activation' do
+        let(:require_activation) { true }
+
+        it 'includes the iframe only after the user activates it' do
+          visit project_issue_path(project, issue)
+
+          expect(page).to have_content('External content from Example (iframe.example)')
+          expect(page).to have_no_css(expected_selector)
+
+          click_button 'Load external content'
+
+          expect(page).to have_css(expected_selector)
+        end
       end
     end
 
@@ -46,15 +76,11 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
       it 'renders diffs and includes iframe correctly' do
         visit(diffs_project_merge_request_path(project, merge_request))
 
-        wait_for_requests
-
         page.within('.tab-content') do
           expect(page).to have_selector('.diffs')
         end
 
         visit(project_merge_request_path(project, merge_request))
-
-        wait_for_requests
 
         page.within('.merge-request') do
           expect(page).to have_css(expected_selector)
@@ -67,8 +93,6 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
       it 'includes iframe correctly' do
         visit(project_milestone_path(project, milestone))
-
-        wait_for_requests
 
         expect(page).to have_css(expected_selector)
       end
@@ -86,8 +110,6 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
       it 'includes iframe correctly' do
         visit(project_path(project))
 
-        wait_for_all_requests
-
         page.within '.js-wiki-content' do
           expect(page).to have_css(expected_selector)
         end
@@ -97,7 +119,7 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
   shared_examples_for 'an iframe renderer in a group' do
     before do
-      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: ['iframe.example'])
+      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
     end
 
     context 'in a group milestone' do
@@ -105,8 +127,6 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
       it 'includes iframe correctly' do
         visit(group_milestone_path(subgroup, group_milestone))
-
-        wait_for_requests
 
         expect(page).to have_css(expected_selector)
       end
@@ -119,6 +139,148 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
     end
 
     it_behaves_like 'an iframe renderer'
+
+    context 'with explicit dimensions' do
+      let(:issue) { create(:issue, project: project, description: markdown) }
+
+      before do
+        stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
+      end
+
+      def overflowing?(selector)
+        find(selector).evaluate_script('this.scrollWidth > this.clientWidth')
+      end
+
+      context 'when both are set' do
+        where(:dimensions) do
+          ['{width=560 height=315}', '{width=560px height=315px}']
+        end
+
+        with_them do
+          let(:markdown) { "![](https://iframe.example/some-video)#{dimensions}\n" }
+
+          it 'keeps the aspect ratio' do
+            visit project_issue_path(project, issue)
+
+            expect(page).to have_css(expected_selector)
+            aspect_ratio = "getComputedStyle(document.querySelector(#{expected_selector.to_json})).aspectRatio"
+            width, height = page.evaluate_script(
+              "(r => [r.width, r.height])(document.querySelector(#{expected_selector.to_json}).getBoundingClientRect())"
+            )
+
+            expect(page.evaluate_script(aspect_ratio)).to eq('560 / 315')
+            expect([width, height]).to eq([560, 315])
+          end
+        end
+      end
+
+      context 'when the requested width is below the minimum' do
+        let(:markdown) { "![](https://iframe.example/some-video){width=10 height=10}\n" }
+
+        it 'widens the frame without growing its height' do
+          visit project_issue_path(project, issue)
+
+          expect(page).to have_css(expected_selector)
+          width, height = page.evaluate_script(
+            "(r => [r.width, r.height])(document.querySelector(#{expected_selector.to_json}).getBoundingClientRect())"
+          )
+
+          expect(width).to eq(272)
+          expect(height).to eq(10)
+        end
+      end
+
+      context 'when the container is narrower than the minimum' do
+        where(:dimensions) do
+          ['{width=10 height=10}', '{width=560 height=315}']
+        end
+
+        with_them do
+          let(:markdown) { "![](https://iframe.example/some-video)#{dimensions}\n" }
+
+          it 'fits the frame to the container' do
+            visit project_issue_path(project, issue)
+
+            expect(page).to have_css(expected_selector)
+            frame, container = page.evaluate_script(<<~JS)
+              (iframe => {
+                iframe.closest('p').style.width = '200px';
+                return [iframe, iframe.closest('p')].map(el => {
+                  const r = el.getBoundingClientRect();
+                  return { left: r.left, right: r.right };
+                });
+              })(document.querySelector(#{expected_selector.to_json}))
+            JS
+
+            expect(frame).to eq(container)
+          end
+
+          context 'when activation is required' do
+            let(:require_activation) { true }
+
+            it 'keeps the placeholder and the warning within the container' do
+              visit project_issue_path(project, issue)
+
+              expect(page).to have_button('Load external content')
+              find('p:has(> .media-container)').execute_script("this.style.width = '200px'")
+
+              expect(overflowing?('p:has(> .media-container)')).to be(false)
+              expect(overflowing?('[data-testid="external-content-placeholder"]')).to be(false)
+
+              click_button 'Load external content'
+
+              expect(page).to have_css(expected_selector)
+              find('p:has(> .media-container)').execute_script("this.style.width = '100px'")
+
+              expect(overflowing?('p:has(> .media-container)')).to be(false)
+              expect(overflowing?('[data-testid="external-content-warning"]')).to be(false)
+            end
+          end
+        end
+      end
+
+      context 'when the width is too narrow for the external content chrome' do
+        let(:markdown) { "![](https://iframe.example/some-video){width=10}\n" }
+        let(:require_activation) { true }
+
+        it 'keeps the placeholder and the warning within their bounds' do
+          visit project_issue_path(project, issue)
+
+          expect(page).to have_button('Load external content')
+          expect(overflowing?('[data-testid="external-content-placeholder"]')).to be(false)
+
+          click_button 'Load external content'
+
+          expect(page).to have_css(expected_selector)
+          expect(overflowing?('[data-testid="external-content-warning"]')).to be(false)
+        end
+      end
+    end
+  end
+
+  context 'when feature is configured and enabled for the project, without dimensions' do
+    let(:issue) { create(:issue, project: project, description: markdown) }
+    let(:require_activation) { true }
+
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: project)
+      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
+    end
+
+    def rendered_size(selector)
+      find(selector).evaluate_script('(r => [r.width, r.height])(this.getBoundingClientRect())')
+    end
+
+    it 'loads the frame into the space the placeholder held' do
+      visit project_issue_path(project, issue)
+
+      placeholder_size = rendered_size('[data-testid="external-content-placeholder"]')
+
+      click_button 'Load external content'
+
+      expect(rendered_size(expected_selector)).to eq(placeholder_size)
+      expect(placeholder_size).to eq([560, 315])
+    end
   end
 
   context 'when feature is configured and enabled for the immediate group' do
@@ -150,12 +312,11 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
       it 'no iframe is added, the image tag is left untouched' do
         visit project_issue_path(project, issue)
-        wait_for_requests
 
-        expect(page).not_to have_css(expected_selector)
         # The image may be considered invisible because of the invalid target;
         # the main thing is it's there, and it's not an iframe.
         expect(page).to have_css(untouched_selector, visible: :all)
+        expect(page).to have_no_css(expected_selector)
       end
     end
   end

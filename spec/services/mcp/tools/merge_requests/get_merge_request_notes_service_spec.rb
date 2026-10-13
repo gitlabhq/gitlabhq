@@ -32,6 +32,10 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestNotesService, feature_c
         'Get the notes (comments and system notes) for a specific merge request.'
       )
     end
+
+    it 'is unlisted while it awaits removal' do
+      expect(service.unlisted?).to be(true)
+    end
   end
 
   describe 'input schema' do

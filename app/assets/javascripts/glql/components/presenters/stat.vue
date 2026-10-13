@@ -5,16 +5,14 @@ import { badgeVariantOptions } from '@gitlab/ui/src/utils/constants';
 import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { __, sprintf } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
-import { valueFormatterFor } from '../../utils/value_format';
-import { TREND_KEYS, statPresentationFor, trendPresentationFor } from './utils/stat';
-
-// Rendered when an aggregated query has no row for the single metric. Aggregations
-// over an empty set can omit the node entirely, so distinguish "no data" from a 0.
-const NO_VALUE = '—';
+import { compactValueFormatterFor, valueFormatterFor } from '../../utils/value_format';
+import { interpolateDescription, unknownPlaceholderError } from './utils/description';
+import { NO_VALUE, TREND_KEYS, statPresentationFor, trendPresentationFor } from './utils/stat';
 
 const metricValueIn = (data, metric) => (metric ? data?.nodes?.[0]?.[metric.key] : undefined);
 
 const BADGE_VARIANTS = Object.values(badgeVariantOptions);
+const COMPACT_OPTIONS = [true, false];
 const KNOWN_ICONS = new Set(iconSpriteInfo.icons);
 
 export default {
@@ -69,6 +67,9 @@ export default {
         ...this.displayConfig,
       });
     },
+    description() {
+      return interpolateDescription(this.statConfig.description, this.metrics, this.row);
+    },
     // A block that sets any part of the badge owns all of it: its own text under a derived
     // arrow, colour and tooltip would make the badge contradict itself.
     trend() {
@@ -80,6 +81,18 @@ export default {
       });
     },
     displayConfigError() {
+      const { compact } = this.displayConfig ?? {};
+      if (compact != null && !COMPACT_OPTIONS.includes(compact)) {
+        return sprintf(
+          __('Unknown `%{key}`: `%{value}`. Supported values are: %{supportedValues}.'),
+          {
+            key: 'compact',
+            value: compact,
+            supportedValues: COMPACT_OPTIONS.map((option) => `\`${option}\``).join(', '),
+          },
+        );
+      }
+
       const { variant, metaIcon, titleIcon } = this.statConfig;
 
       if (!BADGE_VARIANTS.includes(variant)) {
@@ -106,16 +119,20 @@ export default {
       // Config errors do not depend on the query result, so they surface before it arrives.
       if (this.displayConfigError) return this.displayConfigError;
       if (!this.fields.length) return null;
-      if (this.metrics.length !== 1) {
-        return __('stat display type requires exactly 1 metric');
+      if (this.metrics.length < 1) {
+        return __('stat display type requires at least 1 metric');
       }
       if (this.dimensions.length > 0) {
         return __('stat display type cannot have dimensions');
       }
-      return null;
+
+      return unknownPlaceholderError(this.statConfig.description, this.metrics);
     },
     metric() {
       return this.metrics[0];
+    },
+    row() {
+      return this.data?.nodes?.[0];
     },
     value() {
       return metricValueIn(this.data, this.metric);
@@ -126,6 +143,9 @@ export default {
     displayValue() {
       if (!this.metric) return '';
       if (this.value == null) return NO_VALUE;
+      if (this.displayConfig?.compact === true) {
+        return compactValueFormatterFor(this.metric)(this.value);
+      }
       return valueFormatterFor(this.metric)(this.value);
     },
   },
@@ -149,7 +169,7 @@ export default {
       :value="displayValue"
       :title="statConfig.title"
       :unit="statConfig.unit"
-      :description="statConfig.description"
+      :description="description"
       :meta-text="statConfig.metaText"
       :meta-icon="statConfig.metaIcon"
       :meta-tooltip="statConfig.metaTooltip"

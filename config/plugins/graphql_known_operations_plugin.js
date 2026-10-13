@@ -92,7 +92,7 @@ const createWebpackRawSource = (source) => {
   };
 };
 
-const onSucceedModule = ({ module, knownOperations, compilation }) => {
+const collectOperations = ({ module, knownOperations, compilation }) => {
   if (!isGraphqlFile(module)) {
     return;
   }
@@ -111,7 +111,14 @@ const onSucceedModule = ({ module, knownOperations, compilation }) => {
   });
 };
 
-const onCompilerEmit = ({ compilation, knownOperations, filename }) => {
+const onCompilerEmit = ({ compilation, filename }) => {
+  const knownOperations = new Map();
+
+  // why: Rspack does not run succeedModule for modules restored from its persistent cache.
+  compilation.modules.forEach((module) => {
+    collectOperations({ module, knownOperations, compilation });
+  });
+
   const contents = createFileContents(knownOperations);
   const source = createWebpackRawSource(contents);
 
@@ -136,23 +143,10 @@ class GraphqlKnownOperationsPlugin {
   }
 
   apply(compiler) {
-    const knownOperations = new Map();
-
     compiler.hooks.emit.tap(PLUGIN_NAME, (compilation) => {
       onCompilerEmit({
         compilation,
-        knownOperations,
         filename: this._filename,
-      });
-    });
-
-    compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
-      compilation.hooks.succeedModule.tap(PLUGIN_NAME, (module) => {
-        onSucceedModule({
-          module,
-          knownOperations,
-          compilation,
-        });
       });
     });
   }

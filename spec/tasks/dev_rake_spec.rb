@@ -32,6 +32,8 @@ RSpec.describe 'dev rake tasks' do
       expect(connections).to all(receive(:execute).with('SET statement_timeout TO 0'))
       expect(connections).to all(receive(:execute).with('ANALYZE'))
       expect(connections).to all(receive(:execute).with('RESET statement_timeout'))
+      expect(Gitlab::Database::TransactionTimeout).to receive(:disable).exactly(connections.size).times
+      expect(Gitlab::Database::TransactionTimeout).to receive(:reset).exactly(connections.size).times
 
       expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
 

@@ -240,7 +240,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -259,7 +259,7 @@ following response attributes:
 | `ci_forward_deployment_rollback_allowed` | boolean | Whether rollback is allowed for forward deployments. |
 | `ci_job_token_scope_enabled` | boolean | Indicates if CI/CD job token scope is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Requires administrator access or at least the Maintainer role for the project to view or update. Can be configured only through the API, not the UI. |
 | `ci_id_token_sub_claim_components` | array of strings | Components included in the CI/CD ID token subject claim. |
 | `ci_skip_branch_pipelines_for_mrs` | boolean | Whether [branch pipelines are skipped for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests) when the branch has an open merge request. Only visible if you have administrator access or the Owner role for the project. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
@@ -727,7 +727,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -1102,7 +1102,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -1117,7 +1117,7 @@ following response attributes:
 | `ci_forward_deployment_enabled` | boolean | Whether forward deployment is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_job_token_scope_enabled` | boolean | Indicates if CI/CD job token scope is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Requires administrator access or at least the Maintainer role for the project to view or update. Can be configured only through the API, not the UI. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
 | `keep_latest_artifact` | boolean | Indicates if the latest artifact is kept when a new one is created. Only visible if you have administrator access or the Owner role for the project. |
 | `restrict_user_defined_variables` | boolean | Whether user-defined variables are restricted. Only visible if you have administrator access or the Owner role for the project. |
@@ -1575,7 +1575,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -1590,7 +1590,7 @@ following response attributes:
 | `ci_forward_deployment_enabled` | boolean | Whether forward deployment is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_job_token_scope_enabled` | boolean | Indicates if CI/CD job token scope is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Requires administrator access or at least the Maintainer role for the project to view or update. Can be configured only through the API, not the UI. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
 | `keep_latest_artifact` | boolean | Indicates if the latest artifact is kept when a new one is created. Only visible if you have administrator access or the Owner role for the project. |
 | `restrict_user_defined_variables` | boolean | Whether user-defined variables are restricted. Only visible if you have administrator access or the Owner role for the project. |
@@ -2249,7 +2249,7 @@ Supported general project attributes:
 | `only_allow_merge_if_all_status_checks_passed`     | boolean | No                             | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No                             | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) in the project settings. |
 | `packages_enabled`                                 | boolean | No                             | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
-| `package_registry_access_level`                    | string  | No                             | Enable or disable packages repository feature. |
+| `package_registry_access_level`                    | string  | No                             | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `printing_merge_request_link_enabled`              | boolean | No                             | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No                             | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
@@ -2275,11 +2275,11 @@ Supported general project attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
-     --header "Content-Type: application/json" --data '{
-        "name": "new_project", "description": "New Project", "path": "new_project",
-        "namespace_id": "42", "initialize_with_readme": "true"}' \
-     --url "https://gitlab.example.com/api/v4/projects/"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your-token>" \
+  --header "Content-Type: application/json" \
+  --data '{"name": "new_project", "description": "New Project", "path": "new_project", "namespace_id": "42", "initialize_with_readme": "true"}' \
+  --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
 To set the visibility level of individual project features,
@@ -2353,7 +2353,7 @@ Supported general project attributes:
 | `only_allow_merge_if_all_status_checks_passed`     | boolean | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No       | Set whether merge requests can only be merged with successful jobs. |
 | `packages_enabled`                                 | boolean | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
-| `package_registry_access_level`                    | string  | No       | Enable or disable packages repository feature. |
+| `package_registry_access_level`                    | string  | No       | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                             | string  | No       | Custom repository name for new project. By default generated based on name. |
 | `printing_merge_request_link_enabled`              | boolean | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
@@ -2396,6 +2396,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 - `feature_flags_minimum_role` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
 - `ci_skip_branch_pipelines_for_mrs` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/607869) in GitLab 19.4.
+- `duo_code_review_decisions_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254980) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `duo_code_review_decisions`. Disabled by default.
 
 {{< /history >}}
 
@@ -2435,7 +2436,7 @@ Supported general project attributes:
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_skip_branch_pipelines_for_mrs`                 | boolean           | No       | Enable or disable [skip branch pipelines for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). |
-| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path` or `project_id`. The array might also include `ref_type`, `ref`, `ref_protected`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. Support for `project_id` as the first component [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/600358) in GitLab 19.1. |
+| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). The first element must be `project_path`, `project_id`, `job_project_path`, `job_project_id`, `source_project_path`, or `source_project_id`. The array might also include `ref_type`, `ref`, `ref_protected`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. Support for `project_id` as the first component [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/600358) in GitLab 19.1. Support for `job_project_path`, `job_project_id`, `source_project_path`, and `source_project_id` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565925) in GitLab 19.5. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. Premium and Ultimate only. |
 | `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer`, or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
@@ -2445,6 +2446,7 @@ Supported general project attributes:
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                      | string            | No       | Short project description. |
+| `duo_code_review_decisions_enabled`                | boolean           | No       | Enable approval and change requests by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code). Ultimate only. |
 | `duo_remote_flows_enabled`                         | boolean           | No       | Determine whether or not [flows](../user/duo_agent_platform/flows/_index.md) can run in your project. |
 | `duo_sast_fp_detection_enabled` | boolean | No | If `true`, turns on SAST false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST false positive detection](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project). |
 | `duo_secret_detection_fp_enabled` | boolean | No | If `true`, turns on secret detection false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on secret detection false positive detection](../user/application_security/vulnerabilities/secret_false_positive_detection.md#turn-on-for-a-project). |
@@ -2482,7 +2484,7 @@ Supported general project attributes:
 | `only_allow_merge_if_pipeline_succeeds`            | boolean           | No       | Set whether merge requests can only be merged with successful jobs. |
 | `only_mirror_protected_branches`                   | boolean           | No       | Only mirror protected branches. Premium and Ultimate only. |
 | `packages_enabled`                                 | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
-| `package_registry_access_level`                    | string  | No                 | Enable or disable packages repository feature. |
+| `package_registry_access_level`                    | string  | No                 | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
 | `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
@@ -2514,9 +2516,10 @@ Supported general project attributes:
 For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/_index.md):
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url "https://gitlab.com/api/v4/projects/<your-project-ID>" \
-     --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your-token>" \
+  --data "shared_runners_enabled=true" \
+  --url "https://gitlab.com/api/v4/projects/<your-project-ID>" # to turn off: "shared_runners_enabled=false"
 ```
 
 To set the visibility level of individual project features,
@@ -2535,7 +2538,8 @@ Prerequisites:
 To turn off Service Desk for a project, set the `service_desk_enabled` attribute to `false`:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --data "service_desk_enabled=false" \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>"
 ```
@@ -2985,6 +2989,9 @@ Supported attributes:
 
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- Asynchronous transfers [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/586549) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- Asynchronous transfers [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
+- Checking for a project with the same name or path before the transfer is scheduled [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/597297) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -3003,6 +3010,8 @@ Supported attributes:
 |:------------|:------------------|:---------|:------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer the project to. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the project as it was before the transfer.
 
 Example request:
 
@@ -3129,6 +3138,11 @@ Example response:
 }
 ```
 
+To confirm the transfer was successful, [retrieve the project](#retrieve-a-project) until its `namespace.id` matches the ID of the new namespace.
+
+If the transfer fails, the user who requested it gets a to-do item with the `transfer_failed` action.
+To get to-do items, see [list all to-do items](todos.md#list-all-to-do-items).
+
 #### List groups available for project transfer
 
 Retrieve a list of groups to which the user can transfer a project.
@@ -3250,8 +3264,10 @@ To remove a project avatar, use a blank value for the `avatar` attribute.
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "avatar=" "https://gitlab.example.com/api/v4/projects/5"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "avatar=" \
+  --url "https://gitlab.example.com/api/v4/projects/5"
 ```
 
 ## Share projects
@@ -3346,13 +3362,14 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
- --header "Content-Type: application/json" \
- --data '{
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
   "file_path":"src/main.c",
   "content":"#include<string.h>\nint main(int argc, char **argv) {\n  char buff[128];\n  strcpy(buff, argv[1]);\n  return 0;\n}\n"
  }' \
- --url "https://gitlab.example.com/api/v4/projects/:id/security_scans/sast/scan"
+  --url "https://gitlab.example.com/api/v4/projects/:id/security_scans/sast/scan"
 ```
 
 Example response:

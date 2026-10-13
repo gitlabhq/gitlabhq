@@ -21,8 +21,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	"gitlab.com/gitlab-org/gitaly/v18/client"
-	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v19/client"
+	"gitlab.com/gitlab-org/gitaly/v19/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/labkit/v2/log"
 )
 

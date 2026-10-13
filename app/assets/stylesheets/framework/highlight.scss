@@ -30,9 +30,7 @@
 
     code {
       display: inline-block;
-      // The source viewer offsets the code by `--source-gutter-width`; subtract it
-      // so the code doesn't overrun the viewport by that much.
-      min-width: calc(100% - var(--source-gutter-width, 0px));
+      min-width: 100%;
       font-family: $monospace-font;
       white-space: normal;
       word-wrap: normal;
@@ -276,5 +274,20 @@ pre .hll {
 
   .diff-line-num .file-line-blame:hover::before {
     background-color: var(--code-line-number-hover-color, #{$gl-color-neutral-600});
+  }
+}
+
+// Lives outside the grid and its wrapper: both are as tall as the file, so a
+// sticky child of either pins to the file's bottom edge, not the viewport's.
+.source-viewer-scrollbar {
+  height: $gl-spacing-scale-5;
+}
+
+// Avoids a second scrollbar stacked at the file's bottom edge.
+.source-viewer-file-content {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

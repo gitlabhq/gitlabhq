@@ -43,6 +43,7 @@ Asana
 Asciidoctor
 asdf
 Assembla
+Astra
 Astro
 async
 Atlassian
@@ -435,6 +436,7 @@ Gitpod
 Gitter
 glab
 GLab
+GLM
 globals
 globbing
 globstar
@@ -567,6 +569,7 @@ keytabs
 Kibana
 kibibyte
 kibibytes
+Kimi
 Kinesis
 Kiro
 Klar
@@ -668,6 +671,7 @@ mitigations
 mitmproxy
 mixin
 mixins
+Mixtral
 MLflow
 MLOps
 Mmap
@@ -715,6 +719,7 @@ NVMe
 nyc
 OAuth
 OCP
+OCaml
 Octokit
 offboarded
 offboarding
@@ -756,6 +761,7 @@ passwordless
 Patroni
 PDFs
 performant
+pg_ash
 PgBouncer
 pgFormatter
 pgLoader
@@ -839,6 +845,7 @@ Python
 Qualys
 queryable
 Quicktime
+Qwen
 Rackspace
 railties
 Raspbian
@@ -1009,6 +1016,7 @@ Sobelow
 Solargraph
 Solarized
 Sourcegraph
+Sourcetree
 Spamcheck
 spammable
 sparkline
@@ -1033,6 +1041,8 @@ strikethrough
 strikethroughs
 stunnel
 stylelint
+subagent
+subagents
 subchart
 subcharts
 subcommand
@@ -1107,6 +1117,7 @@ tcpdump
 teardown
 Telesign
 templated
+Tencent
 Thanos
 thoughtbot
 throughputs
@@ -1294,6 +1305,7 @@ virtualizing
 Vite
 VMs
 VPCs
+VRAM
 VSCodium
 Vue
 Vuex

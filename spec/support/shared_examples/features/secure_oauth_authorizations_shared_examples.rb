@@ -39,6 +39,17 @@ RSpec.shared_examples 'Secure Device OAuth Authorizations' do
   end
 
   context 'when confirmation page is rendered' do
+    let!(:device_grant) do
+      Doorkeeper::DeviceAuthorizationGrant::DeviceGrant.create!(
+        application: create(:oauth_application, scopes: 'read_user'),
+        user_code: user_code,
+        device_code: SecureRandom.hex,
+        expires_in: 300,
+        scopes: 'read_user',
+        organization: current_organization
+      )
+    end
+
     before do
       find_by_testid('authorization-button').click
     end

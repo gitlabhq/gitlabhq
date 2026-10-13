@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -13,12 +14,20 @@ import (
 	redsync "github.com/go-redsync/redsync/v4"
 	redis "github.com/redis/go-redis/v9"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
+	"google.golang.org/protobuf/proto"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 var errFailedToAcquireLockError = errors.New("handleClientEvents: failed to acquire lock")
+
+// Stamped unconditionally: a client must not get to choose its own value here.
+func markClientInjected(tools []*pb.McpTool) {
+	for _, tool := range tools {
+		tool.ClientInjected = proto.Bool(true)
+	}
+}
 
 type workflowStream interface {
 	Send(*pb.ClientEvent) error
@@ -30,6 +39,74 @@ type selfHostedWorkflowStream interface {
 	Send(*pb.TrackSelfHostedClientEvent) error
 	Recv() (*pb.TrackSelfHostedAction, error)
 	CloseSend() error
+}
+
+// teardownReason explains why an ExecuteWorkflow stream ended, so that
+// sessionErrorsTotal can show what sits behind each gRPC code. Workhorse
+// records it as soon as it learns the cause, which always happens before the
+// resulting teardown reaches Recv.
+type teardownReason int32
+
+const (
+	// teardownUnsolicited means nothing on the workhorse side asked for this
+	// teardown: the stream ended on its own, so DWS closed it or the transport
+	// between the two failed. This is the zero value, so a session where
+	// workhorse never noticed anything reports it.
+	teardownUnsolicited teardownReason = iota
+
+	// teardownClientNormalClose means the client closed the WebSocket with a
+	// normal code (1000 or 1001): the user closed the browser tab or the IDE
+	// panel, or stopped the flow.
+	teardownClientNormalClose
+
+	// teardownClientPongTimeout means the client stopped answering pings.
+	teardownClientPongTimeout
+
+	// teardownClientKeepaliveFailed means writing a keepalive to the client
+	// failed, so its connection was already gone.
+	teardownClientKeepaliveFailed
+
+	// teardownClientReadFailed means reading from the client failed in a way
+	// ReadError does not treat as an orderly disconnect: an abnormal WebSocket
+	// closure, a connection reset, or an unparsable message. No
+	// StopWorkflowRequest is sent on this path; the stream is torn down
+	// locally, which is why it must not be confused with teardownUnsolicited.
+	teardownClientReadFailed
+
+	// teardownWorkhorseShutdown means this workhorse instance is draining.
+	teardownWorkhorseShutdown
+)
+
+// String returns the value used for the teardown_reason metric label.
+func (t teardownReason) String() string {
+	switch t {
+	case teardownClientNormalClose:
+		return "client_normal_close"
+	case teardownClientPongTimeout:
+		return "client_pong_timeout"
+	case teardownClientKeepaliveFailed:
+		return "client_keepalive_failed"
+	case teardownClientReadFailed:
+		return "client_read_failed"
+	case teardownWorkhorseShutdown:
+		return "workhorse_shutdown"
+	default:
+		return "unsolicited"
+	}
+}
+
+// clientDisconnectReason maps a StopWorkflowRequest reason that ReadError
+// produced onto its teardown category. ReadError only reports a reason for
+// disconnects it considers orderly; anything else is teardownClientReadFailed.
+func clientDisconnectReason(reason string) teardownReason {
+	switch {
+	case reason == reasonPongTimeout:
+		return teardownClientPongTimeout
+	case strings.HasPrefix(reason, reasonClosePrefix):
+		return teardownClientNormalClose
+	default:
+		return teardownClientReadFailed
+	}
 }
 
 // stopCoordinator manages the graceful stop handshake between workhorse and DWS.
@@ -83,6 +160,22 @@ type runner struct {
 	mcpManager          mcpManager
 	stop                stopCoordinator
 	stopWorkflowTimeout time.Duration
+
+	// teardown holds the teardownReason recorded for this session, read by
+	// Recv when it labels sessionErrorsTotal.
+	teardown atomic.Int32
+}
+
+// recordTeardown notes why the stream is about to end. The first cause recorded
+// wins: anything that fails afterwards is a consequence of it, not an
+// independent cause.
+func (r *runner) recordTeardown(reason teardownReason) {
+	r.teardown.CompareAndSwap(int32(teardownUnsolicited), int32(reason))
+}
+
+// teardownReason reports the cause recorded for the teardown Recv is observing.
+func (r *runner) teardownReason() teardownReason {
+	return teardownReason(r.teardown.Load())
 }
 
 func newRunner(client clientTransport, rails *api.API, backend http.Handler, relativeURLRoot string, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
@@ -113,9 +206,11 @@ func newRunner(client clientTransport, rails *api.API, backend http.Handler, rel
 		token:                     cfg.Service.Headers["x-gitlab-oauth-token"],
 		shouldTimeoutHTTPRequests: cfg.TimeoutHTTPRequests,
 		originalReq:               r,
+		clientType:                cfg.Service.Headers["x-gitlab-client-type"],
+		clientName:                cfg.Service.Headers["x-gitlab-client-name"],
 	}
 
-	return &runner{
+	rnr := &runner{
 		originalReq:        r,
 		httpActionHandler:  httpActionHandler,
 		client:             client,
@@ -128,7 +223,13 @@ func newRunner(client clientTransport, rails *api.API, backend http.Handler, rel
 			acked:        make(chan struct{}),
 			shutdownDone: make(chan struct{}),
 		},
-	}, nil
+	}
+
+	// Let Recv read back the cause workhorse recorded, so every session error
+	// is labeled with what ended the stream.
+	streamManager.teardownReason = rnr.teardownReason
+
+	return rnr, nil
 }
 
 func (r *runner) Execute(ctx context.Context) error {
@@ -176,6 +277,7 @@ func (r *runner) keepaliveClient(ctx context.Context, errCh chan<- error, interv
 			return
 		case <-ticker.C:
 			if err := r.client.Keepalive(); err != nil {
+				r.recordTeardown(teardownClientKeepaliveFailed)
 				errCh <- r.stopAndWrapError("keepaliveClient", reasonKeepaliveFailed, err)
 				return
 			}
@@ -188,8 +290,12 @@ func (r *runner) handleClientEvents(errCh chan<- error) {
 		event, err := r.client.ReadClientEvent()
 		if err != nil {
 			if reason, ok := r.client.ReadError(err); ok {
+				r.recordTeardown(clientDisconnectReason(reason))
 				errCh <- r.stopAndWrapError("handleClientEvents", reason, err)
 			} else {
+				// Not an orderly disconnect, so no stop request is sent and the
+				// stream is torn down locally instead.
+				r.recordTeardown(teardownClientReadFailed)
 				errCh <- fmt.Errorf("handleClientEvents: failed to read a client event: %w", err)
 			}
 			return
@@ -289,7 +395,11 @@ func (r *runner) Close() error {
 	// client never sees that signal and won't reconnect to the new instance. In
 	// the normal request path Shutdown is never called, so we must not block on
 	// shutdownDone there.
-	if r.stop.shutdownStarted.Load() {
+	//
+	// Not when the workflow already ended: Shutdown sends nothing to the client
+	// then, and it only wakes on the drain deadline, so waiting would hold a
+	// finished session's connection open for the whole grace period.
+	if r.stop.shutdownStarted.Load() && !r.stop.workflowEnded.Load() {
 		<-r.stop.shutdownDone
 	}
 
@@ -318,6 +428,11 @@ func (r *runner) handleClientEvent(response *pb.ClientEvent) error {
 		}
 
 		r.mcpManager.SetWorkflowID(startReq.WorkflowID)
+
+		for _, tool := range startReq.McpTools {
+			tool.Trusted = nil
+		}
+		markClientInjected(startReq.McpTools)
 
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
 		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
@@ -389,7 +504,12 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 
 		event, err := r.mcpManager.CallTool(ctx, action)
 		if err != nil {
-			return fmt.Errorf("handleAgentAction: failed to call MCP tool: %v", err)
+			log.WithContextFields(ctx, log.Fields{
+				"request_id": action.RequestID,
+				"name":       mcpTool.Name,
+			}).WithError(err).Error("handleAgentAction: reporting failed MCP tool call back to DWS")
+
+			return r.sendActionError(action, err)
 		}
 
 		if err := r.streamManager.Send(event); err != nil {
@@ -406,9 +526,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 
 // writeActionToClient hands an action to the client for execution. Transports
 // whose client cannot execute actions reject them with errActionUnsupported;
-// those are reported back to Duo Workflow Service as a failed action, because
-// it waits for a response to every action it emits and would otherwise stall
-// until its own timeout.
+// those are reported back to Duo Workflow Service as a failed action.
 func (r *runner) writeActionToClient(ctx context.Context, action *pb.Action) error {
 	err := r.client.WriteAction(ctx, action)
 	if !errors.Is(err, errActionUnsupported) {
@@ -419,19 +537,24 @@ func (r *runner) writeActionToClient(ctx context.Context, action *pb.Action) err
 		"request_id": action.RequestID,
 	}).WithError(err).Info("writeActionToClient: reporting unsupported action back to DWS")
 
+	return r.sendActionError(action, err)
+}
+
+// sendActionError answers the action with an error so DWS does not wait forever.
+func (r *runner) sendActionError(action *pb.Action, actionErr error) error {
 	event := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
 			ActionResponse: &pb.ActionResponse{
 				RequestID: action.RequestID,
 				ResponseType: &pb.ActionResponse_PlainTextResponse{
-					PlainTextResponse: &pb.PlainTextResponse{Error: err.Error()},
+					PlainTextResponse: &pb.PlainTextResponse{Error: actionErr.Error()},
 				},
 			},
 		},
 	}
 
-	if sendErr := r.streamManager.Send(event); sendErr != nil {
-		return fmt.Errorf("writeActionToClient: failed to send gRPC message: %w", sendErr)
+	if err := r.streamManager.Send(event); err != nil {
+		return fmt.Errorf("sendActionError: failed to send gRPC message: %w", err)
 	}
 
 	return nil
@@ -501,8 +624,9 @@ func (r *runner) Shutdown(ctx context.Context) error {
 	// to stop and no reason to signal going away — the client does not need to
 	// reconnect to resume a workflow that has already finished.
 	if !workflowEnded {
+		r.recordTeardown(teardownWorkhorseShutdown)
 		err := r.stopWorkflow(
-			"WORKHORSE_SERVER_SHUTDOWN",
+			reasonServerShutdown,
 			fmt.Errorf("duoworkflow: stopping workflow due to server shutdown"),
 		)
 		if err != nil {

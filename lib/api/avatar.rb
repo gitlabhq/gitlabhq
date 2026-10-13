@@ -11,8 +11,9 @@ module API
         tags %w[avatars]
       end
       params do
-        requires :email, type: String, desc: 'Public email address of the user'
-        optional :size, type: Integer, desc: 'Single pixel dimension for Gravatar images'
+        requires :email, type: String, desc: 'Public email address of the user.'
+        optional :size, type: Integer, desc: 'Single pixel dimension for the avatar image. Only used for avatar ' \
+                                         'lookups at Gravatar or a configured Libravatar server.'
       end
       route_setting :authorization, permissions: :read_avatar, boundary_type: :user
       get do

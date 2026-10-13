@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import { getScrollingElement } from '~/lib/utils/panels';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import LogLine from './line.vue';
@@ -40,8 +41,15 @@ export default {
             await this.$nextTick();
 
             const el = document.getElementById(lineNumber);
-            const topBarHeight = document.querySelector('.js-job-log-top-bar')?.offsetHeight || 0;
-            scrollToElement(el, { offset: topBarHeight * -1 });
+            // The top bar is sticky and offset from the scroll container top, so
+            // offset by its bottom edge (not just its height) to keep the target
+            // line from landing behind it.
+            const topBar = document.querySelector('.js-job-log-top-bar');
+            const scrollContainer = getScrollingElement(el);
+            const topBarOffset = topBar
+              ? topBar.getBoundingClientRect().bottom - scrollContainer.getBoundingClientRect().top
+              : 0;
+            scrollToElement(el, { offset: topBarOffset * -1 });
 
             this.unwatchJobLog();
           }

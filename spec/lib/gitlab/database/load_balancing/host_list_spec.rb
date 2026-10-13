@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList, feature_category: :dat
         host_list.shuffle
 
         expect(host_list.length).to eq(host_count)
-        expect(host_list.hosts).to contain_exactly(*all_hosts)
+        expect(host_list.hosts).to match_array(all_hosts)
       end
     end
   end

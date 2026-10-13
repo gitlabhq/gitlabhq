@@ -386,7 +386,12 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
       it 'schedules the event with correct parameters' do
         constructed_event = event_klass.new(data: event_data)
 
-        expect(worker).to receive(:perform_in).with(5.minutes, event_name, event_data)
+        expect(worker).to receive(:perform_in) do |delay, name, data|
+          expect(delay).to eq(5.minutes)
+          expect(name).to eq(event_name)
+          expect(data).to eq(event_data.deep_stringify_keys)
+          expect(data).to be_instance_of(Hash)
+        end
 
         worker_instance.handle_event_in(5.minutes, constructed_event)
       end

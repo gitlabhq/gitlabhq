@@ -22,4 +22,12 @@ RSpec.describe Gitlab::Encryption::KeyProviderWrapper, feature_category: :shared
       wrapper.decryption_keys
     end
   end
+
+  describe '#decryption_keys_current_first' do
+    it 'returns the decryption keys with the current (last) key first' do
+      allow(key_provider).to receive(:decryption_keys).and_return(%w[old current])
+
+      expect(wrapper.decryption_keys_current_first).to eq(%w[current old])
+    end
+  end
 end

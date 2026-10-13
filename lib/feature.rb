@@ -367,6 +367,18 @@ module Feature
       ::Gitlab::Redis::FeatureFlag.cache_store
     end
 
+    # Drops the L1 and L2 cache entries for one flag so the next read hits the
+    # database. Geo promotion over logical replication needs this: no CacheInvalidationEvent
+    # expires the L2 store there. Adapters without a cache (the in-memory one in specs) are skipped.
+    def expire_cache(key)
+      adapter = flipper.adapter
+
+      while adapter
+        adapter.expire_feature_cache(key.to_s) if adapter.respond_to?(:expire_feature_cache)
+        adapter = adapter.respond_to?(:adapter) ? adapter.adapter : nil
+      end
+    end
+
     private
 
     def database_exists?

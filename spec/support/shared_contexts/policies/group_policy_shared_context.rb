@@ -24,7 +24,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:subgroup_guest, freeze: false) { create(:user, guest_of: subgroup) }
   let_it_be(:subgroup_maintainer, freeze: false) { create(:user, maintainer_of: subgroup) }
 
-  let_it_be(:organization_owner, freeze: false) { create(:organization_user, :owner, organization: organization).user }
+  let_it_be_with_reload(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
 
   let(:public_anonymous_permissions) do
     %i[
@@ -63,12 +63,16 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_label
         admin_milestone
         admin_work_item
+        create_label
+        delete_label
         destroy_issue
+        promote_label
         read_confidential_issues
         read_crm_contact
         read_crm_organization
         read_internal_note
         update_issue
+        update_label
       ]
     ).uniq
   end
@@ -82,6 +86,9 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_label
         admin_milestone
         admin_work_item
+        create_label
+        delete_label
+        promote_label
         read_ci_cd_analytics
         read_confidential_issues
         read_container_image
@@ -91,6 +98,7 @@ RSpec.shared_context 'GroupPolicy context' do
         read_internal_note
         read_prometheus
         update_issue
+        update_label
       ]
     ).uniq
   end
@@ -108,10 +116,8 @@ RSpec.shared_context 'GroupPolicy context' do
         create_custom_emoji
         create_observability_access_request
         create_package
-        delete_o11y_settings
         read_cluster
         read_observability_portal
-        update_o11y_settings
       ]
     ).uniq
   end

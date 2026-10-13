@@ -45,7 +45,8 @@ GET /broadcast_messages
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/broadcast_messages"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/broadcast_messages"
 ```
 
 Example response:
@@ -92,7 +93,8 @@ Parameters:
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/broadcast_messages/1"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/broadcast_messages/1"
 ```
 
 Example response:
@@ -165,8 +167,9 @@ The `theme` options are defined in the `System::BroadcastMessage` class. The fol
 Example request:
 
 ```shell
-curl --data "message=Deploy in progress&target_access_levels[]=10&target_access_levels[]=30&theme=red" \
+curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "message=Deploy in progress&target_access_levels[]=10&target_access_levels[]=30&theme=red" \
   --url "https://gitlab.example.com/api/v4/broadcast_messages"
 ```
 

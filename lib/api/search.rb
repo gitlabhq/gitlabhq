@@ -27,7 +27,7 @@ module API
 
       check_rate_limit!(
         :search_rate_limit,
-        scope: [current_user],
+        scope: { user: current_user },
         users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist
       )
     end
@@ -72,9 +72,17 @@ module API
         params_hash = keys.filter_map do |key|
           [key, params[key]] if params.key?(key)
         end.to_h
+        params_hash[:not] = negated_search_params if params[:not].respond_to?(:key?)
         params_hash[:snippets] = snippets?
         params_hash[:source] = 'api'
         params_hash
+      end
+
+      # Copying the hash whole would apply filters nothing here declares.
+      def negated_search_params
+        Helpers::SearchHelpers.search_negated_param_keys.filter_map do |key|
+          [key, params[:not][key]] if params[:not].key?(key)
+        end.to_h
       end
 
       def search(additional_params = {})
@@ -94,6 +102,7 @@ module API
           bad_request!("Scope '#{params[:scope]}' is not available for this search")
         end
 
+        @search_attempted = true
         @search_duration_s = Benchmark.realtime do
           @results = search_service.search_objects(preload_method)
         end
@@ -116,17 +125,20 @@ module API
 
         paginate(@results)
       ensure
+        # Skip requests that never attempted a search -- they are not search errors.
+        #
         # If we raise an error somewhere in the @search_duration_s benchmark block, we will end up here
         # with a 200 status code, but an empty @search_duration_s.
         # Errors record the user requested scope, otherwise the scope executed is recorded
-
-        search_service = search_service(additional_params)
-        Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-          error: @search_duration_s.nil? || status >= 500,
-          search_type: search_type(additional_params),
-          search_level: search_service.level,
-          search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
-        )
+        if @search_attempted
+          search_service = search_service(additional_params)
+          Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
+            error: @search_duration_s.nil? || status >= 500,
+            search_type: search_type(additional_params),
+            search_level: search_service.level,
+            search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
+          )
+        end
       end
 
       def project_scope_allowed?
@@ -160,6 +172,8 @@ module API
 
       def verify_ee_param_fields!(_); end
 
+      def verify_ee_param_mr_filters!(_); end
+
       def search_type(additional_params = {})
         @search_type ||= search_service(additional_params).search_type
       end
@@ -192,15 +206,20 @@ module API
       end
 
       params :params_common do
-        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
-        optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
+        optional :state, type: String, desc: 'Filter results by state. Applies only to the ' \
+                                         '`issues`, `work_items`, and `merge_requests` ' \
+                                         'scopes.', values: Helpers::SearchHelpers.search_states
+        optional :confidential, type: Boolean, desc: 'If `true`, returns only confidential results. If `false`, ' \
+                                                 'returns only non-confidential results. Applies only to the ' \
+                                                 '`issues` and `work_items` scopes.'
         optional :type, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           desc: Helpers::SearchHelpers.work_item_type_filter_desc
       end
 
       params :param_archived_filter do
         optional :include_archived, type: Boolean, default: false,
-          desc: 'Includes archived projects in the search. Introduced in GitLab 18.9.'
+          desc: 'If `true`, includes archived projects in the search. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.'
       end
 
       params :ee_param_fields do
@@ -218,6 +237,10 @@ module API
       params :ee_param_regex do
         # Overridden in EE
       end
+
+      params :ee_param_mr_filters do
+        # Overridden in EE
+      end
     end
 
     # rubocop: disable Cop/InjectEnterpriseEditionModule -- params helper needs to be included before the endpoints
@@ -231,8 +254,8 @@ module API
       end
 
       params do
-        requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :search, type: String, desc: 'Search query.'
+        requires :scope, type: String, desc: 'Scope of the search.',
           values: Helpers::SearchHelpers.global_search_scopes
 
         use :params_common
@@ -241,6 +264,7 @@ module API
         use :ee_param_exclude_forks
         use :ee_param_num_context_lines
         use :ee_param_regex
+        use :ee_param_mr_filters
         use :pagination
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :user
@@ -250,6 +274,7 @@ module API
         verify_search_scope_for_ee!(search_type)
         verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
+        verify_ee_param_mr_filters!(search_type)
 
         set_headers('Content-Transfer-Encoding' => 'binary')
 
@@ -264,9 +289,9 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
-        requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
+        requires :search, type: String, desc: 'Search query.'
+        requires :scope, type: String, desc: 'Scope of the search.',
           values: Helpers::SearchHelpers.group_search_scopes
 
         use :params_common
@@ -275,6 +300,7 @@ module API
         use :ee_param_exclude_forks
         use :ee_param_num_context_lines
         use :ee_param_regex
+        use :ee_param_mr_filters
         use :pagination
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :group
@@ -287,6 +313,7 @@ module API
         verify_search_scope_for_ee!(search_type)
         verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
+        verify_ee_param_mr_filters!(search_type)
 
         set_headers
 
@@ -301,18 +328,19 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-        requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+        requires :search, type: String, desc: 'Search query.'
+        requires :scope, type: String, desc: 'Scope of the search.',
           values: Helpers::SearchHelpers.project_search_scopes
 
         optional :ref, type: String,
-          desc: 'The name of a repository branch or tag. If not given, the default branch is used'
+          desc: 'Name of the repository branch or tag. If omitted, uses the default branch.'
 
         use :params_common
         use :ee_param_fields
         use :ee_param_num_context_lines
         use :ee_param_regex
+        use :ee_param_mr_filters
         use :pagination
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :project
@@ -324,6 +352,7 @@ module API
         search_type = search_type(additional_params)
         verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
+        verify_ee_param_mr_filters!(search_type)
 
         set_headers
 

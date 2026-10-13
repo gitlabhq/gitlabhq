@@ -73,7 +73,8 @@ RSpec.describe WorkerAttributes, feature_category: :sidekiq do
       :get_concurrency_limit                  | :concurrency_limit                 | 0                | [-> { 0 }]   | {} | 0
 
       :get_deduplication_options              | :deduplicate                       | {}               | [:none, { including_scheduled: true }] | {} | { including_scheduled: true }
-      :database_health_check_attrs            | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute]     | {} | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute, block: nil }
+      :database_health_check_attrs            | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute]     | {} | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute, indicators: nil, block: nil }
+      :database_health_check_attrs            | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute]     | { indicators: [:foo] } | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute, indicators: [:foo], block: nil }
     end
     # rubocop: enable Layout/LineLength
 

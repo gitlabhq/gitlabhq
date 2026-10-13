@@ -8,7 +8,8 @@ module Mutations
 
         ADMIN_MESSAGE = 'You must be an admin to use this mutation'
 
-        authorize_granular_token permissions: :drop_sidekiq_job, boundary: :instance, boundary_type: :instance
+        authorize_granular_token permissions: :drop_sidekiq_job, boundary: :instance, boundary_type: :instance,
+          assignable_when: [:admin]
 
         ::Gitlab::ApplicationContext.allowed_job_keys.each do |key|
           argument key,

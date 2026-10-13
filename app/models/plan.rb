@@ -72,7 +72,7 @@ class Plan < ApplicationRecord
   # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 
   def actual_limits
-    limits || build_limits
+    limits || build_limits(plan_name_uid: plan_name_uid_before_type_cast)
   end
 
   def default?

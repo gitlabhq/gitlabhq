@@ -114,15 +114,32 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
       shared_examples_for 'not running analyze' do
         specify do
-          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(analyze: analyze) }
+          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(models, analyze: analyze) }
           expect(control.occurrences).not_to include(analyze_regex)
         end
       end
 
       context 'when analyze_interval is not set' do
-        it_behaves_like 'not running analyze'
+        let(:whole_table_analyze_regex) { /ANALYZE \(SKIP_LOCKED\) "_test_partitioning_test\d"/ }
+
+        it 'does not run the whole-table analyze by default' do
+          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(models, analyze: analyze) }
+          expect(control.occurrences).not_to include(whole_table_analyze_regex)
+        end
+
+        context 'when analyze_tables_with_default_interval is true' do
+          it 'runs the whole-table analyze using the default analyze_interval' do
+            control = ActiveRecord::QueryRecorder.new do
+              described_class.sync_partitions(models, analyze: analyze, analyze_tables_with_default_interval: true)
+            end
+
+            expect(control.occurrences).to include(whole_table_analyze_regex)
+          end
+        end
 
         context 'when analyze is set to false' do
+          let(:analyze) { false }
+
           it_behaves_like 'not running analyze'
         end
       end
@@ -333,6 +350,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
         described_class.sync_partitions(models)
       end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping sync of dynamic postgres partitions',
+          feature_flag: :partition_manager_sync_partitions
+        )
+
+        expect(described_class.sync_partitions(models)).to eq(:partition_manager_sync_partitions)
+      end
     end
 
     context 'when disallow_database_ddl_feature_flags feature flag is enabled' do
@@ -346,6 +372,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         expect(described_class).to receive(:sync_partitions).and_call_original
 
         described_class.sync_partitions(models)
+      end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping sync of dynamic postgres partitions',
+          feature_flag: :disallow_database_ddl_feature_flags
+        )
+
+        expect(described_class.sync_partitions(models)).to eq(:disallow_database_ddl_feature_flags)
       end
     end
   end
@@ -419,6 +454,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
         described_class.drop_detached_partitions
       end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping drop of detached postgres partitions',
+          feature_flag: :partition_manager_sync_partitions
+        )
+
+        expect(described_class.drop_detached_partitions).to eq(:partition_manager_sync_partitions)
+      end
     end
 
     context 'when the feature disallow DDL feature flags is enabled' do
@@ -431,10 +475,51 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
         described_class.drop_detached_partitions
       end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping drop of detached postgres partitions',
+          feature_flag: :disallow_database_ddl_feature_flags
+        )
+
+        expect(described_class.drop_detached_partitions).to eq(:disallow_database_ddl_feature_flags)
+      end
     end
 
     def table_exists?(table_name)
       table_oid(table_name).present?
+    end
+  end
+
+  describe '.finalize_pending_detach_partitions' do
+    it 'finalizes pending detach partitions for each database' do
+      expect(Gitlab::Database::EachDatabase).to receive(:each_connection).and_yield
+      expect_next_instance_of(Gitlab::Database::Partitioning::PendingDetachPartitionFinalizer) do |finalizer|
+        expect(finalizer).to receive(:perform)
+      end
+
+      described_class.finalize_pending_detach_partitions
+    end
+
+    context 'when the feature disallow DDL feature flags is enabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+      end
+
+      it 'does not call the PendingDetachPartitionFinalizer' do
+        expect(Gitlab::Database::Partitioning::PendingDetachPartitionFinalizer).not_to receive(:new)
+
+        described_class.finalize_pending_detach_partitions
+      end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping finalizing pending detach postgres partitions',
+          feature_flag: :disallow_database_ddl_feature_flags
+        )
+
+        expect(described_class.finalize_pending_detach_partitions).to eq(:disallow_database_ddl_feature_flags)
+      end
     end
   end
 end

@@ -28,6 +28,7 @@ const TEST_PROJECT_ID = getStateQueryResponse.data.project.id;
 const TEST_MR_ID = getStateQueryResponse.data.project.mergeRequest.id;
 const TEST_MR_IID = '23';
 const TEST_MR_TITLE = 'Test MR Title';
+const TEST_MR_TITLE_HTML = '<p>Test MR Title</p>';
 const TEST_PROJECT_PATH = 'lorem/ipsum';
 
 jest.mock('~/alert');
@@ -69,6 +70,7 @@ describe('~/vue_merge_request_widget/components/checks/draft.vue', () => {
           __typename: 'MergeRequest',
           id: TEST_MR_ID,
           title: TEST_MR_TITLE,
+          titleHtml: TEST_MR_TITLE_HTML,
           draft: false,
           mergeableDiscussionsState: true,
         },
@@ -159,7 +161,11 @@ describe('~/vue_merge_request_widget/components/checks/draft.vue', () => {
       });
 
       it('calls toggleDraftStatus', () => {
-        expect(MergeRequest.toggleDraftStatus).toHaveBeenCalledWith(TEST_MR_TITLE, true);
+        expect(MergeRequest.toggleDraftStatus).toHaveBeenCalledWith(
+          TEST_MR_TITLE,
+          true,
+          TEST_MR_TITLE_HTML,
+        );
       });
     });
 

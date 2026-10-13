@@ -192,7 +192,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         # These queries are unrelated to what this N+1 spec is testing.
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Project).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
         end
       end
 
@@ -792,6 +795,54 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           let(:filter) { { membership: true } }
           let(:current_user) { user }
           let(:projects) { [project, project2, project3] }
+        end
+
+        context 'when sorting by a column with a (column, id) index' do
+          let(:membership_projects) { [project, project2, project3] }
+
+          def request_sql(params)
+            ActiveRecord::QueryRecorder.new { get api(path, user), params: params }.log.join("\n")
+          end
+
+          it 'sorts without the index and returns projects in order', :aggregate_failures do
+            sql = request_sql(membership: true, order_by: 'name', sort: 'asc')
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.map { |p| p['id'] }).to eq(membership_projects.sort_by { |p| [p.name, p.id] }.map(&:id))
+            expect(sql).to include("ORDER BY ('' || projects.name) ASC")
+          end
+
+          it 'sorts without the index in descending order', :aggregate_failures do
+            sql = request_sql(membership: true, order_by: 'path', sort: 'desc')
+
+            expect(json_response.map { |p| p['id'] }).to eq(membership_projects.sort_by { |p| [p.path, p.id] }.reverse.map(&:id))
+            expect(sql).to include("ORDER BY ('' || projects.path) DESC")
+          end
+
+          it 'sorts without the index when filtering by min_access_level', :aggregate_failures do
+            sql = request_sql(min_access_level: Gitlab::Access::GUEST, order_by: 'name', sort: 'asc')
+
+            expect(json_response.map { |p| p['id'] }).to eq(membership_projects.sort_by { |p| [p.name, p.id] }.map(&:id))
+            expect(sql).to include("ORDER BY ('' || projects.name) ASC")
+          end
+
+          it 'sorts by the column when ordering by id' do
+            expect(request_sql(membership: true, order_by: 'id', sort: 'asc')).not_to include("('' ||")
+          end
+
+          it 'sorts by the column without membership' do
+            expect(request_sql(order_by: 'name', sort: 'asc')).not_to include("('' ||")
+          end
+
+          context 'when sort_membership_projects_without_index is disabled' do
+            before do
+              stub_feature_flags(sort_membership_projects_without_index: false)
+            end
+
+            it 'sorts by the column' do
+              expect(request_sql(membership: true, order_by: 'name', sort: 'asc')).not_to include("('' ||")
+            end
+          end
         end
       end
 
@@ -1468,6 +1519,22 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           )
       end
     end
+
+    context 'when filtering by organization', :with_current_organization do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:org1_namespace) { create(:namespace, organization: current_organization) }
+      let_it_be(:other_namespace) { create(:namespace, organization: other_organization) }
+      let_it_be(:org1_project) { create(:project, :public, namespace: org1_namespace) }
+      let_it_be(:other_org_project) { create(:project, :public, namespace: other_namespace) }
+
+      it 'returns only projects belonging to the current organization' do
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |p| p['id'] }).to include(org1_project.id)
+        expect(json_response.map { |p| p['id'] }).not_to include(other_org_project.id)
+      end
+    end
   end
 
   describe 'POST /projects' do
@@ -1772,6 +1839,28 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect { post api(path, user), params: project_params }.to change { Project.count }.by(1)
 
       expect(response).to have_gitlab_http_status(:created)
+    end
+
+    describe 'request_channel for an import_url', :clean_gitlab_redis_shared_state do
+      let(:url) { 'http://example.com' }
+      let(:project_params) { { import_url: url, path: 'path-project-Foo', name: 'Foo Project' } }
+
+      before do
+        allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with(url).and_return(true)
+        stub_application_setting(import_sources: ['git'])
+      end
+
+      it 'defaults to :api' do
+        post api(path, user), params: project_params
+
+        expect(Project.find(json_response['id']).import_state.request_channel).to eq('api')
+      end
+
+      it 'is :congregate when the caller identifies as Congregate' do
+        post api(path, user), params: project_params, headers: { 'User-Agent' => 'GitLabApiClient' }
+
+        expect(Project.find(json_response['id']).import_state.request_channel).to eq('congregate')
+      end
     end
 
     it 'sets a project as public' do
@@ -2191,6 +2280,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         get api("/users/#{user4.id}/projects/", personal_access_token: pat)
       end
     end
+
+    # This endpoint lists personal projects, and a user has a single personal namespace, so the
+    # organization filter is exercised across two users rather than within one result set.
+    context 'when filtering by organization', :with_current_organization do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:org_user) { create(:user, organization: current_organization) }
+      let_it_be(:other_org_user) { create(:user, organization: other_organization) }
+      let_it_be(:org_project) { create(:project, :public, namespace: org_user.namespace) }
+      let_it_be(:other_org_project) { create(:project, :public, namespace: other_org_user.namespace) }
+
+      it 'returns projects when the user namespace is in the current organization' do
+        get api("/users/#{org_user.id}/projects/", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |p| p['id'] }).to contain_exactly(org_project.id)
+      end
+
+      it 'excludes projects when the user namespace is in another organization' do
+        get api("/users/#{other_org_user.id}/projects/", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
   end
 
   describe 'GET /users/:user_id/starred_projects/' do
@@ -2376,6 +2489,18 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     it_behaves_like 'POST request permissions for admin mode' do
       let(:params) { { name: 'Foo Project' } }
+    end
+
+    it 'captures request_channel for an import_url', :clean_gitlab_redis_shared_state do
+      url = 'http://example.com'
+      allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with(url).and_return(true)
+      stub_application_setting(import_sources: ['git'])
+
+      post api(path, admin, admin_mode: true),
+        params: { import_url: url, path: 'path-project-Foo', name: 'Foo Project' },
+        headers: { 'User-Agent' => 'GitLabApiClient' }
+
+      expect(Project.find(json_response['id']).import_state.request_channel).to eq('congregate')
     end
 
     it 'creates new project without path but with name and return 201' do
@@ -7163,5 +7288,47 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     let(:attributable) { project }
     let(:other_attributable) { project2 }
     let(:boundary_type) { project }
+  end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of fork_repository' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'fork_repository').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'namespace_id' => {
+            type: 'integer',
+            description: 'ID of the namespace to fork the new project into.'
+          },
+          'namespace_path' => {
+            type: 'string',
+            description: 'Path of the namespace to fork the new project into.'
+          },
+          'name' => {
+            type: 'string',
+            description: 'Name assigned to the new project after forking.'
+          },
+          'path' => {
+            type: 'string',
+            description: 'Path assigned to the new project after forking.'
+          },
+          'description' => {
+            type: 'string',
+            description: 'Description assigned to the new project after forking.'
+          },
+          'visibility' => {
+            type: 'string',
+            description: '[Visibility level](https://docs.gitlab.com/api/projects/#project-visibility-level) ' \
+              'assigned to the new project after forking.',
+            enum: %w[private internal public]
+          }
+        },
+        required: %w[id],
+        additionalProperties: false
+      })
+    end
   end
 end

@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: Custom Models
+stage: AI Platform
+group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Plateformes de service LLM prises en charge.
 title: Configurer les plateformes LLM
@@ -8,19 +8,20 @@ title: Configurer les plateformes LLM
 
 {{< details >}}
 
-- Édition : GitLab Premium, GitLab Ultimate
-- Offre : GitLab Self-Managed
+- Édition : GitLab Premium, GitLab Ultimate
+- Offre : GitLab Self-Managed, GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduit](https://gitlab.com/groups/gitlab-org/-/epics/12972) dans GitLab 17.1 [avec un flag](../feature_flags/_index.md) nommé `ai_custom_model`. Désactivé par défaut.
-- [Activé sur GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) dans GitLab 17.6.
-- Modifié pour nécessiter le module complémentaire GitLab Duo dans GitLab 17.6 et versions ultérieures.
-- Le feature flag `ai_custom_model` a été supprimé dans GitLab 17.8.
-- Généralement disponible dans GitLab 17.9.
-- Modifié pour inclure Premium dans GitLab 18.0.
+- [Introduction](https://gitlab.com/groups/gitlab-org/-/work_items/12972) dans GitLab 17.1 [avec le feature flag](../feature_flags/_index.md) `ai_custom_model`. Désactivé par défaut.
+- [Activation sur GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/work_items/15176) dans GitLab 17.6.
+- À partir de GitLab 17.6 et versions ultérieures, le module d'extension GitLab Duo est devenu obligatoire.
+- Suppression du feature flag `ai_custom_model` dans GitLab 17.8.
+- Passage en disponibilité générale dans GitLab 17.9.
+- Modification pour inclure GitLab Premium dans GitLab 18.0.
+- [Activation sur GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) dans GitLab 18.5.
 
 {{< /history >}}
 
@@ -158,8 +159,9 @@ Cette modification a été observée comme améliorant notablement les temps de 
 GitLab a validé et testé les fournisseurs suivants. L'AI Gateway prend en charge les fournisseurs LLM compatibles avec [LiteLLM](https://docs.litellm.ai/docs/providers).
 
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
-- [Google Vertex AI](https://cloud.google.com/vertex-ai)
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+- [Amazon Bedrock Mantle](#configure-amazon-bedrock-mantle)
+- [Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard&pivots=azure-openai)
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [OpenAI](https://developers.openai.com/api/docs/models)
 
@@ -205,7 +207,7 @@ Pour utiliser IRSA afin d'authentifier Amazon EKS :
      --description "Bedrock access for AI Gateway"
    ```
 
-1. Facultatif. Pour un contrôle d'accès plus strict, remplacez la ressource générique par le nom de ressource Amazon (ARN) spécifique du modèle. Cela garantit que seuls les modèles approuvés sont accessibles, même si la configuration GitLab change. Pour les ARN de modèles disponibles, consultez [les ID de modèles Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
+1. Facultatif. Pour un contrôle d'accès plus strict, remplacez la ressource générique par le nom de ressource Amazon (ARN) spécifique du modèle. Cela garantit que seuls les modèles approuvés sont accessibles, même si la configuration GitLab change. Pour connaître les ARN de modèles disponibles, consultez [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
 
    ```json
    "Resource": [
@@ -215,7 +217,7 @@ Pour utiliser IRSA afin d'authentifier Amazon EKS :
    ```
 
    > [!note]
-   > Certains modèles peuvent utiliser des formats ARN différents. Par exemple, les modèles plus récents peuvent nécessiter des ARN de profil d'inférence en plus des ARN de modèle de fondation. Pour vérifier le format ARN de votre modèle spécifique, consultez les [ID de modèles Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
+   > Certains modèles peuvent utiliser des formats ARN différents. Par exemple, les modèles plus récents peuvent nécessiter des ARN de profil d'inférence en plus des ARN de modèle de fondation. Pour vérifier le format ARN de votre modèle spécifique, consultez [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
 
 1. Créez un rôle IAM avec une politique de confiance pour votre compte de service Amazon EKS. Remplacez les valeurs suivantes :
 
@@ -411,9 +413,34 @@ docker run -d \
 
 Pour plus d'informations, consultez [Amazon Bedrock Guardrails](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html).
 
-### Configurer l'authentification avec Google Vertex AI {#configure-authentication-with-google-vertex-ai}
+### Configurer Amazon Bedrock Mantle {#configure-amazon-bedrock-mantle}
 
-Pour utiliser des modèles de Google Vertex AI, vous devez authentifier votre instance AI Gateway. Vous pouvez utiliser l'un des mécanismes suivants :
+{{< details >}}
+
+- Statut : version bêta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduit](https://gitlab.com/groups/gitlab-org/-/work_items/22787) en tant que [version bêta](../../policy/development_stages_support.md#beta) dans GitLab 19.3.
+
+{{< /history >}}
+
+[Amazon Bedrock Mantle](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) est un service d'inférence compatible avec l'API OpenAI, proposé par AWS. Configurez Amazon Bedrock Mantle avec la plateforme API comme les autres points de terminaison compatibles avec OpenAI.
+
+Seul GPT OSS 120B est validé et pris en charge sur Amazon Bedrock Mantle.
+
+Pour configurer un modèle Amazon Bedrock Mantle, [ajoutez un modèle auto-hébergé](configure_duo_features.md#add-a-self-hosted-model) avec les valeurs suivantes :
+
+- Pour **Famille de modèles**, sélectionnez la famille correspondant au modèle. Pour GPT OSS 120B, sélectionnez **GPT**.
+- Pour **Point de terminaison**, saisissez le point de terminaison régional sous la forme `https://bedrock-mantle.<region>.api.aws/v1` (par exemple, `https://bedrock-mantle.us-east-1.api.aws/v1`).
+- Pour **Identifiant du modèle**, utilisez le préfixe `bedrock_mantle/` (par exemple, `bedrock_mantle/openai.gpt-oss-120b`).
+- Pour **Clé de l'API**, saisissez une clé d'API Amazon Bedrock Mantle. Pour plus d'informations, consultez [AWS Bedrock API keys](#aws-bedrock-api-keys).
+
+### Configurer l'authentification avec Gemini Enterprise Agent Platform {#configure-authentication-with-gemini-enterprise-agent-platform}
+
+Pour utiliser des modèles de Gemini Enterprise Agent Platform, vous devez authentifier votre instance de passerelle d'IA. Vous pouvez utiliser l'un des mécanismes suivants :
 
 - Exportez les variables d'environnement lors du démarrage du conteneur Docker. Pour ce faire, définissez les variables d'environnement suivantes lors de l'exécution du conteneur AI Gateway :
 
@@ -423,7 +450,7 @@ Pour utiliser des modèles de Google Vertex AI, vous devez authentifier votre in
   VERTEXAI_LOCATION=global # or any specific location, e.g., "europe-west1"
   ```
 
-- Exécutez le conteneur AI Gateway sur Google Cloud Run et utilisez le [compte de service Cloud Run](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account) pour l'accès à Vertex AI.
+- Exécutez le conteneur de la passerelle d'IA sur Google Cloud Run et utilisez le [compte de service Cloud Run](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account) pour accéder à Gemini Enterprise Agent Platform.
 
 ## Sujets connexes {#related-topics}
 
@@ -434,4 +461,4 @@ Pour utiliser des modèles de Google Vertex AI, vous devez authentifier votre in
 - Pour les informations de configuration, consultez la documentation suivante :
   - [Présentation de l'API Anthropic](https://platform.claude.com/docs/en/api/overview)
   - [Présentation de l'API OpenAI](https://developers.openai.com/api/docs)
-  - [Utilisation des modèles Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
+  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/working-with-models?tabs=powershell)

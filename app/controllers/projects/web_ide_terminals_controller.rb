@@ -59,6 +59,8 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
 
     if response.success?
       render_terminal(response[:job])
+    elsif response.reason == :rate_limited
+      head :too_many_requests
     else
       respond_422
     end

@@ -351,7 +351,7 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
         ## Test Result Summary
 
         <!-- section:msw -->
-        ### MSW Test Result Summary
+        ### Frontend Integration Test Result Summary
 
         msw body
         <!-- /section:msw -->
@@ -374,7 +374,13 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
     it 'leaves the other section untouched' do
       result = splice_section(existing, 'rspec', 'fresh rspec body')
 
-      expect(result).to include("<!-- section:msw -->\n### MSW Test Result Summary\n\nmsw body\n<!-- /section:msw -->")
+      expect(result).to include(<<~MD.chomp)
+        <!-- section:msw -->
+        ### Frontend Integration Test Result Summary
+
+        msw body
+        <!-- /section:msw -->
+      MD
     end
 
     it 'appends the section when its markers are missing' do
@@ -393,8 +399,8 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       expect(placeholder_section('msw', job_present: true)).to include('Pending')
     end
 
-    it 'reports a counterpart job absent from the pipeline as not run' do
-      expect(placeholder_section('msw', job_present: false)).to include('Did not run')
+    it 'reports a counterpart that is absent or had nothing to report' do
+      expect(placeholder_section('msw', job_present: false)).to include('Did not run', 'nothing to report')
     end
   end
 
@@ -502,6 +508,24 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       expect(fetch_changed_spec_files('1', '2')[:files].first).to include(old_path: 'spec/models/old_spec.rb')
     end
 
+    it 'flags integration (MSW) spec changes, including deletions' do
+      allow(self).to receive(:api_request).and_return([
+        mr_diff(new_path: 'ee/spec/frontend/integration/work_items/work_items_spec.js', deleted_file: true)
+      ])
+
+      expect(fetch_changed_spec_files('1', '2')[:msw_changes]).to be(true)
+    end
+
+    it 'does not flag unit-level JS specs or non-spec files as MSW changes' do
+      allow(self).to receive(:api_request).and_return([
+        mr_diff(new_path: 'spec/frontend/boards/board_list_spec.js'),
+        mr_diff(new_path: 'spec/models/user_spec.rb'),
+        mr_diff(new_path: 'app/models/user.rb')
+      ])
+
+      expect(fetch_changed_spec_files('1', '2')[:msw_changes]).to be(false)
+    end
+
     it 'flags truncation when the page cap is reached' do
       page = Array.new(DIFFS_PER_PAGE) { |i| mr_diff(new_path: "spec/models/user#{i}_spec.rb") }
       allow(self).to receive(:api_request).and_return(page)
@@ -510,12 +534,14 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
 
       expect(result[:truncated]).to be(true)
       expect(result[:files].size).to eq(DIFFS_PER_PAGE * MAX_DIFF_PAGES)
+      # A truncated listing cannot prove the MR has no integration spec changes.
+      expect(result[:msw_changes]).to be(true)
     end
 
-    it 'warns and reports no changed files when the diffs endpoint fails' do
+    it 'warns, reports no changed files, and assumes MSW changes when the diffs endpoint fails' do
       allow(self).to receive(:api_request).and_raise(StandardError, 'boom')
 
-      expect { expect(fetch_changed_spec_files('1', '2')).to eq(files: [], truncated: false) }
+      expect { expect(fetch_changed_spec_files('1', '2')).to eq(files: [], truncated: false, msw_changes: true) }
         .to output(/Could not fetch MR changed files/).to_stderr
     end
   end
@@ -1179,28 +1205,28 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
     end
 
     it 'is true when the pipeline holds the job' do
-      allow(self).to receive(:api_request).and_return([{ 'name' => 'jest-msw-integration' }])
+      allow(self).to receive(:api_request).and_return([{ 'name' => 'jest-integration' }])
 
-      expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(true)
+      expect(counterpart_job_present?('1', 'jest-integration')).to be(true)
     end
 
     it 'is false when the pipeline does not hold the job' do
       allow(self).to receive(:api_request).and_return([{ 'name' => 'rspec:test-summary' }])
 
-      expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(false)
+      expect(counterpart_job_present?('1', 'jest-integration')).to be(false)
     end
 
     it 'is false outside a pipeline' do
       stub_env('CI_PIPELINE_ID', '')
 
-      expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(false)
+      expect(counterpart_job_present?('1', 'jest-integration')).to be(false)
     end
 
     it 'warns and is false when the jobs endpoint fails' do
       allow(self).to receive(:api_request).and_raise(StandardError, 'boom')
 
-      expect { expect(counterpart_job_present?('1', 'jest-msw-integration')).to be(false) }
-        .to output(/Could not look up jest-msw-integration/).to_stderr
+      expect { expect(counterpart_job_present?('1', 'jest-integration')).to be(false) }
+        .to output(/Could not look up jest-integration/).to_stderr
     end
   end
 
@@ -1223,7 +1249,7 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
         allow(self).to receive_messages(find_existing_note: nil, counterpart_job_present?: true)
       end
 
-      it 'posts a combined note holding this section and a placeholder for MSW' do
+      it 'posts a combined note holding this section and a placeholder for the integration suite' do
         record_api_calls
 
         expect { post_or_update_comment('1', '2', section) }
@@ -1232,6 +1258,16 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
         expect(calls.first[:method]).to eq('POST')
         expect(calls.first[:path]).to eq('/projects/1/merge_requests/2/notes')
         expect(calls.first[:payload][:body]).to include(COMBINED_MARKER, 'fresh rspec body', 'Pending')
+      end
+
+      it 'uses the nothing-to-report placeholder when the MR has no integration spec changes' do
+        record_api_calls
+
+        expect { post_or_update_comment('1', '2', section, msw_changes: false) }
+          .to output(/Posted new test summary comment/).to_stdout
+
+        expect(calls.first[:payload][:body]).to include('nothing to report')
+        expect(calls.first[:payload][:body]).not_to include('Pending')
       end
     end
 
@@ -1282,7 +1318,8 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
           is_deleted: false,
           old_path: 'spec/models/user_spec.rb'
         }],
-        truncated: false
+        truncated: false,
+        msw_changes: false
       }
     end
 
@@ -1295,9 +1332,9 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       allow(self).to receive_messages(fetch_knapsack_baseline: knapsack, fetch_changed_spec_files: changed)
     end
 
-    it 'posts the rendered summary section' do
+    it 'posts the rendered summary section, passing the MSW-changes flag through' do
       expect(self).to receive(:post_or_update_comment)
-        .with('1', '2', a_string_including('### RSpec Test Result Summary'))
+        .with('1', '2', a_string_including('### RSpec Test Result Summary'), msw_changes: false)
 
       expect { run(argv) }.to output(/New examples/).to_stdout
     end
@@ -1327,6 +1364,31 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       expect(self).to receive(:write_baseline).with('rspec/baseline.json', hash_including(:per_file))
 
       expect { run(argv + ['--baseline-path', 'rspec/baseline.json']) }.to output.to_stdout
+    end
+
+    context 'when both the artifact and the knapsack baselines are available' do
+      let(:knapsack) { { per_file: { 'spec/models/user_spec.rb' => { runtime_s: 648.0, example_count: nil } } } }
+      let(:artifact) { { per_file: { 'spec/models/user_spec.rb' => { runtime_s: 830.0, example_count: 1 } } } }
+      let(:argv) { super() + ['--dry-run'] }
+
+      before do
+        stub_report('rspec/rspec-1.json', [rspec_example(file_path: './spec/models/user_spec.rb', run_time: 814.0)])
+        allow(self).to receive(:fetch_master_baseline).and_return(artifact)
+      end
+
+      it 'measures the delta against the like-for-like artifact baseline' do
+        expect { run(argv) }.to output(/Added runtime: −16s/).to_stdout
+      end
+
+      it 'does not report the misleading delta against the knapsack average' do
+        expect { run(argv) }.not_to output(/Added runtime: \+2m 46s/).to_stdout
+      end
+
+      it 'falls back to the knapsack baseline when no artifact baseline exists' do
+        allow(self).to receive(:fetch_master_baseline).and_return(nil)
+
+        expect { run(argv) }.to output(/Added runtime: \+2m 46s/).to_stdout
+      end
     end
   end
 

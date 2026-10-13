@@ -63,7 +63,9 @@ export const initCopyCodeButton = (selector = '#content-body') => {
   // there as the unnecessary DOM lookups can become expensive.
   // Inline blob embeds reuse `.file-content.code` but appear on pages that *do*
   // want copy-code buttons, so exclude those from this check.
-  const onRawFileView = Boolean(document.querySelector('.file-content.code:not(.blob-embed *)'));
+  const onRawFileView = [...document.querySelectorAll('.file-content.code')].some(
+    (el) => !el.closest('.blob-embed'),
+  );
   const el = document.querySelector(selector);
 
   if (!el || onRawFileView) return () => {};

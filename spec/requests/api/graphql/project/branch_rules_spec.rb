@@ -8,13 +8,13 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
   let_it_be(:project, freeze: false) { create(:project, :repository, :public) }
   let_it_be(:current_user) { create(:user) }
 
-  let(:variables) { { path: project.full_path } }
+  let(:variables) { { full_path: project.full_path } }
   let(:fields) { all_graphql_fields_for('BranchRule') }
   let(:query) do
     <<~GQL
-    query($path: ID!, $n: Int, $cursor: String) {
-      project(fullPath: $path) {
-        branchRules(first: $n, after: $cursor) {
+    query($fullPath: ID!, $first: Int, $after: String) {
+      project(fullPath: $fullPath) {
+        branchRules(first: $first, after: $after) {
           pageInfo {
             hasNextPage
             endCursor
@@ -31,7 +31,19 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
     GQL
   end
 
-  context 'when the user does not have read_protected_branch abilities' do
+  context 'when the user is not signed in' do
+    before do
+      post_graphql(query, current_user: nil, variables: variables)
+    end
+
+    it_behaves_like 'a working graphql query'
+
+    it 'hides branch rules data' do
+      expect(branch_rules_data).to be_empty
+    end
+  end
+
+  context 'when the user does not have read_branch_rule abilities' do
     before do
       project.add_guest(current_user)
       post_graphql(query, current_user: current_user, variables: variables)
@@ -44,7 +56,7 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
     end
   end
 
-  context 'when the user does have read_protected_branch abilities' do
+  context 'when the user does have read_branch_rule abilities' do
     before do
       project.add_maintainer(current_user)
     end
@@ -54,8 +66,8 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
 
       let(:query) do
         <<~GQL
-            query($path: ID!) {
-              project(fullPath: $path) {
+            query($fullPath: ID!) {
+              project(fullPath: $fullPath) {
                 branchRules {
                   nodes {
                     matchingBranchesCount
@@ -166,9 +178,9 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
 
       context 'when limiting the number of results' do
         let(:branch_rule_limit) { 2 }
-        let(:variables) { { path: project.full_path, n: branch_rule_limit } }
+        let(:variables) { { full_path: project.full_path, first: branch_rule_limit } }
         let(:next_variables) do
-          { path: project.full_path, n: branch_rule_limit, cursor: last_cursor }
+          { full_path: project.full_path, first: branch_rule_limit, after: last_cursor }
         end
 
         it_behaves_like 'a working graphql query'

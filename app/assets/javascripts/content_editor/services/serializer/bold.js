@@ -1,6 +1,6 @@
-function renderBold() {
-  return '**';
-}
+import { recordDelimiter } from '../emphasis_delimiters';
+
+const renderBold = (state, mark) => recordDelimiter(state, mark, '**');
 
 const bold = {
   open: renderBold,

@@ -149,7 +149,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       it 'creates tags' do
         expect(service).to receive(:try_obtain_lease).and_call_original
         expect { subject }.to change { ::Packages::Tag.count }.by(8)
-        expect(package.reload.tags.map(&:name)).to contain_exactly(*expected_tags)
+        expect(package.reload.tags.map(&:name)).to match_array(expected_tags)
       end
 
       context 'with existing package and tags' do
@@ -161,7 +161,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
         it 'creates tags and deletes those not in metadata' do
           expect(service).to receive(:try_obtain_lease).and_call_original
           expect { subject }.to change { ::Packages::Tag.count }.by(5)
-          expect(existing_package.tags.map(&:name)).to contain_exactly(*expected_tags)
+          expect(existing_package.tags.map(&:name)).to match_array(expected_tags)
         end
       end
 

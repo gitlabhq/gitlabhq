@@ -13,7 +13,7 @@ class Compare
     if compare.is_a?(Compare)
       compare
     else
-      self.new(compare, project)
+      new(compare, project)
     end
   end
 

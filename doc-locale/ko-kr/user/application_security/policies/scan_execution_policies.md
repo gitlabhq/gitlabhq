@@ -14,9 +14,7 @@ title: 검사 실행 정책
 
 {{< history >}}
 
-- 스캔 실행 정책 편집기에서 사용자 지정 CI/CD 변수 지원 [GitLab 16.2에서 도입됨](https://gitlab.com/groups/gitlab-org/-/epics/9566).
-- 기존 GitLab CI/CD 구성이 있는 프로젝트에 검사 실행 정책 적용 [GitLab 16.2에서 도입됨](https://gitlab.com/groups/gitlab-org/-/epics/6880) [플래그 포함](../../../administration/feature_flags/_index.md) `scan_execution_policy_pipelines`. 기능 플래그 `scan_execution_policy_pipelines`은 GitLab 16.5에서 제거되었습니다.
-- 스캔 실행 정책에서 사전 정의된 변수 재정의 [GitLab 16.10에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) [플래그 포함](../../../administration/feature_flags/_index.md) `allow_restricted_variables_at_policy_level`. 기본적으로 활성화됩니다. 기능 플래그 `allow_restricted_variables_at_policy_level`은 GitLab 17.5에서 제거되었습니다.
+- 스캔 실행 정책에서 사전 정의된 변수 재정의가 GitLab 16.10에서 `allow_restricted_variables_at_policy_level`이라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)와 함께 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/440855)되었습니다. 기본적으로 활성화됩니다. 기능 플래그 `allow_restricted_variables_at_policy_level`은 GitLab 17.5에서 제거되었습니다.
 
 {{< /history >}}
 
@@ -32,7 +30,7 @@ title: 검사 실행 정책
 
 ## 검사 실행 정책 만들기 {#create-a-scan-execution-policy}
 
-검사 실행 정책을 생성하려면 다음 리소스 중 하나를 사용할 수 있습니다:
+검사 실행 정책을 생성하려면 다음 리소스 중 하나를 사용할 수 있습니다.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> 동영상 안내를 보려면 [GitLab에서 보안 스캔 정책을 설정하는 방법](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY)을 참조하세요.
 - <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab CI/CD 구성이 없는 프로젝트에 검사 실행 정책 적용](https://www.youtube.com/watch?v=sUfwQQ4-qHs)에 대해 자세히 알아보세요.
@@ -50,7 +48,7 @@ title: 검사 실행 정책
 
 DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테이지가 없으면 GitLab이 파이프라인의 끝에 `dast` 스테이지를 주입합니다.
 
-다른 모든 스캔의 정책 작업은 파이프라인의 `test` 스테이지에서 실행됩니다. 기본 파이프라인에서 `test` 스테이지를 제거하면 작업이 대신 `scan-policies` 스테이지에서 다음 규칙에 따라 실행됩니다:
+다른 모든 스캔의 정책 작업은 파이프라인의 `test` 스테이지에서 실행됩니다. 기본 파이프라인에서 `test` 스테이지를 제거하면 작업이 대신 `scan-policies` 스테이지에서 다음 규칙에 따라 실행됩니다.
 
 - `scan-policies` 스테이지가 아직 없으면 GitLab이 평가 시 스테이지를 CI/CD 파이프라인에 주입합니다.
 - `build` 스테이지가 있으면 GitLab이 `scan-policies`을 `build` 스테이지 직후에 주입합니다.
@@ -63,8 +61,8 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 {{< history >}}
 
 - `Merge Request Security Template`:
-  - GitLab 18.2에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) 되었으며 [플래그](../../../administration/feature_flags/_index.md) `flexible_scan_execution`라는 이름입니다. 기본적으로 비활성화되어 있습니다.
-  - GitLab 18.3에서 [GitLab.com, GitLab Self-Managed 및 GitLab Dedicated에서 활성화됨](https://gitlab.com/gitlab-org/gitlab/-/issues/541689).
+  - `flexible_scan_execution`라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)로 GitLab 18.2에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/541689)되었습니다. 기본적으로 비활성화되었습니다.
+  - GitLab 18.3에서 [GitLab.com, GitLab Self-Managed 및 GitLab Dedicated에서 활성화](https://gitlab.com/gitlab-org/gitlab/-/issues/541689)되었습니다.
   - GitLab 18.4에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/541689)합니다. 기능 플래그 `flexible_scan_execution`이 제거되었습니다.
 
 {{< /history >}}
@@ -80,7 +78,7 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 - 머지 리퀘스트 보안
   - 사용 사례: 모든 커밋이 아니라 머지 리퀘스트가 생성될 때만 보안 스캔을 실행하려고 합니다.
   - 언제 사용할지: 기본 또는 보호된 브랜치를 대상으로 하는 소스 브랜치에서 보안 스캔을 실행해야 하는 머지 리퀘스트 파이프라인을 사용하는 프로젝트의 경우입니다.
-  - 최고의 사용처: 머지 리퀘스트 승인 정책을 사용하여 정렬하고 모든 브랜치에서 스캔을 피함으로써 인프라 비용을 줄입니다.
+  - 최고의 사용처: 머지 리퀘스트 승인 정책과 일치시키고, 모든 브랜치에서 스캔을 피함으로써 인프라 비용을 줄입니다.
   - 파이프라인 소스: 주로 머지 리퀘스트 파이프라인입니다.
 - 예약된 스캔
   - 사용 사례: 코드 변경과 관계없이 일정(예: 일일 또는 주간)에 따라 보안 스캔을 자동으로 실행하려고 합니다.
@@ -93,7 +91,7 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
   - 최고의 사용처: 릴리스 게이트 워크플로우, 프로덕션 배포 또는 높은 보안 환경입니다.
   - 파이프라인 소스: 보호된 브랜치, 릴리스 파이프라인으로 푸시합니다.
 
-사용 가능한 템플릿이 요구 사항을 충족하지 않거나 더 사용자 지정된 검사 실행 정책이 필요한 경우 다음을 수행할 수 있습니다:
+사용 가능한 템플릿이 요구 사항을 충족하지 않거나 더 사용자 지정된 검사 실행 정책이 필요한 경우 다음을 수행할 수 있습니다.
 
 - **커스텀** 옵션을 선택하고 사용자 지정 요구 사항으로 자신만의 검사 실행 정책을 만듭니다.
 - [파이프라인 실행 정책](pipeline_execution_policies.md)을 사용하여 보안 스캔 및 CI 적용에 더 많은 사용자 지정 옵션에 액세스하세요.
@@ -105,7 +103,7 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 ![검사 실행 정책 편집기 규칙 모드](img/scan_execution_policy_rule_mode_v17_5.png)
 
 > [!note]
-> DAST 실행 정책의 경우 규칙 모드 편집기에서 사이트 및 스캐너 프로필을 적용하는 방식은 정책이 정의된 위치에 따라 달라집니다:
+> DAST 실행 정책의 경우 규칙 모드 편집기에서 사이트 및 스캐너 프로필을 적용하는 방식은 정책이 정의된 위치에 따라 달라집니다.
 >
 > - 프로젝트의 정책의 경우 규칙 모드 편집기에서 프로젝트에 이미 정의된 프로필 목록에서 선택합니다.
 > - 그룹의 정책의 경우 사용할 프로필의 이름을 입력해야 합니다. 파이프라인 오류를 방지하려면 일치하는 이름을 가진 프로필이 그룹의 모든 프로젝트에 존재해야 합니다.
@@ -124,52 +122,52 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 
 {{< history >}}
 
-- 정책당 작업 제한 [GitLab 17.4에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) [플래그 포함](../../../administration/feature_flags/_index.md) `scan_execution_policy_action_limit`(프로젝트의 경우) 및 `scan_execution_policy_action_limit_group`(그룹의 경우). 기본적으로 비활성화되어 있습니다.
-- 정책당 작업 제한 [GitLab 18.0에서 일반적으로 제공됨](https://gitlab.com/gitlab-org/gitlab/-/issues/535605). 기능 플래그 `scan_execution_policy_action_limit`(프로젝트의 경우) 및 `scan_execution_policy_action_limit_group`(그룹의 경우)가 제거되었습니다.
+- 정책당 작업 제한이 GitLab 17.4에서 `scan_execution_policy_action_limit`(프로젝트용) 및 `scan_execution_policy_action_limit_group`(그룹용)라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)와 함께 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/472213)되었습니다. 기본적으로 비활성화되었습니다.
+- 정책당 작업 제한이 GitLab 18.0에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/535605)합니다. 기능 플래그 `scan_execution_policy_action_limit`(프로젝트의 경우) 및 `scan_execution_policy_action_limit_group`(그룹의 경우)가 제거되었습니다.
 
 {{< /history >}}
 
 | 필드          | 형식                                         | 필수 | 설명 |
 |----------------|----------------------------------------------|----------|-------------|
 | `name`         | `string`                                     | 참     | 정책의 이름입니다. 최대 255자입니다. |
-| `description`  | `string`                                     | 거짓    | 정책에 대한 설명입니다. |
+| `description`  | `string`                                     | 거짓    | 정책의 설명입니다. |
 | `enabled`      | `boolean`                                    | 참     | 정책을 활성화(`true`) 또는 비활성화(`false`)하는 플래그입니다. |
 | `rules`        | 규칙의 `array`                             | 참     | 정책이 적용되는 규칙 목록입니다. |
 | `actions`      | 작업의 `array`                           | 참     | 정책이 적용하는 작업 목록입니다. GitLab 18.0 이상에서 최대 10개로 제한됩니다. |
-| `policy_scope` | `object` [`policy_scope`](_index.md#configure-the-policy-scope) | 거짓    | 지정한 프로젝트, 그룹 또는 규정 준수 프레임워크 레이블을 기반으로 정책의 범위를 정의합니다. |
-| `skip_ci`      | `object` [`skip_ci`](#skip_ci-type) | 거짓 | 사용자가 `skip-ci` 지시문을 적용할 수 있는지 여부를 정의합니다. |
-| `no_pipeline`  | `object` [`no_pipeline`](#no_pipeline-type) | 거짓 | 사용자가 `no_pipeline` 지시문을 적용할 수 있는지 여부를 정의합니다. |
+| `policy_scope` | [`policy_scope`](_index.md#configure-the-policy-scope)의 `object` | 거짓    | 지정한 프로젝트, 그룹 또는 규정 준수 프레임워크 레이블을 기반으로 정책의 범위를 정의합니다. |
+| `skip_ci`      | [`skip_ci`](#skip_ci-type)의 `object` | 거짓 | 사용자가 `skip-ci` 지시자를 적용할 수 있는지 여부를 정의합니다. |
+| `no_pipeline`  | [`no_pipeline`](#no_pipeline-type)의 `object` | 거짓 | 사용자가 `no_pipeline` 지시자를 적용할 수 있는지 여부를 정의합니다. |
 
 ### `skip_ci` 유형 {#skip_ci-type}
 
 {{< history >}}
 
-- [GitLab 17.9에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/482952).
+- GitLab 17.9에 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/482952)되었습니다.
 
 {{< /history >}}
 
-검사 실행 정책은 `[skip ci]` 지시문을 사용할 수 있는 사용자를 제어합니다. `[skip ci]`을 사용할 수 있는 특정 사용자 또는 서비스 계정을 지정할 수 있으며 여전히 중요한 보안 및 규정 준수 검사를 수행하도록 합니다.
+검사 실행 정책은 `[skip ci]` 지시자를 사용할 수 있는 사용자를 제어합니다. `[skip ci]`을 사용할 수 있는 특정 사용자 또는 서비스 계정을 지정할 수 있으며 중요한 보안 및 규정 준수 검사가 수행됩니다.
 
-`skip_ci` 키워드를 사용하여 사용자가 `skip_ci` 지시문을 적용하여 파이프라인을 건너뛸 수 있는지 여부를 지정합니다. 키워드가 지정되지 않으면 `skip_ci` 지시문이 무시되어 모든 사용자가 파이프라인 실행 정책을 우회하지 못합니다.
+`skip_ci` 키워드를 사용하여 사용자가 `skip_ci` 지시자를 적용하여 파이프라인을 건너뛸 수 있는지 여부를 지정합니다. 키워드가 지정되지 않으면 `skip_ci` 지시자가 무시되어 모든 사용자가 파이프라인 실행 정책을 우회하지 못합니다.
 
 | 필드                   | 형식     | 가능한 값          | 설명 |
 |-------------------------|----------|--------------------------|-------------|
-| `allowed` | `boolean`   | `true`, `false` | `true` 또는 `false`) `skip-ci` 지시문 적용을 적용된 파이프라인 실행 정책으로 파이프라인에 대해 허용하거나 방지하는 플래그입니다. |
-| `allowlist`             | `object` | `users` | `skip-ci` 지시문 사용을 항상 허용하는 사용자를 지정합니다. `allowed` 플래그와 관계없습니다. `users:`을 사용하고 사용자 ID를 나타내는 `id` 키가 있는 개체 배열을 따릅니다. |
+| `allowed` | `boolean`   | `true`, `false` | 적용된 파이프라인 실행 정책이 있는 파이프라인에 대해 `skip-ci` 지시자 사용을 허용(`true`) 또는 방지(`false`)하는 플래그입니다. |
+| `allowlist`             | `object` | `users` | `skip-ci` 지시자 사용을 항상 허용하는 사용자를 지정합니다. `allowed` 플래그와 관계없습니다. `users:`를 사용하고 사용자 ID를 나타내는 `id` 키가 있는 개체 배열을 따릅니다. |
 
 > [!note]
 > `schedule` 규칙 유형이 있는 검사 실행 정책은 항상 `skip_ci` 옵션을 무시합니다. 예약된 스캔은 마지막 커밋 메시지에 `[skip ci]`(또는 이의 변형)이 표시되는지 여부와 관계없이 구성된 시간에 실행됩니다. 이렇게 하면 CI/CD 파이프라인이 그 외의 경우 건너뛸 때에도 보안 스캔이 예측 가능한 일정에 따라 수행됩니다.
 
 ### `no_pipeline` 유형 {#no_pipeline-type}
 
-검사 실행 정책은 `[no_pipeline]` 지시문을 사용할 수 있는 사용자를 제어합니다. `[no_pipeline]`을 사용할 수 있는 특정 사용자 또는 서비스 계정을 지정할 수 있으며 여전히 중요한 보안 및 규정 준수 검사를 수행하도록 합니다.
+검사 실행 정책은 `[no_pipeline]` 지시자를 사용할 수 있는 사용자를 제어합니다. `[no_pipeline]`을 사용할 수 있는 특정 사용자 또는 서비스 계정을 지정할 수 있으며 중요한 보안 및 규정 준수 검사가 수행됩니다.
 
-`no_pipeline` 키워드를 사용하여 사용자가 `no_pipeline` 지시문을 적용하여 푸시에서 파이프라인을 만들지 않을 수 있는지 여부를 지정합니다. 키워드가 지정되지 않으면 `no_pipeline` 지시문이 무시되어 모든 사용자가 파이프라인 실행 정책을 우회하지 못합니다.
+`no_pipeline` 키워드를 사용하여 사용자가 `no_pipeline` 지시자를 적용하여 푸시에서 파이프라인을 만들지 않을 수 있는지 여부를 지정합니다. 키워드가 지정되지 않으면 `no_pipeline` 지시자가 무시되어 모든 사용자가 파이프라인 실행 정책을 우회하지 못합니다.
 
 | 필드                   | 형식     | 가능한 값          | 설명 |
 |-------------------------|----------|--------------------------|-------------|
-| `allowed` | `boolean`   | `true`, `false` | `true` 또는 `false`) `no_pipeline` 지시문 적용을 적용된 파이프라인 실행 정책으로 파이프라인에 대해 허용하거나 방지하는 플래그입니다. |
-| `allowlist`             | `object` | `users` | `no_pipeline` 지시문 사용을 항상 허용하는 사용자를 지정합니다. `allowed` 플래그와 관계없습니다. `users:`을 사용하고 사용자 ID를 나타내는 `id` 키가 있는 개체 배열을 따릅니다. |
+| `allowed` | `boolean`   | `true`, `false` | 적용된 파이프라인 실행 정책이 있는 파이프라인에 대해 `no_pipeline` 지시자 사용을 허용(`true`) 또는 방지(`false`)하는 플래그입니다. |
+| `allowlist`             | `object` | `users` | `no_pipeline` 지시자 사용을 항상 허용하는 사용자를 지정합니다. `allowed` 플래그와 관계없습니다. `users:`를 사용하고 사용자 ID를 나타내는 `id` 키가 있는 개체 배열을 따릅니다. |
 
 > [!note]
 > `schedule` 규칙 유형이 있는 검사 실행 정책은 항상 `no_pipeline` 옵션을 무시합니다. 예약된 스캔은 마지막 커밋 메시지에 `[no_pipeline]`(또는 이의 변형)이 표시되는지 여부와 관계없이 구성된 시간에 실행됩니다. 이렇게 하면 CI/CD 파이프라인이 생성되지 않을 때에도 보안 스캔이 예측 가능한 일정에 따라 수행됩니다.
@@ -178,15 +176,9 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 
 {{< history >}}
 
-- `branch_type` 필드:
-  - GitLab 16.1에서 `security_policies_branch_type` [플래그](../../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/404774)되었습니다.
-  - GitLab 16.2에서 일반적으로 제공됩니다. 기능 플래그 `security_policies_branch_type`이 제거되었습니다.
-- `branch_exceptions` 필드:
-  - [GitLab 16.3에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) [플래그 포함](../../../administration/feature_flags/_index.md) `security_policies_branch_exceptions`.
-  - GitLab 16.5에서 일반적으로 제공됩니다. 기능 플래그 `security_policies_branch_exceptions`이 제거되었습니다.
 - `pipeline_sources` 필드 및 `branch_type` 옵션 `target_default` 및 `target_protected`:
-  - GitLab 18.2에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) 되었으며 [플래그](../../../administration/feature_flags/_index.md) `flexible_scan_execution`라는 이름입니다.
-  - GitLab 18.3에서 [GitLab.com, GitLab Self-Managed 및 GitLab Dedicated에서 활성화됨](https://gitlab.com/gitlab-org/gitlab/-/issues/541689).
+  - `flexible_scan_execution`라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)로 GitLab 18.2에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/541689)되었습니다.
+  - GitLab 18.3에서 [GitLab.com, GitLab Self-Managed 및 GitLab Dedicated에서 활성화](https://gitlab.com/gitlab-org/gitlab/-/issues/541689)되었습니다.
   - GitLab 18.4에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/541689)합니다. 기능 플래그 `flexible_scan_execution`이 제거되었습니다.
 
 {{< /history >}}
@@ -196,40 +188,29 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 | 필드 | 형식 | 필수 | 가능한 값 | 설명 |
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | 참 | `pipeline` | 규칙의 유형입니다. |
-| `branches` <sup>1</sup> | `array` / `string` | `branch_type` 필드가 존재하지 않는 경우 참 | `*` 또는 브랜치의 이름 | 정책이 적용되는 브랜치(와일드카드 지원)입니다. 머지 리퀘스트 승인 정책과의 호환성을 위해 기능 브랜치 및 기본 브랜치에 스캔을 포함하려면 모든 브랜치를 대상으로 해야 합니다. |
-| `branch_type` <sup>1</sup> | `string` | `branches` 필드가 존재하지 않는 경우 참 | `default`, `protected`, `all`, `target_default` <sup>2</sup> 또는 `target_protected` <sup>2</sup> | 정책이 적용되는 브랜치의 유형입니다. |
-| `branch_exceptions` | `array` / `string` | 거짓 |  브랜치의 이름 | 이 규칙에서 제외할 브랜치입니다. |
-| `pipeline_sources` <sup>2</sup> | `array` / `string` | 거짓 | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event` <sup>3</sup>, `pipeline`, `push` <sup>3</sup>, `schedule`, `trigger`, `unknown`, `web` | 검사 실행 작업이 시작될 때를 결정하는 파이프라인 소스입니다. 자세한 내용은 [문서](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable)를 참조하세요. |
+| `branches`[^specify-either-branches] | `string`의 `array` | `branch_type` 필드가 존재하지 않는 경우 참 | `*` 또는 브랜치의 이름 | 정책이 적용되는 브랜치(와일드카드 지원)입니다. 머지 리퀘스트 승인 정책과의 호환성을 위해 기능 브랜치 및 기본 브랜치에 스캔을 포함하려면 모든 브랜치를 대상으로 해야 합니다. |
+| `branch_type`[^specify-either-branches] | `string` | `branches` 필드가 존재하지 않는 경우 참 | `default`, `protected`, `all`, `target_default`[^options-available-flexible], 또는 `target_protected`[^options-available-flexible] | 정책이 적용되는 브랜치의 유형입니다. |
+| `branch_exceptions` | `string`의 `array` | 거짓 |  브랜치의 이름 | 이 규칙에서 제외할 브랜치입니다. |
+| `pipeline_sources`[^options-available-flexible] | `object` | 거짓 | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`[^branch-type-options], `pipeline`, `push`[^branch-type-options], `schedule`, `trigger`, `unknown`, `web` | 스캔 실행 작업이 트리거될 시기를 결정하는 파이프라인 소스 배열로 설정된 `including` 키를 포함하는 객체입니다. 자세한 내용은 [`CI_PIPELINE_SOURCE` 사전 정의 변수](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable)를 참조하세요. |
 
-1. `branches` 또는 `branch_type`를 지정해야 합니다. 둘 다 지정할 수는 없습니다.
-1. 일부 옵션은 `flexible_scan_execution` 기능 플래그가 활성화된 경우에만 사용 가능합니다. 자세한 내용은 기록을 참조하세요.
-1. `branch_type` 옵션 `target_default` 또는 `target_protected`이 지정되면 `pipeline_sources` 필드는 `merge_request_event` 및 `push` 필드만 지원합니다.
+[^specify-either-branches]: `branches` 또는 `branch_type`을 지정해야 하지만 둘 다는 아닙니다. [^options-available-flexible]: 일부 옵션은 `flexible_scan_execution` 기능 플래그가 활성화된 경우에만 사용 가능합니다. 자세한 내용은 기록을 참조하세요. [^branch-type-options]: `branch_type` 옵션 `target_default` 또는 `target_protected`이 지정된 경우 `pipeline_sources:including` 필드는 `merge_request_event` 및 `push` 필드만 지원합니다.
 
 ## `schedule` 규칙 유형 {#schedule-rule-type}
 
 {{< history >}}
 
-- 새로운 `branch_type` 필드:
-  - GitLab 16.1에서 `security_policies_branch_type` [플래그](../../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/404774)되었습니다.
-  - GitLab 16.2에서 일반적으로 제공됩니다. 기능 플래그가 제거되었습니다.
-- 새로운 `branch_exceptions` 필드:
-  - [GitLab 16.3에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) [플래그 포함](../../../administration/feature_flags/_index.md) `security_policies_branch_exceptions`.
-  - GitLab 16.5에서 일반적으로 제공됩니다. 기능 플래그가 제거되었습니다.
 - 예약된 스캔에서 파이프라인을 만드는 새로운 `scan_execution_pipeline_worker` 작업자:
-  - [GitLab 16.11에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) [플래그 포함](../../../administration/feature_flags/_index.md).
+  - GitLab 16.11에서 [기능 플래그](../../../administration/feature_flags/_index.md)와 함께 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691)되었습니다.
   - GitLab 17.5에서 GitLab.com에서 [활성화됨](https://gitlab.com/gitlab-org/gitlab/-/issues/451890).
-  - GitLab 17.6에서 [일반적으로 제공됨](https://gitlab.com/gitlab-org/gitlab/-/issues/451890). 기능 플래그 `scan_execution_pipeline_worker`이 제거되었습니다.
+  - GitLab 17.6에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/451890)합니다. 기능 플래그 `scan_execution_pipeline_worker`이 제거되었습니다.
 - 새 애플리케이션 설정 `security_policy_scheduled_scans_max_concurrency`:
   - GitLab 17.1에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855)되었습니다. 동시성 제한은 `scan_execution_pipeline_worker` 및 `scan_execution_pipeline_concurrency_control`이 모두 활성화되어 있을 때 적용됩니다.
   - GitLab 17.11에서 새 애플리케이션 설정 `security_policy_scheduled_scans_max_concurrency`을 [제거했습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178892).
 - 검사 실행 예약된 작업의 동시성 제한:
-  - GitLab 17.3에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) 되었으며 [플래그](../../../administration/feature_flags/_index.md) `scan_execution_pipeline_concurrency_control`라는 이름입니다.
+  - `scan_execution_pipeline_concurrency_control`라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)로 GitLab 17.3에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636)되었습니다.
   - GitLab 17.9에서 [일반 공급 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/463802). 기능 플래그 `scan_execution_pipeline_concurrency_control`이 제거되었습니다.
 
 {{< /history >}}
-
-> [!warning]
-> GitLab 16.1 이전에는 예약된 검사 실행 정책과 함께 [직접 전송](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)을 사용하면 안 됩니다. 직접 전송을 사용해야 하는 경우 먼저 GitLab 16.2로 업그레이드하고 적용할 프로젝트에서 보안 정책 봇이 활성화되어 있는지 확인하세요.
 
 `schedule` 규칙 유형을 사용하여 일정에 따라 보안 스캐너를 실행합니다.
 
@@ -243,24 +224,34 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 | 필드      | 형식 | 필수 | 가능한 값 | 설명 |
 |------------|------|----------|-----------------|-------------|
 | `type`     | `string` | 참 | `schedule` | 규칙의 유형입니다. |
-| `branches` <sup>1</sup> | `array` / `string` | `branch_type` 또는 `agents` 필드가 존재하지 않는 경우 참 | `*` 또는 브랜치의 이름 | 정책이 적용되는 브랜치(와일드카드 지원)입니다. |
-| `branch_type` <sup>1</sup> | `string` | `branches` 또는 `agents` 필드가 존재하지 않는 경우 참 | `default`, `protected` 또는 `all` | 정책이 적용되는 브랜치의 유형입니다. |
-| `branch_exceptions` | `array` / `string` | 거짓 |  브랜치의 이름 | 이 규칙에서 제외할 브랜치입니다. |
-| `cadence`  | `string` | 참 | 옵션이 제한된 Cron 표현입니다. 예를 들어 `0 0 * * *`는 매일 자정(오전 12:00)에 실행되도록 예약합니다. | 예약된 시간을 나타내는 5개의 필드가 포함된 공백으로 구분된 문자열입니다. |
+| `branches`[^specify-one-branches] | `string`의 `array` | `branch_type` 또는 `agents` 필드가 존재하지 않는 경우 참 | `*` 또는 브랜치의 이름 | 정책이 적용되는 브랜치(와일드카드 지원)입니다. |
+| `branch_type`[^specify-one-branches] | `string` | `branches` 또는 `agents` 필드가 존재하지 않는 경우 참 | `default`, `protected` 또는 `all` | 정책이 적용되는 브랜치의 유형입니다. |
+| `branch_exceptions` | `string`의 `array` | 거짓 |  브랜치의 이름 | 이 규칙에서 제외할 브랜치입니다. |
+| `cadence`  | `string` | 참 | 옵션이 제한된 Cron 표현식입니다. 예를 들어 `0 0 * * *`는 매일 자정(오전 12:00)에 실행되도록 예약합니다. | 예약된 시간을 나타내는 5개의 필드가 포함된 공백으로 구분된 문자열입니다. |
 | `timezone` | `string` | 거짓 | 시간대 식별자(예: `America/New_York`) | 케이던스에 적용할 시간대입니다. 값은 IANA 시간대 데이터베이스 식별자여야 합니다. |
 | `time_window` | `object` | 거짓 |  | 예약된 보안 스캔의 배포 및 기간 설정입니다. |
-| `agents` <sup>1</sup>   | `object` | `branch_type` 또는 `branches` 필드가 존재하지 않는 경우 참  |  | [Kubernetes용 GitLab 에이전트](../../clusters/agent/_index.md)의 이름입니다. 여기서 [운영 컨테이너 스캔](../../clusters/agent/vulnerabilities.md)이 실행됩니다. 개체 키는 GitLab에서 프로젝트용으로 구성된 Kubernetes 에이전트의 이름입니다. |
+| `agents`[^specify-one-branches]   | `object` | `branch_type` 또는 `branches` 필드가 존재하지 않는 경우 true   |  | [Kubernetes용 GitLab 에이전트](../../clusters/agent/_index.md)의 이름입니다. 여기서 [운영 컨테이너 스캔](../../clusters/agent/vulnerabilities.md)이 실행됩니다. 개체 키는 GitLab에서 프로젝트용으로 구성된 Kubernetes 에이전트의 이름입니다. |
 
-1. `branches`, `branch_type` 또는 `agents` 중 하나만 지정해야 합니다.
+[^specify-one-branches]: `branches`, `branch_type` 또는 `agents` 중 하나만 지정해야 합니다.
 
 ### 케이던스 {#cadence}
 
-`cadence` 필드를 사용하여 정책의 작업을 실행할 시기를 예약합니다. `cadence` 필드는 [cron 구문](../../../topics/cron/_index.md)을 사용하지만 일부 제한 사항이 있습니다:
+{{< history >}}
 
-- 다음 유형의 cron 구문만 지원됩니다:
+- 규칙 모드의 월간 주기 지원이 GitLab 19.4에 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/606441)되었습니다.
+
+{{< /history >}}
+
+`cadence` 필드를 사용하여 정책의 작업을 실행할 시기를 예약합니다. `cadence` 필드는 [cron 구문](../../../topics/cron/_index.md)을 사용하지만 일부 제한 사항이 있습니다.
+
+- 다음 유형의 cron 구문만 지원됩니다.
   - 지정된 시간 주변의 시간당 한 번의 일일 케이던스(예: `0 18 * * *`)
   - 지정된 날짜 및 지정된 시간 주변의 주당 한 번의 주간 케이던스(예: `0 13 * * 0`)
+  - 월의 지정된 하루 이상과 지정된 시간 주변의 월간 주기입니다. 예: `0 0 1 * *` 또는 여러 날의 경우 일(day-of-month) 필드에서 쉼표로 구분된 목록: `0 0 1,15 * *`. 주어진 월의 일 수보다 큰 날짜는 그 월에 대해 건너뜁니다. 따라서 31일에 예약된 스캔은 30일 월에 실행되지 않습니다.
 - 쉼표(,), 하이픈(-) 또는 단계 연산자(/)는 분 및 시간에 대해 지원되지 않습니다. 이러한 문자를 사용하는 모든 예약된 파이프라인은 건너뜁니다.
+
+> [!note]
+> 범위, 단계 연산자 또는 0이 아닌 분을 사용하는 Cron 구문(예: `0 22 * * 1-5` 또는 `30 2 * * *`) 유효하지만 규칙 모드는 표시할 수 없습니다. 정책이 이 형식 중 하나를 사용하는 경우 규칙 모드에서 조건 섹션은 읽기 전용이며 cron 표현식을 작성된 대로 표시합니다. 대신 YAML 모드에서 일정을 편집하세요. 정책은 어느 쪽이든 기존 일정에 따라 계속 실행됩니다.
 
 `cadence` 필드 값을 선택할 때 다음을 고려하세요:
 
@@ -270,14 +261,14 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 `schedule` 규칙 유형을 `agents` 필드와 함께 사용할 때:
 
 - Kubernetes용 GitLab 에이전트는 30초마다 적용 가능한 정책이 있는지 확인합니다. 에이전트가 정책을 찾으면 정의된 `cadence`에 따라 스캔을 실행합니다.
-- cron 표현은 Kubernetes 에이전트 포드의 시스템 시간을 사용하여 평가됩니다.
+- cron 표현식은 Kubernetes 에이전트 포드의 시스템 시간을 사용하여 평가됩니다.
 
 `schedule` 규칙 유형을 `branches` 필드와 함께 사용할 때:
 
 - cron 작업자는 15분 간격으로 실행되고 이전 15분 동안 실행되도록 예약된 파이프라인을 시작합니다. 따라서 예약된 파이프라인은 최대 15분의 오프셋으로 실행될 수 있습니다.
 - 정책이 많은 프로젝트 또는 브랜치에 적용되면 정책이 배치로 처리되며 모든 파이프라인을 만드는 데 시간이 걸릴 수 있습니다.
 
-![예약된 보안 스캔이 처리되고 실행되는 방식을 보여주는 다이어그램입니다. 잠재적 지연이 있습니다.](img/scheduled_scan_execution_policies_diagram_v18_04.png)
+![잠재적 지연을 포함하여 예약된 보안 스캔이 처리되고 실행되는 방식을 보여주는 다이어그램입니다.](img/scheduled_scan_execution_policies_diagram_v18_04.png)
 
 ### `agent` 스키마 {#agent-schema}
 
@@ -285,7 +276,7 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 
 | 필드        | 형식                | 필수 | 설명 |
 |--------------|---------------------|----------|-------------|
-| `namespaces` | `array` / `string` | 참 | 스캔되는 네임스페이스입니다. 비어 있으면 모든 네임스페이스가 스캔됩니다. |
+| `namespaces` | `string`의 `array` | 참 | 스캔되는 네임스페이스입니다. 비어 있으면 모든 네임스페이스가 스캔됩니다. |
 
 #### `agent` 예제 {#agent-example}
 
@@ -306,7 +297,7 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 
 스케줄 규칙의 키는:
 
-- `cadence`(필수): 스캔을 실행할 시간을 나타내는 [Cron 표현](../../../topics/cron/_index.md)입니다.
+- `cadence`(필수): 스캔을 실행할 시간을 나타내는 [Cron 표현식](../../../topics/cron/_index.md)입니다.
 - `agents:<agent-name>`(필수): 스캔에 사용할 에이전트의 이름입니다.
 - `agents:<agent-name>:namespaces`(선택 사항): 스캔할 Kubernetes 네임스페이스입니다. 생략하면 모든 네임스페이스가 스캔됩니다.
 
@@ -346,7 +337,7 @@ DAST 스캔은 항상 `dast` 스테이지에서 실행됩니다. `dast` 스테�
 
 ### 예약된 검사 실행 정책의 최대 스케줄링 시간 범위 구성 {#configuring-the-maximum-scheduling-timespan-for-scheduled-scan-execution-policies}
 
-예약된 검사 실행 정책은 `cadence` 필드와 함께 cron 표현을 사용하는 월간 스케줄링을 지원합니다. `time_window`을 2629746초(약 30일)까지 구성하여 해당 기간 내에 스캔을 무작위로 분배할 수 있습니다.
+예약된 검사 실행 정책은 `cadence` 필드와 함께 cron 표현식을 사용하는 월간 스케줄링을 지원합니다. `time_window`을 2629746초(약 30일)까지 구성하여 해당 기간 내에 스캔을 무작위로 분배할 수 있습니다.
 
 예를 들어, 30일 분배 창으로 월간 스캔을 예약하려면:
 
@@ -369,10 +360,10 @@ rules:
 
 #### 실행 중인 예약된 스캔 취소 {#canceling-a-running-scheduled-scan}
 
-예약된 스캔을 취소하려면 두 가지 옵션이 있습니다:
+예약된 스캔을 취소하려면 두 가지 옵션이 있습니다.
 
 - 개별 파이프라인 취소: 프로젝트에서 작업을 취소할 필요한 권한이 있으면 파이프라인 보기에서 직접 실행 중인 파이프라인을 취소할 수 있습니다.
-- **Disable the policy**: 정책 편집기에서 `enabled: false`을 설정하여 검사 실행 정책을 비활성화합니다. 이미 실행 중이거나 다음 15분(대략) 내에 실행되도록 예약된 스캔은 여전히 실행될 수 있습니다.
+- **정책 비활성화**: 정책 편집기에서 `enabled: false`을 설정하여 검사 실행 정책을 비활성화합니다. 이미 실행 중이거나 다음 15분(대략) 내에 실행되도록 예약된 스캔은 여전히 실행될 수 있습니다.
 
 #### 대규모 배포에 대한 권장 사항 {#recommendations-for-large-scale-deployments}
 
@@ -389,22 +380,19 @@ rules:
 
 `time_window` 속성을 설정할 때 GitLab이 동시성 제어를 적용합니다.
 
-동시성 제어는 [`time_window` 설정](#time_window-schema)에 따라 예약된 파이프라인을 분배합니다. 정책에 정의됩니다.
+동시성 제어는 정책에 정의된 [`time_window` 설정](#time_window-schema)에 따라 예약된 파이프라인을 분배합니다.
 
 ## `scan` 작업 유형 {#scan-action-type}
 
 {{< history >}}
 
-- 검사 실행 정책 변수 우선순위:
-  - GitLab 16.7에서 [변경됨](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) [플래그 포함](../../../administration/feature_flags/_index.md) `security_policies_variables_precedence`. 기본적으로 활성화됩니다.
-  - GitLab 16.8에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/435727)합니다. 기능 플래그 `security_policies_variables_precedence`이 제거되었습니다.
 - 주어진 작업에 대한 보안 템플릿 선택:
-  - [GitLab 17.1의 프로젝트에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) [기능 플래그 포함](../../../administration/feature_flags/_index.md) `scan_execution_policies_with_latest_templates`. 기본적으로 비활성화되어 있습니다.
-  - [GitLab 17.2의 그룹에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/468981) [기능 플래그 포함](../../../administration/feature_flags/_index.md) `scan_execution_policies_with_latest_templates_group`. 기본적으로 비활성화되어 있습니다.
+  - `scan_execution_policies_with_latest_templates`라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)와 함께 GitLab 17.1의 프로젝트에 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/415427)되었습니다. 기본적으로 비활성화되었습니다.
+  - `scan_execution_policies_with_latest_templates_group`라는 이름의 [기능 플래그](../../../administration/feature_flags/_index.md)와 함께 GitLab 17.2의 그룹에 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/468981)되었습니다. 기본적으로 비활성화되었습니다.
   - GitLab 17.2에서 [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/461474) 및 [GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468981)에서 활성화되었습니다.
-  - GitLab 17.3에서 일반적으로 제공됩니다. 기능 플래그 `scan_execution_policies_with_latest_templates` 및 `scan_execution_policies_with_latest_templates_group` 제거됨.
-- `v2` 템플릿 지원 `dependency_scanning` [GitLab 18.4에서 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/523986).
-- `dependency_scanning`의 기본 템플릿 [GitLab 19.1의 새 정책으로 변경됨](https://gitlab.com/gitlab-org/gitlab/-/work_items/598744) `v2`.
+  - GitLab 17.3에서 일반적으로 사용 가능합니다. 기능 플래그 `scan_execution_policies_with_latest_templates` 및 `scan_execution_policies_with_latest_templates_group`이 제거되었습니다.
+- `dependency_scanning`에 대한 `v2` 템플릿 지원이 GitLab 18.4에 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/523986)되었습니다.
+- `dependency_scanning`의 기본 템플릿이 GitLab 19.1의 새 정책부터 `v2`로 [변경](https://gitlab.com/gitlab-org/gitlab/-/work_items/598744)되었습니다.
 
 {{< /history >}}
 
@@ -414,10 +402,10 @@ rules:
 |-------|------|-----------------|-------------|
 | `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | 작업의 유형입니다. |
 | `site_profile` | `string` | 선택된 [DAST 사이트 프로필](../dast/profiles.md#site-profile)의 이름입니다. | DAST 스캔을 실행하기 위한 DAST 사이트 프로필입니다. 이 필드는 `scan` 유형이 `dast`인 경우에만 설정해야 합니다. |
-| `scanner_profile` | `string` 또는 `null` | 선택된 [DAST 스캐너 프로필](../dast/profiles.md#scanner-profile)의 이름입니다. | DAST 스캔을 실행하기 위한 DAST 스캐너 프로필입니다. 이 필드는 `scan` 유형이 `dast`인 경우에만 설정해야 합니다.|
+| `scanner_profile` | `string` 또는 `null` | 선택된 [DAST 스캐너 프로필](../dast/profiles.md#scanner-profile)의 이름입니다. | DAST 스캔을 실행하기 위한 DAST 스캐너 프로필입니다. 이 필드는 `scan` 유형이 `dast`인 경우에만 설정해야 합니다. |
 | `variables` | `object` | | 선택된 스캔에 적용하고 적용할 `key: value` 쌍의 배열로 제공되는 CI/CD 변수 세트입니다. `key`은 변수 이름이며 `value`은 문자열로 제공됩니다. 이 매개변수는 지정된 스캔에 대해 GitLab CI/CD 작업이 지원하는 모든 변수를 지원합니다. |
-| `tags` | `array` / `string` | | 정책에 대한 러너 태그 목록입니다. 정책 작업은 지정된 태그를 가진 러너로 실행됩니다. |
-| `template` | `string` | `default`, `latest` 또는 스캐너별 버전 | CI/CD 템플릿 버전을 적용합니다. `default`은 안정적인 템플릿을 사용합니다. `latest`는 주요 변경 사항이 포함될 수 있는 실험적 템플릿을 사용합니다. 가장 현재의 권장 버전이 아닙니다. 일부 스캐너는 권장 구성을 나타내는 버전이 지정된 템플릿도 지원합니다. `latest` 템플릿은 머지 리퀘스트와 관련된 `pipeline_sources`만 지원합니다. 사용 가능한 버전별 스캐너는 [스캐너 템플릿 버전](#scanner-template-versions)을 참조하세요. |
+| `tags` | `string`의 `array` | | 정책에 대한 러너 태그 목록입니다. 정책 작업은 지정된 태그를 가진 러너로 실행됩니다. |
+| `template` | `string` | `default`, `latest` 또는 스캐너별 버전 | 적용할 CI/CD 템플릿 버전입니다. `default`는 안정적인 템플릿을 사용합니다. `latest`는 실험적 템플릿을 사용하며, 이는 주요 변경 사항을 포함할 수 있으며 가장 최신의 권장되는 버전이 아닙니다. 일부 스캐너는 권장 구성을 나타내는 버전이 지정된 템플릿도 지원합니다. `latest` 템플릿은 머지 리퀘스트와 관련된 `pipeline_sources`만 지원합니다. 사용 가능한 버전별 스캐너는 [스캐너 템플릿 버전](#scanner-template-versions)을 참조하세요. |
 | `scan_settings` | `object` | | 선택된 스캔에 적용하고 적용할 `key: value` 쌍의 배열로 제공되는 스캔 설정 세트입니다. `key`은 설정 이름이며 `value`은 부울 또는 문자열로 제공됩니다. 이 매개변수는 [스캔 설정](#scan-settings)에 정의된 설정을 지원합니다. |
 
 > [!note]
@@ -425,7 +413,7 @@ rules:
 
 ### 스캐너 템플릿 버전 {#scanner-template-versions}
 
-`template` 필드는 모든 스캐너 유형에 대해 `default` 및 `latest`을 허용합니다. 일부 스캐너는 추가 버전이 지정된 템플릿을 지원합니다. 권장되는 기본값은 스캐너에 따라 다릅니다. 이 필드를 설정하기 전에 스캐너 문서를 확인하세요.
+`template` 필드는 모든 스캐너 유형에 대해 `default` 및 `latest`을 허용합니다. 일부 스캐너는 추가 버전이 지정된 템플릿을 지원합니다. 권장되는 기본값은 스캐너에 따라 다르므로 이 필드를 설정하기 전에 스캐너 설명서를 확인하세요.
 
 | 스캐너 | 지원되는 템플릿 | 설명서 |
 |---------|---------------------|---------------|
@@ -437,29 +425,29 @@ rules:
 
 ### 스캐너 동작 {#scanner-behavior}
 
-일부 스캐너는 `scan` 작업에서 일반 CI/CD 파이프라인 스캔과 다르게 동작합니다:
+일부 스캐너는 `scan` 작업에서 일반 CI/CD 파이프라인 스캔과 다르게 동작합니다.
 
 - 정적 애플리케이션 보안 테스트(SAST): 리포지토리에 [SAST에서 지원하는 파일](../sast/_index.md#supported-languages-and-frameworks)이 포함된 경우에만 실행됩니다.
 - 시크릿 검색:
   - 기본적으로 기본 규칙 집합의 규칙만 지원됩니다.
-  - 규칙 집합 구성을 사용자 지정하려면 다음 중 하나를 수행합니다:
-    - 기본 규칙 집합을 수정합니다. 검사 실행 정책을 사용하여 `SECRET_DETECTION_RULESET_GIT_REFERENCE` CI/CD 변수를 지정합니다. 기본적으로 기본 규칙 집합에서 규칙을 만 재정의하거나 비활성화하는 [원격 구성 파일](../secret_detection/pipeline/configure.md#with-a-remote-ruleset)을 가리킵니다. 이 변수만 사용하면 기본 규칙 집합을 확장하거나 바꿀 수 없습니다.
-    - [확장](../secret_detection/pipeline/configure.md#extend-the-default-ruleset) 또는 [바꾸기](../secret_detection/pipeline/configure.md#replace-the-default-ruleset) 기본 규칙 집합. 검사 실행 정책을 사용하여 `SECRET_DETECTION_RULESET_GIT_REFERENCE` CI/CD 변수 및 기본 규칙 집합을 확장하거나 바꾸기 위해 [Git 통과](../secret_detection/pipeline/custom_rulesets_schema.md#passthrough-types)를 사용하는 원격 구성 파일을 지정합니다. 자세한 안내서는 [집중식으로 관리되는 파이프라인 시크릿 검색 구성을 설정하는 방법](https://support.gitlab.com/hc/en-us/articles/18863735262364-How-to-set-up-a-centrally-managed-pipeline-secret-detection-configuration-applied-via-Scan-Execution-Policy)을 참조하세요.
+  - 규칙 집합 구성을 사용자 지정하려면 다음 중 하나를 수행합니다.
+    - 기본 규칙 집합을 수정합니다. 검사 실행 정책을 사용하여 `SECRET_DETECTION_RULESET_GIT_REFERENCE` CI/CD 변수를 지정합니다. 기본적으로 기본 규칙 집합에서 규칙만 재정의하거나 비활성화하는 [원격 구성 파일](../secret_detection/pipeline/configure.md#with-a-remote-ruleset)을 가리킵니다. 이 변수만 사용하면 기본 규칙 집합을 확장하거나 바꿀 수 없습니다.
+    - 기본 규칙 집합을 [확장](../secret_detection/pipeline/configure.md#extend-the-default-ruleset)하거나 [대체](../secret_detection/pipeline/configure.md#replace-the-default-ruleset)합니다. 검사 실행 정책을 사용하여 `SECRET_DETECTION_RULESET_GIT_REFERENCE` CI/CD 변수 및 기본 규칙 집합을 확장하거나 바꾸기 위해 [Git 통과](../secret_detection/pipeline/custom_rulesets_schema.md#passthrough-types)를 사용하는 원격 구성 파일을 지정합니다. 자세한 안내서는 [집중식으로 관리되는 파이프라인 시크릿 검색 구성을 설정하는 방법](https://support.gitlab.com/hc/en-us/articles/18863735262364-How-to-set-up-a-centrally-managed-pipeline-secret-detection-configuration-applied-via-Scan-Execution-Policy)을 참조하세요.
   - `scheduled` 검사 실행 정책의 경우 시크릿 검색은 기본적으로 먼저 `historic` 모드(`SECRET_DETECTION_HISTORIC_SCAN` = `true`)에서 실행됩니다. 모든 후속 예약된 스캔은 기본 모드에서 `SECRET_DETECTION_LOG_OPTIONS`이 마지막 실행과 현재 SHA 사이의 커밋 범위로 설정됩니다. 검사 실행 정책에서 CI/CD 변수를 지정하여 이 동작을 재정의할 수 있습니다. 자세한 내용은 [전체 기록 파이프라인 시크릿 검색](../secret_detection/pipeline/_index.md#run-a-historic-scan)을 참조하세요.
   - `triggered` 검사 실행 정책의 경우 시크릿 검색은 [`.gitlab-ci.yml`에서 수동으로 구성된](../secret_detection/pipeline/_index.md#edit-the-gitlab-ciyml-file-manually) 일반 스캔처럼 작동합니다.
 - 컨테이너 스캔: `pipeline` 규칙 유형에 대해 구성된 스캔은 `agents` 개체에 정의된 에이전트를 무시합니다. `agents` 개체는 `schedule` 규칙 유형에만 고려됩니다. `agents` 개체에 제공된 이름을 가진 에이전트를 만들고 프로젝트에 대해 구성해야 합니다.
 
 ### DAST 프로필 {#dast-profiles}
 
-다이나믹 애플리케이션 보안 테스트(DAST)를 적용할 때 다음 요구 사항이 적용됩니다:
+다이나믹 애플리케이션 보안 테스트(DAST)를 적용할 때 다음 요구 사항이 적용됩니다.
 
 - 정책 범위의 모든 프로젝트에 대해 지정된 [사이트 프로필](../dast/profiles.md#site-profile) 및 [스캐너 프로필](../dast/profiles.md#scanner-profile)이 존재해야 합니다. 이들을 사용할 수 없으면 정책이 적용되지 않으며 오류 메시지가 있는 작업이 생성됩니다.
-- DAST 사이트 프로필 또는 스캐너 프로필이 활성화된 검사 실행 정책에 명명되어 있으면 프로필을 수정하거나 삭제할 수 없습니다. 프로필을 편집하거나 삭제하려면 먼저 정책 편집기에서 정책을 **비활성화됨**으로 설정하거나 YAML 모드에서 `enabled: false`을 설정해야 합니다.
+- DAST 사이트 프로필 또는 스캐너 프로필이 활성화된 검사 실행 정책에 명명되어 있으면 프로필을 수정하거나 삭제할 수 없습니다. 프로필을 편집하거나 삭제하려면 먼저 정책 편집기에서 정책을 **비활성화됨**으로 설정하거나 YAML 모드에서 `enabled: false`를 설정해야 합니다.
 - 예약된 DAST 스캔으로 정책을 구성할 때 보안 정책 프로젝트의 리포지토리에서 커밋의 작성자는 스캐너 및 사이트 프로필에 액세스할 수 있어야 합니다. 그렇지 않으면 스캔이 성공적으로 예약되지 않습니다.
 
 ### 스캔 설정 {#scan-settings}
 
-`scan_settings` 매개변수에서 지원하는 설정은 다음과 같습니다:
+`scan_settings` 매개변수에서 지원하는 설정은 다음과 같습니다.
 
 | 설정 | 형식 | 필수 | 가능한 값 | 기본값 | 설명 |
 |-------|------|----------|-----------------|-------------|-----------|
@@ -468,14 +456,14 @@ rules:
 ## CI/CD 변수 {#cicd-variables}
 
 > [!warning]
-> Git 리포지토리의 일반 텍스트 정책 구성의 일부로 저장되므로 변수에 민감한 정보나 자격 증명을 저장하지 마세요.
+> Git 리포지토리에 일반 텍스트 정책 구성의 일부로 저장되므로 민감한 정보 또는 자격 증명을 변수에 저장하지 마세요.
 
 검사 실행 정책에 정의된 변수는 표준 [CI/CD 변수 우선순위](../../../ci/variables/_index.md#cicd-variable-precedence)를 따릅니다.
 
-검사 실행 정책이 적용되는 모든 프로젝트의 다음 CI/CD 변수에 대해 미리 구성된 값이 사용됩니다. 정책만 이 값을 재정의할 수 있습니다. 그룹 또는 프로젝트 CI/CD 변수는 이러한 변수를 재정의할 수 없습니다:
+검사 실행 정책이 적용되는 모든 프로젝트의 다음 CI/CD 변수에 대해 미리 구성된 값이 사용됩니다. 정책만 이 값을 재정의할 수 있습니다. 그룹 또는 프로젝트 CI/CD 변수는 이러한 변수를 재정의할 수 없습니다.
 
 ```plaintext
-DS_EXCLUDED_PATHS: spec, test, tests, tmp
+DS_EXCLUDED_PATHS: '**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git'
 SAST_EXCLUDED_PATHS: spec, test, tests, tmp
 SECRET_DETECTION_EXCLUDED_PATHS: ''
 SECRET_DETECTION_HISTORIC_SCAN: false
@@ -485,21 +473,16 @@ DS_EXCLUDED_ANALYZERS: ''
 SECURE_ENABLE_LOCAL_CONFIGURATION: true
 ```
 
-GitLab 16.9 이전 버전에서:
-
-- 접미사 `_EXCLUDED_PATHS`이 있는 CI/CD 변수가 정책에서 선언된 경우 해당 값을 그룹 또는 프로젝트의 CI/CD 변수로 재정의할 수 있습니다.
-- 접미사 `_EXCLUDED_ANALYZERS`이 있는 CI/CD 변수가 정책에서 선언된 경우 정책, 그룹 또는 프로젝트가 어디에서 정의되었는지에 관계없이 해당 값이 무시되었습니다.
-
 ## 정책 범위 스키마 {#policy-scope-schema}
 
-정책 적용을 사용자 지정하려면 지정한 프로젝트, 그룹 또는 규정 준수 프레임워크 레이블을 포함하거나 제외하도록 정책의 범위를 정의할 수 있습니다. 자세한 내용은 [범위](_index.md#configure-the-policy-scope)를 참조하세요.
+적용을 사용자 정의하기 위해 의 범위를 정의하여 지정된 프로젝트, 그룹 또는 규정 준수 프레임워크 레이블을 포함하거나 제외할 수 있습니다. 자세한 내용은 [범위](_index.md#configure-the-policy-scope)를 참조하세요.
 
 > [!note]
-> `policy_scope` 필드를 빈 컬렉션(예: `including: []`)으로 설정하면 필드를 생략하는 것과 동일하게 취급되므로 정책이 해당 범위 차원의 모든 프로젝트에 적용됩니다. 정책을 완전히 비활성화하려면 `enabled: false`을 사용합니다. 자세한 내용은 [`policy_scope`의 빈 컬렉션](_index.md#empty-collections-in-policy_scope)을 참조하세요.
+> `policy_scope` 필드를 빈 컬렉션(예: `including: []`)으로 설정하는 것은 필드를 생략하는 것과 같이 처리되므로 정책은 해당 범위 차원의 모든 프로젝트에 적용됩니다. 정책을 완전히 비활성화하려면 `enabled: false`를 사용합니다. 자세한 내용은 [`policy_scope`의 빈 컬렉션](_index.md#empty-collections-in-policy_scope)을 참조하세요.
 
 ## 정책 업데이트 전파 {#policy-update-propagation}
 
-정책을 업데이트할 때 변경 사항은 정책을 업데이트하는 방식에 따라 다르게 전파됩니다:
+정책을 업데이트할 때 변경 사항은 정책을 업데이트하는 방식에 따라 다르게 전파됩니다.
 
 - [보안 정책 프로젝트](../_index.md)에서 머지 리퀘스트와 함께: 변경 사항은 머지 리퀘스트가 병합된 후 즉시 적용됩니다.
 - `.gitlab/security-policies/policy.yml`에 직접 커밋: 변경 사항이 적용되는 데 최대 10분이 걸릴 수 있습니다.
@@ -512,7 +495,7 @@ GitLab 16.9 이전 버전에서:
 
 ## 예제 보안 정책 프로젝트 {#example-security-policy-project}
 
-[보안 정책 프로젝트](enforcement/security_policy_projects.md)에 저장된 `.gitlab/security-policies/policy.yml` 파일에서 이 예제를 사용할 수 있습니다:
+[보안 정책 프로젝트](enforcement/security_policy_projects.md)에 저장된 `.gitlab/security-policies/policy.yml` 파일에서 이 예제를 사용할 수 있습니다.
 
 ```yaml
 ---
@@ -586,20 +569,20 @@ actions:
 
 검사 실행 정책으로 인해 프로젝트의 `.gitlab-ci.yml` 파일에 스캔 작업을 포함하면 동일한 유형의 스캐너가 여러 번 실행될 수 있습니다.
 
-중복 스캔은 의도적으로 실행됩니다. 스캐너는 서로 다른 변수와 설정으로 두 번 이상 실행될 수 있기 때문입니다. 예를 들어, 정책에 의해 적용된 것과 다른 변수를 사용하여 SAST 스캔을 실행할 수 있습니다. 이 시나리오에서 두 개의 SAST 작업이 파이프라인에서 실행됩니다:
+중복 스캔은 의도적으로 실행됩니다. 스캐너는 서로 다른 변수와 설정으로 두 번 이상 실행될 수 있기 때문입니다. 예를 들어, 정책에 의해 적용된 것과 다른 변수를 사용하여 SAST 스캔을 실행할 수 있습니다. 이 시나리오에서 두 개의 SAST 작업이 파이프라인에서 실행됩니다.
 
 - 하나는 사용자 지정 변수입니다.
 - 하나는 정책에 의해 적용된 변수입니다.
 
 중복 스캔을 방지하려면 프로젝트의 `.gitlab-ci.yml` 파일에서 스캔 중 하나를 제거하거나 변수를 사용하는 로컬 작업을 건너뜁니다. 작업을 건너뛰면 검사 실행 정책으로 정의된 보안 작업이 실행되지 않습니다.
 
-변수를 사용하여 스캔 작업을 건너뛰려면 다음을 사용할 수 있습니다:
+변수를 사용하여 스캔 작업을 건너뛰려면 다음을 사용할 수 있습니다.
 
-- `SAST_DISABLED: "true"` SAST 작업을 건너뜁니다.
-- `DAST_DISABLED: "true"` DAST 작업을 건너뜁니다.
-- `CONTAINER_SCANNING_DISABLED: "true"` 컨테이너 스캔 작업을 건너뜁니다.
-- `SECRET_DETECTION_DISABLED: "true"` 시크릿 검색 작업을 건너뜁니다.
-- `DEPENDENCY_SCANNING_DISABLED: "true"` 종속성 검사 작업을 건너뜁니다.
+- `SAST_DISABLED: "true"`는 SAST 작업을 건너뜁니다.
+- `DAST_DISABLED: "true"`는 DAST 작업을 건너뜁니다.
+- `CONTAINER_SCANNING_DISABLED: "true"`는 컨테이너 스캔 작업을 건너뜁니다.
+- `SECRET_DETECTION_DISABLED: "true"`는 시크릿 검색 작업을 건너뜁니다.
+- `DEPENDENCY_SCANNING_DISABLED: "true"`는 종속성 검사 작업을 건너뜁니다.
 
 작업을 건너뛸 수 있는 모든 변수의 개요는 [CI/CD 변수 문서](../../../topics/autodevops/cicd_variables.md#job-skipping-variables)를 참조하세요.
 
@@ -613,7 +596,7 @@ actions:
 
 `type: pipeline` 규칙이 있는 검사 실행 정책은 병합된 CI/CD 구성을 사용하여 파이프라인을 생성합니다. 프로젝트의 `workflow:rules`이 파이프라인을 완전히 필터링하면 검사 실행 정책이 파이프라인을 생성할 수 없습니다.
 
-예를 들어, 다음 `workflow:rules` 구성은 모든 파이프라인이 생성되지 않도록 방지합니다:
+예를 들어, 다음 `workflow:rules` 구성은 모든 파이프라인이 생성되지 않도록 방지합니다.
 
 ```yaml
 # .gitlab-ci.yml
@@ -625,9 +608,9 @@ workflow:
 
 해결:
 
-이 이슈를 해결하려면 다음 옵션을 사용할 수 있습니다:
+이 이슈를 해결하려면 다음 옵션을 사용할 수 있습니다.
 
-- 프로젝트의 `.gitlab-ci.yml` 파일에서 `workflow:rules`을 수정하여 검사 실행 정책이 파이프라인을 생성하도록 허용합니다. `$CI_PIPELINE_SOURCE` 변수를 사용하여 정책이 트리거한 파이프라인을 식별할 수 있습니다:
+- 프로젝트의 `.gitlab-ci.yml` 파일에서 `workflow:rules`을 수정하여 검사 실행 정책이 파이프라인을 생성하도록 허용합니다. `$CI_PIPELINE_SOURCE` 변수를 사용하여 정책이 트리거한 파이프라인을 식별할 수 있습니다.
 
   ```yaml
   workflow:

@@ -141,7 +141,7 @@ License scanning is supported for the following languages and package managers:
     </tr>
     <tr>
       <td rowspan="4">Python</td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
+      <td><a href="https://setuptools.pypa.io/en/latest/">setuptools</a></td>
       <td>Yes</td>
       <td>No</td>
     </tr>
@@ -210,7 +210,7 @@ license names.
 | NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
 | Packagist       | <https://packagist.org/packages/list.json>                       |
 | pub             | <https://pub.dev/>                                               |
-| PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
+| PyPI            | <https://docs.pypi.org/api/bigquery/>                            |
 | RubyGems        | <https://rubygems.org/versions>                                  |
 
 ## License expressions
@@ -244,7 +244,7 @@ Users can require approval for merge requests based on the licenses that are det
 {{< /details >}}
 
 For instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
-CycloneDX reports for licenses. For more information, see the offline [quick start guide](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+CycloneDX reports for licenses. For more information, see [Package Metadata Database for offline instances](../../../topics/offline/package-metadata-database.md).
 
 ## Use CycloneDX report as a source of license information
 
@@ -328,7 +328,7 @@ Validation failed: Found duplicates at the following index pairs: "(A, B), (C, D
 #/properties/components/uniqueItems
 ```
 
-This issue can be fixed by updating the CI template to use [jq](https://jqlang.github.io/jq/) to remove the duplicate components from the `gl-sbom-*.cdx.json` report by overriding the job definition that produces the duplicate components. For example, the following removes duplicate components from the `gl-sbom-gem-bundler.cdx.json` report file produced by the `gemnasium-dependency_scanning` job:
+This issue can be fixed by updating the CI template to use [jq](https://jqlang.org/) to remove the duplicate components from the `gl-sbom-*.cdx.json` report by overriding the job definition that produces the duplicate components. For example, the following removes duplicate components from the `gl-sbom-gem-bundler.cdx.json` report file produced by the `gemnasium-dependency_scanning` job:
 
 ```yaml
 include:

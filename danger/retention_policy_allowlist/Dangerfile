@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+retention_policy_allowlist.check_retention_policy_allowlist_additions

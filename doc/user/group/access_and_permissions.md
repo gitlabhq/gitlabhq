@@ -400,19 +400,32 @@ can change the project setting to another value if needed.
   Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/598279) in GitLab 19.2.
   Feature flag `mcp_server_availability_setting` removed.
+- [Turned on](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241093) in GitLab 19.2 for existing
+  top-level groups with GitLab Duo features and experiment and beta features turned on.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256761) for top-level groups
+  created in GitLab 19.5 and later.
 
 {{< /history >}}
+
+Whether this setting is on for your group depends on when the group was created:
+
+- Groups that existed when the setting was added: on only if the group had both GitLab Duo
+  features and experiment and beta features turned on at that time.
+- Groups created after that, up to GitLab 19.5: off by default.
+- Groups created in GitLab 19.5 and later: on by default.
+
+An Owner can turn the setting on or off for any top-level group.
 
 Prerequisites:
 
 - The Owner role for the top-level group.
 
-To allow access to the MCP server for a top-level group:
+To change access to the MCP server for a top-level group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
-1. In the **MCP client access** section, select the **Allow connection to GitLab** checkbox.
+1. In the **MCP client access** section, select or clear the **Allow connection to GitLab** checkbox.
 1. Select **Save changes**.
 
 ## Troubleshooting

@@ -13,11 +13,6 @@ module BulkImports
 
     self.table_name = 'bulk_import_exports'
 
-    # organization_id was added for a sharding-key rollout that turned out to be
-    # unnecessary here (see gitlab-org/gitlab#604997). The column is dropped in a
-    # follow-up release; this keeps Rails from caching it in the meantime.
-    ignore_column :organization_id, remove_with: '19.5', remove_after: '2026-09-12'
-
     belongs_to :project, optional: true
     belongs_to :group, optional: true
     belongs_to :user, optional: true
@@ -105,7 +100,7 @@ module BulkImports
 
     def config
       strong_memoize(:config) do
-        FileTransfer.config_for(portable)
+        FileTransfer.config_for(portable, offline: offline?)
       end
     end
 

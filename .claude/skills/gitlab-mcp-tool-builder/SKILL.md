@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.10.0
+version: 1.20.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -48,7 +48,7 @@ MCP client (JSON-RPC POST /api/v4/mcp, "tools/call")
           → process_result    (shape output → MCP Response)
 ```
 
-- **`<Name>Tool`** (`.../<area>/<name>_tool.rb`) — subclass of `Mcp::Tools::GraphqlTool`;
+- **`<Name>Tool`** (`.../<area>/<name>_tool.rb`) — subclass of `Mcp::Tools::Base::GraphqlTool`;
   loads the operation from a `.graphql` file, maps `params → variables`, optionally
   reshapes output.
 - **`<Name>Service`** (`.../<area>/<name>_service.rb`) — subclass of
@@ -56,6 +56,10 @@ MCP client (JSON-RPC POST /api/v4/mcp, "tools/call")
   `description`, and `annotations`.
 - **Registration** — one line in `manager.rb` `GRAPHQL_TOOLS`:
   `'<tool_name>' => ::Mcp::Tools::<Area>::<Name>Service`.
+
+Every tool must also declare exactly one **toolset** (`toolset: :symbol` in the Service's
+`register_version` metadata) from `Mcp::Tools::Toolsets::ALL` — a coverage spec fails
+CI if it's missing or invalid.
 
 Key fact: `GraphqlTool#execute` calls **`GitlabSchema.execute(...)`** — the same schema
 the HTTP `/api/graphql` endpoint uses, run **as `current_user`**, so the tool inherits
@@ -82,14 +86,17 @@ Rules for the file:
 - **Verb-first operation name** to match `app/graphql/queries` (`getMergeRequestNotes`,
   `createNote` — not `MergeRequestNotes`).
 - **Load with the direct `load_graphql(...)` form, not a lambda.** `-> { load_graphql(...) }`
-  rereads the file every request. The one exception is an operation *composed at load
-  time* (e.g. a query built from EE-overridden fragments) — build it in a method and
-  reference it with a lambda (`graphql_operation: -> { build_query }`).
+  rereads the file every request. The one exception is an operation *built in Ruby* by a
+  class that EE prepends (`WorkItemsQueryBuilder`) — build it in a method and reference it
+  with a lambda (`graphql_operation: -> { build_query }`).
+- **EE-only fields go in a fragment, not a copy of the query.** Spread a fragment imported
+  with `#import "./<name>.fragment.graphql"` and add a file with the same name under
+  `ee/app/graphql/queries/mcp/`; `load_graphql` reads it in place of the CE one (see
+  `merge_requests/get_merge_request.query.graphql`).
 
 ## Tool naming and consolidation conventions (!245400)
 
-> **Note:** Existing tools (`get_merge_request_notes`, `create_merge_request_note`, etc.)
-> predate these conventions. Copy them for the **implementation pattern** but name and
+> **Note:** Some existing tools predate these conventions. Copy them for the **implementation pattern** but name and
 > structure your new tool per the conventions below.
 
 Every tool name uses a `verb_object` shape. The verb signals the operation class:
@@ -163,9 +170,20 @@ a convention (non-standard verb, second write tool on one resource).
    instance method if the root field varies at call time (e.g. project-or-group tools —
    see `references/tool-anatomy.md`); map `params → variables` in `build_variables`;
    reshape in `process_result` if needed.
-5. **Service class** (`< Base::GraphqlService`): write `input_schema` (agent-facing args
-   + `required`; do **not** add `additionalProperties`), `description`, `annotations`
-   (`readOnlyHint` correct — it drives pre-approval); point `graphql_tool_class` at the Tool.
+5. **Service class** (`< Base::GraphqlService`): write `toolset: :symbol` (one of
+   `Mcp::Tools::Toolsets::ALL`), `input_schema` (agent-facing args + `required`;
+   do **not** add `additionalProperties`), `description`, `annotations` (`readOnlyHint`
+   correct — it drives pre-approval); point `graphql_tool_class` at the Tool. Example
+   `register_version` metadata:
+
+   ```ruby
+   register_version '0.1.0', {
+     toolset: :work_items,
+     description: 'Example description',
+     annotations: { readOnlyHint: true },
+     input_schema: { type: 'object', properties: {} }
+   }
+   ```
 6. **Declare the governance namespace.** Every tool inherits
    `{ project: :project_id, group: :group_id }` from `GovernanceNamespaceResolver`. If your
    `input_schema` already names its project/group arguments `project_id`/`group_id`, skip this
@@ -193,6 +211,12 @@ a convention (non-standard verb, second write tool on one resource).
      lists EE-only tools.
    Only one of the two annotations examples runs in a given pipeline, so green specs never
    prove you updated both files.
+   A read-only tool (`readOnlyHint: true`) must ALSO be added to the two Duo Workflow Service
+   preapproved-tool lists, which are deliberately literal so pre-approval gets a review:
+   `ee/spec/services/ai/duo_workflows/mcp_config_service_spec.rb` (`read_only_tool_names`) and
+   `ee/spec/requests/api/ai/duo_workflows/workflows_spec.rb` (`mcp_preapproved_tools`) — both
+   alphabetical, one name per line. These fail only in `rspec-ee` jobs, so a green local run of
+   the MCP specs never catches them.
 10. **Unit specs** for the Tool and the Service. Lock the service `input_schema` as a
    whole with a single `expect(...).to eq({ … })` (a full version-lock, like
    `list_merge_requests_service_spec`), not property-by-property — it catches accidental
@@ -217,8 +241,8 @@ a convention (non-standard verb, second write tool on one resource).
   string/HEREDOC as `graphql_operation:`; use a `.graphql` file via `load_graphql`.
 - **Missing `# @feature_category:` → lint failure.** Every `.graphql` file needs it as
   the first line (`graphql_require_feature_category`).
-- **`load_graphql` in a lambda rereads the file per request.** Use the direct form; a
-  method + lambda is only for an operation composed at load time (EE fragments).
+- **`load_graphql` in a lambda rereads the file per request.** Use the direct form, EE
+  fragments included; a method + lambda is only for an operation built in Ruby.
 - **Don't hand-set `additionalProperties`.** `SchemaDefaults` applies `false`
   automatically (!243352); setting it manually is redundant and will be flagged.
 - **`readOnlyHint` changes behavior, not just docs.** The pre-approved tool list is
@@ -265,6 +289,12 @@ a convention (non-standard verb, second write tool on one resource).
   `:read_merge_request` instead of `:read_project`), pass it as `ability:`:
   `find_project!(project_id, ability: :read_merge_request)`. The same uniform-error guarantee
   applies regardless of which ability you pass.
+- **Never describe a project/group argument as accepting a URL-encoded path.** Use "ID or
+  full path, e.g. `gitlab-org/gitlab`" instead. The encoded form (`gitlab-org%2Fgitlab`) fails
+  for every tool type: `Gitlab::ResourceLookup#lookup_project` (lib/gitlab/resource_lookup.rb:14)
+  only treats a value as a path when it contains a literal `/`, and nothing in the MCP layer
+  percent-decodes the argument first. This keeps recurring because the REST API docs correctly
+  say "URL-encoded path" (Rack decodes it there); that wording doesn't transfer to MCP.
 - **Don't hardcode a value list the schema already derives from a model.** GraphQL
   `enum`s are often generated from a model constant (e.g. `DuoWorkflowStatusGroup` is built
   from `Ai::DuoWorkflows::Workflow::GROUPED_STATUSES`). Derive your `input_schema` `enum`
@@ -303,6 +333,13 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
 `Manager` memoizes `GRAPHQL_TOOLS`.
 
 - **Request spec** (canonical): pattern in `spec/requests/api/mcp/handlers/call_tool_spec.rb`.
+- **In specs, authenticate the way clients do: an OAuth token with the `mcp` scope.** MCP
+  clients register through dynamic client registration and send `Authorization: Bearer`, so
+  use `create(:oauth_access_token, user: user, scopes: [:mcp])`. A personal access token is
+  the wrong shape either way. The factory default `[:api]` is refused outright, since
+  `lib/api/mcp/base.rb` requires the `mcp` or `granular` scope. And `scopes: [:mcp]` passes
+  model validation but is missing from `Gitlab::Auth.available_scopes_for`, so no user can
+  create one through the UI or the self-serve token API.
 - **Don't hardcode the GDK URL, and don't assume port 3000.** Puma may bind a UNIX socket
   (`config/puma.rb`), so `127.0.0.1:3000` can be refused; the app is reachable through nginx at
   whatever `Gitlab.config.gitlab.url` reports (e.g. `https://gdk.test:3443`). Derive it.
@@ -312,8 +349,10 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
   ```ruby
   require 'net/http'; require 'json'
   base  = URI("#{Gitlab.config.gitlab.url}/api/v4/mcp")
+  # A console can mint an mcp-scope PAT even though the UI cannot offer one. Fine for
+  # smoke-testing a tool; specs still want the OAuth token above.
   token = User.find_by_username('root').personal_access_tokens.create!(
-    name: 'mcp-verify', scopes: [:api, :mcp], expires_at: 7.days.from_now)
+    name: 'mcp-verify', scopes: [:mcp], expires_at: 7.days.from_now)
   token.set_token('someknownvalue'); token.save! # token.revoke! when done
   def rpc(base, tok, body)
     req = Net::HTTP::Post.new(base)
@@ -342,11 +381,11 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
 |---|---|
 | Two-class field-by-field detail, naming, mapping, mutation deltas | [references/tool-anatomy.md](references/tool-anatomy.md) |
 | How the GraphQL API is built + how to discover it (introspection) | [references/graphql-api-model.md](references/graphql-api-model.md) |
-| Full worked read example (`get_merge_request_notes`) | [references/worked-example.md](references/worked-example.md) |
+| Full worked read example (`get_commit`) | [references/worked-example.md](references/worked-example.md) |
 | Agent-as-consumer review checklist | [references/agent-consumer-review.md](references/agent-consumer-review.md) |
 | Canonical dev docs | `doc/development/duo_agent_platform/mcp/{_index,graphql_integration}.md` |
-| Framework classes | `app/services/mcp/tools/graphql_tool.rb`, `.../base/graphql_service.rb`, `.../manager.rb` |
+| Framework classes | `app/services/mcp/tools/base/graphql_tool.rb`, `.../base/graphql_service.rb`, `.../manager.rb` |
 | Concerns | `app/services/mcp/tools/concerns/{resource_finder,url_parser,content_validation,constants}.rb` |
-| Closest read / write templates | `.../merge_requests/get_merge_request_notes_{tool,service}.rb` / `create_merge_request_note_{tool,service}.rb` |
+| Closest read / write templates | `.../commits/get_commit_{tool,service}.rb` / `.../notes/save_note_{tool,service}.rb` |
 | Project-or-group tool template | `.../labels/search_{tool,service}.rb` + `app/graphql/queries/mcp/labels/search.query.graphql` |
 | RuboCop rule forbidding inline operations | `rubocop/cop/mcp/use_graphql_query_file.rb` |

@@ -45,16 +45,29 @@ RSpec.describe Gitlab::ResourceUsageLimiter, feature_category: :shared do
       expect(Gitlab::ApplicationRateLimiter)
           .to receive(:resource_usage_throttled?)
             .once
-            .with(:test_limit, resource_key: resource_key, scope: [worker_name],
+            .with(:test_limit, resource_key: resource_key, scope: { worker_name: worker_name },
               threshold: threshold, interval: interval, peek: peek)
 
       expect(Gitlab::ApplicationRateLimiter)
           .to receive(:resource_usage_throttled?)
             .once
-            .with(:test_limit_per_user, resource_key: resource_key, scope: [worker_name,
-              1], threshold: threshold, interval: interval, peek: peek)
+            .with(:test_limit_per_user, resource_key: resource_key,
+              scope: { worker_name: worker_name, user_id: 1 },
+              threshold: threshold, interval: interval, peek: peek)
 
       described_class.new(worker_name: worker_name).exceeded_limits
+    end
+
+    context 'when a limit has no scopes' do
+      let(:limits) do
+        [Gitlab::SidekiqLimits::Limit.new(:unscoped_limit, resource_key, [], nil, threshold, interval)]
+      end
+
+      it 'skips the limit check' do
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:resource_usage_throttled?)
+
+        described_class.new(worker_name: worker_name).exceeded_limits
+      end
     end
 
     context 'when scopes are missing' do
@@ -87,14 +100,15 @@ RSpec.describe Gitlab::ResourceUsageLimiter, feature_category: :shared do
       expect(Gitlab::ApplicationRateLimiter)
         .to receive(:resource_usage_throttled?)
               .once
-              .with(:test_limit, resource_key: resource_key, scope: [worker_name],
+              .with(:test_limit, resource_key: resource_key, scope: { worker_name: worker_name },
                 threshold: threshold, interval: interval, peek: peek)
 
       expect(Gitlab::ApplicationRateLimiter)
         .to receive(:resource_usage_throttled?)
               .once
-              .with(:test_limit_per_user, resource_key: resource_key, scope: [worker_name,
-                1], threshold: threshold, interval: interval, peek: peek)
+              .with(:test_limit_per_user, resource_key: resource_key,
+                scope: { worker_name: worker_name, user_id: 1 },
+                threshold: threshold, interval: interval, peek: peek)
 
       exceeded_limits?
     end
@@ -126,6 +140,18 @@ RSpec.describe Gitlab::ResourceUsageLimiter, feature_category: :shared do
 
       it 'returns false' do
         expect(resource_usage_limiter).not_to be_exceeded_limits
+      end
+    end
+
+    context 'when a limit has no scopes' do
+      let(:limits) do
+        [Gitlab::SidekiqLimits::Limit.new(:unscoped_limit, resource_key, [], nil, threshold, interval)]
+      end
+
+      it 'skips the limit check' do
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:resource_usage_throttled?)
+
+        exceeded_limits?
       end
     end
 

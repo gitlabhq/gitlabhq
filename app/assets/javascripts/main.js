@@ -18,6 +18,8 @@ import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
+import AccessorUtilities from './lib/utils/accessor';
+import { getStorageValue } from './lib/utils/local_storage';
 import {
   localTimeAgo,
   initLocalDateTimes,
@@ -143,15 +145,19 @@ function deferredInitialisation() {
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
-  const glTooltipDelay = localStorage.getItem('gl-tooltip-delay');
-  const delay = glTooltipDelay ? JSON.parse(glTooltipDelay) : 0;
+  // Browsers that deny storage access (e.g. blocked cookies on Chrome Mobile)
+  // throw a SecurityError when `localStorage` is even read.
+  const { exists, value: delay } = AccessorUtilities.canUseLocalStorage()
+    ? getStorageValue('gl-tooltip-delay')
+    : { exists: false };
+  const tooltipDelay = exists ? delay : 0;
 
   // Initialize tooltips
   tooltips.initTooltips({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
     trigger: 'hover',
     boundary: 'viewport',
-    delay,
+    delay: tooltipDelay,
   });
 
   // Initialize popovers

@@ -25,17 +25,12 @@ For a full list of reference architectures, see
   can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
 - **Unsure which Reference Architecture to use**? For more information, see [deciding which architecture to start with](_index.md#deciding-which-architecture-to-start-with).
 
-| Users        | Configuration        | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
+| Users        | Configuration        | GCP example[^machine-types] | AWS example[^machine-types] | Azure example[^machine-types] |
 |--------------|----------------------|----------------|--------------|----------|
-| Up to 1,000 or 20 RPS | 8 vCPU, 16 GB memory | `n1-standard-8`<sup>2</sup> | `c5.2xlarge` | `F8s v2` |
+| Up to 1,000 or 20 RPS | 8 vCPU, 16 GB memory | `n1-standard-8`[^custom-machine-type] | `c5.2xlarge` | `F8s v2` |
 
-**Footnotes**:
-
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
-2. For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://docs.cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
-<!-- markdownlint-enable MD029 -->
+[^machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
+[^custom-machine-type]: For GCP, the closest and equivalent standard machine type has been selected that matches the recommended requirement of 8 vCPU and 16 GB of RAM. A [custom machine type](https://docs.cloud.google.com/compute/docs/instances/creating-instance-with-custom-machine-type) can also be used if desired.
 
 The following diagram shows that while GitLab can be installed on a single server, it is internally composed of multiple services. When an instance scales, these services are separated and independently scaled according to their specific demands.
 

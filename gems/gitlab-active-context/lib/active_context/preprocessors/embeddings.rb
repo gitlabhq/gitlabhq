@@ -8,13 +8,14 @@ module ActiveContext
       IndexingError = Class.new(StandardError)
 
       class_methods do
-        def apply_embeddings_by_root_namespace(
+        def apply_embeddings_by_root_namespace( # rubocop:disable Metrics/ParameterLists -- forwards to generate_and_apply_embeddings_for_root_namespace
           refs:,
           queue_name: nil,
           content_field: :content,
           content_method: nil,
           remove_content: false,
           next_model_only: false,
+          current_model_only: false,
           error_types: [StandardError],
           infinite_retry_error_types: []
         )
@@ -27,19 +28,21 @@ module ActiveContext
               content_method: content_method,
               remove_content: remove_content,
               next_model_only: next_model_only,
+              current_model_only: current_model_only,
               error_types: error_types,
               infinite_retry_error_types: infinite_retry_error_types
             )
           end
         end
 
-        def apply_embeddings(
+        def apply_embeddings( # rubocop:disable Metrics/ParameterLists -- forwards to generate_and_apply_embeddings_for_root_namespace
           refs:,
           queue_name: nil,
           content_field: :content,
           content_method: nil,
           remove_content: false,
           next_model_only: false,
+          current_model_only: false,
           error_types: [StandardError],
           infinite_retry_error_types: []
         )
@@ -51,6 +54,7 @@ module ActiveContext
             content_method: content_method,
             remove_content: remove_content,
             next_model_only: next_model_only,
+            current_model_only: current_model_only,
             error_types: error_types,
             infinite_retry_error_types: infinite_retry_error_types
           )
@@ -66,6 +70,7 @@ module ActiveContext
           content_method: nil,
           remove_content: false,
           next_model_only: false,
+          current_model_only: false,
           error_types: [StandardError],
           infinite_retry_error_types: []
         )
@@ -76,7 +81,9 @@ module ActiveContext
             queue_name: queue_name,
             preprocessor: 'embeddings') do
             docs_to_process = refs.flat_map do |ref|
-              models = ref.indexing_embedding_models(next_model_only: next_model_only)
+              models = ref.indexing_embedding_models(
+                next_model_only: next_model_only, current_model_only: current_model_only
+              )
 
               next [] unless models.any?
 

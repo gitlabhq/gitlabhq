@@ -2,11 +2,12 @@
 import Vue from 'vue';
 import { createApolloProvider, ApolloProvider } from '@vue/apollo-option';
 import { ApolloMutation } from '@vue/apollo-components';
+import { PLUGIN_MIXIN, VUE_APOLLO } from './plugin_install_state';
 
 export { ApolloMutation };
 
 // This module is what `import VueApollo from 'vue-apollo'` resolves to on the
-// Vue 3 lanes (see config/helpers/context_aliases_shared.js and
+// Vue 3 lanes (see config/vue3migration/aliases.js and
 // jest.config.base.js). It adapts @vue/apollo-option v4 — where the provider
 // itself is the app plugin (`app.use(apolloProvider)`) — to the vue-apollo v3
 // call sites used across the repo:
@@ -85,6 +86,8 @@ function resolveApolloProvider(vm) {
 // mixin. Registered before any component is created and using only native
 // Vue 3 hook names — nothing relies on @vue/compat lifecycle aliasing.
 const apolloMixin = {
+  [PLUGIN_MIXIN]: VUE_APOLLO,
+
   beforeCreate() {
     const provider = resolveApolloProvider(this);
     // Cached on every instance (even null) so children resolve in O(1).

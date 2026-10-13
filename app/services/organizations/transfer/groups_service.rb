@@ -41,12 +41,15 @@ module Organizations
         capture_log_context
 
         Group.transaction do
+          persist_transfer_source_organization
           perform_transfer
         end
 
+        schedule_sync_workers
         log_transfer_success
         ServiceResponse.success
       rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e, **(@log_context || {}))
         log_transfer_error(e.message)
         ServiceResponse.error(message: e.message)
       end
@@ -55,28 +58,24 @@ module Organizations
 
       attr_reader :group, :new_organization, :current_user
 
-      # The "old" organization is the source of the transfer. By default it is
-      # the group's current organization, but Organizations::ConfirmService
-      # moves the top-level group's organization_id ahead of the descendants;
-      # in that case the actual source is taken from the first descendant
-      # that has not yet been transferred so the runners transfer, the
-      # GroupTransferredEvent, and the EE subscription transfer all receive
-      # the real source organization.
+      # Before the root moves it is the group's own org; after (re-run) it is the value
+      # persisted earlier, so the source survives a partial transfer.
       def old_organization
-        return group.organization unless new_organization&.id == group.organization_id
+        source_id =
+          if group.organization_id == new_organization.id
+            group.state_metadata['organization_transfer_source_id']
+          else
+            group.organization_id
+          end
 
-        Organizations::Organization.find_by_id(untransferred_descendant_organization_id) ||
-          group.organization
+        Organizations::Organization.find_by_id(source_id)
       end
-      strong_memoize_attr :old_organization
 
-      def untransferred_descendant_organization_id
-        descendant_ids = group.self_and_descendant_ids(skope: Namespace)
+      def persist_transfer_source_organization
+        return if group.organization_id == new_organization.id
 
-        Namespace.id_in(descendant_ids)
-          .where.not(organization_id: new_organization.id) # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
-          .limit(1)
-          .pick(:organization_id)
+        group.state_metadata['organization_transfer_source_id'] = group.organization_id
+        group.namespace_details.save!
       end
 
       def perform_transfer
@@ -110,12 +109,31 @@ module Organizations
             visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
           )
 
+          transfer_oauth_application_granular_scopes(batch_ids)
           transfer_oauth_applications(batch_ids)
           transfer_stage_event_hashes(batch_ids)
         end
       end
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_oauth_application_granular_scopes(namespace_ids)
+        application_ids = Authn::OauthApplication
+          .where(owner_type: 'Namespace', owner_id: namespace_ids, organization_id: old_organization.id)
+          .select(:id)
+
+        update_organization_id_for(Authz::OauthApplicationGranularScope) do |relation|
+          relation.where(application_id: application_ids)
+        end
+
+        granular_scope_ids = Authz::OauthApplicationGranularScope
+          .where(application_id: application_ids)
+          .select(:granular_scope_id)
+
+        update_organization_id_for(Authz::GranularScope) do |relation|
+          relation.where(id: granular_scope_ids)
+        end
+      end
+
       def transfer_oauth_applications(namespace_ids)
         update_organization_id_for(Authn::OauthApplication) do |relation|
           relation.where(owner_type: 'Namespace', owner_id: namespace_ids)
@@ -246,11 +264,14 @@ module Organizations
         return if source_hash_id == target_hash_id
 
         stage_event_models.each do |model|
-          model
-            .where(stage_event_hash_id: source_hash_id, group_id: group_ids)
-            .each_batch(column: model.issuable_id_column, of: BATCH_SIZE) do |batch|
-              batch.update_all(stage_event_hash_id: target_hash_id)
-            end
+          source_events = model.where(stage_event_hash_id: source_hash_id, group_id: group_ids)
+
+          # Ordering by the issuable id has no supporting index and times out. Updated rows leave
+          # the scope, so an unordered limit loop terminates.
+          loop do
+            updated_count = source_events.limit(BATCH_SIZE).update_all(stage_event_hash_id: target_hash_id)
+            break if updated_count == 0
+          end
         end
       end
 
@@ -369,6 +390,13 @@ module Organizations
         end
       end
 
+      def schedule_sync_workers
+        ActiveRecord.after_all_transactions_commit do
+          ::Namespaces::SyncEvent.enqueue_worker
+          ::Projects::SyncEvent.enqueue_worker
+        end
+      end
+
       def log_transfer_success
         log_transfer
       end
@@ -429,8 +457,14 @@ module Organizations
         !group.has_parent?
       end
 
+      # A recorded source means a transfer is still in progress, so proceed. Detecting
+      # true completion across every moved resource is deferred to the re-run guard in
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/630389.
       def already_transferred?
-        new_organization && new_organization.id == old_organization.id
+        return false unless new_organization
+
+        group.organization_id == new_organization.id &&
+          group.state_metadata['organization_transfer_source_id'].nil?
       end
 
       def has_permission?

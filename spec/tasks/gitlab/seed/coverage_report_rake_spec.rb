@@ -19,14 +19,13 @@ RSpec.describe 'gitlab:seed:coverage_report', :silence_output, feature_category:
   end
 
   describe 'choosing the base ref' do
-    it 'skips the report when no base ref is available' do
+    it 'skips the report when the target branch tip is unavailable' do
       expect { run_rake_task('gitlab:seed:coverage_report') }
-        .to output(/No base ref given, skipping the fixture coverage report/).to_stdout
+        .to output(/No target branch SHA, skipping the fixture coverage report/).to_stdout
     end
 
-    it 'prefers the target branch tip over the merge base' do
+    it 'diffs against the target branch tip' do
       stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_SHA', 'target-sha')
-      stub_env('CI_MERGE_REQUEST_DIFF_BASE_SHA', 'base-sha')
       stub_entry_names([])
 
       run_rake_task('gitlab:seed:coverage_report')
@@ -34,13 +33,15 @@ RSpec.describe 'gitlab:seed:coverage_report', :silence_output, feature_category:
       expect(Quality::AddedTables).to have_received(:new).with('target-sha')
     end
 
-    it 'falls back to the merge base when the target branch tip is unavailable' do
+    # Detached pipelines expose no target branch tip. The merge base is not a substitute: on a
+    # branch that already contains master it diffs in tables other merge requests added.
+    it 'does not fall back to the merge base' do
       stub_env('CI_MERGE_REQUEST_DIFF_BASE_SHA', 'base-sha')
-      stub_entry_names([])
+      allow(Quality::AddedTables).to receive(:new)
 
-      run_rake_task('gitlab:seed:coverage_report')
-
-      expect(Quality::AddedTables).to have_received(:new).with('base-sha')
+      expect { run_rake_task('gitlab:seed:coverage_report') }
+        .to output(/No target branch SHA, skipping the fixture coverage report/).to_stdout
+      expect(Quality::AddedTables).not_to have_received(:new)
     end
 
     it 'prefers an explicit argument over the environment' do

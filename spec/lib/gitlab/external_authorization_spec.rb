@@ -14,7 +14,7 @@ RSpec.describe Gitlab::ExternalAuthorization, :request_store do
       # `EE::ApplicationSetting` which breaks when using `any_instance`
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/33587
       expect(::Gitlab::CurrentSettings.current_application_settings)
-        .to receive(:external_authorization_service_enabled) { false }
+        .to receive(:external_authorization_service_enabled).and_return(false)
 
       expect(described_class).not_to receive(:access_for_user_to_label)
 
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::ExternalAuthorization, :request_store do
   describe '#rejection_reason' do
     it 'is always nil when the feature is disabled' do
       expect(::Gitlab::CurrentSettings.current_application_settings)
-        .to receive(:external_authorization_service_enabled) { false }
+        .to receive(:external_authorization_service_enabled).and_return(false)
 
       expect(described_class).not_to receive(:access_for_user_to_label)
 

@@ -17,6 +17,7 @@ title: 'Tutorial: Use the personal homepage'
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546151) in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `personal_homepage`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/554048) in GitLab 18.4 for a subset of users.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/work_items/17932) in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561388) in GitLab 19.4. Feature flag `personal_homepage` removed.
 - Recently viewed wiki pages:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233014) in GitLab 19.0 [with a feature flag](../../administration/feature_flags/_index.md) named `recently_viewed_wiki_pages`. Disabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/597889) in GitLab 19.1. Feature flag `recently_viewed_wiki_pages` removed.
@@ -33,8 +34,9 @@ and to get the most out of it.
 
 ## Before you begin
 
-Set the [personal homepage](../../user/profile/preferences.md#choose-your-homepage)
-as the default homepage in your preferences.
+The personal homepage is the default for all users, so you don't need to do anything to use it.
+If you previously changed your [homepage preference](../../user/profile/preferences.md#choose-your-homepage)
+to a different page, set it back to **Personal homepage (default)**.
 
 ## Access the homepage
 
@@ -48,7 +50,7 @@ You can access your personal homepage from anywhere in GitLab:
 Near the top, select your avatar to set your status.
 If you have set a status, your avatar displays a status badge and emoji, and you can hover to view your status text.
 
-Below your avatar, view the number of merge requests and issues that you're involved with.
+On the right side of the homepage, the **Merge requests** widget shows your open merge requests: those you authored or are assigned to, and those waiting for your review.
 
 The **Items that need your attention** list shows all work items across GitLab that need your input.
 
@@ -64,7 +66,7 @@ work for the day:
 
 1. Use the filter in the **Items that need your attention** list to view the events that are most important to you.
    For example, to see merge requests that are blocked because of failed pipelines, select **Failed builds** from the filter dropdown list.
-1. Near the top of the homepage, select **Merge requests waiting for your review** to view the merge requests that need your review, so you can unblock others.
+1. On the **Merge requests** widget, select the **Review requested** tab to view the merge requests that need your review, so you can unblock others.
 
 You can also keep track of what you have been working on, for example:
 

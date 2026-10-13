@@ -9,6 +9,8 @@
       - stuck_or_timeout_failure
       - unknown_failure
     # See https://docs.gitlab.com/development/pipelines/internals/#custom-exit-codes
+    # `.rspec-base` in .gitlab/ci/rails/shared.gitlab-ci.yml restates this list.
+    # When you add a code here, add it there too.
     exit_codes:
       - 112  # known flaky test detected, retry the whole job
       - 201  # low free disk space
@@ -176,7 +178,7 @@
 
 .es8-services:
   services:
-    - name: elasticsearch:8.19.20
+    - name: elasticsearch:8.19.22
 
 .es8-variables:
   variables:
@@ -289,12 +291,19 @@
   extends: .use-pg17
   services:
     - !reference [.db-services-with-auto-explain, services]
-    - name: clickhouse/clickhouse-server:25.12.3-alpine
+    # Use the lowest supported ClickHouse minor version to catch compatibility regressions.
+    - name: clickhouse/clickhouse-server:25.1.8.25-alpine
       alias: clickhouse
   variables:
     CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
+    CLICKHOUSE_HOST_URL: http://clickhouse:8123
+    # The app connects as this least-privilege user, not as `default`. See
+    # scripts/click_house/setup_ci_user.rb. The GITLAB_ prefix keeps these clear of the
+    # image entrypoint's own CLICKHOUSE_PASSWORD and the coverage exporter's CLICKHOUSE_USERNAME.
+    GITLAB_CLICKHOUSE_USER: gitlab
+    GITLAB_CLICKHOUSE_PASSWORD: gitlab_clickhouse_ci
 
 .use-pg17-clickhouse26:
   extends: .use-pg17
@@ -306,6 +315,12 @@
     CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
+    CLICKHOUSE_HOST_URL: http://clickhouse:8123
+    # The app connects as this least-privilege user, not as `default`. See
+    # scripts/click_house/setup_ci_user.rb. The GITLAB_ prefix keeps these clear of the
+    # image entrypoint's own CLICKHOUSE_PASSWORD and the coverage exporter's CLICKHOUSE_USERNAME.
+    GITLAB_CLICKHOUSE_USER: gitlab
+    GITLAB_CLICKHOUSE_PASSWORD: gitlab_clickhouse_ci
 
 # Adds a SECOND Postgres started with a non-UTC server `timezone`
 # (`reset_val = America/Los_Angeles`), exposed under the `postgres-tz` alias,
@@ -464,7 +479,7 @@
   policy: pull
 
 .assets-cache: &assets-cache
-  key: "assets-${NODE_ENV}-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
+  key: "assets-${NODE_ENV}-${GLCI_ASSETS_TARGET}-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
   paths:
     - app/assets/javascripts/locale/**/app.js
     - public/assets/
@@ -484,7 +499,7 @@
     files:
       - config/webpack.config.js
       - yarn.lock
-    prefix: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}"
+    prefix: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-${GLCI_ASSETS_BUNDLER}"
   paths:
     - tmp/cache
   policy: pull
@@ -595,7 +610,7 @@
     - !reference [.ruby-gems-cache]
     - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-tmp-cache.yml
     - *node-modules-cache
-    - *assets-cache
+    - !reference [.assets-cache] # use reference to be able to override via overrides/assets-cache.yml
 
 .assets-compile-cache-pull:
   cache:

@@ -1,3 +1,4 @@
+import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
 import MergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData, { mockPipelineSubscription } from '../mock_data';
@@ -131,6 +132,21 @@ describe('MergeRequestStore', () => {
 
       expect(store.securityReportsDocsPath).toBe('security-reports-docs-path');
     });
+
+    it.each`
+      flag     | expected
+      ${true}  | ${'/reports'}
+      ${false} | ${undefined}
+    `(
+      'sets reportsTabPath to $expected when later widget data does not include it and the flag is $flag',
+      ({ flag, expected }) => {
+        window.gon.features = { mergeRequestReportsWidgetGroup: flag };
+        store.setPaths({ ...mockData, reportsTabPath: '/reports' });
+        store.setData({ ...mockData });
+
+        expect(store.reportsTabPath).toBe(expected);
+      },
+    );
   });
 
   describe('preventMerge', () => {
@@ -169,6 +185,26 @@ describe('MergeRequestStore', () => {
     });
   });
 
+  describe('isMergeAllowed', () => {
+    it('is true when the detailed merge status is MERGEABLE', () => {
+      store.setGraphqlSubscriptionData({
+        ...getStateQueryResponse.data.project.mergeRequest,
+        detailedMergeStatus: 'MERGEABLE',
+      });
+
+      expect(store.isMergeAllowed).toBe(true);
+    });
+
+    it('is false when the detailed merge status is not MERGEABLE', () => {
+      store.setGraphqlSubscriptionData({
+        ...getStateQueryResponse.data.project.mergeRequest,
+        detailedMergeStatus: 'UNCHECKED',
+      });
+
+      expect(store.isMergeAllowed).toBe(false);
+    });
+  });
+
   describe('buildMetrics', () => {
     it('returns empty object when metrics is undefined', () => {
       expect(MergeRequestStore.buildMetrics(undefined)).toEqual({});
@@ -199,6 +235,26 @@ describe('MergeRequestStore', () => {
 
       expect(result.closedAt).toBeNull();
       expect(result.mergedAt).not.toBeNull();
+    });
+  });
+
+  describe('setGraphqlSubscriptionData', () => {
+    const { project } = getStateQueryResponse.data;
+
+    it('updates the fields the polled query writes', () => {
+      store.setGraphqlData(project);
+
+      store.setGraphqlSubscriptionData({
+        ...project.mergeRequest,
+        project,
+        state: 'closed',
+        draft: true,
+        mergeError: 'Merge failed',
+      });
+
+      expect(store.mergeRequestState).toBe('closed');
+      expect(store.draft).toBe(true);
+      expect(store.mergeError).toBe('Merge failed');
     });
   });
 

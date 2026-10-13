@@ -10,15 +10,30 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
   # The matched rule names the throttle (minus the throttle_ prefix); the
   # middleware reconstructs the throttle name from it for the cohort lookup and the
   # 429 headers.
-  let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web', action: :limit) }
+  let(:rule) do
+    instance_double(
+      Labkit::RateLimit::Rule, name: 'unauthenticated_web', action: :limit,
+      characteristics: [:ip], match: { web_or_frontend: true, requester_id: nil, path: %r{/some} }
+    )
+  end
+
+  let(:counted_evaluation) { instance_double(Labkit::RateLimit::Result::Evaluation, rule: rule, exceeded?: false) }
   let(:result) do
-    instance_double(Labkit::RateLimit::Result, action: :allow, error?: false, rule: rule, evaluations: [])
+    instance_double(
+      Labkit::RateLimit::Result,
+      action: :allow, error?: false, rule: rule, evaluations: [], skipped?: false
+    )
   end
 
   let(:limiter) { instance_double(Labkit::RateLimit::Limiter, check: result) }
 
   # A plan rule: built by PlanRules, not the registry, so it resolves to no Entry.
-  let(:plan_rule) { instance_double(Labkit::RateLimit::Rule, name: 'free_traffic_per_user', action: :limit) }
+  let(:plan_rule) do
+    instance_double(
+      Labkit::RateLimit::Rule, name: 'free_traffic_per_user', action: :limit,
+      characteristics: [:requester_type, :requester_id], match: { requester_plan: 'free' }
+    )
+  end
 
   # The middleware reads the registry only for the cohort (enforce gating); it builds
   # the request facts from ClassifiedRequest and the limiter matches against those.
@@ -60,6 +75,23 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
       expect(status).to eq(200)
       expect(body).to eq(['ok'])
       expect(headers).not_to include('RateLimit-Name')
+    end
+
+    it 'records the limiter state for the request log', :request_store do
+      # Only a counted rule becomes an evaluation, and that is what the state
+      # reads, so the counting rule has to arrive as one.
+      allow(limiter).to receive(:check).and_return(
+        instance_double(
+          Labkit::RateLimit::Result,
+          action: :allow, error?: false, rule: rule, evaluations: [counted_evaluation], skipped?: false
+        )
+      )
+
+      middleware.call(env)
+
+      expect(Gitlab::Instrumentation::RateLimitState.payload).to eq(
+        Gitlab::Instrumentation::RateLimitState::STATE => ["#{registry::GENERAL}:unauthenticated_web:allow"]
+      )
     end
 
     it 'never returns a 429 when only the shadow flag is on (enforce off)' do
@@ -131,6 +163,17 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
       end
 
+      # Instrumentation shares the request path but must never decide it.
+      it 'still renders the 429 when instrumentation raises', :request_store, :aggregate_failures do
+        allow(::Gitlab::Instrumentation::RateLimitState).to receive(:track).and_raise(StandardError, 'boom')
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(StandardError))
+        expect(app).not_to receive(:call)
+
+        status, = middleware.call(env)
+
+        expect(status).to eq(429)
+      end
+
       it 'returns a 429 byte-identical to the legacy Rack::Attack responder' do
         freeze_time do
           legacy_request = ::Rack::Attack::Request.new(
@@ -156,6 +199,138 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         _status, headers, = described_class.new(header_setting_app).call(env)
 
         expect(headers).not_to include('X-Downstream')
+      end
+
+      describe 'the blocked-request log line' do
+        let(:blocked_evaluation) do
+          instance_double(
+            Labkit::RateLimit::Result::Evaluation,
+            rule: instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web', action: :limit, ban_for: nil),
+            exceeded?: true
+          )
+        end
+
+        let(:result) do
+          instance_double(
+            Labkit::RateLimit::Result,
+            action: :block, error?: false, rule: rule, info: info,
+            evaluations: [blocked_evaluation], skipped?: false
+          )
+        end
+
+        let(:allowing) do
+          instance_double(
+            Labkit::RateLimit::Result,
+            action: :allow, error?: false, rule: nil, evaluations: [], skipped?: false
+          )
+        end
+
+        def blocked_info(count, limit = 100)
+          instance_double(
+            Labkit::RateLimit::Result::Info,
+            resolved_limit: limit, resolved_period: 3600, count: count, remaining: 0, reset_at: Time.current
+          )
+        end
+
+        it 'describes the rule and the client it blocked', :request_store do
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            a_hash_including(
+              message: 'Rate_Limit_Block',
+              status: 429,
+              matched: 'throttle_unauthenticated_web',
+              rule: 'unauthenticated_web',
+              limit: 100,
+              period_s: 3600,
+              count: 101,
+              counted_by: { ip: '1.2.3.4' },
+              Gitlab::Instrumentation::RateLimitState::STATE =>
+                ["#{registry::GENERAL}:unauthenticated_web:block"]
+            )
+          )
+
+          middleware.call(Rack::MockRequest.env_for('/some/path', 'REMOTE_ADDR' => '1.2.3.4'))
+        end
+
+        # A route regex runs to kilobytes, so it cannot go in a log line by value.
+        it 'logs scalar match conditions and elides patterns', :request_store do
+          expect(Gitlab::AuthLogger).to receive(:error).with(
+            a_hash_including(applies_to: { web_or_frontend: true, requester_id: nil, path: '(pattern)' })
+          )
+
+          middleware.call(env)
+        end
+
+        it 'logs the first block, which is one past the limit', :request_store do
+          expect(Gitlab::AuthLogger).to receive(:error).once
+
+          middleware.call(env)
+        end
+
+        # One stub per example on purpose: the 429 header builder reads info too, so a
+        # sequenced and_return does not line up one value per request.
+        it 'stays quiet between doublings', :request_store do
+          allow(result).to receive(:info).and_return(blocked_info(150))
+
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+
+          middleware.call(env)
+        end
+
+        it 'logs again at the next doubling', :request_store do
+          allow(result).to receive(:info).and_return(blocked_info(200))
+
+          expect(Gitlab::AuthLogger).to receive(:error).once
+
+          middleware.call(env)
+        end
+
+        # A count_distinct rule can report a fractional count. Truncating one that
+        # sits between the limit and the limit plus one used to divide into a
+        # multiple of 1, which read as a doubling and logged every blocked request.
+        it 'does not treat a fractional count at the limit as a doubling', :request_store do
+          allow(result).to receive(:info).and_return(blocked_info(100.4))
+
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+
+          middleware.call(env)
+        end
+
+        # resolved_limit arrives nil when a rule resolved no limit, and to_i makes that
+        # 0. Without the guard the count falls through to divmod(0), which raises.
+        it 'logs nothing when the rule resolved no limit', :request_store do
+          allow(result).to receive(:info).and_return(blocked_info(101, 0))
+
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+
+          expect { middleware.call(env) }.not_to raise_error
+        end
+
+        # The counter is per bucket, so one client being blocked never silences another.
+        it 'logs each client separately', :request_store do
+          expect(Gitlab::AuthLogger).to receive(:error).twice
+
+          middleware.call(Rack::MockRequest.env_for('/some/path', 'REMOTE_ADDR' => '1.2.3.4'))
+          middleware.call(Rack::MockRequest.env_for('/some/path', 'REMOTE_ADDR' => '5.6.7.8'))
+        end
+
+        # Load on Redis during an attack is what makes the limiter fail open, so the
+        # block path must not add a call of its own. Scope: the middleware's own code,
+        # since the limiter here is a double and never reaches a real pool.
+        it 'adds no call of its own to either rate-limit Redis pool', :request_store do
+          expect(Gitlab::Redis::RateLimiting).not_to receive(:with)
+          expect(Gitlab::Redis::SharedState).not_to receive(:with)
+
+          middleware.call(env)
+        end
+
+        it 'still renders the 429 when the logger raises', :request_store, :aggregate_failures do
+          allow(Gitlab::AuthLogger).to receive(:error).and_raise(StandardError, 'boom')
+          expect(::Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(StandardError))
+
+          status, = middleware.call(env)
+
+          expect(status).to eq(429)
+        end
       end
     end
 
@@ -189,6 +364,13 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
 
         expect(status).to eq(200)
       end
+
+      # Per block, not per check.
+      it 'writes no blocked-request line', :request_store do
+        expect(Gitlab::AuthLogger).not_to receive(:error)
+
+        middleware.call(env)
+      end
     end
 
     context 'when labkit blocks but the rule\'s cohort does not enforce' do
@@ -216,6 +398,13 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         status, = middleware.call(env)
 
         expect(status).to eq(200)
+      end
+
+      # The line reports the 429, and an observed block never renders one.
+      it 'writes no blocked-request line' do
+        expect(Gitlab::AuthLogger).not_to receive(:error)
+
+        middleware.call(env)
       end
     end
 

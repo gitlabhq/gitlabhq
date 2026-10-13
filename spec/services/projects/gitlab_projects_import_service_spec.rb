@@ -18,5 +18,21 @@ RSpec.describe Projects::GitlabProjectsImportService, feature_category: :importe
 
   describe '#execute' do
     it_behaves_like 'gitlab projects import validations', import_type: 'gitlab_project'
+
+    describe 'request_channel', :clean_gitlab_redis_shared_state, :request_store do
+      it 'is captured on the import state when given' do
+        project = described_class.new(
+          namespace.owner, import_params, import_type: 'gitlab_project', request_channel: :ui
+        ).execute
+
+        expect(project.import_state.request_channel).to eq('ui')
+      end
+
+      it 'is not captured when not given' do
+        project = described_class.new(namespace.owner, import_params, import_type: 'gitlab_project').execute
+
+        expect(project.import_state.request_channel).to be_nil
+      end
+    end
   end
 end

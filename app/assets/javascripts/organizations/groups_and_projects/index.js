@@ -8,12 +8,14 @@ import { ORGANIZATION_ROOT_ROUTE_NAME } from '~/organizations/shared/constants';
 import { userPreferenceSortName, userPreferenceSortDirection } from './utils';
 import App from './components/app.vue';
 
-export const createRouter = () => {
+Vue.use(VueApollo);
+
+export const createRouter = (basePath) => {
   const routes = [{ path: '/', name: ORGANIZATION_ROOT_ROUTE_NAME, component: App }];
 
   const router = new VueRouter({
     routes,
-    base: '/',
+    base: basePath,
     mode: 'history',
   });
 
@@ -37,13 +39,14 @@ export const initOrganizationsGroupsAndProjects = () => {
     hasGroups,
     userPreferenceSort,
     userPreferenceDisplay,
+    basePath,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
-  const router = createRouter();
+  const router = createRouter(basePath);
 
   return initVueApp({
     el,

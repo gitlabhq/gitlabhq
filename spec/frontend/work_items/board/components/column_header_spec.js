@@ -146,7 +146,9 @@ describe('ColumnHeader', () => {
     });
 
     it('renders Hide list above the move items when the column can be hidden and reordered', () => {
-      createComponent({ props: { canHide: true, reorderable: true } });
+      createComponent({
+        props: { canHide: true, reorderable: true, canMoveLeft: true, canMoveRight: true },
+      });
 
       expect(findActionsMenu().exists()).toBe(true);
       expect(findActionItems().map((item) => item.text)).toEqual([
@@ -163,7 +165,7 @@ describe('ColumnHeader', () => {
     });
 
     it('renders only the move items when the column cannot be hidden', () => {
-      createComponent({ props: { reorderable: true } });
+      createComponent({ props: { reorderable: true, canMoveLeft: true, canMoveRight: true } });
 
       expect(findActionItems().map((item) => item.text)).toEqual(['Move left', 'Move right']);
     });
@@ -176,11 +178,16 @@ describe('ColumnHeader', () => {
       expect(wrapper.emitted('hide-column')).toEqual([[]]);
     });
 
-    it('disables Move left on the first column and Move right on the last', () => {
+    it('hides Move left on the first column and Move right on the last', () => {
       createComponent({ props: { reorderable: true, canMoveLeft: false, canMoveRight: true } });
 
-      expect(findActionItem('Move left').extraAttrs.disabled).toBe(true);
-      expect(findActionItem('Move right').extraAttrs.disabled).toBe(false);
+      expect(findActionItems().map((item) => item.text)).toEqual(['Move right']);
+    });
+
+    it('hides Move right on the last column and Move left on the first', () => {
+      createComponent({ props: { reorderable: true, canMoveLeft: true, canMoveRight: false } });
+
+      expect(findActionItems().map((item) => item.text)).toEqual(['Move left']);
     });
 
     it('emits move-column with a -1/+1 delta when an item is actioned', () => {

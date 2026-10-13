@@ -125,7 +125,8 @@ module Gitlab
           pagination_params: pagination_params,
           with_last_commit: with_last_commit
         )
-        request.sort = Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST if pagination_params
+
+        request.sort = Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST_FILESYSTEM if pagination_params
 
         response = gitaly_client_call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
 
@@ -336,6 +337,8 @@ module Gitlab
         request.order = params[:order].upcase if params[:order].present?
         request.skip = params[:skip].to_i if params[:skip].present?
         request.first_parent = !!params[:first_parent]
+        request.follow = !!params[:follow]
+        request.trailers = !!params[:trailers]
 
         if params[:commit_message_patterns]
           request.commit_message_patterns += encode_repeated(Array.wrap(params[:commit_message_patterns]))
@@ -515,7 +518,8 @@ module Gitlab
           first_parent: !!options[:first_parent],
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
-          trailers: options[:trailers]
+          trailers: options[:trailers],
+          include_shortstat: !!options[:include_shortstat]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
@@ -672,7 +676,16 @@ module Gitlab
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = gitaly_client_call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)
-        GitalyClient::DiffStitcher.new(response)
+        GitalyClient::DiffStitcher.new(response, lookahead: single_file_lookahead?)
+      end
+
+      # Wikis and snippets are repository containers but cannot be flag actors,
+      # so they follow the flag's global state rather than raising.
+      def single_file_lookahead?
+        container = @repository.container
+        container = nil unless container.respond_to?(:flipper_id)
+
+        Feature.enabled?(:diff_stitcher_single_file_lookahead, container)
       end
 
       def diff_from_parent_request_params(commit, options = {})

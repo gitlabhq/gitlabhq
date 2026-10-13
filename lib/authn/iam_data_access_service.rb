@@ -10,6 +10,12 @@ module Authn
     class << self
       include Gitlab::Utils::StrongMemoize
 
+      # The gRPC host and port carry defaults, so the secret file is the only
+      # setting that distinguishes a deployment with IAM from one without.
+      def configured?
+        iam_config.secret_file.present?
+      end
+
       def grpc_address
         grpc = iam_config.grpc
         if grpc.host.blank? || grpc.port.blank?

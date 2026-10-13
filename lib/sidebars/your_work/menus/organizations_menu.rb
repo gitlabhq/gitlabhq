@@ -22,11 +22,8 @@ module Sidebars
         override :render?
         def render?
           return false unless context.current_user
-          return false unless ::Organizations::Release.enabled?(:your_work_sidebar_org_menu_item, context.current_user)
 
-          return context.current_user.has_active_non_default_organization? if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- use Gitlab.com? for now to keep simple. May refactor to SaaS feature in the future
-
-          true
+          ::Organizations::Release.enrolled?(context.current_user, flag: :your_work_sidebar_org_menu_item)
         end
 
         override :active_routes

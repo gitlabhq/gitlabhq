@@ -602,7 +602,7 @@ class GroupMember < Member
      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
        %w[users user_details user_preferences], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424288'
      ) do
-       user.update_two_factor_requirement
+       Authn::Users::UpdateTwoFactorRequirementService.new(user).execute.success?
      end
    end
 end

@@ -85,7 +85,7 @@ export default {
       this.$emit('role-change');
     },
     userAccessLevelLabel(user) {
-      return ACCESS_LEVEL_LABEL[user.accessLevel.stringValue];
+      return ACCESS_LEVEL_LABEL[user.accessLevel?.stringValue];
     },
   },
 };

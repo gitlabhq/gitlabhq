@@ -11,8 +11,11 @@ class GroupExportWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: false, dead: false
 
   def perform(current_user_id, group_id, params = {})
-    current_user = User.find(current_user_id)
-    group = Group.find(group_id)
+    current_user = User.find_by_id(current_user_id)
+    return unless current_user
+
+    group = Group.find_by_id(group_id)
+    return unless group
 
     params.symbolize_keys!
 

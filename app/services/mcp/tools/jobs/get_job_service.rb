@@ -7,21 +7,21 @@ module Mcp
         extend ::Gitlab::Utils::Override
         include ::Gitlab::Utils::StrongMemoize
 
-        INCLUDES = %w[log].freeze
+        INCLUDES = %w[log artifacts].freeze
         MAX_BYTE_LIMIT = ::Gitlab::Ci::Trace::Stream::LIMIT_SIZE
         MIN_BYTE_OFFSET = 0
         LOG_ALIAS = 'get_job_log'
         NOT_FOUND = 'Job not found or inaccessible'
         LOG_FORBIDDEN = "Job log not accessible: you do not have permission to read this job's log."
 
-        def self.namespace_arguments
-          { project: :id }
-        end
+        container_arguments project: :id
 
         register_version '0.1.0', {
           toolset: :ci,
           description: 'Get a CI/CD job in a GitLab project. Add include: log to also get the ' \
-            "job's trace/log, which you can page through with byte_offset and byte_limit.",
+            "job's trace/log, which you can page through with byte_offset and byte_limit. " \
+            'Add include: artifacts to also list the artifacts the job produced (name, size, ' \
+            'file type); read one with the get_artifact_file tool.',
           annotations: {
             readOnlyHint: true
           },
@@ -38,7 +38,7 @@ module Mcp
               },
               include: {
                 type: 'array',
-                description: 'Facet to include alongside the job, one per call: log.',
+                description: 'Facet to include alongside the job, one per call: log or artifacts.',
                 items: {
                   type: 'string',
                   enum: INCLUDES
@@ -70,13 +70,9 @@ module Mcp
           [LOG_ALIAS]
         end
 
-        # A job we cannot find and a job we cannot read get the same response, so the caller
-        # cannot probe for jobs they have no access to.
-        override :authorize!
-        def authorize!(params)
-          super
-        rescue ::Gitlab::Access::AccessDeniedError
-          raise ArgumentError, log_forbidden? ? LOG_FORBIDDEN : NOT_FOUND
+        override :authorization_error_message
+        def authorization_error_message
+          log_forbidden? ? LOG_FORBIDDEN : NOT_FOUND
         end
 
         protected
@@ -89,7 +85,7 @@ module Mcp
           @arguments = params[:arguments] || {}
           @invoked_as = params[:name]
 
-          job || raise(ArgumentError, NOT_FOUND)
+          job || raise(ResourceNotFoundError, NOT_FOUND)
         end
 
         def perform_default(arguments = {})
@@ -97,6 +93,7 @@ module Mcp
 
           data = job_data
           data[:log] = log_facet if include_log?
+          data[:artifacts] = artifacts_facet if include_artifacts?
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.generate(data) }]
           ::Mcp::Tools::Base::Response.success(formatted_content, data)
@@ -127,6 +124,10 @@ module Mcp
           @invoked_as == LOG_ALIAS || Array(arguments[:include]).include?('log')
         end
 
+        def include_artifacts?
+          Array(arguments[:include]).include?('artifacts')
+        end
+
         def job_data
           {
             id: job.id,
@@ -136,6 +137,20 @@ module Mcp
             allow_failure: job.allow_failure,
             web_url: ::Gitlab::Routing.url_helpers.project_job_url(job.project, job)
           }
+        end
+
+        # Bounded without pagination: a job stores at most one artifact per file type.
+        def artifacts_facet
+          job.job_artifacts.map do |artifact|
+            {
+              id: artifact.id,
+              name: artifact.filename,
+              size: artifact.size,
+              file_type: artifact.file_type,
+              expire_at: artifact.expire_at,
+              expired: artifact.expired?
+            }
+          end
         end
 
         def log_facet

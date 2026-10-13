@@ -2,11 +2,15 @@
 
 FactoryBot.define do
   factory :oauth_access_token do
-    resource_owner
+    resource_owner { @overrides[:user] || association(:resource_owner) }
     application
     organization { association(:common_organization) }
     token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
     refresh_token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
     scopes { application.scopes }
+
+    trait :granular do
+      scopes { ['granular'] }
+    end
   end
 end

@@ -169,40 +169,5 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, :clean_g
         end
       end
     end
-
-    context 'when user mapping is disabled' do
-      let(:note_attrs) do
-        {
-          noteable_id: issuable.id,
-          noteable_type: issuable.class.name,
-          author_id: author.id,
-          project_id: project.id,
-          system: true,
-          created_at: issue_event.created_at,
-          updated_at: issue_event.created_at,
-          imported_from: 'github'
-        }.stringify_keys
-      end
-
-      before do
-        project.build_or_assign_import_data(data: {}).save!
-        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:find).with(1000, 'github_author').and_return(author.id)
-        end
-      end
-
-      context 'with Issue' do
-        it_behaves_like 'process assigned & unassigned events'
-        it_behaves_like 'do not push placeholder reference'
-      end
-
-      context 'with MergeRequest' do
-        let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
-
-        it_behaves_like 'process assigned & unassigned events'
-        it_behaves_like 'do not push placeholder reference'
-      end
-    end
   end
 end

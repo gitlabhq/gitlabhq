@@ -10,9 +10,8 @@ module Repositories
 
     attr_reader :next_cursor
 
-    UNSUPPORTED_KEYSET_PARAMS = %w[trailers follow].freeze
-    # Message fragment used to build the user-facing error. It omits the verb
-    # ("is"/"are") so it reads correctly in both the singular and plural forms.
+    UNSUPPORTED_KEYSET_PARAMS = %w[follow].freeze
+    # Trailing fragment of the user-facing error, asserted by the API specs.
     KEYSET_PARAM_ERROR_SUFFIX = 'not supported with keyset pagination'
 
     def initialize(project, params = {})
@@ -47,6 +46,7 @@ module Repositories
         order: order,
         committed_before: params[:until],
         committed_after: params[:since],
+        trailers: params[:trailers],
         pagination_params: pagination_params
       )
 
@@ -84,17 +84,10 @@ module Repositories
     end
 
     def validate_keyset_params!
-      unsupported = UNSUPPORTED_KEYSET_PARAMS.select { |p| param_present?(p) }
-      return if unsupported.empty?
+      unsupported = UNSUPPORTED_KEYSET_PARAMS.find { |p| param_present?(p) }
+      return unless unsupported
 
-      raise UnsupportedKeysetParamError, unsupported_keyset_params_error(unsupported)
-    end
-
-    def unsupported_keyset_params_error(unsupported_params)
-      names = unsupported_params.map { |p| "'#{p}'" }.join(', ')
-      pluralized = unsupported_params.one? ? 'parameter is' : 'parameters are'
-
-      "The #{names} #{pluralized} #{KEYSET_PARAM_ERROR_SUFFIX}"
+      raise UnsupportedKeysetParamError, "The '#{unsupported}' parameter is #{KEYSET_PARAM_ERROR_SUFFIX}"
     end
 
     def param_present?(name)

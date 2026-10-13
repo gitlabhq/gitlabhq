@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../../../app/models/concerns/vulnerability_finding_signature_helpers'
 
 RSpec.describe Gitlab::Ci::Reports::Security::FindingSignature, feature_category: :vulnerability_management do
   subject { described_class.new(params.with_indifferent_access) }

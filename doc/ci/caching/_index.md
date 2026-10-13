@@ -222,7 +222,7 @@ For more information, see [`cache: policy`](../yaml/_index.md#cachepolicy).
 
 {{< history >}}
 
-- `-protected` suffix for Maintainer role and higher [introduced](https://about.gitlab.com/releases/2025/11/26/patch-release-gitlab-18-6-1-released/) in GitLab 18.4.5.
+- `-protected` suffix for Maintainer role and higher [introduced](https://docs.gitlab.com/releases/patches/patch-release-gitlab-18-6-1-released/) in GitLab 18.4.5.
 
 {{< /history >}}
 
@@ -309,7 +309,7 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
 
-### How archiving and extracting works
+### Archive and extraction workflow
 
 This example shows two jobs in two consecutive stages:
 
@@ -340,8 +340,8 @@ job B:
     - cat vendor/hello.txt
 ```
 
-If one machine has one runner installed, then all jobs for your project
-run on the same host:
+If your project uses a single runner installed on one machine, all jobs
+run on that host:
 
 1. Pipeline starts.
 1. `job A` runs.
@@ -363,6 +363,22 @@ By using a single runner on a single machine, you don't have the issue where
 cache can be reused between stages. It only works if the execution goes from the `build` stage
 to the `test` stage in the same runner/machine. Otherwise, the cache [might not be available](#cache-mismatch).
 
+This restriction exists because the cache created for one runner
+is often not valid when used by a different one. A different runner might use a
+different architecture, so cached binary files might not work. Runners can also run on
+different machines, so GitLab uses the same runner by default to keep the cache reliable.
+
+```mermaid
+flowchart LR
+    accTitle: Cache archive and extraction across two jobs
+    accDescr: Job A archives the cache to the runner's storage, and job B can only extract it if both jobs run on the same runner.
+
+    A[Job A runs] --> B[Cache archived to cache.zip]
+    B --> C{Job B on same runner?}
+    C -->|Yes| D[Cache extracted for job B]
+    C -->|No| E[Cache not available for job B]
+```
+
 During the caching process, also consider the following:
 
 - If some other job, with another cache configuration, had saved its
@@ -374,12 +390,6 @@ During the caching process, also consider the following:
   extracted in the job's working directory (usually the repository which is
   pulled down), and the runner doesn't mind if the archive of `job A` overwrites
   things in the archive of `job B`.
-
-It works this way because the cache created for one runner
-often isn't valid when used by a different one. A different runner may run on a
-different architecture (for example, when the cache includes binary files). Also,
-because the different steps might be executed by runners running on different
-machines, it is a safe default.
 
 ## Clearing the cache
 
@@ -395,6 +405,15 @@ Change the value for `cache: key` in your `.gitlab-ci.yml` file.
 The next time the pipeline runs, the cache is stored in a different location.
 
 ### Clear the cache manually
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+> [!note]
+> Clearing the cache forces the next pipeline, including a pipeline on a protected branch, to fetch dependencies again.
+> If a job does not pin its dependency versions, that fetch can resolve to a newer upstream release that no one has reviewed.
+> Pin your dependency versions so that the contents of a pipeline do not change when the cache is cleared.
 
 You can clear the cache in the GitLab UI:
 

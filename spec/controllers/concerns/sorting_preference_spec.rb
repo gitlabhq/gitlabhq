@@ -18,10 +18,8 @@ RSpec.describe SortingPreference do
   let(:controller) { controller_class.new }
 
   before do
-    allow(controller).to receive(:params).and_return(ActionController::Parameters.new(params))
-    allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:legacy_sort_cookie_name).and_return('issuable_sort')
-    allow(controller).to receive(:sorting_field).and_return(:issues_sort)
+    allow(controller).to receive_messages(params: ActionController::Parameters.new(params), current_user: user,
+      legacy_sort_cookie_name: 'issuable_sort', sorting_field: :issues_sort)
   end
 
   describe '#set_sort_order' do
@@ -31,10 +29,8 @@ RSpec.describe SortingPreference do
     let(:issue_weights_available) { true }
 
     before do
-      allow(controller).to receive(:default_sort_order).and_return('updated_desc')
-      allow(controller).to receive(:controller_name).and_return(controller_name)
-      allow(controller).to receive(:action_name).and_return(action_name)
-      allow(controller).to receive(:can_sort_by_issue_weight?).and_return(issue_weights_available)
+      allow(controller).to receive_messages(default_sort_order: 'updated_desc', controller_name: controller_name,
+        action_name: action_name, can_sort_by_issue_weight?: issue_weights_available)
       user.user_preference.update!(issues_sort: sorting_field)
     end
 

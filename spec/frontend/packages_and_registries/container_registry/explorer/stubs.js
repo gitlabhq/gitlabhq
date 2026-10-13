@@ -2,7 +2,6 @@ import {
   GlModal as RealGlModal,
   GlEmptyState as RealGlEmptyState,
   GlSkeletonLoader as RealGlSkeletonLoader,
-  GlDropdown as RealGlDropdown,
 } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
@@ -34,12 +33,7 @@ export const ListItem = {
   ...RealListItem,
   data() {
     return {
-      detailsSlots: [],
       isDetailsShown: true,
     };
   },
 };
-
-export const GlDropdown = stubComponent(RealGlDropdown, {
-  template: '<div><slot></slot></div>',
-});

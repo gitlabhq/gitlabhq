@@ -2,7 +2,6 @@
 
 module HomepageData
   extend ActiveSupport::Concern
-  include Gitlab::Utils::StrongMemoize
   include MergeRequestsHelper
 
   private
@@ -11,12 +10,7 @@ module HomepageData
     last_push_event = user&.recent_push
 
     {
-      review_requested_path: merge_requests_dashboard_path,
       activity_path: activity_dashboard_path,
-      assigned_merge_requests_path: merge_requests_dashboard_path,
-      assigned_work_items_path: issues_dashboard_path(assignee_username: user.username),
-      authored_work_items_path: issues_dashboard_path(author_username: user.username),
-      duo_code_review_bot_username: duo_code_review_bot_username(user),
       last_push_event: prepare_last_push_event_data(last_push_event)&.to_json
     }
   end
@@ -48,11 +42,5 @@ module HomepageData
                                   end
 
     event_data
-  end
-
-  def duo_code_review_bot_username(user)
-    strong_memoize_with(:duo_code_review_bot_username, user) do
-      ::Users::Internal.in_organization(user.organization_id).duo_code_review_bot.username
-    end
   end
 end

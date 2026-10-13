@@ -7,6 +7,7 @@ module Types
       description 'A user with access to the organization.'
 
       include ::UsersHelper
+      include ::Gitlab::Allowable
 
       authorize :read_organization_user
       authorize_granular_token permissions: :read_organization_user, boundary: :instance, boundary_type: :instance
@@ -17,8 +18,9 @@ module Types
 
       field :access_level,
         ::Types::Organizations::OrganizationUserAccessLevelType,
-        null: false,
+        null: true,
         description: 'Access level of the user in the organization.',
+        authorize: :read_user_access_level,
         experiment: { milestone: '16.11' },
         method: :access_level_before_type_cast
       field :badges,
@@ -33,8 +35,9 @@ module Types
         experiment: { milestone: '16.4' }
       field :is_last_owner,
         GraphQL::Types::Boolean,
-        null: false,
+        null: true,
         description: 'Whether the user is the last owner of the organization.',
+        authorize: :read_user_access_level,
         experiment: { milestone: '16.11' },
         method: :last_owner?
       field :user,
@@ -44,7 +47,7 @@ module Types
         experiment: { milestone: '16.4' }
 
       def badges
-        user_badges_in_admin_section(organization_user.user)
+        user_badges_in_admin_section(organization_user.user, organization_user.organization)
       end
     end
   end

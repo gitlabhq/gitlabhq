@@ -17,13 +17,13 @@ module Authn
       class << self
         # Primary public interface for creating validated tokens.
         def from_jwt(token_string)
+          jwt = strip_access_token_prefix(token_string)
+          return unless jwt
+
           unless Authn::IamAuthService.enabled?
             Gitlab::AuthLogger.info(message: 'IAM JWT authentication attempt when disabled')
             return
           end
-
-          jwt = strip_access_token_prefix(token_string)
-          return unless jwt
 
           result = validate_jwt(jwt)
           return unless result.success?

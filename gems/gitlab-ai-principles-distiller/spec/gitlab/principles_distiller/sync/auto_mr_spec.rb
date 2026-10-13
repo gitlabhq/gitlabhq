@@ -671,7 +671,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       # Default: no SSOT authors resolve, so the description falls back to the
       # team ping (contexts below override this to exercise the author path).
       # Keeps these tests hermetic (no /users lookup over the network).
-      allow(sync).to receive_messages(find_open_mr: nil, reviewer_resolver: reviewer_resolver)
+      allow(sync).to receive_messages(find_open_mr: nil, reviewer_resolver: reviewer_resolver, duo_review_bot_id: nil)
     end
 
     # Captures the team MR body (the one whose title is NOT the tooling MR),
@@ -843,14 +843,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         # Titles are prefixed with the team_slug (never the @handle), so the
         # title itself never pings anyone.
         expect(titles).to include(
-          a_string_starting_with('qa: '),
-          a_string_starting_with('appsec: '),
+          a_string_starting_with('Draft: qa: '),
+          a_string_starting_with('Draft: appsec: '),
           a_string_starting_with('tooling: ')
         )
         expect(titles).to all(satisfy { |t| !t.include?('@') })
 
-        testing = bodies.find { |b| b[:title].start_with?('qa: ') }
-        security = bodies.find { |b| b[:title].start_with?('appsec: ') }
+        testing = bodies.find { |b| b[:title].start_with?('Draft: qa: ') }
+        security = bodies.find { |b| b[:title].start_with?('Draft: appsec: ') }
 
         expect(testing[:description]).to include('#### `qa`')
         expect(testing[:description]).not_to include('#### `security`')
@@ -956,7 +956,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
         create_branch_and_mr
 
-        expect(captured[:title]).to start_with('rails-backend: ')
+        expect(captured[:title]).to start_with('Draft: rails-backend: ')
         expect(captured[:title]).not_to include('@')
         expect(captured[:description]).to include('**rails-backend**')
         expect(captured[:description]).not_to include('@gitlab-org/maintainers/rails-backend')
@@ -965,18 +965,32 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
 
     context 'when SSOT authors resolve' do
+      let(:ada_commit_shas) do
+        %w[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb]
+      end
+
+      let(:grace_commit_sha) { 'cccccccccccccccccccccccccccccccccccccccc' }
+
       before do
         # Override the hermetic default: individuals who changed the SSOT are
         # pinged instead of the owning team.
         allow(reviewer_resolver).to receive(:ssot_authors).and_return([
-          { username: 'ada', id: 1 }, { username: 'grace', id: 2 }
+          { username: 'ada', id: 1, commit_shas: ada_commit_shas },
+          { username: 'grace', id: 2, commit_shas: [grace_commit_sha] }
         ])
       end
 
-      it 'pings the resolved authors and omits the team fallback ping', :aggregate_failures do
+      it 'lists each author with their commit SHAs in a table and assigns them as reviewers', :aggregate_failures do
         body = capture_post_body
 
-        expect(body[:description]).to include('authored by @ada @grace')
+        expect(body[:description]).to include(<<~TABLE)
+
+          | Author | SSOT commit(s) |
+          | --- | --- |
+          | @ada | #{ada_commit_shas.join(', ')} |
+          | @grace | #{grace_commit_sha} |
+
+        TABLE
         expect(body[:reviewer_ids]).to eq([1, 2])
         # The team-fallback ping ("Please review: **team**.") must not appear
         # when authors resolved.
@@ -1004,24 +1018,27 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
         expect(body[:description]).to include('routing to @ada')
         expect(body[:reviewer_ids]).to eq([1])
+        expect(body[:description]).not_to include('| Author | SSOT commit(s) |')
       end
 
       it 'explains that review was routed to an individual, not a group', :aggregate_failures do
         body = capture_post_body
 
-        # owner_team_reviewer picks one least-loaded member, so describing this
+        # owner_team_reviewer picks one member, so describing this
         # as a group ping would misstate what happened.
         expect(body[:description]).to include('No documentation author could be resolved')
-        expect(body[:description]).to include('least-loaded available member')
+        expect(body[:description]).to include('one available member of the owning team')
         expect(body[:description]).not_to include('you changed the SSOT documentation')
         expect(body[:description]).to include('reviewed and merged')
       end
     end
 
     context 'when authors are mentioned but cannot be assigned as reviewers' do
+      let(:commit_sha) { 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }
+
       before do
         allow(reviewer_resolver).to receive_messages(
-          ssot_authors: [{ username: 'ada', id: nil }],
+          ssot_authors: [{ username: 'ada', id: nil, commit_shas: [commit_sha] }],
           owner_team_reviewer: { username: 'grace', id: 2, review_count: 0 }
         )
       end
@@ -1029,7 +1046,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       it 'assigns and names the fallback reviewer without hiding the author mention', :aggregate_failures do
         body = capture_post_body
 
-        expect(body[:description]).to include('authored by @ada')
+        expect(body[:description]).to include("| @ada | #{commit_sha} |")
         expect(body[:description]).to include('Reviewer assignment routed to @grace')
         expect(body[:reviewer_ids]).to eq([2])
       end
@@ -1043,9 +1060,29 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       end
     end
 
+    context 'when the team MR is already open with a reviewer' do
+      before do
+        allow(sync).to receive(:find_open_mr).and_return('iid' => 5, 'reviewers' => [{ 'id' => 1 }])
+        allow(reviewer_resolver).to receive(:owner_team_reviewer).and_return(username: 'ada', id: 1, review_count: 0)
+        allow(sync.workflow).to receive(:put_json).and_return(mock_response)
+      end
+
+      it 'looks up the MR once and lets the resolver keep the current reviewer', :aggregate_failures do
+        create_branch_and_mr
+
+        expect(sync).to have_received(:find_open_mr).with(anything, a_string_ending_with('-qa'), anything).once
+        expect(reviewer_resolver).to have_received(:owner_team_reviewer)
+          .with('@abdwdd @alexpooley', current_reviewer_ids: [1])
+        team_mr_body = hash_including(title: a_string_starting_with('Draft: qa: '), reviewer_ids: [1])
+        expect(sync.workflow).to have_received(:put_json).with(anything, hash_including(body: team_mr_body))
+      end
+    end
+
     context 'when authors resolve to reviewer IDs' do
       before do
-        allow(reviewer_resolver).to receive(:ssot_authors).and_return([{ username: 'ada', id: 1 }])
+        allow(reviewer_resolver).to receive(:ssot_authors).and_return([
+          { username: 'ada', id: 1, commit_shas: ['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] }
+        ])
       end
 
       it 'does not query a fallback reviewer' do
@@ -1147,7 +1184,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         create_branch_and_mr
 
         # Exactly the team MR; the tooling MR is skipped (no staged changes).
-        expect(bodies.map { |b| b[:title] }).to contain_exactly(a_string_starting_with('qa: '))
+        expect(bodies.map { |b| b[:title] }).to contain_exactly(a_string_starting_with('Draft: qa: '))
       end
     end
 
@@ -1292,9 +1329,196 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       it 'applies auto_mr_cfg values to the MR title (slug-prefixed), labels, and flag', :aggregate_failures do
         today = Time.now.utc.strftime('%Y%m%d')
 
-        expect(received_body[:title]).to eq("qa: Custom title #{today}")
+        expect(received_body[:title]).to eq("Draft: qa: Custom title #{today}")
         expect(received_body[:labels]).to eq('label-a,label-b')
         expect(received_body[:remove_source_branch]).to be(false)
+      end
+    end
+
+    describe 'Draft handoff to human reviewers' do
+      let(:duo_bot_id) { 99 }
+
+      def capture_bodies(http_method, response = mock_response)
+        [].tap do |bodies|
+          allow(sync.workflow).to receive(http_method) do |url, body:, **|
+            bodies << body.merge(url: url)
+            response
+          end
+        end
+      end
+
+      before do
+        allow(sync).to receive(:duo_review_bot_id).and_return(duo_bot_id)
+      end
+
+      it 'opens the team MR as Draft and tells human reviewers when to start', :aggregate_failures do
+        expect(received_body[:title]).to start_with('Draft: qa: ')
+        expect(received_body[:description]).to include(
+          'Draft until GitLab Duo',
+          '(https://gitlab.com/gitlab-org/gitlab/-/blob/master/.claude/skills/ai-principles-review-feedback/SKILL.md)'
+        )
+      end
+
+      it 'requests a Duo review only on the team MR', :aggregate_failures do
+        bodies = capture_bodies(:post_json)
+
+        create_branch_and_mr
+
+        team, tooling = bodies.partition { |body| body[:title].start_with?('Draft: ') }
+        expect(team.map { |body| body[:reviewer_ids] }).to eq([[duo_bot_id]])
+        expect(tooling.size).to eq(1)
+        expect(tooling.first[:title]).to start_with('tooling: ')
+        expect(tooling.first).not_to have_key(:reviewer_ids)
+      end
+
+      context 'when updating an MR that already has Duo as a reviewer' do
+        let(:put_response) do
+          instance_double(Net::HTTPResponse, is_a?: true, code: '200',
+            body: '{"iid":5,"references":{"full":"gitlab-org/gitlab!5"},"web_url":"https://gitlab.com/mr/5"}')
+        end
+
+        before do
+          allow(sync).to receive(:find_open_mr).and_return('iid' => 5, 'reviewers' => [{ 'id' => duo_bot_id }])
+          allow(sync.workflow).to receive(:put_json).and_return(put_response)
+        end
+
+        it 're-drafts the MR and re-requests the Duo review once', :aggregate_failures do
+          puts_bodies = capture_bodies(:put_json, put_response)
+          allow(sync.workflow).to receive(:query_graphql)
+            .and_return('mergeRequestReviewerRereview' => { 'errors' => [] })
+
+          expect { create_branch_and_mr }.not_to output(/re-request a Duo review/).to_stderr
+
+          expect(puts_bodies.map { |body| body[:title] }).to include(a_string_starting_with('Draft: qa: '))
+          expect(sync.workflow).to have_received(:query_graphql).once.with(
+            described_class::DUO_REREVIEW_MUTATION,
+            projectPath: 'gitlab-org/gitlab', iid: '5', userId: "gid://gitlab/User/#{duo_bot_id}"
+          )
+        end
+
+        it 'warns when the re-request is rejected' do
+          allow(sync.workflow).to receive(:query_graphql)
+            .and_return('mergeRequestReviewerRereview' => { 'errors' => ['not allowed'] })
+
+          expect { create_branch_and_mr }
+            .to output(/could not re-request a Duo review on !5: not allowed/).to_stderr
+        end
+      end
+
+      context 'when updating an MR without Duo as a reviewer' do
+        before do
+          allow(sync).to receive(:find_open_mr).and_return('iid' => 5, 'reviewers' => [{ 'id' => 1 }])
+        end
+
+        it 'adds Duo as a reviewer instead of re-requesting', :aggregate_failures do
+          puts_bodies = capture_bodies(:put_json)
+          allow(sync.workflow).to receive(:query_graphql)
+
+          create_branch_and_mr
+
+          expect(puts_bodies.find { |body| body[:title].start_with?('Draft: ') }[:reviewer_ids]).to eq([1, duo_bot_id])
+          expect(sync.workflow).not_to have_received(:query_graphql)
+        end
+      end
+
+      context 'when reviewer assignment fails' do
+        it 'warns that dropping reviewers also skips the Duo review' do
+          rejected = instance_double(Net::HTTPResponse, is_a?: false, code: '422', body: '{}')
+          allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
+            body[:reviewer_ids] ? rejected : mock_response
+          end
+
+          expect { create_branch_and_mr }
+            .to output(/retrying without reviewers \(including @GitLabDuo, so no Duo review starts\)/).to_stderr
+        end
+      end
+
+      context 'when the Duo bot cannot be resolved' do
+        let(:duo_bot_id) { nil }
+
+        it 'still opens the Draft MR without requesting a Duo review', :aggregate_failures do
+          expect(received_body[:title]).to start_with('Draft: qa: ')
+          expect(received_body).not_to have_key(:reviewer_ids)
+        end
+      end
+    end
+
+    describe '#rerequest_duo_review' do
+      subject(:rerequest) { sync.send(:rerequest_duo_review, mr, 99) }
+
+      let(:mr) { { 'iid' => 5, 'references' => { 'full' => 'gitlab-org/gitlab!5' } } }
+      let(:graphql_client) { instance_double(Gitlab::PrinciplesDistiller::GraphqlClient) }
+
+      # Exercises the real Workflow#query_graphql error policy rather than stubbing it away.
+      before do
+        allow(sync.workflow).to receive(:graphql_client).and_return(graphql_client)
+      end
+
+      it 'stays quiet when GraphQL reports no errors' do
+        allow(graphql_client).to receive(:query).and_return('mergeRequestReviewerRereview' => { 'errors' => [] })
+
+        expect { rerequest }.not_to output.to_stderr
+      end
+
+      it 'warns with the mutation errors' do
+        allow(graphql_client).to receive(:query)
+          .and_return('mergeRequestReviewerRereview' => { 'errors' => ['Reviewer not found'] })
+
+        expect { rerequest }.to output(/re-request a Duo review on !5: Reviewer not found/).to_stderr
+      end
+
+      it 'warns with the client error and the MR iid on top-level GraphQL or HTTP errors' do
+        allow(graphql_client).to receive(:query)
+          .and_raise(Gitlab::PrinciplesDistiller::GraphqlClient::Error, 'GraphQL HTTP 502: bad gateway')
+
+        expect { rerequest }
+          .to output(/GraphQL HTTP 502.*re-request a Duo review on !5: GraphQL request failed/m).to_stderr
+      end
+
+      it 'warns instead of raising on a network error' do
+        allow(graphql_client).to receive(:query).and_raise(Errno::ECONNRESET)
+
+        expect { expect { rerequest }.not_to raise_error }
+          .to output(/Connection reset.*re-request a Duo review on !5: GraphQL request failed/m).to_stderr
+      end
+
+      context 'when the MR response has no references' do
+        let(:mr) { { 'iid' => 5 } }
+
+        it 'warns without sending the mutation', :aggregate_failures do
+          allow(graphql_client).to receive(:query)
+
+          expect { rerequest }.to output(/re-request a Duo review on !5: MR response has no references.full/).to_stderr
+          expect(graphql_client).not_to have_received(:query)
+        end
+      end
+    end
+
+    describe '#fetch_duo_review_bot_id' do
+      subject(:bot_id) { sync.send(:fetch_duo_review_bot_id, 'token') }
+
+      let(:response) { instance_double(Net::HTTPResponse, is_a?: success, code: '200', body: '[{"id":99}]') }
+
+      before do
+        allow(sync).to receive(:authenticated_get).and_return(response)
+      end
+
+      context 'when the lookup succeeds' do
+        let(:success) { true }
+
+        it 'returns the bot user ID and queries it by username', :aggregate_failures do
+          expect(bot_id).to eq(99)
+          expect(sync).to have_received(:authenticated_get)
+            .with(URI('https://gitlab.com/api/v4/users?username=GitLabDuo'), 'token')
+        end
+      end
+
+      context 'when the lookup fails' do
+        let(:success) { false }
+
+        it 'warns and returns nil' do
+          expect { expect(bot_id).to be_nil }.to output(/could not resolve @GitLabDuo/).to_stderr
+        end
       end
     end
 
@@ -1444,6 +1668,171 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
+  describe '.create_branch_and_mr with metadata checkpoints' do
+    subject(:create_branch_and_mr) do
+      sync.create_branch_and_mr({}, affected, auto_mr_cfg, checkpoints: checkpoints)
+    end
+
+    let(:body) { "# QA Principles\n\n- Keep me\n" }
+    let(:evaluated) { "---\nsource_checksum: old\ndistilled_at_sha: #{'1' * 40}\n---\n#{body}" }
+    let(:checkpoints) { { 'qa' => checkpoint_for(evaluated) } }
+    let(:bodies) { [] }
+    let(:resolver) { instance_double(described_class::ReviewerResolver) }
+    let(:affected) do
+      %w[qa security].to_h do |name|
+        source = { 'path' => "doc/#{name}.md" }
+        [name, { config: { 'sources' => [source] }, changed_sources: [source] }]
+      end
+    end
+
+    let(:auto_mr_cfg) do
+      { 'branch_prefix' => 'docs-sync/principles', 'title_template' => 'Update AI development principles (%{date})' }
+    end
+
+    def path_for(name)
+      File.join(tmpdir, ".ai/principles/distilled/#{name}.md")
+    end
+
+    def checkpoint_for(content)
+      described_class::MetadataCheckpoint.new(
+        source_checksum: 'new', distilled_at_sha: '2' * 40,
+        original_sha256: described_class::MetadataCheckpoint.fingerprint(content)
+      )
+    end
+
+    def titles
+      bodies.map { |submitted| submitted[:title] }
+    end
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      stub_const('ENV', { 'GITLAB_API_TOKEN' => 'token', 'CI_PROJECT_ID' => 'gitlab-org/gitlab',
+                          'CI_DEFAULT_BRANCH' => 'master', 'CI_PROJECT_PATH' => 'gitlab-org/gitlab' })
+      FileUtils.mkdir_p(File.dirname(path_for('qa')))
+      File.write(path_for('qa'), evaluated)
+      File.write(path_for('security'), evaluated)
+
+      # Git is stubbed, so the "fresh branch" is the tmpdir as written above. No tooling files exist there, so the
+      # tooling MR is skipped and only the metadata MR can be opened.
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, regenerate_static_artifacts: nil,
+        open_mrs_by_author: [], find_open_mr: nil, mr_assignee_id: nil, current_milestone_id: nil,
+        reviewer_resolver: resolver)
+      allow(resolver).to receive(:owner_team_reviewer) do |team|
+        {
+          '@org/qa' => { id: 41, username: 'qa-reviewer' },
+          '@org/appsec' => { id: 42, username: 'appsec-reviewer' }
+        }[team]
+      end
+      allow(sync.workflow).to receive_messages(gitlab_host: 'https://gitlab.com', default_branch: 'master',
+        catalog_project_path: 'gitlab-org/gitlab')
+      allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
+        bodies << body
+        instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '201')
+      end
+      sync.manifest.data = {
+        'principles' => {
+          'qa' => { 'owner_team' => '@org/qa', 'sources' => [{ 'path' => 'doc/qa.md' }] },
+          'security' => { 'owner_team' => '@org/appsec', 'sources' => [{ 'path' => 'doc/security.md' }] }
+        }
+      }
+    end
+
+    it 'opens a metadata MR that changes only the frontmatter', :aggregate_failures do
+      create_branch_and_mr
+
+      expect(File.read(path_for('qa'))).to eq("---\nsource_checksum: new\ndistilled_at_sha: #{'2' * 40}\n---\n#{body}")
+      expect(titles).to contain_exactly(a_string_starting_with('metadata: '))
+    end
+
+    it 'looks up an adoptable metadata branch' do
+      allow(sync).to receive(:prefetch_adopted_branches!)
+
+      create_branch_and_mr
+
+      expect(sync).to have_received(:prefetch_adopted_branches!).with(anything, %w[tooling metadata])
+    end
+
+    # Until the metadata MR merges, every scheduled run re-distills the same principles, so its owners must be told.
+    it 'requests an owner-team reviewer and shows the source changes', :aggregate_failures do
+      create_branch_and_mr
+
+      expect(bodies.first[:reviewer_ids]).to eq([41])
+      expect(bodies.first[:description]).to include('#### `qa`', 'doc/qa.md', '**@org/qa**')
+    end
+
+    context 'with principles owned by several teams' do
+      let(:checkpoints) { { 'qa' => checkpoint_for(evaluated), 'security' => checkpoint_for(evaluated) } }
+
+      it 'requests one reviewer per owning team' do
+        create_branch_and_mr
+
+        expect(bodies.first[:reviewer_ids]).to eq([41, 42])
+      end
+    end
+
+    context 'when the metadata MR is already open with a reviewer' do
+      let(:existing_mr) { { 'iid' => 5, 'reviewers' => [{ 'id' => 41 }] } }
+
+      before do
+        allow(sync).to receive(:find_open_mr).and_return(existing_mr)
+        allow(sync.workflow).to receive(:put_json) do |_url, body:, **|
+          bodies << body
+          instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '200')
+        end
+      end
+
+      it 'looks up the MR once and lets the resolver keep its current reviewer', :aggregate_failures do
+        create_branch_and_mr
+
+        expect(sync).to have_received(:find_open_mr).once
+        expect(resolver).to have_received(:owner_team_reviewer).with('@org/qa', current_reviewer_ids: [41])
+        expect(bodies.first[:reviewer_ids]).to eq([41])
+      end
+    end
+
+    context 'when no owner-team member resolves' do
+      before do
+        allow(resolver).to receive(:owner_team_reviewer).and_return(nil)
+      end
+
+      it 'still opens the metadata MR without reviewers', :aggregate_failures do
+        create_branch_and_mr
+
+        expect(titles).to contain_exactly(a_string_starting_with('metadata: '))
+        expect(bodies.first).not_to have_key(:reviewer_ids)
+      end
+    end
+
+    # A team MR merged after the run evaluated the file, so the checkpoint would describe a different body.
+    context 'when the distilled file changed on the base branch since it was evaluated' do
+      let(:merged) { evaluated.sub('Keep me', 'Merged change') }
+
+      before do
+        File.write(path_for('qa'), merged)
+      end
+
+      it 'leaves the file untouched and opens no metadata MR', :aggregate_failures do
+        expect { create_branch_and_mr }.to output(/qa: distilled file changed on master/).to_stderr
+
+        expect(File.read(path_for('qa'))).to eq(merged)
+        expect(titles).to be_empty
+      end
+    end
+
+    # A merged team or tooling MR removed the principle, so there is nothing to checkpoint.
+    context 'when the distilled file was deleted on the base branch' do
+      before do
+        File.delete(path_for('qa'))
+      end
+
+      it 'warns that the file no longer exists and opens no metadata MR', :aggregate_failures do
+        expect { create_branch_and_mr }.to output(/qa: distilled file no longer exists on master/).to_stderr
+
+        expect(titles).to be_empty
+      end
+    end
+  end
+
   # Coverage for the decoupled reconcile path: the working tree already holds
   # the fences regenerated by pure projection from merged master (done by
   # Sync#reconcile_duo_instructions_fences), and this helper cuts a fresh branch off
@@ -1546,6 +1935,61 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(sync.workflow).not_to have_received(:post_json)
       end
     end
+
+    context 'when a reconcile MR is already open' do
+      let(:open_mr) { { 'iid' => 42, 'reviewers' => [] } }
+      let(:branch_file) do
+        instance_double(Net::HTTPResponse, body: branch_content).tap do |response|
+          allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+        end
+      end
+
+      before do
+        allow(sync).to receive_messages(find_open_mr: open_mr, authenticated_get: branch_file, commit_and_push: nil)
+        allow(sync.workflow).to receive(:put_json).and_return(mock_response)
+      end
+
+      context 'when its branch already carries the regenerated fences' do
+        let(:branch_content) { "instructions:\n" }
+
+        it 'skips the push and leaves the MR untouched', :aggregate_failures do
+          reconcile
+
+          expect(sync).not_to have_received(:commit_and_push)
+          expect(sync.workflow).not_to have_received(:put_json)
+          expect(sync).to have_received(:authenticated_get)
+            .with(having_attributes(
+              path: a_string_ending_with('/repository/files/.gitlab%2Fduo%2Fmr-review-instructions.yaml/raw'),
+              query: 'ref=docs-sync%2Fprinciples-reconcile-fences'
+            ), 'token')
+        end
+      end
+
+      context 'when fetching its branch content fails' do
+        let(:branch_content) { "instructions:\n" }
+
+        before do
+          allow(sync).to receive(:authenticated_get).and_raise(Net::ReadTimeout)
+        end
+
+        it 'warns and pushes anyway', :aggregate_failures do
+          expect { reconcile }.to output(/could not compare with the open reconcile MR/).to_stderr
+
+          expect(sync).to have_received(:commit_and_push)
+        end
+      end
+
+      context 'when its branch carries different fences' do
+        let(:branch_content) { "instructions: stale\n" }
+
+        it 'pushes and updates the open MR', :aggregate_failures do
+          reconcile
+
+          expect(sync).to have_received(:commit_and_push)
+          expect(sync.workflow).to have_received(:put_json).with(a_string_ending_with('/merge_requests/42'), anything)
+        end
+      end
+    end
   end
 
   describe '#reconcile_branch_name' do
@@ -1553,7 +1997,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     let(:auto_mr_cfg) { { 'branch_prefix' => 'docs-sync/principles' } }
 
-    it 'is date-free so the daily job reuses one MR across runs' do
+    it 'is date-free so every reconcile run reuses one MR' do
       expect(branch_name).to eq('docs-sync/principles-reconcile-fences')
     end
   end

@@ -10,3 +10,7 @@ available_for:
 permissions:
   - resend_webhook_event
   - test_webhook
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

@@ -112,7 +112,7 @@ graph TB
    ↓
 4. Format response
    ├─ Success: Response.success(message, payload)
-   └─ Error: Response.error(message)
+   └─ Error: Response.error(message, reason: ...)
    ↓
 5. Return to MCP Client
 ```
@@ -136,8 +136,8 @@ Renaming a Ruby class does not rename its registered tool, so keep the keys unch
 ### Declare the tool's governance namespace
 
 A GraphQL-backed service must also declare which of its input arguments name the project or
-group it acts on, so administrators can enforce tool rules against it. Override
-`self.namespace_arguments` on the service class, the same way `ListVulnerabilitiesService` and
+group it acts on, so administrators can enforce tool rules against it. Call the
+`container_arguments` macro on the service class, the same way `ListVulnerabilitiesService` and
 `Labels::SearchService` do. For the full contract, including the default, the recognized
 container kinds, and the `ungovernable!` opt-out, see
 [Declare the namespace that governs the tool](_index.md#declare-the-namespace-that-governs-the-tool).
@@ -157,9 +157,20 @@ module Mcp
         include Mcp::Tools::Concerns::Versionable
 
         QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
+        IMPORT_PATTERN = %r{^#\s*import "\./(?<path>[^"]+)"$}
 
         def self.load_graphql(relative_path)
-          File.read(QUERIES_ROOT.join(relative_path)).freeze
+          query = read_graphql_file(relative_path)
+          directory = File.dirname(relative_path)
+          fragments = query.scan(IMPORT_PATTERN).flatten.map do |path|
+            read_graphql_file(File.join(directory, path))
+          end
+
+          [query, *fragments].join("\n").freeze
+        end
+
+        def self.read_graphql_file(relative_path)
+          File.read(QUERIES_ROOT.join(relative_path))
         end
 
         attr_reader :current_user, :params
@@ -214,12 +225,18 @@ module Mcp
 
           operation_data = result.dig('data', operation_name)
 
-          return ::Mcp::Tools::Base::Response.error("Operation returned no data") if operation_data.nil?
+          if operation_data.nil?
+            return ::Mcp::Tools::Base::Response.error(
+              "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+            )
+          end
 
           operation_errors = operation_data['errors']
           if operation_errors&.any?
             error_messages = extract_error_messages(operation_errors)
-            return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
+            return ::Mcp::Tools::Base::Response.error(
+              error_messages.join(', '), reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+            )
           end
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]
@@ -292,12 +309,36 @@ register_version VERSIONS[:v0_1_0], {
 }
 ```
 
-> [!note]
-> This works only for static operations.
-> An operation composed at load time (for example, a query built from EE-overridden fragments) cannot live in a flat `.graphql` file.
-> Build it through a method and reference that method with a lambda (`graphql_operation: -> { build_query }`) so it is composed per request.
-
 The `Mcp/UseGraphqlQueryFile` RuboCop rule flags an inline string or HEREDOC passed as `graphql_operation:` and points to `load_graphql`.
+
+#### Add fields that exist only in EE
+
+Do not copy the query into `ee/` to add EE-only fields.
+Spread a fragment in the CE query and import it from a file in the same directory:
+
+```graphql
+# @feature_category: mcp_server
+#import "./merge_request_edition_fields.fragment.graphql"
+
+query getMergeRequest($fullPath: ID!, $iid: String!) {
+  project(fullPath: $fullPath) {
+    mergeRequest(iid: $iid) {
+      id
+      ...MergeRequestEditionFields
+    }
+  }
+}
+```
+
+Give the CE fragment a field the query already selects, because a fragment cannot be empty.
+Put the EE fields in a fragment file with the same name under `ee/app/graphql/queries/mcp/`.
+`load_graphql` reads the EE file in place of the CE file, so keep the direct form in `register_version`.
+For an example, see `get_merge_request.query.graphql`.
+
+`all_queries_spec.rb` resolves the import to the CE fragment.
+A spec that runs the tool in EE is the only check of the EE fragment against the schema.
+
+Use a lambda (`graphql_operation: -> { build_query }`) only for an operation built in Ruby by a class that EE prepends, such as `WorkItemsQueryBuilder`.
 
 ### Layer 2: GraphqlService Base Class
 
@@ -326,7 +367,11 @@ module Mcp
 
         override :execute
         def execute(request: nil, params: nil)
-          return Response.error("#{self.class.name}: current_user is not set") unless current_user.present?
+          unless current_user.present?
+            return Response.error(
+              "#{self.class.name}: current_user is not set", reason: Response::Reason::UNAUTHORIZED
+            )
+          end
 
           super
         end
@@ -462,8 +507,9 @@ module Mcp
               },
               body: {
                 type: 'string',
-                description: 'Content of the note/comment (max 1,048,576 characters)',
-                maxLength: 1_048_576
+                description: 'Content of the note/comment (max ' \
+                  "#{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters)",
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               }
             },
             required: ['body']
@@ -672,15 +718,16 @@ resource enumeration, see
 
 1. **Service-level errors** (GraphqlService):
    - Missing `current_user`
-   - Returns: `Response.error(message)`
+   - Returns: `Response.error(message, reason: Response::Reason::UNAUTHORIZED)`
 1. **GraphQL-level errors** (syntax, validation):
    - Invalid GraphQL syntax
    - Type mismatches
-   - Returns: `Response.error(joined_messages)`
+   - Returns: `Response.error(joined_messages)`, which defaults to the `error` reason because this
+     branch mixes denials with query and argument validation failures
 1. **Mutation-level errors** (business logic):
    - Validation failures (e.g., empty title)
    - State conflicts
-   - Returns: `Response.error(joined_messages)`
+   - Returns: `Response.error(joined_messages, reason: Response::Reason::BAD_REQUEST)`
 
 **Error Propagation**:
 

@@ -1,9 +1,8 @@
-query getUserGroupsAndProjects($id: UserID, $search: String) {
+query getUserGroupsAndProjects($id: UserID, $search: String, $fullPath: ID!, $hasSearch: Boolean!) {
   projects(membership: true, search: $search, searchNamespaces: true) {
     nodes {
       id
       name
-      nameWithNamespace
       fullPath
     }
   }
@@ -19,5 +18,19 @@ query getUserGroupsAndProjects($id: UserID, $search: String) {
         descendantGroupsCount
       }
     }
+  }
+
+  projectByFullPath: project(fullPath: $fullPath) @include(if: $hasSearch) {
+    id
+    name
+    fullPath
+  }
+
+  groupByFullPath: group(fullPath: $fullPath) @include(if: $hasSearch) {
+    id
+    name
+    fullPath
+    projectsCount
+    descendantGroupsCount
   }
 }

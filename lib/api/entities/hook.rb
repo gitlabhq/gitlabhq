@@ -17,7 +17,7 @@ module API
         if: ->(hook, _) { hook.is_a?(SystemHook) },
         documentation: { type: 'Integer', example: 1 }
 
-      expose :alert_status, documentation: { type: 'Symbol', example: :executable }
+      expose :alert_status, documentation: { type: 'String', example: 'executable' }
       expose :disabled_until, documentation: { type: 'DateTime', example: '2012-05-28T04:42:42-07:00' }
       expose :url_variables,
         if: ->(_, options) { options[:with_url_variables] != false },

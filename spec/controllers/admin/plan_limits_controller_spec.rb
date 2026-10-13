@@ -57,6 +57,15 @@ RSpec.describe Admin::PlanLimitsController do
         expect(plan_limits.reload.conan_max_file_size).not_to eq(file_size)
       end
 
+      it 'returns not_found for a non-numeric plan_name_uid', :aggregate_failures do
+        sign_in(create(:admin))
+
+        post :create, params: { plan_limits: { plan_name_uid: 'not-a-uid', conan_max_file_size: file_size } }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(plan_limits.reload.conan_max_file_size).not_to eq(file_size)
+      end
+
       it 'ignores plan_id and resolves via plan_name_uid when both are present' do
         other_plan = create(:plan, name: 'free')
         other_plan_limits = create(:plan_limits, plan: other_plan)

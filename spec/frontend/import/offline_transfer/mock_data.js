@@ -74,7 +74,6 @@ const mockGroupsPage2 = [
   },
 ];
 
-// Page 1 of a two-page set — advertises a next page so next/prev can be exercised.
 export const mockGroupsPage1Response = {
   data: {
     groups: {
@@ -121,4 +120,32 @@ export const emptyGroupsResponse = {
       __typename: 'GroupConnection',
     },
   },
+};
+
+export const mockOfflineExports = [
+  {
+    id: 1,
+    status: 'finished',
+    bucket: 'gitlab-exports',
+    export_prefix: '2026-09-11_10-00-00_export_ab12cd34',
+    created_at: '2026-09-11T10:00:00.000Z',
+    has_failures: false,
+  },
+  {
+    id: 2,
+    status: 'created',
+    bucket: 'gitlab-exports-two',
+    export_prefix: '2026-09-10_09-00-00_export_ef56gh78',
+    created_at: '2026-09-10T09:00:00.000Z',
+    has_failures: false,
+  },
+];
+
+export const mockPurgedExport = {
+  id: 3,
+  status: 'finished',
+  bucket: null,
+  export_prefix: null,
+  created_at: '2026-09-09T08:00:00.000Z',
+  has_failures: false,
 };

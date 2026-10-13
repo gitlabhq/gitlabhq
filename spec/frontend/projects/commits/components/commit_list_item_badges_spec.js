@@ -1,7 +1,7 @@
 import { GlBadge, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListItemBadges from '~/projects/commits/components/commit_list_item_badges.vue';
-import AgentSessionBadge from '~/commit/components/agent_session_badge.vue';
+import AgentSessionBadge from 'ee_component/commit/components/agent_session_badge.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { mockCommit } from './mock_data';
@@ -114,10 +114,17 @@ describe('CommitListItemBadges', () => {
       },
     );
 
-    it('renders in both containers when commit has an agent session', () => {
-      createComponent({ commit: { ...mockCommit, hasAgentSession: true } });
+    it('renders in both containers with the commit description', () => {
+      createComponent({
+        commit: { ...mockCommit, hasAgentSession: true, description: 'Duo-Session: url' },
+      });
 
-      expect(wrapper.findAllComponents(AgentSessionBadge)).toHaveLength(2);
+      const badges = wrapper.findAllComponents(AgentSessionBadge);
+
+      expect(badges).toHaveLength(2);
+      badges.wrappers.forEach((badge) => {
+        expect(badge.attributes('description')).toBe('Duo-Session: url');
+      });
     });
   });
 });

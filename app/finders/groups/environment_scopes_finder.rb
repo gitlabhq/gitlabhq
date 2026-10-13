@@ -11,12 +11,12 @@ module Groups
   class EnvironmentScopesFinder
     DEFAULT_ENVIRONMENT_SCOPES_LIMIT = 100
 
+    EnvironmentScope = Struct.new(:name)
+
     def initialize(group:, params: {})
       @group = group
       @params = params
     end
-
-    EnvironmentScope = Struct.new(:name)
 
     def execute
       variables = group.variables

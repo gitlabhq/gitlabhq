@@ -82,6 +82,8 @@ module API
               end
             end
           end
+          tier = ::API::Helpers::IntegrationsHelpers.integration_tier(slug)
+          route_setting :tier, tier if tier
           route_setting :authorization, permissions: :update_integration,
             boundary: -> { parent_resource },
             boundaries: [{ boundary_type: :project }, { boundary_type: :group }]

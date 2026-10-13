@@ -2,6 +2,11 @@
 
 module Members
   class AcceptedInviteEvent < ::Gitlab::EventStore::Event
+    # TODO: Remove in a later milestone after CloudEvent migration is complete.
+    # Dual-published alongside AcceptedInviteCloudEvent in
+    # gitlab/app/services/members/accept_invite_service.rb
+    # to allow in-flight events to drain.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/605291
     def schema
       {
         'type' => 'object',

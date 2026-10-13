@@ -276,6 +276,26 @@ describe('CopyAsGFM', () => {
     });
   });
 
+  describe('transformGFMSelection', () => {
+    it('excludes data-gfm-ignore elements', () => {
+      const md = document.createElement('div');
+      md.classList.add('md');
+      const content = document.createElement('p');
+      content.textContent = 'content';
+      const ignored = document.createElement('div');
+      ignored.dataset.gfmIgnore = '';
+      ignored.textContent = 'chrome';
+      md.append(content, ignored);
+      const fragment = document.createDocumentFragment();
+      fragment.appendChild(md);
+
+      const result = CopyAsGFM.transformGFMSelection(fragment);
+
+      expect(result.querySelector('[data-gfm-ignore]')).toBe(null);
+      expect(result.textContent).toBe('content');
+    });
+  });
+
   describe('transformCodeSelection', () => {
     it('serializes each selected line followed by a newline', () => {
       const fragment = createFragment(

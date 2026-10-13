@@ -26,8 +26,28 @@ RSpec.describe Types::Ci::InheritedCiVariableType, feature_category: :pipeline_c
     ).at_least
   end
 
+  describe '#group_name' do
+    it 'returns the name of the group' do
+      expect(batch_sync { resolve_field(:group_name, variable, current_user: user) }).to eq(group.name)
+    end
+
+    context 'without a current user' do
+      it 'returns the name of the group' do
+        expect(batch_sync { resolve_field(:group_name, variable, current_user: nil) }).to eq(group.name)
+      end
+    end
+
+    context 'when the group no longer exists' do
+      let(:orphaned_variable) { build(:ci_group_variable, group_id: non_existing_record_id) }
+
+      it 'returns nil' do
+        expect(batch_sync { resolve_field(:group_name, orphaned_variable, current_user: user) }).to be_nil
+      end
+    end
+  end
+
   describe '#group_ci_cd_settings_path' do
-    subject(:settings_path) { resolve_field(:group_ci_cd_settings_path, variable, current_user: user) }
+    subject(:settings_path) { batch_sync { resolve_field(:group_ci_cd_settings_path, variable, current_user: user) } }
 
     context 'when user has admin_cicd_variables permission' do
       before_all do
@@ -53,6 +73,12 @@ RSpec.describe Types::Ci::InheritedCiVariableType, feature_category: :pipeline_c
     context 'when user is not a member of the group' do
       it 'returns nil' do
         expect(settings_path).to be_nil
+      end
+    end
+
+    context 'without a current user' do
+      it 'returns nil' do
+        expect(batch_sync { resolve_field(:group_ci_cd_settings_path, variable, current_user: nil) }).to be_nil
       end
     end
   end

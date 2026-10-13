@@ -66,13 +66,65 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
         expect(relation.link_type).to eq('closes')
         expect(relation.from_mr_description).to be(false)
       end
+
+      context 'when the user can read but not update the target work item' do
+        let_it_be(:other_public_project) { create(:project, :public) }
+        let_it_be(:read_only_work_item) { create(:work_item, :issue, project: other_public_project) }
+
+        let(:target_work_items) { [read_only_work_item] }
+
+        it 'does not create the closes relation and reports the error', :aggregate_failures do
+          expect { result }.not_to change { merge_request.merge_request_issues.count }
+
+          expect(result).to be_error
+          expect(result.reason).to eq(:unprocessable_entity)
+          expect(result.payload[:errors]).to contain_exactly(
+            format(
+              _('You are not allowed to close %{work_item_reference} by merging this merge request.'),
+              work_item_reference: read_only_work_item.to_reference(merge_request.project)
+            )
+          )
+        end
+      end
+
+      context 'with a mix of updatable and read-only targets' do
+        let_it_be(:other_public_project) { create(:project, :public) }
+        let_it_be(:read_only_work_item) { create(:work_item, :issue, project: other_public_project) }
+
+        let(:target_work_items) { [work_item, read_only_work_item] }
+
+        it 'links only the updatable target and reports the other', :aggregate_failures do
+          expect { result }.to change { merge_request.merge_request_issues.count }.by(1)
+
+          expect(result).to be_success
+          expect(result.payload[:work_item_relations].map(&:issue_id)).to contain_exactly(work_item.id)
+          expect(result.payload[:errors]).to contain_exactly(
+            format(
+              _('You are not allowed to close %{work_item_reference} by merging this merge request.'),
+              work_item_reference: read_only_work_item.to_reference(merge_request.project)
+            )
+          )
+        end
+      end
+    end
+
+    context 'with link_type related to a work item the user can only read' do
+      let_it_be(:other_public_project) { create(:project, :public) }
+      let_it_be(:read_only_work_item) { create(:work_item, :issue, project: other_public_project) }
+
+      let(:target_work_items) { [read_only_work_item] }
+
+      it 'creates the related relation, since read access is sufficient', :aggregate_failures do
+        expect { result }.to change { merge_request.merge_request_issues.count }.by(1)
+        expect(result).to be_success
+      end
     end
 
     context 'when an auto-derived (from_mr_description) closes row already exists for the work item' do
       let(:link_type) { :closes }
 
       let_it_be(:auto_closes_relation) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue_id: work_item.id, link_type: :closes, from_mr_description: true)
       end
 
@@ -88,7 +140,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
 
     context 'when the relation already exists' do
       before do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue: work_item, link_type: :related, from_mr_description: false)
       end
 
@@ -142,7 +194,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
 
     context 'when every work item fails to link' do
       before do
-        allow_next_instance_of(MergeRequestsClosingIssues) do |relation|
+        allow_next_instance_of(MergeRequestIssue) do |relation|
           allow(relation).to receive(:save) do
             relation.errors.add(:base, 'boom')
             false
@@ -165,7 +217,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
 
       before do
         # Fail only work_item's relation; other_work_item saves for real.
-        allow_next_instance_of(MergeRequestsClosingIssues) do |relation|
+        allow_next_instance_of(MergeRequestIssue) do |relation|
           allow(relation).to receive(:save).and_wrap_original do |original|
             next original.call unless relation.issue_id == work_item.id
 
@@ -199,12 +251,12 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
       let(:link_type) { :closes }
 
       let_it_be(:concurrent_relation) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue: work_item, link_type: :closes, from_mr_description: true)
       end
 
       before do
-        allow_next_instance_of(MergeRequestsClosingIssues) do |relation|
+        allow_next_instance_of(MergeRequestIssue) do |relation|
           allow(relation).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
         end
       end

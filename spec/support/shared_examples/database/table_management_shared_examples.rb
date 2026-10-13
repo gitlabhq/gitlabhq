@@ -38,66 +38,22 @@ RSpec.shared_examples "a measurable object" do
     end
   end
 
-  it 'creates the partitioned table with the same non-key columns' do
-    subject
-
-    copied_columns = filter_columns_by_name(connection.columns(partitioned_table), new_primary_key)
-    original_columns = filter_columns_by_name(connection.columns(source_table), new_primary_key)
-
-    expect(copied_columns).to match_array(original_columns)
-  end
-
-  it 'removes the default from the primary key column' do
-    subject
-
-    pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
-
-    expect(pk_column.default_function).to be_nil
-  end
-
   describe 'constructing the partitioned table' do
-    it 'creates a table partitioned by the proper column' do
-      subject
-
-      expect(connection.table_exists?(partitioned_table)).to be(true)
-      expect(connection.primary_key(partitioned_table)).to eq(new_primary_key)
-
-      expect_table_partitioned_by(partitioned_table, [partition_column_name], part_type: part_type)
-    end
-
-    it 'requires the migration helper to be run in DDL mode' do
+    it 'creates a table partitioned by the proper column, requiring DDL mode', :aggregate_failures do
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_ddl_mode!)
 
       subject
 
       expect(connection.table_exists?(partitioned_table)).to be(true)
       expect(connection.primary_key(partitioned_table)).to eq(new_primary_key)
-
       expect_table_partitioned_by(partitioned_table, [partition_column_name], part_type: part_type)
-    end
-
-    it 'changes the primary key datatype to bigint' do
-      subject
 
       pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
-
       expect(pk_column.sql_type).to eq('bigint')
-    end
-
-    it 'removes the default from the primary key column' do
-      subject
-
-      pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
-
       expect(pk_column.default_function).to be_nil
-    end
-
-    it 'creates the partitioned table with the same non-key columns' do
-      subject
 
       copied_columns = filter_columns_by_name(connection.columns(partitioned_table), new_primary_key)
       original_columns = filter_columns_by_name(connection.columns(source_table), new_primary_key)
-
       expect(copied_columns).to match_array(original_columns)
     end
   end
@@ -108,7 +64,8 @@ RSpec.shared_examples "a measurable object" do
       partitioned_model.table_name = partitioned_table
     end
 
-    it 'creates a trigger function on the original table' do
+    it 'creates a trigger function on the original table and syncs inserts, updates, and deletes',
+      :aggregate_failures do
       expect_function_not_to_exist(function_name)
       expect_trigger_not_to_exist(source_table, trigger_name)
 
@@ -116,25 +73,8 @@ RSpec.shared_examples "a measurable object" do
 
       expect_function_to_exist(function_name)
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
-    end
-
-    it 'syncs inserts to the partitioned tables' do
-      subject
 
       expect(partitioned_model.count).to eq(0)
-
-      first_record = source_model.create!(name: 'Bob', age: 20, created_at: timestamp, external_id: 1,
-        updated_at: timestamp)
-      second_record = source_model.create!(name: 'Alice', age: 30, created_at: timestamp, external_id: 2,
-        updated_at: timestamp)
-
-      expect(partitioned_model.count).to eq(2)
-      expect(partitioned_model.find(first_record.id).attributes).to eq(first_record.attributes)
-      expect(partitioned_model.find(second_record.id).attributes).to eq(second_record.attributes)
-    end
-
-    it 'syncs updates to the partitioned tables' do
-      subject
 
       first_record = source_model.create!(name: 'Bob', age: 20, created_at: timestamp, external_id: 1,
         updated_at: timestamp)
@@ -154,17 +94,6 @@ RSpec.shared_examples "a measurable object" do
       expect(partitioned_model.count).to eq(2)
       expect(first_copy.reload.attributes).to eq(first_record.attributes)
       expect(second_copy.reload.attributes).to eq(second_record.attributes)
-    end
-
-    it 'syncs deletes to the partitioned tables' do
-      subject
-
-      first_record = source_model.create!(name: 'Bob', age: 20, created_at: timestamp, external_id: 1,
-        updated_at: timestamp)
-      second_record = source_model.create!(name: 'Alice', age: 30, created_at: timestamp, external_id: 2,
-        updated_at: timestamp)
-
-      expect(partitioned_model.count).to eq(2)
 
       first_record.destroy!
 

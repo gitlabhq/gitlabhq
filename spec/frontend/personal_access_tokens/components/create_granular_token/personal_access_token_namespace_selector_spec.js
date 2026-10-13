@@ -12,6 +12,10 @@ import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/cons
 import {
   mockGroups,
   mockProjects,
+  mockNonMemberProject,
+  mockNonMemberGroup,
+  mockFullPathProjectQueryResponse,
+  mockFullPathGroupQueryResponse,
   mockSearchGroupsAndProjectsQueryResponse,
 } from '../../mock_data';
 
@@ -31,6 +35,8 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
     data: {
       projects: { nodes: [] },
       user: { id: 'gid://gitlab/User/123', groups: { nodes: [] } },
+      projectByFullPath: null,
+      groupByFullPath: null,
     },
   };
 
@@ -52,6 +58,7 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
   const findSelectedNamespaces = () => wrapper.findByTestId('selected-namespaces');
   const findRemoveButtons = () => wrapper.findAllComponentsByTestId('remove-namespace');
   const findDescendantCounts = () => wrapper.findByTestId('descendant-counts');
+  const findFullPathHint = () => wrapper.findByTestId('full-path-hint');
 
   const waitForQuery = async () => {
     jest.advanceTimersByTime(DEBOUNCE_DELAY);
@@ -72,6 +79,18 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       expect(findListbox().props('toggleText')).toBe('Add group or project');
     });
 
+    it('explains that a full path finds namespaces the user is not a member of', () => {
+      expect(findFullPathHint().text()).toBe(
+        "Enter a full path to find groups or projects you're not a member of.",
+      );
+    });
+
+    it('announces the full path hint to screen readers along with the result count', () => {
+      expect(findListbox().props('srOnlyResultsLabel')(2)).toBe(
+        "2 results. Enter a full path to find groups or projects you're not a member of.",
+      );
+    });
+
     it('renders error message when error prop is provided', () => {
       createComponent({ props: { error: 'At least one group or project is required.' } });
 
@@ -90,6 +109,8 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       expect(mockQueryHandler).toHaveBeenCalledWith({
         id: 'gid://gitlab/User/123',
         search: '',
+        fullPath: '',
+        hasSearch: false,
       });
     });
 
@@ -101,6 +122,34 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       expect(mockQueryHandler).toHaveBeenCalledWith({
         id: 'gid://gitlab/User/123',
         search: 'test search',
+        fullPath: 'test search',
+        hasSearch: true,
+      });
+    });
+
+    it('trims the search term before looking it up as a full path', async () => {
+      await findListbox().vm.$emit('search', '  test search  ');
+
+      await waitForQuery();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        search: '  test search  ',
+        fullPath: 'test search',
+        hasSearch: true,
+      });
+    });
+
+    it('does not look up a full path when the search term is only whitespace', async () => {
+      await findListbox().vm.$emit('search', '   ');
+
+      await waitForQuery();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        search: '   ',
+        fullPath: '',
+        hasSearch: false,
       });
     });
 
@@ -112,6 +161,8 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       expect(mockQueryHandler).not.toHaveBeenCalledWith({
         id: 'gid://gitlab/User/123',
         search: 'a',
+        fullPath: 'a',
+        hasSearch: true,
       });
     });
   });
@@ -146,6 +197,103 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
       await waitForQuery();
 
       expect(findListbox().text()).toContain('No matches found');
+    });
+  });
+
+  describe('namespaces found by full path', () => {
+    describe('when the full path matches a project', () => {
+      beforeEach(async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(mockFullPathProjectQueryResponse),
+        });
+
+        await findListbox().vm.$emit('search', mockNonMemberProject.fullPath);
+        await waitForQuery();
+      });
+
+      it('offers a project the membership-scoped search did not return', () => {
+        expect(findListbox().props('items')).toEqual([
+          {
+            text: 'Groups',
+            options: [],
+          },
+          {
+            text: 'Projects',
+            options: [{ value: mockNonMemberProject.id, text: mockNonMemberProject.fullPath }],
+          },
+        ]);
+      });
+
+      it('allows the project to be selected', async () => {
+        await findListbox().vm.$emit('select', [mockNonMemberProject.id]);
+
+        expect(wrapper.emitted('input')).toEqual([[[mockNonMemberProject]]]);
+      });
+    });
+
+    describe('when the full path matches a group', () => {
+      beforeEach(async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(mockFullPathGroupQueryResponse),
+        });
+
+        await findListbox().vm.$emit('search', mockNonMemberGroup.fullPath);
+        await waitForQuery();
+      });
+
+      it('offers a group the membership-scoped search did not return', () => {
+        expect(findListbox().props('items')).toEqual([
+          {
+            text: 'Groups',
+            options: [{ value: mockNonMemberGroup.id, text: mockNonMemberGroup.fullPath }],
+          },
+          {
+            text: 'Projects',
+            options: [],
+          },
+        ]);
+      });
+
+      it('allows the group to be selected', async () => {
+        await findListbox().vm.$emit('select', [mockNonMemberGroup.id]);
+
+        expect(wrapper.emitted('input')).toEqual([[[mockNonMemberGroup]]]);
+      });
+    });
+
+    describe('when the full path matches a namespace the search also returned', () => {
+      beforeEach(async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue({
+            data: {
+              ...mockSearchGroupsAndProjectsQueryResponse.data,
+              projectByFullPath: mockProjects[1],
+              groupByFullPath: mockGroups[1],
+            },
+          }),
+        });
+
+        await findListbox().vm.$emit('search', mockProjects[1].fullPath);
+        await waitForQuery();
+      });
+
+      it('lists the matched project first without duplicating it', () => {
+        const [, projects] = findListbox().props('items');
+
+        expect(projects.options).toEqual([
+          { value: mockProjects[1].id, text: mockProjects[1].fullPath },
+          { value: mockProjects[0].id, text: mockProjects[0].fullPath },
+        ]);
+      });
+
+      it('lists the matched group first without duplicating it', () => {
+        const [groups] = findListbox().props('items');
+
+        expect(groups.options).toEqual([
+          { value: mockGroups[1].id, text: mockGroups[1].fullPath },
+          { value: mockGroups[0].id, text: mockGroups[0].fullPath },
+        ]);
+      });
     });
   });
 

@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/pages/new' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, maintainers: user) }
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project) }
 
   before do
     allow(project).to receive(:show_pages_onboarding?).and_return(true)

@@ -89,26 +89,6 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
         stub_feature_flags(project_commits_refactor: true)
       end
 
-      context 'when project is public' do
-        let_it_be(:project, freeze: false) { create_default(:project, :public, :repository, group: group) }
-
-        it_behaves_like 'has expected number of commits with refactor'
-
-        it 'lists commits grouped by day', :js, :aggregate_failures do
-          visit project_commits_path(project)
-
-          commit = project.repository.commit
-          # The UI renders day headers in the browser's (OS-local) timezone,
-          # so mirror that with +localtime+ rather than +Time.zone+.
-          expected_date = commit.committed_date.localtime.strftime('%b %-d, %Y')
-
-          within_testid('daily-commits', match: :first) do
-            expect(page).to have_testid('daily-commits-date', text: expected_date)
-            expect(page).to have_testid('commit-row', minimum: 1, text: commit.title)
-          end
-        end
-      end
-
       context 'when project is public with private repository' do
         let_it_be(:project, freeze: false) do
           create_default(:project, :public, :repository, :repository_private, group: group)
@@ -125,20 +105,6 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
             end
 
             it_behaves_like 'has expected number of commits with refactor'
-
-            it 'lists commits grouped by day', :js, :aggregate_failures do
-              visit project_commits_path(project)
-
-              commit = project.repository.commit
-              # The UI renders day headers in the browser's (OS-local) timezone,
-              # so mirror that with +localtime+ rather than +Time.zone+.
-              expected_date = commit.committed_date.localtime.strftime('%b %-d, %Y')
-
-              within_testid('daily-commits', match: :first) do
-                expect(page).to have_testid('daily-commits-date', text: expected_date)
-                expect(page).to have_testid('commit-row', minimum: 1, text: commit.title)
-              end
-            end
           end
         end
       end

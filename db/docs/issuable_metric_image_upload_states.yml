@@ -4,9 +4,10 @@ description: Separate table for Issuable Metric Image Upload verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236108
 milestone: '19.1'
 feature_categories:
-  - geo_replication
+- geo_replication
 classes:
-  - Geo::IssuableMetricImageUploadState
+- Geo::IssuableMetricImageUploadState
 gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
+table_size: small

@@ -22,6 +22,8 @@ export const I18N_PASSWORD = __('Current password');
 export const I18N_PASSWORD_DESCRIPTION = __(
   'Your current password is required to register a new device.',
 );
+export const I18N_PASSWORD_REQUIRED = __('Current password is required.');
+export const I18N_DEVICE_NAME_REQUIRED = __('Device name is required.');
 export const I18N_STATUS_SUCCESS = __(
   'Your device was successfully set up! Give it a name and register it with the GitLab server.',
 );

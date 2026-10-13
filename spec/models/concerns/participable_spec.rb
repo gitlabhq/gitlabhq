@@ -148,8 +148,7 @@ RSpec.describe Participable, feature_category: :team_planning do
         it 'filters participants based on confidential issue access' do
           allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
 
-          allow(instance).to receive(:foo).and_return(user1)
-          allow(instance).to receive(:bar).and_return(user2)
+          allow(instance).to receive_messages(foo: user1, bar: user2)
 
           expect(instance.participants(user2)).to contain_exactly(user2)
         end
@@ -160,10 +159,12 @@ RSpec.describe Participable, feature_category: :team_planning do
           allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
 
           allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-          allow(instance).to receive(:confidential?).and_return(true)
-          allow(instance).to receive(:resource_parent).and_return(private_project)
-          allow(instance).to receive(:foo).and_return(user1)
-          allow(instance).to receive(:bar).and_return(user2)
+          allow(instance).to receive_messages(
+            confidential?: true,
+            resource_parent: private_project,
+            foo: user1,
+            bar: user2
+          )
           expect(instance).to receive(:project).exactly(4).and_return(private_project)
 
           expect(instance.participants(user2)).to contain_exactly(user1, user2)
@@ -225,9 +226,8 @@ RSpec.describe Participable, feature_category: :team_planning do
         note3 = build(:system_note, author: user1, note: "assigned to #{user2.to_reference}")
         note4 = build(:note, author: user2)
 
-        allow(instance).to receive(:project).and_return(project)
         allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
-        allow(instance).to receive(:notes).and_return([note1, note2, note3, note4])
+        allow(instance).to receive_messages(project: project, notes: [note1, note2, note3, note4])
 
         allow(Ability).to receive(:allowed?).with(anything, :read_project, anything).and_return(true)
         allow(Ability).to receive(:allowed?).with(anything, :read_note, anything).exactly(3).times.and_return(true)
@@ -245,9 +245,7 @@ RSpec.describe Participable, feature_category: :team_planning do
     end
 
     it 'returns whether the user is a participant' do
-      allow(instance).to receive(:foo).and_return(user2)
-      allow(instance).to receive(:bar).and_return(user3)
-      allow(instance).to receive(:project).and_return(project)
+      allow(instance).to receive_messages(foo: user2, bar: user3, project: project)
 
       expect(instance.participant?(user1)).to be false
       expect(instance.participant?(user2)).to be true
@@ -267,8 +265,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       let(:instance) { model.new(author: user1) }
 
       it 'returns whether the user is a participant' do
-        allow(instance).to receive(:foo).and_return(user1)
-        allow(instance).to receive(:bar).and_return(user2)
+        allow(instance).to receive_messages(foo: user1, bar: user2)
 
         expect(instance.participant?(user1)).to be true
         expect(instance.participant?(user2)).to be false
@@ -285,10 +282,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       end
 
       it 'returns whether the user is a participant' do
-        allow(instance).to receive(:foo).and_return(user1)
-        allow(instance).to receive(:bar).and_return(user3)
-        allow(instance).to receive(:project).and_return(nil)
-        allow(instance).to receive(:namespace).and_return(group)
+        allow(instance).to receive_messages(foo: user1, bar: user3, project: nil, namespace: group)
 
         expect(instance.participant?(user1)).to be true # returned by participant attr and a member of group
         expect(instance.participant?(user2)).to be false # returned by participant attr
@@ -297,8 +291,7 @@ RSpec.describe Participable, feature_category: :team_planning do
 
       context 'when participable is neither project nor group level object' do
         it 'returns whether the user is a participant' do
-          allow(instance).to receive(:foo).and_return(user1)
-          allow(instance).to receive(:project).and_return(nil)
+          allow(instance).to receive_messages(foo: user1, project: nil)
 
           # user1 is returned by participant attr and is a member of group,
           # but participable model is neither a group or project object

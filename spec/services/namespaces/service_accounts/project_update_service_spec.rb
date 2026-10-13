@@ -85,5 +85,20 @@ RSpec.describe Namespaces::ServiceAccounts::ProjectUpdateService, feature_catego
 
       it_behaves_like 'service account update not authorized'
     end
+
+    context 'when email confirmation setting is set to hard' do
+      let(:current_user) { project_owner }
+
+      before do
+        stub_application_setting_enum('email_confirmation_setting', 'hard')
+      end
+
+      it 'requires confirmation of the new email', :aggregate_failures do
+        result = service.execute
+
+        expect(result.status).to eq(:success)
+        expect(result.payload[:user].unconfirmed_email).to eq(params[:email])
+      end
+    end
   end
 end

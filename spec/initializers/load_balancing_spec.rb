@@ -8,8 +8,8 @@ RSpec.describe 'load_balancing', :delete, :reestablished_active_record_base, fea
   end
 
   before do
-    # Stub out middleware call, as not idempotent
-    allow(Gitlab::Application.instance.middleware).to receive(:use)
+    # Stub out the middleware insertion, as not idempotent
+    allow(Gitlab::Application.instance.middleware).to receive(:insert_before)
   end
 
   context 'with replica hosts configured' do

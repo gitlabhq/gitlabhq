@@ -14,8 +14,8 @@ import HtmlPresenter from './html.vue';
 import CiItemPresenter from './ci_item.vue';
 import CiStatusPresenter from './ci_status.vue';
 import CodePresenter from './code.vue';
+import DateBucketPresenter from './date_bucket.vue';
 import DurationPresenter from './duration.vue';
-import DurationMsPresenter from './duration_ms.vue';
 import NamedTextPresenter from './named_text.vue';
 import NullPresenter from './null.vue';
 import BoolPresenter from './bool.vue';
@@ -23,9 +23,11 @@ import CollectionPresenter from './collection.vue';
 import LinkPresenter from './link.vue';
 import TimePresenter from './time.vue';
 import TextPresenter from './text.vue';
+import TierBandPresenter from './tier_band.vue';
 import UrlPresenter from './url.vue';
 import PercentagePresenter from './percentage.vue';
 import NumberPresenter from './number.vue';
+import CreditsPresenter from './credits.vue';
 
 // A registry value is either a Vue component (used for all variants/typenames)
 // or a plain object whose keys are variant names / parent typenames. Vue
@@ -62,6 +64,7 @@ export const presentersByObjectType = {
   CiJob: CiItemPresenter,
   CiStage: NamedTextPresenter,
   Group: LinkPresenter,
+  DuoWorkflowsModelMetadata: NamedTextPresenter,
 };
 
 // Maps field keys to presenters. Values can be:
@@ -101,6 +104,7 @@ export const presentersByFieldKey = {
     DuoCodeSuggestionsAggregationResponseDimensions: UserAvatarPresenter,
     DuoUsageEventsAggregationResponseDimensions: UserAvatarPresenter,
     AgentPlatformSessionsAggregationResponseDimensions: UserAvatarPresenter,
+    DuoWorkflowsAggregationResponseDimensions: UserAvatarPresenter,
     default: UserPresenter,
     compact: UserPresenter,
   },
@@ -116,18 +120,51 @@ export const presentersByFieldKey = {
   totalCount: NumberPresenter,
   usersCount: NumberPresenter,
   finishedCount: NumberPresenter,
+  projectsCount: NumberPresenter,
   suggestionSizeSum: NumberPresenter,
   throughputCount: NumberPresenter,
   featuresCount: NumberPresenter,
   returningUsersCount: NumberPresenter,
   previousPeriodUsersCount: NumberPresenter,
+  joinedUsersCount: NumberPresenter,
+  churnedUsersCount: NumberPresenter,
+  flowTypesCount: NumberPresenter,
+  createdMrCountMin: NumberPresenter,
+  createdMrCountMax: NumberPresenter,
+  createdMrCountMean: NumberPresenter,
+  createdMrCountSum: NumberPresenter,
+  createdMrCountQuantile: NumberPresenter,
+  mergedMrCountMin: NumberPresenter,
+  mergedMrCountMax: NumberPresenter,
+  mergedMrCountMean: NumberPresenter,
+  mergedMrCountSum: NumberPresenter,
+  mergedMrCountQuantile: NumberPresenter,
+  closedMrCountMin: NumberPresenter,
+  closedMrCountMax: NumberPresenter,
+  closedMrCountMean: NumberPresenter,
+  closedMrCountSum: NumberPresenter,
+  closedMrCountQuantile: NumberPresenter,
+  openMrCountMin: NumberPresenter,
+  openMrCountMax: NumberPresenter,
+  openMrCountMean: NumberPresenter,
+  openMrCountSum: NumberPresenter,
+  openMrCountQuantile: NumberPresenter,
+  creditsUsedMin: CreditsPresenter,
+  creditsUsedMax: CreditsPresenter,
+  creditsUsedMean: CreditsPresenter,
+  creditsUsedSum: CreditsPresenter,
+  creditsUsedQuantile: CreditsPresenter,
+  creditsPerMergedMrRatio: CreditsPresenter,
   durationQuantile: DurationPresenter,
   durationMean: DurationPresenter,
   durationMin: DurationPresenter,
   durationMax: DurationPresenter,
   durationSum: DurationPresenter,
-  // timeToMergeQuantile arrives in milliseconds, unlike durationQuantile (seconds)
-  timeToMergeQuantile: DurationMsPresenter,
+  timeToMergeQuantile: DurationPresenter,
+  timeToMergeMean: DurationPresenter,
+  timeToMergeMin: DurationPresenter,
+  timeToMergeMax: DurationPresenter,
+  timeToMergeSum: DurationPresenter,
 };
 
 // Returns the field key that holds the title for the given __typename,
@@ -136,11 +173,12 @@ export const titleFieldFor = (typename) => {
   return presentersByObjectType[typename]?.titleField ?? 'title';
 };
 
-// The title-aliased field hands the whole item to the type-routed presenter;
-// other field keys resolve to that field's value.
-export const dataForField = (item, fieldKey) => {
+// The title field hands the whole item to the type-routed presenter; other
+// field keys resolve to that field's value. Match on the base field key so an
+// unrelated field aliased `as "title"` still resolves to its own value.
+export const dataForField = (item, fieldKey, presenterKey = '') => {
   // eslint-disable-next-line no-underscore-dangle
-  if (!fieldKey || fieldKey === titleFieldFor(item?.__typename)) return item;
+  if (!fieldKey || (presenterKey || fieldKey) === titleFieldFor(item?.__typename)) return item;
   return item[fieldKey];
 };
 
@@ -172,13 +210,29 @@ const presenterByPrimitiveType = (field) => {
   return TextPresenter;
 };
 
-// Resolves a presenter for (item, fieldKey) via: null → field-key → typename → primitive.
+// Without this, bucket values hit the primitive fallback and render as relative time.
+// Only strings qualify: the presenter stringifies non-bucket strings unchanged, while
+// objects and numbers on a future non-date field keep their regular dispatch.
+const isDateBucket = (field, parameters) =>
+  Boolean(parameters.granularity) && typeof field === 'string';
+
+// Tier values are opaque `tier_0`, `tier_1`... strings, named from the field's thresholds.
+const isTierBand = (field, parameters) =>
+  Boolean(parameters.thresholds?.length) && typeof field === 'string';
+
+// Resolves a presenter for (item, fieldKey) via: null → bucket → tier → field-key → typename → primitive.
 // `fieldKey` is the data key for value lookup; `presenterKey` (falls back to `fieldKey`)
 // is used for `presentersByFieldKey` — needed because aliased fields store data under
 // the alias, not the base field key.
-export const presenterFor = (item, fieldKey, { variant = 'default', presenterKey = '' } = {}) => {
-  const field = dataForField(item, fieldKey);
+export const presenterFor = (
+  item,
+  fieldKey,
+  { variant = 'default', presenterKey = '', parameters = {} } = {},
+) => {
+  const field = dataForField(item, fieldKey, presenterKey);
   if (field == null) return NullPresenter;
+  if (isDateBucket(field, parameters)) return DateBucketPresenter;
+  if (isTierBand(field, parameters)) return TierBandPresenter;
   return (
     presenterByFieldKey(presenterKey || fieldKey, item, variant) ||
     presenterByObjectType(field, variant) ||

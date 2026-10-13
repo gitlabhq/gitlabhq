@@ -259,7 +259,9 @@ module MergeRequests
       # Read before substitution consumes the placeholder.
       closes_issue_placed_by_template = description&.include?('%{closes_issue}')
       replace_variables_in_description
-      assign_description_from_cherry_picked_merge_request unless description_given?
+      description_replaced_by_cherry_pick =
+        !description_given? && assign_description_from_cherry_picked_merge_request
+      closes_issue_placed_by_template = false if description_replaced_by_cherry_pick
 
       assign_title_from_template if mr_title_template_enabled?
       assign_title_and_description_from_commits
@@ -381,9 +383,10 @@ module MergeRequests
     def assign_description_from_cherry_picked_merge_request
       picked_merge_request = cherry_picked_merge_request
 
-      return if picked_merge_request&.description.blank?
+      return false if picked_merge_request&.description.blank?
 
       merge_request.description = picked_merge_request.description
+      true
     end
 
     # The id arrives in the query string, so authorize whatever it resolves to.

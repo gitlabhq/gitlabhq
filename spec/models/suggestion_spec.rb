@@ -52,6 +52,32 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#diff_file_for_highlight' do
+    let(:suggestion) { build(:suggestion) }
+
+    it 'uses the discussion diff file and never the latest diff file' do
+      discussion_diff_file = instance_double(Gitlab::Diff::File)
+      allow(suggestion.note).to receive(:discussion)
+        .and_return(instance_double(DiffDiscussion, diff_file: discussion_diff_file))
+      expect(suggestion.note).not_to receive(:latest_diff_file)
+
+      expect(suggestion.diff_file_for_highlight).to eq(discussion_diff_file)
+    end
+
+    context 'when the suggestion is in a reply' do
+      let_it_be(:first_note) { create(:diff_note_on_merge_request) }
+      let_it_be(:reply) { create(:diff_note_on_merge_request, in_reply_to: first_note) }
+
+      let(:suggestion) { build(:suggestion, note: reply) }
+
+      it 'reuses the stored diff file of the first note instead of comparing' do
+        expect(CompareService).not_to receive(:new)
+
+        expect(suggestion.diff_file_for_highlight.unique_identifier).to eq(first_note.note_diff_file.id)
+      end
+    end
+  end
+
   describe '#appliable?' do
     let(:suggestion) { build(:suggestion) }
 
@@ -95,12 +121,36 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
       it { is_expected.to eq("Can't apply this suggestion.") }
     end
 
+    context 'when the suggestion spans more lines below than MAX_LINES_CONTEXT allows' do
+      let(:suggestion) { build(:suggestion, note: note, lines_below: Suggestible::MAX_LINES_CONTEXT + 1) }
+
+      it { is_expected.to eq("Cannot apply as this suggestion spans more than 100 lines.") }
+    end
+
+    context 'when the suggestion spans more lines above than MAX_LINES_CONTEXT allows' do
+      let(:suggestion) { build(:suggestion, note: note, lines_above: Suggestible::MAX_LINES_CONTEXT + 1) }
+
+      it { is_expected.to eq("Cannot apply as this suggestion spans more than 100 lines.") }
+    end
+
+    context 'when the suggestion spans exactly MAX_LINES_CONTEXT lines' do
+      let(:suggestion) { build(:suggestion, note: note, lines_below: Suggestible::MAX_LINES_CONTEXT) }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'when merge request was merged' do
       before do
         merge_request.mark_as_merged!
       end
 
       it { is_expected.to eq("This merge request was merged. To apply this suggestion, edit this file directly.") }
+
+      context 'and the suggestion also spans more lines than MAX_LINES_CONTEXT allows' do
+        let(:suggestion) { build(:suggestion, note: note, lines_below: Suggestible::MAX_LINES_CONTEXT + 1) }
+
+        it { is_expected.to eq("This merge request was merged. To apply this suggestion, edit this file directly.") }
+      end
     end
 
     context 'when merge request is closed' do

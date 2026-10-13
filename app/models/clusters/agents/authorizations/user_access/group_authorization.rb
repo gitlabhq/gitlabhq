@@ -22,8 +22,11 @@ module Clusters
               .order('id, access_level DESC')
           }
 
+          # Filters on `group_id`, not on the `all_groups_with_membership` CTE that `for_user`
+          # adds, so that the scope also works after `for_admin`. Both filters are equivalent,
+          # because the CTE is joined on `group_id`.
           scope :for_project, ->(project) {
-            where(all_groups_with_membership: { id: project.namespace.self_and_ancestor_ids })
+            where(group_id: project.namespace.self_and_ancestor_ids)
           }
 
           validates :config, json_schema: { filename: 'clusters_agents_authorizations_user_access_config' }

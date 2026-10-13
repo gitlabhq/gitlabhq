@@ -6,17 +6,20 @@
   "AiCatalogCustomAndFoundationalItem": [
     "AiCatalogAgent",
     "AiCatalogFlow",
+    "AiCatalogSkill",
     "AiCatalogThirdPartyFlow",
     "AiFoundationalChatAgent"
   ],
   "AiCatalogItem": [
     "AiCatalogAgent",
     "AiCatalogFlow",
+    "AiCatalogSkill",
     "AiCatalogThirdPartyFlow"
   ],
   "AiCatalogItemVersion": [
     "AiCatalogAgentVersion",
     "AiCatalogFlowVersion",
+    "AiCatalogSkillVersion",
     "AiCatalogThirdPartyFlowVersion"
   ],
   "AlertManagementIntegration": [
@@ -178,6 +181,10 @@
     "GroupNamespaceMarkdownPaths",
     "ProjectNamespaceMarkdownPaths",
     "UserNamespaceMarkdownPaths"
+  ],
+  "MavenTargetUpstream": [
+    "MavenLocalUpstream",
+    "MavenUpstream"
   ],
   "MemberInterface": [
     "GroupMember",
@@ -349,6 +356,7 @@
   ],
   "ScanProfileConfiguration": [
     "AutoRemediationConfiguration",
+    "DependencyScanningConfiguration",
     "SastConfiguration",
     "SastFalsePositiveConfiguration",
     "SastVulnerabilityResolutionConfiguration",
@@ -469,6 +477,8 @@
     "WorkItemWidgetDevelopment",
     "WorkItemWidgetEmailParticipants",
     "WorkItemWidgetErrorTracking",
+    "WorkItemWidgetEscalationPolicy",
+    "WorkItemWidgetEscalationStatus",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
@@ -481,6 +491,7 @@
     "WorkItemWidgetParticipants",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
+    "WorkItemWidgetSeverity",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",

@@ -394,6 +394,57 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
       end
     end
 
+    context 'when env is stopping' do
+      let!(:environment) { create(:environment, :stopping, name: 'production', project: project) }
+
+      it 'returns 404 without force' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(environment.reload).to be_stopping
+      end
+
+      context 'with force' do
+        subject { patch :stop, params: environment_params(format: :json, force: true) }
+
+        it 'stops the environment and returns the environment url' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({ 'redirect_url' => project_environment_url(project, environment) })
+          expect(environment.reload).to be_stopped
+        end
+
+        context 'when user is not allowed to stop the environment' do
+          let(:user) { reporter }
+
+          it 'returns 404' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(environment.reload).to be_stopping
+          end
+        end
+      end
+    end
+
+    context 'with force' do
+      subject { patch :stop, params: environment_params(format: :json, force: true) }
+
+      it 'passes the force option to the stop service' do
+        expect_next_instance_of(Environments::StopService) do |service|
+          expect(service.params).to eq(force: true)
+
+          response = ServiceResponse.success(payload: { environment: environment, actions: [] })
+          expect(service).to receive(:execute).with(environment).and_return(response)
+        end
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'when stop action' do
       it 'returns job url for a stop action when job is build' do
         action = create(:ci_build, :manual)

@@ -7,7 +7,7 @@ module Sidebars
       class ObservabilityMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false unless o11y_settings_access_enabled? || (feature_enabled? && observability_access?)
+          return false unless feature_enabled? && observability_access?
 
           if context.group.observability_group_o11y_setting&.persisted?
             add_item(logs_explorer_menu_item)
@@ -26,8 +26,6 @@ module Sidebars
           end
 
           add_item(setup_menu_item)
-
-          add_item(o11y_settings_menu_item) if o11y_settings_access_enabled?
 
           true
         end
@@ -72,10 +70,6 @@ module Sidebars
 
         def feature_enabled?
           ::Feature.enabled?(:observability_sass_features, context.group)
-        end
-
-        def o11y_settings_access_enabled?
-          ::Feature.enabled?(:o11y_settings_access, context.current_user)
         end
 
         def services_menu_item
@@ -257,20 +251,6 @@ module Sidebars
             description: s_('Observability|Manage API keys for observability ingestion'),
             library_icon: 'key',
             container_html_options: { class: 'shortcuts-api-keys js-observability-nav' }
-          )
-        end
-
-        def o11y_settings_menu_item
-          link = edit_group_observability_o11y_service_settings_path(context.group)
-          ::Sidebars::MenuItem.new(
-            title: s_('Observability|O11y service settings'),
-            link: link,
-            active_routes: { page: link },
-            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
-            item_id: :o11y_settings,
-            description: s_('Observability|Configure observability settings'),
-            library_icon: 'observability-settings',
-            container_html_options: { class: 'shortcuts-o11y-settings' }
           )
         end
 

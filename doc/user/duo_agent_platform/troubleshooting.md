@@ -61,6 +61,27 @@ in a repository with no commits.
 To fix this issue, push an initial commit to the project before you run a flow.
 For example, add a `README.md` file.
 
+## Error: `Workflow could not use your token to connect to your GitLab instance`
+
+When you use the GitLab Duo Agent Platform in the GitLab Duo CLI or your IDE, you might get the error:
+`Workflow could not use your token to connect to your GitLab instance.`
+
+This issue can occur when:
+
+- You are using a GitLab Duo Agent Platform trial.
+- You selected a frontier model that is not included in trials.
+- You are using an earlier version of the GitLab Duo CLI or your editor extension.
+
+To resolve this issue, either:
+
+- Select another available model. For more information, see
+  [model selection](model_selection.md#select-a-model-for-a-feature).
+- [Buy GitLab Credits](../../subscriptions/gitlab_credits.md#buy-gitlab-credits).
+
+To get a more detailed error message, update the GitLab Duo CLI or your editor extension to the latest version.
+
+For more information, see [GitLab Duo Agent Platform trials](../../subscriptions/free_trials.md#gitlab-duo-agent-platform-trials).
+
 ## Session is stuck in created state
 
 If a session for your flow does not start:
@@ -93,10 +114,11 @@ To configure push rules for a project:
    1. In **Commit author's email**, add a regular expression that allows the email address you just copied.
    1. Select **Save push rules**.
 
-1. Allow the `duo/feature/` branch prefix:
+1. Allow the `duo/` branch prefixes:
    1. In the **Push rules** section, find **Branch name**.
-   1. Add a regular expression that allows branches starting with ^duo/(fix|feature|refactor|docs/).*
-      For example: `^(duo/feature)/.*$`
+   1. Add a regular expression that allows branches starting with `duo/fix/`, `duo/feature/`,
+      `duo/refactor/`, or `duo/docs/`.
+      For example: `^duo/(fix|feature|refactor|docs)/.*`
    1. Select **Save push rules**.
 
 To create push rules for the instance:
@@ -129,6 +151,8 @@ To resolve this issue:
    1. In the top bar, select **Search or go to** and find your project or top-level group.
    1. In the left sidebar, select **Build** > **Runners**.
    1. Confirm that a runner with the `gitlab--duo` tag is online.
+1. Optional. [Verify the runner configuration](flows/execution/_index.md#verify-the-runner-configuration)
+   from project settings, which checks the tag, executor, and scope together.
 1. If no runner meets the requirements, [configure a runner to execute flows](flows/execution/_index.md#configure-runners-to-execute-flows).
 
 If a runner meets all of the requirements but jobs still do not start, check the following:
@@ -250,7 +274,24 @@ to the same `environment` line:
     volumes = ["/path/to/your/ca-bundle.crt:/etc/gitlab-runner/certs/ca.crt:ro"]
 ```
 
-If the GitLab Duo CLI runs in the Anthropic Sandbox Runtime (SRT), runner `environment` variables might not reach it. If TLS errors persist after this change, in your `agent-config.yml`, in the `setup_script`, set `NODE_EXTRA_CA_CERTS` instead. The `setup_script` runs inside the container and is not filtered by the sandbox.
+The GitLab Duo CLI runs inside the Anthropic Sandbox Runtime (SRT), which starts with an
+empty environment. When the following certificate, proxy, and locale variables are set in the job,
+they are forwarded into the sandbox:
+
+- `NODE_EXTRA_CA_CERTS`
+- `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`
+- The lowercase equivalents `http_proxy`, `https_proxy`, and `no_proxy`
+- `LANG` and `LC_ALL`, so the sandbox keeps the locale of the image
+
+Set these variables in the runner's `environment` directive, or export them in the
+`setup_script` of your `agent-config.yml` file. Other variables are not forwarded.
+
+These variables apply to all Node.js network traffic in the sandbox, not only to
+connections to your GitLab instance. `NODE_EXTRA_CA_CERTS` points to a file, so mount the
+CA certificate into the container as shown earlier.
+
+`NODE_TLS_REJECT_UNAUTHORIZED` is not forwarded, because setting it to `0` turns off TLS
+verification. Use `NODE_EXTRA_CA_CERTS` instead.
 
 The `GIT_SSL_CAINFO` variable addresses Git operations that occur before the GitLab Duo CLI starts. For GitLab Duo CLI certificate configuration, see [certificate errors](../gitlab_duo_cli/use.md#certificate-errors).
 
@@ -301,14 +342,9 @@ configure both of the following:
 - Add the proxy's [CA certificate](#custom-ca-certificate).
 
 The GitLab Duo CLI, the GitLab Duo plugin for JetBrains IDEs, and GitLab for Visual Studio
-have two known issues:
+have one known issue. If the proxy URL uses `https://`, the WebSocket connection fails.
+Use an `http://` proxy URL if possible.
 
-- If the proxy URL uses `https://`, the WebSocket connection fails.
-  Use an `http://` proxy URL if possible.
-- These clients cannot present a client certificate for mTLS.
-
-For more information, see
-[issue 2527](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2527).
 GitLab for VS Code is not affected.
 
 ## Troubleshooting in your IDE

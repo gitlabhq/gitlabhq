@@ -213,8 +213,8 @@ the following sections and tables provide an alternative.
 | `description`       | `string`           | false    |                 | Description of the policy.                               |
 | `enabled`           | `boolean`          | true     | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules`             | `array` of rules   | true     |                 | List of rules that the policy applies.                   |
-| `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
-| `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
+| `actions`           | `array` of actions | true if `approval_settings` field does not exist | | List of actions that the policy enforces.                |
+| `approval_settings` | `object`           | true if `actions` field does not exist | | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
@@ -336,12 +336,9 @@ In this example:
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19465) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_malware_attribute`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253877) in GitLab 19.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258759) in GitLab 19.5. Feature flag `security_policies_malware_attribute` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use the `is_malicious` scanner attribute to block merge requests when a scan detects a package
 listed in the
@@ -473,14 +470,12 @@ If you specify multiple approvers in the same `require_approval` block, any of t
 | `type` | `string` | true | `require_approval` | The action's type. |
 | `approvals_required` | `integer` | true | Greater than or equal to zero | The number of MR approvals required. |
 | `user_approvers` | `array` of `string` | Conditional | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `user_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `group_approvers` | `array` of `string` | Conditional <sup>1</sup> | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `group_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `role_approvers` | `array` of `string` | Conditional <sup>1</sup> | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. Only users with the exact role you specify, or users with a custom role based on that role, can approve. Roles with higher privileges cannot approve. For example, if you select `developer`, users with the Developer role can approve. If a custom role based on `developer` exists, users with that custom role can also approve. Maintainers and Owners cannot approve unless you also add them. |
+| `user_approvers_ids` | `array` of `integer` | Conditional[^specify-least-one] | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `group_approvers` | `array` of `string` | Conditional[^specify-least-one] | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `group_approvers_ids` | `array` of `integer` | Conditional[^specify-least-one] | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `role_approvers` | `array` of `string` | Conditional[^specify-least-one] | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. Only users with the exact role you specify, or users with a custom role based on that role, can approve. Roles with higher privileges cannot approve. For example, if you select `developer`, users with the Developer role can approve. If a custom role based on `developer` exists, users with that custom role can also approve. Maintainers and Owners cannot approve unless you also add them. |
 
-**Footnotes:**
-
-1. You must specify at least one approver using the approver fields (`user_approvers`, `user_approvers_ids`, `group_approvers`, `group_approvers_ids`, or `role_approvers`).
+[^specify-least-one]: You must specify at least one approver using the approver fields (`user_approvers`, `user_approvers_ids`, `group_approvers`, `group_approvers_ids`, or `role_approvers`).
 
 ### Valid configuration examples
 
@@ -639,6 +634,7 @@ approval_policy:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420724) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `scan_result_policy_block_group_branch_modification`.
   - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437306) in GitLab 17.6.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/503930) in GitLab 17.7. Feature flag `scan_result_policy_block_group_branch_modification` removed.
+- The `remove_code_owner_approvals_with_new_commit` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242393) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `approval_policy_selective_code_owner_removals`. Disabled by default.
 
 {{< /history >}}
 
@@ -650,7 +646,8 @@ The settings set in the policy overwrite settings in the project.
 | `block_group_branch_modification`   | `boolean` or `object` | false    | `true`, `false`, `{ enabled: boolean, exceptions: [{ id: Integer}] }` | All                  | When enabled, prevents a user from removing group-level protected branches on every group the policy applies to. If `block_branch_modification` is `true`, implicitly defaults to `true`. Add top-level groups that support [group-level protected branches](../../project/repository/branches/protected.md#in-a-group) as `exceptions` |
 | `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge. |
 | `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge. |
-| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
+| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. Mutually exclusive with `remove_code_owner_approvals_with_new_commit`. |
+| `remove_code_owner_approvals_with_new_commit` | `boolean`   | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if a new commit changes files owned by Code Owners who already approved, only those Code Owner approvals are removed. Other approvals remain. If the project is configured to remove all approvals when a commit is added, that broader setting takes precedence and all approvals are removed. Mutually exclusive with `remove_approvals_with_new_commit`. Available behind the `approval_policy_selective_code_owner_removals` feature flag, disabled by default. |
 | `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, approvers must authenticate again before approving. The approver can re-authenticate using their password or SAML, depending on their configured authentication method. This adds an extra layer of security to ensure the approver's identity. For more information, see [require user re-authentication to approve](../../project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve). |
 | `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch. Creation of a branch that does not yet exist is governed by the standard [protected branch](../../project/repository/branches/protected.md) rules; this setting applies to subsequent pushes and force-pushes once the branch exists. |
 
@@ -661,6 +658,7 @@ These settings are enforced only on merge requests that have violations against 
 - `prevent_approval_by_author`
 - `prevent_approval_by_commit_author`
 - `remove_approvals_with_new_commit`
+- `remove_code_owner_approvals_with_new_commit`
 - `require_password_to_approve`
 
 If a merge request has no policy violations, the settings have no effect on that
@@ -821,6 +819,11 @@ To recreate a pipeline execution policy:
 {{< /history >}}
 
 In busy projects, the most recent pipeline may not have completed security scans available right away, which blocks security report comparisons. Use the `security_report_time_window` setting to security reports from recently completed pipelines instead. The security reports cannot be older than the time window, specified in minutes prior to the creation of the target branch pipeline. This setting does not apply if the selected pipeline already has completed security reports.
+
+The time-window look-back considers only pipelines with a standard CI source (for example, `push`, `schedule`, `pipeline`, `web`, `api`).
+Pipelines created by a scheduled scan execution policy (source `security_orchestration_policy`) are not eligible for this fallback.
+If the only recent pipeline carrying the required security reports is a scheduled scan execution policy pipeline, widening `security_report_time_window` does not cause that pipeline to be selected.
+See [How the target-branch comparison pipeline is selected](#how-the-target-branch-comparison-pipeline-is-selected) for how scan execution policy pipelines participate in the comparison.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
@@ -1047,6 +1050,37 @@ actions:
 - If the merge request approval policy looks for a combination of new and pre-existing vulnerability states, the comparison is done against the common ancestor of the source and target branches.
 - Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipelines with source `webide` are not supported.
 - The child pipelines of each of the selected pipelines are also considered for comparison.
+
+#### How the target-branch comparison pipeline is selected
+
+For the target branch, GitLab does not always pick the most recent pipeline.
+GitLab selects a baseline pipeline whose security reports are then combined with related pipelines on the same commit.
+This selection order determines which pipelines contribute to the comparison, especially on busy default branches where many pipelines run per commit.
+
+1. GitLab collects candidate pipelines at a short list of commits, in this order:
+
+   1. The merge base between the source branch and the target branch.
+   1. The commit the merge request diff was generated against (`start_sha`).
+   1. The ten most recent commits on the target branch.
+
+1. At each commit, GitLab examines at most the ten newest completed pipelines whose source is a standard CI source (for example, `push`, `schedule`, `pipeline`, `web`, `api`).
+   Pipelines created by a scheduled scan execution policy (source `security_orchestration_policy`) are not eligible at this step.
+   Any completed pipelines beyond the tenth newest for a given commit are not examined.
+
+1. The first candidate whose jobs (or child pipelines) produced the required security report artifacts becomes the baseline pipeline.
+
+1. Once the baseline is chosen, GitLab adds the latest completed pipeline of every supported source on the baseline's commit (including scheduled scan execution policy pipelines) and their child pipelines, and combines their security reports.
+   This is the only stage at which a scheduled scan execution policy pipeline can contribute to the comparison, and only when it shares a commit with the baseline.
+
+##### Implications for busy default branches
+
+On projects where the target branch receives many pipelines per commit (for example, an hourly scheduled pipeline in addition to push and merge request pipelines), report-less pipelines can fill the ten-pipeline window at a given commit. When that happens, the pipeline that carries the security reports is not examined at that commit, and the baseline moves to a later candidate commit. If a scan execution policy pipeline exists only at the earlier commit, it does not join the comparison.
+
+To increase the likelihood that a report-carrying pipeline is examined at the merge base:
+
+- Reduce the number of pipelines created per commit on the target branch. A top-level [`workflow`](../../../ci/yaml/_index.md#workflow) block with rules that prevent pipeline creation when no work is needed is more effective than job-level `rules:`. A pipeline that is never created does not consume a slot in the ten-pipeline window, but a pipeline that is created but empty does.
+- Rebase merge requests whose branches have diverged from the target branch some time ago, so the comparison anchors on a more recent commit.
+- Ensure security scanners run on every target-branch pipeline (typically via a [scan execution policy](scan_execution_policies.md) or the project's `.gitlab-ci.yml`), so that whichever pipeline is selected as the baseline carries the required reports.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 

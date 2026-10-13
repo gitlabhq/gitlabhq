@@ -203,6 +203,8 @@ export default {
   <div data-testid="sidebar-todo" :class="{ 'inline-block': !isMergeRequest }">
     <todo-button
       v-gl-tooltip.hover.top
+      category="tertiary"
+      size="small"
       :title="tootltipTitle"
       :issuable-type="issuableType"
       :issuable-id="issuableId"

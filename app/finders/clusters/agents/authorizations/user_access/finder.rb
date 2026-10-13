@@ -22,7 +22,7 @@ module Clusters
           attr_reader :user, :agent, :project, :preload, :limit
 
           def project_authorizations
-            authorizations = Clusters::Agents::Authorizations::UserAccess::ProjectAuthorization.for_user(user)
+            authorizations = project_authorization_scope
             authorizations = filter_by_agent(authorizations)
             authorizations = filter_by_project(authorizations)
             authorizations = apply_limit(authorizations)
@@ -31,12 +31,30 @@ module Clusters
           end
 
           def group_authorizations
-            authorizations = Clusters::Agents::Authorizations::UserAccess::GroupAuthorization.for_user(user)
+            authorizations = group_authorization_scope
             authorizations = filter_by_agent(authorizations)
             authorizations = filter_by_project(authorizations)
             authorizations = apply_limit(authorizations)
             authorizations = apply_preload(authorizations)
             authorizations.to_a
+          end
+
+          # Without the admin branch, an administrator who is not a member of the authorized
+          # project or group gets an empty result, even in admin mode.
+          def project_authorization_scope
+            return Clusters::Agents::Authorizations::UserAccess::ProjectAuthorization.for_admin if admin_access?
+
+            Clusters::Agents::Authorizations::UserAccess::ProjectAuthorization.for_user(user)
+          end
+
+          def group_authorization_scope
+            return Clusters::Agents::Authorizations::UserAccess::GroupAuthorization.for_admin if admin_access?
+
+            Clusters::Agents::Authorizations::UserAccess::GroupAuthorization.for_user(user)
+          end
+
+          def admin_access?
+            user.can_admin_all_resources?
           end
 
           def filter_by_agent(authorizations)

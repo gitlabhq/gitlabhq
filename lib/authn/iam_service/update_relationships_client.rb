@@ -16,9 +16,14 @@ module Authn
     class UpdateRelationshipsClient < DataAccessClient
       # Grants roles by writing one ASSIGNMENT tuple per entry in a single
       # all-or-nothing write. Each assignment is a hash of the per-subject
-      # pieces: assignee_id, resource_id, role_id.
+      # pieces: assignee_id, resource_id, role_id, and optionally parent_id.
       #
-      # @param assignments [Array<Hash>] one hash per assignment
+      # @param assignments [Array<Hash>] one hash per assignment. assignee_id,
+      #   resource_id and role_id are required and fetched, so a missing one
+      #   raises here rather than building a request IAM would reject.
+      #   parent_id is optional: naming a parent lets IAM accept an admin role
+      #   the caller holds above the resource, and omitting it requires one on
+      #   the resource itself.
       # @param organization_uuid [String] the subjects' home organization UUID,
       #   used as the identity origin. IAM derives the organization it authorizes
       #   against from the caller's token, not from this value.
@@ -26,7 +31,9 @@ module Authn
       # @return [Update::V1::WriteRelationshipsResponse]
       def grant_roles(assignments, organization_uuid:, token:)
         inputs = assignments.map do |a|
-          assignment_input(organization_uuid, a.fetch(:assignee_id), a.fetch(:resource_id), a.fetch(:role_id))
+          assignee_id, resource_id, role_id = a.fetch_values(:assignee_id, :resource_id, :role_id)
+
+          assignment_input(organization_uuid, assignee_id, resource_id, role_id, a[:parent_id])
         end
 
         write_relationships(inputs, token: token)
@@ -34,18 +41,23 @@ module Authn
 
       # Revokes role assignments by deleting one ASSIGNMENT tuple per key in a
       # single all-or-nothing delete. Each key is a hash of the per-subject
-      # pieces: assignee_id, resource_id. Deleting a key with no matching tuple
-      # succeeds for a subject IAM has already seen, but IAM resolves every
-      # key's subject first and fails the whole batch with NOT_FOUND when any
-      # subject was never granted anything.
+      # pieces: assignee_id, resource_id, and optionally parent_id. Deleting a
+      # key with no matching tuple succeeds for a subject IAM has already seen,
+      # but IAM resolves every key's subject first and fails the whole batch
+      # with NOT_FOUND when any subject was never granted anything.
       #
-      # @param keys [Array<Hash>] one hash per key
+      # @param keys [Array<Hash>] one hash per key. assignee_id and resource_id
+      #   are required and fetched, so a missing one raises here rather than
+      #   building a request IAM would reject. parent_id is optional, and
+      #   behaves as it does for #grant_roles.
       # @param organization_uuid [String] the subjects' home organization UUID
       # @param token [String] AR-scoped JWT presented as a bearer credential
       # @return [Update::V1::DeleteRelationshipsResponse]
       def revoke_roles(keys, organization_uuid:, token:)
         inputs = keys.map do |key|
-          relationship_key(organization_uuid, key.fetch(:assignee_id), key.fetch(:resource_id))
+          assignee_id, resource_id = key.fetch_values(:assignee_id, :resource_id)
+
+          relationship_key(organization_uuid, assignee_id, resource_id, key[:parent_id])
         end
 
         delete_relationships(inputs, token: token)
@@ -75,7 +87,7 @@ module Authn
         raise request_error(e, operation: 'delete')
       end
 
-      def assignment_input(organization_uuid, assignee_id, resource_id, role_id)
+      def assignment_input(organization_uuid, assignee_id, resource_id, role_id, parent_id = nil)
         ::Gitlab::Iam::Relationships::V1::RelationshipInput.new(
           subject: ::Gitlab::Iam::Relationships::V1::Subject.new(
             identity: ::Gitlab::Iam::Relationships::V1::Identity.new(
@@ -84,15 +96,28 @@ module Authn
               local_id: assignee_id.to_s
             )
           ),
-          object: ::Gitlab::Iam::Relationships::V1::Object.new(id: resource_id),
+          object: relationship_object(resource_id, parent_id),
           kind: :KIND_ASSIGNMENT,
           role: ::Gitlab::Iam::Relationships::V1::Role.new(id: role_id)
         )
       end
 
+      # Naming a parent lets IAM accept an admin role the caller holds above the
+      # target instead of on the target itself. IAM reads only the first entry,
+      # so the list holds one. It is additive: with no role on the parent the
+      # caller still needs one on the object, which is the behaviour without it.
+      def relationship_object(resource_id, parent_id)
+        return ::Gitlab::Iam::Relationships::V1::Object.new(id: resource_id) if parent_id.blank?
+
+        ::Gitlab::Iam::Relationships::V1::Object.new(
+          id: resource_id,
+          ancestors: [::Gitlab::Iam::Relationships::V1::Object.new(id: parent_id)]
+        )
+      end
+
       # A delete key is the write input without a role: IAM stores one
       # ASSIGNMENT per (subject, object), so the key alone identifies the tuple.
-      def relationship_key(organization_uuid, assignee_id, resource_id)
+      def relationship_key(organization_uuid, assignee_id, resource_id, parent_id = nil)
         ::Gitlab::Iam::Relationships::V1::RelationshipKey.new(
           subject: ::Gitlab::Iam::Relationships::V1::Subject.new(
             identity: ::Gitlab::Iam::Relationships::V1::Identity.new(
@@ -101,7 +126,7 @@ module Authn
               local_id: assignee_id.to_s
             )
           ),
-          object: ::Gitlab::Iam::Relationships::V1::Object.new(id: resource_id),
+          object: relationship_object(resource_id, parent_id),
           kind: :KIND_ASSIGNMENT
         )
       end

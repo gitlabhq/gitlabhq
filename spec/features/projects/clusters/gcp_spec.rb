@@ -11,7 +11,7 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
   before do
     project.add_maintainer(user)
     sign_in(user)
-    allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL).and_return(100)
   end
 
   context 'when user has signed with Google' do

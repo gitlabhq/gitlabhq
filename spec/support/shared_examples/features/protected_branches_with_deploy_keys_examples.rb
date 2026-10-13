@@ -22,7 +22,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
         within('[data-testid="allowed-to-push-dropdown"]') do
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
+          expect(dropdown_headers).to match_array(all_dropdown_sections)
           expect(page).to have_content(write_access_key.title)
           expect(page).not_to have_content(readonly_access_key.title)
         end
@@ -37,7 +37,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
         within('[data-testid="allowed-to-merge-dropdown"]') do
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)
+          expect(dropdown_headers).to match_array(dropdown_sections_minus_deploy_keys)
         end
       end
 
@@ -51,7 +51,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
 
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
+          expect(dropdown_headers).to match_array(all_dropdown_sections)
         end
       end
 
@@ -91,7 +91,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
         within('[data-testid="allowed-to-push-dropdown"]') do
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)
+          expect(dropdown_headers).to match_array(dropdown_sections_minus_deploy_keys)
         end
       end
 
@@ -105,7 +105,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
 
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)
+          expect(dropdown_headers).to match_array(dropdown_sections_minus_deploy_keys)
         end
       end
     end

@@ -18,15 +18,12 @@ description: Vulnerability details, status, resolution, and linking issues.
 - Redesigned vulnerability page:
   - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21907) in GitLab 19.0 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_details_enrichment`. Disabled by default.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/606953) in GitLab 19.3.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254166) in GitLab 19.5. Feature flag `vulnerability_details_enrichment` removed.
 - Display of malware findings:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587647) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_malware_detection`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260114) in GitLab 19.5. Feature flag `vulnerability_malware_detection` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the redesigned vulnerability page is controlled by a feature flag.
-> The display of malware findings is controlled by a separate feature flag.
-> For more information, see the history.
 
 Each vulnerability in a project has a vulnerability page. The page header shows the vulnerability
 title, when and in which pipeline it was detected, how many related merge requests and issues there
@@ -127,7 +124,8 @@ For more information, see [secret false positive detection](secret_false_positiv
 {{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
-resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability.
+By default, it is powered by the Anthropic [Claude Sonnet 4.6](https://console.cloud.google.com/agent-platform/publishers/anthropic/model-garden/claude-sonnet-4-6) model.
 
 GitLab cannot guarantee that the large language model produces correct results.
 You should always review the proposed change before merging it. When reviewing, check that:
@@ -275,7 +273,8 @@ The following data is shared with third-party AI APIs:
 {{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
-resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability finding.
+By default, it is powered by the Anthropic [Claude Sonnet 4.6](https://console.cloud.google.com/agent-platform/publishers/anthropic/model-garden/claude-sonnet-4-6) model.
 
 To resolve the vulnerability finding:
 
@@ -322,7 +321,7 @@ A vulnerability's code flow is the path the data takes from the user input (sour
 For details on how to view a vulnerability's code flow, see
 [Vulnerability code flow](../sast/gitlab_advanced_sast.md#code-flow).
 
-![The data flow of a SQL injection, from the request parameter that supplies the search term to the database query that executes it](img/code_flow_view_v19_3.png)
+![The Data flow section of a vulnerability, showing the steps of a SQL injection from the user name argument to the database query that runs it](img/code_flow_view_v19_4.png)
 
 ## Vulnerability status values
 
@@ -364,8 +363,11 @@ stateDiagram
 
 {{< /history >}}
 
-A vulnerability may be no longer detected because of changes made deliberately to remediate it or
-as a side effect of other changes. When a security scan runs and a vulnerability is no longer
+A vulnerability might be no longer detected because of changes made deliberately to remediate it or
+as a side effect of other changes. The vulnerability might also be no longer detected
+because the analyzer that reported it no longer scans its language. For an example, see
+[vulnerability changes](../sast/gitlab_advanced_sast.md#vulnerability-changes).
+When a security scan runs and a vulnerability is no longer
 detected in the default branch, the scanner adds **No longer detected** to the record's activity log
 but the record's status does not change. Instead, you should check and confirm the
 vulnerability has been resolved and if so,

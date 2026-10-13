@@ -33,6 +33,7 @@ module Ci
         Ci::PipelineChatData
         Ci::PipelineMessage
         Ci::PipelineMetadata
+        Ci::PipelineProcessingData
         Ci::PipelineVariable
         Ci::Sources::Pipeline
         Ci::Sources::Project

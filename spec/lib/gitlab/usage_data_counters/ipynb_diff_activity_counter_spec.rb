@@ -10,10 +10,8 @@ RSpec.describe Gitlab::UsageDataCounters::IpynbDiffActivityCounter, :clean_gitla
   let(:second_note) { build(:note, author: user, id: 2) }
 
   before do
-    allow(first_note).to receive(:for_merge_request?).and_return(for_mr)
-    allow(second_note).to receive(:for_merge_request?).and_return(for_mr)
-    allow(first_note).to receive(:for_commit?).and_return(for_commit)
-    allow(second_note).to receive(:for_commit?).and_return(for_commit)
+    allow(first_note).to receive_messages(for_merge_request?: for_mr, for_commit?: for_commit)
+    allow(second_note).to receive_messages(for_merge_request?: for_mr, for_commit?: for_commit)
   end
 
   subject do

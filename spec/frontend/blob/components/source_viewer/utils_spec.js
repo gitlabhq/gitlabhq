@@ -1,0 +1,376 @@
+import { setHTMLFixture } from 'helpers/fixtures';
+import {
+  calculateBlameOffset,
+  shouldRender,
+  toggleBlameLineBorders,
+  hasBlameDataForChunk,
+  normalizeBlameGroups,
+  blameGroupsForChunk,
+  findOverlayElementFromPoint,
+  createBlameSliceBuilder,
+  getAgentSessionUrls,
+  parseAgentSessionUrl,
+} from '~/blob/components/source_viewer/utils';
+import { SOURCE_CODE_CONTENT_MOCK, BLAME_DATA_MOCK } from './mock_data';
+
+describe('SourceViewer utils', () => {
+  beforeEach(() => setHTMLFixture(SOURCE_CODE_CONTENT_MOCK));
+
+  const findContent = () => document.querySelector('.content');
+
+  describe('calculateBlameOffset', () => {
+    it('returns an offset of zero if line number === 1', () => {
+      expect(calculateBlameOffset(1)).toBe('0px');
+    });
+
+    it('calculates an offset for the blame component', () => {
+      const { offsetTop } = document.querySelector('#LC3');
+      expect(calculateBlameOffset(3)).toBe(`${offsetTop}px`);
+    });
+
+    it('returns null when the line content element is not in the DOM', () => {
+      expect(calculateBlameOffset(999)).toBeNull();
+    });
+  });
+
+  describe('shouldRender', () => {
+    const commit = { sha: 'abc' };
+    const identicalSha = [{ commit }, { commit }];
+
+    it.each`
+      data            | index | result
+      ${identicalSha} | ${0}  | ${true}
+      ${identicalSha} | ${1}  | ${false}
+    `('returns $result', ({ data, index, result }) => {
+      expect(shouldRender(data, index)).toBe(result);
+    });
+  });
+
+  describe('toggleBlameLineBorders', () => {
+    it('adds classes', () => {
+      toggleBlameLineBorders(BLAME_DATA_MOCK, true);
+      expect(findContent()).toMatchSnapshot();
+    });
+
+    it('removes classes', () => {
+      toggleBlameLineBorders(BLAME_DATA_MOCK, false);
+      expect(findContent()).toMatchSnapshot();
+    });
+  });
+
+  describe('agent session trailers', () => {
+    const sessionUrl = `${window.location.origin}/group/project/-/automate/agent-sessions/4310`;
+    const agentCommit = (sha, url = sessionUrl) => ({
+      sha,
+      hasAgentSession: true,
+      message: `Render blame groups as grid cells\n\nCo-authored-by: GitLab Duo <duo@gitlab.com>\nDuo-Session: ${url}`,
+    });
+    const humanCommit = {
+      sha: 'human',
+      hasAgentSession: false,
+      message: 'Duo-Session: not-flagged',
+    };
+
+    describe('getAgentSessionUrls', () => {
+      it('returns the Duo-Session trailer value of an agent commit', () => {
+        expect(getAgentSessionUrls(agentCommit('a'))).toEqual([sessionUrl]);
+      });
+
+      it('returns nothing when the commit is not flagged as an agent session', () => {
+        expect(getAgentSessionUrls(humanCommit)).toEqual([]);
+      });
+
+      it('returns nothing when a flagged commit has no trailer in its message', () => {
+        expect(getAgentSessionUrls({ hasAgentSession: true, message: 'No trailer' })).toEqual([]);
+      });
+
+      it.each([
+        ['another instance', 'https://gitlab.com/group/project/-/automate/agent-sessions/1'],
+        ['a javascript URL', ['javascript', 'alert(1)'].join(':')],
+        ['a same-origin page that is not a session', `${window.location.origin}/group/project`],
+      ])('refuses to link to %s', (_, value) => {
+        expect(getAgentSessionUrls(agentCommit('a', value))).toEqual([]);
+      });
+
+      it('returns every distinct valid session in a squashed commit message', () => {
+        const other = sessionUrl.replace('4310', '4402');
+        const message = `Squash\n\nDuo-Session: ${sessionUrl}\nDuo-Session: ${other}\n\nDuo-Session: ${sessionUrl}\nDuo-Session: https://gitlab.com/x/-/automate/agent-sessions/9`;
+
+        expect(getAgentSessionUrls({ hasAgentSession: true, message })).toEqual([
+          sessionUrl,
+          other,
+        ]);
+      });
+
+      it('lists a session once when its trailers differ only by query string', () => {
+        const message = `Squash\n\nDuo-Session: ${sessionUrl}\nDuo-Session: ${sessionUrl}?tab=logs`;
+
+        expect(getAgentSessionUrls({ hasAgentSession: true, message })).toEqual([sessionUrl]);
+      });
+    });
+
+    describe('parseAgentSessionUrl', () => {
+      it.each`
+        url                                                     | expected
+        ${sessionUrl}                                           | ${{ href: sessionUrl, id: '4310' }}
+        ${`${sessionUrl}/`}                                     | ${{ href: `${sessionUrl}/`, id: '4310' }}
+        ${`${sessionUrl}?tab=logs`}                             | ${{ href: `${sessionUrl}?tab=logs`, id: '4310' }}
+        ${`${sessionUrl}#top`}                                  | ${{ href: `${sessionUrl}#top`, id: '4310' }}
+        ${'/group/project/-/automate/agent-sessions/4310'}      | ${{ href: sessionUrl, id: '4310' }}
+        ${'https://gitlab.com/g/p/-/automate/agent-sessions/1'} | ${null}
+        ${`${window.location.origin}/group/project`}            | ${null}
+        ${null}                                                 | ${null}
+      `('returns $expected for $url', ({ url, expected }) => {
+        expect(parseAgentSessionUrl(url)).toEqual(expected);
+      });
+    });
+  });
+
+  describe('findOverlayElementFromPoint', () => {
+    let overlay;
+    let child;
+
+    beforeEach(() => {
+      overlay = document.createElement('code');
+      overlay.setAttribute('inert', '');
+      child = document.createElement('span');
+      overlay.appendChild(child);
+      document.body.appendChild(overlay);
+      // `elementsFromPoint` is not implemented in jsdom.
+      document.elementsFromPoint = jest.fn().mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      delete document.elementsFromPoint;
+    });
+
+    it('returns the overlay descendant at the given point and restores inert', () => {
+      document.elementsFromPoint.mockImplementation(() => {
+        expect(overlay.hasAttribute('inert')).toBe(false);
+        return [document.body, child];
+      });
+
+      expect(findOverlayElementFromPoint(overlay, 1, 2)).toBe(child);
+      expect(document.elementsFromPoint).toHaveBeenCalledWith(1, 2);
+      expect(overlay.hasAttribute('inert')).toBe(true);
+    });
+
+    it('returns undefined when no element at the point belongs to the overlay', () => {
+      document.elementsFromPoint.mockReturnValue([document.body]);
+
+      expect(findOverlayElementFromPoint(overlay, 1, 2)).toBeUndefined();
+      expect(overlay.hasAttribute('inert')).toBe(true);
+    });
+  });
+
+  describe('hasBlameDataForChunk', () => {
+    const chunk = { startingFrom: 0, totalLines: 70 };
+
+    it.each([
+      [[{ lineno: 1 }], true, 'within range'],
+      [[{ lineno: 70 }], true, 'at boundary'],
+      [[{ lineno: 71 }], false, 'outside range'],
+      [[], false, 'empty'],
+    ])('returns %s when blame data is %s', (blameData, expected) => {
+      expect(hasBlameDataForChunk(blameData, chunk)).toBe(expected);
+    });
+
+    it('handles chunk with non-zero startingFrom', () => {
+      const chunk2 = { startingFrom: 70, totalLines: 40 };
+      expect(hasBlameDataForChunk([{ lineno: 80 }], chunk2)).toBe(true);
+    });
+  });
+
+  describe('normalizeBlameGroups', () => {
+    const groupA = { lineno: 1, span: 2, commit: { sha: 'a' } };
+    const groupB = { lineno: 3, span: 1, commit: { sha: 'b' } };
+
+    it('sorts groups that arrived out of order', () => {
+      expect(normalizeBlameGroups([groupB, groupA])).toEqual([groupA, groupB]);
+    });
+
+    it('merges consecutive groups for the same commit into one span', () => {
+      const firstHalf = { lineno: 1, span: 2, commit: { sha: 'a' } };
+      const secondHalf = { lineno: 3, span: 4, commit: { sha: 'a' } };
+
+      expect(normalizeBlameGroups([firstHalf, secondHalf])).toEqual([
+        { lineno: 1, span: 6, commit: { sha: 'a' } },
+      ]);
+    });
+
+    it('does not merge the same commit when the lines are not contiguous', () => {
+      const early = { lineno: 1, span: 1, commit: { sha: 'a' } };
+      const later = { lineno: 9, span: 1, commit: { sha: 'a' } };
+
+      expect(normalizeBlameGroups([early, later])).toEqual([early, later]);
+    });
+
+    it('defaults a missing span to a single line', () => {
+      expect(normalizeBlameGroups([{ lineno: 5, commit: { sha: 'a' } }])).toEqual([
+        { lineno: 5, span: 1, commit: { sha: 'a' } },
+      ]);
+    });
+
+    it('absorbs a group that was delivered twice', () => {
+      // The copy is a distinct object, matching a repeat Apollo read that hands
+      // back a fresh tree — which a reference-equality check cannot catch.
+      const group = { lineno: 1, span: 2, commit: { sha: 'a' } };
+
+      expect(normalizeBlameGroups([group, { ...group }])).toEqual([group]);
+    });
+
+    it('keeps the longer span when a duplicate reports more lines', () => {
+      const short = { lineno: 1, span: 2, commit: { sha: 'a' } };
+      const long = { lineno: 1, span: 5, commit: { sha: 'a' } };
+
+      expect(normalizeBlameGroups([short, long])).toEqual([
+        { lineno: 1, span: 5, commit: { sha: 'a' } },
+      ]);
+    });
+
+    it('is idempotent', () => {
+      const once = normalizeBlameGroups([groupA, groupB, { ...groupA }, { ...groupB }]);
+
+      expect(normalizeBlameGroups(once)).toEqual(once);
+      expect(once).toEqual([groupA, groupB]);
+    });
+
+    it('does not merge a duplicate of a different commit', () => {
+      const mine = { lineno: 1, span: 2, commit: { sha: 'a' } };
+      const theirs = { lineno: 1, span: 2, commit: { sha: 'b' } };
+
+      expect(normalizeBlameGroups([mine, theirs])).toHaveLength(2);
+    });
+
+    it('does not mutate the input', () => {
+      const input = [{ lineno: 1, span: 2, commit: { sha: 'a' } }];
+      normalizeBlameGroups([...input, { lineno: 3, span: 1, commit: { sha: 'a' } }]);
+
+      expect(input[0].span).toBe(2);
+    });
+  });
+
+  describe('createBlameSliceBuilder', () => {
+    const chunks = [
+      { startingFrom: 0, totalLines: 70 },
+      { startingFrom: 70, totalLines: 40 },
+    ];
+    const inChunkOne = { lineno: 1, span: 2, commit: { sha: 'a' } };
+    const inChunkTwo = { lineno: 75, span: 2, commit: { sha: 'b' } };
+
+    it('reuses the previous array for a chunk whose slice is unchanged', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, [inChunkOne]);
+      const second = build(chunks, [inChunkOne, inChunkTwo]);
+
+      expect(second[0]).toBe(first[0]);
+      expect(second[1]).not.toBe(first[1]);
+    });
+
+    it('returns a new array once a chunk gains a group', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, []);
+      const second = build(chunks, [inChunkOne]);
+
+      expect(second[0]).not.toBe(first[0]);
+      expect(second[0]).toHaveLength(1);
+    });
+
+    it('returns a new array when a group grows into more rows', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, [inChunkOne]);
+      const second = build(chunks, [{ ...inChunkOne, span: 6 }]);
+
+      expect(second[0]).not.toBe(first[0]);
+      expect(second[0][0].rowSpan).toBe(6);
+    });
+
+    it('returns a new array when a group stops opening a block', () => {
+      const build = createBlameSliceBuilder();
+      const standalone = { lineno: 71, span: 2, commit: { sha: 'a' } };
+      const carriedOver = { lineno: 69, span: 4, commit: { sha: 'a' } };
+
+      const first = build(chunks, [standalone]);
+      const second = build(chunks, [carriedOver]);
+
+      expect(first[1][0]).toMatchObject({ rowStart: 1, rowSpan: 2, hasSeparator: true });
+      expect(second[1][0]).toMatchObject({ rowStart: 1, rowSpan: 2, hasSeparator: false });
+      expect(second[1]).not.toBe(first[1]);
+    });
+
+    it('keeps identity across a rebuild with no change at all', () => {
+      const build = createBlameSliceBuilder();
+      const first = build(chunks, [inChunkOne]);
+      const second = build(chunks, [inChunkOne]);
+
+      expect(second[0]).toBe(first[0]);
+      expect(second[1]).toBe(first[1]);
+    });
+
+    it('does not share a cache between builders', () => {
+      const first = createBlameSliceBuilder()(chunks, [inChunkOne]);
+      const second = createBlameSliceBuilder()(chunks, [inChunkOne]);
+
+      expect(second[0]).not.toBe(first[0]);
+      expect(second[0]).toEqual(first[0]);
+    });
+  });
+
+  describe('blameGroupsForChunk', () => {
+    const chunk = { startingFrom: 70, totalLines: 40 };
+
+    it('maps a group inside the chunk to 1-based grid rows', () => {
+      const groups = [{ lineno: 71, span: 3, commit: { sha: 'a' } }];
+
+      expect(blameGroupsForChunk(groups, chunk)).toEqual([
+        expect.objectContaining({ rowStart: 1, rowSpan: 3, hasSeparator: true }),
+      ]);
+    });
+
+    it('excludes groups that fall outside the chunk', () => {
+      const groups = [
+        { lineno: 1, span: 5, commit: { sha: 'a' } },
+        { lineno: 200, span: 1, commit: { sha: 'b' } },
+      ];
+
+      expect(blameGroupsForChunk(groups, chunk)).toEqual([]);
+    });
+
+    it('clamps a group that runs past the end of the chunk', () => {
+      const groups = [{ lineno: 109, span: 20, commit: { sha: 'a' } }];
+
+      expect(blameGroupsForChunk(groups, chunk)).toEqual([
+        expect.objectContaining({ rowStart: 39, rowSpan: 2 }),
+      ]);
+    });
+
+    it('clamps a group that started before the chunk and marks it a continuation', () => {
+      const groups = [{ lineno: 65, span: 10, commit: { sha: 'a' } }];
+
+      expect(blameGroupsForChunk(groups, chunk)).toEqual([
+        expect.objectContaining({ rowStart: 1, rowSpan: 4, hasSeparator: false }),
+      ]);
+    });
+
+    it('includes a group covering the chunk boundary lines exactly', () => {
+      const groups = [{ lineno: 110, span: 1, commit: { sha: 'a' } }];
+
+      expect(blameGroupsForChunk(groups, chunk)).toEqual([
+        expect.objectContaining({ rowStart: 40, rowSpan: 1 }),
+      ]);
+    });
+
+    it('gives the block on the first line of the file no separator', () => {
+      const firstChunk = { startingFrom: 0, totalLines: 70 };
+      const groups = [
+        { lineno: 1, span: 2, commit: { sha: 'a' } },
+        { lineno: 3, span: 1, commit: { sha: 'b' } },
+      ];
+
+      expect(blameGroupsForChunk(groups, firstChunk)).toEqual([
+        expect.objectContaining({ rowStart: 1, hasSeparator: false }),
+        expect.objectContaining({ rowStart: 3, hasSeparator: true }),
+      ]);
+    });
+  });
+});

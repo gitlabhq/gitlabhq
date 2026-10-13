@@ -38,7 +38,6 @@ export default {
     'signInPath',
     'groupId',
     'isGroup',
-    'hasEpicsFeature',
   ],
   props: {
     showNewIssueDropdown: {
@@ -64,10 +63,7 @@ export default {
       };
     },
     showNewProjectButton() {
-      const canCreateGroupLevelWorkItems = this.hasEpicsFeature;
-      return (
-        this.canCreateProjects && this.isGroup && !this.hasProjects && !canCreateGroupLevelWorkItems
-      );
+      return this.canCreateProjects && this.isGroup && !this.hasProjects;
     },
   },
   methods: {

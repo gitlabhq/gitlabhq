@@ -212,6 +212,12 @@ RSpec.describe Gitlab::ManagedSettings, feature_category: :settings do
         expect { described_class.apply! }.not_to raise_error
         expect(settings.reload.sidekiq_timezone_override).to eq('UTC')
       end
+
+      it 'logs the skip' do
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(message: /Skipping managed settings/))
+
+        described_class.apply!
+      end
     end
 
     context 'when a managed column does not exist yet' do
@@ -226,16 +232,17 @@ RSpec.describe Gitlab::ManagedSettings, feature_category: :settings do
       end
     end
 
-    context 'when post-deployment migrations are pending' do
+    context 'when migrations are pending' do
       before do
-        allow(::ApplicationSetting.connection_pool.migration_context)
-          .to receive(:needs_migration?).and_return(true)
+        allow(Gitlab::ApplicationSettingFetcher).to receive(:needs_migration?).and_return(true)
       end
 
-      it 'still applies the managed values' do
+      it 'does not validate or change the settings' do
+        expect(described_class).not_to receive(:validate!)
+
         described_class.apply!
 
-        expect(settings.reload.sidekiq_timezone_override).to eq('Europe/London')
+        expect(settings.reload.sidekiq_timezone_override).to eq('UTC')
       end
     end
 

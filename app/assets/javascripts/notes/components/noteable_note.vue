@@ -18,6 +18,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import { parseAgentPresence } from '~/ai/agents_utils';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -36,6 +37,9 @@ export default {
     NoteBody,
     NoteSessionBar: defineAsyncComponent(
       () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
+    NoteAgentActorLine: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_agent_actor_line.vue'),
     ),
     TimelineEntryItem,
     GlAvatarLink,
@@ -127,6 +131,7 @@ export default {
   ],
   data() {
     return {
+      actorLineOverflows: false,
       isEditingLocal: false,
       isDeleting: false,
       isRequesting: false,
@@ -264,6 +269,16 @@ export default {
         this.glFeatures.noteAgentSessionBar &&
         Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name)
       );
+    },
+    agentPresence() {
+      if (!this.glFeatures.agentPresenceConsolidation) return null;
+
+      return parseAgentPresence(this.note.agent_presence);
+    },
+    duoSessionId() {
+      if (this.agentPresence) return null;
+
+      return this.note.duo_session_id;
     },
   },
   created() {
@@ -509,11 +524,19 @@ export default {
           :is-internal-note="note.internal"
           :is-imported="note.imported"
           :email-participant="note.external_author"
+          :hide-username="Boolean(agentPresence)"
+          :single-line="Boolean(agentPresence) && !actorLineOverflows"
         >
           <template v-if="glSlots()['note-header-info']" #note-header-info>
             <slot name="note-header-info"></slot>
           </template>
           <span v-if="commit" v-safe-html="actionText"></span>
+          <template v-if="agentPresence">
+            <note-agent-actor-line
+              :presence="agentPresence"
+              @overflow="actorLineOverflows = $event"
+            />
+          </template>
         </note-header>
         <note-actions
           :author="author"
@@ -541,7 +564,7 @@ export default {
           :resolve-discussion="note.isDraft && note.resolve_discussion"
           :discussion-id="discussionId"
           :award-path="note.toggle_award_path"
-          :duo-session-id="note.duo_session_id"
+          :duo-session-id="duoSessionId"
           @handle-edit="editHandler"
           @handle-delete="deleteHandler"
           @handle-resolve="resolveHandler"

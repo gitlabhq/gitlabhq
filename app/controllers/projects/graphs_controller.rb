@@ -30,14 +30,14 @@ class Projects::GraphsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        commits = @project.repository.commits(ref, limit: MAX_COMMITS, skip_merges: true)
-        log = commits.map do |commit|
-          {
-            author_name: commit.author_name,
-            author_email: commit.author_email,
-            date: commit.committed_date.to_date.iso8601
-          }
-        end
+        include_stats = include_stats?
+        commits = @project.repository.commits(
+          ref,
+          limit: MAX_COMMITS,
+          skip_merges: true,
+          include_shortstat: include_stats
+        )
+        log = commits.map { |commit| contributor_graph_commit_data(commit, include_stats: include_stats) }
 
         render json: Gitlab::Json.dump(log)
       end
@@ -66,6 +66,24 @@ class Projects::GraphsController < Projects::ApplicationController
 
   def ref
     @fully_qualified_ref || @ref
+  end
+
+  def contributor_graph_commit_data(commit, include_stats:)
+    data = {
+      id: commit.id,
+      author_name: commit.author_name,
+      author_email: commit.author_email,
+      date: commit.committed_date.to_date.iso8601
+    }
+
+    return data unless include_stats
+
+    short_stats = commit.short_stats
+    data.merge(additions: short_stats&.additions || 0, deletions: short_stats&.deletions || 0)
+  end
+
+  def include_stats?
+    ActiveModel::Type::Boolean.new.cast(params.permit(:with_stats)[:with_stats])
   end
 
   def get_commits

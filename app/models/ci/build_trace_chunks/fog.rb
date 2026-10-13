@@ -139,23 +139,7 @@ module Ci
       def connection
         return unless available?
 
-        if connection_cache_enabled?
-          self.class.cached_connection(object_store.connection.to_hash.deep_symbolize_keys)
-        else
-          ::Gitlab::SafeRequestStore.fetch(object_store_raw_config) do
-            ::Fog::Storage.new(object_store.connection.to_hash.deep_symbolize_keys)
-          end
-        end
-      end
-
-      # fog-aws refreshes IAM instance-profile credentials in place on the shared
-      # connection without synchronization, so a process-wide cache would race
-      # under concurrent requests. Only cache when credentials cannot refresh.
-      # Remove this guard once the fog-aws fix ships:
-      # https://github.com/fog/fog-aws/pull/759.
-      def connection_cache_enabled?
-        Feature.enabled?(:cache_ci_build_trace_chunk_fog_connection, Feature.current_request) &&
-          !object_store_config.use_iam_profile?
+        self.class.cached_connection(object_store.connection.to_hash.deep_symbolize_keys)
       end
 
       def fog_directory

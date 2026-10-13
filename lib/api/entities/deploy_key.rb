@@ -11,7 +11,7 @@ module API
         if: ->(key, _) { key.fingerprint.present? }
 
       expose :fingerprint_sha256,
-        documentation: { type: 'String', example: 'SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU' }
+        documentation: { type: 'String', example: 'Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU' }
 
       expose :projects_with_write_access, using: Entities::ProjectIdentity, if: ->(_, options) { options[:include_projects_with_write_access] }
       expose :projects_with_readonly_access, using: Entities::ProjectIdentity, if: ->(_, options) { options[:include_projects_with_readonly_access] }

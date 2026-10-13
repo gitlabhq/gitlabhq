@@ -116,10 +116,10 @@ RSpec.describe SnippetBlobPresenter do
     let_it_be(:unauthorized_user) { create(:user) }
     let_it_be(:authorized_user) { ref_project.first_owner }
 
-    let(:content) { "Reference to #{public_issue.to_reference} and #{private_issue.to_reference}" }
+    let_it_be(:content) { "Reference to #{public_issue.to_reference} and #{private_issue.to_reference}" }
 
     context 'with a SnippetBlob (no repository)' do
-      let(:snippet) do
+      let_it_be(:snippet) do
         create(
           :project_snippet,
           :public,
@@ -140,7 +140,7 @@ RSpec.describe SnippetBlobPresenter do
     end
 
     context 'with a repo-backed blob' do
-      let(:snippet) do
+      let_it_be(:snippet) do
         create(
           :project_snippet,
           :public,
@@ -149,20 +149,18 @@ RSpec.describe SnippetBlobPresenter do
           author: ref_project.first_owner,
           file_name: 'test.md',
           content: content
-        )
+        ).tap do |repo_snippet|
+          repo_snippet.repository.create_file(
+            ref_project.first_owner,
+            'test.md',
+            content,
+            message: 'Add test.md with references',
+            branch_name: repo_snippet.default_branch
+          )
+        end
       end
 
-      let(:blob) do
-        snippet.repository.create_file(
-          ref_project.first_owner,
-          'test.md',
-          content,
-          message: 'Add test.md with references',
-          branch_name: snippet.default_branch
-        )
-
-        snippet.blobs(['test.md']).first
-      end
+      let(:blob) { snippet.blobs(['test.md']).first }
 
       it 'uses a repo-backed blob' do
         expect(snippet.repository_exists?).to be(true)
@@ -173,16 +171,12 @@ RSpec.describe SnippetBlobPresenter do
   end
 
   describe 'route helpers' do
-    let_it_be(:project)          { create(:project) }
     let_it_be(:user)             { create(:user) }
+    let_it_be(:project)          { create(:project, developers: user) }
     let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
     let_it_be(:project_snippet)  { create(:project_snippet, :repository, project: project, author: user) }
 
     let(:blob) { snippet.blobs.first }
-
-    before do
-      project.add_developer(user)
-    end
 
     describe '#raw_path' do
       subject { described_class.new(blob, current_user: user).raw_path }

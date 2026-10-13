@@ -13,6 +13,8 @@ module API
       helpers ::API::Helpers::InternalHelpers
 
       COMMANDS_TO_AUDIT = %w[git-upload-pack git-receive-pack].freeze
+      CERTIFICATE_AUDIT_PARAMS = %i[ca_fingerprint certificate_identity certificate_trust_source].freeze
+      CERTIFICATE_IDENTITY_MAX_LENGTH = 1_024
 
       helpers do
         def check_clone_or_pull_or_push_verb(params)
@@ -28,6 +30,19 @@ module API
           end
 
           wants > 0 && haves == 0 ? 'clone' : 'pull'
+        end
+
+        def certificate_audit_details
+          details = {}
+          CERTIFICATE_AUDIT_PARAMS.each do |param|
+            details[param] = params[param] if params[param].present?
+          end
+
+          if details[:certificate_identity]
+            details[:certificate_identity] = details[:certificate_identity].truncate(CERTIFICATE_IDENTITY_MAX_LENGTH)
+          end
+
+          details
         end
       end
 
@@ -65,6 +80,12 @@ module API
               desc: 'Username of the user performing the git operation.'
             optional :namespace_path, type: String,
               desc: 'Namespace path for SSH certificate scoped access.'
+            optional :ca_fingerprint, type: String,
+              desc: 'Fingerprint, with the `SHA256:` prefix, of the CA that signed the authenticating SSH certificate.'
+            optional :certificate_identity, type: String,
+              desc: 'Key ID of the SSH certificate used for authentication, truncated to 1024 characters if longer.'
+            optional :certificate_trust_source, type: String,
+              desc: 'Where the certificate CA is trusted. GitLab Shell sends `file`, `group`, or `instance`.'
           end
 
           route_setting :authorization, skip_granular_token_authorization: :gitlab_shared_secret_auth
@@ -85,6 +106,8 @@ module API
 
             audit_message[:written_bytes] = params[:written_bytes] if params[:written_bytes].present?
             audit_message[:received_bytes] = params[:received_bytes] if params[:received_bytes].present?
+
+            audit_message.merge!(certificate_audit_details)
 
             # Surface the SSH key used for the operation so that owners can
             # correlate Git-over-SSH activity with a specific credential.

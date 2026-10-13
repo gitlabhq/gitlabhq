@@ -424,8 +424,8 @@ Parameters:
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api_key`              | string  | yes     | API key used for authentication with Datadog.                                                                                                                                          |
 | `api_url`              | string  | no    | (Advanced) The full URL for your Datadog site.                                                                                                                                          |
-| `datadog_env`          | string  | no    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                      |
-| `datadog_service`      | string  | no    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                          |
+| `datadog_env`          | string  | no    | For GitLab Self-Managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                      |
+| `datadog_service`      | string  | no    | Tag all data from this GitLab instance in Datadog. Can be used when managing several GitLab Self-Managed deployments.                                                                          |
 | `datadog_site`         | string  | no    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
 | `datadog_tags`         | string  | no    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
 | `datadog_ci_visibility` | boolean | no   | Enables collection of pipeline and job events in Datadog to display pipeline execution traces. |
@@ -1821,7 +1821,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `hostname`   | string | no | Custom hostname of the Telegram API. The default value is `https://api.telegram.org`. |
+| `hostname`   | string | no | URL of the Telegram API server, including `http://` or `https://`. The default value is `https://api.telegram.org`. |
 | `token`   | string | yes | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | yes | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
 | `thread` | integer | no | Unique identifier for the target message thread (topic in a forum supergroup). |

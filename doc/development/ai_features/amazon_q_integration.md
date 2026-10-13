@@ -46,7 +46,7 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
       ```
 
    1. Apply the config changes by `sudo gitlab-ctl reconfigure`
-1. Obtain and activate a **Self-Managed - Ultimate & Duo with Amazon Q** license
+1. Obtain and activate a **GitLab Self-Managed - Ultimate & Duo with Amazon Q** license
 
    > [!note]
    > Amazon Q requires a GitLab Duo with Amazon Q subscription. An Ultimate subscription is not

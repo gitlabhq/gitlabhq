@@ -23,7 +23,7 @@ title: Check migrations before upgrade
 {{< /history >}}
 
 GitLab provides a set of Rake tasks to manage background migrations from the command line.
-These tasks are particularly useful for self-managed administrators who need to manage background
+These tasks are particularly useful for GitLab Self-Managed administrators who need to manage background
 migrations when the Admin UI is not available, such as during downtime upgrades or maintenance windows.
 
 All Rake tasks work across all databases (main and ci) and use a unified migration ID format: `{database}_{id}`.
@@ -243,6 +243,55 @@ The task:
 - Reports the status of each migration as it completes.
 - Continues processing remaining migrations even if some fail.
 
+### Wait for all migrations to finish
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258378) in GitLab 19.5.
+
+{{< /history >}}
+
+To block until all unfinished batched background migrations across all databases have finished:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:wait
+```
+
+Example output:
+
+```plaintext
+Waiting for batched background migrations to finish, checking every 30s...
+Still waiting on 1 batched background migration(s):
+Database: main
+  active | BackfillPipelineExecutionPoliciesMetadata,security_policies,id,[]
+All batched background migrations have finished.
+```
+
+This task is intended for automation, such as gating a zero-downtime upgrade until the current
+version's migrations finish before starting the next upgrade. Unlike
+[Execute all migrations](#execute-all-migrations), it does not run migrations itself. It only
+polls their status while the scheduler works through them.
+
+The task:
+
+- Checks every configured database (`main`, `ci`, and so on).
+- Polls until no migrations remain in a `paused`, `active`, or `finalizing` state, then exits `0`.
+- Exits with a non-zero status if any migration is in the `failed` state, because waiting cannot
+  clear it. Resolve these first with
+  [Resolve failed batched background migrations](#resolve-failed-batched-background-migrations).
+
+To control how often the task polls, set the `BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS`
+environment variable to a positive integer (default `30`):
+
+```shell
+sudo BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS=60 gitlab-rake gitlab:background_migrations:wait
+```
+
+The task has no internal timeout. Bound the total wait from the caller, for example with `timeout`
+or a job deadline.
+
+The task does not catch transient database errors. If it fails with one, retry the entire task.
+
 ## Check for pending database background migrations
 
 {{< history >}}
@@ -299,6 +348,10 @@ To check the status of batched background migrations:
 1. In the left sidebar, select **Monitoring** > **Background migrations**.
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
    and **Failed** for failed migrations.
+
+If a migration shows **Progress unavailable**, GitLab could not estimate the table size
+when the migration was queued, so it cannot calculate a percentage. If the status is
+**Active**, the migration is running as expected.
 
 #### From the database
 
@@ -692,6 +745,10 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 {{< /tab >}}
 
 {{< /tabs >}}
+
+If advanced search indexing is turned on, [the `gitlab:check` Rake task](../integration/advanced_search/elasticsearch.md#all-migrations-must-be-finished-before-doing-a-major-upgrade)
+also reports whether any advanced search migrations are pending, and how many.
+The check reports status only and does not stop an upgrade, so you must read the output and act on the result.
 
 If you're on a long upgrade path and have many pending migrations, you might want to configure
 **Requeue indexing workers** and **Number of shards for non-code indexing** to speed up indexing.

@@ -183,6 +183,42 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
 
       it_behaves_like 'notifies the chat integration'
 
+      context 'when a merge request update changes reviewers' do
+        let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
+        let(:reviewers_change) do
+          { reviewers: { previous: [], current: [{ name: 'Jane Doe', username: 'jane', state: 'unreviewed' }] } }
+        end
+
+        context 'when reviewers change' do
+          let(:data) do
+            merge_request.to_hook_data(user).tap do |hook_data|
+              hook_data[:object_attributes][:action] = 'update'
+              hook_data[:changes] = reviewers_change
+            end
+          end
+
+          it_behaves_like 'notifies the chat integration'
+
+          context 'when the chat_notify_reviewer_change feature flag is disabled' do
+            before do
+              stub_feature_flags(chat_notify_reviewer_change: false)
+            end
+
+            it_behaves_like 'does not notify the chat integration'
+          end
+        end
+
+        context 'when the update leaves reviewers unchanged' do
+          let(:data) do
+            merge_request.to_hook_data(user).tap do |hook_data|
+              hook_data[:object_attributes][:action] = 'update'
+            end
+          end
+
+          it_behaves_like 'does not notify the chat integration'
+        end
+      end
+
       context 'with label filter' do
         subject(:integration) { integration_class.new(labels_to_be_notified: '~Bug') }
 

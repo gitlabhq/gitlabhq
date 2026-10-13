@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillMissingWorkItemCurrentStatuses
+description: Create a work_item_current_statuses row for every work item in a namespace with a custom lifecycle that has none, pointing at the lifecycle default for the item's type and state
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259625
+milestone: '19.5'
+queued_migration_version: 20261005100000
+gitlab_schema: gitlab_main_org

@@ -5,6 +5,24 @@ require 'spec_helper'
 RSpec.describe Authn::IamDataAccessService, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
+  describe '.configured?' do
+    subject(:configured?) { described_class.configured? }
+
+    where(:secret_file, :expected) do
+      '/etc/gitlab/iam-data-access/.gitlab_iam_data_access_secret' | true
+      ''                                                            | false
+      nil                                                           | false
+    end
+
+    with_them do
+      before do
+        stub_config(iam_data_access_service: { secret_file: secret_file, grpc: {} })
+      end
+
+      it { is_expected.to be(expected) }
+    end
+  end
+
   describe '.grpc_address' do
     subject(:grpc_address) { described_class.grpc_address }
 

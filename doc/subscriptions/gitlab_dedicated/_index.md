@@ -196,7 +196,7 @@ If your network has no internet egress, your runners run in an offline environme
 
 ### Application
 
-GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with a small number of exceptions. For more information, see [Unavailable features](#unavailable-features).
+GitLab Dedicated comes with the GitLab Self-Managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with a small number of exceptions. For more information, see [Unavailable features](#unavailable-features).
 
 #### Advanced search
 

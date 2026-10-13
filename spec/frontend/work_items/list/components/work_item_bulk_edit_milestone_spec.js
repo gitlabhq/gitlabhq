@@ -32,16 +32,12 @@ describe('WorkItemBulkEditMilestone component', () => {
 
   const milestoneSearchQueryHandler = jest.fn().mockResolvedValue(projectMilestonesResponse);
 
-  const createComponent = ({
-    props = {},
-    searchQueryHandler = milestoneSearchQueryHandler,
-  } = {}) => {
+  const createComponent = ({ searchQueryHandler = milestoneSearchQueryHandler } = {}) => {
     wrapper = mount(WorkItemBulkEditMilestone, {
       apolloProvider: createMockApollo([[projectMilestonesQuery, searchQueryHandler]]),
       propsData: {
         fullPath: 'group/project',
         isGroup: false,
-        ...props,
       },
       stubs: {
         GlCollapsibleListbox,

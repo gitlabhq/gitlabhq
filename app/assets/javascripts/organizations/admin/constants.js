@@ -9,6 +9,6 @@ export const ORGANIZATION_USER_TYPE_ADMIN = 'ADMIN';
 export const ORGANIZATION_USER_TYPE_DEFAULT = ORGANIZATION_USER_TYPE_USER;
 
 export const ORGANIZATION_USER_TYPE_OPTIONS = [
-  { value: ORGANIZATION_USER_TYPE_USER, text: s__('Organization|User') },
-  { value: ORGANIZATION_USER_TYPE_ADMIN, text: s__('Organization|Admin') },
+  { value: ORGANIZATION_USER_TYPE_USER, text: s__('Organization|Organization regular user') },
+  { value: ORGANIZATION_USER_TYPE_ADMIN, text: s__('Organization|Organization administrator') },
 ];

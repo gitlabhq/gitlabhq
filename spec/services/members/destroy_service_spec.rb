@@ -52,12 +52,13 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     end
 
     it 'triggers members destroyed event' do
-      expect(Gitlab::EventStore)
-        .to receive(:publish)
-        .with(an_instance_of(Members::DestroyedEvent))
-        .and_call_original
+      expect { described_class.new(member, current_user: current_user, **opts).execute }
+        .to publish_event(Members::DestroyedEvent)
+    end
 
-      described_class.new(member, current_user: current_user, **opts).execute
+    it 'triggers members destroyed cloud event' do
+      expect { described_class.new(member, current_user: current_user, **opts).execute }
+        .to publish_event(Members::DestroyedCloudEvent)
     end
 
     it 'does not remove user from organization' do

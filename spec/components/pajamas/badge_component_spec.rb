@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::BadgeComponent, type: :component do
+RSpec.describe Pajamas::BadgeComponent do
   let(:text) { "Hello" }
   let(:options) { {} }
   let(:html_options) { {} }

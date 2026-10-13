@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlDisclosureDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash-es';
 import { s__, __, sprintf } from '~/locale';
 import { isTemplate } from '../utils';
@@ -9,7 +9,6 @@ export default {
   components: {
     GlModal,
     GlButton,
-    GlIcon,
     GlDisclosureDropdownItem,
   },
   directives: {
@@ -115,12 +114,12 @@ export default {
 
 <template>
   <div v-if="pagePersisted">
-    <gl-disclosure-dropdown-item v-if="showAsDropdownItem" v-gl-modal="modalId" :item="listItem">
-      <template #list-item>
-        <gl-icon name="remove" class="gl-mr-2" />
-        {{ listItem.text }}
-      </template>
-    </gl-disclosure-dropdown-item>
+    <gl-disclosure-dropdown-item
+      v-if="showAsDropdownItem"
+      v-gl-modal="modalId"
+      :item="listItem"
+      icon="remove"
+    />
     <gl-button
       v-else
       v-gl-modal="modalId"

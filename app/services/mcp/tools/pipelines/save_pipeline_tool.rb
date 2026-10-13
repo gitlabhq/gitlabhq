@@ -28,6 +28,16 @@ module Mcp
 
         register_version VERSIONS[:v0_1_0], {}
 
+        # The pipeline mutations find the ID with GlobalID::Locator, which raises for a missing pipeline.
+        def execute
+          super
+        rescue ActiveRecord::RecordNotFound
+          ::Mcp::Tools::Base::Response.error(
+            ::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR,
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+          )
+        end
+
         def graphql_operation
           OPERATIONS.fetch(operation)[:graphql_operation]
         end
@@ -115,6 +125,13 @@ module Mcp
         end
 
         def process_result(result)
+          # The project (create) or the pipeline (retry, cancel) exists by now, so this is a denial.
+          if resource_access_denied?(result)
+            return ::Mcp::Tools::Base::Response.error(
+              extract_error_messages(result['errors']).join(', '), reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
+          end
+
           processed_result = super
 
           return processed_result if processed_result[:isError]
@@ -126,6 +143,13 @@ module Mcp
           payload = format_pipeline(pipeline)
 
           ::Mcp::Tools::Base::Response.success([{ type: 'text', text: Gitlab::Json.dump(payload) }], payload)
+        end
+
+        def resource_access_denied?(result)
+          Array(result['errors']).any? do |error|
+            error.is_a?(Hash) &&
+              error['message'] == ::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
+          end
         end
 
         # PipelineType exposes a global ID and a relative path only, so the plain ID and

@@ -57,6 +57,7 @@ export default {
   },
   [types.CLEAR_DRAFTS]() {
     this.drafts = [];
+    this.publishReviewId = null;
   },
   [types.SET_DRAFT_EDITING]({ draftId, isEditing }) {
     const draftIndex = this.drafts.findIndex((draft) => draft.id === draftId);

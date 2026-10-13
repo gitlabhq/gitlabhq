@@ -7,12 +7,12 @@ module API
         def validate_param!(attr_name, params)
           value = params[attr_name]
 
-          return if value.nil? || value.size <= @option
+          return if value.nil? || value.size <= @options
 
           message = if value.is_a?(Array)
-                      "#{@scope.full_name(attr_name)} must contain at most #{@option} items"
+                      "#{@scope.full_name(attr_name)} must contain at most #{@options} items"
                     else
-                      "#{@scope.full_name(attr_name)} must be less than #{@option} characters"
+                      "#{@scope.full_name(attr_name)} must be less than #{@options} characters"
                     end
 
           raise Grape::Exceptions::Validation.new(

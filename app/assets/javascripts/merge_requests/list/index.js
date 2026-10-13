@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import MergeRequestsListApp from './components/merge_requests_list_app.vue';
 import issuableBulkUpdateActions from './issuable_bulk_update_actions';

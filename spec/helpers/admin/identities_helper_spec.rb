@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Admin::IdentitiesHelper do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:identity) { create(:identity, provider: 'ldapmain', extern_uid: 'ldap-uid') }
+  let(:user) { build_stubbed(:user) }
+  let(:identity) { build_stubbed(:identity, provider: 'ldapmain', extern_uid: 'ldap-uid') }
 
   describe '#label_for_identity_provider' do
     it 'shows label for identity provider' do

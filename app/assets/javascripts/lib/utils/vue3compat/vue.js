@@ -6,8 +6,13 @@ import GlAbilitiesPlugin from '../../../vue_shared/gl_abilities_plugin';
 import Translate from '../../../vue_shared/translate';
 import { vueErrorHandler } from '../../../sentry/vue_error_handler';
 
-import { logDevNotice } from '../../logger';
+import { logDevNotice, logError } from '../../logger';
 import { compatConfig } from './compat_config';
+import {
+  assertComponentPluginsInstalled,
+  assertPluginsInstalled,
+  shouldAssertPluginsInstalled,
+} from './plugin_install_state';
 
 export * from '@vue/compat';
 
@@ -16,6 +21,13 @@ class GitLabPatchedVue extends VueCompatOriginal {
     const appName = rawConfig?.name;
     if (appName) {
       logDevNotice(`[V] Using Vue.js 3 (with @vue/compat) for ${appName}`);
+    }
+
+    if (shouldAssertPluginsInstalled()) {
+      // A throwaway app gets the same copy of global mixins as the app below.
+      // eslint-disable-next-line no-underscore-dangle
+      const getMixins = () => VueCompatOriginal.createApp({})._context.mixins;
+      assertPluginsInstalled(rawConfig, getMixins, appName);
     }
 
     const config = rawConfig?.el ? { ...rawConfig } : rawConfig;
@@ -52,6 +64,15 @@ class GitLabPatchedVue extends VueCompatOriginal {
 
 GitLabPatchedVue.configureCompat(compatConfig);
 
+if (shouldAssertPluginsInstalled()) {
+  // Registered first, so @vue/compat copies it into every app.
+  GitLabPatchedVue.mixin({
+    created() {
+      assertComponentPluginsInstalled(this);
+    },
+  });
+}
+
 // This is temporary place for this
 // We are basically mirroring app/assets/javascripts/commons/vue.js
 // We should not put them in jest, but we don't want for now to add
@@ -64,6 +85,14 @@ if (typeof jest === 'undefined') {
 
   if (process.env.NODE_ENV === 'production') {
     GitLabPatchedVue.config.errorHandler = vueErrorHandler;
+  } else {
+    // Without a handler, Vue 3 rethrows in development and leaves the component tree half
+    // patched. With one, it renders a comment node instead, as production does with Sentry
+    // and as Vue 2 does in every build. The message copies Vue 2's format.
+    GitLabPatchedVue.config.errorHandler = (err, vm, info) => {
+      const name = vm?.$options?.name ?? 'unknown';
+      logError(`[Vue warn]: Error in ${info}: "${err}"\n\nfound in\n\n---> <${name}>`, err);
+    };
   }
 }
 

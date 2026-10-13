@@ -88,13 +88,8 @@ export default {
 
 <template>
   <list-item :selected="selected" v-bind="$attrs">
-    <template #left-action>
-      <gl-form-checkbox
-        v-if="packageEntity.userPermissions.destroyPackage"
-        class="gl-m-0"
-        :checked="selected"
-        @change="$emit('select')"
-      />
+    <template v-if="packageEntity.userPermissions.destroyPackage" #left-action>
+      <gl-form-checkbox class="gl-m-0" :checked="selected" @change="$emit('select')" />
     </template>
     <template #left-primary>
       <div class="gl-mr-5 gl-flex gl-min-w-0 gl-items-center gl-gap-3" data-testid="package-name">

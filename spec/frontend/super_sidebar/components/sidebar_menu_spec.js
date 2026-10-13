@@ -67,6 +67,7 @@ describe('Sidebar Menu', () => {
   const findStaticItemsSection = () => wrapper.findByTestId('static-items-section');
   const findStaticItems = () => findStaticItemsSection().findAllComponents(NavItem);
   const findPinnedSection = () => wrapper.findComponent(PinnedSection);
+  const findPinnedSections = () => wrapper.findAllComponents(PinnedSection);
   const findMainMenuSeparator = () => wrapper.findByTestId('main-menu-separator');
   const findNonStaticItemsSection = () => wrapper.findByTestId('non-static-items-section');
   const findNonStaticItems = () => findNonStaticItemsSection().findAllComponents(NavItem);
@@ -633,7 +634,7 @@ describe('Sidebar Menu', () => {
     });
   });
 
-  describe('Feature Library modal', () => {
+  describe('Feature catalog modal', () => {
     const findFeatureLibraryModal = () => wrapper.findComponent({ name: 'FeatureLibraryModal' });
     const findTrigger = () => wrapper.findComponentByTestId('feature-library-trigger');
 
@@ -646,7 +647,7 @@ describe('Sidebar Menu', () => {
 
       it('renders the trigger button with the expected label', () => {
         expect(findTrigger().exists()).toBe(true);
-        expect(findTrigger().text()).toBe('More features');
+        expect(findTrigger().text()).toBe('Feature catalog');
       });
 
       it('renders the feature-addition icon on the trigger', () => {
@@ -884,7 +885,7 @@ describe('Sidebar Menu', () => {
           createFocusWrapper();
         });
 
-        it('moves focus to the "More features" button', async () => {
+        it('moves focus to the "Feature catalog" button', async () => {
           unpin({ fromPinnedSection: true });
           await nextTick();
 
@@ -956,7 +957,7 @@ describe('Sidebar Menu', () => {
           });
         });
 
-        it('moves focus to its current-page item, not "More features"', async () => {
+        it('moves focus to its current-page item, not "Feature catalog"', async () => {
           unpin({ fromPinnedSection: true }, 'active_page', 'Active subitem');
           await nextTick();
 
@@ -965,7 +966,7 @@ describe('Sidebar Menu', () => {
           );
         });
 
-        it('moves focus to "More features" when unpinning a non-active page', async () => {
+        it('moves focus to "Feature catalog" when unpinning a non-active page', async () => {
           unpin({ fromPinnedSection: true }, 'some_item', 'Some Item');
           await nextTick();
 
@@ -996,7 +997,7 @@ describe('Sidebar Menu', () => {
           });
         });
 
-        it('moves focus to "More features" when unpinning a different page', async () => {
+        it('moves focus to "Feature catalog" when unpinning a different page', async () => {
           expect(wrapper.findByTestId('current-page-section').exists()).toBe(true);
 
           unpin({ fromPinnedSection: true }, 'some_item', 'Some Item');
@@ -1132,6 +1133,21 @@ describe('Sidebar Menu', () => {
         expect(findSettingsPortal().props('to')).toBe('super-sidebar-settings-disclosure');
       });
 
+      it('renders a labelled settings toggle when settingsInHeader is false', () => {
+        expect(findNonStaticSectionItems().at(0).props('iconOnlyToggle')).toBe(false);
+      });
+
+      it('renders an icon-only settings toggle when settingsInHeader is true', () => {
+        createWrapper({
+          items: menuItems,
+          panelType,
+          settingsInHeader: true,
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+
+        expect(findNonStaticSectionItems().at(0).props('iconOnlyToggle')).toBe(true);
+      });
+
       it('does not render non-settings sections', () => {
         const sectionTitles = findNonStaticSectionItems().wrappers.map(
           (w) => w.props('item').title,
@@ -1258,6 +1274,190 @@ describe('Sidebar Menu', () => {
         });
 
         expect(findEmptyPinsHint().exists()).toBe(false);
+      });
+    });
+
+    describe('show categories preference', () => {
+      const createProjectWrapper = (props = {}) =>
+        createWrapper({
+          items: menuItems,
+          panelType: 'project',
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          ...props,
+        });
+
+      describe('when showOldCategories is true', () => {
+        beforeEach(() => {
+          createProjectWrapper({ showOldCategories: true });
+        });
+
+        it('renders all non-settings sections in place', () => {
+          const sectionTitles = findNonStaticSectionItems().wrappers.map(
+            (w) => w.props('item').title,
+          );
+
+          expect(sectionTitles).toContain('With subitems');
+          expect(sectionTitles).toContain('Also with subitems');
+        });
+
+        it('portals the settings section to the top disclosure, not in place', () => {
+          expect(findSettingsPortal().exists()).toBe(true);
+          expect(findSettingsPortal().props('to')).toBe('super-sidebar-settings-disclosure');
+
+          const settingsSection = findNonStaticSectionItems().wrappers.find(
+            (w) => w.props('item').id === 'settings_menu',
+          );
+          expect(settingsSection.props('disclosure')).toBe(true);
+
+          const inlineNonSettingsSections = findNonStaticSectionItems().wrappers.filter(
+            (w) => w.props('item').id !== 'settings_menu',
+          );
+          expect(inlineNonSettingsSections.map((w) => w.props('disclosure'))).not.toContain(true);
+        });
+
+        it('renders the main menu separator', () => {
+          expect(findMainMenuSeparator().exists()).toBe(true);
+        });
+
+        it('keeps the pinned section headerless like the new design', () => {
+          expect(findPinnedSection().props('headerless')).toBe(true);
+        });
+      });
+
+      describe('when showOldCategories is false', () => {
+        beforeEach(() => {
+          createProjectWrapper({ showOldCategories: false });
+        });
+
+        it('renders only the settings section as a disclosure', () => {
+          expect(findSettingsPortal().exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('categorize pinned preference', () => {
+      const pinnedMenuItems = [
+        {
+          id: 'code',
+          title: 'Code',
+          items: [
+            { id: 'files', title: 'Files' },
+            { id: 'commits', title: 'Commits' },
+          ],
+        },
+        {
+          id: 'operate',
+          title: 'Operate',
+          items: [{ id: 'environments', title: 'Environments' }],
+        },
+      ];
+
+      const createGroupedWrapper = (props = {}) =>
+        createWrapper({
+          items: pinnedMenuItems,
+          pinnedItemIds: ['files', 'environments'],
+          panelType: 'project',
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          groupPinned: true,
+          ...props,
+        });
+
+      describe('when groupPinned is true', () => {
+        beforeEach(() => {
+          createGroupedWrapper();
+        });
+
+        it('renders one pinned section per category that has a pinned item', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(2);
+          expect(sections.wrappers.map((w) => w.props('groupItem').title)).toEqual([
+            'Code',
+            'Operate',
+          ]);
+        });
+
+        it('passes only the pinned items belonging to each category', () => {
+          const sections = findPinnedSections();
+
+          expect(
+            sections
+              .at(0)
+              .props('items')
+              .map((i) => i.id),
+          ).toEqual(['files']);
+          expect(
+            sections
+              .at(1)
+              .props('items')
+              .map((i) => i.id),
+          ).toEqual(['environments']);
+        });
+
+        it('preserves nonStaticItems order for the groups', () => {
+          expect(findPinnedSections().wrappers.map((w) => w.props('groupItem').id)).toEqual([
+            'code',
+            'operate',
+          ]);
+        });
+      });
+
+      describe('wasPinnedNav per group', () => {
+        const activePinnedMenuItems = [
+          {
+            id: 'code',
+            title: 'Code',
+            items: [{ id: 'files', title: 'Files', is_active: true }],
+          },
+          {
+            id: 'operate',
+            title: 'Operate',
+            items: [{ id: 'environments', title: 'Environments' }],
+          },
+        ];
+
+        it('only force-expands the group that holds the active pin on pinned-nav', () => {
+          window.sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, 'true');
+          createGroupedWrapper({ items: activePinnedMenuItems });
+
+          const sections = findPinnedSections();
+
+          expect(sections.at(0).props('wasPinnedNav')).toBe(true);
+          expect(sections.at(1).props('wasPinnedNav')).toBe(false);
+        });
+
+        it('does not force-expand any group when the nav was not a pinned-nav click', () => {
+          createGroupedWrapper({ items: activePinnedMenuItems });
+
+          const sections = findPinnedSections();
+
+          expect(sections.at(0).props('wasPinnedNav')).toBe(false);
+          expect(sections.at(1).props('wasPinnedNav')).toBe(false);
+        });
+      });
+
+      describe('when groupPinned is false', () => {
+        beforeEach(() => {
+          createGroupedWrapper({ groupPinned: false });
+        });
+
+        it('renders a single flat pinned section', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(1);
+          expect(sections.at(0).props('groupItem')).toBe(null);
+        });
+      });
+
+      describe('when no pinned item maps to a category', () => {
+        beforeEach(() => {
+          createGroupedWrapper({ pinnedItemIds: [] });
+        });
+
+        it('falls back to the single flat pinned section', () => {
+          expect(findPinnedSections()).toHaveLength(1);
+          expect(findPinnedSection().props('groupItem')).toBe(null);
+        });
       });
     });
   });

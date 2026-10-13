@@ -1,0 +1,10 @@
+---
+name: diff_skip_redundant_charset_detection
+description: Skip CharlockHolmes charset detection on stored merge request diffs when the scan cannot change the result, speeding up diff endpoints.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629870
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256379
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629894
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

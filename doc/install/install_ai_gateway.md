@@ -3,7 +3,7 @@ stage: AI Platform
 group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Gateway between GitLab and large language models.
-title: Install the GitLab AI Gateway
+title: Install the AI Gateway
 ---
 
 The [AI Gateway](../administration/gitlab_duo/gateway.md)
@@ -36,14 +36,19 @@ Each pair provides the following roles:
 Both keys in a pair must be RSA 2048-bit private keys in PEM format.
 If these keys are missing, the service cannot sign tokens and requests fail with a token creation error.
 
+The AI Gateway also verifies the tokens that your GitLab instance signs with its Cloud Connector key
+and caches the public keys of your instance.
+To rotate the Cloud Connector key without authentication failures, see
+[rotate the Cloud Connector key](../administration/gitlab_duo_self_hosted/offline_deployment.md#rotate-the-cloud-connector-key).
+
 ## Install by using Docker
 
-The GitLab AI Gateway Docker image contains all necessary code and dependencies
+The AI Gateway Docker image contains all necessary code and dependencies
 in a single container.
 
 Prerequisites:
 
-- Install a Docker container engine, like [Docker](https://docs.docker.com/engine/install/#server).
+- Install a Docker container engine, like [Docker](https://docs.docker.com/engine/install/).
 - Use a valid hostname that is accessible in your network. Do not use `localhost`.
 - Ensure you have approximately 340 MB (compressed) for the `linux/amd64` architecture and
   a minimum of 512 MB of RAM.
@@ -71,7 +76,7 @@ To ensure better performance, especially under heavy usage, consider allocating
 more disk space, memory, and resources than the minimum requirements.
 Higher RAM and disk capacity can enhance the AI Gateway's efficiency during peak loads.
 
-A GPU is not needed for the GitLab AI Gateway.
+A GPU is not needed for the AI Gateway.
 
 ### AI Gateway images
 
@@ -181,6 +186,10 @@ To copy an image and its signature, use `cosign copy`.
    - Forces the GitLab Duo Workflow Service to authenticate
      exclusively against the local GitLab instance.
    - Eliminates the 20-second delay caused by unreachable CustomersDot calls.
+
+   To record GitLab Duo usage on the instance, also
+   [send billing events to your GitLab instance](#send-billing-events-to-an-offline-gitlab-instance).
+
 1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 1. Optional. If your local GitLab Duo Agent Platform endpoint uses TLS:
    1. In the upper-right corner, select **Admin**.
@@ -471,17 +480,33 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    kubectl create namespace ai-gateway
    ```
 
-1. Generate the certificate for the domain where you plan to expose the AI Gateway.
+1. Generate the certificate for the domains where you plan to expose the AI Gateway
+   and the GitLab Duo Agent Platform service.
 1. Create the TLS secret in the previously created namespace:
 
    ```shell
    kubectl -n ai-gateway create secret tls ai-gateway-tls --cert="<path_to_cert>" --key="<path_to_cert_key>"
    ```
 
+1. Generate the JWT signing keys and store them in a secret in the same namespace:
+
+   ```shell
+   openssl genrsa -out aigw_signing.key 2048
+   openssl genrsa -out aigw_validation.key 2048
+   openssl genrsa -out duo_workflow_jwt.key 2048
+   openssl genrsa -out duo_workflow_validation.key 2048
+
+   kubectl -n ai-gateway create secret generic ai-gateway-jwt \
+     --from-file=aigw_signing.key \
+     --from-file=aigw_validation.key \
+     --from-file=duo_workflow_jwt.key \
+     --from-file=duo_workflow_validation.key
+   ```
+
 1. Get the version number of the latest package in the [chart's Package Registry](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages).
 1. For the AI Gateway to access the API, it must know where the GitLab instance
-   is located. To do this, set the `gitlab.url` and `gitlab.apiUrl` together with
-   the `ingress.hosts` and `ingress.tls` values as follows:
+   is located. Set `gitlab.url` and `gitlab.apiUrl` together with
+   the Ingress, gRPC Ingress, and JWT key values as follows:
 
    ```shell
    helm repo add ai-gateway \
@@ -502,18 +527,52 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
      --set "ingress.tls[0].secretName=ai-gateway-tls" \
      --set "ingress.tls[0].hosts[0]=<your_gateway_domain>" \
      --set="ingress.className=nginx" \
-     --set "extraEnvironmentVariables[0].name=AIGW_SELF_SIGNED_JWT__SIGNING_KEY" \
-     --set "extraEnvironmentVariables[0].value=$(cat aigw_signing.key)" \
-     --set "extraEnvironmentVariables[1].name=AIGW_SELF_SIGNED_JWT__VALIDATION_KEY" \
-     --set "extraEnvironmentVariables[1].value=$(cat aigw_validation.key)" \
-     --set "extraEnvironmentVariables[2].name=DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY" \
-     --set "extraEnvironmentVariables[2].value=$(cat duo_workflow_jwt.key)" \
-     --set "extraEnvironmentVariables[3].name=DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY" \
-     --set "extraEnvironmentVariables[3].value=$(cat duo_workflow_validation.key)" \
-     --set "extraEnvironmentVariables[4].name=DUO_WORKFLOW_AUTH__ENABLED" \
-     --set "extraEnvironmentVariables[4].value={{ true | quote }}" \
+     --set "ingress.gitlabIngressEnabled=false" \
+     --set "grpcIngress.hosts[0].host=<your_gateway_grpc_domain>" \
+     --set "grpcIngress.hosts[0].paths[0].path=/" \
+     --set "grpcIngress.hosts[0].paths[0].pathType=Prefix" \
+     --set "grpcIngress.tls[0].secretName=ai-gateway-tls" \
+     --set "grpcIngress.tls[0].hosts[0]=<your_gateway_grpc_domain>" \
+     --set "grpc-tls-proxy.enabled=true" \
+     --set "grpc-tls-proxy.tlsSecretName=ai-gateway-tls" \
+     --set "grpc-tls-proxy.upstream.host=ai-gateway" \
+     --set "aigwSigningKey.secret=ai-gateway-jwt" \
+     --set "aigwSigningKey.key=aigw_signing.key" \
+     --set "aigwValidationKey.secret=ai-gateway-jwt" \
+     --set "aigwValidationKey.key=aigw_validation.key" \
+     --set "duoWorkflowSigningKey.secret=ai-gateway-jwt" \
+     --set "duoWorkflowSigningKey.key=duo_workflow_jwt.key" \
+     --set "duoWorkflowValidationKey.secret=ai-gateway-jwt" \
+     --set "duoWorkflowValidationKey.key=duo_workflow_validation.key" \
      --timeout=300s --wait --wait-for-jobs
    ```
+
+   The chart renders an Ingress only when `ingress.gitlabIngressEnabled` is `false`.
+   The gRPC Ingress serves the GitLab Duo Agent Platform service through the chart's TLS proxy.
+   `grpc-tls-proxy.upstream.host` must be the name of the AI Gateway service,
+   which is `ai-gateway` for the release name in this command.
+
+   For an offline environment with an offline license and no internet access,
+   before `--timeout=300s`, also add the following values to the command:
+
+   ```shell
+     --set "extraEnvironmentVariables[0].name=AIGW_CUSTOMER_PORTAL_URL" \
+     --set "extraEnvironmentVariables[0].value=https://<your_gitlab_domain>" \
+     --set "extraEnvironmentVariables[1].name=LITELLM_LOCAL_MODEL_COST_MAP" \
+     --set-string "extraEnvironmentVariables[1].value=True" \
+     --set "grpc-tls-proxy.image.repository=<your_internal_registry>/nginx" \
+   ```
+
+   The chart already sets `DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL` to `gitlab.url`.
+   Without internet access, `LITELLM_LOCAL_MODEL_COST_MAP` must be `True`.
+   Otherwise, LiteLLM retries a download from `raw.githubusercontent.com` at startup,
+   and the liveness probe restarts the pod before the AI Gateway accepts connections.
+
+   Before you run the command, mirror the TLS proxy's `nginx:alpine` image
+   to `<your_internal_registry>/nginx`.
+
+   To record GitLab Duo usage on the instance, also
+   [send billing events to your GitLab instance](#send-billing-events-to-an-offline-gitlab-instance).
 
 You can find the list of AI Gateway versions that can be used as `image.tag` in the [container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted).
 
@@ -535,6 +594,54 @@ kubectl wait pod \
 ```
 
 When your pods are up and running, you can set up your IP ingresses and DNS records.
+
+## Send billing events to an offline GitLab instance
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259290) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `local_billing_persistence`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+In an offline environment, the AI Gateway cannot reach the GitLab billing collector on the internet.
+Instead, configure the AI Gateway to send GitLab Duo billing events to your GitLab instance,
+which records the usage locally.
+
+The AI Gateway authenticates to your GitLab instance with a personal access token
+that belongs to a service account. Tokens that belong to regular users are rejected.
+
+Prerequisites:
+
+- Administrator access.
+- A GitLab instance that uses an offline license.
+
+To send billing events to your GitLab instance:
+
+1. [Create an instance service account](../user/profile/service_accounts.md#create-a-service-account).
+1. [Create a personal access token for the service account](../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account)
+   with the [`ai_features` scope](../security/tokens/access_token_scopes.md).
+1. On the AI Gateway, set the following environment variables:
+
+   - `AIGW_BILLING_EVENT__ENABLED`: `true`.
+   - `AIGW_BILLING_EVENT__ENDPOINT`: `https://<your_gitlab_domain>/api/v4/ai/billable_usage/events`.
+   - `AIGW_BILLING_EVENT__API_KEY`: The personal access token of the service account.
+
+   For a Docker deployment, pass the variables with `-e`:
+
+   ```shell
+   -e AIGW_BILLING_EVENT__ENABLED=true \
+   -e AIGW_BILLING_EVENT__ENDPOINT=https://<your_gitlab_domain>/api/v4/ai/billable_usage/events \
+   -e AIGW_BILLING_EVENT__API_KEY=<service_account_token> \
+   ```
+
+   For a GitLab Helm chart deployment, add the variables to `extraEnvironmentVariables`.
+   Store the token in a Kubernetes secret rather than in plain text in your `values.yaml` file.
+
+1. Restart the AI Gateway.
 
 ## Connect to a GitLab instance or model endpoint with a self-signed SSL certificate
 
@@ -965,145 +1072,3 @@ The AI Gateway is available in multiple regions globally to ensure optimal perfo
 - Data sovereignty requirements compliance.
 
 You should locate your AI Gateway in the same geographic region as your GitLab instance to help provide a frictionless developer experience, particularly for latency-sensitive features like Code Suggestions.
-
-## Troubleshooting
-
-When working with the AI Gateway, you might encounter the following issues.
-
-### OpenShift permission issues
-
-When deploying the AI Gateway on OpenShift, you might encounter permission errors due to the OpenShift security model.
-
-#### Read-only filesystem at `/tmp`
-
-The AI Gateway needs to write to `/tmp`. However, based on the OpenShift environment, which is security-restricted,
-`/tmp` might be read-only.
-
-To resolve this issue, create a new `EmptyDir` volume and mount it at `/tmp`.
-You can do this in either of the following ways:
-
-- From the command line:
-
-  ```shell
-  oc set volume <object_type>/<name> --add --name=tmpVol --type=emptyDir --mountPoint=/tmp
-  ```
-
-- Added to your `values.yaml`:
-
-  ```yaml
-  volumes:
-  - name: tmp-volume
-    emptyDir: {}
-
-  volumeMounts:
-  - name: tmp-volume
-    mountPath: "/tmp"
-  ```
-
-#### HuggingFace models
-
-By default, the AI Gateway uses `/home/aigateway/.hf` for caching HuggingFace models, which may not be writable in OpenShift's
-security-restricted environment. This can result in permission errors like:
-
-```shell
-[Errno 13] Permission denied: '/home/aigateway/.hf/...'
-```
-
-To resolve this, set the `HF_HOME` environment variable to a writable location. You can use `/var/tmp/huggingface` or any other directory that is writable by the container.
-
-You can configure this in either of the following ways:
-
-- Add to your `values.yaml`:
-
-  ```yaml
-  extraEnvironmentVariables:
-    - name: HF_HOME
-      value: /var/tmp/huggingface  # Use any writable directory
-  ```
-
-- Or include in your Helm upgrade command:
-
-  ```shell
-  --set "extraEnvironmentVariables[0].name=HF_HOME" \
-  --set "extraEnvironmentVariables[0].value=/var/tmp/huggingface"  # Use any writable directory
-  ```
-
-This configuration ensures the AI Gateway can properly cache HuggingFace models while respecting the OpenShift security constraints. The exact directory you choose may depend on your specific OpenShift configuration and security policies.
-
-### Tokenizer cache shadowed by a volume mount
-
-The precached tokenizer files in the AI Gateway image
-might be shadowed by a volume mount if:
-
-- Code completion requests return a `500` error.
-- AI Gateway logs show an `OSError` from `transformers/utils/hub.py`
-  attempting to download `Salesforce/codegen2-16B` from `huggingface.co`.
-
-The self-hosted AI Gateway image (`self-hosted-vX.Y.Z-ee`) sets
-`HF_HUB_OFFLINE=true` and precaches the tokenizer at build time,
-so no network access to `huggingface.co` should occur at runtime.
-If network access occurs, an empty directory in your Helm values
-might be mounted over `/home/aigateway/.hf`, overwriting the cached files.
-
-Do not try to resolve this issue by granting egress access to `huggingface.co`.
-Instead, to diagnose the issue, run the following in the AI Gateway pod:
-
-```shell
-ls -la /home/aigateway/.hf/hub/ 2>/dev/null || echo "NO_CACHE_DIR"
-env | grep -E '^(HF_|TRANSFORMERS_)'
-```
-
-If the cache directory is missing or empty, do the following:
-
-1. Check your `values.yaml` for any `volumeMounts` that target
-   `/home/aigateway/.hf` or the path set by `HF_HOME`.
-1. Remove or remap the mount to a directory that does not overlap
-   with the image's built-in cache.
-
-### Self-signed certificate error
-
-An `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI Gateway
-when the AI Gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
-
-To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).
-
-### Token creation failed
-
-If you encounter a `Token creation failed` error when you use features like Duo Chat,
-the `AIGW_SELF_SIGNED_JWT__SIGNING_KEY` and `AIGW_SELF_SIGNED_JWT__VALIDATION_KEY`
-environment variables might not be set on the AI Gateway.
-
-These keys are required for the AI Gateway to issue short-lived user JWTs.
-Without these keys, the AI Gateway cannot sign tokens, which causes a JWK
-deserialization failure.
-
-To resolve this issue:
-
-1. Generate the required keys:
-
-   ```shell
-   openssl genrsa -out aigw_signing.key 2048
-   openssl genrsa -out aigw_validation.key 2048
-   ```
-
-1. Add the keys to your AI Gateway container by passing them as environment variables:
-
-   ```shell
-   -e AIGW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat aigw_signing.key)" \
-   -e AIGW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat aigw_validation.key)"
-   ```
-
-1. Restart the AI Gateway container.
-
-### SSL certificate errors when loading PEM files
-
-If you get an error that says `JWKError` while loading the PEM file into the Docker container,
-you might need to resolve an SSL certificate error.
-
-To fix this issue, use the following environment variables to set the appropriate
-certificate bundle path in the Docker container:
-
-- `SSL_CERT_FILE=/path/to/ca-bundle.pem`
-- `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
-
-Replace `/path/to/ca-bundle.pem` with the path to your certificate bundle.

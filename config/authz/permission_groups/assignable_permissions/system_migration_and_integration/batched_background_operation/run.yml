@@ -8,3 +8,5 @@ available_for:
 permissions:
   - stop_batched_background_operation
   - restart_batched_background_operation
+assignable_when:
+  - condition: admin

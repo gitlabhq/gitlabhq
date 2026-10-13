@@ -103,7 +103,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMcpServerEnabled,
 
       before do
         namespace_settings.create!(namespace_id: sub_group.id, duo_features_enabled: true,
-          experiment_features_enabled: true)
+          experiment_features_enabled: true, mcp_server_enabled: nil)
       end
 
       it 'does not update namespace_settings' do
@@ -127,7 +127,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMcpServerEnabled,
 
       before do
         namespace_settings.create!(namespace_id: sub_group.id, duo_features_enabled: true,
-          experiment_features_enabled: true)
+          experiment_features_enabled: true, mcp_server_enabled: nil)
       end
 
       it 'only updates top-level group namespace_settings' do

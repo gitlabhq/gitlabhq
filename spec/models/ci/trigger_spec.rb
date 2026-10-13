@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project) }
 
   describe 'associations' do
@@ -131,6 +133,18 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
           expect(result).to be_empty
         end
       end
+
+      context 'with several db_key_base keys' do
+        include DbKeyBaseHelpers
+
+        let_it_be(:trigger) { create(:ci_trigger, project: project) }
+
+        it 'returns the trigger for a token encrypted with the previous key' do
+          stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+
+          expect(described_class.with_token(trigger.token)).to contain_exactly(trigger)
+        end
+      end
     end
   end
 
@@ -196,8 +210,8 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
     subject { trigger.short_token }
 
-    it 'returns shortened token without prefix' do
-      is_expected.not_to eq(Ci::Trigger::TRIGGER_TOKEN_PREFIX[0..4])
+    it 'returns the first characters of the token body' do
+      is_expected.to eq('toke')
     end
 
     context 'token does not have a prefix' do
@@ -217,22 +231,41 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         stub_application_setting(instance_token_prefix: instance_prefix)
       end
 
-      it 'returns shortened token with neither custom, nor default prefix' do
+      it 'strips the generated prefix from a generated token' do
         trigger = create(:ci_trigger_without_token, project: project)
-        expect(trigger.token).to start_with(instance_prefix)
-        expect(trigger.short_token).not_to eq(instance_prefix[0...4])
-        expect(trigger.short_token).not_to eq(Ci::Trigger::TRIGGER_TOKEN_PREFIX[0...4])
+        generated_prefix = "#{instance_prefix}-#{Ci::Trigger::TRIGGER_TOKEN_PREFIX}"
+
+        expect(trigger.token).to start_with(generated_prefix)
+        expect(trigger.short_token).to eq(trigger.token.delete_prefix(generated_prefix)[0...4])
       end
 
-      context 'with feature flag custom_prefix_for_all_token_types disabled' do
-        before do
-          stub_feature_flags(custom_prefix_for_all_token_types: false)
+      context 'with a stored token' do
+        where(:case_name, :token_value) do
+          'the current instance prefix'      | "instanceprefix-#{Ci::Trigger::TRIGGER_TOKEN_PREFIX}abcd1234"
+          'no instance prefix'               | "#{Ci::Trigger::TRIGGER_TOKEN_PREFIX}abcd1234"
+          'a previously configured prefix'   | "previousprefix-#{Ci::Trigger::TRIGGER_TOKEN_PREFIX}abcd1234"
         end
 
-        it 'returns shortened token without prefix' do
-          expect(trigger.token).to start_with(Ci::Trigger::TRIGGER_TOKEN_PREFIX)
-          expect(trigger.short_token).not_to eq(Ci::Trigger::TRIGGER_TOKEN_PREFIX[0...4])
+        with_them do
+          let(:trigger) do
+            build(:ci_trigger_without_token, project: project).tap { |trigger| trigger.token = token_value }
+          end
+
+          it 'returns the first characters of the token body' do
+            expect(trigger.short_token).to eq('abcd')
+          end
         end
+      end
+
+      it 'still strips the prefix after the feature flag is disabled' do
+        trigger = create(:ci_trigger_without_token, project: project)
+        generated_prefix = "#{instance_prefix}-#{Ci::Trigger::TRIGGER_TOKEN_PREFIX}"
+        trigger_token = trigger.token
+
+        expect(trigger.token).to start_with(generated_prefix)
+        expect do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end.not_to change { trigger.short_token }.from(trigger_token.delete_prefix(generated_prefix)[0...4])
       end
     end
   end

@@ -17,6 +17,10 @@ module Import
                 pipeline: ::BulkImports::Common::Pipelines::MaxIidsPipeline,
                 stage: 1
               },
+              members: {
+                pipeline: Import::Offline::Common::Pipelines::MembersPipeline,
+                stage: 1
+              },
               namespace_settings: {
                 pipeline: ::BulkImports::Groups::Pipelines::NamespaceSettingsPipeline,
                 stage: 1
@@ -27,6 +31,11 @@ module Import
               },
               milestones: {
                 pipeline: ::BulkImports::Common::Pipelines::MilestonesPipeline,
+                stage: 1
+              },
+              badges: {
+                pipeline: Import::Offline::Common::Pipelines::BadgesPipeline,
+                minimum_source_version: '19.5.0',
                 stage: 1
               },
               boards: {

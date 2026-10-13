@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe ImpersonationAccessTokenEntity do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:token) { create(:personal_access_token, :impersonation, user: user) }
+  let(:user) { build_stubbed(:user) }
+  let(:token) { build_stubbed(:personal_access_token, :impersonation, user: user) }
 
-  subject(:json) {  described_class.new(token).as_json }
+  subject(:json) { described_class.new(token).as_json }
 
   it 'has the correct attributes' do
     expected_revoke_path = Gitlab::Routing.url_helpers

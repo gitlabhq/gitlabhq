@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import Translate from '~/vue_shared/translate';
+import { ENVIRONMENTS_SCOPE } from '../constants';
 import { apolloProvider as createApolloProvider } from '../graphql/client';
 import EnvironmentsFolderApp from './environments_folder_app.vue';
 
@@ -29,7 +30,7 @@ export default () => {
         name: 'environments_folder',
         component: EnvironmentsFolderApp,
         props: (route) => ({
-          scope: route.query.scope,
+          scope: route.query.scope || ENVIRONMENTS_SCOPE.ACTIVE,
           page: Number(route.query.page || '1'),
           folderName,
           folderPath,

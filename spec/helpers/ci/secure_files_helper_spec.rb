@@ -6,11 +6,12 @@ RSpec.describe Ci::SecureFilesHelper, feature_category: :mobile_devops do
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:anonymous) { create(:user) }
-  let_it_be(:unconfirmed) { create(:user, :unconfirmed) }
   let_it_be(:project) do
     create(:project, creator_id: maintainer.id, maintainers: maintainer, developers: developer, guests: guest)
   end
+
+  let(:anonymous) { build_stubbed(:user) }
+  let(:unconfirmed) { build_stubbed(:user, :unconfirmed) }
 
   subject { helper.show_secure_files_setting(project, user) }
 

@@ -16,9 +16,7 @@ module Mcp
           delete: 'deleted'
         }.freeze
 
-        def self.namespace_arguments
-          { project: :id }
-        end
+        container_arguments project: :id
 
         register_version '0.1.0', {
           toolset: :ci,
@@ -41,7 +39,7 @@ module Mcp
             properties: {
               id: {
                 type: 'string',
-                description: 'ID or URL-encoded path of the project'
+                description: 'ID or full path of the project'
               },
               pipeline_id: {
                 type: 'integer',
@@ -61,6 +59,12 @@ module Mcp
           'manage_pipeline'
         end
 
+        # Unlisted pending removal (https://gitlab.com/gitlab-org/gitlab/-/work_items/631276).
+        override :unlisted?
+        def unlisted?
+          true
+        end
+
         protected
 
         override :perform_default
@@ -69,7 +73,7 @@ module Mcp
           params[:arguments] = transformed_args.except(:operation)
           tool = select_tool(transformed_args)
 
-          raise Mcp::Tools::Manager::ToolNotFoundError, self.class.tool_name unless tool
+          raise Base::AggregatedService::ToolNotConfiguredError, self.class.tool_name unless tool
 
           execute_tool_with_enhanced_response(tool, transformed_args[:operation])
         end

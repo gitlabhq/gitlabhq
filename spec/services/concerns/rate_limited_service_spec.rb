@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RateLimitedService, feature_category: :rate_limiting do
   let(:key) { :issues_create }
-  let(:scope) { [:container, :current_user] }
+  let(:scope) { { project: :container, user: :current_user } }
   let(:opts) { { scope: scope, users_allowlist: -> { [build_stubbed(:support_bot).username] } } }
   let(:rate_limiter) { ::Gitlab::ApplicationRateLimiter }
 
@@ -40,6 +40,8 @@ RSpec.describe RateLimitedService, feature_category: :rate_limiting do
       let_it_be(:current_user) { create(:user) }
 
       let(:service) { instance_double(Issues::CreateService, container: project, current_user: current_user) }
+      let(:evaluated_scope) { { project: project, user: current_user } }
+      let(:evaluated_opts) { { scope: evaluated_scope, users_allowlist: %w[support-bot] } }
 
       context 'when rate limiting is not in effect' do
         let(:throttled) { false }

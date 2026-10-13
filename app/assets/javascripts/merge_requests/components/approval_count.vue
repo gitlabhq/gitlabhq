@@ -1,11 +1,12 @@
 <script>
-import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
 
 export default {
   name: 'ApprovalCount',
   components: {
     GlBadge,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -16,6 +17,15 @@ export default {
       required: true,
     },
     fullText: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    /**
+     * Renders a subtle icon and count instead of the badge, for dense lists where a
+     * coloured pill would compete with the merge request title for attention.
+     */
+    neutral: {
       type: Boolean,
       required: false,
       default: false,
@@ -44,7 +54,10 @@ export default {
     class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
     data-testid="mr-approvals"
   >
-    <gl-badge icon="check-circle" variant="success" icon-optically-aligned>
+    <span v-if="neutral" class="gl-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle">
+      <gl-icon name="approval" :size="12" variant="subtle" />{{ approvalCount }}
+    </span>
+    <gl-badge v-else icon="check-circle" variant="success" icon-optically-aligned>
       {{ approvalCount }}
     </gl-badge>
   </button>

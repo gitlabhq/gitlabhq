@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
-import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
+import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/merge_widget.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -24,18 +24,17 @@ import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
 import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
-import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
-import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
+import getStateSubscription from 'ee_else_ce/vue_merge_request_widget/queries/get_state.subscription.graphql';
+import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/merge_widget.subscription.graphql';
 import mrPipelineUpdatedSubscription from '~/vue_merge_request_widget/subscriptions/mr_pipeline_updated.subscription.graphql';
 import mrPipelineCreationRequestUpdated from '~/vue_merge_request_widget/subscriptions/mr_pipeline_creation_request_updated.subscription.graphql';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_merge_request_widget/widgets/security_reports/graphql/security_report_merge_request_download_paths.query.graphql';
-import readyToMergeQuery from '~/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
+import readyToMergeQuery from '~/vue_merge_request_widget/queries/states/merge_widget.query.graphql';
 import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
 import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
-import mergeChecksSubscription from '~/vue_merge_request_widget/queries/merge_checks.subscription.graphql';
 import userPermissionsReviewerQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import missingBranchQuery from '~/vue_merge_request_widget/queries/states/missing_branch.query.graphql';
@@ -64,13 +63,22 @@ describe('MrWidgetOptions', () => {
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
 
+  const createStateSubscriptionPayload = (overrides = {}) => ({
+    ...getStateQueryResponse.data.project.mergeRequest,
+    mergeabilityChecks: [],
+    availableAutoMergeStrategies: [],
+    mergeTrainCar: null,
+    project: { ...getStateQueryResponse.data.project, mergeTrains: null },
+    ...overrides,
+  });
+
   const createComponent = ({
     updatedMrData = {},
     options = {},
     data = {},
     stateSubscriptionHandler = jest
       .fn()
-      .mockResolvedValue({ data: { mergeRequestMergeStatusUpdated: {} } }),
+      .mockResolvedValue({ data: { mergeRequestMergeStatusUpdated: null } }),
     mountFn = shallowMountExtended,
   } = {}) => {
     gl.mrWidgetData = { ...mockData, ...updatedMrData };
@@ -156,7 +164,6 @@ describe('MrWidgetOptions', () => {
       [approvedBySubscription, () => mockedApprovalsSubscription],
       [getStateSubscription, stateSubscriptionHandler],
       [readyToMergeSubscription, () => createMockApolloSubscription()],
-      [mergeChecksSubscription, () => createMockApolloSubscription()],
       [mrPipelineUpdatedSubscription, () => createMockApolloSubscription()],
       [mrPipelineCreationRequestUpdated, () => createMockApolloSubscription()],
     ];
@@ -383,6 +390,26 @@ describe('MrWidgetOptions', () => {
           });
           eventHub.$emit('mr-widget-update-requested');
           expect(mockSetData).toHaveBeenCalled();
+        });
+
+        it('refreshes strategies via REST (no redundant state refetch) on mr-widget-check-status', async () => {
+          const mockSetData = jest.fn();
+          await createComponent({
+            data: {
+              mr: {
+                setData: mockSetData,
+                setGraphqlData: jest.fn(),
+                setGraphqlSubscriptionData: jest.fn(),
+              },
+            },
+          });
+          const refetchStateSpy = jest.spyOn(wrapper.vm, 'refetchState');
+
+          eventHub.$emit('mr-widget-check-status');
+          await waitForPromises();
+
+          expect(mockSetData).toHaveBeenCalled();
+          expect(refetchStateSpy).not.toHaveBeenCalled();
         });
       });
 
@@ -725,6 +752,81 @@ describe('MrWidgetOptions', () => {
     });
   });
 
+  describe('merge checks', () => {
+    it('refreshes the merge checks from the merge status subscription', async () => {
+      const stateSubscriptions = [];
+
+      await createComponent({
+        mountFn: mountExtended,
+        updatedMrData: {
+          state: 'opened',
+          source_branch_exists: true,
+          target_branch_sha: 'abc123',
+        },
+        stateSubscriptionHandler: () => {
+          const subscription = createMockApolloSubscription();
+          stateSubscriptions.push(subscription);
+          return subscription;
+        },
+      });
+
+      expect(wrapper.text()).not.toContain('Merge blocked: 1 check failed');
+
+      stateSubscriptions.forEach((subscription) => {
+        subscription.next({
+          data: {
+            mergeRequestMergeStatusUpdated: createStateSubscriptionPayload({
+              mergeabilityChecks: [{ identifier: 'DRAFT_STATUS', status: 'FAILED' }],
+            }),
+          },
+        });
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Merge blocked: 1 check failed');
+    });
+  });
+
+  describe('merge status subscription', () => {
+    it('switches to the merged state when a push reports the merge request merged', async () => {
+      const stateSubscriptions = [];
+
+      await createComponent({
+        updatedMrData: {
+          state: 'opened',
+          source_branch_exists: true,
+          target_branch_sha: 'abc123',
+        },
+        stateSubscriptionHandler: () => {
+          const subscription = createMockApolloSubscription();
+          stateSubscriptions.push(subscription);
+          return subscription;
+        },
+      });
+
+      expect(wrapper.findComponent(MergedState).exists()).toBe(false);
+
+      mock.resetHandlers();
+      mock
+        .onGet(mockData.merge_request_widget_path)
+        .reply(HTTP_STATUS_OK, { ...mockData, state: 'merged' });
+      mock.onGet(mockData.merge_request_cached_widget_path).reply(HTTP_STATUS_OK, {});
+
+      stateSubscriptions.forEach((subscription) => {
+        subscription.next({
+          data: {
+            mergeRequestMergeStatusUpdated: createStateSubscriptionPayload({ state: 'merged' }),
+          },
+        });
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.findComponent(MergedState).exists()).toBe(true);
+    });
+  });
+
   describe('async preparation for a newly opened MR', () => {
     beforeEach(() => {
       mock
@@ -783,9 +885,9 @@ describe('MrWidgetOptions', () => {
         stateSubscriptions.forEach((stateSubscription) => {
           stateSubscription.next({
             data: {
-              mergeRequestMergeStatusUpdated: {
+              mergeRequestMergeStatusUpdated: createStateSubscriptionPayload({
                 detailedMergeStatus: 'MERGEABLE',
-              },
+              }),
             },
           });
         });

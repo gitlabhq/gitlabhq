@@ -68,8 +68,7 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
       context 'when placeholder references have not finished being loaded to the database' do
         before do
           allow_next_instance_of(Import::PlaceholderReferences::Store) do |store|
-            allow(store).to receive(:empty?).and_return(false)
-            allow(store).to receive(:count).and_return(1)
+            allow(store).to receive_messages(empty?: false, count: 1)
           end
         end
 

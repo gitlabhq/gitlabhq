@@ -47,8 +47,9 @@ class JiraConnectInstallation < ApplicationRecord
   validates :forge_installation_xid, format: { with: FORGE_INSTALLATION_XID_REGEX }, allow_blank: true
   validates :forge_installation_xid, uniqueness: true, allow_nil: true
   validates :cloud_id, presence: true, if: :forge?
-  # Jira apiBaseUrl that GitLab calls directly with the Forge system token. It and
-  # the token stay optional so a row survives the app clearing or rotating them.
+  # Jira apiBaseUrl that GitLab calls directly with the Forge system token.
+  # Set at first-link and refreshed via the app-context forge_token call;
+  # optional so a row stays valid if they are cleared (forge_direct? gates use).
   validates :jira_api_base_url, public_url: true, allow_blank: true
   validate :instance_url_parseable_by_uri, if: :instance_url_changed?
 
@@ -65,6 +66,33 @@ class JiraConnectInstallation < ApplicationRecord
   scope :direct_installations, -> { joins(:subscriptions) }
   scope :proxy_installations, -> { where.not(instance_url: nil) }
 
+  # Resolves the installation for a verified FIT: by its installation id,
+  # else the site's pre-Forge (Connect upgrade) row, which adopts the id on
+  # first contact. That first contact is often a read (the config page loads
+  # before any link), so the backfill runs on every FIT call, not only on link.
+  def self.find_or_backfill_by_forge_token(installation_id:, cloud_id:, organization_id:)
+    return if installation_id.blank?
+
+    installation = find_by(forge_installation_xid: installation_id, organization_id: organization_id)
+    return installation if installation
+    return if cloud_id.blank?
+
+    fallback = where(cloud_id: cloud_id, organization_id: organization_id, forge_installation_xid: nil)
+      .order(id: :desc).first
+    return unless fallback
+    return fallback if fallback.update(forge_installation_xid: installation_id)
+
+    Gitlab::AppLogger.warn(
+      message: 'Failed to adopt the Forge installation id on a Connect installation',
+      jira_connect_installation_id: fallback.id, forge_installation_xid: installation_id,
+      errors: fallback.errors.full_messages
+    )
+    nil
+  end
+
+  # The single outbound client selector: a Forge system-token client once the
+  # app registered its apiBaseUrl + system token (native install or a Connect
+  # install upgraded to Forge), otherwise the Connect shared_secret client.
   def client
     if forge_direct?
       Atlassian::Forge::SystemTokenClient.new(jira_api_base_url, forge_system_token)

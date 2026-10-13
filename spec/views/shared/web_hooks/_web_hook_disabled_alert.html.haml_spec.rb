@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/web_hooks/_web_hook_disabled_alert' do
-  let_it_be(:project) { create(:project) }
-
+  let(:project) { build_stubbed(:project) }
   let(:show_project_hook_failed_callout?) { false }
 
   def after_flash_content

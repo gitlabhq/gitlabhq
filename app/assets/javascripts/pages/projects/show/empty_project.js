@@ -2,13 +2,13 @@ import { GlTabsBehavior, HISTORY_TYPE_HASH } from '~/tabs';
 
 export default class EmptyProject {
   constructor() {
-    this.configureGitTabsEl = document.querySelector('.js-configure-git-tabs');
+    const configureGitTabsEl = document.querySelector('.js-configure-git-tabs');
+    const emptyProjectTabsEl = document.querySelector('.js-empty-project-tabs');
 
-    this.emptyProjectTabsEl = document.querySelector('.js-empty-project-tabs');
-
-    // eslint-disable-next-line no-new
-    new GlTabsBehavior(this.configureGitTabsEl, { history: HISTORY_TYPE_HASH });
-    // eslint-disable-next-line no-new
-    new GlTabsBehavior(this.emptyProjectTabsEl, { history: HISTORY_TYPE_HASH });
+    // Neither nav renders without push access, and the protocol nav also needs SSH enabled.
+    [configureGitTabsEl, emptyProjectTabsEl].filter(Boolean).forEach((el) => {
+      // eslint-disable-next-line no-new
+      new GlTabsBehavior(el, { history: HISTORY_TYPE_HASH });
+    });
   }
 }

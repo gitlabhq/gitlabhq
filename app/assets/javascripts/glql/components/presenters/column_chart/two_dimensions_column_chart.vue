@@ -1,5 +1,6 @@
 <script>
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
+import { foldSeries } from '../bar_list/fold_tail';
 import {
   buildStackedByDimension,
   dimensionLabelFormatter,
@@ -11,9 +12,14 @@ import {
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 
+const EMPTY_VALUE = '-';
+
 export default {
   name: 'TwoDimensionsColumnChart',
   components: { GlStackedColumnChart, FormattedTooltipContent },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -31,14 +37,35 @@ export default {
       required: true,
       type: Object,
     },
+    maxSeries: {
+      required: false,
+      type: Number,
+      default: null,
+    },
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     chart() {
       return buildStackedByDimension({
         nodes: this.data.nodes,
         primaryDim: this.primaryDimension,
         secondaryDim: this.secondaryDimension,
         metric: this.metric,
+        // ECharts' empty marker; gitlab-ui's tooltip formatter throws on a bare null.
+        missingValue: EMPTY_VALUE,
+      });
+    },
+    // The biggest series by total keep their own segment; the rest fold into Other.
+    bars() {
+      if (!this.maxSeries) return this.chart.bars;
+
+      return foldSeries({
+        bars: this.chart.bars,
+        groups: this.chart.groups,
+        max: this.maxSeries,
+        missingValue: EMPTY_VALUE,
       });
     },
     metricFormatter() {
@@ -76,7 +103,10 @@ export default {
         axisName: this.xAxisTitle,
       });
     },
-    contentFromParams: tooltipContentFromParams,
+    contentFromParams(params) {
+      const seriesData = params?.seriesData?.filter(({ value }) => value !== EMPTY_VALUE);
+      return tooltipContentFromParams({ ...params, seriesData });
+    },
   },
 };
 </script>
@@ -87,8 +117,9 @@ export default {
     :x-axis-title="xAxisTitle"
     :y-axis-title="yAxisTitle"
     :group-by="chart.groups"
-    :bars="chart.bars"
+    :bars="bars"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     presentation="stacked"
     :include-legend-avg-max="false"
   >

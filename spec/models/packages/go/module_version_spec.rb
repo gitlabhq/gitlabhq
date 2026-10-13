@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Go::ModuleVersion, feature_category: :package_registry do
   include_context 'basic Go module'
 
   let_it_be(:mod) { create :go_module, project: project }

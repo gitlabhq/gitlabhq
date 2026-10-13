@@ -1,0 +1,22 @@
+<% source_hostname = @source_user.source_hostname %>
+<% source_name = @source_user.source_name %>
+<% source_username = "@#{@source_user.source_username}" %>
+<% reassign_to_user = @source_user.reassign_to_user %>
+<% reassign_to_name = reassign_to_user.name %>
+<% reassign_to_username = "#{reassign_to_user.to_reference} - #{user_url(reassign_to_user)}" %>
+<% destination_group = "#{@source_user.namespace.name} (/#{@source_user.namespace.full_path})" %>
+
+<%= s_('UserMapping|Reassignment revoked') %>
+
+<%= s_('UserMapping|%{reassign_to_name} (%{reassign_to_username}) has revoked their previously approved reassignment of contributions from %{source_name} (%{source_username}) on %{source_hostname} in %{destination_group}. Contributions already reassigned to %{reassign_to_name} remain attributed to them.') % {
+  reassign_to_name: reassign_to_name,
+  reassign_to_username: reassign_to_username,
+  source_name: source_name,
+  source_username: source_username,
+  source_hostname: source_hostname,
+  destination_group: destination_group} %>
+
+<%= s_('UserMapping|To reassign these contributions to another user, go to the %{link_start}Members page%{link_end} of %{destination_group}.') % {
+  link_start: '',
+  link_end: " (#{group_group_members_url(@source_user.namespace, tab: 'placeholders')})",
+  destination_group: destination_group} %>

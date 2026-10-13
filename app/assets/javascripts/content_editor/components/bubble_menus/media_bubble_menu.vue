@@ -115,13 +115,18 @@ export default {
 
       const position = this.tiptapEditor.state.selection.from;
 
+      let providerId;
+
       if (this.isIframe) {
-        this.mediaSrc = await this.contentEditor.resolveIframeSrc(this.mediaCanonicalSrc);
+        const resolved = await this.contentEditor.resolveIframeSrc(this.mediaCanonicalSrc);
+
+        this.mediaSrc = resolved.src;
+        providerId = resolved.providerId;
       } else {
         this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
       }
 
-      if (this.isIframe && !isIframeSrcAllowed(this.mediaSrc)) {
+      if (this.isIframe && !isIframeSrcAllowed(this.mediaSrc, providerId)) {
         this.isUpdating = false;
         this.endEditingMedia();
         return;
@@ -132,6 +137,8 @@ export default {
         alt: this.mediaAlt,
         canonicalSrc: this.mediaCanonicalSrc,
       };
+
+      if (this.isIframe) attrs.providerId = providerId;
 
       this.tiptapEditor.chain().focus().updateAttributes(this.mediaType, attrs).run();
 

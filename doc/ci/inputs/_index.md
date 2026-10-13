@@ -26,8 +26,8 @@ can be used in similar ways, but have different benefits:
   To define specific values when the pipeline runs, use inputs instead of CI/CD variables.
 - CI/CD variables offer flexible values that can be defined at multiple levels, but can be modified
   throughout pipeline execution. Use variables for values that need to be accessible in the job's runtime environment.
-  You can also use [predefined variables](../variables/predefined_variables.md) with `rules`
-  for dynamic pipeline configuration.
+  You can also use [predefined variables](../variables/predefined_variables.md) with [`include:rules`](../yaml/_index.md#includerules)
+  for dynamic pipeline composition through conditional includes.
 
 ## CI/CD Inputs and variables comparison
 
@@ -215,10 +215,11 @@ test_job:
 
 #### Array type
 
-The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
-like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. To reuse a list across
-configuration files, define it as an array input in an
-[external file](#define-pipeline-inputs-in-external-files), which also lets you
+The content of the items in an array type can be any valid YAML map, sequence, or scalar. Do not use
+more complex YAML features like [`!reference`](../yaml/yaml_optimization.md#reference-tags), which
+[can produce unexpected results in input values](#input-value-looks-like-gitlabciconfigyamltagsreference).
+To reuse a list across configuration files, define an array input in an
+[external file](#define-pipeline-inputs-in-external-files). You can then
 [extend it with additional items](#extend-an-array-input-with-additional-items).
 
 When using the value of an array input in a string (for example
@@ -274,9 +275,9 @@ With an input value of `[shared-tag-1, shared-tag-2]`, `test_job` uses
 `[shared-tag-1, shared-tag-2, additional-tag]`.
 
 The input must be the entire array item. When an array item combines the input with other
-text, for example `- prefix-$[[ inputs.tags ]]`, the input is
-[interpolated as a string](#input-types) instead, and the item becomes a single string
-containing the string representation of the array.
+text, for example `- prefix-$[[ inputs.tags ]]`, GitLab
+[interpolates the input as a string](#input-types) instead. The item then becomes a single string
+that contains the array's string representation.
 
 ##### Array inputs with options
 
@@ -321,8 +322,8 @@ The pipeline fails to start if any value in the array input does not match a lis
 {{< /history >}}
 
 Use bracket notation with an index number to access individual elements of an array input.
-Array items are indexed in the order they are defined in the YAML array,
-with positive numbers, and the `[0]` index item is the first item in the array.
+Array items are indexed with positive numbers, in the order they are defined in the YAML array.
+The `[0]` index item is the first item in the array.
 
 For example:
 
@@ -601,6 +602,10 @@ Input values are only available in the same file as the `spec` section defining 
 A file added with `include` cannot access inputs defined in other files, or the including file.
 To use a value from an included file, pass it explicitly with `include:inputs`.
 
+> [!note]
+> Do not use a [`!reference` tag](../yaml/yaml_optimization.md#reference-tags) as an input
+> value or in an input `default:`, because [tags are resolved after inputs are interpolated](#input-value-looks-like-gitlabciconfigyamltagsreference).
+
 #### With multiple `include` entries
 
 Inputs must be specified separately for each include entry. For example:
@@ -694,6 +699,10 @@ trigger-job:
 
 {{< /tabs >}}
 
+> [!note]
+> Do not use a [`!reference` tag](../yaml/yaml_optimization.md#reference-tags) as an input
+> value or in an input `default:`, because [tags are resolved after inputs are interpolated](#input-value-looks-like-gitlabciconfigyamltagsreference).
+
 #### Define pipeline inputs in external files
 
 {{< history >}}
@@ -703,8 +712,8 @@ trigger-job:
 
 {{< /history >}}
 
-You can reuse pipeline input definitions across multiple CI/CD configurations by defining them in
-external files and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
+To reuse pipeline input definitions across multiple CI/CD configurations, define them in external files,
+then include them in a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
 
 Create a file with input definitions, for example in a file named `shared-inputs.yml`:
 
@@ -801,9 +810,8 @@ that runs the pipeline.
 {{< /history >}}
 
 Input keys must be unique across all included files and inline specifications.
-If you define an input with the same key in multiple included files, or in both
-an included file and the `inputs:` section in the `.gitlab-ci.yml` configuration,
-the following error is returned:
+If the same input key appears in multiple included files, or in an included file and the inline `inputs:` section,
+GitLab returns this error:
 
 ```plaintext
 Duplicate input keys found: environment. Input keys must be unique across all included files and inline specifications.
@@ -1002,12 +1010,12 @@ which is assigned to `tags` as an array.
 ### YAML syntax errors when using `inputs` in `rules`
 
 When you use input to modify `rules:if` expressions, you might get one of
-[a variety of syntax errors](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
+[a variety of syntax errors](../jobs/job_troubleshooting.md#error-this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
 
 These errors are often related to how strings are handled in [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
 Expressions in `rules:if` expect a CI/CD variable compared to a quoted string (`'` or `"`) or another variable.
 When input values are inserted into the `rules` configuration at pipeline runtime,
-the resulting value might not be a quoted string or variable, which causes the error.
+the resulting value might not be a quoted string or variable. This mismatch causes the error.
 
 For example, in the configuration to include:
 
@@ -1073,3 +1081,27 @@ syntax after the input is evaluated. When quotes are nested, use `"` for the inn
 quotes and `'` for the outer quotes, or the inverse.
 
 Jobs names do not need to be quoted.
+
+### Input value looks like `#<Gitlab::Ci::Config::Yaml::Tags::Reference...>`
+
+An input value might contain a string like `#<Gitlab::Ci::Config::Yaml::Tags::Reference:0x000079ec9b09bda0>`
+instead of your expected value.
+
+This happens when you use a [`!reference` tag](../yaml/yaml_optimization.md#reference-tags)
+as an input value. For example:
+
+```yaml
+.my-shared-list:
+  - value1
+  - value2
+
+include:
+  - local: include.yml
+    inputs:
+      my_input: !reference [.my-shared-list]
+```
+
+Inputs are interpolated before reference tags, so the input resolves to the reference tag's
+internal object. For an alternative, you can define an array input in an
+[external file](#define-pipeline-inputs-in-external-files) and
+[extend it with additional items](#extend-an-array-input-with-additional-items).

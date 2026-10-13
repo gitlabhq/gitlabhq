@@ -5,9 +5,7 @@ class IssuableSidebarBasicEntity < Grape::Entity
 
   expose :id
   expose :iid
-  expose :type do |issuable|
-    issuable.to_ability_name
-  end
+  expose :type, &:to_ability_name
   expose :author_id
   expose :project_id do |issuable|
     issuable.project.id
@@ -33,8 +31,8 @@ class IssuableSidebarBasicEntity < Grape::Entity
       issuable.can_move?(current_user)
     end
 
-    expose :can_admin_label do |issuable|
-      can?(current_user, :admin_label, issuable.project)
+    expose :can_create_label do |issuable|
+      can?(current_user, :create_label, issuable.project)
     end
 
     expose :can_create_timelogs do |issuable|

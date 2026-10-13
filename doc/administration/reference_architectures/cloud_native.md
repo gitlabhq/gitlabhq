@@ -93,6 +93,12 @@ These architectures are designed around target RPS ranges representing typical p
 | L | ≤500 | Large teams with heavy development activity and significant automation |
 | XL | ≤1000 | Enterprise deployments with intensive workloads and extensive integrations |
 
+> [!note]
+> These RPS targets assume typical workload composition. AI-driven usage, such as
+> [GitLab Duo Agent Platform](#scaling-for-gitlab-duo-agent-platform), doesn't scale with user
+> count and can push actual load above these targets. Monitor actual usage rather than sizing
+> from user count alone for environments with meaningful agentic activity.
+
 For detailed guidance on determining your expected load and selecting the appropriate size, see the [reference architecture sizing guide](../../install/sizing.md).
 
 ## Key benefits
@@ -300,7 +306,15 @@ The machine types shown are examples used in validation and testing. You can use
 
 Do not use burstable instance types due to inconsistent performance.
 
-For more information, see [supported machine types](_index.md#how-specifications-are-derived).
+For more information, see [How specifications are derived](_index.md#how-specifications-are-derived).
+
+### Node pool configuration
+
+The node configurations shown for each size use one dedicated pool per component type, matching
+the [GitLab Charts reference examples](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/examples/ref).
+Combining Webservice, Sidekiq, and Supporting onto a single shared pool is also supported, provided
+nodes are sized to host all three workloads together. Gitaly always requires its own dedicated
+nodes, regardless of how the other components are grouped.
 
 ### Gitaly considerations
 

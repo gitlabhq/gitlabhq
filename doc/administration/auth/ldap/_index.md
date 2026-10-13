@@ -666,7 +666,7 @@ is required when `external_groups` is configured:
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
 
 > [!note]
-> If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronisation to work.
+> If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronization to work.
 
 ### Use multiple LDAP servers
 

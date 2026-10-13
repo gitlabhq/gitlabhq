@@ -32,6 +32,13 @@ module API
         %i[scope search state confidential search_type include_archived page per_page order_by sort type]
       end
 
+      # Sub-keys copied out of the nested `not` hash: `convert_not_params` flattens every
+      # member it receives, so an uncopied one would reach an undeclared filter. Flat by
+      # scope, so a key added here needs a matching `verify_ee_param_*!` entry.
+      def self.search_negated_param_keys
+        []
+      end
+
       def self.gitlab_search_mcp_params
         search_param_keys + [:id]
       end

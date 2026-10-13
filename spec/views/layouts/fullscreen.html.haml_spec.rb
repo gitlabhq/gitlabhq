@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'layouts/fullscreen' do
   let_it_be(:template) { 'layouts/fullscreen' }
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   before do
     allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))

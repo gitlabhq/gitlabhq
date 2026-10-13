@@ -16,6 +16,8 @@ module Ci
     idempotent!
 
     def perform(...)
+      return if Ci::UnlockPipelineRequest.total_pending == 0
+
       Ci::UnlockPipelinesInQueueWorker.perform_with_capacity(...)
     end
   end

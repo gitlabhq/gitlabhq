@@ -1,6 +1,6 @@
 ---
-source_checksum: 68dd734ecfa7b3dd
-distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
+source_checksum: 1cb02a9b9820f086
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -36,7 +36,8 @@ distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
 - List path attributes first, then required attributes, then sort remaining attributes alphabetically in request attribute tables.
 - Place attribute names in backtick code blocks in all attribute tables.
 - Document tier and offering restrictions (e.g. `GitLab Self-Managed, Premium and Ultimate only.`) in the attribute description; combine tier and offering information when possible.
-- For conditionally required attributes, use the format `Required if \`attribute1\` is \`true\`.` in the description and set the Required column to `Conditional`.
+- For an attribute required by another attribute's value, use the format `Required if \`attribute1\` is \`true\`.` in the description and set the Required column to `Conditional`.
+- When at least one attribute from a group is required but no particular member is mandatory, set the Required column to `Conditional` and describe each alternative with `Required if none of \`attribute1\`, \`attribute2\`, or \`attribute3\` are provided.`
 
 ### REST API — Response Attributes
 

@@ -3,23 +3,23 @@ stage: Release Notes
 group: Monthly Release
 date: 2023-11-16
 title: "GitLab 16.6 릴리스 정보"
-description: "GitLab 16.6이 출시되었으며 GitLab Duo Chat이 베타로 제공됩니다"
+description: "GitLab 16.6이 릴리스되었으며 GitLab Duo Chat이 베타로 제공됩니다"
 ---
 
 <!-- markdownlint-disable -->
 <!-- vale off -->
 
-2023년 11월 16일에 GitLab 16.6이 다음 기능과 함께 출시되었습니다.
+2023년 11월 16일에 GitLab 16.6이 다음 기능과 함께 릴리스되었습니다.
 
-또한 이달의 주목할 만한 기여자를 포함한 모든 기여자에게 감사드립니다.
+또한 이번 달의 주목할 만한 기여자를 포함하여 모든 기여자에게 감사드립니다.
 
-## 이달의 주목할 만한 기여자: Joe Snyder {#this-months-notable-contributor-joe-snyder}
+## 이달의 우수 기여자: Joe Snyder {#this-months-notable-contributor-joe-snyder}
 
 Joe Snyder는 GitLab 전반에 걸친 일관된 기여로 GitLab의 16.6 MVP로 선정되었으며, [관리자가 버전별로 러너를 필터링할 수 있도록 허용](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135025)하는 최근 머지 리퀘스트가 포함되어 있습니다.
 
 Joe는 GitLab의 선임 프론트엔드 엔지니어인 [Miguel Rincon](https://gitlab.com/mrincon)에 의해 지명되었습니다. Miguel은 GitLab의 진화하는 아키텍처로 인한 여러 필수 재작성을 통해 Joe의 노력을 인정했으며, Joe의 "성능 및 사용성에 대한 신중한 고려"에 대해 언급했습니다.
 
-GitLab의 선임 백엔드 엔지니어인 [Pedro Pombeiro](https://gitlab.com/pedropombeiro)는 "Joe Snyder는 이전 동료로부터 인수한 후 문제에 대한 모든 맥락을 학습해야 하면서 이 변경을 결승선을 넘겼습니다. 그는 또한 연속적인 리뷰에서 당사의 피드백에 매우 반응성 있고 인내심 있게 대응했습니다."라고 덧붙였습니다.
+GitLab의 선임 백엔드 엔지니어인 [Pedro Pombeiro](https://gitlab.com/pedropombeiro)는 "Joe Snyder는 이전 동료로부터 업무를 인수한 후 문제에 대한 모든 맥락을 파악해야 했음에도 이 변경 사항을 끝까지 완수해냈습니다. 그는 또한 연속적인 리뷰에서 당사의 피드백에 매우 반응성 있고 인내심 있게 대응했습니다."라고 덧붙였습니다.
 
 GitLab의 선임 백엔드 엔지니어인 [Terri Chu](https://gitlab.com/terrichu)는 "Joe는 함께 일하기 정말 좋은 사람이었습니다"라고 말했습니다. Terri는 지난 마일스톤(및 이전 마일스톤) 동안 [`emails_enabled` 변경](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899)에 대한 Joe의 진행 중인 작업을 강조했습니다.
 
@@ -41,12 +41,12 @@ Joe Snyder는 [Kitware](https://www.kitware.com/)의 선임 R&D 엔지니어이�
 
 소프트웨어 개발 프로세스에 관여하는 모든 사람들은 코드, 에픽, 이슈, 그리고 긴 논의 스레드에 익숙해지는 데 상당한 시간을 소비할 수 있습니다. 요약, 문서, 테스트 또는 코드 작성과 같은 일상적인 작업으로 인해 속도가 느려질 수 있습니다. 판단 없이 DevSecOps 질문에 답하고 후속 조치를 처리할 수 있는 전문가가 옆에 있으면 소프트웨어 개발 프로세스를 가속화하는 데 도움이 될 수 있습니다.
 
-GitLab Duo Chat은 이러한 문제점들을 적극적으로 해결하고 워크플로우를 가속화하는 것을 목표로 합니다. 해당 기능은 다음을 포함합니다:
+GitLab Duo Chat은 이러한 문제점들을 적극적으로 해결하고 워크플로우를 가속화하는 것을 목표로 합니다. 해당 기능은 다음을 포함합니다.
 
 - 이슈, 에픽 및 코드를 설명하거나 요약합니다.
 - "이 이슈에서 제안된 솔루션과 관련하여 댓글에서 제기된 모든 논거를 수집하세요"와 같은 이러한 아티팩트에 대한 구체적인 질문에 답변합니다.
 - 이러한 아티팩트의 정보를 기반으로 코드 또는 콘텐츠를 생성합니다. 예를 들어, "이 코드에 대한 문서를 작성할 수 있습니까?"라고 물어볼 수 있습니다.
-- 또는 "GitLab CI/CD 에서 Ruby on Rails 애플리케이션을 테스트하고 구축하기 위한 .GitLab-ci.yml 구성 파일을 만듭니다"처럼 처음부터 시작하도록 도와줍니다.
+- 또는 "GitLab CI/CD 파이프라인에서 Ruby on Rails 애플리케이션을 테스트하고 구축하기 위한 .GitLab-ci.yml 구성 파일을 만듭니다"처럼 처음부터 시작하도록 도와줍니다.
 - 초보자이든 전문가이든 모든 DevSecOps 관련 질문에 답합니다. 예를 들어 "REST API에 대한 Dynamic Application Security Testing을 설정하려면 어떻게 해야 하나요?"
 - 후속 질문에 답하여 위의 모든 시나리오를 반복적으로 진행할 수 있습니다.
 
@@ -66,7 +66,7 @@ GitLab Duo Chat은 GitLab.com에서 베타 기능으로 제공됩니다. VS Code
 
 {{< /details >}}
 
-GitLab.com 사용자의 기본 이메일 주소가 기존의 검증된 도메인과 일치하면 사용자가 엔터프라이즈 사용자로 자동 청구됩니다. 이것은 그룹 Owner에게 더 많은 사용자 관리 제어 권한과 사용자 계정에 대한 가시성을 제공합니다. 사용자가 엔터프라이즈 사용자가 된 후 기본 이메일을 자신의 조직이 소유한 이메일로만 변경할 수 있으며, 이는 검증된 도메인에 따릅니다.
+GitLab.com 사용자의 기본 이메일 주소가 기존의 검증된 도메인과 일치하면 사용자가 엔터프라이즈 사용자로 자동 청구됩니다. 이것은 그룹 소유자에게 더 많은 사용자 관리 제어 권한과 사용자 계정에 대한 가시성을 제공합니다. 사용자가 엔터프라이즈 사용자가 된 후 기본 이메일을 자신의 조직이 소유한 이메일로만 변경할 수 있으며, 이는 검증된 도메인에 따릅니다.
 
 ### 최소 포킹 - 기본 브랜치만 포함 {#minimal-forking---only-include-the-default-branch}
 
@@ -98,9 +98,9 @@ GitLab의 이전 버전에서는 리포지토리를 포크할 때 포크에는 �
 
 프로덕션 애플리케이션에 도입될 수 있는 코드 변경 사항에 대한 조사가 증가하고 있으며, 이는 기업이 컴플라이언스 위험 및 보안 취약성에 노출될 수 있습니다. 스캔 결과 정책을 사용하면 모든 머지 리퀘스트에 대해 2명의 승인을 적용하여 일방적인 변경을 할 수 없도록 할 수 있습니다.
 
-스캔 결과 정책에는 `Any merge request`을 대상으로 하는 새로운 옵션이 있으며, 이를 [역할 기반 승인자](../../user/application_security/policies/merge_request_approval_policies.md#require_approval-action-type) 정의와 함께 사용하여 정의된 브랜치에 대한 각 머지 리퀘스트가 지정된 역할(Owner, Maintainer 또는 Developer)을 가진 2명 이상의 사용자로부터 승인을 요구하도록 할 수 있습니다.
+스캔 결과 정책에는 `Any merge request`을 대상으로 하는 새로운 옵션이 있으며, 이를 [역할 기반 승인자](../../user/application_security/policies/merge_request_approval_policies.md#require_approval-action-type) 정의와 함께 사용하여 정의된 브랜치에 대한 각 머지 리퀘스트가 지정된 역할(소유자, 유지관리자 또는 개발자)을 가진 2명 이상의 사용자로부터 승인을 요구하도록 할 수 있습니다.
 
-SaaS에서 16.6으로 사용 가능합니다. 기능 플래그 `scan_result_any_merge_request` 뒤의 Self-managed에서 사용 가능하며 16.7에서 기본적으로 활성화됩니다.
+16.6부터 SaaS에서 사용 가능합니다. 기능 플래그 `scan_result_any_merge_request` 뒤의 Self-managed에서 사용 가능하며 16.7에서 기본적으로 활성화됩니다.
 
 ### GitLab Dedicated용 Switchboard 포털이 이제 일반적으로 출시됨 {#switchboard-portal-for-gitlab-dedicated-is-now-generally-available}
 
@@ -114,7 +114,7 @@ SaaS에서 16.6으로 사용 가능합니다. 기능 플래그 `scan_result_any_
 
 {{< /details >}}
 
-새로운 셀프서비스 포털인 Switchboard는 이제 고객 및 팀 멤버가 [GitLab Dedicated](https://about.gitlab.com/dedicated/) 인스턴스를 온보드, 구성 및 유지할 수 있도록 제공됩니다.
+새로운 셀프서비스 포털인 Switchboard는 이제 고객 및 팀 멤버가 [GitLab Dedicated](https://about.gitlab.com/dedicated/) 인스턴스를 온보딩, 구성 및 유지 관리할 수 있도록 제공됩니다.
 
 Switchboard를 사용하면 이제 GitLab Dedicated 인스턴스에 [구성 변경](../../administration/dedicated/_index.md)을 적용할 수 있습니다. 이 기능은 향후 릴리스에서 확장될 예정입니다.
 
@@ -130,7 +130,7 @@ Switchboard를 사용하면 이제 GitLab Dedicated 인스턴스에 [구성 변�
 
 {{< /details >}}
 
-GitLab 16.1에서 [발표](https://about.gitlab.com/blog/introducing-ci-components/)한 CI/CD 구성 요소라는 흥미로운 실험적 기능의 릴리스입니다. 은 CI/CD 카탈로그에 나열될 수 있는 구성 블록입니다.
+GitLab 16.1에서 우리는 CI/CD 구성 요소라는 흥미로운 실험적 기능의 릴리스를 [발표](https://about.gitlab.com/blog/introducing-ci-components/)했습니다. 구성 요소는 향후 CI/CD 카탈로그에 나열될 수 있는 파이프라인 구성 블록입니다.
 
 오늘 우리는 CI/CD 구성 요소의 베타 가용성을 발표하게 되어 기쁩니다. 이 릴리스를 통해 초기 실험 버전의 구성 요소 폴더 구조도 개선했습니다. CI/CD 구성 요소의 실험 버전을 이미 테스트 중이라면 [새로운 폴더 구조](../../ci/components/_index.md#directory-structure)로 마이그레이션하는 것이 필수입니다. [여기](https://gitlab.com/gitlab-components/)에서 몇 가지 예를 볼 수 있습니다. 이전 폴더 구조는 더 이상 사용되지 않으며 향후 몇 개의 릴리스 내에 제거할 예정입니다.
 
@@ -148,9 +148,9 @@ CI/CD 구성 요소를 시도해보는 경우 현재 실험적 기능으로 제�
 
 {{< /details >}}
 
-는 GitLab CI/CD의 기본 부분이며, 설정 UI에서 변수로 작업할 수 있는 더 나은 환경을 제공할 수 있다고 생각했습니다. 따라서 이번 릴리스에서 를 추가하고 편집하는 흐름을 개선하는 새로운 드로어를 사용하도록 UI를 업데이트했습니다.
+CI/CD 변수는 GitLab CI/CD의 기본 부분이며, 설정 UI에서 변수로 작업할 수 있는 더 나은 환경을 제공할 수 있다고 생각했습니다. 따라서 이번 릴리스에서 CI/CD 변수를 추가하고 편집하는 플로우를 개선하는 새로운 드로어를 사용하도록 UI를 업데이트했습니다.
 
-예를 들어, 마스킹 검증은 이전에 를 저장하려고 할 때만 발생했으며, 실패한 경우 처음부터 다시 시작해야 했습니다. 하지만 이제 새로운 드로어를 사용하면 실시간 검증을 받을 수 있으므로 다시 수행할 필요 없이 움직이면서 조정할 수 있습니다!
+예를 들어, 마스킹 검증은 이전에 CI/CD 변수를 저장하려고 할 때만 발생했으며, 실패한 경우 처음부터 다시 시작해야 했습니다. 하지만 이제 새로운 드로어를 사용하면 실시간 검증을 받을 수 있으므로 다시 수행할 필요 없이 움직이면서 조정할 수 있습니다!
 
 이 변경에 대한 [피드백](https://gitlab.com/gitlab-org/gitlab/-/issues/428807)은 항상 소중하게 여겨집니다.
 
@@ -214,7 +214,7 @@ Self-managed 러너 플릿의 운영자는 러너 플릿 인프라에 대한 중
 
 그러나 오류 목록은 총 몇 개의 항목이 가져오지 못했는지, 그리고 특히 어떤 항목이 가져오지 못했는지 이해하는 데 도움이 되지 않습니다. 이 정보는 가져오기 프로세스의 결과를 이해하는 데 중요합니다.
 
-이 릴리스에서 **상세정보** 버튼을 **See failures** 링크로 바꿨습니다. **See failures** 링크를 선택하면 주어진 그룹 또는 프로젝트에 대해 가져오기에 실패한 모든 항목을 나열하는 새 페이지로 이동합니다. 가져오지 못한 각 항목에 대해 다음을 볼 수 있습니다:
+이 릴리스에서 **상세정보** 버튼을 **See failures** 링크로 바꿨습니다. **See failures** 링크를 선택하면 주어진 그룹 또는 프로젝트에 대해 가져오기에 실패한 모든 항목을 나열하는 새 페이지로 이동합니다. 가져오지 못한 각 항목에 대해 다음을 볼 수 있습니다.
 
 - 항목의 유형입니다. 예를 들어, 머지 리퀘스트 또는 이슈.
 - 발생한 오류의 종류입니다.
@@ -236,7 +236,7 @@ Self-managed 러너 플릿의 운영자는 러너 플릿 인프라에 대한 중
 
 16.0 릴리스는 새로운 네비게이션 경험을 도입했으며, 2023년 6월 2일부터 모든 사용자를 위한 기본값이 되었습니다. 후속 마일스톤에서는 풍부한 사용자 피드백을 기반으로 많은 개선 사항이 이루어졌습니다. 이전 네비게이션으로 돌아갈 수 있는 기능이 이제 제거되었습니다. 더 많은 흥미로운 변경 사항이 네비게이션을 위해 계획되어 있지만, 지금은 모든 사용자가 일관된 네비게이션 경험을 갖습니다.
 
-요약하면 새로운 GitLab 네비게이션을 사용하면 다음을 수행할 수 있습니다:
+요약하면 새로운 GitLab 네비게이션을 사용하면 다음을 수행할 수 있습니다.
 
 - 자주 사용되는 프로젝트 또는 그룹 항목을 상단에 저장하도록 메뉴 항목 고정
 - 네비게이션을 숨기고 "엿보기"하여 더 넓은 화면 노출
@@ -304,9 +304,9 @@ GitLab 버전 16.4부터는 Kubernetes용 에이전트 및 개인 액세스 토�
 
 [보안 정책 컴플라이언스 적용](https://gitlab.com/groups/gitlab-org/-/epics/9704)을 돕기 위해 스캔 결과 정책에 추가되는 여러 새로운 설정 중 하나인 이 제어는 정책을 우회하기 위해 프로젝트 수준 설정을 활용하는 기능을 제한합니다.
 
-각 기존 또는 새로운 스캔 결과 정책에 대해 `Prevent pushing and force pushing`을 활성화하여 정책 내에 정의된 브랜치에 효과를 발휘하고 사용자가 머지 리퀘스트 흐름을 우회하여 브랜치로 직접 변경 사항을 푸시하는 것을 방지할 수 있습니다.
+각 기존 또는 새로운 스캔 결과 정책에 대해 `Prevent pushing and force pushing`을 활성화하여 정책 내에 정의된 브랜치에 효과를 발휘하고 사용자가 머지 리퀘스트 플로우를 우회하여 브랜치로 직접 변경 사항을 푸시하는 것을 방지할 수 있습니다.
 
-SaaS에서 16.6으로 사용 가능합니다. 기능 플래그 `scan_result_policies_block_force_push` 뒤의 Self-managed에서 사용 가능하며 16.7에서 기본적으로 활성화됩니다.
+16.6부터 SaaS에서 사용 가능합니다. 기능 플래그 `scan_result_policies_block_force_push` 뒤의 Self-managed에서 사용 가능하며 16.7에서 기본적으로 활성화됩니다.
 
 ### AWS S3에 대한 그룹 수준 감사 이벤트 스트리밍 {#group-level-audit-event-streaming-to-aws-s3}
 
@@ -366,7 +366,7 @@ SaaS에서 16.6으로 사용 가능합니다. 기능 플래그 `scan_result_poli
 
 {{< /details >}}
 
-GitLab 관리자 및 그룹 Owner는 서비스 계정에 대한 만료 날짜를 적용할지 여부를 선택할 수 있습니다. 이전에는 서비스 계정 토큰이 개인, 프로젝트 및 그룹 액세스 토큰 만료 한도에 따라 1년 이내에 만료되어야 했습니다. 이를 통해 관리자와 그룹 Owner는 자신의 목표와 가장 잘 맞는 보안과 사용 편의성 간의 균형을 선택할 수 있습니다.
+GitLab 관리자 및 그룹 소유자는 서비스 계정에 대한 만료 날짜를 적용할지 여부를 선택할 수 있습니다. 이전에는 서비스 계정 토큰이 개인, 프로젝트 및 그룹 액세스 토큰 만료 한도에 따라 1년 이내에 만료되어야 했습니다. 이를 통해 관리자와 그룹 소유자는 자신의 목표와 가장 잘 맞는 보안과 사용 편의성 간의 균형을 선택할 수 있습니다.
 
 ### 중복 NuGet 패키지 방지 {#prevent-duplicate-nuget-packages}
 
@@ -382,7 +382,7 @@ GitLab 관리자 및 그룹 Owner는 서비스 계정에 대한 만료 날짜를
 
 GitLab 패키지 레지스트리를 사용하여 프로젝트의 NuGet 패키지를 게시하고 다운로드할 수 있습니다. 기본적으로 동일한 패키지 이름과 버전을 여러 번 게시할 수 있습니다.
 
-그러나 특히 릴리스의 경우 중복 업로드를 방지할 수 있습니다. 이 릴리스에서 GitLab은 패키지 레지스트리에 대한 그룹 설정을 확장하여 중복 패키지 업로드를 허용하거나 거부할 수 있습니다.
+그러나 특히 릴리스의 경우 중복 업로드를 방지하고 싶을 수 있습니다. 이 릴리스에서 GitLab은 패키지 레지스트리에 대한 그룹 설정을 확장하여 중복 패키지 업로드를 허용하거나 거부할 수 있습니다.
 
 [GitLab API](../../api/graphql/reference/_index.md#packagesettings)를 사용하거나 UI에서 이 설정을 조정할 수 있습니다.
 
@@ -414,7 +414,7 @@ GitLab 패키지 레지스트리는 이제 기본 HTTP 인증으로 Maven 패키
 
 {{< /details >}}
 
-컨테이너 스캔 결과에는 공급업체가 평가하고 수정하지 않기로 결정한 결과가 포함될 수 있습니다. 실행 가능한 결과에 집중할 수 있도록 이제 이러한 결과를 제외할 수 있습니다. 구성 옵션은 GitLab 문서를 참조하십시오.
+컨테이너 스캔 결과에는 공급업체가 평가하고 수정하지 않기로 결정한 결과가 포함될 수 있습니다. 실행 가능한 결과에 집중할 수 있도록 이제 이러한 결과를 제외할 수 있습니다. 구성 옵션은 GitLab 문서를 참조하세요.
 
 ### 취약성 보고서 내보내기에 CVSS 벡터 포함 {#include-cvss-vectors-in-the-vulnerability-report-export}
 
@@ -456,7 +456,7 @@ GitLab 패키지 레지스트리는 이제 기본 HTTP 인증으로 Maven 패키
 
 {{< /details >}}
 
-16.6 릴리스 마일스톤 동안 브라우저 기반 DAST에 대해 기본적으로 다음 활성 검사를 활성화했습니다:
+16.6 릴리스 마일스톤 동안 브라우저 기반 DAST에 대해 기본적으로 다음 활성 검사를 활성화했습니다.
 
 - 검사 94.1은 ZAP 검사 90019를 대체하고 서버 측 코드 주입(PHP)을 식별합니다.
 - 검사 94.2는 ZAP 검사 90019를 대체하고 서버 측 코드 주입(Ruby)을 식별합니다.
@@ -494,21 +494,21 @@ macOS의 SaaS 러너를 사용하면 GitLab CI/CD와 통합된 안전한 온디�
 
 {{< /details >}}
 
-오늘 GitLab 러너 16.6을 출시합니다! GitLab Runner는 CI/CD 작업을 실행하고 결과를 GitLab 인스턴스로 다시 보내는 가볍고 확장성이 높은 에이전트입니다. GitLab Runner는 GitLab에 포함된 오픈 소스 지속적 통합 서비스인 GitLab CI/CD와 함께 작동합니다.
+오늘 GitLab Runner 16.6을 출시합니다! GitLab Runner는 CI/CD 작업을 실행하고 결과를 GitLab 인스턴스로 다시 보내는 가볍고 확장성이 높은 에이전트입니다. GitLab Runner는 GitLab에 포함된 오픈 소스 지속적 통합 서비스인 GitLab CI/CD와 함께 작동합니다.
 
 #### 새로운 기능 {#whats-new}
 
-- [GCP Compute Engine용 GitLab 러너 Fleeting 플러그인 - 베타](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29409)
-- [Docker executor를 위한 우아한 종료 구현](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6359)
+- [GCP Compute Engine용 GitLab Runner Fleeting 플러그인 - 베타](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29409)
+- [Docker 실행기를 위한 우아한 종료 구현](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6359)
 - [Kubernetes를 위한 저장소 클래스를 사용하여 PVC 볼륨을 동적으로 생성](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27835)
-- [Kubernetes 실행기에서 `image.entrypoint`을 통해 컨테이너 진입점 재정의](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30713)
+- [Kubernetes 실행기에서 `image.entrypoint`를 통해 컨테이너 진입점 재정의](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30713)
 
 #### 버그 수정 {#bug-fixes}
 
-- [GitLab 러너 16.5.0으로 업그레이드 후 Pod이 Liveness probe failed 오류로 계속 재시작](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/36959)
+- [GitLab Runner 16.5.0으로 업그레이드 후 Pod이 Liveness probe failed 오류로 계속 재시작](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/36959)
 - [디버그 터미널 - 변수가 파일 경로 대신 파일 내용 포함](https://gitlab.com/gitlab-org/gitlab/-/issues/399770)
 - [Kubernetes의 작업 실행 Pod이 신호를 처리하지 않음](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28162)
-- [GitLab 러너 Docker 실행기에서 Podman을 사용하는 서비스가 시작되지 않음](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29480)
+- [GitLab Runner Docker 실행기에서 Podman을 사용하는 서비스가 시작되지 않음](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29480)
 
 모든 변경 사항 목록은 GitLab Runner [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-runner/blob/16-6-stable/CHANGELOG.md)에 있습니다.
 
@@ -517,5 +517,5 @@ macOS의 SaaS 러너를 사용하면 GitLab CI/CD와 통합된 안전한 온디�
 - [버그 수정](https://gitlab.com/groups/gitlab-org/-/issues/?sort=updated_desc&state=closed&label_name%5B%5D=type%3A%3Abug&or%5Blabel_name%5D%5B%5D=workflow%3A%3Acomplete&or%5Blabel_name%5D%5B%5D=workflow%3A%3Averification&or%5Blabel_name%5D%5B%5D=workflow%3A%3Aproduction&milestone_title=16.6)
 - [성능 개선](https://gitlab.com/groups/gitlab-org/-/issues/?sort=updated_desc&state=closed&label_name%5B%5D=bug%3A%3Aperformance&or%5Blabel_name%5D%5B%5D=workflow%3A%3Acomplete&or%5Blabel_name%5D%5B%5D=workflow%3A%3Averification&or%5Blabel_name%5D%5B%5D=workflow%3A%3Aproduction&milestone_title=16.6)
 - [UI 개선](https://papercuts.gitlab.com/?milestone=16.6)
-- [더 이상 사용되지 않는 항목 및 제거](../../update/deprecations.md)
+- [지원 중단 및 제거](../../update/deprecations.md)
 - [업그레이드 정보](../../update/versions/_index.md)

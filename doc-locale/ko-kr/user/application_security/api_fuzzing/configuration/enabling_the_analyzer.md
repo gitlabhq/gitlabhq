@@ -66,13 +66,13 @@ API 퍼징은 OpenAPI 문서를 사용하여 요청 본문을 생성합니다. �
 
 ## OpenAPI 및 미디어 유형 {#openapi-and-media-types}
 
-미디어 유형(이전의 MIME 유형)은 전송되는 파일 형식 및 형식 콘텐츠에 대한 식별자입니다. OpenAPI 문서를 사용하면 주어진 작업이 다양한 미디어 유형을 허용할 수 있으므로 주어진 요청은 다양한 파일 콘텐츠를 사용하여 데이터를 보낼 수 있습니다. 예를 들어 `PUT /user` 작업은 XML(미디어 유형 `application/xml`) 또는 JSON(미디어 유형 `application/json`) 형식으로 사용자 데이터를 업데이트할 수 있습니다. OpenAPI 2.x를 사용하면 허용된 미디어 유형을 전역으로 또는 작업별로 지정할 수 있으며, OpenAPI 3.x를 사용하면 허용된 미디어 유형을 작업별로 지정할 수 있습니다. API 퍼징은 나열된 미디어 유형을 확인하고 지원되는 각 미디어 유형에 대한 샘플 데이터를 생성하려고 시도합니다.
+미디어 유형(이전의 MIME 유형)은 전송되는 파일 형식 및 형식 콘텐츠에 대한 식별자입니다. OpenAPI 문서를 사용하면 주어진 작업이 다양한 미디어 유형을 수락할 수 있음을 지정할 수 있으므로 주어진 요청이 다양한 파일 콘텐츠를 사용하여 데이터를 보낼 수 있습니다. 예를 들어, `PUT /user` 작업을 사용하여 사용자 데이터를 업데이트할 수 있으며, XML(미디어 유형 `application/xml`) 또는 JSON(미디어 유형 `application/json`) 형식의 데이터를 수락할 수 있습니다. OpenAPI 2.x를 사용하면 허용된 미디어 유형을 전역으로 또는 작업별로 지정할 수 있으며, OpenAPI 3.x를 사용하면 허용된 미디어 유형을 작업별로 지정할 수 있습니다. API 퍼징은 나열된 미디어 유형을 확인하고 지원되는 각 미디어 유형에 대한 샘플 데이터를 생성하려고 시도합니다.
 
 - 기본 동작은 사용할 지원되는 미디어 유형 중 하나를 선택하는 것입니다. 목록에서 첫 번째 지원되는 미디어 유형을 선택합니다. 이 동작은 구성 가능합니다.
 
 동일한 작업(예: `POST /user`)을 다양한 미디어 유형(예: `application/json` 및 `application/xml`)을 사용하여 테스트하는 것이 항상 바람직한 것은 아닙니다. 예를 들어 대상 애플리케이션이 요청 콘텐츠 유형에 관계없이 동일한 코드를 실행하면 테스트 세션을 완료하는 데 더 오래 걸리고 대상 앱에 따라 요청 본문과 관련된 중복 취약성을 보고할 수 있습니다.
 
-환경 변수 `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES`을 사용하면 주어진 작업에 대한 요청을 생성할 때 하나 대신 지원되는 모든 미디어 유형을 사용할지 여부를 지정할 수 있습니다. 환경 변수 `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES`를 값으로 설정하면 API 퍼징은 주어진 작업에서 하나 대신 지원되는 모든 미디어 유형에 대한 요청을 생성하려고 시도합니다. 제공된 각 미디어 유형에 대해 테스트가 반복되므로 테스트가 더 오래 걸립니다.
+환경 변수 `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES`을 사용하면 주어진 작업에 대한 요청을 생성할 때 하나 대신 지원되는 모든 미디어 유형을 사용할지 여부를 지정할 수 있습니다. 환경 변수 `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES`가 어떤 값으로든 설정되면, API 퍼징은 주어진 작업에서 하나 대신 지원하는 모든 미디어 유형에 대한 요청을 생성하려고 시도합니다. 제공된 각 미디어 유형에 대해 테스트가 반복되므로 테스트가 더 오래 걸립니다.
 
 또는 변수 `FUZZAPI_OPENAPI_MEDIA_TYPES`을 사용하여 테스트할 미디어 유형 목록을 제공합니다. 둘 이상의 미디어 유형을 제공하면 선택한 각 미디어 유형에 대해 테스트가 수행되므로 테스트가 더 오래 걸립니다. 환경 변수 `FUZZAPI_OPENAPI_MEDIA_TYPES`를 미디어 유형 목록으로 설정하면 요청을 생성할 때 나열된 미디어 유형만 포함됩니다.
 
@@ -173,15 +173,9 @@ API 퍼징 구성 옵션의 자세한 내용은 [사용 가능한 CI/CD 변수](
 
 ## GraphQL 스키마 {#graphql-schema}
 
-{{< history >}}
-
-- GraphQL 스키마에 대한 지원은 GitLab 15.4에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/352780)되었습니다.
-
-{{< /history >}}
-
 GraphQL은 API를 위한 쿼리 언어이며 REST API의 대안입니다. API 퍼징은 여러 방식으로 GraphQL 엔드포인트 테스트를 지원합니다:
 
-- GraphQL 스키마를 사용하여 테스트합니다. GitLab 15.4에서 [도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/352780).
+- GraphQL 스키마를 사용하여 테스트합니다.
 - GraphQL 쿼리의 기록(HAR)을 사용하여 테스트합니다.
 - GraphQL 쿼리를 포함하는 Postman Collection을 사용하여 테스트합니다.
 
@@ -236,7 +230,7 @@ API 퍼징은 GraphQL 스키마 파일을 사용하여 내부 검사가 비활�
 
    `environment_url.txt` 파일에 URL을 추가하는 것은 동적 환경에서 테스트하는 데 좋습니다. 자세한 내용은 [동적 환경 솔루션](../troubleshooting.md#dynamic-environment-solutions)을 참조하세요.
 
-GraphQL 스키마 파일을 사용하는 완전한 예시 구성:
+GraphQL 스키마 파일 사용의 완전한 예제 구성:
 
 ```yaml
 stages:
@@ -252,7 +246,7 @@ apifuzzer_fuzz:
     FUZZAPI_TARGET_URL: http://test-deployment/
 ```
 
-GraphQL 스키마 파일 URL을 사용하는 완전한 예시 구성:
+GraphQL 스키마 파일 URL 사용의 완전한 예제 구성:
 
 ```yaml
 stages:
@@ -326,17 +320,9 @@ API 퍼징 구성 옵션의 자세한 내용은 [사용 가능한 CI/CD 변수](
 
 ### Postman 변수 {#postman-variables}
 
-{{< history >}}
-
-- Postman 환경 파일 형식에 대한 지원은 GitLab 15.1에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/356312)되었습니다.
-- 여러 변수 파일에 대한 지원은 GitLab 15.1에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/356312)되었습니다.
-- Postman 변수 범위에 대한 지원(전역 및 환경)은 GitLab 15.1에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/356312)되었습니다.
-
-{{< /history >}}
-
 #### Postman Client의 변수 {#variables-in-postman-client}
 
-Postman을 사용하면 개발자가 요청의 다양한 부분에서 사용할 수 있는 자리 표시자를 정의할 수 있습니다. 이러한 자리 표시자를 [변수 사용](https://learning.postman.com/docs/sending-requests/variables/variables/)에서 설명한 대로 변수라고 합니다. 변수를 사용하여 요청 및 스크립트에서 값을 저장하고 재사용할 수 있습니다. 예를 들어 컬렉션을 편집하여 문서에 변수를 추가할 수 있습니다:
+Postman을 사용하면 개발자가 요청의 다양한 부분에서 사용할 수 있는 자리 표시자를 정의할 수 있습니다. 이러한 자리 표시자는 변수라고 하며, [변수 사용](https://learning.postman.com/docs/use/send-requests/variables/variables/)에서 설명됩니다. 변수를 사용하여 요청 및 스크립트에서 값을 저장하고 재사용할 수 있습니다. 예를 들어 컬렉션을 편집하여 문서에 변수를 추가할 수 있습니다:
 
 ![컬렉션 변수 탭 보기 편집](img/api_fuzzing_postman_collection_edit_variable_v18_5.png)
 
@@ -350,14 +336,14 @@ Postman을 사용하면 개발자가 요청의 다양한 부분에서 사용할 
 
 Postman은 좋은 UX 경험을 가진 기본 클라이언트 도구에서 스크립트로 API를 테스트하고, 보조 요청을 트리거하는 복잡한 컬렉션을 생성하고, 변수를 설정할 수 있는 더 복잡한 에코시스템으로 발전했습니다. Postman 에코시스템의 모든 기능이 지원되는 것은 아닙니다. 예를 들어 스크립트는 지원되지 않습니다. Postman 지원의 주요 초점은 Postman Client에서 사용되는 Postman Collection 정의와 워크스페이스, 환경 및 컬렉션 자체에 정의된 관련 변수를 수집하는 것입니다.
 
-Postman을 사용하면 다양한 범위에 변수를 생성할 수 있습니다. 각 범위는 Postman 도구에서 다른 수준의 가시성을 가집니다. 예를 들어 모든 작업 정의 및 워크스페이스에서 볼 수 있는 전역 환경 범위에 변수를 만들 수 있습니다. 특정 환경이 사용하도록 선택된 경우에만 표시되고 사용되는 특정 환경 범위에 변수를 만들 수도 있습니다. 일부 범위는 항상 사용 가능하지 않습니다. 예를 들어 Postman 에코시스템에서 Postman Client에서 요청을 만들 수 있지만 이러한 요청에는 로컬 범위가 없지만 테스트 스크립트는 있습니다.
+Postman을 사용하면 다양한 범위에 변수를 생성할 수 있습니다. 각 범위는 Postman 도구에서 다른 수준의 가시성을 가집니다. 예를 들어 모든 작업 정의 및 워크스페이스에서 볼 수 있는 전역 환경 범위에 변수를 만들 수 있습니다. 특정 환경이 사용하도록 선택된 경우에만 표시되고 사용되는 특정 환경 범위에 변수를 만들 수도 있습니다. 일부 범위는 항상 사용 가능한 것은 아닙니다. 예를 들어 Postman 에코시스템에서 Postman Client에서 요청을 만들 수 있습니다. 이러한 요청에는 로컬 범위가 없지만 테스트 스크립트는 있습니다.
 
-Postman의 변수 범위는 까다로운 주제일 수 있으며 모두가 익숙한 것은 아닙니다. 계속하기 전에 Postman 설명서에서 [변수 범위](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes)를 읽으세요.
+Postman의 변수 범위는 까다로운 주제일 수 있으며 모두가 익숙한 것은 아닙니다. 계속 진행하기 전에 Postman 문서에서 [변수 범위](https://learning.postman.com/docs/use/send-requests/variables/variables/#variable-scopes)를 읽으세요.
 
 앞서 언급했듯이 다양한 변수 범위가 있으며 각각은 Postman 문서에 유연성을 제공하는 데 사용될 수 있는 목적이 있습니다. 변수 값이 계산되는 방식에 대한 중요한 참고 사항이 있습니다(Postman 설명서 참조):
 
 > [!note]
-> 같은 이름의 변수가 두 개의 다른 범위에서 선언되면 가장 좁은 범위의 변수에 저장된 값이 사용됩니다. 예를 들어 `username`라는 전역 변수와 `username`라는 로컬 변수가 있으면 요청이 실행될 때 로컬 값이 사용됩니다.
+> 동일한 이름의 변수가 두 개의 서로 다른 범위에서 선언되면 범위가 가장 좁은 변수에 저장된 값이 사용됩니다. 예를 들어 `username`라는 전역 변수와 `username`라는 로컬 변수가 있으면 요청이 실행될 때 로컬 값이 사용됩니다.
 
 다음은 Postman Client 및 API 퍼징에서 지원하는 변수 범위의 요약입니다:
 
@@ -366,7 +352,7 @@ Postman의 변수 범위는 까다로운 주제일 수 있으며 모두가 익�
 - **Collection scope**는 주어진 컬렉션에 선언된 변수의 그룹입니다. 컬렉션 변수는 선언된 컬렉션 및 중첩된 요청 또는 컬렉션에서 사용 가능합니다. 컬렉션 범위에 정의된 변수는 전역 환경 범위 및 환경 범위보다 우선합니다. Postman Client는 하나 이상의 컬렉션을 JSON 파일로 내보낼 수 있으며, 이 JSON 파일에는 선택한 컬렉션, 요청 및 컬렉션 변수가 포함됩니다.
 - **API fuzzing scope**는 사용자가 추가 변수를 제공하거나 다른 지원되는 범위에 정의된 변수를 재정의할 수 있도록 API 퍼징에서 추가한 새로운 범위입니다. 이 범위는 Postman에서 지원되지 않습니다. API 퍼징 범위 변수는 [사용자 지정 JSON 파일 형식](#api-fuzzing-scope-custom-json-file-format)을 사용하여 제공됩니다.
   - 환경 또는 컬렉션에 정의된 값 재정의
-  - 스크립트의 변수 정의
+  - 스크립트에서 변수 정의
   - 지원되지 않는 _데이터 범위_에서 단일 데이터 행 정의
 - **Data scope**는 이름과 값이 JSON 또는 CSV 파일에서 오는 변수의 그룹입니다. [Newman](https://learning.postman.com/docs/collections/using-newman-cli/command-line-integration-with-newman/) 또는 [Postman Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)와 같은 Postman 컬렉션 실행기는 JSON 또는 CSV 파일의 항목 수만큼 컬렉션의 요청을 실행합니다. 이러한 변수의 좋은 사용 사례는 Postman에서 스크립트를 사용하여 테스트를 자동화하는 것입니다. API 퍼징은 CSV 또는 JSON 파일에서 데이터를 읽는 것을 지원하지 않습니다.
 - **Local scope**는 Postman 스크립트에서 정의된 변수입니다. API 퍼징은 Postman 스크립트를 지원하지 않으며 따라서 스크립트에 정의된 변수를 지원하지 않습니다. 지원되는 범위 중 하나에 정의하거나 사용자 지정 JSON 형식으로 정의하여 스크립트 정의 변수에 대한 값을 제공할 수 있습니다.
@@ -377,16 +363,16 @@ Postman의 변수 범위는 까다로운 주제일 수 있으며 모두가 익�
 | ------------------ |:---------:|:-----------:| :-------|
 | 전역 환경 | 예       | 예         | 특별 사전 정의 환경 |
 | 환경        | 예       | 예         | 명명된 환경 |
-| 컬렉션         | 예       | 예         | postman 컬렉션에 정의됨 |
+| 컬렉션         | 예       | 예         | Postman 컬렉션에서 정의됨 |
 | API 퍼징 범위  | 아니요        | 예         | API 퍼징에서 추가한 사용자 지정 범위 |
 | 데이터               | 예       | 아니요          | CSV 또는 JSON 형식의 외부 파일 |
 | 로컬              | 예       | 아니요          | 스크립트에 정의된 변수 |
 
 다양한 범위에서 변수를 정의하고 내보내는 방법에 대한 자세한 내용은 다음을 참조하세요:
 
-- [컬렉션 변수 정의](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-collection-variables)
-- [환경 변수 정의](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-environment-variables)
-- [전역 변수 정의](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-global-variables)
+- [컬렉션 변수 정의](https://learning.postman.com/docs/use/send-requests/variables/variables/#defining-collection-variables)
+- [환경 변수 정의](https://learning.postman.com/docs/use/send-requests/variables/variables/#defining-environment-variables)
+- [글로벌 변수 정의](https://learning.postman.com/docs/use/send-requests/variables/variables/#defining-global-variables)
 
 #### Postman Client에서 내보내기 {#exporting-from-postman-client}
 
@@ -398,7 +384,7 @@ Postman Client를 사용하면 다양한 파일 형식을 내보낼 수 있습�
 
 - [컬렉션 내보내기](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
 - [환경 내보내기](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
-- [전역 환경 다운로드](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
+- [글로벌 환경 다운로드](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments)
 
 #### API 퍼징 범위, 사용자 지정 JSON 파일 형식 {#api-fuzzing-scope-custom-json-file-format}
 
@@ -415,7 +401,7 @@ Postman Client를 사용하면 다양한 파일 형식을 내보낼 수 있습�
 
 #### API 퍼징과 범위 사용 {#using-scopes-with-api-fuzzing}
 
-범위(전역, 환경, 컬렉션 및 GitLab API 퍼징)는 [GitLab 15.1 이상](https://gitlab.com/gitlab-org/gitlab/-/issues/356312)에서 지원됩니다. GitLab 15.0 이전에는 컬렉션 및 GitLab API 퍼징 범위만 지원합니다.
+다음 범위가 지원됩니다: 글로벌, 환경, 컬렉션, GitLab API 퍼징.
 
 다음 표는 범위 파일/URL을 API 퍼징 구성 변수에 매핑하기 위한 빠른 참조를 제공합니다:
 
@@ -430,17 +416,17 @@ Postman Client를 사용하면 다양한 파일 형식을 내보낼 수 있습�
 
 Postman Collection 문서에는 모든 컬렉션 범위 변수가 자동으로 포함됩니다. Postman Collection은 구성 변수 `FUZZAPI_POSTMAN_COLLECTION`로 제공됩니다. 이 변수는 단일 [내보낸 Postman 컬렉션](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)으로 설정할 수 있습니다.
 
-다른 범위의 변수는 `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` 구성 변수를 통해 제공됩니다. 구성 변수는 [GitLab 15.1 이상](https://gitlab.com/gitlab-org/gitlab/-/issues/356312)에서 쉼표(`,`) 구분 파일 목록을 지원합니다. GitLab 15.0 이전에는 단일 파일만 지원합니다. 제공된 파일의 순서는 파일이 필요한 범위 정보를 제공하므로 중요하지 않습니다.
+다른 범위의 변수는 `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` 구성 변수를 통해 제공됩니다. 구성 변수는 쉼표(`,`)로 구분된 파일 목록을 지원합니다. 제공된 파일의 순서는 파일이 필요한 범위 정보를 제공하므로 중요하지 않습니다.
 
 구성 변수 `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`를 다음으로 설정할 수 있습니다:
 
-- [내보낸 전역 환경](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
+- [내보낸 글로벌 환경](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments)
 - [내보낸 환경](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [API 퍼징 사용자 지정 JSON 형식](#api-fuzzing-scope-custom-json-file-format)
 
 #### 정의되지 않은 Postman 변수 {#undefined-postman-variables}
 
-API 퍼징 엔진이 Postman 컬렉션 파일에서 사용 중인 모든 변수 참조를 찾지 못할 수 있습니다. 일부 경우는 다음과 같습니다:
+API 퍼징 엔진이 Postman 컬렉션 파일에서 사용하는 모든 변수 참조를 찾지 못할 가능성이 있습니다. 일부 경우는 다음과 같습니다:
 
 - 데이터 또는 로컬 범위 변수를 사용 중이며, 앞서 설명한 대로 이러한 범위는 API 퍼징에서 지원되지 않습니다. 따라서 [API 퍼징 범위](#api-fuzzing-scope-custom-json-file-format)를 통해 이러한 변수에 대한 값이 제공되지 않았다고 가정하면 데이터 및 로컬 범위 변수의 값이 정의되지 않습니다.
 - 변수 이름이 잘못 입력되었으며 이름이 정의된 변수와 일치하지 않습니다.
@@ -452,9 +438,9 @@ API 퍼징 엔진이 Postman 컬렉션 파일에서 사용 중인 모든 변수 
 
 #### 동적 Postman 변수 {#dynamic-postman-variables}
 
-사용자가 다양한 범위 수준에서 정의할 수 있는 변수 외에도 Postman에는 동적 변수라고 하는 사전 정의된 변수 세트가 있습니다. [동적 변수](https://learning.postman.com/docs/tests-and-scripts/write-scripts/variables-list/)는 이미 정의되어 있으며 이름 앞에는 달러 기호(`$`)가 붙습니다(예: `$guid`). 동적 변수는 다른 변수처럼 사용할 수 있으며 Postman Client에서 요청/컬렉션 실행 중에 임의의 값을 생성합니다.
+사용자가 다양한 범위 수준에서 정의할 수 있는 변수 외에도 Postman에는 동적 변수라고 하는 사전 정의된 변수 세트가 있습니다. [동적 변수](https://learning.postman.com/docs/tests-and-scripts/write-scripts/variables-list/)는 이미 정의되어 있으며 그 이름은 달러 기호(`$`)가 앞에 붙습니다. 예를 들어 `$guid`입니다. 동적 변수는 다른 변수처럼 사용할 수 있으며 Postman Client에서 요청/컬렉션 실행 중에 임의의 값을 생성합니다.
 
-API 퍼징과 Postman의 중요한 차이점은 API 퍼징이 동일한 동적 변수를 사용할 때마다 동일한 값을 반환한다는 것입니다. 이는 동일한 동적 변수의 각 사용에서 임의의 값을 반환하는 Postman Client 동작과 다릅니다. 다시 말해 API 퍼징은 동적 변수에 정적 값을 사용하고 Postman은 임의의 값을 사용합니다.
+API 퍼징과 Postman의 중요한 차이점은 API 퍼징이 동일한 동적 변수를 사용할 때마다 동일한 값을 반환한다는 것입니다. 이는 같은 동적 변수를 사용할 때마다 임의의 값을 반환하는 Postman Client 동작과 다릅니다. 다시 말해 API 퍼징은 동적 변수에 정적 값을 사용하고 Postman은 임의의 값을 사용합니다.
 
 스캔 프로세스 중에 지원되는 동적 변수는 다음과 같습니다:
 
@@ -581,7 +567,7 @@ API 퍼징과 Postman의 중요한 차이점은 API 퍼징이 동일한 동적 �
 
 #### 예:  전역 범위 {#example-global-scope}
 
-이 예시에서 [전역 범위는 내보내집니다](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) Postman Client에서 `global-scope.json`로 가져오고 `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` 구성 변수를 통해 API 퍼징에 제공됩니다.
+이 예제에서 [글로벌 범위를 내보냅니다](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments). Postman Client에서 `global-scope.json`로 내보내고 `FUZZAPI_POSTMAN_COLLECTION_VARIABLES` 구성 변수를 통해 API 퍼징에 제공합니다.
 
 `FUZZAPI_POSTMAN_COLLECTION_VARIABLES`을 사용하는 예시는 다음과 같습니다:
 
@@ -672,7 +658,7 @@ variables:
 
 이 예시에서 전역 범위, 환경 범위 및 컬렉션 범위가 구성됩니다. 첫 번째 단계는 다양한 범위를 내보내는 것입니다.
 
-- [전역 범위 내보내기](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) `global-scope.json`로
+- [글로벌 범위를 내보냅니다](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments) `global-scope.json`로
 - [환경 범위 내보내기](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) `environment-scope.json`로
 - _컬렉션_ 범위를 포함하는 Postman Collection을 내보내기 `postman-collection.json`로
 
@@ -728,7 +714,7 @@ variables:
 
 이 예시에서 전역 범위, 환경 범위, 컬렉션 범위 및 API 퍼징 범위가 구성됩니다. 첫 번째 단계는 다양한 범위를 내보내고 만드는 것입니다.
 
-- [전역 범위 내보내기](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) `global-scope.json`로
+- [글로벌 범위를 내보냅니다](https://learning.postman.com/docs/use/send-requests/variables/variables/#downloading-global-environments) `global-scope.json`로
 - [환경 범위 내보내기](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) `environment-scope.json`로
 - 컬렉션 범위를 포함하는 Postman Collection을 내보내기 `postman-collection.json`로
 
@@ -760,7 +746,7 @@ variables:
 
 올바르게 구성되면 CI/CD 파이프라인에 `fuzz` 스테이지와 `apifuzzer_fuzz` 또는 `apifuzzer_fuzz_dnd` 작업이 포함됩니다. 작업은 잘못된 구성이 제공될 때만 실패합니다. 일반적인 작동 중에 퍼징 테스트 중에 결함이 식별되더라도 작업은 항상 성공합니다.
 
-결함은 **보안** 파이프라인 탭에 스위트 이름과 함께 표시됩니다. 리포지토리 기본 브랜치에 대해 테스트할 때 퍼징 결함도 보안 및 규정 준수의 취약성 보고서에 표시됩니다.
+결함은 **보안** 파이프라인 탭에 스위트 이름과 함께 표시됩니다. 리포지토리의 기본 브랜치에 대해 테스트할 때, 퍼징 결함도 보안 및 규정 준수의 취약성 보고서에 표시됩니다.
 
 보고된 결함의 과도한 수를 방지하기 위해 API 퍼징 스캐너는 보고하는 결함의 수를 제한합니다.
 
@@ -779,7 +765,7 @@ API 퍼징에서 탐지한 결함은 라이브 웹 애플리케이션에서 발�
 1. 프로젝트 또는 머지 리퀘스트에서 결함을 볼 수 있습니다:
 
    - 프로젝트에서 프로젝트의 **보안** > **취약성 보고서** 페이지로 이동합니다. 이 페이지에는 기본 브랜치의 모든 취약성만 표시됩니다.
-   - 머지 리퀘스트에서 머지 리퀘스트의 **보안** 섹션으로 이동하여 **펼침** 버튼을 선택합니다. API 퍼징 결함은 **API fuzzing detected N potential vulnerabilities**라는 레이블이 붙은 섹션에서 사용 가능합니다. 결함 세부 정보를 표시하려면 제목을 선택합니다.
+   - 머지 리퀘스트에서 머지 리퀘스트의 **보안** 섹션으로 이동하고 **펼침** 버튼을 선택합니다. API 퍼징 결함은 **API fuzzing detected N potential vulnerabilities**라는 레이블이 붙은 섹션에서 사용 가능합니다. 결함 세부 정보를 표시하려면 제목을 선택합니다.
 
 1. 결함의 제목을 선택하여 결함의 세부 정보를 표시합니다. 아래 표는 이러한 세부 정보를 설명합니다.
 
@@ -799,7 +785,7 @@ API 퍼징에서 탐지한 결함은 라이브 웹 애플리케이션에서 발�
 
 ### 보안 대시보드 {#security-dashboard}
 
-퍼징 결함은 심각도가 알 수 없는 취약성으로 표시됩니다. 보안 대시보드는 그룹, 프로젝트 및 파이프라인의 모든 보안 취약성을 개괄적으로 파악할 수 있는 좋은 장소입니다. 자세한 내용은 [보안 대시보드 설명서](../../security_dashboard/_index.md)를 참조하세요.
+퍼징 결함은 심각도가 알 수 없는 취약성으로 표시됩니다. 보안 대시보드는 그룹, 프로젝트 및 파이프라인의 모든 보안 취약성을 개괄적으로 파악하기에 좋은 장소입니다. 자세한 내용은 [보안 대시보드 설명서](../../security_dashboard/_index.md)를 참조하세요.
 
 ### 취약성과 상호작용 {#interacting-with-the-vulnerabilities}
 
@@ -809,7 +795,7 @@ API 퍼징에서 탐지한 결함은 라이브 웹 애플리케이션에서 발�
 
 거짓 양성은 두 가지 방법으로 처리할 수 있습니다:
 
-- 거짓 양성을 생성하는 확인을 해제합니다. 이는 확인이 결함을 생성하지 않도록 합니다. 예시 확인은 `JSONFuzzingCheck` 및 `FormBodyFuzzingCheck`입니다.
+- 거짓 양성을 생성하는 확인을 해제합니다. 이는 확인이 결함을 생성하지 않도록 합니다. 예제 확인 사항은 `JSONFuzzingCheck` 및 `FormBodyFuzzingCheck`입니다.
 - 퍼징 확인에는 결함이 식별될 때 감지하는 여러 방법이 있으며 "어설션"이라고 합니다. 어설션을 해제하고 구성할 수도 있습니다. 예를 들어 API 퍼저는 기본적으로 HTTP 상태 코드를 사용하여 실제 이슈인 경우를 식별하는 데 도움이 됩니다. API가 테스트 중에 500 오류를 반환하면 결함이 생성됩니다. 일부 프레임워크가 자주 500개 오류를 반환하므로 항상 바람직하지 않습니다.
 
 ### 확인 해제 {#turn-off-a-check}

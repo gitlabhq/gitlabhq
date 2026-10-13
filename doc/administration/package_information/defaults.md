@@ -52,7 +52,7 @@ See the table below for the list of ports that the Linux package assigns by defa
 | Mattermost                | No            | Port             |               | `8065`          |
 | Mattermost                | No            | Port             |               | `80` or `443`   |
 | PgBouncer                 | No            | Port             |               | `6432`          |
-| Consul                    | No            | Port             |               | `8300`, `8301`(TCP and UDP), `8500`, `8600` <sup>1</sup> |
+| Consul                    | No            | Port             |               | `8300`, `8301`(TCP and UDP), `8500`, `8600`[^additional-service-ports] |
 | Patroni                   | No            | Port             |               | `8008`          |
 | GitLab KAS                | Yes           | Port             |               | `8150`          |
 | Gitaly                    | Yes           | Socket           | Port (`8075`) | `8075` or `9999` (TLS) |
@@ -61,10 +61,8 @@ See the table below for the list of ports that the Linux package assigns by defa
 | GitLab Workhorse exporter | Yes           | Port             |               | `9229`          |
 | Registry exporter         | No            | Port             |               | `5001`          |
 
-**Footnotes**:
-
-1. If using additional Consul functionality, more ports may need to be opened. See the
-   [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
+[^additional-service-ports]: If using additional Consul functionality, more ports may need to be opened. See the
+    [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 
 Legend:
 

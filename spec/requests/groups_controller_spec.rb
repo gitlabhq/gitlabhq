@@ -462,6 +462,20 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:found)
       end
 
+      context 'when creating a group in an organization' do
+        it 'creates group in organization and redirects to unscoped URL' do
+          sign_in(user)
+
+          expect do
+            post organization_groups_path(current_organization), params: { group: { name: 'new_group', path: 'new_group' } }
+          end.to change { Group.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to("/new_group")
+          expect(Group.order(:id).last.organization).to eq(current_organization)
+        end
+      end
+
       it 'allows an admin to create a group', :aggregate_failures do
         sign_in(admin)
 
@@ -1442,7 +1456,9 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
     let_it_be(:maintainer) { create(:user) }
     let_it_be_with_reload(:group) { create(:group, organization: default_organization, owners: owner, maintainers: maintainer) }
 
-    subject(:make_request) { post create_organization_from_group_path(group), as: :json }
+    let(:params) { {} }
+
+    subject(:make_request) { post create_organization_from_group_path(group), params: params, as: :json }
 
     before do
       sign_in(owner)
@@ -1456,6 +1472,20 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to include('id' => organization.id, 'path' => organization.path)
       expect(organization).not_to eq(default_organization)
+    end
+
+    context 'when name param is passed' do
+      let(:params) { { name: 'custom name' } }
+
+      it 'creates an organization from the group with custom name' do
+        expect { make_request }.to change { Organizations::Organization.count }.by(1)
+
+        organization = group.reload.organization
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(organization.name).to eq(params[:name])
+        expect(json_response).to include('id' => organization.id, 'path' => organization.path, 'name' => params[:name])
+      end
     end
 
     context 'when the organization cannot be created from the group' do
@@ -1473,7 +1503,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
     context 'when the release flag is disabled' do
       before do
-        stub_feature_flags(org_stage_experimental: false)
+        stub_organization_release(create_org_from_group_settings: false)
       end
 
       it 'returns not found' do

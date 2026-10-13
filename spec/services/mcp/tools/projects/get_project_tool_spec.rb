@@ -161,6 +161,7 @@ RSpec.describe Mcp::Tools::Projects::GetProjectTool, feature_category: :mcp_serv
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Project not found')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
   end

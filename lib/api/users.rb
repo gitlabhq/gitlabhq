@@ -88,7 +88,7 @@ module API
           optional :organization, type: String, desc: 'The organization of the user. Empty string or nil clears the field.'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
           optional :extern_uid, type: String, desc: 'The external authentication provider UID'
-          optional :provider, type: String, desc: 'The external provider'
+          optional :provider, type: String, desc: 'Name of the external authentication provider.'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
           optional :pronouns, type: String, desc: 'The pronouns of the user'
@@ -103,7 +103,7 @@ module API
           # TODO: Add `allow_blank: false` in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :note, type: String, desc: 'Admin note for this user'
-          optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+          optional :view_diffs_file_by_file, type: Boolean, desc: 'If `true`, the user sees only one file diff per page.'
           optional :policy_advanced_editor, type: Boolean, desc: 'Flag indicating that advanced editor is enabled'
           all_or_none_of :extern_uid, :provider
 
@@ -112,9 +112,9 @@ module API
 
         params :sort_params do
           optional :order_by, type: String, values: %w[id name username created_at updated_at],
-            default: 'id', desc: 'Return users ordered by a field'
+            default: 'id', desc: 'Sort results by the specified field.'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
-            desc: 'Return users sorted in ascending and descending order'
+            desc: 'Sort results in ascending or descending order.'
         end
 
         # Grape doesn't make it easy to tell whether a user supplied a
@@ -123,9 +123,9 @@ module API
         # not provided.
         params :sort_params_no_defaults do
           optional :order_by, type: String, values: %w[id name username created_at updated_at],
-            desc: 'Return users ordered by a field'
+            desc: 'Sort results by the specified field.'
           optional :sort, type: String, values: %w[asc desc],
-            desc: 'Return users sorted in ascending and descending order'
+            desc: 'Sort results in ascending or descending order.'
         end
       end
 
@@ -137,9 +137,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :read_user_support_pin, boundary_type: :instance
+      route_setting :authorization, permissions: :read_user_support_pin, boundary_type: :instance,
+        assignable_when: [:admin]
       get ":id/support_pin", feature_category: :user_management do
         authenticated_as_admin!
 
@@ -167,9 +168,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :revoke_user_support_pin, boundary_type: :instance
+      route_setting :authorization, permissions: :revoke_user_support_pin, boundary_type: :instance,
+        assignable_when: [:admin]
       post ":id/support_pin/revoke", feature_category: :user_management do
         authenticated_as_admin!
 
@@ -201,25 +203,25 @@ module API
       end
       params do
         # CE
-        optional :username, type: String, desc: 'Get a single user with a specific username'
-        optional :extern_uid, type: String, desc: 'Get a single user with a specific external authentication provider UID'
-        optional :public_email, type: String, desc: 'Get a single user with a specific public email'
-        optional :provider, type: String, desc: 'The external provider'
-        optional :search, type: String, desc: 'Search for a username'
-        optional :active, type: Boolean, default: false, desc: 'Filters only active users'
-        optional :humans, type: Boolean, default: false, desc: 'Filters only human users'
-        optional :external, type: Boolean, default: false, desc: 'Filters only external users'
-        optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
-        optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
-        optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
-        optional :without_projects, type: Boolean, default: false, desc: 'Filters only users without projects'
-        optional :without_project_bots, type: Boolean, default: false, desc: 'Filters users without project bots'
-        optional :admins, type: Boolean, default: false, desc: 'Filters only admin users'
+        optional :username, type: String, desc: 'Return a single user with the specified username.'
+        optional :extern_uid, type: String, desc: 'Return a single user with the specified external authentication provider UID. Use with `provider`. Administrators only.'
+        optional :public_email, type: String, desc: 'Return a single user with the specified public email.'
+        optional :provider, type: String, desc: 'Name of the external authentication provider.'
+        optional :search, type: String, desc: 'Search for users by name, username, or public email.'
+        optional :active, type: Boolean, default: false, desc: 'If `true`, returns only active users.'
+        optional :humans, type: Boolean, default: false, desc: 'If `true`, returns only regular users that are not bot or internal users.'
+        optional :external, type: Boolean, default: false, desc: 'If `true`, returns only external users.'
+        optional :blocked, type: Boolean, default: false, desc: 'If `true`, returns only blocked users.'
+        optional :created_after, type: DateTime, desc: 'Return users created on or after the specified time.'
+        optional :created_before, type: DateTime, desc: 'Return users created on or before the specified time.'
+        optional :without_projects, type: Boolean, default: false, desc: 'If `true`, returns only users that do not have any projects.'
+        optional :without_project_bots, type: Boolean, default: false, desc: 'If `true`, excludes project bot users from the results.'
+        optional :admins, type: Boolean, default: false, desc: 'If `true`, returns only administrators.'
         optional :two_factor, type: String, desc: 'Filter users by Two-factor authentication.'
-        optional :exclude_active, as: :without_active, type: Boolean, default: false, desc: 'Filters only non active users'
-        optional :exclude_external, as: :non_external, type: Boolean, default: false, desc: 'Filters only non external users'
-        optional :exclude_humans, as: :without_humans, type: Boolean, default: false, desc: 'Filters only non human users'
-        optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
+        optional :exclude_active, as: :without_active, type: Boolean, default: false, desc: 'If `true`, returns only users that are not active.'
+        optional :exclude_external, as: :non_external, type: Boolean, default: false, desc: 'If `true`, returns only users that are not external.'
+        optional :exclude_humans, as: :without_humans, type: Boolean, default: false, desc: 'If `true`, returns only bot or internal users.'
+        optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'If `true`, returns only users that are not internal.'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params_no_defaults
@@ -272,7 +274,7 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
 
         use :with_custom_attributes
       end
@@ -283,7 +285,7 @@ module API
 
         unless current_user.can_read_all_resources?
           check_rate_limit!(:users_get_by_id,
-            scope: current_user,
+            scope: { user: current_user },
             users_allowlist: Gitlab::CurrentSettings.current_application_settings.users_get_by_id_limit_allowlist
           )
         end
@@ -305,7 +307,7 @@ module API
         success Entities::UserStatus
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
       end
       route_setting :authorization, permissions: :read_user_status, boundary_type: :user
       get ":user_id/status", requirements: ::API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
@@ -324,7 +326,7 @@ module API
         success Entities::User
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
       route_setting :authorization, permissions: :follow_user, boundary_type: :user
       post ':id/follow', feature_category: :user_profile do
@@ -348,7 +350,7 @@ module API
         success Entities::User
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
       route_setting :authorization, permissions: :unfollow_user, boundary_type: :user
       post ':id/unfollow', feature_category: :user_profile do
@@ -374,7 +376,7 @@ module API
         is_array true
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_user_following, boundary_type: :user
@@ -396,7 +398,7 @@ module API
         is_array true
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_user_follower, boundary_type: :user
@@ -417,7 +419,7 @@ module API
         success Entities::UserWithAdmin
       end
       params do
-        requires :email, type: String, desc: 'The email of the user'
+        requires :email, type: String, desc: 'Email address to add to the user account.'
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
         optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
@@ -427,7 +429,7 @@ module API
         optional :force_random_password, type: Boolean, desc: 'Flag indicating a random password will be set'
         use :optional_attributes
       end
-      route_setting :authorization, permissions: :create_user, boundary_type: :instance
+      route_setting :authorization, permissions: :create_user, boundary_type: :instance, assignable_when: [:admin]
       post feature_category: :user_profile do
         authenticated_as_admin!
 
@@ -464,8 +466,8 @@ module API
         success Entities::UserWithAdmin
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        optional :email, type: String, desc: 'The email of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        optional :email, type: String, desc: 'Email address to add to the user account.'
         optional :password, type: String, desc: 'The password of the new user'
         optional :skip_reconfirmation, type: Boolean, desc: 'Flag indicating the account skips the confirmation by email'
         optional :name, type: String, desc: 'The name of the user'
@@ -473,7 +475,7 @@ module API
         use :optional_attributes
       end
 
-      route_setting :authorization, permissions: :update_user, boundary_type: :instance
+      route_setting :authorization, permissions: :update_user, boundary_type: :instance, assignable_when: [:admin]
       put ":id", feature_category: :user_profile do
         authenticated_as_admin!
 
@@ -520,9 +522,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :disable_two_factor_user, boundary_type: :instance
+      route_setting :authorization, permissions: :disable_two_factor_user, boundary_type: :instance,
+        assignable_when: [:admin]
       patch ":id/disable_two_factor", feature_category: :system_access do
         authenticated_as_admin!
 
@@ -548,11 +551,11 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :provider, type: String, desc: 'The external provider'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :provider, type: String, desc: 'Name of the external authentication provider.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :delete_identity, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_identity, boundary_type: :instance, assignable_when: [:admin]
       delete ":id/identities/:provider", feature_category: :system_access do
         authenticated_as_admin!
 
@@ -573,7 +576,7 @@ module API
         tags ['deploy_resources']
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_user_project_deploy_key, boundary_type: :user
@@ -600,15 +603,16 @@ module API
         tags ['keys']
       end
       params do
-        requires :user_id, type: Integer, desc: 'The ID of the user'
-        requires :key, type: String, desc: 'The new SSH key'
-        requires :title, type: String, desc: 'The title of the new SSH key'
-        optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        requires :user_id, type: Integer, desc: 'ID of the user.'
+        requires :key, type: String, desc: 'Public key value of the SSH key.'
+        requires :title, type: String, desc: 'Title of the SSH key.'
+        optional :expires_at, type: DateTime, desc: 'Date when the SSH key expires.'
         optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
-          desc: 'Scope of usage for the SSH key'
+          desc: 'Usage scope for the key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :create_user_ssh_key, boundary_type: :instance
+      route_setting :authorization, permissions: :create_user_ssh_key, boundary_type: :instance,
+        assignable_when: [:admin]
       post ":user_id/keys", feature_category: :system_access do
         authenticated_as_admin!
 
@@ -632,7 +636,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
@@ -652,8 +656,8 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :key_id, type: Integer, desc: 'ID of the SSH key.'
       end
       route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
       get ':id/keys/:key_id', requirements: ::API::USER_REQUIREMENTS, feature_category: :system_access do
@@ -674,11 +678,12 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :key_id, type: Integer, desc: 'ID of the SSH key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :delete_user_ssh_key, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_user_ssh_key, boundary_type: :instance,
+        assignable_when: [:admin]
       delete ':id/keys/:key_id', feature_category: :system_access do
         authenticated_as_admin!
 
@@ -701,11 +706,12 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :key, type: String, desc: 'The new GPG key'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :key, type: String, desc: 'Public key value of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :create_user_gpg_key, boundary_type: :instance
+      route_setting :authorization, permissions: :create_user_gpg_key, boundary_type: :instance,
+        assignable_when: [:admin]
       post ':id/gpg_keys', feature_category: :system_access do
         authenticated_as_admin!
 
@@ -729,7 +735,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
@@ -750,8 +756,8 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :key_id, type: Integer, desc: 'ID of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_user_gpg_key, boundary_type: :user
@@ -774,11 +780,12 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :key_id, type: Integer, desc: 'ID of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :delete_user_gpg_key, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_user_gpg_key, boundary_type: :instance,
+        assignable_when: [:admin]
       delete ':id/gpg_keys/:key_id', feature_category: :system_access do
         authenticated_as_admin!
 
@@ -801,11 +808,12 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :key_id, type: Integer, desc: 'ID of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :revoke_user_gpg_key, boundary_type: :instance
+      route_setting :authorization, permissions: :revoke_user_gpg_key, boundary_type: :instance,
+        assignable_when: [:admin]
       post ':id/gpg_keys/:key_id/revoke', feature_category: :system_access do
         authenticated_as_admin!
 
@@ -826,12 +834,12 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :email, type: String, desc: 'The email of the user'
-        optional :skip_confirmation, type: Boolean, desc: 'Skip confirmation of email and assume it is verified'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :email, type: String, desc: 'Email address to add to the user account.'
+        optional :skip_confirmation, type: Boolean, desc: 'If `true`, skips email confirmation and assumes the email is verified.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :create_user_email, boundary_type: :instance
+      route_setting :authorization, permissions: :create_user_email, boundary_type: :instance, assignable_when: [:admin]
       post ":id/emails", feature_category: :user_profile do
         authenticated_as_admin!
 
@@ -855,11 +863,11 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :read_user_email, boundary_type: :instance
+      route_setting :authorization, permissions: :read_user_email, boundary_type: :instance, assignable_when: [:admin]
       get ':id/emails', feature_category: :user_profile do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
@@ -876,11 +884,11 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        requires :email_id, type: Integer, desc: 'The ID of the email'
+        requires :id, type: Integer, desc: 'ID of the user.'
+        requires :email_id, type: Integer, desc: 'ID of the email.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :delete_user_email, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_user_email, boundary_type: :instance, assignable_when: [:admin]
       delete ':id/emails/:email_id', feature_category: :user_profile do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
@@ -901,11 +909,11 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
+        requires :id, type: Integer, desc: 'ID of the user.'
+        optional :hard_delete, type: Boolean, desc: 'If `true`, contributions that would usually be [moved to a ghost user](https://docs.gitlab.com/user/profile/account/delete_account/#associated-records) are deleted instead, along with groups owned solely by this user.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :delete_user, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_user, boundary_type: :instance, assignable_when: [:admin]
       delete ":id", feature_category: :user_profile do
         authenticated_as_admin!
 
@@ -928,10 +936,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :activate_user, boundary_type: :instance
+      route_setting :authorization, permissions: :activate_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/activate', feature_category: :system_access do
         authenticated_as_admin!
 
@@ -952,9 +960,9 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :approve_user, boundary_type: :instance
+      route_setting :authorization, permissions: :approve_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/approve', feature_category: :system_access do
         user = User.find_by(id: params[:id])
         not_found!('User') unless can?(current_user, :read_user, user)
@@ -974,9 +982,9 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :reject_user, boundary_type: :instance
+      route_setting :authorization, permissions: :reject_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/reject', feature_category: :system_access do
         user = find_user_by_id(params)
 
@@ -996,10 +1004,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :deactivate_user, boundary_type: :instance
+      route_setting :authorization, permissions: :deactivate_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/deactivate', feature_category: :system_access do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
@@ -1022,10 +1030,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :block_user, boundary_type: :instance
+      route_setting :authorization, permissions: :block_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/block', feature_category: :system_access do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
@@ -1054,10 +1062,10 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :unblock_user, boundary_type: :instance
+      route_setting :authorization, permissions: :unblock_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/unblock', feature_category: :system_access do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
@@ -1080,9 +1088,9 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :ban_user, boundary_type: :instance
+      route_setting :authorization, permissions: :ban_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/ban', feature_category: :system_access do
         authenticated_as_admin!
         user = find_user_by_id(params)
@@ -1101,9 +1109,9 @@ module API
         tags ['users']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :id, type: Integer, desc: 'ID of the user.'
       end
-      route_setting :authorization, permissions: :unban_user, boundary_type: :instance
+      route_setting :authorization, permissions: :unban_user, boundary_type: :instance, assignable_when: [:admin]
       post ':id/unban', feature_category: :system_access do
         authenticated_as_admin!
         user = find_user_by_id(params)
@@ -1123,11 +1131,11 @@ module API
         tags ['users']
       end
       params do
-        requires :user_id, type: Integer, desc: 'The ID of the user'
-        optional :type, type: String, desc: 'Filter memberships by type', values: %w[Project Namespace]
+        requires :user_id, type: Integer, desc: 'ID of the user.'
+        optional :type, type: String, desc: 'Filter memberships by type.', values: %w[Project Namespace]
         use :pagination
       end
-      route_setting :authorization, permissions: :read_user, boundary_type: :instance
+      route_setting :authorization, permissions: :read_user, boundary_type: :instance, assignable_when: [:admin]
       get ":user_id/memberships", feature_category: :user_profile, urgency: :high do
         authenticated_as_admin!
         user = find_user_by_id(params)
@@ -1162,7 +1170,7 @@ module API
         params do
           requires :id,
             type: Integer,
-            desc: 'ID of the user to query.'
+            desc: 'ID of the user.'
         end
         route_setting :authorization, permissions: :read_user_association, boundary_type: :user
         get do
@@ -1177,7 +1185,7 @@ module API
       end
 
       params do
-        requires :user_id, type: Integer, desc: 'The ID of the user'
+        requires :user_id, type: Integer, desc: 'ID of the user.'
       end
       segment ':user_id' do
         resource :impersonation_tokens do
@@ -1202,13 +1210,16 @@ module API
           end
           params do
             use :pagination
-            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) impersonation_tokens'
+            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filter tokens by state.'
           end
-          route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance
+          route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance,
+            assignable_when: [:admin]
           get feature_category: :system_access do
             tokens = finder(declared_params(include_missing: false)).execute.preload_users.preload_last_used_ips
+            paginated_tokens = paginate(tokens)
 
-            present paginate(tokens), with: Entities::ImpersonationToken
+            present paginated_tokens, with: Entities::ImpersonationToken,
+              **granular_scopes_options_for(paginated_tokens)
           end
 
           desc 'Create an impersonation token' do
@@ -1220,14 +1231,15 @@ module API
             tags ['access_tokens']
           end
           params do
-            requires :name, type: String, desc: 'The name of the impersonation token'
-            optional :description, type: String, desc: 'The description of the personal access token'
-            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
-            optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The array of scopes of the impersonation token'
+            requires :name, type: String, desc: 'Name of the impersonation token.'
+            optional :description, type: String, desc: 'Description of the impersonation token. Limited to 255 characters.'
+            optional :expires_at, type: Date, desc: 'Date when the impersonation token expires. If omitted, the token does not expire, which is accepted only when [token expiry is not enforced](https://docs.gitlab.com/user/profile/personal_access_tokens/#access-token-expiration).'
+            optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Array of approved scopes. For a list of possible values, see [access token scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).'
             use :granular_scope_params
             mutually_exclusive :scopes, :granular_scopes
           end
-          route_setting :authorization, permissions: :create_impersonation_token, boundary_type: :instance
+          route_setting :authorization, permissions: :create_impersonation_token, boundary_type: :instance,
+            assignable_when: [:admin]
           post feature_category: :system_access do
             if params[:granular_scopes]
               target_user = find_user_by_id(params)
@@ -1241,7 +1253,10 @@ module API
               response = create_granular_token(current_user, granular_scopes, token_params, target_user: target_user)
 
               if response.success?
-                present response.payload[:personal_access_token], with: Entities::ImpersonationTokenWithToken
+                impersonation_token = response.payload[:personal_access_token]
+
+                present impersonation_token, with: Entities::ImpersonationTokenWithToken,
+                  **granular_scopes_options_for([impersonation_token])
               else
                 render_api_error!(response.message, response.reason || :unprocessable_entity)
               end
@@ -1263,11 +1278,15 @@ module API
             tags ['access_tokens']
           end
           params do
-            requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
+            requires :impersonation_token_id, type: Integer, desc: 'ID of the impersonation token.'
           end
-          route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance
+          route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance,
+            assignable_when: [:admin]
           get ':impersonation_token_id', feature_category: :system_access do
-            present find_impersonation_token, with: Entities::ImpersonationToken
+            impersonation_token = find_impersonation_token
+
+            present impersonation_token, with: Entities::ImpersonationToken,
+              **granular_scopes_options_for([impersonation_token])
           end
 
           desc 'Revoke an impersonation token' do
@@ -1276,9 +1295,10 @@ module API
             tags ['access_tokens']
           end
           params do
-            requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
+            requires :impersonation_token_id, type: Integer, desc: 'ID of the impersonation token.'
           end
-          route_setting :authorization, permissions: :revoke_impersonation_token, boundary_type: :instance
+          route_setting :authorization, permissions: :revoke_impersonation_token, boundary_type: :instance,
+            assignable_when: [:admin]
           delete ':impersonation_token_id', feature_category: :system_access do
             token = find_impersonation_token
 
@@ -1306,9 +1326,10 @@ module API
           params do
             use :create_personal_access_token_params
             requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
-              desc: 'The array of scopes of the personal access token'
+              desc: 'Array of approved scopes. For a list of possible values, see [access token scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).'
           end
-          route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :instance
+          route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :instance,
+            assignable_when: [:admin]
           post feature_category: :system_access do
             response = ::PersonalAccessTokens::CreateService.new(
               current_user: current_user, target_user: target_user, organization_id: Current.organization.id, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
@@ -1366,10 +1387,10 @@ module API
         end
 
         params :set_user_status_params do
-          optional :emoji, type: String, desc: "The emoji to set on the status"
-          optional :message, type: String, desc: "The status message to set"
-          optional :availability, type: String, desc: "The availability of user to set"
-          optional :clear_status_after, type: String, desc: "Automatically clear emoji, message and availability fields after a certain time", values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
+          optional :emoji, type: String, desc: 'Name of the emoji to use as a status. If omitted, `speech_balloon` is used. Must be one of the names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json).'
+          optional :message, type: String, desc: 'Message to set as a status. Can contain emoji codes. Maximum of 100 characters.'
+          optional :availability, type: String, desc: 'Availability of the user. Possible values are `busy` and `not_set`.'
+          optional :clear_status_after, type: String, desc: 'Time after which the status is cleared automatically.', values: UserStatus::CLEAR_STATUS_QUICK_OPTIONS.keys
         end
       end
 
@@ -1395,7 +1416,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        requires :key_id, type: Integer, desc: 'ID of the SSH key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
@@ -1413,11 +1434,11 @@ module API
         tags ['keys']
       end
       params do
-        requires :key, type: String, desc: 'The new SSH key'
-        requires :title, type: String, desc: 'The title of the new SSH key'
-        optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        requires :key, type: String, desc: 'Public key value of the SSH key.'
+        requires :title, type: String, desc: 'Title of the SSH key.'
+        optional :expires_at, type: DateTime, desc: 'Date when the SSH key expires.'
         optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
-          desc: 'Scope of usage for the SSH key'
+          desc: 'Usage scope for the key.'
       end
       route_setting :authorization, permissions: :create_user_ssh_key, boundary_type: :user
       post "keys", feature_category: :system_access do
@@ -1436,7 +1457,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        requires :key_id, type: Integer, desc: 'ID of the SSH key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_user_ssh_key, boundary_type: :user
@@ -1471,7 +1492,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+        requires :key_id, type: Integer, desc: 'ID of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_user_gpg_key, boundary_type: :user
@@ -1489,7 +1510,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :key, type: String, desc: 'The new GPG key'
+        requires :key, type: String, desc: 'Public key value of the GPG key.'
       end
       route_setting :authorization, permissions: :create_user_gpg_key, boundary_type: :user
       post 'gpg_keys', feature_category: :system_access do
@@ -1508,7 +1529,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+        requires :key_id, type: Integer, desc: 'ID of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :revoke_user_gpg_key, boundary_type: :user
@@ -1527,7 +1548,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        requires :key_id, type: Integer, desc: 'ID of the GPG key.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_user_gpg_key, boundary_type: :user
@@ -1563,20 +1584,21 @@ module API
         tags ['users']
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
-        requires :credit_card_validated_at, type: DateTime, desc: 'The time when the user\'s credit card was validated'
-        requires :credit_card_expiration_month, type: Integer, desc: 'The month the credit card expires'
-        requires :credit_card_expiration_year, type: Integer, desc: 'The year the credit card expires'
-        requires :credit_card_holder_name, type: String, desc: 'The credit card holder name'
-        requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
-        requires :credit_card_type, type: String, desc: 'The credit card network name'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
+        requires :credit_card_validated_at, type: DateTime, desc: "Time when the user's credit card was validated."
+        requires :credit_card_expiration_month, type: Integer, desc: 'Month the credit card expires.'
+        requires :credit_card_expiration_year, type: Integer, desc: 'Year the credit card expires.'
+        requires :credit_card_holder_name, type: String, desc: 'Name of the credit card holder.'
+        requires :credit_card_mask_number, type: String, desc: 'Last 4 digits of the credit card number.'
+        requires :credit_card_type, type: String, desc: 'Name of the credit card network.'
 
-        optional :zuora_payment_method_xid, type: String, desc: 'The Zuora payment method ID'
-        optional :stripe_setup_intent_xid, type: String, desc: 'The Stripe setup intent ID'
-        optional :stripe_payment_method_xid, type: String, desc: 'The Stripe payment method ID'
-        optional :stripe_card_fingerprint, type: String, desc: 'The Stripe credit card fingerprint'
+        optional :zuora_payment_method_xid, type: String, desc: 'ID of the Zuora payment method.'
+        optional :stripe_setup_intent_xid, type: String, desc: 'ID of the Stripe setup intent.'
+        optional :stripe_payment_method_xid, type: String, desc: 'ID of the Stripe payment method.'
+        optional :stripe_card_fingerprint, type: String, desc: 'Stripe credit card fingerprint.'
       end
-      route_setting :authorization, permissions: :update_credit_card_validation, boundary_type: :instance
+      route_setting :authorization, permissions: :update_credit_card_validation, boundary_type: :instance,
+        assignable_when: [:admin]
       put ":user_id/credit_card_validation", urgency: :low, feature_category: :subscription_management do
         authenticated_as_admin!
 
@@ -1644,10 +1666,10 @@ module API
         tags ['users']
       end
       params do
-        optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
-        optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
-        optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities to a CI job as part of a JSON web token.'
-        optional :policy_advanced_editor, type: Boolean, desc: 'Flag indicating that advanced editor is enabled.'
+        optional :view_diffs_file_by_file, type: Boolean, desc: 'If `true`, the user sees only one file diff per page.'
+        optional :show_whitespace_in_diffs, type: Boolean, desc: 'If `true`, the user sees whitespace changes in diffs.'
+        optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: "If `true`, passes the user's external identities to CI jobs as part of a JSON web token. This attribute is internal to GitLab and must not be passed to third-party services. For more information, see [Token Payload](https://docs.gitlab.com/ci/secrets/id_token_authentication/#token-payload)."
+        optional :policy_advanced_editor, type: Boolean, desc: 'If `true`, enables the advanced editor.'
         at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :policy_advanced_editor
       end
       route_setting :authorization, permissions: :update_user_preference, boundary_type: :user
@@ -1685,7 +1707,7 @@ module API
         tags ['users']
       end
       params do
-        requires :email_id, type: Integer, desc: 'The ID of the email'
+        requires :email_id, type: Integer, desc: 'ID of the email.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_user_email, boundary_type: :user
@@ -1703,7 +1725,7 @@ module API
         tags ['users']
       end
       params do
-        requires :email, type: String, desc: 'The new email'
+        requires :email, type: String, desc: 'Email address to add to the account.'
       end
       route_setting :authorization, permissions: :create_user_email, boundary_type: :user
       post "emails", feature_category: :user_profile do
@@ -1723,7 +1745,7 @@ module API
         tags ['users']
       end
       params do
-        requires :email_id, type: Integer, desc: 'The ID of the email'
+        requires :email_id, type: Integer, desc: 'ID of the email.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_user_email, boundary_type: :user
@@ -1854,7 +1876,7 @@ module API
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/555546
           optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
-            desc: 'The array of scopes of the personal access token'
+            desc: 'Array of approved scopes. For a list of possible values, see [access token scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).'
           exactly_one_of :scopes, :granular_scopes
         end
         route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :user
@@ -1876,7 +1898,10 @@ module API
             end
 
           if response.success?
-            present response.payload[:personal_access_token], with: Entities::PersonalAccessTokenWithToken
+            personal_access_token = response.payload[:personal_access_token]
+
+            present personal_access_token, with: Entities::PersonalAccessTokenWithToken,
+              **granular_scopes_options_for([personal_access_token])
           else
             render_api_error!(response.message, response.reason || :unprocessable_entity)
           end

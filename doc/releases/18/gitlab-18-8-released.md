@@ -94,7 +94,7 @@ Please provide your feedback in [issue 583008](https://gitlab.com/gitlab-org/git
 
 {{< /details >}}
 
-The GitLab Duo Security Analyst Agent, [introduced as beta in GitLab 18.5](https://about.gitlab.com/releases/2025/10/16/gitlab-18-5-released/#gitlab-security-analyst-agent-for-duo-agent-catalog-beta), is now generally available in GitLab 18.8.
+The GitLab Duo Security Analyst Agent, [introduced as beta in GitLab 18.5](gitlab-18-5-released.md#gitlab-security-analyst-agent-for-duo-agent-catalog-beta), is now generally available in GitLab 18.8.
 
 The Security Analyst Agent enables engineers to manage vulnerabilities through natural language commands in GitLab Duo Agentic Chat. Instead of manually clicking through vulnerability dashboards or writing custom scripts for bulk operations, security teams can now triage, assess, and provide guidance for vulnerabilities in Chat conversations.
 

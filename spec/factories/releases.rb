@@ -22,18 +22,14 @@ FactoryBot.define do
     end
 
     trait :with_evidence do
-      after(:create) do |release, _|
-        create(:evidence, release: release)
-      end
+      evidences { [association(:evidence, strategy: :build, release: instance)] }
     end
 
     trait :with_milestones do
       transient do
         milestones_count { 2 }
       end
-      after(:create) do |release, evaluator|
-        create_list(:milestone, evaluator.milestones_count, project: evaluator.project, releases: [release])
-      end
+      milestones { Array.new(milestones_count) { association(:milestone, project: project) } }
     end
 
     trait :with_catalog_resource_version do

@@ -1,4 +1,5 @@
 <script>
+import { maxBy } from 'lodash-es';
 import { __, sprintf } from '~/locale';
 import HeatMapChart from '~/analytics/analytics_dashboards/components/visualizations/heat_map_chart.vue';
 import {
@@ -12,9 +13,19 @@ import { DISPLAY_TYPES } from '../../constants';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
 import FormattedTooltipContent from './chart/formatted_tooltip_content.vue';
 
+// A capped axis keeps its busiest entries and drops the rest, so the colour
+// ramp spans the values on screen. The panel title has to say it is capped.
+// Ties break on the label, so which entry survives the cap does not depend on
+// the order the query happened to return.
+const largestFirst = (entries, max) =>
+  [...entries].sort((a, b) => b.total - a.total || a.label.localeCompare(b.label)).slice(0, max);
+
 export default {
   name: 'HeatMapPresenter',
   components: { DimensionRoutedChart, FormattedTooltipContent, HeatMapChart },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: false,
@@ -39,8 +50,18 @@ export default {
   },
   emits: { error: null },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     description() {
       return this.displayConfig?.description;
+    },
+    // A dense grid can cap either axis, keeping the busiest entries.
+    maxColumns() {
+      return this.axisCap(this.displayConfig?.maxColumns);
+    },
+    maxRows() {
+      return this.axisCap(this.displayConfig?.maxRows);
     },
   },
   methods: {
@@ -56,21 +77,51 @@ export default {
       });
       const formatColumn = dimensionLabelFormatter(this.data.nodes, columnDimension);
 
-      return bars.flatMap(({ name, data }) =>
-        data.map((value, index) => ({
-          column: formatColumn(groups[index]),
-          row: name,
-          value,
+      const columns = this.cappedAxis(
+        groups.map((group, index) => ({
+          label: formatColumn(group),
+          index,
+          total: bars.reduce((sum, { data }) => sum + data[index], 0),
+        })),
+        this.maxColumns,
+      );
+      const rows = this.cappedAxis(
+        bars.map(({ name, data }, index) => ({
+          label: name,
+          index,
+          total: data.reduce((sum, value) => sum + value, 0),
+        })),
+        this.maxRows,
+      );
+
+      return rows.flatMap((row) =>
+        columns.map((column) => ({
+          column: column.label,
+          row: row.label,
+          value: bars[row.index].data[column.index],
         })),
       );
     },
+    axisCap(value) {
+      const max = Number(value);
+
+      return Number.isInteger(max) && max > 0 ? max : null;
+    },
+    cappedAxis(entries, max) {
+      return max ? largestFirst(entries, max) : entries;
+    },
     // Compact in the cell so a value fits a narrow column, full digits in the
     // tooltip where there is room. The chart cannot name its own axes, so the
-    // description for assistive technology is supplied here too.
-    optionsFor(dimensions, metric) {
+    // description for assistive technology is supplied here too, from the same cells.
+    chartPropsFor(dimensions, metric) {
+      const cells = this.cellsFor(dimensions, metric);
+
       return {
-        formatValue: axisFormatterFor(baseFieldKeyOf(metric)),
-        aria: { label: { description: this.ariaDescription(dimensions, metric) } },
+        data: cells,
+        options: {
+          formatValue: axisFormatterFor(baseFieldKeyOf(metric)),
+          aria: { label: { description: this.ariaDescription(dimensions, metric, cells) } },
+        },
       };
     },
     // Labelled from the metric, so a query alias renames it.
@@ -82,12 +133,30 @@ export default {
 
       return (_label, value) => format(value);
     },
-    ariaDescription(dimensions, metric) {
-      return sprintf(__('Heat map of %{metric} by %{columns} and %{rows}.'), {
+    ariaDescription(dimensions, metric, cells) {
+      const title = this.visualizationTitle;
+      const axes = {
         metric: labelWithParameter(metric),
         columns: labelWithParameter(dimensions[0]),
         rows: labelWithParameter(dimensions[1]),
-      });
+      };
+      // Separate strings rather than prepending the title, so translators see its punctuation.
+      const shape = title
+        ? sprintf(__('%{title}. Heat map of %{metric} by %{columns} and %{rows}.'), {
+            ...axes,
+            title,
+          })
+        : sprintf(__('Heat map of %{metric} by %{columns} and %{rows}.'), axes);
+      const highest = maxBy(cells, 'value');
+      const peak = highest
+        ? sprintf(__('Highest is %{value} for %{column} and %{row}.'), {
+            value: formatterFor(baseFieldKeyOf(metric))(highest.value),
+            row: highest.row,
+            column: highest.column,
+          })
+        : '';
+
+      return [shape, peak].filter(Boolean).join(' ');
     },
   },
   DISPLAY_TYPES,
@@ -106,10 +175,7 @@ export default {
       @error="$emit('error', $event)"
     >
       <template #two-dimensions="{ dimensions, metric }">
-        <heat-map-chart
-          :data="cellsFor(dimensions, metric)"
-          :options="optionsFor(dimensions, metric)"
-        >
+        <heat-map-chart v-bind="chartPropsFor(dimensions, metric)">
           <template #tooltip-content="{ value }">
             <formatted-tooltip-content
               :content="tooltipContent(metric, value)"

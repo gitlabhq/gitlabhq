@@ -6,8 +6,7 @@ RSpec.describe DashboardHelper, :enable_admin_mode, feature_category: :shared do
   let_it_be(:user) { build(:admin) }
 
   before do
-    allow(helper).to receive(:current_user).and_return(user)
-    allow(helper).to receive(:can?) { true }
+    allow(helper).to receive_messages(current_user: user, can?: true)
   end
 
   describe '#feature_entry' do

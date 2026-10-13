@@ -99,7 +99,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
         let(:current_user) { user }
 
         it 'returns tokens of user' do
-          is_expected.to contain_exactly(*user.personal_access_tokens)
+          is_expected.to match_array(user.personal_access_tokens)
         end
       end
 

@@ -531,20 +531,6 @@ RSpec.describe PagesDomain, feature_category: :pages do
     end
   end
 
-  describe '.instance_serverless' do
-    let_it_be(:domain_1) { create(:pages_domain, wildcard: true) }
-    let_it_be(:domain_2) { create(:pages_domain, :instance_serverless) }
-    let_it_be(:domain_3) { create(:pages_domain, scope: :instance) }
-    let_it_be(:domain_4) { create(:pages_domain, :instance_serverless) }
-    let_it_be(:domain_5) { create(:pages_domain, usage: :serverless) }
-
-    subject { described_class.instance_serverless }
-
-    it 'returns domains that are wildcard, instance-level, and serverless' do
-      is_expected.to match_array [domain_2, domain_4]
-    end
-  end
-
   describe '.need_auto_ssl_renewal' do
     subject { described_class.need_auto_ssl_renewal }
 

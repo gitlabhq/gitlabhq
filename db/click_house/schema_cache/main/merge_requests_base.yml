@@ -2,7 +2,7 @@
 name: merge_requests_base
 engine: ReplacingMergeTree
 engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
-  (traversal_path, id) ORDER BY (traversal_path, id) TTL seen + toIntervalHour(1)
+  (traversal_path, id) ORDER BY (traversal_path, id) TTL toDateTime(seen) + toIntervalHour(1)
   SETTINGS index_granularity = 8192
 primary_key: traversal_path, id
 sorting_key: traversal_path, id

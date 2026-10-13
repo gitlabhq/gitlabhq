@@ -73,10 +73,10 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
   let(:merge_request) { create(:merge_request, merge_status: :unchecked, source_project: project, target_project: project) }
 
   describe '#async_execute' do
-    it 'updates merge status to checking' do
+    it 'leaves the merge status for the worker to update' do
       described_class.new(merge_request).async_execute
 
-      expect(merge_request).to be_checking
+      expect(merge_request).to be_unchecked
     end
 
     it 'enqueues MergeRequestMergeabilityCheckWorker' do
@@ -262,35 +262,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         it 'reports the merge status as discarded' do
           expect(subject.reason).to eq(described_class::STALE_MERGE_STATUS_DISCARDED)
         end
-
-        context 'when discard_stale_mergeability_verdicts is disabled' do
-          before do
-            stub_feature_flags(discard_stale_mergeability_verdicts: false)
-          end
-
-          it 'writes the stale unmergeable status' do
-            expect { subject }.to change { merge_request.merge_status }
-              .from('unchecked').to('cannot_be_merged')
-          end
-        end
-      end
-
-      context 'when discard_stale_mergeability_verdicts is disabled' do
-        before do
-          stub_feature_flags(discard_stale_mergeability_verdicts: false)
-        end
-
-        it 'overwrites the current merge status with the stale one' do
-          expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
-            .from('cannot_be_merged').to('can_be_merged')
-        end
-
-        it 'takes the original path, reading no inputs and locking no row' do
-          expect(merge_request).not_to receive(:merge_status_inputs)
-          expect(merge_request).not_to receive(:merge_status_inputs_current?)
-
-          subject
-        end
       end
     end
 
@@ -309,17 +280,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       it 'discards the merge status computed for the old source SHA' do
         expect { subject }.not_to change { MergeRequest.find(merge_request.id).merge_status }
           .from('cannot_be_merged')
-      end
-
-      context 'when discard_stale_mergeability_verdicts is disabled' do
-        before do
-          stub_feature_flags(discard_stale_mergeability_verdicts: false)
-        end
-
-        it 'overwrites the current merge status with the stale one' do
-          expect { subject }.to change { MergeRequest.find(merge_request.id).merge_status }
-            .from('cannot_be_merged').to('can_be_merged')
-        end
       end
     end
 
@@ -436,6 +396,21 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
         expect(result.message).to eq('Merge request is not mergeable')
+      end
+    end
+
+    context 'when the merge-ref commit cannot be found' do
+      before do
+        expect_next_instance_of(MergeRequests::MergeToRefService) do |merge_to_ref|
+          expect(merge_to_ref).to receive(:execute)
+            .and_raise(MergeRequests::MergeToRefService::MergeCommitNotFoundError)
+        end
+      end
+
+      it 'propagates the error without marking the merge request as unmergeable' do
+        expect { subject }.to raise_error(MergeRequests::MergeToRefService::MergeCommitNotFoundError)
+
+        expect(MergeRequest.find(merge_request.id).merge_status).not_to eq('cannot_be_merged')
       end
     end
 

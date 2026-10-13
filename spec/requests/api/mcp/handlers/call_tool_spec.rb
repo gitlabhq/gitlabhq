@@ -122,6 +122,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['isError']).to be_truthy
         expect(json_response['result']['content'].first['text']).to include('iid is missing')
       end
+
+      it 'does not expose the internal reason to the client' do
+        expect(json_response['result'].keys).not_to include('reason')
+      end
     end
 
     context 'when a tool receives an unknown argument' do
@@ -168,6 +172,47 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    describe 'client identity' do
+      let(:logger) { instance_double(Gitlab::Mcp::Logger, conditional_info: nil) }
+      let(:user_agent) { 'Cursor/1.0.0 (darwin arm64)' }
+
+      subject(:tool_call) do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.to_json,
+          headers: { 'Content-Type' => 'application/json', 'User-Agent' => user_agent }
+      end
+
+      before do
+        allow(Gitlab::Mcp::Logger).to receive(:build).and_return(logger)
+      end
+
+      it 'logs the client from the User-Agent' do
+        tool_call
+
+        expect(logger).to have_received(:conditional_info).with(
+          user, hash_including(event_name: 'tool_call', mcp_client_name: 'Cursor', mcp_client_version: '1.0.0')
+        )
+      end
+
+      context 'when the request carries clientInfo in _meta (stateless revision)' do
+        let(:tool_params) do
+          {
+            name: 'get_issue',
+            arguments: { id: project.full_path, issue_iid: issue.iid },
+            _meta: { 'io.modelcontextprotocol/clientInfo' => { name: 'claude-code', version: '2.1.280' } }
+          }
+        end
+
+        it 'prefers the _meta clientInfo over the User-Agent' do
+          tool_call
+
+          expect(logger).to have_received(:conditional_info).with(
+            user, hash_including(event_name: 'tool_call', mcp_client_name: 'claude-code', mcp_client_version: '2.1.280')
+          )
+        end
+      end
+    end
+
     context 'with unknown tool name' do
       let(:params) do
         {
@@ -211,6 +256,23 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['structuredContent']['title']).to eq(merge_request.title)
         expect(json_response['result']['isError']).to be_falsey
       end
+
+      context 'with a URL-encoded project path' do
+        let(:tool_params) do
+          {
+            name: 'get_merge_request',
+            arguments: { project_id: CGI.escape(project.full_path), merge_request_iid: merge_request.iid }
+          }
+        end
+
+        it 'resolves the project as if the path were plain', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['title']).to eq(merge_request.title)
+        end
+      end
     end
 
     describe '#get_repository_file' do
@@ -245,6 +307,21 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['content'].first['text']).to include(first_diff.to_json)
         expect(json_response['result']['structuredContent']['items']).to include(first_diff.stringify_keys)
         expect(json_response['result']['isError']).to be_falsey
+      end
+
+      context 'with a URL-encoded project path' do
+        let(:tool_params) do
+          { name: 'get_merge_request_diffs',
+            arguments: { id: CGI.escape(project.full_path), merge_request_iid: merge_request.iid } }
+        end
+
+        it 'resolves the project as if the path were plain', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['items']).to be_present
+        end
       end
     end
 
@@ -1600,6 +1677,16 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['structuredContent']['log']['content']).to eq('BUILD TRACE')
+      end
+
+      it 'logs the alias as sent together with the canonical tool name' do
+        expect_next_instance_of(Gitlab::Mcp::Logger) do |logger|
+          expect(logger).to receive(:conditional_info).with(
+            user, hash_including(tool_name: 'get_job_log', canonical_tool_name: 'get_job')
+          ).and_call_original
+        end
+
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
       end
     end
 

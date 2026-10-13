@@ -30,7 +30,6 @@ export default {
     helpText: {
       type: String,
       required: true,
-      default: '',
     },
     path: {
       type: String,

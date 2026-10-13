@@ -18,6 +18,27 @@ RSpec.describe 'Project integrations', :js, feature_category: :integrations do
     end
   end
 
+  context 'with the deprecated Slack notifications integration' do
+    before do
+      stub_application_setting(slack_app_enabled: true)
+    end
+
+    it 'does not list the integration for a project that never configured it' do
+      visit_project_integrations
+
+      expect(page).to have_link('GitLab for Slack app')
+      expect(page).to have_no_link('Slack notifications')
+    end
+
+    it 'lists the integration for a project that already configured it' do
+      create(:integrations_slack, project: project)
+
+      visit_project_integrations
+
+      expect(page).to have_link('Slack notifications')
+    end
+  end
+
   context 'with remove_monitor_metrics flag enabled' do
     before do
       stub_feature_flags(remove_monitor_metrics: true)

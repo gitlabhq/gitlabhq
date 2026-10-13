@@ -41,10 +41,7 @@ describe('MultilineCommentForm', () => {
       const line = { ...testLine };
       createWrapper({ line });
 
-      // we can't check for .attributes() because of GlFormSelect design
-      // all the attributes get converted to a string, so the line object becomes [object Object]
-      // we can test for the component internals instead which is as reliable as VTUs checks
-      expect(wrapper.findComponent(GlFormSelect).vm.$attrs.value).toEqual(line);
+      expect(wrapper.findComponent(GlFormSelect).props('value')).toEqual(line);
       expect(useNotes().setSelectedCommentPosition).toHaveBeenCalled();
     });
 
@@ -54,7 +51,7 @@ describe('MultilineCommentForm', () => {
       };
       createWrapper({ lineRange });
 
-      expect(wrapper.findComponent(GlFormSelect).vm.$attrs.value).toEqual(lineRange.start);
+      expect(wrapper.findComponent(GlFormSelect).props('value')).toEqual(lineRange.start);
       expect(useNotes().setSelectedCommentPosition).toHaveBeenCalled();
     });
   });
@@ -76,7 +73,7 @@ describe('MultilineCommentForm', () => {
 
     glSelect.vm.$emit('change', { ...testLine });
 
-    expect(wrapper.findComponent(GlFormSelect).vm.$attrs.value).toEqual(line);
+    expect(wrapper.findComponent(GlFormSelect).props('value')).toEqual(line);
     expect(wrapper.emitted('input')).toHaveLength(1);
     // Once during created, once during updateCommentLineStart
     expect(useNotes().setSelectedCommentPosition).toHaveBeenCalledTimes(2);

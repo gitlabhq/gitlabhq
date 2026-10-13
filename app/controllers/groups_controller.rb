@@ -109,7 +109,7 @@ class GroupsController < Groups::ApplicationController
                  )
                end
 
-      redirect_to @group, notice: notice
+      redirect_to group_path(@group, organization_path: nil), notice: notice
     else
       render action: "new"
     end
@@ -153,7 +153,11 @@ class GroupsController < Groups::ApplicationController
   def create_organization_from_group
     return render_404 unless Organizations::Release.enabled?(:create_org_from_group_settings, @group)
 
-    result = Organizations::CreateFromGroupService.new(group: @group, current_user: current_user).execute
+    result = Organizations::CreateFromGroupService.new(
+      group: @group,
+      current_user: current_user,
+      params: params.permit(:name)
+    ).execute
 
     if result.success?
       organization = result.payload[:organization]
@@ -266,7 +270,11 @@ class GroupsController < Groups::ApplicationController
     if @group.export_file_exists?(current_user)
       if @group.export_archive_exists?(current_user)
         export_file = @group.export_file(current_user)
-        send_upload(export_file, attachment: export_file.filename)
+        send_upload(
+          export_file,
+          attachment: export_file.filename,
+          send_params: { content_type: Gitlab::ImportExport.export_download_content_type }
+        )
       else
         redirect_to edit_group_path(@group),
           alert: _(
@@ -387,13 +395,13 @@ class GroupsController < Groups::ApplicationController
 
     scope = action_name == 'download_export' ? @group : nil
 
-    check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
+    check_rate_limit!(prefixed_action, scope: { user: current_user, group: scope }.compact)
   end
 
   def check_create_rate_limit!
     return unless Feature.enabled?(:namespace_create_rate_limit, current_user)
 
-    check_rate_limit!(:groups_create, scope: [current_user])
+    check_rate_limit!(:groups_create, scope: { user: current_user })
   end
 
   private

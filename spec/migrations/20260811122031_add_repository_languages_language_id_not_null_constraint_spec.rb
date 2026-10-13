@@ -18,7 +18,6 @@ RSpec.describe AddRepositoryLanguagesLanguageIdNotNullConstraint,
 
   after do
     remove_constraint
-    add_constraint
   end
 
   context 'when on GitLab.com' do

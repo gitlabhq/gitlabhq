@@ -51,6 +51,16 @@
   - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
 
+= render ::Layouts::SettingsBlockComponent.new(s_('AdminSettings|GitLab MCP server rate limits'),
+  id: 'js-mcp-limits-settings',
+  testid: 'mcp-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('AdminSettings|Set an additional per-user limit for MCP server requests. These requests also count against the general user and IP rate limits.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits.md', anchor: 'enable-authenticated-mcp-server-request-rate-limit'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
+    = render 'mcp_limits'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Search rate limits'),
   id: 'js-search-limits-settings',
   testid: 'search-limits-settings',

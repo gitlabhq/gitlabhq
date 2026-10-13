@@ -53,16 +53,21 @@ module Emails
     end
 
     def bulk_import_offline_complete(user_id, bulk_import_id)
-      user = User.find(user_id)
-      @bulk_import = BulkImport.find(bulk_import_id)
-      configuration = @bulk_import.offline_configuration
-      @export_prefix = configuration&.export_prefix
-      @hostname = Gitlab::UrlSanitizer.sanitize(configuration&.source_hostname.to_s)
+      bulk_import_offline_email(user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import completed'))
+    end
 
-      email_with_layout(
-        to: user.notification_email_or_default,
-        subject: subject(s_('OfflineTransfer|Offline transfer import completed'))
+    def bulk_import_offline_complete_with_errors(user_id, bulk_import_id)
+      bulk_import_offline_email(
+        user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import completed with errors')
       )
+    end
+
+    def bulk_import_offline_failed(user_id, bulk_import_id)
+      bulk_import_offline_email(user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import failed'))
+    end
+
+    def bulk_import_offline_timeout(user_id, bulk_import_id)
+      bulk_import_offline_email(user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import timed out'))
     end
 
     def bulk_import_csv_user_mapping(
@@ -111,6 +116,7 @@ module Emails
     def import_source_user_reassign(source_user_id)
       @source_user = Import::SourceUser.find(source_user_id)
       @reassign_to_user = @source_user.reassign_to_user
+      @offline_transfer = @source_user.offline_transfer?
       title = safe_format(
         s_('UserMapping|Reassignments in %{group} waiting for review'),
         group: @source_user.namespace.full_path
@@ -126,6 +132,19 @@ module Emails
       @source_user = Import::SourceUser.find(source_user_id)
       title = safe_format(
         s_('UserMapping|Reassignments in %{group} rejected'),
+        group: @source_user.namespace.full_path
+      )
+
+      email_with_layout(
+        to: @source_user.reassigned_by_user.notification_email_or_default,
+        subject: subject(title)
+      )
+    end
+
+    def import_source_user_revoked(source_user_id)
+      @source_user = Import::SourceUser.find(source_user_id)
+      title = safe_format(
+        s_('UserMapping|Reassignments in %{group} revoked'),
         group: @source_user.namespace.full_path
       )
 
@@ -160,6 +179,7 @@ module Emails
     def import_source_user_complete(source_user_id)
       @source_user = Import::SourceUser.find(source_user_id)
       @reassign_to_user = @source_user.reassign_to_user
+      @offline_transfer = @source_user.offline_transfer?
       # We don't need to check if admin bypass is fully enabled, only if this was sent due to admin or group bypass
       @admin_bypass_enabled = Gitlab::CurrentSettings.allow_bypass_placeholder_confirmation
 
@@ -171,6 +191,22 @@ module Emails
       email_with_layout(
         to: @reassign_to_user.notification_email_or_default,
         subject: subject(title)
+      )
+    end
+
+    private
+
+    def bulk_import_offline_email(user_id, bulk_import_id, title)
+      user = User.find(user_id)
+      @bulk_import = BulkImport.find(bulk_import_id)
+      configuration = @bulk_import.offline_configuration
+      @export_prefix = configuration&.export_prefix
+      @hostname = Gitlab::UrlSanitizer.sanitize(configuration&.source_hostname.to_s)
+      @title = title
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(@title)
       )
     end
   end

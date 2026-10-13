@@ -118,7 +118,9 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 
     @include gl-container-width-up(md, panel) {
       top: $calc-application-header-height;
-      min-height: 89px;
+      // Must equal the unstuck header height: any difference flips the scroll-state
+      // query on every frame and the header flickers.
+      height: 89px;
       container-type: scroll-state;
       container-name: sticky-header;
       z-index: $top-bar-z-index - 1;
@@ -180,10 +182,6 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 
         .merge-request-tabs-container {
           @apply gl-z-1;
-        }
-
-        .merge-request-stack-toggle {
-          margin-top: -2px;
         }
       }
     }

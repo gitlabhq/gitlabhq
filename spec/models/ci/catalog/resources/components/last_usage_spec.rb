@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feature_category: :pipeline_composition do
+RSpec.describe Ci::Catalog::Resources::Components::LastUsage, feature_category: :pipeline_composition do
   let_it_be(:component, freeze: false) { create(:ci_catalog_resource_component) }
   let(:component_usage) { build(:catalog_resource_component_last_usage, component: component) }
 

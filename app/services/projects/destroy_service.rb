@@ -4,6 +4,7 @@ module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
     include ContainerRegistry::Protection::Concerns::TagRule
+    include Namespaces::DeletionFailureTracking
 
     DestroyError = Class.new(StandardError)
     BATCH_SIZE = 100
@@ -57,13 +58,11 @@ module Projects
 
       true
     rescue StandardError => error
-      context = Gitlab::ApplicationContext.current.merge(project_id: project.id)
-      Gitlab::ErrorTracking.track_exception(error, **context)
-      attempt_rollback(project, error.message)
+      attempt_rollback(project, error)
       false
     rescue Exception => error # rubocop:disable Lint/RescueException
       # Project.transaction can raise Exception
-      attempt_rollback(project, error.message)
+      attempt_rollback(project, error)
       raise
     end
 
@@ -163,8 +162,10 @@ module Projects
       result[:status] == :success
     end
 
-    def attempt_rollback(project, message)
-      return unless project
+    def attempt_rollback(project, error)
+      message = error.message
+      # Capture before reschedule_deletion! overwrites it with the current time.
+      previous_failed_at = project.deletion_last_failed_at
 
       # It's possible that the project was destroyed, but some after_commit
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
@@ -185,6 +186,7 @@ module Projects
         end
       end
 
+      track_destroy_failure(project, error, previous_failed_at, project_id: project.id)
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end
 

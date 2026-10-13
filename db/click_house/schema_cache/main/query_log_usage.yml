@@ -1,0 +1,79 @@
+---
+name: query_log_usage
+engine: MergeTree
+engine_full: MergeTree PARTITION BY toYYYYMM(event_time) ORDER BY (event_time, query_id)
+  TTL toDateTime(event_time) + toIntervalMonth(3) SETTINGS index_granularity = 8192
+partition_key: toYYYYMM(event_time)
+primary_key: event_time, query_id
+sorting_key: event_time, query_id
+settings:
+  index_granularity: '8192'
+columns:
+- name: event_time
+  type: DateTime64(6, 'UTC')
+  compression_codec: CODEC(Delta(8), ZSTD(1))
+  is_in_partition_key: true
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: query_id
+  type: String
+  compression_codec: CODEC(ZSTD(1))
+  is_in_sorting_key: true
+  is_in_primary_key: true
+- name: root_namespace_id
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: organization_id
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: user_id
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: correlation_id
+  type: String
+  compression_codec: CODEC(ZSTD(1))
+- name: application
+  type: LowCardinality(String)
+- name: feature_category
+  type: LowCardinality(String)
+- name: query_kind
+  type: LowCardinality(String)
+- name: databases
+  type: Array(LowCardinality(String))
+- name: tables
+  type: Array(LowCardinality(String))
+- name: query_duration_ms
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: read_rows
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: read_bytes
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: written_rows
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: written_bytes
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: memory_usage_bytes
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: os_cpu_virtual_time_us
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: exception_code
+  type: Int64
+  compression_codec: CODEC(ZSTD(1))
+- name: log_comment
+  type: String
+  compression_codec: CODEC(ZSTD(1))
+- name: vcpu_seconds
+  type: Float64
+  default_kind: ALIAS
+  default_expression: os_cpu_virtual_time_us / 1000000
+- name: memory_gb_seconds
+  type: Float64
+  default_kind: ALIAS
+  default_expression: "(toFloat64(memory_usage_bytes) * query_duration_ms) / 1000000000000"

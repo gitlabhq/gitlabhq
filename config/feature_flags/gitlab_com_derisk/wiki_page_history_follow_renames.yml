@@ -1,0 +1,10 @@
+---
+name: wiki_page_history_follow_renames
+description: Follow page renames when listing wiki page history
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/25083
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260187
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632767
+milestone: '19.5'
+group: group::planner intelligence
+type: gitlab_com_derisk
+default_enabled: false

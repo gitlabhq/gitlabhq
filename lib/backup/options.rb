@@ -69,6 +69,12 @@ module Backup
     attr_accessor :force
     alias_method :force?, :force
 
+    # Whether to bypass the disk space check before restoring a backup archive
+    #
+    # @return [Boolean] whether to skip the storage check
+    attr_accessor :skip_storage_check
+    alias_method :skip_storage_check?, :skip_storage_check
+
     # What strategy the backup process should use
     #
     # @return [Strategy::STREAM|Strategy::COPY]
@@ -166,11 +172,12 @@ module Backup
       repository_storages: [], repository_paths: [], skip_repository_paths: [],
       repositories_server_side_backup: false, remote_directory: nil,
       compression_options: CompressionOptions.new, gzip_rsyncable: false, container_registry_bucket: nil,
-      service_account_file: nil)
+      service_account_file: nil, skip_storage_check: false)
       @backup_id = backup_id
       @previous_backup = previous_backup
       @incremental = incremental
       @force = force
+      @skip_storage_check = skip_storage_check
       @strategy = strategy
       @skippable_tasks = skippable_tasks
       @skippable_operations = skippable_operations
@@ -199,6 +206,7 @@ module Backup
       self.previous_backup = ENV['PREVIOUS_BACKUP']
       self.incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: incremental)
       self.force = Gitlab::Utils.to_boolean(force_value, default: force)
+      self.skip_storage_check = Gitlab::Utils.to_boolean(ENV['BACKUP_SKIP_STORAGE_CHECK'], default: skip_storage_check)
       self.strategy = Strategy::COPY if ENV['STRATEGY'] == 'copy'
       self.max_parallelism = ENV['GITLAB_BACKUP_MAX_CONCURRENCY']&.to_i
       self.max_storage_parallelism = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY']&.to_i

@@ -115,8 +115,8 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
 
   describe 'scopes' do
     let_it_be_with_reload(:project1) { create(:project) }
-    let_it_be_with_reload(:project2) { create(:project) }
     let_it_be(:new_shard) { create(:shard, name: 'new') }
+
     let_it_be_with_reload(:pool_repository1) do
       create(:pool_repository, source_project: project1, disk_path: 'disk_path')
     end
@@ -125,21 +125,12 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       create(:pool_repository, source_project: project1, disk_path: 'disk_path', shard: new_shard)
     end
 
-    let_it_be_with_reload(:another_pool_repository) { create(:pool_repository, source_project: project2) }
-
-    describe '.by_source_project' do
-      subject { described_class.by_source_project(project1) }
-
-      it 'returns pool repositories per source project from all shards' do
-        is_expected.to match_array([pool_repository1, pool_repository2])
-      end
-    end
-
     describe '.by_disk_path_and_shard_name' do
       subject { described_class.by_disk_path_and_shard_name('disk_path', new_shard.name) }
 
-      it 'returns only a requested pool repository' do
-        is_expected.to match_array([pool_repository2])
+      it 'filters by shard, excluding same-disk_path records on other shards' do
+        is_expected.to contain_exactly(pool_repository2)
+        is_expected.not_to include(pool_repository1)
       end
     end
   end
@@ -166,7 +157,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
 
     context 'when the last member leaves' do
-      it 'schedules pool removal' do
+      it 'schedules pool removal', :aggregate_failures do
         expect(::ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).and_call_original
         expect(pool.source_project.repository).to receive(:disconnect_alternates).and_call_original
 
@@ -196,13 +187,62 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
   end
 
+  describe '#mark_obsolete_if_empty' do
+    subject(:mark_obsolete_if_empty) { pool.mark_obsolete_if_empty }
+
+    let(:organization) { create(:organization) }
+    let(:pool) { create(:pool_repository, :without_project, state: :ready, organization: organization) }
+
+    before do
+      allow(ObjectPool::DestroyWorker).to receive(:perform_async)
+    end
+
+    it 'marks an empty pool obsolete and schedules destruction', :aggregate_failures do
+      mark_obsolete_if_empty
+
+      expect(pool.reload).to be_obsolete
+      expect(ObjectPool::DestroyWorker).to have_received(:perform_async).with(pool.id).once
+    end
+
+    context 'when a member remains' do
+      let!(:member) { create(:project, pool_repository: pool) }
+
+      it 'keeps the pool ready without scheduling destruction', :aggregate_failures do
+        mark_obsolete_if_empty
+
+        expect(pool.reload).to be_ready
+        expect(pool.member_projects).to contain_exactly(member)
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context 'when the pool is already obsolete' do
+      before do
+        pool.update!(state: :obsolete)
+      end
+
+      it 'does not schedule destruction again', :aggregate_failures do
+        mark_obsolete_if_empty
+
+        expect(pool.reload).to be_obsolete
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    it 'checks the pool without an explicit row lock' do
+      expect(pool).not_to receive(:with_lock)
+
+      mark_obsolete_if_empty
+    end
+  end
+
   describe '#remove_member' do
     let(:pool) { create(:pool_repository) }
     let(:member) { create(:project, pool_repository: pool) }
 
     it 'clears the project membership' do
       expect { pool.remove_member(member) }
-        .to change { member.reload.pool_repository }.from(pool).to(nil)
+        .to change { member.pool_repository }.from(pool).to(nil)
     end
 
     it 'does not disconnect alternates' do
@@ -224,11 +264,43 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
         pool.source_project.update_column(:pool_repository_id, nil)
       end
 
-      it 'marks the pool obsolete and schedules its destruction' do
-        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+      it 'clears membership, marks the pool obsolete, and schedules its destruction', :aggregate_failures do
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).once
 
         pool.remove_member(member)
 
+        expect(member.reload.pool_repository).to be_nil
+        expect(pool.reload).to be_obsolete
+      end
+
+      context 'when the pool is already obsolete' do
+        let(:pool) { create(:pool_repository, :obsolete) }
+
+        it 'schedules its destruction again', :aggregate_failures do
+          expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id)
+
+          pool.remove_member(member)
+
+          expect(pool.reload).to be_obsolete
+        end
+      end
+    end
+
+    context 'when the project has joined a different pool' do
+      let(:new_pool) { create(:pool_repository) }
+
+      before do
+        pool.source_project.update_column(:pool_repository_id, nil)
+        member.update_column(:pool_repository_id, new_pool.id)
+      end
+
+      it 'preserves the new membership and obsoletes the empty old pool', :aggregate_failures do
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).once
+
+        pool.remove_member(member)
+
+        expect(member.pool_repository).to eq(new_pool)
+        expect(member.reload.pool_repository).to eq(new_pool)
         expect(pool.reload).to be_obsolete
       end
     end

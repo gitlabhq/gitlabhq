@@ -53,7 +53,10 @@ module IncidentManagement
       end
 
       def valid_token?(token)
-        token && incident_management_setting.pagerduty_token == token
+        expected_token = incident_management_setting.pagerduty_token
+        return false unless token.is_a?(String) && expected_token
+
+        ActiveSupport::SecurityUtils.secure_compare(expected_token, token)
       end
 
       def valid_payload_size?

@@ -4,7 +4,7 @@ module Mcp
   module Tools
     module Base
       class BaseService
-        include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+        include Mcp::Tools::Concerns::GovernanceContainerResolver
 
         # override this method when renaming tools
         def self.tool_aliases
@@ -36,8 +36,13 @@ module Mcp
           validate_arguments!(args)
           perform(args)
         rescue ArgumentError => e
-          Response.error("Validation error: #{e.message}")
+          Response.error("Validation error: #{e.message}", reason: Response::Reason::BAD_REQUEST)
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::NOT_FOUND)
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, ::Gitlab::Access::AccessDeniedError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::UNAUTHORIZED)
         rescue StandardError => e
+          ::Gitlab::ErrorTracking.track_exception(e, mcp_tool: name)
           Response.error("Tool execution failed: #{e.message}")
         end
 
@@ -60,9 +65,7 @@ module Mcp
           IconConfig.gitlab_icons
         end
 
-        # Tool availability check, returns `true` by default.
-        # Tools should override this method if they need to check for specific conditions.
-        def available?
+        def available?(_current_user)
           true
         end
 

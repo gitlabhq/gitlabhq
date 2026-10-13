@@ -1,0 +1,19 @@
+---
+description: Deletion of the selected runners confirmed in the bulk delete modal on the runners list. Also fires on the admin runners page, where no namespace is in context and namespace_id is null.
+internal_events: true
+action: click_bulk_delete_runners_button
+identifiers:
+  - user
+  - namespace
+additional_properties:
+  value:
+    description: Number of runners selected for deletion
+product_group: runner_core
+product_categories:
+  - fleet_visibility
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255237
+tiers:
+  - free
+  - premium
+  - ultimate

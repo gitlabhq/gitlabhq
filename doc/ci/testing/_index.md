@@ -33,6 +33,41 @@ You can generate the following reports:
 | [Metrics reports](metrics_reports.md)                                                   | Track custom metrics like memory usage and performance. |
 | [Unit test reports](unit_test_reports.md)                                               | View test results and identify failures without checking job logs. |
 
+## Baseline pipeline selection
+
+Accessibility, Code Quality, license scanning, metrics, and unit test reports in merge requests
+compare source branch results with a baseline pipeline on the target branch.
+GitLab identifies the baseline pipeline using this process:
+
+1. Checks for a pipeline on the target branch that matches these commit SHAs, in order:
+   1. The target branch tip at the time the
+      [merged results pipeline](../pipelines/merged_results_pipelines.md)
+      was created.
+      This SHA is available only for merged results pipelines.
+   1. The merge-base commit (the common ancestor of the source and target branches).
+   1. The start commit of the merge request diff.
+1. Selects the most recently created pipeline (by pipeline ID) for the first SHA
+   that has a matching pipeline.
+
+The baseline pipeline selection:
+
+- Does not filter by pipeline status.
+  A pipeline in any state, including `running` or `failed`, can be selected as the baseline.
+- Does not check whether the baseline pipeline has report artifacts.
+
+The type of pipeline affects which commit SHA is matched first:
+
+- Merged results pipelines: The baseline is typically the latest pipeline at the target branch tip
+  when the merged results pipeline was created.
+- [Merge request pipelines](../pipelines/merge_request_pipelines.md) and branch pipelines:
+  The baseline is typically the latest pipeline on the target branch at the merge-base commit.
+
+To ensure a baseline is always available for comparison:
+
+- Run pipelines on your target branch that produce the report artifacts you want to compare.
+- If you use merge request pipelines or branch pipelines,
+  ensure the merge-base commit has a pipeline on the target branch.
+
 ## Security reports
 
 {{< details >}}

@@ -13,6 +13,8 @@
 #       "id": "CREATION_ID"
 #       "user_initiated": BOOLEAN <- only present for merge request pipeline creations; a missing
 #                                    flag must be treated as user-initiated
+#       "started_at": FLOAT <- epoch seconds when the request was recorded; start anchor for the
+#                              create_pipeline_from_commit user-experience SLI
 #     }
 #   }
 # }
@@ -45,6 +47,7 @@ module Ci
       PROJECT_REDIS_KEY = "pipeline_creation:projects:{%{project_id}}"
       MERGE_REQUEST_REDIS_KEY = "#{PROJECT_REDIS_KEY}:mrs:{%{mr_id}}".freeze
       REQUEST_REDIS_KEY = "#{PROJECT_REDIS_KEY}:request:{%{request_id}}".freeze
+      REF_REDIS_KEY = "#{PROJECT_REDIS_KEY}:ref:{%{ref_hash}}".freeze
 
       class << self
         def failed(request, error)
@@ -61,7 +64,7 @@ module Ci
 
         def start_for_project(project)
           request_id = generate_id
-          request = { 'key' => request_key(project, request_id), 'id' => request_id }
+          request = { 'key' => request_key(project, request_id), 'id' => request_id, 'started_at' => Time.current.to_f }
 
           hset(request, IN_PROGRESS)
 
@@ -72,12 +75,25 @@ module Ci
           request = {
             'key' => merge_request_key(merge_request),
             'id' => generate_id,
-            'user_initiated' => user_initiated
+            'user_initiated' => user_initiated,
+            'started_at' => Time.current.to_f
           }
 
           hset(request, IN_PROGRESS)
 
           request
+        end
+
+        def pipeline_creating_for_ref?(project, ref)
+          for_ref(project, ref).any? { |request| request['status'] == IN_PROGRESS }
+        end
+
+        def for_ref(project, ref)
+          key = ref_key(project, ref)
+
+          Gitlab::Redis::SharedState
+            .with { |redis| redis.hvals(key) }
+            .filter_map { |request| Gitlab::Json.safe_parse(request) }
         end
 
         def pipeline_creating_for_merge_request?(merge_request)
@@ -102,6 +118,11 @@ module Ci
 
         def merge_request_key(merge_request)
           format(MERGE_REQUEST_REDIS_KEY, project_id: merge_request.project_id, mr_id: merge_request.id)
+        end
+
+        def ref_key(project, ref)
+          ref_hash = Digest::SHA256.hexdigest(ref)
+          format(REF_REDIS_KEY, project_id: project.id, ref_hash: ref_hash)
         end
 
         # Extracts merge request ID from Redis key and returns the MergeRequest object
@@ -131,7 +152,8 @@ module Ci
                   'pipeline_id' => pipeline_id,
                   'error' => error,
                   'id' => request['id'],
-                  'user_initiated' => request['user_initiated']
+                  'user_initiated' => request['user_initiated'],
+                  'started_at' => request['started_at']
                 }.compact.to_json
               )
 

@@ -13,7 +13,8 @@ const VUE_3_TESTING_DOCS_URL =
 const VUE_3_TESTING_EPIC = 'https://gitlab.com/groups/gitlab-org/-/epics/11740';
 
 // Force basic color output in CI
-const chalk = new defaultChalk.constructor({ level: IS_CI ? 1 : undefined });
+const { constructor: Chalk } = defaultChalk;
+const chalk = new Chalk({ level: IS_CI ? 1 : undefined });
 
 // Reads a list of test file paths, one per line. Blank lines are dropped.
 function readFilterFile(path) {
@@ -40,10 +41,6 @@ function parseArgumentsAndEnvironment() {
     .option(
       '--vue3',
       'Run tests under Vue 3 (via @vue/compat). The default is to run under Vue 2. The VUE_VERSION environment variable must agree with this option.',
-    )
-    .option(
-      '--include-vue3-quarantined',
-      'Include tests normally quarantined under Vue 3. This is currently used for nightly pipelines. Has no effect without --vue3. The default (given --vue3) is to exclude quarantined tests.',
     )
     .option(
       '--predictive',
@@ -124,7 +121,6 @@ function parseArgumentsAndEnvironment() {
 
   return {
     vue3: options.vue3,
-    includeVue3Quarantined: options.includeVue3Quarantined,
     predictive: options.predictive,
     fixtures: options.fixtures,
     coverage,
@@ -147,8 +143,6 @@ function loggedSpawnSync(command, args, options) {
 }
 
 function runJest({
-  vue3,
-  includeVue3Quarantined,
   predictive,
   fixtures,
   coverage,
@@ -166,12 +160,7 @@ function runJest({
     '--testLocationInResults',
   ];
 
-  const sequencerArguments = [
-    '--testSequencer',
-    vue3 && !includeVue3Quarantined
-      ? './scripts/frontend/skip_specs_broken_in_vue_compat_fixture_ci_sequencer.js'
-      : './scripts/frontend/fixture_ci_sequencer.js',
-  ];
+  const sequencerArguments = ['--testSequencer', './scripts/frontend/fixture_ci_sequencer.js'];
 
   const predictiveArguments = predictive
     ? ['--passWithNoTests', '--findRelatedTests', ...changedFiles]

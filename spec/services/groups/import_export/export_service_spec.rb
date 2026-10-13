@@ -15,7 +15,15 @@ RSpec.describe Groups::ImportExport::ExportService, feature_category: :importers
       it 'enqueues an export job' do
         expect(GroupExportWorker)
           .to receive(:perform_async)
-          .with(user.id, group.id, { exported_by_admin: exported_by_admin })
+          .with(user.id, group.id, { 'exported_by_admin' => exported_by_admin })
+
+        export_service.async_execute
+      end
+
+      it 'passes the params on as native JSON types' do
+        expect(GroupExportWorker).to receive(:perform_async) do |_user_id, _group_id, job_params|
+          expect([job_params]).to param_containing_valid_native_json_types
+        end
 
         export_service.async_execute
       end
@@ -28,7 +36,7 @@ RSpec.describe Groups::ImportExport::ExportService, feature_category: :importers
         let(:exported_by_admin) { true }
 
         it 'passes `exported_by_admin` correctly in the `params` hash' do
-          expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { exported_by_admin: true })
+          expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { 'exported_by_admin' => true })
 
           export_service.async_execute
         end

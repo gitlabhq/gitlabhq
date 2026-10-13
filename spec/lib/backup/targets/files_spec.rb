@@ -99,8 +99,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
       before do
         FileUtils.touch('registry.tar.gz')
         allow(FileUtils).to receive(:mv).and_raise(Errno::EACCES)
-        allow(files).to receive(:run!).and_return([[true, true], ''])
-        allow(files).to receive(:pipeline_succeeded?).and_return(true)
+        allow(files).to receive_messages(run!: [[true, true], ''], pipeline_succeeded?: true)
       end
 
       after do
@@ -117,8 +116,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
     describe 'folders that are a mountpoint' do
       before do
         allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
-        allow(files).to receive(:run!).and_return([[true, true], ''])
-        allow(files).to receive(:pipeline_succeeded?).and_return(true)
+        allow(files).to receive_messages(run!: [[true, true], ''], pipeline_succeeded?: true)
       end
 
       it 'shows error message' do

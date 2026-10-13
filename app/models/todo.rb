@@ -319,6 +319,12 @@ class Todo < ApplicationRecord
     end
   end
 
+  def transfer_failure_reason
+    return unless transfer_failed?
+
+    transfer_state_namespace&.transfer_last_error
+  end
+
   def resource_parent
     project || group
   end
@@ -424,6 +430,17 @@ class Todo < ApplicationRecord
   end
 
   private
+
+  # The namespace carrying the transfer state: a group is its own namespace, a project keeps it
+  # on its project namespace.
+  def transfer_state_namespace
+    case target
+    when Group
+      target
+    when Project
+      target.project_namespace
+    end
+  end
 
   def transfer_failed_destination_path
     return unless target

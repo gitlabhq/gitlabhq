@@ -38,6 +38,17 @@ RSpec.describe API::ServiceAccounts, :with_current_organization, :aggregate_fail
           expect(response).to match_response_schema('public_api/v4/user/service_account')
         end
 
+        context 'when specifying the external flag' do
+          let(:params) { super().merge(external: false) }
+
+          it 'creates the user with the given external value' do
+            perform_request_as_admin
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['external']).to be(false)
+          end
+        end
+
         context 'when specifying a custom email address' do
           let(:email) { 'service_account@example.com' }
 
@@ -219,10 +230,22 @@ RSpec.describe API::ServiceAccounts, :with_current_organization, :aggregate_fail
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.keys).to match_array(%w[id name username email public_email])
+          expect(json_response.keys).to match_array(%w[id name username email public_email external])
           expect(json_response['name']).to eq(params[:name])
           expect(json_response['username']).to eq(params[:username])
           expect(json_response['email']).to eq(params[:email])
+        end
+
+        context 'when updating the external flag' do
+          let(:params) { { external: false } }
+
+          it 'updates the external attribute' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['external']).to be(false)
+            expect(service_account_user.reload.external).to be(false)
+          end
         end
 
         context 'when email confirmation is required' do
@@ -239,7 +262,9 @@ RSpec.describe API::ServiceAccounts, :with_current_organization, :aggregate_fail
             perform_request
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.keys).to match_array(%w[id name username email public_email unconfirmed_email])
+            expect(json_response.keys).to match_array(
+              %w[id name username email public_email external unconfirmed_email]
+            )
             expect(json_response['unconfirmed_email']).to eq('test@test.com')
             expect(json_response['email']).not_to eq('test@test.com')
           end

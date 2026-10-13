@@ -75,6 +75,54 @@ describe('BarChartPresenter', () => {
       expect(findSingleDim().props('stacked')).toBe(true);
     });
 
+    it('forwards the display defaults to the single-dimension chart', () => {
+      createComponent();
+
+      expect(findSingleDim().props()).toMatchObject({
+        shareLabels: false,
+        showAxisTitles: true,
+        colorBy: 'series',
+      });
+    });
+
+    it('forwards categoryLabels, showAxisTitles and colorBy from displayConfig', () => {
+      createComponent({
+        displayConfig: {
+          categoryLabels: 'valueAndShare',
+          showAxisTitles: false,
+          colorBy: 'category',
+        },
+      });
+
+      expect(findSingleDim().props()).toMatchObject({
+        shareLabels: true,
+        showAxisTitles: false,
+        colorBy: 'category',
+      });
+    });
+
+    it('keeps plain labels for an unknown categoryLabels value', () => {
+      createComponent({ displayConfig: { categoryLabels: 'share' } });
+
+      expect(findSingleDim().props('shareLabels')).toBe(false);
+    });
+
+    it('falls back to colouring by series for an unknown colorBy value', () => {
+      createComponent({ displayConfig: { colorBy: 'rainbow' } });
+
+      expect(findSingleDim().props('colorBy')).toBe('series');
+    });
+
+    it('forwards showAxisTitles to the two-dimension chart', () => {
+      createComponent({
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        data: MOCK_AGGREGATED_DATA_TWO_DIMS,
+        displayConfig: { showAxisTitles: false },
+      });
+
+      expect(findTwoDim().props('showAxisTitles')).toBe(false);
+    });
+
     it('routes to the two-dimension chart for 2 dimensions, ignoring displayConfig.stacked', () => {
       createComponent({
         fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,

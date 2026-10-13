@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../support/helpers/test_reports_helper'
 
 RSpec.describe Gitlab::Ci::Reports::TestReportsComparer do
   include TestReportsHelper

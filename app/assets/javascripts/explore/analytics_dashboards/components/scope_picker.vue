@@ -1,19 +1,44 @@
 <script>
 import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce, xor } from 'lodash-es';
-import { s__, sprintf } from '~/locale';
+import { debounce, uniq, xor } from 'lodash-es';
+import { n__, s__, sprintf } from '~/locale';
+import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import getGroupChildrenQuery from '../graphql/get_group_children.query.graphql';
+import { MAX_SCOPES } from '~/glql/constants';
+import {
+  EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED,
+  EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+  EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED,
+  EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS,
+  EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
+} from '~/performance/constants';
+import getFrecentGroupsQuery from '../graphql/get_frecent_groups.query.graphql';
+import getOrganizationGroupQuery from '../graphql/get_organization_group.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
-import searchNamespacesQuery from '../graphql/search_namespaces.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
 import getScopeNamespaceQuery from '../graphql/get_scope_namespace.query.graphql';
+import { markLoadStep } from '../load_performance';
+import {
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+  SCOPE_PICKER_SELECTED_ITEM_SUFFIX,
+} from './constants';
 import ScopePickerItem from './scope_picker_item.vue';
+
+// The rows are typed in the picker's own terms, so a namespace's typename maps onto one.
+const ITEM_TYPE_BY_TYPENAME = {
+  [TYPENAME_GROUP]: SCOPE_PICKER_ITEM_TYPE_GROUP,
+  [TYPENAME_PROJECT]: SCOPE_PICKER_ITEM_TYPE_PROJECT,
+};
 
 // Keeps a placeholder row's value from colliding with a real namespace path.
 const EMPTY_ITEM_SUFFIX = '::empty';
+const LOAD_MORE_ITEM_SUFFIX = '::load-more';
+
+const SCOPE_NAMESPACE_BATCH_KEY = 'analyticsDashboardScopeNamespace';
 
 export default {
   name: 'AnalyticsDashboardScopePicker',
@@ -22,88 +47,64 @@ export default {
     GlCollapsibleListbox,
     ScopePickerItem,
   },
+  inject: {
+    isLoadTimed: { default: null },
+  },
   props: {
-    // Omit to browse the user's own top-level groups instead of one group's contents, which is
-    // what the instance-level Explore page needs: it has no group to scope to.
-    groupFullPath: {
-      type: String,
+    // Namespace paths to preselect, read by the page from the `scope` URL param on load.
+    // multiSelect = true  -- Anything past the first MAX_SCOPES is dropped here.
+    // multiSelect = false -- Anything past the first path is dropped.
+    initialPaths: {
+      type: Array,
       required: false,
-      default: '',
+      default: () => [],
     },
-    // A namespace path to start selected (ex. URL param on page load)
-    initialPath: {
-      type: String,
+    multiSelect: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
+    },
+    // Permission keys the user needs on a group or project to select it.
+    // Set by `filters.scope.requirePermissions` in the dashboard config:
+    // ee/app/validators/json_schemas/analytics_dashboard.json
+    requirePermissions: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
-  emits: ['change', 'error'],
+  emits: ['change', 'error', 'ready'],
   data() {
     return {
-      namespace: null,
       topLevelGroups: [],
-      // The pick is held as the namespace itself, not its path. A path would have to be resolved
-      // against the loaded namespaces on every read, and a second search replaces the results the
-      // pick may have come from, so by then there would be nothing left to resolve it to.
-      selectedNamespace: null,
-      // The top-level group's projects arrive with the group itself, so it opens without a fetch.
-      expandedPaths: this.groupFullPath ? [this.groupFullPath] : [],
-      // Each expanded subgroup's projects, flattened across its own subgroups, keyed by path.
+      topLevelGroupsPageInfo: null,
+      isLoadingTopLevelGroups: false,
+      // Picks are held as namespace objects, not paths, because resolving a path would mean matching
+      // it against the loaded namespaces on every read -- and a search replaces those results, so
+      // by then there would be nothing left to match against.
+      selectedNamespaces: [],
+      // The paths last emitted. In multi-select, picks stay local until the listbox closes, so
+      // building a selection refreshes the dashboard once rather than on every click.
+      committedPaths: [],
+      expandedPaths: [],
+      // Each expanded group's projects, flattened across the subgroups below it, keyed by path.
+      // Alongside them, the group's loading state and the cursor the next page starts from.
       subgroupProjects: {},
       searchTerm: '',
-      initialScope: null,
-      // Whichever of the two search queries the current mode uses. Only one is ever live.
-      rootedResults: null,
-      globalResults: null,
+      searchResults: null,
+      frecentGroup: null,
+      validatedFrecentGroup: null,
+      // A default is only derived for a load that named no scope, and only until the user picks
+      // something: deriving it again would put a group back after they cleared it.
+      skipDefaultScope: this.initialPaths.length > 0,
+      isReady: false,
     };
   },
   apollo: {
-    namespace: {
-      query: getGroupChildrenQuery,
-      variables() {
-        return { fullPath: this.groupFullPath };
-      },
-      update: ({ group }) => group,
-      skip() {
-        return !this.groupFullPath;
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
-    topLevelGroups: {
-      query: getTopLevelGroupsQuery,
-      update: ({ groups }) => groups?.nodes ?? [],
-      skip() {
-        return Boolean(this.groupFullPath);
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
-    rootedResults: {
-      query: searchNamespacesQuery,
-      variables() {
-        // Trimmed, because `hasSearch` decides whether to run on the trimmed value.
-        return { fullPath: this.groupFullPath, search: this.searchTerm.trim() };
-      },
-      update: ({ group }) => ({
-        groups: group?.descendantGroups?.nodes ?? [],
-        projects: group?.projects?.nodes ?? [],
-      }),
-      skip() {
-        return !this.groupFullPath || !this.hasSearch;
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
-    globalResults: {
+    searchResults: {
       query: searchNamespacesGlobalQuery,
       variables() {
+        // Trimmed, because `hasSearch` decides whether to run on the trimmed value.
         return { search: this.searchTerm.trim() };
       },
       update: ({ groups, projects }) => ({
@@ -111,56 +112,73 @@ export default {
         projects: projects?.nodes ?? [],
       }),
       skip() {
-        return Boolean(this.groupFullPath) || !this.hasSearch;
+        return !this.hasSearch;
       },
       error(error) {
         this.$emit('error', error);
         captureException(error);
       },
     },
-    initialScope: {
-      query: getScopeNamespaceQuery,
-      variables() {
-        return { fullPath: this.initialPath, fullPaths: [this.initialPath] };
+    frecentGroup: {
+      query: getFrecentGroupsQuery,
+      update: ({ frecentGroups }) => frecentGroups?.[0] ?? null,
+      result() {
+        if (!this.frecentGroup) this.completeInitialLoad();
       },
-      // Only update if a valid group/project is returned
-      update: ({ group, projects }) => group ?? projects?.nodes?.[0] ?? null,
-      // The page echoes the current selection back through `initialPath`, so a path that is
-      // already selected needs no lookup -- the click resolved that namespace already.
       skip() {
-        return !this.initialPath || this.initialPath === this.selectedPath;
+        return this.skipDefaultScope;
       },
       error(error) {
-        this.$emit('error', error);
         captureException(error);
+        this.completeInitialLoad();
+      },
+    },
+    validatedFrecentGroup: {
+      query: getOrganizationGroupQuery,
+      variables() {
+        return { ids: this.frecentGroup ? [this.frecentGroup.id] : [] };
+      },
+      update({ organization }) {
+        const group = organization?.groups?.nodes?.[0];
+
+        // A default the dashboard cannot read would only fill every panel with errors.
+        return group && !this.isRestricted(group) ? group : null;
+      },
+      result() {
+        this.selectResolvedNamespace(this.validatedFrecentGroup);
+        this.completeInitialLoad();
+      },
+      skip() {
+        return !this.frecentGroup;
+      },
+      error(error) {
+        captureException(error);
+        this.completeInitialLoad();
       },
     },
   },
   computed: {
     isLoading() {
-      const query = this.groupFullPath ? 'namespace' : 'topLevelGroups';
-
-      return this.$apollo.queries[query].loading;
+      return !this.isReady || (this.isLoadingTopLevelGroups && !this.topLevelGroups.length);
     },
     hasSearch() {
       return this.searchTerm.trim().length > 0;
     },
     isSearching() {
-      const query = this.groupFullPath ? 'rootedResults' : 'globalResults';
+      return this.$apollo.queries.searchResults.loading;
+    },
+    // Replaces the listbox's own count, which would include the pinned picks and status rows.
+    // Silent while searching, as the listbox announces that itself.
+    searchSummary() {
+      if (this.isLoading || this.isSearching) return '';
 
-      return this.$apollo.queries[query].loading;
-    },
-    searchResults() {
-      return this.groupFullPath ? this.rootedResults : this.globalResults;
-    },
-    projects() {
-      return this.namespace?.projects.nodes ?? [];
-    },
-    subgroups() {
-      return this.namespace?.descendantGroups.nodes ?? [];
-    },
-    groupNamespace() {
-      return this.namespace ? this.asNamespace(this.namespace) : null;
+      const listItems = this.hasSearch ? this.searchItems : this.groupItems;
+      const count = listItems.filter(
+        ({ itemType, placeholder }) =>
+          !placeholder && itemType !== SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+      ).length;
+
+      return n__('%d result', '%d results', count);
     },
     // Every namespace behind a row that can currently be clicked, which is what a click's path is
     // turned back into an object against. It only has to cover what is on screen, because the pick
@@ -171,9 +189,6 @@ export default {
       );
 
       return [
-        this.namespace,
-        ...this.projects,
-        ...this.subgroups,
         ...this.topLevelGroups,
         ...subgroupProjects,
         ...(this.searchResults?.groups ?? []),
@@ -182,18 +197,62 @@ export default {
         .filter(Boolean)
         .map((namespace) => this.asNamespace(namespace));
     },
-    selectedPath() {
-      return this.selectedNamespace?.fullPath ?? '';
+    selectedPaths() {
+      return this.selectedNamespaces.map(({ fullPath }) => fullPath);
+    },
+    maxSelections() {
+      return this.multiSelect ? MAX_SCOPES : 1;
+    },
+    isAtMaxSelections() {
+      return this.selectedNamespaces.length >= this.maxSelections;
+    },
+    slotsLeft() {
+      return sprintf(s__('AnalyticsDashboards|%{remaining} of %{max} slots left'), {
+        remaining: MAX_SCOPES - this.selectedNamespaces.length,
+        max: MAX_SCOPES,
+      });
     },
     toggleText() {
-      return this.selectedNamespace?.name ?? s__('AnalyticsDashboards|Select a group or project');
+      const [first] = this.selectedNamespaces;
+
+      if (!first) return s__('AnalyticsDashboards|Select a group or project');
+      if (this.selectedNamespaces.length === 1) return first.name;
+
+      return n__(
+        'AnalyticsDashboards|%d item selected',
+        'AnalyticsDashboards|%d items selected',
+        this.selectedNamespaces.length,
+      );
     },
-    // Rooted mode groups its rows under two headers. Rootless has one kind of top-level row, so
-    // it passes a flat list; the listbox takes either shape, as long as they are not mixed.
     items() {
       if (this.hasSearch) return this.searchItems;
 
-      return this.groupFullPath ? this.rootedSections : this.rootlessItems;
+      // Just show the groups/projects list when nothing is selected.
+      if (!this.selectedItems.length) return this.groupItems;
+
+      return [
+        {
+          text: s__('AnalyticsDashboards|Selected'),
+          options: this.selectedItems,
+        },
+        ...(this.groupItems.length
+          ? [
+              {
+                text: s__('AnalyticsDashboards|Groups and projects'),
+                options: this.groupItems,
+              },
+            ]
+          : []),
+      ];
+    },
+    selectedItems() {
+      return this.selectedNamespaces.map((namespace) => ({
+        ...this.asItem(namespace),
+        value: `${namespace.fullPath}${SCOPE_PICKER_SELECTED_ITEM_SUFFIX}`,
+        parentName: namespace.fullName?.split(' / ').at(-2) ?? null,
+        expanded: false,
+        expanding: false,
+      }));
     },
     // Search spans the whole hierarchy, so results are listed flat rather than placed back into
     // the tree they came from. Headers by kind would only assert an ordering the two queries
@@ -204,77 +263,33 @@ export default {
 
       return [...groups, ...projects].map(this.asResultItem);
     },
-    // Each top-level group is a row of its own, opening into its own projects the way the root
-    // row does in rooted mode. Subgroups are left to search.
-    rootlessItems() {
-      return this.topLevelGroups.flatMap((group) => [
-        { ...this.asItem(this.asNamespace(group)), expandable: group.projectsCount > 0 },
-        ...this.subgroupItems(group.fullPath),
+    // Each top-level group is a row of its own, opening into every project beneath it. Both
+    // counts are direct-only, so this is as close as the API gets to "has content" without an
+    // unbatched per-row query. See the No projects row below.
+    groupItems() {
+      const items = this.topLevelGroups.flatMap((group) => [
+        {
+          ...this.asItem(this.asNamespace(group)),
+          expandable: group.projectsCount > 0 || group.descendantGroupsCount > 0,
+        },
+        ...this.subgroupItems(group),
       ]);
-    },
-    rootedSections() {
-      if (!this.namespace) return [];
 
-      return [
-        {
-          // Not escaped by sprintf: this lands in a text interpolation, which Vue escapes, so
-          // escaping here too would render an ampersand in a group name as `&amp;`.
-          text: sprintf(
-            s__('AnalyticsDashboards|Projects in top-level group (%{name})'),
-            { name: this.namespace.name },
-            false,
-          ),
-          options: [
-            { ...this.asItem(this.groupNamespace), expandable: this.projects.length > 0 },
-            ...(this.isExpanded(this.groupFullPath)
-              ? this.projects.map((project) => ({
-                  ...this.asItem(this.asNamespace(project)),
-                  nested: true,
-                }))
-              : []),
-          ],
-        },
-        {
-          text: s__('AnalyticsDashboards|Subgroups incl. nested'),
-          options: this.subgroups.flatMap((subgroup) => [
-            {
-              ...this.asItem(this.asNamespace(subgroup)),
-              // Both counts are direct-only, so this is as close as the API gets to "has
-              // content" without an unbatched per-row query. See the No projects row below.
-              expandable: subgroup.projectsCount > 0 || subgroup.descendantGroupsCount > 0,
-            },
-            ...this.subgroupItems(subgroup.fullPath),
-          ]),
-        },
-      ].filter(({ options }) => options.length);
-    },
-    // A flat view of whichever shape `items` took, for resolving the selection against.
-    flatItems() {
-      return this.items.flatMap((item) => item.options ?? item);
-    },
-    selectedPaths() {
-      return this.flatItems.filter(({ selected }) => selected).map(({ value }) => value);
-    },
-  },
-  watch: {
-    initialScope(namespace) {
-      // Ignore initialScope if another namespace was already selected.
-      if (!namespace || this.selectedNamespace) return;
+      if (this.topLevelGroupsPageInfo?.hasNextPage) {
+        items.push(this.asLoadMoreItem({ isLoading: this.isLoadingTopLevelGroups }));
+      }
 
-      this.selectedNamespace = this.asNamespace(namespace);
-      this.$emit('change', this.selectedNamespace);
+      return items;
     },
-    // Everything loaded so far belongs to the old root, and the selection may no longer be in
-    // scope, so start over rather than showing a mix of the two.
-    groupFullPath(fullPath) {
-      this.expandedPaths = fullPath ? [fullPath] : [];
-      this.subgroupProjects = {};
-      this.selectedNamespace = null;
-      // Cancelled as well as cleared: a debounce still pending would otherwise land afterwards
-      // and search the new root for a term typed against the old one.
-      this.onSearch.cancel();
-      this.searchTerm = '';
-      this.$emit('change', null);
+    // Rows locked by a selected ancestor render checked, so the options behind them must count as
+    // selected too or they lose aria-selected. Picks count even while a search hides their rows,
+    // or the listbox takes the toggle for an empty picker and greys the name it shows.
+    listboxSelectedPaths() {
+      return uniq(
+        [...this.selectedItems, ...this.items.flatMap((item) => item.options ?? item)]
+          .filter(({ selected }) => selected)
+          .map(({ value }) => value),
+      );
     },
   },
   beforeDestroy() {
@@ -284,25 +299,67 @@ export default {
     // Vue re-binds everything in `methods`, and that drops lodash's `cancel`, so the debounced
     // handler has to be built per instance, so cancelling it cancels only this one's.
     this.onSearch = debounce(this.setSearchTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+    this.markTimedLoadStep({ mark: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START });
+    this.loadTopLevelGroups();
+    this.loadInitialScope();
   },
   methods: {
-    asNamespace({ id, name, fullName, fullPath, __typename }) {
-      return { id, name, fullName, fullPath, type: __typename };
+    markTimedLoadStep(step) {
+      if (this.isLoadTimed?.value) markLoadStep(step);
     },
-    asItem({ name, fullPath, type }) {
-      // A selected group covers everything beneath it, so those items cannot be picked on their own.
-      const isLockedByAncestor =
-        Boolean(this.selectedPath) && fullPath.startsWith(`${this.selectedPath}/`);
+    // A namespace a query resolved rather than the user clicking it: the derived default.
+    // Applied like a click, so the page treats it as an ordinary filter change. Anything the
+    // user picked meanwhile outranks it.
+    selectResolvedNamespace(namespace) {
+      if (!namespace || this.selectedNamespaces.length) return;
+
+      this.selectedNamespaces = [this.asNamespace(namespace)];
+      this.commitChange(this.selectedNamespaces);
+    },
+    // Tells the page the starting selection is settled, emitted after any `change` it caused,
+    // so the page can hold back its empty state until then.
+    completeInitialLoad() {
+      if (this.isReady) return;
+
+      this.isReady = true;
+      this.markTimedLoadStep({
+        mark: EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED,
+        measure: EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
+        start: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+      });
+      this.$emit('ready');
+    },
+    commitChange(namespaces) {
+      this.committedPaths = namespaces.map(({ fullPath }) => fullPath);
+      this.$emit('change', namespaces);
+    },
+    asNamespace({ id, name, fullName, fullPath, __typename, userPermissions }) {
+      return {
+        id,
+        name,
+        fullName,
+        fullPath,
+        type: __typename,
+        restricted: this.isRestricted({ userPermissions }),
+      };
+    },
+    asItem({ name, fullPath, type, restricted }) {
+      const { isLoading, projects } = this.subgroupProjects[fullPath] ?? {};
 
       return {
         value: fullPath,
         text: name,
-        namespaceType: type,
-        selected: this.selectedPath === fullPath || isLockedByAncestor,
+        itemType: ITEM_TYPE_BY_TYPENAME[type],
+        // A selected group covers everything beneath it, so those rows read as selected as well.
+        selected: this.isSelected(fullPath) || this.hasSelectedAncestor(fullPath),
         indeterminate: this.hasSelectedDescendant(fullPath),
-        disabled: isLockedByAncestor,
+        disabled: restricted || !this.isSelectable(fullPath),
+        restricted,
         expanded: this.isExpanded(fullPath),
-        expanding: this.isExpanded(fullPath) && Boolean(this.subgroupProjects[fullPath]?.isLoading),
+        // Only the first page leaves the row with nothing to show, so later pages report on the
+        // Load more button they were asked for from instead.
+        expanding: this.isExpanded(fullPath) && Boolean(isLoading) && !projects,
       };
     },
     asResultItem(namespace) {
@@ -311,15 +368,34 @@ export default {
         parentName: namespace.namespace?.name ?? null,
       };
     },
-    // The rows an expanded subgroup reveals. Nothing until its fetch lands.
-    subgroupItems(fullPath) {
+    // A row of its own at the end of the list it extends, rather than a single footer control,
+    // because every expanded group carries one of its own.
+    asLoadMoreItem({ fullPath = null, name = null, isLoading }) {
+      return {
+        value: `${fullPath ?? ''}${LOAD_MORE_ITEM_SUFFIX}`,
+        // Names the list it extends, every one of these rows otherwise reading alike. Not escaped
+        // by sprintf: Vue escapes the interpolation, so escaping here as well would render a group
+        // called "Sales & Marketing" as `Sales &amp; Marketing`.
+        text: name
+          ? sprintf(s__('AnalyticsDashboards|Load more projects in %{name}'), { name }, false)
+          : s__('AnalyticsDashboards|Load more groups'),
+        itemType: SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+        // The row only carries the button, so there is nothing about it to select.
+        disabled: true,
+        nested: Boolean(fullPath),
+        loading: Boolean(isLoading),
+      };
+    },
+    // The rows an expanded group reveals. Nothing until its fetch lands.
+    subgroupItems({ fullPath, name }) {
       if (!this.isExpanded(fullPath)) return [];
 
-      const { projects } = this.subgroupProjects[fullPath] ?? {};
+      const { projects, pageInfo, isLoading } = this.subgroupProjects[fullPath] ?? {};
       if (!projects) return [];
 
-      // A subgroup can look expandable on its direct counts and still hold nothing, so say so
-      // rather than leaving the expand looking broken.
+      // A group can look expandable on its direct counts and still hold nothing -- its projects
+      // may all be archived, or its subgroups may be empty. Say so rather than leaving the
+      // expand looking broken.
       if (!projects.length) {
         return [
           {
@@ -333,17 +409,39 @@ export default {
 
       // Projects arrive pre-flattened, so they render at one level whatever their real depth.
       // Naming the parent only helps for projects below the subgroup that was expanded.
-      return projects.map((project) => ({
+      const items = projects.map((project) => ({
         ...this.asItem(this.asNamespace(project)),
         nested: true,
         parentName: project.namespace?.fullPath === fullPath ? null : project.namespace?.name,
       }));
+
+      if (pageInfo?.hasNextPage) {
+        items.push(this.asLoadMoreItem({ fullPath, name, isLoading }));
+      }
+
+      return items;
+    },
+    isRestricted({ userPermissions }) {
+      // Only an explicit `false` restricts: a field is null on a backend that predates it.
+      return this.requirePermissions.some((permission) => userPermissions?.[permission] === false);
     },
     isExpanded(fullPath) {
       return this.expandedPaths.includes(fullPath);
     },
+    isSelected(fullPath) {
+      return this.selectedPaths.includes(fullPath);
+    },
+    hasSelectedAncestor(fullPath) {
+      return this.selectedPaths.some((path) => fullPath.startsWith(`${path}/`));
+    },
     hasSelectedDescendant(fullPath) {
-      return this.selectedPath.startsWith(`${fullPath}/`);
+      return this.selectedPaths.some((path) => path.startsWith(`${fullPath}/`));
+    },
+    isSelectable(fullPath) {
+      if (this.hasSelectedAncestor(fullPath)) return false;
+      if (!this.multiSelect || !this.isAtMaxSelections) return true;
+
+      return this.isSelected(fullPath) || this.hasSelectedDescendant(fullPath);
     },
     async toggleExpanded(fullPath) {
       if (this.isExpanded(fullPath)) {
@@ -353,58 +451,194 @@ export default {
 
       this.expandedPaths = [...this.expandedPaths, fullPath];
 
-      // The top-level group's projects came with the group itself, and a subgroup is fetched
-      // once -- including while its first fetch is still in flight.
+      // A group is fetched once -- including while its first fetch is still in flight.
       const cached = this.subgroupProjects[fullPath];
-      if (fullPath === this.groupFullPath || cached?.projects || cached?.isLoading) return;
+      if (cached?.projects || cached?.isLoading) return;
 
       await this.loadSubgroupProjects(fullPath);
     },
-    async loadSubgroupProjects(fullPath) {
-      this.subgroupProjects = {
-        ...this.subgroupProjects,
-        [fullPath]: { isLoading: true, projects: null },
-      };
+    setSubgroupProjects(fullPath, entry) {
+      this.subgroupProjects = { ...this.subgroupProjects, [fullPath]: entry };
+    },
+    async loadSubgroupProjects(fullPath, after = null) {
+      const loaded = this.subgroupProjects[fullPath] ?? {};
+
+      this.setSubgroupProjects(fullPath, {
+        projects: null,
+        pageInfo: null,
+        ...loaded,
+        isLoading: true,
+      });
 
       try {
         const { data } = await this.$apollo.query({
           query: getSubgroupProjectsQuery,
-          // Rooted mode only ever expands subgroups, and rootless only top-level groups, so the
-          // mode decides whether the whole tree or just the group's own projects is wanted.
-          variables: { fullPath, includeSubgroups: Boolean(this.groupFullPath) },
+          variables: { fullPath, after },
         });
 
-        this.subgroupProjects = {
-          ...this.subgroupProjects,
-          // A subgroup can go missing between the parent query and this one, which comes back
-          // as a successful null rather than an error.
-          [fullPath]: { isLoading: false, projects: data.group?.projects?.nodes ?? [] },
-        };
+        // A subgroup can go missing between the parent query and this one, which comes back
+        // as a successful null rather than an error.
+        const { nodes, pageInfo } = data.group?.projects ?? {};
+
+        this.setSubgroupProjects(fullPath, {
+          isLoading: false,
+          projects: [...(loaded.projects ?? []), ...(nodes ?? [])],
+          pageInfo: pageInfo ?? null,
+        });
       } catch (error) {
-        // Collapse and forget the row, so expanding it again retries the fetch.
-        const { [fullPath]: failed, ...rest } = this.subgroupProjects;
-        this.subgroupProjects = rest;
-        this.expandedPaths = this.expandedPaths.filter((path) => path !== fullPath);
+        if (loaded.projects) {
+          // The pages already listed still stand, so keep them and let the button retry.
+          this.setSubgroupProjects(fullPath, { ...loaded, isLoading: false });
+        } else {
+          // Collapse and forget the row, so expanding it again retries the fetch.
+          const { [fullPath]: failed, ...rest } = this.subgroupProjects;
+          this.subgroupProjects = rest;
+          this.expandedPaths = this.expandedPaths.filter((path) => path !== fullPath);
+        }
 
         this.$emit('error', error);
         captureException(error);
       }
     },
+    async loadTopLevelGroups(after = null) {
+      this.isLoadingTopLevelGroups = true;
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: getTopLevelGroupsQuery,
+          variables: { after },
+        });
+
+        const { nodes, pageInfo } = data.groups ?? {};
+
+        this.topLevelGroups = [...this.topLevelGroups, ...(nodes ?? [])];
+        this.topLevelGroupsPageInfo = pageInfo ?? null;
+
+        if (!after) {
+          this.markTimedLoadStep({
+            mark: EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED,
+            measure: EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS,
+            start: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+          });
+        }
+      } catch (error) {
+        // The pages already listed still stand, so keep them and let the button retry.
+        this.$emit('error', error);
+        captureException(error);
+      } finally {
+        this.isLoadingTopLevelGroups = false;
+      }
+    },
+    // The row's value is the only thing that says which list it extends, so read the group back
+    // out of it. Empty for the row that extends the top-level list.
+    onLoadMore(value) {
+      const fullPath = value.slice(0, -LOAD_MORE_ITEM_SUFFIX.length);
+
+      if (fullPath) {
+        this.loadSubgroupProjects(fullPath, this.subgroupProjects[fullPath]?.pageInfo?.endCursor);
+        return;
+      }
+
+      this.loadTopLevelGroups(this.topLevelGroupsPageInfo?.endCursor);
+    },
     onSelect(paths) {
-      // The listbox reports the whole selection, but only one item can change per click and the
-      // picker is single-select, so apply that item's toggle rather than taking the list as given.
-      const [fullPath] = xor(paths, this.selectedPaths);
+      this.skipDefaultScope = true;
 
-      // Ticking an item replaces the selection. Unticking it, or clearing an item left
-      // indeterminate by a descendant, empties the selection instead.
-      const clearsSelection =
-        this.selectedPath === fullPath || this.hasSelectedDescendant(fullPath);
+      // The listbox reports the whole selection, but only one item can change per click.
+      // Determine what changed and update its value.
+      const [value] = xor(paths, this.listboxSelectedPaths);
+      if (!value) return;
 
-      this.selectedNamespace = clearsSelection
-        ? null
-        : (this.knownNamespaces.find((namespace) => namespace.fullPath === fullPath) ?? null);
+      // Remove the selected suffix if necessary
+      const fullPath = value.endsWith(SCOPE_PICKER_SELECTED_ITEM_SUFFIX)
+        ? value.slice(0, -SCOPE_PICKER_SELECTED_ITEM_SUFFIX.length)
+        : value;
 
-      this.$emit('change', this.selectedNamespace);
+      const selected = this.isSelected(fullPath)
+        ? this.selectedNamespaces.filter((namespace) => namespace.fullPath !== fullPath)
+        : this.withNamespaceAdded(fullPath);
+
+      if (!selected) return;
+
+      this.selectedNamespaces = selected;
+      if (!this.multiSelect) this.commitChange(selected);
+    },
+    onHidden() {
+      if (xor(this.selectedPaths, this.committedPaths).length) {
+        this.commitChange(this.selectedNamespaces);
+      }
+    },
+    // A selected group covers everything beneath it, so any picks already sitting beneath the
+    // newly selected group are dropped. Returns nothing when the selection is full or the path
+    // matches no loaded namespace.
+    withNamespaceAdded(fullPath) {
+      const namespace = this.knownNamespaces.find((known) => known.fullPath === fullPath);
+      if (!namespace) return null;
+
+      // Without multi-select there is nothing to merge with and no descendants
+      // to prune, so the pick just replaces it.
+      if (!this.multiSelect) return [namespace];
+
+      const kept = this.selectedNamespaces.filter(
+        ({ fullPath: selectedPath }) => !selectedPath.startsWith(`${fullPath}/`),
+      );
+
+      return kept.length < this.maxSelections ? [...kept, namespace] : null;
+    },
+    async loadInitialScope() {
+      const dedupedPaths = [...new Set(this.initialPaths)];
+
+      // Remove any children that already have a parent selected, and apply the selection limit.
+      const paths = dedupedPaths
+        .filter(
+          (path) => !dedupedPaths.some((other) => other !== path && path.startsWith(`${other}/`)),
+        )
+        .slice(0, this.maxSelections);
+
+      if (!paths.length) return;
+
+      try {
+        await this.restoreScope(paths);
+      } finally {
+        this.completeInitialLoad();
+      }
+    },
+    async restoreScope(paths) {
+      const results = await Promise.allSettled(paths.map(this.fetchScopeNamespace));
+      const failures = results.filter(({ status }) => status === 'rejected');
+
+      // Paths that resolve to nothing (deleted, or no access) are dropped, as are namespaces
+      // missing a permission the dashboard requires.
+      const restored = results
+        .filter(({ value }) => value)
+        .map(({ value }) => this.asNamespace(value))
+        .filter(({ restricted }) => !restricted);
+
+      // Requests go out in batches, so one rejected lookup must not sink the paths
+      // that resolved in other requests. Still log the failures to sentry.
+      failures.forEach(({ reason }) => captureException(reason));
+
+      // A partial restore still gives a usable selection, so the page stays quiet -- only a total
+      // loss leaves the picker empty and worth surfacing.
+      if (!restored.length) {
+        if (failures.length) this.$emit('error', failures[0].reason);
+        return;
+      }
+
+      this.selectedNamespaces = restored;
+      this.commitChange(restored);
+    },
+    // A path from the `scope` param says nothing about whether it names a group or a project, so
+    // both are asked for and whichever resolves is the answer. One query runs per path, sharing a
+    // batch key so they leave as a single request.
+    async fetchScopeNamespace(fullPath) {
+      const { data } = await this.$apollo.query({
+        query: getScopeNamespaceQuery,
+        variables: { fullPath, fullPaths: [fullPath] },
+        context: { batchKey: SCOPE_NAMESPACE_BATCH_KEY },
+      });
+
+      return data.group ?? data.projects?.nodes?.[0] ?? null;
     },
     setSearchTerm(searchTerm) {
       this.searchTerm = searchTerm;
@@ -424,16 +658,17 @@ export default {
     multiple
     fluid-width
     :items="items"
-    :selected="selectedPaths"
+    :selected="listboxSelectedPaths"
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"
     :loading="isLoading"
-    searchable
     :searching="isSearching"
+    searchable
     :search-placeholder="s__('AnalyticsDashboards|Search groups and projects')"
     :no-results-text="s__('AnalyticsDashboards|No groups or projects found')"
     @search="onSearch"
     @select="onSelect"
+    @hidden="onHidden"
   >
     <template #list-item="{ item }">
       <span
@@ -446,11 +681,29 @@ export default {
         {{ item.text }}
       </span>
 
-      <scope-picker-item v-else v-bind="item" @toggle-expanded="toggleExpanded(item.value)" />
+      <scope-picker-item
+        v-else
+        v-bind="item"
+        @toggle-expanded="toggleExpanded(item.value)"
+        @load-more="onLoadMore(item.value)"
+      />
+    </template>
+
+    <template #search-summary-sr-only>
+      {{ searchSummary }}
     </template>
 
     <template #footer>
-      <div class="gl-border-t gl-flex gl-justify-end gl-border-t-dropdown gl-p-3">
+      <div
+        class="gl-border-t gl-flex gl-items-center gl-justify-end gl-border-t-dropdown gl-px-4 gl-py-3"
+      >
+        <span
+          v-if="multiSelect"
+          class="gl-mr-auto gl-text-sm gl-text-subtle"
+          data-testid="scope-picker-slots-left"
+        >
+          {{ slotsLeft }}
+        </span>
         <gl-button category="primary" variant="confirm" size="small" @click="onDone">
           {{ __('Done') }}
         </gl-button>
@@ -463,5 +716,18 @@ export default {
 /* Each item draws its own checkbox, so the listbox's built-in check indicator is redundant. */
 .analytics-scope-picker .gl-new-dropdown-item-check-icon {
   display: none;
+}
+
+/* 1.5x the listbox's 19.5rem default. Groups expand in place rather than into a second panel,
+   so the default cap leaves too little room to see a group and its projects at once. */
+.analytics-scope-picker .gl-new-dropdown-inner {
+  max-height: 29.25rem;
+}
+
+/* `fluid-width` sizes the panel to its rows, between 15.5rem and 28.5rem, so switching to the
+   shorter search rows visibly narrows it. Raising the floor to the ceiling holds the width
+   steady while the rows change underneath. */
+.analytics-scope-picker .gl-new-dropdown-panel-fluid-width {
+  min-width: 28.5rem;
 }
 </style>

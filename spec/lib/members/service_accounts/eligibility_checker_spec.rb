@@ -52,7 +52,7 @@ RSpec.describe Members::ServiceAccounts::EligibilityChecker, feature_category: :
       let(:target_group) { root_group }
 
       context 'with non-service account user' do
-        let(:sa) { create(:user) }
+        let(:sa) { build_stubbed(:user) }
 
         it { is_expected.to be true }
       end
@@ -65,7 +65,7 @@ RSpec.describe Members::ServiceAccounts::EligibilityChecker, feature_category: :
 
       context 'with nil target_group' do
         let(:target_group) { nil }
-        let(:sa) { create(:user, :service_account) }
+        let(:sa) { build_stubbed(:user, :service_account) }
 
         it { is_expected.to be true }
       end
@@ -76,34 +76,34 @@ RSpec.describe Members::ServiceAccounts::EligibilityChecker, feature_category: :
       let(:target_group) { root_group }
 
       context 'when SA is created in subgroup and invited to same subgroup' do
-        let(:sa) { create(:user, :service_account, provisioned_by_group: subgroup) }
+        let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: subgroup) }
         let(:target_group) { subgroup }
 
         it { is_expected.to be true }
       end
 
       context 'when SA is created in subgroup and invited to descendant' do
-        let(:sa) { create(:user, :service_account, provisioned_by_group: subgroup) }
+        let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: subgroup) }
         let(:target_group) { nested_subgroup }
 
         it { is_expected.to be true }
       end
 
       context 'when SA is created in subgroup and invited to parent' do
-        let(:sa) { create(:user, :service_account, provisioned_by_group: subgroup) }
+        let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: subgroup) }
 
         it { is_expected.to be false }
       end
 
       context 'when SA is created in root group' do
-        let(:sa) { create(:user, :service_account, provisioned_by_group: root_group) }
+        let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: root_group) }
         let(:target_group) { subgroup }
 
         it { is_expected.to be true }
       end
 
       context 'when SA is created in unrelated root group (top-level)' do
-        let(:sa) { create(:user, :service_account, provisioned_by_group: other_group) }
+        let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: other_group) }
         let(:target_group) { subgroup }
 
         it { is_expected.to be true }
@@ -111,7 +111,7 @@ RSpec.describe Members::ServiceAccounts::EligibilityChecker, feature_category: :
 
       context 'when SA is created in unrelated subgroup' do
         let_it_be(:unrelated_subgroup) { create(:group, parent: other_group) }
-        let(:sa) { create(:user, :service_account, provisioned_by_group: unrelated_subgroup) }
+        let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: unrelated_subgroup) }
         let(:target_group) { subgroup }
 
         it { is_expected.to be false }
@@ -212,7 +212,7 @@ RSpec.describe Members::ServiceAccounts::EligibilityChecker, feature_category: :
 
         context 'when inviting instance-level SA to project in personal namespace' do
           let(:checker) { described_class.new(target_project: project_in_personal_namespace) }
-          let(:sa) { create(:user, :service_account, provisioned_by_group: nil) }
+          let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: nil) }
 
           it 'allows the instance-level SA' do
             expect(eligible).to be true
@@ -221,7 +221,7 @@ RSpec.describe Members::ServiceAccounts::EligibilityChecker, feature_category: :
 
         context 'when inviting group-provisioned SA to project in personal namespace' do
           let(:checker) { described_class.new(target_project: project_in_personal_namespace) }
-          let(:sa) { create(:user, :service_account, provisioned_by_group: root_group) }
+          let(:sa) { build_stubbed(:user, :service_account, provisioned_by_group: root_group) }
 
           it 'allows the group-provisioned SA' do
             expect(eligible).to be true

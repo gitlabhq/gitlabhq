@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe DeployKeys::DeployKeyEntity do
   include RequestAwareEntity
 
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:project) { create(:project, :internal) }
   let(:project_private) { create(:project, :private) }
   let(:deploy_key) { create(:deploy_key) }

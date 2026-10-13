@@ -65,4 +65,20 @@ RSpec.describe "Admin::Users", feature_category: :user_management do
 
     expect { visit admin_users_path }.not_to exceed_query_limit(control_queries)
   end
+
+  describe 'user search', :js do
+    let_it_be(:user) { create(:user) }
+
+    it 'allows searching by name' do
+      visit admin_users_path(search_query: user.name)
+
+      expect(page).to have_content(user.name)
+    end
+
+    it 'allows searching by email' do
+      visit admin_users_path(search_query: user.email)
+
+      expect(page).to have_content(user.name)
+    end
+  end
 end

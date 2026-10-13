@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Show > Access', feature_category: :groups_and_project
     let_it_be(:message_password_auth_enabled) { 'Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must set a password or set up a personal access token to use instead of a password.' }
     let_it_be(:message_password_auth_disabled) { 'Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must set up a personal access token to use instead of a password.' }
 
-    let(:project) { create(:project, :repository, namespace: user.namespace) }
+    let_it_be(:project) { create(:project, :repository, :public) }
 
     context 'with internal auth enabled' do
       before do

@@ -27,9 +27,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
       .with(Gitlab::Git::Repository, commit.sha)
       .and_return(signature_data)
 
-    allow_next_instance_of(Commit) do |instance|
-      allow(instance).to receive(:committer_email).and_return(user_committer.email)
-    end
+    allow(commit).to receive(:committer_email).and_return(user_committer.email)
 
     allow(verifier).to receive_messages({
       verification_status: verification_status,
@@ -55,6 +53,12 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
       ssh_commit.signature
     end
 
+    it 'assigns the commit to a stored signature' do
+      create(:ssh_signature, commit_sha: commit.sha, project: project, key: signed_by_key)
+
+      expect(signature.commit).to be(commit)
+    end
+
     context 'when all expected data is present' do
       it 'calls signature verifier and uses returned attributes' do
         expect(signature).to have_attributes(
@@ -63,7 +67,8 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
           key_id: signed_by_key.id,
           key_fingerprint_sha256: signed_by_key.fingerprint_sha256,
           user_id: user_committer.id,
-          verification_status: 'verified'
+          verification_status: 'verified',
+          commit: be(commit)
         )
       end
     end

@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import WebIdeButton from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import createDefaultClient from '~/lib/graphql';

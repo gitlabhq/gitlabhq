@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import RepositoryApp from '~/repository/components/app.vue';
 import createStore from '~/code_navigation/store';

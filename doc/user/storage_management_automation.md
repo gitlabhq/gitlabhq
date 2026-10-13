@@ -641,7 +641,7 @@ The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located
 
 # Required programs:
 # - GitLab CLI (glab): https://docs.gitlab.com/cli/
-# - jq: https://jqlang.github.io/jq/
+# - jq: https://jqlang.org/
 
 # Required variables:
 # - PAT: Project Access Token with API scope and Owner role, or Personal Access Token with API scope

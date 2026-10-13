@@ -193,7 +193,7 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
   end
 
   describe 'GET /projects/:id/deploy_keys' do
-    let(:deploy_key) { create(:deploy_key, public: true, user: admin) }
+    let_it_be(:deploy_key) { create(:deploy_key, public: true, user: admin) }
 
     it_behaves_like 'GET request permissions for admin mode' do
       let(:path) { project_path }
@@ -401,12 +401,12 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       end
 
       context 'private deploy key' do
-        let(:deploy_key) { create(:another_deploy_key, public: false) }
-        let(:deploy_keys_project) do
+        let_it_be(:deploy_key) { create(:another_deploy_key, public: false) }
+        let_it_be(:deploy_keys_project) do
           create(:deploy_keys_project, project: project, deploy_key: deploy_key)
         end
 
-        let(:extra_params) { { title: 'new title', can_push: true } }
+        let_it_be(:extra_params) { { title: 'new title', can_push: true } }
 
         it 'updates the title of the deploy key' do
           expect { subject }.to change { deploy_key.reload.title }.to 'new title'

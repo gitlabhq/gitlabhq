@@ -55,7 +55,7 @@ RSpec.describe 'Merge request > Draft note diff context on the Overview tab', :j
     next_discussion_row(line_holder).fill_in('note[note]', with: 'Comment on re-streamed line')
 
     click_button 'Start a review'
-    find_by_testid('review-drawer-toggle', match: :first).click
+    open_review_drawer
     expect(page).to have_text('Comment on re-streamed line')
     click_button 'Submit review'
     expect(page).to have_css('[data-testid="noteable-note-container"]', text: 'Comment on re-streamed line')
@@ -65,6 +65,15 @@ RSpec.describe 'Merge request > Draft note diff context on the Overview tab', :j
 
     expect(page).to have_content('Comment on re-streamed line')
     expect(page).to have_content(commented_line)
+  end
+
+  # Saving the draft shortens the page, so the sticky header expands and slides the toggle down
+  # as it appears. A click mid-slide misses without error, so retry until the drawer opens.
+  def open_review_drawer
+    wait_for('review drawer to open') do
+      click_button 'Your review'
+      has_button?('Submit review', wait: 2)
+    end
   end
 
   def materialize_merge_ref(mr)

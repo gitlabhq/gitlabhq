@@ -84,6 +84,7 @@ RSpec.describe 'User Settings > SSH Keys', feature_category: :source_code_manage
     visit path
 
     page.find("button[aria-label=\"#{action}\"]").click
+    expect(page).to have_css('.modal.show')
 
     page.within('.modal') do
       page.click_button(confirmation_button)

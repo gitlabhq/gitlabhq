@@ -9,16 +9,15 @@ module Gitlab
             super(name, type, expression, operation: :lag, over: over, lag_offset: lag_offset, **kwargs)
           end
 
-          # No inner aggregation needed: user_id is already projected via the
-          # primary key passthrough, so we reference it directly in the outer query.
-          def to_inner_arel(_context)
-            nil
+          # Project the expression column explicitly, so the inner query keys on it.
+          def to_inner_arel(context)
+            expression ? expression.call : context[:scope][source_column]
           end
 
           def to_outer_arel(context)
             inner_query_name = context[:inner_query_name]
-            bitmap_expr = expression ? expression.call.to_s : source_column.to_s
-            Arel::Nodes::SqlLiteral.new("uniqExact(`#{inner_query_name}`.`#{bitmap_expr}`)")
+            local_alias = context.fetch(:local_alias, name)
+            Arel::Nodes::SqlLiteral.new("uniqExact(`#{inner_query_name}`.`#{local_alias}`)")
           end
 
           # Already a UInt64 from to_outer_arel: no finalization step needed.

@@ -9,7 +9,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
 
   it 'defines a method to store counters' do
     registered_attributes = model.class.counter_attributes.keys
-    expect(registered_attributes).to contain_exactly(*counter_attributes)
+    expect(registered_attributes).to match_array(counter_attributes)
   end
 
   counter_attributes.each do |attribute|

@@ -15,6 +15,10 @@ title: Merge request analytics
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21214) in GitLab 19.3.
+- `timeToMergeQuantile` [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/501) to report seconds in GitLab 19.5.
+- `timeToMergeMin`, `timeToMergeMax`, `timeToMergeMean`, and `timeToMergeSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
+- `createdByDuo` filter and dimension, and `acceptanceRate` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/518) in GitLab 19.5.
+- `!=` and `not in` operators on the `state` and `targetBranch` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -30,18 +34,20 @@ To query individual merge request records, use [Merge requests](merge_requests.m
 | `project` | Query merge requests in a specific project.                               |
 | `group`   | Query merge requests across all projects in a group, including subgroups. |
 
-For more information, see [scopes](_index.md#scopes).
+To aggregate merge requests across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
 
-## Query fields
+## Query filters
 
 Use these fields in the `query` parameter to filter your results.
 
 | Field                              | Name           | Operators                 |
 | ---------------------------------- | -------------- | ------------------------- |
 | [Created at](#created-at)          | `created`      | `=`, `>`, `<`, `>=`, `<=` |
+| [Created by Duo](#created-by-duo)  | `createdByDuo` | `=`, `!=`                 |
 | [Merged at](#merged-at)            | `merged`       | `=`, `>`, `<`, `>=`, `<=` |
-| [State](#state)                    | `state`        | `=`, `in`                 |
-| [Target branch](#target-branch)    | `targetBranch` | `=`, `in`                 |
+| [State](#state)                    | `state`        | `=`, `!=`, `in`, `not in` |
+| [Target branch](#target-branch)    | `targetBranch` | `=`, `!=`, `in`, `not in` |
 
 ### Created at {#created-at}
 
@@ -56,6 +62,14 @@ Use these fields in the `query` parameter to filter your results.
 **Notes**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+
+### Created by Duo {#created-by-duo}
+
+**Description**: Filter merge requests by whether a GitLab Duo Agent Platform session created them.
+
+**Allowed value types**:
+
+- `Boolean` (`true` or `false`)
 
 ### Merged at {#merged-at}
 
@@ -78,7 +92,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `Enum`, one of `opened`, `closed`, `merged`, or `locked`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 **Notes**:
 
@@ -91,14 +105,15 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ## Dimensions
 
 | Dimension     | Name           | Description                              |
 | ------------- | -------------- | ---------------------------------------- |
-| Created at    | `created`      | Group by creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `created(monthly)`. |
-| Merged at     | `merged`       | Group by merge date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `merged(monthly)`. |
+| Created at    | `created`      | Group by creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `created(monthly)` or `created(granularity=30d, origin=2026-07-16)`. |
+| Created by Duo | `createdByDuo` | Group by whether a GitLab Duo Agent Platform session created the merge request. |
+| Merged at     | `merged`       | Group by merge date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `merged(monthly)` or `merged(granularity=30d, origin=2026-07-16)`. |
 | State         | `state`        | Group by merge request state.            |
 | Target branch | `targetBranch` | Group by target branch.                  |
 
@@ -106,8 +121,13 @@ Use these fields in the `query` parameter to filter your results.
 
 | Metric                 | Name                   | Description                              |
 | ---------------------- | ---------------------- | ---------------------------------------- |
+| Acceptance rate        | `acceptanceRate`       | Share of merge requests that were merged. |
 | Throughput count       | `throughputCount`      | Number of merged merge requests.         |
-| Time to merge quantile | `timeToMergeQuantile`  | Time from creation to merge, rendered as a duration. For example, `1d 2h`. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`, the median). For example, `timeToMergeQuantile(0.95)`. |
+| Time to merge max      | `timeToMergeMax`       | Longest time from creation to merge, in seconds. |
+| Time to merge mean     | `timeToMergeMean`      | Average time from creation to merge, in seconds. |
+| Time to merge min      | `timeToMergeMin`       | Shortest time from creation to merge, in seconds. |
+| Time to merge quantile | `timeToMergeQuantile`  | Time from creation to merge, in seconds, rendered as a duration. For example, `1d 2h`. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`, the median). For example, `timeToMergeQuantile(0.95)`. |
+| Time to merge sum      | `timeToMergeSum`       | Total time from creation to merge across all merged merge requests, in seconds. |
 | Total count            | `totalCount`           | Total number of merge requests.          |
 
 ## Sort fields
@@ -170,6 +190,20 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: targetBranch as "Target branch"
   metrics: totalCount as "Total", throughputCount as "Merged"
   sort: throughputCount desc
+  ```
+  ````
+
+- Acceptance rate of merge requests created by GitLab Duo compared to other merge requests:
+
+  ````yaml
+  ```glql
+  title: "Merge request acceptance rate by origin (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = MergeRequest and group = "gitlab-org" and created > -30d
+  dimensions: createdByDuo as "Created by Duo"
+  metrics: totalCount as "Total", throughputCount as "Merged", acceptanceRate as "Acceptance rate"
+  sort: totalCount desc
   ```
   ````
 

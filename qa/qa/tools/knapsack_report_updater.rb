@@ -13,7 +13,7 @@ module QA
       DEFAULT_WAIT_BEFORE_MERGE = 120
 
       MR_LABELS = [
-        "group::development analytics",
+        "group::development health",
         "type::maintenance",
         "maintenance::pipelines",
         "automation:bot-authored",

@@ -39,6 +39,10 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
           find('[data-feature-id="email_otp_enrollment_callout"] button[aria-label="Dismiss"]').click
         end
 
+        wait_for('callout dismissed', polling_interval: 0.5) do
+          Users::Callout.exists?(user: user, feature_name: :email_otp_enrollment_callout)
+        end
+
         expect(page).not_to have_content(expected_title)
 
         # Verify it stays dismissed after page reload

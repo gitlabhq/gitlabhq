@@ -92,10 +92,15 @@ Grants the ability to create, delete, read, and update policies in the policy st
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Create | Group | `POST` | `/groups/:id/security/policy_store` |
 | Create | Instance | `POST` | `/organizations/:id/security/policy_store` |
+| Delete | Group | `DELETE` | `/groups/:id/security/policy_store/:policy_id` |
 | Delete | Instance | `DELETE` | `/organizations/:id/security/policy_store/:policy_id` |
+| Read | Group | `GET` | `/groups/:id/security/policy_store` |
+| Read | Group | `GET` | `/groups/:id/security/policy_store/:policy_id` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store/:policy_id` |
+| Update | Group | `PATCH` | `/groups/:id/security/policy_store/:policy_id` |
 | Update | Instance | `PATCH` | `/organizations/:id/security/policy_store/:policy_id` |
 
 #### SBOM Occurrence
@@ -367,7 +372,6 @@ Grants the ability to delete, read, run, and update jobs.
 | Read | Project | `GET` | `/projects/:id/jobs/:job_id/trace` |
 | Run | Project | `POST` | `/projects/:id/jobs/:job_id/play` |
 | Run | Project | `POST` | `/projects/:id/jobs/:job_id/retry` |
-| Update | Project | `GET` | `/projects/:id/jobs/:job_id/runtime_environment_key` |
 | Update | Project | `POST` | `/projects/:id/jobs/:job_id/cancel` |
 
 #### Job Artifact
@@ -768,20 +772,9 @@ Grants the ability to read code suggestion enabled status.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `POST` | `/code_suggestions/enabled` |
 
-#### Duo Flow Callback Hook
-
-Grants the ability to create, delete, and read duo flow callback hooks.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Instance | `POST` | `/ai/duo_workflows/flow_callbacks` |
-| Delete | Instance | `DELETE` | `/ai/duo_workflows/flow_callbacks/:id` |
-| Read | Instance | `GET` | `/ai/duo_workflows/flow_callbacks` |
-| Read | Instance | `GET` | `/ai/duo_workflows/flow_callbacks/:id` |
-
 #### Duo Workflow
 
-Grants the ability to create, delete, read, resume, and update duo workflows.
+Grants the ability to create, delete, read, restart, resume, and update duo workflows.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -791,6 +784,7 @@ Grants the ability to create, delete, read, resume, and update duo workflows.
 | Read | User | `GET` | `/ai/duo_workflows/workflows/agent_privileges` |
 | Read | User | `GET` | `/ai/duo_workflows/ws` |
 | Read | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/execute` |
+| Restart | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/restart` |
 | Resume | User | `POST` | `/ai/duo_workflows/workflows/:workflow_id/resume` |
 
 #### Duo Workflow Direct Access Token
@@ -872,33 +866,6 @@ Grants the ability to create, delete, read, repair, and update Geo sites.
 
 ### GitLab Orbit resources
 
-#### GitLab Orbit MCP tool
-
-Grants the ability to execute tools through the GitLab Orbit MCP server.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Execute | User | `GET` | `/orbit/mcp` |
-| Execute | User | `POST` | `/orbit/mcp` |
-
-#### Knowledge Graph
-
-Grants the ability to read knowledge graph data.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/orbit/agent/commands` |
-| Read | User | `GET` | `/orbit/graph_status` |
-| Read | User | `GET` | `/orbit/query/templates` |
-| Read | User | `GET` | `/orbit/schema` |
-| Read | User | `GET` | `/orbit/schema/dsl` |
-| Read | User | `GET` | `/orbit/schema/format` |
-| Read | User | `GET` | `/orbit/status` |
-| Read | User | `GET` | `/orbit/tools` |
-| Read | User | `POST` | `/orbit/agent/commands/:name` |
-| Read | User | `POST` | `/orbit/query` |
-| Read | User | `POST` | `/orbit/query/:name` |
-
 #### Knowledge Graph Enabled Namespace
 
 Grants the ability to create, delete, and read knowledge graph enabled namespaces.
@@ -908,6 +875,29 @@ Grants the ability to create, delete, and read knowledge graph enabled namespace
 | Create | Instance | `PUT` | `/admin/knowledge_graph/namespaces/:id` |
 | Delete | Instance | `DELETE` | `/admin/knowledge_graph/namespaces/:id` |
 | Read | Instance | `GET` | `/admin/knowledge_graph/namespaces` |
+
+#### Orbit
+
+Grants the ability to read Orbit data the token owner can access in GitLab. Group and project selections do not limit it.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/orbit/agent/commands` |
+| Read | User | `GET` | `/orbit/graph_status` |
+| Read | User | `GET` | `/orbit/mcp` |
+| Read | User | `GET` | `/orbit/query/templates` |
+| Read | User | `GET` | `/orbit/schema` |
+| Read | User | `GET` | `/orbit/schema/dsl` |
+| Read | User | `GET` | `/orbit/schema/format` |
+| Read | User | `GET` | `/orbit/skills` |
+| Read | User | `GET` | `/orbit/skills/:name` |
+| Read | User | `GET` | `/orbit/skills/:name/*path` |
+| Read | User | `GET` | `/orbit/status` |
+| Read | User | `GET` | `/orbit/tools` |
+| Read | User | `POST` | `/orbit/agent/commands/:name` |
+| Read | User | `POST` | `/orbit/mcp` |
+| Read | User | `POST` | `/orbit/query` |
+| Read | User | `POST` | `/orbit/query/:name` |
 
 ### Groups resources
 
@@ -1056,8 +1046,11 @@ Grants the ability to create, delete, and read SSH certificates.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Group | `POST` | `/groups/:id/ssh_certificates` |
+| Create | Instance | `POST` | `/admin/ssh_certificates` |
 | Delete | Group | `DELETE` | `/groups/:id/ssh_certificates/:ssh_certificates_id` |
+| Delete | Instance | `DELETE` | `/admin/ssh_certificates/:id` |
 | Read | Group | `GET` | `/groups/:id/ssh_certificates` |
+| Read | Instance | `GET` | `/admin/ssh_certificates` |
 
 #### Status
 
@@ -1689,6 +1682,7 @@ Grants the ability to create, delete, read, and update packages.
 | Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
 | Create | Project | `PUT` | `/packages/npm/-/package/*package_name/dist-tags/:tag` |
+| Create | Project | `PUT` | `/projects/:id/packages/cargo/api/v1/crates/new` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` |
@@ -2222,8 +2216,12 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/-/work_items` |
+| Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/boards` |
 | Create | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
@@ -2250,6 +2248,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/issues/:issue_id` |
 | Create | Group | `POST` | `/groups/:id/-/work_items` |
+| Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/notes` |
 | Create | Group | `POST` | `/groups/:id/boards` |
 | Create | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
@@ -2262,9 +2262,13 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/groups/:id/milestones` |
 | Create | Group | `POST` | `/groups/:id/wiki_pages/:noteable_id/notes` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid` |
+| Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid` |
@@ -2286,6 +2290,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Delete | Group | `DELETE` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Delete | Group | `DELETE` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid` |
+| Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:epic_iid/award_emoji/:award_id` |
@@ -2296,6 +2301,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Delete | Group | `DELETE` | `/groups/:id/milestones/:milestone_id` |
 | Delete | Group | `DELETE` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/award_emoji` |
@@ -2304,6 +2310,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2320,6 +2328,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
+| Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2403,6 +2413,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
+| Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2456,6 +2468,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2482,7 +2496,11 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | `PATCH` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Update | Project | `PATCH` | `/projects/:id/-/work_items/:work_item_iid` |
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Update | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
@@ -2505,6 +2523,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
@@ -2513,6 +2533,8 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
 | Update | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 
@@ -2740,6 +2762,7 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Merge | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/cancel_auto_merge` |
 | Merge | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds` |
 | Merge | Project | `PUT` | `/projects/:id/merge_requests/:merge_request_iid/merge` |
 | Read | Project | `GET` | `/projects/:id/merge_requests` |
@@ -3189,6 +3212,15 @@ Grants the ability to read experiments.
 | ------ | ------ | ------ | ---- |
 | Read | Instance | `GET` | `/experiments` |
 | Read | Instance | `GET` | `/experiments/:experiment_name/assignments` |
+
+#### Experiment Assignment
+
+Grants the ability to create and delete experiment assignments.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/experiments/:experiment_name/assignments` |
+| Delete | Instance | `DELETE` | `/experiments/:experiment_name/assignments` |
 
 #### Experiment Cache
 
@@ -3666,7 +3698,7 @@ Grants the ability to create and read offline exports.
 
 #### Placeholder Reassignment
 
-Grants the ability to create, read, and update placeholder reassignments.
+Grants the ability to create, read, revoke, and update placeholder reassignments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -4028,11 +4060,15 @@ incompatible with personal access tokens.
 | `PATCH` | `/api/scim/:version/application/Groups/:id` | SCIM token |
 | `PUT` | `/api/scim/:version/application/Groups/:id` | SCIM token |
 | `DELETE` | `/api/scim/:version/application/Groups/:id` | SCIM token |
+| `GET` | `/api/scim/:version/application/Schemas` | SCIM token |
+| `GET` | `/api/scim/:version/application/Schemas/:id` | SCIM token |
 | `GET` | `/api/scim/:version/application/Users` | SCIM token |
 | `POST` | `/api/scim/:version/application/Users` | SCIM token |
 | `GET` | `/api/scim/:version/application/Users/:id` | SCIM token |
 | `PATCH` | `/api/scim/:version/application/Users/:id` | SCIM token |
 | `DELETE` | `/api/scim/:version/application/Users/:id` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/Schemas` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/Schemas/:id` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Users` | SCIM token |
 | `POST` | `/api/scim/:version/groups/:group/Users` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Users/:id` | SCIM token |
@@ -4062,10 +4098,12 @@ incompatible with personal access tokens.
 | `POST` | `/groups/import/authorize` | Workhorse pre-authorization |
 | `GET` | `/iam/userinfo` | IAM OAuth token |
 | `PUT` | `/integrations/jira_forge/installation` | GitLab for Jira (Forge) app token |
+| `DELETE` | `/integrations/jira_forge/installation` | GitLab for Jira (Forge) app token |
 | `POST` | `/integrations/jira_forge/installation/forge_token` | GitLab for Jira (Forge) app token |
 | `GET` | `/integrations/jira_forge/subscriptions` | GitLab for Jira (Forge) app token |
 | `POST` | `/integrations/jira_forge/subscriptions` | GitLab for Jira (Forge) app token |
 | `DELETE` | `/integrations/jira_forge/subscriptions/:id` | GitLab for Jira (Forge) app token |
+| `POST` | `/integrations/jira_forge/user_delegation` | GitLab for Jira (Forge) app token |
 | `POST` | `/integrations/slack/events` | Slack request signature |
 | `POST` | `/integrations/slack/interactions` | Slack request signature |
 | `POST` | `/integrations/slack/options` | Slack request signature |
@@ -4125,6 +4163,7 @@ incompatible with personal access tokens.
 | `POST` | `/internal/observability/project/:id/write/logs` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/metrics` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/traces` | Workhorse verification |
+| `GET` | `/internal/orbit/cloud_connector_token` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/info` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs` | GitLab Orbit internal token |
@@ -4166,6 +4205,7 @@ incompatible with personal access tokens.
 | `GET` | `/jobs/:id/artifacts` | CI job token |
 | `POST` | `/jobs/:id/artifacts` | CI job token |
 | `POST` | `/jobs/:id/artifacts/authorize` | CI job token |
+| `GET` | `/jobs/:id/runtime_environment_key` | CI job token |
 | `POST` | `/jobs/:id/sbom_scans` | CI job token |
 | `POST` | `/jobs/:id/sbom_scans/:sbom_digest` | CI job token |
 | `GET` | `/jobs/:id/sbom_scans/:sbom_scan_id` | CI job token |
@@ -4180,6 +4220,7 @@ incompatible with personal access tokens.
 | `POST` | `/projects/:id/(ref/:ref/)trigger/pipeline` | CI trigger token |
 | `POST` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images/authorize` | Workhorse pre-authorization |
 | `PATCH` | `/projects/:id/compliance_external_controls/:control_id/status` | Compliance external control token |
+| `POST` | `/projects/:id/github/webhooks` | GitHub OAuth webhook signature |
 | `POST` | `/projects/:id/integrations/mattermost_slash_commands/trigger` | Project integration token |
 | `POST` | `/projects/:id/issues/:issue_iid/metric_images/authorize` | Workhorse pre-authorization |
 | `GET` | `/projects/:id/managed_licenses` | Deprecated endpoint |

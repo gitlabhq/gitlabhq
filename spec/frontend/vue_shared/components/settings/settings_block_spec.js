@@ -1,9 +1,10 @@
 import { GlCollapse, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { parseBoolean, historyPushState } from '~/lib/utils/common_utils';
+import { historyPushState } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   historyPushState: jest.fn(),

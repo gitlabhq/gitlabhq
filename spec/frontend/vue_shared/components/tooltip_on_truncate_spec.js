@@ -38,7 +38,11 @@ describe('TooltipOnTruncate component', () => {
     });
   };
 
-  const createWrappedComponent = ({ propsData, ...options }) => {
+  const createWrappedComponent = ({
+    propsData,
+    slotContent = '<div>{{title}}</div>',
+    ...options
+  }) => {
     const WrappedTooltipOnTruncate = {
       ...TooltipOnTruncate,
       directives: {
@@ -56,7 +60,7 @@ describe('TooltipOnTruncate component', () => {
         },
         template: `
           <TooltipOnTruncate :title="title" truncate-target="child">
-            <div>{{title}}</div>
+            ${slotContent}
           </TooltipOnTruncate>
         `,
         components: {
@@ -137,7 +141,7 @@ describe('TooltipOnTruncate component', () => {
         },
       });
 
-      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.childNodes[0]);
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.firstElementChild);
 
       await nextTick();
 
@@ -159,12 +163,36 @@ describe('TooltipOnTruncate component', () => {
         },
       });
 
-      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.childNodes[0]);
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.firstElementChild);
 
       await nextTick();
 
       expect(getTooltipValue()).toMatchObject({
         disabled: true,
+      });
+    });
+
+    describe('when the slot renders non-element nodes before the child', () => {
+      beforeEach(async () => {
+        hasHorizontalOverflow.mockReturnValueOnce(true);
+        createWrappedComponent({
+          propsData: { title: MOCK_TITLE },
+          slotContent: `
+            <span v-if="false"></span>
+            <div data-testid="truncated-child">{{title}}</div>
+          `,
+        });
+        await nextTick();
+      });
+
+      it('measures the slotted element', () => {
+        const target = parent.find('[data-testid="truncated-child"]').element;
+
+        expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(target);
+        expect(getTooltipValue()).toMatchObject({
+          title: MOCK_TITLE,
+          disabled: false,
+        });
       });
     });
   });

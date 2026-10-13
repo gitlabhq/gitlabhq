@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :project_member, parent: :member, class: 'ProjectMember' do
-    source { association(:project) }
+    source { @overrides[:project] || association(:project) }
     maintainer
   end
 end

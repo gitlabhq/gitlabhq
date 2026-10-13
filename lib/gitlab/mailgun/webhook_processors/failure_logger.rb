@@ -10,12 +10,14 @@ module Gitlab
 
         def permanent_failure_over_threshold?
           payload['event'] == 'failed' && payload['severity'] == 'permanent' &&
-            Gitlab::ApplicationRateLimiter.throttled?(:permanent_email_failure, scope: payload['recipient'] || :global)
+            Gitlab::ApplicationRateLimiter.throttled?(
+              :permanent_email_failure, scope: { email: payload['recipient'] || :global })
         end
 
         def temporary_failure_over_threshold?
           payload['event'] == 'failed' && payload['severity'] == 'temporary' &&
-            Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: payload['recipient'] || :global)
+            Gitlab::ApplicationRateLimiter.throttled?(
+              :temporary_email_failure, scope: { email: payload['recipient'] || :global })
         end
 
         private

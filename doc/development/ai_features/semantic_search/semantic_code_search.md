@@ -15,10 +15,10 @@ Semantic Code Search is the first feature offered under Semantic Search. It enab
 
 The Semantic Code Search embedding model depends on the GitLab instance.
 
-For SaaS, Dedicated, and Self-Managed instances without Duo Self-hosted, the model used for embeddings generation is
+For SaaS, Dedicated, and GitLab Self-Managed instances without Duo Self-hosted, the model used for embeddings generation is
 `text-embedding-005` provided by Gemini Enterprise Agent Platform.
 
-For Self-Managed instances with Duo Self-hosted, administrators must select their own Self-hosted embedding model.
+For GitLab Self-Managed instances with Duo Self-hosted, administrators must select their own Self-hosted embedding model.
 
 ### Indexing workflow
 
@@ -91,7 +91,7 @@ Not all namespaces are eligible for Semantic Code Search. Eligibility is managed
 - The namespace has a supported AI plan (Premium or higher)
 - The subscription is not expired
 
-**On self-managed instances**, all top-level group namespaces are eligible if:
+**On GitLab Self-Managed instances**, all top-level group namespaces are eligible if:
 
 - Instance-level AI beta features are enabled (`instance_level_ai_beta_features_enabled`)
 - AI features are available in the license

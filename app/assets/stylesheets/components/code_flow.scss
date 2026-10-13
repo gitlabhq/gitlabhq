@@ -12,3 +12,7 @@ $code-flow-tabs-height: 51px;
 .code-flow-content-modal {
   height: var(--modal-content-height);
 }
+
+.code-flow-content-card {
+  max-height: 70vh;
+}

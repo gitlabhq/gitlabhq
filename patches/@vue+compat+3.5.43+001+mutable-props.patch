@@ -1,0 +1,72 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6850,7 +6850,7 @@
+     $: (i) => i,
+     $el: (i) => getDevRootFragmentEl(i) ,
+     $data: (i) => i.data,
+-    $props: (i) => shallowReadonly(i.props) ,
++    $props: (i) => !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
+     $attrs: (i) => shallowReadonly(i.attrs) ,
+     $slots: (i) => shallowReadonly(i.slots) ,
+     $refs: (i) => shallowReadonly(i.refs) ,
+@@ -9187,6 +9187,10 @@
+       );
+     }
+   }
++  /*! GitLab specific: copy mutable props marker to internal props object */
++  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
++    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
++  }
+   return hasAttrsChanged;
+ }
+ function resolvePropValue(options, props, key, value, instance, isAbsent) {
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6831,7 +6831,7 @@
+     $: (i) => i,
+     $el: (i) => !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
+     $data: (i) => i.data,
+-    $props: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.props) : i.props,
++    $props: (i) => !!(process.env.NODE_ENV !== "production") && !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
+     $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
+     $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
+     $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
+@@ -9172,6 +9172,10 @@
+       );
+     }
+   }
++  /*! GitLab specific: copy mutable props marker to internal props object */
++  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
++    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
++  }
+   return hasAttrsChanged;
+ }
+ function resolvePropValue(options, props, key, value, instance, isAbsent) {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6758,7 +6758,7 @@
+     $: (i) => i,
+     $el: (i) => !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
+     $data: (i) => i.data,
+-    $props: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.props) : i.props,
++    $props: (i) => !!(process.env.NODE_ENV !== "production") && !i.props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ ? shallowReadonly(i.props) : i.props,
+     $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
+     $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
+     $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
+@@ -9099,6 +9099,10 @@
+       );
+     }
+   }
++  /*! GitLab specific: copy mutable props marker to internal props object */
++  if (rawProps && rawProps.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__) {
++    props.__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ = true;
++  }
+   return hasAttrsChanged;
+ }
+ function resolvePropValue(options, props, key, value, instance, isAbsent) {

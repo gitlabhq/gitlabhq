@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::QueryPlan, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::QueryPlan, feature_category: :value_stream_management do
   let_it_be(:engine_definition) do
     Gitlab::Database::Aggregation::Engine.build do
       def self.dimensions_mapping

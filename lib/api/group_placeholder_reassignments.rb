@@ -15,7 +15,7 @@ module API
     feature_category :importers
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve pending reassignments' do
@@ -78,7 +78,7 @@ module API
       post ':id/placeholder_reassignments' do
         authorize! :create_placeholder_reassignment, user_group
 
-        check_rate_limit!(:placeholder_reassignment, scope: current_user)
+        check_rate_limit!(:placeholder_reassignment, scope: { user: current_user })
 
         require_gitlab_workhorse!
 

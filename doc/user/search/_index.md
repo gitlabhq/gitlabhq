@@ -31,17 +31,14 @@ For code search, GitLab uses these types in this order:
 {{< history >}}
 
 - Groups scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+- Groups scope [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/607018) in GitLab 19.5. Feature flag `elasticsearch_group_search` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the Groups scope is controlled by a feature flag.
-> For more information, see the history.
 
 Scopes describe the type of data you're searching.
 The following scopes are available for basic search:
 
-| Scope          | Global <sup>1</sup> |    Group    | Project |
+| Scope          | Global[^disable-global-search-scopes] |    Group    | Project |
 |----------------|:-------------------:|:-----------:|:-------:|
 | Code           |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
 | Comments       |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
@@ -49,15 +46,13 @@ The following scopes are available for basic search:
 | Groups         |     {{< yes >}}     | {{< yes >}} | {{< no >}} |
 | Work items     |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Merge requests |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
-| Milestones <sup>2</sup> |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Milestones[^global-basic-search] |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Projects       |     {{< yes >}}     | {{< yes >}} | {{< no >}} |
 | Users          |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Wikis          |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
 
-**Footnotes**:
-
-1. An administrator can [disable global search scopes](#disable-global-search-scopes).
-1. Global basic search returns only project milestones, not group milestones.
+[^disable-global-search-scopes]: An administrator can [disable global search scopes](#disable-global-search-scopes).
+[^global-basic-search]: Global basic search returns only project milestones, not group milestones.
 
 ## Specify a search type
 

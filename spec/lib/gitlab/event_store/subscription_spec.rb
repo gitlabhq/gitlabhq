@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::EventStore::Subscription, feature_category: :shared do
+RSpec.describe Gitlab::EventStore::Subscription, :clean_gitlab_redis_queues_metadata, feature_category: :shared do
   let(:worker) do
     stub_const('EventSubscriber', Class.new).tap do |klass|
       klass.class_eval do
@@ -67,6 +67,21 @@ RSpec.describe Gitlab::EventStore::Subscription, feature_category: :shared do
 
       it 'dispatches the events to the worker with batch parameters and delay' do
         expect(worker).to receive(:perform_in)
+
+        consume_event
+      end
+    end
+
+    context 'when event data has nested hashes' do
+      let(:event) { event_klass.new(data: { name: 'Bob', id: 123, details: { list: [{ key: 'value' }] } }) }
+
+      it 'passes plain hashes to the worker' do
+        expect(worker).to receive(:perform_async) do |_event_class, args|
+          expect(args).to eq('name' => 'Bob', 'id' => 123, 'details' => { 'list' => [{ 'key' => 'value' }] })
+          expect(args).to be_instance_of(Hash)
+          expect(args['details']).to be_instance_of(Hash)
+          expect(args['details']['list'].first).to be_instance_of(Hash)
+        end
 
         consume_event
       end
@@ -168,6 +183,21 @@ RSpec.describe Gitlab::EventStore::Subscription, feature_category: :shared do
 
       it 'dispatches the events to the worker after some time' do
         expect(worker).to receive(:bulk_perform_in).with(1.minute, [['TestEvent', serialized_data]])
+
+        consume_events
+      end
+    end
+
+    context 'when event data has nested hashes' do
+      let(:events) { [event_klass.new(data: { name: 'Bob', id: 123, details: { key: 'value' } })] }
+
+      it 'passes plain hashes to the worker' do
+        expect(worker).to receive(:bulk_perform_async) do |args|
+          data = args.first.last.first
+
+          expect(data).to eq('name' => 'Bob', 'id' => 123, 'details' => { 'key' => 'value' })
+          expect(data['details']).to be_instance_of(Hash)
+        end
 
         consume_events
       end

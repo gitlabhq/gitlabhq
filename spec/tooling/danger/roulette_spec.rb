@@ -17,7 +17,8 @@ RSpec.describe 'Reviewer roulette label resolution', feature_category: :tooling 
     fake_helper.config do |config|
       config.custom_labels_for_categories = {
         'merge requests backend': '~"Merge Requests backend"',
-        geo: '~"group::geo"'
+        geo: '~"group::geo"',
+        project_management: '~"group::work items"'
       }
     end
 
@@ -31,6 +32,7 @@ RSpec.describe 'Reviewer roulette label resolution', feature_category: :tooling 
 
     where(:category, :expected_label) do
       :geo                      | '~"group::geo"'
+      :project_management       | '~"group::work items"'
       :'merge requests backend' | '~"Merge Requests backend"'
       :docs                     | '~documentation'
       :unknown_category         | '~"unknown_category"'

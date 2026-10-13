@@ -21,10 +21,10 @@
 // content are exempt — there the child sees non-empty content on both
 // runtimes, so presence checks agree.
 //
-// A fixed file also receives the `glSlotsMixin` import/registration (same
-// machinery and constraints as `vue3-gl-slots`). Sites with a dynamic
-// `:name` on the outlet, several outlets feeding one target slot, or a
-// script the mixin cannot be injected into are reported without a fix.
+// A fixed file also receives the `glSlotsMixin` import/registration. Sites
+// with a dynamic `:name` on the outlet, several outlets feeding one target
+// slot, or a script the mixin cannot be injected into are reported without
+// a fix.
 
 import { defineTemplateBodyVisitor } from './utils/eslint_parsing_utils.mjs';
 import {

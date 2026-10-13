@@ -56,7 +56,7 @@ module AlertManagement
     validates :fingerprint,     allow_blank: true, uniqueness: {
       scope: :project,
       conditions: -> { not_resolved },
-      message: ->(object, data) { _('Cannot have multiple unresolved alerts') }
+      message: ->(_object, _data) { _('Cannot have multiple unresolved alerts') }
     }, unless: :resolved?
     validate :hosts_format
 

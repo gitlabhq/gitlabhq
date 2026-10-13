@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { InternalEvents } from '~/tracking';
 import { __ } from './locale';
 

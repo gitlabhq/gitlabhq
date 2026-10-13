@@ -404,7 +404,7 @@ This update is crucial for developers needing secure, authenticated connections 
 
 Some merge requests may need to be held for merging until after a certain date or time. When that date and time does pass you need to find someone with permissions to merge and hope they’re available to take care of it for you. If this is after hours or the timeline is critical you may need to prepare folks well in advance for the task.
 
-Now, when you create or edit a merge request you can specify a `merge after` date. This date will be used to prevent the merge request from being merged until it has passed. Using this new capability with our previously released [improvements to auto-merge](https://about.gitlab.com/releases/2024/09/19/gitlab-17-4-released/#auto-merge-when-all-checks-pass) gives you the flexibility to schedule merge requests to merge in the future.
+Now, when you create or edit a merge request you can specify a `merge after` date. This date will be used to prevent the merge request from being merged until it has passed. Using this new capability with our previously released [improvements to auto-merge](gitlab-17-4-released.md#auto-merge-when-all-checks-pass) gives you the flexibility to schedule merge requests to merge in the future.
 
 A big thank you to [Niklas van Schrick](https://gitlab.com/Taucher2003) for the amazing contribution!
 

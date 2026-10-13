@@ -121,4 +121,53 @@ RSpec.shared_examples 'rich text editor - copy/paste' do
       end
     end
   end
+
+  describe 'pasting into a list item', feature_category: :markdown do
+    before do
+      switch_to_content_editor
+
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor :delete
+    end
+
+    it 'inserts text copied from a list item inline at the cursor' do
+      type_in_content_editor '* item one'
+
+      type_in_content_editor [:shift, :left, :left, :left]
+      expect(page.evaluate_script('window.getSelection().toString()')).to eq('one')
+      type_in_content_editor [modifier_key, 'c']
+
+      type_in_content_editor :end
+      type_in_content_editor :enter
+      type_in_content_editor 'item two'
+      type_in_content_editor [modifier_key, 'v']
+
+      wait_until_hidden_field_is_updated(/item two.*one/m)
+
+      switch_to_markdown_editor
+
+      expect(page.find('textarea').value.strip).to eq("* item one\n* item twoone")
+    end
+
+    it 'inserts text copied from a paragraph inline at the cursor' do
+      type_in_content_editor 'plain one'
+
+      type_in_content_editor [:shift, :left, :left, :left]
+      expect(page.evaluate_script('window.getSelection().toString()')).to eq('one')
+      type_in_content_editor [modifier_key, 'c']
+
+      type_in_content_editor :end
+      type_in_content_editor :enter
+      type_in_content_editor '* item one'
+      type_in_content_editor :enter
+      type_in_content_editor 'item two'
+      type_in_content_editor [modifier_key, 'v']
+
+      wait_until_hidden_field_is_updated(/item two.*one/m)
+
+      switch_to_markdown_editor
+
+      expect(page.find('textarea').value.strip).to eq("plain one\n\n* item one\n* item twoone")
+    end
+  end
 end

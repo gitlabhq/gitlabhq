@@ -5,8 +5,6 @@ module Ci
     class AssignResourceFromResourceGroupService < ::BaseService
       include Gitlab::InternalEventsTracking
 
-      RESPAWN_WAIT_TIME = 1.minute
-
       def execute(resource_group)
         release_resource_from_stale_jobs(resource_group)
 

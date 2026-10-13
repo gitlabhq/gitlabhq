@@ -85,6 +85,37 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
       expect(json_response['hide_closed_list']).to be(true)
     end
 
+    context 'when the name is not valid' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:board_name, :name_error) do
+        ('a' * 256) | 'is too long (maximum is 255 characters)'
+        ''          | "can't be blank"
+      end
+
+      with_them do
+        it 'returns the validation errors and saves nothing', :aggregate_failures do
+          expect { put api(url, user), params: { name: board_name, hide_backlog_list: true } }
+            .to not_change { board.reload.name }
+            .and not_change { board.reload.hide_backlog_list }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['name']).to contain_exactly(name_error)
+        end
+      end
+    end
+
+    it 'returns a 400 when the update fails without validation errors', :aggregate_failures do
+      allow_next_instance_of(Boards::UpdateService) do |service|
+        allow(service).to receive(:execute).and_return(false)
+      end
+
+      put api(url, user), params: { name: 'changed board name' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq('400 Bad request - Failed to save board')
+    end
+
     it_behaves_like 'authorizing granular token permissions', :update_issue_board do
       let(:boundary_object) { board_parent }
       let(:request) { put api(url, personal_access_token: pat) }

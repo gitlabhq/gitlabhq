@@ -60,6 +60,12 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       expect(operation).to be_frozen
     end
 
+    it 'appends the fragments the query imports' do
+      operation = described_class.load_graphql('work_items/get_work_item.query.graphql')
+
+      expect(operation).to include('query getWorkItem(', 'fragment WorkItemEditionWidgets on WorkItemWidget')
+    end
+
     it 'raises Errno::ENOENT for a missing path' do
       expect { described_class.load_graphql('notes/does_not_exist.query.graphql') }
         .to raise_error(Errno::ENOENT)
@@ -169,32 +175,6 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
   end
 
-  describe '#resource_not_found?' do
-    context 'when there are no errors and operation data is nil' do
-      let(:result) { { 'data' => { 'testMutation' => nil } } }
-
-      it 'returns true' do
-        expect(tool.send(:resource_not_found?, result)).to be(true)
-      end
-    end
-
-    context 'when operation data is present' do
-      let(:result) { { 'data' => { 'testMutation' => { 'result' => { 'id' => '1' }, 'errors' => [] } } } }
-
-      it 'returns false' do
-        expect(tool.send(:resource_not_found?, result)).to be(false)
-      end
-    end
-
-    context 'when there are GraphQL errors' do
-      let(:result) { { 'errors' => ['Some error'], 'data' => { 'testMutation' => nil } } }
-
-      it 'returns false' do
-        expect(tool.send(:resource_not_found?, result)).to be(false)
-      end
-    end
-  end
-
   describe '#icons' do
     it 'returns icons array with dark and light themes' do
       icons = tool.icons
@@ -204,6 +184,21 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       expect(icons.first).to include(:mimeType, :src, :theme)
       expect(icons.first[:theme]).to eq('dark')
       expect(icons.last[:theme]).to eq('light')
+    end
+  end
+
+  describe '#resource_not_found_error_for_result' do
+    it 'delegates to the existing hook when operation data is missing' do
+      error = tool.send(:resource_not_found_error_for_result, { 'data' => { 'testMutation' => nil } })
+
+      expect(error[:isError]).to be(true)
+      expect(error[:content].first[:text]).to eq('Operation returned no data')
+    end
+
+    it 'returns nil when operation data exists' do
+      result = tool.send(:resource_not_found_error_for_result, { 'data' => { 'testMutation' => {} } })
+
+      expect(result).to be_nil
     end
   end
 
@@ -314,7 +309,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       it 'returns error response with mutation errors' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Title cannot be blank')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Title cannot be blank',
+          reason: :bad_request)
         expect(result).to eq(error_response)
       end
     end
@@ -341,7 +337,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         result = tool.execute
 
         expect(::Mcp::Tools::Base::Response).to have_received(:error)
-          .with('Title cannot be blank, Description is too short')
+          .with('Title cannot be blank, Description is too short', reason: :bad_request)
         expect(result).to eq(error_response)
       end
     end
@@ -387,8 +383,21 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       it 'returns error response' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data',
+          reason: :not_found)
         expect(result).to eq(error_response)
+      end
+
+      context 'when a result-aware hook does not handle missing data' do
+        before do
+          allow(tool).to receive(:resource_not_found_error_for_result).and_return(nil)
+        end
+
+        it 'falls back to the default not-found error' do
+          expect(tool.execute).to eq(error_response)
+          expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data',
+            reason: :not_found)
+        end
       end
     end
 

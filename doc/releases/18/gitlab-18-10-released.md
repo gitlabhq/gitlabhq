@@ -106,7 +106,7 @@ Passkeys offer the following benefits:
 - **Phishing-resistant security**: Your private key never leaves your device. GitLab only stores the public key, protecting your account even if GitLab servers are compromised.
 - **Automatic 2FA integration**: For accounts with 2FA enabled, passkeys become available as your default 2FA method.
 
-To get started, add a passkey in your account settings. We welcome your questions and feedback in issue [366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/[366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/366758)).
+To get started, add a passkey in your account settings. We welcome your questions and feedback in issue [366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/366758).
 
 ### Introducing the work items list and saved views
 

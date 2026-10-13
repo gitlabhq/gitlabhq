@@ -55,7 +55,7 @@ instance being overloaded.
 
 - For details, see [Rate limits](../../rate_limits/_index.md).
 - For details of the rate limit settings used by GitLab.com, see
-  [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+  [GitLab.com-specific rate limits](../../user/gitlab_com/rate_limits.md).
 
 ## Response format
 
@@ -277,6 +277,17 @@ The response is:
 This resource has been moved permanently to https://gitlab.example.com/api/v4/projects/81
 ```
 
+The API redirects only `GET` requests. If you send a `POST`, `PUT`, `PATCH`, or `DELETE` request
+that uses the old path of a moved project, most endpoints return `405 Method Not Allowed`:
+
+```json
+{
+  "message": "Non GET methods are not allowed for moved projects"
+}
+```
+
+For these requests, use the project ID or the current path of the project.
+
 ## Pagination
 
 GitLab supports the following pagination methods:
@@ -323,7 +334,7 @@ curl --request GET \
 response. They have `rel` set to `prev`, `next`, `first`, or `last` and contain
 the relevant URL. Be sure to use these links instead of generating your own URLs.
 
-For GitLab.com users, [some pagination headers may not be returned](../../user/gitlab_com/_index.md#pagination-response-headers).
+For GitLab.com users, [some pagination headers may not be returned](../../user/gitlab_com/rate_limits.md#pagination-response-headers).
 
 The following cURL example limits the output to three items per page
 (`per_page=3`), and requests the second page (`page=2`) of [comments](../notes.md)
@@ -370,7 +381,7 @@ GitLab also returns the following additional pagination headers:
 | `x-total`       | The total number of items. |
 | `x-total-pages` | The total number of pages. |
 
-For GitLab.com users, [some pagination headers may not be returned](../../user/gitlab_com/_index.md#pagination-response-headers).
+For GitLab.com users, [some pagination headers may not be returned](../../user/gitlab_com/rate_limits.md#pagination-response-headers).
 
 ### Keyset-based pagination
 

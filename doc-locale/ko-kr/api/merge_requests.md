@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab의 머지 리퀘스트에 대한 REST API 문서입니다.
@@ -20,9 +20,8 @@ title: 머지 리퀘스트 API
 - `reference` [GitLab 12.7에서 지원 중단되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354).
 - `merged_by` [GitLab 14.7에서 지원 중단되었습니다](https://gitlab.com/gitlab-org/gitlab/-/issues/350534).
 - `merge_status` [GitLab 15.6에서 지원 중단되었으며](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) `detailed_merge_status` 대신 사용합니다.
-- `with_merge_status_recheck` [GitLab 15.11에서 변경되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) [플래그](../administration/feature_flags/_index.md) `restrict_merge_status_recheck` 이름으로 권한이 부족한 사용자의 요청에서 무시되도록 합니다. 기본적으로 비활성화됨.
+- `with_merge_status_recheck` [변경](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948)되었습니다. GitLab 15.11에서 `restrict_merge_status_recheck`라는 이름의 [기능 플래그](../administration/feature_flags/_index.md)를 사용하여 권한이 부족한 사용자의 요청에 대해 무시되도록 변경되었습니다. 기본적으로 비활성화됨.
 - `approvals_before_merge` [GitLab 16.0에서 지원 중단되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503).
-- `prepared_at` [GitLab 16.1에서 도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001).
 - `merge_user_id` [GitLab 17.0에서 도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002).
 - `merge_user_username` [GitLab 17.0에서 도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002).
 - `merged_at` 값 `order_by` [GitLab 17.2에서 도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147052).
@@ -81,6 +80,8 @@ GET /merge_requests?search=foo&in=title
 | `created_before`            | 날짜/시간      | 아니요       | 주어진 날짜 및 시간 이전에 생성된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `deployed_after`            | 날짜/시간      | 아니요       | 주어진 날짜/시간 이후에 배포된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `deployed_before`           | 날짜/시간      | 아니요       | 주어진 날짜/시간 이전에 배포된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
+| `merged_after`             | 날짜/시간      | 아니요       | 지정된 날짜 및 시간 이후에 병합된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
+| `merged_before`            | 날짜/시간      | 아니요       | 지정된 날짜 및 시간 이전에 병합된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `environment`               | 문자열        | 아니요       | 주어진 환경에 배포된 머지 리퀘스트를 반환합니다. |
 | `in`                        | 문자열        | 아니요       | `search` 속성의 범위를 변경합니다. `title`, `description` 또는 쉼표로 결합한 문자열입니다. 기본값은 `title,description`입니다. |
 | `labels`                    | 문자열        | 아니요       | 쉼표로 구분된 레이블 목록과 일치하는 머지 리퀘스트를 반환합니다. `None`은 레이블이 없는 모든 머지 리퀘스트를 나열합니다. `Any`는 최소 하나 이상의 레이블을 가진 모든 머지 리퀘스트를 나열합니다. 미리 정의된 이름은 대소문자를 구분하지 않습니다. |
@@ -148,7 +149,7 @@ GET /merge_requests?search=foo&in=title
 | `description`                            | 문자열   | 머지 리퀘스트의 설명입니다. 캐싱을 위해 HTML로 렌더링된 Markdown이 포함되어 있습니다. |
 | `description_html`                       | 문자열   | `render_html`이 설정되면 설명의 렌더링된 HTML 버전입니다. |
 | `detailed_merge_status`                  | 문자열   | 세부 병합 상태 정보입니다. 가능한 값의 목록은 [병합 상태](#merge-status)를 참조하세요. |
-| `discussion_locked`                      | 부울  | `true`이면 스레드가 잠겨 있습니다. 프로젝트 멤버만 잠긴 스레드에서 댓글을 추가, 편집 또는 해결할 수 있습니다. |
+| `discussion_locked`                      | 부울  | `true`이면 스레드가 잠겨 있습니다. 프로젝트 멤버만 잠긴 토론에서 댓글을 추가, 편집 또는 해결할 수 있습니다. |
 | `downvotes`                              | 정수  | 머지 리퀘스트의 다운보트 수입니다. |
 | `draft`                                  | 부울  | `true`이면 머지 리퀘스트가 `draft` 상태로 표시됩니다. |
 | `force_remove_source_branch`             | 부울  | `true`이면 프로젝트 설정이 병합 후 소스 브랜치 삭제를 강제합니다. |
@@ -397,6 +398,8 @@ GET /projects/:id/merge_requests?my_reaction_emoji=star
 | `created_before`                | 날짜/시간       | 아니요       | 주어진 날짜 및 시간 이전에 생성된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `deployed_after`                | 날짜/시간       | 아니요       | 주어진 날짜 및 시간 이후에 배포된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `deployed_before`               | 날짜/시간       | 아니요       | 주어진 날짜 및 시간 이전에 배포된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
+| `merged_after`             | 날짜/시간      | 아니요       | 지정된 날짜 및 시간 이후에 병합된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
+| `merged_before`            | 날짜/시간      | 아니요       | 지정된 날짜 및 시간 이전에 병합된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `environment`                   | 문자열         | 아니요       | 주어진 환경에 배포된 머지 리퀘스트를 반환합니다. |
 | `in`                            | 문자열         | 아니요       | `search` 속성의 범위를 변경합니다. `title`, `description` 또는 쉼표로 결합한 문자열입니다. 기본값은 `title,description`입니다. |
 | `labels`                        | 문자열         | 아니요       | 쉼표로 구분된 레이블 목록과 일치하는 머지 리퀘스트를 반환합니다. `None`은 레이블이 없는 모든 머지 리퀘스트를 나열합니다. `Any`는 최소 하나 이상의 레이블을 가진 모든 머지 리퀘스트를 나열합니다. 미리 정의된 이름은 대소문자를 구분하지 않습니다. |
@@ -432,7 +435,7 @@ GET /projects/:id/merge_requests?my_reaction_emoji=star
 | `[].assignee`                      | 객체   | 머지 리퀘스트의 첫 번째 담당자입니다. |
 | `[].assignees`                     | 배열    | 머지 리퀘스트의 담당자입니다. |
 | `[].author`                        | 객체   | 이 머지 리퀘스트를 생성한 사용자입니다. |
-| `[].blocking_discussions_resolved` | 부울  | 머지 리퀘스트를 병합하기 전에 모든 것이 필요한 경우에만 모든 스레드가 해결되었는지 나타냅니다. |
+| `[].blocking_discussions_resolved` | 부울  | 모든 토론이 해결되고 머지 리퀘스트를 병합하기 전에 필수인 경우에만 모든 토론이 해결되었음을 나타냅니다. |
 | `[].closed_at`                     | 날짜/시간 | 머지 리퀘스트를 닫을 때의 타임스탬프입니다. |
 | `[].closed_by`                     | 객체   | 이 머지 리퀘스트를 닫은 사용자입니다. |
 | `[].created_at`                    | 날짜/시간 | 머지 리퀘스트를 생성할 때의 타임스탬프입니다. |
@@ -449,12 +452,12 @@ GET /projects/:id/merge_requests?my_reaction_emoji=star
 | `[].merge_user`                    | 객체   | 이 머지 리퀘스트를 병합했거나 자동 병합으로 설정했거나 `null`인 사용자입니다. |
 | `[].merge_when_pipeline_succeeds`  | 부울  | 머지 리퀘스트가 자동 병합으로 설정되었는지 나타냅니다. |
 | `[].merged_at`                     | 날짜/시간 | 머지 리퀘스트를 병합할 때의 타임스탬프입니다. |
-| `[].merged_by`                     | 객체   | 이 머지 리퀘스트를 병합했거나 자동 병합으로 설정한 사용자입니다. GitLab 14.7에서 [지원 중단](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/epics/8115)에서 제거될 예정입니다. `merge_user` 대신 사용합니다.  |
+| `[].merged_by`                     | 객체   | 이 머지 리퀘스트를 병합했거나 자동 병합으로 설정한 사용자입니다. GitLab 14.7에서 [지원 종료](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115)에서 제거되도록 예정되어 있습니다. `merge_user` 대신 사용합니다.  |
 | `[].milestone`                     | 객체   | 머지 리퀘스트의 마일스톤입니다. |
 | `[].prepared_at`                   | 날짜/시간 | 머지 리퀘스트를 준비할 때의 타임스탬프입니다. 이 필드는 모든 [준비 단계](#preparation-steps)가 완료된 후 한 번 채워지며, 더 많은 변경 사항이 추가되면 업데이트되지 않습니다. |
 | `[].project_id`                    | 정수  | 머지 리퀘스트가 있는 프로젝트의 ID입니다. 항상 `target_project_id`과 같습니다. |
-| `[].reference`                     | 문자열   | 머지 리퀘스트의 내부 참조입니다. 기본적으로 단축된 형식으로 반환됩니다. GitLab 12.7에서 [지원 중단](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/epics/8115)에서 제거될 예정입니다. `references` 대신 사용합니다.  |
-| `[].references`                    | 객체   | 머지 리퀘스트의 내부 참조입니다. `short`, `relative` 및 `full` 참조를 포함합니다. `references.relative`는 머지 리퀘스트의 그룹 또는 프로젝트에 상대적입니다. 머지 리퀘스트의 프로젝트에서 가져올 때 `relative`와 `short` 형식이 동일합니다. 그룹 또는 프로젝트 간에 요청할 때 `relative`과 `full` 형식이 동일합니다.|
+| `[].reference`                     | 문자열   | 머지 리퀘스트의 내부 참조입니다. 기본적으로 단축된 형식으로 반환됩니다. GitLab 12.7에서 [지원 종료](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115)에서 제거되도록 예정되어 있습니다. `references` 대신 사용합니다.  |
+| `[].references`                    | 객체   | 머지 리퀘스트의 내부 참조입니다. `short`, `relative` 및 `full` 참조를 포함합니다. `references.relative`는 머지 리퀘스트의 그룹 또는 프로젝트에 상대적입니다. 머지 리퀘스트의 프로젝트에서 가져올 때 `relative`와 `short` 형식이 동일합니다. 그룹 또는 프로젝트 간에 요청할 때 `relative`과 `full` 형식이 동일합니다. |
 | `[].reviewers`                     | 배열    | 머지 리퀘스트의 검토자입니다. |
 | `[].sha`                           | 문자열   | 머지 리퀘스트의 Diff 헤드 SHA입니다. |
 | `[].should_remove_source_branch`   | 부울  | 병합 후 머지 리퀘스트의 소스 브랜치를 삭제해야 하는지 나타냅니다. |
@@ -647,6 +650,8 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 | `created_before`            | 날짜/시간          | 아니요       | 주어진 날짜 및 시간 이전에 생성된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `deployed_after`            | 날짜/시간          | 아니요       | 주어진 날짜 및 시간 이후에 배포된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `deployed_before`           | 날짜/시간          | 아니요       | 주어진 날짜 및 시간 이전에 배포된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
+| `merged_after`             | 날짜/시간      | 아니요       | 지정된 날짜 및 시간 이후에 병합된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
+| `merged_before`            | 날짜/시간      | 아니요       | 지정된 날짜 및 시간 이전에 병합된 머지 리퀘스트를 반환합니다. ISO 8601 형식(`2019-03-15T08:00:00Z`)으로 예상됩니다. |
 | `environment`               | 문자열            | 아니요       | 주어진 환경에 배포된 머지 리퀘스트를 반환합니다. |
 | `in`                        | 문자열            | 아니요       | `search` 속성의 범위를 변경합니다. `title`, `description` 또는 쉼표로 결합한 문자열입니다. 기본값은 `title,description`입니다. |
 | `labels`                  | 문자열             | 아니요       | 쉼표로 구분된 레이블 목록과 일치하는 머지 리퀘스트를 반환합니다. `None`은 레이블이 없는 모든 머지 리퀘스트를 나열합니다. `Any`는 최소 하나 이상의 레이블을 가진 모든 머지 리퀘스트를 나열합니다. 미리 정의된 이름은 대소문자를 구분하지 않습니다. |
@@ -716,7 +721,7 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 | `created_at`                             | 날짜시간 | 머지 리퀘스트를 생성할 때의 타임스탬프입니다. |
 | `description`                            | 문자열   | 머지 리퀘스트의 설명입니다. 캐싱을 위해 HTML로 렌더링된 Markdown이 포함되어 있습니다. |
 | `detailed_merge_status`                  | 문자열   | 세부 병합 상태 정보입니다. 가능한 값의 목록은 [병합 상태](#merge-status)를 참조하세요. |
-| `discussion_locked`                      | 부울  | `true`이면 스레드가 잠겨 있습니다. 프로젝트 멤버만 잠긴 스레드에서 댓글을 추가, 편집 또는 해결할 수 있습니다. |
+| `discussion_locked`                      | 부울  | `true`이면 스레드가 잠겨 있습니다. 프로젝트 멤버만 잠긴 토론에서 댓글을 추가, 편집 또는 해결할 수 있습니다. |
 | `downvotes`                              | 정수  | 머지 리퀘스트의 다운보트 수입니다. |
 | `draft`                                  | 부울  | `true`이면 머지 리퀘스트가 `draft` 상태로 표시됩니다. |
 | `force_remove_source_branch`             | 부울  | `true`이면 프로젝트 설정이 병합 후 소스 브랜치 삭제를 강제합니다. |
@@ -1003,7 +1008,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `diff_refs.base_sha`                                        | 문자열   | 소스 및 대상 브랜치가 분기된 머지 베이스 커밋의 SHA입니다. |
 | `diff_refs.start_sha`                                       | 문자열   | 대상 브랜치 커밋의 SHA입니다. diff의 시작점입니다. 일반적으로 `base_sha`과(와) 동일합니다. |
 | `diff_refs.head_sha`                                        | 문자열   | 소스 브랜치의 헤드 커밋의 SHA입니다. 머지 리퀘스트의 최신 커밋입니다. |
-| `discussion_locked`                                         | 부울  | `true`이면 스레드가 잠겨 있습니다. 프로젝트 멤버만 잠긴 스레드에서 댓글을 추가, 편집 또는 해결할 수 있습니다. |
+| `discussion_locked`                                         | 부울  | `true`이면 스레드가 잠겨 있습니다. 프로젝트 멤버만 잠긴 토론에서 댓글을 추가, 편집 또는 해결할 수 있습니다. |
 | `diverged_commits_count`                                    | 정수  | 설정되면 소스 브랜치가 대상 브랜치보다 뒤에 있는 커밋 수를 포함합니다. |
 | `downvotes`                                                 | 정수  | 머지 리퀘스트의 다운보트 수입니다. |
 | `draft`                                                     | 부울  | `true`이면 머지 리퀘스트가 `draft` 상태로 표시됩니다. |
@@ -1081,7 +1086,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `merge_user[]`                                              | 객체   | 이 머지 리퀘스트를 병합한 사용자, 자동 병합으로 설정한 사용자, 또는 `null`입니다. |
 | `merge_when_pipeline_succeeds`                              | 부울  | `true`이면 머지 리퀘스트가 자동 병합으로 설정됩니다. |
 | `merged_at`                                                 | 날짜시간 | 머지 리퀘스트를 병합할 때의 타임스탬프입니다. |
-| `merged_by[]`                                               | 객체   | 이 머지 리퀘스트를 병합했거나 자동 병합으로 설정한 사용자입니다. GitLab 14.7에서 [지원 중단](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/epics/8115)에서 제거될 예정입니다. `merge_user` 대신 사용합니다.  |
+| `merged_by[]`                                               | 객체   | 이 머지 리퀘스트를 병합했거나 자동 병합으로 설정한 사용자입니다. GitLab 14.7에서 [지원 종료](https://gitlab.com/gitlab-org/gitlab/-/issues/350534)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115)에서 제거되도록 예정되어 있습니다. `merge_user` 대신 사용합니다.  |
 | `milestone[]`                                               | 객체   | 머지 리퀘스트에 할당된 마일스톤에 대한 정보가 포함된 객체입니다. |
 | `milestone.created_at`                                      | 날짜시간 | 마일스톤을 생성할 때의 타임스탬프입니다. |
 | `milestone.description`                                     | 문자열   | 마일스톤의 설명 텍스트입니다. `null`이면 마일스톤에 설명이 없습니다. |
@@ -1100,7 +1105,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 | `prepared_at`                                               | 날짜시간 | 머지 리퀘스트를 준비할 때의 타임스탬프입니다. 이 필드는 모든 [준비 단계](#preparation-steps)가 완료된 후 한 번 채워지며, 더 많은 변경 사항이 추가되면 업데이트되지 않습니다. |
 | `project_id`                                                | 정수  | 머지 리퀘스트를 포함하는 프로젝트의 ID입니다. |
 | `rebase_in_progress`                                        | 부울  | `true`이 참일 경우, Sidekiq이 이 브랜치에서 리베이스 작업을 실행 중입니다. |
-| `reference`                                                 | 문자열   | 지원 중단됨. `references` 대신 사용합니다. GitLab 12.7에서 [지원 중단](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/epics/8115)에서 제거될 예정입니다. `references` 대신 사용합니다.  |
+| `reference`                                                 | 문자열   | 지원 중단됨. `references` 대신 사용합니다. GitLab 12.7에서 [지원 종료](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)되었으며, [API 버전 5](https://gitlab.com/groups/gitlab-org/-/work_items/8115)에서 제거되도록 예정되어 있습니다. `references` 대신 사용합니다.  |
 | `references[]`                                              | 객체   | 머지 리퀘스트의 모든 내부 참조가 포함된 객체입니다. |
 | `references.full`                                           | 문자열   | `gitlab-org/gitlab!123`과 같은 전체 프로젝트 경로를 포함한 머지 리퀘스트에 대한 완전한 참조입니다. 그룹 또는 프로젝트 간에 요청할 때 `references.relative`와 동일합니다. |
 | `references.relative`                                       | 문자열   | 특정 프로젝트 또는 그룹에 상대적인 참조: 현재 프로젝트의 머지 리퀘스트의 경우 `!123`, 같은 그룹의 다른 프로젝트의 경우 `other-project!123`. |
@@ -2173,7 +2178,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/changes
 | `id`                | 정수 또는 문자열 | 예      | 프로젝트의 ID 또는 [URL로 인코딩된 경로](rest/_index.md#namespaced-paths)입니다. |
 | `merge_request_iid` | 정수           | 예      | 머지 리퀘스트의 내부 ID입니다. |
 | `access_raw_diffs`  | 부울           | 아니요       | Gitaly를 통해 변경사항 diffs를 검색합니다. |
-| `unidiff`           | 부울           | 아니요       | 변경사항 diffs를 [통합 diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) 형식으로 표시합니다. 기본값은 거짓입니다. [GitLab 16.5에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610). |
+| `unidiff`           | 부울           | 아니요       | 변경사항 diffs를 [통합 diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) 형식으로 표시합니다. 기본값은 거짓입니다. |
 
 변경사항과 연결된 diffs는 API 또는 UI를 통해 반환된 다른 diffs와 동일한 크기 제한이 적용됩니다. 이러한 제한이 결과에 영향을 미칠 때, `overflow` 필드는 `true` 값을 포함합니다. `access_raw_diffs` 매개변수를 추가하여 이러한 제한 없이 diff 데이터를 검색합니다. 이는 데이터베이스가 아닌 Gitaly에서 직접 diffs에 액세스합니다. 이 방법은 일반적으로 더 느리고 더 많은 리소스를 사용하지만, 데이터베이스 기반 diffs에 적용된 크기 제한의 영향을 받지 않습니다. Gitaly에 내재된 제한이 여전히 적용됩니다.
 
@@ -2290,9 +2295,6 @@ GET /projects/:id/merge_requests/:merge_request_iid/changes
 
 {{< history >}}
 
-- `generated_file` [도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) GitLab 16.9 [플래그 사용](../administration/feature_flags/_index.md) `collapse_generated_diff_files`. 기본적으로 비활성화됨.
-- GitLab 16.10에서 [GitLab.com 및 GitLab Self-Managed에서 활성화됨](https://gitlab.com/gitlab-org/gitlab/-/issues/432670).
-- `generated_file` GitLab 16.11에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478). 기능 플래그 `collapse_generated_diff_files` 제거됨.
 - `collapsed` 및 `too_large` 응답 속성 [GitLab 18.4에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633).
 
 {{< /history >}}
@@ -2311,7 +2313,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/diffs
 | `merge_request_iid` | 정수           | 예      | 머지 리퀘스트의 내부 ID입니다. |
 | `page`              | 정수           | 아니요       | 반환할 결과의 페이지입니다. 기본값은 1입니다. |
 | `per_page`          | 정수           | 아니요       | 페이지당 결과 수입니다. 기본값은 20입니다. |
-| `unidiff`           | 부울           | 아니요       | diffs를 [통합 diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) 형식으로 표시합니다. 기본값은 거짓입니다. [GitLab 16.5에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610). |
+| `unidiff`           | 부울           | 아니요       | diffs를 [통합 diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) 형식으로 표시합니다. 기본값은 거짓입니다. |
 
 성공하면 [`200 OK`](rest/troubleshooting.md#status-codes)와 다음 응답 속성을 반환합니다:
 
@@ -2700,7 +2702,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `assignee_id`              | 정수           | 아니요       | 머지 리퀘스트를 할당할 사용자의 ID입니다. `0`로 설정하거나 모든 담당자를 할당 해제하려면 빈 값을 제공하세요. |
 | `assignee_ids`             | 정수 배열     | 아니요       | 머지 리퀘스트를 할당할 사용자의 ID입니다. `0`로 설정하거나 모든 담당자를 할당 해제하려면 빈 값을 제공하세요. |
 | `description`              | 문자열            | 아니요       | 머지 리퀘스트의 설명입니다. 1,048,576자로 제한됩니다. |
-| `discussion_locked`        | 부울           | 아니요       | 머지 리퀘스트의 토론이 잠겨 있는지 여부를 나타내는 플래그입니다. 잠긴 토론에는 프로젝트 멤버만 댓글을 추가, 편집 또는 해결할 수 있습니다. |
+| `discussion_locked`        | 부울           | 아니요       | 머지 리퀘스트의 토론이 잠겨 있는지 여부를 나타내는 플래그입니다. 프로젝트 멤버만 잠긴 토론에 댓글을 추가, 편집 또는 해결할 수 있습니다. |
 | `labels`                   | 문자열            | 아니요       | 머지 리퀘스트에 대한 쉼표로 구분된 레이블 이름입니다. 모든 레이블을 할당 해제하려면 빈 문자열로 설정합니다. 레이블이 아직 없으면, 새 프로젝트 레이블을 생성하고 머지 리퀘스트에 할당합니다. |
 | `merge_after`              | 문자열            | 아니요       | 머지 리퀘스트를 병합할 수 있는 날짜입니다. GitLab 17.8에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)되었습니다. |
 | `milestone_id`             | 정수           | 아니요       | 머지 리퀘스트에 할당할 마일스톤의 전역 ID입니다. `0`로 설정하거나 빈 값을 제공하여 마일스톤을 할당 해제합니다. `milestone`과 상호 배타적입니다. |
@@ -2711,7 +2713,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `squash`                   | 부울           | 아니요       | `true`이면 머지 시 모든 커밋을 단일 커밋으로 스쿼시합니다. 제공되지 않으면, [프로젝트의 스쿼시 옵션 설정](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)으로 기본 설정됩니다. 프로젝트가 **요구** 또는 **허용하지 않음**으로 스쿼싱을 설정하면 병합 시간에 해당 설정이 우선합니다. |
 | `state_event`              | 문자열            | 아니요       | 새 상태(종료/다시 열기) |
 | `target_branch`            | 문자열            | 아니요       | 대상 브랜치입니다. |
-| `title`                    | 문자열            | 아니요       | 머지 리퀘스트 제목입니다. |
+| `title`                    | 문자열            | 아니요       | MR 제목입니다. |
 
 최소한 하나의 필수가 아닌 속성을 포함해야 합니다.
 
@@ -2879,7 +2881,15 @@ curl --request DELETE \
 
 ## 머지 리퀘스트 병합 {#merge-a-merge-request}
 
-이 API를 사용하여 머지 리퀘스트로 제출된 변경 사항을 수락하고 병합합니다.
+{{< history >}}
+
+- `auto_merge` 요청을 [머지 트레인](../ci/pipelines/merge_trains.md)이 활성화된 프로젝트의 머지 트레인으로 라우팅하는 것이 GitLab 19.1에서 [변경](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237922)되었으며, `fix_merge_api_train_bypass`라는 이름의 [기능 플래그](../administration/feature_flags/_index.md)를 사용합니다. 기본적으로 비활성화됨. 머지 리퀘스트가 직접 병합되는 대신 머지 트레인에 추가됩니다.
+- 기능 플래그 `fix_merge_api_train_bypass`이 GitLab 19.1에서 제거되었습니다.
+- 머지 리퀘스트 API에서 커밋 `sha`을 요구하는 설정이 GitLab 19.2에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421)되었습니다.
+
+{{< /history >}}
+
+머지 리퀘스트에서 제출된 변경 사항을 수락하고 병합합니다.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/merge
@@ -2891,10 +2901,10 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 |--------------------------------|-------------------|----------|-------------|
 | `id`                           | 정수 또는 문자열 | 예      | 프로젝트의 ID 또는 [URL로 인코딩된 경로](rest/_index.md#namespaced-paths)입니다. |
 | `merge_request_iid`            | 정수           | 예      | 머지 리퀘스트의 내부 ID입니다. |
-| `auto_merge`                   | 부울           | 아니요       | `true`이면 파이프라인이 성공하면 머지 리퀘스트가 병합됩니다. |
+| `auto_merge`                   | 부울           | 아니요       | `true`이면 검사가 통과할 때 머지 리퀘스트가 병합됩니다. |
 | `merge_commit_message`         | 문자열            | 아니요       | 사용자 지정 병합 커밋 메시지입니다. |
 | `merge_when_pipeline_succeeds` | 부울           | 아니요       | [GitLab 17.11에서 더 이상 사용되지 않음](https://gitlab.com/gitlab-org/gitlab/-/issues/521291) `auto_merge` 대신 사용합니다. |
-| `sha`                          | 문자열            | 아니요       | 표시된 경우 이 SHA는 소스 브랜치의 HEAD와 일치해야 합니다. 검토된 커밋만 병합되도록 보장하는 데 사용합니다. |
+| `sha`                          | 문자열            | 조건부 | 표시된 경우 이 SHA는 소스 브랜치의 HEAD와 일치해야 합니다. 검토된 커밋만 병합되도록 보장하는 데 사용합니다. [머지 리퀘스트 API에서 커밋 SHA 요구](../user/group/manage.md#require-a-commit-sha-on-the-merge-requests-api) 설정이 그룹 또는 인스턴스에 대해 활성화된 경우 필수입니다. |
 | `should_remove_source_branch`  | 부울           | 아니요       | `true`이면 소스 브랜치를 제거합니다. |
 | `squash_commit_message`        | 문자열            | 아니요       | 사용자 지정 스쿼시 커밋 메시지입니다. |
 | `squash`                       | 부울           | 아니요       | `true`이면 머지 시 모든 커밋을 단일 커밋으로 스쿼시합니다. |
@@ -2903,6 +2913,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 
 | HTTP 상태 | 메시지                                    | 이유 |
 |-------------|--------------------------------------------|--------|
+| `400`       | `SHA must be provided when merging`        | [머지 리퀘스트 API에서 커밋 SHA 요구](../user/group/manage.md#require-a-commit-sha-on-the-merge-requests-api)가 활성화되어 있지만 `sha` 매개변수가 제공되지 않았습니다. |
 | `401`       | `401 Unauthorized`                         | 이 사용자는 이 머지 리퀘스트를 수락할 권한이 없습니다. |
 | `405`       | `405 Method Not Allowed`                   | 머지 리퀘스트는 병합할 수 없습니다. |
 | `409`       | `SHA does not match HEAD of source branch` | 제공된 `sha` 매개변수가 소스의 HEAD와 일치하지 않습니다. |
@@ -3088,6 +3099,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 ```
 
 ## 파이프라인이 성공하면 병합 취소 {#cancel-merge-when-pipeline-succeeds}
+
+머지 리퀘스트의 활성 자동 병합을 취소합니다. 머지 리퀘스트가 [머지 트레인](../ci/pipelines/merge_trains.md)에 있으면 트레인에서도 제거됩니다.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
@@ -4085,7 +4098,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 | `id`                | 문자열  | 예      | 프로젝트의 ID입니다. |
 | `merge_request_iid` | 정수 | 예      | 머지 리퀘스트의 내부 ID입니다. |
 | `version_id`        | 정수 | 예      | 머지 리퀘스트 diff 버전의 ID입니다. |
-| `unidiff`           | 부울 | 아니요       | diffs를 [통합 diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) 형식으로 표시합니다. 기본값은 거짓입니다. [GitLab 16.5에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610). |
+| `unidiff`           | 부울 | 아니요       | diffs를 [통합 diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) 형식으로 표시합니다. 기본값은 거짓입니다. |
 
 성공하면 [`200 OK`](rest/troubleshooting.md#status-codes)와 다음 응답 속성을 반환합니다:
 

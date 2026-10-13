@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, feature_category: :durability_metrics do
+RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, feature_category: :durability_metrics do
   let(:subscriber) { described_class.new }
   let(:counter) { double(:counter) }
   let(:transmitted_bytes_counter) { double(:counter) }

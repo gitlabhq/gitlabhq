@@ -1,6 +1,6 @@
 <script>
 import { uniqueId } from 'lodash-es';
-import { GlDisclosureDropdown, GlTooltip, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltip, GlModal, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -11,9 +11,6 @@ export default {
     GlTooltip,
     GlModal,
     GlSprintf,
-  },
-  directives: {
-    GlModal: GlModalDirective,
   },
   inject: ['deleteMutation'],
   props: {

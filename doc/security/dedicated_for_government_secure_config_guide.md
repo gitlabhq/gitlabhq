@@ -13,7 +13,7 @@ title: GitLab Dedicated for Government secure configuration guide
 {{< /details >}}
 
 FedRAMP requires Cloud Service Providers to create, maintain, and publish a
-[secure configuration guide](https://www.fedramp.gov/docs/rev5/balance/secure-configuration-guide/).
+[secure configuration guide](https://www.fedramp.gov/2026/reference/secure-configuration-guide/).
 The mandate includes both required and recommended criteria. Use this page to harden your
 Dedicated for Government instance and align with the latest FedRAMP guidance.
 

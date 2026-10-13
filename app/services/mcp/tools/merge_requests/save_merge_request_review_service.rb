@@ -61,10 +61,10 @@ module Mcp
               },
               body: {
                 type: 'string',
-                description: 'Note text (create_note, reply_discussion, create_diff_note; max 1,048,576 ' \
-                  'characters). Lines that begin with "/" are rejected to avoid triggering quick actions ' \
-                  'such as /merge.',
-                maxLength: 1_048_576
+                description: 'Note text (create_note, reply_discussion, create_diff_note; max ' \
+                  "#{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters). Lines that begin with " \
+                  '"/" are rejected to avoid triggering quick actions such as /merge.',
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               discussion_id: {
                 type: 'string',
@@ -222,16 +222,14 @@ module Mcp
 
           check_approval_sha!(merge_request, arguments[:sha])
 
-          ::MergeRequests::ApprovalService
-            .new(project: merge_request.project, current_user: current_user)
+          result = ::MergeRequests::ApprovalService
+            .new(project: merge_request.project, current_user: current_user,
+              params: { sha: arguments[:sha] })
             .execute(merge_request)
 
-          # ApprovalService returns nil on every failure and can report success on a raced
-          # save, so the merge request state is the only trustworthy outcome signal.
-          return method_response(merge_request, 'approve', 'approved') if
-            merge_request.reset.approved_by?(current_user)
+          return approve_failure_response(merge_request) unless result.success?
 
-          ::Mcp::Tools::Base::Response.error(approve_failure_message(merge_request))
+          method_response(merge_request.reset, 'approve', 'approved')
         end
 
         def perform_unapprove(arguments)
@@ -240,7 +238,10 @@ module Mcp
           # RemoveApprovalService performs no permission check; mirror the REST endpoint,
           # which authorizes :approve_merge_request before calling it.
           unless current_user.can?(:approve_merge_request, merge_request)
-            return ::Mcp::Tools::Base::Response.error('You are not allowed to unapprove this merge request.')
+            return ::Mcp::Tools::Base::Response.error(
+              'You are not allowed to unapprove this merge request.',
+              reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
           end
 
           unless merge_request.approved_by?(current_user)
@@ -263,20 +264,30 @@ module Mcp
           raise ArgumentError, "SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}"
         end
 
-        def approve_failure_message(merge_request)
-          return 'Cannot approve: the merge request is already merged.' if merge_request.merged?
+        def approve_failure_response(merge_request)
+          if merge_request.merged?
+            return ::Mcp::Tools::Base::Response.error('Cannot approve: the merge request is already merged.')
+          end
 
           unless current_user.can?(:approve_merge_request, merge_request)
-            return 'You are not allowed to approve this merge request.'
+            return ::Mcp::Tools::Base::Response.error(
+              'You are not allowed to approve this merge request.',
+              reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
           end
 
           unless merge_request.eligible_for_approval_by?(current_user)
-            return 'You cannot approve this merge request (for example, the project may not ' \
-              'allow authors or committers to approve).'
+            return ::Mcp::Tools::Base::Response.error(
+              'You cannot approve this merge request (for example, the project may not ' \
+                'allow authors or committers to approve).',
+              reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
           end
 
-          "Approval was rejected by this instance's approval settings (for example a password " \
-            'or SAML re-authentication requirement), which this tool does not support.'
+          ::Mcp::Tools::Base::Response.error(
+            "Approval was rejected by this instance's approval settings (for example a password " \
+              'or SAML re-authentication requirement), which this tool does not support.'
+          )
         end
 
         def unapprove_failure_message(merge_request)
@@ -381,12 +392,11 @@ module Mcp
           ).compact
         end
 
-        # Safety net for raises the pre-validation didn't anticipate: convert them
-        # to error responses so the failure path still reports the created notes.
+        # Converts a raise to an error response so the failure path still reports the created notes.
         def execute_review_step(arguments)
           execute_graphql_tool(arguments)
         rescue ArgumentError => e
-          ::Mcp::Tools::Base::Response.error(e.message)
+          ::Mcp::Tools::Base::Response.error(e.message, reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
         end
 
         def post_summary_note(arguments, resolved)
@@ -416,7 +426,10 @@ module Mcp
           message = "submit_review failed at #{failed_step}: #{error_text}"
           message += " Notes already created (not rolled back): #{created_ids.join(', ')}." if created_ids.any?
 
-          ::Mcp::Tools::Base::Response.error(message, { 'created_notes' => created_notes })
+          ::Mcp::Tools::Base::Response.error(
+            message, { 'created_notes' => created_notes },
+            reason: ::Mcp::Tools::Base::Response.error_reason(failed_result)
+          )
         end
       end
     end

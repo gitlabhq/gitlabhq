@@ -27,6 +27,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
   let(:in_reply_to_id) { nil }
   let(:start_line) { nil }
   let(:end_line) { 23 }
+  let(:original_start_line) { nil }
+  let(:original_end_line) { nil }
   let(:note_body) { 'Hello world' }
   let(:user_data) { { id: 4, login: 'alice' } }
   let(:side) { 'RIGHT' }
@@ -134,6 +136,36 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
             )
           end
         end
+
+        context 'when the diff position is outdated and end_line is nil' do
+          let(:end_line) { nil }
+          let(:original_end_line) { 30 }
+
+          context 'when the diff is an addition' do
+            it 'falls back to original_end_line' do
+              expect(note.diff_position.new_line).to eq(30)
+              expect(note.diff_position.old_line).to be_nil
+            end
+          end
+
+          context 'when the diff is a deletion' do
+            let(:side) { 'LEFT' }
+
+            it 'falls back to original_end_line' do
+              expect(note.diff_position.old_line).to eq(30)
+              expect(note.diff_position.new_line).to be_nil
+            end
+          end
+
+          context 'when original_end_line is also nil' do
+            let(:original_end_line) { nil }
+
+            it 'leaves both line numbers nil' do
+              expect(note.diff_position.new_line).to be_nil
+              expect(note.diff_position.old_line).to be_nil
+            end
+          end
+        end
       end
 
       describe '#github_identifiers' do
@@ -185,6 +217,19 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
             )
 
             expect(note.diff_hunk).to eq("@@ -20,1 +20,1 @@\ncontext not found")
+          end
+
+          it 'generates a default diff_hunk using original_end_line when end_line is nil' do
+            note = described_class.new(
+              diff_hunk: nil,
+              file_path: 'README.md',
+              line: 20,
+              end_line: nil,
+              original_end_line: 30,
+              original_commit_id: 'abc123'
+            )
+
+            expect(note.diff_hunk).to eq("@@ -30,1 +30,1 @@\ncontext not found")
           end
 
           it 'generates a default diff_hunk with line 1 when both end_line and line are nil' do
@@ -308,6 +353,29 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
           end
         end
 
+        context 'when the diff position is outdated and end_line is nil' do
+          let(:start_line) { 426 }
+          let(:end_line) { nil }
+          let(:original_start_line) { 374 }
+          let(:original_end_line) { 375 }
+          let(:note_body) do
+            <<~BODY
+            ```suggestion
+            Hello World
+            ```
+            BODY
+          end
+
+          it 'falls back to the original line numbers' do
+            expect(note.note).to eq <<~BODY
+            ```suggestion:-1+0
+            Hello World
+            ```
+            BODY
+            expect(note.contains_suggestion?).to be(true)
+          end
+        end
+
         describe '#author' do
           it 'includes the user details' do
             expect(note.author).to be_an_instance_of(
@@ -346,6 +414,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
         updated_at: updated_at,
         line: end_line,
         start_line: start_line,
+        original_line: original_end_line,
+        original_start_line: original_start_line,
         in_reply_to_id: in_reply_to_id
       }
     end
@@ -387,6 +457,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
           'updated_at' => updated_at.to_s,
           'end_line' => end_line,
           'start_line' => start_line,
+          'original_end_line' => original_end_line,
+          'original_start_line' => original_start_line,
           'in_reply_to_id' => in_reply_to_id,
           'discussion_id' => 'FIRST_DISCUSSION_ID'
         }

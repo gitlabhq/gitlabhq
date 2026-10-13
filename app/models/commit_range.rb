@@ -99,9 +99,9 @@ class CommitRange
     project_reference = project.to_reference_base(from, full: full)
 
     if project_reference.present?
-      project_reference + self.class.reference_prefix + self.id
+      project_reference + self.class.reference_prefix + id
     else
-      self.id
+      id
     end
   end
 

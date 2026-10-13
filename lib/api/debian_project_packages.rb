@@ -38,7 +38,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
 
       namespace ':id/packages/debian' do
@@ -95,7 +95,7 @@ module API
             optional :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex
             given :distribution do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
+              requires :file_name, type: String, desc: 'Name of the package file.', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
           route_setting :authorization, permissions: :upload_debian_package, boundary_type: :project
@@ -148,7 +148,7 @@ module API
             optional :distribution, type: String, desc: 'The Debian Codename or Suite', regexp: Gitlab::Regex.debian_distribution_regex
             given :distribution do
               requires :component, type: String, desc: 'The Debian Component', regexp: Gitlab::Regex.debian_component_regex
-              requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
+              requires :file_name, type: String, desc: 'Name of the package file.', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
           route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization

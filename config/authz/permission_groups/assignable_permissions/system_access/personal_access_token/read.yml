@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - read_personal_access_token
+assignable_when:
+  - condition: saas
+    boundaries:
+      - group

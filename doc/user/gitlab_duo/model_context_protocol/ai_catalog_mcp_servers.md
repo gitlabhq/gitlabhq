@@ -75,9 +75,8 @@ On GitLab Self-Managed and GitLab Dedicated, instance administrators can add an 
 
 To add an MCP server to the AI Catalog:
 
-1. In the left sidebar, select **Search or go to** and find your group.
-1. Select **Build** > **AI Catalog**.
-1. Select the **MCP** tab.
+1. In the top bar, select **Search or go to** > **Explore**.
+1. In the left sidebar, select **AI Catalog**, then select the **MCP** tab.
 1. Select **New MCP server**.
 1. Complete the fields:
    - **Name**: A descriptive name for the MCP server (for example, `Jira`).
@@ -114,9 +113,8 @@ On GitLab Self-Managed and GitLab Dedicated, instance administrators can edit an
 
 To edit an MCP server:
 
-1. In the left sidebar, select **Search or go to** and find your group.
-1. Select **Build** > **AI Catalog**.
-1. Select the **MCP** tab.
+1. In the top bar, select **Search or go to** > **Explore**.
+1. In the left sidebar, select **AI Catalog**, then select the **MCP** tab.
 1. Select the MCP server you want to edit.
 1. Select **Edit**.
 1. Update the fields as needed.
@@ -126,14 +124,16 @@ To edit an MCP server:
 
 To connect an MCP server to a custom agent:
 
-1. In the left sidebar, select **Search or go to** and find your group.
-1. Select **Build** > **AI Catalog**.
-1. Select the **Agents** tab.
-1. Select the agent you want to configure, then select **Edit**.
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **AI** > **Agents**.
+1. Select the agent you want to configure.
+1. In the upper-right corner, select **Edit**.
 1. In the **MCP servers** section, select the MCP servers to associate with this agent.
 1. Select **Save changes**.
 
 The agent can now use all tools provided by the associated MCP server during execution.
+For an OAuth-enabled MCP server, the agent can use the server only after you
+[authenticate with it](#authenticate-with-an-mcp-server).
 
 You cannot restrict an agent from using specific MCP server tools.
 
@@ -141,14 +141,13 @@ You cannot restrict an agent from using specific MCP server tools.
 
 To view which MCP servers are connected to a custom agent:
 
-1. In the left sidebar, select **Search or go to** and find your group.
-1. Select **Build** > **AI Catalog**.
-1. Select the **Agents** tab.
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **AI** > **Agents**.
 1. Select the agent.
 
 The agent detail page lists all connected MCP servers.
 
-## Disconnect an MCP server from custom agents
+## Disconnect from an MCP server
 
 {{< history >}}
 
@@ -156,17 +155,21 @@ The agent detail page lists all connected MCP servers.
 
 {{< /history >}}
 
-You can disconnect an MCP server from all custom agents that it has a connection
-to. You cannot disconnect an MCP server from a specific agent.
+You can disconnect from an OAuth-enabled MCP server that you
+[authenticated with](#authenticate-with-an-mcp-server). When you disconnect,
+your access token for the server is revoked. It does not remove the MCP server from any
+custom agents. To stop an agent from using an MCP server, [edit the agent](#connect-an-mcp-server-to-a-custom-agent)
+and remove the server from the **MCP servers** section.
 
 After disconnecting, existing custom agent chats can still reference content
 already retrieved from the MCP server. However, agents are no longer able to
-fetch new content or perform any actions.
+fetch new content or perform any actions with the server until you connect again.
 
-1. In the left sidebar, select **Search or go to** and find your group.
-1. Select **Build** > **AI Catalog**.
-1. Select the **MCP** tab.
-1. For the MCP server you want to disconnect, select **Disconnect**.
+To disconnect from an MCP server:
+
+1. In the top bar, select **Search or go to** and find your group or project.
+1. Select **AI** > **MCP servers**.
+1. For the MCP server you want to disconnect from, select **Disconnect**.
 1. In the confirmation dialog, select **Disconnect**.
 
 ## View MCP servers for a namespace
@@ -181,7 +184,7 @@ This page is available at both the group and project level:
 
 To view MCP servers at the group or project level:
 
-1. In the left sidebar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **AI** > **MCP servers**.
 
 For OAuth-enabled servers that you have not yet authenticated with, an option to **Connect** is displayed.
@@ -190,7 +193,7 @@ For OAuth-enabled servers that you have not yet authenticated with, an option to
 
 To authenticate with an OAuth-enabled MCP server:
 
-1. In the left sidebar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **AI** > **MCP servers**.
 1. Find the MCP server and select **Connect**.
 1. Review and approve the authorization request on the MCP server's authorization page.

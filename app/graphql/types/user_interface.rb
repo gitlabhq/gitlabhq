@@ -114,6 +114,11 @@ module Types
     field :events,
       description: 'Activity events visible to the current user, most recent first.',
       resolver: Resolvers::Users::EventsResolver
+    field :contribution_calendar,
+      description: 'Contribution calendar of the user: the profile page activity heatmap for the past year. ' \
+        'Null when the current user cannot read the profile.',
+      resolver: Resolvers::Users::ContributionCalendarResolver,
+      experiment: { milestone: '19.5' }
     field :namespace,
       type: Types::NamespaceType,
       null: true,

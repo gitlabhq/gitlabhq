@@ -26,10 +26,11 @@ module Authn
 
         delegate :encrypted_field, to: :strategy
 
+        # With every `db_key_base` key, to find tokens encrypted before a rotation
         def tokens
           @tokens ||= [
-            strategy.encode(token), # encrypted_value
-            Gitlab::CryptoHelper.aes256_gcm_encrypt(token) # token_encrypted_with_static_iv
+            *strategy.encode_candidates(token), # encrypted_value
+            *Gitlab::CryptoHelper.aes256_gcm_encrypt_candidates(token) # token_encrypted_with_static_iv
           ]
         end
 

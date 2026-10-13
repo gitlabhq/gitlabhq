@@ -5,7 +5,7 @@ import { updateHash } from '~/blob/state';
 import {
   HIGHLIGHT_TOP_CLASS_NAME,
   HIGHLIGHT_BOTTOM_CLASS_NAME,
-} from '~/vue_shared/components/blob_viewers/constants';
+} from '~/blob/components/blob_viewers/constants';
 
 // LineHighlighter
 //

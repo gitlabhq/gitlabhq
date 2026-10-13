@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import NotificationsDropdown from './components/notifications_dropdown.vue';
 import NotificationEmailListboxInput from './components/notification_email_listbox_input.vue';
 

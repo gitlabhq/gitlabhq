@@ -46,8 +46,7 @@ module LetsEncryptHelpers
 
   def acme_authorization_double(challenge = acme_challenge_double)
     authorization = instance_double('Acme::Client::Resources::Authorization')
-    allow(authorization).to receive(:http).and_return(challenge)
-    allow(authorization).to receive(:challenges).and_return([challenge])
+    allow(authorization).to receive_messages(http: challenge, challenges: [challenge])
     authorization
   end
 

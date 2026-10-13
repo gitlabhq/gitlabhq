@@ -28,7 +28,7 @@ GitLab monitors its own internal service metrics, and makes them available at th
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
 the metrics, the client IP address must be [explicitly allowed](../ip_allowlist.md).
 
-These metrics are enabled and collected for [Linux package](https://docs.gitlab.com/omnibus/)
+These metrics are enabled and collected for Linux package
 and Helm chart installations. For self-compiled installations, these metrics must be enabled
 manually and collected by a Prometheus server.
 
@@ -131,6 +131,7 @@ The following metrics are available:
 | `gitlab_openbao_request_errors_total`                                          | Counter   |  19.4 | `operation`, `error_type`                                               | Failed HTTP calls from Rails to OpenBao, by fault type. Premium and Ultimate only. |
 | `gitlab_openbao_requests_total`                                                | Counter   |  19.4 | `operation`, `method`, `outcome`                                        | Total number of HTTP calls from Rails to OpenBao. Premium and Ultimate only. |
 | `gitlab_page_out_of_bounds`                                                    | Counter   |  12.8 | `controller`, `action`, `bot`                                           | Counter for the PageLimiter pagination limit being hit |
+| `gitlab_plan_tier_lookups_total`                                               | Counter   |  19.5 | `subject`, `result`                                                     | Counts plan tier lookups. `subject` is `user` or `namespace`. `result` is `hit` when the per-request store or Redis answered, and `miss` when the lookup queried the database. A lookup with no ID is not counted. Two lookups in one request reuse the per-request store only when they resolve the same cache key, as a deploy token does when its own namespace is the one the request addresses, so alert on the `miss` rate rather than the hit ratio |
 | `gitlab_presentable_object_cacheless_render_real_duration_seconds`             | Histogram |  15.3 | `controller`, `action`, `endpoint_id`                                   | Duration of real time spent caching and representing specific web request objects |
 | `gitlab_rack_attack_events_total`                                              | Counter   |  17.6 | `event_type`, `event_name`                                              | Counts the total number of events handled by Rack Attack. |
 | `gitlab_rack_attack_throttle_limit`                                            | Gauge     |  17.6 | `event_name`                                                            | Reports the maximum number of requests that a client can make before Rack Attack throttles them. |
@@ -138,11 +139,11 @@ The following metrics are available:
 | `gitlab_rails_boot_time_seconds`                                               | Gauge     |  14.8 |                                                                         | Time elapsed for Rails primary process to finish startup |
 | `gitlab_rails_queue_duration_seconds`                                          | Histogram |   9.4 |                                                                         | Measures latency between GitLab Workhorse forwarding a request to Rails |
 | `gitlab_rate_limiter_git_basic_auth_ban_events_total`                                 | Counter   |  19.4 | `event`                                                                 | Counts Git and container registry authentication IP ban events. `event` is one of `failure`, `ban`, `blocked`, `already_banned`, or `reset` |
-| `gitlab_ref_cache_operations_total`                                            | Counter   |  19.4 | `operation`, `ref_type`, `status`                                       | Counts ref cache operations by outcome. `operation` is `fetch`, `search`, `include`, `update`, or `rebuild`. `ref_type` is `branch`, `tag`, or `unknown`. Status values depend on the operation. For `update`, `skipped` includes dual-writes queued during a rebuild and later applied by reconciliation. |
+| `gitlab_ref_cache_operations_total`                                            | Counter   |  19.4 | `operation`, `ref_type`, `status`                                       | Counts ref cache operations by outcome. `operation` is `fetch`, `search`, `include`, `update`, or `rebuild`. `ref_type` is `branch`, `tag`, or `unknown`. For `fetch`, `search`, and `include`, `status` is `hit`, `miss_untrusted`, `miss_absent`, or `error`. `miss_untrusted` means a recoverable miss where the set is present but untrusted, or the cache rebuild produces an empty set, which has no Redis key. `miss_absent` means a cold read that produced members. For `update`, `status` is `success`, `skipped`, or `error`. For `rebuild`, `status` is `success`, `skipped_locked`, `skipped_trusted`, or `error`. `update/skipped` includes dual-writes queued during a rebuild and later applied by reconciliation. |
 | `gitlab_ref_cache_trust_events_total`                                          | Counter   |  19.4 | `ref_type`, `event`                                                     | Total ref cache trust lifecycle events. `ref_type` is `branch`, `tag`, or `unknown`. `event` is `granted`, `revoked`, or `grant_skipped`. |
 | `gitlab_ruby_threads_max_expected_threads`                                     | Gauge     |  13.3 |                                                                         | Maximum number of threads expected to be running and performing application work |
 | `gitlab_ruby_threads_running_threads`                                          | Gauge     |  13.3 |                                                                         | Number of running Ruby threads by name |
-| `gitlab_secrets_manager_entitlement_resolutions_total`                         | Counter   |  19.4 | `source`                                                                | Secrets Manager entitlement resolutions that queried Customers Portal; offline and cached resolutions are not counted. `source` is `live` (Customers Portal answered), `lkg_stale` (Customers Portal was unreachable, so GitLab reused its last known good answer), or `fail_closed` (the resolution failed, so GitLab denied access). Premium and Ultimate only. |
+| `gitlab_secrets_manager_entitlement_resolutions_total`                         | Counter   |  19.4 | `source`                                                                | Secrets Manager entitlement resolutions that queried Customers Portal; offline and cached resolutions are not counted. `source` is `live` (Customers Portal answered), `lkg_stale` (Customers Portal was unreachable or answered with an HTTP 5xx error, so GitLab reused its last known good answer), or `fail_closed` (the resolution failed, so GitLab denied access). Premium and Ultimate only. |
 | `gitlab_security_policies_policy_creation_duration_seconds`                    | Histogram |  17.6 |                                                                         | The amount of time to create policy-related configuration |
 | `gitlab_security_policies_policy_deletion_duration_seconds`                    | Histogram |  17.6 |                                                                         | The amount of time to delete policy-related configuration |
 | `gitlab_security_policies_policy_sync_duration_seconds`                        | Histogram |  17.6 |                                                                         | The amount of time to sync policy changes for a policy configuration |
@@ -366,6 +367,7 @@ The Apdex target for these metrics is `APDEX_THRESHOLD_S` in
 | `gitlab_sli_search_zoekt_tasks_error_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task errors |
 | `gitlab_sli_search_zoekt_tasks_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task error-rate measurements. Divide `gitlab_sli_search_zoekt_tasks_error_total` by `gitlab_sli_search_zoekt_tasks_total` to get an error ratio |
 | `gitlab_sli_search_zoekt_tasks_requests_total` | Counter | 18.10 | `zoekt_node`, `task_type` | Total number of Zoekt tasks added to the queue |
+| `gitlab_search_zoekt_task_duration_seconds` | Histogram | 19.5 | `zoekt_node`, `task_type` | Seconds between a Zoekt indexing task's scheduled time and its completion |
 
 ### Audit event streaming SLI metrics
 
@@ -396,6 +398,7 @@ The following metrics can be controlled by feature flags:
 | `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
 | `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
 | `ruby_gvl_wait_seconds_total`                | `enable_sidekiq_gvl_metrics`       |
+| `ruby_gvl_wait_seconds_total`                | `enable_puma_gvl_metrics`          |
 
 ## Praefect metrics
 
@@ -849,6 +852,11 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `gitlab_memwd_violations_handled_total`                  | Counter   | 15.9  |                                                                                           | Total number of times Sidekiq process memory violations were handled |
 | `gitlab_memwd_violations_total`                          | Counter   | 15.9  |                                                                                           | Total number of times a Sidekiq process violated a memory threshold |
 | `gitlab_optimistic_locking_retries`                      | Histogram | 13.10 |                                                                                           | Number of retry attempts to execute optimistic retry lock |
+| `gitlab_pg_ash_consecutive_rotate_failures`              | Gauge     | 19.5  |                                                                                           | Number of [active session history](../performance/_index.md#active-session-history) partition rotations that failed in a row; a successful rotation resets it |
+| `gitlab_pg_ash_insert_errors`                            | Gauge     | 19.4  |                                                                                           | Number of errors `pg_ash` hit while writing [active session history](../performance/_index.md#active-session-history) samples |
+| `gitlab_pg_ash_missed_samples`                           | Gauge     | 19.4  |                                                                                           | Number of [active session history](../performance/_index.md#active-session-history) samples interrupted before they could be recorded |
+| `gitlab_pg_ash_sampler_errors_total`                     | Counter   | 19.4  |                                                                                           | Number of errors raised while taking an [active session history](../performance/_index.md#active-session-history) sample |
+| `gitlab_pg_ash_skipped_samples`                          | Gauge     | 19.4  |                                                                                           | Number of [active session history](../performance/_index.md#active-session-history) samples skipped because sampling was off in the database |
 | `gitlab_transaction_event_receive_email_create_issue_total`                     | Counter   | 12.3  |                                                                                           | Counter for received emails that create an issue |
 | `gitlab_transaction_event_receive_email_create_merge_request_total`             | Counter   | 12.3  |                                                                                           | Counter for received emails that create a merge request |
 | `gitlab_transaction_event_receive_email_create_note_issuable_total`             | Counter   | 12.3  |                                                                                           | Counter for received emails that create a comment on an issue, when the email is not a reply to a notification |
@@ -943,7 +951,7 @@ and the metrics all have these labels:
 | Metric                                              | Type  | Since | Description |
 |:----------------------------------------------------|:------|:------|:------------|
 | `gitlab_database_connection_pool_size`              | Gauge | 13.0  | Total connection pool capacity |
-| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Number of connections that have been created in the pool. <sup>1</sup> |
+| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Number of connections that have been created in the pool.[^idle-connection-count] |
 | `gitlab_database_connection_pool_busy`              | Gauge | 13.0  | Connections in use where the owner is still alive |
 | `gitlab_database_connection_pool_dead`              | Gauge | 13.0  | Connections in use where the owner is not alive |
 | `gitlab_database_connection_pool_idle`              | Gauge | 13.0  | Connections created, but not currently in use |
@@ -951,9 +959,7 @@ and the metrics all have these labels:
 | `gitlab_database_extended_connection_pool_busy`     | Gauge | 18.11 | Connections in use where the owner is still alive, per thread |
 | `gitlab_database_extended_connection_pool_dead`     | Gauge | 18.11 | Connections in use where the owner is not alive, per thread |
 
-**Footnotes**:
-
-1. Because `idle` counts only initialized connections that are not in use, the total of `busy`, `dead`, and `idle` connections can be less than or equal to the total number of connections.
+[^idle-connection-count]: Because `idle` counts only initialized connections that are not in use, the total of `busy`, `dead`, and `idle` connections can be less than or equal to the total number of connections.
 
 In GitLab 18.11 and later, the default connection pool gauges are
 aggregated across Puma worker processes, so a single time series is
@@ -1036,7 +1042,7 @@ Some basic Ruby runtime metrics are available:
 
 These client metrics are meant to complement Redis server metrics.
 These metrics are broken down per
-[Redis instance](https://docs.gitlab.com/omnibus/settings/redis/#running-with-multiple-redis-instances).
+[Redis instance](../../redis/replication_and_failover.md#running-multiple-redis-clusters).
 These metrics all have a `storage` label which indicates the Redis
 instance. For example, `cache` or `shared_state`.
 
@@ -1104,5 +1110,5 @@ metrics can't function correctly.
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.
 For best performance, create this directory in `tmpfs`.
 
-If GitLab is installed using the [Linux package](https://docs.gitlab.com/omnibus/)
+If GitLab is installed using the Linux package
 and `tmpfs` is available, then GitLab configures the metrics directory for you.

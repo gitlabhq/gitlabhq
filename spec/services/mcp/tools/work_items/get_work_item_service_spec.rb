@@ -59,13 +59,17 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               type: 'array',
               items: {
                 type: 'string',
-                enum: %w[notes related_merge_requests]
+                enum: %w[notes discussions related_merge_requests]
               },
               maxItems: 1,
               description: 'Associated data to return with the work item, one facet per call. ' \
                 'notes returns up to 100 notes per call and paginates with the notes_* ' \
                 'parameters; for the newest notes, use notes_last without notes_first or ' \
-                'notes_after. related_merge_requests paginates with the ' \
+                'notes_after. discussions returns threads with their resolvable and resolved ' \
+                'state and the notes of each thread, and paginates forward with the ' \
+                'discussions_* parameters; use it for thread structure or unresolved threads. ' \
+                'An unresolved thread has resolvable true and resolved false. Use notes for a ' \
+                'flat chronological history. related_merge_requests paginates with the ' \
                 'related_merge_requests_* parameters and is empty for group-level work items ' \
                 'such as epics.'
             },
@@ -92,6 +96,25 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
               type: 'string',
               description: 'Cursor for backward pagination of notes. Use pageInfo.startCursor ' \
                 'from a previous response. Applies only when notes is in include.'
+            },
+            discussions_first: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              description: 'Number of discussions to return after the cursor (forward pagination). ' \
+                'Max 100. Applies only when discussions is in include.'
+            },
+            discussions_after: {
+              type: 'string',
+              description: 'Cursor for forward pagination of discussions. Use pageInfo.endCursor ' \
+                'from a previous response. Applies only when discussions is in include.'
+            },
+            discussions_filter: {
+              type: 'string',
+              enum: %w[all_notes only_comments only_activity],
+              description: 'Which discussions to return: all_notes, only_comments to leave out ' \
+                'system notes, or only_activity for system notes only. ' \
+                'Applies only when discussions is in include.'
             },
             related_merge_requests_first: {
               type: 'integer',
@@ -196,6 +219,62 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemService, feature_category: :mcp
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('not both directions')
+      end
+    end
+
+    context 'when paginating discussions' do
+      let_it_be(:first_thread) do
+        create(:discussion_note_on_work_item, noteable: work_item, project: project, note: 'first thread')
+      end
+
+      let_it_be(:first_thread_reply) do
+        create(:discussion_note_on_work_item, noteable: work_item, project: project,
+          note: 'first thread reply', in_reply_to: first_thread)
+      end
+
+      let_it_be(:second_thread) do
+        create(:discussion_note_on_work_item, noteable: work_item, project: project, note: 'second thread')
+      end
+
+      let(:base_arguments) do
+        { project_id: project.id.to_s, work_item_iid: work_item.iid, include: %w[discussions] }
+      end
+
+      def discussions_connection(result)
+        result[:structuredContent]['widgets'].find { |w| w['discussions'] }['discussions']
+      end
+
+      def thread_bodies(connection)
+        connection['nodes'].map { |discussion| discussion['notes']['nodes'].pluck('body') }
+      end
+
+      it 'pages forward one whole thread at a time', :aggregate_failures do
+        first_page = service.execute(
+          request: request, params: { arguments: base_arguments.merge(discussions_first: 1) }
+        )
+
+        connection = discussions_connection(first_page)
+        expect(thread_bodies(connection)).to eq([['first thread', 'first thread reply']])
+        expect(connection['pageInfo']['hasNextPage']).to be(true)
+
+        next_page_arguments = base_arguments.merge(
+          discussions_first: 1, discussions_after: connection['pageInfo']['endCursor']
+        )
+        second_page = service.execute(request: request, params: { arguments: next_page_arguments })
+
+        connection = discussions_connection(second_page)
+        expect(thread_bodies(connection)).to eq([['second thread']])
+        expect(connection['pageInfo']['hasNextPage']).to be(false)
+      end
+
+      it 'rejects an unknown discussions_filter' do
+        result = service.execute(
+          request: request, params: { arguments: base_arguments.merge(discussions_filter: 'everything') }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(::Mcp::Tools::Base::Response.error_reason(result))
+          .to eq(::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
       end
     end
 

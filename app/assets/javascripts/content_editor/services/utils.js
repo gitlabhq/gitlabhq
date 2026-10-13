@@ -68,3 +68,15 @@ export const getColumnHeaderText = (doc, pos) => {
 
   return headerText;
 };
+
+// See lib/banzai/filter/placeholders_post_filter.rb; this carefully matches
+// its behaviour.
+const ENCODED_PLACEHOLDER_REGEX = /%(?:25)?%7B(\w{1,30})%7D/gi;
+
+export const decodePlaceholders = (url) => url?.replace(ENCODED_PLACEHOLDER_REGEX, '%{$1}');
+
+export const parseCanonicalSrc = (element) => {
+  const { canonicalSrc, placeholder } = element.dataset;
+
+  return placeholder === undefined ? canonicalSrc : decodePlaceholders(canonicalSrc);
+};

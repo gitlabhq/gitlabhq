@@ -11,21 +11,17 @@
         "properties": {
           "id": {
             "type": "integer"
-          },
-          "username": {
-            "type": "string"
           }
         },
         "required": [
-          "id",
-          "username"
+          "id"
         ],
         "additionalProperties": false
       }
     },
     "approval_rules": {
       "type": "array",
-      "description": "Approval rules requiring at least one approval, with eligible approvers",
+      "description": "Approval rules for the merge request, with eligible approvers",
       "items": {
         "type": "object",
         "properties": {
@@ -43,7 +39,10 @@
             "type": "string"
           },
           "section": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "approvals_required": {
             "type": "integer"
@@ -55,9 +54,6 @@
               "properties": {
                 "id": {
                   "type": "integer"
-                },
-                "username": {
-                  "type": "string"
                 },
                 "busy": {
                   "type": "boolean"
@@ -92,7 +88,6 @@
               },
               "required": [
                 "id",
-                "username",
                 "busy",
                 "pending_reviews"
               ],

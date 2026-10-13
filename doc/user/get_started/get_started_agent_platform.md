@@ -93,7 +93,7 @@ For more information, see:
 
 ## Step 5: Extend capabilities with integrations
 
-To increase the knowledge of your AI agents, use the Knowledge Graph.
+To increase the knowledge of your AI agents, use GitLab Orbit.
 It creates structured representations of your code repositories and
 helps agents and your team better understand relationships between files,
 functions, and dependencies.
@@ -109,7 +109,7 @@ and data sources.
 
 For more information, see:
 
-- [Knowledge Graph](../project/repository/knowledge_graph/_index.md).
+- [GitLab Orbit](https://docs.gitlab.com/orbit/).
 - [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md).
 - [MCP server](../model_context_protocol/mcp_server.md).
 

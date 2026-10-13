@@ -1,0 +1,10 @@
+---
+name: sort_membership_projects_without_index
+description: Sort membership project listings by name, path, updated_at or last_activity_at with an expression instead of the column, so PostgreSQL sorts the user's projects instead of scanning projects in index order.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605822
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257561
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630731
+milestone: '19.5'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

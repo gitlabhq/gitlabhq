@@ -151,8 +151,7 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
 
       context "and size is above the limit" do
         before do
-          allow(metadata_entry).to receive(:total_size).and_return(1.megabyte)
-          allow(metadata_entry).to receive(:entries).and_return([])
+          allow(metadata_entry).to receive_messages(total_size: 1.megabyte, entries: [])
         end
 
         include_examples "valid pages deployment"
@@ -166,8 +165,7 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
 
       context "and size is below the limit" do
         before do
-          allow(metadata_entry).to receive(:total_size).and_return(1.megabyte)
-          allow(metadata_entry).to receive(:entries).and_return([])
+          allow(metadata_entry).to receive_messages(total_size: 1.megabyte, entries: [])
         end
 
         include_examples "valid pages deployment"
@@ -175,8 +173,7 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
 
       context "and size is above the limit" do
         before do
-          allow(metadata_entry).to receive(:total_size).and_return(101.megabytes)
-          allow(metadata_entry).to receive(:entries).and_return([])
+          allow(metadata_entry).to receive_messages(total_size: 101.megabytes, entries: [])
         end
 
         include_examples "invalid pages deployment",

@@ -5,7 +5,13 @@ require 'email_spec'
 
 RSpec.describe DeviseMailer, feature_category: :user_management do
   include EmailSpec::Matchers
-  include_context 'gitlab email notification'
+
+  let_it_be_with_reload(:user) { create(:user) }
+
+  let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
+  let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
+  let(:opts) { {} }
 
   shared_examples 'it validates recipients' do
     let(:opts) { { to: ['example@example.com', 'example2@example.com'] } }
@@ -16,12 +22,10 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
   end
 
-  let(:opts) { {} }
-
   describe "#confirmation_instructions" do
-    subject { described_class.confirmation_instructions(user, 'faketoken', opts) }
+    let_it_be_with_reload(:user) { create(:user, created_at: 1.minute.ago) }
 
-    let(:user) { create(:user, created_at: 1.minute.ago) }
+    subject { described_class.confirmation_instructions(user, 'faketoken', opts) }
 
     it_behaves_like 'it validates recipients'
 
@@ -57,7 +61,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     context 'for secondary email' do
-      let(:secondary_email) { create(:email) }
+      let_it_be_with_reload(:secondary_email) { create(:email) }
 
       subject { described_class.confirmation_instructions(secondary_email, 'faketoken', opts) }
 
@@ -97,8 +101,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   describe '#password_change_by_admin' do
     subject { described_class.password_change_by_admin(user, opts) }
 
-    let_it_be_with_reload(:user) { create(:user) }
-
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
@@ -123,8 +125,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
 
   describe '#user_admin_approval' do
     subject { described_class.user_admin_approval(user, opts) }
-
-    let_it_be_with_reload(:user) { create(:user) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
@@ -153,8 +153,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   end
 
   describe '#reset_password_instructions' do
-    let_it_be_with_reload(:user) { create(:user) }
-
     subject do
       described_class.reset_password_instructions(user, 'faketoken', opts)
     end
@@ -203,7 +201,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   describe '#email_changed' do
     let(:content_saas) { 'If you did not initiate this change, please contact your group owner immediately. If you have a Premium or Ultimate tier subscription, you can also contact GitLab support.' }
     let(:content_self_managed) { 'If you did not initiate this change, please contact your administrator immediately.' }
-    let_it_be_with_reload(:user) { create(:user) }
 
     subject { described_class.email_changed(user, opts) }
 
@@ -246,7 +243,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   end
 
   describe '#unlock_instructions' do
-    let_it_be_with_reload(:user) { create(:user) }
     let(:unlock_text) do
       "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in 12 minutes or you can click the link below to unlock now."
     end

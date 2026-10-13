@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlModal, GlSearchBoxByType, GlCollapse, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType, GlCollapse, GlEmptyState } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
@@ -124,14 +124,13 @@ describe('FeatureLibraryModal', () => {
   const createWrapper = ({
     currentPinnedIds = [],
     panelType = 'project',
-    showFeedbackLink = false,
     sections = defaultSections,
     aiSearchAvailable = false,
     resourceId = null,
     supportsPins,
   } = {}) => {
     wrapper = shallowMountExtended(FeatureLibraryModal, {
-      propsData: { sections, currentPinnedIds, showFeedbackLink, supportsPins },
+      propsData: { sections, currentPinnedIds, supportsPins },
       provide: { panelType, aiSearchAvailable, resourceId },
       // Stub GlModal (declared props stay props, everything else surfaces as
       // attrs) and render all its slots so footer/body content is inspectable.
@@ -171,7 +170,6 @@ describe('FeatureLibraryModal', () => {
     const button = findCategoryFilters().wrappers.find((w) => w.text() === label);
     await button.vm.$emit('click');
   };
-  const findFeedbackLink = () => wrapper.findComponent(GlLink);
   const findGeminiButton = () => wrapper.findComponentByTestId('search-with-gemini-button');
   const findGeminiSection = () => wrapper.findByTestId('gemini-results-grid');
   const findHideGeminiButton = () => wrapper.findComponentByTestId('hide-gemini-section');
@@ -293,29 +291,17 @@ describe('FeatureLibraryModal', () => {
       });
 
       describe('footer visibility', () => {
-        describe('when the feedback link is enabled', () => {
-          beforeEach(() => createWrapper({ showFeedbackLink: true }));
-
-          it('shows the footer', () => {
-            expect(findModal().attributes('hide-footer')).toBeUndefined();
-          });
-        });
-
-        describe('when there is no feedback link to show', () => {
-          beforeEach(() => createWrapper({ showFeedbackLink: false }));
-
-          it('hides the footer', () => {
-            expect(findModal().attributes('hide-footer')).toBe('true');
-          });
-        });
-
         describe('when the gemini search button is not available', () => {
           beforeEach(() => {
-            createWrapper({ showFeedbackLink: false, aiSearchAvailable: false, resourceId: 1 });
+            createWrapper({ aiSearchAvailable: false, resourceId: 1 });
           });
 
           it('hides the footer', () => {
             expect(findModal().attributes('hide-footer')).toBe('true');
+          });
+
+          it('removes the modal body bottom padding', () => {
+            expect(findModal().vm.$attrs['body-class']).toContainEqual({ '!gl-pb-0': true });
           });
         });
 
@@ -324,7 +310,7 @@ describe('FeatureLibraryModal', () => {
             mockSearch();
             mockAiSearch();
 
-            createWrapper({ showFeedbackLink: false, aiSearchAvailable: true, resourceId: 1 });
+            createWrapper({ aiSearchAvailable: true, resourceId: 1 });
             await emitSearch('re');
             await waitForPromises();
             await clickGeminiSearch();
@@ -426,23 +412,33 @@ describe('FeatureLibraryModal', () => {
     describe('title/description matching (client-side, instant)', () => {
       beforeEach(() => createWrapper());
 
-      it('hides results and shows a loading indicator while the endpoint is in flight', async () => {
+      it('keeps title/description matches visible without a loading indicator while the endpoint is in flight', async () => {
         mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
         await emitSearch('repo');
 
-        expect(findGrid().exists()).toBe(false);
-        expect(findLoadingIcon().exists()).toBe(true);
+        expect(findGrid().exists()).toBe(true);
+        expect(findItemIds()).toEqual(['repository']);
+        expect(findLoadingIcon().exists()).toBe(false);
       });
 
       it('does not flash the grouped browsing view while the endpoint is in flight', async () => {
+        // 'sprint' matches no title or description, so nothing but the
+        // loading indicator should show while the endpoint is in flight.
         mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
-        await emitSearch('repo');
+        await emitSearch('sprint');
 
         expect(findSectionToggles()).toHaveLength(0);
         expect(findLoadingIcon().exists()).toBe(true);
       });
 
-      it('shows all results together once the endpoint resolves', async () => {
+      it('marks the search box as loading while the endpoint is in flight', async () => {
+        mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+        await emitSearch('repo');
+
+        expect(findSearch().props('isLoading')).toBe(true);
+      });
+
+      it('adds endpoint synonym results to the visible list once the endpoint resolves', async () => {
         mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['boards'] });
         await emitSearch('repo');
         await waitForPromises();
@@ -465,13 +461,16 @@ describe('FeatureLibraryModal', () => {
         expect(findCollapses()).toHaveLength(0);
       });
 
-      it('hides the loading indicator once the endpoint resolves', async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        await emitSearch('repo');
+      it('shows a loading indicator only while nothing is visible, hiding it once the endpoint resolves', async () => {
+        // 'sprint' matches no title or description, so there is nothing to
+        // show until the endpoint returns its synonym matches.
+        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['boards'] });
+        await emitSearch('sprint');
         expect(findLoadingIcon().exists()).toBe(true);
 
         await waitForPromises();
         expect(findLoadingIcon().exists()).toBe(false);
+        expect(findItemIds()).toEqual(['boards']);
       });
 
       // Ranking and sort order are unit-tested in search_spec.js. These two
@@ -584,8 +583,8 @@ describe('FeatureLibraryModal', () => {
         expect(findItemIds()).toEqual(['repository']);
       });
 
-      describe('stale state guard', () => {
-        it('clears previous endpoint results immediately when a new query starts', async () => {
+      describe('previous results while a new query is in flight', () => {
+        it('keeps them visible instead of flashing to a loading state', async () => {
           mockAxios
             .onGet(SEARCH_URL)
             .replyOnce(HTTP_STATUS_OK, { ids: ['boards'] })
@@ -595,12 +594,42 @@ describe('FeatureLibraryModal', () => {
           await emitSearch('sprint');
           await waitForPromises();
 
-          expect(findItemIds()).toContain('boards');
+          expect(findItemIds()).toEqual(['boards']);
 
           await emitSearch('repo');
 
+          expect(findGrid().exists()).toBe(true);
+          expect(findItemIds()).toEqual(['repository', 'boards']);
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+
+        it('replaces kept synonym results once the new response lands', async () => {
+          mockAxios
+            .onGet(SEARCH_URL)
+            .replyOnce(HTTP_STATUS_OK, { ids: ['boards'] })
+            .onGet(SEARCH_URL)
+            .replyOnce(HTTP_STATUS_OK, { ids: ['members'] });
+
+          await emitSearch('sprint');
+          await waitForPromises();
+
+          await emitSearch('iteration');
+          await waitForPromises();
+
+          expect(findItemIds()).toEqual(['members']);
+        });
+
+        it('drops synonym results when the query falls below the minimum length', async () => {
+          mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['boards'] });
+          await emitSearch('sprint');
+          await waitForPromises();
+
+          expect(findItemIds()).toEqual(['boards']);
+
+          await emitSearch('q');
+
+          expect(findItems()).toHaveLength(0);
           expect(findGrid().exists()).toBe(false);
-          expect(findLoadingIcon().exists()).toBe(true);
         });
       });
 
@@ -668,7 +697,7 @@ describe('FeatureLibraryModal', () => {
 
       it('hides the loading indicator when the box is cleared mid-flight', async () => {
         mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
-        await emitSearch('repo');
+        await emitSearch('sprint');
         expect(findLoadingIcon().exists()).toBe(true);
 
         await emitSearch('');
@@ -784,6 +813,14 @@ describe('FeatureLibraryModal', () => {
         await emitSearch('re');
         await waitForPromises();
         expect(findModal().attributes('hide-footer')).toBeUndefined();
+        expect(findModal().vm.$attrs['body-class']).toContainEqual({ '!gl-pb-0': false });
+      });
+
+      it('keeps the button visible while the endpoint is in flight', async () => {
+        mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+        await emitSearch('re');
+
+        expect(findGeminiButton().exists()).toBe(true);
       });
     });
 
@@ -1501,17 +1538,36 @@ describe('FeatureLibraryModal', () => {
         });
       });
 
-      describe('while the search endpoint is in flight', () => {
+      describe('while the search endpoint is in flight with visible title matches', () => {
         beforeEach(async () => {
           mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
           createWrapper();
           await emitSearch('board');
         });
 
-        it('does nothing', () => {
-          pressKey();
+        it('focuses the first visible result', () => {
+          const event = pressKey();
+
+          expect(focusItem).toHaveBeenCalled();
+          expect(focusItem.mock.contexts[0].item.id).toBe('boards');
+          expect(event.defaultPrevented).toBe(true);
+        });
+      });
+
+      describe('while the search endpoint is in flight with nothing visible yet', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+          createWrapper();
+          // 'sprint' matches no title or description, so nothing renders
+          // until the endpoint resolves.
+          await emitSearch('sprint');
+        });
+
+        it('does nothing, leaving the default key behavior intact', () => {
+          const event = pressKey();
 
           expect(focusItem).not.toHaveBeenCalled();
+          expect(event.defaultPrevented).toBe(false);
         });
       });
 
@@ -1586,6 +1642,40 @@ describe('FeatureLibraryModal', () => {
         });
       });
     });
+
+    describe('when a kept result holds focus while a new query is in flight', () => {
+      // 'sprint' has no title/description match, so 'boards' is on screen only
+      // because of the endpoint; the follow-up query keeps it visible until its
+      // own response lands.
+      const focusKeptResult = async (secondResponse) => {
+        mockAxios
+          .onGet(SEARCH_URL)
+          .replyOnce(HTTP_STATUS_OK, { ids: ['boards'] })
+          .onGet(SEARCH_URL)
+          .replyOnce(HTTP_STATUS_OK, secondResponse);
+        createWrapper();
+        await emitSearch('sprint');
+        await waitForPromises();
+
+        await emitSearch('zzz');
+        jest.spyOn(document, 'activeElement', 'get').mockReturnValue(findItems().at(0).element);
+        await waitForPromises();
+      };
+
+      it('returns focus to the search input when the response drops the focused result', async () => {
+        await focusKeptResult({ ids: [] });
+
+        expect(findItems()).toHaveLength(0);
+        expect(focusInput).toHaveBeenCalled();
+      });
+
+      it('leaves focus alone when the response keeps the focused result', async () => {
+        await focusKeptResult({ ids: ['boards'] });
+
+        expect(findItemIds()).toEqual(['boards']);
+        expect(focusInput).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('search status live region', () => {
@@ -1597,12 +1687,20 @@ describe('FeatureLibraryModal', () => {
       expect(findSearchStatusRegion().text()).toBe('');
     });
 
-    it('announces the loading state while the search endpoint is in flight', async () => {
+    it('announces the loading state while the endpoint is in flight with nothing visible', async () => {
+      mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
+      createWrapper();
+      await emitSearch('sprint');
+
+      expect(findSearchStatusRegion().text()).toBe('Searching for features …');
+    });
+
+    it('announces the visible result count while the endpoint is still in flight', async () => {
       mockAxios.onGet(SEARCH_URL).reply(() => new Promise(() => {}));
       createWrapper();
       await emitSearch('board');
 
-      expect(findSearchStatusRegion().text()).toBe('Searching for features …');
+      expect(findSearchStatusRegion().text()).toBe('1 feature found.');
     });
 
     it('announces a singular result count', async () => {
@@ -1792,38 +1890,6 @@ describe('FeatureLibraryModal', () => {
     // search_with_gemini_in_feature_library_modal event definition is EE-only
     // (tiers: premium, ultimate) and lives in ee/config/events/:
     // ee/spec/frontend/super_sidebar/components/feature_library_modal_spec.js
-  });
-
-  describe('feedback link', () => {
-    describe('when showFeedbackLink is true', () => {
-      beforeEach(() => createWrapper({ showFeedbackLink: true }));
-
-      it('renders the feedback link', () => {
-        expect(findFeedbackLink().exists()).toBe(true);
-      });
-
-      it('points the feedback link at the feedback issue', () => {
-        expect(findFeedbackLink().attributes('href')).toBe(
-          'https://gitlab.com/gitlab-org/gitlab/-/work_items/604008',
-        );
-      });
-    });
-
-    describe('when showFeedbackLink is false', () => {
-      beforeEach(() => createWrapper({ showFeedbackLink: false }));
-
-      it('does not render the feedback link', () => {
-        expect(findFeedbackLink().exists()).toBe(false);
-      });
-    });
-
-    describe('by default', () => {
-      beforeEach(() => createWrapper());
-
-      it('does not render the feedback link', () => {
-        expect(findFeedbackLink().exists()).toBe(false);
-      });
-    });
   });
 
   describe('destroy', () => {

@@ -130,10 +130,12 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
 
     describe 'IID pre-allocation' do
       before do
-        allow(subject).to receive(:import_file).and_return(true)
-        allow(subject).to receive(:check_version!).and_return(true)
-        allow(subject).to receive(:restorers).and_return(double(all?: true))
-        allow(subject).to receive(:overwrite_project).and_return(true)
+        allow(subject).to receive_messages(
+          import_file: true,
+          check_version!: true,
+          restorers: double(all?: true),
+          overwrite_project: true
+        )
       end
 
       it 'calls IidPreallocator.from_file with the project and max_iids.json path' do
@@ -197,9 +199,7 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
         before do
           restorers = double(:restorers, all?: true)
 
-          allow(subject).to receive(:import_file).and_return(true)
-          allow(subject).to receive(:check_version!).and_return(true)
-          allow(subject).to receive(:restorers).and_return(restorers)
+          allow(subject).to receive_messages(import_file: true, check_version!: true, restorers: restorers)
           allow(project).to receive(:import_data).and_return(double(data: { 'original_path' => existing_project.path }))
         end
 
@@ -236,9 +236,7 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
         before do
           restorers = double(:restorers, all?: true)
 
-          allow(subject).to receive(:import_file).and_return(true)
-          allow(subject).to receive(:check_version!).and_return(true)
-          allow(subject).to receive(:restorers).and_return(restorers)
+          allow(subject).to receive_messages(import_file: true, check_version!: true, restorers: restorers)
           allow(project).to receive(:import_data).and_return(double(data: { 'original_path' => existing_project.path }))
         end
 

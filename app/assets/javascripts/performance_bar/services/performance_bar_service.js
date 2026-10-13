@@ -1,4 +1,4 @@
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import axios from '~/lib/utils/axios_utils';
 
 export default class PerformanceBarService {

@@ -74,6 +74,8 @@ class IssuePolicy < IssuablePolicy
     prevent :create_note
     prevent :read_note
     prevent :admin_note
+    prevent :update_note
+    prevent :delete_note
     prevent :read_internal_note
     prevent :set_note_created_at
     prevent :mark_note_as_internal
@@ -111,18 +113,19 @@ class IssuePolicy < IssuablePolicy
     prevent :create_note
     prevent :read_note
     prevent :award_emoji
-  end
-
-  rule { locked }.policy do
-    prevent :reopen_issue
-  end
-
-  rule { ~can?(:read_issue) }.policy do
     prevent :read_design
     prevent :create_design
     prevent :update_design
     prevent :destroy_design
     prevent :move_design
+    prevent :read_issuable_metric_image
+    prevent :upload_issuable_metric_image
+    prevent :update_issuable_metric_image
+    prevent :delete_issuable_metric_image
+  end
+
+  rule { locked }.policy do
+    prevent :reopen_issue
   end
 
   rule { ~anonymous & can?(:read_issue) }.policy do

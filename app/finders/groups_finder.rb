@@ -223,12 +223,6 @@ class GroupsFinder < UnionFinder
     !all_available?
   end
 
-  def public_or_internal_only?
-    return false unless visibility_levels.present?
-
-    (visibility_levels - [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL]).empty?
-  end
-
   def by_aimed_for_deletion(groups)
     return groups if params[:aimed_for_deletion].nil?
 

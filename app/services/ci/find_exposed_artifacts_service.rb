@@ -54,7 +54,7 @@ module Ci
       job.artifacts_exposed_paths
         .lazy
         .map { |path| job.artifacts_metadata_entry(path, recursive: true) }
-        .select { |entry| entry.exists? }
+        .select(&:exists?)
         .first(2)
     end
 

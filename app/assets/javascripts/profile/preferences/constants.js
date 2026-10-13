@@ -24,6 +24,4 @@ export const i18n = {
   saveChanges: __('Save changes'),
   defaultSuccess: __('Preferences saved.'),
   defaultError: s__('Preferences|Failed to save preferences.'),
-  integrations: s__('Preferences|Integrations'),
-  integrationsDescription: s__('Preferences|Customize integrations with third party services.'),
 };

@@ -75,10 +75,11 @@ mutation {
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a feature flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8. 
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8.
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/612115) validity checks for external service tokens in GitLab 19.3.
 - Feature flag `secret_detection_partner_token_verification` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/619506) in GitLab 19.4.
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/624216) validity checks to more GitHub token types in GitLab 19.4.
+- [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/628281) validity checks to more OpenAI token types in GitLab 19.5.
 
 {{< /history >}}
 
@@ -100,19 +101,35 @@ Validity checks support the following secret types:
 
 **External service tokens:**
 
+- Adafruit IO keys
 - Anthropic API keys
+- Asana personal access tokens
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
+- EasyPost API tokens
+- EasyPost test API tokens
 - GitHub App installation tokens
 - GitHub fine-grained personal access tokens
 - GitHub OAuth access tokens
 - GitHub personal access tokens (classic)
 - Google Cloud API keys
+- HashiCorp Terraform user and organization API tokens
 - Heroku API keys
+- npm access tokens
+- OpenAI admin API keys
 - OpenAI project API keys
+- OpenAI service account keys
+- OpenAI user API keys
 - Postman API tokens
 - SendGrid API tokens
+- Stripe live publishable keys
+- Stripe live restricted keys
 - Stripe live secret keys
+- Stripe live short secret keys
+- Stripe test publishable keys
+- Stripe test restricted keys
+- Stripe test secret keys
+- Stripe test short secret keys
 
 Validity checks for AWS IAM access key IDs, Google Cloud API keys, and Postman API tokens
 work with any secret detection analyzer.
@@ -132,13 +149,19 @@ The supported URLs are:
 
 - `https://api.anthropic.com/v1/models`
 - `https://api.datadoghq.com/api/v1/validate`
+- `https://api.easypost.com/v2/addresses`
 - `https://api.getpostman.com/me`
 - `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`
 - `https://api.heroku.com/account`
 - `https://api.openai.com/v1/models`
+- `https://api.openai.com/v1/organization/admin_api_keys`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
+- `https://app.asana.com/api/1.0/users/me`
+- `https://app.terraform.io/api/v2/account/details`
+- `https://io.adafruit.com/api/v2/user`
+- `https://registry.npmjs.org/-/whoami`
 - `https://sts.amazonaws.com/`
 - `https://www.googleapis.com/discovery/v1/apis`
 

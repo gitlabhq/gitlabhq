@@ -5,6 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
 import { stubComponent } from 'helpers/stub_component';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerBulkActions from '~/ci/runner/components/runner_bulk_actions.vue';
@@ -25,6 +26,8 @@ describe('RunnerList', () => {
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findHeaders = () => wrapper.findAll('th');
   const findRows = () => wrapper.findAll('[data-testid^="runner-row-"]');
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
   const findCell = ({ row = 0, fieldKey }) =>
     findRows().at(row).find(`[data-testid="td-${fieldKey}"]`);
   const findRunnerBulkActions = () => wrapper.findComponent(RunnerBulkActions);
@@ -178,6 +181,20 @@ describe('RunnerList', () => {
         runner,
         isChecked: true,
       });
+    });
+
+    it('Tracks checking and unchecking a runner', async () => {
+      jest.spyOn(localMutations, 'setRunnerChecked').mockImplementation(() => {});
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const checkbox = findCell({ fieldKey: 'checkbox' }).find('input');
+      await checkbox.setChecked(true);
+      await checkbox.setChecked(false);
+
+      expect(trackEventSpy.mock.calls).toEqual([
+        ['click_select_runner_checkbox', { property: 'checked' }, undefined],
+        ['click_select_runner_checkbox', { property: 'unchecked' }, undefined],
+      ]);
     });
 
     it('Emits a deleted event', () => {

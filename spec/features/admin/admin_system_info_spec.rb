@@ -15,8 +15,7 @@ RSpec.describe 'Admin System information', feature_category: :shared do
 
     context 'when all info is available' do
       before do
-        allow(Vmstat).to receive(:cpu).and_return(cpu)
-        allow(Vmstat).to receive(:memory).and_return(memory)
+        allow(Vmstat).to receive_messages(cpu: cpu, memory: memory)
         visit admin_system_info_path
       end
 
@@ -68,10 +67,8 @@ RSpec.describe 'Admin System information', feature_category: :shared do
       end
 
       before do
-        allow(Vmstat).to receive(:cpu).and_return(cpu)
-        allow(Vmstat).to receive(:memory).and_return(memory)
-        allow(Sys::Filesystem).to receive(:mounts).and_return(mounts)
-        allow(Sys::Filesystem).to receive(:stat).and_return(disk_stat)
+        allow(Vmstat).to receive_messages(cpu: cpu, memory: memory)
+        allow(Sys::Filesystem).to receive_messages(mounts: mounts, stat: disk_stat)
 
         visit admin_system_info_path
       end

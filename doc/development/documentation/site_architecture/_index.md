@@ -17,16 +17,17 @@ page.
 
 The documentation source files are in the same repositories as the product code.
 
-| Project | Path |
-| --- | --- |
-| [GitLab](https://gitlab.com/gitlab-org/gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) |
-| [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) |
-| [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
-| [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
-| [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator) | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
-| [GitLab CLI (glab)](https://gitlab.com/gitlab-org/cli/) | [`/docs/source`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source) |
-| [Artifact Registry](https://gitlab.com/gitlab-org/ops/artifact-registry/) | [`/docs`](https://gitlab.com/gitlab-org/ops/artifact-registry/-/tree/main/docs) |
-| [Orbit](https://gitlab.com/gitlab-org/orbit/knowledge-graph) | [`/docs`](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/tree/main/docs/source) |
+| Project                                                                          | Path |
+|----------------------------------------------------------------------------------|------|
+| [GitLab](https://gitlab.com/gitlab-org/gitlab/)                                  | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) |
+| [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/)                    | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) |
+| [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/)                  | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc) |
+| [Charts](https://gitlab.com/gitlab-org/charts/gitlab)                            | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
+| [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)    | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) |
+| [GitLab CLI (glab)](https://gitlab.com/gitlab-org/cli/)                          | [`/docs/source`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source) |
+| [Artifact Registry](https://gitlab.com/gitlab-org/ops/artifact-registry/)        | [`/docs/user`](https://gitlab.com/gitlab-org/ops/artifact-registry/-/tree/main/docs/user) |
+| [Orbit](https://gitlab.com/gitlab-org/orbit/knowledge-graph)                     | [`/docs/source`](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/tree/main/docs/source) |
+| [Patch release notes](https://gitlab.com/gitlab-org/release/patch-release-blogs) | [`/doc/releases`](https://gitlab.com/gitlab-org/release/patch-release-blogs/-/tree/main/doc/releases) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 

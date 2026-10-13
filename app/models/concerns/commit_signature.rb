@@ -35,8 +35,10 @@ module CommitSignature
     end
   end
 
+  attr_writer :commit
+
   def commit
-    project.commit(commit_sha)
+    @commit ||= project.commit(commit_sha)
   end
 
   def signed_by_user

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'action_controller'
 
 RSpec.describe Gitlab::Graphql::Variables, feature_category: :api do
   using RSpec::Parameterized::TableSyntax

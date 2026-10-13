@@ -8,38 +8,37 @@ title: CI/CD 입력
 
 {{< details >}}
 
-- 계층:  Free, Premium, Ultimate
-- 제공:  GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- 티어:  Free, Premium, Ultimate
+- 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)에서 베타 기능으로 도입되었습니다.
-- [GitLab 17.0](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062)에서 일반적으로 사용 가능하게 되었습니다.
+- GitLab 17.0에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062)합니다.
 
 {{< /history >}}
 
-을 사용하여 CI/CD 구성의 유연성을 높입니다. 입력과 [CI/CD 변수](../variables/_index.md)는 비슷한 방식으로 사용할 수 있지만 다른 장점을 제공합니다:
+CI/CD 입력을 사용하여 CI/CD 구성의 유연성을 높입니다. 입력과 [CI/CD 변수](../variables/_index.md)는 비슷한 방식으로 사용할 수 있지만 다른 장점을 제공합니다.
 
 - 입력은 파이프라인 생성 시 기본 유효성 검사를 포함한 재사용 가능한 템플릿에 입력된 매개변수를 제공합니다. 파이프라인이 실행될 때 특정 값을 정의하려면 CI/CD 변수 대신 입력을 사용합니다.
-- CI/CD 변수는 여러 수준에서 정의할 수 있는 유연한 값을 제공하지만 파이프라인 실행 전체에서 수정할 수 있습니다. 작업의 런타임 환경에 액세스해야 하는 값에는 변수를 사용합니다. [사전 정의된 변수](../variables/predefined_variables.md)를 `rules`와 함께 사용하여 동적 파이프라인 구성을 할 수 있습니다.
+- CI/CD 변수는 여러 수준에서 정의할 수 있는 유연한 값을 제공하지만 파이프라인 실행 전체에서 수정할 수 있습니다. 작업의 런타임 환경에 액세스해야 하는 값에는 변수를 사용합니다. [사전 정의된 변수](../variables/predefined_variables.md)를 [`include:rules`](../yaml/_index.md#includerules)와 함께 사용하여 조건부 포함을 통한 동적 파이프라인 구성을 할 수 있습니다.
 
 ## CI/CD 입력과 변수 비교 {#cicd-inputs-and-variables-comparison}
 
 입력:
 
-- **Purpose**:  CI 구성(템플릿, 구성 요소 또는 `.gitlab-ci.yml`)에서 정의되고 파이프라인이 트리거될 때 값이 할당되어 소비자가 재사용 가능한 CI 구성을 사용자 지정할 수 있도록 합니다.
-- **Modification**:  파이프라인 초기화 시 전달되면 입력 값은 CI/CD 구성에 보간되고 전체 파이프라인 실행 동안 고정되어 있습니다.
-- **범위**:  `.gitlab-ci.yml`에 있는지 또는 `include`되는 파일인지 여부에 관계없이 정의된 파일에서만 사용 가능합니다. `include:inputs`를 사용하여 다른 파일에 명시적으로 전달하거나 `trigger:inputs`를 사용하여 파이프라인에 전달할 수 있습니다.
-- **Validation**:  형식 검사, 정규식 패턴, 사전 정의된 옵션 목록 및 사용자를 위한 유용한 설명을 포함한 강력한 유효성 검사 기능을 제공합니다.
+- **Purpose**: CI/CD 구성(템플릿, 구성 요소 또는 `.gitlab-ci.yml`)에서 정의되고 파이프라인이 트리거될 때 값이 할당되어 소비자가 재사용 가능한 CI 구성을 사용자 지정할 수 있습니다.
+- **Modification**: 파이프라인 초기화 시 전달되면 입력 값은 CI/CD 구성에 보간되고 전체 파이프라인 실행 동안 고정되어 있습니다.
+- **Scope**: `.gitlab-ci.yml` 또는 `include`되는 파일 중 정의된 파일에서만 사용 가능합니다. `include:inputs`를 사용하여 명시적으로 다른 파일에 전달하거나, `trigger:inputs`를 사용하여 파이프라인에 전달할 수 있습니다.
+- **Validation**: 형식 검사, 정규식 패턴, 사전 정의된 옵션 목록 및 사용자를 위한 유용한 설명을 포함한 강력한 유효성 검사 기능을 제공합니다.
 
 CI/CD 변수:
 
-- **Purpose**:  작업 실행 중 및 파이프라인의 다양한 부분에서 환경 변수로 설정할 수 있는 값으로, 작업 간에 데이터를 전달합니다.
-- **Modification**:  dotenv 아티팩트, 조건부 규칙 또는 작업 스크립트에서 직접 파이프라인 실행 중에 동적으로 생성되거나 수정할 수 있습니다.
-- **범위**:  전역적으로(모든 작업에 영향), 작업 수준에서(특정 작업에만 영향) 또는 GitLab UI를 통해 전체 프로젝트 또는 그룹에 대해 정의할 수 있습니다.
-- **Validation**:  최소한의 기본 제공 유효성 검사가 있는 단순 키-값 쌍이지만, 프로젝트 변수에 대해 GitLab UI를 통해 일부 제어를 추가할 수 있습니다.
+- **Purpose**: 작업 실행 중 및 파이프라인의 다양한 부분에서 환경 변수로 설정할 수 있는 값으로, 작업 간에 데이터를 전달합니다.
+- **Modification**: dotenv 아티팩트, 조건부 규칙 또는 작업 스크립트에서 직접 파이프라인 실행 중에 동적으로 생성되거나 수정할 수 있습니다.
+- **Scope**: 전역적으로(모든 작업에 영향), 작업 수준에서(특정 작업에만 영향) 또는 GitLab UI를 통해 전체 프로젝트 또는 그룹에 대해 정의할 수 있습니다.
+- **Validation**: 최소한의 기본 제공 유효성 검사를 포함한 키-값 쌍이지만, GitLab UI를 통해 프로젝트 변수에 일부 제어를 추가할 수 있습니다.
 
 ## `spec:inputs`를 사용하여 입력 매개변수 정의 {#define-input-parameters-with-specinputs}
 
@@ -62,7 +61,7 @@ scan-website:
   script: ./scan-website $[[ inputs.environment ]]
 ```
 
-이 예에서 입력은 `job-stage`과 `environment`입니다.
+이 예에서 입력은 `job-stage`와 `environment`입니다.
 
 `spec` 섹션이 있는 파일에서만 입력 값을 사용할 수 있습니다. `include`로 추가된 다른 파일에서 입력 값을 사용하려면 [명시적으로 포함된 파일에 전달](#for-configuration-added-with-include)합니다.
 
@@ -70,28 +69,28 @@ scan-website:
 
 - `default`이 지정되지 않으면 입력이 필수입니다.
 - 입력은 파이프라인 생성 중에 구성을 가져올 때 평가되고 채워집니다.
-- 입력을 포함하는 문자열은 1 MB 미만이어야 합니다.
-- 입력 내의 문자열은 1 KB 미만이어야 합니다.
+- 입력을 포함하는 문자열은 1MB 미만이어야 합니다.
+- 입력 내의 문자열은 1KB 미만이어야 합니다.
 - 입력은 CI/CD 변수를 사용할 수 있지만 [`include` 키워드와 동일한 변수 제한](../yaml/includes.md#use-variables-with-include)이 있습니다.
 - `spec:inputs`을 정의하는 파일에 작업 정의도 포함되는 경우 헤더 뒤에 YAML 문서 구분자(`---`)를 추가합니다.
 
-그런 후 다음 경우에 입력 값을 설정합니다:
+그런 후 다음 경우에 입력 값을 설정합니다.
 
-- 이 구성 파일을 사용하여 [새 파이프라인 실행](#for-a-pipeline)합니다. `include` 이외의 다른 방법으로 입력을 사용하여 새 파이프라인을 구성할 때 항상 기본값을 설정해야 합니다. 그렇지 않으면 새 파이프라인이 자동으로 트리거될 경우 파이프라인이 시작되지 않을 수 있습니다:
+- 이 구성 파일을 사용하여 [새 파이프라인 실행](#for-a-pipeline)합니다. `include` 이외의 다른 방법으로 입력을 사용하여 새 파이프라인을 구성할 때 항상 기본값을 설정해야 합니다. 그렇지 않으면 새 파이프라인이 자동으로 트리거될 경우 파이프라인이 시작되지 않을 수 있습니다.
   - 머지 리퀘스트 파이프라인
   - 브랜치 파이프라인
   - 태그 파이프라인
-- 파이프라인에 [구성 포함](#for-configuration-added-with-include)합니다. 필수인 모든 입력을 `include:inputs` 섹션에 추가해야 하며, 구성이 포함될 때마다 사용됩니다.
+- 파이프라인에 [구성을 포함](#for-configuration-added-with-include)합니다. 필수인 모든 입력을 `include:inputs` 섹션에 추가해야 하며, 구성이 포함될 때마다 사용됩니다.
 
 ### 입력 구성 {#input-configuration}
 
-입력을 구성하려면 다음을 사용하세요:
+입력을 구성하려면 다음을 사용하세요.
 
 - [`spec:inputs:default`](../yaml/_index.md#specinputsdefault)를 사용하여 지정되지 않을 때 입력의 기본값을 정의합니다. 기본값을 지정하면 입력이 더 이상 필수가 아닙니다.
-- [`spec:inputs:description`](../yaml/_index.md#specinputsdescription)를 사용하여 특정 입력에 설명을 제공합니다. 설명은 입력에 영향을 주지 않지만 사용자가 입력 세부 정보 또는 예상 값을 이해하는 데 도움이 될 수 있습니다.
+- [`spec:inputs:description`](../yaml/_index.md#specinputsdescription)을 사용하여 특정 입력에 설명을 제공합니다. 설명은 입력에 영향을 주지 않지만 사용자가 입력 세부 정보 또는 예상 값을 이해하는 데 도움이 될 수 있습니다.
 - [`spec:inputs:options`](../yaml/_index.md#specinputsoptions)를 사용하여 입력에 허용된 값의 목록을 지정합니다.
 - [`spec:inputs:regex`](../yaml/_index.md#specinputsregex)를 사용하여 입력이 일치해야 하는 정규식을 지정합니다.
-- [`spec:inputs:type`](../yaml/_index.md#specinputstype)를 사용하여 특정 입력 형식을 강제하며, `string`(지정하지 않을 때 기본값), `array`, `number` 또는 `boolean`일 수 있습니다.
+- [`spec:inputs:type`](../yaml/_index.md#specinputstype)을 사용하여 특정 입력 형식을 강제하며, `string`(지정하지 않을 때 기본값), `array`, `number` 또는 `boolean`일 수 있습니다.
 - [`spec:inputs:rules`](../yaml/_index.md#specinputsrules)를 사용하여 다른 입력의 값을 기반으로 조건부 `options` 및 `default` 값을 정의합니다.
 
 CI/CD 구성 파일당 여러 입력을 정의할 수 있으며 각 입력은 여러 구성 매개변수를 가질 수 있습니다.
@@ -127,23 +126,23 @@ spec:
 
 이 예에서:
 
-- `job-prefix`은 필수 문자열 입력이며 정의해야 합니다.
-- `job-stage`은 선택 사항입니다. 정의되지 않으면 값은 `test`입니다.
-- `environment`은 정의된 옵션 중 하나와 일치해야 하는 필수 문자열 입력입니다.
-- `concurrency`은 선택적 숫자 입력입니다. 지정되지 않으면 `1`로 기본값이 설정됩니다.
+- `job-prefix`는 필수 문자열 입력이며 정의해야 합니다.
+- `job-stage`는 선택 사항입니다. 정의되지 않으면 값은 `test`입니다.
+- `environment`는 정의된 옵션 중 하나와 일치해야 하는 필수 문자열 입력입니다.
+- `concurrency`는 선택적 숫자 입력입니다. 지정되지 않으면 `1`로 기본값이 설정됩니다.
 - `version`은 지정된 정규식과 일치해야 하는 필수 문자열 입력입니다.
-- `export_results`은 선택적 부울 입력입니다. 지정되지 않으면 `true`로 기본값이 설정됩니다.
+- `export_results`는 선택적 부울 입력입니다. 지정되지 않으면 `true`로 기본값이 설정됩니다.
 
 ### 입력 형식 {#input-types}
 
 선택적 `spec:inputs:type` 키워드를 사용하여 입력이 특정 형식을 사용해야 함을 지정할 수 있습니다.
 
-입력 형식은:
+입력 형식:
 
 - [`array`](#array-type)
 - `boolean`
 - `number`
-- `string`(지정하지 않을 때 기본값)
+- `string`(지정하지 않으면 기본값)
 
 입력이 CI/CD 구성에서 전체 YAML 값을 바꾸면 지정된 형식으로 구성에 보간됩니다. 예를 들어:
 
@@ -182,13 +181,9 @@ test_job:
 
 #### 배열 형식 {#array-type}
 
-{{< history >}}
+배열 형식의 항목 내용은 모든 유효한 YAML 맵, 시퀀스 또는 스칼라일 수 있습니다. [`!reference`](../yaml/yaml_optimization.md#reference-tags)와 같은 더 복잡한 YAML 기능은 사용할 수 없습니다. 구성 파일 전체에서 목록을 재사용하려면 [외부 파일](#define-pipeline-inputs-in-external-files)에서 배열 입력을 정의합니다. 그런 다음 [추가 항목으로 확장](#extend-an-array-input-with-additional-items)할 수 있습니다.
 
-- [GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/407176)에서 도입되었습니다.
-
-{{< /history >}}
-
-배열 형식의 항목 내용은 모든 유효한 YAML 맵, 시퀀스 또는 스칼라일 수 있습니다. [`!reference`](../yaml/yaml_optimization.md#reference-tags)와 같은 더 복잡한 YAML 기능은 사용할 수 없습니다. 배열 입력의 값을 문자열(예: `echo "My rules: $[[ inputs.rules-config ]]"`) `script:` 섹션)에서 사용할 때 예상치 못한 결과가 나타날 수 있습니다. 배열 입력은 문자열 표현으로 변환되며, 이는 맵과 같은 복잡한 YAML 구조에 대한 예상과 일치하지 않을 수 있습니다.
+배열 입력의 값을 문자열(예: `script:` 섹션의 `echo "My rules: $[[ inputs.rules-config ]]"`)에서 사용할 때 예상치 못한 결과가 나타날 수 있습니다. 배열 입력은 문자열 표현으로 변환되며, 이는 맵과 같은 복잡한 YAML 구조에 대한 예상과 일치하지 않을 수 있습니다.
 
 ```yaml
 spec:
@@ -206,7 +201,7 @@ test_job:
   script: ls
 ```
 
-배열 입력을 다음에 대해 수동으로 전달할 때 `["array-input-1", "array-input-2"]`과 같이 JSON으로 형식화해야 합니다:
+배열 입력을 다음에 대해 수동으로 전달할 때 `["array-input-1", "array-input-2"]`와 같이 JSON으로 형식화해야 합니다.
 
 - [파이프라인 수동 실행](../pipelines/_index.md#run-a-pipeline-manually).
 - [파이프라인 트리거 API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token).
@@ -214,15 +209,37 @@ test_job:
 - Git [푸시 옵션](../../topics/git/commit.md#push-options-for-gitlab-cicd)
 - [파이프라인 일정](../pipelines/schedules.md#create-a-pipeline-schedule)
 
+##### 배열 입력을 추가 항목으로 확장 {#extend-an-array-input-with-additional-items}
+
+배열 입력이 배열의 전체 항목인 경우 해당 항목이 중첩되지 않고 주변 배열에 추가됩니다. 이를 사용하여 공유 목록을 추가 항목으로 확장합니다:
+
+```yaml
+spec:
+  inputs:
+    tags:
+      type: array
+---
+
+test_job:
+  tags:
+    - $[[ inputs.tags ]]
+    - additional-tag
+  script: ls
+```
+
+`[shared-tag-1, shared-tag-2]` 입력값이 주어지면, `test_job`는 `[shared-tag-1, shared-tag-2, additional-tag]`을 사용합니다.
+
+입력은 전체 배열 항목이어야 합니다. 배열 항목이 입력과 다른 텍스트(예: `- prefix-$[[ inputs.tags ]]`)를 결합하면, GitLab은 대신 [입력을 문자열로 보간](#input-types)합니다. 그러면 항목은 배열의 문자열 표현을 포함하는 단일 문자열이 됩니다.
+
 ##### 옵션이 있는 배열 입력 {#array-inputs-with-options}
 
 {{< history >}}
 
-- [GitLab 19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/566155)에서 도입되었습니다.
+- GitLab 19.0에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/566155)되었습니다.
 
 {{< /history >}}
 
-배열 입력에 대해 허용된 값을 제한하는 옵션 목록을 정의할 수 있습니다. 파이프라인을 수동으로 실행하면 UI에 텍스트 필드 대신 다중 선택 드롭다운이 표시됩니다. 예를 들어:
+배열 입력에 대해 허용된 값을 제한하는 옵션 목록을 정의할 수 있습니다. 파이프라인을 수동으로 실행하면 UI는 텍스트 필드 대신 다중 선택 드롭다운 목록을 표시합니다. 예를 들어:
 
 ```yaml
 spec:
@@ -249,12 +266,12 @@ test:
 
 {{< history >}}
 
-- [GitLab 18.10](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657) 에서 [플래그](../../administration/feature_flags/_index.md) `ci_inputs_array_index_operator`로 도입되었습니다. 기본적으로 비활성화됨.
-- [GitLab 18.11](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657)에서 일반적으로 사용 가능합니다. 기능 플래그 `ci_inputs_array_index_operator`이 제거되었습니다.
+- GitLab 18.10에서 `ci_inputs_array_index_operator`라는 [기능 플래그](../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657)되었습니다. 기본적으로 비활성화됨.
+- GitLab 18.11에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/work_items/587657)합니다. 기능 플래그 `ci_inputs_array_index_operator`가 제거되었습니다.
 
 {{< /history >}}
 
-배열 입력의 개별 요소에 액세스하기 위해 인덱스 번호가 있는 괄호 표기법을 사용합니다. 배열 항목은 YAML 배열에 정의된 순서대로 양수로 인덱싱되며, `[0]` 인덱스 항목이 배열의 첫 번째 항목입니다.
+배열 입력의 개별 요소에 액세스하기 위해 인덱스 번호가 있는 괄호 표기법을 사용합니다. 배열 항목은 YAML 배열에 정의된 순서대로 양수로 인덱싱됩니다. `[0]` 인덱스 항목은 배열의 첫 번째 항목입니다.
 
 예를 들어:
 
@@ -275,7 +292,7 @@ job:
     - echo 'Latest version is $[[ inputs.supported_versions[0] ]]'
 ```
 
-배열 인덱싱을 점 표기법과 함께 연결하여 중첩된 값에 액세스할 수 있습니다:
+배열 인덱싱을 점 표기법과 함께 연결하여 중첩된 값에 액세스할 수 있습니다.
 
 ```yaml
 spec:
@@ -292,7 +309,7 @@ job:
     - curl "https://$[[ inputs.servers[0].host ]]:$[[ inputs.servers[0].port ]]"
 ```
 
-다차원 배열의 경우 여러 인덱스를 행으로 사용합니다. 예를 들어 2차원 배열에 `[0][1]`을 사용할 수 있습니다:
+다차원 배열의 경우 여러 인덱스를 행으로 사용합니다. 예를 들어 2차원 배열에 `[0][1]`을 사용할 수 있습니다.
 
 ```yaml
 spec:
@@ -314,7 +331,7 @@ job:
 
 #### 다중 행 입력 문자열 값 {#multi-line-input-string-values}
 
-입력은 다양한 값 형식을 지원합니다. 다음 형식을 사용하여 다중 문자열 값을 전달할 수 있습니다:
+입력은 다양한 값 형식을 지원합니다. 다음 형식을 사용하여 다중 문자열 값을 전달할 수 있습니다.
 
 ```yaml
 spec:
@@ -333,17 +350,17 @@ spec:
 
 {{< history >}}
 
-- [GitLab 18.7](https://gitlab.com/groups/gitlab-org/-/epics/18546)에서 도입되었습니다.
+- GitLab 18.7에서 [도입](https://gitlab.com/groups/gitlab-org/-/epics/18546)되었습니다.
 
 {{< /history >}}
 
 [`spec:inputs:rules`](../yaml/_index.md#specinputsrules)를 사용하여 다른 입력의 값을 기반으로 입력에 대한 다른 `options` 및 `default` 값을 정의합니다. 한 입력이 다른 입력에서 제공하는 컨텍스트에 따라 다른 허용 값을 가져야 할 때 이 구성을 사용할 수 있습니다.
 
-`rules` 목록의 각 규칙은 다음을 포함할 수 있습니다:
+`rules` 목록의 각 규칙은 다음을 포함할 수 있습니다.
 
-- `if`:  이 규칙이 적용될 때를 결정하기 위해 하나 이상의 입력 값을 확인하는 표현식입니다. [`$[[ inputs.input-id ]]` 보간](#define-input-parameters-with-specinputs)과 동일한 구문을 사용합니다.
-- `options`:  이 규칙이 일치할 때 입력에 허용되는 값의 목록입니다.
-- `default`:  이 규칙이 일치할 때 사용할 기본값입니다.
+- `if`: 이 규칙이 적용될 때를 결정하기 위해 하나 이상의 입력 값을 확인하는 표현식입니다. [`$[[ inputs.input-id ]]` 보간](#define-input-parameters-with-specinputs)과 동일한 구문을 사용합니다.
+- `options`: 이 규칙이 일치할 때 입력에 허용되는 값의 목록입니다.
+- `default`: 이 규칙이 일치할 때 사용할 기본값입니다.
 
 규칙은 순서대로 평가됩니다. 일치하는 `if` 조건이 있는 첫 번째 규칙이 사용됩니다. `if` 조건이 없는 마지막 규칙은 다른 규칙이 일치하지 않을 때 대체로 작동합니다.
 
@@ -390,9 +407,9 @@ deploy:
 
 이 예에서:
 
-- `cloud_provider`이 `aws`이고 `environment`이 `development`일 때 사용자는 `t3.micro` 또는 `t3.small` 인스턴스 형식에서 선택할 수 있으며, `t3.micro`이 기본값입니다.
-- `cloud_provider`이 `aws`이고 `environment`이 `production`일 때 다양한 인스턴스 형식(`t3.xlarge`, `t3.2xlarge`, `m5.xlarge`)을 사용할 수 있습니다.
-- `cloud_provider`이 `gcp`일 때 환경에 관계없이 GCP 관련 인스턴스 형식을 사용할 수 있습니다.
+- `cloud_provider`가 `aws`이고 `environment`가 `development`일 때 사용자는 `t3.micro` 또는 `t3.small` 인스턴스 형식에서 선택할 수 있으며, `t3.micro`가 기본값입니다.
+- `cloud_provider`가 `aws`이고 `environment`가 `production`일 때 다양한 인스턴스 형식(`t3.xlarge`, `t3.2xlarge`, `m5.xlarge`)을 사용할 수 있습니다.
+- `cloud_provider`가 `gcp`일 때 환경에 관계없이 GCP 관련 인스턴스 형식을 사용할 수 있습니다.
 - 조건이 일치하지 않으면 대체 규칙이 일반적인 크기 옵션을 제공합니다.
 
 `||`(OR) 연산자를 사용하여 여러 조건과 일치할 수도 있습니다. 예를 들어:
@@ -418,17 +435,17 @@ deploy:
   script: echo "Deploying with $[[ inputs.deployment_type ]] strategy"
 ```
 
-이 예에서 `requires_approval` 입력은 `deployment_type`이 `canary` 또는 `blue-green`일 때 `true`로 설정됩니다. 다른 모든 경우에는 기본값이 `false`이고 `true` 또는 `false`이 모두 허용된 옵션입니다.
+이 예에서 `requires_approval` 입력은 `deployment_type`이 `canary` 또는 `blue-green`일 때 `true`로 설정됩니다. 다른 모든 경우에 기본값은 `false`이고 `true`과 `false` 모두 허용되는 옵션입니다.
 
-### `default: null`를 사용하여 사용자가 입력한 값 허용 {#allow-user-entered-values-with-default-null}
+### `default: null`을 사용하여 사용자가 입력한 값 허용 {#allow-user-entered-values-with-default-null}
 
 {{< history >}}
 
-- [GitLab 18.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218804)에서 도입되었습니다.
+- GitLab 18.9에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218804)되었습니다.
 
 {{< /history >}}
 
-`spec:inputs:rules`를 `default: null`과 함께 사용하고 `options` 없이 사용하여 사용자가 입력의 고유한 값을 입력하도록 허용합니다. 이는 환경 이름 또는 테스트 구성과 같은 워크플로우별 값에 유용합니다.
+`spec:inputs:rules`을 `default: null`와 함께 사용하고 `options` 없이 사용하여 사용자가 환경 이름이나 테스트 구성과 같은 자신의 값을 입력할 수 있도록 합니다.
 
 예를 들어:
 
@@ -450,11 +467,11 @@ deploy:
   script: echo "Config: $[[ inputs.custom_config ]]"
 ```
 
-이 예에서 `deployment_type`이 `custom`일 때 `custom_config` 입력은 파이프라인 실행 페이지에 나열되고 사용자는 입력 값을 입력해야 합니다.
+이 예에서 `deployment_type`이 `custom`일 때, `custom_config` 입력이 **새 파이프라인 실행** 페이지에 표시되고 사용자는 이에 대한 값을 입력해야 합니다.
 
-### `spec:inputs:rules`을 사용하여 부울 입력 사용 {#use-boolean-inputs-with-specinputsrules}
+### `spec:inputs:rules`를 사용하여 부울 입력 사용 {#use-boolean-inputs-with-specinputsrules}
 
-규칙 조건에서 부울 입력을 사용할 수 있습니다. 부울 값은 부울 리터럴(`true`/`false`)을 사용하여 비교할 수 있습니다:
+규칙 조건에서 부울 입력을 사용할 수 있습니다. 부울 값은 부울 리터럴(`true`/`false`)을 사용하여 비교할 수 있습니다.
 
 ```yaml
 spec:
@@ -476,7 +493,7 @@ job:
   script: echo "Publishing is $[[ inputs.publish ]]"
 ```
 
-이 예에서 `publish`이 `true`일 때 `publish_stage`은 `publish`로 기본값이 설정됩니다. `publish`이 `false`일 때는 `test`로 기본값이 설정됩니다.
+이 예에서 `publish`가 `true`일 때 `publish_stage`는 `publish`로 기본값이 설정됩니다. `publish`가 `false`일 때는 `test`로 기본값이 설정됩니다.
 
 ## 입력 값 설정 {#set-input-values}
 
@@ -486,13 +503,7 @@ job:
 
 ### `include`로 추가된 구성 {#for-configuration-added-with-include}
 
-{{< history >}}
-
-- `include:with`이 GitLab 16.0에서 [`include:inputs`으로 이름이 변경](https://gitlab.com/gitlab-org/gitlab/-/issues/406780)되었습니다.
-
-{{< /history >}}
-
-[`include:inputs`](../yaml/_index.md#includeinputs)를 사용하여 포함된 구성이 파이프라인에 추가될 때 입력의 값을 설정합니다:
+[`include:inputs`](../yaml/_index.md#includeinputs)를 사용하여 포함된 구성이 파이프라인에 추가될 때 입력의 값을 설정합니다.
 
 - [CI/CD 구성 요소](../components/_index.md)
 - `include`로 추가된 다른 구성입니다.
@@ -519,7 +530,7 @@ include:
 | `environment`    | `staging`       | 명시적으로 정의해야 하며, 포함된 구성의 `spec:inputs:options` 값 중 하나와 일치해야 합니다. |
 | `concurrency`    | `2`             | 포함된 구성에서 `number`로 설정된 `spec:inputs:type`과 일치하도록 숫자 값이어야 합니다. 기본값을 재정의합니다. |
 | `version`        | `v1.3.2`        | 명시적으로 정의해야 하며, 포함된 구성의 `spec:inputs:regex` 정규식과 일치해야 합니다. |
-| `export_results` | `false`         | 포함된 구성에서 `boolean`로 설정된 `spec:inputs:type`과 일치하도록 `true` 또는 `false`이어야 합니다. 기본값을 재정의합니다. |
+| `export_results` | `false`         | 포함된 구성에서 `boolean`으로 설정된 `spec:inputs:type`과 일치하도록 `true` 또는 `false`이어야 합니다. 기본값을 재정의합니다. |
 
 입력 값은 `spec` 섹션을 정의하는 같은 파일에서만 사용 가능합니다. `include`로 추가된 파일은 다른 파일이나 포함하는 파일에서 정의된 입력에 액세스할 수 없습니다. 포함된 파일의 값을 사용하려면 `include:inputs`으로 명시적으로 전달합니다.
 
@@ -541,18 +552,18 @@ include:
 
 {{< history >}}
 
-- [GitLab 17.11](https://gitlab.com/groups/gitlab-org/-/epics/16321)에서 도입되었습니다.
+- GitLab 17.11에서 [도입](https://gitlab.com/groups/gitlab-org/-/epics/16321)되었습니다.
 
 {{< /history >}}
 
-입력은 형식 검사, 유효성 검사 및 명확한 계약을 포함하여 변수보다 많은 장점을 제공합니다. 예상치 못한 입력은 거부됩니다. 파이프라인의 입력은 메인 `.gitlab-ci.yml` 파일의 [`spec:inputs` 헤더](#define-input-parameters-with-specinputs)에서 정의해야 합니다. 포함된 파일에 정의된 입력을 파이프라인 수준 구성에 사용할 수 없습니다.
+입력은 유형 확인, 유효성 검사 및 명확한 계약을 포함하여 변수보다 많은 장점을 제공합니다. 예상치 못한 입력은 거부됩니다. 파이프라인의 입력은 메인 `.gitlab-ci.yml` 파일의 [`spec:inputs` 헤더](#define-input-parameters-with-specinputs)에서 정의해야 합니다. 포함된 파일에 정의된 입력을 파이프라인 수준 구성에 사용할 수 없습니다.
 
 > [!note]
 > [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables) 이상에서는 [파이프라인 변수](../variables/_index.md#use-pipeline-variables)를 전달하는 것보다 파이프라인 입력을 권장합니다. 보안 강화를 위해 입력을 사용할 때 [파이프라인 변수를 비활성화](../variables/_index.md#restrict-pipeline-variables)해야 합니다.
 
 파이프라인에 대한 입력을 정의할 때 항상 기본값을 설정해야 합니다. 입력이 기본값이 누락되면 자동으로 트리거될 때 파이프라인이 실패합니다. 예를 들어 머지 리퀘스트 파이프라인은 머지 리퀘스트의 소스 브랜치 변경에 대해 트리거될 수 있습니다. 머지 리퀘스트 파이프라인에 대해 입력을 수동으로 설정할 수 없으므로 입력이 기본값이 누락되면 파이프라인이 실패합니다. 이는 브랜치 파이프라인, 태그 파이프라인 및 기타 자동으로 트리거되는 파이프라인에서도 발생할 수 있습니다.
 
-다음을 사용하여 입력 값을 설정할 수 있습니다:
+다음을 사용하여 입력 값을 설정할 수 있습니다.
 
 - [다운스트림 파이프라인](../pipelines/downstream_pipelines.md#pass-inputs-to-a-downstream-pipeline)
 - [파이프라인 수동 실행](../pipelines/_index.md#run-a-pipeline-manually).
@@ -564,9 +575,9 @@ include:
 
 파이프라인은 최대 20개의 입력을 받을 수 있습니다.
 
-[이 이슈](https://gitlab.com/gitlab-org/gitlab/-/issues/533802)에서 피드백을 환영합니다.
+[이 이슈](https://gitlab.com/gitlab-org/gitlab/-/issues/533802)에 대한 피드백을 받고 있습니다.
 
-다운스트림 파이프라인의 구성 파일이 [`spec:inputs`](#define-input-parameters-with-specinputs) 를 사용하는 경우 [다운스트림 파이프라인](../pipelines/downstream_pipelines.md)에 입력을 전달할 수 있습니다.
+다운스트림 파이프라인의 구성 파일이 [`spec:inputs`](#define-input-parameters-with-specinputs)을 사용하는 경우 [다운스트림 파이프라인](../pipelines/downstream_pipelines.md)에 입력을 전달할 수 있습니다.
 
 예를 들어 [`trigger:inputs`](../yaml/_index.md#triggerinputs)와 함께:
 
@@ -609,14 +620,14 @@ trigger-job:
 
 {{< history >}}
 
-- [GitLab 18.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931) 에서 [플래그](../../administration/feature_flags/_index.md) `ci_file_inputs`로 도입되었습니다. 기본적으로 비활성화됨.
-- [GitLab 18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/579240)에서 일반적으로 사용 가능합니다. 기능 플래그 `ci_file_inputs`이 제거되었습니다.
+- GitLab 18.6에서 `ci_file_inputs`라는 [기능 플래그](../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206931)되었습니다. 기본적으로 비활성화됨.
+- GitLab 18.9에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/issues/579240)합니다. 기능 플래그 `ci_file_inputs`가 제거되었습니다.
 
 {{< /history >}}
 
-외부 파일에서 정의하고 [`spec:include`](../yaml/_index.md#specinclude)를 사용하여 프로젝트의 파이프라인 구성에 포함하여 여러 CI/CD 구성에서 파이프라인 입력 정의를 재사용할 수 있습니다.
+여러 CI/CD 구성에서 파이프라인 입력 정의를 재사용하려면 외부 파일에 정의한 다음 [`spec:include`](../yaml/_index.md#specinclude)를 사용하여 프로젝트의 파이프라인 구성에 포함시킵니다.
 
-입력 정의가 포함된 파일(예: `shared-inputs.yml`이라는 파일)을 만듭니다:
+입력 정의가 포함된 파일(예: `shared-inputs.yml`이라는 파일)을 만듭니다.
 
 ```yaml
 inputs:
@@ -627,7 +638,7 @@ inputs:
     default: 'us-east-1'
 ```
 
-그런 다음 `local`를 사용하여 `.gitlab-ci.yml`에서 외부 입력을 포함할 수 있습니다:
+그런 다음 `local`을 사용하여 `.gitlab-ci.yml`에서 외부 입력을 포함할 수 있습니다.
 
 ```yaml
 spec:
@@ -639,12 +650,12 @@ deploy:
   script: echo "Deploying to $[[ inputs.environment ]] in $[[ inputs.region ]]"
 ```
 
-파일이 프로젝트 외부에 저장된 경우 다음을 사용할 수 있습니다:
+파일이 프로젝트 외부에 저장된 경우 다음을 사용할 수 있습니다.
 
-- 다른 GitLab 프로젝트의 파일에 `project`을 사용합니다. 전체 프로젝트 경로를 사용하고 `file`를 사용하여 파일 이름을 정의합니다. 선택 사항으로 `ref`를 정의하여 파일을 가져올 수도 있습니다.
-- 다른 서버의 파일에 `remote`을 사용합니다. 파일의 전체 URL을 사용합니다.
+- 다른 GitLab 프로젝트의 파일에 `project`를 사용합니다. 전체 프로젝트 경로를 사용하고 `file`을 사용하여 파일 이름을 정의합니다. 선택 사항으로 `ref`를 정의하여 파일을 가져올 수도 있습니다.
+- 다른 서버의 파일에는 `remote`을 사용합니다. 파일의 전체 URL을 사용합니다.
 
-예를 들어 동시에 여러 입력 파일을 포함할 수도 있습니다:
+예를 들어 동시에 여러 입력 파일을 포함할 수도 있습니다.
 
 ```yaml
 spec:
@@ -660,15 +671,51 @@ spec:
 > [!note]
 > `spec:include`를 [CI/CD 구성 요소](../components/_index.md#component-spec-section) 입력에 사용할 수 없습니다.
 
+##### 다른 프로젝트의 구성에서 외부 입력 파일 사용 {#use-external-input-files-in-configuration-from-another-project}
+
+{{< history >}}
+
+- [GitLab 19.4에 도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/590532) [기능 플래그](../../administration/feature_flags/_index.md) `ci_spec_include_own_context` 포함. 기본적으로 비활성화됨.
+
+{{< /history >}}
+
+> [!flag]
+> 이 기능의 사용 가능성은 기능 플래그로 제어합니다. 자세한 내용은 기록을 참조하세요.
+
+다른 프로젝트에서 구성 파일이 포함되면, 해당 파일의 `spec:include` 위치는 다른 프로젝트의 리포지토리와 ref에서 해결됩니다. 파이프라인을 실행하는 프로젝트는 이 해결에 영향을 주지 않습니다.
+
+예를 들어, `my-group/pipelines` 프로젝트의 `templates/deploy.yml` 파일이 외부 파일에서 입력을 정의합니다:
+
+```yaml
+spec:
+  include:
+    - local: shared-inputs.yml
+---
+
+deploy:
+  script: echo "Deploying to $[[ inputs.environment ]]"
+```
+
+다른 프로젝트는 자신의 `.gitlab-ci.yml` 파일에 그 파일을 포함시킵니다:
+
+```yaml
+include:
+  - project: 'my-group/pipelines'
+    ref: main
+    file: '/templates/deploy.yml'
+```
+
+이 예에서 `shared-inputs.yml`은 파이프라인을 실행하는 프로젝트가 아닌 `my-group/pipelines` 프로젝트에서 읽습니다.
+
 #### 외부 파일에서 입력 재정의 {#override-inputs-from-an-external-file}
 
 {{< history >}}
 
-- [GitLab 18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/557867)에서 도입되었습니다.
+- GitLab 18.9에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/557867)되었습니다.
 
 {{< /history >}}
 
-입력 키는 모든 포함된 파일과 인라인 사양에서 고유해야 합니다. 여러 포함된 파일이나 포함된 파일과 `.gitlab-ci.yml` 구성의 `inputs:` 섹션 모두에서 동일한 키를 사용하여 입력을 정의하는 경우 다음 오류가 반환됩니다:
+입력 키는 모든 포함된 파일과 인라인 사양에서 고유해야 합니다. 동일한 입력 키가 여러 포함된 파일이나 포함된 파일 및 인라인 `inputs:` 섹션에 나타나면 GitLab은 다음 오류를 반환합니다:
 
 ```plaintext
 Duplicate input keys found: environment. Input keys must be unique across all included files and inline specifications.
@@ -678,13 +725,7 @@ Duplicate input keys found: environment. Input keys must be unique across all in
 
 ## 입력 값을 조작할 함수 지정 {#specify-functions-to-manipulate-input-values}
 
-{{< history >}}
-
-- [GitLab 16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/409462)에서 도입되었습니다.
-
-{{< /history >}}
-
-보간 블록에서 사전 정의된 함수를 지정하여 입력 값을 조작할 수 있습니다. 지원되는 형식은 다음과 같습니다:
+보간 블록에서 사전 정의된 함수를 지정하여 입력 값을 조작할 수 있습니다. 지원되는 형식은 다음과 같습니다.
 
 ```yaml
 $[[ input.input-id | <function1> | <function2> | ... <functionN> ]]
@@ -707,7 +748,7 @@ test-job:
   script: echo $[[ inputs.test | expand_vars | truncate(5,8) ]]
 ```
 
-이 예에서 입력이 기본값을 사용하고 `$MY_VAR`이 값 `my value`의 마스크되지 않은 프로젝트 변수라고 가정합니다:
+이 예에서 입력이 기본값을 사용하고 `$MY_VAR`이 값 `my value`의 마스크되지 않은 프로젝트 변수라고 가정합니다.
 
 1. 먼저 [`expand_vars`](#expand_vars) 함수는 값을 `test my value`로 확장합니다.
 1. 그런 다음 [`truncate`](#truncate)는 `test my value`에 `5`의 문자 오프셋과 `8`의 길이로 적용됩니다.
@@ -717,15 +758,12 @@ test-job:
 
 #### `expand_vars` {#expand_vars}
 
-{{< history >}}
-
-- [GitLab 16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/387632)에서 도입되었습니다.
-
-{{< /history >}}
-
 `expand_vars`를 사용하여 입력 값에서 [CI/CD 변수](../variables/_index.md)를 확장합니다.
 
-[`include` 키워드와 함께 사용](../yaml/includes.md#use-variables-with-include)할 수 있는 유일한 변수이고 확장 가능한 것으로 [표시](../variables/_index.md#mask-a-cicd-variable)되지 **않습니다.** [중첩된 변수 확장](../variables/where_variables_can_be_used.md#nested-variable-expansion)은 지원되지 않습니다.
+[`include` 키워드와 함께 사용](../yaml/includes.md#use-variables-with-include)할 수 있고 [마스크](../variables/_index.md#mask-a-cicd-variable)되지 않은 변수만 확장할 수 있습니다. [중첩된 변수 확장](../variables/where_variables_can_be_used.md#nested-variable-expansion)은 지원되지 않습니다.
+
+> [!note]
+> 파이프라인 생성 중에 입력 보간이 발생하고 작업을 환경에 할당하기 전에 환경 범위 프로젝트 및 그룹 변수를 `expand_vars`에서 사용할 수 없습니다. `expand_vars`이 일치하는 변수를 찾을 수 없으면, 리터럴 문자열(예: `$MY_VAR`)을 구성에 변경되지 않은 상태로 두며, 셸은 런타임에 이를 확장할 수 있습니다. 동일한 이름을 가진 환경 범위 변수와 범위가 없는 변수가 둘 다 존재하면 `expand_vars`는 범위가 없는 값을 사용합니다.
 
 예:
 
@@ -740,15 +778,9 @@ test-job:
   script: echo $[[ inputs.test | expand_vars ]]
 ```
 
-이 예에서 `$MY_VAR`이 마스크되지 않았거나(작업 로그에 노출됨) 값 `my value`이면 입력이 `test my value`으로 확장됩니다.
+이 예에서 `$MY_VAR`이 마스크되지 않았거나(작업 로그에 노출됨) 값 `my value`이면 입력이 `test my value`로 확장됩니다.
 
 #### `truncate` {#truncate}
-
-{{< history >}}
-
-- [GitLab 16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/409462)에서 도입되었습니다.
-
-{{< /history >}}
 
 `truncate`를 사용하여 보간된 값을 단축합니다. 예를 들어:
 
@@ -771,7 +803,7 @@ $[[ inputs.test | truncate(3,5) ]]
 
 {{< history >}}
 
-- [GitLab 18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568289)에서 도입되었습니다.
+- GitLab 18.6에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/568289)되었습니다.
 
 {{< /history >}}
 
@@ -791,7 +823,7 @@ test-job:
   script: printf '%s\n' $[[ inputs.test | posix_escape ]]
 ```
 
-이 예에서 `posix_escape`은 셸 제어 또는 메타데이터 문자일 수 있는 문자를 이스케이프합니다:
+이 예에서 `posix_escape`는 셸 제어 또는 메타데이터 문자일 수 있는 문자를 이스케이프합니다.
 
 ```console
 $ printf '%s\n' A\ string\ with\ single\ \'\ and\ double\ \"\ quotes\ and\ \ \ blanks
@@ -803,7 +835,7 @@ A string with single ' and double " quotes and   blanks
 > [!warning]
 > 신뢰할 수 없는 입력 값에 대해 `posix_escape`를 보안 목적으로 의존하지 마세요.
 
-`posix_escape`는 입력 값을 정확히 유지하려고 최선의 노력을 하지만 일부 문자 조합은 여전히 원하지 않는 결과를 초래할 수 있습니다. `posix_escape`를 사용하는 경우에도 다음이 가능합니다:
+`posix_escape`는 입력 값을 정확히 유지하려고 최선의 노력을 하지만 일부 문자 조합은 여전히 원하지 않는 결과를 초래할 수 있습니다. `posix_escape`를 사용하는 경우에도 다음이 가능합니다.
 
 - 문자열에 포함된 셸 코드가 실행될 수 있습니다.
 - 작은따옴표 또는 큰따옴표를 사용하여 주변 인용을 이스케이프할 수 있습니다.
@@ -811,18 +843,53 @@ A string with single ' and double " quotes and   blanks
 - 입력 또는 출력 리디렉션을 사용하여 로컬 파일을 읽거나 쓸 수 있습니다.
 - 이스케이프되지 않은 공백은 셸에서 문자열을 여러 인수로 분할하는 데 사용됩니다.
 
-보안상 입력이 신뢰할 수 있는지 확인해야 합니다. 다음을 사용할 수 있습니다:
+보안상 입력이 신뢰할 수 있는지 확인해야 합니다. 다음을 사용할 수 있습니다.
 
-- 문제가 있는 문자를 포함할 수 없는 [`spec:input:type`](../yaml/_index.md#specinputstype) `number` 또는 `boolean`.
+- 문제가 있는 문자를 포함할 수 없는 [`spec:input:type`](../yaml/_index.md#specinputstype)인 `number` 또는 `boolean`.
 - 문제가 있는 입력을 방지하기 위한 [`spec:input:regex`](../yaml/_index.md#specinputsregex) 키워드.
 - 사전 정의된 입력 옵션 목록을 정의하기 위한 [`spec:input:options`](../yaml/_index.md#specinputsoptions) 키워드.
 
-`posix_escape`을 `expand_vars`과 결합하는 경우 먼저 `expand_vars`을 설정해야 합니다. 그렇지 않으면 `posix_escape`이 변수의 `$`을 이스케이프하여 확장을 방지합니다. 예를 들어:
+`posix_escape`를 `expand_vars`과 결합하는 경우 먼저 `expand_vars`을 설정해야 합니다. 그렇지 않으면 `posix_escape`이 변수의 `$`를 이스케이프하여 확장을 방지합니다. 예를 들어:
 
 ```yaml
 test-job:
   script: echo $[[ inputs.test | expand_vars | posix_escape ]]
 ```
+
+#### `split` {#split}
+
+{{< history >}}
+
+- GitLab 19.2에서 `ci_interpolation_split_function` [기능 플래그](../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/19368)되었습니다. 기본적으로 비활성화됨.
+- GitLab 19.2에서 [일반 공개](https://gitlab.com/gitlab-org/gitlab/-/work_items/603990)되었습니다. 기능 플래그 `ci_interpolation_split_function`가 제거되었습니다.
+
+{{< /history >}}
+
+`split`을 사용하여 문자열 입력을 구분자에서 부분 문자열의 배열로 나눕니다. 예를 들어:
+
+- `split('<separator>')`
+
+| 이름        | 형식   | 설명 |
+| ----------- | ------ | ----------- |
+| `separator` | 문자열 | 분할할 문자 또는 문자열입니다. |
+
+`split`은 각 요소에서 앞뒤 공백을 제거하고 빈 요소를 제거합니다.
+
+예:
+
+```yaml
+spec:
+  inputs:
+    runner_tags:
+      default: 'docker,linux'
+---
+
+deploy:
+  tags: $[[ inputs.runner_tags | split(',') ]]
+  script: echo "Deploying..."
+```
+
+이 예에서 `inputs.runner_tags`이 `'docker,linux'`인 경우 `['docker', 'linux']`을 생성하며, 이는 `tags`에 배열로 할당됩니다.
 
 ## 문제 해결 {#troubleshooting}
 
@@ -830,7 +897,7 @@ test-job:
 
 입력을 사용하여 `rules:if` 표현식을 수정할 때 [다양한 구문 오류](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions) 중 하나가 발생할 수 있습니다.
 
-이러한 오류는 종종 [CI/CD 변수 표현식](../jobs/job_rules.md#cicd-variable-expressions)에서 문자열을 처리하는 방식과 관련이 있습니다. `rules:if`의 표현식은 CI/CD 변수를 따옴표 문자열(`'` 또는 `"`) 또는 다른 변수와 비교하기를 예상합니다. 입력 값이 파이프라인 런타임에 `rules` 구성에 삽입되면 결과 값이 따옴표 문자열이나 변수가 아닐 수 있으며 이로 인해 오류가 발생합니다.
+이러한 오류는 종종 [CI/CD 변수 표현식](../jobs/job_rules.md#cicd-variable-expressions)에서 문자열을 처리하는 방식과 관련이 있습니다. `rules:if`의 표현식은 CI/CD 변수를 따옴표 문자열(`'` 또는 `"`) 또는 다른 변수와 비교하기를 예상합니다. 입력 값이 파이프라인 런타임에 `rules` 구성에 삽입되면, 결과 값이 따옴표가 있는 문자열이나 변수가 아닐 수 있습니다. 이 불일치로 인해 오류가 발생합니다.
 
 예를 들어 포함할 구성에서:
 
@@ -860,10 +927,10 @@ include:
 
 이 예에서:
 
-- `branch: $CI_DEFAULT_BRANCH`을 사용하는 것은 유효합니다. `if:` 절은 `if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH`으로 평가되며, 이는 유효한 변수 표현식입니다. 변수를 따옴표로 묶을 필요가 없습니다.
-- `branch2: main`을 사용하는 것은 유효하지 않습니다. `if:` 절은 `if: $CI_COMMIT_REF_NAME == main`으로 평가되며, `main`는 문자열이지만 따옴표로 묶이지 않았으므로 유효하지 않습니다.
+- `branch: $CI_DEFAULT_BRANCH`를 사용하는 것은 유효합니다. `if:` 절은 `if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH`로 평가되며, 이는 유효한 변수 표현식입니다. 변수를 따옴표로 묶을 필요가 없습니다.
+- `branch2: main`을 사용하는 것은 유효하지 않습니다. `if:` 절은 `if: $CI_COMMIT_REF_NAME == main`으로 평가되며, `main`은 문자열이지만 따옴표로 묶이지 않았으므로 유효하지 않습니다.
 
-입력 값을 구성에 삽입한 후 표현식이 올바르게 형식화되어 있는지 확인합니다. 이를 위해 추가 따옴표 문자가 필요할 수 있습니다. 예를 들어 문자열 값을 사용하는 규칙에 따옴표를 추가합니다:
+이 이슈를 해결하려면 입력 값을 구성에 삽입한 후 표현식이 올바르게 형식화되어 있는지 확인합니다. 이를 위해 추가 따옴표 문자가 필요할 수 있습니다. 예를 들어 문자열 값을 사용하는 규칙에 따옴표를 추가합니다.
 
 ```yaml
 rules:

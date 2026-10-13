@@ -27,6 +27,8 @@
 - ee/spec/features/groups/member_roles_spec.rb
 - ee/spec/features/groups/members/list_members_spec.rb
 - ee/spec/features/groups/usage_quotas/code_suggestions_usage_tab_spec.rb
+- ee/spec/features/groups/wiki/user_previews_wiki_changes_spec.rb
+- ee/spec/features/groups/wiki/user_views_asciidoc_page_with_includes_spec.rb
 - ee/spec/features/groups/wiki_spec.rb
 - ee/spec/features/incidents/incident_details_spec.rb
 - ee/spec/features/merge_request/code_owner_approvals_reset_after_merging_to_source_branch_spec.rb
@@ -500,7 +502,6 @@
 - spec/features/projects/settings/visibility_settings_spec.rb
 - spec/features/projects/show/access_spec.rb
 - spec/features/projects/show/content_display_spec.rb
-- spec/features/projects/show/download_buttons_spec.rb
 - spec/features/projects/show/repository_actions_spec.rb
 - spec/features/projects/show/user_interactions_spec.rb
 - spec/features/projects/show/user_interacts_with_auto_devops_banner_spec.rb
@@ -515,6 +516,9 @@
 - spec/features/projects/user_creates_project_spec.rb
 - spec/features/projects/user_sees_sidebar_spec.rb
 - spec/features/projects/user_uses_shortcuts_spec.rb
+- spec/features/projects/wiki/user_previews_wiki_changes_spec.rb
+- spec/features/projects/wiki/user_views_asciidoc_page_with_includes_spec.rb
+- spec/features/projects/wiki/user_views_a_wiki_page_non_vue_surfaces_spec.rb
 - spec/features/projects/wiki/user_views_wiki_empty_spec.rb
 - spec/features/projects/wiki_spec.rb
 - spec/features/projects_spec.rb
@@ -565,7 +569,6 @@
 - spec/features/work_items/issues/issue_detail_spec.rb
 - spec/features/work_items/issues/issue_sidebar_spec.rb
 - spec/features/work_items/issues/list/csv_spec.rb
-- spec/features/work_items/issues/list/user_resets_their_incoming_email_token_spec.rb
 - spec/features/work_items/issues/list/user_sorts_issues_spec.rb
 - spec/features/work_items/issues/markdown_toolbar_spec.rb
 - spec/features/work_items/issues/move_spec.rb
@@ -598,7 +601,6 @@
 - spec/frontend/fixtures/pipeline_details.rb
 - spec/frontend/fixtures/snippet.rb
 - spec/frontend/fixtures/users.rb
-- spec/frontend/fixtures/webauthn.rb
 - spec/graphql/mutations/users/set_namespace_commit_email_spec.rb
 - spec/graphql/resolvers/board_list_issues_resolver_spec.rb
 - spec/graphql/resolvers/board_lists_resolver_spec.rb

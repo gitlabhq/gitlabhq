@@ -8,11 +8,12 @@ module Organizations
     UnknownFlagError = Class.new(StandardError)
     UnknownStageError = Class.new(StandardError)
 
-    # Stages are cumulative: Experimental and Beta cascade forward, so a feature
-    # at any later stage is also enabled for their audiences (an LA feature is on
-    # for Experimental and Beta too). LA percentages don't nest and GA is on for
-    # everyone, so neither is a cascade source. Earliest-first; order matters.
-    CASCADING_STAGE_KEYS = %i[experimental beta].freeze
+    # Stages are cumulative: Experimental, Internal, and Beta cascade forward, so
+    # a feature at any later stage is also enabled for their audiences (an LA
+    # feature is on for Experimental, Internal, and Beta too). LA percentages
+    # don't nest and GA is on for everyone, so neither is a cascade source.
+    # Earliest-first; order matters.
+    CASCADING_STAGE_KEYS = %i[experimental internal beta].freeze
 
     class << self
       # True when the actor has the feature's stage flag enabled, or an earlier
@@ -30,6 +31,19 @@ module Organizations
           # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- interpolated by design; suffix is a stage key from Stage::ALL
           Feature.enabled?(:"org_stage_#{key}", actor)
           # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+        end
+      end
+
+      # Real per-user "has this actor adopted organizations" state, not a flag rollout
+      # check. `flag:` additionally requires that flag be enabled for the user first --
+      # self-managed/Dedicated (no legacy default org to leave) enroll only via a flag.
+      def enrolled?(user, flag: nil)
+        return false if flag && !enabled?(flag, user)
+
+        if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- use Gitlab.com? for now to keep simple. May refactor to SaaS feature in the future
+          user.has_active_non_default_organization?
+        else
+          flag.present?
         end
       end
 

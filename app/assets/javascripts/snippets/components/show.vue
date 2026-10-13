@@ -28,6 +28,9 @@ export default {
     hasUnretrievableBlobs() {
       return this.snippet.hasUnretrievableBlobs;
     },
+    hasLoadError() {
+      return this.snippetLoadError || (!this.isLoading && !this.snippet.id);
+    },
   },
   beforeCreate() {
     performanceMarkAndMeasure({ mark: SNIPPET_MARK_VIEW_APP_START });
@@ -36,8 +39,16 @@ export default {
 </script>
 <template>
   <div class="js-snippet-view gl-pt-3">
+    <gl-alert
+      v-if="hasLoadError"
+      variant="danger"
+      :dismissible="false"
+      data-testid="snippet-load-error"
+    >
+      {{ s__('Snippets|Could not load the snippet. Refresh the page and try again.') }}
+    </gl-alert>
     <gl-loading-icon
-      v-if="isLoading"
+      v-else-if="isLoading"
       :label="__('Loading snippet')"
       size="lg"
       class="loading-animation gl-mb-6 gl-mt-5"

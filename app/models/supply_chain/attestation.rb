@@ -45,6 +45,11 @@ module SupplyChain
       sbom: 1
     }
 
+    enum :signing_method, {
+      sigstore: 0,
+      local_ca: 1
+    }, prefix: true
+
     def self.find_provenance(project:, subject_digest:)
       for_project(project).with_predicate_kind("provenance").with_digest(subject_digest).take
     end

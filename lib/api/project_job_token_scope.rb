@@ -21,7 +21,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       route_setting :authorization, permissions: :read_job_token_scope, boundary_type: :project
       get ':id/job_token_scope' do
@@ -42,7 +42,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         requires :enabled,
           type: Boolean,
           as: :ci_inbound_job_token_scope_enabled,
@@ -73,7 +73,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_job_token_scope_allowlist, boundary_type: :project
@@ -96,7 +96,7 @@ module API
         tags %w[projects_job_token_scope]
       end
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_job_token_scope_allowlist, boundary_type: :project
@@ -123,13 +123,13 @@ module API
       params do
         requires :id,
           allow_blank: false,
-          desc: 'ID of user project',
+          desc: 'ID of the project.',
           documentation: { example: 1 },
           type: Integer
 
         requires :target_project_id,
           allow_blank: false,
-          desc: 'ID of target project',
+          desc: 'ID of the project to add to the CI/CD job token inbound allowlist.',
           documentation: { example: 2 },
           type: Integer
       end
@@ -165,13 +165,13 @@ module API
       params do
         requires :id,
           allow_blank: false,
-          desc: 'ID of user project',
+          desc: 'ID of the project.',
           documentation: { example: 1 },
           type: Integer
 
         requires :target_group_id,
           allow_blank: false,
-          desc: 'ID of target group',
+          desc: 'ID of the group to add to the CI/CD job token groups allowlist.',
           documentation: { example: 2 },
           type: Integer
       end
@@ -206,13 +206,13 @@ module API
       params do
         requires :id,
           allow_blank: false,
-          desc: 'ID of user project',
+          desc: 'ID of the project.',
           documentation: { example: 1 },
           type: Integer
 
         requires :target_group_id,
           allow_blank: false,
-          desc: 'ID of the group to be removed from the allowlist',
+          desc: 'ID of the group to remove from the CI/CD job token groups allowlist.',
           documentation: { example: 2 },
           type: Integer
       end
@@ -249,13 +249,13 @@ module API
       params do
         requires :id,
           allow_blank: false,
-          desc: 'ID of user project',
+          desc: 'ID of the project.',
           documentation: { example: 1 },
           type: Integer
 
         requires :target_project_id,
           allow_blank: false,
-          desc: 'ID of the project to be removed from the allowlist',
+          desc: 'ID of the project to remove from the CI/CD job token inbound allowlist.',
           documentation: { example: 2 },
           type: Integer
       end

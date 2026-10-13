@@ -294,7 +294,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         before do
           stub_feature_flags(ci_config_fetch_timeout_override: false)
           stub_const('Gitlab::Ci::Config::TIMEOUT_SECONDS', 0.3.seconds) # it should take at least 0.3 seconds (0.1 x 3)
-          stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 1) # allowing it run as log as it takes
+          stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 60) # allowing it run as long as it takes
 
           allow_any_instance_of(Repository).to receive(:blobs_at).and_wrap_original do |method, *args| # rubocop:disable RSpec/AnyInstanceOf -- needed to intercept calls across multiple repositories
             sleep 0.1

@@ -44,6 +44,7 @@ module Gitlab
       JOB_TOKEN_PARAM = :job_token
       DEPLOY_TOKEN_HEADER = 'HTTP_DEPLOY_TOKEN'
       RUNNER_TOKEN_PARAM = :token
+      RUNNER_TOKEN_HEADER = 'HTTP_RUNNER_TOKEN'
       RUNNER_JOB_TOKEN_PARAM = :token
 
       PARAM_TOKEN_KEYS = [
@@ -191,7 +192,8 @@ module Gitlab
       def find_runner_from_token
         return unless api_request?
 
-        token = current_request.params[RUNNER_TOKEN_PARAM].presence
+        token = current_request.params[RUNNER_TOKEN_PARAM].presence ||
+          current_request.env[RUNNER_TOKEN_HEADER].presence
         return unless token
 
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
@@ -312,7 +314,10 @@ module Gitlab
         }
 
         token_info[:token_application_id] = access_token.application_id if access_token.respond_to?(:application_id)
-        token_info[:pat_type] = access_token.granular? ? 'granular' : 'legacy' if access_token.is_a?(PersonalAccessToken)
+
+        if access_token.is_a?(::Authz::GranularTokenInterface)
+          token_info[:token_granularity] = access_token.granular? ? 'granular' : 'legacy'
+        end
 
         ::Current.token_info = token_info
       end
@@ -351,6 +356,7 @@ module Gitlab
 
         self.current_token = parsed_oauth_token
         return unless current_token
+        return unless ::Authn::Tokens::CiJobToken.prefix?(current_token)
 
         job = ::Ci::AuthJobFinder.new(token: current_token).execute
         return unless job
@@ -369,29 +375,43 @@ module Gitlab
       def access_token
         strong_memoize(:access_token) do
           # Kubernetes API OAuth header is not OauthAccessToken or PersonalAccessToken
-          # and should be ignored by this method. When the kubernetes API uses a different
-          # header, we can remove this guard
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/406582
+          # and should be ignored by this method (including by EE's stateless-token
+          # resolution). When the kubernetes API uses a different header, we can
+          # remove this guard. https://gitlab.com/gitlab-org/gitlab/-/issues/406582
           next if current_request.path.starts_with? "/api/v4/internal/kubernetes/"
 
-          if try(:inheritable_setting)&.namespace_inheritable&.[](:authentication)
-            access_token_from_namespace_inheritable
-          elsif pat_prefix_token?
-            # If the token has a PAT prefix (glpat-), skip OAuth lookup entirely.
-            # This avoids the expensive PBKDF2 hashing in OauthAccessToken.by_token
-            # for tokens that are clearly Personal Access Tokens.
-            find_personal_access_token
-          else
-            # The token can be a PAT or an OAuth (doorkeeper or IAM JWT) token
-            begin
-              find_oauth_access_token
-            rescue UnauthorizedError
-              # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
-              # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
-              # and try to find a personal access token.
-            end || find_personal_access_token
-          end
+          resolve_access_token
         end
+      end
+
+      # Split out so EE can override just the resolution logic; access_token
+      # itself must stay unprepended since specs stub it via `allow_any_instance_of`,
+      # which rspec-mocks refuses for methods defined on a prepended module.
+      def resolve_access_token
+        if namespace_inheritable_authentication?
+          access_token_from_namespace_inheritable
+        elsif pat_prefix_token?
+          # If the token has a PAT prefix (glpat-), skip OAuth lookup entirely.
+          # This avoids the expensive PBKDF2 hashing in OauthAccessToken.by_token
+          # for tokens that are clearly Personal Access Tokens.
+          find_personal_access_token
+        else
+          # The token can be a PAT or an OAuth (doorkeeper or IAM JWT) token
+          begin
+            find_oauth_access_token
+          rescue UnauthorizedError
+            # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
+            # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
+            # and try to find a personal access token.
+          end || find_personal_access_token
+        end
+      end
+
+      def namespace_inheritable_authentication?
+        # `!!` coerces to a real boolean while preserving truthiness semantics:
+        # an empty (but present) strategies hash from `authenticate_with` still
+        # counts as registered, so this must not become `.present?`.
+        !!try(:inheritable_setting)&.namespace_inheritable&.[](:authentication)
       end
 
       def pat_prefix_token?
@@ -616,6 +636,10 @@ module Gitlab
 
       def revoke_token_family(token)
         return unless access_token_rotation_request?
+        # Only PersonalAccessToken has a family to revoke. Other duck-typed
+        # access tokens (e.g. a StatelessAccessToken JWT) have a non-integer
+        # `id`, which would raise a DB type error against the bigint FK below.
+        return unless token.is_a?(PersonalAccessToken)
 
         PersonalAccessTokens::RevokeTokenFamilyService.new(token).execute
       end
@@ -652,25 +676,28 @@ module Gitlab
       end
 
       def find_user_from_dependency_proxy_token
-        return unless dependency_proxy_request?
-
-        token, _ = ActionController::HttpAuthentication::Token.token_and_options(current_request)
-
-        return unless token
-
-        user_or_deploy_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+        user_or_deploy_token = dependency_proxy_requester
 
         # Do not return deploy tokens
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/342481
-        return unless user_or_deploy_token.is_a?(::User)
+        user_or_deploy_token if user_or_deploy_token.is_a?(::User)
+      end
 
-        user_or_deploy_token
-      rescue ActiveRecord::RecordNotFound
-        nil # invalid id used return no user
+      def dependency_proxy_requester
+        strong_memoize(:dependency_proxy_requester) do
+          next unless dependency_proxy_request?
+
+          token, _ = ActionController::HttpAuthentication::Token.token_and_options(current_request)
+          next unless token
+
+          ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+        rescue ActiveRecord::RecordNotFound
+          nil # invalid id used return no user
+        end
       end
 
       def dependency_proxy_request?
-        Gitlab::PathRegex.dependency_proxy_route_regex.match?(current_request.path)
+        Gitlab::PathRegex.dependency_proxy_containers_route_regex.match?(current_request.path)
       end
 
       def validate_job_token_size!(token)

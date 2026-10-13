@@ -96,7 +96,7 @@ module Ci
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
         seeds_block: block,
-        variables_attributes: params[:variables_attributes],
+        variables_attributes: variables_attributes,
         project: project,
         current_user: current_user,
         push_options: ::Ci::PipelineCreation::PushOptions.fabricate(params[:push_options]),
@@ -163,6 +163,12 @@ module Ci
     end
 
     private
+
+    # Sidekiq delivers these with string keys, so symbolize each entry here rather
+    # than making every caller do it; the chain reads var[:key].
+    def variables_attributes
+      params[:variables_attributes]&.map { |var| var.is_a?(Hash) ? var.symbolize_keys : var }
+    end
 
     def after_successful_creation_hook
       # overridden in EE

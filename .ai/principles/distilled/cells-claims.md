@@ -1,6 +1,6 @@
 ---
-source_checksum: 78095dedd5107da5
-distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
+source_checksum: 6fdbb66acbdb3f01
+distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -25,6 +25,10 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 - After the Topology Service MR is merged, update the Topology Service client in GitLab by running `scripts/update-topology-service-gem.sh` in the MR branch.
 - Audit the model for ActiveRecord-bypassing code paths (`delete_all`, `insert_all`, `upsert_all`, raw SQL) and handle claims for those paths using `Cells::BulkClaimsWorker`.
 - Add model tests using `it_behaves_like 'cells claimable model'` and a dedicated spec file in `spec/cells/claims/<model>_spec.rb` covering creating, deleting, and updating claims.
+
+### HTTP Router
+
+- Update the HTTP router's vendored Topology Service client by running `scripts/update-topology-service-client.sh` in a router MR after any new claim type is merged in Topology Service, so the new type is available for routing.
 
 ### Feature Flags
 
@@ -77,3 +81,4 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 For the full picture, see:
 
 - doc/development/cells/claims.md
+

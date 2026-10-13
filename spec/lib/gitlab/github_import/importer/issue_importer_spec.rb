@@ -23,6 +23,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:description) { 'This is my issue' }
   let(:author) { Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice') }
+  let(:bob) { Gitlab::GithubImport::Representation::User.new(id: 5, login: 'bob') }
+  let(:assignees) { [author, bob] }
 
   let(:issue) do
     Gitlab::GithubImport::Representation::Issue.new(
@@ -31,10 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       description: description,
       milestone_number: 1,
       state: :opened,
-      assignees: [
-        author,
-        Gitlab::GithubImport::Representation::User.new(id: 5, login: 'bob')
-      ],
+      assignees: assignees,
       label_names: %w[bug],
       author: author,
       created_at: created_at,
@@ -143,6 +142,44 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       end
     end
 
+    context 'when the issue has no author' do
+      let(:author) { nil }
+      let(:assignees) { [bob] }
+
+      it 'imports the issue as the ghost user and pushes only the assignee reference' do
+        importer.execute
+
+        created_issue = Issue.last
+
+        expect(created_issue.author_id).to eq(Users::Internal.in_organization(project.organization).ghost.id)
+        expect(cached_references).to contain_exactly(
+          [
+            'IssueAssignee', { 'user_id' => source_user_bob.mapped_user_id, 'issue_id' => created_issue.id },
+            'user_id', source_user_bob.id
+          ]
+        )
+      end
+    end
+
+    context 'when an assignee is the GitHub ghost user' do
+      let(:assignees) { [author, Gitlab::GithubImport::Representation::User.new(id: 6, login: 'ghost')] }
+
+      it 'skips the ghost assignee and pushes references only for mapped users' do
+        importer.execute
+
+        created_issue = Issue.last
+
+        expect(created_issue.assignee_ids).to contain_exactly(source_user_alice.mapped_user_id)
+        expect(cached_references).to contain_exactly(
+          ['Issue', created_issue.id, 'author_id', source_user_alice.id],
+          [
+            'IssueAssignee', { 'user_id' => source_user_alice.mapped_user_id, 'issue_id' => created_issue.id },
+            'user_id', source_user_alice.id
+          ]
+        )
+      end
+    end
+
     context 'when importing into a personal namespace' do
       let_it_be(:user_namespace) { create(:namespace) }
 
@@ -169,105 +206,36 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
     end
   end
 
-  context 'when user_mapping is not enabled' do
-    before_all do
-      project.build_or_assign_import_data(data: {}).save!
+  describe '#import_attributes' do
+    it 'resolves the author only once when called repeatedly' do
+      expect(importer.user_finder).to receive(:author_id_for).once.and_call_original
+
+      2.times { importer.import_attributes }
     end
 
-    before do
-      allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
+    it 'returns the attributes used to create the issue' do
+      expect(importer.import_attributes).to include(
+        iid: 42,
+        title: 'My Issue',
+        author_id: source_user_alice.mapped_user_id,
+        assignee_ids: contain_exactly(source_user_alice.mapped_user_id, source_user_bob.mapped_user_id),
+        project_id: project.id,
+        milestone_id: milestone.id,
+        imported_from: ::Import::SOURCE_GITHUB
+      )
     end
+  end
 
-    describe '.import_if_issue' do
-      it 'imports an issuable if it is a regular issue' do
-        expect_next_instance_of(Gitlab::GithubImport::Importer::IssueImporter, issue, project, client) do |importer|
-          expect(importer).to receive(:execute)
-        end
+  describe '#push_placeholder_references' do
+    it 'pushes the author and assignee references for an existing issue' do
+      created_issue = project.issues.create!(importer.import_attributes.merge(importing: true))
 
-        described_class.import_if_issue(issue, project, client)
-      end
+      importer.push_placeholder_references(created_issue)
 
-      it 'does not import the issuable if it is a pull request' do
-        expect(issue).to receive(:pull_request?).and_return(true)
-
-        expect(described_class).not_to receive(:new)
-
-        described_class.import_if_issue(issue, project, client)
-      end
-    end
-
-    describe '#execute' do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:user_2) { create(:user) }
-      let(:importer) { described_class.new(issue, project, client) }
-
-      before do
-        allow_next_instance_of(Gitlab::GithubImport::MilestoneFinder) do |finder|
-          allow(finder).to receive(:id_for).with(issue).and_return(milestone.id)
-        end
-
-        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:author_id_for).with(issue).and_return([project.creator_id, false])
-          allow(finder).to receive(:user_id_for).and_return(nil)
-        end
-      end
-
-      it 'creates the issue' do
-        expect { importer.execute }.to change { Issue.count }.by(1)
-        expect(Issue.last).to have_attributes(
-          iid: 42,
-          title: 'My Issue',
-          author_id: project.creator_id,
-          assignee_ids: [],
-          project_id: project.id,
-          namespace_id: project.project_namespace_id,
-          description: "*Created by: alice*\n\nThis is my issue",
-          milestone_id: milestone.id,
-          state_id: 1,
-          created_at: created_at,
-          updated_at: updated_at,
-          work_item_type_id: work_item_type_id,
-          imported_from: 'github'
-        )
-      end
-
-      it 'caches the created issue ID' do
-        importer.execute
-
-        database_id = Gitlab::GithubImport::IssuableFinder.new(project, issue).database_id
-
-        expect(database_id).to eq(Issue.last.id)
-      end
-
-      context 'when author is mapped to a user' do
-        it 'sets the author ID to the mapped user and preserves the original issue description' do
-          expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-            expect(finder).to receive(:author_id_for).and_return([user.id, true])
-            expect(finder).to receive(:user_id_for).and_return(nil).twice
-          end
-
-          importer.execute
-
-          expect(Issue.last).to have_attributes(
-            description: "This is my issue",
-            author_id: user.id
-          )
-        end
-      end
-
-      context 'when assigness are mapped to users' do
-        it 'sets the assignee IDs to the mapped users' do
-          expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-            expect(finder).to receive(:author_id_for).and_return([user.id, true])
-            expect(finder).to receive(:user_id_for).and_return(user.id)
-            expect(finder).to receive(:user_id_for).and_return(user_2.id)
-          end
-
-          importer.execute
-
-          expect(Issue.last.assignee_ids).to match_array([user.id, user_2.id])
-        end
-      end
+      expect(cached_references).to include(
+        ['Issue', created_issue.id, 'author_id', source_user_alice.id]
+      )
+      expect(cached_references.size).to eq(3)
     end
   end
 end

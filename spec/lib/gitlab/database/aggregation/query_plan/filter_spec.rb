@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Filter, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Filter, feature_category: :value_stream_management do
   let(:part_definition) { Gitlab::Database::Aggregation::PartDefinition.new(:exact_match, :string) }
   let(:part_configuration) { { identifier: :exact_match, values: ['value1'] } }
 

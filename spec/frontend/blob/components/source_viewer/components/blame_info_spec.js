@@ -1,0 +1,181 @@
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import BlameCommitInfo from '~/blob/components/source_viewer/components/blame_commit_info.vue';
+import BlameInfo from '~/blob/components/source_viewer/components/blame_info.vue';
+import BlameColumnResizer from '~/blob/components/source_viewer/components/blame_column_resizer.vue';
+import * as utils from '~/blob/components/source_viewer/utils';
+import { BLAME_DATA_MOCK } from '../mock_data';
+
+describe('BlameInfo component', () => {
+  let wrapper;
+
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(BlameInfo, {
+      propsData: {
+        blameInfo: BLAME_DATA_MOCK,
+        ...props,
+      },
+    });
+  };
+
+  const findBlameCommitInfoComponents = () => wrapper.findAllComponents(BlameCommitInfo);
+  const findBlameWrappers = () => wrapper.findAll('.blame-commit-wrapper');
+  const findIndicatorHeight = (index) =>
+    findBlameWrappers().at(index).element.style.getPropertyValue('--blame-indicator-height');
+  const findColumnResizer = () => wrapper.findComponent(BlameColumnResizer);
+
+  beforeEach(() => createComponent());
+
+  afterEach(() => {
+    localStorage.clear();
+    jest.restoreAllMocks();
+  });
+
+  it('renders a BlameCommitInfo component for each blame entry', () => {
+    expect(findBlameCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
+  });
+
+  it.each(BLAME_DATA_MOCK)(
+    'sets the correct data and positioning for blame entry at index $index',
+    ({ commit, index, blameOffset, commitData }) => {
+      const blameCommitInfo = findBlameCommitInfoComponents().at(index);
+
+      expect(blameCommitInfo.props('commit')).toEqual(commit);
+      expect(blameCommitInfo.props('previousBlamePath')).toBe(
+        commitData?.previousBlamePath ?? null,
+      );
+      expect(blameCommitInfo.element.style.top).toBe(blameOffset);
+    },
+  );
+
+  describe('blame age indicator', () => {
+    it('renders an indicator per each BlameCommitInfo component', () => {
+      expect(findBlameWrappers()).toHaveLength(findBlameCommitInfoComponents().length);
+    });
+
+    it.each(BLAME_DATA_MOCK.map((_, index) => [index]))(
+      'sets the position to the same value as BlameCommitInfo component at index %i',
+      (index) => {
+        const blameWrapperTop = findBlameWrappers()
+          .at(index)
+          .element.style.getPropertyValue('--blame-indicator-top');
+        const blameCommitInfoTop = findBlameCommitInfoComponents().at(index).element.style.top;
+
+        expect(blameWrapperTop).toBe(blameCommitInfoTop);
+        expect(blameWrapperTop).toBe(BLAME_DATA_MOCK[index].blameOffset);
+      },
+    );
+
+    it('sets correct blame indicator colors based on age class', () => {
+      const firstWrapper = findBlameWrappers().at(0);
+      const expectedColor = 'var(--gl-color-data-blue-50)'; // blame-commit-age-9
+
+      expect(firstWrapper.element.style.getPropertyValue('--blame-indicator-color')).toBe(
+        expectedColor,
+      );
+    });
+
+    describe('indicator height', () => {
+      const singleLineGroup = [
+        { lineno: 1, span: 1, commit: { author: 'A', sha: 'a' }, index: 0, blameOffset: '0px' },
+      ];
+
+      it('bounds the height to the next group start (lineno + span) when it is rendered', () => {
+        // Group spans lines 1..5, next group's first line (6) is rendered at 100px.
+        jest.spyOn(utils, 'calculateBlameOffset').mockReturnValue('100px');
+
+        createComponent({
+          blameInfo: [
+            { lineno: 1, span: 5, commit: { author: 'A', sha: 'a' }, index: 0, blameOffset: '0px' },
+          ],
+        });
+
+        expect(utils.calculateBlameOffset).toHaveBeenCalledWith(6);
+        expect(findIndicatorHeight(0)).toBe('100px');
+      });
+
+      it('does not stretch across a gap when the group end line is in an unloaded chunk', () => {
+        jest.spyOn(utils, 'calculateBlameOffset').mockReturnValue(null);
+
+        createComponent({
+          blameInfo: [
+            { lineno: 1, span: 3, commit: { author: 'A', sha: 'a' }, index: 0, blameOffset: '0px' },
+            {
+              lineno: 900,
+              span: 1,
+              commit: { author: 'B', sha: 'b' },
+              index: 1,
+              blameOffset: '9000px',
+            },
+          ],
+        });
+
+        expect(findIndicatorHeight(0)).toBe('0px');
+      });
+
+      it('does not throw and falls back when span data is unavailable', () => {
+        jest.spyOn(utils, 'calculateBlameOffset').mockReturnValue(null);
+
+        createComponent({
+          blameInfo: [
+            { lineno: 1, commit: { author: 'A', sha: 'a' }, index: 0, blameOffset: '0px' },
+          ],
+        });
+
+        // No span -> calculateBlameOffset(lineno + span) is never evaluated for the
+        // group-bounded path; height resolves via the legacy containerHeight path.
+        expect(findIndicatorHeight(0)).toBe('0px');
+      });
+
+      it('never produces a negative height', () => {
+        jest.spyOn(utils, 'calculateBlameOffset').mockReturnValue('0px');
+
+        createComponent({ blameInfo: singleLineGroup });
+
+        expect(findIndicatorHeight(0)).toBe('0px');
+      });
+    });
+
+    it('hides blame indicators from screen readers', () => {
+      const wrappers = findBlameWrappers();
+      for (let i = 0; i < wrappers.length; i += 1) {
+        expect(wrappers.at(i).attributes('aria-hidden')).toBe('true');
+      }
+    });
+
+    describe('when blameInfo changes', () => {
+      const extendedBlameData = [
+        ...BLAME_DATA_MOCK,
+        { lineno: 4, commit: { author: 'John', sha: 'jkl' }, index: 3, blameOffset: '3px' },
+      ];
+
+      it('recalculates heights when new blame data is added', async () => {
+        expect(findBlameWrappers()).toHaveLength(3);
+        // setProps used to test reactivity of the component
+        await wrapper.setProps({ blameInfo: extendedBlameData });
+        await nextTick();
+
+        expect(findBlameWrappers()).toHaveLength(4);
+      });
+    });
+  });
+
+  describe('column width', () => {
+    // The drag handle, persistence and breakpoint behaviour belong to
+    // BlameColumnResizer and are covered by its own spec.
+    it('starts at the default width', () => {
+      createComponent();
+
+      expect(wrapper.attributes('style')).toContain('width: 400px');
+    });
+
+    it('applies the width reported by the resizer', async () => {
+      createComponent();
+
+      findColumnResizer().vm.$emit('input', 520);
+      await nextTick();
+
+      expect(wrapper.attributes('style')).toContain('width: 520px');
+    });
+  });
+});

@@ -28,6 +28,14 @@ RSpec.describe Gitlab::QueryLogs::Tags, feature_category: :database do
     end
   end
 
+  describe '.feature_category' do
+    it 'returns the feature category from the Labkit context' do
+      Labkit::Context.with_context(feature_category: 'source_code_management') do
+        expect(described_class.feature_category({})).to eq('source_code_management')
+      end
+    end
+  end
+
   describe '.correlation_id' do
     it 'returns the current correlation id when there is no job' do
       Labkit::Correlation::CorrelationId.use_id('cid1') do

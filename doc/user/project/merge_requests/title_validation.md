@@ -18,6 +18,7 @@ title: Merge request title validation
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25689) in GitLab 17.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `merge_request_title_regex`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/508022) in GitLab 18.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508022) in GitLab 18.10. Feature flag `merge_request_title_regex` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/624452) to ignore draft prefixes in GitLab 19.5.
 
 {{< /history >}}
 
@@ -68,6 +69,9 @@ Title validation uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
 not PCRE. RE2 does not support backreferences or lookahead/lookbehind assertions.
 
 The pattern and description fields each have a maximum length of 255 characters.
+
+The regex pattern does not need to account for draft prefixes (`[Draft]`, `Draft:`, and `(Draft)`) in merge request titles.
+Title validation automatically removes them before pattern matching.
 
 ### Example patterns
 
@@ -123,13 +127,6 @@ If a merge request is blocked by title validation:
    **Settings** > **Merge requests** > **Title pattern**.
 1. Use the **Title example** shown in the error message as a reference
    for the expected format.
-
-### Draft merge requests
-
-Title validation applies to the full title string, including any `Draft:`
-prefix. If your regex pattern does not account for the `Draft:` prefix,
-draft merge requests might fail validation. Consider using a pattern like
-`^(Draft: )?YOUR_PATTERN` to allow both draft and non-draft titles.
 
 ### Regex pattern does not match as expected
 

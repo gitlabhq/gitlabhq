@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::Email::Message::RepositoryPush, feature_category: :source_code_management do
   include RepoHelpers
 
-  let!(:group) { create(:group, name: 'my_group') }
-  let!(:project) { create(:project, :repository, namespace: group) }
-  let!(:author) { create(:author, name: 'Author') }
+  let_it_be(:group) { create(:group, name: 'my_group') }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: group) }
+  let_it_be(:author) { create(:author, name: 'Author') }
 
   let(:message) do
     described_class.new(Notify, project.id, opts)

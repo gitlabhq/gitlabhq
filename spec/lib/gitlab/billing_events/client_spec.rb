@@ -24,7 +24,7 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
   end
 
   before do
-    allow(Gitlab::Tracking).to receive(:billing_event)
+    allow(Gitlab::Tracking).to receive(:billing_event).and_return(true)
   end
 
   describe '.track_billing_event' do
@@ -34,6 +34,36 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
       end
 
       described_class.track_billing_event(**required_args)
+    end
+  end
+
+  describe '.track_billing_snapshot' do
+    it 'delegates to an instance' do
+      expect_next_instance_of(described_class) do |client|
+        expect(client).to receive(:track_billing_snapshot).with(**required_args)
+      end
+
+      described_class.track_billing_snapshot(**required_args)
+    end
+  end
+
+  describe '#local_persistence_enabled?' do
+    it 'defaults to false, so usage is emitted rather than stored' do
+      expect(described_class.new.local_persistence_enabled?).to be(false)
+    end
+  end
+
+  describe '#track_billing_snapshot' do
+    subject(:track) { described_class.new.track_billing_snapshot(**required_args) }
+
+    it 'emits over the network exactly as track_billing_event does' do
+      track
+
+      expect(Gitlab::Tracking).to have_received(:billing_event).with(
+        category,
+        event_type,
+        context: [an_instance_of(SnowplowTracker::SelfDescribingJson)]
+      )
     end
   end
 
@@ -261,15 +291,33 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
       )
     end
 
-    context 'when billing_event_tracking feature flag is disabled' do
+    context 'when the tracker does not emit the event' do
       before do
-        stub_feature_flags(billing_event_tracking: false)
+        allow(Gitlab::Tracking).to receive(:billing_event).and_return(false)
+        allow(Gitlab::AppLogger).to receive(:info)
       end
 
-      it 'does not track', :aggregate_failures do
-        expect { track }.not_to trigger_internal_events('usage_billing_event')
+      it 'logs that emission was skipped instead of tracked', :aggregate_failures do
+        track
 
-        expect(Gitlab::Tracking).not_to have_received(:billing_event)
+        expect(Gitlab::AppLogger).to have_received(:info).with(
+          hash_including(
+            message: 'BillingEvents: billing event emission skipped',
+            event_type: event_type,
+            namespace_id: namespace.id
+          )
+        )
+        expect(Gitlab::AppLogger).not_to have_received(:info).with(
+          hash_including(message: 'BillingEvents: billing event tracked')
+        )
+      end
+
+      it 'still tracks the internal event' do
+        expect(Gitlab::InternalEvents).to receive(:track_event).with(
+          'usage_billing_event', hash_including(category: category)
+        )
+
+        track
       end
     end
 
@@ -304,6 +352,22 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
             event_type: event_type,
             event_id: an_instance_of(String),
             namespace_id: namespace.id
+          )
+        )
+
+        expect { track }.not_to raise_error
+      end
+    end
+
+    context 'when namespace is nil' do
+      let(:args) { required_args.merge(namespace: nil) }
+
+      it 'tracks the exception rather than letting the error handler raise', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          an_instance_of(NoMethodError),
+          hash_including(
+            message: 'BillingEvents: tracking failed',
+            namespace_id: nil
           )
         )
 

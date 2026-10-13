@@ -37,8 +37,7 @@ RSpec.describe OmniAuth::Strategies::Bitbucket do
   end
 
   before do
-    allow(strategy).to receive(:raw_info).and_return(raw_info)
-    allow(strategy).to receive(:emails).and_return(emails)
+    allow(strategy).to receive_messages(raw_info: raw_info, emails: emails)
   end
 
   describe 'uid' do
@@ -66,8 +65,7 @@ RSpec.describe OmniAuth::Strategies::Bitbucket do
     context 'when script name is not present' do
       it 'has the correct default callback path' do
         allow(strategy).to receive(:full_host) { base_url }
-        allow(strategy).to receive(:script_name).and_return('')
-        allow(strategy).to receive(:query_string).and_return('')
+        allow(strategy).to receive_messages(script_name: '', query_string: '')
         expect(strategy.callback_url).to eq("#{base_url}/users/auth/bitbucket/callback")
       end
     end
@@ -75,8 +73,7 @@ RSpec.describe OmniAuth::Strategies::Bitbucket do
     context 'when script name is present' do
       it 'sets the callback path with script_name' do
         allow(strategy).to receive(:full_host) { base_url }
-        allow(strategy).to receive(:script_name).and_return('/v1')
-        allow(strategy).to receive(:query_string).and_return('')
+        allow(strategy).to receive_messages(script_name: '/v1', query_string: '')
         expect(strategy.callback_url).to eq("#{base_url}/v1/users/auth/bitbucket/callback")
       end
     end

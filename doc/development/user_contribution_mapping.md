@@ -122,7 +122,6 @@ flowchart
 1. Implement a feature flag for user mapping within the importer.
 1. Ensure that the feature flag state is stored at the beginning of the importer so that changing the flag state during an import does not affect the ongoing import.
    - Third-party importers accomplish this by setting `project.import_data[:data][:user_contribution_mapping_enabled]` at the start of the import. See [`Gitlab::GithubImport::Settings`](https://gitlab.com/gitlab-org/gitlab/-/blob/5849575ce96582fb00ee9ad7cc58034c08006a22/lib/gitlab/github_import/settings.rb#L57) or [`Gitlab::BitbucketServerImport::ProjectCreator`](https://gitlab.com/gitlab-org/gitlab/-/blob/5849575ce96582fb00ee9ad7cc58034c08006a22/lib/gitlab/bitbucket_server_import/project_creator.rb#L45) as examples.
-   - direct transfer uses `EphemeralData` in [`BulkImports::CreateService`](https://gitlab.com/gitlab-org/gitlab/-/blob/5849575ce96582fb00ee9ad7cc58034c08006a22/app/services/bulk_imports/create_service.rb#L59) to cache the feature flag states.
 1. Before saving a user contribution to the database, use `Gitlab::Import::SourceUserMapper#find_or_create_source_user` to find the correct `User` to attribute the contribution to.
 1. Save the contribution with the mapped user to the database.
 1. Once the record is persisted, initialize `Import::PlaceholderReferences::PushService` and execute it to push an initialized `Import::SourceUserPlaceholderReference` to Redis. Initializing the service using `from_record` is often most convenient.

@@ -12,10 +12,13 @@ module Groups
       push_force_frontend_feature_flag(:work_item_features_field,
         Feature.enabled?(:work_item_features_field, current_user))
       push_frontend_feature_flag(:work_item_rest_api_frontend_users, current_user)
-      push_frontend_feature_flag(:planning_view_boards, current_user)
+      push_force_frontend_feature_flag(:planning_view_boards,
+        Feature.enabled?(:planning_view_boards, current_user) ||
+          Feature.enabled?(:planning_view_boards_group, group&.root_ancestor))
+      push_force_frontend_feature_flag(:planning_view_boards_group,
+        Feature.enabled?(:planning_view_boards_group, group&.root_ancestor))
       push_frontend_feature_flag(:planning_view_table, current_user)
       push_frontend_feature_flag(:work_items_realtime, current_user)
-      push_frontend_feature_flag(:work_items_task_list_toggle, group.root_ancestor)
     end
 
     def show
@@ -23,5 +26,3 @@ module Groups
     end
   end
 end
-
-Groups::SavedViewsController.prepend_mod

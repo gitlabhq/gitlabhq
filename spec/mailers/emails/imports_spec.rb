@@ -7,6 +7,10 @@ RSpec.describe Emails::Imports, feature_category: :importers do
   include EmailSpec::Matchers
 
   let(:user) { build_stubbed(:user) }
+  let(:offline_warning) do
+    s_('UserMapping|This import was created from a file. ' \
+      'The source hostname was supplied by the importing user and GitLab cannot verify it.')
+  end
 
   describe '#github_gists_import_errors_email' do
     let(:errors) { { 'gist_id1' => "Title can't be blank", 'gist_id2' => 'Snippet maximum file count exceeded' } }
@@ -51,35 +55,73 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
   end
 
-  describe '#bulk_import_offline_complete' do
+  shared_examples 'an offline transfer import email' do
     let(:bulk_import) { build_stubbed(:bulk_import, :finished, :with_offline_configuration) }
     let(:configuration) { bulk_import.offline_configuration }
-
-    subject { Notify.bulk_import_offline_complete('user_id', 'bulk_import_id') }
+    let(:start_date) { I18n.l(bulk_import.created_at.to_date, format: :long) }
 
     before do
       allow(User).to receive(:find).and_return(user)
       allow(BulkImport).to receive(:find).and_return(bulk_import)
     end
 
-    it 'sends complete email', :aggregate_failures do
-      start_date = I18n.l(bulk_import.created_at.to_date, format: :long)
-
-      is_expected.to have_subject('Offline transfer import completed')
-      is_expected.to have_content('Offline transfer import completed')
-      is_expected.to have_content("The offline transfer import you started on #{start_date} " \
-        "from export #{configuration.export_prefix} has completed. You can now review your import results.")
+    it 'reports the import outcome', :aggregate_failures do
+      is_expected.to have_subject(expected_title)
+      is_expected.to have_content(expected_title)
+      is_expected.to have_content(format(
+        expected_message_with_prefix,
+        start_date: start_date,
+        strong_open: '',
+        strong_close: '',
+        export_prefix: configuration.export_prefix
+      ))
       is_expected.to have_content('is not verified, so it may not be trustworthy')
-      is_expected.to have_content(configuration.source_hostname)
+      is_expected.to have_content(expected_results_label)
       is_expected.to have_body_text(history_import_bulk_import_url(bulk_import.id))
     end
 
+    context 'when the bulk import has no configuration' do
+      before do
+        allow(bulk_import).to receive(:offline_configuration).and_return(nil)
+      end
+
+      it 'omits the unverified source section and export prefix', :aggregate_failures do
+        is_expected.to have_content(format(expected_message_without_prefix, start_date: start_date))
+        is_expected.not_to have_content('is not verified, so it may not be trustworthy')
+        is_expected.not_to have_content('from export')
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
+  describe '#bulk_import_offline_complete' do
+    subject { Notify.bulk_import_offline_complete('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import completed') }
+      let(:expected_results_label) { s_('OfflineTransfer|View import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has completed. You can now review your import results.')
+      end
+
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. ' \
+          'You can now review your import results.')
+      end
+    end
+
     context 'when source_hostname contains credentials' do
+      let(:bulk_import) { build_stubbed(:bulk_import, :finished) }
       let(:configuration) do
         build_stubbed(:offline_configuration, source_hostname: 'https://user:secret@gitlab.example.com')
       end
 
       before do
+        allow(User).to receive(:find).and_return(user)
+        allow(BulkImport).to receive(:find).and_return(bulk_import)
         allow(bulk_import).to receive(:offline_configuration).and_return(configuration)
       end
 
@@ -89,11 +131,12 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     context 'when source_hostname is not present' do
-      let(:configuration) do
-        build_stubbed(:offline_configuration, source_hostname: nil)
-      end
+      let(:bulk_import) { build_stubbed(:bulk_import, :finished) }
+      let(:configuration) { build_stubbed(:offline_configuration, source_hostname: nil) }
 
       before do
+        allow(User).to receive(:find).and_return(user)
+        allow(BulkImport).to receive(:find).and_return(bulk_import)
         allow(bulk_import).to receive(:offline_configuration).and_return(configuration)
       end
 
@@ -102,21 +145,62 @@ RSpec.describe Emails::Imports, feature_category: :importers do
         is_expected.not_to have_content('is not verified, so it may not be trustworthy')
       end
     end
+  end
 
-    context 'when the bulk import has no configuration' do
-      before do
-        allow(bulk_import).to receive(:offline_configuration).and_return(nil)
+  describe '#bulk_import_offline_complete_with_errors' do
+    subject { Notify.bulk_import_offline_complete_with_errors('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import completed with errors') }
+      let(:expected_results_label) { s_('OfflineTransfer|View import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has completed with errors. ' \
+          'You can now review your import results.')
       end
 
-      it 'omits the unverified source section and export prefix', :aggregate_failures do
-        is_expected.to have_content('Offline transfer import completed')
-        is_expected.not_to have_content('is not verified, so it may not be trustworthy')
-        is_expected.not_to have_content('from export')
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has completed ' \
+          'with errors. You can now review your import results.')
       end
     end
+  end
 
-    it_behaves_like 'appearance header and footer enabled'
-    it_behaves_like 'appearance header and footer not enabled'
+  describe '#bulk_import_offline_failed' do
+    subject { Notify.bulk_import_offline_failed('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import failed') }
+      let(:expected_results_label) { s_('OfflineTransfer|View partial import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has failed. You can now review your partial import results.')
+      end
+
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has failed. ' \
+          'You can now review your partial import results.')
+      end
+    end
+  end
+
+  describe '#bulk_import_offline_timeout' do
+    subject { Notify.bulk_import_offline_timeout('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import timed out') }
+      let(:expected_results_label) { s_('OfflineTransfer|View partial import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has timed out. ' \
+          'You can now review your partial import results.')
+      end
+
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has timed out. ' \
+          'You can now review your partial import results.')
+      end
+    end
   end
 
   describe '#bulk_import_csv_user_mapping' do
@@ -257,6 +341,9 @@ RSpec.describe Emails::Imports, feature_category: :importers do
       is_expected.to have_content('Export failed')
       is_expected.to have_content(configuration.source_hostname)
       is_expected.to have_content(start_date)
+      is_expected.to have_content(configuration.export_prefix)
+      is_expected.to have_content('You can safely delete any files found at that path')
+      is_expected.to have_content('To try again, start a new export from your source GitLab instance')
     end
 
     context 'when source_hostname contains credentials' do
@@ -275,13 +362,15 @@ RSpec.describe Emails::Imports, feature_category: :importers do
   describe '#import_source_user_reassign' do
     let(:user) { build_stubbed(:user) }
     let(:group) { build_stubbed(:group) }
+    let(:import_type) { 'github' }
     let(:source_user) do
       build_stubbed(
-        :import_source_user, :awaiting_approval, :with_reassigned_by_user, namespace: group, reassign_to_user: user
+        :import_source_user, :awaiting_approval, :with_reassigned_by_user, namespace: group, reassign_to_user: user,
+        import_type: import_type
       )
     end
 
-    subject { Notify.import_source_user_reassign('user_id') }
+    subject(:email) { Notify.import_source_user_reassign('user_id') }
 
     before do
       allow(Import::SourceUser).to receive(:find).and_return(source_user)
@@ -299,6 +388,20 @@ RSpec.describe Emails::Imports, feature_category: :importers do
       is_expected.to have_body_text(
         namespaced_show_import_source_users_url(source_user.namespace_id, source_user.reassignment_token)
       )
+    end
+
+    it 'does not describe other imports as offline transfers', :aggregate_failures do
+      expect(email.html_part.decoded).not_to include(offline_warning)
+      expect(email.text_part.decoded).not_to include(offline_warning)
+    end
+
+    context 'when imported through offline transfer' do
+      let(:import_type) { Import::SOURCE_OFFLINE_TRANSFER.to_s }
+
+      it 'explains the file-based import and unverified source hostname', :aggregate_failures do
+        expect(email.html_part.decoded).to include(offline_warning)
+        expect(email.text_part.decoded).to include(offline_warning)
+      end
     end
 
     it_behaves_like 'appearance header and footer enabled'
@@ -331,16 +434,46 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     it_behaves_like 'appearance header and footer not enabled'
   end
 
+  describe '#import_source_user_revoked' do
+    let(:user) { build_stubbed(:user) }
+    let(:owner) { build_stubbed(:owner) }
+    let(:group) { build_stubbed(:group) }
+    let(:source_user) do
+      build_stubbed(:import_source_user, namespace: group, reassign_to_user: user, reassigned_by_user: owner)
+    end
+
+    subject { Notify.import_source_user_revoked('user_id') }
+
+    before do
+      allow(Import::SourceUser).to receive(:find).and_return(source_user)
+    end
+
+    it 'sends revoked email' do
+      is_expected.to deliver_to(owner.email)
+      is_expected.to have_subject("Reassignments in #{group.full_path} revoked")
+      is_expected.to have_content('Reassignment revoked')
+      is_expected.to have_content("#{user.name} (@#{user.username}) has revoked their previously approved reassignment")
+      is_expected.to have_content("Contributions already reassigned to #{user.name} remain attributed to them.")
+      is_expected.to have_content('To reassign these contributions to another user, go to the Members page')
+      is_expected.to have_link('Members page', href: group_group_members_url(group, tab: 'placeholders'))
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
   describe '#import_source_user_complete' do
     let(:user) { build_stubbed(:user) }
     let(:group) { build_stubbed(:group) }
+    let(:import_type) { 'github' }
     let(:source_user) do
       build_stubbed(
-        :import_source_user, :completed, :with_reassigned_by_user, namespace: group, reassign_to_user: user
+        :import_source_user, :completed, :with_reassigned_by_user, namespace: group, reassign_to_user: user,
+        import_type: import_type
       )
     end
 
-    subject { Notify.import_source_user_complete('user_id') }
+    subject(:email) { Notify.import_source_user_complete('user_id') }
 
     before do
       allow(Import::SourceUser).to receive(:find).and_return(source_user)
@@ -361,6 +494,20 @@ RSpec.describe Emails::Imports, feature_category: :importers do
         source_user.reassigned_by_user.to_reference,
         href: user_url(source_user.reassigned_by_user)
       )
+    end
+
+    it 'does not describe other imports as offline transfers', :aggregate_failures do
+      expect(email.html_part.decoded).not_to include(offline_warning)
+      expect(email.text_part.decoded).not_to include(offline_warning)
+    end
+
+    context 'when imported through offline transfer' do
+      let(:import_type) { Import::SOURCE_OFFLINE_TRANSFER.to_s }
+
+      it 'explains the file-based import and unverified source hostname', :aggregate_failures do
+        expect(email.html_part.decoded).to include(offline_warning)
+        expect(email.text_part.decoded).to include(offline_warning)
+      end
     end
 
     context 'when admin placeholder bypass is enabled' do

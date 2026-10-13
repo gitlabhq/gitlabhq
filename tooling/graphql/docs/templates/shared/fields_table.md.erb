@@ -1,0 +1,5 @@
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+<% sorted_by_name(@fields).each do |field| %>
+| <%= name(field) %> | <%= type(field) %> | <%= field_description(field).squish %><%= docs_render('fields_table_arguments', field: field) if documented_arguments?(field) %> |
+<% end %>

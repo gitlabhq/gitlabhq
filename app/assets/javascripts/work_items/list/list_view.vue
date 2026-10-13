@@ -7,7 +7,6 @@ import {
   GlIcon,
   GlTooltipDirective,
   GlSkeletonLoader,
-  GlModalDirective,
   GlAlert,
   GlToastMixin,
 } from '@gitlab/ui';
@@ -43,7 +42,6 @@ import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url
 import {
   STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_NAME_EPIC,
   METADATA_KEYS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
@@ -84,7 +82,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: ['isGroup', 'workItemType'],
@@ -115,18 +112,10 @@ export default {
       required: false,
       default: false,
     },
-    hasWorkItems: {
-      type: Boolean,
-      required: true,
-    },
     error: {
       type: String,
       required: false,
       default: undefined,
-    },
-    initialLoadWasFiltered: {
-      type: Boolean,
-      required: true,
     },
     showBulkEditSidebar: {
       type: Boolean,
@@ -233,23 +222,11 @@ export default {
     checkedIssuables() {
       return this.workItems.filter((issuable) => this.checkedIssuableIds.includes(issuable.id));
     },
-    shouldShowList() {
-      return (
-        this.hasWorkItems === true ||
-        this.error ||
-        this.initialLoadWasFiltered ||
-        this.workItems.length > 0 ||
-        !this.isEpicsList
-      );
-    },
     workItemDetailPanelEnabled() {
       return this.displaySettings?.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
     isServiceDeskList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
-    },
-    isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     hasSearch() {
       return Boolean(this.searchQuery);
@@ -519,7 +496,7 @@ export default {
   <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
   <div
-    v-else-if="shouldShowList"
+    v-else
     :class="{ 'work-item-list-container': !isServiceDeskList }"
     class="issuable-list-container"
   >
@@ -544,7 +521,6 @@ export default {
             v-if="showBulkEditSidebar"
             :checked-items="checkedIssuables"
             :full-path="rootPageFullPath"
-            :is-epics-list="isEpicsList"
             :is-group="isGroup"
             @finish="bulkEditInProgress = false"
             @start="bulkEditInProgress = true"
@@ -679,9 +655,5 @@ export default {
         />
       </local-storage-sync>
     </div>
-  </div>
-
-  <div v-else>
-    <slot name="page-empty-state"></slot>
   </div>
 </template>

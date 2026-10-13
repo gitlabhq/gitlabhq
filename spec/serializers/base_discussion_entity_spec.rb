@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BaseDiscussionEntity, feature_category: :shared do
-  let_it_be(:user) { create(:user) }
   let_it_be(:note) { create(:discussion_note_on_merge_request) }
 
+  let(:user) { build_stubbed(:user) }
   let(:request) { double('request', note_entity: ProjectNoteEntity) }
   let(:controller) { double('controller') }
   let(:entity) { described_class.new(discussion, request: request, context: controller) }
@@ -15,8 +15,7 @@ RSpec.describe BaseDiscussionEntity, feature_category: :shared do
 
   before do
     allow(controller).to receive(:render_to_string)
-    allow(request).to receive(:current_user).and_return(user)
-    allow(request).to receive(:noteable).and_return(note.noteable)
+    allow(request).to receive_messages(current_user: user, noteable: note.noteable)
   end
 
   it 'exposes correct attributes' do

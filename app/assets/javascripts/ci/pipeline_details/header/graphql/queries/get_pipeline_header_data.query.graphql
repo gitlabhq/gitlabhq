@@ -40,6 +40,7 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
           emoji
         }
       }
+      commitTitle @gl_introduced(version: "19.5.0")
       commit {
         id
         sha

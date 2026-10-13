@@ -84,7 +84,11 @@ On the primary site:
 ## Reset verification for projects where verification has failed
 
 Geo actively tries to correct verification failures marking the repository to
-be resynced with a back-off period. You can also manually [resync and reverify individual components through the UI or the Rails console](../replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+be resynced with a back-off period. You can also manually [resync and reverify individual components through the UI or the Rails console](../replication/resync_reverify.md#resync-and-reverify-individual-components).
+
+The Geo Rake tasks previously documented for resetting verification are no longer available in
+GitLab 16.5 and later. Use the UI-based bulk actions or the Rails console procedures in
+[Resync and reverify Geo data](../replication/resync_reverify.md) instead.
 
 ## Reconcile differences with checksum mismatches
 

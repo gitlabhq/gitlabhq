@@ -62,6 +62,22 @@ RSpec.describe Ci::PlayManualStageService, '#execute', feature_category: :contin
     end
   end
 
+  context 'when playing a build is rejected by the service' do
+    before do
+      allow_next_instance_of(Ci::PlayBuildService) do |service|
+        allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Too many requests'))
+      end
+    end
+
+    it 'logs the error and continues processing other jobs' do
+      expect(Gitlab::AppLogger).to receive(:error)
+        .with(hash_including(message: 'Unable to play manual action', error: 'Too many requests'))
+        .exactly(stage.processables.manual.where(type: 'Ci::Build').count).times
+
+      service.execute(stage)
+    end
+  end
+
   context 'when processable is not playable' do
     let(:stage_status) { 'skipped' }
 

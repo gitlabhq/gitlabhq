@@ -97,7 +97,7 @@ module API
       end
       route_setting :authorization, permissions: :create_bulk_import, boundary_type: :instance
       post do
-        check_rate_limit!(:bulk_import, scope: current_user)
+        check_rate_limit!(:bulk_import, scope: { user: current_user })
 
         params[:entities].each do |entity|
           if entity[:destination_name]
@@ -110,7 +110,8 @@ module API
           current_user,
           params[:entities],
           params[:configuration].slice(:url, :access_token),
-          fallback_organization: Current.organization
+          fallback_organization: Current.organization,
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?
@@ -134,9 +135,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order by creation date.'
         optional :status, type: String, values: BulkImport.all_human_statuses,
-          desc: 'Return GitLab Migrations with specified status'
+          desc: 'Filter migrations by import status.'
       end
       route_setting :authorization, permissions: :read_bulk_import, boundary_type: :instance
       get do
@@ -157,9 +158,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order by creation date.'
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
-          desc: "Return all GitLab Migrations' entities with specified status"
+          desc: 'Filter entities by import status.'
       end
       route_setting :authorization, permissions: :read_bulk_import_entity, boundary_type: :instance
       get :entities do
@@ -182,7 +183,7 @@ module API
         tags %w[imports]
       end
       params do
-        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
+        requires :import_id, type: Integer, desc: 'ID of the GitLab Migration.'
       end
       route_setting :authorization, permissions: :read_bulk_import, boundary_type: :instance
       get ':import_id' do
@@ -201,9 +202,9 @@ module API
         tags %w[imports]
       end
       params do
-        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
+        requires :import_id, type: Integer, desc: 'ID of the GitLab Migration.'
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
-          desc: 'Return import entities with specified status'
+          desc: 'Filter entities by import status.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_bulk_import_entity, boundary_type: :instance
@@ -222,8 +223,8 @@ module API
         tags %w[imports]
       end
       params do
-        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
-        requires :entity_id, type: Integer, desc: "The ID of GitLab Migration entity"
+        requires :import_id, type: Integer, desc: 'ID of the GitLab Migration.'
+        requires :entity_id, type: Integer, desc: 'ID of the GitLab Migration entity.'
       end
       route_setting :authorization, permissions: :read_bulk_import_entity, boundary_type: :instance
       get ':import_id/entities/:entity_id' do
@@ -242,8 +243,8 @@ module API
         tags %w[imports]
       end
       params do
-        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
-        requires :entity_id, type: Integer, desc: "The ID of GitLab Migration entity"
+        requires :import_id, type: Integer, desc: 'ID of the GitLab Migration.'
+        requires :entity_id, type: Integer, desc: 'ID of the GitLab Migration entity.'
       end
       route_setting :authorization, permissions: :read_bulk_import_entity_failure, boundary_type: :instance
       get ':import_id/entities/:entity_id/failures' do
@@ -263,7 +264,7 @@ module API
       end
 
       params do
-        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
+        requires :import_id, type: Integer, desc: 'ID of the GitLab Migration.'
       end
       route_setting :authorization, permissions: :cancel_bulk_import, boundary_type: :instance
       post ':import_id/cancel' do

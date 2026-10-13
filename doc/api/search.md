@@ -54,8 +54,15 @@ GET /search
 | `num_context_lines`  | integer          | No       | Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11. |
 | `state`              | string           | No       | Filter by state. Supports `issues`, `work_items`, and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
 | `type`               | array of strings | No       | Filter work items by type. Only applies to `work_items` scope. Available types: `issue`, `task`, `epic`, `incident`, `test_case`, `requirement`, `objective`, `key_result`, `ticket`.                          |
-| `order_by`           | string           | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `order_by`           | string           | No       | Allowed values are `created_at` and `title`. You can sort by `title` for the `issues`, `work_items`, and `merge_requests` scopes with basic search, and for the `issues` and `work_items` scopes with advanced search. Until the advanced search backfill for title sorting has finished, advanced search answers `order_by=title` with results sorted by `created_at` in descending order. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/565410) in GitLab 19.5. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
 | `sort`               | string           | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
+| `author_username`    | string           | No       | Filter by author username. A username that matches no user is ignored. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `label_name`         | array of strings | No       | Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[author_username]` | string           | No       | Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[source_branch]` | string           | No       | Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[target_branch]` | string           | No       | Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `source_branch`      | string           | No       | Filter merge requests by source branch. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `target_branch`      | string           | No       | Filter merge requests by target branch. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
 
 ### Scope: `projects`
 
@@ -97,12 +104,9 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/607018) in GitLab 19.5. Feature flag `elasticsearch_group_search` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this scope is controlled by a feature flag.
-> For more information, see the history.
 
 ```shell
 curl --request GET \
@@ -629,8 +633,15 @@ GET /groups/:id/search
 | `num_context_lines`  | integer           | No       | Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11. |
 | `state`              | string            | No       | Filter by state. Supports `issues`, `work_items`, and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
 | `type`               | array of strings  | No       | Filter work items by type. Only applies to `work_items` scope. Available types: `issue`, `task`, `epic`, `incident`, `test_case`, `requirement`, `objective`, `key_result`, `ticket`.                          |
-| `order_by`           | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `order_by`           | string            | No       | Allowed values are `created_at` and `title`. You can sort by `title` for the `issues`, `work_items`, and `merge_requests` scopes with basic search, and for the `issues` and `work_items` scopes with advanced search. Until the advanced search backfill for title sorting has finished, advanced search answers `order_by=title` with results sorted by `created_at` in descending order. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/565410) in GitLab 19.5. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
 | `sort`               | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
+| `author_username`    | string            | No       | Filter by author username. A username that matches no user is ignored. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `label_name`         | array of strings  | No       | Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[author_username]` | string            | No       | Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[source_branch]` | string            | No       | Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[target_branch]` | string            | No       | Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `source_branch`      | string            | No       | Filter merge requests by source branch. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `target_branch`      | string            | No       | Filter merge requests by target branch. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
 
 The response depends on the requested scope.
 
@@ -674,12 +685,9 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/607018) in GitLab 19.5. Feature flag `elasticsearch_group_search` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this scope is controlled by a feature flag.
-> For more information, see the history.
 
 This scope returns the subgroups of the specified group, not the group itself.
 
@@ -1174,8 +1182,15 @@ GET /projects/:id/search
 | `ref`                | string            | No       | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`.                                         |
 | `state`              | string            | No       | Filter by state. Supports `issues`, `work_items`, and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
 | `type`               | array of strings  | No       | Filter work items by type. Only applies to `work_items` scope. Available types: `issue`, `task`, `epic`, `incident`, `test_case`, `requirement`, `objective`, `key_result`, `ticket`.                          |
-| `order_by`           | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `order_by`           | string            | No       | Allowed values are `created_at` and `title`. You can sort by `title` for the `issues`, `work_items`, and `merge_requests` scopes with basic search, and for the `issues` and `work_items` scopes with advanced search. Until the advanced search backfill for title sorting has finished, advanced search answers `order_by=title` with results sorted by `created_at` in descending order. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/565410) in GitLab 19.5. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
 | `sort`               | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
+| `author_username`    | string            | No       | Filter by author username. A username that matches no user is ignored. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `label_name`         | array of strings  | No       | Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[author_username]` | string            | No       | Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Supports the `issues`, `merge_requests`, and `work_items` scopes with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[source_branch]` | string            | No       | Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `not[target_branch]` | string            | No       | Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `source_branch`      | string            | No       | Filter merge requests by source branch. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
+| `target_branch`      | string            | No       | Filter merge requests by target branch. Supports only the `merge_requests` scope with advanced search. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5. |
 
 The response depends on the requested scope.
 

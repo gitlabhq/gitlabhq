@@ -139,7 +139,7 @@ module API
       end
 
       def validate_projects_api_rate_limit_for_unauthenticated_users!
-        check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
+        check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: { ip: ip_address })
       end
 
       def validate_projects_api_rate_limit!
@@ -153,7 +153,7 @@ module API
 
     helpers do
       params :statistics_params do
-        optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
+        optional :statistics, type: Boolean, default: false, desc: 'If `true`, includes project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role.'
       end
 
       params :collection_params do
@@ -162,7 +162,7 @@ module API
         use :pagination
 
         optional :simple, type: Boolean, default: false,
-          desc: 'Return only the ID, URL, name, and path of each project'
+          desc: 'If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.'
       end
 
       params :sort_params do
@@ -170,35 +170,35 @@ module API
           values: %w[id name path created_at updated_at last_activity_at similarity star_count] + Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS,
           default: 'created_at', desc: "Return projects ordered by field. #{Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.join(', ')} are only available to admins. Similarity is available when searching and is limited to projects the user has access to."
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return projects sorted in ascending and descending order'
+          desc: 'Sort results in ascending or descending order.'
       end
 
       params :filter_params do
-        optional :archived, type: Boolean, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'If `true`, returns only archived projects.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-          desc: 'Limit by visibility'
-        optional :search, type: String, desc: 'Return list of projects matching the search criteria'
-        optional :search_namespaces, type: Boolean, desc: "Include ancestor namespaces when matching search criteria"
-        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
-        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
-        optional :imported, type: Boolean, default: false, desc: 'Limit by imported by authenticated user'
-        optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
-        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
-        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
-        optional :with_programming_language, type: String, desc: 'Limit to repositories which use the given programming language'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-        optional :id_after, type: Integer, desc: 'Limit results to projects with IDs greater than the specified ID'
-        optional :id_before, type: Integer, desc: 'Limit results to projects with IDs less than the specified ID'
-        optional :last_activity_after, type: DateTime, desc: 'Limit results to projects with last_activity after specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
-        optional :last_activity_before, type: DateTime, desc: 'Limit results to projects with last_activity before specified time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
-        optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
-        optional :topic, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of topics. Limit results to projects having all topics'
-        optional :topic_id, type: Integer, desc: 'Limit results to projects with the assigned topic given by the topic ID'
-        optional :updated_before, type: DateTime, desc: 'Return projects updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
-        optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
-        optional :include_pending_delete, type: Boolean, desc: 'Include projects in pending delete state. Can only be set by admins'
-        optional :marked_for_deletion_on, type: Date, desc: 'Date when the project was marked for deletion'
-        optional :active, type: Boolean, desc: 'Limit by projects that are not archived and not marked for deletion'
+          desc: 'Return projects with the specified visibility.'
+        optional :search, type: String, desc: 'Return a list of projects with a `path`, `name`, or `description` matching the search criteria (case-insensitive, substring match). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and are ANDed together. Example: `one+two` matches substrings `one` and `two` (in any order).'
+        optional :search_namespaces, type: Boolean, desc: 'If `true`, includes ancestor namespaces when matching search criteria.'
+        optional :owned, type: Boolean, default: false, desc: 'If `true`, returns only projects explicitly owned by the current user.'
+        optional :starred, type: Boolean, default: false, desc: 'If `true`, returns only projects starred by the current user.'
+        optional :imported, type: Boolean, default: false, desc: 'If `true`, returns only projects that were imported from external systems by the authenticated user.'
+        optional :membership, type: Boolean, default: false, desc: 'If `true`, returns only projects that the current user is a member of.'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'If `true`, returns only projects that have the issues feature enabled.'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'If `true`, returns only projects that have the merge requests feature enabled.'
+        optional :with_programming_language, type: String, desc: 'Return projects that use the given programming language.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return results where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+        optional :id_after, type: Integer, desc: 'Return projects with IDs greater than the specified ID.'
+        optional :id_before, type: Integer, desc: 'Return projects with IDs less than the specified ID.'
+        optional :last_activity_after, type: DateTime, desc: 'Return projects with last activity after the specified time.'
+        optional :last_activity_before, type: DateTime, desc: 'Return projects with last activity before the specified time.'
+        optional :repository_storage, type: String, desc: 'Return projects stored on the specified repository storage shard. Administrators only.'
+        optional :topic, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of topics. Return projects having all topics.'
+        optional :topic_id, type: Integer, desc: 'Filter projects by the given topic ID.'
+        optional :updated_before, type: DateTime, desc: 'Return projects last updated on or before the specified time.'
+        optional :updated_after, type: DateTime, desc: 'Return projects last updated on or after the specified time.'
+        optional :include_pending_delete, type: Boolean, desc: 'If `true`, includes projects that are pending deletion in the response. Administrators only.'
+        optional :marked_for_deletion_on, type: Date, desc: 'Return projects that are marked for deletion on this date. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1.'
+        optional :active, type: Boolean, desc: 'If `true`, returns only projects that are not archived and not marked for deletion.'
 
         use :optional_filter_params_ee
       end
@@ -212,7 +212,7 @@ module API
       end
 
       def load_projects
-        project_params = project_finder_params.merge(current_organization: Current.organization)
+        project_params = project_finder_params.merge(organization: Current.organization)
         support_order_by_similarity!(project_params)
         verify_project_filters!(project_params)
         ProjectsFinder.new(current_user: current_user, params: project_params).execute
@@ -224,10 +224,25 @@ module API
         present project, **options
       end
 
+      def sort_projects(projects)
+        return projects.sort_without_index(params[:order_by], params[:sort]) if sort_membership_projects_without_index?
+
+        reorder_projects(projects)
+      end
+
+      # A user's own projects are few compared to all projects, so sorting them directly is cheaper than
+      # letting PostgreSQL walk a (column, id) index. See https://gitlab.com/gitlab-org/gitlab/-/work_items/605822
+      def sort_membership_projects_without_index?
+        current_user.present? &&
+          (params[:membership].present? || params[:min_access_level].present?) &&
+          Project::SORT_WITHOUT_INDEX_EXPRESSIONS.key?(params[:order_by]) &&
+          Feature.enabled?(:sort_membership_projects_without_index, current_user)
+      end
+
       def present_projects(projects, options = {})
         verify_statistics_order_by_projects!
 
-        projects = reorder_projects(projects) unless order_by_similarity?(allow_unauthorized: false)
+        projects = sort_projects(projects) unless order_by_similarity?(allow_unauthorized: false)
         projects = apply_filters(projects)
 
         records, options = paginate_with_strategies(projects, options[:request_scope], use_cursor: false) do |projects|
@@ -269,6 +284,13 @@ module API
       def add_import_params(params)
         params[:import_type] = 'git' if params[:import_url].present?
         params
+      end
+
+      # Picked up by ProjectImportState#after_create when CreateService builds the import state.
+      def stash_import_request_channel(params)
+        return unless params[:import_url].present?
+
+        ::Gitlab::Import::RequestChannel.stash(::Gitlab::Import::RequestChannel.detect(request))
       end
 
       # `cicd_catalog_enabled` is not a project attribute. It is backed by the
@@ -330,7 +352,7 @@ module API
         is_array true
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
         use :collection_params
         use :statistics_params
         use :with_custom_attributes
@@ -356,12 +378,12 @@ module API
         is_array true
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
         use :sort_params
         use :pagination
 
         optional :simple, type: Boolean, default: false,
-          desc: 'Return only the ID, URL, name, and path of each project'
+          desc: 'If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.'
       end
 
       route_setting :authorization, permissions: :read_contributed_project, boundary_type: :user
@@ -384,7 +406,7 @@ module API
         is_array true
       end
       params do
-        requires :user_id, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'ID or username of the user.'
         use :collection_params
         use :statistics_params
       end
@@ -410,7 +432,7 @@ module API
         tags ['projects']
       end
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       route_setting :authorization, permissions: :restore_project, boundary_type: :project
       post ':id/restore', feature_category: :system_access do
@@ -426,7 +448,8 @@ module API
 
       desc 'List all projects' do
         detail 'Lists all projects. Unauthenticated requests return only public projects with a limited subset of ' \
-          'attributes. You can filter responses by custom attributes.'
+          'attributes. You can filter responses by custom attributes. To use the `updated_after` or ' \
+          '`updated_before` filters, you must also set `order_by` to `updated_at`.'
         success code: 200, model: Entities::BasicProjectDetails
         failure [
           { code: 400, message: 'Bad request' }
@@ -472,7 +495,7 @@ module API
       route_setting :authorization, permissions: :create_project, boundary_type: :user
       post urgency: :low do
         if Feature.enabled?(:namespace_create_rate_limit, current_user)
-          check_rate_limit!(:projects_create, scope: [current_user])
+          check_rate_limit!(:projects_create, scope: { user: current_user })
         end
 
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
@@ -485,6 +508,7 @@ module API
         validate_cicd_catalog_owner_access!(attrs, cicd_catalog_enabled)
 
         validate_git_import_url!(params[:import_url])
+        stash_import_request_channel(attrs)
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
@@ -517,7 +541,7 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the project', documentation: { example: 'New Project' }
-        requires :user_id, type: Integer, desc: 'The ID of a user', documentation: { example: 1 }
+        requires :user_id, type: Integer, desc: 'ID of the user to assign as the project owner.', documentation: { example: 1 }
         optional :path, type: String, desc: 'The path of the repository', documentation: { example: 'new_project' }
         optional :default_branch, type: String, desc: 'The default branch of the project', documentation: { example: 'main' }
         use :optional_project_params
@@ -525,7 +549,7 @@ module API
         use :create_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :create_project, boundary_type: :user
+      route_setting :authorization, permissions: :create_project, boundary_type: :user, assignable_when: [:admin]
       post "user/:user_id", feature_category: :groups_and_projects do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         authenticated_as_admin!
@@ -539,6 +563,7 @@ module API
         filter_attributes_using_license!(attrs)
         validate_cicd_catalog_description!(attrs, cicd_catalog_enabled)
         validate_git_import_url!(params[:import_url])
+        stash_import_request_channel(attrs)
 
         project = ::Projects::CreateService.new(user, attrs).execute
 
@@ -557,12 +582,12 @@ module API
 
       desc 'List all groups available to invite to a project' do
         detail 'Lists all groups that can be invited to a project.'
-        success Entities::Group
+        success Entities::PublicGroupDetails
         tags %w[projects groups]
       end
       params do
-        requires :id, type: Integer, desc: 'The id of the project'
-        optional :search, type: String, desc: 'Return list of groups matching the search criteria'
+        requires :id, type: Integer, desc: 'ID of the project.'
+        optional :search, type: String, desc: 'Return groups matching the search criteria.'
       end
       route_setting :authorization, permissions: :read_share_location, boundary_type: :project
       get ':id/share_locations' do
@@ -575,7 +600,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve a project' do
@@ -589,7 +614,7 @@ module API
         use :with_custom_attributes
 
         optional :license, type: Boolean, default: false,
-          desc: 'Include project license data'
+          desc: 'If `true`, includes the project license data in the response.'
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
       route_setting :authorization, permissions: :read_project, boundary_type: :project
@@ -620,19 +645,25 @@ module API
         tags %w[projects]
       end
       params do
-        optional :namespace, type: String, desc: '(deprecated) The ID or name of the namespace that the project will be forked into', documentation: { example: 'gitlab' }
-        optional :namespace_id, type: Integer, desc: 'The ID of the namespace that the project will be forked into', documentation: { example: 1 }
-        optional :namespace_path, type: String, desc: 'The path of the namespace that the project will be forked into', documentation: { example: 'new_path/gitlab' }
-        optional :path, type: String, desc: 'The path that will be assigned to the fork', documentation: { example: 'fork' }
-        optional :name, type: String, desc: 'The name that will be assigned to the fork', documentation: { example: 'Fork' }
-        optional :description, type: String, desc: 'The description that will be assigned to the fork', documentation: { example: 'Description' }
-        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
-        optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
-        optional :branches, type: String, desc: 'Branches to fork'
+        optional :namespace, type: String, desc: 'ID or path of the namespace to fork the new project into. Deprecated. Use `namespace_id` or `namespace_path` instead.', documentation: { example: 'gitlab' }
+        optional :namespace_id, type: Integer, desc: 'ID of the namespace to fork the new project into.', documentation: { example: 1 }
+        optional :namespace_path, type: String, desc: 'Path of the namespace to fork the new project into.', documentation: { example: 'new_path/gitlab' }
+        optional :path, type: String, desc: 'Path assigned to the new project after forking.', documentation: { example: 'fork' }
+        optional :name, type: String, desc: 'Name assigned to the new project after forking.', documentation: { example: 'Fork' }
+        optional :description, type: String, desc: 'Description assigned to the new project after forking.', documentation: { example: 'Description' }
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: '[Visibility level](https://docs.gitlab.com/api/projects/#project-visibility-level) assigned to the new project after forking.'
+        optional :mr_default_target_self, type: Boolean, desc: 'If `true`, merge requests from the forked project target this project. If `false`, they target the upstream project.'
+        optional :branches, type: String, desc: 'Branches to fork. Leave empty to fork all branches.'
       end
       route_setting :mcp, tool_name: :fork_repository, toolset: :repository,
         params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
-        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project",
+        container_arguments: {
+          record: {
+            namespace_id: ->(id) { ::Namespace.without_project_namespaces.find_by_id(id) },
+            namespace_path: ->(path) { ::Namespace.without_project_namespaces.find_by_full_path(path) }
+          }
+        }
       route_setting :authorization, permissions: :create_fork, boundary_type: :project
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')
@@ -855,7 +886,7 @@ module API
         tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of users matching the search criteria', documentation: { example: 'user' }
+        optional :search, type: String, desc: 'Search for a specific user by their username or name.', documentation: { example: 'user' }
         use :pagination
       end
       route_setting :authorization, permissions: :read_starring_user, boundary_type: :project
@@ -908,7 +939,7 @@ module API
         tags %w[projects]
       end
       params do
-        requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from', documentation: { example: 'gitlab' }
+        requires :forked_from_id, type: String, desc: 'ID of the project that was forked from.', documentation: { example: 'gitlab' }
       end
       route_setting :authorization, permissions: :create_fork_relationship, boundary_type: :project
       post ":id/fork/:forked_from_id", feature_category: :source_code_management do
@@ -967,9 +998,9 @@ module API
         tags %w[projects]
       end
       params do
-        requires :group_id, type: Integer, desc: 'The ID of a group', documentation: { example: 1 }
-        requires :group_access, type: Integer, values: Gitlab::Access.all_values, as: :link_group_access, desc: 'The group access level'
-        optional :expires_at, type: Date, desc: 'Share expiration date'
+        requires :group_id, type: Integer, desc: 'ID of the group to share the project with.', documentation: { example: 1 }
+        requires :group_access, type: Integer, values: Gitlab::Access.all_values, as: :link_group_access, desc: 'Access level to grant to the invited group. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).'
+        optional :expires_at, type: Date, desc: 'Date when the share expires.'
         use :share_project_params_ee
       end
       route_setting :authorization, permissions: :share_project, boundary_type: :project
@@ -1001,7 +1032,7 @@ module API
         tags %w[projects]
       end
       params do
-        requires :group_id, type: Integer, desc: 'The ID of the group'
+        requires :group_id, type: Integer, desc: 'ID of the shared group.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :unshare_project, boundary_type: :project
@@ -1036,7 +1067,7 @@ module API
         tags %w[projects]
       end
       params do
-        requires :project_id, type: Integer, desc: 'The ID of the source project to import the members from.'
+        requires :project_id, type: Integer, desc: 'ID of the source project to import the members from.'
       end
       route_setting :authorization, permissions: :import_member, boundary_type: :project
       post ":id/import_project_members/:project_id", feature_category: :groups_and_projects do
@@ -1069,8 +1100,8 @@ module API
         tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of users matching the search criteria', documentation: { example: 'user' }
-        optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
+        optional :search, type: String, desc: 'Search for a specific user by their username or name.', documentation: { example: 'user' }
+        optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out members with the specified IDs.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_contributing_user, boundary_type: :project
@@ -1094,15 +1125,15 @@ module API
         tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of groups matching the search criteria', documentation: { example: 'group' }
-        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
+        optional :search, type: String, desc: 'Return groups matching the search criteria.', documentation: { example: 'group' }
+        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Skip the specified group IDs.'
         optional :with_shared, type: Boolean, default: false,
-          desc: 'Include shared groups'
+          desc: 'If `true`, includes groups the project is shared with.'
         optional :shared_visible_only, type: Boolean, default: false,
-          desc: 'Limit to shared groups user has access to'
+          desc: 'If `true`, returns only shared groups the authenticated user can access.'
         # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
         optional :shared_min_access_level, type: Integer, values: Gitlab::Access.all_values,
-          desc: 'Limit returned shared groups by minimum access level to the project'
+          desc: 'Return shared groups with at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).'
         # rubocop:enable API/AccessLevelStringType
         use :pagination
       end
@@ -1119,14 +1150,14 @@ module API
           'groups. Limited to 60 requests a minute per user account for authenticated requires and per ' \
           'IP address for unauthenticated requests. Supports offset-based pagination (up to 50,000 projects) and ' \
           'keyset-based pagination (greater than 50,000 projects).'
-        success Entities::Group
+        success Entities::PublicGroupDetails
         is_array true
         tags %w[projects]
       end
       params do
-        optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Filter by group relation'
-        optional :search, type: String, desc: 'Search for a specific group'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+        optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Filter groups by relation.'
+        optional :search, type: String, desc: 'Return the list of authorized groups matching the search criteria.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return results where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
 
         use :pagination
         use :with_custom_attributes
@@ -1202,7 +1233,7 @@ module API
         tags %w[projects]
       end
       params do
-        requires :namespace, type: String, desc: 'The ID or path of the new namespace', documentation: { example: 'gitlab' }
+        requires :namespace, type: String, desc: 'ID or path of the namespace to transfer the project to.', documentation: { example: 'gitlab' }
       end
       route_setting :authorization, permissions: :transfer_project, boundary_type: :project
       put ":id/transfer", feature_category: :groups_and_projects do
@@ -1224,7 +1255,7 @@ module API
         tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of namespaces matching the search criteria', documentation: { example: 'search' }
+        optional :search, type: String, desc: 'Group name to search for.', documentation: { example: 'search' }
         use :pagination
       end
       route_setting :authorization, permissions: :read_project_transfer_location, boundary_type: :project
@@ -1251,9 +1282,9 @@ module API
         tags %w[projects]
       end
       params do
-        requires :id, type: String, desc: 'ID of a project'
+        requires :id, type: String, desc: 'ID or URL-encoded path of the project.'
       end
-      route_setting :authorization, permissions: :read_storage, boundary_type: :project
+      route_setting :authorization, permissions: :read_storage, boundary_type: :project, assignable_when: [:admin]
       get ':id/storage', feature_category: :source_code_management do
         authenticated_as_admin!
 

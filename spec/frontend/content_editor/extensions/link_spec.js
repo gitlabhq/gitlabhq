@@ -75,5 +75,50 @@ describe('content_editor/extensions/link', () => {
 
       expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
     });
+
+    describe('when the link has a data-placeholder attribute', () => {
+      it('decodes percent-encoded placeholders in the canonical src', () => {
+        tiptapEditor.commands.setContent(
+          '<a href="http://localhost/gitlab-org/gitlab" data-placeholder ' +
+            'data-canonical-src="http://%25%7Bgitlab_server%7D/%%7Bproject_path%7D">test</a>',
+        );
+
+        expect(tiptapEditor.getJSON()).toEqual(
+          doc(
+            p(
+              link(
+                {
+                  href: 'http://localhost/gitlab-org/gitlab',
+                  canonicalSrc: 'http://%{gitlab_server}/%{project_path}',
+                },
+                'test',
+              ),
+            ),
+          ).toJSON(),
+        );
+      });
+    });
+
+    describe('when the link has no data-placeholder attribute', () => {
+      it('leaves the canonical src as is', () => {
+        tiptapEditor.commands.setContent(
+          '<a href="http://example.com/%25%7Bfoo%7D" data-canonical-src="http://example.com/%25%7Bfoo%7D">test</a>',
+        );
+
+        expect(tiptapEditor.getJSON()).toEqual(
+          doc(
+            p(
+              link(
+                {
+                  href: 'http://example.com/%25%7Bfoo%7D',
+                  canonicalSrc: 'http://example.com/%25%7Bfoo%7D',
+                },
+                'test',
+              ),
+            ),
+          ).toJSON(),
+        );
+      });
+    });
   });
 });

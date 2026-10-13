@@ -12,6 +12,7 @@ project:
   - create_on_demand_dast_scan
   - create_pipeline
   - create_vulnerability_state_transition
+  - read_boundary
   - read_build
   - read_on_demand_dast_scan
   - read_package

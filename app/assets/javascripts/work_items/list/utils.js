@@ -163,17 +163,13 @@ export const getSortOptions = ({
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
   hasStatusFeature,
-  hasPriority = true,
-  hasMilestoneDueDate = true,
   hasDueDate = true,
-  hasLabelPriority = true,
   hasManualSort = true,
   hasStartDate = false,
   hasMergedDate = false,
-  hasWeight = true,
 } = {}) => {
   const sortOptions = [
-    hasPriority && {
+    {
       id: 1,
       title: __('Priority'),
       sortDirection: {
@@ -205,7 +201,7 @@ export const getSortOptions = ({
         descending: CLOSED_AT_DESC,
       },
     },
-    hasMilestoneDueDate && {
+    {
       id: 5,
       title: __('Milestone due date'),
       sortDirection: {
@@ -229,7 +225,7 @@ export const getSortOptions = ({
         descending: POPULARITY_DESC,
       },
     },
-    hasLabelPriority && {
+    {
       id: 8,
       title: __('Label priority'),
       sortDirection: {
@@ -296,7 +292,7 @@ export const getSortOptions = ({
     });
   }
 
-  if (hasIssueWeightsFeature && hasWeight) {
+  if (hasIssueWeightsFeature) {
     sortOptions.push({
       id: sortOptions.length + 1,
       title: __('Weight'),
@@ -965,11 +961,22 @@ export function mapWorkItemWidgetsToIssuableFields({
     );
 
     Object.keys(WORK_ITEM_TO_ISSUABLE_MAP).forEach((widgetType) => {
-      const currentWidget = findWidget(widgetType, workItem);
+      const currentWidget =
+        workItem.features?.[camelCase(widgetType)] || findWidget(widgetType, workItem);
       if (!currentWidget) {
         return;
       }
       const property = WORK_ITEM_TO_ISSUABLE_MAP[widgetType];
+
+      // The detail query may select a widget's type without its fields.
+      // Writing `undefined` would clear the cached value instead of keeping it.
+      const value =
+        property === WORK_ITEM_TO_ISSUABLE_MAP[WIDGET_TYPE_TIME_TRACKING]
+          ? currentWidget.humanReadableAttributes?.timeEstimate
+          : currentWidget[property];
+      if (value === undefined) {
+        return;
+      }
 
       // handling the case for assignees and labels
       if (
@@ -995,12 +1002,7 @@ export function mapWorkItemWidgetsToIssuableFields({
         return;
       }
 
-      // handling the case for time tracking
-      if (property === WORK_ITEM_TO_ISSUABLE_MAP[WIDGET_TYPE_TIME_TRACKING]) {
-        activeItem[property] = currentWidget.humanReadableAttributes?.timeEstimate;
-        return;
-      }
-      activeItem[property] = currentWidget[property];
+      activeItem[property] = value;
     });
 
     activeItem.title = workItem.title;

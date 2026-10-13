@@ -17,11 +17,11 @@ import {
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
+import { getRealtimeRequestTagLink } from '~/work_items/list/graphql/realtime_request_tag';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { restWorkItemsResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
-import { decisionLogStubResolvers } from 'ee_else_ce/work_items/components/decision_log/graphql/stub_resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
 import {
   linkedItems,
@@ -128,6 +128,9 @@ const updateLinkedItems = (linkedItemsWidget, context) => {
 
 export const config = {
   typeDefs,
+  // Gated on the flag so this link (which only matches work item queries) doesn't run for
+  // every other app that shares this client.
+  links: window.gon?.features?.workItemsRealtime ? [getRealtimeRequestTagLink()] : [],
   cacheConfig: {
     typePolicies: {
       Query: {
@@ -192,6 +195,9 @@ export const config = {
         merge: true,
       },
       NamespacePermissions: {
+        merge: true,
+      },
+      NamespaceAvailableFeatures: {
         merge: true,
       },
       ProjectPermissions: {
@@ -417,7 +423,7 @@ export const config = {
                 // this ensures that we don’t override linkedItems.workItem when updating parent
                 if (incomingWidget?.type === WIDGET_TYPE_LINKED_ITEMS) {
                   if (!incomingWidget.linkedItems) {
-                    return existingWidget;
+                    return { ...existingWidget, ...incomingWidget };
                   }
 
                   const incomingNodes = incomingWidget.linkedItems?.nodes || [];
@@ -613,10 +619,8 @@ const restWorkItemsResolvers = window.gon?.features?.workItemRestApiFrontendUser
 export const resolvers = {
   Query: {
     ...restWorkItemsResolvers,
-    ...decisionLogStubResolvers.Query,
   },
   Mutation: {
-    ...decisionLogStubResolvers.Mutation,
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });
       const data = produce(sourceData, (draftData) => {

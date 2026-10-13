@@ -3,8 +3,7 @@
 RSpec.describe QA::Support::WaitForRequests do
   describe '.wait_for_requests' do
     before do
-      allow(subject).to receive(:finished_all_ajax_requests?).and_return(true)
-      allow(subject).to receive(:spinner_cleared?).and_return(true)
+      allow(subject).to receive_messages(finished_all_ajax_requests?: true, spinner_cleared?: true)
       allow(QA::Support::PageErrorChecker).to receive(:check_page_for_error_code)
       allow(QA::Support::Waiter).to receive(:wait_until).and_yield
     end
@@ -56,8 +55,7 @@ RSpec.describe QA::Support::WaitForRequests do
 
     context 'when both AJAX requests and spinner check fails' do
       before do
-        allow(subject).to receive(:spinner_cleared?).and_return(false)
-        allow(subject).to receive(:finished_all_ajax_requests?).and_return(false)
+        allow(subject).to receive_messages(spinner_cleared?: false, finished_all_ajax_requests?: false)
         allow(QA::Support::Waiter).to receive(:wait_until).and_yield
           .and_raise(QA::Support::Repeater::WaitExceededError.new('Wait exceeded'))
       end
@@ -72,8 +70,7 @@ RSpec.describe QA::Support::WaitForRequests do
 
     context 'when both AJAX requests and spinner pass' do
       before do
-        allow(subject).to receive(:spinner_cleared?).and_return(true)
-        allow(subject).to receive(:finished_all_ajax_requests?).and_return(true)
+        allow(subject).to receive_messages(spinner_cleared?: true, finished_all_ajax_requests?: true)
       end
 
       it 'throws no error' do

@@ -261,7 +261,8 @@ export default {
       this.isReplying = false;
       clearDraft(this.autosaveKey);
     }),
-    async saveReply(noteText, form, callback) {
+    // eslint-disable-next-line max-params
+    async saveReply(noteText, form, callback, resolveDiscussion) {
       if (!noteText) {
         this.cancelReplyForm();
         callback();
@@ -289,6 +290,11 @@ export default {
         postData.return_discussion = true;
       }
 
+      if (resolveDiscussion !== this.discussionResolved) {
+        postData.resolve_discussion = resolveDiscussion;
+        postData.return_discussion = true;
+      }
+
       if (this.discussion.for_commit) {
         postData.note_project_id = this.discussion.project_id;
       }
@@ -300,11 +306,13 @@ export default {
       };
 
       this.saveNote(replyData)
-        .then(() => {
+        .then((data) => {
           this.isReplying = false;
           clearDraft(this.autosaveKey);
 
-          callback();
+          callback(undefined, {
+            resolvedStateSaved: data?.discussion?.resolved === resolveDiscussion,
+          });
         })
         .catch((err) => {
           this.handleSaveError(err); // The 'err' parameter is being used in JH, don't remove it

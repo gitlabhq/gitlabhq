@@ -6,7 +6,7 @@ module Mutations
       # This is a Base class for the Note update mutations and is not
       # mounted as a GraphQL mutation itself.
       class Base < Mutations::Notes::Base
-        authorize :admin_note
+        authorize :update_note
 
         authorize_granular_token permissions: :update_note,
           boundaries: [

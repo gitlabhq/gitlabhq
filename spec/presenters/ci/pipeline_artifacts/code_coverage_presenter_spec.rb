@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifacts::CodeCoveragePresenter do
-  let(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files) }
+  let_it_be(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_code_coverage_with_multiple_files) }
 
   subject(:presenter) { described_class.new(pipeline_artifact) }
 

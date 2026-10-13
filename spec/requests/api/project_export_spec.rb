@@ -266,7 +266,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
           it 'prevents requesting project export' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project]).and_return(true)
+              .with(:project_download_export, scope: { user: user, project: project }).and_return(true)
 
             request
 
@@ -333,6 +333,19 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         upload = ImportExportUpload.new(project: project)
         upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
         upload.save!
+      end
+
+      it 'returns download headers for import compatibility' do
+        upload = ImportExportUpload.new(project: project_finished, user: user)
+        upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
+        upload.save!
+        project_finished.add_maintainer(user)
+
+        get api("/projects/#{project_finished.id}/export/download", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.header['Content-Disposition']).to include('_export.tar.gz')
+        expect(response.header['Content-Type']).to eq('application/octet-stream')
       end
 
       it_behaves_like 'get project download by strategy'
@@ -442,7 +455,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         context 'when export is already in progress' do
           before do
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_export, scope: user).and_return(false)
+              .with(:project_export, scope: { user: user }).and_return(false)
           end
 
           it '400 response if export already queued' do
@@ -503,7 +516,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
           before do
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_export, scope: user).and_return(false)
+              .with(:project_export, scope: { user: user }).and_return(false)
           end
 
           it 'passes excluded_relations to add_export_job' do

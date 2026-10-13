@@ -145,9 +145,9 @@ For GitLab there is an essential difference in analytics setup between GitLab.co
 ### Self-Managed and Dedicated
 
 > [!note]
-> Starting with version 18.0, we collect event-level data on both Self-Managed and Dedicated instances, providing more detailed insights into product usage.
+> Starting with version 18.0, we collect event-level data on both GitLab Self-Managed and Dedicated instances, providing more detailed insights into product usage.
 
-**For GitLab 18.0 and later**: Self-Managed and Dedicated instances collect event-level data, providing the same detailed insights available on GitLab.com.
+**For GitLab 18.0 and later**: GitLab Self-Managed and Dedicated instances collect event-level data, providing the same detailed insights available on GitLab.com.
 
 **For versions prior to 18.0**: Only aggregated metrics are available. These metrics are computed once per week on a randomly chosen day and forwarded to [Version App](https://version.gitlab.com) via a process called Service Ping. Only the metrics that were instrumented up to the version the instance is running are available. For example, if a metric is instrumented during the development of version 17.9, it will be available on instances running version 17.9 or later, but not on instances running earlier versions such as 17.8.
 The received payloads are imported into our Data Warehouse once per day.
@@ -169,7 +169,7 @@ The propagation process takes multiple hours to complete. The following diagram 
 
 #### Pre-computed metrics
 
-Metrics are computed once per week like on Self-Managed, with the only difference being that most of the computation takes place within the Warehouse rather than within the instance.
+Metrics are computed once per week like on GitLab Self-Managed, with the only difference being that most of the computation takes place within the Warehouse rather than within the instance.
 For GitLab.com this process is started on Monday morning and computes metrics for the time-frame from Sunday 23:59 UTC to this Sunday 23:59 UTC.
 
 The following diagram illustrates the process:
@@ -180,8 +180,8 @@ The following diagram illustrates the process:
 
 ## Data flow
 
-On SaaS and Self-Managed instances (starting with GitLab 18.0), event records are directly sent to a collection system called Snowplow and imported into our data warehouse.
-For Self-Managed instances on versions prior to 18.0, only event counts are recorded locally. Every week, a process called Service Ping sends the current
+On SaaS and GitLab Self-Managed instances (starting with GitLab 18.0), event records are directly sent to a collection system called Snowplow and imported into our data warehouse.
+For GitLab Self-Managed instances on versions prior to 18.0, only event counts are recorded locally. Every week, a process called Service Ping sends the current
 values for all pre-defined and active metrics to our data warehouse. For GitLab.com, metrics are calculated directly in the data warehouse.
 
 The following chart aims to illustrate this data flow:
@@ -213,9 +213,9 @@ flowchart LR;
 
 ## Data Privacy
 
-**For GitLab 18.0 and later**: GitLab collects event-level data from Self-Managed instances with pseudonymized identifiers to protect privacy.
+**For GitLab 18.0 and later**: GitLab collects event-level data from GitLab Self-Managed instances with pseudonymized identifiers to protect privacy.
 
-**For versions prior to 18.0**: GitLab only receives event counts or similarly aggregated information from Self-Managed instances. For the GitLab.com version, user identifiers for individual events are pseudonymized.
+**For versions prior to 18.0**: GitLab only receives event counts or similarly aggregated information from GitLab Self-Managed instances. For the GitLab.com version, user identifiers for individual events are pseudonymized.
 An exact description on what kind of data is being collected through the Internal Analytics system is given in our [handbook](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
 
 ## Contribution guidelines

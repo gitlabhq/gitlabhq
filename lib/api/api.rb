@@ -5,8 +5,6 @@ module API
     include APIGuard
     include Helpers::OpenApi
 
-    use ::Gitlab::Middleware::IpAddress
-
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
     # Origin of the catch-all `route :any, '*path'` that handles requests mapping to no real
@@ -248,6 +246,7 @@ module API
         mount ::API::Admin::InstanceClusters
         mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits
+        mount ::API::Admin::SshCertificates
         mount ::API::Admin::Token
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
@@ -317,6 +316,7 @@ module API
         mount ::API::ImportBitbucket
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
+        mount ::API::ImportGithubOauthWebhooks
         mount ::API::Integrations
         mount ::API::Integrations::Slack::Events
         mount ::API::Integrations::Slack::Interactions
@@ -420,6 +420,7 @@ module API
         mount ::API::WorkItems::CurrentUserTodos
         mount ::API::WorkItems::Notes
         mount ::API::WorkItems::Discussions
+        mount ::API::WorkItems::DiscussionNotes
         mount ::API::WorkItems::EmailParticipants
         mount ::API::Wikis
 

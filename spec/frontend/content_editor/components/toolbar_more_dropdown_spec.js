@@ -92,6 +92,32 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     expect(wrapper.findByRole('button', { name: 'Table of contents' }).exists()).toBe(false);
   });
 
+  describe.each`
+    name                        | icon
+    ${'Alert'}                  | ${'warning'}
+    ${'Code block'}             | ${'code'}
+    ${'Collapsible section'}    | ${'details-block'}
+    ${'Bullet list'}            | ${'list-bulleted'}
+    ${'Ordered list'}           | ${'list-numbered'}
+    ${'Task list'}              | ${'list-task'}
+    ${'Horizontal rule'}        | ${'dash'}
+    ${'Embedded view'}          | ${'kind'}
+    ${'Mermaid diagram'}        | ${'diagram'}
+    ${'PlantUML diagram'}       | ${'diagram'}
+    ${'Create or edit diagram'} | ${'pencil-square'}
+    ${'Table of contents'}      | ${'title'}
+  `('option $name', ({ name, icon }) => {
+    it(`sets the icon to ${icon}`, () => {
+      buildWrapper();
+
+      const item = findDropdown()
+        .props('items')
+        .find((i) => i.text === name);
+
+      expect(item.icon).toBe(icon);
+    });
+  });
+
   describe('a11y tests', () => {
     it('sets toggleText and text-sr-only properties to the table button dropdown', () => {
       buildWrapper();

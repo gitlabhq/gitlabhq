@@ -33,6 +33,7 @@ export default {
     },
   },
   emits: ['cancel', 'confirm'],
+  expose: ['show'],
   computed: {
     itemToBeDeleted() {
       return this.itemsToBeDeleted.length === 1 ? this.itemsToBeDeleted[0] : null;
@@ -71,7 +72,6 @@ export default {
       text: __('Cancel'),
     },
   },
-  expose: ['show'],
   methods: {
     show() {
       this.$refs.deleteModal.show();

@@ -310,8 +310,7 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
         let(:file) { build(:merge_request_diff_file) }
 
         before do
-          allow(file.merge_request_diff).to receive(:stored_externally?).and_return(true)
-          allow(file.merge_request_diff).to receive(:cached_external_diff).and_return(packed)
+          allow(file.merge_request_diff).to receive_messages(stored_externally?: true, cached_external_diff: packed)
         end
 
         context 'when the diff is marked as binary' do

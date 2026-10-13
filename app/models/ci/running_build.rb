@@ -28,7 +28,7 @@ module Ci
       # Owner namespace of the runner that executed the build
       runner_owner_namespace_id = build.runner.owner_runner_namespace.namespace_id if build.runner.group_type?
 
-      entry = self.new(
+      entry = new(
         build: build,
         project: build.project,
         runner: build.runner,
@@ -38,7 +38,7 @@ module Ci
 
       entry.validate!
 
-      self.upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
+      upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
     end
   end
 end

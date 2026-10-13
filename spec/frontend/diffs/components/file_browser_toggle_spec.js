@@ -3,6 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import {
@@ -12,7 +13,6 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 

@@ -34,3 +34,5 @@ end
 # rubocop:enable Gitlab/BoundedContexts
 # rubocop:enable Scalability/CronWorkerContext
 # rubocop:enable Sidekiq/EnforceDatabaseHealthSignalDeferral
+
+Database::BackgroundOperation::CronEnqueueWorker.prepend_mod

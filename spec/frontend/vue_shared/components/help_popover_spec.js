@@ -170,6 +170,17 @@ describe('HelpPopover', () => {
     });
   });
 
+  describe('with a shown listener', () => {
+    it('forwards the popover shown event', () => {
+      const onShown = jest.fn();
+      createComponent({ listeners: { shown: onShown } });
+
+      findPopover().vm.$emit('shown');
+
+      expect(onShown).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('with custom slots', () => {
     const titleSlot = '<h1>title</h1>';
     const defaultSlot = '<strong>content</strong>';

@@ -67,6 +67,10 @@ RSpec.describe API::Concerns::McpAccess, feature_category: :mcp_server do
       expect(if_condition.call(request_double(verb, plain_route_endpoint))).to be_falsey
     end
 
+    it 'denies a request matching the verb when no endpoint is mounted for it' do
+      expect(if_condition.call(request_double(verb, nil))).to be_falsey
+    end
+
     it 'denies a request with a different verb, even on a route with an mcp route setting' do
       other_verb = %i[get post put delete].find { |v| v != verb }
 

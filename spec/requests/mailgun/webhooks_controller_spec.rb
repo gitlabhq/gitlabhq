@@ -97,7 +97,7 @@ RSpec.describe Mailgun::WebhooksController, feature_category: :team_planning do
   context 'when logging a delivery failure' do
     before do
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:permanent_email_failure, scope: 'alice@example.com').and_return(true)
+        .with(:permanent_email_failure, scope: { email: 'alice@example.com' }).and_return(true)
     end
 
     let(:event_data) do

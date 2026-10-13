@@ -277,8 +277,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     let(:object) { double(:object) }
 
     before do
-      allow(importer).to receive(:representation_class).and_return(repr_class)
-      allow(importer).to receive(:sidekiq_worker_class).and_return(worker_class)
+      allow(importer).to receive_messages(representation_class: repr_class, sidekiq_worker_class: worker_class)
       allow(repr_class).to receive(:from_api_response).with(object, {})
         .and_return({ title: 'One' }, { title: 'Two' }, { title: 'Three' }, { title: 'Four' })
     end
@@ -310,8 +309,10 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
       it 'deducts the job runtime from the delay' do
         freeze_time do
           allow(::Gitlab::JobWaiter).to receive(:generate_key).and_return('waiter-key')
-          allow(importer).to receive(:parallel_import_batch).and_return({ size: 2, delay: 1.minute })
-          allow(importer).to receive(:job_started_at).and_return(45.seconds.ago)
+          allow(importer).to receive_messages(
+            parallel_import_batch: { size: 2, delay: 1.minute },
+            job_started_at: 45.seconds.ago
+          )
           allow(importer).to receive(:each_object_to_import)
             .and_yield(object).and_yield(object).and_yield(object).and_yield(object)
 

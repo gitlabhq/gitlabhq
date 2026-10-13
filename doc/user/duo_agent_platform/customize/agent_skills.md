@@ -55,12 +55,10 @@ GitLab Duo supports the following types of skills:
 | Level                                                              | GitLab UI | Editor extensions | GitLab Duo CLI |
 |--------------------------------------------------------------------|-------------------------------|-------------------|----------------|
 | User-level: Apply to all of your projects      | {{< no >}}                    | {{< no >}}        | {{< yes >}}    |
-| Project-level: Apply only to a specific project | {{< yes >}} <sup>1</sup>                   | {{< yes >}}       | {{< yes >}}    |
+| Project-level: Apply only to a specific project | {{< yes >}}[^foundational-custom-flows]                   | {{< yes >}}       | {{< yes >}}    |
 
-**Footnotes**:
-
-1. In the GitLab UI, only foundational and custom flows, excluding Code Review, support project-level
-   skills. GitLab Duo Chat in the GitLab UI does not support skills.
+[^foundational-custom-flows]: In the GitLab UI, only foundational and custom flows, excluding Code Review, support project-level
+    skills. GitLab Duo Chat in the GitLab UI does not support skills.
 
 ## Use Agent Skills with GitLab Duo
 
@@ -110,13 +108,21 @@ the first one it encounters.
 #### Create project-level skills
 
 Project-level skills apply to a specific project. You define them in a `SKILL.md`
-file in a `skills/<skill-name>/` directory of your project.
+file in one of the following directories:
+
+- `skills/<skill-name>/`
+- `.agents/skills/<skill-name>/`
+
+The `.agents/skills/` directory follows the cross-tool Agent Skills standard.
+If both directories contain a skill with the same name, `.agents/skills/` takes
+precedence. Define each skill in only one location to avoid conflicts.
 
 To create a project-level skill:
 
-1. In the root of your project, create a `skills` directory.
-1. In the new directory, create another directory for the specific skill. Use the skill name as the
-   directory name.
+1. In the root of your project, create either a `skills` or `.agents/skills`
+   directory.
+1. In the new directory, create another directory for the specific skill. Use
+   the skill name as the directory name.
 1. Create a `SKILL.md` file and include instructions using the following format.
    The `name` and `description` YAML front matter fields are required.
 

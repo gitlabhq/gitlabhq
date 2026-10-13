@@ -229,12 +229,12 @@ describe('Diffs tree list component', () => {
       useCodeReview().reviewedIds = reviewedIds;
     });
 
-    it('sets viewed property based on reviewedIds', async () => {
+    it('renders viewed rows based on reviewedIds', async () => {
       createComponent();
 
       await nextTick();
-      const items = getScroller().props('items');
-      const viewedFile = items.find((item) => item.codeReviewId === 12345);
+      const rows = wrapper.findAllComponents(FileRow).wrappers.map((row) => row.props('file'));
+      const viewedFile = rows.find((file) => file.codeReviewId === 12345);
       expect(viewedFile?.viewed).toBe(true);
     });
   });
@@ -396,20 +396,32 @@ describe('Diffs tree list component', () => {
         .filter((item) => item.type !== 'tree');
     const findLoadingItem = (loadedFile) =>
       getRootItems().find((item) => item.type !== 'tree' && item.fileHash !== loadedFile.fileHash);
-    const findLoadedItem = (loadedFile) =>
-      getRootItems().find((item) => item.type !== 'tree' && item.fileHash === loadedFile.fileHash);
 
     beforeEach(() => {
       setupFilesInState();
     });
 
-    it('sets loading state for loading files', () => {
+    it('renders loading state for loading files', () => {
       const loadedFile = getLoadingFile();
       createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
-      const loadedItem = findLoadedItem(loadedFile);
-      const loadingItem = findLoadingItem(loadedFile);
-      expect(loadingItem.loading).toBe(true);
-      expect(loadedItem.loading).toBe(false);
+      const rows = wrapper.findAllComponents(FileRow).wrappers.map((row) => row.props('file'));
+      const loadedRow = rows.find((file) => file.fileHash === loadedFile.fileHash);
+      const loadingRow = rows.find(
+        (file) => file.type !== 'tree' && file.fileHash !== loadedFile.fileHash,
+      );
+      expect(loadingRow.loading).toBe(true);
+      expect(loadedRow.loading).toBe(false);
+    });
+
+    it('does not render loading state for folders', () => {
+      createComponent({ loadedFiles: {} });
+      const folderRows = wrapper
+        .findAllComponents(FileRow)
+        .wrappers.filter((row) => row.props('file').type === 'tree');
+
+      expect(folderRows).not.toHaveLength(0);
+      expect(folderRows.map((row) => row.classes('is-loading'))).not.toContain(true);
+      expect(folderRows.map((row) => row.attributes('tabindex'))).not.toContain('-1');
     });
 
     it('is not focusable', () => {

@@ -820,6 +820,39 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe 'GET /merge_requests' do
     include_context 'with merge requests'
 
+    context 'with bot authors' do
+      let_it_be(:bot_author) { create(:user, :project_bot) }
+      let_it_be(:bot_merge_request) do
+        create(:merge_request, :simple, source_project: project, target_project: project, author: bot_author)
+      end
+
+      it 'includes bot status for human and bot authors' do
+        get api('/merge_requests', user), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/merge_requests')
+        expect(json_response).to include(
+          a_hash_including('id' => merge_request.id, 'author' => a_hash_including('bot' => false)),
+          a_hash_including('id' => bot_merge_request.id, 'author' => a_hash_including('bot' => true))
+        )
+      end
+
+      it 'avoids N+1 queries when serializing bot authors', :request_store, :use_sql_query_cache do
+        get api('/merge_requests', user), params: { scope: 'all' }
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api('/merge_requests', user), params: { scope: 'all' }
+        end
+
+        create_list(:merge_request, 3, :simple, :closed, source_project: project, target_project: project,
+          author: create(:user, :service_account))
+
+        expect do
+          get api('/merge_requests', user), params: { scope: 'all' }
+        end.not_to exceed_all_query_limit(control).with_threshold(allowed_query_threshold)
+      end
+    end
+
     it_behaves_like 'issuable API rate-limited search' do
       let(:url) { '/merge_requests' }
       let(:issuable) { merge_request }
@@ -2221,6 +2254,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response.size).to eq(merge_request.context_commits.size)
       expect(json_response.first['id']).to eq(context_commit.id)
       expect(json_response.first['title']).to eq(context_commit.title)
+    end
+
+    it 'returns the attributes of the entity the endpoint documents' do
+      route = described_class.routes.find do |r|
+        r.request_method == 'GET' && r.path.include?('/merge_requests/:merge_request_iid/context_commits')
+      end
+      documented_keys = route.options[:entity].root_exposures.map { |exposure| exposure.key.to_s }
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.first.keys).to match_array(documented_keys)
     end
 
     it 'returns a 404 when merge_request_iid not found' do
@@ -4262,6 +4307,44 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
     end
 
+    context 'when the MR is still preparing and its diff has not been created yet' do
+      # Reproduces the window between POST /merge_requests returning and NewMergeRequestWorker
+      # writing the diff. See https://gitlab.com/gitlab-org/cli/-/work_items/8140
+      let(:merge_request) do
+        create(:merge_request, :simple, :skip_diff_creation, author: user, source_project: project,
+          source_branch: 'markdown', title: 'Test')
+      end
+
+      before do
+        merge_request.mark_as_preparing!
+      end
+
+      it 'sets auto merge instead of returning 422' do
+        expect(merge_request.has_no_commits?).to be(true)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+          params: { auto_merge: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(merge_request.reload.auto_merge_enabled).to be(true)
+        expect(merge_request.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+      end
+
+      context 'when the auto_merge_skip_commits_check_while_preparing feature flag is disabled' do
+        before do
+          stub_feature_flags(auto_merge_skip_commits_check_while_preparing: false)
+        end
+
+        it 'returns 422' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+            params: { auto_merge: true }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Branch cannot be merged')
+        end
+      end
+    end
+
     it 'enables auto merge if the MR is not mergeable and only_allow_merge_if_pipeline_succeeds is true' do
       allow_any_instance_of(MergeRequest)
         .to receive_messages(
@@ -4668,6 +4751,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { target_branch: "wiki" }
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['target_branch']).to eq('wiki')
+    end
+
+    it 'does not update target_branch of a merged merge request', :aggregate_failures do
+      merge_request.mark_as_merged!
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { target_branch: 'wiki' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['target_branch']).to eq('master')
     end
 
     it_behaves_like 'authorizing granular token permissions', :update_merge_request do
@@ -5152,14 +5244,34 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
-    before do
-      ::AutoMergeService.new(merge_request.target_project, user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+    context 'when an auto-merge is set' do
+      let(:merge_request) do
+        create(:merge_request, :simple, :merge_when_checks_pass, author: user, assignees: [user],
+          source_project: project, target_project: project, source_branch: 'markdown', title: 'Test')
+      end
+
+      it 'answers 201 with a success status and cancels the auto-merge' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to eq('status' => 'success')
+        expect(merge_request.reload.auto_merge_enabled).to be(false)
+      end
     end
 
-    it 'removes the merge_when_pipeline_succeeds status' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+    context 'when no auto-merge is set' do
+      it 'answers 201 with an error status, not 406' do
+        merge_request.update!(auto_merge_enabled: false)
 
-      expect(response).to have_gitlab_http_status(:created)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to eq(
+          'message' => "Can't cancel the automatic merge",
+          'status' => 'error',
+          'http_status' => 406
+        )
+      end
     end
 
     it 'returns 404 if the merge request is not found' do
@@ -5169,6 +5281,10 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it 'returns 404 if the merge request id is used instead of iid' do
+      # A merge request in another project takes an id first, so this one's id
+      # cannot also be its iid, whatever ran before this example.
+      create(:merge_request)
+
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/cancel_merge_when_pipeline_succeeds", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
@@ -5188,6 +5304,86 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:boundary_object) { project }
       let(:request) do
         post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", personal_access_token: pat)
+      end
+    end
+  end
+
+  describe 'POST :id/merge_requests/:merge_request_iid/cancel_auto_merge' do
+    let(:merge_request) do
+      create(:merge_request, :simple, :merge_when_checks_pass, author: user, assignees: [user],
+        source_project: project, target_project: project, source_branch: 'markdown', title: "Test")
+    end
+
+    it 'removes the merge_when_pipeline_succeeds status and returns the merge request' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_auto_merge", user)
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(response).to match_response_schema('public_api/v4/merge_request')
+      expect(json_response['id']).to eq(merge_request.id)
+      expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['merge_when_pipeline_succeeds']).to be(false)
+      expect(merge_request.reload.auto_merge_enabled).to be(false)
+    end
+
+    it 'returns 409 if there is no automatic merge to cancel' do
+      merge_request.update!(auto_merge_enabled: false)
+
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_auto_merge", user)
+
+      expect(response).to have_gitlab_http_status(:conflict)
+      expect(json_response['message']).to eq("Can't cancel the automatic merge")
+    end
+
+    it 'returns 403 if the user cannot cancel the automatic merge' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_auto_merge", user2)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['message']).to eq('403 Forbidden')
+      expect(merge_request.reload.auto_merge_enabled).to be(true)
+    end
+
+    context 'when the author cannot merge the merge request' do
+      let(:merge_request) do
+        create(:merge_request, :simple, :merge_when_checks_pass, author: user2,
+          source_project: project, target_project: project, source_branch: 'markdown', title: "Test")
+      end
+
+      it 'cancels the automatic merge and returns the merge request' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_auto_merge", user2)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['iid']).to eq(merge_request.iid)
+        expect(json_response['merge_when_pipeline_succeeds']).to be(false)
+        expect(merge_request.reload.auto_merge_enabled).to be(false)
+      end
+    end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/cancel_auto_merge", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns 404 if the merge request id is used instead of iid' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/cancel_auto_merge", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'with oauth token that has ai_workflows scope' do
+      let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it "does not allow access" do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_auto_merge", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :cancel_merge_merge_request do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_auto_merge", personal_access_token: pat)
       end
     end
   end
@@ -5290,5 +5486,77 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     let!(:issuable) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
     include_examples 'time tracking endpoints', 'merge_request'
+  end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of get_merge_request_commits' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_merge_request_commits').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'merge_request_iid' => {
+            type: 'integer',
+            description: 'Internal ID of the merge request.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          }
+        },
+        required: %w[id merge_request_iid],
+        additionalProperties: false
+      })
+    end
+
+    it 'locks the full input schema of get_merge_request_diffs' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_merge_request_diffs').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'merge_request_iid' => {
+            type: 'integer',
+            description: 'Internal ID of the merge request.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          }
+        },
+        required: %w[id merge_request_iid],
+        additionalProperties: false
+      })
+    end
+
+    it 'locks the full input schema of get_merge_request_pipelines' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_merge_request_pipelines').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'merge_request_iid' => {
+            type: 'integer',
+            description: 'Internal ID of the merge request.'
+          }
+        },
+        required: %w[id merge_request_iid],
+        additionalProperties: false
+      })
+    end
   end
 end

@@ -90,7 +90,7 @@ module LoginHelpers
     return unless two_factor_auth
 
     fill_in "user_otp_attempt", with: user.reload.current_otp
-    click_button "Verify code"
+    click_button s_('TwoFactorAuth|Verify code')
   end
 
   private

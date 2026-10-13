@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :pipelin
 
           got_array = subject.to_runner_variables
 
-          expect(got_array.shift(3)).to contain_exactly(*expected_array1)
+          expect(got_array.shift(3)).to match_array(expected_array1)
           expect(got_array).to eq(expected_array2)
         end
       end

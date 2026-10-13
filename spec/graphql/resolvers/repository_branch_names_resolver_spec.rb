@@ -39,7 +39,7 @@ RSpec.describe Resolvers::RepositoryBranchNamesResolver do
         expect(offset_names).not_to include(*starting_names)
 
         all_names = resolve_branch_names(pattern, 0, 100)
-        expect(all_names).to contain_exactly(*starting_names, *offset_names)
+        expect(all_names).to match_array(starting_names + offset_names)
       end
     end
   end

@@ -9,3 +9,8 @@ available_for:
   - granular_access_token
 permissions:
   - update_gitlab_subscription
+assignable_when:
+  - condition: admin
+  - condition: self_managed
+    boundaries:
+      - instance

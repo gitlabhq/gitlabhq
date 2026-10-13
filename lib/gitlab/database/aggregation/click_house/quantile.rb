@@ -20,7 +20,8 @@ module Gitlab
 
             inner_column = Arel::Table.new(context[:inner_query_name])[context.fetch(:local_alias, name)]
 
-            Arel.sql("quantile(?)(?)", context[:scope].quote(quantile), inner_column)
+            # `quantile` samples above 8192 values and can return different numbers for the same query.
+            Arel.sql("quantileExactInclusive(?)(?)", context[:scope].quote(quantile), inner_column)
           end
         end
       end

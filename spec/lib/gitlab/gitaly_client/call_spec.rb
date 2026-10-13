@@ -21,7 +21,7 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
       allow(client).to receive(:execute) {
         instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {})
       }
-      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?) { true }
+      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
     end
 
     def expect_call_details_to_match(duration_higher_than: 0)
@@ -43,10 +43,64 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
 
       expect(client).to receive(:execute).with(
         storage, service, rpc, request,
-        remote_storage: remote_storage, timeout: timeout, gitaly_context: gitaly_context
+        remote_storage: remote_storage, timeout: timeout, gitaly_context: gitaly_context,
+        resolved_address: client.address(storage)
       ).and_return(operation)
 
       expect(subject).to eq(response)
+    end
+
+    # Under a percentage-of-time rollout of route_gitaly_through_gitway, each resolution can pick a different address,
+    # so the stubbed `address` hands out a different one every time it is asked.
+    context 'when the address changes between resolutions' do
+      let(:response) { Gitaly::FindLocalBranchesResponse.new }
+      let(:dialled_addresses) { [] }
+
+      before do
+        allow(client).to receive(:address).with(storage)
+          .and_return('tcp://gitaly.example.com:8075', 'tcp://gitway.example.com:8075')
+        allow(client).to receive(:execute) do |*, resolved_address:, **|
+          dialled_addresses << resolved_address
+          instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {})
+        end
+      end
+
+      it 'resolves the address once per call' do
+        subject
+
+        expect(client).to have_received(:address).with(storage).once
+        expect(dialled_addresses).to eq(['tcp://gitaly.example.com:8075'])
+      end
+
+      context 'when the call raises a BadStatus error' do
+        before do
+          allow(client).to receive(:execute) do |*, resolved_address:, **|
+            dialled_addresses << resolved_address
+            raise GRPC::Unavailable
+          end
+        end
+
+        it 'reports the address the call dialled' do
+          expect { subject }.to raise_error(GRPC::Unavailable) do |err|
+            expect(err.metadata[:gitaly_error_metadata][:address]).to eq(dialled_addresses.sole)
+          end
+        end
+      end
+
+      context 'when a stream raises a BadStatus error' do
+        let(:response) do
+          Enumerator.new do |yielder|
+            yielder << 1
+            raise GRPC::Unavailable
+          end
+        end
+
+        it 'reports the address the call dialled' do
+          expect { subject.to_a }.to raise_error(GRPC::Unavailable) do |err|
+            expect(err.metadata[:gitaly_error_metadata][:address]).to eq(dialled_addresses.sole)
+          end
+        end
+      end
     end
 
     context 'when the response is not an enumerator' do
@@ -423,7 +477,7 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
       end
     end
 
-    describe 'circuit breaker integration' do
+    describe 'circuit breaker integration', :freeze_time do
       let(:exhausted_exception) { GRPC::ResourceExhausted.new("Gitaly exhausted") }
 
       before do
@@ -447,6 +501,37 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
       end
 
       context 'with streaming enumerator responses' do
+        it 'does not open the circuit for message-size ResourceExhausted errors' do
+          unique_rpc = :"find_branch_#{SecureRandom.hex(4)}"
+          message_size_error = GRPC::ResourceExhausted.new(
+            'grpc: Received message larger than max (5691745 vs. 4194304)'
+          )
+          failures_remaining = 5
+
+          allow(Gitlab::GitalyClient).to receive(:execute) do
+            response = if failures_remaining.positive?
+                         failures_remaining -= 1
+                         Enumerator.new { raise message_size_error }
+                       else
+                         Enumerator.new { |yielder| yielder << 'success' }
+                       end
+
+            instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {})
+          end
+
+          gitaly_call = described_class.new(storage, service, unique_rpc, request, nil, 10)
+
+          5.times do
+            response = gitaly_call.call
+
+            expect { response.to_a }.to raise_error do |error|
+              expect(error).to equal(message_size_error)
+            end
+          end
+
+          expect(gitaly_call.call.to_a).to eq(['success'])
+        end
+
         it 'opens circuit when enumerator consumption fails with ResourceExhausted' do
           unique_rpc = :"find_branch_#{SecureRandom.hex(4)}"
           allow(Gitlab::GitalyClient).to receive(:execute) do

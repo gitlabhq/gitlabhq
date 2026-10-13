@@ -8,7 +8,6 @@ export default {
   components: {
     GlModal,
   },
-  expose: ['show', 'hide'],
   inject: ['addBeforeSubmitHook', 'beforeSubmitHookContexts', 'pendingUserCount'],
   props: {
     id: {
@@ -17,6 +16,7 @@ export default {
     },
   },
   emits: ['hide', 'primary', 'secondary'],
+  expose: ['show', 'hide'],
   computed: {
     actionPrimary() {
       return {

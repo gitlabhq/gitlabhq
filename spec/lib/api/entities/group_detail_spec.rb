@@ -11,6 +11,18 @@ RSpec.describe API::Entities::GroupDetail, feature_category: :groups_and_project
 
     let(:options) { {} }
 
+    describe '#require_sha_for_merge' do
+      let(:group) { root_group }
+
+      it { is_expected.to include(:require_sha_for_merge) }
+    end
+
+    describe '#lock_require_sha_for_merge' do
+      let(:group) { root_group }
+
+      it { is_expected.to include(:lock_require_sha_for_merge) }
+    end
+
     describe '#prevent_sharing_groups_outside_hierarchy' do
       context 'for a root group' do
         let(:group) { root_group }

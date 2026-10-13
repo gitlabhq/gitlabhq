@@ -11,10 +11,9 @@ const BAN = 'ban';
 const UNBAN = 'unban';
 const TRUST = 'trust';
 const UNTRUST = 'untrust';
+const RESYNC_LDAP = 'resyncLdap';
 
 export const EDIT = 'edit';
-
-export const LDAP = 'ldapBlocked';
 
 export const CONFIRMATION_ACTIONS = [
   ACTIVATE,
@@ -28,6 +27,7 @@ export const CONFIRMATION_ACTIONS = [
   REJECT,
   TRUST,
   UNTRUST,
+  RESYNC_LDAP,
 ];
 
 export const DELETE_ACTIONS = [DELETE, DELETE_WITH_CONTRIBUTIONS];

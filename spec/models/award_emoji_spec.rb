@@ -214,10 +214,14 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       award_emoji.save!
     end
 
-    it 'calls bump_updated_at on the note when destroyed' do
-      expect(note).to receive(:bump_updated_at)
+    context 'when destroyed' do
+      let(:note) { build_stubbed(:note_on_issue) }
 
-      award_emoji.destroy!
+      it 'calls bump_updated_at on the note' do
+        expect(note).to receive(:bump_updated_at)
+
+        award_emoji.destroy!
+      end
     end
 
     context 'on another awardable' do
@@ -288,10 +292,14 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
         award_emoji.save!
       end
 
-      it 'does not update upvotes_count on the merge_request when destroyed' do
-        expect(merge_request).not_to receive(:update_column)
+      context 'when destroyed' do
+        let(:merge_request) { build_stubbed(:merge_request) }
 
-        award_emoji.destroy!
+        it 'does not update upvotes_count on the merge_request' do
+          expect(merge_request).not_to receive(:update_column)
+
+          award_emoji.destroy!
+        end
       end
     end
   end
@@ -339,7 +347,7 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
   end
 
   describe '#to_ability_name' do
-    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
     let(:award_emoji) { build(:award_emoji, user: user, awardable: merge_request) }
 
     it 'returns correct ability name' do

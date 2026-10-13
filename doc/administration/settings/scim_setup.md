@@ -170,16 +170,14 @@ The following table provides attribute mappings that are required for GitLab.
 | Source attribute                                                           | Target attribute               | Matching precedence |
 |:---------------------------------------------------------------------------|:-------------------------------|:--------------------|
 | `objectId`                                                                 | `externalId`                   | 1                   |
-| `userPrincipalName` OR `mail` <sup>1</sup>                                 | `emails[type eq "work"].value` |                     |
+| `userPrincipalName` OR `mail`[^mail-source-attribute]                                 | `emails[type eq "work"].value` |                     |
 | `mailNickname`                                                    | `userName`                     |                     |
-| `displayName` OR `Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
-| `Switch([IsSoftDeleted], , "False", "True", "True", "False")` <sup>3</sup> | `active`                       |                     |
+| `displayName` OR `Join(" ", [givenName], [surname])`[^join-expression]          | `name.formatted`               |                     |
+| `Switch([IsSoftDeleted], , "False", "True", "True", "False")`[^expression-mapping] | `active`                       |                     |
 
-**Footnotes**:
-
-1. Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
-1. Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
-1. This is an expression mapping type, not a direct mapping. Select **Expression** in the **Mapping type** dropdown list.
+[^mail-source-attribute]: Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
+[^join-expression]: Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
+[^expression-mapping]: This is an expression mapping type, not a direct mapping. Select **Expression** in the **Mapping type** dropdown list.
 
 Each attribute mapping has:
 

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: :planning_views do
+RSpec.describe WorkItems::NamespaceChanges::BroadcastService, :clean_gitlab_redis_rate_limiting,
+  feature_category: :planning_views do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:work_item) { create(:work_item, project: project) }
@@ -59,6 +60,12 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: 
 
     context 'when the work item was repositioned' do
       let(:updated_changes) { %w[relative_position] }
+
+      it_behaves_like 'broadcasts the event'
+    end
+
+    context 'when the work item type changed' do
+      let(:updated_changes) { %w[work_item_type_id] }
 
       it_behaves_like 'broadcasts the event'
     end
@@ -173,11 +180,11 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, feature_category: 
       allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
       allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
-        .with(:namespace_work_item_changes_broadcast, scope: group).and_return(true)
+        .with(:namespace_work_item_changes_broadcast, scope: { group: group }).and_return(true)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:namespace_work_item_changes_broadcast, scope: group).and_return(true)
+        .with(:namespace_work_item_changes_broadcast, scope: { group: group }).and_return(true)
     end
 
     it 'skips only the rate limited namespace' do

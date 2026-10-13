@@ -1,6 +1,7 @@
 import Vue, { computed, nextTick } from 'vue';
 import { GlNavItem, GlCollapse, GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import FlyoutMenu from '~/super_sidebar/components/flyout_menu.vue';
@@ -19,10 +20,11 @@ describe('MenuSection component', () => {
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findNavItem = () => wrapper.findComponent(GlNavItem);
 
-  const createWrapper = (item, otherProps, provide = {}) => {
+  const createWrapper = (item, otherProps, { attachTooltip = false, ...provide } = {}) => {
     provideState.isIconOnly = provide.isIconOnly ?? false;
 
     wrapper = shallowMountExtended(MenuSection, {
+      ...(attachTooltip && { directives: { GlTooltip: createMockDirective('gl-tooltip') } }),
       propsData: { item: { items: [], ...item }, ...otherProps },
       provide: {
         isIconOnly: computed(() => provideState.isIconOnly),
@@ -115,6 +117,55 @@ describe('MenuSection component', () => {
         );
         expect(findCollapse().classes()).not.toContain('gl-hidden');
       });
+    });
+
+    describe('when headerless and not expanded', () => {
+      // Regression: a category collapsed in the expanded sidebar carried a
+      // stale `expanded: false` into icon-only mode, where a headerless section
+      // has no toggle to reopen it, so its pinned icons vanished.
+      it('keeps the collapse open because there is no header to reopen it', () => {
+        createWrapper({ title: 'Pinned' }, { expanded: false, headerless: true });
+
+        expect(findCollapse().props('visible')).toBe(true);
+      });
+    });
+
+    describe('when first mounted headerless then the header reappears', () => {
+      // Regression: a section first mounted headerless (sidebar loads icon-only)
+      // force-expanded isExpanded, so when the header reappeared it stayed open
+      // regardless of its real collapse state.
+      it('re-syncs to the collapsed expanded prop when the header reappears', async () => {
+        createWrapper({ title: 'Pinned' }, { expanded: false, headerless: true });
+        expect(findCollapse().props('visible')).toBe(true);
+
+        await wrapper.setProps({ headerless: false });
+
+        expect(findCollapse().props('visible')).toBe(false);
+      });
+
+      it('honors an expanded prop of true when the header reappears', async () => {
+        createWrapper({ title: 'Pinned' }, { expanded: true, headerless: true });
+
+        await wrapper.setProps({ headerless: false });
+
+        expect(findCollapse().props('visible')).toBe(true);
+      });
+    });
+  });
+
+  describe('boldTitle prop', () => {
+    const findTitleLabel = () => wrapper.find('.menu-section-button-label');
+
+    it('renders the title in a heavier font weight when true', () => {
+      createWrapper({ title: 'Asdf' }, { boldTitle: true });
+
+      expect(findTitleLabel().classes()).toContain('gl-font-bold');
+    });
+
+    it('does not add the heavier font weight by default', () => {
+      createWrapper({ title: 'Asdf' });
+
+      expect(findTitleLabel().classes()).not.toContain('gl-font-bold');
     });
   });
 
@@ -277,6 +328,61 @@ describe('MenuSection component', () => {
       await nextTick();
 
       expect(wrapper.find('[data-testid="disclosure-content"]').element.tagName).toBe('UL');
+    });
+
+    describe('iconOnlyToggle', () => {
+      it('renders a labelled toggle by default in the expanded sidebar', () => {
+        createWrapper(
+          { title: 'Settings', items: [] },
+          { disclosure: true },
+          { isIconOnly: false },
+        );
+
+        expect(findNavItem().props('isIconOnly')).toBe(false);
+      });
+
+      it('forces an icon-only toggle when set, even in the expanded sidebar', () => {
+        createWrapper(
+          { title: 'Settings', items: [] },
+          { disclosure: true, iconOnlyToggle: true },
+          { isIconOnly: false },
+        );
+
+        expect(findNavItem().props('isIconOnly')).toBe(true);
+      });
+    });
+
+    describe('toggle tooltip', () => {
+      const createTooltipWrapper = (props, provide) =>
+        createWrapper(
+          { title: 'Settings' },
+          { disclosure: true, ...props },
+          { ...provide, attachTooltip: true },
+        );
+
+      const getTooltip = () => getBinding(findNavItem().element, 'gl-tooltip').value;
+
+      it('has no tooltip title on the labelled (expanded) toggle', () => {
+        createTooltipWrapper({}, { isIconOnly: false });
+
+        expect(getTooltip().title).toBe('');
+      });
+
+      it('anchors the tooltip above the button in the header', () => {
+        createTooltipWrapper({ iconOnlyToggle: true }, { isIconOnly: false });
+
+        expect(getTooltip()).toMatchObject({
+          title: 'Settings',
+          placement: 'top',
+          boundary: 'viewport',
+        });
+      });
+
+      it('anchors the tooltip to the right in the collapsed sidebar', () => {
+        createTooltipWrapper({}, { isIconOnly: true });
+
+        expect(getTooltip()).toMatchObject({ title: 'Settings', placement: 'right' });
+      });
     });
   });
 

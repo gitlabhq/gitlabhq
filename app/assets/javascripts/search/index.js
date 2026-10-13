@@ -1,6 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import setHighlightClass from 'ee_else_ce/search/highlight_blob_search_result';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import syntaxHighlight from '~/syntax_highlight';
 import { initSidebar } from './sidebar';
 import { initSearchSort } from './sort';
@@ -20,7 +20,6 @@ const sidebarInitState = () => {
     searchLevel,
     advancedSearchAvailable,
     zoektAvailable,
-    zoektLanguageAggregationsEnabled,
     groupInitialJson,
     projectInitialJson,
     workItemTypesJson,
@@ -38,7 +37,6 @@ const sidebarInitState = () => {
     searchLevel,
     advancedSearchAvailable: parseBoolean(advancedSearchAvailable),
     zoektAvailable: parseBoolean(zoektAvailable),
-    zoektLanguageAggregationsEnabled: parseBoolean(zoektLanguageAggregationsEnabled),
     groupInitialJsonParsed,
     projectInitialJsonParsed,
     workItemTypesParsed,
@@ -66,7 +64,6 @@ export const initSearchApp = () => {
     searchLevel,
     advancedSearchAvailable,
     zoektAvailable,
-    zoektLanguageAggregationsEnabled,
     groupInitialJsonParsed: groupInitialJson,
     projectInitialJsonParsed: projectInitialJson,
     workItemTypesParsed: workItemTypes,
@@ -82,7 +79,6 @@ export const initSearchApp = () => {
     searchLevel,
     advancedSearchAvailable,
     zoektAvailable,
-    zoektLanguageAggregationsEnabled,
     groupInitialJson,
     projectInitialJson,
     workItemTypes,

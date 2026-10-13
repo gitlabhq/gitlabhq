@@ -23,7 +23,7 @@ module API
             tags ['mlops']
           end
           params do
-            optional :experiment_id, type: String, default: '', desc: 'Experiment ID, in reference to the project'
+            optional :experiment_id, type: String, default: '', desc: 'ID of the experiment, relative to the project.'
           end
           route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'get', urgency: :low do
@@ -36,7 +36,7 @@ module API
             tags ['mlops']
           end
           params do
-            optional :experiment_name, type: String, default: '', desc: 'Experiment name'
+            optional :experiment_name, type: String, default: '', desc: 'Name of the experiment.'
           end
           route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           get 'get-by-name', urgency: :low do
@@ -63,18 +63,19 @@ module API
           params do
             optional :max_results,
               type: Integer,
-              desc: 'Maximum number of experiments to fetch in a page. Default is 200, maximum is 1000.',
+              desc: 'Maximum number of experiments to fetch in a page. The maximum is 1000.',
               default: 200
             optional :order_by,
               type: String,
-              desc: 'Order criteria. Can be by a column of the experiment (created_at, name).',
+              desc: 'Column and direction to sort experiments by, for example `created_at DESC` or `name`. Supported ' \
+                'columns are `created_at` and `name`.',
               default: 'created_at DESC'
             optional :page_token,
               type: String,
-              desc: 'Token for pagination'
+              desc: 'Token for pagination.'
             optional :filter,
               type: String,
-              desc: 'This parameter is ignored'
+              desc: 'Ignored. Accepted for MLflow API compatibility.'
           end
           route_setting :authorization, permissions: :read_ml_experiment, boundary_type: :project
           post 'search', urgency: :low do
@@ -99,9 +100,9 @@ module API
             tags ['mlops']
           end
           params do
-            requires :name, type: String, desc: 'Experiment name'
-            optional :tags, type: Array, desc: 'Tags with information about the experiment'
-            optional :artifact_location, type: String, desc: 'This will be ignored'
+            requires :name, type: String, desc: 'Name of the experiment.'
+            optional :tags, type: Array, desc: 'Tags containing metadata about the experiment.'
+            optional :artifact_location, type: String, desc: 'Ignored. Accepted for MLflow API compatibility.'
           end
           route_setting :authorization, permissions: :create_ml_experiment, boundary_type: :project
           post 'create', urgency: :low do
@@ -118,8 +119,8 @@ module API
           end
           params do
             requires :experiment_id, type: String, desc: 'ID of the experiment.'
-            requires :key, type: String, desc: 'Name for the tag.'
-            requires :value, type: String, desc: 'Value for the tag.'
+            requires :key, type: String, desc: 'Name of the tag.'
+            requires :value, type: String, desc: 'Value of the tag.'
           end
           route_setting :authorization, permissions: :update_ml_experiment, boundary_type: :project
           post 'set-experiment-tag', urgency: :low do

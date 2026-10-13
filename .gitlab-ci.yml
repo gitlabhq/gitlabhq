@@ -38,9 +38,98 @@ default:
     # Opt-in: set the CI/CD variable ENABLE_PACKFILE_URI_CI to "true" to turn it on.
     #
     # NOTE: job-level `hooks` replaces this wholesale rather than merging with
-    # it, so a job that defines its own `hooks` also needs this line.
+    # it, so a job that defines its own `hooks` also needs these
+    # `pre_get_sources_script` steps.
     pre_get_sources_script:
-      - if [ "$ENABLE_PACKFILE_URI_CI" = "true" ]; then git config --global fetch.uriProtocols https; fi
+      - if [ "$ENABLE_PACKFILE_URI_CI" = "true" ]; then git config --global fetch.uriProtocols https; else echo "Packfile URI disabled"; fi
+      # Seeds a git object pool (a bare clone of the default branch, using bundle-uri) on
+      # runners that set GLCI_GIT_OBJECT_POOL_DIR to a path in their per-project /cache
+      # volume. Protected and unprotected refs get separate cache volumes, so each has its
+      # own pool that other projects cannot read. GIT_ALTERNATE_OBJECT_DIRECTORIES below
+      # points git at what this seeds. A pool that is not a usable bare repository is removed
+      # and reseeded. If a get_sources attempt fails, the retry removes the pool and fetches
+      # normally, and the next job reseeds. It is a no-op on runners without
+      # GLCI_GIT_OBJECT_POOL_DIR and for jobs that skip sources, and never fails the job.
+      - |
+        # Only one job runs per VM at a time, so none of this needs locking.
+        glci_pool=
+        if [ -n "$GLCI_GIT_OBJECT_POOL_DIR" ] && [ "$GIT_STRATEGY" != "none" ] && [ "$GIT_STRATEGY" != "empty" ]; then
+          case "$GLCI_GIT_OBJECT_POOL_DIR" in
+            /cache/?*) glci_pool="$GLCI_GIT_OBJECT_POOL_DIR$CI_PROJECT_DIR/.git" ;;
+            *) echo "Git object pool disabled: GLCI_GIT_OBJECT_POOL_DIR must be under /cache/" ;;
+          esac
+        fi
+        if [ -n "$glci_pool" ]; then
+          glci_pool_tmp="$GLCI_GIT_OBJECT_POOL_DIR/.tmp-gitlab.git"
+          glci_pool_attempt="$GLCI_GIT_OBJECT_POOL_DIR/.attempt-$CI_JOB_ID"
+          glci_pool_usable() {
+            [ -d "$glci_pool" ] && git --git-dir="$glci_pool" rev-parse --verify --quiet 'HEAD^{commit}' >/dev/null 2>&1
+          }
+          # Until a pool is seeded, an empty objects directory stands in for it, because git
+          # writes an error on every command when GIT_ALTERNATE_OBJECT_DIRECTORIES is missing.
+          glci_pool_placeholder() {
+            [ "$(ls -A "$glci_pool" 2>/dev/null)" = "objects" ] && [ -z "$(ls -A "$glci_pool/objects" 2>/dev/null)" ]
+          }
+          mkdir -p "$GLCI_GIT_OBJECT_POOL_DIR" || true
+          # The runner reruns this hook for each GET_SOURCES_ATTEMPTS retry. A marker for this
+          # job means an earlier attempt failed, possibly because the pool is corrupt.
+          if [ -e "$glci_pool_attempt" ]; then
+            glci_pool_retry=true
+          else
+            glci_pool_retry=false
+          fi
+          for glci_pool_marker in "$GLCI_GIT_OBJECT_POOL_DIR"/.attempt-*; do
+            [ "$glci_pool_marker" = "$glci_pool_attempt" ] || rm -f "$glci_pool_marker" || true
+          done
+          touch "$glci_pool_attempt" 2>/dev/null || true
+          if [ "$glci_pool_retry" = true ]; then
+            # Don't reseed here: this retry clones normally, and the next job reseeds.
+            rm -rf "$glci_pool" || true
+            echo "Git object pool removed: a previous get_sources attempt of this job failed"
+          elif [ -e "$glci_pool" ] && ! glci_pool_usable && ! glci_pool_placeholder; then
+            # A plain file at the pool path makes every clone fail; so can a broken repository.
+            echo "Git object pool at $glci_pool is not a usable repository; removing it"
+            rm -rf "$glci_pool" || true
+          fi
+          [ -e "$glci_pool" ] || mkdir -p "$glci_pool/objects" || true
+          if [ "$glci_pool_retry" = false ] && [ "$GLCI_GIT_OBJECT_POOL" = "true" ] && ! glci_pool_usable; then
+            glci_pool_free_kb=$(df -Pk "$GLCI_GIT_OBJECT_POOL_DIR" | awk 'NR==2 {print $4}') || true
+            case "$glci_pool_free_kb" in
+              '' | *[!0-9]*) glci_pool_free_kb=0 ;;
+            esac
+            # rm -rf clears leftovers from a cancelled job. Cloning into the tmp path and then
+            # renaming publishes atomically, so a borrowing job never sees a partial repo.
+            # --bare --single-branch: the pool is only an object source for the default branch.
+            # gc.auto 0: never prune objects that running clones borrow through alternates.
+            # The pool outlives the job, so strip the job token from the remote URL and
+            # http.extraheader.
+            if [ "$glci_pool_free_kb" -lt 20971520 ]; then
+              echo "Git object pool seed skipped: less than 20 GB free (or unknown) on $GLCI_GIT_OBJECT_POOL_DIR"
+            elif rm -rf "$glci_pool_tmp" &&
+              git -c transfer.bundleURI=true clone --bare --single-branch --branch "$CI_DEFAULT_BRANCH" "$CI_REPOSITORY_URL" "$glci_pool_tmp" &&
+              git -C "$glci_pool_tmp" config gc.auto 0 &&
+              git -C "$glci_pool_tmp" remote set-url origin "${CI_SERVER_URL}/${CI_PROJECT_PATH}.git" &&
+              { git -C "$glci_pool_tmp" config --unset-all http.extraheader || true; } &&
+              rm -rf "$glci_pool" &&
+              mv "$glci_pool_tmp" "$glci_pool"; then
+              echo "Git object pool seeded at $glci_pool"
+            else
+              rm -rf "$glci_pool_tmp" || true
+              [ -e "$glci_pool" ] || mkdir -p "$glci_pool/objects" || true
+              echo "Git object pool seed failed; continuing with a normal clone"
+            fi
+          fi
+        fi
+        # One status line on every job, so job logs show which jobs borrow from a pool.
+        if [ -z "$GLCI_GIT_OBJECT_POOL_DIR" ]; then
+          echo "Git object pool: not configured on this runner"
+        elif [ -z "$glci_pool" ]; then
+          echo "Git object pool: not used by this job"
+        elif glci_pool_usable; then
+          echo "Git object pool: borrowing from $glci_pool ($(git --git-dir="$glci_pool" rev-parse --short HEAD 2>/dev/null))"
+        else
+          echo "Git object pool: none seeded yet at $glci_pool"
+        fi
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
@@ -52,6 +141,8 @@ default:
 
 .default-merge-request-variables: &default-merge-request-variables
   NO_SOURCEMAPS: "true"
+  FE_SOURCEMAPS: "false"
+  GLCI_ASSETS_TARGET: "ci"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
@@ -167,14 +258,6 @@ workflow:
         <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         QUERY_LOG_LINE: "true"
-    # MRs with the 'pipeline:use-test-balancing' label opt in to dynamic RSpec
-    # test balancing. Placed after the database/ruby-next toggles so those win
-    # when stacked; balancing degrades gracefully to the static Knapsack split.
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /pipeline:use-test-balancing/'
-      variables:
-        <<: [*default-ruby-variables, *default-merge-request-variables]
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
-        GLCI_USE_TEST_BALANCING: "true"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
@@ -269,9 +352,10 @@ variables:
   DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-node-${NODE_VERSION}-python-${PYTHON_VERSION}-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-poetry-${POETRY_VERSION}"
   DEFAULT_JOB_TAG: "gitlab-org"
   GITLAB_LARGE_RUNNER_OPTIONAL: "gitlab-org"  # overridden just in gitlab-org/gitlab
-  GLCI_MEDIUM_RUNNER_REQUIRED: ""  # This should be a tag pointing to a valid "medium" runner. Newer versions of Chrome (133+) require at least medium runners (4 core / 16G RAM), otherwise system test jobs are unpredictably instable due to insufficient resources (postgres DB and Rails application will have random failures). Therefore, the default is an empty string, which will cause system test jobs to never run. See https://issues.chromium.org/issues/447192720
+  GLCI_MEDIUM_RUNNER_REQUIRED: ""  # This should be a tag pointing to a valid "medium" runner. Newer versions of Chrome (133+) require at least medium runners (4 core / 16G RAM), otherwise system test jobs are unpredictably instable due to insufficient resources (postgres DB and Rails application will have random failures). Therefore, the default is an empty string, which will cause the jobs requesting this tag to never run. See https://issues.chromium.org/issues/447192720
   GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL: "gitlab-org-docker"  # this is set to GITLAB_LARGE_RUNNER_OPTIONAL on gitlab-org/gitlab and default to docker runners for dind to work correctly
   DEFAULT_RSPEC_PREDICTIVE_JOB_TAGS: "${DEFAULT_JOB_TAG}"  # Separated by commas, overridden in JiHu
+  GLCI_ASSETS_TARGET: "deploy"
   # We set $GITLAB_DEPENDENCY_PROXY to another variable (since it's set at the group level and has higher precedence than .gitlab-ci.yml)
   # so that we can override $GITLAB_DEPENDENCY_PROXY_ADDRESS in workflow rules.
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
@@ -284,10 +368,21 @@ variables:
   # we override the max_old_space_size to prevent OOM errors
   NODE_OPTIONS: --max-old-space-size=10240
   GIT_DEPTH: "20"
-  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio (on runners with
+  # the per-VM git object pool, fetches also send haves from the pool, so requests vary more)
   GIT_STRATEGY: "clone"
+  # Whether a job may seed a git object pool. See the `pre_get_sources_script` hook in
+  # `default:` above. Off until the runners that set GLCI_GIT_OBJECT_POOL_DIR have it, so
+  # this merges inert; "false" only skips seeding, not borrowing from a pool that exists.
+  GLCI_GIT_OBJECT_POOL: "false"
+  # Where git borrows objects from the pool. The runner sets only GLCI_GIT_OBJECT_POOL_DIR, so
+  # the pool's name stays with this project. On runners without a pool this is the job's own
+  # object directory, which git ignores as an alternate, so it never names a missing path.
+  GIT_ALTERNATE_OBJECT_DIRECTORIES: "${GLCI_GIT_OBJECT_POOL_DIR}${CI_PROJECT_DIR}/.git/objects"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+  # See the `pre_get_sources_script` hook in `default:` above.
+  ENABLE_PACKFILE_URI_CI: "true"
   # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
   CI_FETCH_REPO_GIT_STRATEGY: "none"
   FORCE_COLOR: 1
@@ -407,3 +502,6 @@ include:
   - local: .gitlab/ci/overrides/assets-tmp-cache.yml
     rules:
       - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+  - local: .gitlab/ci/overrides/assets-cache.yml
+    rules:
+      - if: '$CI_MERGE_REQUEST_IID'

@@ -19,9 +19,7 @@ module Ci
       can_admin_trigger?(trigger)
     end
 
-    expose :can_access_project do |trigger|
-      trigger.can_access_project?
-    end
+    expose :can_access_project, &:can_access_project?
 
     expose :project_trigger_path, if: ->(trigger) { can_manage_trigger?(trigger) } do |trigger|
       project_trigger_path(options[:project], trigger)

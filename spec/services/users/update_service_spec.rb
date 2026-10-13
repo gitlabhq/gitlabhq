@@ -354,6 +354,75 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
           expect(result[:status]).to eq(:success), result[:message]
           expect(target_user.organization_users.first.reload.access_level).to eq('default')
         end
+
+        context 'when the membership being updated is the last owner of its organization' do
+          let_it_be(:sole_owner_organization) { create(:organization, organization_users: []) }
+          let_it_be_with_reload(:target_user) { current_user }
+          let_it_be(:sole_ownership) do
+            create(:organization_owner, organization: sole_owner_organization, user: current_user)
+          end
+
+          let(:organization_users_attributes) do
+            [{ id: sole_ownership.id, organization_id: sole_owner_organization.id, access_level: 'default' }]
+          end
+
+          subject(:execute) do
+            described_class.new(current_user, {
+              user: target_user,
+              organization_users_attributes: organization_users_attributes
+            }).execute
+          end
+
+          it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+
+          it 'keeps the owner access level' do
+            expect { execute }.not_to change { sole_ownership.reload.access_level }.from('owner')
+          end
+        end
+
+        context 'when the target user is not a member of the organization' do
+          let_it_be(:target_user) { create(:user) }
+          let_it_be(:organization_users_attributes) do
+            [{ organization_id: organization.id, access_level: 'default' }]
+          end
+
+          it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+
+          it 'does not add the user to the organization' do
+            expect { execute }.not_to change { organization.user?(target_user) }.from(false)
+          end
+        end
+
+        # Two organizations are asked for but only one membership exists, which is the
+        # size mismatch the guard rejects. The existing membership must not be applied
+        # on its own, or a partial update would slip through.
+        context 'when the target user belongs to only some of the organizations' do
+          let_it_be(:other_organization) { create(:organization, organization_users: []) }
+          let_it_be_with_reload(:target_membership) { organization.organization_users.last }
+          let_it_be(:organization_users_attributes) do
+            [
+              { id: target_membership.id, organization_id: organization.id, access_level: 'default' },
+              { organization_id: other_organization.id, access_level: 'default' }
+            ]
+          end
+
+          subject(:execute) do
+            described_class.new(current_user, {
+              user: target_user,
+              organization_users_attributes: organization_users_attributes
+            }).execute
+          end
+
+          it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+
+          it 'does not apply the change to the organization the user does belong to' do
+            expect { execute }.not_to change { target_membership.reload.access_level }.from('owner')
+          end
+
+          it 'does not add the user to the organization they are missing from' do
+            expect { execute }.not_to change { other_organization.user?(target_user) }.from(false)
+          end
+        end
       end
 
       context 'when user is neither an admin nor an organization owner' do
@@ -423,6 +492,170 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
 
         expect(result[:status]).to eq(:error)
         expect(result[:message]).to include('Service Desk address for project')
+      end
+    end
+
+    describe 'Organization Administrator role sync' do
+      let_it_be(:organization) { create(:organization, organization_users: create_list(:organization_owner, 2)) }
+      let_it_be(:organization_owner) { organization.organization_users.first }
+      let_it_be_with_reload(:target_membership) { organization.organization_users.last }
+      let_it_be_with_reload(:target_user) { target_membership.user }
+
+      let(:access_level) { 'default' }
+      let(:params) do
+        {
+          user: target_user,
+          organization_users_attributes: [{
+            id: target_membership.id,
+            organization_id: organization.id,
+            access_level: access_level
+          }]
+        }
+      end
+
+      subject(:execute) { described_class.new(current_user, params).execute }
+
+      before do
+        allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+      end
+
+      context 'when the current user is an admin', :enable_admin_mode do
+        let_it_be(:current_user) { create(:admin) }
+
+        context 'when access_level changes from owner to default' do
+          it 'enqueues RevokeOwnerRoleWorker with the admin as the acting user', :aggregate_failures do
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+              .with(organization.id, target_user.id, current_user.id)
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when access_level changes from default to owner' do
+          let(:access_level) { 'owner' }
+
+          before do
+            target_membership.update!(access_level: :default)
+          end
+
+          it 'enqueues GrantOwnerRoleWorker with the admin as the acting user', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async)
+              .with(organization.id, target_user.id, current_user.id)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when access_level is unchanged' do
+          let(:access_level) { 'owner' }
+
+          it 'does not enqueue a worker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when the user is added to an organization with the default access level' do
+          let_it_be(:other_organization) { create(:organization) }
+
+          let(:params) do
+            { user: target_user, organization_users_attributes: [{ organization_id: other_organization.id }] }
+          end
+
+          it 'does not enqueue a worker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when the user is added to an organization as an owner' do
+          let_it_be(:other_organization) { create(:organization) }
+
+          let(:params) do
+            {
+              user: target_user,
+              organization_users_attributes: [{ organization_id: other_organization.id, access_level: 'owner' }]
+            }
+          end
+
+          it 'enqueues GrantOwnerRoleWorker with the admin as the acting user', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async)
+              .with(other_organization.id, target_user.id, current_user.id)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when no organization_users_attributes are passed' do
+          let(:params) { { user: target_user, name: 'New name' } }
+
+          it 'does not enqueue a worker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when the update fails' do
+          let(:params) { super().merge(email: 'invalid') }
+
+          it 'does not enqueue a worker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:error)
+          end
+        end
+
+        context 'when the owner role sync is unavailable' do
+          before do
+            allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+          end
+
+          it 'does not enqueue a worker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
+      end
+
+      context 'when the current user is an organization owner' do
+        let_it_be(:current_user) { organization_owner.user }
+
+        it 'enqueues RevokeOwnerRoleWorker with the owner as the acting user', :aggregate_failures do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+            .with(organization.id, target_user.id, current_user.id)
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(execute[:status]).to eq(:success)
+        end
+
+        # The organization admin area promotes members through this path.
+        context 'when access_level changes from default to owner' do
+          let(:access_level) { 'owner' }
+
+          before do
+            target_membership.update!(access_level: :default)
+          end
+
+          it 'enqueues GrantOwnerRoleWorker with the owner as the acting user', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async)
+              .with(organization.id, target_user.id, current_user.id)
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(execute[:status]).to eq(:success)
+          end
+        end
       end
     end
 

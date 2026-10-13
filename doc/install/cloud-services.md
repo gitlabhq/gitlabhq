@@ -70,10 +70,15 @@ Known limitations:
 
 If your workload requires additional connection pooling beyond what PostgreSQL handles directly,
 deploy your own PgBouncer instance.
+Configure PgBouncer to:
 
-> [!note]
-> The GitLab-bundled PgBouncer only works with the bundled PostgreSQL and cannot be used with
-> external database services.
+- Use an authentication method that your database service supports, such as
+  [`auth_file`](https://www.pgbouncer.org/config.html#auth_file).
+- Run in [transaction pooling mode](../administration/postgresql/pgbouncer.md#pooling-mode).
+
+Do not use the bundled PgBouncer from the Linux package.
+The bundled PgBouncer is
+[supported only with PostgreSQL managed by the Linux package](../administration/postgresql/pgbouncer.md#authentication).
 
 The following provider-managed pooling solutions are not recommended:
 
@@ -99,7 +104,7 @@ The service must support:
 Services known to work include:
 
 - [Google Memorystore](https://cloud.google.com/memorystore)
-- [Amazon ElastiCache for Valkey](https://aws.amazon.com/elasticache/valkey/)
+- [Amazon ElastiCache for Valkey](https://aws.amazon.com/elasticache/)
 
 > [!note]
 > On AWS, use ElastiCache for Valkey 7.2. ElastiCache for Redis 7.2 is not available on AWS.

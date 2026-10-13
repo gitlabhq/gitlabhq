@@ -1,0 +1,9 @@
+---
+name: read_custom_emoji
+description: Grants the ability to read custom emoji
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - read_custom_emoji

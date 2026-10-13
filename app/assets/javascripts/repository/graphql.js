@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
-import { fetchLogsTree } from './log_tree';
 
 Vue.use(VueApollo);
 
@@ -16,29 +15,17 @@ const typePolicies = {
   },
 };
 
+// The server omits `html` when the blob has no rich viewer, but the query selects it.
+export const fetchReadme = (url) =>
+  axios
+    .get(url, { params: { format: 'json', viewer: 'rich' } })
+    .then(({ data }) => ({ html: null, ...data, __typename: 'ReadmeFile' }));
+
 const defaultClient = createDefaultClient(
   {
     Query: {
-      commit(_, { path, fileName, maxOffset }) {
-        return new Promise((resolve) => {
-          fetchLogsTree(
-            defaultClient,
-            path,
-            '0',
-            {
-              resolve,
-              entry: {
-                name: fileName,
-              },
-            },
-            maxOffset,
-          );
-        });
-      },
       readme(_, { url }) {
-        return axios
-          .get(url, { params: { format: 'json', viewer: 'rich' } })
-          .then(({ data }) => ({ ...data, __typename: 'ReadmeFile' }));
+        return fetchReadme(url);
       },
     },
   },

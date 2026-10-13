@@ -30,6 +30,14 @@ module Gitlab
         "#{DEFAULT_USERNAME}-#{cell_suffix}"
       end
 
+      def self.seeded_admin
+        ::User.admins.find_by_username(DEFAULT_USERNAME) || ::User.admins.first
+      end
+
+      def self.seeded_admin_organization
+        seeded_admin.organization
+      end
+
       def self.create_organization
         suffix = cell_suffix
 

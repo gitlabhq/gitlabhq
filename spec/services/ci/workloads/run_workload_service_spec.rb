@@ -127,6 +127,79 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
       end
     end
 
+    context 'with oversized variables' do
+      let(:oversized_variables) { { 'BIG_VAR' => 'a' * described_class::MAX_VARIABLE_BYTESIZE } }
+
+      let(:workload_definition) do
+        ::Ci::Workloads::WorkloadDefinition.new.tap do |definition|
+          definition.image = image
+          definition.commands = commands
+          definition.variables = oversized_variables
+        end
+      end
+
+      context 'when a single variable is over the per-variable limit' do
+        it 'does not create a pipeline and names the offending variable' do
+          expect(::Ci::CreatePipelineService).not_to receive(:new)
+
+          expect(execute).to be_error
+          expect(execute.message).to eq(
+            'Error in creating workload: variables over the ' \
+              "#{described_class::MAX_VARIABLE_BYTESIZE} byte limit: BIG_VAR"
+          )
+        end
+
+        it 'logs the variable sizes but not their values' do
+          expect(Gitlab::AppJsonLogger).to receive(:error) do |payload|
+            expect(payload).to include(
+              'message' => 'Workload job environment exceeds the size limits',
+              'gl_project_id' => project.id,
+              'oversized_variables' => ['BIG_VAR'],
+              'variable_bytesizes' => a_collection_including(
+                { 'name' => 'BIG_VAR', 'bytesize' => 'BIG_VAR'.bytesize + described_class::MAX_VARIABLE_BYTESIZE + 2 }
+              )
+            )
+            expect(payload.to_json).not_to include('a' * 100)
+          end
+
+          execute
+        end
+      end
+
+      context 'when the variables are collectively over the warning threshold' do
+        let(:oversized_variables) do
+          half = described_class::MAX_VARIABLE_BYTESIZE / 2
+
+          ((described_class::WARN_VARIABLES_BYTESIZE / half) + 1).times.to_h do |i|
+            ["VAR_#{i}", 'a' * half]
+          end
+        end
+
+        it 'creates the workload and logs the total size' do
+          expect(Gitlab::AppJsonLogger).to receive(:warn) do |payload|
+            expect(payload).to include(
+              'message' => 'Workload job environment is over the total size threshold',
+              'variables_bytesize' => be > described_class::WARN_VARIABLES_BYTESIZE,
+              'oversized_variables' => []
+            )
+            expect(payload.to_json).not_to include('a' * 100)
+          end
+
+          expect(execute).to be_success
+        end
+      end
+
+      context 'when the largest variable is just within the per-variable limit' do
+        let(:oversized_variables) do
+          { 'BIG_VAR' => 'a' * (described_class::MAX_VARIABLE_BYTESIZE - 'BIG_VAR'.bytesize - 2) }
+        end
+
+        it 'creates the workload' do
+          expect(execute).to be_success
+        end
+      end
+    end
+
     context 'with unsupported source' do
       let(:source) { :foo }
 

@@ -81,7 +81,7 @@ RSpec.describe 'issuable list', :js, feature_category: :planning_views do
       issue = Issue.reorder(:iid).first
       merge_request = create(:merge_request, :unique_branches, source_project: project)
 
-      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
+      create(:merge_request_issue, issue: issue, merge_request: merge_request)
     end
   end
 end

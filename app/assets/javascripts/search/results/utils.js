@@ -1,9 +1,6 @@
-import {
-  LEGACY_FALLBACKS,
-  ROUGE_TO_HLJS_LANGUAGE_MAP,
-} from '~/vue_shared/components/source_viewer/constants';
+import { LEGACY_FALLBACKS, ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/highlight_js/constants';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
-import { highlight } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
+import { highlight } from '~/highlight_js/workers/highlight_utils';
 import {
   HIGHLIGHT_MARK,
   HIGHLIGHT_MARK_REGEX,

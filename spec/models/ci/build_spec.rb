@@ -531,7 +531,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'with rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_processed_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: { project: build.project })
                                                      .and_return(true)
         end
 
@@ -549,7 +549,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'without rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_processed_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: { project: build.project })
                                                      .and_return(false)
         end
 
@@ -599,24 +599,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like "when build receives #{action} event"
-      end
-
-      context 'with ci_stage_subscription feature flag disabled' do
-        before do
-          stub_feature_flags(ci_stage_subscription: false)
-        end
-
-        %w[cancel! drop! run! skip! success!].each do |action|
-          shared_examples "when build receives #{action} event" do
-            it 'does not trigger GraphQL subscription ciStageUpdated' do
-              expect(GraphqlTriggers).not_to receive(:ci_stage_updated).with(build_with_stage)
-
-              build_with_stage.public_send(action)
-            end
-          end
-
-          it_behaves_like "when build receives #{action} event"
-        end
       end
     end
   end
@@ -1140,7 +1122,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let_it_be(:pipeline) { create(:ci_pipeline, locked: :unlocked) }
 
       context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }
 
         it { is_expected.to be_falsy }
       end
@@ -1863,6 +1845,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it "saves the correct extracted coverage value" do
         expect(build.update_coverage).to be(true)
         expect(build.coverage).to eq(98.29)
+      end
+    end
+
+    context 'when coverage_regex is blank' do
+      before do
+        build.coverage_regex = nil
+        build.trace.set('Coverage 1033 / 1051 LOC (98.29%) covered')
+      end
+
+      it 'does not read the trace' do
+        expect(build).not_to receive(:trace)
+
+        expect(build.update_coverage).to be_nil
+        expect(build.coverage).to be_nil
       end
     end
   end
@@ -2621,6 +2617,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(result).to be_success
       expect(result.payload[:job]).to be_pending
     end
+
+    it 'passes rate_limit through to the play service' do
+      expect(Ci::PlayBuildService).to receive(:new).with(hash_including(rate_limit: false)).and_call_original
+
+      build.play(user, rate_limit: false)
+    end
   end
 
   describe '#playable?' do
@@ -3034,7 +3036,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false },
           { key: 'CI_COMMIT_USER_LOGIN', value: pipeline.git_author_login.to_s, public: true, masked: false },
           { key: 'CI_TRACEPARENT',
-            value: Gitlab::Ci::TraceContext.build_traceparent(pipeline.id, build.id),
+            value: Gitlab::Ci::TraceContext.build_traceparent(pipeline.id, build.id, :export),
             public: true, masked: false },
           { key: 'CI_TRACESTATE',
             value: "gitlab=pipeline:#{pipeline.id};job:#{build.id}",
@@ -3118,7 +3120,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 project_pre_var,
                 pipeline_pre_var,
                 { key: 'CI_TRACEPARENT',
-                  value: Gitlab::Ci::TraceContext.build_traceparent(pipeline.id, build.id),
+                  value: Gitlab::Ci::TraceContext.build_traceparent(pipeline.id, build.id, :export),
                   public: true, masked: false },
                 { key: 'CI_TRACESTATE',
                   value: "gitlab=pipeline:#{pipeline.id};job:#{build.id}",
@@ -4476,6 +4478,59 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(Ci::BuildPrepareWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
+    end
+  end
+
+  describe 'state transition: pending => :running', :clean_gitlab_redis_shared_state do
+    let(:build) { create(:ci_build, :pending, pipeline: pipeline) }
+
+    def candidate_cache
+      Gitlab::Ci::RedundantPipelines::CandidateCache.for(project_id: project.id, ref: pipeline.ref)
+    end
+
+    def pipeline_key
+      Gitlab::Ci::RedundantPipelines::PipelineKey.of(pipeline)
+    end
+
+    it 'protects the pipeline in the cache' do
+      build.run!
+
+      expect(candidate_cache).to be_protected(pipeline_key)
+    end
+
+    it 'queues the durable write for the pipeline' do
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker)
+        .to receive(:perform_async).with(pipeline.id, pipeline.partition_id)
+
+      build.run!
+    end
+
+    it 'does not queue the durable write when the cache already protects the pipeline' do
+      candidate_cache.protect(pipeline_key)
+
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker).not_to receive(:perform_async)
+
+      build.run!
+    end
+
+    it 'does not protect it while the candidates are not cached' do
+      stub_feature_flags(ci_redundant_pipeline_candidates_cache: false)
+
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker).not_to receive(:perform_async)
+
+      build.run!
+
+      expect(candidate_cache).not_to be_protected(pipeline_key)
+    end
+
+    it 'does not protect it for an interruptible build' do
+      interruptible = create(:ci_build, :pending, :interruptible, pipeline: pipeline)
+
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker).not_to receive(:perform_async)
+
+      interruptible.run!
+
+      expect(candidate_cache).not_to be_protected(pipeline_key)
     end
   end
 
@@ -5867,27 +5922,29 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#execute_hooks' do
-    before do
-      build.clear_memoization(:build_data)
-    end
-
     context 'when project hooks exists' do
-      let(:build_data) { double(:BuildData) }
-
       before do
         create(:project_hook, project: project, job_events: true)
         allow(Ci::ExecuteBuildHooksWorker).to receive(:perform_async)
       end
 
-      it 'enqueues ExecuteBuildHooksWorker' do
-        expect(::Gitlab::DataBuilder::Build)
-            .to receive(:build).with(build).and_return(build_data)
-
+      it 'enqueues ExecuteBuildHooksWorker with the build id and a state snapshot' do
         build.execute_hooks
 
         expect(Ci::ExecuteBuildHooksWorker)
           .to have_received(:perform_async)
-          .with(project.id, build_data)
+          .with(project.id, build.id, hash_including(
+            build_status: build.status,
+            build_started_at: build.started_at,
+            build_finished_at: build.finished_at,
+            build_duration: build.duration
+          ))
+      end
+
+      it 'does not build the webhook payload when enqueuing' do
+        expect(::Gitlab::DataBuilder::Build).not_to receive(:build)
+
+        build.execute_hooks
       end
 
       context 'with blocked users' do

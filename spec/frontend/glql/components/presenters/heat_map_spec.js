@@ -42,12 +42,83 @@ describe('HeatMapPresenter', () => {
     ]);
   });
 
+  it('keeps the busiest columns when maxColumns is set, largest first', () => {
+    createComponent({
+      data: {
+        nodes: [
+          { user: 'user-0', language: 'ruby', totalCount: 10 },
+          { user: 'user-1', language: 'ruby', totalCount: 7 },
+          { user: 'user-2', language: 'ruby', totalCount: 3 },
+          { user: 'user-3', language: 'ruby', totalCount: 1 },
+        ],
+      },
+      displayConfig: { maxColumns: 2 },
+    });
+
+    expect(findChart().props('data')).toEqual([
+      { column: 'user-0', row: 'ruby', value: 10 },
+      { column: 'user-1', row: 'ruby', value: 7 },
+    ]);
+  });
+
+  it('keeps the busiest rows when maxRows is set', () => {
+    createComponent({
+      data: {
+        nodes: [
+          { user: 'user-0', language: 'ruby', totalCount: 10 },
+          { user: 'user-0', language: 'python', totalCount: 4 },
+          { user: 'user-0', language: 'go', totalCount: 1 },
+        ],
+      },
+      displayConfig: { maxRows: 1 },
+    });
+
+    expect(findChart().props('data')).toEqual([{ column: 'user-0', row: 'ruby', value: 10 }]);
+  });
+
+  it('caps both axes when maxColumns and maxRows are set', () => {
+    createComponent({
+      data: {
+        nodes: [
+          { user: 'user-0', language: 'ruby', totalCount: 10 },
+          { user: 'user-1', language: 'ruby', totalCount: 1 },
+          { user: 'user-0', language: 'python', totalCount: 2 },
+          { user: 'user-1', language: 'python', totalCount: 1 },
+        ],
+      },
+      displayConfig: { maxColumns: 1, maxRows: 1 },
+    });
+
+    expect(findChart().props('data')).toEqual([{ column: 'user-0', row: 'ruby', value: 10 }]);
+  });
+
+  it.each([
+    ['tie-x first', ['tie-x', 'tie-y']],
+    ['tie-y first', ['tie-y', 'tie-x']],
+  ])('breaks a tie at the cap on the label, whichever order the query returns (%s)', (_, tied) => {
+    createComponent({
+      data: {
+        nodes: [
+          { user: 'big', language: 'ruby', totalCount: 9 },
+          { user: tied[0], language: 'ruby', totalCount: 1 },
+          { user: tied[1], language: 'ruby', totalCount: 1 },
+        ],
+      },
+      displayConfig: { maxColumns: 2 },
+    });
+
+    expect(findChart().props('data')).toEqual([
+      { column: 'big', row: 'ruby', value: 9 },
+      { column: 'tie-x', row: 'ruby', value: 1 },
+    ]);
+  });
+
   it('formats the in-cell value with the metric unit, compactly', () => {
     expect(findChart().props('options').formatValue(2500000)).toBe('2.5M');
   });
 
   it('describes the chart for assistive technology', () => {
-    expect(findChart().props('options').aria.label.description).toBe(
+    expect(findChart().props('options').aria.label.description).toContain(
       'Heat map of Total count by User and Language.',
     );
   });
@@ -118,5 +189,36 @@ describe('HeatMapPresenter', () => {
 
     expect(mounted.text()).toContain('Total count');
     expect(mounted.text()).toContain('12,345');
+  });
+
+  describe('description for assistive technology', () => {
+    const descriptionFor = (provide) => {
+      const mounted = shallowMountExtended(HeatMapPresenter, {
+        propsData: {
+          data: {
+            nodes: [
+              { user: 'user-0', language: 'ruby', totalCount: 5 },
+              { user: 'user-1', language: 'go', totalCount: 9 },
+            ],
+          },
+          fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        },
+        provide,
+        stubs: { DimensionRoutedChart },
+      });
+
+      return mounted.findComponent(HeatMapChart).props('options').aria.label.description;
+    };
+
+    it('leads with the panel title and states the highest value', () => {
+      const description = descriptionFor({ getVisualizationTitle: () => 'Sessions by tier' });
+
+      expect(description).toMatch(/^Sessions by tier\. Heat map of Total count by/);
+      expect(description).toContain('Highest is 9 for user-1 and go.');
+    });
+
+    it('starts with the chart shape outside a dashboard panel', () => {
+      expect(descriptionFor({})).toMatch(/^Heat map of Total count by/);
+    });
   });
 });

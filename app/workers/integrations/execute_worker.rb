@@ -20,6 +20,7 @@ module Integrations
       return unless integration
 
       log_extra_metadata_on_done(:integration_class, integration.class.name)
+      log_extra_metadata_on_done(Labkit::Fields::GL_ORGANIZATION_ID, integration.organization_id_for_logging)
 
       begin
         scope = data['object_kind']

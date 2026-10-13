@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:merge_request) do
+    create(:merge_request_with_diffs, target_project: project, source_project: project)
+  end
 
   let(:request) { EntityRequest.new(project: project) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.first }
   let(:full_path) { project.full_path }
@@ -63,7 +65,7 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
     end
 
     context 'when diff is not included in @merge_request_diffs' do
-      let(:merge_request_diff) { create(:merge_request_diff) }
+      let(:merge_request_diff) { build_stubbed(:merge_request_diff) }
       let(:merge_request_diff_2) { create(:merge_request_diff) }
 
       before do
@@ -82,10 +84,16 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
     end
 
     context 'when @merge_request_diffs.size > 1' do
-      let(:merge_request) { create(:merge_request_with_multiple_diffs) }
+      # version_index is derived from the diff's position in this collection, so an
+      # unordered association makes it depend on the query plan. Every production
+      # caller orders these diffs; mirror that here.
+      let(:merge_request_diffs) { merge_request.merge_request_diffs.order_id_desc }
 
-      it 'returns difference between size and diff index',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5967' do
+      before do
+        merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+      end
+
+      it 'returns difference between size and diff index' do
         expect(merge_request_diffs.size).to eq(2)
 
         # diff index: 0

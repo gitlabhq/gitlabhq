@@ -173,7 +173,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Failed, feature_category: :continuous_
 
     context 'invalid failure message' do
       before do
-        allow(build).to receive(:failure_reason) { 'invalid failure message' }
+        allow(build).to receive(:failure_reason).and_return('invalid failure message')
       end
 
       it "is an invalid status" do

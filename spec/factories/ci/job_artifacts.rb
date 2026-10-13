@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :ci_job_artifact, class: 'Ci::JobArtifact' do
-    job factory: :ci_build
+    job { association(:ci_build, **@overrides.slice(:project).compact) }
     file_type { :archive }
     file_format { :zip }
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :markdown do
   let(:valid_entry) do
@@ -190,9 +190,85 @@ RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :m
       end
     end
 
+    describe 'additional_csp_hosts' do
+      it 'defaults to none' do
+        expect(from_config.additional_csp_hosts).to eq([])
+      end
+
+      it 'accepts a list of hostnames, normalising case' do
+        provider = from_config(additional_csp_hosts: %w[www.example.com Other.Example.COM])
+
+        expect(provider.additional_csp_hosts).to eq(%w[www.example.com other.example.com])
+      end
+
+      it 'rejects anything but a list of strings' do
+        expect_config_error("'additional_csp_hosts' must be a list of hostnames", additional_csp_hosts: nil)
+        expect_config_error("'additional_csp_hosts' must be a list of hostnames",
+          additional_csp_hosts: 'www.example.com')
+        expect_config_error("'additional_csp_hosts' must be a list of hostnames", additional_csp_hosts: [1])
+      end
+
+      it 'rejects entries that are not bare hostnames' do
+        [
+          '',
+          'https://www.example.com',
+          'www.example.com/path',
+          'www.example.com:443',
+          'user@www.example.com',
+          '*.example.com',
+          'www.example.com.',
+          '-www.example.com',
+          'www.example.com; script-src *',
+          'www.example.com https://evil.example'
+        ].each do |host|
+          expect_config_error("'additional_csp_hosts' must be a list of hostnames", additional_csp_hosts: [host])
+        end
+      end
+
+      context 'with allow-same-origin' do
+        before do
+          stub_config(gitlab: { host: 'gitlab.example.com' }, pages: { host: 'pages.example.com' })
+        end
+
+        it 'accepts hosts served elsewhere' do
+          provider = from_config(additional_csp_hosts: %w[www.example.com], sandbox: %w[allow-same-origin])
+
+          expect(provider.additional_csp_hosts).to eq(%w[www.example.com])
+        end
+
+        it 'rejects hosts served by the instance or GitLab Pages' do
+          %w[gitlab.example.com GitLab.Example.COM pages.example.com group.pages.example.com].each do |host|
+            expect_config_error(
+              "'additional_csp_hosts' must not include hosts served by this GitLab instance " \
+                "when 'allow-same-origin' is set",
+              additional_csp_hosts: [host], sandbox: %w[allow-same-origin])
+          end
+        end
+
+        it 'accepts hosts served by the instance without allow-same-origin' do
+          provider = from_config(additional_csp_hosts: %w[gitlab.example.com], sandbox: %w[allow-scripts])
+
+          expect(provider.additional_csp_hosts).to eq(%w[gitlab.example.com])
+        end
+      end
+    end
+
     it 'rejects a non-boolean require_activation' do
       expect_config_error("'require_activation' must be a boolean", require_activation: 'yes')
       expect_config_error("'require_activation' must be a boolean", require_activation: nil)
+    end
+  end
+
+  describe '#frame_src_origins' do
+    it 'is the src origin when there are no additional CSP hosts' do
+      expect(from_config.frame_src_origins).to eq(%w[https://embed.example.com])
+    end
+
+    it 'includes the additional CSP hosts as https origins' do
+      provider = from_config(additional_csp_hosts: %w[www.example.com other.example.com])
+
+      expect(provider.frame_src_origins)
+        .to eq(%w[https://embed.example.com https://www.example.com https://other.example.com])
     end
   end
 
@@ -232,6 +308,23 @@ RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :m
     it 'returns nil when a capture segment is empty' do
       expect(match('https://www.example.com/video//slug')).to be_nil
       expect(match('https://www.example.com//abc')).to be_nil
+    end
+
+    it 'returns nil when a capture expands to a dot segment', :aggregate_failures do
+      expect(match('https://www.example.com/video/..')).to be_nil
+      expect(match('https://www.example.com/video/.')).to be_nil
+      expect(match('https://www.example.com/video/%2e%2e')).to be_nil
+      expect(match('https://example.com/view?kind=video&id=..')).to be_nil
+    end
+
+    it 'returns nil when adjacent captures expand to a dot segment' do
+      provider = from_config(requires: {}, src: 'https://embed.example.com/{kind}{id}')
+
+      expect(provider.match(Addressable::URI.parse('https://www.example.com/./.'))).to be_nil
+    end
+
+    it 'expands a capture containing dots that is not a dot segment' do
+      expect(match('https://www.example.com/video/a..b')).to eq('https://embed.example.com/video/a..b?host=gitlab')
     end
 
     it 'returns nil when a requirement is not met' do

@@ -447,6 +447,10 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
         sequence_name: model.sequence_name
       })
     end
+
+    it_behaves_like 'a partitioning strategy with a default analyze_interval' do
+      let(:strategy_args) { { partition_size: partition_size } }
+    end
   end
 
   describe 'attributes with sequence_name' do

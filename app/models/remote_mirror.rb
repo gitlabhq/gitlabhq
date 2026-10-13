@@ -14,6 +14,7 @@ class RemoteMirror < ApplicationRecord
   MAX_INCREMENTAL_RUNTIME = 1.hour
   PROTECTED_BACKOFF_DELAY   = 1.minute
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
+  NO_DELAY_BACKOFF_DELAY    = 30.seconds
 
   attr_encrypted :credentials,
     key: :db_key_base,
@@ -89,10 +90,6 @@ class RemoteMirror < ApplicationRecord
     after_transition started: :failed do |remote_mirror|
       remote_mirror.send_failure_notifications
     end
-  end
-
-  def update_failed?
-    update_status == 'failed'
   end
 
   def update_in_progress?
@@ -227,6 +224,8 @@ class RemoteMirror < ApplicationRecord
   end
 
   def backoff_delay
+    return NO_DELAY_BACKOFF_DELAY if no_delay?
+
     if self.only_protected_branches
       PROTECTED_BACKOFF_DELAY
     else
@@ -251,6 +250,10 @@ class RemoteMirror < ApplicationRecord
 
   private
 
+  def no_delay?
+    Feature.enabled?(:remote_mirror_no_delay, project, type: :ops)
+  end
+
   def enabling_mirror?
     enabled_changed? && enabled?
   end
@@ -271,7 +274,7 @@ class RemoteMirror < ApplicationRecord
   end
 
   def schedule_with_delay?
-    return false if Feature.enabled?(:remote_mirror_no_delay, project, type: :ops)
+    return false if no_delay?
     return false unless self.last_update_started_at
 
     self.last_update_started_at >= Time.current - backoff_delay
@@ -336,8 +339,10 @@ class RemoteMirror < ApplicationRecord
     return if value.blank?
 
     canonical = canonicalize_scp_style(value)
-    # Normalize to a credential-insensitive form so equivalent URLs compare equal.
-    Gitlab::UrlSanitizer.new(canonical).sanitized_url.chomp('/').delete_suffix('.git').chomp('/')
+    normalized = Addressable::URI.parse(Gitlab::UrlSanitizer.new(canonical).sanitized_url)
+    # Hostnames are case-insensitive, but repository paths may not be.
+    normalized.host = normalized.host&.downcase
+    normalized.to_s.chomp('/').delete_suffix('.git').chomp('/')
   rescue Addressable::URI::InvalidURIError
     nil
   end

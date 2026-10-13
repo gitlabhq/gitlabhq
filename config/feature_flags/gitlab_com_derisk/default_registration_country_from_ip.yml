@@ -1,0 +1,9 @@
+---
+name: default_registration_country_from_ip
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/604000
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254864
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/628619
+milestone: '19.5'
+type: gitlab_com_derisk
+group: group::acquisition
+default_enabled: false

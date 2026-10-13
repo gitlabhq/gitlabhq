@@ -18,7 +18,6 @@ export default {
     rawLogPath: {
       required: true,
       type: String,
-      default: null,
     },
   },
   data() {

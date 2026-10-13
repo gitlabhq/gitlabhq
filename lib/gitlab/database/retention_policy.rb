@@ -27,7 +27,7 @@ module Gitlab
         work_item
       ].freeze
 
-      EXCLUDE_REASONS = %w[indefinite_retention technical_complexity].freeze
+      EXCLUDE_REASONS = %w[indefinite_retention technical_complexity needs_archival].freeze
       ENFORCEMENT_STRATEGIES = %w[drop_partition delete_rows transient_data none].freeze
       PAUSE_MECHANISMS = %w[none application_setting feature_flag].freeze
 

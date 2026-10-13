@@ -5,15 +5,16 @@ import {
   getLineNumbers,
   getLineChange,
   getLineCode,
-  getNewLineRangeContent,
   findLineRow,
 } from '~/rapid_diffs/utils/line_utils';
+import { getCodeSuggestionsConfig } from '~/rapid_diffs/utils/code_suggestions';
 import { createAlert } from '~/alert';
 import { pinia } from '~/pinia/instance';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 
 function mountDiscussionRow({
   lineRow,
+  diffElement,
   parallel,
   appData,
   store,
@@ -54,6 +55,14 @@ function mountDiscussionRow({
         linkedFileData: appData.linkedFileData,
         newCommentTemplatePaths: appData.newCommentTemplatePaths || [],
         showWhitespace,
+        resolveCodeSuggestions: (discussion) =>
+          getCodeSuggestionsConfig({
+            discussion,
+            diffElement,
+            diffRefs,
+            canReceiveSuggestion: store.canReceiveSuggestion,
+            blobRawPath: appData.blobRawPath,
+          }),
       };
     },
     render(h) {
@@ -71,7 +80,6 @@ function mountDiscussionRow({
             const lineCode = getLineCode({ id, row: lineRow, oldLine, newLine });
             const linePos = { old_line: oldLine, new_line: newLine };
             const lineRange = { start: linePos, end: linePos };
-            const lines = getNewLineRangeContent(lineRow.closest('table'), lineRange, side);
             store.addNewLineDiscussionForm({
               oldPath,
               newPath,
@@ -79,7 +87,6 @@ function mountDiscussionRow({
               lineCode,
               lineRange,
               diffRefs,
-              extraOptions: { lines },
             });
           },
           empty() {
@@ -122,6 +129,7 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
             if (!lineRow) return;
             mountDiscussionRow({
               lineRow,
+              diffElement,
               parallel,
               appData: { ...appData, oldPath, newPath, blobRawPath },
               store,
@@ -156,7 +164,6 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
       const [oldLine, newLine] = getLineNumbers(row);
       const { oldPath, newPath, diffRefs } = this.data;
       const lineCode = getLineCode({ id: this.id, row, oldLine, newLine });
-      const lines = getNewLineRangeContent(this.diffElement, button.lineRange, lineChange.position);
       const existingDiscussionId = store.addNewLineDiscussionForm({
         oldPath,
         newPath,
@@ -164,7 +171,6 @@ export const createLineDiscussionsAdapter = ({ store, parallel, errorMessage }) 
         lineCode,
         lineRange: button.lineRange,
         diffRefs,
-        extraOptions: { lines },
       });
       if (existingDiscussionId) {
         document

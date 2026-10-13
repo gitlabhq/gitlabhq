@@ -3,6 +3,16 @@
 module ClickHouseHelpers
   extend ActiveRecord::ConnectionAdapters::Quoting
 
+  # CI runs `main` as the least-privilege `gitlab` user production uses, and appends a
+  # `main_admin` connection on the `default` credentials for the few statements production
+  # is not granted (`SYSTEM RELOAD DICTIONARY`, `SYSTEM REFRESH VIEW`). Local setups run
+  # `main` as `default`, which already holds them.
+  def click_house_admin_database
+    admin = ClickHouseSchemaHelpers::ADMIN_DATABASE
+
+    ::ClickHouse::Client.database_configured?(admin) ? admin : :main
+  end
+
   def insert_events_into_click_house(events = Event.all)
     # Insert into both events table until legacy table is removed
     %i[events siphon_events].each do |clickhouse_table_name|

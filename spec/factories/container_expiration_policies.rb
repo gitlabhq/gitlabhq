@@ -10,9 +10,7 @@ FactoryBot.define do
     # Also, if you wish to assign an existing project to a
     # container_expiration_policy, you will then have to destroy the project's
     # container_expiration_policy first.
-    before(:create) do |container_expiration_policy|
-      container_expiration_policy.project = build(:project) unless container_expiration_policy.project
-    end
+    project { association(:project, strategy: :build) }
 
     cadence { '1d' }
     enabled { true }

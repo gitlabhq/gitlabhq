@@ -17,10 +17,16 @@ module Users
 
         return error(error_messages[:no_seats], :forbidden) unless creation_allowed?
 
-        create_user
+        result = create_user
+        after_successful_creation_hook(result.payload[:user]) if result.success?
+        result
       end
 
       private
+
+      # Overridden in EE to log the service_account_created audit event, whose
+      # type is defined only in EE.
+      def after_successful_creation_hook(user); end
 
       def username_and_email_generator
         Gitlab::Utils::UsernameAndEmailGenerator.new(
@@ -48,7 +54,7 @@ module Users
           email: email,
           username: username,
           user_type: :service_account,
-          external: true,
+          external: external_param,
           skip_confirmation: skip_confirmation,
           organization_id: params[:organization_id],
           avatar: params[:avatar].presence,
@@ -82,6 +88,12 @@ module Users
         params[:private_profile] || false
       end
 
+      def external_param
+        return true if params[:external].nil?
+
+        params[:external]
+      end
+
       # Skip confirmation only for auto-generated email address.
       # Custom addresses should go through confirmation if
       # enabled for the instance.
@@ -107,3 +119,5 @@ module Users
     end
   end
 end
+
+Users::ServiceAccounts::CreateService.prepend_mod

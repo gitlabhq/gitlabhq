@@ -8,7 +8,7 @@
 # `variables:` block: they need different tokens and timeouts.
 .ai-principles-setup:
   before_script:
-    - apk add --no-cache build-base git
+    - apk add --no-cache git
     # Audit-trail visibility: log the identity making the calls (the service account; see access request #43931).
     - echo "Identity:${GITLAB_USER_LOGIN:-<unset>} (job triggered from $CI_PIPELINE_SOURCE)"
     - git config --global user.email "service-modelops-agent-principles-distiller@gitlab.com"

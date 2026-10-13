@@ -14,6 +14,11 @@ module Mutations
         description: 'Board after mutation.'
 
       authorize :admin_issue_board
+      authorize_granular_token permissions: :create_issue_board,
+        boundaries: [
+          { boundary_argument: :project_path, boundary_type: :project },
+          { boundary_argument: :group_path, boundary_type: :group }
+        ]
 
       def resolve(args)
         board_parent = authorized_resource_parent_find!(args)

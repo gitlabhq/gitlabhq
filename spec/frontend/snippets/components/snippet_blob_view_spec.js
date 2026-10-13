@@ -18,7 +18,7 @@ import {
 } from '~/blob/components/constants';
 import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
-import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
+import { RichViewer, SimpleViewer } from '~/blob/components/blob_viewers';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -319,6 +319,30 @@ describe('Blob Embeddable', () => {
   });
 
   describe('GetBlobContent query', () => {
+    it('renders empty content when the response contains no snippet', async () => {
+      const handler = jest.fn().mockResolvedValue({
+        data: { snippets: { __typename: 'SnippetConnection', id: '1', nodes: [] } },
+      });
+      createComponent({ handler });
+      await waitForPromises();
+
+      expect(findBlobContent().props('content')).toBe('');
+    });
+
+    it('renders empty content when the response contains no matching blob', async () => {
+      createComponent({ handler: mockDefaultHandler({ nodes: [] }) });
+      await waitForPromises();
+
+      expect(findBlobContent().props('content')).toBe('');
+    });
+
+    it('renders empty content when the query fails', async () => {
+      createComponent({ handler: jest.fn().mockRejectedValue(new Error('GraphQL error')) });
+      await waitForPromises();
+
+      expect(findBlobContent().props('content')).toBe('');
+    });
+
     it('passes projectId when snippet has a project', async () => {
       const handler = mockDefaultHandler();
       createComponent({ handler });

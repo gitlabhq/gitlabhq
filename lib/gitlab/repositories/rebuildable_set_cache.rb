@@ -14,8 +14,7 @@ module Gitlab
       # Matches REBUILD_FLAG_TTL so orphaned events expire before the next rebuild.
       PENDING_EVENT_TTL = REBUILD_FLAG_TTL
 
-      TRUST_TTL = 1.hour
-      INCREASED_TRUST_TTL = 6.hours
+      TRUST_TTL = 6.hours
       TRUST_TTL_JITTER = 30.minutes
       DRAIN_BATCH_SIZE = 1000
 
@@ -234,27 +233,31 @@ module Gitlab
         log_event(:cache_miss, key, exists: exists, trusted: is_trusted)
 
         result = write(key, yield)
-        metrics.increment_operation(key: key, operation: 'fetch', status: 'miss')
+        metrics.increment_operation(key: key, operation: 'fetch', status: miss_status(exists, result))
         result
       rescue StandardError
         metrics.increment_operation(key: key, operation: 'fetch', status: 'error')
         raise
       end
 
-      # Searches the cache set using SSCAN with the MATCH option. The MATCH
-      # parameter is the pattern argument.
-      # See https://redis.io/commands/scan#the-match-option for more information.
-      # Returns an Enumerator that enumerates all SSCAN hits.
+      # Returns an Enumerator of values matching the glob pattern: SSCAN MATCH on a trusted hit.
+      # On a miss, matches the rebuilt values in memory, since the Redis set may be absent
+      # or stale while another request holds the rebuild lock.
       def search(key, pattern)
         full_key = cache_key(key)
 
         enumerator, status = with do |redis|
-          is_trusted = redis.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+          exists, is_trusted = redis.multi do |multi|
+            multi.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+            multi.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
+          end
 
-          write(key, yield) unless is_trusted
-
-          # search:error excludes failures raised while consuming the lazy enumerator.
-          [redis.sscan_each(full_key, match: pattern), is_trusted ? 'hit' : 'miss']
+          if is_trusted
+            [redis.sscan_each(full_key, match: pattern), 'hit']
+          else
+            result = write(key, yield)
+            [match_in_memory(result, pattern), miss_status(exists, result)]
+          end
         end
 
         metrics.increment_operation(key: key, operation: 'search', status: status)
@@ -280,7 +283,9 @@ module Gitlab
         end
 
         unless is_trusted
-          metrics.increment_operation(key: key, operation: 'include', status: 'miss')
+          # No rebuild result is available here; the subsequent adapter fetch classifies it accurately.
+          status = miss_status(exists)
+          metrics.increment_operation(key: key, operation: 'include', status: status)
           return [false, false]
         end
 
@@ -292,6 +297,20 @@ module Gitlab
       end
 
       private
+
+      # Approximates Redis MATCH; bracket expressions and multibyte `?` can differ.
+      def match_in_memory(values, pattern)
+        # File.fnmatch? raises on NUL, and branch names cannot contain it.
+        return [].each if pattern.include?("\0")
+
+        values.select { |value| File.fnmatch?(pattern, value, File::FNM_DOTMATCH) }.each
+      end
+
+      def miss_status(exists, rebuilt_result = nil)
+        # Redis cannot persist empty sets, so an empty rebuilt cache looks absent.
+        # Treat recurring trust expiry for those caches as recoverable.
+        exists || rebuilt_result&.empty? ? 'miss_untrusted' : 'miss_absent'
+      end
 
       # Rebuild the cache while the caller holds the rebuild lock.
       # @param key [String] Cache key
@@ -554,9 +573,7 @@ module Gitlab
       end
 
       def trust_ttl
-        return TRUST_TTL.to_i unless Feature.enabled?(:increase_ref_cache_trust_ttl, repository.project)
-
-        INCREASED_TRUST_TTL.to_i + rand(TRUST_TTL_JITTER.to_i)
+        TRUST_TTL.to_i + rand(TRUST_TTL_JITTER.to_i)
       end
 
       # Atomically deletes the trust flag and set for each trust-backed key.

@@ -5,7 +5,7 @@ require 'yaml'
 require_relative '../../../lib/gitlab/vue3_migration'
 
 # Validates the metadata files that opt an entrypoint into the Vue 3 migration.
-# The schema is documented in `config/helpers/vue3_migration_file_validation.js`.
+# The schema is documented in `config/vue3migration/migration_schema.js`.
 #
 # The file name says which entry module it describes: `vue3_migration.yml` is
 # the `index.js` beside it, `<name>.vue3_migration.yml` is the `<name>.js`

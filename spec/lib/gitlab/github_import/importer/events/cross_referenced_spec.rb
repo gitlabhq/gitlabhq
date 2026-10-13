@@ -191,40 +191,4 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
       end
     end
   end
-
-  context 'when user mapping is disabled' do
-    let_it_be(:mapped_user) { create(:user) }
-    let(:expected_note_attrs) do
-      {
-        system: true,
-        noteable_type: issuable.class.name,
-        noteable_id: issuable.id,
-        project_id: project.id,
-        author_id: mapped_user.id,
-        note: expected_note_body,
-        created_at: issue_event.created_at,
-        imported_from: 'github'
-      }.stringify_keys
-    end
-
-    before do
-      project.build_or_assign_import_data(data: {}).save!
-      allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        allow(finder).to receive(:find).with(1000, 'github_author').and_return(mapped_user.id)
-      end
-    end
-
-    context 'with Issue' do
-      it_behaves_like 'import cross-referenced event'
-      it_behaves_like 'do not push placeholder reference'
-    end
-
-    context 'with MergeRequest' do
-      let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
-
-      it_behaves_like 'import cross-referenced event'
-      it_behaves_like 'do not push placeholder reference'
-    end
-  end
 end

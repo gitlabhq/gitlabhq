@@ -12,9 +12,15 @@ RSpec.describe Organizations::CreateFromGroupService, feature_category: :organiz
 
   let(:current_user) { nil }
   let(:skip_authorization) { true }
+  let(:params) { {} }
 
   subject(:result) do
-    described_class.new(group: group, current_user: current_user, skip_authorization: skip_authorization).execute
+    described_class.new(
+      group: group,
+      current_user: current_user,
+      skip_authorization: skip_authorization,
+      params: params
+    ).execute
   end
 
   describe '#execute' do
@@ -28,6 +34,38 @@ RSpec.describe Organizations::CreateFromGroupService, feature_category: :organiz
       expect(organization.name).to eq(group.name)
       expect(organization.path).to eq(group.path)
       expect(organization.visibility_level).to eq(group.visibility_level)
+    end
+
+    context 'when name param is passed' do
+      let(:params) { { name: 'custom name' } }
+
+      it 'creates organization with name param' do
+        expect { result }.to change { Organizations::Organization.count }.by(1)
+
+        organization = result.payload[:organization]
+
+        expect(result).to be_success
+        expect(organization).to be_unconfirmed
+        expect(organization.name).to eq(params[:name])
+        expect(organization.path).to eq(group.path)
+        expect(organization.visibility_level).to eq(group.visibility_level)
+      end
+    end
+
+    context 'when name param is passed an empty string' do
+      let(:params) { { name: '' } }
+
+      it 'creates organization with group name' do
+        expect { result }.to change { Organizations::Organization.count }.by(1)
+
+        organization = result.payload[:organization]
+
+        expect(result).to be_success
+        expect(organization).to be_unconfirmed
+        expect(organization.name).to eq(group.name)
+        expect(organization.path).to eq(group.path)
+        expect(organization.visibility_level).to eq(group.visibility_level)
+      end
     end
 
     it 'transfers the group to the new organization' do

@@ -66,16 +66,8 @@ module Gitlab
 
         attr_reader :connection
 
-        # The ash schema is absent from the gitlab_schema dictionary, so the
-        # analyzers reject any statement that touches it.
         def execute(sql)
-          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-            Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
-              # rubocop:disable Database/AvoidUsingConnectionExecute -- DDL must run on the primary
-              connection.execute(sql)
-              # rubocop:enable Database/AvoidUsingConnectionExecute
-            end
-          end
+          PgAsh.execute(connection, sql)
         end
 
         def version_mismatch_message(current)

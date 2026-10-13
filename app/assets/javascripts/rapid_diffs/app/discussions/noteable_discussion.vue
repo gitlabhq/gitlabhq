@@ -48,6 +48,14 @@ export default {
     iid: {
       default: null,
     },
+    resolveCodeSuggestions: {
+      default: null,
+    },
+  },
+  provide() {
+    return {
+      codeSuggestions: () => this.resolveCodeSuggestions?.(this.discussion),
+    };
   },
   props: {
     discussion: {
@@ -211,10 +219,7 @@ export default {
         return;
       }
 
-      await this.store.replyToDiscussion(this.discussion, noteText);
-      if (shouldResolve) {
-        await this.toggleResolve();
-      }
+      await this.store.replyToDiscussion(this.discussion, noteText, shouldResolve);
       this.$emit('stop-replying');
     },
     async saveDraft(noteText, shouldResolve) {

@@ -23,7 +23,7 @@ FactoryBot.define do
   end
 
   factory :label, traits: [:base_label], class: 'ProjectLabel' do
-    project
+    project { @overrides[:parent_container] || association(:project) }
 
     transient do
       priority { nil }
@@ -37,7 +37,7 @@ FactoryBot.define do
   end
 
   factory :group_label, traits: [:base_label] do
-    group
+    group { @overrides[:parent_container] || association(:group) }
   end
 
   factory :admin_label, traits: [:base_label], class: 'Label' do

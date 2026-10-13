@@ -6,8 +6,8 @@ RSpec.describe NotifyHelper, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   describe 'merge_request_reference_link' do
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:project) { build_stubbed(:project) }
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project, iid: 1) }
 
     it 'returns link to merge request with the text reference' do
       url = "http://test.host/#{project.full_path}/-/merge_requests/#{merge_request.iid}"
@@ -17,8 +17,8 @@ RSpec.describe NotifyHelper, feature_category: :shared do
   end
 
   describe 'issue_reference_link' do
-    let(:project) { create(:project) }
-    let(:issue) { create(:issue, project: project) }
+    let(:project) { build_stubbed(:project) }
+    let(:issue) { build_stubbed(:issue, project: project, iid: 1) }
 
     it 'returns link to issue with the text reference' do
       url = "http://test.host#{::Gitlab::UrlBuilder.instance.issue_path(issue)}"
@@ -28,8 +28,8 @@ RSpec.describe NotifyHelper, feature_category: :shared do
   end
 
   describe '#merge_request_hash_param' do
-    let(:merge_request) { create(:merge_request) }
-    let(:reviewer) { create(:user) }
+    let(:merge_request) { build_stubbed(:merge_request, iid: 1) }
+    let(:reviewer) { build_stubbed(:user) }
     let(:avatar_icon_for_user) { 'avatar_icon_for_user' }
 
     before do

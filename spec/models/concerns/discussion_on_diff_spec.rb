@@ -8,7 +8,7 @@ RSpec.describe DiscussionOnDiff, feature_category: :code_review_workflow do
   describe "#truncated_diff_lines" do
     let(:truncated_lines) { subject.truncated_diff_lines }
 
-    context "when diff is greater than allowed number of truncated diff lines " do
+    context "when diff is greater than allowed number of truncated diff lines" do
       it "returns fewer lines" do
         expect(subject.diff_lines.count).to be > DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
 

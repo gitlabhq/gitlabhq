@@ -7,7 +7,6 @@ Gitlab::Database::QueryAnalyzer.instance.tap do |query_analyzer|
   query_analyzer.all_analyzers.tap do |analyzers|
     analyzers.append(::Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics)
     analyzers.append(::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification)
-    analyzers.append(::Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer)
     analyzers.append(::Gitlab::Database::QueryAnalyzers::LogLargeInLists)
     analyzers.append(::Gitlab::Database::QueryAnalyzers::Capture)
     analyzers.append(::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet)

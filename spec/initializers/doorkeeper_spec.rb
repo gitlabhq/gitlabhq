@@ -38,6 +38,10 @@ RSpec.describe Doorkeeper.configuration, feature_category: :system_access do
     it 'matches Gitlab::Auth.optional_scopes' do
       expect(subject.optional_scopes).to eq Gitlab::Auth.optional_scopes - Gitlab::Auth::REGISTRY_SCOPES
     end
+
+    it 'includes the backend-only granular scope so Doorkeeper accepts it on applications and tokens' do
+      expect(subject.optional_scopes.to_a).to include(Gitlab::Auth::GRANULAR_SCOPE.to_s)
+    end
   end
 
   describe '#resource_owner_authenticator' do

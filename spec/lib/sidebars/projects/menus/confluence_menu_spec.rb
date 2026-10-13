@@ -18,10 +18,8 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu, feature_category: :nav
     end
 
     context 'when Confluence integration is present' do
-      let!(:confluence) { create(:confluence_integration, project: project, active: active) }
-
       context 'when integration is disabled' do
-        let(:active) { false }
+        let!(:confluence) { create(:confluence_integration, project: project, active: false) }
 
         it 'returns false' do
           expect(subject.render?).to be false
@@ -29,7 +27,7 @@ RSpec.describe Sidebars::Projects::Menus::ConfluenceMenu, feature_category: :nav
       end
 
       context 'when issues integration is enabled' do
-        let(:active) { true }
+        let_it_be(:confluence) { create(:confluence_integration, project: project, active: true) }
 
         it 'returns true' do
           expect(subject.render?).to be true

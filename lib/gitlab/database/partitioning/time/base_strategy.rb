@@ -19,7 +19,8 @@ module Gitlab
             @partitioning_key = partitioning_key
             @retain_for = retention_period(retain_for)
             @retain_non_empty_partitions = retain_non_empty_partitions
-            @analyze_interval = analyze_interval
+            @analyze_interval = analyze_interval || DEFAULT_ANALYZE_INTERVAL
+            @default_analyze_interval = analyze_interval.nil?
             @detach_concurrently = detach_concurrently
             @retain_detached_partitions_for = validate_detached_retention!(retain_detached_partitions_for)
           end

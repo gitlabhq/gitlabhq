@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ContainerTagEntity, feature_category: :container_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:repository) { create(:container_repository, name: 'image', project: project) }
 
+  let(:repository) { build_stubbed(:container_repository, name: 'image', project: project) }
   let(:entity) { described_class.new(tag, request: request) }
   let(:request) { double('request') }
   let(:tag) { repository.tag('test') }
@@ -16,8 +16,7 @@ RSpec.describe ContainerTagEntity, feature_category: :container_registry do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: /image/, tags: %w[test], with_manifest: true)
-    allow(request).to receive(:project).and_return(project)
-    allow(request).to receive(:current_user).and_return(user)
+    allow(request).to receive_messages(project: project, current_user: user)
   end
 
   it 'exposes required informations'  do

@@ -52,6 +52,18 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
     it { is_expected.to have_attributes(max_page_size: 500) }
   end
 
+  describe '#reviewers' do
+    subject { described_class.fields['reviewers'] }
+
+    it { is_expected.to have_attributes(max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS) }
+  end
+
+  describe '#assignees' do
+    subject { described_class.fields['assignees'] }
+
+    it { is_expected.to have_attributes(max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS) }
+  end
+
   describe '#diffs' do
     subject(:field) { described_class.fields['diffs'] }
 
@@ -362,6 +374,65 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
         .and_call_original
 
       resolve_field(:committers, merge_request)
+    end
+  end
+
+  describe 'mergeability_checks and detailed_merge_status' do
+    subject(:execute_query) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:current_user) { create(:admin) }
+
+    let(:fields) do
+      %(
+        mergeabilityChecks {
+          identifier
+          status
+        }
+        detailedMergeStatus
+      )
+    end
+
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequest(iid: "#{merge_request.iid}") {
+              #{fields}
+            }
+          }
+        }
+      )
+    end
+
+    shared_examples 'a single mergeability run' do
+      it 'runs the mergeability checks once for both fields' do
+        expect_next_found_instance_of(MergeRequest) do |instance|
+          expect(instance).to receive(:execute_merge_checks).once.and_call_original
+        end
+
+        merge_request_data = execute_query.dig('data', 'project', 'mergeRequest')
+
+        expect(merge_request_data['detailedMergeStatus']).to eq('MERGEABLE')
+        expect(merge_request_data['mergeabilityChecks']).to be_present
+      end
+    end
+
+    it_behaves_like 'a single mergeability run'
+
+    context 'when detailedMergeStatus is selected first' do
+      let(:fields) do
+        %(
+          detailedMergeStatus
+          mergeabilityChecks {
+            identifier
+            status
+          }
+        )
+      end
+
+      it_behaves_like 'a single mergeability run'
     end
   end
 

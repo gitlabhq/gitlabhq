@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../support/memory_instrumentation_helper'
 
 RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_metrics do
   include MemoryInstrumentationHelper
@@ -24,7 +25,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_me
 
     context 'when feature is unavailable' do
       before do
-        allow(described_class).to receive(:available?) { false }
+        allow(described_class).to receive(:available?).and_return(false)
       end
 
       it 'a nil is returned' do
@@ -57,7 +58,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_me
 
     context 'when feature is unavailable' do
       before do
-        allow(described_class).to receive(:available?) { false }
+        allow(described_class).to receive(:available?).and_return(false)
       end
 
       it 'a nil is returned' do

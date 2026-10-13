@@ -1,7 +1,7 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { groupsProvideData } from 'ee_else_ce/invite_members/utils';
 import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 let initedInviteGroupsModal;
 

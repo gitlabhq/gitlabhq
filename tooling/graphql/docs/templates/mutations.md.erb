@@ -1,0 +1,49 @@
+<%= docs_render 'page_metadata', title: 'Mutations', description: 'Operations that create, update, or delete data through the GitLab GraphQL API.' %>
+
+Mutations are the top-level entry points for creating, updating, and deleting data in the
+[GitLab GraphQL API](../../_index.md). For an introduction, see
+[Mutations](../../getting_started.md#mutations).
+
+<%= docs_render 'deprecation_warning_header' %>
+
+
+## Calling a mutation
+
+You call a mutation with one argument, `input`. You put the mutation's arguments inside `input`,
+and then request the fields you want returned:
+
+```graphql
+mutation($id: NoteableID!, $body: String!) {
+  # Arguments go inside `input`.
+  createNote(input: { noteableId: $id, body: $body }) {
+    # Request the fields you want returned.
+    note {
+      id
+      body
+    }
+    errors
+  }
+}
+```
+
+Each mutation lists:
+
+- **Input type**: The type of `input`. You need it when you pass all of the arguments as one
+  variable, for example `mutation($input: CreateNoteInput!) { createNote(input: $input) { errors } }`.
+- **Arguments**: What you can put inside `input`. An argument whose type ends in `!` is required,
+  unless it has a default value.
+- **Fields**: What you can request in the result. Every mutation returns `errors`, a list of
+  error messages. Always request `errors` so you can see why a mutation failed.
+
+### `clientMutationId` {.no_toc}
+
+Every mutation also accepts an optional `clientMutationId` argument of type `String`, and returns
+the same value in its result. Use it to match each response to its request. It works the same way
+for every mutation, so it is not listed with each mutation's arguments and fields.
+
+<% sorted_by_name(@mutations).each do |mutation| %>
+
+## <%= name(mutation) %>
+
+<%= render_mutation_body(mutation) %>
+<% end %>

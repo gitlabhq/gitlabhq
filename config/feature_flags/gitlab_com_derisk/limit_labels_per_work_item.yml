@@ -1,0 +1,10 @@
+---
+name: limit_labels_per_work_item
+description: Enforce a maximum of 100 labels per work item
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/606182
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253768
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/629454
+milestone: '19.5'
+group: group::portfolio planning
+type: gitlab_com_derisk
+default_enabled: false

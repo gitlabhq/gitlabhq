@@ -13,6 +13,10 @@ module Support
 
     def start(_notification)
       @group_level = 0
+      # Wall-clock time this formatter has measured per file so far this run. A file
+      # can have several top-level describe blocks; we sum their wall-clock durations
+      # here and always write this total, rather than reading back knapsack's value.
+      @wall_clock_time_per_file = Hash.new(0.0)
     end
 
     def example_group_started(_notification)
@@ -28,9 +32,13 @@ module Support
 
       file_path = notification.group.metadata[:file_path].sub('./', '')
       wall_clock_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @current_group_start_time
+      @wall_clock_time_per_file[file_path] += wall_clock_duration
 
-      # Tampers with knapsack's internal state so Report#save writes corrected values.
-      Knapsack.tracker.test_files_with_time[file_path] = wall_clock_duration
+      # Overwrite knapsack's per-file duration with our own wall-clock total so
+      # Report#save writes corrected values. We always assign (never read back
+      # knapsack's value), because knapsack's Tracker#stop_timer also accumulates
+      # into this hash for every top-level group; adding to it would double-count.
+      Knapsack.tracker.test_files_with_time[file_path] = @wall_clock_time_per_file[file_path]
     end
   end
 end

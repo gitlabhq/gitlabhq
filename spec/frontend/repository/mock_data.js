@@ -241,7 +241,6 @@ export const headerAppInjected = {
   uploadPath: '/project/upload',
   newDirPath: '/project/new-directory',
   projectRootPath: '/project/root/path',
-  comparePath: undefined,
   isReadmeView: false,
   isFork: false,
   needsToFork: true,
@@ -279,13 +278,11 @@ export const headerAppInjected = {
       path: 'https://gitlab.com/example-group/example-project/-/releases',
     },
   ],
-  downloadArtifacts: [
-    'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
-  ],
   isBinary: false,
   rootRef: 'main',
   showNoSshKeyMessage: false,
   userSettingsSshKeysPath: null,
+  customCodeDropdownClients: [],
 };
 
 export const FILE_SIZE_3MB = 3000000;

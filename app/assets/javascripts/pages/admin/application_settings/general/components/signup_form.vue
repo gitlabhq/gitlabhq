@@ -11,7 +11,6 @@ import {
 } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { s__, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import BeforeSubmitApproveUsersModal from './before_submit_approve_users_modal.vue';
 import SignupCheckbox from './signup_checkbox.vue';
@@ -43,7 +42,7 @@ export default {
         import('ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'),
     ),
   },
-  mixins: [glFeatureFlagMixin(), glLicensedFeaturesMixin()],
+  mixins: [glLicensedFeaturesMixin()],
   provide() {
     return {
       /**

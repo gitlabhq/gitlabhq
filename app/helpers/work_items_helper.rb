@@ -58,7 +58,7 @@ module WorkItemsHelper
   def base_data(resource_parent, current_user, group)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      can_admin_label: can?(current_user, :admin_label, resource_parent).to_s,
+      can_create_label: can?(current_user, :create_label, resource_parent).to_s,
       can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
       can_edit: can?(current_user, :admin_project, resource_parent).to_s,
       full_path: resource_parent.full_path,

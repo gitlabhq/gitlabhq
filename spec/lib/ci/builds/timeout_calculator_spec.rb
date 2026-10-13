@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::Builds::TimeoutCalculator, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { FactoryBot.build(:project) }
+  let_it_be(:project) { FactoryBot.build_stubbed(:project) }
   let_it_be(:runner) { FactoryBot.build(:ci_runner) }
-  let_it_be(:build) { FactoryBot.build(:ci_build, project: project, runner: runner) }
+  let_it_be(:build) { FactoryBot.build_stubbed(:ci_build, project: project, runner: runner) }
   let(:calculator) { described_class.new(build) }
 
   describe '#applicable_timeout' do

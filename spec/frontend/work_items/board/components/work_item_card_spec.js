@@ -5,7 +5,7 @@ import WorkItemCard from '~/work_items/board/components/work_item_card.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
-import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 import {
@@ -46,7 +46,7 @@ describe('WorkItemCard', () => {
   const findStatusBadge = () => wrapper.findComponent({ name: 'WorkItemStatusBadge' });
   const findMetadataRow = () => wrapper.findByTestId('work-item-metadata');
   const findMilestone = () => wrapper.findComponent(IssueMilestone);
-  const findDueDate = () => wrapper.findComponent(IssueDueDate);
+  const findDates = () => wrapper.findComponent(WorkItemDatesAttribute);
   const findWeight = () => wrapper.findByTestId('work-item-weight');
   const findIteration = () => wrapper.findByTestId('work-item-iteration');
   const findHealthStatus = () => wrapper.findComponentByTestId('work-item-health-status');
@@ -56,6 +56,9 @@ describe('WorkItemCard', () => {
   const stubFrom = (name, props = []) => ({ name, props, template: '<div />' });
 
   const findCard = () => wrapper.findByTestId('work-item-board-card');
+  const findActionsMenu = () => wrapper.findComponentByTestId('card-actions-menu');
+  const findActionItems = () => findActionsMenu().props('items');
+  const findActionItem = (text) => findActionItems().find((item) => item.text === text);
 
   const createComponent = ({
     item = buildItem(),
@@ -63,9 +66,21 @@ describe('WorkItemCard', () => {
     rootPageFullPath = '',
     activeItem = null,
     detailPanelEnabled = true,
+    canReorder = false,
+    isFirst = false,
+    isLast = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemCard, {
-      propsData: { item, hiddenMetadataKeys, rootPageFullPath, activeItem, detailPanelEnabled },
+      propsData: {
+        item,
+        hiddenMetadataKeys,
+        rootPageFullPath,
+        activeItem,
+        detailPanelEnabled,
+        canReorder,
+        isFirst,
+        isLast,
+      },
       stubs: {
         WorkItemStatusBadge: stubFrom('WorkItemStatusBadge', ['item']),
         IssueWeight: stubFrom('IssueWeight'),
@@ -115,7 +130,11 @@ describe('WorkItemCard', () => {
       createComponent({ item, activeItem: item });
 
       expect(findCard().classes()).toEqual(
-        expect.arrayContaining(['!gl-border-feedback-info', '!gl-bg-feedback-info']),
+        expect.arrayContaining([
+          '!gl-border-strong',
+          '!gl-bg-neutral-100',
+          'dark:!gl-bg-neutral-700',
+        ]),
       );
     });
 
@@ -320,20 +339,41 @@ describe('WorkItemCard', () => {
       expect(findMilestone().classes()).toContain('!gl-max-w-28');
     });
 
-    it('renders the due date from the START_AND_DUE_DATE widget', () => {
-      createComponent({
-        item: buildItem({ widgets: [buildStartAndDueDateWidget({ dueDate: '2026-03-01' })] }),
+    describe('dates', () => {
+      it.each`
+        case            | startDate       | dueDate
+        ${'start only'} | ${'2026-02-01'} | ${null}
+        ${'due only'}   | ${null}         | ${'2026-03-01'}
+        ${'both dates'} | ${'2026-02-01'} | ${'2026-03-01'}
+      `('renders the dates attribute when $case is set', ({ startDate, dueDate }) => {
+        createComponent({
+          item: buildItem({ widgets: [buildStartAndDueDateWidget({ startDate, dueDate })] }),
+        });
+
+        expect(findDates().props()).toMatchObject({ startDate, dueDate });
       });
 
-      expect(findDueDate().props('date')).toBe('2026-03-01');
-    });
+      it('does not render the dates attribute when neither date is set', () => {
+        createComponent({
+          item: buildItem({
+            widgets: [buildStartAndDueDateWidget({ startDate: null, dueDate: null })],
+          }),
+        });
 
-    it('does not render the due date when the widget has no due date', () => {
-      createComponent({
-        item: buildItem({ widgets: [buildStartAndDueDateWidget({ dueDate: null })] }),
+        expect(findDates().exists()).toBe(false);
       });
 
-      expect(findDueDate().exists()).toBe(false);
+      it.each`
+        case        | closedAt
+        ${'open'}   | ${null}
+        ${'closed'} | ${'2026-01-02T00:00:00Z'}
+      `('passes isClosed as $case', ({ closedAt }) => {
+        createComponent({
+          item: buildItem({ closedAt, widgets: [buildStartAndDueDateWidget()] }),
+        });
+
+        expect(findDates().props('isClosed')).toBe(Boolean(closedAt));
+      });
     });
 
     it('renders the weight from the WEIGHT widget', () => {
@@ -427,13 +467,13 @@ describe('WorkItemCard', () => {
       expect(findMilestone().exists()).toBe(false);
     });
 
-    it('hides the due date when "dates" is in hiddenMetadataKeys', () => {
+    it('hides the dates attribute when "dates" is in hiddenMetadataKeys', () => {
       createComponent({
         item: buildItem({ widgets: [buildStartAndDueDateWidget()] }),
         hiddenMetadataKeys: ['dates'],
       });
 
-      expect(findDueDate().exists()).toBe(false);
+      expect(findDates().exists()).toBe(false);
     });
 
     it('hides the weight when "weight" is in hiddenMetadataKeys', () => {
@@ -495,6 +535,52 @@ describe('WorkItemCard', () => {
       });
 
       expect(findFooter().exists()).toBe(false);
+    });
+  });
+
+  describe('actions menu', () => {
+    it('is not rendered when canReorder is false', () => {
+      createComponent({ canReorder: false });
+
+      expect(findActionsMenu().exists()).toBe(false);
+    });
+
+    it('is not rendered when the card is both first and last in the column', () => {
+      createComponent({ canReorder: true, isFirst: true, isLast: true });
+
+      expect(findActionsMenu().exists()).toBe(false);
+    });
+
+    it('renders both move actions in order, each with a direction icon', () => {
+      createComponent({ canReorder: true });
+
+      expect(findActionItems().map((item) => [item.text, item.icon])).toEqual([
+        ['Move to start of list', 'arrow-up'],
+        ['Move to end of list', 'arrow-down'],
+      ]);
+    });
+
+    it('disables "Move to start of list" on the first card and "Move to end of list" on the last', () => {
+      createComponent({ canReorder: true, isFirst: true, isLast: false });
+
+      expect(findActionItem('Move to start of list').extraAttrs.disabled).toBe(true);
+      expect(findActionItem('Move to end of list').extraAttrs.disabled).toBe(false);
+    });
+
+    it('emits move-to-start when "Move to start of list" is actioned', () => {
+      createComponent({ canReorder: true });
+
+      findActionItem('Move to start of list').action();
+
+      expect(wrapper.emitted('move-to-start')).toEqual([[]]);
+    });
+
+    it('emits move-to-end when "Move to end of list" is actioned', () => {
+      createComponent({ canReorder: true });
+
+      findActionItem('Move to end of list').action();
+
+      expect(wrapper.emitted('move-to-end')).toEqual([[]]);
     });
   });
 });

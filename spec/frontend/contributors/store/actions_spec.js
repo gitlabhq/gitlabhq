@@ -16,18 +16,21 @@ describe('Contributors store actions', () => {
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
+      createAlert.mockClear();
     });
 
     afterEach(() => {
       mock.restore();
+      jest.restoreAllMocks();
     });
 
     it('should commit SET_CHART_DATA with received response', () => {
+      jest.spyOn(axios, 'get');
       mock.onGet().reply(HTTP_STATUS_OK, chartData);
 
       return testAction(
         actions.fetchChartData,
-        { endpoint },
+        endpoint,
         {},
         [
           { type: types.SET_LOADING_STATE, payload: true },
@@ -35,19 +38,95 @@ describe('Contributors store actions', () => {
           { type: types.SET_LOADING_STATE, payload: false },
         ],
         [],
-      );
+      ).then((result) => {
+        expect(result).toBe(true);
+        expect(axios.get).toHaveBeenCalledWith(endpoint);
+      });
     });
 
     it('should show alert on API error', async () => {
       mock.onGet().reply(HTTP_STATUS_BAD_REQUEST, 'Not Found');
 
-      await testAction(
+      const result = await testAction(
         actions.fetchChartData,
-        { endpoint },
+        endpoint,
         {},
-        [{ type: types.SET_LOADING_STATE, payload: true }],
+        [
+          { type: types.SET_LOADING_STATE, payload: true },
+          { type: types.SET_LOADING_STATE, payload: false },
+        ],
         [],
       );
+
+      expect(result).toBe(false);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: expect.stringMatching('error'),
+      });
+    });
+  });
+
+  describe('fetchChartStats', () => {
+    let mock;
+    const endpoint = '/contributors';
+    const chartData = [{ id: 'abc123', additions: 4, deletions: 2 }];
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      createAlert.mockClear();
+    });
+
+    afterEach(() => {
+      mock.restore();
+      jest.restoreAllMocks();
+    });
+
+    it('should commit SET_CHART_STATS with received response', () => {
+      jest.spyOn(axios, 'get');
+      mock.onGet(endpoint, { params: { with_stats: true } }).reply(HTTP_STATUS_OK, chartData);
+
+      return testAction(
+        actions.fetchChartStats,
+        endpoint,
+        { statsLoaded: false, statsLoading: false },
+        [
+          { type: types.SET_STATS_LOADING_STATE, payload: true },
+          { type: types.SET_CHART_STATS, payload: chartData },
+          { type: types.SET_STATS_LOADING_STATE, payload: false },
+        ],
+        [],
+      ).then((result) => {
+        expect(result).toBe(true);
+        expect(axios.get).toHaveBeenCalledWith(endpoint, { params: { with_stats: true } });
+      });
+    });
+
+    it.each([
+      { statsLoaded: true, statsLoading: false },
+      { statsLoaded: false, statsLoading: true },
+    ])('should not fetch stats again with %j', async (state) => {
+      jest.spyOn(axios, 'get');
+
+      const result = await testAction(actions.fetchChartStats, endpoint, state, [], []);
+
+      expect(result).toBe(true);
+      expect(axios.get).not.toHaveBeenCalled();
+    });
+
+    it('should show alert on API error', async () => {
+      mock.onGet(endpoint, { params: { with_stats: true } }).reply(HTTP_STATUS_BAD_REQUEST);
+
+      const result = await testAction(
+        actions.fetchChartStats,
+        endpoint,
+        { statsLoaded: false, statsLoading: false },
+        [
+          { type: types.SET_STATS_LOADING_STATE, payload: true },
+          { type: types.SET_STATS_LOADING_STATE, payload: false },
+        ],
+        [],
+      );
+
+      expect(result).toBe(false);
       expect(createAlert).toHaveBeenCalledWith({
         message: expect.stringMatching('error'),
       });

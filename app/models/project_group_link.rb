@@ -29,10 +29,6 @@ class ProjectGroupLink < ApplicationRecord
     Gitlab::Access.human_access(self.group_access)
   end
 
-  def owner_access?
-    group_access.to_i == Gitlab::Access::OWNER
-  end
-
   private
 
   def different_group

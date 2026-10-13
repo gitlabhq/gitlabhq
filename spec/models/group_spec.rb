@@ -993,6 +993,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'returns groups without integration' do
       expect(described_class.without_integration(instance_integration)).to contain_exactly(another_group)
     end
+
+    it 'excludes groups belonging to a different organization than an instance-level integration' do
+      create(:group, organization: organization)
+
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(another_group)
+    end
   end
 
   describe '.groups_user_can' do
@@ -1389,25 +1395,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '#pending_delete?' do
       context 'when group has no deletion schedule' do
-        let(:group) { create(:group) }
+        let(:group) { build_stubbed(:group) }
 
         specify { expect(group.pending_delete?).to be(false) }
       end
 
       context 'when group is marked for deletion in the future' do
-        let(:group) { create(:group, deletion_scheduled_at: 1.day.from_now) }
+        let(:group) { build_stubbed(:group, deletion_scheduled_at: 1.day.from_now) }
 
         specify { expect(group.pending_delete?).to be(true) }
       end
 
       context 'when group is marked for deletion in the past' do
-        let(:group) { create(:group, deletion_scheduled_at: 1.day.ago) }
+        let(:group) { build_stubbed(:group, deletion_scheduled_at: 1.day.ago) }
 
         specify { expect(group.pending_delete?).to be(false) }
       end
 
       context 'when group is marked for deletion today' do
-        let(:group) { create(:group, deletion_scheduled_at: Time.zone.today) }
+        let(:group) { build_stubbed(:group, deletion_scheduled_at: Time.zone.today) }
 
         specify { expect(group.pending_delete?).to be(false) }
       end
@@ -1825,7 +1831,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     with_them do
-      let(:user) { admin_user? ? create(:admin) : create(:user) }
+      let(:user) { admin_user? ? build_stubbed(:admin) : build_stubbed(:user) }
 
       before do
         stub_application_setting(default_project_creation: default_project_creation)
@@ -1858,7 +1864,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     with_them do
-      let(:user) { admin_user? ? create(:admin) : create(:user) }
+      let(:user) { admin_user? ? build_stubbed(:admin) : build_stubbed(:user) }
 
       before do
         enable_admin_mode!(user) if admin_mode
@@ -2089,14 +2095,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'returns false when user does not match the owner' do
-        other_user = create(:user)
+        other_user = build_stubbed(:user)
         expect(group.last_owner_in_list?(other_user, [owner_member])).to be false
       end
     end
 
     context 'with multiple owners in the list' do
       let(:owner_member) { build_stubbed(:group_member, user_id: user.id) }
-      let(:another_owner) { build_stubbed(:group_member, user_id: create(:user).id) }
+      let(:another_owner) { build_stubbed(:group_member, user_id: build_stubbed(:user).id) }
 
       it 'returns false even if user is one of the owners' do
         expect(group.last_owner_in_list?(user, [owner_member, another_owner])).to be false
@@ -2823,17 +2829,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
     let_it_be(:other_developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
 
-    describe '#hierarchy_members' do
-      it 'returns parents members' do
-        expect(group.hierarchy_members).to include(developer)
-        expect(group.hierarchy_members).to include(maintainer)
-      end
-
-      it 'returns descendant members' do
-        expect(group.hierarchy_members).to include(other_developer)
-      end
-    end
-
     describe '#hierarchy_members_with_inactive' do
       let_it_be(:maintainer_blocked) { group.parent.add_member(create(:user, :blocked), GroupMember::MAINTAINER) }
 
@@ -3060,134 +3055,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'is equal to the public group regardless of membership' do
         expect(subject).to match_array([group])
-      end
-    end
-  end
-
-  describe '#update_two_factor_requirement_for_members' do
-    let_it_be_with_reload(:user) { create(:user) }
-
-    context 'group membership' do
-      it 'enables two_factor_requirement for group members' do
-        group.add_member(user, GroupMember::OWNER)
-        group.update!(require_two_factor_authentication: true)
-
-        group.update_two_factor_requirement_for_members
-
-        expect(user.reload.require_two_factor_authentication_from_group).to be_truthy
-      end
-
-      it 'disables two_factor_requirement for group members' do
-        user.update!(require_two_factor_authentication_from_group: true)
-        group.add_member(user, GroupMember::OWNER)
-        group.update!(require_two_factor_authentication: false)
-
-        group.update_two_factor_requirement_for_members
-
-        expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
-      end
-    end
-
-    context 'sub groups and projects' do
-      context 'expanded group members' do
-        let(:indirect_user) { create(:user) }
-
-        context 'two_factor_requirement is enabled' do
-          context 'two_factor_requirement is also enabled for ancestor group' do
-            it 'enables two_factor_requirement for subgroup member' do
-              subgroup = create(:group, :nested, parent: group)
-              subgroup.add_member(indirect_user, GroupMember::OWNER)
-              group.update!(require_two_factor_authentication: true)
-
-              group.update_two_factor_requirement_for_members
-
-              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
-            end
-          end
-
-          context 'two_factor_requirement is disabled for ancestor group' do
-            it 'enables two_factor_requirement for subgroup member' do
-              subgroup = create(:group, :nested, parent: group, require_two_factor_authentication: true)
-              subgroup.add_member(indirect_user, GroupMember::OWNER)
-              group.update!(require_two_factor_authentication: false)
-
-              group.update_two_factor_requirement_for_members
-
-              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
-            end
-
-            it 'enable two_factor_requirement for ancestor group member' do
-              ancestor_group = create(:group)
-              ancestor_group.add_member(indirect_user, GroupMember::OWNER)
-              group.update!(parent: ancestor_group)
-              group.update!(require_two_factor_authentication: true)
-
-              group.update_two_factor_requirement_for_members
-
-              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
-            end
-          end
-        end
-
-        context 'two_factor_requirement is disabled' do
-          context 'two_factor_requirement is enabled for ancestor group' do
-            it 'enables two_factor_requirement for subgroup member' do
-              subgroup = create(:group, :nested, parent: group)
-              subgroup.add_member(indirect_user, GroupMember::OWNER)
-              group.update!(require_two_factor_authentication: true)
-
-              group.update_two_factor_requirement_for_members
-
-              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_truthy
-            end
-          end
-
-          context 'two_factor_requirement is also disabled for ancestor group' do
-            it 'disables two_factor_requirement for subgroup member' do
-              subgroup = create(:group, :nested, parent: group)
-              subgroup.add_member(indirect_user, GroupMember::OWNER)
-              group.update!(require_two_factor_authentication: false)
-
-              group.update_two_factor_requirement_for_members
-
-              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
-            end
-
-            it 'disables two_factor_requirement for ancestor group member' do
-              ancestor_group = create(:group, require_two_factor_authentication: false)
-              indirect_user.update!(require_two_factor_authentication_from_group: true)
-              ancestor_group.add_member(indirect_user, GroupMember::OWNER)
-              group.update!(require_two_factor_authentication: false)
-
-              group.update_two_factor_requirement_for_members
-
-              expect(indirect_user.reload.require_two_factor_authentication_from_group).to be_falsey
-            end
-          end
-        end
-      end
-
-      context 'project members' do
-        it 'does not enable two_factor_requirement for child project member' do
-          project = create(:project, group: group)
-          project.add_maintainer(user)
-          group.update!(require_two_factor_authentication: true)
-
-          group.update_two_factor_requirement_for_members
-
-          expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
-        end
-
-        it 'does not enable two_factor_requirement for subgroup child project member' do
-          subgroup = create(:group, :nested, parent: group)
-          project = create(:project, group: subgroup)
-          project.add_maintainer(user)
-          group.update!(require_two_factor_authentication: true)
-
-          group.update_two_factor_requirement_for_members
-
-          expect(user.reload.require_two_factor_authentication_from_group).to be_falsey
-        end
       end
     end
   end
@@ -3504,13 +3371,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject { group.auto_devops_enabled? }
 
     context 'when auto devops is explicitly enabled on group' do
-      let(:group) { create(:group, :auto_devops_enabled) }
+      let(:group) { build_stubbed(:group, :auto_devops_enabled) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when auto devops is explicitly disabled on group' do
-      let(:group) { create(:group, :auto_devops_disabled) }
+      let(:group) { build_stubbed(:group, :auto_devops_disabled) }
 
       it { is_expected.to be_falsy }
     end
@@ -3549,7 +3416,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe 'project_creation_level' do
     it 'outputs the default one if it is nil' do
-      group = create(:group, project_creation_level: nil)
+      group = build_stubbed(:group, project_creation_level: nil)
 
       expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
     end
@@ -4375,17 +4242,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#vulnerability_malware_detection_feature_flag_enabled?' do
+  describe '#use_mermaid_v12_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :vulnerability_malware_detection }
-      let(:feature_flag_method) { :vulnerability_malware_detection_feature_flag_enabled? }
-    end
-  end
-
-  describe '#dependency_malware_detection_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :dependency_malware_detection }
-      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
+      let(:feature_flag) { :use_mermaid_v12 }
+      let(:feature_flag_method) { :use_mermaid_v12_feature_flag_enabled? }
     end
   end
 
@@ -4671,42 +4531,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:security_manager) { create(:group_member, :security_manager, group: group) }
     let_it_be(:developer) { create(:group_member, :developer, group: group) }
 
-    context 'when security manager role is enabled' do
-      it 'returns security manager members' do
-        expect(group.members.security_managers).to include(security_manager)
-        expect(group.members.security_managers).not_to include(developer)
-      end
-    end
-
-    context 'when security manager role is disabled', :disable_security_manager do
-      it 'returns empty relation' do
-        expect(group.members.security_managers).to be_empty
-      end
-
-      it 'does not return security manager members even if they exist' do
-        expect(group.members.security_managers).not_to include(security_manager)
-      end
+    it 'returns security manager members', :aggregate_failures do
+      expect(group.members.security_managers).to include(security_manager)
+      expect(group.members.security_managers).not_to include(developer)
     end
   end
 
   describe '#add_security_manager' do
     let_it_be(:user) { create(:user) }
 
-    context 'with security manager role' do
-      it 'adds security manager when feature is enabled' do
-        member = group.add_security_manager(user)
-        expect(member.access_level).to eq(Gitlab::Access::SECURITY_MANAGER)
-        expect(group.members.security_managers).to include(member)
-      end
-    end
+    it 'adds security manager', :aggregate_failures do
+      member = group.add_security_manager(user)
 
-    context 'when security manager role is disabled', :disable_security_manager do
-      it 'returns nil and does not add the user' do
-        result = group.add_security_manager(user)
-
-        expect(result).to be_nil
-        expect(group.members.where(user: user)).to be_empty
-      end
+      expect(member.access_level).to eq(Gitlab::Access::SECURITY_MANAGER)
+      expect(group.members.security_managers).to include(member)
     end
   end
 
@@ -4819,7 +4657,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe '#mcp_server_setting_available?', feature_category: :mcp_server do
     it 'returns false in FOSS' do
-      expect(create(:group).mcp_server_setting_available?).to be(false)
+      expect(build_stubbed(:group).mcp_server_setting_available?).to be(false)
     end
   end
 
@@ -4837,6 +4675,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         group.namespace_settings.update!(mcp_server_enabled: false)
 
         expect(group.mcp_server_enabled?).to be false
+      end
+    end
+
+    context 'when a root group has just been created' do
+      let_it_be(:new_group) { create(:group) }
+
+      it 'is enabled without the owner opting in' do
+        expect(new_group.mcp_server_enabled?).to be true
       end
     end
 
@@ -4869,11 +4715,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   describe '.with_mcp_server_enabled', feature_category: :mcp_server do
     let_it_be_with_refind(:group_on) { create(:group) }
     let_it_be_with_refind(:group_off) { create(:group) }
-    let_it_be(:group_nil) { create(:group) }
+    let_it_be_with_refind(:group_nil) { create(:group) }
 
     before do
       group_on.namespace_settings.update!(mcp_server_enabled: true)
       group_off.namespace_settings.update!(mcp_server_enabled: false)
+      group_nil.namespace_settings.update!(mcp_server_enabled: nil)
     end
 
     it 'returns only groups with mcp_server_enabled = true' do

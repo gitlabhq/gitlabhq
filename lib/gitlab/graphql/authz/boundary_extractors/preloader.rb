@@ -12,6 +12,7 @@ module Gitlab
             def preload_boundaries(type, nodes, context)
               token = context[:access_token]
               return unless token && token.respond_to?(:granular?)
+              return unless token.granular? || token.subject_to_granular_enforcement?
 
               nodes = nodes.compact
               return if nodes.empty?
@@ -43,7 +44,7 @@ module Gitlab
 
           def preload_all(nodes, token)
             preload_boundary_associations(nodes)
-            preload_root_namespace_enforcement(nodes) if token.legacy?
+            preload_root_namespace_enforcement(nodes) if token.subject_to_granular_enforcement?
           end
 
           private
@@ -74,8 +75,8 @@ module Gitlab
             end
           end
 
-          # Step 2: for legacy tokens we also need the root namespace of each boundary
-          # for enforcement checks.
+          # Step 2: for tokens subject to enforcement we also need the root namespace
+          # of each boundary for enforcement checks.
           def preload_root_namespace_enforcement(nodes)
             root_namespace_ids = nodes
               .flat_map { |node| BoundaryExtractor.new(directives, object: node, arguments: nil).extract }

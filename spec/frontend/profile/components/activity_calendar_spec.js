@@ -1,15 +1,23 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLink, GlEmptyState, GlButton, GlSprintf } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
-import { useFakeDate } from 'helpers/fake_date';
+import ActivitySkeletonLoader from '~/profile/components/activity_skeleton_loader.vue';
+import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/ajax_cache');
 
+const ACTIVITY_PATH = '/users/root/activity.json';
+const CALENDAR_ACTIVITIES_PATH = '/users/root/calendar_activities';
+
 describe('ActivityCalendar', () => {
   let wrapper;
+  let mock;
 
   // August 5th, 2026 (Wednesday)
   useFakeDate(2026, 7, 5);
@@ -17,6 +25,13 @@ describe('ActivityCalendar', () => {
   const defaultProvide = {
     username: 'root',
     utcOffset: 0,
+    userCalendarActivitiesPath: CALENDAR_ACTIVITIES_PATH,
+    userActivityPath: ACTIVITY_PATH,
+    viewAllActivityPath: '/users/root/activity',
+    isCurrentUserProfile: false,
+    emptyStateSvgPath: '/illustrations/empty-activity.svg',
+    newGroupPath: '/groups/new',
+    exploreGroupsPath: '/explore/groups',
   };
 
   const createComponent = (provide = {}) => {
@@ -34,6 +49,10 @@ describe('ActivityCalendar', () => {
   const expectToBeEmptyCells = (...cells) => {
     cells.forEach((cell) => {
       expect(cell.attributes('aria-hidden')).toBe('true');
+      // Padding cells are plain divs so they are not focusable, and carry no
+      // label of their own.
+      expect(cell.element.tagName).toBe('DIV');
+      expect(cell.attributes('aria-label')).toBeUndefined();
     });
   };
 
@@ -42,6 +61,8 @@ describe('ActivityCalendar', () => {
   const expectToBeDateCells = (...cells) => {
     cells.forEach((cell) => {
       expect(cell.attributes('aria-hidden')).toBeUndefined();
+      // Real days render as buttons so they can be focused and activated.
+      expect(cell.element.tagName).toBe('BUTTON');
     });
   };
 
@@ -59,10 +80,19 @@ describe('ActivityCalendar', () => {
   beforeEach(() => {
     gon.first_day_of_week = 0;
     AjaxCache.retrieve.mockResolvedValue({});
+
+    mock = new MockAdapter(axios);
+    // The general feed auto-loads on mount; the day feed loads on cell click.
+    mock.onGet(ACTIVITY_PATH).reply(200, []);
+    mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Flush the auto-loaded activity feed request before restoring the mock so
+    // synchronous render-only tests do not leak a pending request into teardown.
+    await waitForPromises();
     delete gon.first_day_of_week;
+    mock.restore();
   });
 
   describe('skeleton grid', () => {
@@ -417,6 +447,460 @@ describe('ActivityCalendar', () => {
 
       expect(findAlert().exists()).toBe(false);
       expect(AjaxCache.retrieve).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    // The focused cell is observable as the single cell with tabindex="0" (the
+    // accessible tab-stop). Because each cell binds handleKeyDown with its own
+    // coordinates, pressing a key on a specific cell navigates relative to it,
+    // so tests drive setup with real key presses rather than internal state.
+    const findCellById = (weekIndex, dayIndex) =>
+      wrapper.find(`#calendar-cell-${weekIndex}-${dayIndex}`);
+
+    const findTabbableCell = () =>
+      findCells().wrappers.find((cell) => cell.attributes('tabindex') === '0');
+
+    const tabbableCellId = () => findTabbableCell().attributes('id');
+
+    const pressKeyOn = (weekIndex, dayIndex, key) =>
+      findCellById(weekIndex, dayIndex).trigger('keydown', { key });
+
+    // The first real (non-padding) cell in DOM order, which is where the
+    // initial tab-stop sits. Its exact coordinates depend on the mocked date's
+    // first-week padding, so tests derive it rather than hardcoding it.
+    const findFirstDateCell = () =>
+      findCells().wrappers.find((cell) => cell.element.tagName === 'BUTTON');
+
+    beforeEach(async () => {
+      AjaxCache.retrieve.mockResolvedValue({});
+      createComponent();
+      await waitForPromises();
+    });
+
+    describe('roving tabindex', () => {
+      it('makes exactly one cell tabbable', () => {
+        const tabbableCells = findCells().wrappers.filter(
+          (cell) => cell.attributes('tabindex') === '0',
+        );
+
+        expect(tabbableCells).toHaveLength(1);
+      });
+
+      it('makes the first non-empty cell tabbable', () => {
+        expect(tabbableCellId()).toBe(findFirstDateCell().attributes('id'));
+        expect(findTabbableCell().element.tagName).toBe('BUTTON');
+      });
+
+      it('renders all other cells as not tabbable', () => {
+        const notTabbable = findCells().wrappers.filter(
+          (cell) => cell.attributes('tabindex') === '-1',
+        );
+
+        expect(notTabbable).toHaveLength(findCells().length - 1);
+      });
+
+      it('makes a real day cell tabbable before the fetch resolves', () => {
+        AjaxCache.retrieve.mockReturnValue(new Promise(() => {}));
+        createComponent();
+
+        expect(findTabbableCell().element.tagName).toBe('BUTTON');
+      });
+
+      it('moves the tab-stop to the cell the user navigates to', async () => {
+        // Day 2 is the first non-padding row under the default mocked date.
+        await pressKeyOn(0, 2, 'ArrowRight');
+
+        expect(tabbableCellId()).toBe('calendar-cell-1-2');
+      });
+    });
+
+    describe('arrow keys', () => {
+      it('ArrowRight moves focus to the next week (same day row)', async () => {
+        // Day 2 is the first non-padding row under the default mocked date.
+        await pressKeyOn(0, 2, 'ArrowRight');
+
+        expect(tabbableCellId()).toBe('calendar-cell-1-2');
+      });
+
+      it('ArrowLeft moves focus to the previous week (same day row)', async () => {
+        await pressKeyOn(1, 2, 'ArrowLeft');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-2');
+      });
+
+      it('ArrowDown moves focus to the next day (same week column)', async () => {
+        await pressKeyOn(5, 2, 'ArrowDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-5-3');
+      });
+
+      it('ArrowUp from the top day of a week wraps to the previous week', async () => {
+        await pressKeyOn(1, 0, 'ArrowUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-6');
+      });
+    });
+
+    describe('Home and End keys', () => {
+      it('Home moves focus to the first day of the current week', async () => {
+        await pressKeyOn(5, 4, 'Home');
+
+        expect(tabbableCellId()).toBe('calendar-cell-5-0');
+      });
+
+      it('End moves focus to the last day of the current week', async () => {
+        await pressKeyOn(5, 1, 'End');
+
+        expect(tabbableCellId()).toBe('calendar-cell-5-6');
+      });
+    });
+
+    describe('PageUp and PageDown keys', () => {
+      it('PageDown moves focus four weeks forward', async () => {
+        await pressKeyOn(2, 3, 'PageDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-6-3');
+      });
+
+      it('PageUp moves focus four weeks backward', async () => {
+        await pressKeyOn(6, 3, 'PageUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-2-3');
+      });
+    });
+
+    describe('padded edges (disabled cells)', () => {
+      // Fixed date so the padding of the first and last weeks is
+      // deterministic: the range runs Feb 21 2022 - Feb 21 2023, giving the
+      // first week one leading empty cell (day 0) and the last week (index
+      // 52) four trailing empty cells (days 3-6).
+      useFakeDate(2023, 1, 21);
+
+      it('ArrowRight from the last week wraps to the start of the next row', async () => {
+        await pressKeyOn(52, 1, 'ArrowRight');
+
+        // Day 2 row starts at week 0 (only day 0 of the first week is padding).
+        expect(tabbableCellId()).toBe('calendar-cell-0-2');
+      });
+
+      it('ArrowLeft from the first week wraps to the end of the previous row', async () => {
+        await pressKeyOn(0, 3, 'ArrowLeft');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-2');
+      });
+
+      it('ArrowLeft skips the disabled cells of the last week when wrapping to the previous row', async () => {
+        await pressKeyOn(0, 4, 'ArrowLeft');
+
+        // Day 3 of the last week is padding, so focus lands on the week before.
+        expect(tabbableCellId()).toBe('calendar-cell-51-3');
+      });
+
+      it('ArrowRight skips the disabled cells of the last week and wraps to the next row', async () => {
+        await pressKeyOn(51, 5, 'ArrowRight');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-6');
+      });
+
+      it('ArrowDown from the last available cell wraps to the first available cell', async () => {
+        await pressKeyOn(52, 2, 'ArrowDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-1');
+      });
+
+      it('ArrowUp from the first available cell wraps to the last available cell', async () => {
+        await pressKeyOn(0, 1, 'ArrowUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-2');
+      });
+
+      it('Home moves to the first available day in the padded first week', async () => {
+        await pressKeyOn(0, 4, 'Home');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-1');
+      });
+
+      it('End moves to the last available day in the padded last week', async () => {
+        await pressKeyOn(52, 1, 'End');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-2');
+      });
+
+      it('PageDown near the end clamps to the last week instead of wrapping', async () => {
+        await pressKeyOn(50, 1, 'PageDown');
+
+        expect(tabbableCellId()).toBe('calendar-cell-52-1');
+      });
+
+      it('PageDown clamping backs off the padding cells of the last week', async () => {
+        await pressKeyOn(50, 4, 'PageDown');
+
+        // Day 4 of the last week is padding, so focus lands on the week before.
+        expect(tabbableCellId()).toBe('calendar-cell-51-4');
+      });
+
+      it('PageUp near the start clamps to the first week instead of wrapping', async () => {
+        await pressKeyOn(2, 3, 'PageUp');
+
+        expect(tabbableCellId()).toBe('calendar-cell-0-3');
+      });
+
+      it('PageUp clamping backs off the padding cell of the first week', async () => {
+        await pressKeyOn(3, 0, 'PageUp');
+
+        // Day 0 of the first week is padding, so focus lands on the week after.
+        expect(tabbableCellId()).toBe('calendar-cell-1-0');
+      });
+    });
+
+    describe('event handling', () => {
+      const dispatchKeydown = (weekIndex, dayIndex, key) => {
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        findCellById(weekIndex, dayIndex).element.dispatchEvent(event);
+
+        return event;
+      };
+
+      it('prevents default scrolling for handled navigation keys', () => {
+        // Day 2 is the first non-padding cell under the default mocked date.
+        const event = dispatchKeydown(0, 2, 'ArrowRight');
+
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('does not prevent default for unhandled keys', () => {
+        const event = dispatchKeydown(0, 2, 'Enter');
+
+        expect(event.defaultPrevented).toBe(false);
+      });
+    });
+  });
+
+  describe('activity feed', () => {
+    const findViewAllLink = () => wrapper.findComponent(GlLink);
+    const findActivities = () => wrapper.findByTestId('calendar-activities');
+    const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+    const findSkeleton = () => wrapper.findComponent(ActivitySkeletonLoader);
+    const findEvents = () => wrapper.findComponent(ContributionEvents);
+    const findLoadMore = () => findActivities().findComponent(GlButton);
+    const firstDateCell = () => findDateCells()[0];
+    const findTabbableCell = () =>
+      findCells().wrappers.find((cell) => cell.attributes('tabindex') === '0');
+
+    describe('View all link', () => {
+      it('links to the activity page', async () => {
+        createComponent();
+        await waitForPromises();
+
+        expect(findViewAllLink().attributes('href')).toBe('/users/root/activity');
+        expect(findViewAllLink().text()).toBe('View all');
+      });
+
+      it('is hidden when the user has no activity', async () => {
+        createComponent();
+        await waitForPromises();
+
+        expect(findViewAllLink().classes()).toContain('gl-hidden');
+      });
+
+      it('is shown when the user has activity', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findViewAllLink().classes()).not.toContain('gl-hidden');
+      });
+
+      it('stays visible based on overall activity, not the selected day', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+        mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
+
+        createComponent();
+        await waitForPromises();
+
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        expect(findViewAllLink().classes()).not.toContain('gl-hidden');
+      });
+    });
+
+    describe('loading state', () => {
+      it('renders the skeleton loader while the feed is loading', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(() => new Promise(() => {}));
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findSkeleton().exists()).toBe(true);
+      });
+    });
+
+    describe('when the general feed returns events', () => {
+      beforeEach(async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }, { id: 2 }]);
+
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('renders the events feed', () => {
+        expect(findEvents().props('events')).toHaveLength(2);
+      });
+
+      it('does not render the empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
+      });
+    });
+
+    describe('day selection', () => {
+      beforeEach(async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('requests the selected day activities on cell click', async () => {
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        const dayRequest = mock.history.get.find((req) => req.url === CALENDAR_ACTIVITIES_PATH);
+
+        expect(dayRequest.params).toMatchObject({ limit: 50, offset: 0 });
+        expect(dayRequest.params.date).toEqual(expect.any(String));
+      });
+
+      it('renders the selected day heading', async () => {
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        // GlSprintf is a functional stub under shallowMount, so assert on the
+        // message it receives via its attributes.
+        expect(findActivities().findComponent(GlSprintf).attributes('message')).toContain(
+          'Contributions for',
+        );
+      });
+
+      it('marks the clicked cell as active', async () => {
+        const cell = firstDateCell();
+        await cell.trigger('click');
+        await waitForPromises();
+
+        expect(cell.classes()).toContain('is-active');
+      });
+
+      it('moves the roving tab-stop to the active cell so tabbing returns to it', async () => {
+        const cell = firstDateCell();
+        await cell.trigger('click');
+        await waitForPromises();
+
+        // The active cell is the single tabbable cell, so Tab lands on it.
+        expect(cell.attributes('tabindex')).toBe('0');
+        expect(cell.attributes('id')).toBe(findTabbableCell().attributes('id'));
+      });
+
+      it('deselects the day when the active cell is clicked again', async () => {
+        const cell = firstDateCell();
+        await cell.trigger('click');
+        await waitForPromises();
+
+        await cell.trigger('click');
+        await waitForPromises();
+
+        expect(cell.classes()).not.toContain('is-active');
+      });
+
+      it('shows the no contributions message when the day has none', async () => {
+        mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
+
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        expect(wrapper.findByText('No contributions were found.').exists()).toBe(true);
+      });
+    });
+
+    describe('load more', () => {
+      beforeEach(async () => {
+        // A full page signals more pages are available.
+        mock.onGet(ACTIVITY_PATH).reply(200, new Array(15).fill({ id: 1 }));
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('renders a load more button when more activities are available', () => {
+        expect(findLoadMore().exists()).toBe(true);
+      });
+
+      it('requests the next page when clicked', async () => {
+        await findLoadMore().vm.$emit('click');
+        await waitForPromises();
+
+        const generalRequests = mock.history.get.filter((req) => req.url === ACTIVITY_PATH);
+
+        expect(generalRequests).toHaveLength(2);
+        expect(generalRequests[1].params).toMatchObject({ offset: 15, limit: 50 });
+      });
+    });
+
+    describe('error state', () => {
+      it('shows a retry alert when the feed request fails', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(500);
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findActivities().findComponent(GlAlert).props('title')).toBe(
+          'There was an error loading activities.',
+        );
+      });
+    });
+
+    describe('empty state', () => {
+      it("renders a call to action on the current user's own profile", async () => {
+        createComponent({ isCurrentUserProfile: true });
+        await waitForPromises();
+
+        expect(findEmptyState().props()).toMatchObject({
+          title: 'No activities found',
+          svgPath: '/illustrations/empty-activity.svg',
+          primaryButtonText: 'New group',
+          primaryButtonLink: '/groups/new',
+          secondaryButtonText: 'Explore groups',
+          secondaryButtonLink: '/explore/groups',
+        });
+      });
+
+      it("omits the call to action on another user's profile", async () => {
+        createComponent({ isCurrentUserProfile: false });
+        await waitForPromises();
+
+        expect(findEmptyState().props('title')).toBe('No activities found');
+        expect(findEmptyState().props('primaryButtonText')).toBe(null);
+        expect(findEmptyState().props('secondaryButtonText')).toBe(null);
+      });
+    });
+
+    describe('when the feed is disabled (no activity path)', () => {
+      beforeEach(async () => {
+        createComponent({ userActivityPath: null });
+        await waitForPromises();
+      });
+
+      it('renders the calendar without the activities section', () => {
+        expect(findCalendar().exists()).toBe(true);
+        expect(findActivities().exists()).toBe(false);
+      });
+
+      it('does not render the View all link', () => {
+        expect(findViewAllLink().exists()).toBe(false);
+      });
+
+      it('does not request the activity feed', () => {
+        expect(mock.history.get.some((req) => req.url === ACTIVITY_PATH)).toBe(false);
+      });
     });
   });
 });

@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import LinkCell from '~/ci/runner/components/cells/link_cell.vue';

@@ -8,6 +8,8 @@ class ClickHouseTestRunner
 
   def truncate_tables
     ClickHouse::Client.configuration.databases.each_key do |db|
+      next if admin_database?(db)
+
       tables = tables_for(db)
       next if tables.empty?
 

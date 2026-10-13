@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlLink, GlPopover } from '@gitlab/ui';
+import { uniqueId } from 'lodash-es';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { typeConfig, statusConfig } from 'ee_else_ce/commit/constants';
 import X509CertificateDetails from './x509_certificate_details.vue';
@@ -17,6 +18,16 @@ export default {
       type: Object,
       required: true,
     },
+    dataTestid: {
+      type: String,
+      required: false,
+      default: 'signature-badge',
+    },
+  },
+  data() {
+    return {
+      popoverTarget: uniqueId('signature-badge-'),
+    };
   },
   computed: {
     statusConfig() {
@@ -44,9 +55,9 @@ export default {
     class="gl-ml-2 gl-flex gl-items-center hover:gl-cursor-pointer"
   >
     <button
-      id="signature"
+      :id="popoverTarget"
       tabindex="0"
-      data-testid="signature-badge"
+      :data-testid="dataTestid"
       role="button"
       variant="link"
       class="gl-flex gl-items-center gl-rounded-pill gl-border-0 gl-bg-transparent gl-p-0 focus-visible:gl-focus"
@@ -56,7 +67,7 @@ export default {
         {{ statusConfig.label }}
       </gl-badge>
     </button>
-    <gl-popover target="signature">
+    <gl-popover :target="popoverTarget">
       <template #title>
         {{ statusConfig.title }}
       </template>

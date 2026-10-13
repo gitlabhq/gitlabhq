@@ -7,7 +7,6 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
-    stub_feature_flags(personal_homepage: true)
   end
 
   describe '#dashboard_value' do
@@ -19,8 +18,10 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
 
     context 'with flipped dashboard mapping for rollout' do
       before do
-        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
-        allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
+        allow(user).to receive_messages(
+          should_use_flipped_dashboard_mapping_for_rollout?: true,
+          effective_dashboard_for_routing: 'homepage'
+        )
       end
 
       it 'returns effective dashboard value when flipped mapping is enabled' do
@@ -28,8 +29,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
       end
 
       it 'returns raw dashboard value when flipped mapping is disabled' do
-        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(false)
-        allow(user).to receive(:dashboard).and_return('projects')
+        allow(user).to receive_messages(should_use_flipped_dashboard_mapping_for_rollout?: false, dashboard: 'projects')
 
         expect(helper.dashboard_value).to eq('projects')
       end
@@ -394,8 +394,7 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
     let(:gitpod_enabled) { false }
 
     before do
-      allow(Gitlab::CurrentSettings).to receive(:gitpod_enabled).and_return(gitpod_enabled)
-      allow(Gitlab::CurrentSettings).to receive(:gitpod_url).and_return(gitpod_url)
+      allow(Gitlab::CurrentSettings).to receive_messages(gitpod_enabled: gitpod_enabled, gitpod_url: gitpod_url)
     end
 
     context 'on default' do

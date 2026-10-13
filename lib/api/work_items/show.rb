@@ -40,8 +40,7 @@ module API
           route_setting :authorization,
             permissions: :read_work_item,
             boundary: -> { namespace_path_boundary },
-            boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
-            job_token_policies: :read_work_items
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           get ':work_item_iid' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])
 
@@ -68,10 +67,12 @@ module API
             use :work_items_show_params
           end
           route_setting :lifecycle, :experiment
+          route_setting :authentication, job_token_allowed: true
           route_setting :authorization,
             permissions: :read_work_item,
             boundary_type: :project,
-            job_token_policies: :read_work_items
+            job_token_policies: :read_work_items,
+            allow_public_access_for_enabled_project_features: :issues
           get ':work_item_iid' do
             project = find_project!(params[:id])
 

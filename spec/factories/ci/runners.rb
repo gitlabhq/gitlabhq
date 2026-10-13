@@ -20,17 +20,18 @@ FactoryBot.define do
       without_projects { false }
     end
 
+    organization_id { (projects.first || groups.first)&.organization_id }
+
+    # Build (not create) the join records so they are autosaved together with the runner.
+    runner_projects do
+      projects.map { |project| association(:ci_runner_project, strategy: :build, runner: instance, project: project) }
+    end
+
+    runner_namespaces do
+      groups.map { |group| association(:ci_runner_namespace, strategy: :build, runner: instance, namespace: group) }
+    end
+
     after(:build) do |runner, evaluator|
-      runner.organization_id ||= evaluator.projects.first&.organization_id if runner.project_type?
-      evaluator.projects.each do |proj|
-        runner.runner_projects << build(:ci_runner_project, runner: runner, project: proj)
-      end
-
-      runner.organization_id ||= evaluator.groups.first&.organization_id if runner.group_type?
-      evaluator.groups.each do |group|
-        runner.runner_namespaces << build(:ci_runner_namespace, runner: runner, namespace: group)
-      end
-
       runner.creator = evaluator.creator if evaluator.creator
 
       runner.set_token(evaluator.token) if evaluator.token
@@ -97,22 +98,10 @@ FactoryBot.define do
 
     trait :group do
       runner_type { :group_type }
-
-      after(:build) do |runner, evaluator|
-        if runner.runner_namespaces.empty?
-          runner.runner_namespaces << build(:ci_runner_namespace, runner: runner)
-        end
-      end
     end
 
     trait :project do
       runner_type { :project_type }
-
-      after(:build) do |runner, evaluator|
-        if runner.runner_projects.empty?
-          runner.runner_projects << build(:ci_runner_project, runner: runner)
-        end
-      end
     end
 
     # we use without_projects to create invalid runner: the one without projects
@@ -121,20 +110,24 @@ FactoryBot.define do
         without_projects { true }
       end
 
-      after(:build) do |runner, evaluator|
-        runner.organization_id = create(:common_organization).id
+      organization_id { association(:common_organization, strategy: :create).id }
+
+      # Tolerate only the missing project instead of creating a throwaway one, so other validation errors still raise.
+      to_create do |runner|
+        runner.validate
+        runner.errors.delete(:runner, Ci::Runner::NO_PROJECTS_ERROR_MESSAGE)
+        raise ActiveRecord::RecordInvalid, runner if runner.errors.any?
+
+        runner.save!(validate: false)
       end
 
-      after(:create) do |runner, evaluator|
-        runner.runner_projects.delete_all
+      after(:create) do |runner, _evaluator|
         runner.clear_memoization(:owner)
       end
     end
 
     trait :with_runner_manager do
-      after(:build) do |runner, evaluator|
-        runner.runner_managers << build(:ci_runner_machine, runner: runner)
-      end
+      runner_managers { [association(:ci_runner_machine, strategy: :build, runner: instance)] }
     end
 
     trait :paused do

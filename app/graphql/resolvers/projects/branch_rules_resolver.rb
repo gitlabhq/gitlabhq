@@ -23,6 +23,12 @@ module Resolvers
 
       # BranchRules for 'All branches' i.e. no associated ProtectedBranch
       def custom_branch_rules(args)
+        # Custom rules have different permission requirements to regular branch
+        # rules. GraphQL's after_resolve logic silently filters out unauthorized
+        # objects but pagination is built during resolution, so we pre-filter
+        # here to keep page sizes correct.
+        return [] unless Ability.allowed?(current_user, :read_branch_rule, all_branches_rule)
+
         [all_branches_rule]
       end
 

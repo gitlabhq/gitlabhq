@@ -8,6 +8,12 @@ module Namespaces
 
     private
 
+    def cancel_transfer_if_in_progress(namespace, transfer_error: nil)
+      return unless namespace.transfer_in_progress?
+
+      namespace.cancel_transfer!(transfer_error: transfer_error)
+    end
+
     def cancel_stale_transfer_state(namespace, **log_params)
       return unless namespace.transfer_in_progress?
 

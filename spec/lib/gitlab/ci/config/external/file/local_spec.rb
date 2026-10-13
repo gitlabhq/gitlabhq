@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pipeline_composition do
-  around do |example|
-    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-      example.run
-    end
-  end
-
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :small_repo) }

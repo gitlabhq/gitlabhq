@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category: :value_stream_management do
   let(:test_class) do
     Class.new do
       include Gitlab::Database::Aggregation::Graphql::Mounter

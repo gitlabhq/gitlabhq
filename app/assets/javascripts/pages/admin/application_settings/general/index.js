@@ -5,7 +5,6 @@ import { initAdminDeletionProtectionSettings } from '~/admin/application_setting
 import initAccountAndLimitsSection from '../account_and_limits';
 import initGitpod from '../gitpod';
 import initSignupRestrictions from '../signup_restrictions';
-import initIframeSettings from '../iframe';
 
 (() => {
   initAccountAndLimitsSection();
@@ -13,7 +12,6 @@ import initIframeSettings from '../iframe';
   initSignupRestrictions();
   initSilentModeSettings();
   initAdminDeletionProtectionSettings();
-  initIframeSettings();
 
   initSimpleApp('#js-extension-marketplace-settings-app', VscodeExtensionMarketplaceSettings);
 })();

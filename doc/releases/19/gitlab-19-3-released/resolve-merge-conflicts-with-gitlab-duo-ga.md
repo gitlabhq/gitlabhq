@@ -13,7 +13,7 @@ weight: 20
 In previous versions of GitLab, you had to resolve merge conflicts manually in
 the GitLab UI or from the command line, even for straightforward cases.
 
-Now you can ask GitLab Duo to resolve conflicts for you. 
+Now you can ask GitLab Duo to resolve conflicts for you.
 
-Start conflict resolution from the merge widget or the **Resolve conflicts** page. 
+Start conflict resolution from the merge widget or the **Resolve conflicts** page.
 GitLab Duo analyzes the conflicts, edits the files and commits the resolution to the source branch, and then posts a summary comment on the merge request describing what changed.

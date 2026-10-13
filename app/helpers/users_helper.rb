@@ -127,18 +127,46 @@ module UsersHelper
     end
   end
 
-  def user_badges_in_admin_section(user)
+  def user_badges_in_admin_section(user, authorization_context = nil)
     [].tap do |badges|
       badges << blocked_user_badge(user) if user.blocked?
-      badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin
+
+      if instance_admin_context?(authorization_context)
+        badges.concat(instance_user_badges(user))
+      else
+        badges.concat(organization_user_badges(user, authorization_context))
+      end
+
       badges << { text: s_('AdminUsers|Bot'), variant: 'neutral' } if user.bot?
       badges << { text: s_('AdminUsers|Deactivated'), variant: 'danger' } if user.deactivated?
-      badges << { text: s_('AdminUsers|External'), variant: 'neutral' } if user.external?
-      badges << { text: s_("AdminUsers|It's you!"), variant: 'neutral' } if current_user == user
       badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?
       badges << { text: s_("UserMapping|Placeholder"), variant: 'neutral' } if user.placeholder?
       badges << { text: s_('AdminUsers|LDAP'), variant: 'info' } if user.ldap_user?
+      badges << { text: s_("AdminUsers|It's you!"), variant: 'neutral' } if current_user == user
     end
+  end
+
+  def instance_admin_context?(authorization_context)
+    !authorization_context.is_a?(::Organizations::Organization)
+  end
+
+  def instance_user_badges(user)
+    [].tap do |badges|
+      if user.admin? && can?(current_user, :read_user_access_level, :global) # rubocop:disable Cop/UserAdmin -- shows whether the listed user is an instance admin, not whether they can act as one
+        badges << { text: s_('AdminUsers|Admin'), variant: 'success' }
+      end
+
+      if user.external? && can?(current_user, :read_admin_users, :global)
+        badges << { text: s_('AdminUsers|External'), variant: 'neutral' }
+      end
+    end
+  end
+
+  def organization_user_badges(user, organization)
+    return [] unless can?(current_user, :read_user_access_level, organization)
+    return [] unless organization.owner_user_ids.include?(user.id)
+
+    [{ text: s_('AdminUsers|Organization admin'), variant: 'success' }]
   end
 
   def work_information(user, with_schema_markup: false)
@@ -211,7 +239,7 @@ module UsersHelper
 
   def has_contact_info?(user)
     contact_fields = %i[bluesky discord linkedin mastodon orcid twitter website_url github]
-    has_contact = contact_fields.any? { |field| user.public_send(field).present? }  # rubocop:disable GitlabSecurity/PublicSend -- fields are controlled, it is safe.
+    has_contact = contact_fields.any? { |field| user.public_send(field).present? } # rubocop:disable GitlabSecurity/PublicSend -- fields are controlled, it is safe.
     has_contact || display_public_email?(user)
   end
 
@@ -252,6 +280,13 @@ module UsersHelper
   def user_activity_calendar_data(user)
     {
       username: user.username,
+      calendar_activities_path: user_calendar_activities_path(user, :json),
+      activity_path: user_activity_path(user, :json),
+      view_all_activity_path: user_activity_path(user),
+      is_current_user_profile: (current_user.present? && current_user.id == user.id).to_s,
+      empty_state_svg_path: image_path('illustrations/empty-state/empty-activity-md.svg'),
+      new_group_path: new_group_path,
+      explore_groups_path: explore_groups_path,
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset
     }
   end
@@ -278,6 +313,7 @@ module UsersHelper
       approve: approve_admin_user_path(:id),
       reject: reject_admin_user_path(:id),
       unblock: unblock_admin_user_path(:id),
+      resync_ldap: unblock_admin_user_path(:id),
       block: block_admin_user_path(:id),
       deactivate: deactivate_admin_user_path(:id),
       activate: activate_admin_user_path(:id),

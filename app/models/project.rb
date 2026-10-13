@@ -5,6 +5,7 @@ require 'carrierwave/orm/activerecord'
 class Project < ApplicationRecord
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
+  include Import::SourceHosting
   include AccessRequestable
   include Authz::HasRoles
   include Avatarable
@@ -34,6 +35,7 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
+  include IdInOrdered
   include ::Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
@@ -72,6 +74,12 @@ class Project < ApplicationRecord
   EPOCH_CACHE_EXPIRATION = 30.days
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
+  SORT_WITHOUT_INDEX_EXPRESSIONS = {
+    'name' => "('' || projects.name)",
+    'path' => "('' || projects.path)",
+    'updated_at' => "(projects.updated_at + interval '0')",
+    'last_activity_at' => "(projects.last_activity_at + interval '0')"
+  }.freeze
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
   # nil: legacy
   # 1: repository
@@ -178,7 +186,8 @@ class Project < ApplicationRecord
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
-  after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
+  after_save :schedule_sync_event_worker,
+    if: -> { saved_change_to_id? || saved_change_to_namespace_id? || saved_change_to_organization_id? }
 
   after_save :create_import_state, if: ->(project) do
     project.import? && project.import_state.nil? && (!project.transfer_import? || project.mirror?)
@@ -574,6 +583,10 @@ class Project < ApplicationRecord
       :cancel_deletion!,
       :deletion_error,
       :deletion_error=,
+      :deletion_attempt_count,
+      :deletion_attempt_count=,
+      :deletion_last_failed_at,
+      :deletion_last_failed_at=,
       :deletion_in_progress?,
       :deletion_scheduled?,
       :namespace_details,
@@ -1239,6 +1252,16 @@ class Project < ApplicationRecord
     Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
   end
 
+  # Sorts by an expression equal to the column, so PostgreSQL cannot walk a (column, id) index and
+  # probe each project until it finds a page of matches. For a user's own projects that walk can scan
+  # most of the table; sorting the user's projects instead is cheap. See https://gitlab.com/gitlab-org/gitlab/-/work_items/605822
+  def self.sort_without_index(column, direction)
+    expression = SORT_WITHOUT_INDEX_EXPRESSIONS.fetch(column.to_s)
+    direction = direction.to_s == 'desc' ? :desc : :asc
+
+    reorder(Arel.sql("#{expression} #{direction.upcase}"), id: direction)
+  end
+
   def self.dormant
     project_statistics = ::ProjectStatistics.arel_table
     minimum_size_mb = ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes
@@ -1395,10 +1418,12 @@ class Project < ApplicationRecord
         .where("#{Integration.table_name}.project_id = projects.id")
         .where(type: integration.type)
 
-      Project
+      scope = Project
         .where('NOT EXISTS (?)', integrations)
         .where(pending_delete: false)
         .non_archived
+
+      integration.instance_level? ? scope.in_organization(integration.organization_id) : scope
     end
 
     def project_features_defaults
@@ -1437,6 +1462,12 @@ class Project < ApplicationRecord
             .to_h
         )
       end
+    end
+
+    def root_namespace_id_subquery(project_ids)
+      Namespace
+        .where(id: id_in(project_ids).select(:namespace_id))
+        .select(Arel.sql('namespaces.traversal_ids[1]'))
     end
 
     def root_ids_for(project_ids)
@@ -1976,11 +2007,6 @@ class Project < ApplicationRecord
     import_type == 'bitbucket_server'
   end
 
-  def github_enterprise_import?
-    github_import? &&
-      URI.parse(safe_import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
-  end
-
   # Determine whether any kind of import is in progress.
   # - Full file import
   # - Relation import
@@ -2224,6 +2250,7 @@ class Project < ApplicationRecord
     Integration
       .available_integration_names(include_instance_specific: false)
       .difference(disabled_integrations)
+      .difference(hidden_integrations)
       .map { find_or_initialize_integration(_1) }
       .sort_by { |int| int.title.downcase }
   end
@@ -2232,6 +2259,15 @@ class Project < ApplicationRecord
   # Globally disabled integrations should go in Integration.disabled_integration_names.
   def disabled_integrations
     %w[zentao]
+  end
+
+  # Names omitted from the settings list but still resolvable by name, so the edit page
+  # and the REST API keep working. Disabling a name instead would make
+  # find_or_initialize_integration return nil, which is a breaking API change.
+  def hidden_integrations
+    return [] unless hide_deprecated_slack_notifications?
+
+    [Integrations::Slack.to_param]
   end
 
   def find_or_initialize_integration(name)
@@ -2836,7 +2872,7 @@ class Project < ApplicationRecord
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
     job_id = Projects::ImportExport::CreateRelationExportsWorker
-                 .perform_async(current_user.id, self.id, after_export_strategy, params.stringify_keys)
+                 .perform_async(current_user.id, self.id, after_export_strategy&.as_json, params.stringify_keys)
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -3368,6 +3404,15 @@ class Project < ApplicationRecord
     pool.remove_member(self)
   end
 
+  def schedule_leave_pool_repository
+    pool = pool_repository
+    return if pool.blank?
+    return leave_pool_repository if pending_delete?
+
+    disk_path = pool.disk_path
+    ActiveRecord.after_all_transactions_commit { ObjectPool::DisconnectWorker.perform_async(id, disk_path) }
+  end
+
   # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool
   def swap_pool_repository!
     return unless repository_exists?
@@ -3688,12 +3733,8 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
-  def vulnerability_malware_detection_feature_flag_enabled?
-    group&.vulnerability_malware_detection_feature_flag_enabled? || Feature.enabled?(:vulnerability_malware_detection, self, type: :beta)
-  end
-
-  def dependency_malware_detection_feature_flag_enabled?
-    group&.dependency_malware_detection_feature_flag_enabled? || Feature.enabled?(:dependency_malware_detection, self, type: :beta)
+  def use_mermaid_v12_feature_flag_enabled?
+    group&.use_mermaid_v12_feature_flag_enabled? || Feature.enabled?(:use_mermaid_v12, self, type: :gitlab_com_derisk)
   end
 
   def use_work_item_url?
@@ -3877,6 +3918,13 @@ class Project < ApplicationRecord
     pool_repository || create_new_pool_repository
   end
 
+  # A non-forked project may still belong to its former upstream's pool until its async disconnect runs.
+  # New forks should not join a pool their parent is leaving.
+  def pool_repository_reusable?
+    pool = pool_repository
+    pool.nil? || pool.source_project_id == id
+  end
+
   private
 
   def check_duplicate_export!(current_user)
@@ -3936,6 +3984,18 @@ class Project < ApplicationRecord
     @topic_list = nil
   end
 
+  # Asking whether the replacement is available covers both the slack_app_enabled setting
+  # and the EE allowed_integrations allowlist, so the deprecated integration is never
+  # hidden unless the project can actually reach the GitLab for Slack app.
+  def hide_deprecated_slack_notifications?
+    return false unless Integration.available_integration_names.include?(
+      Integrations::GitlabSlackApplication.to_param
+    )
+
+    find_integration(integrations, Integrations::Slack.to_param).nil? &&
+      find_integration(integration_instances, Integrations::Slack.to_param).nil?
+  end
+
   def find_integration(integrations, name)
     integrations.find { _1.to_param == name }
   end
@@ -3953,7 +4013,7 @@ class Project < ApplicationRecord
   end
 
   def integration_instances
-    @integration_instances ||= Integration.for_instance
+    @integration_instances ||= Integration.for_organization(organization_id)
   end
 
   def closest_namespace_setting(name)

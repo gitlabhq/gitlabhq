@@ -6,12 +6,10 @@ require 'uri'
 require 'fileutils'
 require 'tempfile'
 
-# Downloads per-test coverage shards from all matching jobs in the child
-# pipeline triggered by per-test-coverage:trigger. Sibling to
-# ChildPipelineArtifactDownloader: that one downloads from a single named job
-# (the e2e:test-on-gdk flow); this one matches every job in a parallel:N child
-# pipeline by regex against its name, since GitLab CI does not natively let an
-# upstream job reference a downstream pipeline's artifacts.
+# Downloads per-test coverage shards from every matching job in a target
+# pipeline (the triggered child by default, or target_pipeline_id's pipeline).
+# Sibling to ChildPipelineArtifactDownloader, which pulls one named job instead.
+# Matches by regex since GitLab CI can't need artifacts across pipelines.
 class PerTestCoverageArtifactDownloader
   BRIDGE_NAME = 'per-test-coverage:trigger'
 
@@ -33,9 +31,13 @@ class PerTestCoverageArtifactDownloader
   # at the project root (`.`) restores files to their original locations
   # (`tmp/per-test-coverage-rspec-XXX.ndjson`). Passing `tmp` would double-nest
   # to `tmp/tmp/per-test-coverage-rspec-XXX.ndjson`.
-  def initialize(job_name_pattern:, output_dir: '.', process_command: nil, output_glob: nil, batch_size: 1)
+  def initialize(
+    job_name_pattern:, output_dir: '.', process_command: nil, output_glob: nil, batch_size: 1,
+    target_pipeline_id: nil)
     @job_name_pattern = job_name_pattern
     @output_dir = output_dir
+    # Set to skip the bridge lookup and target a known pipeline directly.
+    @target_pipeline_id = target_pipeline_id
     # Streaming: when process_command is set, shards are downloaded in batches of
     # batch_size, the command runs on each batch, then output_glob is cleared
     # before the next batch. This bounds disk to one batch instead of holding
@@ -68,15 +70,15 @@ class PerTestCoverageArtifactDownloader
   # artifacts 404 on the API is skipped: the job ran but uploaded nothing,
   # which is valid when a small weekday queue leaves a shard zero examples.
   def run
-    child_pipeline_id = find_child_pipeline_id
-    unless child_pipeline_id
+    target_pipeline_id = @target_pipeline_id || find_child_pipeline_id
+    unless target_pipeline_id
       puts "Per-test coverage: no child pipeline found via bridge '#{BRIDGE_NAME}'. Nothing to download."
       return 0
     end
 
-    matching = find_matching_jobs(child_pipeline_id)
+    matching = find_matching_jobs(target_pipeline_id)
     if matching.empty?
-      warn "Per-test coverage: no jobs in child pipeline #{child_pipeline_id} match " \
+      warn "Per-test coverage: no jobs in pipeline #{target_pipeline_id} match " \
         "#{@job_name_pattern.inspect}. Exiting non-zero so the export job surfaces missing artifacts."
       return 1
     end
@@ -106,7 +108,7 @@ class PerTestCoverageArtifactDownloader
 
     puts "Per-test coverage: node #{@node_index}/#{@node_total} downloaded artifacts from " \
       "#{downloaded}/#{shards.size} jobs (#{skipped} skipped: no artifacts) " \
-      "in child pipeline #{child_pipeline_id}."
+      "in pipeline #{target_pipeline_id}."
 
     all_ok ? 0 : 1
   end
@@ -148,15 +150,15 @@ class PerTestCoverageArtifactDownloader
     bridge&.dig('downstream_pipeline', 'id')
   end
 
-  # Lists all jobs in the child pipeline (paginated 100 at a time) and filters
+  # Lists all jobs in the target pipeline (paginated 100 at a time) and filters
   # by @job_name_pattern. At parallel:88 across multiple test levels the list
   # can run into the hundreds, so pagination matters.
-  def find_matching_jobs(child_pipeline_id)
+  def find_matching_jobs(target_pipeline_id)
     jobs = []
     page = 1
     loop do
       response = api_get(
-        "projects/#{project_id}/pipelines/#{child_pipeline_id}/jobs?per_page=100&page=#{page}")
+        "projects/#{project_id}/pipelines/#{target_pipeline_id}/jobs?per_page=100&page=#{page}")
       batch = JSON.parse(response.body)
       # When the total is an exact multiple of 100 we make one extra request
       # that returns an empty page; cheaper than tracking the total count.

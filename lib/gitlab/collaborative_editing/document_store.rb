@@ -94,7 +94,9 @@ module Gitlab
       end
 
       def replace(snapshot, token)
-        return false unless snapshot.is_a?(String) && token.is_a?(String)
+        raise ArgumentError, 'snapshot must be a String' unless snapshot.is_a?(String)
+        raise ArgumentError, 'token must be a String' unless token.is_a?(String)
+
         return false if token.empty?
 
         result = with_redis do |redis|

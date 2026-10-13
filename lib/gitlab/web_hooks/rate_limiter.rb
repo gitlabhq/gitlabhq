@@ -23,7 +23,7 @@ module Gitlab
 
         ::Gitlab::ApplicationRateLimiter.throttled?(
           limit_name,
-          scope: [root_namespace],
+          scope: { namespace: root_namespace },
           threshold: limit
         )
       end
@@ -35,7 +35,7 @@ module Gitlab
 
         Gitlab::ApplicationRateLimiter.peek(
           limit_name,
-          scope: [root_namespace],
+          scope: { namespace: root_namespace },
           threshold: limit
         )
       end

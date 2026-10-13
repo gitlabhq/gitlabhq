@@ -147,7 +147,7 @@ RSpec::Matchers.define :have_graphql_arguments do |*expected|
   match do |field|
     names = expected_names(field)
 
-    expect(field.arguments.keys).to contain_exactly(*names)
+    expect(field.arguments.keys).to match_array(names)
   end
 
   failure_message do |field|

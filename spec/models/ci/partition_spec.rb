@@ -125,7 +125,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     describe '.next_available' do
       subject(:next_available) { described_class.next_available(ci_partition.id) }
 
-      let!(:next_ci_partition) { create(:ci_partition, :ready) }
+      let_it_be(:next_ci_partition) { create(:ci_partition, :ready) }
 
       context 'when one partition is ready' do
         it { is_expected.to eq(next_ci_partition) }
@@ -145,7 +145,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     describe '.provisioning' do
       subject(:provisioning) { described_class.provisioning(ci_partition.id) }
 
-      let!(:next_ci_partition) { create(:ci_partition) }
+      let_it_be_with_reload(:next_ci_partition) { create(:ci_partition) }
 
       context 'when one partition is preparing' do
         it { is_expected.to eq(next_ci_partition) }

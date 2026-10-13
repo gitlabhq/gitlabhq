@@ -3,6 +3,7 @@
 module API
   module Entities
     class ResourceAccessToken < Entities::PersonalAccessToken
+      # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
       expose :access_level,
         documentation: {
           type: 'Integer',
@@ -13,6 +14,7 @@ module API
         } do |token, _options|
         token.user.members.first.access_level
       end
+      # rubocop:enable API/AccessLevelStringType
 
       expose :resource_type,
         documentation: {

@@ -2,6 +2,10 @@
 
 module Packages
   module Cargo
+    # Dots are not valid in a cargo package name, so the shared
+    # 'Temporary.Package' default cannot be used here.
+    TEMPORARY_PACKAGE_NAME = 'Cargo-Temporary-Package'
+
     def self.table_name_prefix
       'packages_cargo_'
     end

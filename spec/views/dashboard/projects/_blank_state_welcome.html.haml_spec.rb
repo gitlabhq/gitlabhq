@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
   context 'with regular user' do
     context 'with project creation enabled' do
-      let_it_be(:user) { create(:user) }
+      let(:user) { build_stubbed(:user) }
 
       before do
         allow(view).to receive(:current_user).and_return(user)
@@ -31,7 +31,7 @@ RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
     end
 
     context 'with project creation disabled' do
-      let_it_be(:user_projects_limit) { create(:user, projects_limit: 0) }
+      let(:user_projects_limit) { build_stubbed(:user, projects_limit: 0) }
 
       before do
         allow(view).to receive(:current_user).and_return(user_projects_limit)

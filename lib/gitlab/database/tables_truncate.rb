@@ -160,11 +160,12 @@ module Gitlab
           new_tables_to_truncate = tables_groups.flatten
           logger&.info "= New tables to truncate: #{new_tables_to_truncate.join(', ')}"
           truncated_tables.push(*new_tables_to_truncate).tap(&:sort!)
-          sql_statements = [
-            "SET LOCAL statement_timeout = 0",
-            "SET LOCAL lock_timeout = 0",
-            "TRUNCATE TABLE #{truncated_tables.join(', ')} RESTRICT"
-          ]
+          sql_statements = ["SET LOCAL statement_timeout = 0", "SET LOCAL lock_timeout = 0"]
+          if Gitlab::Database::TransactionTimeout.supported?(connection)
+            sql_statements << "SET LOCAL transaction_timeout = 0"
+          end
+
+          sql_statements << "TRUNCATE TABLE #{truncated_tables.join(', ')} RESTRICT"
 
           sql_statements.each { |sql_statement| logger&.info(sql_statement) }
 
@@ -225,9 +226,7 @@ module Gitlab
       end
 
       def with_suppressed_query_analyzers(&block)
-        Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
-          Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer.with_suppressed(&block)
-        end
+        Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed(&block)
       end
     end
   end

@@ -85,6 +85,7 @@ import MergeRequestReviewers from '~/merge_requests/list/components/merge_reques
 import MergeRequestStatistics from '~/merge_requests/list/components/merge_request_statistics.vue';
 import getMergeRequestsQuery from 'ee_else_ce/merge_request_dashboard/queries/search/get_merge_requests.query.graphql';
 import getMergeRequestsApprovalsQuery from '../queries/search/get_merge_requests_approvals.query.graphql';
+import getMergeRequestsCountQuery from '../queries/search/get_merge_requests_count.query.graphql';
 
 const UserToken = defineAsyncComponent(
   () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue'),
@@ -170,10 +171,12 @@ export default {
     'isPublicVisibilityRestricted',
     'isSignedIn',
   ],
+  emits: ['count-change'],
   data() {
     return {
       filterTokens: [],
       mergeRequests: [],
+      mergeRequestsCount: null,
       mergeRequestsError: null,
       pageInfo: {},
       pageParams: {},
@@ -223,6 +226,28 @@ export default {
       manual: true,
       result() {},
       error(error) {
+        if (error.networkError?.statusCode !== HTTP_STATUS_SERVICE_UNAVAILABLE) {
+          Sentry.captureException(error);
+        }
+      },
+      skip() {
+        return !this.hasFilters;
+      },
+    },
+    mergeRequestsCount: {
+      client: SEARCH_CLIENT,
+      query: getMergeRequestsCountQuery,
+      variables() {
+        return this.apiFilterParams;
+      },
+      update(data) {
+        return data.mergeRequests?.count ?? null;
+      },
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      context: { batchKey: 'MergeRequestDashboardSearchCount' },
+      error(error) {
+        this.mergeRequestsCount = null;
+
         if (error.networkError?.statusCode !== HTTP_STATUS_SERVICE_UNAVAILABLE) {
           Sentry.captureException(error);
         }
@@ -475,10 +500,14 @@ export default {
     $route(newRoute, oldRoute) {
       if (newRoute.fullPath !== oldRoute.fullPath) this.updateData(this.initialSort);
     },
+    mergeRequestsCount(count) {
+      this.$emit('count-change', count);
+    },
     hasFilters(hasFilters) {
       if (hasFilters) return;
 
       this.mergeRequests = [];
+      this.mergeRequestsCount = null;
       this.pageInfo = {};
       this.mergeRequestsError = null;
       this.searchTimeout = false;
@@ -487,6 +516,9 @@ export default {
   created() {
     this.updateData(this.initialSort);
     this.autocompleteCache = new AutocompleteCache();
+  },
+  beforeDestroy() {
+    this.$emit('count-change', null);
   },
   methods: {
     updateUrl() {

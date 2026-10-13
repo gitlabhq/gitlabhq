@@ -26,18 +26,20 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
   describe '#tokens_app_data' do
     let_it_be(:feed_token) { 'DUKu345VD73Py7zz3z89' }
     let_it_be(:incoming_email_token) { 'az4a2l5f8ssa0zvdfbhidbzlx' }
-    let_it_be(:static_object_token) { 'QHXwGHYioHTgxQnAcyZ-' }
     let_it_be(:feed_token_reset_path) { '/-/profile/reset_feed_token' }
     let_it_be(:incoming_email_token_reset_path) { '/-/profile/reset_incoming_email_token' }
     let_it_be(:static_object_token_reset_path) { '/-/profile/reset_static_object_token' }
     let_it_be(:user) do
-      build(
+      # rubocop:disable RSpec/FactoryBot/AvoidCreate -- reset_static_object_token! only persists an encrypted token on a saved record
+      create(
         :user,
         feed_token: feed_token,
-        incoming_email_token: incoming_email_token,
-        static_object_token: static_object_token
-      )
+        incoming_email_token: incoming_email_token
+      ).tap(&:reset_static_object_token!)
+      # rubocop:enable RSpec/FactoryBot/AvoidCreate
     end
+
+    let_it_be(:static_object_token) { user.static_object_token }
 
     it 'returns expected json' do
       allow(Gitlab::CurrentSettings).to receive_messages(

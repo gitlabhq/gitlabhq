@@ -24,8 +24,13 @@ RSpec.describe Admin::AbuseReportsHelper, feature_category: :insider_threat do
 
   describe '#abuse_report_data' do
     let(:report) { build_stubbed(:abuse_report) }
+    let(:admin) { build_stubbed(:user, :admin) }
 
     subject(:data) { helper.abuse_report_data(report) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(admin)
+    end
 
     it 'has the expected attributes' do
       expect(data[:abuse_report_data]).to include('user', 'reporter', 'report')

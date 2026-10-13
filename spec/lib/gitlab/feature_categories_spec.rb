@@ -65,7 +65,7 @@ RSpec.describe Gitlab::FeatureCategories do
   describe "#categories" do
     it "returns a set of the given categories" do
       expect(subject.categories).to be_a(Set)
-      expect(subject.categories).to contain_exactly(*fake_categories)
+      expect(subject.categories).to match_array(fake_categories)
     end
   end
 
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::FeatureCategories do
     it "creates FeatureCategories from feature_categories.yml file" do
       contents = YAML.load_file(Rails.root.join('config', 'feature_categories.yml'))
 
-      expect(subject.categories).to contain_exactly(*contents)
+      expect(subject.categories).to match_array(contents)
     end
   end
 

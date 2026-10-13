@@ -6,6 +6,8 @@ module Mcp
       class SaveWorkItemService < Base::GraphqlService
         extend ::Gitlab::Utils::Override
 
+        container_arguments record: { parent_id: ->(id) { work_item_containers([id]) } }
+
         # Issue and epic URLs must route to update so an unrecognized item URL fails
         # URL parsing instead of silently creating a duplicate work item.
         UPDATE_INTENT_URL = %r{/-/(?:work_items|issues|epics)/\d+(?:[/?#]|\z)}
@@ -53,8 +55,11 @@ module Mcp
               },
               description: {
                 type: 'string',
-                description: 'Description in GitLab Flavored Markdown (max 1,048,576 characters).',
-                maxLength: 1_048_576
+                description: 'Description in GitLab Flavored Markdown ' \
+                  "(max #{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters). Lines " \
+                  'beginning with "/" are rejected to avoid triggering quick actions. Use add_labels, ' \
+                  'assignee_ids, and the other fields instead.',
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               assignee_ids: {
                 type: 'array',

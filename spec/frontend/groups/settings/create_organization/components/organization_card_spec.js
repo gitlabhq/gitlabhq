@@ -1,5 +1,5 @@
-import { GlAvatarLabeled, GlCard } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlAvatarLabeled, GlAvatar, GlCard } from '@gitlab/ui';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
@@ -11,8 +11,13 @@ describe('OrganizationCard', () => {
 
   const [nonDefaultOrganization] = mockOrganizations;
 
-  const createComponent = ({ props = {}, scopedSlots = {} } = {}) => {
-    wrapper = shallowMountExtended(OrganizationCard, {
+  const createComponent = ({
+    props = {},
+    scopedSlots = {},
+    mountFn = shallowMountExtended,
+  } = {}) => {
+    wrapper = mountFn(OrganizationCard, {
+      attachTo: document.body,
       propsData: {
         organization: nonDefaultOrganization,
         ...props,
@@ -31,14 +36,20 @@ describe('OrganizationCard', () => {
   };
 
   const findCard = () => wrapper.findComponent(GlCard);
-  const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
+  const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
+  const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findVisibilityIcon = () => wrapper.findComponentByTestId('organization-visibility');
+  const findEditOrganizationNameButton = () =>
+    wrapper.findComponentByTestId('edit-organization-name-button');
+  const findSaveOrganizationNameButton = () =>
+    wrapper.findComponentByTestId('save-organization-name-button');
+  const findOrganizationNameInput = () => wrapper.findByLabelText('Organization name');
 
   describe('when organization is not the default organization', () => {
     it('renders organization name and avatar', () => {
       createComponent();
 
-      expect(findAvatar().props()).toMatchObject({
+      expect(findAvatarLabeled().props()).toMatchObject({
         label: nonDefaultOrganization.name,
         entityName: nonDefaultOrganization.name,
         src: nonDefaultOrganization.avatarUrl,
@@ -74,6 +85,71 @@ describe('OrganizationCard', () => {
 
       expect(wrapper.findByTestId('slot-content').text()).toBe('false');
     });
+
+    describe('when allowEditMode is false', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render edit button', () => {
+        expect(findEditOrganizationNameButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when allowEditMode is true', () => {
+      beforeEach(() => {
+        createComponent({ props: { allowEditMode: true }, mountFn: mountExtended });
+      });
+
+      it('renders edit button', () => {
+        expect(findEditOrganizationNameButton().exists()).toBe(true);
+      });
+
+      describe('when edit button is clicked', () => {
+        beforeEach(() => {
+          findEditOrganizationNameButton().vm.$emit('click');
+        });
+
+        it('shows edit input', () => {
+          expect(findOrganizationNameInput().exists()).toBe(true);
+        });
+
+        it('shows avatar', () => {
+          expect(findAvatar().props()).toMatchObject({
+            entityName: nonDefaultOrganization.name,
+            src: nonDefaultOrganization.avatarUrl,
+          });
+        });
+
+        describe('when organization name is changed and saved', () => {
+          beforeEach(async () => {
+            await findOrganizationNameInput().setValue('custom name');
+            findSaveOrganizationNameButton().trigger('click');
+          });
+
+          it('emits update event with updated organization name', () => {
+            expect(wrapper.emitted('update')).toEqual([
+              [{ ...nonDefaultOrganization, name: 'custom name' }],
+            ]);
+          });
+        });
+
+        describe('when organization name is empty', () => {
+          beforeEach(async () => {
+            await findOrganizationNameInput().setValue('');
+            findSaveOrganizationNameButton().trigger('click');
+          });
+
+          it('shows error message', () => {
+            expect(wrapper.findByText('Organization name is required.').exists()).toBe(true);
+          });
+
+          it('does not emit update event', () => {
+            expect(wrapper.emitted('update')).toBeUndefined();
+          });
+        });
+      });
+    });
   });
 
   describe('when organization is the default organization', () => {
@@ -82,7 +158,7 @@ describe('OrganizationCard', () => {
     });
 
     it('renders the other top-level groups header instead of an avatar', () => {
-      expect(findAvatar().exists()).toBe(false);
+      expect(findAvatarLabeled().exists()).toBe(false);
       expect(findCard().text()).toContain('Other top-level groups');
     });
 

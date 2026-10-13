@@ -106,18 +106,22 @@ if these variables are not defined, those jobs are skipped entirely.
 
 #### `GLCI_MEDIUM_RUNNER_REQUIRED`
 
-This variable enables system (feature) test jobs that require runners with at least 4 cores and 16 GB of RAM.
+This variable enables jobs that require runners with at least 4 cores and 16 GB of RAM. These jobs are the
+system (feature) test jobs and `bundle-size-review`.
 Chrome version 133+ requires additional compute resources to run reliably. Otherwise, system test
 jobs become unpredictably unstable due to insufficient resources for the PostgreSQL database and
 Rails application.
 
+The `bundle-size-review` job requires these resources because it runs a full production webpack build with the
+bundle analyzer, which is OOM-killed on smaller runners.
+
 Define this variable in the CI/CD settings and set it to a runner tag that has at least 4 cores and 16 GB of RAM.
 For complete configuration details, see the [testing section](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207000#testing) of the MR that introduced this variable.
 
-When not defined (default is empty string), system test jobs are not run.
+When not defined (default is empty string), the jobs that request this tag are not run.
 This prevents resource-intensive tests from running in environments without sufficient runner capacity, such as contributors' personal forks.
 
-Required for environments where system tests need to run, including:
+Required for environments where these jobs need to run, including:
 
 - The canonical `gitlab-org/gitlab` project
 - The GitLab Community fork
@@ -147,7 +151,7 @@ The current stages are:
 - `post-qa`: This stage includes jobs that build reports or gather data from
   the `qa` stage's jobs (for example, Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
+  GitLab Pages (for example, the [Knapsack RSpec timing report](https://gitlab-org.gitlab.io/gitlab/knapsack/report-master.json)),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
 - `notify`: This stage includes jobs that notify various failures to Slack.
@@ -298,12 +302,21 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 The table below lists custom exit codes we use to auto-retry (see the retry rules in [GitLab global CI configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for its definition):
 
-| Exit code | Description |
-|-----------|-------------|
-| 112       | known flaky test detected; retry the whole job |
-| 201       | low disk space |
+| Exit code | Description | Configured in |
+|-----------|-------------|---------------|
+| 112       | known flaky test detected; retry the whole job | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.default-retry`), restated in `.rspec-base` |
+| 139       | `SIGSEGV` (`128 + 11`) from the Ruby VM, most often `parallel_rspec`. The process crashed, so no spec results were written and the in-job spec retry cannot run. Root cause tracked in [work item 753](https://gitlab.com/gitlab-org/quality/analytics/team/-/work_items/753). | [`.gitlab/ci/rails/shared.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails/shared.gitlab-ci.yml) (`.rspec-base`) |
+| 201       | low disk space | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.default-retry`), restated in `.rspec-base` |
 
 This list can be expanded as new failure patterns emerge. To avoid conflicts, please use exit codes in the range 201-255.
+
+That range applies to codes we assign.
+Signal-derived codes are the exception: when a child process is killed by a signal,
+the shell reports `128 + signal`, which we do not get to choose.
+`139` above is a signal-derived code, so it falls outside the range by necessity.
+
+`.rspec-base` sets its own `exit_codes` list, and `extends` replaces arrays.
+When you add a code to `.default-retry`, also add it to `.rspec-base`.
 
 ## Best Practices
 

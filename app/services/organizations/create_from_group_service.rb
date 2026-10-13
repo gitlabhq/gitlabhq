@@ -5,10 +5,11 @@ module Organizations
   class CreateFromGroupService
     include Gitlab::Allowable
 
-    def initialize(group:, current_user: nil, skip_authorization: false)
+    def initialize(group:, current_user: nil, skip_authorization: false, params: {})
       @group = group
       @current_user = current_user
       @skip_authorization = skip_authorization
+      @params = params
     end
 
     def execute
@@ -29,7 +30,7 @@ module Organizations
 
     private
 
-    attr_reader :group, :current_user, :skip_authorization
+    attr_reader :group, :current_user, :skip_authorization, :params
 
     def in_default_organization?
       Organization.default?(group.organization_id)
@@ -48,7 +49,7 @@ module Organizations
       Organizations::CreateService.new(
         current_user: current_user,
         params: {
-          name: group.name,
+          name: params[:name].presence || group.name,
           path: path,
           state: :unconfirmed,
           visibility_level: group.visibility_level

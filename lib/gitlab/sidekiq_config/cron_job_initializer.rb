@@ -55,6 +55,23 @@ module Gitlab
             'sync_service_token_worker',
             { 'cron' => "#{rand(60)} * * * * UTC" }
           )
+
+          Gitlab.ee do
+            Gitlab::SidekiqConfig::CronJobs.config.set_job(
+              'ai_duo_workflows_fetch_session_credits_cron_worker',
+              { 'cron' => cron_for_session_credits }
+            )
+          end
+        end
+
+        # Every 15 minutes at an instance-specific offset, so the CustomersDot fan-out
+        # does not land on the quarter hour. Derived from the UUID rather than rand so
+        # every Sidekiq process agrees and a rolling deploy cannot fire twice.
+        def cron_for_session_credits
+          uuid = Gitlab::CurrentSettings.uuid || GITLAB_INSTANCE_UUID_NOT_SET
+          offset = Digest::SHA256.hexdigest("#{uuid}session_credits").to_i(16) % 15
+
+          "#{offset}-59/15 * * * * UTC"
         end
 
         # Computes a per-instance random schedule from the instance UUID so that

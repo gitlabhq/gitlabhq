@@ -15,7 +15,7 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          waiters = importers(project).each_with_object({}) do |klass, hash|
+          waiters = importers.each_with_object({}) do |klass, hash|
             info(
               project.id,
               message: "starting importer",
@@ -31,21 +31,11 @@ module Gitlab
 
         # The importers to run in this stage. Issues can't be imported earlier
         # on as we also use these to enrich pull requests with assigned labels.
-        def importers(project)
+        def importers
           [
             Importer::IssuesImporter,
-            diff_notes_importer(project)
-          ]
-        end
-
-        private
-
-        def diff_notes_importer(project)
-          if import_settings(project).enabled?(:single_endpoint_notes_import)
             Importer::SingleEndpointDiffNotesImporter
-          else
-            Importer::DiffNotesImporter
-          end
+          ]
         end
       end
     end

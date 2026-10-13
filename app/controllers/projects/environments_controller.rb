@@ -113,9 +113,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def stop
-    return render_404 unless @environment.available?
+    return render_404 unless environment_stoppable?
 
-    service_response = Environments::StopService.new(project, current_user).execute(@environment)
+    service_response = Environments::StopService.new(project, current_user, force: force_stop?).execute(@environment)
     return render_403 unless service_response.success?
 
     job = service_response[:actions].first if service_response[:actions]&.count == 1
@@ -262,6 +262,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def authorize_update_environment!
     access_denied! unless can?(current_user, :update_environment, environment)
+  end
+
+  def environment_stoppable?
+    @environment.available? || (force_stop? && @environment.stopping?)
+  end
+
+  def force_stop?
+    Gitlab::Utils.to_boolean(params.permit(:force)[:force], default: false)
   end
 
   def ensure_certificate_based_clusters_enabled!

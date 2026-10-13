@@ -545,6 +545,59 @@ endpoint's class body autoloads the entire API surface. When a previously
 mounted endpoint reads back a constant from the endpoint that is still loading,
 this raises a `NameError`.
 
+## Passing options to Grape methods
+
+The `present`, `declared`, and route methods (`get`, `post`, `put`, `patch`, `delete`) take their options as keyword arguments.
+If you pass the options as a Hash variable, Grape ignores it silently.
+There is no error, but the entity isn't applied, or route settings like `feature_category` and `urgency` are lost.
+Splat the Hash instead:
+
+```ruby
+# bad
+present user, options
+get ':id', route_options do
+
+# good
+present user, **options
+get ':id', **route_options do
+present user, with: Entities::User
+```
+
+### Reusing helpers
+
+Don't call `.helpers` with no arguments on an API class to reuse its helpers.
+In Grape 3.x, this call raises `NoMethodError` and stops the application from booting.
+Put shared helpers in a named module under `lib/api/helpers/` and include it:
+
+```ruby
+# bad
+helpers ::API::Foo.helpers
+
+# good
+helpers ::API::Helpers::FooHelpers
+```
+
+### Route formats
+
+A route-level `format:` only picks the response formatter.
+It does not limit which URL extension matches.
+For example, `/index.xls` is served as JSON.
+On wildcard routes, a dot in the captured value is split off as the extension, so `my.pkg` becomes `my` with format `pkg`.
+
+Add a matching `requirements: { format: ... }` next to `format:`.
+Use the shared constants `::API::JSON_FORMAT_SUFFIX_REQUIREMENT`, `::API::XML_FORMAT_SUFFIX_REQUIREMENT`, and `::API::TXT_FORMAT_SUFFIX_REQUIREMENT` from `lib/api.rb`.
+If you write the regex yourself, keep it unanchored (`/json/`, not `/\Ajson\z/`). Anchors break the match.
+
+```ruby
+# bad
+get 'index', format: :json do
+
+# good
+get 'index', format: :json, requirements: ::API::JSON_FORMAT_SUFFIX_REQUIREMENT do
+```
+
+The `spec/lib/api/every_api_endpoint_spec.rb` spec fails for new routes that miss this.
+
 ## Breaking changes
 
 We must not make breaking changes to our REST API v4, even in major GitLab releases. See [what is a breaking change](#what-is-a-breaking-change) and [what is not a breaking change](#what-is-not-a-breaking-change).
@@ -862,10 +915,21 @@ in two parameters: the `params` hash and the `param` name to validate.
 The body of the method does the hard work of validating the parameter value
 and returns appropriate error messages to the caller method.
 
-Lastly, we register the validator using the line below:
+Grape registers a validator automatically when its class loads.
+It derives a short name from the class name. For example, `FilePath` becomes `file_path`.
+To make sure the class is loaded in every environment, add it to the list in `config/initializers/grape_validators.rb`.
+
+Grape shares validator instances across requests and freezes them, including their options.
+Read options from `@options` and never modify them.
+Don't memoize values into instance variables.
+Doing either raises a `FrozenError` at request time.
 
 ```ruby
-Grape::Validations.register_validator(<validator name as symbol>, ::API::Helpers::CustomValidators::<YourCustomValidatorClassName>)
+# bad
+@options[:allowlist] << '/extra'
+
+# good
+allowlist = @options[:allowlist].dup << '/extra'
 ```
 
 Once you add the validator, make sure you add the `rspec`s for it into

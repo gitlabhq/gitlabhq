@@ -1,5 +1,6 @@
 import { GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -11,7 +12,6 @@ import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/vue_merge_request_widget/components/widget/telemetry', () => ({
@@ -393,6 +393,23 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findToggleButton().exists()).toBe(false);
     });
 
+    it('collapses the expanded section when it stops being collapsible', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findExpandedSection().exists()).toBe(true);
+
+      await wrapper.setProps({ isCollapsible: false });
+
+      expect(findExpandedSection().exists()).toBe(false);
+    });
+
     it('fetches expanded data when clicked for the first time', async () => {
       const mockDataCollapsed = {
         headers: {},
@@ -673,6 +690,62 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       jest.advanceTimersByTime(3000);
 
       expect(fetchCollapsedData).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when rendered as a row (level 2)', () => {
+    const createRow = (propsData = {}) =>
+      createComponent({
+        propsData: {
+          level: 2,
+          summary: { title: 'Code Quality scans detected 13 findings' },
+          statusIconName: 'warning',
+          actionButtons: [{ text: 'View report', href: '/reports/code-quality' }],
+          ...propsData,
+        },
+      });
+
+    it('renders a content row instead of a section, with one status icon', async () => {
+      await createRow();
+
+      expect(wrapper.findComponent(WidgetContentRow).exists()).toBe(true);
+      expect(wrapper.findByTestId('widget-extension').exists()).toBe(false);
+      expect(wrapper.findByTestId('widget-extension-row-summary').text()).toBe(
+        'Code Quality scans detected 13 findings',
+      );
+      expect(wrapper.findAllComponents(StatusIcon)).toHaveLength(1);
+    });
+
+    it('has no toggle and no expanded section even when collapsible', async () => {
+      await createRow({ isCollapsible: true });
+
+      expect(findToggleButton().exists()).toBe(false);
+      expect(findExpandedSection().exists()).toBe(false);
+    });
+
+    it('shows the error text when the fetch failed', async () => {
+      await createRow({ hasError: true, errorText: 'Failed to load the report' });
+
+      expect(wrapper.findByTestId('widget-extension-row-summary').text()).toBe(
+        'Failed to load the report',
+      );
+    });
+
+    it('shows the loading text while the collapsed data is still loading', async () => {
+      createRow({ fetchCollapsedData: () => new Promise(() => {}) });
+      await nextTick();
+
+      expect(wrapper.findByTestId('widget-extension-row-summary').text()).toBe('Loading widget');
+    });
+
+    it('still fetches its collapsed data', async () => {
+      const fetchCollapsedData = jest
+        .fn()
+        .mockResolvedValue({ headers: {}, status: HTTP_STATUS_OK });
+
+      await createRow({ fetchCollapsedData });
+
+      expect(fetchCollapsedData).toHaveBeenCalled();
     });
   });
 });

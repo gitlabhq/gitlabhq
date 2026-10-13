@@ -22,6 +22,10 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
 
       CREATE INDEX #{index_name} ON #{table_name} (#{column_name});
     SQL
+
+    # transaction_timeout statements only exist on PostgreSQL 17+, keep the asserted SQL version independent
+    allow(Gitlab::Database::TransactionTimeout).to receive(:set)
+    allow(Gitlab::Database::TransactionTimeout).to receive(:reset)
   end
 
   context 'when the index serves an exclusion constraint' do
@@ -72,6 +76,15 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
       "REINDEX INDEX CONCURRENTLY \"public\".\"#{index.name}\"",
       "RESET statement_timeout"
     )
+
+    subject
+  end
+
+  it 'raises the transaction timeout to match the statement timeout while reindexing' do
+    allow(connection).to receive(:execute).and_call_original
+    expect(Gitlab::Database::TransactionTimeout).to receive(:set).with(connection, 24.hours).ordered
+    expect_to_execute_in_order("REINDEX INDEX CONCURRENTLY \"public\".\"#{index.name}\"")
+    expect(Gitlab::Database::TransactionTimeout).to receive(:reset).with(connection).ordered
 
     subject
   end

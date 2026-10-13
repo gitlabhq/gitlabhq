@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Order, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Order, feature_category: :value_stream_management do
   let(:part_definition) { Gitlab::Database::Aggregation::PartDefinition.new(:count, :integer) }
   let(:part_configuration) { {} }
   let(:plan_part) do

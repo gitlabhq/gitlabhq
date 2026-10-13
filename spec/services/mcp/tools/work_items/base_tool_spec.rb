@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:group) { create(:group) }
@@ -186,7 +188,7 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
 
       it 'raises ArgumentError' do
         expect { tool.test_resolve_work_item_id }
-          .to raise_error(ArgumentError, 'Work item #99999 not found or inaccessible')
+          .to raise_error(not_found_error, 'Work item #99999 not found or inaccessible')
       end
     end
   end
@@ -307,7 +309,7 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
 
         it 'raises ArgumentError' do
           expect { tool.send(:resolve_work_item_from_params) }
-            .to raise_error(ArgumentError, 'Work item #99999 not found or inaccessible')
+            .to raise_error(not_found_error, 'Work item #99999 not found or inaccessible')
         end
       end
     end

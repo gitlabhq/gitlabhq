@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
 
 RSpec.describe Gitlab::GithubImport::Representation::Representable, feature_category: :importers do
   let(:representation_class) do

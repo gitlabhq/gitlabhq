@@ -190,11 +190,12 @@ Five properties of that compilation, each of which a caller has to work with:
   so `rules` is stored per rule rather than as one program per policy, and `custom` is
   stored as authored rather than reformatted. `RuleProgramMerger` combines them into one
   per-policy module, keeping a single `package governance` line and stripping it from
-  every rule. That module is what the API exposes as `policy_rego`, and what a write
-  supplying `rules` is measured against. A violation the transpiler emits carries its
-  `rule_index` so that attribution survives a merge, since `violation` is a set and two
-  rules emitting identical objects would deduplicate. A `custom` program is stored as
-  authored, so only its author can do the same for it.
+  every rule. Each rule's `import` lines are lifted under that line, since Rego allows
+  imports only ahead of the first rule. That module is what the API exposes as
+  `policy_rego`, and what a write supplying `rules` is measured against. A violation the
+  transpiler emits carries its `rule_index` so that attribution survives a merge, since
+  `violation` is a set and two rules emitting identical objects would deduplicate. A
+  `custom` program is stored as authored, so only its author can do the same for it.
 - **A policy still fires when any one of its rules fires**, but that OR belongs to
   whoever evaluates the programs, whether it runs each separately and concatenates the
   violations or evaluates one merged module. This is the reverse of scope compilation,
@@ -256,17 +257,42 @@ absent, `null`, a number, or an object produces no violation and no error, becau
 orders across types, so the freeze window never fires at all. Neither the transpiler nor
 the emitted program can tell. Whoever calls the engine owns that contract.
 
+## Rego validation
+
+On create and on update, Rego is parsed by the Policy Engine through
+`Gitlab::PolicyStore::RegoValidator` before anything is stored. A program that does not
+parse raises `ValidationError` with the engine's message and location, and the policy is
+not written.
+
+What is parsed:
+
+- **Each `custom` rule on its own**, since it is the only rule type whose program the
+  caller writes. The error names the rule, for example
+  ``rules[0] is invalid: error: expecting `}` while parsing object (at line:column)``, and the
+  location points into the rule's `value`.
+- **The merged module**, once. It is what `RuleProgramMerger` produces and what the API
+  returns as `policy_rego`. It is validated under the field `policy_merged_program`
+  (`RegoValidator::MERGED_PROGRAM_FIELD`). Since every piece the caller wrote already
+  parsed on its own, a failure here raises `EngineError` instead of `ValidationError`.
+- **An authored `scope_rego`**, once.
+
+The engine is only called when a write supplies `rules` or a hand-written `scope_rego`.
+A rename, a `policy_scope` change, or an update to any other attribute never reaches it.
+
+When the engine itself fails, or the merged module does not parse, `RegoValidator` raises
+`EngineError`.
+
 ## Enforcement Modes
 
-Every policy has a `mode` that controls how evaluation outcomes are handled by callers.
-The Policy Store stores and returns this mode but does not interpret it — **mode routing
-is the caller's responsibility**.
+Every policy has a `mode` that controls how callers handle evaluation outcomes.
+The Policy Store stores and returns this mode but does not interpret it — **mode
+routing is the caller's responsibility**. Policies default to `warn`.
 
-| Mode | Description | Caller Action on Deny |
+| Mode | Description | Caller Responsibility |
 |------|-------------|----------------------|
-| `warn` | Surface a warning, do not block | Show warning to user, allow the action to proceed |
+| `warn` | Surface a warning without blocking | Show warning to user, allow the action |
+| `audit` | Log only with no user-facing effect | Record the evaluation, take no action |
 | `enforce` | Apply the configured action | Block the action or require approval |
-| `audit` | Log only, no user-facing action | Record the evaluation, take no blocking action |
 
 ## Repository Contract
 
@@ -277,7 +303,7 @@ interface:
 - `#update(id, attributes)` - Changes an existing policy and bumps its `version` by one, or returns it untouched when no supplied value differs
 - `#find(id)` - Returns a `Policy` by ID, raises `NotFound` if not found
 - `#delete(id)` - Deletes a policy by ID, raises `NotFound` if not found
-- `#list(organization_id:, trigger_type: nil, ids: nil, offset: 0, per_page: DEFAULT_PER_PAGE)` - Returns a `Page` (`items`, `per_page`, `has_next_page?`) of an organization's policies, optionally for one trigger. When `ids` is given, returns only those ids (bypassing `offset`/`per_page`) instead of a page. Speaks offset, not page number: page-oriented callers (like the REST API) translate at their own boundary. `offset` is clamped to `MAX_OFFSET` and `per_page` to `MAX_PER_PAGE`. Carries no total count: adapters fetch one row past `per_page` to answer `has_next_page?` instead of running a separate `COUNT` query.
+- `#list(organization_id:, trigger_type: nil, namespace_ids: nil, lifecycle_state: nil, ids: nil, offset: 0, per_page: DEFAULT_PER_PAGE)` - Returns a `Page` (`items`, `per_page`, `has_next_page?`) of an organization's policies, optionally for one trigger. When `namespace_ids` is given, returns only policies owned by one of those namespaces, where a `nil` element matches policies owned by the organization itself and an empty array matches nothing. When `ids` is given, returns only those ids (bypassing `offset`/`per_page`) instead of a page. Speaks offset, not page number: page-oriented callers (like the REST API) translate at their own boundary. `offset` is clamped to `MAX_OFFSET` and `per_page` to `MAX_PER_PAGE`. Carries no total count: adapters fetch one row past `per_page` to answer `has_next_page?` instead of running a separate `COUNT` query.
 
 Every method that returns a policy returns copies of its structured attributes, so a
 caller cannot reach stored data through one.

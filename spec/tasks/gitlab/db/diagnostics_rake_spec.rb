@@ -36,6 +36,12 @@ RSpec.describe 'gitlab:db:diagnostics', :silence_stdout, feature_category: :data
       run_rake_task('gitlab:db:diagnostics', 'main', 'ci')
     end
 
+    it 'tracks the run', :clean_gitlab_redis_shared_state do
+      expect { run_rake_task('gitlab:db:diagnostics') }
+        .to trigger_internal_events('run_db_diagnostics_rake_task')
+        .and increment_usage_metrics('counts.count_total_run_db_diagnostics_rake_task_monthly')
+    end
+
     it 'succeeds when nothing is found' do
       expect { run_rake_task('gitlab:db:diagnostics') }.not_to raise_error
     end
@@ -72,6 +78,14 @@ RSpec.describe 'gitlab:db:diagnostics', :silence_stdout, feature_category: :data
         .to receive(:run).with(database_names: %w[main], check_names: %w[search_path])
 
       run_rake_task('gitlab:db:diagnostics:search_path', 'main')
+    end
+
+    it 'tracks the run under the same event as the parent task', :clean_gitlab_redis_shared_state do
+      allow(Gitlab::Database::Diagnostics::Console).to receive(:run)
+
+      expect { run_rake_task('gitlab:db:diagnostics:search_path', 'main') }
+        .to trigger_internal_events('run_db_diagnostics_rake_task')
+        .and increment_usage_metrics('counts.count_total_run_db_diagnostics_rake_task_monthly')
     end
   end
 

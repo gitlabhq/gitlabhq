@@ -5,8 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Recovery key management
 ---
 
-The recovery key is an emergency credential for OpenBao. Use it to generate a temporary root
-token when the primary JWT authentication method becomes unavailable.
+The recovery key is an emergency credential for OpenBao. Use it to generate a root token for
+privileged OpenBao operations.
 
 The recovery key is not used in standard operations such as secret fetches or namespace
 provisioning. Treat it as a high-privilege credential and store it securely.
@@ -78,71 +78,43 @@ The task asks for confirmation before generating and displaying the key. The key
 
 ## Generate a root token from the recovery key
 
-Use the recovery key to generate a temporary root token when you need to perform privileged
-OpenBao operations such as reconfiguring JWT authentication or migrating the seal.
+Generate a root token when you need to perform a privileged OpenBao operation that GitLab cannot
+perform for you. A root token has unrestricted access to all OpenBao operations and namespaces.
 
-> [!warning]
-> Revoke the root token immediately after you complete the required operations.
-> A root token has unrestricted access to all OpenBao operations and namespaces.
+Prerequisites:
 
-The `bao` binary is available inside the OpenBao pod. Run all commands with `kubectl exec`.
-No port-forward is required.
+- Permission to run `kubectl exec` in the toolbox pod and the OpenBao pod.
+- A recovery key that you stored with `recovery_key:store`, or saved after you ran
+  `recovery_key:fetch`.
+- Working authentication from GitLab to OpenBao. If authentication fails, see
+  [JWT authentication fails](troubleshooting.md#jwt-authentication-fails).
 
-1. Retrieve your recovery key:
+To generate a root token:
+
+1. Run the Rake task:
 
    ```shell
    kubectl exec -n gitlab -it -c toolbox <toolbox-pod-name> -- \
-     gitlab-rake "gitlab:secrets_management:openbao:recovery_key:show"
+     gitlab-rake "gitlab:secrets_management:openbao:root_token:generate"
    ```
 
-   If you used `recovery_key:fetch` and stored the key externally, retrieve it from that location instead.
+1. When the task asks for confirmation, enter `y`. If you stored the recovery key with
+   `recovery_key:store`, the task uses the stored key. Otherwise, enter the recovery key. The task
+   does not display the key as you enter the key.
+
+   If another root token generation is already in progress, the task asks whether to cancel the
+   existing generation and start a new generation. To continue, enter `y`.
+
+   The task displays the root token. Replace `<root_token>` in the following steps with this value.
 
 1. Get the OpenBao pod name:
 
    ```shell
-   kubectl get pods -n gitlab -l app.kubernetes.io/name=openbao -o name
+   kubectl get pods -n gitlab -l app.kubernetes.io/name=openbao -o name | head -1
    ```
 
-   Replace `<openbao-pod-name>` in the following steps with the output from this command. For example, `pod/gitlab-openbao-0`.
-
-1. Generate an OTP:
-
-   ```shell
-   kubectl exec -n gitlab <openbao-pod-name> -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 bao operator generate-root -generate-otp"
-   ```
-
-   Replace `<otp>` in the following commands with this output.
-
-1. Initialize root generation:
-
-   ```shell
-   kubectl exec -n gitlab <openbao-pod-name> -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 bao operator generate-root -init -otp=<otp>"
-   ```
-
-   A successful response includes `Started: true` and a `Nonce` value.
-   Replace `<nonce>` in the following steps with this `Nonce` value.
-
-1. Submit the recovery key:
-
-   ```shell
-   kubectl exec -n gitlab <openbao-pod-name> -- \
-     sh -c "echo '<recovery_key>' | BAO_ADDR=http://127.0.0.1:8200 bao operator generate-root -nonce=<nonce>"
-   ```
-
-   OpenBao is configured with a single recovery key share, so the operation completes
-   immediately. A successful response includes `Complete: true` and an `Encoded Token` value.
-   Replace `<encoded_token>` in the next step with this token value.
-
-1. Decode the root token:
-
-   ```shell
-   kubectl exec -n gitlab <openbao-pod-name> -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 bao operator generate-root -decode=<encoded_token> -otp=<otp>"
-   ```
-
-   Replace `<root_token>` in the following steps with the decoded root token.
+   Replace `<openbao-pod-name>` in the following steps with the output from this command.
+   For example, `pod/gitlab-openbao-5c6dfc987d-b2wtb`.
 
 1. Verify the root token works:
 
@@ -154,7 +126,21 @@ No port-forward is required.
    A successful response includes `policies  [root]`.
 
 1. Perform the required privileged operations.
-1. Revoke the root token:
+   For example, to change an ACL policy, save the policy to a file, edit the file, and then write
+   the file back to OpenBao:
+
+   ```shell
+   kubectl exec -n gitlab <openbao-pod-name> -- \
+     sh -c "BAO_ADDR=http://127.0.0.1:8200 BAO_TOKEN=<root_token> bao policy read <policy-name>" \
+     > <policy-name>.hcl
+   kubectl exec -i -n gitlab <openbao-pod-name> -- \
+     sh -c "BAO_ADDR=http://127.0.0.1:8200 BAO_TOKEN=<root_token> bao policy write <policy-name> -" \
+     < <policy-name>.hcl
+   ```
+
+   The `-i` flag passes the edited file to `bao policy write` through standard input.
+
+1. Revoke the root token, because root tokens do not expire:
 
    ```shell
    kubectl exec -n gitlab <openbao-pod-name> -- \

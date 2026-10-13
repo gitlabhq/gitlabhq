@@ -208,6 +208,21 @@ RSpec.describe Mcp::Tools::Projects::ListProjectMembersTool, feature_category: :
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('you do not have permission to list the members')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
+      end
+    end
+
+    context 'when the project resolves to no data' do
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return({ 'data' => { 'project' => nil } })
+      end
+
+      it 'returns a project-not-found error', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to eq('Project not found or inaccessible')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 

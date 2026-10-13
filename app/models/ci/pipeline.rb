@@ -42,6 +42,8 @@ module Ci
     COUNT_FAILED_JOBS_LIMIT = 101
     INPUTS_LIMIT = 20
 
+    VariablesFileMissingError = Class.new(StandardError)
+
     paginates_per 15
 
     sha_attribute :source_sha
@@ -161,6 +163,9 @@ module Ci
     has_one :source_bridge, through: :source_pipeline, source: :source_bridge
 
     has_one :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :pipeline
+
+    has_one :pipeline_processing_data, class_name: 'Ci::PipelineProcessingData',
+      foreign_key: [:pipeline_id, :partition_id], inverse_of: :pipeline
 
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult',
       foreign_key: :last_pipeline_id, inverse_of: :last_pipeline
@@ -379,7 +384,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          AutoMergeProcessWorker.perform_async({ 'pipeline_id' => self.id })
+          AutoMergeProcessWorker.perform_async({ 'pipeline_id' => id }) if enqueue_auto_merge_process?
 
           if pipeline.auto_devops_source?
             self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
@@ -395,6 +400,8 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         next unless pipeline.bridge_waiting?
+        # A pipeline persisted as failed during creation is handled by CreateDownstreamPipelineService
+        next if pipeline.previously_new_record? && pipeline.failed?
 
         pipeline.run_after_commit do
           ::Ci::PipelineBridgeStatusWorker.perform_async(pipeline.id)
@@ -561,7 +568,9 @@ module Ci
       with_api_entity_associations
         .preload(merge_request: [:author, { target_project: PROJECT_ROUTE_AND_NAMESPACE_ROUTE[:project] }])
     }
-    scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
+    scope :with_auto_cancel_policy_associations, -> {
+      preload(:project, :pipeline_metadata, :pipeline_processing_data)
+    }
     scope :unlocked, -> { where(locked: :unlocked) }
 
     scope :outside_pipeline_family, ->(pipeline) do
@@ -893,14 +902,14 @@ module Ci
     def ci_pipeline_statuses_rate_limited?
       Gitlab::ApplicationRateLimiter.throttled?(
         :ci_pipeline_statuses_subscription,
-        scope: project
+        scope: { project: project }
       )
     end
 
     def trigger_status_change_subscriptions
       GraphqlTriggers.ci_pipeline_status_updated(self)
 
-      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule) if self.pipeline_schedule_id.present?
+      GraphqlTriggers.ci_pipeline_schedule_status_updated(pipeline_schedule) if pipeline_schedule_id.present?
 
       return if ci_pipeline_statuses_rate_limited?
 
@@ -950,7 +959,7 @@ module Ci
     end
 
     def valid_commit_sha
-      self.errors.add(:sha, "can't be 00000000 (branch removal)") if Gitlab::Git.blank_ref?(self.sha)
+      errors.add(:sha, "can't be 00000000 (branch removal)") if Gitlab::Git.blank_ref?(sha)
     end
 
     def git_author_name
@@ -1055,7 +1064,7 @@ module Ci
     end
 
     def cancelable?
-      CANCELABLE_STATUSES.include?(self.status) && internal_pipeline?
+      CANCELABLE_STATUSES.include?(status) && internal_pipeline?
     end
 
     def auto_canceled?
@@ -1138,7 +1147,7 @@ module Ci
     #
     # Return a hash of file type => array of 1 job artifact
     def latest_report_artifacts
-      ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
+      ::Gitlab::SafeRequestStore.fetch("pipeline:#{id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
           id: job_artifacts.all_reports
             .select("max(#{Ci::JobArtifact.quoted_table_name}.id) as id")
@@ -1192,8 +1201,12 @@ module Ci
       add_message(:error, content)
     end
 
+    # Warnings are kept in memory only. Nothing reads them after the request that creates
+    # the pipeline, so saving them only grows ci_pipeline_messages.
     def add_warning_message(content)
-      add_message(:warning, content)
+      in_memory_warning_messages << ::Ci::PipelineMessage.new(
+        severity: :warning, content: content, project_id: project_id
+      )
     end
 
     # Like #drop!, but does not persist the pipeline nor trigger any state
@@ -1210,10 +1223,10 @@ module Ci
       messages.select(&:error?)
     end
 
+    # Both branches must return a copy. Handing out the internal array would let callers
+    # record warnings through the reader.
     def warning_messages(limit: nil)
-      messages.select(&:warning?).tap do |warnings|
-        break warnings.take(limit) if limit
-      end
+      limit ? in_memory_warning_messages.take(limit) : in_memory_warning_messages.dup
     end
 
     # Manually set the notes for a Ci::Pipeline
@@ -1273,6 +1286,14 @@ module Ci
       # TODO: Replace super with [] when Ci::PipelineVariable is dropped
       # https://gitlab.com/gitlab-org/gitlab/-/issues/587237
       read_variables_from_pipeline_artifact || super
+    rescue VariablesFileMissingError => e
+      Gitlab::ErrorTracking.track_exception(e, pipeline_id: id, pipeline_artifact_id: pipeline_artifacts_pipeline_variables.id)
+
+      # Pipelines created before we stopped writing variables to the database still have them there
+      database_variables = super
+      return database_variables if database_variables.any?
+
+      raise
     end
     strong_memoize_attr :variables
 
@@ -1481,7 +1502,7 @@ module Ci
 
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
-        .new(self.present, current_user)
+        .new(present, current_user)
         .fabricate!
     end
 
@@ -1547,15 +1568,17 @@ module Ci
       complete? && has_reports?(reports_scope)
     end
 
-    def complete_and_has_self_or_descendant_reports?(reports_scope)
-      return false unless complete?
-
+    def has_self_or_descendant_reports?(reports_scope)
       hierarchy_builds = builds_in_self_and_project_descendants
 
       reports_scope
         .where(job_id: hierarchy_builds.select(:id))
         .in_partition(hierarchy_builds.where_values_hash['partition_id'] || self)
         .exists?
+    end
+
+    def complete_and_has_self_or_descendant_reports?(reports_scope)
+      complete? && has_self_or_descendant_reports?(reports_scope)
     end
 
     def complete_or_manual_and_has_reports?(reports_scope)
@@ -1810,7 +1833,7 @@ module Ci
     end
 
     def matches_sha_or_source_sha?(sha)
-      self.sha == sha || self.source_sha == sha
+      self.sha == sha || source_sha == sha
     end
 
     def triggered_by?(current_user)
@@ -1904,7 +1927,7 @@ module Ci
     end
 
     def build_matchers
-      self.builds.latest.build_matchers(project)
+      builds.latest.build_matchers(project)
     end
 
     def cluster_agent_authorizations
@@ -1943,6 +1966,10 @@ module Ci
       pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
     end
 
+    def interruptible_protected?
+      !!pipeline_processing_data&.interruptible_protected
+    end
+
     def cancel_async_on_job_failure
       case auto_cancel_on_job_failure
       when 'none'
@@ -1978,8 +2005,29 @@ module Ci
     end
     # rubocop: enable CodeReuse/ServiceClass
 
+    def enqueue_auto_merge_process?
+      return true if Feature.disabled?(:auto_merge_process_pipeline_guard, Project.actor_from_id(project_id))
+
+      # Wider than all_merge_requests (no sha filter) so it stays an index lookup; the worker narrows it.
+      merge_requests =
+        if merge_request_id.present?
+          MergeRequest.where(id: merge_request_id)
+        else
+          MergeRequest.where(source_project_id: project_id, source_branch: ref)
+        end
+
+      # Primary, so an auto-merge enabled just before the pipeline finished is not missed on a lagging replica.
+      ::Gitlab::Database::LoadBalancing::SessionMap.current(MergeRequest.load_balancer).use_primary do
+        merge_requests.with_auto_merge_enabled.exists?
+      end
+    end
+
     def add_message(severity, content)
       messages.build(severity: severity, content: content, project_id: project_id)
+    end
+
+    def in_memory_warning_messages
+      @in_memory_warning_messages ||= []
     end
 
     def push_details
@@ -2007,7 +2055,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha, self.before_sha, source: self.class.name)
+      project.repository.keep_around(sha, before_sha, source: self.class.name)
     end
 
     def observe_age_in_minutes
@@ -2156,6 +2204,10 @@ module Ci
     def read_variables_from_pipeline_artifact
       artifact = pipeline_artifacts_pipeline_variables
       return unless artifact
+
+      if artifact.file.stored_file_missing?
+        raise VariablesFileMissingError, 'Pipeline variables artifact file is missing'
+      end
 
       variables_attributes = Gitlab::Json.safe_parse(artifact.file.read)
       variables_attributes.map { |var_attrs| Ci::PipelineVariableItem.new(pipeline: self, **var_attrs) }

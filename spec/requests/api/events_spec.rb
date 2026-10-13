@@ -35,6 +35,12 @@ RSpec.describe API::Events, feature_category: :user_profile do
         expect(json_response.size).to eq(1)
       end
 
+      it 'accepts an unknown action' do
+        get api('/events?action=unknown', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       context 'when scope is passed' do
         it 'returns all events across projects' do
           private_project.add_developer(non_member)

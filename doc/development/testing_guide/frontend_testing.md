@@ -6,7 +6,7 @@ title: Frontend testing standards and style guidelines
 ---
 
 There are two types of test suites encountered while developing frontend code
-at GitLab. We use Jest for JavaScript unit and [integration testing](#msw-integration-tests),
+at GitLab. We use Jest for JavaScript unit and [integration testing](#frontend-integration-tests),
 and Capybara feature tests for e2e (end-to-end) integration testing.
 
 Unit and feature tests need to be written for all new features.
@@ -202,6 +202,86 @@ The line between unit and integration tests can be quite blurry in a component h
 
 For example, it's better to use the generated markup to trigger a button click and validate the markup changed accordingly than to call a method manually and verify data structures or computed properties. There's always the chance of accidentally breaking the user flow, while the tests pass and provide a false sense of security.
 
+## Test structure
+
+Follow BDD (Behavior-Driven Development) conventions:
+
+- Use `describe` blocks to define the context or state the system is in.
+- Use `it` blocks to declare the specific behavior being verified.
+- Use `beforeEach` to set up the state shared by a `describe` block.
+
+Group related tests together under a shared `describe` block.
+
+### Set up the context in `beforeEach`
+
+The `beforeEach` of a `describe` block must perform the setup that the block's name promises,
+including mounting the component, so that every `it` inside it starts from that state.
+If the block is named `when the user is signed in`, the sign-in mock belongs in that `beforeEach`,
+not in each `it`.
+
+**Bad**:
+
+```javascript
+describe('when the user is signed in', () => {
+  it('shows the edit button', () => {
+    window.gon.current_user_id = 1;
+    createComponent();
+
+    expect(findEditButton().exists()).toBe(true);
+  });
+});
+```
+
+**Good**:
+
+```javascript
+describe('when the user is signed in', () => {
+  beforeEach(() => {
+    window.gon.current_user_id = 1;
+    createComponent();
+  });
+
+  it('shows the edit button', () => {
+    expect(findEditButton().exists()).toBe(true);
+  });
+});
+```
+
+### Extract conditions into `describe` blocks
+
+When "when X" appears inside an `it` block description, extract the condition into
+its own `describe` block with a `beforeEach` that performs the setup.
+Context-driven specs group related tests together, and help both humans and AI agents
+see which scenarios are already covered and update specs in the right place.
+
+**Bad**:
+
+```javascript
+it('displays an alert when the request fails', () => {
+  createComponent({ props: { hasError: true } });
+
+  expect(findAlert().exists()).toBe(true);
+});
+```
+
+**Good**:
+
+```javascript
+describe('when the request fails', () => {
+  beforeEach(() => {
+    createComponent({ props: { hasError: true } });
+  });
+
+  it('displays an alert', () => {
+    expect(findAlert().exists()).toBe(true);
+  });
+});
+```
+
+For the same reason, avoid `it` blocks that re-create the component when an outer
+`beforeEach` already did.
+Move them into their own `describe` block with dedicated setup instead.
+
 ## Common practices
 
 These are some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
@@ -311,41 +391,6 @@ describe('methodName', () => {
   });
 });
 ```
-
-### Extract conditions into `describe` blocks
-
-When "when X" appears inside an `it` block description, extract the condition into
-its own `describe` block with a `beforeEach` that performs the setup.
-Context-driven specs group related tests together, and help both humans and AI agents
-see which scenarios are already covered and update specs in the right place.
-
-**Bad**:
-
-```javascript
-it('displays an alert when the request fails', () => {
-  createComponent({ props: { hasError: true } });
-
-  expect(findAlert().exists()).toBe(true);
-});
-```
-
-**Good**:
-
-```javascript
-describe('when the request fails', () => {
-  beforeEach(() => {
-    createComponent({ props: { hasError: true } });
-  });
-
-  it('displays an alert', () => {
-    expect(findAlert().exists()).toBe(true);
-  });
-});
-```
-
-For the same reason, avoid `it` blocks that re-create the component when an outer
-`beforeEach` already did.
-Move them into their own `describe` block with dedicated setup instead.
 
 ### Testing promises
 
@@ -950,7 +995,7 @@ unit testing by mocking out modules that cannot be easily consumed in our test e
 #### Where should you put manual mocks?
 
 Jest supports [manual module mocks](https://jestjs.io/docs/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module
-(for example, `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
+(for example, `app/assets/javascripts/ide/__mocks__`). Don't do this. We want to keep all of our test-related code in one place (the `spec/` folder).
 
 If a manual mock is needed for a `node_modules` package, use the `spec/frontend/__mocks__` folder. Here's an example of
 a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
@@ -1065,14 +1110,14 @@ You can find generated fixtures in `tmp/tests/frontend/fixtures-ee`.
 To generate a single fixture for a _spec.js file identify the import from `test_fixtures/` directory:
 
 ```javascript
-// spec/frontend/authentication/webauthn/authenticate_spec.js
+// spec/frontend/new_branch_spec.js
 
-import htmlWebauthnAuthenticate from 'test_fixtures/webauthn/authenticate.html';
+import htmlBranchesNewBranch from 'test_fixtures/branches/new_branch.html';
 ```
 
-The corresponding fixture file is `spec/frontend/fixtures/webauthn.rb`
+The corresponding fixture file is `spec/frontend/fixtures/branches.rb`
 
-To generate the single fixture from the command line run `bin/rspec spec/frontend/fixtures/webauthn.rb`
+To generate the single fixture from the command line run `bin/rspec spec/frontend/fixtures/branches.rb`
 
 ### Download fixtures
 
@@ -1296,19 +1341,19 @@ Main information on frontend testing levels can be found in the [Testing Levels 
 
 Tests relevant for frontend development can be found at the following places:
 
-- `spec/frontend/`, for Jest unit, component, and integration tests
-- `ee/spec/frontend/msw_integration/`, for MSW integration tests (EE-only)
+- `spec/frontend/`, for Jest unit and component tests
+- `ee/spec/frontend/integration/`, for frontend integration tests (EE-only)
 - `spec/features/`, for Capybara feature tests
 
-`spec/frontend/` contains [frontend unit tests](testing_levels.md#frontend-unit-tests), [frontend component tests](testing_levels.md#frontend-component-tests), and [frontend integration tests](testing_levels.md#frontend-integration-tests). Capybara runs [frontend feature tests](testing_levels.md#frontend-feature-tests) in `spec/features/`.
+`spec/frontend/` contains [frontend unit tests](testing_levels.md#frontend-unit-tests) and [frontend component tests](testing_levels.md#frontend-component-tests). `ee/spec/frontend/integration/` contains [frontend integration tests](testing_levels.md#frontend-integration-tests). Capybara runs [frontend feature tests](testing_levels.md#frontend-feature-tests) in `spec/features/`.
 
 Before May 2018, `features/` also contained feature tests run by Spinach. These tests were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/23036)).
 
 See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-components).
 
-## MSW integration tests
+## Frontend integration tests
 
-MSW integration tests bridge the gap between unit tests and Capybara
+Frontend integration tests bridge the gap between unit tests and Capybara
 feature tests. They mount full Vue applications in jsdom (no browser
 needed) and use [MSW (Mock Service Worker)](https://github.com/mswjs/msw)
 to intercept API requests and respond with fixture data. This provides
@@ -1316,16 +1361,15 @@ realistic UI interaction testing at a fraction of the cost of Capybara.
 
 ### Directory structure
 
-MSW integration tests are EE-only. All specs and the shared harness live under
-`ee/spec/frontend/msw_integration/`.
+Frontend integration tests are EE-only. All specs and the shared harness live under
+`ee/spec/frontend/integration/`.
 
 ```plaintext
-ee/spec/frontend/msw_integration/
+ee/spec/frontend/integration/
 ├── handlers.js           # Aggregates the per-feature GraphQL handlers
-├── polyfills.js          # Environment polyfills (loaded by jest.config.msw_integration.js)
 ├── server.js             # MSW server setup
 ├── test_setup.js         # Global Jest setup and teardown; wires helpers into scope
-├── core/                 # Shared harness: fixture loading, variants, request assertions
+├── core/                 # Re-exports of the shared harness from @gitlab/frontend-tests
 │   ├── constants.js
 │   ├── fixture_utils.js
 │   ├── fixture_variant_schema.js
@@ -1341,84 +1385,132 @@ ee/spec/frontend/msw_integration/
 ```
 
 The shared files are configured automatically through
-`jest.config.msw_integration.js`.
+`jest.config.integration.js`.
+
+The shared harness (fixture loading, variants, request assertions) and the
+polyfills MSW needs come from the `@gitlab/frontend-tests` package.
+`jest.config.integration.js` wraps the config with
+`createFrontendIntegrationConfig`, which adds the polyfills as Jest `setupFiles`
+so they load before `msw/node` evaluates. The `core/` files re-export the
+package so existing import paths keep working.
 
 All helper utilities exported from `helpers/test_helpers.js` are auto-imported globally
 through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new
 helper, export it from `helpers/test_helpers.js` and it becomes available globally in
-all MSW integration tests.
+all frontend integration tests.
 
-### Why MSW integration tests are EE-only
+### Why frontend integration tests are EE-only
 
-MSW mocks the network layer, including authentication headers and session
-state, which means it also implicitly mocks licensing. As a result, these tests
-cannot assert differences between CE (FOSS) and EE behavior. When you must
-verify FOSS-versus-licensed behavior, use Capybara feature specs instead.
+MSW intercepts the network layer, including authentication headers and session state, so the backend's license check never runs. These tests therefore cannot prove that the backend gates a feature on a license.
+As such, having these specs in FOSS would only catch instances where the FOSS component
+errors out because of using EE-only data in the CE version of the component. There are
+other ways to catch such errors and so we, for now, keep the integration spec simpler
+by living in the superset domain of EE.
+
+Even while being in the EE directory, you can assert the unlicensed frontend behavior
+in an integration test. See [Test unlicensed feature states](#test-unlicensed-feature-states).
 
 ### CE path lint guard
 
-Adding any file under `spec/frontend/msw_integration/` fails ESLint with the
-message: "MSW integration tests are EE-only; use Capybara for FOSS/licensed
+Adding any file under `spec/frontend/integration/` fails ESLint with the
+message: "Frontend integration tests are EE-only; use Capybara for FOSS/licensed
 behavior." This is intentional. Place the file under
-`ee/spec/frontend/msw_integration/` instead.
+`ee/spec/frontend/integration/` instead.
 
 ### Community contributors
 
-MSW integration specs require EE fixture-generation infrastructure. If you
+Frontend integration specs require EE fixture-generation infrastructure. If you
 cannot run EE locally, open an issue or ask a GitLab team member to add the
 spec.
 
 ### Handler architecture
 
-Because MSW v1 matches the first `rest.post` handler that applies,
-a single GraphQL endpoint cannot be split across multiple MSW handlers.
-Instead, `handlers.js` acts as a thin GraphQL router. It registers one
-`rest.post` handler for `http://test.host/api/graphql` and delegates to
-feature-specific resolver functions in order:
+`handlers.js` acts as a thin router for GraphQL and REST
+requests. For GraphQL, `buildHandlers` registers a single
+`graphql.operation` handler that delegates
+to the feature resolvers in `featureHandlers`, in order. The
+first resolver that returns a result wins, so routing through
+one operation handler keeps request capture and
+missing-operation reporting in one place:
 
 ```javascript
-import { rest } from 'msw';
-import { handleWorkItemOperation } from './work_items/handlers';
+import { graphql, http, HttpResponse } from 'msw';
+import { handleWorkItemOperation, workItemRestEndpoints } from './work_items/handlers';
+import { captureMissingOperation, captureRequest } from './core/operation_helpers';
+import { getActiveVariant } from './core/fixture_variant_schema';
 
-// Thin router: Import feature handlers here
-const graphqlFeatureHandlers = [handleWorkItemOperation];
+export const featureHandlers = [handleWorkItemOperation];
+export const restEndpoints = [...workItemRestEndpoints];
 
-// Collect all REST endpoints from feature handlers
-const restEndpoints = [...workItemRestEndpoints];
+export function buildHandlers(allFeatureHandlers, allRestEndpoints) {
+  const restEndpointsHandlers = allRestEndpoints.map((endpoint) =>
+    http[endpoint.method](endpoint.path, ({ request }) => {
+      const operationName = endpoint.name || `REST:${endpoint.method}:${endpoint.path}`;
+      captureRequest(operationName, request);
 
-const restEndpointsHandlers = restEndpoints.map((endpoint) =>
-  rest[endpoint.method](endpoint.path, (req, res, ctx) => {
-    return res(ctx.json(endpoint.response));
-  }),
-);
+      const response = endpoint.variants
+        ? (getActiveVariant(endpoint.variants.query) ?? endpoint.variants.BASE)
+        : endpoint.response;
 
-export const handlers = [
-  // Single GraphQL endpoint that routes to feature handlers
-  rest.post('http://test.host/api/graphql', (req, res, ctx) => {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { operationName, variables } = body;
+      return HttpResponse.json(response, { headers: endpoint.headers });
+    }),
+  );
 
-    // Try each feature handler until one returns a result
-    for (const handler of graphqlFeatureHandlers) {
-      const result = handler({ operationName, variables, res, ctx });
-      if (result) return result;
-    }
+  return [
+    graphql.operation(({ operationName, variables, request }) => {
+      for (const handler of allFeatureHandlers) {
+        const result = handler({ operationName, variables });
+        if (result) {
+          captureRequest(operationName, request, variables);
+          return result;
+        }
+      }
 
-    console.log(`No handler for operationName: ${operationName}`);
-    return res(ctx.status(400));
-  }),
-  ...restEndpointsHandlers,
-];
+      captureMissingOperation(operationName);
+      return new HttpResponse(null, { status: 400 });
+    }),
+
+    ...restEndpointsHandlers,
+
+    http.get('*', ({ request }) => {
+      // eslint-disable-next-line no-console
+      console.log(`Unhandled url for REST endpoint: ${request.url}`);
+      return new HttpResponse(null, { status: 400 });
+    }),
+  ];
+}
 ```
 
-Each resolver receives `{ operationName, variables, res, ctx }` and
-returns an MSW response if it handles the operation, or `null` to pass
-to the next resolver. Unhandled operations fall through to a catch-all
-that returns a 400 status. This intentional failure surfaces missing
-handlers early. Every GraphQL operation that fires during a test must
-have a corresponding handler. If a test fails with
-`ServerParseError: Unexpected end of JSON input`, add the missing
-operation to the relevant feature handler file.
+Each feature resolver receives `{ operationName, variables }`
+and returns an `HttpResponse` if it handles the operation, or
+`null` to pass to the next resolver. Unhandled operations are
+recorded by `captureMissingOperation` and answered with a 400
+status. Every GraphQL operation that fires during a test must
+have a corresponding handler. At the end of the suite, a
+`console.warn` lists every operation that is missing a handler.
+Use that list to add the missing operation to the relevant
+feature handler file.
+
+REST endpoints are declared as plain descriptor objects
+(`{ method, path, response }`) and turned into `http[method]`
+handlers. `path` can be a string or a regular expression. Set
+`name` to control the key requests are captured under (it
+defaults to `REST:<method>:<path>`), and `headers` to add extra
+response headers. An endpoint can set `variants` instead of
+`response` to serve a different body per test. See
+[Fixture variants](#fixture-variants). A trailing `http.get('*')`
+handler catches any unmocked GET request, logs the unhandled
+URL, and returns a 400, so an unmocked request is visible in
+the test output.
+
+`server.js` builds the MSW node server from these handlers:
+
+```javascript
+import { setupServer } from 'msw/node';
+import { buildHandlers, featureHandlers, restEndpoints } from './handlers';
+
+export const server = setupServer(...buildHandlers(featureHandlers, restEndpoints));
+```
 
 ### Add a new feature domain
 
@@ -1516,7 +1608,7 @@ const OPERATION_NAME_OVERRIDES = {
 
 ```javascript
 import { join } from 'node:path';
-import { loadFixturesMap } from 'ee_jest/msw_integration/core/fixture_utils';
+import { loadFixturesMap } from 'ee_jest/integration/core/fixture_utils';
 
 const FIXTURES_PATH = join('tmp/tests/frontend/fixtures-ee/graphql/my_feature/integration/');
 const fixtures = loadFixturesMap(FIXTURES_PATH);
@@ -1553,6 +1645,8 @@ Combine both into a single `OPERATION_HANDLERS` map and look up the
 operation in the resolver:
 
 ```javascript
+import { HttpResponse } from 'msw';
+
 const STATIC_OPERATION_HANDLERS = Object.fromEntries(
   Object.entries(FIXTURE_RESPONSES).map(([op, fixture]) => [
     op,
@@ -1565,19 +1659,19 @@ const OPERATION_HANDLERS = {
   ...MUTATION_OPERATION_HANDLERS,
 };
 
-export function handleMyFeatureOperation({ operationName, variables, res, ctx }) {
+export function handleMyFeatureOperation({ operationName, variables }) {
   const handler = OPERATION_HANDLERS[operationName];
   if (!handler) return null;
-  return res(ctx.json(handler({ operationName, variables })));
+  return HttpResponse.json(handler({ operationName, variables }));
 }
 ```
 
 ### Fixture variants
 
-Recorded fixtures provide the base response for a GraphQL query.
+Recorded fixtures provide the base response for a GraphQL query or a REST endpoint.
 To test a different response shape such as an error, an empty list, or a flipped flag, you declare named variants instead of editing handlers.
 
-Place a variant file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js`.
+Place a variant file at `ee/spec/frontend/integration/<feature>/fixture_variants/<query>.js`.
 It calls `defineFixtureVariants({ query, variants })` as its default export.
 `query` is the camelCase GraphQL operation name.
 `variants` maps UPPER_SNAKE_CASE keys to fixtures.
@@ -1587,12 +1681,15 @@ Build variants with three transform helpers from `fixture_utils.js`.
 Each helper deep-clones its input and returns a new fixture, so you never clone or mutate the import.
 `setFixtureData(fixture, lookupKey, value)` sets the first matching key found in a depth-first walk of `data`.
 `setFixtureErrors(fixture, ['message'])` sets `errors` and clears `data`.
-`setFixtureItemsCount({ fixture, lookupKey, itemCount })` resizes a connection's `nodes` array under `lookupKey`, which is the connection key rather than `nodes`.
+`setFixtureItemsCount({ fixture, lookupKey, itemCount })` resizes a connection's `nodes` or `edges` array under `lookupKey`, which is the connection key rather than `nodes` or `edges`.
+When the connection has a `pageInfo`, the helper also sets `hasNextPage` and `hasPreviousPage` to `false`, so the resized list does not offer another page.
+When `itemCount` is `0`, it also sets `startCursor` and `endCursor` to `null`.
+It only changes keys the fixture already has.
 
 ```javascript
 import base from 'test_fixtures/graphql/work_items/integration/get_work_items_full.query.graphql.json';
-import { defineFixtureVariants } from 'ee_jest/msw_integration/core/fixture_variant_schema';
-import { setFixtureItemsCount } from 'ee_jest/msw_integration/core/fixture_utils';
+import { defineFixtureVariants } from 'ee_jest/integration/core/fixture_variant_schema';
+import { setFixtureItemsCount } from 'ee_jest/integration/core/fixture_utils';
 
 export default defineFixtureVariants({
   query: 'getWorkItemsFullEE',
@@ -1603,14 +1700,14 @@ export default defineFixtureVariants({
 });
 ```
 
-In a test, activate a variant with `setQueryVariant` imported from `ee_jest/msw_integration/helpers/setup_utils`.
+In a test, activate a variant with `setQueryVariant` imported from `ee_jest/integration/helpers/setup_utils`.
 Pass the query constant, which is the variant file's default export, and call the method named after the variant key.
 `EMPTY` becomes `empty()`, `WITH_ERROR` becomes `withError()`, so an unknown key cannot be spelled and editor autocomplete lists the variants for that query.
 The active variant resets to `BASE` automatically in `afterEach`.
 
 ```javascript
-import { setQueryVariant } from 'ee_jest/msw_integration/helpers/setup_utils';
-import getWorkItemsFull from 'ee_jest/msw_integration/work_items/fixture_variants/get_work_items_full';
+import { setQueryVariant } from 'ee_jest/integration/helpers/setup_utils';
+import getWorkItemsFull from 'ee_jest/integration/work_items/fixture_variants/get_work_items_full';
 
 it('renders the empty state', async () => {
   setQueryVariant(getWorkItemsFull).empty();
@@ -1622,9 +1719,111 @@ When the variant key is a runtime value, such as a shared helper that receives t
 
 The feature handler serves the active variant by calling `getActiveVariant('operationName')` and falls back to its default fixture when none is active.
 
+#### REST endpoint variants
+
+A REST endpoint can have variants too.
+Use `defineRestFixtureVariants({ query, variants })` from `ee_jest/integration/core/fixture_variant_schema`.
+The same rules as `defineFixtureVariants` apply: `BASE` is required, keys are UPPER_SNAKE_CASE, each `query` is registered once, you activate a variant with `setQueryVariant`, and the active variant resets to `BASE` after each test.
+
+The differences are in the fixture shape and the wiring.
+Each variant is the raw JSON body, an array or an object, served as is.
+There is no `data` or `errors` shape, and no `errors: []` is added.
+`query` is only a registry key. By convention, use the fixture's camelCase name, such as `restWorkItemsList`.
+Set the variant file's default export as the endpoint descriptor's `variants` property instead of `response`.
+`buildHandlers` serves the active variant, or `BASE` when none is active.
+Importing the variant file in the handler, to set `variants`, also registers it, so no separate side-effect import is needed.
+
+```javascript
+import restWorkItemsList from 'test_fixtures/graphql/work_items/integration/rest_work_items_list.json';
+import restWorkItemsListStatusUnlicensed from 'test_fixtures/graphql/work_items/integration/rest_work_items_list_status_unlicensed.json';
+import { defineRestFixtureVariants } from 'ee_jest/integration/core/fixture_variant_schema';
+
+export default defineRestFixtureVariants({
+  query: 'restWorkItemsList',
+  variants: {
+    BASE: restWorkItemsList,
+    STATUS_UNLICENSED: restWorkItemsListStatusUnlicensed,
+  },
+});
+```
+
+```javascript
+import restWorkItemsListVariants from './fixture_variants/rest_work_items_list';
+
+export const GET_WORK_ITEMS_REST_ENDPOINT = {
+  name: 'getWorkItemsRest',
+  method: 'get',
+  path: /\/api\/v4\/namespaces\/.*\/-\/work_items/,
+  variants: restWorkItemsListVariants,
+  headers: { 'x-next-cursor': '', 'x-prev-cursor': '' },
+};
+```
+
+Activate the variant in the spec the same way as a GraphQL variant:
+
+```javascript
+setQueryVariant(restWorkItemsListVariants).statusUnlicensed();
+```
+
+Keep REST variants separate from GraphQL variants.
+Do not derive a REST response from which GraphQL variant is active. Activate each one in the spec.
+
+#### Paginated responses
+
+To test pagination without recording each page, declare the total with `setFixtureItemsCount` in a variant, for example `MANY_PAGES` with `itemCount: 51`.
+Then let the handler serve one page per request.
+
+`createFixturePaginator({ lookupKey, variableNames, pageSize, countKey })` from `fixture_utils.js` returns a function `(fixture, variables) => fixture` that serves one page of the connection.
+It treats every node or edge in the fixture as the full result set, and works with both `nodes` and `edges` connections.
+Create it once per connection, at module level in the handler.
+It holds no state, so operations that share variable names can share one paginator.
+Call it on every request with the served fixture and the request variables.
+
+`variableNames` maps `after`, `before`, `first`, and `last` to the operation's variable names.
+It defaults to those same names.
+`pageSize` (default `20`) is used when the request sends no `first` or `last`.
+`countKey` (default `count`) is kept at the total.
+
+The paginator synthesizes its own cursors and sets `pageInfo` (`hasNextPage`, `hasPreviousPage`, `startCursor`, `endCursor`) for the served page.
+A cursor it did not issue, such as one recorded by Rails, is reported as a missing operation and throws.
+Every page of a paginated connection must go through the paginator.
+
+Prefer recorded page fixtures when the test depends on what Rails returns for a specific page.
+The `cd` and `commits` specs do this.
+Use the paginator when only the shape of pagination matters.
+
+If the UI reads the total from a separate count query, add a matching variant for that query too.
+
+```javascript
+import { createFixturePaginator } from 'ee_jest/integration/core/fixture_utils';
+
+const paginateWorkItems = createFixturePaginator({
+  lookupKey: 'workItems',
+  variableNames: {
+    after: 'afterCursor',
+    before: 'beforeCursor',
+    first: 'firstPageSize',
+    last: 'lastPageSize',
+  },
+});
+
+const OPERATION_HANDLERS = {
+  getWorkItemsFullEE: ({ variables }) =>
+    paginateWorkItems(getActiveVariant('getWorkItemsFullEE') ?? fixtures.getWorkItemsFull, variables),
+};
+```
+
+Declare the total in a variant the same way as any other item count:
+
+```javascript
+MANY_PAGES: setFixtureItemsCount({ fixture: base, lookupKey: 'workItems', itemCount: 51 }),
+```
+
+See `ee/spec/frontend/integration/work_items/list/pagination_spec.js` for an example spec.
+
 #### How the variant registry works
 
-`defineFixtureVariants` self-registers at **module load time** by adding the query to a module-level registry inside `fixture_variant_schema.js`. There are three consequences you must understand before using it:
+`defineFixtureVariants` self-registers at module load time by adding the query to a module-level registry inside `fixture_variant_schema.js`. There are three consequences you must understand before using it:
 
 **The variant file must be imported in the feature handler.**
 `setQueryVariant` throws `"expected a query constant"` if you pass something other than a variant file's default export.
@@ -1648,11 +1847,141 @@ Prefer `??` over `||` here. `getActiveVariant` only ever returns a validated fix
 **Each query can only be registered once.**
 `defineFixtureVariants` throws `"variants for query X are already registered"` if it runs twice for the same query name. Importing one variant file from several places is safe — the module body executes only once, so the registration runs once. The error means two different variant files declare the same `query` name, usually a copy-paste. Keep one variant file per query and import it in the feature handler.
 
-Generate a manifest of every registered query and its variant keys with `yarn msw:variants`.
-It writes a keys-only JSON file to `tmp/tests/frontend/msw_variants.manifest.json`.
+Generate a manifest of every registered query and its variant keys with `yarn integration:variants`.
+It writes a keys-only JSON file to `tmp/tests/frontend/integration_variants.manifest.json`.
 The manifest is not committed.
 It is regenerated on demand and has no maintenance cost.
 Read it to discover which variants exist for which queries.
+
+#### Test unlicensed feature states
+
+The frontend has no notion of a license.
+It renders based on what the payload contains.
+
+A license-gated feature is normally hidden by conditional rendering, either an EE component
+injection or an explicit conditional on data coming from the API.
+
+So a response where a part is missing because the namespace is not licensed for it is just another
+response shape.
+A fixture variant is what lets you produce that shape in a test.
+
+The examples in this section use the work item status widget.
+A work item page renders sidebar sections, such as assignees, labels, and status, and each section
+is called a widget.
+A widget renders when the GraphQL payload for the work item includes its data.
+The status widget is only an example.
+The same steps apply to any license-gated feature, with your own query and element substituted in.
+
+To test a feature's unlicensed state in a frontend integration test, follow these steps:
+
+1. **Record the unlicensed payload.**
+
+   A feature's Rails fixture generator stubs the whole licensed feature set once, in a global
+   `before` block, with `stub_licensed_features(licensed_features)`.
+   For example, `ee/spec/frontend/fixtures/work_items_integration.rb` does this for work item
+   fixtures.
+   To record one feature as unlicensed, call `stub_licensed_features` again inside the individual
+   `it` block, merging that one feature off onto the same set.
+
+   ```ruby
+   it "#{base_output_path}namespace_work_item_status_unlicensed.query.graphql.json" do
+     stub_licensed_features(licensed_features.merge(work_item_status: false))
+
+     query = get_graphql_query_as_string(
+       'work_items/graphql/work_item_by_iid.query.graphql'
+     )
+     post_graphql(query, current_user: user, variables: {
+       fullPath: project.full_path,
+       iid: work_item.iid.to_s
+     })
+     expect_graphql_errors_to_be_empty
+   end
+   ```
+
+   Merge onto `licensed_features` rather than passing the single feature on its own.
+   A bare hash turns every other licensed feature off too, and strips unrelated data from the
+   payload.
+
+1. **Regenerate the fixtures.**
+
+   See [Generate fixtures](#generate-fixtures).
+
+1. **Register the recorded fixture as a named variant, in the query's variant file.**
+
+   ```javascript
+   import namespaceWorkItemBase from 'test_fixtures/graphql/work_items/integration/namespace_work_item.query.graphql.json';
+   import namespaceWorkItemStatusUnlicensed from 'test_fixtures/graphql/work_items/integration/namespace_work_item_status_unlicensed.query.graphql.json';
+   import { defineFixtureVariants } from 'ee_jest/integration/core/fixture_variant_schema';
+
+   export default defineFixtureVariants({
+     query: 'namespaceWorkItem',
+     variants: {
+       BASE: namespaceWorkItemBase,
+       STATUS_UNLICENSED: namespaceWorkItemStatusUnlicensed,
+     },
+   });
+   ```
+
+   Record a fixture for every license state, rather than mutating or stripping down the base
+   fixture with a transform helper.
+   A recording keeps proving what Rails actually returns for an unlicensed namespace, instead of a
+   hand-made shape.
+   If `BASE` itself does not carry the feature's data, `BASE` already doubles as the "feature
+   absent" case, and no new fixture is needed.
+
+1. **Activate the variant in the spec, and assert the feature is absent.**
+
+   ```javascript
+   import { setQueryVariant } from 'ee_jest/integration/helpers/setup_utils';
+   import { namespaceWorkItem as namespaceWorkItemVariants } from 'ee_jest/integration/work_items/fixture_variants';
+
+   beforeEach(() => {
+     setQueryVariant(namespaceWorkItemVariants).statusUnlicensed();
+   });
+
+   it('shows no status on the work item', async () => {
+     // Wait on a sibling widget so the sidebar has rendered before the assertion.
+     await testHelpers.waitForElement(workItemsHelpers.findAssigneesWidget);
+
+     expect(findStatusWidget()).toBe(null);
+   });
+   ```
+
+   Pair a negative assertion with a positive one that confirms the state you expect was actually
+   reached.
+   Otherwise a false positive can pass.
+   In the example, waiting on a sibling element proves the sidebar rendered at all, so an empty
+   drawer alone cannot satisfy the negative assertion.
+
+**One variant is active per operation.**
+The registry keys variants by GraphQL operation name, and holds a single active variant per
+operation.
+Two unlicensed variants of the same query cannot be active at the same time.
+When a scenario needs several features unlicensed at once, record that combination as one
+fixture, and register it as a single variant.
+Queries that are separate operations can each have their own active variant.
+
+**A handler that branches on a request variable can bypass your variant.**
+For example, in `ee/spec/frontend/integration/work_items/handlers.js` the `namespaceWorkItem`
+handler branches on `variables.useWorkItemFeatures`.
+On that branch, it serves variants registered under the separate `namespaceWorkItemFeatures`
+operation key.
+Confirm which branch your query takes, and register the variant under the operation key that
+branch reads.
+A spec that runs under both states of the flag activates both variants:
+
+```javascript
+setQueryVariant(namespaceWorkItemVariants).statusUnlicensed();
+setQueryVariant(namespaceWorkItemFeaturesVariants).statusUnlicensed();
+```
+
+**Another response can put the data back.**
+Responses that write onto the same cached entity can reintroduce data you expect to be missing.
+For example, the work item list rows and the work item detail query merge their widgets onto the
+same cached work item.
+The REST list payload therefore has to carry the same unlicensed shape, so the spec activates the
+`restWorkItemsList` variant too, alongside the `namespaceWorkItem` variant.
+Check that every response feeding the component under test carries the unlicensed shape.
 
 ### Assert Apollo cache integrity
 
@@ -1677,7 +2006,7 @@ Take a snapshot before the action, perform the action, then assert inside
 operation families:
 
 ```javascript
-import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/msw_integration/core/operation_helpers';
+import { snapshotRequests, expectGraphQLCalls } from 'ee_jest/integration/core/operation_helpers';
 
 it('updates the comment count without refetching the list', async () => {
   const baseline = snapshotRequests();
@@ -1703,7 +2032,7 @@ where creating a comment triggered an unnecessary list refetch.
 
 ### Write a test file
 
-Test files live under `ee/spec/frontend/msw_integration/` in a subdirectory that
+Test files live under `ee/spec/frontend/integration/` in a subdirectory that
 mirrors the feature area. Each file should:
 
 1. Create a router with `assignRouter` from `test_helpers.js` instead of
@@ -1714,9 +2043,53 @@ mirrors the feature area. Each file should:
    and automatically attaches to `document.body`.
 1. Use `waitFor` from `@testing-library/dom` after actions that trigger
    API calls.
-1. Interact with the UI through native DOM APIs (`.click()`,
-   `.dispatchEvent()`, `.querySelector()`).
+1. Locate elements with Testing Library `screen` queries
+   (`screen.queryByTestId()`, `screen.queryByRole()`) and interact with
+   them through native DOM APIs (`.click()`, `.dispatchEvent()`).
 1. Assert on the DOM, not on Vue component state.
+
+#### Enable feature flags
+
+The integration test harness installs the same Vue plugins as a real GitLab page.
+Components read feature flags through the `glFeatures` inject.
+The inject comes from `window.gon.features`.
+
+Use `setFeatureFlags` before you mount a component:
+
+```javascript
+import { setFeatureFlags } from 'ee_jest/integration/helpers/setup_utils';
+
+setFeatureFlags({ workItemFeaturesField: true });
+
+fullMount(...);
+```
+
+Do not pass `glFeatures` through `provide`. Nested components do not receive it.
+
+The harness resets `window.gon` before each test. You do not need to remove the flags after the test.
+
+#### Enable licensed features
+
+Components read licensed features through the `glLicensedFeatures` inject.
+The inject comes from `window.gon.licensed_features`.
+
+Use `setLicensedFeatures` before you mount a component:
+
+```javascript
+import { setLicensedFeatures } from 'ee_jest/integration/helpers/setup_utils';
+
+setLicensedFeatures({ fileLocks: true });
+
+fullMount(...);
+```
+
+Do not pass `glLicensedFeatures` through `provide`, and do not assign
+`window.gon.licensed_features` directly. The harness resets `window.gon`
+before each test, so you do not need to remove the features after the test.
+
+This helper only controls what the frontend reads from `gon`. A GraphQL or REST
+response that drops a field for an unlicensed namespace is a different concern.
+For that, see [Test unlicensed feature states](#test-unlicensed-feature-states).
 
 #### Prefer DOM assertions over Vue Test Utils wrappers
 
@@ -1736,6 +2109,7 @@ Use native DOM equivalents instead:
 
 | Vue Test Utils | DOM equivalent |
 |---|---|
+| `.find('[data-testid="foo"]')` | `screen.queryByTestId('foo')` |
 | `.find(selector)` | `.querySelector(selector)` |
 | `.trigger('click')` | `.click()` |
 | `.trigger('submit')` | `.dispatchEvent(new Event('submit', { bubbles: true }))` |
@@ -1744,7 +2118,105 @@ Use native DOM equivalents instead:
 | `.exists()` | `!== null` |
 | `.setValue(val)` | `el.value = val; el.dispatchEvent(new Event('input', { bubbles: true }))` |
 
-The following helpers from `ee_jest/msw_integration/helpers/test_helpers` cover common async interaction patterns:
+#### Prefer `screen` queries over `document.querySelector` for test IDs
+
+When locating elements by `data-testid` attribute, use `screen.queryByTestId`
+or `screen.queryAllByTestId` (both exported from `@testing-library/vue` and
+re-exported by the suite's `test_helpers.js`) instead of raw
+`document.querySelector` or `document.querySelectorAll` calls. Unlike
+`querySelector`, `queryByTestId` returns `null` when nothing matches and
+throws when more than one element matches, so ambiguous selectors are caught
+immediately rather than silently resolved to the first result.
+
+```javascript
+// Bad
+const findResult = () => document.querySelector('[data-testid="result"]');
+
+// Good
+const findResult = () => screen.queryByTestId('result');
+```
+
+Higher-priority queries in the
+[Testing Library query priority](https://testing-library.com/docs/queries/about/#priority),
+such as `screen.queryByRole` or `screen.queryByLabelText`, locate elements the
+way users and assistive technology do — a role query only matches when the
+element exposes the right role and accessible name, so it doubles as an
+accessibility check. Prefer them for one-shot assertions, but prefer test IDs
+for finders you poll on: role queries are expensive to re-run on a fully
+mounted page (see the next section). Raw `querySelector` remains acceptable
+for scoping a search inside an already-found element, and for selectors
+Testing Library cannot express (for example, class or ID selectors).
+
+#### Scope the queries you poll on
+
+Scoping a query with `within` to the region under test is good practice for
+any query type in a full mount: the entire page is rendered, so an unscoped
+query can match an unrelated sidebar, drawer, or breadcrumb, and a narrower
+scope means less work per call.
+
+For role queries inside a poll, scoping is essential. `ByRole` runs a
+visibility check and computes an accessible name for every candidate element
+in scope, and `waitFor` re-runs its callback on every poll tick and DOM
+mutation. In a `fullMount` the default scope is the entire application tree,
+so an unscoped polled role query re-walks the whole page every tick — one
+real-world wait took 5470 ms by role and 78 ms by test ID. This is a
+[known open issue in Testing Library](https://github.com/testing-library/dom-testing-library/issues/820).
+Address the container by test ID and use the role query inside it:
+
+```javascript
+// Bad - re-walks the whole mounted app on every poll tick
+const findSubmit = () => screen.queryByRole('button', { name: /submit/i });
+await waitForElement(findSubmit);
+
+// Good - test ID addresses the container, role selects inside it
+const findSubmit = () => {
+  const form = screen.queryByTestId('merge-request-form');
+  return form ? within(form).queryByRole('button', { name: /submit/i }) : null;
+};
+await waitForElement(findSubmit);
+```
+
+The null guard is not optional: `within(null)` throws when the container is
+absent on the first tick. Both `screen` and `within` are re-exported from the
+suite's `test_helpers.js`.
+
+Role queries work best in one-shot assertions, where the accessible name is
+the thing under test and the query runs only once:
+
+```javascript
+// Good - one-shot assertion, and the accessible name is the thing under test
+expect(
+  within(findToolbar()).queryByRole('button', { name: 'Mark to-do items done' }),
+).not.toBe(null);
+
+// Bad - same query, but now it runs on every tick of the wait
+await waitForElement(() =>
+  within(findToolbar()).queryByRole('button', { name: /mark to-do/i }),
+);
+```
+
+One caveat: content rendered in portals (`GlModal`, dropdowns, tooltips)
+escapes its parent container in the DOM, so don't scope past a portal
+boundary — query portaled content from `screen`.
+
+#### Don't let the accessible name double as state
+
+A toggle that relabels itself is one element, not two. Keying finders off the
+label silently returns `null` when the copy changes, which reads as "element
+missing" rather than "label changed" — the wrong signal when developing.
+Address the element once and read its state from ARIA:
+
+```javascript
+// Bad - two finders for one button, and both break on a copy change
+const findMarkDone = () => screen.queryByRole('button', { name: /mark to-do items done/i });
+const findAddTodo = () => screen.queryByRole('button', { name: /add a to-do item/i });
+
+// Good - address the element once, read its state from ARIA
+const findTodoToggle = () => screen.queryByTestId('todos-toggle');
+const todoIsPending = () => findTodoToggle()?.getAttribute('aria-pressed') === 'true';
+```
+
+The following helpers from `ee_jest/integration/helpers/test_helpers` cover common async interaction patterns:
 
 | Helper | Description |
 |---|---|
@@ -1767,7 +2239,7 @@ import { waitFor } from '@testing-library/dom';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { createRouter } from '~/my_feature/router';
 import MyApp from '~/my_feature/components/app.vue';
-import { assignRouter, fullMount, waitForElement, getText } from '../test_helpers';
+import { assignRouter, fullMount, screen, waitForElement, getText } from 'ee_jest/integration/helpers/test_helpers';
 
 Vue.use(VueApollo);
 
@@ -1777,8 +2249,7 @@ describe('My feature test', () => {
     routerPath: 'my_feature',
   });
 
-  const findResult = () =>
-    document.querySelector('[data-testid="result"]');
+  const findResult = () => screen.queryByTestId('result');
 
   const createComponent = () => {
     fullMount(MyApp, {
@@ -1797,12 +2268,10 @@ describe('My feature test', () => {
   it('renders the page and responds to user interaction', async () => {
     createComponent();
 
-    const el = await waitForElement(
-      () => document.querySelector('[data-testid="my-element"]'),
-    );
+    const el = await waitForElement(() => screen.queryByTestId('my-element'));
     expect(el).not.toBe(null);
 
-    document.querySelector('[data-testid="my-button"]').click();
+    screen.getByTestId('my-button').click();
 
     await waitFor(() => {
       expect(getText(findResult())).toContain('Updated');
@@ -1839,6 +2308,35 @@ Key differences from unit tests:
   `server.close`) is handled globally by `test_setup.js`. Do not add
   these calls in individual test files.
 
+### Register apps booted by their page bootstrap
+
+Most specs mount a component with `fullMount`.
+Some feature areas instead call the real page bootstrap function, for example the default export of `ee/security_orchestration/security_policies_list`.
+That function is what parses the HAML `data` attributes into the app's `provide` values, and covering that wiring is the point of the spec.
+
+An app created this way is not a Vue Test Utils wrapper, so `enableAutoDestroy` does not tear it down.
+Pass the app the bootstrap returns to `registerBootstrappedApp`.
+The harness then unmounts it and removes its root element in `afterEach`, and clears its Apollo cache in the next `beforeEach`.
+The app replaces its mount element, so specs do not remove it themselves.
+On the Vue 2 lane only that root element goes: content an app renders elsewhere in the document, such as a modal appended to `body` or a nested app root, is not covered.
+
+```javascript
+import { registerBootstrappedApp } from 'ee_jest/integration/helpers/test_helpers';
+
+export function mountMyApp() {
+  const el = document.createElement('div');
+  Object.assign(el.dataset, MY_APP_DATASET);
+  document.body.appendChild(el);
+
+  return registerBootstrappedApp(initMyApp(el));
+}
+```
+
+Registration fails when the bootstrap returns no app, which usually means its mount element was missing.
+It also fails when the app exposes no Apollo client, because a cache the harness never sees is never cleared, which surfaces as an unrelated test failing later.
+
+Some domains still need their own `afterEach` for state the harness cannot reach, such as websocket, workflow stream, and panel storage teardown: the `ai_duo_panel` specs register a `teardownDuoChatTest` helper, exported from `ee/spec/frontend/integration/ai_duo_panel/test_support/test_setup.js`, in their own `afterEach`.
+
 ### Test isolation for Apollo requests
 
 MSW 2 streams response bodies across multiple event-loop ticks. When a test
@@ -1850,21 +2348,21 @@ stale response for the next test's identical query. To prevent this,
 cancels in-flight fetches before each test runs. Spec files do not need to
 do anything extra beyond the usual `cache.reset()`.
 
-### Run MSW integration tests
+### Run frontend integration tests
 
-Run all MSW integration tests:
+Run all frontend integration tests:
 
 ```shell
-yarn jest:msw-integration
+yarn jest:integration
 ```
 
 Run a single file:
 
 ```shell
-yarn jest:msw-integration ee/spec/frontend/msw_integration/work_items/agent_plan_spec.js
+yarn jest:integration ee/spec/frontend/integration/work_items/agent_plan_spec.js
 ```
 
-In CI, these tests run in the `jest-msw-integration` job (tier-2+ pipelines).
+In CI, these tests run in the `jest-integration` job (tier-2+ pipelines).
 
 ## Test helpers
 
@@ -1955,6 +2453,10 @@ describe('FooComponent', () => {
 ```
 
 Check an example in [`spec/frontend/alert_management/components/alert_details_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/ac1c9fa4c5b3b45f9566147b1c88fd1339cd7c25/spec/frontend/alert_management/components/alert_details_spec.js#L32).
+
+The single-result finders (`findByTestId`, `findComponentByTestId`, and every `find<Query>` such as `findByRole` or `findByText`) return an extended wrapper, so lookups chain: for example, `wrapper.findByTestId('item-icon').findComponentByTestId('item-cli-icon')`.
+A not-found result is passed through unchanged (`exists()` is `false`, with no further extension).
+The `findAll*` variants still return a plain `WrapperArray`.
 
 ## Testing with older browsers
 
@@ -2081,7 +2583,7 @@ it('shows the component', () => {
 })
 ```
 
-Not only that, but imagine having passed the wrong prop to your component and having the wrong visibility: the snapshot test would still pass because you would have captured the HTML **with the issue** and so unless you double-checked the output of the snapshot, you would never know that your test is broken.
+Not only that, but imagine having passed the wrong prop to your component and having the wrong visibility: the snapshot test would still pass because you would have captured the HTML with the issue and so unless you double-checked the output of the snapshot, you would never know that your test is broken.
 
 #### Example #2 - Presence of text
 
@@ -2122,7 +2624,7 @@ it('renders the paragraph text', () => {
 
 #### Example #3 - Complex HTML
 
-When we have very complex HTML, we should focus on asserting specific sensitive and meaningful points rather than capturing it as a whole. The value in a snapshot test is to **warn developers** that they might have accidentally change an HTML structure that they did not intend to change. If the output of the change is hard to read, which is often the case with complex HTML output, then **is the signal itself that something changed** sufficient? And if it is, can it be accomplished without snapshots?
+When we have very complex HTML, we should focus on asserting specific sensitive and meaningful points rather than capturing it as a whole. The value in a snapshot test is to warn developers that they might have accidentally change an HTML structure that they did not intend to change. If the output of the change is hard to read, which is often the case with complex HTML output, then is the signal itself that something changed sufficient? And if it is, can it be accomplished without snapshots?
 
 A good example of a complex HTML output is `GlTable`. Snapshot testing might feel like a good option since you can capture rows and columns structure, but we should instead try to assert text we expect or count the number of rows and columns manually.
 
@@ -2222,15 +2724,15 @@ Use a unit test if:
 ### Choose the right feature test type
 
 Once you decide a feature test is appropriate, there are two types at
-GitLab. Default to MSW integration tests because they are
-**significantly** faster.
+GitLab. Default to frontend integration tests because they are
+significantly faster.
 
-Use an **MSW integration test** (`ee/spec/frontend/msw_integration/`, EE-only) when:
+Use a **frontend integration test** (`ee/spec/frontend/integration/`, EE-only) when:
 
 - The test covers multi-component interaction on a single page (for example, list + drawer).
 - The backend responses can be represented with auto-generated fixtures.
 - You do not need to verify database state, authorization, server-side validations, or real-time updates.
-- The behavior does not differ between FOSS and EE. MSW mocks licensing, so it cannot assert FOSS-versus-licensed differences; use Capybara for those.
+- You do not need to prove that the backend gates the feature on a license, because MSW mocks that check away. Frontend behavior for an unlicensed payload is still in scope: record that payload as a fixture variant. See [Test unlicensed feature states](#test-unlicensed-feature-states).
 
 Use a **Capybara feature test** (`spec/features/`) when:
 
@@ -2248,7 +2750,7 @@ A [Capybara feature test](testing_levels.md#white-box-tests-at-the-system-level-
 - Call the API.
 
 Capybara feature tests are expensive to run. Make sure you cannot achieve
-the same coverage with an [MSW integration test](#msw-integration-tests)
+the same coverage with a [frontend integration test](#frontend-integration-tests)
 before writing one.
 
 All Capybara feature tests are written in `Ruby` but often end up being written by `JavaScript` engineers, as they implement the user-facing feature. The following section assumes no prior knowledge of `Ruby` or `Capybara`, and provides a clear guideline on when and how to use these tests.
@@ -2373,7 +2875,7 @@ end
 
 Each test is in its own environment and so you must use a factory to seed the required data. For example, to create a test that takes you to the main pipeline page at the route `/namespace/project/-/pipelines/:id/`.
 
-Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should **always create a user unless you are specifically testing a feature looked at by an anonymous user**. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
+Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should always create a user unless you are specifically testing a feature looked at by an anonymous user. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
 
 ```ruby
   let(:user) { create(:user) }
@@ -2514,7 +3016,7 @@ confirm the operation has completed. Do not use `wait_for_requests` or
 
 #### Feature flags
 
-By default, every feature flag is enabled **regardless of the YAML definition or the flags you've set manually in your GDK**. To test when a feature flag is disabled, you must manually stub the flag, ideally in a `before do` block.
+By default, every feature flag is enabled regardless of the YAML definition or the flags you've set manually in your GDK. To test when a feature flag is disabled, you must manually stub the flag, ideally in a `before do` block.
 
 ```ruby
   stub_feature_flags(my_feature_flag: false)
@@ -2526,12 +3028,51 @@ If you are stubbing an `ee` feature flag, then use:
   stub_licensed_features(my_feature_flag: false)
 ```
 
+#### Browser console errors in feature specs
+
+A `:js` feature spec fails with `BrowserConsoleError` when the browser console logs an error during the example.
+The check runs after every example, also when the spec's own assertions pass.
+
+An error in the console often points to a real bug. Vue 2 can hide a component error: it logs the error and the
+rest of the page still works. Vue 3 does not always recover from the same error, so the page breaks.
+
+When a spec fails with `BrowserConsoleError`:
+
+1. Read the console messages in the failure output.
+1. Fix the error in the application code.
+1. If you cannot fix it in the same merge request, add an entry to `spec/support/browser_console_allowlist.yml`.
+   Open an issue for the fix and add its URL to the entry.
+
+An entry looks like this:
+
+```yaml
+- message: "TypeError: Cannot read properties of null (reading 'text')"
+  issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/628981
+  specs:
+  - spec/features/milestones/user_creates_milestone_spec.rb
+```
+
+- `message`: the error text. The entry matches when this text occurs in the console message.
+  The comparison ignores the URL and line prefix, quotes and backslashes.
+  To match several console messages logged in a row, use `messages` with a list instead. For example,
+  vue-apollo logs a GraphQL error as a `GraphQL execution errors for ...` message followed by `Object`.
+- `specs`: the spec files or globs where the error is allowed. The entry does not hide the same error in other specs.
+- `issue`: optional. The URL of the issue that tracks the fix.
+
+When an example fails for another reason, the failure output lists all console errors, also the allowed ones.
+
+Remove the entry when you fix the error.
+`spec/support_specs/browser_console_allowlist_spec.rb` validates the file.
+
+Errors that come from the test environment and not from the application, such as blocked third-party scripts,
+are ignored for all specs by `BROWSER_CONSOLE_ERROR_FILTER` in `spec/support/helpers/browser_console_helpers.rb`.
+
+> [!note]
+> Logs are only captured when using the Chrome driver. The check does not run on `WEBDRIVER=firefox`.
+
 #### Asserting browser console errors
 
-By default, feature specs won't fail if a browser console error is found. Sometimes we want to cover that there are not
-unexpected console errors which could indicate an integration problem.
-
-To set a feature spec to fail if it encounters browser console errors, use `expect_page_to_have_no_console_errors` from
+To check the console at a specific point in an example, use `expect_page_to_have_no_console_errors` from
 the `BrowserConsoleHelpers` support module:
 
 ```ruby
@@ -2567,8 +3108,8 @@ end
 
 Update the `BROWSER_CONSOLE_ERROR_FILTER` constant in `spec/support/helpers/browser_console_helpers.rb` to change
 the list of console errors that should be globally ignored. This filter is shared with the automatic check that
-runs after any failed `:js` example, so updating it changes both what `expect_page_to_have_no_console_errors`
-allows and what can raise a `BrowserConsoleError` alongside an unrelated failure.
+runs after every `:js` example, so updating it changes both what `expect_page_to_have_no_console_errors`
+allows and what can raise a `BrowserConsoleError`.
 
 ### Debugging
 

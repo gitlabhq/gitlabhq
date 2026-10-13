@@ -31,8 +31,6 @@ module Packages
           )
       end
 
-      scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
-
       scope :including_dependency_links_with_nuget_metadatum, -> do
         includes(dependency_links: [:dependency, :nuget_metadatum])
       end

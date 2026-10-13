@@ -65,6 +65,41 @@ RSpec.describe Gitlab::I18n::PoLinter do
       end
     end
 
+    context 'for a pot file with malformed namespaces' do
+      let(:po_path) { 'spec/fixtures/namespace_format.pot' }
+      let(:whitespace_error) { a_string_starting_with('namespace contains whitespace') }
+      let(:pipe_error) { a_string_starting_with('contains more than one pipe') }
+
+      it 'has an error for a namespace with whitespace' do
+        expect(errors['Compliance Center Export|Export status report']).to include(whitespace_error)
+        expect(errors['Value Streams Dashboard | DORA']).to include(whitespace_error)
+      end
+
+      it 'has an error for a msgid with more than one pipe' do
+        expect(errors['ApprovalRule||year(s)']).to include(pipe_error)
+        expect(errors['Pipeline|Source|Security Policy']).to include(pipe_error)
+      end
+
+      it 'has an error for a plural id with more than one pipe' do
+        expect(errors['CommitHistory|1 commit']).to include(pipe_error)
+      end
+
+      it 'has no errors for a valid namespace or a pipe outside a namespace' do
+        expect(errors).not_to have_key('ApprovalRule|day(s)')
+        expect(errors).not_to have_key(
+          '%{reason_text} Manage all notifications: %{manage_notifications_url} | Help: %{help_url}'
+        )
+      end
+    end
+
+    context 'for a po file with malformed namespaces' do
+      let(:po_path) { 'spec/fixtures/namespace_format.po' }
+
+      it 'does not check the namespace format' do
+        expect(errors).to be_empty
+      end
+    end
+
     context 'for a translations with spaces' do
       let(:po_path) { 'spec/fixtures/spaces.po' }
 
@@ -272,6 +307,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
       expect(linter).to receive(:validate_unescaped_chars).with([], fake_entry)
       expect(linter).to receive(:validate_translation).with([], fake_entry)
       expect(linter).to receive(:validate_namespace).with([], fake_entry)
+      expect(linter).to receive(:validate_namespace_format).with([], fake_entry)
       expect(linter).to receive(:validate_spaces).with([], fake_entry)
       expect(linter).to receive(:validate_html).with([], fake_entry)
 

@@ -44,6 +44,22 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
     end
   end
 
+  describe '#add_standard_data!' do
+    it 'adds the housekeeper label' do
+      change.add_standard_data!
+
+      expect(change.labels).to include('automation:gitlab-housekeeper-authored')
+    end
+
+    it 'keeps labels the keep already set' do
+      change.labels = ['existing-label']
+
+      change.add_standard_data!
+
+      expect(change.labels).to eq(['existing-label', 'automation:gitlab-housekeeper-authored'])
+    end
+  end
+
   describe '#mr_description' do
     it 'includes standard content' do
       expect(change.mr_description).to eq(

@@ -51,7 +51,7 @@ export default {
     :to="{ name: to, params: params }"
     active-class="gl-font-bold gl-bg-strong"
     exact
-    class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-strong hover:gl-text-default hover:gl-no-underline"
+    class="gl-mb-2 gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-strong hover:gl-text-default hover:gl-no-underline"
     :data-event-tracking="$options.CLICK_TAB_ON_MERGE_REQUEST_REPORT"
     :data-event-label="trackingLabel"
   >

@@ -24,6 +24,54 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
       expect(used_new_issue.resource_label_events.pluck(:label_id, :namespace_id)).to match_array(expected)
     end
 
+    describe 'the reference on the copied rows' do
+      let_it_be(:project1_label) { create(:label, project: project1) }
+      let_it_be(:group_label) { create(:group_label, group: group) }
+
+      it 'recomputes a project label reference against the new parent' do
+        event = create(:resource_label_event, issue: original_issue, label: project1_label)
+
+        expect(event.reference).to eq(project1_label.to_reference(format: :id))
+
+        subject.execute
+
+        copied = used_new_issue.resource_label_events.find_by(label_id: project1_label.id)
+
+        expect(copied.reference).to eq(project1_label.to_reference(project2, format: :id))
+      end
+
+      it 'keeps a bare reference for a label reachable from both parents' do
+        create(:resource_label_event, issue: original_issue, label: group_label)
+
+        subject.execute
+
+        copied = used_new_issue.resource_label_events.find_by(label_id: group_label.id)
+
+        expect(copied.reference).to eq(group_label.to_reference(format: :id))
+      end
+
+      it 'does not query per label for labels outside the new parent' do
+        source = create(:issue, project: project1)
+        [create(:label), create(:group_label)].each do |label|
+          create(:resource_label_event, issue: source, label: label)
+        end
+
+        target = create(:issue, project: project2)
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.new(user, Issue.find(source.id), Issue.find(target.id)).execute
+        end
+
+        (create_list(:label, 2) + create_list(:group_label, 2)).each do |label|
+          create(:resource_label_event, issue: source, label: label)
+        end
+
+        target = create(:issue, project: project2)
+        expect do
+          described_class.new(user, Issue.find(source.id), Issue.find(target.id)).execute
+        end.not_to exceed_query_limit(control)
+      end
+    end
+
     context 'when new entity is a work item', :aggregate_failures do
       let(:used_new_issue) { new_issue.becomes(::WorkItem) } # rubocop:disable Cop/AvoidBecomes -- Less expensive than creating a new entity
 

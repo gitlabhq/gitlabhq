@@ -44,6 +44,7 @@ RSpec.describe Mcp::Tools::Repositories::BlobsTool, feature_category: :mcp_serve
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
         expect(result[:content].first[:text]).to include('docs/../README.md', 'path traversal sequence')
       end
     end

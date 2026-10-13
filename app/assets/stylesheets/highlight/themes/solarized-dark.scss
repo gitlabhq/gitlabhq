@@ -110,6 +110,7 @@ $solarized-dark-il: #2aa198;
   --diff-expansion-background-color: #{color.adjust($solarized-dark-pre-bg, $lightness: 10%)};
 
   --code-background: #{$solarized-dark-pre-bg};
+  --code-text-color: #{$solarized-dark-pre-color};
   --code-empty-background: #{color.adjust($solarized-dark-pre-bg, $lightness: -1.5%)};
   --code-border-color: #{$gl-color-neutral-700};
   --code-changed-border-color: #{rgba(255,255,255,0.2)};

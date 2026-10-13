@@ -35,11 +35,9 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning, factory
 
     context 'when the update fails' do
       before do
-        allow(todo).to receive(:update).and_return(false)
-
         errors = ActiveModel::Errors.new(todo)
         errors.add(:base, 'An error occurred')
-        allow(todo).to receive(:errors).and_return(errors)
+        allow(todo).to receive_messages(update: false, errors: errors)
       end
 
       it 'raises an error' do
@@ -66,11 +64,9 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning, factory
 
     context 'when the update fails' do
       before do
-        allow(todo).to receive(:update).and_return(false)
-
         errors = ActiveModel::Errors.new(todo)
         errors.add(:base, 'An error occurred')
-        allow(todo).to receive(:errors).and_return(errors)
+        allow(todo).to receive_messages(update: false, errors: errors)
       end
 
       it 'raises an error' do

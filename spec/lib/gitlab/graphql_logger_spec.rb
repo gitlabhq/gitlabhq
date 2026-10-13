@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/context'
+require_relative '../../../app/graphql/cached_introspection_query'
 
 RSpec.describe Gitlab::GraphqlLogger do
   subject { described_class.new('/dev/null') }

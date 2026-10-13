@@ -3,13 +3,20 @@
 module Ci
   class BuildEraseService
     include BaseServiceUtility
+    include Ci::JobRateLimitable
 
-    def initialize(build, current_user)
+    # @rate_limit - false for internal callers (for example, admin console
+    #   cleanup scripts) that must never be throttled
+    def initialize(build, current_user, rate_limit: true)
       @build = build
       @current_user = current_user
+      @rate_limit = rate_limit
     end
 
     def execute
+      throttled_response = rate_limited_response
+      return throttled_response if throttled_response
+
       unless build.erasable?
         return ServiceResponse.error(message: _('Build cannot be erased'), http_status: :unprocessable_entity)
       end
@@ -31,6 +38,22 @@ module Ci
     private
 
     attr_reader :build, :current_user
+
+    def project
+      build.project
+    end
+
+    def rate_limit?
+      @rate_limit
+    end
+
+    def rate_limited_response
+      return unless Feature.enabled?(:rate_limit_job_erase, project)
+
+      job_rate_limited_response(
+        build, key: :job_erase, per_project_key: :job_erase_per_project, log_message: 'Job erase rate limit exceeded'
+      )
+    end
 
     def destroy_artifacts
       Ci::JobArtifacts::DestroyBatchService.new(build.job_artifacts).execute

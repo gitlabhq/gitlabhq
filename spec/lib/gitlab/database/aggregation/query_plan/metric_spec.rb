@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Metric, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::QueryPlan::Metric, feature_category: :value_stream_management do
   let(:part_definition) { Gitlab::Database::Aggregation::PartDefinition.new(:total_count, :integer) }
   let(:part_configuration) { { identifier: :total_count } }
 

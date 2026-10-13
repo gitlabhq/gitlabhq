@@ -90,7 +90,7 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :auto_merge
 - :name: background_operations:database_background_operation_base_orchestrator
@@ -379,6 +379,16 @@
   :worker_name: Authn::DataRetention::OauthAccessTokenArchiveWorker
   :feature_category: :system_access
   :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:authn_iam_replication_reconciliation
+  :worker_name: Authn::IamReplication::ReconciliationWorker
+  :feature_category: :system_access
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -836,6 +846,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:database_finalize_pending_detach_partitions
+  :worker_name: Database::FinalizePendingDetachPartitionsWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_monitor_locked_tables
   :worker_name: Database::MonitorLockedTablesWorker
   :feature_category: :cell
@@ -848,6 +868,16 @@
   :queue_namespace: :cronjob
 - :name: cronjob:database_partition_management
   :worker_name: Database::PartitionManagementWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:database_pg_ash_maintenance
+  :worker_name: Database::PgAshMaintenanceWorker
   :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low
@@ -1508,16 +1538,6 @@
   :queue_namespace: :cronjob
 - :name: cronjob:users_migrate_human_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateHumanRecordsToGhostUserInBatchesWorker
-  :feature_category: :user_profile
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
-- :name: cronjob:users_migrate_non_human_records_to_ghost_user_in_batches
-  :worker_name: Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low
@@ -2228,6 +2248,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :object_pool
+- :name: object_pool:object_pool_disconnect
+  :worker_name: ObjectPool::DisconnectWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :object_pool
 - :name: object_pool:object_pool_join
   :worker_name: ObjectPool::JoinWorker
   :feature_category: :gitaly
@@ -2593,6 +2623,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_background
+- :name: pipeline_background:ci_redundant_pipelines_protect_pipeline
+  :worker_name: Ci::RedundantPipelines::ProtectPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_ref_delete_unlock_artifacts
   :worker_name: Ci::RefDeleteUnlockArtifactsWorker
   :feature_category: :continuous_integration
@@ -2750,7 +2790,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_default
 - :name: pipeline_default:pipeline_metrics
@@ -3182,6 +3222,26 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 2
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: authz_organizations_grant_owner_role
+  :worker_name: Authz::Organizations::GrantOwnerRoleWorker
+  :feature_category: :system_access
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: authz_organizations_revoke_owner_role
+  :worker_name: Authz::Organizations::RevokeOwnerRoleWorker
+  :feature_category: :system_access
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent: true
   :tags: []
   :queue_namespace:
@@ -4736,6 +4796,16 @@
   :queue_namespace:
 - :name: merge_requests_resolve_todos_after_approval
   :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: merge_requests_restore_diff_commits
+  :worker_name: MergeRequests::RestoreDiffCommitsWorker
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low

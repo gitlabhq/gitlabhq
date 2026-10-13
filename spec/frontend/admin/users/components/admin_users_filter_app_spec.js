@@ -22,8 +22,8 @@ const getExpectedTokenConfigs = (config) => {
 describe('AdminUsersFilterApp', () => {
   let wrapper;
 
-  const createComponent = () => {
-    wrapper = shallowMount(AdminUsersFilterApp, {});
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(AdminUsersFilterApp, { propsData: props });
   };
 
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
@@ -97,6 +97,22 @@ describe('AdminUsersFilterApp', () => {
       expect(findAvailableTokens()).toEqual(getExpectedTokenConfigs());
     },
   );
+
+  describe('when showFilterTokens is false', () => {
+    beforeEach(() => {
+      createComponent({ showFilterTokens: false });
+    });
+
+    it('does not include any token configs', () => {
+      expect(findAvailableTokens()).toEqual([]);
+    });
+
+    it('visits expected URL with free-text search when submitted', () => {
+      findFilteredSearch().vm.$emit('submit', ['mytext']);
+
+      expect(visitUrl).toHaveBeenCalledWith(`${getBaseURL()}/?search_query=mytext`);
+    });
+  });
 
   it('visits expected URL when filtered search is submitted', () => {
     // Set up an existing querystring to verify that the filter changes and sort is not touched.

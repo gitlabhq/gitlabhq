@@ -9,7 +9,7 @@ module Gitlab
 
           return {} unless params
 
-          params.slice(:token_type, :token_id, :token_application_id)
+          params.slice(:token_type, :token_id, :token_application_id, :token_granularity)
         end
       end
     end

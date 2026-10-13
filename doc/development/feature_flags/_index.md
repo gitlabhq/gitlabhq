@@ -61,9 +61,9 @@ period of time, consider introducing
 [Cascading Settings](../cascading_settings.md) or [Application Settings](../application_settings.md)
 instead. Settings
 offer a way for customers to enable or disable features for themselves on
-GitLab.com or self-managed and can remain in the codebase as long as needed. In
+GitLab.com or GitLab Self-Managed and can remain in the codebase as long as needed. In
 contrast users have no way to enable or disable feature flags for themselves on
-GitLab.com and only self-managed admins can change the feature flags.
+GitLab.com and only GitLab Self-Managed admins can change the feature flags.
 Also,
 [feature flags are not supported in GitLab Dedicated](../enabling_features_on_dedicated.md#feature-flags)
 which is another reason you should not use them as a replacement for settings.
@@ -352,6 +352,13 @@ a YAML definition in `config/feature_flags` or `ee/config/feature_flags`.
 
 Only feature flags that have a YAML definition file can be used when running the development or testing environments.
 
+When the tool prompts you to create a rollout issue, it copies the generated template to your
+clipboard, opens the **New issue** form in your browser, and waits for the issue URL.
+The tool does not submit the form.
+Paste the template into the form, submit it, and enter the new issue URL at the prompt.
+Create the rollout issue only once. Do not create another issue from the same template through
+the API or another tool while the form is open, because that produces duplicate rollout issues.
+
 ```shell
 $ bin/feature-flag my_feature_flag
 >> Specify the feature flag type
@@ -377,7 +384,7 @@ You picked the group 'group::group2'
 ?> [Return]
 
 >> Press any key and paste the issue content that we copied to your clipboard! 🚀
-?> [Return automatically opens the "New issue" page where you only have to paste the issue content]
+?> [Return opens the "New issue" page. Paste the issue content and submit the issue.]
 
 >> URL of the rollout issue (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/issues/437162
@@ -914,7 +921,7 @@ This search works on GitLab.com logs, available at [`log.gprd.gitlab.net`](https
 
 We want to avoid introducing a changelog when features are not accessible by an end-user either directly (example: ability to use the feature) or indirectly (examples: ability to take advantage of background jobs, performance improvements, or database migration updates).
 
-- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they should have a changelog entry.
+- Database migrations are always accessible by an end-user indirectly, as GitLab Self-Managed customers need to be aware of database changes before upgrading. For this reason, they should have a changelog entry.
 - Any change behind a feature flag disabled by default should not have a changelog entry.
 - Any change behind a feature flag that is enabled by default should have a changelog entry.
 - Changing the feature flag itself (flag removal, default-on setting) should have [a changelog entry](../changelog.md).

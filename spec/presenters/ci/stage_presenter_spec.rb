@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Ci::StagePresenter do
-  let(:stage) { create(:ci_stage) }
+  let_it_be(:stage) { create(:ci_stage) }
+  let_it_be(:build) { create(:ci_build, :tags, :artifacts, pipeline: stage.pipeline, stage: stage.name) }
+  let_it_be(:retried_build) do
+    create(:ci_build, :tags, :artifacts, :retried, pipeline: stage.pipeline, stage: stage.name)
+  end
+
   let(:presenter) { described_class.new(stage) }
 
-  let!(:build) { create(:ci_build, :tags, :artifacts, pipeline: stage.pipeline, stage: stage.name) }
-  let!(:retried_build) { create(:ci_build, :tags, :artifacts, :retried, pipeline: stage.pipeline, stage: stage.name) }
-
-  before do
+  before_all do
     create(:generic_commit_status, pipeline: stage.pipeline, ci_stage: stage)
   end
 

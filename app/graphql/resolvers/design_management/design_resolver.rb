@@ -15,14 +15,14 @@ module Resolvers
         required: false,
         description: 'Find a design by its filename.'
 
+      def self.single
+        self
+      end
+
       def resolve(filename: nil, id: nil)
         params = parse_args(filename, id)
 
         build_finder(params).execute.first
-      end
-
-      def self.single
-        self
       end
 
       private

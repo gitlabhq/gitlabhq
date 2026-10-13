@@ -17,6 +17,8 @@ class BulkImport < ApplicationRecord
   has_one :configuration, class_name: 'BulkImports::Configuration'
   has_one :offline_configuration, class_name: 'Import::Offline::Configuration', inverse_of: :bulk_import
   has_many :entities, class_name: 'BulkImports::Entity'
+  has_many :failures, through: :entities
+  has_many :trackers, through: :entities
 
   validates :source_type, :status, presence: true
 
@@ -58,9 +60,13 @@ class BulkImport < ApplicationRecord
 
     after_transition any => [:finished, :failed, :timeout] do |bulk_import|
       bulk_import.update_has_failures
-      bulk_import.send_completion_notification
       bulk_import.run_after_commit { bulk_import.schedule_configuration_purge }
     end
+
+    after_transition any => :finished, do: :send_completion_notification
+    after_transition any => :failed, do: :send_failed_notification
+    after_transition any => :timeout, do: :send_timeout_notification
+
     after_transition any => [:canceled] do |bulk_import|
       bulk_import.run_after_commit do
         bulk_import.propagate_cancel
@@ -87,6 +93,27 @@ class BulkImport < ApplicationRecord
       bulk_import.run_after_commit do
         bulk_import.track_internal_event('fail_offline_transfer_import', user: bulk_import.user)
       end
+    end
+
+    after_transition on: :start do |bulk_import|
+      bulk_import.track_job_import_event('start_gitlab_migration')
+    end
+
+    after_transition any => :finished do |bulk_import|
+      bulk_import.track_job_import_event('finish_gitlab_migration')
+    end
+
+    # fail_op and cancel are allowed from any state, so only count imports that were still running.
+    after_transition [:created, :started] => :failed do |bulk_import|
+      bulk_import.track_job_import_event('fail_gitlab_migration')
+    end
+
+    after_transition [:created, :started] => :canceled do |bulk_import|
+      bulk_import.track_job_import_event('cancel_gitlab_migration')
+    end
+
+    after_transition on: :cleanup_stale do |bulk_import|
+      bulk_import.track_job_import_event('timeout_gitlab_migration')
     end
   end
 
@@ -128,12 +155,29 @@ class BulkImport < ApplicationRecord
   end
 
   def send_completion_notification
-    run_after_commit do
-      if offline?
-        Notify.bulk_import_offline_complete(user.id, id).deliver_later
+    deliver_notification do
+      if has_failures?
+        Notify.bulk_import_offline_complete_with_errors(user.id, id)
       else
-        Notify.bulk_import_complete(user.id, id).deliver_later
+        Notify.bulk_import_offline_complete(user.id, id)
       end
+    end
+  end
+
+  def send_failed_notification
+    deliver_notification { Notify.bulk_import_offline_failed(user.id, id) }
+  end
+
+  def send_timeout_notification
+    deliver_notification { Notify.bulk_import_offline_timeout(user.id, id) }
+  end
+
+  # Direct transfer sends the same email for every outcome; offline transfer
+  # sends the email built by the given block.
+  def deliver_notification(&)
+    run_after_commit do
+      email = offline? ? yield : Notify.bulk_import_complete(user.id, id)
+      email.deliver_later
     end
   end
 
@@ -159,6 +203,7 @@ class BulkImport < ApplicationRecord
   end
 
   def source_equals_destination?
+    return offline_source_equals_destination? if offline?
     return false unless configuration
 
     source_uri = URI.parse(configuration.url.to_s)
@@ -184,4 +229,51 @@ class BulkImport < ApplicationRecord
   end
 
   alias_method :offline?, :offline_export?
+
+  # Fires the job-level *_gitlab_migration events, covering both Direct Transfer
+  # and Offline Transfer. No import_source: a single request can touch several
+  # unrelated top-level namespaces on the same source instance, so there's no
+  # single path to attach.
+  def track_job_import_event(action)
+    run_after_commit do
+      track_internal_event(action, user: user, additional_properties: job_import_event_additional_properties(action))
+    end
+  end
+
+  private
+
+  def job_import_event_additional_properties(action)
+    properties = { label: import_source.to_s }
+    # Measured from created_at, not from the started transition, so this
+    # includes any time the request spent queued before actually starting.
+    duration_seconds = (Time.current - created_at).to_i
+
+    case action
+    when 'start_gitlab_migration'
+      properties[:same_instance] = source_equals_destination?.to_s
+    when 'finish_gitlab_migration'
+      properties.merge!(
+        total_failure_count: failures.count,
+        duration_seconds: duration_seconds,
+        imported_objects_count: trackers.sum(:imported_objects_count),
+        migrated_entities_count: entities.with_status(:finished).count
+      )
+    else # fail_gitlab_migration, cancel_gitlab_migration, timeout_gitlab_migration
+      properties.merge!(total_failure_count: failures.count, duration_seconds: duration_seconds)
+    end
+
+    properties
+  end
+
+  # For Offline Transfer, "source" is a file uploaded from another instance, so
+  # compare the hostname it was exported from (recorded on the import-side
+  # offline_configuration) to this instance's own host.
+  def offline_source_equals_destination?
+    hostname = offline_configuration&.source_hostname
+    return false if hostname.blank?
+
+    URI.parse(hostname).host == Settings.gitlab.host
+  rescue URI::InvalidURIError
+    false
+  end
 end

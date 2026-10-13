@@ -232,6 +232,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
           result = tool.execute
 
           expect(result[:isError]).to be(true)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
           expect(result[:content].first[:text]).to include("Ref 'no-such-ref' not found")
         end
       end
@@ -243,6 +244,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
           result = tool.execute
 
           expect(result[:isError]).to be(true)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
           expect(result[:content].first[:text]).to include("Path 'no/such/dir' not found at ref 'HEAD'")
         end
       end
@@ -276,6 +278,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
           result = tool.execute
 
           expect(result[:isError]).to be(true)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
           expect(result[:content].first[:text]).to include('repository', 'is not available')
         end
       end
@@ -325,6 +328,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
         expect(result[:content].first[:text]).to include('Project not found')
       end
     end

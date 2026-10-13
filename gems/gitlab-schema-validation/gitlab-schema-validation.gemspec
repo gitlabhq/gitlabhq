@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
     and reports the inconsistencies."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-schema-validation"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.2"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']

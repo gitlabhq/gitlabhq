@@ -1,0 +1,10 @@
+---
+name: revoke_placeholder_reassignment
+description: Grants the ability to revoke placeholder user reassignments made to
+  the token owner
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - revoke_placeholder_reassignment

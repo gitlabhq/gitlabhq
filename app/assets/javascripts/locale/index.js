@@ -103,10 +103,19 @@ export const getPreferredLocales = () => {
   // The GitLab language may or may not contain a country code,
   // so we create the short version as well, e.g. de-AT => de
   const lang = gitlabLanguage.substring(0, 2);
-  // navigator.languages should contain BCP 47 tags, but some environments
-  // include HTTP Accept-Language quality values (e.g. "en;q=0.9") which are
-  // not valid BCP 47 and cause Intl APIs to throw a RangeError. Strip them.
-  const validLanguages = navigator.languages.map((l) => l.split(';')[0].trim());
+  // navigator.languages should contain BCP 47 tags, but some environments leak
+  // HTTP quality values ("en;q=0.9") or raw POSIX locales ("en_US.UTF-8@posix").
+  // Salvage the language[-territory] part and drop anything still invalid.
+  const validLanguages = navigator.languages
+    .map((l) => {
+      const tag = l.split(/[;@.,]/)[0].trim();
+      try {
+        return Intl.getCanonicalLocales(tag.replace(/_/g, '-'))[0];
+      } catch {
+        return undefined;
+      }
+    })
+    .filter(Boolean);
   const locales = validLanguages.filter((l) => l.startsWith(lang));
   if (!locales.includes(gitlabLanguage)) {
     locales.push(gitlabLanguage);

@@ -11,7 +11,8 @@ module Mutations
 
         authorize :delete_custom_attribute
         authorize_granular_token permissions: :delete_custom_attribute,
-          boundary_argument: :project_path, boundary_type: :project
+          boundary_argument: :project_path, boundary_type: :project,
+          assignable_when: [:admin]
 
         argument :project_path, GraphQL::Types::ID,
           required: true,

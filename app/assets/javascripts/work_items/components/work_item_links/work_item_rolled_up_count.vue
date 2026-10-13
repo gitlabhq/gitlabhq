@@ -26,7 +26,6 @@ export default {
     rolledUpCountsByType: {
       type: Array,
       required: true,
-      default: () => [],
     },
     hideCountWhenZero: {
       type: Boolean,

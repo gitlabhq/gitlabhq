@@ -46,7 +46,8 @@ const DEFAULT_DIVERGING_BAR_CHART_OPTIONS = {
     icon: 'square',
     itemWidth: LEGEND_ICON_SIZE,
     itemHeight: LEGEND_ICON_SIZE,
-    textStyle: { fontSize: VALUE_LABEL_SIZE },
+    // The legend's own default colour shadows the theme's, so dark mode needs it set.
+    textStyle: { fontSize: VALUE_LABEL_SIZE, color: 'var(--gl-text-color-default)' },
   },
 };
 
@@ -59,6 +60,14 @@ export default {
     GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
+    /**
+     * A name for the chart that screen readers announce.
+     */
+    accessibleTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
     /**
      * `[{ name: String, values: [Number, Number] }]`, in display order.
      * `values[0]` grows left from the centre, `values[1]` grows right.
@@ -200,6 +209,7 @@ export default {
   >
     <gl-chart
       :options="fullOptions"
+      :accessible-title="accessibleTitle"
       height="auto"
       responsive
       class="gl-grow gl-overflow-hidden"

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'click_house/client'
 
 RSpec.describe ClickHouse::DictionaryCredentialsHandler, feature_category: :database do
   describe '.replace_credentials_with_variables' do

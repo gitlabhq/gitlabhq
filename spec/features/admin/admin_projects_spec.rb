@@ -50,8 +50,7 @@ RSpec.describe "Admin::Projects", :with_current_organization, feature_category: 
 
       context 'for "jh transition banner" part' do
         before do
-          allow(::Gitlab).to receive(:com?).and_return(false)
-          allow(::Gitlab).to receive(:jh?).and_return(false)
+          allow(::Gitlab).to receive_messages(com?: false, jh?: false)
         end
 
         it 'shows the banner class ".js-jh-transition-banner"' do

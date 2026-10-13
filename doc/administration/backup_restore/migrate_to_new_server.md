@@ -137,6 +137,7 @@ To prepare the new server:
    alertmanager['enable'] = false
    gitaly['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
    gitlab_pages['enable'] = false
    gitlab_workhorse['enable'] = false
    logrotate['enable'] = false

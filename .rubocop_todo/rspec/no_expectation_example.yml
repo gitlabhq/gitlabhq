@@ -1,7 +1,6 @@
 ---
 RSpec/NoExpectationExample:
   Exclude:
-    - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'
     - 'ee/spec/features/groups/settings/protected_environments_spec.rb'

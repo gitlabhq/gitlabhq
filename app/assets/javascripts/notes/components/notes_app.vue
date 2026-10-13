@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GlEmptyState } from '@gitlab/ui';
 import EMPTY_ACTIVITY_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg?url';
 import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
-import { createAlert } from '~/alert';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -25,6 +25,7 @@ import { Mousetrap, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { querySelectionClosest } from '~/lib/utils/selection';
 import * as constants from '../constants';
 import { shouldRenderAsDuoSystemNote } from '../utils';
@@ -107,6 +108,7 @@ export default {
       renderSkeleton: !this.shouldShow,
       aiLoading: null,
       previewNote: null,
+      deletedNoteAlert: null,
     };
   },
   apollo: {
@@ -180,6 +182,7 @@ export default {
       'mergeRequestFilters',
     ]),
     ...mapState(useNotes, { discussions: 'filteredDiscussions' }),
+    ...mapState(useDiscussions, { rawDiscussions: 'discussions' }),
     sortDirDesc() {
       return this.sortDirection === constants.DESC;
     },
@@ -365,11 +368,37 @@ export default {
         const discussion = this.discussions.find((d) => d.notes?.some(({ id }) => id === noteId));
 
         if (discussion) {
+          this.dismissDeletedNoteAlert();
           this.expandDiscussion({ discussionId: discussion.id });
+        } else if (this.isNotesFetched && !this.isLoading && !this.noteExists(noteId)) {
+          // !isLoading: DiscussionFilter reacts to the same hashchange by
+          // resetting a non-default filter, which empties the discussions
+          // store while it refetches; that emptiness is not a missing note.
+          this.showDeletedNoteAlert();
         }
+      } else {
+        // The hash no longer targets a note; a stale "could not be found"
+        // alert would misdescribe whatever the user navigated to.
+        this.dismissDeletedNoteAlert();
       }
 
       return noteId;
+    },
+    noteExists(noteId) {
+      return this.rawDiscussions.some((d) => d.notes?.some(({ id }) => id === noteId));
+    },
+    dismissDeletedNoteAlert() {
+      this.deletedNoteAlert?.dismiss();
+      this.deletedNoteAlert = null;
+    },
+    showDeletedNoteAlert() {
+      this.dismissDeletedNoteAlert();
+      this.deletedNoteAlert = createAlert({
+        message: s__(
+          "Notes|The comment you're looking for could not be found. It may have been deleted, or you may not have permission to view it.",
+        ),
+        variant: VARIANT_INFO,
+      });
     },
     async startReplying(discussionId) {
       this.convertToDiscussion(discussionId);

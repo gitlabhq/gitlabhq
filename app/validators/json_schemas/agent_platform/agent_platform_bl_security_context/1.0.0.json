@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Runtime dials for the business logic security scan flow, from project CI/CD variables. Sent only for that flow, and only while its bl_security_analyzer feature flag is enabled.",
+  "type": "object",
+  "properties": {
+    "scan_effort": {
+      "type": "string",
+      "enum": [
+        "low",
+        "standard",
+        "high"
+      ],
+      "description": "The scan's effort tier, from the BL_SCAN_EFFORT project CI/CD variable, stripped and lowercased. Always sent: \"low\" when the variable is unset, blank or not one of these values."
+    },
+    "target_files": {
+      "type": "string",
+      "description": "Restricts the scan to specific files, as a comma-, semicolon- or whitespace-separated list of paths. Sent only when the run checks out a branch other than the default branch, so default-branch runs are always whole-repository scans. Taken from the BL_TARGET_FILES project CI/CD variable when it is set; otherwise, when the goal is a merge request IID, derived from that merge request's diff (the added and modified files, one per line). Omitted otherwise, and when the diff overflowed, lists more than 400 files, or has a path containing whitespace, a comma or a semicolon; the run is then a whole-repository scan."
+    }
+  },
+  "required": [
+    "scan_effort"
+  ],
+  "additionalProperties": false
+}

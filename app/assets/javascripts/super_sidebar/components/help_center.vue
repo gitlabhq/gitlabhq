@@ -13,21 +13,15 @@ import { termsPath } from '~/lib/utils/path_helpers/user';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL, UNIVERSITY_URL } from '~/constants';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
-import { isExperimentVariant } from '~/experimentation/utils';
 import WhatsNewForYouMenuItem from '~/whats_new/components/whats_new_for_you_menu_item.vue';
 import { HELP_MENU_TRACKING_DEFAULTS } from '../constants';
 
-const WHATS_NEW_EXPERIMENT = 'whats_new_placement';
-const WHATS_NEW_PLACEMENT = 'help_menu';
-
 export default {
   name: 'HelpCenter',
-  WHATS_NEW_EXPERIMENT,
+  WHATS_NEW_TRACKING_PROPERTY: HELP_MENU_TRACKING_DEFAULTS['data-track-property'],
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
-    GitlabExperiment,
     GlNavItem,
     GitlabVersionCheckBadge,
     HelpCenterUpgradeSubscription,
@@ -36,7 +30,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin({ property: 'nav_help_menu', experiment: WHATS_NEW_EXPERIMENT })],
+  mixins: [Tracking.mixin({ property: 'nav_help_menu' })],
   i18n: {
     help: __('Help'),
     support: __('Support'),
@@ -61,6 +55,9 @@ export default {
   computed: {
     showUpgradeSubscription() {
       return Boolean(this.sidebarData.free_group_upgrade_link);
+    },
+    showWhatsNew() {
+      return !this.sidebarData.is_logged_in;
     },
     itemGroups() {
       const groups = {
@@ -189,13 +186,6 @@ export default {
       this.track('click_toggle', {
         label: show ? 'show_help_dropdown' : 'hide_help_dropdown',
       });
-
-      if (!show) return;
-
-      const isCandidate = isExperimentVariant(WHATS_NEW_EXPERIMENT, 'candidate');
-      if (this.sidebarData.display_whats_new && !isCandidate) {
-        this.track('render_whats_new_for_you_menu_item', { property: WHATS_NEW_PLACEMENT });
-      }
     },
   },
 };
@@ -259,11 +249,12 @@ export default {
         </template>
       </gl-disclosure-dropdown-group>
 
-      <gitlab-experiment :name="$options.WHATS_NEW_EXPERIMENT">
-        <template #control>
-          <whats-new-for-you-menu-item :sidebar-data="sidebarData" placement="help_menu" />
-        </template>
-      </gitlab-experiment>
+      <whats-new-for-you-menu-item
+        v-if="showWhatsNew"
+        :sidebar-data="sidebarData"
+        placement="help_menu"
+        :tracking-property="$options.WHATS_NEW_TRACKING_PROPERTY"
+      />
     </gl-disclosure-dropdown>
   </div>
 </template>

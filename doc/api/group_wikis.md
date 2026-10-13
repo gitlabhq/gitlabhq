@@ -31,7 +31,7 @@ GET /groups/:id/wikis
 | `with_content` | boolean        | No       | Include pages' content. |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/wikis?with_content=1"
 ```
@@ -79,7 +79,7 @@ GET /groups/:id/wikis/:slug
 | `version`     | string         | No       | Wiki page version SHA. |
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/wikis/home"
 ```

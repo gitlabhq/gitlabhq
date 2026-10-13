@@ -71,6 +71,23 @@ describe('Time ago with tooltip component', () => {
     expect(vm.text()).toEqual(`The time is ${timeAgoTimestamp}`);
   });
 
+  describe('when time cannot be parsed', () => {
+    const outOfRangeDate = '+292278994-08-17T07:12:55+00:00';
+
+    beforeEach(() => {
+      buildVm({ time: outOfRangeDate });
+    });
+
+    it('renders the raw value', () => {
+      expect(vm.text()).toBe(outOfRangeDate);
+    });
+
+    it('renders no tooltip', () => {
+      expect(vm.attributes('title')).toBeUndefined();
+      expect(vm.attributes('aria-label')).toBeUndefined();
+    });
+  });
+
   describe('with User Setting timeDisplayRelative: false', () => {
     beforeEach(() => {
       window.gon = { time_display_relative: false };

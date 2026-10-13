@@ -111,6 +111,7 @@ Example response:
 {{< history >}}
 
 - `email` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178689) in GitLab 17.9.
+- `external` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/583452) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -123,11 +124,12 @@ POST /service_accounts?email=custom_email@gitlab.example.com
 
 Supported attributes:
 
-| Attribute  | Type   | Required | Description |
-| ---------- | ------ | -------- | ----------- |
-| `name`     | string | no       | Name of the user. If not set, uses `Service account user`. |
-| `username` | string | no       | Username of the user account. If undefined, generates a name prepended with `service_account_`. |
-| `email`    | string | no       | Email of the user account. If undefined, generates a no-reply email address. Custom email addresses require confirmation, unless the email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | ----------- |
+| `name`     | string  | no       | Name of the user. If not set, uses `Service account user`. |
+| `username` | string  | no       | Username of the user account. If undefined, generates a name prepended with `service_account_`. |
+| `email`    | string  | no       | Email of the user account. If not specified, generates an email prepended with `service_account_`. Custom email addresses require confirmation, unless the email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `external` | boolean | no       | Whether the user is external. Defaults to `true`. |
 
 Example request:
 
@@ -145,7 +147,8 @@ Example response:
   "username": "service_account_6018816a18e515214e0c34c2b33523fc",
   "public_email": "",
   "name": "Service account user",
-  "email": "service_account_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
+  "email": "service_account_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com",
+  "external": true
 }
 ```
 
@@ -157,6 +160,7 @@ returns a `400 Bad request` error.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196309/) in GitLab 18.2.
+- `external` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/583452) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -174,6 +178,7 @@ Parameters:
 | `name`     | string         | no       | Name of the user.  |
 | `username` | string         | no       | Username of the user account. |
 | `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `external` | boolean        | no       | Whether the user is external. |
 
 Example request:
 
@@ -193,6 +198,7 @@ Example response:
   "public_email": "",
   "name": "Updated Service Account",
   "email": "service_account_<random_hash>@noreply.gitlab.example.com",
+  "external": true,
   "unconfirmed_email": "custom_email@example.com"
 }
 ```
@@ -342,7 +348,7 @@ Supported attributes:
 | `id`       | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
 | `name`     | string         | no       | User account name. If not specified, uses `Service account user`. |
 | `username` | string         | no       | User account username. If not specified, generates a name prepended with `service_account_group_`. |
-| `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation, unless the top-level group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 
@@ -393,7 +399,7 @@ Parameters:
 | `user_id`  | integer        | yes      | The ID of the service account. |
 | `name`     | string         | no       | Name of the user. |
 | `username` | string         | no       | Username of the user. |
-| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the top-level group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 
@@ -537,7 +543,7 @@ Parameters:
 | `name`        | string         | yes      | Name of personal access token. |
 | `description` | string         | no       | Description of personal access token. |
 | `scopes`      | array          | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
-| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 Example request:
 
@@ -611,6 +617,7 @@ Other possible responses:
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632896) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -627,7 +634,7 @@ Parameters:
 | `id`         | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`    | integer        | yes      | The ID of the service account. |
 | `token_id`   | integer        | yes      | The ID of the token. |
-| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, the token has no expiration date. |
 
 Example request:
 
@@ -654,6 +661,11 @@ Example response:
   "token":"<token_value>"
 }
 ```
+
+> [!note]
+> Rotating a token with granular scopes returns those scopes in a `granular_scopes` attribute
+> on the new token. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
 
 ## Project service accounts
 
@@ -785,7 +797,7 @@ Supported attributes:
 | `id`       | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project |
 | `name`     | string         | no       | User account name. If not specified, uses `Service account user`. |
 | `username` | string         | no       | User account username. If not specified, generates a name prepended with `service_account_project_`. |
-| `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_project_`. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_project_`. Custom email addresses require confirmation, unless the top-level group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 
@@ -824,7 +836,7 @@ Parameters:
 | `user_id`  | integer        | yes      | The ID of the service account. |
 | `name`     | string         | no       | Name of the user. |
 | `username` | string         | no       | Username of the user. |
-| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the top-level group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 
@@ -961,7 +973,7 @@ Parameters:
 | `name`        | string         | yes      | Name of personal access token. |
 | `description` | string         | no       | Description of personal access token. |
 | `scopes`      | array          | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
-| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 Example request:
 
@@ -1029,6 +1041,7 @@ Other possible responses:
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632896) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -1045,7 +1058,7 @@ Parameters:
 | `id`         | integer or string | yes      | The ID or [URL-encoded path of the target project](rest/_index.md#namespaced-paths). |
 | `user_id`    | integer        | yes      | The ID of the service account. |
 | `token_id`   | integer        | yes      | The ID of the token. |
-| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, the token has no expiration date. |
 
 Example request:
 
@@ -1072,3 +1085,8 @@ Example response:
   "token":"<token_value>"
 }
 ```
+
+> [!note]
+> Rotating a token with granular scopes returns those scopes in a `granular_scopes` attribute
+> on the new token. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).

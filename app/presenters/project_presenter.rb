@@ -70,7 +70,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       wiki_anchor_data,
       integrations_anchor_data,
       observability_anchor_data
-    ].compact.reject { |item| item.is_link }
+    ].compact.reject(&:is_link)
   end
 
   def default_view

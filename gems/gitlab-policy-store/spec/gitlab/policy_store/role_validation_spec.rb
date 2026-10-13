@@ -143,7 +143,7 @@ RSpec.describe Gitlab::PolicyStore::RoleValidation do
     context 'with block action (no roles)' do
       let(:trigger_type) { 'deployment_requested' }
       let(:actions) do
-        [{ 'type' => 'block', 'value' => { 'blockMessage' => 'Blocked' } }]
+        [{ 'type' => 'block', 'value' => { 'message' => 'Blocked' } }]
       end
 
       it 'creates the policy successfully' do

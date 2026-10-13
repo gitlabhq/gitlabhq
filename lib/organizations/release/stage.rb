@@ -38,10 +38,17 @@ module Organizations
           description: 'In flux. Being designed and built. No stability contract.'
         ),
         new(
+          key: :internal,
+          flag: :org_stage_internal,
+          label: 'Internal',
+          audience: 'GitLab team members',
+          description: 'Used internally by GitLab team members. May change.'
+        ),
+        new(
           key: :beta,
           flag: :org_stage_beta,
           label: 'Beta',
-          audience: 'GitLab Team Members and opted-in customers',
+          audience: 'Opted-in customers',
           description: 'Ready for real world use. No SLA. May change.'
         ),
         *la_stages,

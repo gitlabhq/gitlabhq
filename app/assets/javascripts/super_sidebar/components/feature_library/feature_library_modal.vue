@@ -6,7 +6,6 @@ import {
   GlIcon,
   GlCollapse,
   GlEmptyState,
-  GlLink,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -30,7 +29,7 @@ import {
 } from '../../tracking_constants';
 import { HIDDEN_NAV_ITEM_CLASS, PANEL_TYPES } from '../../constants';
 import ScrollScrim from '../scroll_scrim.vue';
-import { FEEDBACK_ISSUE_URL, MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
+import { MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
 import { rankSearchResults } from './search';
 import FeatureLibraryItem from './feature_library_item.vue';
 
@@ -48,7 +47,6 @@ export default {
     GlIcon,
     GlCollapse,
     GlEmptyState,
-    GlLink,
     GlLoadingIcon,
     ScrollScrim,
     FeatureLibraryItem,
@@ -56,7 +54,6 @@ export default {
   mixins: [trackingMixin],
   modalId: MODAL_ID,
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-  FEEDBACK_ISSUE_URL,
   searchInputDescriptionId: 'feature-library-search-input-description',
   i18n: {
     geminiSearching: s__('FeatureLibrary|Searching with Gemini …'),
@@ -88,11 +85,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    showFeedbackLink: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   emits: ['pin-toggle'],
@@ -223,12 +215,10 @@ export default {
       );
     },
     showResultsGrid() {
-      return !this.isSearching && (Boolean(this.trimmedQuery) || this.hasActiveCategoryFilter);
+      return Boolean(this.trimmedQuery) || this.hasActiveCategoryFilter;
     },
-    // The !isSearching guard stops the grouped view flashing in behind the
-    // loading spinner while a search request is in flight.
     showGroupedSections() {
-      return !this.isSearching && !this.showResultsGrid;
+      return !this.showResultsGrid;
     },
     showEmptyState() {
       return (
@@ -271,14 +261,13 @@ export default {
       return (
         this.aiSearchAvailable &&
         this.resourceId &&
-        !this.isSearching &&
         this.hasSearchableQuery &&
         (!this.geminiSearched || this.geminiHidden) &&
         !this.isGeminiSearching
       );
     },
     showFooter() {
-      return this.showFeedbackLink || this.showGeminiButton;
+      return this.showGeminiButton;
     },
     emptyStateTitle() {
       return s__('FeatureLibrary|No features match your search');
@@ -288,19 +277,19 @@ export default {
         return '';
       }
 
+      if (this.filteredItems.length > 0) {
+        return n__(
+          'FeatureLibrary|%d feature found.',
+          'FeatureLibrary|%d features found.',
+          this.filteredItems.length,
+        );
+      }
+
       if (this.isSearching) {
         return this.$options.i18n.searchInProgress;
       }
 
-      if (this.filteredItems.length === 0) {
-        return this.emptyStateTitle;
-      }
-
-      return n__(
-        'FeatureLibrary|%d feature found.',
-        'FeatureLibrary|%d features found.',
-        this.filteredItems.length,
-      );
+      return this.emptyStateTitle;
     },
     showGeminiTopBorder() {
       // showEmptyState already requires !showGeminiEmptyState, so the two are
@@ -367,7 +356,7 @@ export default {
       this.trackEvent(EVENT_OPEN_FEATURE_LIBRARY_MODAL);
     },
     focusFirstResult(event) {
-      if (!this.trimmedQuery || this.isSearching) return;
+      if (!this.trimmedQuery) return;
 
       // Move focus into the results instead of navigating away: focusing the
       // first result lets keyboard users continue from there
@@ -450,11 +439,8 @@ export default {
       this.renderLimit = ITEMS_PER_RENDER_FRAME;
     },
     fetchResults(query) {
-      this.searchResultIds = [];
-
       if (query.length < MIN_SEARCH_QUERY_LENGTH) {
-        this.isSearching = false;
-        this.latestQuery = null;
+        this.resetSearchState();
         return;
       }
 
@@ -465,19 +451,36 @@ export default {
         .get(onboardingFeatureLibrarySearchPath(), { params: { query, panel: this.panelType } })
         .then(({ data }) => {
           if (query !== this.latestQuery) return;
-          this.searchResultIds = data.ids || [];
+          this.applySearchResultIds(data.ids || []);
         })
         .catch((e) => {
           if (query !== this.latestQuery) return;
           if (e.response?.status !== HTTP_STATUS_TOO_MANY_REQUESTS) {
             Sentry.captureException(e, { tags: { feature_category: 'onboarding' } });
           }
-          this.searchResultIds = [];
+          this.applySearchResultIds([]);
         })
         .finally(() => {
           if (query !== this.latestQuery) return;
           this.isSearching = false;
         });
+    },
+    // A kept result can hold keyboard focus while the request is in flight; if
+    // the response drops it, it unmounts and focus silently falls to <body>.
+    applySearchResultIds(ids) {
+      const focused = document.activeElement;
+      const hadFocusedResult = this.isInsideResult(focused);
+
+      this.searchResultIds = ids;
+
+      if (!hadFocusedResult) return;
+
+      this.$nextTick(() => {
+        if (!this.isInsideResult(focused)) this.$refs.searchBox?.focusInput?.();
+      });
+    },
+    isInsideResult(element) {
+      return (this.$refs.searchResultItems || []).some((item) => item.$el.contains(element));
     },
     async searchWithGemini() {
       if (!this.resourceId || !this.aiSearchAvailable) return;
@@ -539,7 +542,7 @@ export default {
     :aria-label="s__('FeatureLibrary|GitLab features')"
     :hide-footer="!showFooter"
     modal-class="feature-library-modal"
-    body-class="gl-flex gl-flex-col gl-overflow-hidden"
+    :body-class="['gl-flex gl-flex-col gl-overflow-hidden', { '!gl-pb-0': !showFooter }]"
     size="lg"
     hide-header
     @shown="onShown"
@@ -551,6 +554,7 @@ export default {
       :placeholder="searchPlaceholder"
       :aria-describedby="$options.searchInputDescriptionId"
       :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
+      :is-loading="isSearching"
       class="gl-mt-3"
       @input="onSearchInput"
       @keydown.enter="focusFirstResult"
@@ -668,7 +672,7 @@ export default {
           </section>
         </template>
         <gl-loading-icon
-          v-if="isSearching"
+          v-if="isSearching && filteredItems.length === 0"
           size="sm"
           class="gl-mt-3"
           data-testid="search-loading"
@@ -761,12 +765,6 @@ export default {
             <span>{{ s__('FeatureLibrary|Powered by Gemini') }}</span>
           </span>
         </gl-button>
-
-        <div v-if="showFeedbackLink" class="gl-text-center gl-text-sm">
-          <gl-link :href="$options.FEEDBACK_ISSUE_URL" show-external-icon target="_blank">{{
-            s__('FeatureLibrary|Share feedback about this feature library')
-          }}</gl-link>
-        </div>
       </div>
     </template>
   </gl-modal>

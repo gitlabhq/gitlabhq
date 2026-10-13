@@ -212,6 +212,14 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
 
     include_examples 'with diffs_blobs param'
 
+    context 'when changed paths are not returned in sorted order' do
+      let_it_be(:merge_request) do
+        create(:merge_request_with_diffs, target_project: project, source_project: project)
+      end
+
+      include_examples 'with diffs_blobs param'
+    end
+
     context 'when only_context_commits is true' do
       let_it_be(:sha1) { "33f3729a45c02fc67d00adb1b8bca394b0e761d9" }
       let_it_be(:sha2) { "ae73cb07c9eeaf35924a10f713b364d32b2dd34f" }

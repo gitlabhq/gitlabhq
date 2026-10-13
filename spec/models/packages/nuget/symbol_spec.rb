@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Nuget::Symbol, feature_category: :package_registry do
   subject(:symbol) { create(:nuget_symbol) }
 
   it { is_expected.to be_a FileStoreMounter }

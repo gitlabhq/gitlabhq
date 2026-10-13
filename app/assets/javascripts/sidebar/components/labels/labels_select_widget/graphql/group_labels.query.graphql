@@ -8,6 +8,7 @@ query groupLabels($fullPath: ID!, $searchTerm: String) {
       searchTerm: $searchTerm
       onlyGroupLabels: true
       includeAncestorGroups: true
+      fuzzySearch: true
     ) {
       nodes {
         ...Label

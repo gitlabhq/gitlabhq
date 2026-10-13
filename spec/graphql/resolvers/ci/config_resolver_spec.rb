@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_integration do
+RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :pipeline_composition do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -22,7 +22,8 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
       resolve(
         described_class,
         args: { project_path: project.full_path, content: content, sha: sha },
-        ctx: { current_user: user }
+        ctx: { current_user: user },
+        field_opts: { calls_gitaly: true }
       )
     end
 
@@ -43,7 +44,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
         expect(response[:includes]).to eq([])
         expect(response[:errors]).to be_empty
         expect(::Gitlab::Ci::Lint).to have_received(:new)
-          .with(current_user: user, project: project, sha: sha, verify_project_sha: true)
+          .with(current_user: user, project: project, sha: sha, verify_project_sha: true, surface: :graphql_ci_config)
       end
     end
 
@@ -126,7 +127,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
         project.add_developer(user)
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:ci_lint, scope: [user])
+          .with(:ci_lint, scope: { user: user })
           .and_return(true)
       end
 
@@ -137,10 +138,6 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
       end
 
       context 'when ci_enforce_ci_lint_rate_limit is disabled (log-only mode)' do
-        # Provide a sha so the real Lint constructor doesn't resolve the head commit via Gitaly,
-        # which the resolver test harness rejects on the success path.
-        let(:sha) { '1231231' }
-
         let(:fake_result) do
           ::Gitlab::Ci::Lint::Result.new(
             merged_yaml: content, jobs: [], errors: [], warnings: [], includes: []
@@ -150,8 +147,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
         before do
           stub_feature_flags(ci_enforce_ci_lint_rate_limit: false)
 
-          # Exercise the real `ci_lint_rate_limited?` gate (it should return false and not raise),
-          # but stub the downstream validation to avoid Gitaly calls the resolver harness rejects.
+          # Stub the real YAML validation so the example only exercises the rate-limit gate.
           allow_next_instance_of(::Gitlab::Ci::Lint) do |lint|
             allow(lint).to receive(:legacy_static_validation).and_return(fake_result)
           end

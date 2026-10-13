@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::Blob, type: :model, feature_category: :virtual_registry do
+RSpec.describe DependencyProxy::Blob, feature_category: :virtual_registry do
   it_behaves_like 'ttl_expirable'
   it_behaves_like 'destructible', factory: :dependency_proxy_blob
 

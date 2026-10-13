@@ -1,6 +1,7 @@
 import { markInputRule } from '@tiptap/core';
 import { Link } from '@tiptap/extension-link';
 import { sanitize } from '~/lib/dompurify';
+import { parseCanonicalSrc } from '../services/utils';
 
 const extractHrefFromMatch = (match) => {
   return { href: match.groups.href };
@@ -82,7 +83,7 @@ export default Link.extend({
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => element.dataset.canonicalSrc,
+        parseHTML: parseCanonicalSrc,
         renderHTML: () => '',
       },
       isReference: {

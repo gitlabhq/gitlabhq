@@ -27,7 +27,7 @@ describe('WorkItemBulkEditAssignee component', () => {
     .mockResolvedValue(projectMembersAutocompleteResponseWithCurrentUser);
   const currentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
 
-  const createComponent = ({ props = {}, searchQueryHandler = usersSearchQueryHandler } = {}) => {
+  const createComponent = ({ searchQueryHandler = usersSearchQueryHandler } = {}) => {
     wrapper = mount(WorkItemBulkEditAssignee, {
       apolloProvider: createMockApollo([
         [usersSearchQuery, searchQueryHandler],
@@ -35,7 +35,6 @@ describe('WorkItemBulkEditAssignee component', () => {
       ]),
       propsData: {
         fullPath: 'group/project',
-        ...props,
       },
       stubs: {
         GlCollapsibleListbox,

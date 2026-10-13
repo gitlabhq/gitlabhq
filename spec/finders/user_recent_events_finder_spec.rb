@@ -56,7 +56,7 @@ RSpec.describe UserRecentEventsFinder, feature_category: :user_profile do
 
     it 'does not include the events if the user cannot read cross project' do
       allow(Ability).to receive(:allowed?).and_call_original
-      expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project) { false }
+      expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project).and_return(false)
 
       expect(finder.execute).to be_empty
     end

@@ -1076,8 +1076,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       let(:source) { project }
 
       before do
-        # Extra queries from has_approval_policy_rules? checking approval_policy_rules
-        # when deprecate_scan_result_policies feature flag is enabled.
+        # Extra queries from has_approval_policy_rules? checking approval_policy_rules.
         # Threshold set to the measured worst case (~110, including the intermittent
         # `plans` table INSERT and todos resolution) plus a 1-query buffer, so it stays
         # tight enough to catch a future regression instead of masking it.

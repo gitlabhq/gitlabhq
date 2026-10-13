@@ -272,6 +272,18 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST create' do
     expect(response).to have_gitlab_http_status(:ok)
   end
 
+  it 'sets request_channel: :ui on the service' do
+    allow(Gitlab::LegacyGithubImport::ProjectCreator)
+      .to receive(:new).and_return(double(execute: project))
+
+    expect_next_instance_of(Import::GithubService) do |service|
+      expect(service).to receive(:request_channel=).with(:ui)
+      allow(service).to receive(:execute).and_return(status: :success, project: project)
+    end
+
+    post :create, params: { target_namespace: user.namespace }, format: :json
+  end
+
   it 'returns 422 response with the base error when the project could not be imported' do
     project = build(:project)
     project.errors.add(:name, 'is invalid')

@@ -8,6 +8,8 @@ module Gitlab
         module_function
 
         def run(args, check_name: nil)
+          Gitlab::InternalEvents.track_event('run_db_diagnostics_rake_task')
+
           # Rake splits `[main,ci]` on commas, so later names land in `extras`.
           requested = [args[:database_names], *args.extras].compact.map(&:strip).reject(&:empty?)
 

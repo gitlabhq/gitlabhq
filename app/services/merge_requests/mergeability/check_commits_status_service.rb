@@ -16,7 +16,7 @@ module MergeRequests
       end
 
       def skip?
-        false
+        params[:skip_commits_check].present?
       end
 
       def cacheable?

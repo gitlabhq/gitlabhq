@@ -110,13 +110,13 @@ class MergeRequest < ApplicationRecord
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_request_issues,
-    class_name: 'MergeRequestsClosingIssues',
+    class_name: 'MergeRequestIssue',
     inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_request_closing_issues,
     -> { link_type_closes },
-    class_name: 'MergeRequestsClosingIssues',
+    class_name: 'MergeRequestIssue',
     inverse_of: :merge_request
 
   has_one :approval_metrics,
@@ -598,14 +598,6 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :target_project, :latest_merge_request_diff) }
-
-  scope :preload_latest_diff_commit, ->(project) do
-    preload(latest_merge_request_diff: {
-      merge_request_diff_commits: [{
-        merge_request_commits_metadata: [:commit_author, :committer]
-      }]
-    })
-  end
 
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
 
@@ -1608,6 +1600,16 @@ class MergeRequest < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # Used by GET requests so that #mergeable? enqueues the mergeability check
+  # instead of writing the merge status during the request.
+  def with_async_mergeability_check
+    previous = @async_mergeability_check
+    @async_mergeability_check = true
+    yield
+  ensure
+    @async_mergeability_check = previous
+  end
+
   def diffable_merge_ref?
     open? && merge_head_diff.present? && can_be_merged?
   end
@@ -1647,6 +1649,11 @@ class MergeRequest < ApplicationRecord
       ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
     ])
 
+    # Right after creation the diff is written by NewMergeRequestWorker, so the
+    # commits check fails until then; #process re-runs it unskipped before merging.
+    skip_commits_check = merge_when_checks_pass_strat && preparing? &&
+      Feature.enabled?(:auto_merge_skip_commits_check_while_preparing, project)
+
     {
       skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
@@ -1662,7 +1669,8 @@ class MergeRequest < ApplicationRecord
       skip_security_policy_check: merge_when_checks_pass_strat,
       skip_security_policy_pipeline_check: merge_when_checks_pass_strat,
       skip_merge_time_check: merge_when_checks_pass_strat,
-      skip_merge_request_title_check: merge_when_checks_pass_strat
+      skip_merge_request_title_check: merge_when_checks_pass_strat,
+      skip_commits_check: skip_commits_check
     }
   end
 
@@ -1695,7 +1703,7 @@ class MergeRequest < ApplicationRecord
     skip_conflict_check: false, use_cache: true, **mergeable_state_check_params)
     return false unless mergeable_state?(use_cache: use_cache, **mergeable_state_check_params)
 
-    check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
+    check_mergeability(async: !!@async_mergeability_check, sync_retry_lease: check_mergeability_retry_lease)
     mergeable_git_state?(skip_rebase_check: skip_rebase_check, skip_conflict_check: skip_conflict_check, use_cache: use_cache)
   end
 
@@ -2094,8 +2102,15 @@ class MergeRequest < ApplicationRecord
   end
 
   def can_be_merged_by?(user, skip_collaboration_check: false)
+    return false if read_only_target_project?
+
     access = ::Gitlab::UserAccess.new(user, container: project, skip_collaboration_check: skip_collaboration_check)
     access.can_update_branch?(target_branch)
+  end
+
+  # overridden in EE
+  def read_only_target_project?
+    false
   end
 
   def only_allow_merge_if_pipeline_succeeds?
@@ -2116,7 +2131,17 @@ class MergeRequest < ApplicationRecord
   end
 
   def pipeline_creating?
-    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self)
+    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self) ||
+      pipeline_creating_for_source_ref?
+  end
+
+  def pipeline_creating_for_source_ref?
+    return false unless source_project
+    return false unless Feature.enabled?(:track_ref_pipeline_creation, source_project)
+
+    # or_sha: false keeps the refs/heads/... form the requests are keyed by, even
+    # when source_branch_sha is force-set (e.g. imports).
+    Ci::PipelineCreation::Requests.pipeline_creating_for_ref?(source_project, source_branch_ref(or_sha: false))
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
@@ -2436,6 +2461,11 @@ class MergeRequest < ApplicationRecord
   def has_sast_reports_for?(pipeline)
     !!pipeline&.complete_or_manual? &&
       pipeline_has_report_in_self_or_descendants?(:sast, pipeline)
+  end
+
+  # Overridden in EE
+  def agentic_sast_reports?
+    false
   end
 
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
@@ -2849,6 +2879,21 @@ class MergeRequest < ApplicationRecord
 
   def current_patch_id_sha
     merge_request_diff.get_patch_id_sha
+  end
+
+  # head_sha must be a head the caller has verified the approver acted on, since
+  # resets compare approvals against the value derived here.
+  def patch_id_sha_for_head(head_sha)
+    return if head_sha.blank?
+
+    # Only the fork has the source head until the diff's fetch_ref! runs.
+    repository = for_fork? ? source_project&.repository : target_project.repository
+    return if repository.nil? || target_branch_sha.blank?
+
+    base = repository.merge_base(target_branch_sha, head_sha)
+    return if base.blank? || base == head_sha
+
+    repository.get_patch_id(base, head_sha)
   end
 
   def diff_head_pipeline_considered_in_progress?
@@ -3306,7 +3351,7 @@ class MergeRequest < ApplicationRecord
   def bulk_insert_relations(issue_ids_to_create, link_type)
     now = Time.zone.now
     new_associations = issue_ids_to_create.map do |issue_id|
-      MergeRequestsClosingIssues.new(
+      MergeRequestIssue.new(
         issue_id: issue_id,
         merge_request_id: id,
         from_mr_description: true,
@@ -3319,7 +3364,7 @@ class MergeRequest < ApplicationRecord
     # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
     # We can skip validations once we have validated the unique constraint
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
-    MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
+    MergeRequestIssue.bulk_insert!(new_associations, batch_size: 100)
   end
 
   def merge_data_attributes
@@ -3480,9 +3525,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def pipeline_has_report_in_self_or_descendants?(report_type, pipeline = diff_head_pipeline)
-    !!pipeline
-      &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
-      &.exists?
+    !!pipeline&.has_self_or_descendant_reports?(::Ci::JobArtifact.of_report_type(report_type))
   end
 
   def resolve_diff_version(diff_options = {})

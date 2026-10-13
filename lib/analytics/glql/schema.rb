@@ -43,9 +43,11 @@ module Analytics
         { 'name' => 'list', 'description' => 'A bulleted list of items.' },
         { 'name' => 'orderedList', 'description' => 'A numbered list of items.' },
         { 'name' => 'table', 'description' => 'One row per item, one column per display field.' },
-        { 'name' => 'stat', 'description' => 'A single aggregate value.',
+        { 'name' => 'stat',
+          'description' => 'A single aggregate value. The first metric listed is the value to ' \
+            'display, subsequent metrics are used to fill placeholders in the description.',
           'selections' => [
-            { 'dimensions' => 0, 'metrics' => { 'min' => 1, 'max' => 1 } }
+            { 'dimensions' => 0, 'metrics' => { 'min' => 1 } }
           ] },
         { 'name' => 'columnChart', 'description' => 'Vertical bars, one per dimension value.',
           'selections' => [
@@ -58,9 +60,14 @@ module Analytics
             { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
           ] },
         { 'name' => 'barList',
-          'description' => 'Horizontal bars showing each dimension value as a share of the total.',
+          'description' => 'Horizontal bars, one per dimension value in descending order, or one ' \
+            'per metric in query order when there is no dimension. By default each bar is sized ' \
+            'and labeled as a share of the total. With two dimensions, each bar splits into ' \
+            'stacked segments, one per value of the second dimension.',
           'selections' => [
-            { 'dimensions' => 1, 'metrics' => { 'min' => 1, 'max' => 1 } }
+            { 'dimensions' => 0, 'metrics' => { 'min' => 1 } },
+            { 'dimensions' => 1, 'metrics' => { 'min' => 1, 'max' => 1 } },
+            { 'dimensions' => 2, 'metrics' => { 'min' => 1, 'max' => 1 } }
           ] },
         { 'name' => 'lineChart',
           'description' => 'A line over an ordered dimension, typically a date.',

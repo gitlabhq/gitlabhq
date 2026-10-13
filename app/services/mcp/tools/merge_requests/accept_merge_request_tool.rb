@@ -58,7 +58,9 @@ module Mcp
               return accept_response('already_scheduled')
             end
 
-            return ::Mcp::Tools::Base::Response.error(enriched_error_message(payload_errors))
+            return ::Mcp::Tools::Base::Response.error(
+              enriched_error_message(payload_errors), reason: payload_errors_reason(payload_errors)
+            )
           end
 
           processed = super
@@ -66,6 +68,12 @@ module Mcp
 
           status = params[:strategy].present? ? 'auto_merge_scheduled' : 'merging'
           accept_response(status, processed[:structuredContent]['mergeRequest'])
+        end
+
+        def payload_errors_reason(errors)
+          return unless errors.include?(::Mutations::MergeRequests::Accept::SHA_MISMATCH)
+
+          ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
         end
 
         def enriched_error_message(errors)
@@ -83,7 +91,8 @@ module Mcp
           ::Mcp::Tools::Base::Response.error(
             'The merge request is already scheduled to be merged, but its head no longer matches ' \
               'the provided sha. Pass the current diff_head_sha from get_merge_request to confirm ' \
-              'the armed auto-merge.'
+              'the armed auto-merge.',
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
           )
         end
 

@@ -92,8 +92,7 @@ RSpec.describe Ci::PipelineSchedules::VariablesCreateService, feature_category: 
         errors.add(:base, 'An error occurred')
 
         allow_next_instance_of(Ci::PipelineScheduleVariable) do |instance|
-          allow(instance).to receive(:save).and_return(false)
-          allow(instance).to receive(:errors).and_return(errors)
+          allow(instance).to receive_messages(save: false, errors: errors)
         end
       end
 

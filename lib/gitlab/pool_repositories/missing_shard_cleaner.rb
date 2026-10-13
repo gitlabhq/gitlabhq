@@ -21,17 +21,22 @@ module Gitlab
 
       ValidationError = Class.new(StandardError)
 
-      attr_reader :deleted_count, :skipped_members_count
+      attr_reader :deleted_count, :skipped_members_count, :csv_count
 
-      def initialize(shard_names:, logger:, output_file: nil, dry_run: true, csv_writer: nil)
+      def initialize(
+        shard_names:, logger:, output_file: nil, deleted_output_file: nil, dry_run: true,
+        csv_writer: nil, deleted_csv_writer: nil)
         raise ArgumentError, 'output_file or csv_writer is required' if output_file.nil? && csv_writer.nil?
 
         @shard_names = Array(shard_names).map(&:to_s).map(&:strip).reject(&:blank?)
         @output_file = output_file
+        @deleted_output_file = deleted_output_file
         @csv_writer = csv_writer
+        @deleted_csv_writer = deleted_csv_writer
         @logger = logger
         @dry_run = dry_run
         @deleted_count = 0
+        @csv_count = 0
         @skipped_members_count = 0
       end
 
@@ -41,9 +46,11 @@ module Gitlab
         # Created only after validation passes, so a rejected run never
         # truncates an existing audit CSV at the same path.
         csv_writer
+        deleted_csv_writer unless dry_run
 
         if shards_by_id.empty?
           logger.info 'No matching shards found. Nothing to clean up.'
+          report
           return
         end
 
@@ -53,22 +60,45 @@ module Gitlab
         report
       ensure
         @csv_writer&.close
+        @deleted_csv_writer&.close
       end
 
       private
 
-      attr_reader :shard_names, :output_file, :logger, :dry_run
+      attr_reader :shard_names, :output_file, :deleted_output_file, :logger, :dry_run
 
       def csv_writer
         @csv_writer ||= CsvWriter.new(output_file, columns: CSV_COLUMNS)
       end
 
+      def deleted_csv_writer
+        @deleted_csv_writer ||= CsvWriter.new(deleted_output_file, columns: [{ key: :pool_id, header: 'Pool ID' }])
+      end
+
       def validate!
         raise ValidationError, 'shard_names cannot be empty' if shard_names.empty?
 
-        if output_file && File.exist?(output_file)
+        if !dry_run && deleted_output_file.blank? && @deleted_csv_writer.nil?
+          raise ValidationError, 'DELETED_IDS_FILE is required when DRY_RUN=false'
+        end
+
+        output_files = [output_file]
+        output_files << deleted_output_file unless dry_run
+        paths = output_files.compact.map do |path|
+          File.join(File.realpath(File.dirname(path)), File.basename(path))
+        rescue SystemCallError => e
+          raise ValidationError, "Cannot resolve output directory for #{path}: #{e.message}"
+        end
+
+        if paths.uniq.size != paths.size
+          raise ValidationError, 'OUTPUT_FILE and DELETED_IDS_FILE must be different paths'
+        end
+
+        existing_file = output_files.compact.find { |path| File.exist?(path) }
+
+        if existing_file
           raise ValidationError,
-            "Refusing to run: #{output_file} already exists. " \
+            "Refusing to run: #{existing_file} already exists. " \
               'Use a new output file per run to preserve previous audit records.'
         end
 
@@ -118,6 +148,7 @@ module Gitlab
 
           rows = orphaned.to_a
           rows.each { |pool| csv_writer.write_row(csv_row(pool)) }
+          @csv_count += rows.size
 
           next if dry_run
 
@@ -125,17 +156,16 @@ module Gitlab
           # mid-run loses the only recovery record of the deleted batch.
           csv_writer.flush
 
-          # Conditions are re-evaluated inside the DELETE statement itself.
-          # Never delete by previously collected ids: a pool gaining a
-          # member between read and delete must survive.
-          deleted = orphaned.delete_all
-          @deleted_count += deleted
+          deleted_rows = orphaned.where(id: rows.map(&:id)).delete_all_returning(:id)
+          @deleted_count += deleted_rows.size
+          deleted_rows.each { |row| deleted_csv_writer.write_row(pool_id: row.fetch('id')) }
+          deleted_csv_writer.flush
 
           sleep 0.01 # rest period between delete batches to reduce primary database pressure
 
-          next if deleted == rows.size
+          next if deleted_rows.size == rows.size
 
-          logger.warn "Batch mismatch: #{rows.size} rows written to CSV but #{deleted} deleted. " \
+          logger.warn "Batch mismatch: #{rows.size} rows written to CSV but #{deleted_rows.size} deleted. " \
             'Some rows no longer matched the delete conditions and were skipped.'
         end
       end
@@ -154,10 +184,15 @@ module Gitlab
       end
 
       def report
+        logger.info "Recovery CSV: #{csv_count} pool records written."
+        logger.info "Recovery CSV saved to #{output_file}" if output_file
+
         if dry_run
           logger.info 'Dry run complete. No rows were deleted.'
         else
           logger.info "Deleted #{deleted_count} orphaned pool repository rows."
+          logger.info "Deleted IDs CSV: #{deleted_count} IDs written."
+          logger.info "Deleted IDs CSV saved to #{deleted_output_file}" if deleted_output_file
         end
       end
     end

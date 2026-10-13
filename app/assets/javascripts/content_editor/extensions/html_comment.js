@@ -16,10 +16,13 @@ export default Node.create({
         default: null,
         parseHTML(element) {
           return (
-            element.textContent.replace(hexHTMLEntityRegex, (_, code) =>
-              String.fromCharCode(parseInt(code, 16)),
-            ) || ' '
-          ).trim();
+            element.dataset.description ??
+            (
+              element.textContent.replace(hexHTMLEntityRegex, (_, code) =>
+                String.fromCharCode(parseInt(code, 16)),
+              ) || ' '
+            ).trim()
+          );
         },
       },
     };
@@ -27,6 +30,10 @@ export default Node.create({
 
   parseHTML() {
     return [{ tag: 'comment' }];
+  },
+
+  renderHTML({ node }) {
+    return ['comment', { 'data-description': node.attrs.description }];
   },
 
   addNodeView() {

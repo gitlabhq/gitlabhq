@@ -61,24 +61,12 @@ RSpec.describe Gitlab::Access, feature_category: :permissions do
     it 'includes Security Manager with correct access level' do
       expect(described_class.options['Security Manager']).to eq(25)
     end
-
-    context 'when the security manager role is disabled', :disable_security_manager do
-      it 'does not include Security Manager' do
-        expect(described_class.options.keys).to eq(%w[Guest Planner Reporter Developer Maintainer])
-      end
-    end
   end
 
   describe '.option_descriptions' do
-    it 'includes Security Manager description' do
+    it 'includes Security Manager description', :aggregate_failures do
       expect(described_class.option_descriptions).to have_key(25)
       expect(described_class.option_descriptions[25]).to include('Security Manager')
-    end
-
-    context 'when the security manager role is disabled', :disable_security_manager do
-      it 'does not include Security Manager description' do
-        expect(described_class.option_descriptions).not_to have_key(25)
-      end
     end
   end
 
@@ -103,12 +91,6 @@ RSpec.describe Gitlab::Access, feature_category: :permissions do
 
     it 'includes security_manager with correct access level' do
       expect(described_class.sym_options[:security_manager]).to eq(25)
-    end
-
-    context 'when the security manager role is disabled', :disable_security_manager do
-      it 'does not include security_manager' do
-        expect(described_class.sym_options.keys).to eq([:guest, :planner, :reporter, :developer, :maintainer])
-      end
     end
   end
 end

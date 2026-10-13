@@ -17,9 +17,10 @@ module API
     included do
       helpers do
         params :pagination do
-          optional :page, type: Integer, default: 1, desc: 'Current page number', documentation: { example: 1 }
+          optional :page, type: Integer, default: 1, desc: 'Page number of results to ' \
+                                                       'retrieve.', documentation: { example: 1 }
           optional :per_page, type: Integer, default: 20,
-            desc: 'Number of items per page', except_values: [0], documentation: { example: 20 }
+            desc: 'Number of items to list per page.', except_values: [0], documentation: { example: 20 }
         end
 
         def verify_pagination_params!

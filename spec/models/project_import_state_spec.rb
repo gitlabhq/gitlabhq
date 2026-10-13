@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
+RSpec.describe ProjectImportState, feature_category: :importers do
   let_it_be(:correlation_id) { 'cid' }
   let_it_be_with_refind(:import_state) { create(:import_state, correlation_id_value: correlation_id) }
 
@@ -10,6 +10,34 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+  end
+
+  describe '#request_channel', :clean_gitlab_redis_shared_state, :request_store do
+    it 'is populated from the request store when the record is created' do
+      Gitlab::Import::RequestChannel.stash(:ui)
+
+      project = create(:project, import_type: 'github', import_url: 'https://github.com/foo/bar.git')
+
+      expect(project.import_state.request_channel).to eq('ui')
+    end
+
+    it 'returns nil when nothing was stored' do
+      expect(import_state.request_channel).to be_nil
+    end
+
+    it 'round-trips a symbol as a string' do
+      import_state.request_channel = :ui
+
+      expect(import_state.request_channel).to eq('ui')
+    end
+
+    it 'is scoped per project' do
+      import_state.request_channel = :congregate
+
+      other_state = create(:import_state)
+
+      expect(other_state.request_channel).to be_nil
+    end
   end
 
   describe 'validations' do
@@ -174,7 +202,7 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
     end
   end
 
-  describe 'import state transitions' do
+  describe 'import state transitions', :clean_gitlab_redis_shared_state do
     context 'state transition: [:started] => [:finished]' do
       it 'resets last_error' do
         error_message = 'Some error'
@@ -253,7 +281,7 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
             project: project,
             user: project.creator,
             namespace: project.namespace,
-            additional_properties: { label: 'github', property: expected_source }
+            additional_properties: { label: 'github', property: expected_source, source_hosting: 'cloud' }
           )
       end
 
@@ -290,6 +318,100 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
             user: project.creator,
             namespace: project.namespace,
             additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'forwards request_channel when the importer captured one' do
+        project = create(:project, :import_scheduled, import_type: 'github')
+        project.import_state.request_channel = :ui
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', request_channel: 'ui' }
+          )
+      end
+
+      it 'includes source_hosting when the project has a resolvable github source' do
+        project = create(
+          :project, :import_scheduled, import_type: 'github', import_url: 'https://api.github.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', property: expected_source, source_hosting: 'cloud' }
+          )
+      end
+
+      it 'labels enterprise github as self_hosted' do
+        project = create(
+          :project, :import_scheduled, import_type: 'github', import_url: 'https://ghe.example.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', property: expected_source, source_hosting: 'self_hosted' }
+          )
+      end
+
+      it 'labels gitea.com as cloud' do
+        project = create(
+          :project, :import_scheduled, import_type: 'gitea', import_url: 'https://gitea.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitea', property: expected_source, source_hosting: 'cloud' }
+          )
+      end
+
+      it 'labels self-hosted gitea as self_hosted' do
+        project = create(
+          :project, :import_scheduled, import_type: 'gitea', import_url: 'https://gitea.example.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitea', property: expected_source, source_hosting: 'self_hosted' }
+          )
+      end
+
+      it 'omits source_hosting for non-github/gitea importers' do
+        project = create(
+          :project, :import_scheduled, import_type: 'bitbucket', import_url: 'https://bitbucket.org/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'bitbucket', property: expected_source }
           )
       end
 
@@ -420,6 +542,32 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
         import_state.cancel
 
         expect(import_state.user_mapping_enabled).to be(true)
+      end
+    end
+
+    context 'when the importer captured a request_channel' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:transition, :event) do
+        :finish  | 'finish_project_import'
+        :fail_op | 'fail_project_import'
+        :cancel  | 'cancel_project_import'
+      end
+
+      with_them do
+        it 'does not forward request_channel on terminal events' do
+          project = create(:project, :import_started, import_type: 'github')
+          project.import_state.request_channel = :ui
+
+          expect { project.import_state.public_send(transition) }
+            .to trigger_internal_events(event)
+            .with(
+              project: project,
+              user: project.creator,
+              namespace: project.namespace,
+              additional_properties: { label: 'github' }
+            )
+        end
       end
     end
 

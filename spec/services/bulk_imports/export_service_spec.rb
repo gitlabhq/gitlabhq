@@ -6,10 +6,15 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user, owner_of: group) }
 
-  subject { described_class.new(portable: group, user: user) }
+  let(:offline_export_id) { nil }
+
+  subject { described_class.new(portable: group, user: user, offline_export_id: offline_export_id) }
 
   describe '#execute' do
-    let_it_be(:top_level_relations) { BulkImports::FileTransfer.config_for(group).portable_relations }
+    let(:top_level_relations) do
+      BulkImports::FileTransfer.config_for(group, offline: offline_export_id.present?)
+        .portable_relations
+    end
 
     before do
       allow(subject).to receive(:execute).and_return(ServiceResponse.success).and_call_original
@@ -56,7 +61,7 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
     end
 
     context 'when export is from offline transfer' do
-      subject(:service) { described_class.new(portable: group, user: user, offline_export_id: 123) }
+      let(:offline_export_id) { 123 }
 
       it 'schedules RelationExportWorker with the offline export ID' do
         top_level_relations.each do |relation|
@@ -68,11 +73,11 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
                 group.class.name,
                 relation,
                 false,
-                { 'offline_export_id' => 123 }
+                { 'offline_export_id' => offline_export_id }
               )
         end
 
-        service.execute
+        subject.execute
       end
     end
 

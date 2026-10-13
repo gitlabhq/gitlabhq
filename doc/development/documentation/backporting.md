@@ -7,20 +7,28 @@ title: Backport documentation changes
 
 There are two types of backports:
 
-- Current stable release: Any maintainer can backport
+- Maintained versions: Any maintainer can backport
   changes, usually bug fixes but also important documentation changes, into the
-  current stable release. If the milestone in development
-  is 18.7, for example, the most recent stable branch is `18-6-stable-ee`.
-- Older stable releases: To guarantee the
+  [maintained versions](../../policy/maintenance.md#maintained-versions).
+  These are the current stable release and the two releases before it.
+  If the milestone in development is 18.7, for example, the maintained stable
+  branches are `18-6-stable-ee`, `18-5-stable-ee`, and `18-4-stable-ee`.
+- Releases older than the maintained versions: To guarantee the
   [maintenance policy](../../policy/maintenance.md) is respected, merging to
-  older stable releases is restricted to release managers.
+  these releases is restricted to release managers.
 
-## Backport documentation changes to current stable release
+## Backport documentation changes to maintained versions
 
-To backport documentation changes to the current stable release:
+To backport documentation changes to a maintained version:
 
-1. Pull the stable branch, for example `18-6-stable-ee`.
-1. Make your changes and open an MR. Use the [stable branch template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Stable%20Branch.md).
+1. Merge the change to the default branch first.
+1. Create the backport merge request by following the
+   [release documentation](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md#process-to-create-a-backport-merge-request).
+   Cherry-pick the merged commit onto a branch created from the stable branch,
+   so the same commit exists on both branches.
+1. Set the target of the merge request to the stable branch, for example `18-6-stable-ee`,
+   and use the [stable branch template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Stable%20Branch.md).
+1. Assign the merge request to another technical writer or maintainer for review and merge.
 1. [Deploy the changes to the docs site](#deploy-the-backport-changes).
 
 You do not need to involve a release manager.
@@ -32,8 +40,8 @@ You do not need to involve a release manager.
 > Legitimate reasons to backport documentation include legal issues, emergency security fixes,
 > and fixes to content that might prevent users from upgrading or cause data loss.
 
-To backport documentation changes in documentation releases older than the
-current stable branch:
+To backport documentation changes to releases older than the
+maintained versions:
 
 1. [Create an issue for the backport](#create-an-issue).
 1. [Create the merge request (MR) to backport the change](#create-the-merge-request-to-backport-the-change).

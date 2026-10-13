@@ -19,6 +19,14 @@ class Suggestion < ApplicationRecord
     note.latest_diff_file
   end
 
+  # `latest_diff_file` runs a Gitaly compare on every discussions load; the
+  # discussion diff file comes from the stored `note_diff_files` row and is
+  # enough to pick a lexer. Replies share the first note position but never
+  # get a row of their own, so they borrow it from the discussion.
+  def diff_file_for_highlight
+    note.discussion.diff_file
+  end
+
   def source_project
     noteable.source_project
   end
@@ -55,6 +63,7 @@ class Suggestion < ApplicationRecord
       next _("This merge request was merged. To apply this suggestion, edit this file directly.") if noteable.merged?
       next _("This merge request is closed. To apply this suggestion, edit this file directly.") if noteable.closed?
       next _("Can't apply as the source branch was deleted.") unless noteable.source_branch_exists?
+      next oversized_reason if oversized?
       next outdated_reason if outdated?(cached: cached) || !note.active?
       next _("This suggestion already matches its content.") unless different_content?
       next _("This file was modified for readability, and can't accept suggestions. Edit it directly.") if file_path.end_with? "ipynb"
@@ -81,6 +90,13 @@ class Suggestion < ApplicationRecord
 
   def different_content?
     from_content != to_content
+  end
+
+  def oversized_reason
+    format(
+      _("Cannot apply as this suggestion spans more than %{max_lines} lines."),
+      max_lines: Suggestible::MAX_LINES_CONTEXT
+    )
   end
 
   def outdated_reason

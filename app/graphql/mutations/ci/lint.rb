@@ -40,7 +40,7 @@ module Mutations
         ref ||= project.default_branch
 
         result = ::Gitlab::Ci::Lint
-          .new(project: project, current_user: context[:current_user])
+          .new(project: project, current_user: context[:current_user], surface: :graphql_ci_lint)
           .validate(content, dry_run: dry_run, ref: ref)
 
         {

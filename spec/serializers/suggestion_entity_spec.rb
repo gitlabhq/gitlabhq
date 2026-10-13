@@ -16,11 +16,15 @@ RSpec.describe SuggestionEntity, feature_category: :code_review_workflow do
     expect(subject.keys).to match_array([:id, :appliable, :applied, :diff_lines, :current_user, :inapplicable_reason])
   end
 
-  it 'passes diff_file to Gitlab::Diff::Highlight for syntax highlighting' do
+  it 'highlights with the diff file the suggestion picks for highlighting' do
+    highlight_file = instance_double(Gitlab::Diff::File)
+    highlight = instance_double(Gitlab::Diff::Highlight, highlight: suggestion.diff_lines)
+    allow(suggestion).to receive(:diff_file_for_highlight).and_return(highlight_file)
+
     expect(Gitlab::Diff::Highlight)
       .to receive(:new)
-      .with(suggestion.diff_lines, diff_file: suggestion.diff_file)
-      .and_call_original
+      .with(suggestion.diff_lines, diff_file: highlight_file)
+      .and_return(highlight)
 
     subject
   end

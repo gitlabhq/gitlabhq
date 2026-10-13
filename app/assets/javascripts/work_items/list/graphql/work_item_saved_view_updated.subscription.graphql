@@ -1,0 +1,9 @@
+# @feature_category: portfolio_management
+
+#import "./saved_view.fragment.graphql"
+
+subscription workItemSavedViewUpdated($savedViewId: WorkItemsSavedViewsSavedViewID!) {
+  workItemSavedViewUpdated(savedViewId: $savedViewId) {
+    ...SavedView
+  }
+}

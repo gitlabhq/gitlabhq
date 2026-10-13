@@ -7,8 +7,9 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   include RepoHelpers
   include ListboxHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, maintainers: user) }
+
   let(:gravatar_enabled) { true }
 
   # This commit has a known state on the master branch of gitlab-test
@@ -17,7 +18,6 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   before do
     stub_application_setting(gravatar_enabled: gravatar_enabled)
 
-    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -62,6 +62,9 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   end
 
   context "with a tree that contains pathspec characters" do
+    # This context commits to the repository, so it cannot reuse the shared
+    # let_it_be project that the read-only examples above rely on.
+    let(:project) { create(:project, :repository, maintainers: user) }
     let(:path) { ':wq' }
     let(:filename) { File.join(path, 'test.txt') }
     let(:short_newrev) { project.repository.commit('master').short_id }
@@ -135,9 +138,9 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   end
 
   context 'for subgroups' do
-    let(:group) { create(:group) }
-    let(:subgroup) { create(:group, parent: group) }
-    let(:project) { create(:project, :repository, group: subgroup) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, :repository, group: subgroup, maintainers: user) }
 
     it 'renders tree table without errors' do
       visit project_tree_path(project, 'master')

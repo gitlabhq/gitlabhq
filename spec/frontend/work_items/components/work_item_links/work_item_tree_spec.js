@@ -81,7 +81,6 @@ describe('WorkItemTree', () => {
     workItemHierarchyTreeHandler = workItemHierarchyTreeResponseHandler,
     shouldWaitForPromise = true,
     closedChildrenCount = 0,
-    useCachedRolledUpWeights = false,
     workItemFeaturesField = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
@@ -110,7 +109,7 @@ describe('WorkItemTree', () => {
       provide: {
         hasSubepicsFeature,
         closedChildrenCount,
-        glFeatures: { useCachedRolledUpWeights, workItemFeaturesField },
+        glFeatures: { workItemFeaturesField },
       },
       stubs: { CrudComponent },
     });
@@ -590,7 +589,7 @@ describe('WorkItemTree', () => {
     });
 
     // A contextual panel puts its own key in `show`, which is not an encoded child reference.
-    describe.each(['work-item-detail', 'agent-plan', 'decision-log'])(
+    describe.each(['work-item-detail', 'workplan', 'decision-log'])(
       'when the URL requests the %s panel',
       (panel) => {
         beforeEach(async () => {

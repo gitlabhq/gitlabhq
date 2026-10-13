@@ -16,7 +16,7 @@
 #
 # Example:
 #
-#   expect { merge_request_diff.includes_any_commits?(['abc']) }
+#   expect { MergeRequestDiff.ids_including_any_commits([diff.id], ['abc'], project: project) }
 #     .not_to query_missing_diff_commit_columns
 #
 module MissingDiffCommitColumnsMatcher

@@ -91,8 +91,20 @@ RSpec.describe Gitlab::MobilePush::Payload, feature_category: :notifications do
         project_path: project.full_path,
         iid: issue.iid,
         target_url: Gitlab::UrlBuilder.build(issue),
-        note_id: nil
+        note_id: nil,
+        created_at: todo.created_at.utc.iso8601(3),
+        author_id: author.id,
+        author_name: 'Jane Doe',
+        author_username: author.username,
+        author_avatar_url: author.avatar_url(only_path: false)
       )
+    end
+
+    it 'names who acted and when, so the app can pick the exact resource the todo was raised for' do
+      data = payload.gitlab_data
+
+      expect(Time.zone.parse(data[:created_at])).to be_within(0.001).of(todo.created_at)
+      expect(data[:author_avatar_url]).to start_with('http')
     end
 
     context 'when the todo is attached to a note' do

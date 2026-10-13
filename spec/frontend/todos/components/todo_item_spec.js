@@ -95,6 +95,20 @@ describe('TodoItem', () => {
         expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
       });
     });
+
+    describe('selected state background', () => {
+      it('applies the selected background class when `selected` is `true`', () => {
+        createComponent({ selectable: true, selected: true });
+
+        expect(wrapper.classes()).toContain('!gl-bg-strong');
+      });
+
+      it('does not apply the selected background class when `selected` is `false`', () => {
+        createComponent({ selectable: true, selected: false });
+
+        expect(wrapper.classes()).not.toContain('!gl-bg-strong');
+      });
+    });
   });
 
   describe('isSnoozed status', () => {

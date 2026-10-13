@@ -41,7 +41,7 @@ module Issues
 
       return [] if merge_requests.empty?
 
-      ids = MergeRequestsClosingIssues.link_type_closes.where(
+      ids = MergeRequestIssue.link_type_closes.where(
         merge_request_id: merge_requests.map(&:id),
         issue_id: issue.id
       ).pluck(:merge_request_id)
@@ -58,7 +58,7 @@ module Issues
     def persisted_related_merge_requests(issue)
       return [] unless Feature.enabled?(:explicit_mr_work_item_relations, project)
 
-      merge_request_ids = MergeRequestsClosingIssues.link_type_related.with_issues(issue.id).select(:merge_request_id)
+      merge_request_ids = MergeRequestIssue.link_type_related.with_issues(issue.id).select(:merge_request_id)
       merge_requests = MergeRequest.id_in(merge_request_ids).preload_target_project.preload_author
 
       filter_readable_by_user(merge_requests)

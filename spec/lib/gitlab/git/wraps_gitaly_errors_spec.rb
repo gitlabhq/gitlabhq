@@ -182,4 +182,29 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors, feature_category: :gitaly do
       end
     end
   end
+
+  context 'when wrap GRPC::FailedPrecondition' do
+    context 'with Gitaly::RefExistsError dangling reference detail' do
+      let(:original_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'dangling reference',
+          Gitaly::RefExistsError.new(
+            unresolvable_reference: Gitaly::ReferenceUnresolvableError.new(
+              reference_name: "refs/keep-around/deadbeef", oid: "deadbeef"
+            )
+          )
+        )
+      end
+
+      it "wraps in a Gitlab::Git::ReferenceUnresolvableError", :aggregate_failures do
+        expect { wrapper.wrapped_gitaly_errors { raise original_error } }.to raise_error do |wrapped_error|
+          expect(wrapped_error).to be_a(Gitlab::Git::ReferenceUnresolvableError)
+          expect(wrapped_error).to be_a(Gitlab::Git::CommandError)
+          expect(wrapped_error.name).to eql("refs/keep-around/deadbeef")
+          expect(wrapped_error.oid).to eql("deadbeef")
+        end
+      end
+    end
+  end
 end

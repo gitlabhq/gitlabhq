@@ -11,6 +11,16 @@ module Ci
     # In the future it's likely that this class will persist additional models and the concept of a `Workload` may
     # become first class. For that reason we abstract users from the underlying `Ci::Pipeline` semantics.
     class RunWorkloadService
+      include Gitlab::Loggable
+
+      # execve() caps one environment string at MAX_ARG_STRLEN, a kernel compile-time constant.
+      # Past it, the job dies in prepare_script with "argument list too long" on every runner,
+      # so reject here, where the caller learns which variable.
+      MAX_VARIABLE_BYTESIZE = 128.kilobytes
+      # The total is bounded by ARG_MAX, which scales with the runner's stack rlimit, so only log
+      # it until we know how many workloads go over.
+      WARN_VARIABLES_BYTESIZE = 1.megabyte
+
       def initialize(
         project:, current_user:, source:, workload_definition:, ref: nil,
         ci_variables_included: [], duo_workflow_definition: nil)
@@ -27,6 +37,10 @@ module Ci
         validate_source!
 
         @workload_definition.add_variable(:CI_WORKLOAD_REF, @ref)
+
+        oversized = validate_variables_size
+        return oversized if oversized
+
         service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: @ref)
         response = service.execute(
           @source,
@@ -55,6 +69,49 @@ module Ci
       end
 
       private
+
+      def validate_variables_size
+        sizes = @workload_definition.variables.to_h do |name, value|
+          # The kernel bounds the whole "NAME=VALUE\0" string, not the value on its own.
+          [name.to_s, name.to_s.bytesize + value.to_s.bytesize + 2]
+        end
+
+        over_limit = sizes.select { |_name, size| size > MAX_VARIABLE_BYTESIZE }
+        total = sizes.values.sum
+
+        if over_limit.any?
+          Gitlab::AppJsonLogger.error(
+            variables_size_payload('Workload job environment exceeds the size limits', sizes, over_limit, total)
+          )
+
+          return ServiceResponse.error(
+            message: "Error in creating workload: variables over the #{MAX_VARIABLE_BYTESIZE} byte limit: " \
+              "#{over_limit.keys.sort.join(', ')}"
+          )
+        end
+
+        return unless total > WARN_VARIABLES_BYTESIZE
+
+        Gitlab::AppJsonLogger.warn(
+          variables_size_payload('Workload job environment is over the total size threshold', sizes, over_limit, total)
+        )
+        nil
+      end
+
+      # Names and sizes only: the values carry OAuth tokens, service tokens and user content.
+      # Sizes go under fixed field names as {'name' =>, 'bytesize' =>} objects: variable names are
+      # caller-controlled, so hashing on them would inject dynamic keys into the log entry.
+      def variables_size_payload(message, sizes, over_limit, total)
+        build_structured_payload_labkit(
+          message: message,
+          Labkit::Fields::GL_PROJECT_ID => @project.id,
+          source: @source.to_s,
+          duo_workflow_definition: @duo_workflow_definition,
+          variables_bytesize: total,
+          oversized_variables: over_limit.keys.sort,
+          variable_bytesizes: sizes.sort.map { |name, size| { 'name' => name, 'bytesize' => size } }
+        )
+      end
 
       # By default a Workload will not get any of the CI variables configured at the project/group/instance level.
       # Setting ci_included_variables option ensures these named variables will later be made available from the CI

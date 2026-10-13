@@ -6,6 +6,13 @@ module Mcp
       class GetMergeRequestConflictsService < Base::CustomService
         include Gitlab::Utils::StrongMemoize
 
+        # Unlisted pending removal: superseded by the get_merge_request conflicts facet
+        # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
+        override :unlisted?
+        def unlisted?
+          true
+        end
+
         # Register version with schema definition
         register_version '0.1.0', {
           toolset: :merge_requests,
@@ -37,7 +44,7 @@ module Mcp
         def auth_target(params)
           strong_memoize_with(:auth_target, params[:arguments]) do
             mr = merge_request(params[:arguments])
-            raise ArgumentError, "#{name}: merge request not found" if mr.nil?
+            raise ResourceNotFoundError, "#{name}: merge request not found" if mr.nil?
 
             mr
           end
@@ -47,13 +54,12 @@ module Mcp
           super
 
           mr = auth_target(params)
-          raise ArgumentError, "#{name}: source project not found" unless mr.source_project
+          raise ResourceNotFoundError, "#{name}: source project not found" unless mr.source_project
 
           access = ::Gitlab::UserAccess.new(current_user, container: mr.source_project)
           return if access.can_push_to_branch?(mr.source_branch)
 
-          raise Gitlab::Access::AccessDeniedError, "User #{current_user.id} does not have permission to " \
-            "push to branch '#{mr.source_branch}' in project #{mr.source_project.id}"
+          raise ResourceForbiddenError, authorization_error_message
         end
 
         protected

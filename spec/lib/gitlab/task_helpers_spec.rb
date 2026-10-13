@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'webmock/rspec'
 
 RSpec.describe Gitlab::TaskHelpers do
   let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-test.git' }

@@ -63,7 +63,7 @@ RSpec.describe API::WorkItems::RelatedMergeRequests, feature_category: :portfoli
     context 'with an explicitly related merge request' do
       let_it_be(:explicitly_related_mr) do
         create(:merge_request, source_project: project, source_branch: 'markdown').tap do |merge_request|
-          create(:merge_requests_closing_issues,
+          create(:merge_request_issue,
             issue: work_item, merge_request: merge_request, link_type: :related, from_mr_description: false)
         end
       end
@@ -90,7 +90,7 @@ RSpec.describe API::WorkItems::RelatedMergeRequests, feature_category: :portfoli
     end
 
     it 'deduplicates a merge request that is both referenced and explicitly related' do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: work_item, merge_request: referenced_mr, link_type: :related, from_mr_description: false)
 
       get api(api_request_path, user)

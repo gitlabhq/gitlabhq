@@ -139,10 +139,6 @@ sent to the primary email address instead.
 
 Unverified secondary email addresses are automatically deleted after three days.
 
-> [!note]
-> Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
-> the deleted email address.
-
 To delete an email address from your account:
 
 1. In the upper-right corner, select your avatar.

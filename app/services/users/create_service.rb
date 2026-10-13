@@ -23,6 +23,19 @@ module Users
 
     def after_create_hook(user, reset_token)
       notify_new_user(user, reset_token)
+      grant_organization_admin_roles(user)
+    end
+
+    # The admin new-user form and the admin flag create the membership as owner
+    # inside Users::BuildService, so no organization-user service ever sees it.
+    # The worker decides whether an owner row written by the admin flag counts.
+    def grant_organization_admin_roles(user)
+      return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      user.organization_users.owners.each do |organization_user|
+        ::Authz::Organizations::GrantOwnerRoleWorker.perform_async(
+          organization_user.organization_id, user.id, current_user.id)
+      end
     end
 
     def build_class

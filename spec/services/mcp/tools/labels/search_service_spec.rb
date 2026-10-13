@@ -7,7 +7,7 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:label) { create(:label, project: project, title: 'bug') }
 
-  let(:service) { described_class.new(name: 'search_labels') }
+  let(:service) { described_class.new(name: 'search_labels', version: '0.1.0') }
   let(:request) { instance_double(ActionDispatch::Request) }
 
   before_all do
@@ -59,6 +59,64 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
         }
       )
     end
+
+    it 'accepts a string or a nonempty array of search terms in version 0.2.0' do
+      schema = described_class.new(name: 'search_labels').input_schema
+
+      expect(schema[:properties][:search][:oneOf]).to eq([
+        { type: 'string' },
+        { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 10 }
+      ])
+    end
+  end
+
+  describe 'version 0.2.0' do
+    let(:service) { described_class.new(name: 'search_labels') }
+    let(:params) { { arguments: { full_path: project.full_path, is_project: true, search: %w[bug back] } } }
+
+    it 'selects version 0.2.0 by default and returns a flat list' do
+      result = service.execute(request: request, params: params)
+
+      expect(service.version).to eq('0.2.0')
+      expect(result[:isError]).to be(false)
+      expect(result[:structuredContent][:items]).to include(a_hash_including('title' => 'bug'))
+    end
+
+    it 'rejects an empty search array' do
+      result = service.execute(request: request, params: { arguments: params[:arguments].merge(search: []) })
+
+      expect(result[:isError]).to be(true)
+      expect(result[:content].first[:text]).to include('search is invalid')
+    end
+
+    it 'preserves scalar searches on the default version' do
+      result = service.execute(request: request, params: { arguments: params[:arguments].merge(search: 'bug') })
+
+      expect(result[:isError]).to be(false)
+      expect(result[:structuredContent][:items]).to include(a_hash_including('title' => 'bug'))
+    end
+
+    it 'rejects more than ten search terms' do
+      arguments = params[:arguments].merge(search: Array.new(11, 'bug'))
+      result = service.execute(request: request, params: { arguments: arguments })
+
+      expect(result[:isError]).to be(true)
+      expect(result[:content].first[:text]).to include('search cannot contain more than 10 items')
+    end
+
+    it 'rejects non-string search terms' do
+      result = service.execute(request: request, params: { arguments: params[:arguments].merge(search: ['bug', 3]) })
+
+      expect(result[:isError]).to be(true)
+      expect(result[:content].first[:text]).to include('search/1 is invalid')
+    end
+
+    it 'preserves unfiltered label listings when search is omitted' do
+      result = service.execute(request: request, params: { arguments: params[:arguments].except(:search) })
+
+      expect(result[:isError]).to be(false)
+      expect(result[:structuredContent][:items]).to include(a_hash_including('title' => 'bug'))
+    end
   end
 
   describe '#graphql_tool_class' do
@@ -98,8 +156,8 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
       }
     end
 
-    it 'delegates to perform_v0_1_0' do
-      expect(service).to receive(:perform_v0_1_0).with(arguments)
+    it 'delegates to perform_v0_2_0' do
+      expect(service).to receive(:perform_v0_2_0).with(arguments)
 
       service.send(:perform_default, arguments)
     end

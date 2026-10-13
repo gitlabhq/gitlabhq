@@ -21,7 +21,7 @@ A migration tool is available for some third-party platforms. Some support
 | Migrate from                                                                   | Groups                  | Projects    | Migration tool | Post-migration mapping |
 |:-------------------------------------------------------------------------------|:------------------------|:------------|:---------------|:-----------------------|
 | [GitLab (by using direct transfer)](../group/import/_index.md)                 | {{< yes >}}             | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
-| [GitLab (by using file export)](../project/settings/import_export.md)          | {{< yes >}}<sup>1</sup> | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
+| [GitLab (by using file export)](../project/settings/import_export.md)          | {{< yes >}}[^file-export-deprecated] | {{< yes >}} | {{< yes >}}    | {{< no >}}             |
 | [Bitbucket Server](bitbucket_server.md)                                        | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
 | [GitHub](../project/import/github.md)                                          | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
 | [Gitea](gitea.md)                                                              | {{< no >}}              | {{< yes >}} | {{< yes >}}    | {{< yes >}}            |
@@ -36,9 +36,7 @@ A migration tool is available for some third-party platforms. Some support
 | [Team Foundation Version Control (TFVC)](third_party_systems/tfvc.md)          | {{< no >}}              | {{< yes >}} | {{< no >}}     | {{< no >}}             |
 | [Jira (issues only)](third_party_systems/jira.md)                              | {{< no >}}              | {{< no >}}  | {{< yes >}}    | {{< no >}}             |
 
-**Footnotes**:
-
-1. Using file exports for group migration is deprecated.
+[^file-export-deprecated]: Using file exports for group migration is deprecated.
 
 ## Migrate from Subversion
 

@@ -4,11 +4,20 @@ require 'spec_helper'
 
 RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:package_a) { create(:nuget_package, :with_metadatum, project: project, name: 'DummyPackageA') }
+  let_it_be(:package_a) do
+    create(:nuget_package, :with_metadatum, project: project, name: 'DummyPackageA', without_package_files: true)
+  end
+
   let_it_be(:tag1) { create(:packages_tag, package: package_a, name: 'tag1') }
   let_it_be(:tag2) { create(:packages_tag, package: package_a, name: 'tag2') }
-  let_it_be(:packages_b) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageB') }
-  let_it_be(:packages_c) { create_list(:nuget_package, 5, project: project, name: 'DummyPackageC') }
+
+  let_it_be(:packages_b) do
+    create_list(:nuget_package, 5, project: project, name: 'DummyPackageB', without_package_files: true)
+  end
+
+  let_it_be(:packages_c) do
+    create_list(:nuget_package, 5, project: project, name: 'DummyPackageC', without_package_files: true)
+  end
 
   let(:package_ids) { [package_a, *packages_b, *packages_c].map(&:id) }
   let(:packages) do
@@ -45,7 +54,7 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :packa
     it 'avoids n+1 database queries', :use_sql_query_cache do
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) { data }
 
-      create_list(:nuget_package, 2, project: project, name: 'DummyPackageD')
+      create_list(:nuget_package, 2, project: project, name: 'DummyPackageD', without_package_files: true)
 
       expect { described_class.new(search_results).data }.to issue_same_number_of_queries_as(control)
     end

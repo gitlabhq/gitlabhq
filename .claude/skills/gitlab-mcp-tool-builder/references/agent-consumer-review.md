@@ -11,7 +11,7 @@ realistic user request — watch where it hesitates or guesses.
 Three questions the agent must answer **from the contract alone**:
 
 1. **When do I call this?** — *name + description*
-   - Name is `verb_object`, consistent with siblings (`get_merge_request_notes`), no
+   - Name is `verb_object`, consistent with siblings (`get_merge_request`), no
      internal jargon.
    - Description says *what it does* **and** *when to use it*, and disambiguates from
      near-neighbors (MR notes vs work-item notes). One or two sentences; no
@@ -31,6 +31,18 @@ Three questions the agent must answer **from the contract alone**:
      ids to act on, `pageInfo` to paginate, counts for an at-a-glance answer.
    - Errors return a legible `Response.error("…")` the agent can act on (not a raw
      exception/stack trace) — including not-found and permission-denied.
+   - Every error passes a `reason:` when the tool knows why it failed (`:bad_request`,
+     `:unauthorized`, `:not_found`; `:error` is the default). It is stripped before the
+     agent sees the response and only sets `tool_status` in `mcp.log`. See
+     [Categorizing tool errors](../../../../doc/development/duo_agent_platform/mcp/_index.md#categorizing-tool-errors).
+   - If your tool wraps or aggregates another tool, forward the inner result's reason
+     (`Response.error_reason`) rather than building an error without one. A route-backed inner
+     tool's reason comes from the HTTP status, so when you match a known refusal and replace its
+     message, give that table entry its own reason and read it with `fetch`.
+   - Test each `reason:` by driving the branch with an input that occurs in practice, not a
+     stubbed exception shaped like the expected cause, and assert it with
+     `Response.error_reason(result)`. When the same condition can be reached another way (a
+     single note vs. inside a review), check that both paths log the same reason.
    - It isn't needlessly verbose: every returned field costs the agent tokens, so drop
      what it won't use.
    - **Don't silently truncate or transform a returned value.** If you shorten a field (a
@@ -51,7 +63,27 @@ compare — an outlier usually means duplication, not necessary detail.
 
 **Chainability:** can the agent get your *inputs* from a prior tool's *output*, and
 does your *output* hand off to the likely next call? (e.g. returning `discussion.id`
-so a follow-up `create_*_note` can reply to that thread.)
+so a follow-up `save_note` can reply to that thread.)
+
+If your output or error text names another tool for the agent to call next, check that
+tool is actually advertised. Being registered in `Mcp::Tools::Manager` is not enough:
+a tool can override `unlisted?` to be hidden from `tools/list`, so it stays callable
+but the agent never discovers it. Tools pending removal are unlisted this way, often
+because an `include` facet on a `get_` tool replaced them, so point to the facet. A
+GitLab web URL is also a poor hand-off, because the page needs a browser sign-in and
+loads its content with JavaScript; point to a tool instead (a URL for humans alongside
+is fine).
+
+To check, list every unlisted tool:
+
+```shell
+rg -l 'def unlisted\?' app/services/mcp/tools ee/app/services/mcp/tools --glob '!**/base/**'
+```
+
+If the tool you name is in that list, read the comment above its override, which names the
+replacement. For example, `get_merge_request_notes_service.rb` says it is "superseded by the
+get_merge_request notes facet", so the hand-off becomes `get_merge_request` with
+`include: ["notes"]`, not `get_merge_request_notes`.
 
 **Current-user references:** if the tool finds resources belonging to "me" (e.g. "my
 open MRs", "MRs awaiting my review"), prefer a **server-side `scope` enum** resolved

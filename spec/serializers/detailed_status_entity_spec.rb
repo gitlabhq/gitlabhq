@@ -9,8 +9,7 @@ RSpec.describe DetailedStatusEntity do
   end
 
   before do
-    allow(status).to receive(:has_details?).and_return(true)
-    allow(status).to receive(:details_path).and_return('some/path')
+    allow(status).to receive_messages(has_details?: true, details_path: 'some/path')
   end
 
   describe '#as_json' do

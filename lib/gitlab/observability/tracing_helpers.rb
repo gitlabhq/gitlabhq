@@ -26,7 +26,7 @@ module Gitlab
           explicit_id = pipeline_data.dig(:object_attributes, :root_pipeline_id)
           return explicit_id unless explicit_id.nil?
 
-          if pipeline_data[:trace_correlation_enabled] && pipeline_data.key?(:source_pipeline)
+          if pipeline_data.key?(:source_pipeline)
             Gitlab::AppLogger.warn(
               message: 'root_pipeline_id missing from pipeline webhook payload with source_pipeline present',
               gl_pipeline_id: pipeline[:id],
@@ -48,7 +48,7 @@ module Gitlab
           # namespace. This is intentionally distinct from the EE job telemetry
           # span kinds (:lifecycle, :pending, :running) so that export spans
           # and real-time telemetry spans coexist without ID collisions.
-          Gitlab::Ci::TraceContext.span_id_for_job(root_pipeline_id, build[:id], :export)
+          Gitlab::Ci::TraceContext.export_job_span_id(root_pipeline_id, build[:id])
         end
       end
     end

@@ -38,7 +38,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOidOnLfsObjectsProjects, fea
       batch_table: :lfs_objects_projects,
       batch_column: :id,
       pause_ms: 0,
-      sub_batch_size: QueueBackfillOidOnLfsObjectsProjects::SUB_BATCH_SIZE,
+      sub_batch_size: 100,
       connection: connection
     }
   end

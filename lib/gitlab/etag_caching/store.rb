@@ -41,7 +41,10 @@ module Gitlab
       def redis_shared_state_key(key)
         raise InvalidKeyError, "#{key} is invalid" unless valid_key?(key)
 
-        "#{SHARED_STATE_NAMESPACE}#{key}"
+        # Keys built from URL helpers may carry an /o/:organization_path prefix
+        # depending on the request context; store them under the unscoped path
+        # so they line up with Router::Rails.cache_key.
+        "#{SHARED_STATE_NAMESPACE}#{Gitlab::Routing::OrganizationsHelper.unscoped_path(key)}"
       rescue InvalidKeyError => e
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       end

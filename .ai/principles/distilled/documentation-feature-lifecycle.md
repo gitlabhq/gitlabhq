@@ -1,6 +1,6 @@
 ---
-source_checksum: bba6373d18de99ee
-distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+source_checksum: 159f7c44ea4a3971
+distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -82,6 +82,7 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 - For Geo items, include a `{{< details >}}` tier block before the affected versions list.
 - Document a known bug before a fix is available only when it has significant impact on upgrades or operations; when the fix ships, update the list item to the affected range and add the fixed patch level to the `Affected versions` field — DO NOT create separate upgrade notes for the bug and the fix.
 - When an issue spans two major versions, document full details on the newer major version page and link from the older page; if cross-page linking becomes confusing due to many affected versions, duplicate the item on both pages.
+- For upgrade notes requiring extensive reference material (SQL queries, data descriptions, configuration options), use H4 sub-headings for internal structure.
 
 ## Authoritative sources
 

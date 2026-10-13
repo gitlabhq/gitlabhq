@@ -24,7 +24,7 @@ module Projects
 
       def destroy
         result = Projects::ContainerRepository::DeleteTagsService
-          .new(image.project, current_user, tags: [params[:id]])
+          .new(image.project, current_user, tags: [permitted_params[:id]])
           .execute(image)
         track_package_event(:delete_tag, :tag)
 
@@ -34,7 +34,7 @@ module Projects
       end
 
       def bulk_destroy
-        tag_names = params.require(:ids) || []
+        tag_names = bulk_destroy_params
         if tag_names.size > LIMIT
           head :bad_request
           return
@@ -57,8 +57,15 @@ module Projects
       end
 
       def image
-        @image ||= project.container_repositories
-          .find(params[:repository_id])
+        @image ||= project.container_repositories.find(permitted_params[:repository_id])
+      end
+
+      def permitted_params
+        params.permit(:id, :repository_id)
+      end
+
+      def bulk_destroy_params
+        params.require(:ids)
       end
     end
   end

@@ -20,9 +20,7 @@ module TwoFactor
     end
 
     def disable_two_factor
-      ::Users::UpdateService.new(current_user, user: user).execute do |user|
-        user.disable_two_factor!
-      end
+      ::Users::UpdateService.new(current_user, user: user).execute(&:disable_two_factor!)
     end
 
     def notify_on_success(user)

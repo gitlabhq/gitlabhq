@@ -55,7 +55,17 @@ module UploadsActions
     ttl ||= 0
     directives ||= { private: true, must_revalidate: true }
 
-    expires_in ttl, directives
+    # URLs with a ?v= parameter are versioned by the model's updated_at timestamp
+    # (set by avatar_query_params in avatarable.rb). The URL changes whenever the
+    # resource changes, so the current URL is effectively immutable.
+    version_param = params.permit(:v)[:v]
+    if uploader.mounted_as.to_s == 'avatar' && model.updated_at.present? &&
+        version_param.to_s == model.updated_at.to_i.to_s
+      expires_in 7.days, public: directives[:public]
+      response.cache_control[:extras] << 'immutable'
+    else
+      expires_in ttl, directives
+    end
 
     file_uploader = [uploader, *uploader.versions.values].find do |version|
       version.filename == filename_param

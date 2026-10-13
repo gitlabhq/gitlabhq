@@ -109,11 +109,18 @@ Grants the ability to create, delete, read, and update policies in the policy st
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
-| Create | Instance | Mutation | `GovernPolicyCreate` |
+| Create <sup>1</sup> | Group | Mutation | `GovernPolicyCreate` |
+| Create <sup>1</sup> | Instance | Mutation | `GovernPolicyCreate` |
+| Delete | Group | Mutation | `GovernPolicyDelete` |
 | Delete | Instance | Mutation | `GovernPolicyDelete` |
-| Read | Instance | Type | `GovernPolicy` |
-| Read | Instance | Type | `GovernPolicyEvaluation` |
-| Update | Instance | Mutation | `GovernPolicyUpdate` |
+| Read | Group | Field | `PolicyStore.policies` |
+| Read | Group | Field | `PolicyStore.policyEvaluations` |
+| Read | Instance | Field | `PolicyStore.policies` |
+| Read | Instance | Field | `PolicyStore.policyEvaluations` |
+| Update <sup>1</sup> | Group | Mutation | `GovernPolicyUpdate` |
+| Update <sup>1</sup> | Instance | Mutation | `GovernPolicyUpdate` |
+
+<sup>1</sup> Also requires the `Read Policy Store Policy` permission.
 
 #### Secret
 
@@ -154,10 +161,8 @@ Grants the ability to delete and update secrets permissions.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Delete | Project | Mutation | `ProjectSecretsPermissionDelete` |
-| Delete | Project | Mutation | `SecretPermissionDelete` |
 | Delete | Group | Mutation | `GroupSecretsPermissionDelete` |
 | Update | Project | Mutation | `ProjectSecretsPermissionUpdate` |
-| Update | Project | Mutation | `SecretPermissionUpdate` |
 | Update | Group | Mutation | `GroupSecretsPermissionUpdate` |
 
 #### Security Attribute
@@ -213,12 +218,14 @@ Grants the ability to create security project tracked refs.
 
 #### Security Scan Profiles
 
-Grants the ability to create, delete, and update security scan profiles.
+Grants the ability to create, delete, read, and update security scan profiles.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Group | Mutation | `SecurityScanProfileCreate` |
 | Delete | Group | Mutation | `SecurityScanProfileDelete` |
+| Read | Project | Type | `TriageAndRemediationCoverage` |
+| Read | Group | Type | `TriageAndRemediationCoverageCounters` |
 | Update | Group | Mutation | `SecurityScanProfileUpdate` |
 
 #### Security Setting
@@ -767,6 +774,8 @@ Grants the ability to create, delete, read, report, restore, and update AI catal
 | Create | Project | Mutation | `AiCatalogFlowCreate` |
 | Delete | Project | Mutation | `AiCatalogAgentDelete` |
 | Delete | Project | Mutation | `AiCatalogFlowDelete` |
+| Read | Project | Type | `AiCatalogSkill` |
+| Read | Project | Type | `AiCatalogSkillVersion` |
 | Read | Project | Mutation | `AiCatalogItemStar` |
 | Read | User | Mutation | `AiCatalogItemStar` |
 | Read | User | Field | `Query.aiCatalogBuiltInTools` |
@@ -886,7 +895,7 @@ Grants the ability to create user feedback on Duo AI messages.
 
 #### Duo Workflow
 
-Grants the ability to create, delete, read, resume, and update duo workflows.
+Grants the ability to create, delete, read, restart, resume, and update duo workflows.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -894,10 +903,12 @@ Grants the ability to create, delete, read, resume, and update duo workflows.
 | Create | Group | Mutation | `AiDuoWorkflowCreate` |
 | Create | User | Mutation | `AiDuoWorkflowCreate` |
 | Delete | User | Mutation | `DeleteDuoWorkflowsWorkflow` |
+| Read | User | Type | `DuoWorkflow` |
 | Read | User | Type | `DuoWorkflowMergeRequestLink` |
 | Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowPipelineLink` |
 | Read | User | Type | `DuoWorkflowWorkItemLink` |
+| Read | User | Type | `DuoWorkflowWorkflowLink` |
 | Read | User | Field | `Note.duoCreatedSession` |
 | Read | User | Field | `Note.duoTriggeredSession` |
 | Read | User | Field | `Query.duoWorkflowBranches` |
@@ -914,6 +925,22 @@ Grants the ability to read flows metadata.
 | Read | Project | Type | `AiFlowsMetadata` |
 | Read | Group | Type | `AiFlowsMetadata` |
 | Read | Instance | Type | `AiFlowsMetadata` |
+
+#### Functional Verification Check
+
+Grants the ability to read functional verification checks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `FunctionalVerificationStatus` |
+
+#### Functional Verification Workflow
+
+Grants the ability to create functional verification workflows.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CreateFunctionalVerificationWorkflow` |
 
 #### Model Selection Allowlist
 
@@ -950,13 +977,32 @@ Grants the ability to update Geo registries.
 
 ### GitLab Orbit resources
 
-#### Knowledge Graph Setting
+#### Orbit
 
-Grants the ability to update knowledge graph settings.
+Grants the ability to read Orbit data the token owner can access in GitLab. Group and project selections do not limit it.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | User | Field | `Group.orbit` |
+| Read | User | Field | `Project.orbit` |
+
+#### Orbit Setting
+
+Grants the ability to update Orbit settings.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Update | Group | Mutation | `OrbitUpdate` |
+| Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceCreate` |
+| Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceDestroy` |
+
+#### Orbit Trial
+
+Grants the ability to start an Orbit trial for a top-level group.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Start | Group | Mutation | `OrbitStartTrial` |
 
 ### Groups resources
 
@@ -996,12 +1042,13 @@ Grants the ability to update commit emails.
 
 #### Custom Emoji
 
-Grants the ability to create and delete custom emojis.
+Grants the ability to create, delete, and read custom emojis.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Group | Mutation | `CreateCustomEmoji` |
 | Delete | Group | Mutation | `DestroyCustomEmoji` |
+| Read | Group | Type | `CustomEmoji` |
 
 #### Group
 
@@ -1545,6 +1592,14 @@ Grants the ability to create, delete, and update designs.
 | Update | Project | Mutation | `DesignManagementMove` |
 | Update | Project | Mutation | `DesignManagementUpdate` |
 
+#### Issue
+
+Grants the ability to subscribe issues.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Subscribe | Project | Mutation | `IssueSetSubscription` |
+
 #### Label
 
 Grants the ability to create, delete, promote, read, subscribe, and update labels.
@@ -1567,6 +1622,7 @@ Grants the ability to create and delete timelogs.
 | Create | Project | Mutation | `TimelogCreate` |
 | Create | Group | Mutation | `TimelogCreate` |
 | Delete | Project | Mutation | `TimelogDelete` |
+| Delete | Group | Mutation | `TimelogDelete` |
 
 #### Work Item
 
@@ -1574,7 +1630,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `BoardListCreate` |
 | Create <sup>1</sup> | Project | Mutation | `CreateAlertIssue` |
+| Create | Project | Mutation | `CreateBoard` |
 | Create | Project | Mutation | `CreateDiffNote` |
 | Create | Project | Mutation | `CreateDiscussion` |
 | Create | Project | Mutation | `CreateImageDiffNote` |
@@ -1583,27 +1641,35 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Project | Mutation | `CreateNote` |
 | Create | Project | Mutation | `CreateRequirement` |
 | Create | Project | Mutation | `CreateTestCase` |
-| Create | Project | Mutation | `WorkItemBulkMove` |
 | Create | Project | Mutation | `WorkItemCreate` |
 | Create | Project | Mutation | `WorkItemsCsvImport` |
 | Create | Project | Field | `EpicIssue.createNoteEmail` |
 | Create | Project | Field | `Issue.createNoteEmail` |
 | Create | Project | Field | `WorkItem.createNoteEmail` |
+| Create | Group | Mutation | `BoardEpicCreate` |
+| Create | Group | Mutation | `BoardListCreate` |
+| Create | Group | Mutation | `CreateBoard` |
 | Create | Group | Mutation | `CreateDiffNote` |
 | Create | Group | Mutation | `CreateDiscussion` |
+| Create | Group | Mutation | `CreateEpic` |
 | Create | Group | Mutation | `CreateImageDiffNote` |
 | Create | Group | Mutation | `CreateIteration` |
 | Create | Group | Mutation | `CreateLatestDiffNote` |
 | Create | Group | Mutation | `CreateNote` |
 | Create | Group | Mutation | `CustomFieldCreate` |
+| Create | Group | Mutation | `EpicAddIssue` |
+| Create | Group | Mutation | `EpicBoardCreate` |
+| Create | Group | Mutation | `EpicBoardListCreate` |
 | Create | Group | Mutation | `IterationCadenceCreate` |
 | Create | Group | Mutation | `LifecycleCreate` |
-| Create | Group | Mutation | `WorkItemBulkMove` |
 | Create | Group | Mutation | `WorkItemCreate` |
 | Create | Group | Mutation | `WorkItemTypeCreate` |
 | Create | Group | Mutation | `iterationCreate` |
+| Delete | Project | Mutation | `DestroyBoard` |
 | Delete | Project | Mutation | `DestroyNote` |
 | Delete | Project | Mutation | `WorkItemDelete` |
+| Delete | Group | Mutation | `DestroyBoard` |
+| Delete | Group | Mutation | `DestroyEpicBoard` |
 | Delete | Group | Mutation | `DestroyNote` |
 | Delete | Group | Mutation | `IterationCadenceDestroy` |
 | Delete | Group | Mutation | `IterationDelete` |
@@ -1616,6 +1682,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Project | Type | `Note` |
 | Read | Project | Type | `WorkItem` |
 | Read | Project | Mutation | `ExportRequirements` |
+| Read | Project | Mutation | `UpdateBoardEpicUserPreferences` |
 | Read | Project | Mutation | `WorkItemExport` |
 | Read | Project | Mutation | `WorkItemsCsvExport` |
 | Read | Group | Type | `Board` |
@@ -1625,9 +1692,13 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | Type | `IterationCadence` |
 | Read | Group | Type | `Milestone` |
 | Read | Group | Type | `Note` |
+| Read | Group | Type | `WorkItem` |
 | Read | Group | Type | `WorkItemMoveTarget` |
+| Read | Group | Mutation | `UpdateBoardEpicUserPreferences` |
 | Subscribe | Project | Mutation | `WorkItemSubscribe` |
+| Subscribe | Group | Mutation | `EpicSetSubscription` |
 | Subscribe | Group | Mutation | `WorkItemSubscribe` |
+| Update | Project | Mutation | `BoardListUpdateLimitMetrics` |
 | Update | Project | Mutation | `DiscussionToggleResolve` |
 | Update | Project | Mutation | `IssueLinkAlerts` |
 | Update | Project | Mutation | `IssueMove` |
@@ -1644,7 +1715,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | Mutation | `IssueSetWeight` |
 | Update | Project | Mutation | `IssueUnlinkAlert` |
 | Update | Project | Mutation | `NoteConvertToThread` |
+| Update | Project | Mutation | `PromoteToEpic` |
 | Update | Project | Mutation | `RepositionImageDiffNote` |
+| Update | Project | Mutation | `UpdateBoard` |
 | Update | Project | Mutation | `UpdateImageDiffNote` |
 | Update | Project | Mutation | `UpdateIssue` |
 | Update | Project | Mutation | `UpdateNote` |
@@ -1656,7 +1729,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | Mutation | `WorkItemBulkUpdate` |
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
+| Update | Project | Mutation | `WorkItemDecisionArchive` |
 | Update | Project | Mutation | `WorkItemDecisionCreate` |
+| Update | Project | Mutation | `WorkItemDecisionDelete` |
 | Update | Project | Mutation | `WorkItemDecisionResolve` |
 | Update | Project | Mutation | `WorkItemDecisionUpdate` |
 | Update | Project | Mutation | `WorkItemEnableAiPlanning` |
@@ -1668,10 +1743,16 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | Mutation | `WorkItemUserPreferenceUpdate` |
 | Update | Project | Mutation | `workItemsHierarchyReorder` |
 | Update | Project | Mutation | `workItemsReorder` |
+| Update | Group | Mutation | `BoardListUpdateLimitMetrics` |
 | Update | Group | Mutation | `CustomFieldUpdate` |
+| Update | Group | Mutation | `EpicBoardUpdate` |
+| Update | Group | Mutation | `EpicMoveList` |
+| Update | Group | Mutation | `EpicTreeReorder` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
 | Update | Group | Mutation | `LifecycleAttachWorkItemType` |
 | Update | Group | Mutation | `LifecycleUpdate` |
+| Update | Group | Mutation | `UpdateBoard` |
+| Update | Group | Mutation | `UpdateEpic` |
 | Update | Group | Mutation | `UpdateImageDiffNote` |
 | Update | Group | Mutation | `UpdateIteration` |
 | Update | Group | Mutation | `UpdateNote` |
@@ -1681,7 +1762,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | Mutation | `WorkItemBulkMove` |
 | Update | Group | Mutation | `WorkItemBulkUpdate` |
 | Update | Group | Mutation | `WorkItemConvert` |
+| Update | Group | Mutation | `WorkItemDecisionArchive` |
 | Update | Group | Mutation | `WorkItemDecisionCreate` |
+| Update | Group | Mutation | `WorkItemDecisionDelete` |
 | Update | Group | Mutation | `WorkItemDecisionResolve` |
 | Update | Group | Mutation | `WorkItemDecisionUpdate` |
 | Update | Group | Mutation | `WorkItemEnableAiPlanning` |
@@ -1818,7 +1901,9 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Read | Project | Type | `AiSuggestedReviewer` |
 | Read | Project | Type | `MergeRequest` |
 | Read | Project | Type | `MergeRequestApprovalState` |
+| Read | Project | Type | `MergeRequestResourceLabelEvent` |
 | Read | Project | Type | `MergeRequestWorkItemRelation` |
+| Read | Project | Type | `UserMergeRequestInteraction` |
 | Subscribe | Project | Mutation | `MergeRequestSetSubscription` |
 | Update | Project | Mutation | `DismissPolicyViolations` |
 | Update | Project | Mutation | `MergeRequestBypassSecurityPolicy` |
@@ -1906,12 +1991,14 @@ Grants the ability to create and delete target branch rules.
 
 #### Secrets Manager Add-on
 
-Grants the ability to enable the paid Secrets Manager add-on for a top-level group or for the whole instance.
+Grants the ability to enable the paid Secrets Manager add-on for a top-level group, which also provisions that group's secrets manager on GitLab.com, or for the whole instance.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Enable <sup>1</sup> | Group | Mutation | `SecretsManagerEnableAddOn` |
+| Enable <sup>1</sup> | Group | Mutation | `SecretsManagerRefreshEntitlement` |
 | Enable <sup>1</sup> | Instance | Mutation | `SecretsManagerInstanceEnableAddOn` |
+| Enable <sup>1</sup> | Instance | Mutation | `SecretsManagerInstanceRefreshEntitlement` |
 
 <sup>1</sup> Also requires the `Read Secrets Manager` permission.
 
@@ -1925,7 +2012,7 @@ Grants the ability to read secrets manager enrollments.
 
 #### Secrets Manager Trial
 
-Grants the ability to start a Secrets Manager trial for a top-level group or for the whole instance.
+Grants the ability to start a Secrets Manager trial for a top-level group, which also provisions that group's secrets manager on GitLab.com, or for the whole instance.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -2028,6 +2115,7 @@ Grants the ability to read instance metadata.
 | Read | Instance | Type | `GitlabInstanceFeatureFlag` |
 | Read | Instance | Type | `Kas` |
 | Read | Instance | Type | `Metadata` |
+| Read | Instance | Type | `SecurityScanProfileVariable` |
 
 #### Personal Access Token
 
@@ -2056,12 +2144,21 @@ Grants the ability to activate, approve, ban, block, create, deactivate, delete,
 
 ### System Migration resources
 
-#### Placeholder Reassignment
+#### Import Source User
 
-Grants the ability to create, read, and update placeholder reassignments.
+Grants the ability to read import source users.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Read | User | Type | `ImportSourceUser` |
+
+#### Placeholder Reassignment
+
+Grants the ability to create, read, revoke, and update placeholder reassignments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Revoke | User | Mutation | `ImportSourceUserRevoke` |
 | Update | Group | Mutation | `ImportSourceUserCancelReassignment` |
 | Update | Group | Mutation | `ImportSourceUserKeepAllAsPlaceholder` |
 | Update | Group | Mutation | `ImportSourceUserKeepAsPlaceholder` |

@@ -1,12 +1,32 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Panel from './panel.vue';
 
 export default () => {
   const element = document.querySelector('#js-google-cloud-databases');
-  const attrs = JSON.parse(element.getAttribute('data'));
-  return new Vue({
+  const {
+    configurationUrl,
+    deploymentsUrl,
+    databasesUrl,
+    cloudsqlPostgresUrl,
+    cloudsqlMysqlUrl,
+    cloudsqlSqlserverUrl,
+    cloudsqlInstances,
+    emptyIllustrationUrl,
+  } = JSON.parse(element.getAttribute('data'));
+
+  return initVueApp({
     el: element,
     name: 'GoogleCloudDatabasesPanelRoot',
-    render: (createElement) => createElement(Panel, { attrs }),
+    component: Panel,
+    props: {
+      configurationUrl,
+      deploymentsUrl,
+      databasesUrl,
+      cloudsqlPostgresUrl,
+      cloudsqlMysqlUrl,
+      cloudsqlSqlserverUrl,
+      cloudsqlInstances,
+      emptyIllustrationUrl,
+    },
   });
 };

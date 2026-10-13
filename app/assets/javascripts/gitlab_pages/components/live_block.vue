@@ -71,8 +71,10 @@ export default {
     </template>
 
     <template v-if="!isLoading" #description>
-      {{ $options.i18n.deployJobLabel }}
-      <a :href="ciBuildUrl" data-testid="deploy-job-number">{{ deployment.ciBuildId }}</a>
+      <template v-if="deployment.ciBuildId">
+        {{ $options.i18n.deployJobLabel }}
+        <a :href="ciBuildUrl" data-testid="deploy-job-number">{{ deployment.ciBuildId }}</a>
+      </template>
 
       <template v-if="deployment.updatedAt">
         <span aria-hidden="true">·</span>

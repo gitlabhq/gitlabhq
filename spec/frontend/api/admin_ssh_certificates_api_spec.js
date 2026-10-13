@@ -1,10 +1,19 @@
 import MockAdapter from 'axios-mock-adapter';
-import { getAdminSshCertificates } from '~/api/admin_ssh_certificates_api';
+import {
+  getAdminSshCertificates,
+  createAdminSshCertificate,
+  deleteAdminSshCertificate,
+} from '~/api/admin_ssh_certificates_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_OK,
+} from '~/lib/utils/http_status';
 
 describe('~/api/admin_ssh_certificates_api', () => {
+  const expectedUrl = '/api/v4/admin/ssh_certificates';
   let mock;
 
   beforeEach(() => {
@@ -17,8 +26,6 @@ describe('~/api/admin_ssh_certificates_api', () => {
   });
 
   describe('getAdminSshCertificates', () => {
-    const expectedUrl = '/api/v4/admin/ssh_certificates';
-
     it('requests the given page and page size', async () => {
       mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, []);
 
@@ -36,6 +43,32 @@ describe('~/api/admin_ssh_certificates_api', () => {
       await getAdminSshCertificates();
 
       expect(mock.history.get[0].params).toEqual({ page: 1, per_page: DEFAULT_PER_PAGE });
+    });
+  });
+
+  describe('createAdminSshCertificate', () => {
+    it('posts the title and key', async () => {
+      const params = {
+        title: 'Production CA',
+        key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExample',
+      };
+      mock.onPost(expectedUrl).reply(HTTP_STATUS_CREATED, {});
+
+      await createAdminSshCertificate(params);
+
+      expect(mock.history.post[0].url).toBe(expectedUrl);
+      expect(JSON.parse(mock.history.post[0].data)).toEqual(params);
+    });
+  });
+
+  describe('deleteAdminSshCertificate', () => {
+    it('deletes the certificate with the given id', async () => {
+      const id = 42;
+      mock.onDelete(`${expectedUrl}/${id}`).reply(HTTP_STATUS_NO_CONTENT);
+
+      await deleteAdminSshCertificate(id);
+
+      expect(mock.history.delete[0].url).toBe(`${expectedUrl}/${id}`);
     });
   });
 });

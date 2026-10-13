@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Layouts::EmptyResultComponent, type: :component, feature_category: :shared do
+RSpec.describe Layouts::EmptyResultComponent, feature_category: :shared do
   let(:type) { :search }
   let(:html_options) { { data: { testid: 'empty-result-test-id' } } }
 

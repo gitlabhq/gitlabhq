@@ -67,38 +67,25 @@ RSpec.describe Integrations::SlackWorkspace::IntegrationApiScope, feature_catego
         create(:slack_integration, :group, :all_features_supported, group: group2)
       end
 
-      before do
-        described_class.connection.execute(<<~SQL)
-          ALTER TABLE slack_api_scopes DROP CONSTRAINT check_930d89be0d;
-        SQL
-
-        Integrations::SlackWorkspace::ApiScope.update_all(organization_id: nil)
-
-        described_class.connection.execute(<<~SQL)
-          ALTER TABLE slack_api_scopes
-            ADD CONSTRAINT check_930d89be0d CHECK ((organization_id IS NOT NULL)) NOT VALID;
-        SQL
-      end
-
-      it 'updates api scopes to new records that do have an organization_id', :aggregate_failures do
+      it 'resolves the api scope within each organization', :aggregate_failures do
         expect do
           inserted_scopes
         end.to change { Integrations::SlackWorkspace::IntegrationApiScope.count }.by(-8).and(
-          change { Integrations::SlackWorkspace::ApiScope.count }.by(2)
+          not_change { Integrations::SlackWorkspace::ApiScope.count }
         )
 
         expect(organization2.id).not_to eq(instance_integration.organization_id)
 
-        new_scope_org1 = Integrations::SlackWorkspace::ApiScope.find_by(
+        scope_org1 = Integrations::SlackWorkspace::ApiScope.find_by(
           name: first_scope.pick(:name), organization_id: instance_integration.organization.id
         )
-        new_scope_org2 = Integrations::SlackWorkspace::ApiScope.find_by(
+        scope_org2 = Integrations::SlackWorkspace::ApiScope.find_by(
           name: first_scope.pick(:name), organization_id: organization2.id
         )
 
         expect(instance_integration.slack_integrations_scopes).to contain_exactly(
           have_attributes(
-            slack_api_scope_id: new_scope_org1.id,
+            slack_api_scope_id: scope_org1.id,
             organization_id: instance_integration.organization.id,
             group_id: nil,
             project_id: nil
@@ -106,7 +93,7 @@ RSpec.describe Integrations::SlackWorkspace::IntegrationApiScope, feature_catego
         )
         expect(group_integration.slack_integrations_scopes).to contain_exactly(
           have_attributes(
-            slack_api_scope_id: new_scope_org1.id,
+            slack_api_scope_id: scope_org1.id,
             organization_id: nil,
             group_id: group_integration.group.id,
             project_id: nil
@@ -114,7 +101,7 @@ RSpec.describe Integrations::SlackWorkspace::IntegrationApiScope, feature_catego
         )
         expect(project_integration.slack_integrations_scopes).to contain_exactly(
           have_attributes(
-            slack_api_scope_id: new_scope_org1.id,
+            slack_api_scope_id: scope_org1.id,
             organization_id: nil,
             group_id: nil,
             project_id: project_integration.project.id
@@ -122,7 +109,7 @@ RSpec.describe Integrations::SlackWorkspace::IntegrationApiScope, feature_catego
         )
         expect(group_integration2.slack_integrations_scopes).to contain_exactly(
           have_attributes(
-            slack_api_scope_id: new_scope_org2.id,
+            slack_api_scope_id: scope_org2.id,
             organization_id: nil,
             group_id: group2.id,
             project_id: nil

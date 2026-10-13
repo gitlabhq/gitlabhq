@@ -63,7 +63,11 @@ The following Git commands help you to revert and undo changes:
 
 - `git revert`: Creates a new commit that undoes the changes made in a previous commit.
   This helps you to undo a mistake or a change that you no longer need.
+  Use `git revert` when the commit has already been pushed and shared with others.
+  This command preserves the existing commit history, making it suitable for shared branches.
 - `git reset`: Resets and undoes changes that are not yet committed.
+  Use `git reset` for local changes that have not been pushed to a shared branch.
+  This command can rewrite commit history.
 - `git restore`: Restores changes that are lost or deleted.
 
 For more information, see [revert changes](undo.md).

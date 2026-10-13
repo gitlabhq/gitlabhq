@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../support/helpers/lets_encrypt_helpers'
 
 RSpec.describe ::Gitlab::LetsEncrypt::Challenge, feature_category: :pages do
   include LetsEncryptHelpers

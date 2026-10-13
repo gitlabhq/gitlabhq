@@ -24,8 +24,7 @@ RSpec.describe GoogleApi::Auth do
   describe '#get_token' do
     let(:token) do
       double.tap do |dbl|
-        allow(dbl).to receive(:token).and_return('token')
-        allow(dbl).to receive(:expires_at).and_return('expires_at')
+        allow(dbl).to receive_messages(token: 'token', expires_at: 'expires_at')
       end
     end
 

@@ -127,6 +127,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
   end
 
+  describe 'GET #reports' do
+    before do
+      sign_in(user)
+    end
+
+    it 'returns ok' do
+      get reports_project_merge_request_path(project, merge_request)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe 'GET #index' do
     let_it_be_with_reload(:public_project) { create(:project, :public) }
 
@@ -480,35 +492,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(response.cookies).not_to have_key('rapid_diffs_enabled')
         end
       end
-
-      context 'when an error occurs during rendering' do
-        it 'logs the exception, preserves the cookie, and redirects with rapid_diffs_disabled param' do
-          cookies['rapid_diffs_enabled'] = 'true'
-
-          expect_next_instance_of(described_class) do |instance|
-            allow(instance)
-              .to receive(:show_merge_request)
-              .and_raise(StandardError, 'something went wrong')
-
-            expect(instance)
-              .to receive(:log_exception)
-              .with(instance_of(StandardError))
-          end
-
-          get diffs_project_merge_request_path(project, merge_request)
-
-          expect(response).to redirect_to(
-            diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
-          )
-          expect(response.cookies).not_to have_key('rapid_diffs_enabled')
-          expect(flash[:alert]).to eq(
-            _("Rapid Diffs encountered an error and has been temporarily disabled. " \
-              "The page has loaded using the standard diff view. " \
-              "<a class=\"gl-link\" target=\"_blank\" rel=\"noopener noreferrer\" " \
-              "href=\"https://gitlab.com/gitlab-org/gitlab/-/work_items/596236\">Leave feedback</a>")
-          )
-        end
-      end
     end
 
     private
@@ -543,6 +526,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
 
     it 'reports the same page mode on the Overview and Changes tabs' do
+      # Users::ActivityService's lease-gated last_activity_on write (plus a user_preferences insert)
+      # would otherwise land on the query-limited Changes request whenever a leaked lease expires.
+      User.find(user.id).update_column(:last_activity_on, Date.today) # rubocop:disable Rails/Date -- matches Users::ActivityService
+
       get project_merge_request_path(project, merge_request)
       overview = response.body
 

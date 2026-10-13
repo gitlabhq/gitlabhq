@@ -191,4 +191,48 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
     expect(note_formatter.formatted_note).to eq(expected)
     expect(note_formatter.contains_suggestion?).to be(true)
   end
+
+  it 'formats suggestion note when start_line is present but end_line is nil and there is no original line data' do
+    note = <<~BODY
+      Multi-line suggestion
+      ```suggestion
+      sug1
+      ```
+    BODY
+
+    expected = <<~BODY
+      Multi-line suggestion
+      ```suggestion:-0+0
+      sug1
+      ```
+    BODY
+
+    note_formatter = described_class.new(note: note, start_line: 426, end_line: nil)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to be(true)
+  end
+
+  it 'falls back to original_start_line/original_end_line when start_line/end_line is nil' do
+    note = <<~BODY
+      Multi-line suggestion
+      ```suggestion
+      sug1
+      ```
+    BODY
+
+    expected = <<~BODY
+      Multi-line suggestion
+      ```suggestion:-1+0
+      sug1
+      ```
+    BODY
+
+    note_formatter = described_class.new(
+      note: note, start_line: 426, end_line: nil, original_start_line: 374, original_end_line: 375
+    )
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to be(true)
+  end
 end

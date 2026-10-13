@@ -61,7 +61,7 @@ As an MVC, we recommend beginning with a project-level endpoint. A typical itera
 
 - Publish and install in a project
 - Install from a group
-- Publish and install in an instance (this is for self-managed customers)
+- Publish and install in an instance (this is for GitLab Self-Managed customers)
 
 Using instance-level endpoints requires [stricter naming conventions](#naming-conventions).
 
@@ -240,7 +240,7 @@ the package format does not upload and store package files.
 #### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab.com standard API rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+[GitLab.com standard API rate limits](../../user/gitlab_com/rate_limits.md).
 This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,

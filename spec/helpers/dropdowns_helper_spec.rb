@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe DropdownsHelper, feature_category: :design_system do
   before do
-    allow(helper).to receive(:sprite_icon).and_return('<span class="icon"></span>'.html_safe)
-    allow(helper).to receive(:icon).and_return('<span class="icon"></span>'.html_safe)
+    allow(helper).to receive_messages(
+      sprite_icon: '<span class="icon"></span>'.html_safe,
+      icon: '<span class="icon"></span>'.html_safe
+    )
   end
 
   shared_examples 'has two icons' do

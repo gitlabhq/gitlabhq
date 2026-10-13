@@ -97,11 +97,11 @@ response attributes:
 | `data.pageInfo.startCursor`     | string  | Cursor for fetching the previous page of results. |
 | `error`                         | string  | Error message if the query failed. |
 | `fields`                        | array   | Array of field definitions. |
-| `fields[].field`                | string  | The base field name. For aliased parameterised fields, this is the underlying field name (for example, `durationQuantile`), while `key` is the alias (for example, `p50`). For standard fields, same as `key`. |
+| `fields[].field`                | string  | The base field name. For aliased parameterized fields, this is the underlying field name (for example, `durationQuantile`), while `key` is the alias (for example, `p50`). For standard fields, same as `key`. |
 | `fields[].key`                  | string  | The unique field identifier. |
 | `fields[].label`                | string  | The human-readable field name. |
-| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. For aliased parameterised fields, this is the generated response key (for example, `durationQuantile_quantile_0_d5`), not a common name. |
-| `fields[].parameters`           | object  | Resolved parameter metadata for parameterised fields. Absent when the field has no parameters. For example, `{"granularity": "weekly"}` or `{"quantile": "0.5"}`. |
+| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. For aliased parameterized fields, this is the generated response key (for example, `durationQuantile_quantile_0_d5`), not a common name. |
+| `fields[].parameters`           | object  | Resolved parameter metadata for parameterized fields. Absent when the field has no parameters. Values are strings, or arrays of strings for list parameters. For example, `{"granularity": "weekly"}`, `{"quantile": "0.5"}`, or `{"thresholds": ["4", "25", "100"]}`. |
 | `fields[].type`                 | string  | Field classification: `dimension` or `metric` for analytics mode fields. Absent for standard fields. |
 | `success`                       | boolean | Indicates if the query was successful. |
 
@@ -413,7 +413,7 @@ curl --request POST \
 
 Aggregate pipeline metrics grouped by a dimension.
 In analytics mode, the `fields` array includes the `type` attribute for each field,
-and the `parameters` attribute for parameterised fields:
+and the `parameters` attribute for parameterized fields:
 
 ```shell
 curl --request POST \
@@ -479,6 +479,10 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247360) in GitLab 19.3.
+- `List` parameters and the `required` attribute [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/521) in GitLab 19.5.
+- `Granularity` parameter kind [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
+- `Timestamp` parameter kind and the `optional` and `requires` attributes [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/529) in GitLab 19.5.
+- `String` items in `List` parameters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/541) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -508,7 +512,7 @@ response attributes:
 | `operators`       | object array | Comparison operators, each with a `symbol`, `name`, and `label`. |
 | `reference_types` | object array | Reference prefixes, each with a `name`, `symbol`, and `example`. For example, `~` for a label. |
 | `sources`         | object array | The data sources. See below. |
-| `value_kinds`     | object array | The kinds of value a filter accepts, each with a `name` and `description`. |
+| `value_kinds`     | object array | The kinds of value a filter or field-function parameter accepts, each with a `name` and `description`. |
 | `version`         | string       | Version of the GLQL gem this document was shipped in. |
 
 Response attributes for `display_types[]`:
@@ -544,6 +548,7 @@ Response attributes for `sources[].modes[]`:
 | `filter_fields`          | object array | Fields usable in `query`, each with a `name`, optional `aliases`, and `value_types`. |
 | `metrics`                | string array | Analytics modes only. Aggregations to compute. |
 | `mode`                   | string       | `Standard` or `Analytics`. Note these are capitalized here, while the `mode` option in a GLQL block is lowercase. For example, `mode: analytics`. |
+| `multi_scope`            | boolean      | Indicates if `group` and `project` in `query` accept a list of full paths. See [multiple groups and projects](../user/glql/data_sources/_index.md#multiple-groups-and-projects). |
 | `parameterized_fields`   | object array | Fields that accept arguments, each with a `name` and `parameters`. Present only where supported. See below. |
 | `sort_fields`            | string array | Fields usable in `sort`. |
 | `sort_restrictions`      | object array | Sort fields that accept only one direction, each with a `name` and the `directions` it accepts. Fields absent from this list accept both `asc` and `desc`. Present only where a restriction applies. |
@@ -561,14 +566,23 @@ Response attributes for `sources[].modes[].filter_fields[].value_types[]`:
 
 Response attributes for `sources[].modes[].parameterized_fields[].parameters[]`:
 
-| Attribute | Type         | Description |
-|-----------|--------------|-------------|
-| `default` | string       | Value used when the argument is omitted. |
-| `kind`    | string       | `Enum` or `Number`. |
-| `max`     | number       | `Number` only. Largest accepted value. |
-| `min`     | number       | `Number` only. Smallest accepted value. |
-| `name`    | string       | Argument name. For example, `granularity`. |
-| `values`  | string array | `Enum` only. The accepted values. |
+| Attribute             | Type                      | Description |
+|-----------------------|---------------------------|-------------|
+| `default`             | string, number, or array | Value used when the argument is omitted. Absent when the parameter is `required` or `optional`. |
+| `items`               | object array              | `List` only. The value types accepted inside the list, each with a `kind` and, for `Number`, `min` and `max`, or for `Enum`, `values`. `String` items carry no further attributes. |
+| `kind`                | string                    | One of `Enum`, `Number`, `List`, `Granularity`, or `Timestamp`. |
+| `max`                 | number                    | `Number` only. Largest accepted value. |
+| `max_days`            | number                    | `Granularity` only. Largest fixed-day value, spelled `<max_days>d`. |
+| `max_length`          | number                    | `List` only. Most items accepted. |
+| `min`                 | number                    | `Number` only. Smallest accepted value. |
+| `min_days`            | number                    | `Granularity` only. Smallest fixed-day value. |
+| `min_length`          | number                    | `List` only. Fewest items accepted. |
+| `name`                | string                    | Argument name. For example, `granularity`. |
+| `optional`            | boolean                   | `true` when the argument can be left out and is then not sent. Such a parameter has no `default`. |
+| `required`            | boolean                   | `true` when the query must supply the argument. |
+| `requires`            | object                    | Present when the argument is only valid alongside a specific value of a sibling parameter. Has `parameter` (the sibling's name) and `value` (a description of the accepted value). |
+| `strictly_ascending`  | boolean                   | `List` only. `true` when each item must be greater than the previous one. |
+| `values`              | string array              | `Enum` and `Granularity`. The accepted tokens. For `Granularity`, the calendar values accepted beside the fixed-day form. |
 
 Example request:
 
@@ -637,7 +651,7 @@ Example response, truncated:
   "functions": [
     { "name": "today", "kind": "value", "description": "Today's date at 00:00 UTC.", "args": [], "returns": "Date" }
   ],
-  "version": "0.35.0"
+  "version": "0.41.0"
 }
 ```
 
@@ -649,12 +663,19 @@ explicitly rather than relying on the default:
   {
     "name": "finished",
     "parameters": [
-      { "name": "granularity", "kind": "Enum", "values": ["daily", "weekly", "monthly"], "default": "weekly" }
+      { "name": "granularity", "kind": "Granularity", "values": ["daily", "weekly", "monthly"], "min_days": 1, "max_days": 399, "default": "weekly" },
+      { "name": "origin", "kind": "Timestamp", "optional": true, "requires": { "parameter": "granularity", "value": "a fixed-day granularity such as `30d`, not a calendar bucket (`daily`, `weekly`, `monthly`)" } }
     ]
   },
   {
     "name": "durationQuantile",
     "parameters": [{ "name": "quantile", "kind": "Number", "min": 0.01, "max": 0.99, "default": 0.95 }]
+  },
+  {
+    "name": "userTier",
+    "parameters": [
+      { "name": "thresholds", "kind": "List", "items": [{ "kind": "Number", "min": 1, "max": 2147483647 }], "min_length": 1, "max_length": 9, "strictly_ascending": true, "required": true }
+    ]
   }
 ]
 ```

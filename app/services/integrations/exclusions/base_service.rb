@@ -5,8 +5,9 @@ module Integrations
     class BaseService
       include Gitlab::Utils::StrongMemoize
 
-      def initialize(current_user:, integration_name:, projects: [], groups: [])
+      def initialize(current_user:, organization:, integration_name:, projects: [], groups: [])
         @user = current_user
+        @organization = organization
         @integration_name = integration_name
         @projects = projects
         @groups = groups
@@ -14,10 +15,11 @@ module Integrations
 
       private
 
-      attr_reader :user, :integration_name, :projects, :groups
+      attr_reader :user, :organization, :integration_name, :projects, :groups
 
       def validate
         return ServiceResponse.error(message: 'not authorized') unless allowed?
+        return ServiceResponse.error(message: 'not authorized') unless resources_in_organization?
         return ServiceResponse.error(message: 'not instance specific') unless instance_specific_integration?
 
         ServiceResponse.success(payload: []) unless projects.present? || groups.present?
@@ -32,9 +34,16 @@ module Integrations
       end
 
       def instance_integration
-        integration_model.for_instance.first
+        integration_model.for_organization(organization).first
       end
       strong_memoize_attr :instance_integration
+
+      def resources_in_organization?
+        organization_id = organization.id
+
+        projects.all? { |project| project&.organization_id == organization_id } &&
+          groups.all? { |group| group&.organization_id == organization_id }
+      end
 
       def integration_model
         Integration.integration_name_to_model(integration_name)

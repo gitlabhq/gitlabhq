@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Project issue boards sidebar', :js, feature_category: :planning_views do
   include BoardHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
@@ -25,6 +26,28 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :planning_
   end
 
   it_behaves_like 'work item drawer on the boards'
+
+  it 'creates new related item in the drawer' do
+    first_card.click
+
+    # Wait for drawer to load, otherwise the "Create work item" modal takes too long to load
+    expect(page).to have_field('Add a reply')
+
+    within_testid('work-item-detail-panel') do
+      click_button 'More actions', match: :first
+      click_button 'New related item'
+    end
+
+    # Wait for the "Create work item" modal to load, otherwise we get a Capybara timeout
+    expect(page).to have_field('Title')
+
+    within_modal do
+      fill_in 'Title', with: 'New related work item from drawer'
+      click_button 'Create issue'
+    end
+
+    expect(page).to have_css('.gl-toast', text: 'Issue created.')
+  end
 
   def first_card
     find('[data-testid="board-list"]:nth-child(1)').first("[data-testid='board-card']")

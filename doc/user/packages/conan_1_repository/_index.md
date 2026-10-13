@@ -419,9 +419,6 @@ When you upload a Conan package, GitLab automatically extracts metadata from the
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
-
 Conan 1 revisions provide package immutability in the package registry. When you make changes to a recipe or a package without changing its version, Conan calculates a unique identifier (revision) to track these changes.
 
 > [!note]

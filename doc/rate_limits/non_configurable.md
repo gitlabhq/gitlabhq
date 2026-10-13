@@ -30,6 +30,7 @@ GitLab enforces the following rate limits in the application.
 | Snippet creation                     | 300 requests per hour per authenticated user                   | Applies to [creating a snippet](../api/snippets.md#create-a-snippet) with `POST /snippets`, [creating a project snippet](../api/project_snippets.md#create-a-snippet) with `POST /projects/:id/snippets`, and the `createSnippet` GraphQL mutation used by the GitLab UI. The limit is shared between all three. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251927) in GitLab 19.4. |
 | Update username                      | 10 calls per minute per authenticated user                     | Limits how frequently a username can be changed. Mitigates attempts to mass discover which usernames are in use. |
 | Username exists                      | 20 calls per minute per IP address                             | Applies to the internal `/users/:username/exists` endpoint, which checks whether a chosen username is taken. |
+| Work item deletion                   | 300 requests per minute per authenticated user                 | Applies to the `workItemDelete` GraphQL mutation. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253621) in GitLab 19.4. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/628006) in GitLab 19.5. |
 
 ## Related topics
 

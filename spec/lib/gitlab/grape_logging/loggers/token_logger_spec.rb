@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../../app/models/current'
+require 'grape_logging'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::TokenLogger do
   describe ".parameters" do
@@ -44,6 +46,21 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::TokenLogger do
 
       it 'adds the token information with OAuth application ID to log parameters' do
         expect(subject).to eq({ token_id: 1, token_type: "OAuthAccessToken", token_application_id: 1000 })
+      end
+    end
+
+    describe 'when token information includes the token granularity' do
+      before do
+        ::Current.token_info = {
+          token_id: token_id,
+          token_type: token_type,
+          token_scopes: [:granular],
+          token_granularity: 'granular'
+        }
+      end
+
+      it 'adds the token granularity to log parameters' do
+        expect(subject).to eq({ token_id: 1, token_type: "PersonalAccessToken", token_granularity: 'granular' })
       end
     end
   end

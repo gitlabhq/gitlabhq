@@ -17,8 +17,10 @@ module Mcp
           {
             id: resolve_work_item_id,
             includeNotes: facets.include?('notes'),
+            includeDiscussions: facets.include?('discussions'),
             includeRelatedMergeRequests: facets.include?('related_merge_requests'),
             **notes_pagination_variables(facets),
+            **discussions_variables(facets),
             # The canonical params win over the deprecated aliases kept for
             # callers of the replaced DAP tool.
             relatedMergeRequestsFirst: params[:related_merge_requests_first] ||
@@ -56,15 +58,20 @@ module Mcp
           end
         end
 
-        def process_result(result)
-          return resource_not_found_error if resource_not_found?(result)
+        # The discussions connection only pages forward, so there is no last/before pair here.
+        def discussions_variables(facets)
+          return {} unless facets.include?('discussions')
 
-          super
+          {
+            discussionsFirst: params[:discussions_first] || Mcp::Tools::Concerns::CursorPagination::DEFAULT_PAGE_SIZE,
+            discussionsAfter: params[:discussions_after],
+            discussionsFilter: params[:discussions_filter]&.upcase
+          }
         end
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Work item not found or inaccessible.'
+            'Work item not found or inaccessible.', reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
       end

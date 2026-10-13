@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/context'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::AppLogger, feature_category: :observability do
   subject { described_class }

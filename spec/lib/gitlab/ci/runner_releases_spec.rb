@@ -268,8 +268,7 @@ RSpec.describe Gitlab::Ci::RunnerReleases, feature_category: :fleet_visibility d
   def mock_http_response(response)
     http_response = instance_double(HTTParty::Response)
 
-    allow(http_response).to receive(:success?).and_return(!response.nil?)
-    allow(http_response).to receive(:parsed_response).and_return(response)
+    allow(http_response).to receive_messages(success?: !response.nil?, parsed_response: response)
 
     http_response
   end

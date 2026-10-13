@@ -3,14 +3,6 @@
 FactoryBot.define do
   factory :ci_runner_project, class: 'Ci::RunnerProject' do
     project
-
-    after(:build) do |runner_project, evaluator|
-      if runner_project.runner.nil?
-        runner_project.project = evaluator.project
-        runner_project.runner =
-          build(:ci_runner, :project, runner_projects: [runner_project],
-            organization_id: runner_project.project.organization_id)
-      end
-    end
+    runner { association(:ci_runner, :project, projects: [project], runner_projects: [instance]) }
   end
 end

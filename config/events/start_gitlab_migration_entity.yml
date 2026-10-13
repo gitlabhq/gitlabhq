@@ -1,0 +1,24 @@
+---
+description: A Direct Transfer or Offline Transfer entity started, before any pipeline runs
+internal_events: true
+action: start_gitlab_migration_entity
+identifiers:
+- namespace
+- project
+- user
+additional_properties:
+  label:
+    description: 'entity_type of the bulk import (gitlab_migration or offline_transfer)'
+  property:
+    description: hashed identifier of the source host and path, used to detect repeated imports of the same source
+  parent_entity_id:
+    description: id of the parent BulkImports::Entity when nested, null for top-level
+product_group: import
+product_categories:
+- importers
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255888
+tiers:
+- free
+- premium
+- ultimate

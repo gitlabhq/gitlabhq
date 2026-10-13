@@ -88,7 +88,7 @@ module API
       failure [[401, 'Unauthorized'], [403, 'Forbidden']]
       tags ['sidekiq']
     end
-    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance, assignable_when: [:admin]
     get 'sidekiq/queue_metrics' do
       { queues: queue_metrics }
     end
@@ -99,7 +99,7 @@ module API
       failure [[401, 'Unauthorized'], [403, 'Forbidden']]
       tags ['sidekiq']
     end
-    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance, assignable_when: [:admin]
     get 'sidekiq/process_metrics' do
       { processes: process_metrics }
     end
@@ -109,7 +109,7 @@ module API
       failure [[401, 'Unauthorized'], [403, 'Forbidden']]
       tags ['sidekiq']
     end
-    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance, assignable_when: [:admin]
     get 'sidekiq/job_stats' do
       { jobs: job_stats }
     end
@@ -119,7 +119,7 @@ module API
       failure [[401, 'Unauthorized'], [403, 'Forbidden']]
       tags ['sidekiq']
     end
-    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance, assignable_when: [:admin]
     get 'sidekiq/compound_metrics' do
       { queues: queue_metrics, processes: process_metrics, jobs: job_stats }
     end

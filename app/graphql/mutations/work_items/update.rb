@@ -103,7 +103,7 @@ module Mutations
         # Treat reordering as a base attribute so it is covered by the permission check below.
         attributes[:move_between_ids] = move_between_ids if move_between_ids
 
-        extract_task_list_toggle!(work_item, attributes, widget_params)
+        extract_task_list_toggle!(attributes, widget_params)
 
         # Only checks permissions for base attributes because widgets define their own permissions independently.
         raise_resource_not_available_error! if attributes.present? && !can_update?(work_item)
@@ -160,14 +160,9 @@ module Mutations
       # run widget callbacks => no widget-level permission checking.
       #
       # We move it into the base attributes to ensure it triggers the `can_update?` check.
-      def extract_task_list_toggle!(work_item, attributes, widget_params)
+      def extract_task_list_toggle!(attributes, widget_params)
         toggle = widget_params[:description_widget]&.delete(:task_list_toggle)
         return unless toggle
-
-        if Feature.disabled?(:work_items_task_list_toggle, work_item.root_ancestor)
-          raise Gitlab::Graphql::Errors::ArgumentError,
-            '`taskListToggle` is not available. The `work_items_task_list_toggle` feature flag is disabled.'
-        end
 
         # `update_task` path doesn't run any other normal update processing,
         # so deny combining toggle with anything else.

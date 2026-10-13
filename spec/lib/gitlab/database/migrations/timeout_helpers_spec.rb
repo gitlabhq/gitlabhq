@@ -14,6 +14,13 @@ RSpec.describe Gitlab::Database::Migrations::TimeoutHelpers, feature_category: :
       model.disable_statement_timeout
     end
 
+    it 'disables the transaction timeout for the current transaction only' do
+      allow(model).to receive(:execute)
+      expect(Gitlab::Database::TransactionTimeout).to receive(:disable).with(model.connection, local: true)
+
+      model.disable_statement_timeout
+    end
+
     # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
     context 'with real environment', :delete do
       before do
@@ -41,6 +48,48 @@ RSpec.describe Gitlab::Database::Migrations::TimeoutHelpers, feature_category: :
           expect(model).to receive(:execute).with('RESET statement_timeout').at_least(:once)
 
           expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
+
+        it 'disables and resets the transaction timeout on session level around the block' do
+          allow(model).to receive(:execute)
+          allow(model).to receive(:transaction_timeout_disabled?).and_return(false)
+          expect(Gitlab::Database::TransactionTimeout).to receive(:disable).with(model.connection).ordered
+          expect(Gitlab::Database::TransactionTimeout).to receive(:reset).with(model.connection).ordered
+
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
+
+        context 'when the database is older than PostgreSQL 17' do
+          before do
+            allow(model.connection).to receive(:database_version).and_return(16_00_00)
+          end
+
+          it 'lifts only the statement timeout and never reads or sets transaction_timeout' do
+            allow(model.connection).to receive(:execute).and_call_original
+            allow(model.connection).to receive(:select_value).and_call_original
+            expect(model.connection).not_to receive(:execute).with(/transaction_timeout/)
+            expect(model.connection).not_to receive(:select_value).with(/transaction_timeout/)
+
+            expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+          end
+        end
+
+        context 'when an outer scope already disabled the transaction timeout' do
+          before do
+            skip 'transaction_timeout requires PostgreSQL 17 or later' unless
+              Gitlab::Database::TransactionTimeout.supported?(model.connection)
+          end
+
+          it 'leaves the outer exemption in place after the block' do
+            model.connection.transaction do
+              model.connection.execute('SET LOCAL transaction_timeout TO 0')
+              expect(Gitlab::Database::TransactionTimeout).not_to receive(:reset)
+
+              model.disable_statement_timeout { model.execute('SELECT 1') }
+
+              expect(model.connection.select_value('SHOW transaction_timeout')).to eq('0')
+            end
+          end
         end
 
         # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
@@ -80,11 +129,42 @@ RSpec.describe Gitlab::Database::Migrations::TimeoutHelpers, feature_category: :
         ActiveRecord::Migration.connection.execute('RESET statement_timeout')
       end
 
-      it 'yields control without disabling the timeout or resetting' do
-        expect(model).not_to receive(:execute).with('SET statement_timeout TO 0')
-        expect(model).not_to receive(:execute).with('RESET statement_timeout')
+      context 'when the transaction_timeout is already disabled too' do
+        before do
+          allow(model).to receive(:transaction_timeout_disabled?).and_return(true)
+        end
 
-        expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        it 'yields control without disabling the timeouts or resetting' do
+          expect(model).not_to receive(:execute).with('SET statement_timeout TO 0')
+          expect(model).not_to receive(:execute).with('RESET statement_timeout')
+          expect(Gitlab::Database::TransactionTimeout).not_to receive(:disable)
+          expect(Gitlab::Database::TransactionTimeout).not_to receive(:reset)
+
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
+      end
+
+      context 'when the transaction_timeout is still enabled' do
+        before do
+          skip 'transaction_timeout requires PostgreSQL 17 or later' unless
+            Gitlab::Database::TransactionTimeout.supported?(model.connection)
+
+          ActiveRecord::Migration.connection.execute("SET transaction_timeout TO '1h'")
+        end
+
+        after do
+          ActiveRecord::Migration.connection.execute('RESET transaction_timeout')
+        end
+
+        it 'lifts only the transaction timeout around the block' do
+          expect(model).not_to receive(:execute).with('SET statement_timeout TO 0')
+          expect(model).not_to receive(:execute).with('RESET statement_timeout')
+          expect(Gitlab::Database::TransactionTimeout).to receive(:reset).with(model.connection).and_call_original
+
+          model.disable_statement_timeout do
+            expect(model.connection.select_value('SHOW transaction_timeout')).to eq('0')
+          end
+        end
       end
     end
   end

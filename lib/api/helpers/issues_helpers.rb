@@ -20,6 +20,10 @@ module API
         ]
       end
 
+      def self.create_issue_mcp_container_arguments
+        {}
+      end
+
       def self.update_params_at_least_one_of
         [
           :assignee_id,

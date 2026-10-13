@@ -1,10 +1,10 @@
 <script>
 import { isEmpty, clamp, throttle } from 'lodash-es';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
+import getStateSubscription from 'ee_else_ce/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
@@ -21,14 +21,13 @@ import SourceBranchRemovalStatus from './components/source_branch_removal_status
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
-import CheckingState from './components/states/mr_widget_checking.vue';
 import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
 import NothingToMergeState from './components/states/nothing_to_merge.vue';
-import ReadyToMergeState from './components/states/ready_to_merge.vue';
+import ReadyToMergeState from './components/merge_widget.vue';
 import ShaMismatch from './components/states/sha_mismatch.vue';
 import WidgetContainer from './components/widget/app.vue';
 import {
@@ -40,17 +39,12 @@ import {
 } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
-import getStateSubscription from './queries/get_state.subscription.graphql';
 import mergeChecksQuery from './queries/merge_checks.query.graphql';
-import mergeChecksSubscription from './queries/merge_checks.subscription.graphql';
-import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
+import MrWidgetReadyToMerge from './components/states/ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
 export default {
   name: 'MRWidgetRoot',
-  directives: {
-    SafeHtml,
-  },
   components: {
     Loading,
     WidgetContainer,
@@ -64,7 +58,6 @@ export default {
     MrWidgetMissingBranch: MissingBranchState,
     MrWidgetReadyToMerge,
     ShaMismatch,
-    MrWidgetChecking: CheckingState,
     MrWidgetPreparing: PreparingState,
     MrWidgetAutoMergeEnabled,
     MrWidgetAutoMergeFailed: AutoMergeFailed,
@@ -117,6 +110,7 @@ export default {
         variables() {
           return {
             issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
+            targetBranches: this.mergeRequestQueryVariables.targetBranches,
           };
         },
         updateQuery(
@@ -128,7 +122,15 @@ export default {
           },
         ) {
           if (mergeRequestMergeStatusUpdated) {
+            const { userPermissions, mergeabilityChecks, state } = mergeRequestMergeStatusUpdated;
+            const stateChanged = state !== this.mr.mergeRequestState;
+
             this.mr.setGraphqlSubscriptionData(mergeRequestMergeStatusUpdated);
+            this.mergeChecksState = { userPermissions, mergeabilityChecks };
+
+            // Whether the MR is open and its merged details only come from REST,
+            // which a push never refreshes, so fetch them when the state moves.
+            if (stateChanged) this.checkStatus(undefined, undefined, false);
           }
         },
       },
@@ -145,31 +147,6 @@ export default {
       update: (data) => data?.project?.mergeRequest,
       error() {
         this.mergeChecksState = {};
-      },
-      subscribeToMore: {
-        document() {
-          return mergeChecksSubscription;
-        },
-        skip() {
-          return !this.mr?.id;
-        },
-        variables() {
-          return {
-            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
-          };
-        },
-        updateQuery(
-          _,
-          {
-            subscriptionData: {
-              data: { mergeRequestMergeStatusUpdated },
-            },
-          },
-        ) {
-          if (mergeRequestMergeStatusUpdated) {
-            this.mergeChecksState = mergeRequestMergeStatusUpdated;
-          }
-        },
       },
     },
   },
@@ -252,7 +229,6 @@ export default {
     mergeBlockedComponentVisible() {
       return !(
         [
-          'checking',
           'preparing',
           'nothingToMerge',
           'archived',
@@ -349,7 +325,6 @@ export default {
       }
 
       this.bindEventHubListeners();
-      eventHub.$on('mr.discussion.updated', this.refetchState);
     },
     getServiceEndpoints(store) {
       return {
@@ -400,6 +375,11 @@ export default {
           }),
         );
     }, STATE_QUERY_POLLING_INTERVAL_DEFAULT),
+    refreshMergeStatus() {
+      // refetch=false: the strategies come from the REST checkStatus payload; the Apollo
+      // state refetch does not carry them, so skip that extra query (#629566).
+      this.checkStatus(undefined, undefined, false);
+    },
     setFaviconHelper() {
       if (this.mr.faviconOverlayPath) {
         return setFaviconOverlay(this.mr.faviconOverlayPath);
@@ -508,6 +488,9 @@ export default {
     },
     bindEventHubListeners() {
       eventHub.$on('mr-widget-update-requested', this.refetchState);
+      // Strategies are only delivered by the REST checkStatus poll (or the subscription),
+      // not by an Apollo state refetch, so approval triggers this to refresh them promptly.
+      eventHub.$on('mr-widget-check-status', this.refreshMergeStatus);
       eventHub.$on('mr-widget-rebase-success', this.checkRebasedStatus);
       eventHub.$on('failed-to-merge', this.setMergeError);
       eventHub.$on('UpdateWidgetData', this.setMrData);
@@ -516,12 +499,12 @@ export default {
     },
     unbindEventListeners() {
       eventHub.$off('mr-widget-update-requested', this.refetchState);
+      eventHub.$off('mr-widget-check-status', this.refreshMergeStatus);
       eventHub.$off('mr-widget-rebase-success', this.checkRebasedStatus);
       eventHub.$off('failed-to-merge', this.setMergeError);
       eventHub.$off('UpdateWidgetData', this.setMrData);
       eventHub.$off('fetch-actions-content', this.fetchActionsContent);
       eventHub.$off('fetch-deployments', this.onFetchDeployments);
-      eventHub.$off('mr.discussion.updated', this.refetchState);
     },
     apolloStateQueryMaxPollingInterval() {
       return (

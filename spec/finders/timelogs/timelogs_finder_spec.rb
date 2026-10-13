@@ -13,7 +13,7 @@ RSpec.describe Timelogs::TimelogsFinder, feature_category: :team_planning do
   let_it_be_with_reload(:issue_a) { create(:issue, project: project_a) }
   let_it_be_with_reload(:issue_b) { create(:issue, project: project_b) }
   let_it_be_with_reload(:issue_c) { create(:issue, project: project_c) }
-  let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project_a) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, :skip_diff_creation, source_project: project_a) }
 
   let_it_be_with_reload(:timelog1) do
     create(:issue_timelog, issue: issue_a, user: current_user, spent_at: 2.days.ago.beginning_of_day, time_spent: 3000)

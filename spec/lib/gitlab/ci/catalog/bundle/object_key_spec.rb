@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::Catalog::Bundle::ObjectKey, feature_category: :pipeli
 
   it 'derives the key from the identifying fields', :aggregate_failures do
     expect(object_key.dir).to eq('catalog/bundles/cell.example.com/acme/widgets/1.2.3')
-    expect(object_key.filename).to eq('deploy.yml')
+    expect(object_key.filename).to eq('deploy.json')
   end
 
   context 'when the fields the database indexes under lower() vary in case' do
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Ci::Catalog::Bundle::ObjectKey, feature_category: :pipeli
 
     it 'preserves their case so distinct rows derive distinct keys', :aggregate_failures do
       expect(object_key.dir).to eq('catalog/bundles/cell.example.com/acme/widgets/1.2.3-RC1')
-      expect(object_key.filename).to eq('Deploy.yml')
+      expect(object_key.filename).to eq('Deploy.json')
     end
   end
 end

@@ -87,6 +87,52 @@ RSpec.describe Gitlab::Git::BlobPairsDiffs, feature_category: :source_code_manag
       end
     end
 
+    context 'when changed paths are not sorted' do
+      let(:changed_paths) do
+        %w[b.rb a.rb a/c.rb].map do |path|
+          Gitlab::Git::ChangedPath.new(
+            status: :MODIFIED, path: path, old_path: path, old_mode: "100644", new_mode: "100644",
+            old_blob_id: '93e123ac8a3e6a0b600953d7598af629dec7b735',
+            new_blob_id: '50b27c6518be44c42c4d87966ae2481ce895624c'
+          )
+        end
+      end
+
+      it 'returns diff files in the order of changed paths' do
+        diff_files = []
+
+        blob_pairs_service.diffs_by_changed_paths(diff_refs) do |batch|
+          diff_files << batch
+        end
+
+        expect(diff_files.flatten.map(&:new_path)).to eq(%w[b.rb a.rb a/c.rb])
+      end
+
+      context 'when sorted is true' do
+        it 'returns diff files sorted by path' do
+          diff_files = []
+
+          blob_pairs_service.diffs_by_changed_paths(diff_refs, sorted: true) do |batch|
+            diff_files << batch
+          end
+
+          expect(diff_files.flatten.map(&:new_path)).to eq(%w[a/c.rb a.rb b.rb])
+        end
+
+        context 'when an offset is given' do
+          it 'applies the offset to the sorted paths' do
+            diff_files = []
+
+            blob_pairs_service.diffs_by_changed_paths(diff_refs, 2, 10, sorted: true) do |batch|
+              diff_files << batch
+            end
+
+            expect(diff_files.flatten.map(&:new_path)).to eq(%w[b.rb])
+          end
+        end
+      end
+    end
+
     context 'when submodule is deleted' do
       let(:changed_paths) do
         [

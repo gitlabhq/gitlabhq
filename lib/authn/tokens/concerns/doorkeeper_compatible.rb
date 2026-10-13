@@ -46,6 +46,11 @@ module Authn
           user_id
         end
 
+        # For compatibility with Doorkeeper::AccessToken#resource_owner.
+        def resource_owner
+          user
+        end
+
         # Neither token type has a backing Doorkeeper application record.
         def application
           nil

@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { GlIcon, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -16,7 +17,6 @@ import {
   PathIdSeparator,
 } from '~/related_issues/constants';
 import RelatedIssuesList from '~/related_issues/components/related_issues_list.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 describe('RelatedIssuesBlock', () => {
   let wrapper;

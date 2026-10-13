@@ -245,6 +245,39 @@ RSpec.describe 'Projects blob controller', feature_category: :code_review_workfl
       expect(doc.css('.file-content.md')).to be_empty
     end
 
+    context 'when content is missing' do
+      it 'returns bad request' do
+        post namespace_project_preview_blob_path(
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'master/CHANGELOG'
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when content is not a string' do
+      it 'returns bad request' do
+        post namespace_project_preview_blob_path(
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'master/CHANGELOG'
+        ), params: Gitlab::Json.generate({ content: 123 }), headers: { 'Content-Type' => 'application/json' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when content is empty' do
+      it 'renders a diff with removed lines' do
+        do_post('')
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Nokogiri::HTML(response.body).css('.line_holder.old')).to be_present
+      end
+    end
+
     context 'when content exceeds size limit' do
       before do
         stub_const('Projects::BlobController::MAX_PREVIEW_CONTENT', 1.byte)

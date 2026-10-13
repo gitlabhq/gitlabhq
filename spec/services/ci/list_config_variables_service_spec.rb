@@ -55,8 +55,7 @@ RSpec.describe Ci::ListConfigVariablesService,
 
         before do
           allow_next_instance_of(Gitlab::Ci::ProjectConfig) do |instance|
-            allow(instance).to receive(:exists?).and_return(true)
-            allow(instance).to receive(:content).and_return(YAML.dump(ci_config))
+            allow(instance).to receive_messages(exists?: true, content: YAML.dump(ci_config))
           end
         end
 

@@ -1,0 +1,10 @@
+---
+name: terraform_state_delayed_deletion
+description: Delays permanent deletion of Terraform state by seven days.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/621467
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256711
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630245
+milestone: '19.5'
+group: group::runner core
+type: gitlab_com_derisk
+default_enabled: false

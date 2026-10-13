@@ -82,6 +82,8 @@ module Projects
         new_jid = self.class.perform_in(RE_ENQUEUE_DELAY, user_id, project_id, after_export_strategy, params)
         return log_missing_re_enqueue(project_export_job) unless new_jid
 
+        log_re_enqueue(project_export_job)
+
         # StuckExportJobsWorker fails a queued job as soon as Gitlab::SidekiqStatus reports the
         # stored jid as completed, which happens when this execution returns. Pointing `jid` at the
         # scheduled job keeps a throttled export alive, as WaitRelationExportsWorker does for
@@ -89,11 +91,21 @@ module Projects
         project_export_job.update!(jid: new_jid)
       end
 
+      def log_re_enqueue(project_export_job)
+        Gitlab::Export::Logger.info(
+          message: 'Throttled project export was re-enqueued',
+          project_export_job_id: project_export_job.id,
+          Labkit::Fields::GL_PROJECT_ID => project_export_job.project_id,
+          queue_size: ProjectExportJob.queued_and_not_timed_out(QUEUED_JOBS_EXPIRATION).count,
+          concurrent_relation_export_limit: ::Gitlab::CurrentSettings.concurrent_relation_export_limit
+        )
+      end
+
       def log_missing_re_enqueue(project_export_job)
         Gitlab::Export::Logger.error(
           message: 'Throttled project export was not re-enqueued',
           project_export_job_id: project_export_job.id,
-          project_id: project_export_job.project_id
+          Labkit::Fields::GL_PROJECT_ID => project_export_job.project_id
         )
       end
     end

@@ -21,7 +21,7 @@ module Ci
       class_name: 'Ci::JobArtifact',
       partition_foreign_key: :partition_id
 
-    partitionable scope: :build, partitioned: true
+    partitionable scope: :build, partitioned: { detach_archived: true }
 
     validates :build, presence: true
     validates :archival_attempts, presence: true

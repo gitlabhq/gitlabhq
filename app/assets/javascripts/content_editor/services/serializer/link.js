@@ -115,6 +115,7 @@ const link = {
       title ? ` ${quote(title)}` : ''
     })`;
   },
+  mixable: true,
 };
 
 export default link;

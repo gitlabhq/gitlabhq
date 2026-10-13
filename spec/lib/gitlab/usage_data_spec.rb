@@ -400,8 +400,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       for_defined_days_back do
         user = create(:user)
         create(:ci_build, user: user)
-        create(:ci_empty_pipeline, source: :external, user: user)
-        create(:ci_empty_pipeline, user: user)
+        create(:ci_pipeline, source: :external, user: user)
+        create(:ci_pipeline, user: user)
         create(:ci_pipeline, :auto_devops_source, user: user)
         create(:ci_pipeline, :repository_source, user: user)
         create(:ci_pipeline_schedule, owner: user)

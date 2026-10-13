@@ -23,8 +23,13 @@ export default {
       type: Object,
       required: true,
     },
+    level: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
   },
-  emits: ['loaded'],
+  emits: ['loaded', 'empty'],
   data() {
     return {
       hasError: false,
@@ -61,12 +66,18 @@ export default {
           });
         });
 
-        this.$emit('loaded', 0);
+        if (artifacts.length) {
+          this.$emit('loaded', 0, this.$options.icons.warning);
+        }
 
         return artifacts;
       },
       error() {
         this.hasError = true;
+
+        if (this.hasSecurityReports) {
+          this.$emit('loaded', 0, this.$options.icons.failed);
+        }
       },
     },
   },
@@ -104,6 +115,14 @@ export default {
         });
     },
   },
+  watch: {
+    hasSecurityReports: {
+      handler(hasSecurityReports) {
+        this.$emit('empty', !hasSecurityReports);
+      },
+      immediate: true,
+    },
+  },
   methods: {
     handleIsLoading(value) {
       this.isLoading = value;
@@ -127,6 +146,7 @@ export default {
 <template>
   <mr-widget
     v-if="hasSecurityReports"
+    :level="level"
     :has-error="hasError"
     :error-text="$options.i18n.apiError"
     :status-icon-name="$options.icons.warning"

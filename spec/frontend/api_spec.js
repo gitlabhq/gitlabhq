@@ -845,38 +845,6 @@ describe('Api', () => {
     });
   });
 
-  describe('users', () => {
-    it('fetches users', () => {
-      const query = 'dummy query';
-      const options = { unused: 'option' };
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users.json`;
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, [
-        {
-          name: 'test',
-        },
-      ]);
-
-      return Api.users(query, options).then(({ data }) => {
-        expect(data).toHaveLength(1);
-        expect(data[0].name).toBe('test');
-      });
-    });
-  });
-
-  describe('user', () => {
-    it('fetches single user', () => {
-      const userId = '123456';
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}`;
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, {
-        name: 'testuser',
-      });
-
-      return Api.user(userId).then(({ data }) => {
-        expect(data.name).toBe('testuser');
-      });
-    });
-  });
-
   describe('user counts', () => {
     it('fetches single user counts', () => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/user_counts`;

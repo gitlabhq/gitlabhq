@@ -2,8 +2,8 @@ import { concatPagination } from '@apollo/client/utilities';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createDefaultClient from '~/lib/graphql';
@@ -134,6 +134,8 @@ export function initMergeRequestDashboard(el) {
       initialSort: el.dataset.initialSort,
       isPublicVisibilityRestricted: parseBoolean(el.dataset.isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(el.dataset.isSignedIn),
+      savedViewLimit: Number(el.dataset.savedViewLimit),
+      savedViewsEnabled: parseBoolean(el.dataset.savedViewsEnabled),
       vueSearchEnabled: parseBoolean(el.dataset.vueSearchEnabled),
     },
     component: App,

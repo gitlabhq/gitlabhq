@@ -48,9 +48,11 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
   let(:with_dev_ops_score_params) { { dev_ops_score: score_params[:score] } }
   let(:with_conv_index_params) { { conv_index: score_params[:score] } }
   let(:with_usage_data_id_params) { { conv_index: { usage_data_id: usage_data_id } } }
-  let(:service_ping_payload_url) { File.join(described_class::STAGING_BASE_URL, described_class::USAGE_DATA_PATH) }
-  let(:service_ping_errors_url) { File.join(described_class::STAGING_BASE_URL, described_class::ERROR_PATH) }
-  let(:service_ping_metadata_url) { File.join(described_class::STAGING_BASE_URL, described_class::METADATA_PATH) }
+  # The test environment is not production, so the default destination is staging.
+  let(:default_base_url) { Gitlab::TelemetryEndpoint::STAGING_URL }
+  let(:service_ping_payload_url) { File.join(default_base_url, described_class::USAGE_DATA_PATH) }
+  let(:service_ping_errors_url) { File.join(default_base_url, described_class::ERROR_PATH) }
+  let(:service_ping_metadata_url) { File.join(default_base_url, described_class::METADATA_PATH) }
   let(:usage_data) { { uuid: 'uuid', unique_instance_id: 'unique_instance_id', recorded_at: Time.current } }
 
   let_it_be(:organization) { create(:organization) }
@@ -169,6 +171,53 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       submit_service.execute
 
       expect(response).to have_been_requested
+    end
+
+    # Gitlab::TelemetryEndpoint resolves the destination and is specced
+    # separately; these only prove this service posts to whatever it returns.
+    #
+    # The destination must differ from the default in scheme or port, not only
+    # in host: stub_full_request rewrites every hostname to the same stub IP,
+    # so two https origins on port 443 collapse into one WebMock stub.
+    describe 'destination URL' do
+      let(:destination) { 'http://localhost:3000' }
+
+      before do
+        allow(Gitlab::TelemetryEndpoint).to receive(:service_ping_url).and_return(destination)
+      end
+
+      it 'posts to Gitlab::TelemetryEndpoint.service_ping_url' do
+        default_response = stub_response(body: with_dev_ops_score_params)
+        stub_response(body: nil, url: File.join(destination, described_class::METADATA_PATH), status: 201)
+        response = stub_response(
+          body: with_dev_ops_score_params,
+          url: File.join(destination, described_class::USAGE_DATA_PATH)
+        )
+
+        submit_service.execute
+
+        expect(response).to have_been_requested
+        expect(default_response).not_to have_been_requested
+      end
+
+      # #execute rescues StandardError and submits an error payload, which
+      # resolves the destination a second time.
+      it 'reports submission errors to the same destination' do
+        stub_response(
+          body: with_dev_ops_score_params,
+          url: File.join(destination, described_class::USAGE_DATA_PATH),
+          status: 500
+        )
+        error_response = stub_response(
+          body: nil,
+          url: File.join(destination, described_class::ERROR_PATH),
+          status: 201
+        )
+
+        expect { submit_service.execute }.to raise_error(described_class::SubmissionError)
+
+        expect(error_response).to have_been_requested
+      end
     end
 
     context 'when conv_index data is passed' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ResourceEvent, feature_category: :team_planning, type: :model do
+RSpec.describe ResourceEvent, feature_category: :team_planning do
   context 'when inheriting from ResourceEvent' do
     context 'when it does not implement the #issuable method' do
       let(:dummy_resource_label_event_class) do

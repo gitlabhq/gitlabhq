@@ -142,6 +142,70 @@ describe('TodoItemBody', () => {
       expect(retryButton.exists()).toBe(true);
     });
 
+    it('renders the failure reason when the transfer-failed todo has one', () => {
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        body: 'gitlab-org/my-source-group',
+        transferFailedRetryUrl: '/groups/gitlab-org-source/transfer?new_parent_group_id=123',
+        transferFailureReason: 'Namespace already taken',
+        targetEntity: {
+          name: 'gitlab-org-source',
+        },
+      });
+
+      expect(wrapper.text()).toContain(
+        'Failed to transfer gitlab-org-source to gitlab-org / my-source-group: Namespace already taken.',
+      );
+      expect(wrapper.text()).toContain('Try again.');
+    });
+
+    it('does not double up punctuation when the failure reason is already a sentence', () => {
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        body: 'gitlab-org/my-source-group',
+        transferFailedRetryUrl: '/groups/gitlab-org-source/transfer?new_parent_group_id=123',
+        transferFailureReason: 'The transfer failed unexpectedly. Contact your administrator.',
+        targetEntity: {
+          name: 'gitlab-org-source',
+        },
+      });
+
+      expect(wrapper.text()).toContain(
+        'The transfer failed unexpectedly. Contact your administrator.',
+      );
+      expect(wrapper.text()).not.toContain('administrator..');
+    });
+
+    it('renders special characters in the failure reason without HTML entities', () => {
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        body: 'gitlab-org/my-source-group',
+        transferFailedRetryUrl: '/groups/gitlab-org-source/transfer?new_parent_group_id=123',
+        transferFailureReason: "You don't have permission to transfer this project",
+        targetEntity: {
+          name: 'gitlab-org-source',
+        },
+      });
+
+      expect(wrapper.text()).toContain("You don't have permission to transfer this project.");
+      expect(wrapper.text()).not.toContain('&#39;');
+    });
+
+    it('omits the reason separator when the transfer-failed todo has no reason', () => {
+      createComponent({
+        action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+        body: 'gitlab-org/my-source-group',
+        transferFailedRetryUrl: '/groups/gitlab-org-source/transfer?new_parent_group_id=123',
+        targetEntity: {
+          name: 'gitlab-org-source',
+        },
+      });
+
+      expect(wrapper.text()).toContain(
+        'Failed to transfer gitlab-org-source to gitlab-org / my-source-group.',
+      );
+    });
+
     it('calls axios.put with the retry URL when clicking transfer-failed retry action', async () => {
       const retryUrl = '/groups/gitlab-org-source/transfer?new_parent_group_id=123';
       const sourceUrl = '/groups/gitlab-org-source';

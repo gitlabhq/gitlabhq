@@ -160,6 +160,67 @@ RSpec.describe Gitlab::ExternallyStoredField, feature_category: :team_planning d
     end
   end
 
+  describe 'blank payloads' do
+    let(:markdown_class) do
+      uploader = uploader_class
+      Class.new(ApplicationRecord) do
+        self.table_name = '_test_externally_stored_fields'
+
+        include CacheMarkdownField
+        cache_markdown_field :content, storage: :external
+        self.external_storage_uploader_class = uploader
+
+        def self.name
+          'TestBlankPayloadModel'
+        end
+      end
+    end
+
+    before do
+      stub_commonmark_sourcepos_disabled
+    end
+
+    it 'stores nothing for a record created with no field values' do
+      instance = markdown_class.create!
+
+      expect(File.exist?(instance.send(:external_storage_uploader).path)).to be false
+    end
+
+    it 'does not ask the store to remove a payload that was never written' do
+      expect_next_instance_of(uploader_class) do |uploader|
+        expect(uploader).not_to receive(:remove!)
+      end
+
+      markdown_class.create!
+    end
+
+    it 'removes the stored payload when every field is cleared' do
+      instance = markdown_class.create!(content: 'temporary')
+
+      stored_path = instance.send(:external_storage_uploader).path
+      expect(File.exist?(stored_path)).to be true
+
+      instance.update!(content: nil)
+
+      expect(File.exist?(stored_path)).to be false
+    end
+
+    it 'reads back as nil after clearing' do
+      instance = markdown_class.create!(content: 'temporary')
+      instance.update!(content: nil)
+
+      expect(markdown_class.find(instance.id).content).to be_nil
+    end
+
+    it 'stores a payload again when a cleared field is repopulated' do
+      instance = markdown_class.create!(content: 'first')
+      instance.update!(content: nil)
+      instance.update!(content: 'second')
+
+      expect(markdown_class.find(instance.id).content).to eq('second')
+    end
+  end
+
   describe 'cleanup on destroy' do
     it 'removes the stored file' do
       instance = model_class.create!

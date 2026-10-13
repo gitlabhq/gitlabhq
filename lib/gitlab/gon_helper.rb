@@ -20,8 +20,9 @@ module Gitlab
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
-      gon.iframe_rendering_enabled      = Gitlab::CurrentSettings.iframe_rendering_enabled?
-      gon.iframe_rendering_allowlist    = Gitlab::CurrentSettings.iframe_rendering_allowlist
+      if Gitlab::CurrentSettings.iframe_rendering_enabled?
+        gon.iframe_rendering_providers = Gitlab::Markdown::IframeProviders.frontend_config
+      end
 
       # Sentry configurations for the browser client are done
       # via `Gitlab::CurrentSettings` from the Admin panel:
@@ -60,6 +61,11 @@ module Gitlab
       gon.pat_prefix             = Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
       if Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
         gon.instance_token_prefix = Authn::TokenField::PrefixHelper.instance_prefix
+      end
+
+      # Unset, the frontend keeps the schema default page size the backend falls back to.
+      if Feature.enabled?(:larger_clickhouse_aggregation_pages, current_user)
+        gon.aggregation_max_page_size = Gitlab::Database::Aggregation::ClickHouse::Engine.max_page_size
       end
 
       gon.fluid_layout = false
@@ -122,13 +128,11 @@ module Gitlab
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
-      push_frontend_feature_flag(:editor_sticky_table_headers, current_user)
       push_frontend_feature_flag(:hide_unpinned_sidebar_items, current_user)
-      push_frontend_feature_flag(:markdown_sortable_table_columns, current_user)
       # Needed for globally-rendered components such as work item reference popovers.
       push_frontend_feature_flag(:work_item_features_field, current_user)
-
-      push_force_frontend_feature_flag(:security_manager_role_enabled, Gitlab::Security::SecurityManagerConfig.enabled?)
+      # eTag-cached GraphQL queries are polled from many pages, so the flag must be global.
+      push_frontend_feature_flag(:etag_caching_post_requests, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

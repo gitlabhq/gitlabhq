@@ -1,0 +1,48 @@
+#import "~/graphql_shared/fragments/author.fragment.graphql"
+
+query getBlameData(
+  $fullPath: ID!
+  $filePath: String!
+  $fromLine: Int
+  $toLine: Int
+  $ignoreRevs: Boolean
+  $ref: String!
+) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      blobs(ref: $ref, paths: [$filePath]) {
+        nodes {
+          id
+          blame(fromLine: $fromLine, toLine: $toLine, ignoreRevs: $ignoreRevs) {
+            firstLine
+            groups {
+              lineno
+              span
+              commit {
+                id
+                authorName
+                titleHtml
+                title
+                message
+                authoredDate
+                authorGravatar
+                webPath
+                author {
+                  ...Author
+                }
+                sha
+                shortId
+                hasAgentSession @gl_introduced(version: "19.1.0")
+              }
+              commitData {
+                ageMapClass
+                previousBlamePath @gl_introduced(version: "19.4.0")
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

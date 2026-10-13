@@ -23,10 +23,6 @@ title: Code Suggestions
 
 {{< history >}}
 
-- [Introduced support for Gemini Enterprise Agent Platform Codey APIs](https://gitlab.com/groups/gitlab-org/-/work_items/10562) in GitLab 16.1.
-- [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/work_items/10752) in GitLab 16.2.
-- [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/work_items/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
@@ -56,7 +52,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 ## Prerequisites
 
-- If you have GitLab Duo Core, [IDE features are on](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- [GitLab Duo Core is on](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Code Suggestions is set up](../../project/repository/code_suggestions/set_up.md) in your IDE.
 - You have a [default GitLab Duo namespace](../../profile/preferences.md#namespace-resolution-in-your-local-environment)
   set, or have a project open that has GitLab Duo access.
@@ -116,7 +112,7 @@ Code Suggestions uses code completion and code generation:
 | When to use | Use code completion to quickly complete one or a few lines of code. | Use code generation for more complex tasks, larger codebases, when you want to write new code from scratch based on a natural language description, or when the file you're editing has fewer than five lines of code. |
 
 Code Suggestions always uses both of these features. You cannot use only code
-generation or only code completion.
+generation or only code completion. You also cannot turn them off separately.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 [View a code completion vs. code generation comparison demo](https://www.youtube.com/watch?v=9dsyqMt9yg4).
@@ -147,17 +143,6 @@ AI is non-deterministic, so you may not get the same suggestion every time with 
 To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../gitlab_duo/use_cases.md).
-
-## Available language models
-
-Different language models can be the source for Code Suggestions.
-
-- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI Gateway.
-- On GitLab Self-Managed, two options exist:
-  - GitLab can [host the models and connect to them through the cloud-based AI Gateway](../../project/repository/code_suggestions/set_up.md).
-  - Your organization can use [self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md),
-    which means you host the AI Gateway and language models. You can use GitLab-managed models,
-    other supported language models, or bring your own compatible model.
 
 ## Accuracy of results
 

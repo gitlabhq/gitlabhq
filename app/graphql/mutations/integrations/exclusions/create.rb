@@ -35,13 +35,15 @@ module Mutations
 
         authorize :admin_all_resources
         authorize_granular_token permissions: :create_integration_exclusion, boundary: :instance,
-          boundary_type: :instance
+          boundary_type: :instance,
+          assignable_when: [:admin]
 
         def resolve(integration_name:, project_ids: [], group_ids: [])
           authorize!(:global)
 
           result = ::Integrations::Exclusions::CreateService.new(
             current_user: current_user,
+            organization: Current.organization,
             projects: projects(project_ids),
             groups: groups(group_ids),
             integration_name: integration_name

@@ -154,6 +154,7 @@ RSpec.describe Mcp::Tools::Users::GetUserTool, feature_category: :mcp_server do
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to eq('User not found or inaccessible')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'merge_requests created_by_duo enrichment', :click_house, feature_category: :value_stream_management do
   let(:conn) { ClickHouse::Connection.new(:main) }
+  let(:boolean_type) { ActiveModel::Type::Boolean.new }
 
   before do
     # MR 101: created by a namespace-level flow, so the link's traversal_path is the group's, not the project's
@@ -38,8 +39,8 @@ RSpec.describe 'merge_requests created_by_duo enrichment', :click_house, feature
 
     # created_by_duo is a joined column, so the insert path leaves it false and the
     # enrichment pass fills it in. Nothing here is time-dependent, so one pass is enough.
-    conn.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv')
-    conn.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv')
+    ClickHouse::Client.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv', click_house_admin_database)
+    ClickHouse::Client.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv', click_house_admin_database)
   end
 
   it 'marks only merge requests with a live created link', :aggregate_failures do
@@ -49,7 +50,7 @@ RSpec.describe 'merge_requests created_by_duo enrichment', :click_house, feature
       ORDER BY id
     SQL
 
-    expect(rows.map { |row| row.values_at('id', 'created_by_duo') }).to eq([
+    expect(rows.map { |row| [row['id'], boolean_type.cast(row['created_by_duo'])] }).to eq([
       [101, true],
       [102, false],
       [103, true],

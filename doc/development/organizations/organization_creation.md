@@ -93,8 +93,9 @@ today, not the ability.
 
 Two paths create an organization without an actor, and run only once, during instance setup:
 
-- `Gitlab::DatabaseImporters::DefaultOrganizationImporter` creates the default organization every
-  instance gets, from the `db/fixtures/production/002_default_organization.rb` fixture.
+- `Gitlab::DatabaseImporters::DefaultOrganizationImporter` creates the default organization when
+  cells are disabled or on the legacy cell (cell ID 1), from the
+  `db/fixtures/production/002_default_organization.rb` fixture. Other cells skip it.
 - `Gitlab::DatabaseImporters::AdminOrganizationImporter` creates a per-cell organization for the
   seeded administrator on any cell that does not own the default organization, from the
   `db/fixtures/production/003_admin.rb` fixture.

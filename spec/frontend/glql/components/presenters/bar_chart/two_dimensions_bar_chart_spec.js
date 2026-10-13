@@ -1,7 +1,10 @@
 import { GlBarChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoDimensionsBarChart from '~/glql/components/presenters/bar_chart/two_dimensions_bar_chart.vue';
-import { barCategoryAxisOptions } from '~/glql/components/presenters/bar_chart/bar_chart_options';
+import {
+  barCategoryAxisOptions,
+  barChartHeightFor,
+} from '~/glql/components/presenters/bar_chart/bar_chart_options';
 import { chartTooltipStub } from '../../../chart_helpers';
 
 const PRIMARY_DIM = { key: 'user', label: 'User', name: 'user', type: 'dimension' };
@@ -19,8 +22,9 @@ const DATA = {
 describe('TwoDimensionsBarChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsBarChart, {
+      provide,
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
@@ -42,6 +46,10 @@ describe('TwoDimensionsBarChart', () => {
     expect(findChart().props('presentation')).toBe('stacked');
   });
 
+  it('sizes the chart from the number of primary-dimension rows', () => {
+    expect(findChart().props('height')).toBe(barChartHeightFor(2));
+  });
+
   it('labels the axes from the metric and both dimensions', () => {
     expect(findChart().props('xAxisTitle')).toBe('Total count');
     expect(findChart().props('yAxisTitle')).toBe('User by Language');
@@ -57,6 +65,36 @@ describe('TwoDimensionsBarChart', () => {
         [6, 'u0'],
         [5, 'u2'],
       ],
+    });
+  });
+
+  it('leaves pairs with no row empty rather than zero', () => {
+    createComponent({ data: { nodes: DATA.nodes.slice(0, 3) } });
+
+    expect(findChart().props('data').python).toEqual([
+      [6, 'u0'],
+      [null, 'u2'],
+    ]);
+  });
+
+  describe('with showAxisTitles=false', () => {
+    beforeEach(() => {
+      createComponent({ showAxisTitles: false });
+    });
+
+    it('passes empty axis titles', () => {
+      expect(findChart().props('xAxisTitle')).toBe('');
+      expect(findChart().props('yAxisTitle')).toBe('');
+    });
+
+    it('drops the axis title space from the grid', () => {
+      const { grid } = barCategoryAxisOptions(['u0', 'u2'], { axisTitle: false });
+
+      expect(findChart().props('option').grid).toEqual(grid);
+    });
+
+    it('sizes the chart without room for an axis title', () => {
+      expect(findChart().props('height')).toBe(barChartHeightFor(2, { axisTitle: false }));
     });
   });
 
@@ -186,6 +224,61 @@ describe('TwoDimensionsBarChart', () => {
 
       expect(w.text()).toContain('1,234');
       expect(w.text()).toContain('567');
+    });
+
+    it('omits padded pairs but keeps genuine zeros', () => {
+      const w = mountExtended(TwoDimensionsBarChart, {
+        propsData: {
+          data: DATA,
+          primaryDimension: PRIMARY_DIM,
+          secondaryDimension: SECONDARY_DIM,
+          metric: METRIC,
+        },
+        stubs: {
+          GlBarChart: chartTooltipStub({
+            seriesData: [
+              { seriesName: 'ruby', value: [0, 'u0'], color: '#aaa' },
+              { seriesName: 'python', value: [null, 'u0'], color: '#bbb' },
+            ],
+          }),
+        },
+      });
+
+      expect(w.text()).toContain('ruby');
+      expect(w.text()).not.toContain('python');
+    });
+
+    it('still names the dimensions in the title when axis titles are hidden', () => {
+      const w = mountExtended(TwoDimensionsBarChart, {
+        propsData: {
+          data: DATA,
+          primaryDimension: PRIMARY_DIM,
+          secondaryDimension: SECONDARY_DIM,
+          metric: METRIC,
+          showAxisTitles: false,
+        },
+        stubs: {
+          GlBarChart: chartTooltipStub({
+            seriesData: [{ seriesName: 'ruby', value: [12, 'u0'], color: '#aaa' }],
+          }),
+        },
+      });
+
+      expect(w.text()).toContain('u0 (User by Language)');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().attributes('accessible-title')).toBe('');
     });
   });
 });

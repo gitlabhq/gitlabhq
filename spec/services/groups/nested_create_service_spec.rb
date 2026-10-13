@@ -19,7 +19,7 @@ RSpec.describe Groups::NestedCreateService, feature_category: :groups_and_projec
       expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
-    context 'adding a visibility level ' do
+    context 'adding a visibility level' do
       it 'overwrites the visibility level' do
         service = described_class.new(user, params.merge(visibility_level: Gitlab::VisibilityLevel::PRIVATE))
 

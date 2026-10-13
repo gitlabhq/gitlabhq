@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-# Most award/reaction interactions were migrated to the MSW integration spec at
-# spec/frontend/msw_integration/work_items/awards/award_emoji_spec.js. What stays
+# Most award/reaction interactions were migrated to the frontend integration spec at
+# spec/frontend/integration/work_items/awards/award_emoji_spec.js. What stays
 # here needs the real backend or the real emoji picker:
 #   - Emoji picker selection: the picker renders its emoji list lazily via an
 #     intersection observer that does not fire under jsdom, so selecting an emoji
-#     from the picker cannot be exercised in the MSW spec.
+#     from the picker cannot be exercised in the frontend integration spec.
 #   - Comment/GFM parsing and the legacy invalid-emoji regression go through real
 #     server-side code paths.
 RSpec.describe 'User interacts with awards', :js, feature_category: :team_planning do

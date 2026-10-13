@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Npm::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Npm::Package, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
   end

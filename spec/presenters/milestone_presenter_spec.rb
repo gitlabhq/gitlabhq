@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe MilestonePresenter do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, developers: user) }
-  let_it_be(:milestone) { create(:milestone, group: group) }
-  let_it_be(:presenter) { described_class.new(milestone, current_user: user) }
+  let(:user) { build_stubbed(:user) }
+  let(:group) { build_stubbed(:group) }
+  let(:milestone) { build_stubbed(:milestone, group: group) }
+  let(:presenter) { described_class.new(milestone, current_user: user) }
 
   describe '#milestone_path' do
     it 'returns correct path' do

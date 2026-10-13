@@ -8,6 +8,8 @@ import StatePresenter from '~/glql/components/presenters/state.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { trimText } from 'helpers/text_helper';
+import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
 import { MOCK_FIELDS, MOCK_ISSUES, MOCK_PROJECT } from '../../mock_data';
 
 describe('ListPresenter', () => {
@@ -53,11 +55,11 @@ describe('ListPresenter', () => {
     expect(htmlPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
     expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(listItem1.text()).toEqual(
-      'Issue 1 (gitlab-test#1) @foobar ·  Open · This is a description',
+    expect(trimText(listItem1.text())).toEqual(
+      'Issue 1 (gitlab-test#1) @foobar · Open · This is a description',
     );
-    expect(listItem2.text()).toEqual(
-      'Issue 2 (gitlab-test#2 - closed) @janedoe ·  Closed · This is another description',
+    expect(trimText(listItem2.text())).toEqual(
+      'Issue 2 (gitlab-test#2 - closed) @janedoe · Closed · This is another description',
     );
   });
 
@@ -84,6 +86,22 @@ describe('ListPresenter', () => {
     createWrapper({ data: MOCK_ISSUES, fields: fieldsWithoutTitle }, mountExtended);
 
     expect(wrapper.find('h3').exists()).toBe(false);
+  });
+
+  it('renders date bucket dimensions as date-only labels, not relative time', () => {
+    const weeklyDimension = {
+      key: 'created',
+      label: 'Created',
+      name: 'created',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+    createWrapper(
+      { data: { nodes: [{ created: '2026-01-12' }] }, fields: [weeklyDimension] },
+      mountExtended,
+    );
+
+    expect(wrapper.findByTestId('list-item-0').text()).toBe('Jan 12 – 18, 2026');
   });
 
   it('renders all fields when there is no title field', () => {
@@ -128,6 +146,44 @@ describe('ListPresenter', () => {
 
       expect(inlineKeys).not.toContain('name');
       expect(inlineKeys).toContain('updatedAt');
+    });
+  });
+
+  describe('aliases and the title heading', () => {
+    it('promotes the title field to the heading under an alias', () => {
+      const fields = [
+        { key: 'Name', field: 'title', label: 'Name', name: 'title' },
+        { key: 'state', label: 'State', name: 'state' },
+      ];
+      createWrapper({ data: MOCK_ISSUES, fields }, mountExtended);
+
+      const heading = wrapper.findByTestId('list-item-0').find('h3');
+      expect(heading.findComponent(IssuablePresenter).exists()).toBe(true);
+      expect(heading.findComponent(FieldPresenter).props('fieldKey')).toBe('Name');
+      expect(heading.findComponent(FieldPresenter).props('presenterKey')).toBe('title');
+    });
+
+    it('keeps a bucket dimension aliased as "title" inline as a date bucket', () => {
+      const fields = [
+        {
+          key: 'title',
+          field: 'created',
+          label: 'title',
+          name: 'created',
+          type: 'dimension',
+          parameters: { granularity: 'monthly' },
+        },
+        { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+      ];
+      createWrapper(
+        { data: { nodes: [{ __typename: 'Issue', title: '2026-06-01', totalCount: 3 }] }, fields },
+        mountExtended,
+      );
+
+      const item = wrapper.findByTestId('list-item-0');
+      expect(item.find('h3').exists()).toBe(false);
+      expect(item.findComponent(DateBucketPresenter).exists()).toBe(true);
+      expect(trimText(item.text())).toBe('Jun 2026 · Total count: 3');
     });
   });
 
@@ -183,7 +239,9 @@ describe('ListPresenter', () => {
       mountExtended,
     );
 
-    expect(wrapper.findByTestId('list-item-0').text()).toBe('Jun 1, 2026 · 1h 1m 1s');
+    expect(trimText(wrapper.findByTestId('list-item-0').text())).toBe(
+      'Jun 2026 · Duration P50: 1h 1m 1s',
+    );
   });
 
   it('passes compact variant to field presenters', () => {
@@ -197,6 +255,93 @@ describe('ListPresenter', () => {
 
     nonTitlePresenters.forEach((fp) => {
       expect(fp.props('variant')).toBe('compact');
+    });
+  });
+
+  describe('metric field label prefix', () => {
+    const metricFields = [
+      { key: 'title', label: 'Title', name: 'title' },
+      { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+      { key: 'author', label: 'Author', name: 'author' },
+    ];
+    const metricData = {
+      nodes: [
+        {
+          __typename: 'Issue',
+          id: 'gid://gitlab/Issue/1',
+          title: 'Issue 1',
+          titleHtml: 'Issue 1',
+          totalCount: 42,
+          author: {
+            __typename: 'UserCore',
+            username: 'foobar',
+            webUrl: 'https://gitlab.com/foobar',
+          },
+          webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/1',
+        },
+      ],
+    };
+
+    it('renders metric fields with a label prefix', () => {
+      createWrapper({ data: metricData, fields: metricFields }, mountExtended);
+
+      const listItem = wrapper.findByTestId('list-item-0');
+      expect(listItem.text()).toContain('Total count:');
+    });
+
+    it('does not render a label prefix for non-metric fields', () => {
+      createWrapper({ data: metricData, fields: metricFields }, mountExtended);
+
+      const listItem = wrapper.findByTestId('list-item-0');
+      const text = listItem.text();
+
+      // Author field should not have a label prefix
+      expect(text).not.toContain('Author:');
+    });
+
+    it('renders the correct label text from the field definition', () => {
+      const customMetricFields = [
+        { key: 'title', label: 'Title', name: 'title' },
+        { key: 'usersCount', label: 'Unique users', name: 'usersCount', type: 'metric' },
+      ];
+      const customData = {
+        nodes: [
+          {
+            __typename: 'Issue',
+            id: 'gid://gitlab/Issue/1',
+            title: 'Issue 1',
+            titleHtml: 'Issue 1',
+            usersCount: 100,
+            webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/1',
+          },
+        ],
+      };
+
+      createWrapper({ data: customData, fields: customMetricFields }, mountExtended);
+
+      const listItem = wrapper.findByTestId('list-item-0');
+      expect(listItem.text()).toContain('Unique users:');
+    });
+
+    // Matches the header `table.vue` and the chart series render for the same metric.
+    it('appends the parameter to a parameterised metric label', () => {
+      const fields = [
+        {
+          key: 'durationQuantile',
+          field: 'durationQuantile',
+          label: 'Duration quantile',
+          name: 'durationQuantile',
+          type: 'metric',
+          parameters: { quantile: 0.5 },
+        },
+      ];
+
+      createWrapper(
+        { data: { nodes: [{ id: '1', durationQuantile: 3661 }] }, fields },
+        mountExtended,
+      );
+
+      expect(wrapper.findByTestId('list-item-0').text()).toContain('Duration quantile (0.5):');
     });
   });
 });

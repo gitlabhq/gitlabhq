@@ -21,10 +21,12 @@ describe('MergeRequest', () => {
       const listener = jest.fn();
       document.addEventListener(EVENT_MR_TITLE_UPDATED, listener);
 
-      MergeRequest.toggleDraftStatus('New title', true);
+      MergeRequest.toggleDraftStatus('New title', true, '<code>New</code> title');
 
       expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({ detail: { title: 'New title' } }),
+        expect.objectContaining({
+          detail: { title: 'New title', titleHtml: '<code>New</code> title' },
+        }),
       );
 
       document.removeEventListener(EVENT_MR_TITLE_UPDATED, listener);
@@ -36,6 +38,22 @@ describe('MergeRequest', () => {
       MergeRequest.toggleDraftStatus('New title', true);
 
       expect(document.querySelector('.merge-request-sticky-title').textContent).toBe('New title');
+
+      resetHTMLFixture();
+    });
+
+    it('renders the markdown title HTML when provided', () => {
+      setHTMLFixture(
+        '<div class="merge-request"><div class="detail-page-header"><h1 class="title">Draft: Old title</h1></div></div>' +
+          '<a class="merge-request-sticky-title">Draft: Old title</a>',
+      );
+
+      MergeRequest.toggleDraftStatus('code title', true, '<code>code</code> title');
+
+      expect(document.querySelector('.merge-request .detail-page-header .title code')).not.toBe(
+        null,
+      );
+      expect(document.querySelector('.merge-request-sticky-title code')).not.toBe(null);
 
       resetHTMLFixture();
     });

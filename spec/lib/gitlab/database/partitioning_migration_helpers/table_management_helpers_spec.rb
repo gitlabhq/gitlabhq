@@ -191,25 +191,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         source_model.table_name = table_name
       end
 
-      it 'creates the partitions' do
+      it 'creates the partitions, a composite primary key, and the correct column schema', :aggregate_failures do
         migration.partition_table_by_int_range(table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key)
 
         expect_range_partitions_for(partitioned_table, partitions.merge(buffer_partitions))
-      end
-
-      it 'creates a composite primary key' do
-        migration.partition_table_by_int_range(
-          table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key
-        )
 
         expect(connection.primary_key(partitioned_table))
           .to eql(%w[merge_request_diff_id relative_order])
-      end
-
-      it 'applies the correct column schema for the new table' do
-        migration.partition_table_by_int_range(
-          table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key
-        )
 
         columns = connection.columns(partitioned_table)
 
@@ -528,20 +516,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       shared_examples 'a correct list partitioning method' do
-        it 'creates the partitions' do
+        it 'creates the partitions, a composite primary key, and the correct column schema', :aggregate_failures do
           partition_table_by_list
 
           expect_list_partitions_for(partitioned_table, partitions, partition_name_format: partition_name_format)
-        end
-
-        it 'creates a composite primary key' do
-          partition_table_by_list
 
           expect(connection.primary_key(partitioned_table)).to eql(new_primary_key)
-        end
-
-        it 'applies the correct column schema for the new table' do
-          partition_table_by_list
 
           columns = connection.columns(partitioned_table)
           expect(columns.map(&:name)).to eq(new_table_definition.keys.map(&:to_s))
@@ -700,29 +680,20 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
     end
 
-    it 'drops the trigger syncing to the partitioned table' do
+    it 'drops the trigger syncing to the partitioned table, the partitioned copy, and all partitions',
+      :aggregate_failures do
       migration.partition_table_by_date(
         source_table, partition_column, min_date: min_date, max_date: max_date
       )
 
       expect_function_to_exist(function_name)
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
+      expect(expected_tables.select { |table| connection.table_exists?(table) }).to eq(expected_tables)
 
       migration.drop_partitioned_table_for(source_table)
 
       expect_function_not_to_exist(function_name)
       expect_trigger_not_to_exist(source_table, trigger_name)
-    end
-
-    it 'drops the partitioned copy and all partitions' do
-      migration.partition_table_by_date(
-        source_table, partition_column, min_date: min_date, max_date: max_date
-      )
-
-      expect(expected_tables.select { |table| connection.table_exists?(table) }).to eq(expected_tables)
-
-      migration.drop_partitioned_table_for(source_table)
-
       expect(expected_tables.select { |table| connection.table_exists?(table) }).to be_empty
     end
   end
@@ -993,24 +964,18 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       )
     end
 
-    it 'replaces the original table with the partitioned table' do
+    it 'replaces the original table with the partitioned table and moves the trigger', :aggregate_failures do
       expect(table_type(source_table)).to eq('normal')
       expect(table_type(partitioned_table)).to eq('partitioned')
       expect(table_type(archived_table)).to be_nil
+      expect_function_to_exist(function_name)
+      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
 
       expect_table_to_be_replaced { migration.replace_with_partitioned_table(source_table) }
 
       expect(table_type(source_table)).to eq('partitioned')
       expect(table_type(archived_table)).to eq('normal')
       expect(table_type(partitioned_table)).to be_nil
-    end
-
-    it 'moves the trigger from the original table to the new table' do
-      expect_function_to_exist(function_name)
-      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
-
-      expect_table_to_be_replaced { migration.replace_with_partitioned_table(source_table) }
-
       expect_function_to_exist(function_name)
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
     end
@@ -1031,24 +996,19 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       migration.replace_with_partitioned_table(source_table)
     end
 
-    it 'replaces the partitioned table with the non-partitioned table' do
+    it 'replaces the partitioned table with the non-partitioned table and moves the trigger',
+      :aggregate_failures do
       expect(table_type(source_table)).to eq('partitioned')
       expect(table_type(archived_table)).to eq('normal')
       expect(table_type(partitioned_table)).to be_nil
+      expect_function_to_exist(function_name)
+      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
 
       expect_table_to_be_replaced { migration.rollback_replace_with_partitioned_table(source_table) }
 
       expect(table_type(source_table)).to eq('normal')
       expect(table_type(partitioned_table)).to eq('partitioned')
       expect(table_type(archived_table)).to be_nil
-    end
-
-    it 'moves the trigger from the partitioned table to the non-partitioned table' do
-      expect_function_to_exist(function_name)
-      expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
-
-      expect_table_to_be_replaced { migration.rollback_replace_with_partitioned_table(source_table) }
-
       expect_function_to_exist(function_name)
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
     end
@@ -1071,27 +1031,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       migration.replace_with_partitioned_table source_table
     end
 
-    it 'drops the archive table' do
+    it 'drops the archive table, the trigger, and the sync function', :aggregate_failures do
       expect(table_type(archived_table)).to eq('normal')
-
-      subject
-
-      expect(table_type(archived_table)).to be_nil
-    end
-
-    it 'drops the trigger on the source table' do
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
-
-      subject
-
-      expect_trigger_not_to_exist(source_table, trigger_name)
-    end
-
-    it 'drops the sync function' do
       expect_function_to_exist(function_name)
 
       subject
 
+      expect(table_type(archived_table)).to be_nil
+      expect_trigger_not_to_exist(source_table, trigger_name)
       expect_function_not_to_exist(function_name)
     end
   end
@@ -1111,19 +1059,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
     end
 
-    it 'creates the sync function' do
+    it 'creates the sync function and installs the trigger', :aggregate_failures do
       expect_function_not_to_exist(function_name)
-
-      subject
-
-      expect_function_to_exist(function_name)
-    end
-
-    it 'installs the trigger' do
       expect_trigger_not_to_exist(source_table, trigger_name)
 
       subject
 
+      expect_function_to_exist(function_name)
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
     end
   end
@@ -1144,19 +1086,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       migration.create_trigger_to_sync_tables(source_table, target_table, :id)
     end
 
-    it 'drops the sync function' do
+    it 'drops the sync function and the trigger', :aggregate_failures do
       expect_function_to_exist(function_name)
-
-      subject
-
-      expect_function_not_to_exist(function_name)
-    end
-
-    it 'drops the trigger' do
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
 
       subject
 
+      expect_function_not_to_exist(function_name)
       expect_trigger_not_to_exist(source_table, trigger_name)
     end
   end

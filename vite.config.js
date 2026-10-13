@@ -3,7 +3,6 @@ import path from 'node:path';
 
 import { defineConfig } from 'vite';
 import vue2 from '@vitejs/plugin-vue2';
-// eslint-disable-next-line import/no-unresolved -- False positive: eslint doesn't read `exports` and reports `unresolved`. See https://github.com/import-js/eslint-plugin-import/issues/1810
 import vue3 from '@vitejs/plugin-vue';
 import graphql from '@rollup/plugin-graphql';
 import webpackConfig from './config/webpack.config';
@@ -26,9 +25,9 @@ import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
 import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_origin_worker';
 import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next';
-import { Vue3InfectionPlugin } from './config/helpers/vite_plugin_vue3_infection.mjs';
-import * as vue3SfcCompiler from './config/vue3migration/vue3_sfc_compiler.mjs';
-import vue2Compiler from './config/vue3migration/vue2_compiler';
+import { Vue3InfectionPlugin } from './config/vue3migration/plugins/vite.mjs';
+import * as vue3SfcCompiler from './config/vue3migration/compilers/vue3_sfc.mjs';
+import vue2Compiler from './config/vue3migration/compilers/vue2_template';
 
 const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
 

@@ -149,6 +149,28 @@ describe('Agents', () => {
       expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
     });
 
+    describe('when the project has no repository tree and the agents arrive afterwards', () => {
+      beforeEach(async () => {
+        await createWrapper({
+          treeListQueryResponse: jest.fn().mockResolvedValue({
+            data: { project: { id: projectId, repository: null } },
+          }),
+          agentQueryResponse: jest.fn().mockImplementation(async () => {
+            await waitForPromises();
+            return clusterAgentsResponse;
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('renders the agents without config folders and does not throw', () => {
+        expect(() => jest.runAllTimers()).not.toThrow();
+        expect(findAgentTable().props('agents')).toMatchObject(
+          expectedAgentsList.map((agent) => ({ ...agent, configFolder: undefined })),
+        );
+      });
+    });
+
     it('should emit agents count to the parent component', async () => {
       await createWrapper();
 

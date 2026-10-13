@@ -740,16 +740,10 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       subject { described_class.security_managers }
 
-      context 'when security manager role is enabled' do
-        it { is_expected.to include security_manager }
-        it { is_expected.to include security_manager_invited }
-        it { is_expected.not_to include developer }
-        it { is_expected.not_to include blocked_security_manager }
-      end
-
-      context 'when security manager role is disabled', :disable_security_manager do
-        it { is_expected.to be_empty }
-      end
+      it { is_expected.to include security_manager }
+      it { is_expected.to include security_manager_invited }
+      it { is_expected.not_to include developer }
+      it { is_expected.not_to include blocked_security_manager }
     end
 
     describe '.developers' do
@@ -851,6 +845,20 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       it { is_expected.not_to include @blocked_maintainer }
       it { is_expected.not_to include @blocked_developer }
       it { is_expected.not_to include @member_with_minimal_access }
+
+      context 'when minimal_access is true' do
+        subject { described_class.active_without_invites_and_requests(minimal_access: true).to_a }
+
+        it { is_expected.to include @owner }
+        it { is_expected.to include @maintainer }
+        it { is_expected.not_to include @invited_member }
+        it { is_expected.to include @accepted_invite_member }
+        it { is_expected.not_to include @requested_member }
+        it { is_expected.to include @accepted_request_member }
+        it { is_expected.not_to include @blocked_maintainer }
+        it { is_expected.not_to include @blocked_developer }
+        it { is_expected.to include @member_with_minimal_access }
+      end
     end
 
     describe '.without_invites_and_requests' do
@@ -1659,8 +1667,41 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'skip_authorized_projects_refresh' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    let(:member) { create(:group_member, group: group, user: user) }
+
+    it 'skips the refresh for the update it is set for' do
+      member.skip_authorized_projects_refresh = true
+
+      expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+      member.update!(access_level: Gitlab::Access::MAINTAINER)
+    end
+
+    it 'is cleared once the save it was set for is committed' do
+      member.skip_authorized_projects_refresh = true
+
+      member.update!(access_level: Gitlab::Access::MAINTAINER)
+
+      expect(member.skip_authorized_projects_refresh).to be(false)
+    end
+
+    context 'when importing' do
+      let(:member) { build(:group_member, group: group, user: user, importing: true) }
+
+      it 'does not refresh' do
+        expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+        member.save!
+      end
+    end
+  end
+
   describe '#refresh_member_authorized_projects' do
-    let_it_be(:member) { create(:group_member) }
+    let_it_be_with_refind(:member) { create(:group_member) }
 
     let(:service) { instance_double(UserProjectAccessChangedService) }
 
@@ -2084,20 +2125,24 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   context 'when after_create :update_two_factor_requirement' do
-    it 'calls update_two_factor_requirement after creation' do
+    it 'recalculates the 2FA requirement after creation' do
       user = create(:user)
 
-      expect(user).to receive(:update_two_factor_requirement)
+      expect_next_instance_of(Authn::Users::UpdateTwoFactorRequirementService, user) do |service|
+        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { user: user }))
+      end
 
       create(:group_member, user: user)
     end
   end
 
   context 'when after_destroy :update_two_factor_requirement' do
-    it 'calls update_two_factor_requirement after deletion' do
+    it 'recalculates the 2FA requirement after deletion' do
       group_member = create(:group_member)
 
-      expect(group_member.user).to receive(:update_two_factor_requirement)
+      expect_next_instance_of(Authn::Users::UpdateTwoFactorRequirementService, group_member.user) do |service|
+        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { user: group_member.user }))
+      end
 
       group_member.destroy!
     end

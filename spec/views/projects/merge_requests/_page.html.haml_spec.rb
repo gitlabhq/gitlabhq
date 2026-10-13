@@ -47,4 +47,20 @@ RSpec.describe 'projects/merge_requests/_page.html.haml', feature_category: :cod
       end
     end
   end
+
+  describe '.js-changes-tab-count' do
+    [true, false].each do |initial_preparation|
+      context "when initial_preparation? is #{initial_preparation}" do
+        before do
+          allow(merge_request).to receive(:initial_preparation?).and_return(initial_preparation)
+
+          render
+        end
+
+        it 'exposes it as data-preparing' do
+          expect(rendered).to have_selector(".js-changes-tab-count[data-preparing=\"#{initial_preparation}\"]")
+        end
+      end
+    end
+  end
 end

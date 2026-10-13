@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe 'User creates branch and merge request on issue page', :js, feature_category: :team_planning do
   include Spec::Support::Helpers::ModalHelpers
 
+  let_it_be_with_reload(:project) { create(:project, :repository, :public) }
+
   let(:membership_level) { :developer }
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository, :public) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
 
   context 'when signed out' do
@@ -65,6 +66,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       end
 
       context 'when branch name is auto-generated' do
+        # Creating a branch mutates the repository, so this context needs its own project.
+        let(:project) { create(:project, :repository, :public) }
+
         it 'creates a merge request' do
           branch_name = issue.suggested_branch_name
 
@@ -95,6 +99,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       end
 
       context 'when branch name is custom' do
+        let(:project) { create(:project, :repository, :public) }
         let(:branch_name) { 'custom-branch-name' }
 
         it 'creates a merge request' do

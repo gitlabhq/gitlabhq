@@ -1,5 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   convertObjectPropsToCamelCase,
   parseIntPagination,
@@ -78,17 +79,21 @@ export const baseQueries = (endpoint) => ({
 });
 
 export const baseMutations = {
-  stopEnvironmentREST(_, { environment }, { client, cache }) {
+  stopEnvironmentREST(_, { environment, force = false }, { client, cache }) {
     client.writeQuery({
       query: isEnvironmentStoppingQuery,
       variables: { environment },
       data: { isEnvironmentStopping: true },
     });
     return axios
-      .post(environment.stopPath)
-      .then(() => buildErrors())
+      .post(environment.stopPath, { force })
       .then(() => {
         cache.evict({ fieldName: 'folder' });
+        // The details page header is rendered from static data, so reload it.
+        if (environment.onSingleEnvironmentPage) {
+          refreshCurrentPage();
+        }
+        return buildErrors();
       })
       .catch(() => {
         client.writeQuery({
@@ -104,8 +109,10 @@ export const baseMutations = {
   deleteEnvironment(_, { environment: { deletePath } }, { cache }) {
     return axios
       .delete(deletePath)
-      .then(() => buildErrors())
-      .then(() => cache.evict({ fieldName: 'folder' }))
+      .then(() => {
+        cache.evict({ fieldName: 'folder' });
+        return buildErrors();
+      })
       .catch(() =>
         buildErrors([
           s__(
@@ -117,9 +124,9 @@ export const baseMutations = {
   rollbackEnvironment(_, { environment, isLastDeployment }, { cache }) {
     return axios
       .post(environment?.retryUrl)
-      .then(() => buildErrors())
       .then(() => {
         cache.evict({ fieldName: 'folder' });
+        return buildErrors();
       })
       .catch(() =>
         buildErrors([

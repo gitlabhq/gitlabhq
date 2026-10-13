@@ -4,6 +4,11 @@ module QA
   module Service
     module DockerRun
       class Npm < Base
+        # Must cover setup, docker cp, npm publish, the full retry window, and one
+        # late attempt that starts just before the retrier deadline.
+        INSTALL_MAX_DURATION_SECONDS = 180
+        CONTAINER_LIFETIME_SECONDS = 900
+
         def initialize(
           volume_host_path,
           gitlab_address_without_port:,
@@ -57,7 +62,7 @@ module QA
             --network #{network}
             --hostname #{host_name}
             --name #{name}
-            #{image} sh -c "sleep 300"
+            #{image} sh -c "sleep #{CONTAINER_LIFETIME_SECONDS}"
           CMD
           shell "docker cp #{volume_host_path}/. #{name}:/home/node"
         rescue StandardError => e
@@ -82,10 +87,23 @@ module QA
 
         def install_package
           Support::Retrier.retry_until(
-            max_duration: 180, retry_on_exception: true, sleep_interval: 2
+            max_duration: INSTALL_MAX_DURATION_SECONDS, retry_on_exception: true, sleep_interval: 2
           ) do
-            shell "docker exec -t #{name} sh -c 'cd /home/node && npm install #{package_name}'"
+            shell "docker exec -t #{name} sh -c " \
+              "'cd /home/node && npm install --no-audit --no-fund " \
+              "--no-progress #{package_name}'"
           end
+        rescue StandardError => e
+          QA::Runtime::Logger.warn("Installing the package encountered an error: #{e}")
+          QA::Runtime::Logger.warn("Container #{name} is no longer running") unless container_running?
+          raise
+        end
+
+        # Diagnostic only: a failed check must not replace the install error being re-raised.
+        def container_running?
+          running?
+        rescue StandardError
+          true
         end
       end
     end

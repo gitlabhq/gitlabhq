@@ -500,7 +500,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'with rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: { project: pipeline.project })
                                                     .and_return(true)
         end
 
@@ -514,7 +514,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'with rate limiting disabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: { project: pipeline.project })
                                                     .and_return(false)
         end
 
@@ -1105,18 +1105,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.not_ref_protected' do
-    subject { described_class.not_ref_protected }
-
-    let_it_be(:protected_pipeline) { create(:ci_pipeline, protected: true) }
-    let_it_be(:unprotected_pipeline) { create(:ci_pipeline, protected: false) }
-    let_it_be(:protected_unspecified_pipeline) { create(:ci_pipeline, protected: nil) }
-
-    it 'contains all unprotected pipelines' do
-      is_expected.to contain_exactly(unprotected_pipeline, protected_unspecified_pipeline)
-    end
-  end
-
   describe '.unlocked' do
     subject { described_class.unlocked }
 
@@ -1214,7 +1202,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat merge_request_event
-          external_pull_request_event security_orchestration_policy])
+          external_pull_request_event security_orchestration_policy pipeline_execution_policy_schedule])
     end
   end
 
@@ -2617,6 +2605,65 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it_behaves_like 'when pipeline does not have pipeline variables'
     end
+
+    context 'when the pipeline variables artifact file is missing from storage' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      shared_examples 'raising a missing file error' do
+        it 'tracks and raises VariablesFileMissingError' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(
+              an_instance_of(described_class::VariablesFileMissingError),
+              { pipeline_id: pipeline.id, pipeline_artifact_id: artifact.id }
+            ).and_call_original
+
+          expect { pipeline.reset.variables }.to raise_error(described_class::VariablesFileMissingError)
+        end
+      end
+
+      context 'with local storage' do
+        let(:artifact) { create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline) }
+
+        before do
+          artifact.file.remove!
+        end
+
+        it_behaves_like 'raising a missing file error'
+      end
+
+      context 'with object storage' do
+        let(:artifact) { create(:ci_pipeline_artifact, :with_pipeline_variables, :remote_store, pipeline: pipeline) }
+
+        before do
+          stub_artifacts_object_storage(Ci::PipelineArtifactUploader)
+          artifact.file.remove!
+        end
+
+        it_behaves_like 'raising a missing file error'
+      end
+
+      context 'when the pipeline also has variables in the database' do
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          variables_attributes.each do |var_attrs|
+            create(:ci_pipeline_variable, pipeline: pipeline, **var_attrs)
+          end
+
+          create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline).file.remove!
+        end
+
+        it 'tracks the error and returns the database variables' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(an_instance_of(described_class::VariablesFileMissingError), a_hash_including(pipeline_id: pipeline.id))
+
+          expect(pipeline.reset.variables).to match_array([
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
+          ])
+        end
+      end
+    end
   end
 
   describe '#auto_canceled?' do
@@ -3116,6 +3163,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe 'auto merge' do
+      shared_examples 'enqueues AutoMergeProcessWorker' do
+        it 'performs AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
+
+          pipeline.succeed!
+        end
+      end
+
+      shared_examples 'does not enqueue AutoMergeProcessWorker' do
+        it 'does not perform AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
+        end
+      end
+
       context 'when auto merge is enabled' do
         let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
         let_it_be_with_reload(:pipeline) do
@@ -3136,19 +3199,73 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             end
           end
         end
-      end
 
-      context 'when auto merge is not enabled in the merge request' do
-        let(:merge_request) { create(:merge_request) }
-
-        # We enqueue the job here because the check for whether or not to
-        # automatically merge happens in the worker itself.
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167095
-        it 'performs AutoMergeProcessWorker' do
-          expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
+        it 'checks for the merge request on the primary' do
+          lb_session = ::Gitlab::Database::LoadBalancing::SessionMap.current(MergeRequest.load_balancer)
+          allow(::Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).and_call_original
+          allow(::Gitlab::Database::LoadBalancing::SessionMap)
+            .to receive(:current).with(MergeRequest.load_balancer).and_return(lb_session)
+          expect(lb_session).to receive(:use_primary).and_call_original
 
           pipeline.succeed!
         end
+
+        context 'when the pipeline ran for another commit of the source branch' do
+          before do
+            pipeline.update_column(:sha, merge_request.target_branch_sha)
+          end
+
+          it_behaves_like 'enqueues AutoMergeProcessWorker'
+        end
+
+        context 'when the merge request is closed' do
+          before do
+            merge_request.update_column(:state_id, MergeRequest.available_states[:closed])
+          end
+
+          it_behaves_like 'does not enqueue AutoMergeProcessWorker'
+        end
+      end
+
+      context 'when the pipeline is a merge request pipeline' do
+        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
+        let_it_be_with_reload(:pipeline) do
+          create(:ci_pipeline, :running, :detached_merge_request_pipeline, merge_request: merge_request)
+        end
+
+        it_behaves_like 'enqueues AutoMergeProcessWorker'
+
+        context 'when auto merge is not enabled in the merge request' do
+          before do
+            merge_request.update_column(:auto_merge_enabled, false)
+          end
+
+          it_behaves_like 'does not enqueue AutoMergeProcessWorker'
+        end
+      end
+
+      context 'when auto merge is not enabled in the merge request' do
+        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be_with_reload(:pipeline) do
+          create(:ci_pipeline, :running,
+            project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)
+        end
+
+        it_behaves_like 'does not enqueue AutoMergeProcessWorker'
+
+        context 'when auto_merge_process_pipeline_guard is disabled' do
+          before do
+            stub_feature_flags(auto_merge_process_pipeline_guard: false)
+          end
+
+          it_behaves_like 'enqueues AutoMergeProcessWorker'
+        end
+      end
+
+      context 'when the pipeline has no merge request' do
+        let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running, ref: 'branch-without-merge-request') }
+
+        it_behaves_like 'does not enqueue AutoMergeProcessWorker'
       end
     end
 
@@ -3298,6 +3415,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let!(:downstream_pipeline) { create(:ci_pipeline, :with_job) }
 
         it_behaves_like 'upstream downstream pipeline'
+      end
+
+      context 'when the downstream pipeline is not persisted yet' do
+        let(:upstream_pipeline) { create(:ci_pipeline) }
+        let(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, downstream: project) }
+        # `build` is shadowed by `let(:build)` in this describe block
+        let(:downstream_pipeline) { FactoryBot.build(:ci_pipeline, project: project) }
+
+        before do
+          downstream_pipeline.build_source_pipeline(
+            source_pipeline: upstream_pipeline,
+            source_project: upstream_pipeline.project,
+            source_bridge: bridge,
+            project: project
+          )
+        end
+
+        it 'does not schedule the pipeline bridge worker when persisted as failed' do
+          expect(::Ci::PipelineBridgeStatusWorker).not_to receive(:perform_async)
+
+          downstream_pipeline.drop!(:config_error)
+
+          expect(downstream_pipeline).to be_persisted
+        end
+
+        it 'schedules the pipeline bridge worker when persisted as skipped' do
+          expect(::Ci::PipelineBridgeStatusWorker).to receive(:perform_async).with(an_instance_of(Integer))
+
+          downstream_pipeline.skip!
+
+          expect(downstream_pipeline).to be_persisted
+        end
       end
     end
 
@@ -6314,9 +6463,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#complete_and_has_self_or_descendant_reports?' do
-    subject(:complete_and_has_self_or_descendant_reports?) do
-      pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
+  describe '#has_self_or_descendant_reports?' do
+    subject(:has_self_or_descendant_reports?) do
+      pipeline.has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
     end
 
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
@@ -6327,7 +6476,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       create(:ci_build, :test_reports, pipeline: child_pipeline)
 
       recorder = ActiveRecord::QueryRecorder.new do
-        complete_and_has_self_or_descendant_reports?
+        has_self_or_descendant_reports?
       end
 
       artifact_existence_query = recorder.log.find do |query|
@@ -6346,6 +6495,44 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           .and include('"p_ci_job_artifacts"."partition_id"')
           .and include('"p_ci_builds"."partition_id"')
       end
+    end
+
+    context 'when the pipeline has reports' do
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :with_test_reports, :success) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when the pipeline is not complete' do
+        before do
+          pipeline.update!(status: 'running')
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when the pipeline does not have reports' do
+      it { is_expected.to be_falsey }
+
+      context 'when the child pipeline has reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the child pipeline is in another partition' do
+        let_it_be(:child_pipeline) do
+          create(:ci_pipeline, :with_test_reports, :success, partition_id: 101, child_of: pipeline)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#complete_and_has_self_or_descendant_reports?' do
+    subject(:complete_and_has_self_or_descendant_reports?) do
+      pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
     end
 
     context 'when the pipeline has reports' do

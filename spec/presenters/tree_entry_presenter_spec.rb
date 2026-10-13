@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe TreeEntryPresenter, feature_category: :source_code_management do
   include Gitlab::Routing.url_helpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
   let(:tree) { Gitlab::Graphql::Representation::TreeEntry.new(repository.tree(ref).trees.first, repository) }
   let(:presenter) { described_class.new(tree) }

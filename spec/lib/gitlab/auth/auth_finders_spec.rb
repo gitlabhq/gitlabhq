@@ -887,6 +887,43 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  describe '#resolve_access_token' do
+    context 'when namespace_inheritable authentication is registered but empty' do
+      let(:inheritable_setting) { Struct.new(:namespace_inheritable).new({ authentication: {} }) }
+
+      before do
+        allow(self).to receive(:inheritable_setting).and_return(inheritable_setting)
+      end
+
+      # access_token_from_namespace_inheritable only exists on real Grape
+      # endpoints (API::Helpers::Authentication), not on AuthFinders alone, so
+      # this can only assert delegation, not the full downstream outcome.
+      it 'delegates to the namespace-inheritable lookup instead of falling back to the generic OAuth/PAT lookup' do
+        expect(self).to receive(:access_token_from_namespace_inheritable)
+
+        resolve_access_token
+      end
+    end
+  end
+
+  describe '#revoke_token_family' do
+    context 'when the token is not a PersonalAccessToken' do
+      # Any duck-typed access token with a non-integer `id` (e.g. a JWT's
+      # `jti`) would raise a DB type error if it reached the query below.
+      let(:token) { double('token', id: 'a-jwt-jti') }
+
+      before do
+        set_header('SCRIPT_NAME', "/personal_access_tokens/self/rotate")
+      end
+
+      it 'does not attempt to revoke a token family' do
+        expect(PersonalAccessTokens::RevokeTokenFamilyService).not_to receive(:new)
+
+        revoke_token_family(token)
+      end
+    end
+  end
+
   describe '#find_personal_access_token' do
     before do
       set_header('SCRIPT_NAME', 'url.atom')
@@ -964,7 +1001,13 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
 
       it 'calls find_caught_up_replica to ensure a recent replica is used' do
-        expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica)
+        # The model lookup sticks as well while stick_new_oauth_tokens_to_primary rolls out
+        #
+        # Revert https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211007 after
+        # rollouts for oauth_lookups_use_load_balancer_sticking and stick_new_oauth_tokens_to_primary
+        # are completed and change this expectation to
+        # expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica)
+        expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica).at_least(:once)
 
         find_oauth_access_token
       end
@@ -1520,6 +1563,22 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
       end
 
+      it 'records the token as legacy in the token info' do
+        validate_and_save_access_token!
+
+        expect(::Current.token_info).to include(token_granularity: 'legacy')
+      end
+
+      context 'when the token is granular' do
+        let(:personal_access_token) { create(:granular_pat, user: user) }
+
+        it 'records the token as granular in the token info' do
+          validate_and_save_access_token!
+
+          expect(::Current.token_info).to include(token_granularity: 'granular')
+        end
+      end
+
       context 'when reset_token is true' do
         it 'reloads the access token before validation' do
           expect(personal_access_token).to receive(:reload)
@@ -1566,6 +1625,22 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         expect(::Current.token_info).to match(a_hash_including({
           token_application_id: oauth_access_token.application_id
         }))
+      end
+
+      it 'records the token as legacy in the token info' do
+        validate_and_save_access_token!
+
+        expect(::Current.token_info).to include(token_granularity: 'legacy')
+      end
+
+      context 'when the token is granular' do
+        let!(:oauth_access_token) { create(:oauth_access_token, :granular, resource_owner: user) }
+
+        it 'records the token as granular in the token info' do
+          validate_and_save_access_token!
+
+          expect(::Current.token_info).to include(token_granularity: 'granular')
+        end
       end
 
       context 'when reset_token is true' do
@@ -1859,11 +1934,53 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
         expect { find_runner_from_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
+
+      context 'with a Runner-Token header' do
+        let_it_be(:other_runner, freeze: true) { create(:ci_runner) }
+
+        it 'returns the runner if the header token is valid' do
+          set_header(described_class::RUNNER_TOKEN_HEADER, runner.token)
+
+          expect(find_runner_from_token).to eq(runner)
+        end
+
+        it 'returns nil if the header is blank' do
+          set_header(described_class::RUNNER_TOKEN_HEADER, '')
+
+          expect(find_runner_from_token).to be_nil
+        end
+
+        it 'returns exception if the header token is invalid' do
+          set_header(described_class::RUNNER_TOKEN_HEADER, 'invalid_token')
+
+          expect { find_runner_from_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+
+        it 'prefers the token param' do
+          set_param(:token, runner.token)
+          set_header(described_class::RUNNER_TOKEN_HEADER, other_runner.token)
+
+          expect(find_runner_from_token).to eq(runner)
+        end
+
+        it 'falls back to the header when the token param is blank' do
+          set_param(:token, '')
+          set_header(described_class::RUNNER_TOKEN_HEADER, runner.token)
+
+          expect(find_runner_from_token).to eq(runner)
+        end
+      end
     end
 
     context 'without API requests' do
       before do
         set_header('SCRIPT_NAME', 'url.ics')
+      end
+
+      it 'returns nil if the header token is valid' do
+        set_header(described_class::RUNNER_TOKEN_HEADER, runner.token)
+
+        expect(find_runner_from_token).to be_nil
       end
 
       it 'returns nil if token is valid' do

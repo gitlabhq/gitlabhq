@@ -62,6 +62,7 @@ the GitLab Duo Agent Platform, including `chat-rules.md`, `AGENTS.md`, and `SKIL
 1. [Install and set up](set_up.md) the GitLab Duo CLI.
 1. [Use](use.md) the GitLab Duo CLI, either in interactive or headless mode.
 1. [Customize](customize.md) the GitLab Duo CLI to better fit your workflow or use case.
+1. Change [settings](settings.md) for yourself, or enforce them for your organization.
 1. Review the [reference documentation](reference.md) to learn more about how you can use the GitLab Duo CLI.
 
 ## Manage GitLab Duo CLI access
@@ -92,6 +93,8 @@ Prerequisites:
 1. Under **GitLab Duo CLI**, select or clear the **Turn on GitLab Duo CLI access** checkbox.
 1. Select **Save changes**.
 
+To enforce GitLab Duo CLI settings on users' machines, see [managed settings file](settings.md#managed-settings-file).
+
 ## Update the GitLab Duo CLI
 
 To install the GitLab Duo CLI for the first time, see [set up](set_up.md).
@@ -115,13 +118,13 @@ To update the compiled binary, run the install script again.
 On macOS and Linux:
 
 ```shell
-bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.sh")
+bash <(curl --fail --silent --show-error --location "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.sh")
 ```
 
 On Windows:
 
 ```shell
-irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/scripts/install_duo_cli.ps1" | iex
+irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packages/cli/app/scripts/install_duo_cli.ps1" | iex
 ```
 
 If you previously installed the GitLab Duo CLI through npm, it no longer receives updates.
@@ -136,11 +139,11 @@ then run the previous script to install the compiled binary instead.
 ## Contribute to the GitLab Duo CLI
 
 For information on contributing to the GitLab Duo CLI, see the
-[development guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/development.md).
+[development guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/development.md).
 
 ## Related topics
 
-- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [Security considerations for editor extensions](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
 - [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)

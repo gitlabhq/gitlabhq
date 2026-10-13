@@ -9,9 +9,9 @@ module Clusters
         scope :available, -> do
           where(
             status: [
-              self.state_machines[:status].states[:externally_installed].value,
-              self.state_machines[:status].states[:installed].value,
-              self.state_machines[:status].states[:updated].value
+              state_machines[:status].states[:externally_installed].value,
+              state_machines[:status].states[:installed].value,
+              state_machines[:status].states[:updated].value
             ]
           )
         end

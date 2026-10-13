@@ -345,14 +345,18 @@ namespace :gitlab do
 
     desc 'Create missing dynamic database partitions'
     task :create_dynamic_partitions, [:skip] => :environment do |_, args|
-      Gitlab::Database::Partitioning.sync_partitions unless args.skip
+      next if args.skip
+
+      skipped_partition_sync_note(Gitlab::Database::Partitioning.sync_partitions)
     end
 
     namespace :create_dynamic_partitions do
       each_database(databases) do |database_name|
         desc "Create missing dynamic database partitions on the #{database_name} database"
         task database_name, [:skip] => :environment do |_, args|
-          Gitlab::Database::Partitioning.sync_partitions(only_on: database_name) unless args.skip
+          next if args.skip
+
+          skipped_partition_sync_note(Gitlab::Database::Partitioning.sync_partitions(only_on: database_name))
         end
       end
     end
@@ -449,6 +453,19 @@ namespace :gitlab do
       NOTE
 
       yield if block_given?
+    end
+
+    def skipped_partition_sync_note(blocking_flag)
+      case blocking_flag
+      when :disallow_database_ddl_feature_flags
+        disabled_db_flags_note
+      when :partition_manager_sync_partitions
+        puts Rainbow(<<~NOTE).yellow
+          Note: partition_manager_sync_partitions feature is currently disabled. Dynamic partitions were not synced.
+
+          Enable with: Feature.enable(:partition_manager_sync_partitions)
+        NOTE
+      end
     end
 
     desc 'Enqueue an index for reindexing'

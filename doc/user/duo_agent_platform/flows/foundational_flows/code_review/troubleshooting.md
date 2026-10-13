@@ -61,7 +61,7 @@ You might get an error that states
 
 Code Review Flow requires authentication tokens to connect to the GitLab AI Gateway and the GitLab API. This error occurs when those tokens cannot be generated, usually due to an incorrect GitLab Duo setup or a transient infrastructure issue.
 
-For self-managed instances, ask your administrator to verify the [GitLab Duo configuration](../../../../../administration/gitlab_duo/configure/_index.md).
+For GitLab Self-Managed instances, ask your administrator to verify the [GitLab Duo configuration](../../../../../administration/gitlab_duo/configure/_index.md).
 
 ## `Error DCR4006`
 
@@ -99,6 +99,38 @@ You might get an error that states
 This error occurs when Code Review Flow is unable to retrieve the source branch for the merge request.
 
 Try to restart the review.
+
+## `Error DCR4010`
+
+You might get an error that states
+`Usage billing is not available for this account. To continue using Code Review Flow, contact your administrator. Error code: DCR4010`.
+
+This error occurs when you have used all of your allocated GitLab Credits and your administrator has not accepted the usage billing terms required for on-demand credits.
+
+Ask your administrator to do one of the following:
+
+- Accept the usage billing terms in the [GitLab Credits dashboard](../../../../../subscriptions/gitlab_credits_dashboard.md) in the Customers Portal. This allows you to use on-demand credits.
+- Purchase a [monthly commitment pool](../../../../../subscriptions/gitlab_credits.md#monthly-commitment-pool).
+
+When credits are available again, request a new review.
+
+## `Error DCR4011`
+
+You might get an error that states
+`Code Review Flow could not start because the project has no runner available. It needs an instance runner or a top-level group runner with the gitlab--duo tag and a Docker-compatible executor. Error code: DCR4011`.
+
+This error occurs when Code Review Flow runs on a CI/CD pipeline, but no eligible runner is available. Flows need an instance runner or a group runner assigned to the top-level group, with the `gitlab--duo` tag and a Docker-compatible executor.
+
+For the full runner requirements and how to configure one, see [A flow's job or session fails to start](../../../troubleshooting.md#a-flows-job-or-session-fails-to-start).
+
+## `Error DCR4012`
+
+You might get an error that states
+`Code Review Flow could not start because the namespace has run out of compute minutes. Ask someone with billing access to add compute minutes before trying again. Error code: DCR4012`.
+
+This error occurs when the namespace has used all of its compute minutes, which also removes access to hosted (instance) runners. Project and top-level group runners are not affected.
+
+Ask someone with billing access to add compute minutes, then request a new review. For more details, see [A flow's job or session fails to start](../../../troubleshooting.md#a-flows-job-or-session-fails-to-start).
 
 ## `Error DCR5000`
 

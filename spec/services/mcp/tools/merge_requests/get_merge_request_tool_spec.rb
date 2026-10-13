@@ -58,11 +58,15 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       expect(variables[:includeConflicts]).to be(false)
     end
 
-    it 'omits notes pagination parameters when not provided', :aggregate_failures do
+    it 'omits facet pagination parameters when not provided', :aggregate_failures do
       variables = tool.build_variables
 
       expect(variables).not_to have_key(:notesAfter)
       expect(variables).not_to have_key(:notesFirst)
+      expect(variables).not_to have_key(:commitsAfter)
+      expect(variables).not_to have_key(:commitsFirst)
+      expect(variables).not_to have_key(:pipelinesAfter)
+      expect(variables).not_to have_key(:pipelinesFirst)
     end
 
     context 'when a single facet is requested' do
@@ -162,6 +166,49 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       end
     end
 
+    context 'when backward notes pagination parameters are provided' do
+      let(:params) { super().merge(include: ['notes'], notes_before: 'cursor1', notes_last: 5) }
+
+      it 'passes only the backward variables', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:notesBefore]).to eq('cursor1')
+        expect(variables[:notesLast]).to eq(5)
+        expect(variables).not_to have_key(:notesFirst)
+        expect(variables).not_to have_key(:notesAfter)
+      end
+    end
+
+    context 'when only notes_before is provided' do
+      let(:params) { super().merge(include: ['notes'], notes_before: 'cursor1') }
+
+      it 'defaults notesLast so the page ends at the cursor', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:notesBefore]).to eq('cursor1')
+        expect(variables[:notesLast]).to eq(Mcp::Tools::Concerns::CursorPagination::MAX_PAGE_SIZE)
+        expect(variables).not_to have_key(:notesFirst)
+      end
+    end
+
+    context 'when notes pagination mixes both directions' do
+      let(:params) { super().merge(include: ['notes'], notes_first: 5, notes_last: 5) }
+
+      it 'raises an ArgumentError' do
+        expect { tool.build_variables }.to raise_error(ArgumentError, /not both directions/)
+      end
+    end
+
+    context 'when notes pagination parameters are provided without the notes facet' do
+      let(:params) { super().merge(include: ['commits'], notes_first: 5, notes_last: 5) }
+
+      it 'ignores them', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables.keys).not_to include(:notesFirst, :notesAfter, :notesLast, :notesBefore)
+      end
+    end
+
     context 'when diffs pagination parameters are provided' do
       let(:params) { super().merge(include: ['diffs'], detail: 'full_patch', diffs_after: 'cursor2', diffs_first: 10) }
 
@@ -170,6 +217,28 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
 
         expect(variables[:diffsAfter]).to eq('cursor2')
         expect(variables[:diffsFirst]).to eq(10)
+      end
+    end
+
+    context 'when commits pagination parameters are provided' do
+      let(:params) { super().merge(include: ['commits'], commits_after: 'cursor3', commits_first: 30) }
+
+      it 'includes them in the GraphQL variables', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:commitsAfter]).to eq('cursor3')
+        expect(variables[:commitsFirst]).to eq(30)
+      end
+    end
+
+    context 'when pipelines pagination parameters are provided' do
+      let(:params) { super().merge(include: ['pipelines'], pipelines_after: 'cursor4', pipelines_first: 5) }
+
+      it 'includes them in the GraphQL variables', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:pipelinesAfter]).to eq('cursor4')
+        expect(variables[:pipelinesFirst]).to eq(5)
       end
     end
   end
@@ -250,6 +319,32 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         returned_ids = result[:structuredContent]['notes']['nodes'].map { |n| n['id'] }
         expect(returned_ids).to include(*all_notes.map { |n| n.to_global_id.to_s })
       end
+
+      it 'includes discussion counts, backward page info, and per-note position and thread', :aggregate_failures do
+        result = tool.execute
+        merge_request_data = result[:structuredContent]
+        nodes = merge_request_data.dig('notes', 'nodes')
+        diff_note = all_notes.find { |n| n.is_a?(DiffNote) }
+        diff_node = nodes.find { |n| n['id'] == diff_note.to_global_id.to_s }
+
+        expect(merge_request_data).to include('resolvedDiscussionsCount', 'resolvableDiscussionsCount')
+        expect(merge_request_data.dig('notes', 'pageInfo')).to include('hasPreviousPage', 'startCursor')
+        expect(diff_node['position']).to include('newPath' => diff_note.position.new_path)
+        expect(diff_node['discussion']).to include('id' => diff_note.discussion.to_global_id.to_s, 'resolvable' => true)
+      end
+    end
+
+    context 'when the newest notes are requested with notes_last' do
+      let(:params) { super().merge(include: ['notes'], notes_last: 2) }
+
+      it 'returns the last notes', :aggregate_failures do
+        result = tool.execute
+        nodes = result[:structuredContent].dig('notes', 'nodes')
+
+        expect(result[:isError]).to be(false)
+        expect(nodes.size).to eq(2)
+        expect(result[:structuredContent].dig('notes', 'pageInfo', 'hasPreviousPage')).to be(true)
+      end
     end
 
     context 'when diffs are requested' do
@@ -280,6 +375,22 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       end
     end
 
+    context 'when pipelines are requested and the merge request has more than 100' do
+      let(:params) { super().merge(include: ['pipelines']) }
+
+      before_all do
+        create_list(:ci_pipeline, 101, :detached_merge_request_pipeline, merge_request: merge_request) # rubocop:disable FactoryBot/ExcessiveCreateList -- need >100 to test the default page size
+      end
+
+      it 'returns the first 100 pipelines and a cursor to the rest', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent].dig('pipelines', 'nodes').size).to eq(100)
+        expect(result[:structuredContent].dig('pipelines', 'pageInfo', 'hasNextPage')).to be(true)
+      end
+    end
+
     context 'when conflicts are requested' do
       let(:params) { super().merge(include: ['conflicts']) }
 
@@ -299,6 +410,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text]).to include('Merge request not found')
       end
     end

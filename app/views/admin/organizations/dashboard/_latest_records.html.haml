@@ -1,0 +1,11 @@
+= render ::Layouts::CrudComponent.new(title, count: (number_with_delimiter(count) if count), options: { class: 'gl-flex gl-flex-col' }, body_options: { class: 'gl-mt-0' }) do |c|
+  - c.with_body do
+    - if count.nil?
+      = _('This count is currently unavailable.')
+    - else
+      - records.each do |record|
+        .gl-flex.gl-py-4{ class: ('gl-border-b' if records.last != record) }
+          .gl-mr-auto
+            = record.respond_to?(:full_name) ? record.full_name : record.name
+          %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
+            #{time_ago_with_tooltip(record.created_at)}

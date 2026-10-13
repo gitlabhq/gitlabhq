@@ -14,44 +14,55 @@ class UserProjectAccessChangedService
     @user_ids = Array.wrap(user_ids)
   end
 
-  def execute(priority: HIGH_PRIORITY)
+  # @param delay [Boolean] when false, a medium priority refresh is enqueued immediately and unbatched
+  #   instead of after MEDIUM_DELAY
+  def execute(priority: HIGH_PRIORITY, delay: true)
     return if @user_ids.empty?
 
     bulk_args = @user_ids.map { |id| [id] }
 
-    result =
-      case priority
-      when HIGH_PRIORITY
-        AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
-      when MEDIUM_PRIORITY
+    case priority
+    when HIGH_PRIORITY
+      AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
+      ::User.sticking.bulk_stick(:user, @user_ids)
+    when MEDIUM_PRIORITY
+      if delay
         AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
-      when LOW_PRIORITY
-        execute_low_priority_refresh(bulk_args)
+      else
+        AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext -- same as the delayed path, the user ID argument identifies each job
       end
-
-    ::User.sticking.bulk_stick(:user, @user_ids)
-
-    result
+    when LOW_PRIORITY
+      execute_low_priority_refresh
+    end
   end
 
   private
 
-  def execute_low_priority_refresh(bulk_args)
-    return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs)
+  def execute_low_priority_refresh
+    return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
 
-    if Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, :instance)
-      Authz::ProjectAuthorizationReverification.queue_users(@user_ids)
-    else
-      Gitlab::ApplicationContext.with_raw_context(
-        authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
-      ) do
-        # rubocop:disable Scalability/BulkPerformWithContext -- related_class context is set by the wrapping block
-        with_related_class_context do
-          AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in(
-            DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
-        end
-        # rubocop:enable Scalability/BulkPerformWithContext
+    # The actor is the user being refreshed, so each user is on exactly one path.
+    db_queued_user_ids, legacy_user_ids = @user_ids.partition do |user_id|
+      Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, ::User.actor_from_id(user_id))
+    end
+
+    # Legacy path first so a failure in the newer queue path cannot block it.
+    enqueue_legacy_safety_net_jobs(legacy_user_ids) if legacy_user_ids.any?
+    Authz::ProjectAuthorizationReverification.queue_users(db_queued_user_ids) if db_queued_user_ids.any?
+  end
+
+  def enqueue_legacy_safety_net_jobs(user_ids)
+    bulk_args = user_ids.map { |id| [id] }
+
+    Gitlab::ApplicationContext.with_raw_context(
+      authorized_projects_refresh_purpose: SAFETY_NET_REFRESH_PURPOSE
+    ) do
+      # rubocop:disable Scalability/BulkPerformWithContext -- related_class context is set by the wrapping block
+      with_related_class_context do
+        AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.bulk_perform_in(
+          DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds)
       end
+      # rubocop:enable Scalability/BulkPerformWithContext
     end
   end
 

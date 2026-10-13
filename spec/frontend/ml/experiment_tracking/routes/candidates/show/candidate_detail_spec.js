@@ -6,6 +6,9 @@ import CandidateDetail from '~/ml/experiment_tracking/routes/candidates/show/can
 import { newCandidate } from 'jest/ml/model_registry/mock_data';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
 
 Vue.use(VueApollo);
 
@@ -169,10 +172,8 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
     });
 
     it('copies MLflow ID to clipboard when clicked', async () => {
-      jest.spyOn(navigator.clipboard, 'writeText').mockImplementation(() => Promise.resolve());
       await findMlflowIdButton().vm.$emit('click');
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('abcdefg');
-      jest.restoreAllMocks();
+      expect(copyToClipboard).toHaveBeenCalledWith('abcdefg');
     });
   });
 

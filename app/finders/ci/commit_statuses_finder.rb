@@ -33,9 +33,18 @@ module Ci
     end
 
     def latest_pipeline_per_ref(pipelines)
-      ref_sha_pairs = refs.filter_map { |ref| [ref.name, ref.dereferenced_target.sha] if ref.dereferenced_target }
+      if Feature.enabled?(:branches_page_pipeline_lookup_by_sha, project)
+        # Implied by the (ref, sha) join, but lets PostgreSQL use the (project_id, sha) index.
+        pipelines = pipelines.for_sha(ref_sha_pairs.map(&:last).uniq)
+      end
+
       pipelines.latest_pipeline_per_ref(ref_sha_pairs)
     end
+
+    def ref_sha_pairs
+      refs.filter_map { |ref| [ref.name, ref.dereferenced_target.sha] if ref.dereferenced_target }
+    end
+    strong_memoize_attr :ref_sha_pairs
 
     attr_reader :project, :repository, :current_user, :refs, :ref_type
   end

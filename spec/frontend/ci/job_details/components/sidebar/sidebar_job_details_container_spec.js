@@ -53,12 +53,12 @@ describe('Job Sidebar Details Container', () => {
     beforeEach(createWrapper);
 
     it.each([
-      ['duration', 'Elapsed time: 6 seconds'],
-      ['erased_at', 'Erased: 3 weeks ago'],
-      ['finished_at', 'Finished: 3 weeks ago'],
-      ['queued_duration', 'Queued: 9 seconds'],
-      ['runner', 'Runner: #1 (ABCDEFGH) local ci runner'],
-      ['coverage', 'Coverage: 20%'],
+      ['duration', 'Elapsed time 6 seconds'],
+      ['erased_at', 'Erased 3 weeks ago'],
+      ['finished_at', 'Finished 3 weeks ago'],
+      ['queued_duration', 'Queued 9 seconds'],
+      ['runner', 'Runner #1 (ABCDEFGH) local ci runner'],
+      ['coverage', 'Coverage 20%'],
     ])('uses %s to render job-%s', async (detail, value) => {
       await store.dispatch('receiveJobSuccess', { [detail]: job[detail] });
       const detailsRow = findAllDetailsRow();
@@ -72,7 +72,8 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { tags });
       const tagsComponent = findJobTags();
 
-      expect(tagsComponent.text()).toBe('Tags: tag');
+      expect(tagsComponent.text()).toContain('Tags');
+      expect(tagsComponent.text()).toContain('tag');
     });
   });
 
@@ -80,28 +81,28 @@ describe('Job Sidebar Details Container', () => {
     beforeEach(createWrapper);
 
     it.each([
-      ['api', 'Source: API'],
-      ['chat', 'Source: Chat'],
-      ['container_registry_push', 'Source: Container Registry Push'],
-      ['duo_workflow', 'Source: Duo Agent Platform'],
-      ['dependency_management_security_update', 'Source: Dependency Management Security Update'],
-      ['external', 'Source: External'],
-      ['external_pull_request_event', 'Source: External Pull Request'],
-      ['merge_request_event', 'Source: Merge Request'],
-      ['ondemand_dast_scan', 'Source: On-Demand DAST Scan'],
-      ['ondemand_dast_validation', 'Source: On-Demand DAST Validation'],
-      ['parent_pipeline', 'Source: Parent Pipeline'],
-      ['pipeline', 'Source: Pipeline'],
-      ['pipeline_execution_policy', 'Source: Pipeline Execution Policy'],
-      ['pipeline_execution_policy_schedule', 'Source: Scheduled Pipeline Execution Policy'],
-      ['push', 'Source: Push'],
-      ['scan_execution_policy', 'Source: Scan Execution Policy'],
-      ['schedule', 'Source: Schedule'],
-      ['security_orchestration_policy', 'Source: Scheduled Scan Execution Policy'],
-      ['trigger', 'Source: Trigger'],
-      ['web', 'Source: Web'],
-      ['webide', 'Source: Web IDE'],
-      ['unknown', 'Source: Unknown'],
+      ['api', 'Source API'],
+      ['chat', 'Source Chat'],
+      ['container_registry_push', 'Source Container Registry Push'],
+      ['duo_workflow', 'Source Duo Agent Platform'],
+      ['dependency_management_security_update', 'Source Dependency Management Security Update'],
+      ['external', 'Source External'],
+      ['external_pull_request_event', 'Source External Pull Request'],
+      ['merge_request_event', 'Source Merge Request'],
+      ['ondemand_dast_scan', 'Source On-Demand DAST Scan'],
+      ['ondemand_dast_validation', 'Source On-Demand DAST Validation'],
+      ['parent_pipeline', 'Source Parent Pipeline'],
+      ['pipeline', 'Source Pipeline'],
+      ['pipeline_execution_policy', 'Source Pipeline Execution Policy'],
+      ['pipeline_execution_policy_schedule', 'Source Scheduled Pipeline Execution Policy'],
+      ['push', 'Source Push'],
+      ['scan_execution_policy', 'Source Scan Execution Policy'],
+      ['schedule', 'Source Schedule'],
+      ['security_orchestration_policy', 'Source Scheduled Scan Execution Policy'],
+      ['trigger', 'Source Trigger'],
+      ['web', 'Source Web'],
+      ['webide', 'Source Web IDE'],
+      ['unknown', 'Source Unknown'],
     ])(`uses source to render %s`, async (source, value) => {
       await store.dispatch('receiveJobSuccess', { source });
       const detailsRow = findAllDetailsRow();
@@ -117,7 +118,7 @@ describe('Job Sidebar Details Container', () => {
         const detailsRow = findAllDetailsRow();
 
         expect(detailsRow).toHaveLength(1);
-        expect(detailsRow.at(0).text()).toBe(`Source: ${source}`);
+        expect(detailsRow.at(0).text()).toBe(`Source ${source}`);
       });
     });
   });
@@ -131,7 +132,7 @@ describe('Job Sidebar Details Container', () => {
         coverage: 0,
       });
 
-      expect(findAllDetailsRow().at(6).text()).toBe('Coverage: 0%');
+      expect(findAllDetailsRow().at(6).text()).toBe('Coverage 0%');
     });
   });
 
@@ -140,7 +141,7 @@ describe('Job Sidebar Details Container', () => {
       createWrapper();
       await store.dispatch('receiveJobSuccess', job);
 
-      expect(findAllDetailsRow()).toHaveLength(7);
+      expect(findAllDetailsRow()).toHaveLength(8);
     });
 
     describe('duration row', () => {
@@ -148,7 +149,7 @@ describe('Job Sidebar Details Container', () => {
         createWrapper();
         await store.dispatch('receiveJobSuccess', job);
 
-        expect(findAllDetailsRow().at(0).text()).toBe('Duration: 6 seconds');
+        expect(findAllDetailsRow().at(0).text()).toBe('Duration 6 seconds');
       });
     });
   });
@@ -209,7 +210,7 @@ describe('Job Sidebar Details Container', () => {
       const detailsRow = findAllDetailsRow();
 
       expect(detailsRow).toHaveLength(1);
-      expect(detailsRow.at(0).text()).toBe('Timeout: 1m 40s');
+      expect(detailsRow.at(0).text()).toBe('Timeout 1m 40s');
     });
 
     it('uses metadata to render timeout and the source', async () => {
@@ -217,7 +218,7 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', { metadata });
       const detailsRow = findAllDetailsRow();
 
-      expect(detailsRow.at(0).text()).toBe('Timeout: 1m 40s (from runner)');
+      expect(detailsRow.at(0).text()).toBe('Timeout 1m 40s (from runner)');
     });
 
     it('should not render when no time is provided', async () => {

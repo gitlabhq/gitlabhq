@@ -8,7 +8,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   include ReactiveCachingHelpers
 
   let(:project) { create(:project, :repository) }
-  let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
+  let_it_be(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
@@ -19,7 +19,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
   before do
     project.add_maintainer(user)
-    project_only_mwps.add_maintainer(user)
+    project_only_mwps.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, so before_all cannot access it
     sign_in(user)
   end
 
@@ -148,7 +148,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       expect(page).to have_selector('[data-testid="merge-failed-pipeline-confirmation-dialog"]', visible: :visible)
     end
 
-    it 'allows me to merge with a failed pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16779' do
+    it 'allows me to merge with a failed pipeline' do
       wait_for_requests
 
       click_button 'Merge…'
@@ -558,6 +558,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     let!(:build) { create(:ci_build, :success, pipeline: head_pipeline, project: project) }
 
     before do
+      stub_feature_flags(merge_request_reports_widget_group: false)
       merge_request.update!(head_pipeline_id: head_pipeline.id)
     end
 

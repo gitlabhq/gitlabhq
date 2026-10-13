@@ -31,7 +31,7 @@ RSpec.shared_examples 'a where_composite scope' do |scope_name|
     let(:ids) { composite_ids }
 
     it 'finds all the results' do
-      expect(result).to contain_exactly(*all_results)
+      expect(result).to match_array(all_results)
     end
   end
 

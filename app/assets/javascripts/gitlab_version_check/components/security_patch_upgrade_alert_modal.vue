@@ -71,8 +71,12 @@ export default {
     alertEmoji() {
       return glEmojiTag('rotating_light');
     },
+    // Guards against a stale response recommending the version already running.
+    recommendedStableVersions() {
+      return (this.latestStableVersions || []).filter((v) => v !== this.currentVersion);
+    },
     modalBody() {
-      if (this.latestStableVersions?.length > 0) {
+      if (this.recommendedStableVersions.length > 0) {
         return this.$options.i18n.modalBodyStableVersions;
       }
 
@@ -82,11 +86,14 @@ export default {
       return sprintf(this.$options.i18n.modalDetails, { details: this.details });
     },
     latestStableVersionsStrings() {
-      return this.latestStableVersions?.length > 0 ? this.latestStableVersions.join(', ') : '';
+      return this.recommendedStableVersions.length > 0
+        ? this.recommendedStableVersions.join(', ')
+        : '';
     },
     showLatestStableVersionOfMinor() {
       return (
         this.latestStableVersionOfMinor &&
+        this.latestStableVersionOfMinor !== this.currentVersion &&
         !this.latestStableVersionsStrings.includes(this.latestStableVersionOfMinor)
       );
     },

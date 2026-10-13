@@ -1,0 +1,8 @@
+---
+retention_window: 365
+enforcement_strategy: drop_partition
+enforcing: true
+pause_mechanism:
+  type: feature_flag
+  name: ci_detach_archived_partitions
+work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/607862

@@ -19,9 +19,11 @@ module QA
 
       EVENT_TRIGGERS = %i[
         deployment
+        emoji
         issues
         job
         merge_requests
+        milestone
         note
         pipeline
         push

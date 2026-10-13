@@ -15,21 +15,16 @@ title: Installing a GitLab POC on Amazon Web Services (AWS)
 
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official Linux package. You should customize it to accommodate your needs.
 
-> [!note]
-> For organizations with 1,000 users or fewer, the recommended AWS installation method is to launch
-> an EC2 single-box [Linux package installation](https://about.gitlab.com/install/) and implement
-> a snapshot strategy for backing up the data.
-
 ## Getting started for production-grade GitLab
 
 > [!note]
 > This document is a proof-of-concept walkthrough. It does not result in a highly available
 > configuration.
 
-Following this guide exactly results in a non-HA instance. For production-grade deployments on AWS,
-use the [reference architectures](../../administration/reference_architectures/_index.md) to
-determine the right configuration for your scale. Reference architectures cover both Linux package
-(VM-based) and cloud-native (Kubernetes) deployment types.
+Following this guide exactly results in a non-HA environment. For production GitLab environments on AWS,
+use the [reference architectures](../../administration/reference_architectures/_index.md) as starting
+configurations. Use the [deployment sizing guidance](../sizing.md) to assess your expected workload
+and adjust the configuration.
 
 ## Introduction
 
@@ -1173,7 +1168,7 @@ and primarily the restore prerequisites. Then, follow the steps under the
 
 ## Updating GitLab
 
-GitLab releases a new version every month on the [release date](https://about.gitlab.com/releases/). Whenever a new version is
+GitLab releases a new version every month. Whenever a new version is
 released, you can update your GitLab instance:
 
 1. SSH into your instance
@@ -1209,11 +1204,13 @@ Have a read through these other resources and feel free to
 [open an issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new)
 to request additional material:
 
-- [Scaling GitLab](../../administration/reference_architectures/_index.md):
-  GitLab supports several different types of clustering.
+- [Reference architectures](../../administration/reference_architectures/_index.md):
+  Select a starting production topology and configuration.
+- [Deployment sizing guidance](../sizing.md):
+  Assess your expected workload and adjust the configuration.
 - [Geo replication](../../administration/geo/_index.md):
   Geo is the solution for widely distributed development teams.
-- [Linux package](https://docs.gitlab.com/omnibus/) - Everything you must know
+- [Linux package](../package/_index.md) - Everything you must know
   about administering your GitLab instance.
 - [Add a license](../../administration/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.

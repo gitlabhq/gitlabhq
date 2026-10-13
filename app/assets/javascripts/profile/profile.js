@@ -1,8 +1,8 @@
 import $ from 'jquery';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { Rails } from '~/lib/utils/rails_ujs';
 import { smoothScrollTop } from '~/lib/utils/scroll_utils';

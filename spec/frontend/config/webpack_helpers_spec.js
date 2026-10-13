@@ -1,8 +1,8 @@
 import { generateEntries, applyVue3Migrations } from '../../../config/webpack.helpers';
-import { loadVue3Migrations } from '../../../config/helpers/vue3_migration_loader';
+import { loadVue3Migrations } from '../../../config/vue3migration/migration';
 
-jest.mock('../../../config/helpers/vue3_migration_loader', () => ({
-  ...jest.requireActual('../../../config/helpers/vue3_migration_loader'),
+jest.mock('../../../config/vue3migration/migration', () => ({
+  ...jest.requireActual('../../../config/vue3migration/migration'),
   loadVue3Migrations: jest.fn(),
 }));
 

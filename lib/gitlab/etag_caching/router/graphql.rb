@@ -39,7 +39,7 @@ module Gitlab
         def self.match(request)
           return unless request.path_info == graphql_api_path
 
-          graphql_resource = request.headers[GRAPHQL_ETAG_RESOURCE_HEADER]
+          graphql_resource = resource_header(request)
           return unless graphql_resource
 
           ROUTES.find { |route| route.match(graphql_resource) }
@@ -48,9 +48,14 @@ module Gitlab
         def self.cache_key(request)
           [
             request.path,
-            request.headers[GRAPHQL_ETAG_RESOURCE_HEADER]
+            resource_header(request)
           ].compact.join(':')
         end
+
+        def self.resource_header(request)
+          request.headers[GRAPHQL_ETAG_RESOURCE_HEADER]&.delete_prefix("#{graphql_api_path}:").presence
+        end
+        private_class_method :resource_header
 
         def self.graphql_api_path
           @graphql_api_path ||= Gitlab::Routing.url_helpers.api_graphql_path

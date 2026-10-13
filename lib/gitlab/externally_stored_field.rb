@@ -135,14 +135,24 @@ module Gitlab
                   build_external_payload
                 end
 
-      external_storage_uploader.store!(
-        CarrierWaveStringFile.new(Gitlab::Json.dump(payload))
-      )
+      if payload.values.all?(&:blank?)
+        remove_external_payload
+      else
+        external_storage_uploader.store!(
+          CarrierWaveStringFile.new(Gitlab::Json.dump(payload))
+        )
+      end
 
       # The cached uploader was built before the DB commit; its `@file` was created using
       # whatever store was in effect at instantiation. Discard it so the next read
       # re-instantiates against the now-current `file_store`.
       clear_cached_uploader
+    end
+
+    def remove_external_payload
+      return unless external_storage_uploader.file&.exists?
+
+      external_storage_uploader.remove!
     end
 
     # Set `file_store` as part of the normal AR save so it's committed atomically with

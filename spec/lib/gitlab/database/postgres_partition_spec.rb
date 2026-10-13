@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_category: :database do
+  include Database::PartitioningHelpers
+
   let(:current_schema) { ActiveRecord::Base.connection.select_value("SELECT current_schema()") }
   let(:schema) { 'gitlab_partitions_dynamic' }
   let(:name) { '_test_partition_01' }
@@ -163,6 +165,24 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
 
         it 'returns only the DEFAULT partition' do
           expect(default_partition.map(&:name)).to contain_exactly(default_name)
+        end
+      end
+    end
+
+    describe '.pending_detach' do
+      subject(:pending_detach) { described_class.for_parent_table('_test_partitioned_table').pending_detach }
+
+      it 'excludes an attached partition' do
+        expect(pending_detach).to be_empty
+      end
+
+      context 'when a partition is pending detach' do
+        before do
+          mark_pending_detach(name, schema: schema, conn: ActiveRecord::Base.connection)
+        end
+
+        it 'returns the pending partition' do
+          expect(pending_detach.map(&:name)).to contain_exactly(name)
         end
       end
     end

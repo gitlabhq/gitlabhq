@@ -2,7 +2,6 @@
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
-  GlIcon,
   GlDisclosureDropdownGroup,
   GlButton,
   GlTooltipDirective,
@@ -18,8 +17,11 @@ import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 
 export default {
   name: 'WorkItemsSavedViewSelector',
+  editItem: { text: s__('WorkItem|Edit'), icon: 'pencil' },
+  copyLinkItem: { text: s__('WorkItem|Copy link to view'), icon: 'link' },
+  unsubscribeItem: { text: s__('WorkItem|Remove from list'), icon: 'close' },
+  deleteItem: { text: s__('WorkItem|Delete view'), icon: 'remove' },
   components: {
-    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
@@ -134,40 +136,30 @@ export default {
     >
       <gl-disclosure-dropdown-item
         v-if="canUpdateSavedView"
+        :item="$options.editItem"
         data-testid="edit-action"
         @action="editView"
-      >
-        <template #list-item>
-          <gl-icon name="pencil" class="gl-mr-2" variant="subtle" />
-          {{ s__('WorkItem|Edit') }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
-      <gl-disclosure-dropdown-item data-testid="copy-action" @action="copyViewLink">
-        <template #list-item>
-          <gl-icon name="link" class="gl-mr-2" variant="subtle" />
-          {{ s__('WorkItem|Copy link to view') }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
+        :item="$options.copyLinkItem"
+        data-testid="copy-action"
+        @action="copyViewLink"
+      />
 
-      <gl-disclosure-dropdown-item data-testid="unsubscribe-action" @action="unsubscribeView">
-        <template #list-item>
-          <gl-icon name="close" class="gl-mr-2" variant="subtle" />
-          {{ s__('WorkItem|Remove from list') }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
+        :item="$options.unsubscribeItem"
+        data-testid="unsubscribe-action"
+        @action="unsubscribeView"
+      />
 
       <gl-disclosure-dropdown-group v-if="canDeleteSavedView" bordered>
         <gl-disclosure-dropdown-item
+          :item="$options.deleteItem"
           data-testid="delete-action"
           variant="danger"
           @action="deleteView"
-        >
-          <template #list-item>
-            <gl-icon name="remove" class="gl-mr-2" variant="current" />
-            {{ s__('WorkItem|Delete view') }}
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
     <gl-button

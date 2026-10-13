@@ -27,7 +27,6 @@ export default {
     isApplied: {
       type: Boolean,
       required: true,
-      default: false,
     },
     isBatched: {
       type: Boolean,

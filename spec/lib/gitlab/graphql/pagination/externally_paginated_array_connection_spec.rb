@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection do
-  let(:context) { instance_double(GraphQL::Query::Context, schema: GitlabSchema) }
+  let(:context) { instance_double(GraphQL::Query::Context, schema: GitlabSchema, namespace: {}) }
   let(:prev_cursor) { 1 }
   let(:next_cursor) { 6 }
   let(:values) { [2, 3, 4, 5] }

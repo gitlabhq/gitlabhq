@@ -296,4 +296,37 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequest, feature_catego
       expect(pr.github_identifiers).to eq(github_identifiers.merge(issuable_type: 'MergeRequest'))
     end
   end
+
+  describe '#provider_id' do
+    let(:response) do
+      {
+        id: 5678,
+        number: 42,
+        title: 'My Pull Request',
+        body: 'This is my pull request',
+        state: 'open',
+        head: { sha: '123abc', ref: 'my-feature', repo: { id: 400 } },
+        base: { sha: '456def', ref: 'master', repo: { id: 200 } },
+        created_at: created_at,
+        updated_at: updated_at
+      }
+    end
+
+    it 'is the pull request id from the API response' do
+      expect(described_class.from_api_response(response).provider_id).to eq(5678)
+    end
+
+    it 'survives the to_hash and from_json_hash round trip' do
+      pr = described_class.from_api_response(response)
+      round_tripped = described_class.from_json_hash(pr.to_hash.deep_stringify_keys)
+
+      expect(round_tripped.provider_id).to eq(5678)
+    end
+
+    it 'is nil for a payload serialized before provider_id existed' do
+      hash = described_class.from_api_response(response).to_hash.except(:provider_id)
+
+      expect(described_class.from_json_hash(hash.deep_stringify_keys).provider_id).to be_nil
+    end
+  end
 end

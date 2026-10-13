@@ -55,6 +55,31 @@ RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :team_plan
       described_class.new(resource, author).execute(added_labels: [labels[0]])
     end
 
+    describe 'the stored reference' do
+      it 'stores the reference computed for each label' do
+        foreign_label = create(:label)
+
+        described_class.new(resource, author).execute(added_labels: [labels[0]], removed_labels: [foreign_label])
+
+        expect(resource.resource_label_events.pluck(:label_id, :reference)).to contain_exactly(
+          [labels[0].id, labels[0].to_reference(format: :id)],
+          [foreign_label.id, foreign_label.to_reference(project, format: :id)]
+        )
+      end
+
+      it 'does not query per label for labels outside the parent' do
+        control_labels = Label.id_in([create(:label), create(:group_label)].map(&:id)).to_a
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.new(resource, author).execute(added_labels: control_labels)
+        end
+
+        labels = Label.id_in((create_list(:label, 3) + create_list(:group_label, 3)).map(&:id)).to_a
+        expect do
+          described_class.new(resource, author).execute(added_labels: labels)
+        end.not_to exceed_query_limit(control)
+      end
+    end
+
     context 'when adding a label' do
       let(:added)   { [labels[0]] }
       let(:removed) { [] }

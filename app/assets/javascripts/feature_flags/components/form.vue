@@ -3,7 +3,6 @@ import { GlButton, GlFormTextarea } from '@gitlab/ui';
 import { cloneDeep, isNumber, uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
-import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
@@ -24,7 +23,6 @@ export default {
     RelatedIssuesRoot,
     GlFormTextarea,
   },
-  mixins: [featureFlagsMixin()],
   inject: {
     featureFlagIssuesEndpoint: {
       default: '',

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/context'
+require 'gitlab/safe_request_store'
 require 'rack'
 
 RSpec.describe Gitlab::Middleware::RackAttackHeaders, feature_category: :rate_limiting do

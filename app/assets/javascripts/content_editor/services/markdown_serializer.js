@@ -1,5 +1,5 @@
-import { MarkdownSerializer as ProseMirrorMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import * as extensions from '../extensions';
+import { DelimiterAwareSerializerState } from './emphasis_delimiters';
 import alert from './serializer/alert';
 import alertTitle from './serializer/alert_title';
 import codeSuggestion from './serializer/code_suggestion';
@@ -45,6 +45,7 @@ import taskList from './serializer/task_list';
 import bulletList from './serializer/bullet_list';
 import orderedList from './serializer/ordered_list';
 import paragraph from './serializer/paragraph';
+import placeholder from './serializer/placeholder';
 import hardBreak from './serializer/hard_break';
 import text from './serializer/text';
 import wordBreak from './serializer/word_break';
@@ -102,6 +103,7 @@ const defaultSerializerConfig = {
     [extensions.Loading.name]: loading,
     [extensions.OrderedList.name]: orderedList,
     [extensions.Paragraph.name]: paragraph,
+    [extensions.Placeholder.name]: placeholder,
     [extensions.HTMLComment.name]: htmlComment,
     [extensions.Reference.name]: reference,
     [extensions.ReferenceLabel.name]: referenceLabel,
@@ -144,7 +146,7 @@ export default class MarkdownSerializer {
    * @returns A String that represents the serialized document as Markdown
    */
   serialize({ doc }, { useCanonicalSrc = true, skipEmptyNodes = false } = {}) {
-    const serializer = new ProseMirrorMarkdownSerializer(
+    const state = new DelimiterAwareSerializerState(
       {
         ...defaultSerializerConfig.nodes,
         ...this.serializerConfig.nodes,
@@ -153,15 +155,16 @@ export default class MarkdownSerializer {
         ...defaultSerializerConfig.marks,
         ...this.serializerConfig.marks,
       },
+      {
+        tightLists: true,
+        useCanonicalSrc,
+        skipEmptyNodes,
+        escapeExtraCharacters: /<|>/g,
+      },
     );
 
-    const serialized = serializer.serialize(doc, {
-      tightLists: true,
-      useCanonicalSrc,
-      skipEmptyNodes,
-      escapeExtraCharacters: /<|>/g,
-    });
+    state.renderContent(doc);
 
-    return serialized;
+    return state.out;
   }
 }

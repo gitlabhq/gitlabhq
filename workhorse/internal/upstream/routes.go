@@ -519,6 +519,10 @@ func configureRoutes(u *upstream) {
 		u.route("PUT",
 			newRoute(apiProjectPattern+`/packages/conan/`, "project_api_packages_conan", railsBackend), requestBodyUploader),
 
+		// Cargo Artifact Repository
+		u.route("PUT",
+			newRoute(apiProjectPattern+`/packages/cargo/api/v1/crates/new\z`, "api_projects_packages_cargo", railsBackend), requestBodyUploader),
+
 		// Generic Packages Repository
 		u.route("PUT",
 			newRoute(apiProjectPattern+`/packages/generic/`, "api_projects_packages_generic", railsBackend), requestBodyUploader),

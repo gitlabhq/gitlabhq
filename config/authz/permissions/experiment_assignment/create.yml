@@ -1,0 +1,3 @@
+---
+name: create_experiment_assignment
+description: Grants the ability to force a variant assignment for an experiment

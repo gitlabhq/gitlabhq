@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  let(:user) { build(:user) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }
@@ -14,7 +16,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   before do
-    allow(helper).to receive(:current_user).and_return(project.owner)
+    allow(helper).to receive(:current_user).and_return(user)
   end
 
   describe 'diff_view' do
@@ -62,7 +64,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when action name is diff_for_path' do
       before do
-        allow(controller).to receive(:action_name) { 'diff_for_path' }
+        allow(controller).to receive(:action_name).and_return('diff_for_path')
       end
 
       it 'returns expanded true' do
@@ -369,8 +371,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     let(:line_type) { 'line_type' }
 
     before do
-      allow(line).to receive(:rich_text).and_return('line_text')
-      allow(line).to receive(:type).and_return(line_type)
+      allow(line).to receive_messages(rich_text: 'line_text', type: line_type)
     end
 
     it 'generates only single line num' do
@@ -420,12 +421,14 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when no limits are hit' do
       before do
-        allow(diff_files).to receive(:overflow_max_bytes?).and_return(false)
-        allow(diff_files).to receive(:overflow_max_files?).and_return(false)
-        allow(diff_files).to receive(:overflow_max_lines?).and_return(false)
-        allow(diff_files).to receive(:collapsed_safe_bytes?).and_return(false)
-        allow(diff_files).to receive(:collapsed_safe_files?).and_return(false)
-        allow(diff_files).to receive(:collapsed_safe_lines?).and_return(false)
+        allow(diff_files).to receive_messages(
+          overflow_max_bytes?: false,
+          overflow_max_files?: false,
+          overflow_max_lines?: false,
+          collapsed_safe_bytes?: false,
+          collapsed_safe_files?: false,
+          collapsed_safe_lines?: false
+        )
       end
 
       it 'returns false and does not log any overflow events' do
@@ -772,9 +775,10 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
   describe '#conflicts_with_types', :use_clean_rails_redis_caching do
     let(:merge_request) do
-      create(
+      build_stubbed(
         :merge_request,
         :conflict,
+        source_project: project,
         merge_status: 'cannot_be_merged'
       )
     end
@@ -819,7 +823,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     end
 
     context 'when merge request can be merged' do
-      let(:merge_request) { create(:merge_request, merge_status: 'can_be_merged') }
+      let(:merge_request) { build_stubbed(:merge_request, source_project: project, merge_status: 'can_be_merged') }
 
       it 'returns nil' do
         expect(helper.conflicts_with_types).to be_nil
@@ -828,8 +832,9 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when source branch does not exist' do
       let(:merge_request) do
-        create(
+        build_stubbed(
           :merge_request,
+          source_project: project,
           source_branch: 'i-do-no-exist',
           merge_status: 'cannot_be_merged'
         )
@@ -842,8 +847,9 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when target branch does not exist' do
       let(:merge_request) do
-        create(
+        build_stubbed(
           :merge_request,
+          source_project: project,
           target_branch: 'i-do-no-exist',
           merge_status: 'cannot_be_merged'
         )
@@ -915,7 +921,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when request has w param set' do
       before do
-        allow(controller).to receive(:params) { { w: '1' } }
+        allow(controller).to receive(:params).and_return({ w: '1' })
       end
 
       it { is_expected.to be(true) }
@@ -938,7 +944,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
       context 'when request has w param set' do
         before do
-          allow(controller).to receive(:params) { { w: '1' } }
+          allow(controller).to receive(:params).and_return({ w: '1' })
         end
 
         it { is_expected.to be(true) }

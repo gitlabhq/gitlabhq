@@ -36,7 +36,7 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
       end
 
       context 'when Jira integration exists' do
-        let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
+        let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
         context 'when Jira connection is not valid' do
           before do
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
       it_behaves_like 'jira configuration base checks'
 
       context 'when jira connection is valid' do
-        let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
+        let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
         it 'does not return any error' do
           expect { subject }.not_to raise_error
@@ -77,28 +77,22 @@ RSpec.describe Gitlab::JiraImport, :clean_gitlab_redis_shared_state, feature_cat
 
         it_behaves_like 'jira configuration base checks'
 
-        context 'when jira integration is configured' do
-          let!(:jira_integration) { create(:jira_integration, project: project, active: true) }
+        context 'when issues feature is disabled' do
+          let_it_be(:project) { create(:project, :issues_disabled) }
 
-          context 'when issues feature is disabled' do
-            let_it_be_with_reload(:project) { create(:project, :issues_disabled) }
+          it_behaves_like 'raise Jira import error', 'Cannot import because issues are not available in this project.'
+        end
 
-            it_behaves_like 'raise Jira import error', 'Cannot import because issues are not available in this project.'
-          end
+        context 'when everything is ok' do
+          let_it_be(:jira_integration) { create(:jira_integration, project: project, active: true) }
 
-          context 'when everything is ok' do
-            it 'does not return any error' do
-              expect { subject }.not_to raise_error
-            end
+          it 'does not return any error' do
+            expect { subject }.not_to raise_error
           end
         end
       end
 
       context 'when user does not have permissions to run the import' do
-        before do
-          create(:jira_integration, project: project, active: true)
-        end
-
         before_all do
           project.add_developer(user)
         end

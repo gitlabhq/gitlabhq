@@ -452,7 +452,7 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
         it 'has projects on the first page' do
           get :index, params: { group_id: group.to_param, sort: 'id_desc' }, format: :json
 
-          expect(assigns(:children)).to contain_exactly(*first_page_projects)
+          expect(assigns(:children)).to match_array(first_page_projects)
         end
 
         it 'has projects on the second page' do
@@ -470,7 +470,7 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
         it 'contains all subgroups' do
           get :index, params: { group_id: group.to_param, sort: 'id_asc' }, format: :json
 
-          expect(assigns(:children)).to contain_exactly(*first_page_subgroups)
+          expect(assigns(:children)).to match_array(first_page_subgroups)
         end
 
         it 'contains the project and group on the second page' do

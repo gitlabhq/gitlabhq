@@ -13,6 +13,9 @@ class SlackIntegration < ApplicationRecord
   SCOPE_CHANNELS_HISTORY = 'channels:history'
   SCOPE_GROUPS_HISTORY = 'groups:history'
   SCOPE_REACTIONS_WRITE = 'reactions:write'
+  SCOPE_IM_HISTORY = 'im:history'
+  SCOPE_MPIM_HISTORY = 'mpim:history'
+  SCOPE_ASSISTANT_WRITE = 'assistant:write'
   ORGANIZATION_ALIAS = 'gitlab-organization'
 
   # These scopes are requested when installing the app, additional scopes
@@ -31,6 +34,11 @@ class SlackIntegration < ApplicationRecord
     SCOPE_GROUPS_HISTORY,
     SCOPE_REACTIONS_WRITE
   ].freeze
+
+  # Scopes for the Slack Agents feature (top bar, DMs). Only requested once the
+  # `slack_duo_agent_app` release flag is on, which must not happen before the
+  # updated marketplace app is published, or new installs fail with invalid_scope.
+  AGENT_APP_SCOPES = [SCOPE_IM_HISTORY, SCOPE_MPIM_HISTORY, SCOPE_ASSISTANT_WRITE].freeze
   DATABASE_ATTRIBUTES = %w[
     team_id team_name user_id bot_user_id encrypted_bot_access_token encrypted_bot_access_token_iv
   ].freeze
@@ -54,8 +62,7 @@ class SlackIntegration < ApplicationRecord
     class_name: '::Integrations::SlackWorkspace::ApiScope',
     through: :slack_integrations_scopes
 
-  scope :preloaded_integration, -> { preload(:integration) }
-  scope :preload_integration_organization, -> { preloaded_integration.preload(integration: [:group, :project]) }
+  scope :preloaded_sharding_key_parents, -> { preload(:group, :project) }
   scope :with_bot, -> { where.not(bot_user_id: nil) }
   scope :by_team, ->(team_id) { where(team_id: team_id) }
   scope :by_integration, ->(integration_ids) { where(integration_id: integration_ids) }
@@ -80,7 +87,14 @@ class SlackIntegration < ApplicationRecord
   end
 
   def self.scopes_for(duo_enabled:)
-    duo_enabled ? DUO_SCOPES : SCOPES
+    return SCOPES unless duo_enabled
+    return DUO_SCOPES unless agent_app_enabled?
+
+    DUO_SCOPES + AGENT_APP_SCOPES
+  end
+
+  def self.agent_app_enabled?
+    Feature.enabled?(:slack_duo_agent_app, :instance)
   end
 
   def feature_available?(feature_name)
@@ -107,17 +121,18 @@ class SlackIntegration < ApplicationRecord
   def authorized_scope_names=(names)
     names = Array.wrap(names).flat_map { |name| name.split(',') }.map(&:strip)
 
-    # TODO: get `organization_id_from_parent` directly from SlackIntegration.
-    # The `organization_id_from_parent` should be moved to this model when sharding key is finalized
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/582748
     scopes = ::Integrations::SlackWorkspace::ApiScope.find_or_initialize_by_names(
-      names, organization_id: integration.organization_id_from_parent
+      names, organization_id: organization_id_from_parent
     )
     self.slack_api_scopes = scopes
   end
 
   def authorized_scope_names
     slack_api_scopes.pluck(:name)
+  end
+
+  def organization_id_from_parent
+    project&.organization_id || group&.organization_id || organization_id
   end
 
   def to_database_hash

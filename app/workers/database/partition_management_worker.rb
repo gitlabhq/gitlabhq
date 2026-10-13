@@ -12,7 +12,7 @@ module Database
     idempotent!
 
     def perform
-      Gitlab::Database::Partitioning.sync_partitions
+      Gitlab::Database::Partitioning.sync_partitions(analyze_tables_with_default_interval: true)
     ensure
       Gitlab::Database::Partitioning.report_metrics
     end

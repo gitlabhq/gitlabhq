@@ -1,0 +1,10 @@
+---
+name: diff_stitcher_single_file_lookahead
+description: Holds each streamed diff patch until the next arrives so DiffStitcher can report whether the stream held a single file.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572763
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257263
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631906
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

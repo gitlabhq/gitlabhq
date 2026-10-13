@@ -11,7 +11,7 @@ RSpec.shared_examples 'a BulkUsersByEmailLoad model' do
       let(:passed_emails) { [user1.emails.first.email, user2.email] }
 
       it 'preforms the yielded query and supplies the data with only emails desired' do
-        expect(model.users_by_emails(passed_emails).keys).to contain_exactly(*passed_emails)
+        expect(model.users_by_emails(passed_emails).keys).to match_array(passed_emails)
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.shared_examples 'a BulkUsersByEmailLoad model' do
       it 'passes back loaded data and does not update the items that already exist' do
         users_by_emails = model.users_by_emails(passed_emails)
 
-        expect(users_by_emails.keys).to contain_exactly(*passed_emails)
+        expect(users_by_emails.keys).to match_array(passed_emails)
         expect(users_by_emails).to include(resource_data.merge(user1.email => user1))
       end
     end

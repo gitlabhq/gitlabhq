@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dashboard::LabelsController do
+RSpec.describe Dashboard::LabelsController, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, reporters: user) }
   let_it_be(:project_2) { create(:project, reporters: user) }

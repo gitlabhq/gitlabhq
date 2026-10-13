@@ -25,7 +25,7 @@ title: AI Gateway configuration and authentication
 
 {{< /history >}}
 
-There are two AI Gateway configuration options for self-managed customers:
+There are two AI Gateway configuration options for GitLab Self-Managed customers:
 
 - **GitLab.com AI Gateway**: This is the default configuration for GitLab Self-Managed customers. Use the GitLab-managed AI Gateway with external large language model (LLM) providers selected by GitLab (for example, Google Vertex or Anthropic).
 - **Self-hosted AI Gateway**: Deploy and manage your own AI Gateway and language models in your infrastructure, without depending on GitLab-provided external language providers.

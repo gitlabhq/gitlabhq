@@ -8,6 +8,7 @@ module Sidebars
           override :configure_menu_items
           def configure_menu_items
             add_item(general_menu_item)
+            add_item(integrations_menu_item)
 
             true
           end
@@ -41,6 +42,17 @@ module Sidebars
               active_routes: { controller: 'admin/organizations/settings' },
               item_id: :organization_admin_settings_general
             )
+          end
+
+          def integrations_menu_item
+            build_menu_item(
+              title: _('Integrations'),
+              # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- We only want to generate org-scoped path here
+              link: organization_admin_settings_integrations_path(context.current_organization),
+              # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
+              active_routes: { controller: 'admin/organizations/integrations' },
+              item_id: :organization_admin_settings_integrations
+            ) { can?(context.current_user, :update_integration, context.current_organization) }
           end
         end
       end

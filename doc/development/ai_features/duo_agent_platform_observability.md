@@ -87,8 +87,8 @@ triggered by `UpdateWorkflowStatusEventWorker`. Also has an extra tracker
 
 ### MCP tool calls
 
-Carry `tool_name`, `session_id`, `duo_add_on`. Identifiers: `user`, `namespace`.
-Also have an extra tracker (`Gitlab::Tracking::AiTracking`).
+Carry `tool_name`, `request_id`, `mcp_client_name`, `mcp_client_version`. Identifiers: `user`, `namespace`.
+Also have an extra tracker (`Gitlab::Tracking::AiTracking`), which does not store the MCP client fields.
 
 | Event | Additional properties | What it tracks |
 | --- | --- | --- |
@@ -121,7 +121,7 @@ resolver, type, mutation, or subscription for this surface.
 
 | Field | Where exposed | What it returns |
 | --- | --- | --- |
-| `duoWorkflowWorkflows` | Root query and `ProjectType` | Session list filtered by `workflowId`, `projectPath`, `type`, `environment`, `statusGroup`, and others |
+| `duoWorkflowWorkflows` | Root query and `ProjectType` | Session list filtered by `workflowId`, `projectPath`, `projectId`, `type`, `environment`, `statusGroup`, and others |
 
 Key fields fetched by the executor on each poll cycle: `statusName`, `projectId`,
 `project` (languages, URLs, context exclusion settings), `namespaceId`,

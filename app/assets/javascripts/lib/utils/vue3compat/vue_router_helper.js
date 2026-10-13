@@ -6,6 +6,22 @@ const toNewCatchAllPath = (path, { isRoot } = {}) => {
   return path;
 };
 
+// Vue Router 4 drops a record that has no name, component or redirect
+// (`isMatchable`); Vue Router 3 still matched it.
+export const EMPTY_ROUTE_COMPONENT = {
+  name: 'EmptyRoute',
+  render() {
+    return '';
+  },
+};
+
+const isBareLeafRoute = (route) =>
+  !route.name &&
+  !route.redirect &&
+  !route.component &&
+  !route.components &&
+  !route.children?.length;
+
 export const normalizeLocation = (historyBase = '') => {
   if (historyBase.includes('#')) {
     const hashIndex = window.location.href.indexOf('#');
@@ -27,6 +43,9 @@ export const transformRoutes = (routes, _routerOptions, transformOptions = { isR
       ...route,
       path: toNewCatchAllPath(route.path, transformOptions),
     };
+    if (isBareLeafRoute(route)) {
+      newRoute.component = EMPTY_ROUTE_COMPONENT;
+    }
     if (route.children) {
       newRoute.children = transformRoutes(route.children, _routerOptions, { isRoot: false });
     }

@@ -62,7 +62,10 @@ module Resolvers
 
         raise_resource_not_available_error! if query_builder.nil?
 
-        ::Gitlab::Graphql::Pagination::ClickHouseAggregatedRelation.new(query_builder)
+        ::Gitlab::Graphql::Pagination::ClickHouseAggregatedRelation.new(
+          query_builder,
+          context_attributes: { namespace: project.project_namespace }
+        )
       end
 
       private

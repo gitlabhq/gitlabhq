@@ -145,6 +145,31 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
 
           it { is_expected.to be_falsey }
         end
+
+        context 'when non-matching paths sort both before and after the matching path' do
+          let_it_be(:project) do
+            create(:project, :small_repo, files: {
+              'README.md' => '', 'a.txt' => '', 'b.txt' => '', 'c.txt' => '',
+              'docs/guide.md' => '', 'src/main.rs' => '', 'z.txt' => ''
+            })
+          end
+
+          let(:globs) { ['docs/'] }
+
+          it { is_expected.to be_truthy }
+
+          context 'when a sibling path shares the directory name as a prefix' do
+            let(:globs) { ['doc/'] }
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'when the directory sorts after every path' do
+            let(:globs) { ['z/'] }
+
+            it { is_expected.to be_falsey }
+          end
+        end
       end
 
       context 'when a file path is in a variable' do

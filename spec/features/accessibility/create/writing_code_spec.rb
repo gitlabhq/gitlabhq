@@ -51,7 +51,6 @@ RSpec.describe 'Accessibility: Writing Code', :js, feature_category: :source_cod
   end
 
   before do
-    stub_feature_flags(inline_blame: true)
     sign_in(project_maintainer)
   end
 

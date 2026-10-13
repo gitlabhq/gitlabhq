@@ -185,6 +185,7 @@ module Repositories
 
     def lfs_auth_header
       return unless user
+      return if authentication_result.type == :build
 
       Gitlab::LfsToken.new(user, project).basic_encoding
     end

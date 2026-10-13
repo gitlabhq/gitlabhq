@@ -4,8 +4,9 @@ classes:
 - Projects::SyncEvent
 feature_categories:
 - groups_and_projects
-description: Used as a queue of data that needs to be synchronized between the `ci`
-  and `main` database
+description: Used as a queue of data that needs to be synchronized from the `main` database
+  to the `ci` and `sec` databases. The `ci_synced` and `sec_synced` columns track which
+  database has been updated.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75517
 milestone: '14.6'
 gitlab_schema: gitlab_main_org

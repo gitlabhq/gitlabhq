@@ -8,8 +8,8 @@ RSpec.describe GitlabSchema.types['TerraformState'] do
 
   describe 'fields' do
     let(:fields) do
-      %i[id name locked_by_user locked_at latest_version created_at updated_at deleted_at
-        protection_rule_exists]
+      %i[id name locked_by_user locked_at latest_version versions created_at updated_at deleted_at
+        protection_rule_exists permanent_deletion_at]
     end
 
     it { expect(described_class).to have_graphql_fields(fields) }
@@ -21,9 +21,12 @@ RSpec.describe GitlabSchema.types['TerraformState'] do
     it { expect(described_class.fields['createdAt'].type).to be_non_null }
     it { expect(described_class.fields['updatedAt'].type).to be_non_null }
     it { expect(described_class.fields['deletedAt'].type).not_to be_non_null }
+    it { expect(described_class.fields['permanentDeletionAt'].type).not_to be_non_null }
     it { expect(described_class.fields['protectionRuleExists'].type).to be_non_null }
-
     it { expect(described_class.fields['latestVersion'].type).not_to be_non_null }
     it { expect(described_class.fields['latestVersion'].complexity).to eq(3) }
+
+    it { expect(described_class.fields['versions'].type).not_to be_non_null }
+    it { expect(described_class.fields['versions'].type.unwrap).to eq(Types::Terraform::StateVersionType.connection_type) }
   end
 end

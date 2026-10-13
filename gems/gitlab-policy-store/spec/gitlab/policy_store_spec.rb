@@ -100,18 +100,18 @@ RSpec.describe Gitlab::PolicyStore do
         filtered = instance_double(Gitlab::PolicyStore::Page)
         namespaced = instance_double(Gitlab::PolicyStore::Page)
         allow(repository).to receive(:list).with(
-          organization_id: 5, trigger_type: nil, namespace_id: nil, lifecycle_state: nil, ids: nil, offset: 0,
+          organization_id: 5, trigger_type: nil, namespace_ids: nil, lifecycle_state: nil, ids: nil, offset: 0,
           per_page: Gitlab::PolicyStore::Ports::PolicyRepository::DEFAULT_PER_PAGE
         ).and_return(unfiltered)
         allow(repository).to receive(:list)
           .with(
-            organization_id: 5, trigger_type: 'deployment_requested', namespace_id: nil, lifecycle_state: 'active',
+            organization_id: 5, trigger_type: 'deployment_requested', namespace_ids: nil, lifecycle_state: 'active',
             ids: [1, 2], offset: 20, per_page: 10
           )
           .and_return(filtered)
         allow(repository).to receive(:list)
-          .with(organization_id: 5, trigger_type: nil, namespace_id: 7, lifecycle_state: nil, ids: nil, offset: 0,
-            per_page: Gitlab::PolicyStore::Ports::PolicyRepository::DEFAULT_PER_PAGE)
+          .with(organization_id: 5, trigger_type: nil, namespace_ids: [nil, 7], lifecycle_state: nil, ids: nil,
+            offset: 0, per_page: Gitlab::PolicyStore::Ports::PolicyRepository::DEFAULT_PER_PAGE)
           .and_return(namespaced)
 
         expect(described_class.list(organization_id: 5)).to eq(unfiltered)
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::PolicyStore do
             offset: 20, per_page: 10
           )
         ).to eq(filtered)
-        expect(described_class.list(organization_id: 5, namespace_id: 7)).to eq(namespaced)
+        expect(described_class.list(organization_id: 5, namespace_ids: [nil, 7])).to eq(namespaced)
       end
     end
   end

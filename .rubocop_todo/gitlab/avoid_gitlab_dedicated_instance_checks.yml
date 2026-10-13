@@ -6,7 +6,6 @@ Gitlab/AvoidGitlabDedicatedInstanceChecks:
     - 'app/controllers/event_forward/event_forward_controller.rb'
     - 'app/controllers/sessions_controller.rb'
     - 'app/policies/base_policy.rb'
-    - 'ee/app/helpers/admin/ai/self_hosted_models_helper.rb'
     - 'ee/app/models/ee/ci/runner.rb'
     - 'ee/app/policies/ee/global_policy.rb'
     - 'ee/app/services/ci/minutes/update_gitlab_hosted_runner_monthly_usage_service.rb'

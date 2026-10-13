@@ -269,6 +269,44 @@ describe('mergeRequestDraftNotes store', () => {
       expect(result[0].position).toMatchObject(sourceStraightRefs);
     });
 
+    // After the target advances both stored positions are stale; the retraced merge-head position is served as
+    // `positions`, the same field DiscussionEntity exposes for published notes.
+    describe('retraced merge-head positions', () => {
+      const rebuiltRefs = {
+        base_sha: 'new_target',
+        start_sha: 'new_target',
+        head_sha: 'rebuilt_merge_head',
+      };
+      const retracedPosition = {
+        position_type: 'text',
+        old_path: 'a.js',
+        new_path: 'a.js',
+        old_line: 90,
+        new_line: 91,
+        ...rebuiltRefs,
+      };
+      const shiftedLine = { oldPath: 'a.js', newPath: 'a.js', oldLine: 90, newLine: 91 };
+
+      it('attaches on the rebuilt merge-head view via positions', () => {
+        useBatchComments().$patch({
+          drafts: [makeDraft(1, { ...draftOnMergeHead(), positions: [retracedPosition] })],
+        });
+
+        const result = store.findDraftsForPosition({ ...shiftedLine, diffRefs: rebuiltRefs });
+
+        expect(result).toHaveLength(1);
+        expect(result[0].position).toMatchObject(rebuiltRefs);
+      });
+
+      it('excludes the draft when no retraced position is served', () => {
+        useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
+
+        expect(store.findDraftsForPosition({ ...shiftedLine, diffRefs: rebuiltRefs })).toHaveLength(
+          0,
+        );
+      });
+    });
+
     it('excludes drafts when the rendered refs match no known position', () => {
       useBatchComments().$patch({ drafts: [draftOnMergeHead()] });
 

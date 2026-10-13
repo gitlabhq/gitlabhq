@@ -99,10 +99,17 @@ module Resolvers
       def resolve_groups(parent_path: nil, **args)
         sanitized_args = sanitize_sort_args(unpack_negated_args(args))
         sanitized_args[:parent] = find_authorized_parent!(parent_path) if parent_path
+        sanitized_args = sanitized_args.merge(allow_similarity_sort: true)
 
-        GroupsFinder
-          .new(context[:current_user], sanitized_args.merge(allow_similarity_sort: true))
-          .execute
+        return GroupsFinder.new(current_user, sanitized_args).execute unless advanced_finder_enabled?
+
+        # Argument names and defaults are unchanged, so results match whichever backend
+        # Namespaces::GroupsFinder picks.
+        ::Namespaces::GroupsFinder.new(current_user, sanitized_args).execute
+      end
+
+      def advanced_finder_enabled?
+        Feature.enabled?(:namespaces_advanced_groups_finder, current_user)
       end
 
       # GroupsFinder takes flat params, so negated arguments are merged into the top level.

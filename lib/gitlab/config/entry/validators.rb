@@ -100,8 +100,6 @@ module Gitlab
         end
 
         class ArrayOfHashesValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
             unless validate_array_of_hashes(value)
               record.errors.add(attribute, 'should be an array of hashes')
@@ -152,8 +150,6 @@ module Gitlab
         end
 
         class DurationValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
             return if options[:variable] && contains_variable?(value)
 
@@ -162,7 +158,7 @@ module Gitlab
             end
 
             if options[:limit]
-              unless validate_duration_limit(value, options[:limit], options[:parser])
+              unless validate_duration_limit(value, options[:limit])
                 record.errors.add(attribute, 'should not exceed the limit')
               end
             end
@@ -170,6 +166,33 @@ module Gitlab
 
           def contains_variable?(value)
             ExpandVariables::VARIABLES_REGEXP.match?(value.to_s)
+          end
+
+          private
+
+          def validate_duration(value, parser = nil)
+            return false unless value.is_a?(String)
+
+            if parser && parser.respond_to?(:validate_duration)
+              parser.validate_duration(value)
+            else
+              ChronicDuration.parse(value)
+            end
+          rescue ChronicDuration::DurationParseError
+            false
+          end
+
+          def validate_duration_limit(value, limit)
+            return false unless value.is_a?(String)
+
+            parsed_value = ChronicDuration.parse(value)
+            parsed_limit = ChronicDuration.parse(limit)
+
+            return false if parsed_value.nil? || parsed_limit.nil?
+
+            parsed_value.second.from_now < parsed_limit.second.from_now
+          rescue ChronicDuration::DurationParseError
+            false
           end
         end
 

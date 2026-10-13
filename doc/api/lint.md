@@ -108,14 +108,19 @@ POST /projects/:id/ci/lint
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
 | `ref`          | string  | No       | If `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 
-Example request:
+This example runs a pipeline creation simulation in the context of the `main` branch,
+and includes the list of jobs in the response:
 
 ```shell
 curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint" \
   --data @- <<'EOF'
 {
+  "dry_run": true,
+  "include_jobs": true,
+  "ref": "main",
   "content": "{
     \"image\": \"ruby:2.6\",
     \"services\": [\"postgres\"],
@@ -147,7 +152,22 @@ Example responses:
     "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
     "errors": [],
     "warnings": [],
-    "includes": []
+    "includes": [],
+    "jobs": [
+      {
+        "name": "test_job",
+        "stage": "test",
+        "before_script": [],
+        "script": [
+          "echo 1"
+        ],
+        "after_script": [],
+        "tag_list": [],
+        "environment": null,
+        "when": "on_success",
+        "allow_failure": false
+      }
+    ]
   }
   ```
 
@@ -187,11 +207,16 @@ GET /projects/:id/ci/lint
 | `ref`          | string  | No       | (Deprecated) When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. Use `dry_run_ref` instead. |
 | `sha`          | string  | No       | (Deprecated) The CI/CD configuration content is taken from this commit SHA, branch, or tag. Defaults to the SHA of the head of the project's default branch when not set. Use `content_ref` instead. |
 
-Example request:
+This example:
+
+- Reads the CI/CD configuration from the `feature-branch` branch.
+- Runs a pipeline creation simulation in the context of the `main` branch.
+- Includes the list of jobs in the response.
 
 ```shell
 curl --request GET \
-  --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint?content_ref=feature-branch&dry_run=true&dry_run_ref=main&include_jobs=true"
 ```
 
 Example responses:

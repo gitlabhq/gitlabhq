@@ -4,10 +4,15 @@ import SmartInterval from '~/smart_interval';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import { observable } from '~/lib/utils/observable';
 import {
+  hasAccessibilityReport,
+  hasBrowserPerformanceReport,
   hasCodeQualityReport,
   hasLicenseComplianceReport,
   hasLoadPerformanceReport,
   hasMetricsReport,
+  hasStatusChecksReport,
+  hasTestSummaryReport,
+  hasTerraformReport,
 } from 'ee_else_ce/merge_requests/reports/configured_reports';
 
 export const PIPELINE_STATE = {
@@ -96,11 +101,26 @@ export default {
     hasLicenseComplianceReports() {
       return hasLicenseComplianceReport(state.mr);
     },
+    hasBrowserPerformanceReports() {
+      return hasBrowserPerformanceReport(state.mr);
+    },
     hasLoadPerformanceReports() {
       return hasLoadPerformanceReport(state.mr);
     },
+    hasAccessibilityReports() {
+      return hasAccessibilityReport(state.mr);
+    },
     hasMetricsReports() {
       return hasMetricsReport(state.mr);
+    },
+    hasStatusChecksReports() {
+      return hasStatusChecksReport(state.mr);
+    },
+    hasTestSummaryReports() {
+      return hasTestSummaryReport(state.mr);
+    },
+    hasTerraformReports() {
+      return hasTerraformReport(state.mr);
     },
     pipelineState() {
       return pipelineStateOf(state.mr);

@@ -234,7 +234,8 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchService, feature_cat
           'commit' => {
             'id' => "gid://gitlab/Commit/#{project.repository.commit('master').id}",
             'sha' => project.repository.commit('master').id
-          }
+          },
+          'web_url' => Gitlab::Routing.url_helpers.project_tree_url(project, 'my-feature')
         })
         expect(project.repository.branch_exists?('my-feature')).to be true
       end

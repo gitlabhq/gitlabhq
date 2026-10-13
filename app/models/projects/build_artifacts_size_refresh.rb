@@ -62,7 +62,7 @@ module Projects
         refresh.last_job_artifact_id_on_refresh_start = refresh.project.job_artifacts.last&.id
       end
 
-      before_transition running: any do |refresh, transition|
+      before_transition running: any do |refresh, _transition|
         refresh.updated_at = Time.zone.now
       end
 
@@ -70,7 +70,7 @@ module Projects
         refresh.last_job_artifact_id = transition.args.first
       end
 
-      before_transition running: :finalizing do |refresh, transition|
+      before_transition running: :finalizing do |refresh, _transition|
         refresh.schedule_finalize_worker
       end
     end

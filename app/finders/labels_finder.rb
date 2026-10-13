@@ -68,11 +68,11 @@ class LabelsFinder < UnionFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def sort(items)
-    return items.reorder(title: :asc) unless params[:sort]
+    return items.sorted_by_similarity_desc(params[:search]) if sort_by_similarity?
+    return items.order_by(params[:sort]) if params[:sort]
+    return items.order_contiguous_matches_first(params[:search], search_in: params[:search_in]) if fuzzy_search?
 
-    return items.sorted_by_similarity_desc(params[:search]) if params[:sort] == 'relevance' && params[:search].present?
-
-    items.order_by(params[:sort])
+    items.reorder(title: :asc)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -133,6 +133,14 @@ class LabelsFinder < UnionFinder
 
   def search?
     params[:search].present?
+  end
+
+  def sort_by_similarity?
+    params[:sort] == 'relevance' && search?
+  end
+
+  def fuzzy_search?
+    params[:fuzzy_search].present? && search?
   end
 
   def title

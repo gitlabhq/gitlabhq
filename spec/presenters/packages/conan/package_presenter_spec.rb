@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_registry do
-  let_it_be(:user) { create(:user) }
   let_it_be(:package) { create(:conan_package, without_revisions: true) }
   let_it_be(:conan_package_reference) { package.conan_package_references.first }
   let_it_be(:alternative_reference) { create(:conan_package_reference, package: package, recipe_revision: nil) }
 
   let_it_be(:project) { package.project }
   let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
+  let(:user) { build_stubbed(:user) }
   let(:params) { { package_scope: :instance } }
   let(:presenter) { described_class.new(package, user, project, params) }
 

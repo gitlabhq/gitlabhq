@@ -33,7 +33,12 @@ Prerequisites:
 If you're on the Free tier and you start an Ultimate trial, your trial includes 24 [GitLab credits](gitlab_credits.md#included-credits) per user.
 You can use credits to test GitLab Duo Agent Platform features.
 
-For GitLab.com, if you have already [purchased a Monthly Commitment Pool](gitlab_credits.md#for-the-free-tier), you are not allocated additional credits for the trial period.
+> [!note]
+> Some frontier models are not included in GitLab Duo Agent Platform trials.
+> To use a frontier model, you can [buy GitLab Credits](gitlab_credits.md#buy-gitlab-credits).
+> Alternatively, you can [select another available model](../user/duo_agent_platform/model_selection.md#select-a-model-for-a-feature).
+
+For GitLab.com, if you have already [purchased a monthly commitment pool](gitlab_credits.md#for-the-free-tier), you are not allocated additional credits for the trial period.
 Credits used during the trial period are deducted from the pool.
 
 Credits are valid for the duration of the trial (30 days). Unused credits do not carry over if you buy a subscription, or when your trial ends.

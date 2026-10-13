@@ -9,8 +9,7 @@ RSpec.describe 'search/show', :with_current_organization, feature_category: :glo
     instance_double(SearchServicePresenter,
       without_count?: false,
       advanced_search_enabled?: false,
-      zoekt_enabled?: false,
-      zoekt_language_aggregations_enabled?: false
+      zoekt_enabled?: false
     )
   end
 
@@ -60,8 +59,7 @@ RSpec.describe 'search/show', :with_current_organization, feature_category: :glo
         instance_double(SearchServicePresenter,
           without_count?: false,
           advanced_search_enabled?: false,
-          zoekt_enabled?: false,
-          zoekt_language_aggregations_enabled?: false
+          zoekt_enabled?: false
         )
       end
 
@@ -88,8 +86,7 @@ RSpec.describe 'search/show', :with_current_organization, feature_category: :glo
         instance_double(SearchServicePresenter,
           without_count?: true,
           advanced_search_enabled?: false,
-          zoekt_enabled?: false,
-          zoekt_language_aggregations_enabled?: false
+          zoekt_enabled?: false
         )
       end
 

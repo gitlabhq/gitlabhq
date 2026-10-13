@@ -8,7 +8,15 @@ module Ci
         'required' => %w[pipeline_id partition_id],
         'properties' => {
           'pipeline_id' => { 'type' => 'integer' },
-          'partition_id' => { 'type' => 'integer' }
+          'partition_id' => { 'type' => 'integer' },
+          'pipeline_creation_request' => {
+            'type' => 'object',
+            'required' => %w[key id],
+            'properties' => {
+              'key' => { 'type' => 'string' },
+              'id' => { 'type' => 'string' }
+            }
+          }
         }
       }
     end

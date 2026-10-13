@@ -15,7 +15,7 @@ The plugin includes the following features:
   - The chat tab: Interact with GitLab Duo Agentic Chat, or use the **New chat** ({{< icon name="duo-chat-new" >}})
     dropdown list to select a foundational or custom agent to work with.
   - The flows tab: Use the Software Development Flow. Learn more about the
-    [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
+    [difference between Chat and the flow](../software_development.md#flow-and-chat-comparison).
 - In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
   GitLab Duo Code Suggestions and review suggestions in
   your file as you author code.
@@ -81,16 +81,16 @@ hard-coding personal access tokens.
 Prerequisites:
 
 - You have the [1Password](https://1password.com) desktop app installed.
-- You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started/) tool installed.
+- You have the [1Password CLI](https://www.1password.dev/cli/get-started) tool installed.
 
 To integrate the GitLab Duo plugin for JetBrains IDEs with the 1Password CLI:
 
 1. Authenticate with GitLab. Either:
    - [Install the `glab`](https://docs.gitlab.com/cli/#install-the-cli) CLI and
-     configure the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/).
+     configure the [1Password shell plugin](https://www.1password.dev/cli/shell-plugins/gitlab).
    - Follow the GitLab Duo plugin for JetBrains IDEs [set up steps](setup.md).
 1. Open the 1Password item.
-1. [Copy the secret reference](https://developer.1password.com/docs/cli/secret-references/#step-1-copy-secret-references).
+1. [Copy the secret reference](https://www.1password.dev/cli/secret-references#step-1-get-secret-references).
 
    If you use the `gitlab` 1Password shell plugin, the token is stored as a password under `"op://Private/GitLab Personal Access Token/token"`.
 

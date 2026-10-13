@@ -5,8 +5,10 @@ RSpec.shared_examples "multi_store_wrapper_shared_examples" do
   let_it_be(:pool_name, freeze: false) { "#{described_class.store_name.underscore}_multi_store" }
 
   before do
-    allow(described_class).to receive(:config_file_name).and_return(Rails.root.join(config_file_name).to_s)
-    allow(described_class).to receive(:redis_yml_path).and_return('/dev/null')
+    allow(described_class).to receive_messages(
+      config_file_name: Rails.root.join(config_file_name).to_s,
+      redis_yml_path: '/dev/null'
+    )
 
     clear_multistore_pool
   end
@@ -36,8 +38,7 @@ RSpec.shared_examples "multi_store_wrapper_shared_examples" do
 
     context 'when running on multi-threaded runtime' do
       before do
-        allow(Gitlab::Runtime).to receive(:multi_threaded?).and_return(true)
-        allow(Gitlab::Runtime).to receive(:max_threads).and_return(18)
+        allow(Gitlab::Runtime).to receive_messages(multi_threaded?: true, max_threads: 18)
       end
 
       it 'instantiates a connection pool with a size based on the concurrency of the worker' do

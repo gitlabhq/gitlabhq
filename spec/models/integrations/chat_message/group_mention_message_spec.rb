@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Integrations::ChatMessage::GroupMentionMessage, feature_category: :integrations do
   subject { described_class.new(args) }
 
-  let(:color) { '#345' }
+  let(:color) { '#334455' }
   let(:args) do
     {
       object_kind: 'group_mention',

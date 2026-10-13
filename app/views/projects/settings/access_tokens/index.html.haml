@@ -19,7 +19,7 @@
         = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
   - c.with_body do
     - if show_upgrade_card
-      = render_if_exists 'projects/settings/access_tokens/upgrade_card', project: @project
+      = render_if_exists 'shared/access_tokens/premium_offer', resource: @project
 
     #js-new-access-token-app{ data: { access_token_type: type } }
 

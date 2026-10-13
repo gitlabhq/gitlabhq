@@ -691,17 +691,6 @@ describe('WorkItemDetail component', () => {
     expect(findLinkedResourcesWidget().exists()).toBe(false);
   });
 
-  it('shows an error message when WorkItemTitle emits an `error` event', async () => {
-    createComponent();
-    await mockApollo.resolveAll();
-    const updateError = 'Failed to update';
-
-    findWorkItemTitle().vm.$emit('error', updateError);
-    await waitForPromises();
-
-    expect(findAlert().text()).toBe(updateError);
-  });
-
   it('calls the work item query', async () => {
     createComponent();
     await mockApollo.resolveAll();
@@ -945,6 +934,15 @@ describe('WorkItemDetail component', () => {
       expect(findNotesWidget().exists()).toBe(true);
       expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);
       expect(findNotesWidget().props('canCreateNote')).toBeDefined();
+    });
+
+    it('emits `duo-question-answered` when the notes widget emits it', async () => {
+      createComponent();
+      await mockApollo.resolveAll();
+
+      findNotesWidget().vm.$emit('duo-question-answered');
+
+      expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
     });
 
     describe('comment templates', () => {
@@ -1321,6 +1319,20 @@ describe('WorkItemDetail component', () => {
       await mockApollo.resolveAll();
 
       expect(findStickyHeader().exists()).toBe(true);
+    });
+    describe('when content is passed for the sticky header', () => {
+      beforeEach(async () => {
+        createComponent({
+          scopedSlots: {
+            'sticky-header-append': '<span data-testid="sticky-header-extra">Extra</span>',
+          },
+        });
+        await mockApollo.resolveAll();
+      });
+
+      it('renders it inside the sticky header', () => {
+        expect(findStickyHeader().find('[data-testid="sticky-header-extra"]').exists()).toBe(true);
+      });
     });
   });
 

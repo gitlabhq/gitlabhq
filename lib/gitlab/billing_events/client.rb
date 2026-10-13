@@ -5,37 +5,57 @@ module Gitlab
     class Client
       BILLABLE_USAGE_SCHEMA = 'iglu:com.gitlab/billable_usage/jsonschema/1-0-3'
 
-      REALM_MAP = {
-        'saas' => 'SaaS',
-        'self-managed' => 'SM',
-        'dedicated' => 'Dedicated'
-      }.freeze
+      COUNTER = :counter
+      SNAPSHOT = :snapshot
 
       def self.track_billing_event(**args)
         new.track_billing_event(**args)
       end
 
-      def track_billing_event( # rubocop:disable Metrics/ParameterLists -- billing schema has many fields
+      def self.track_billing_snapshot(**args)
+        new.track_billing_snapshot(**args)
+      end
+
+      # A tally: each call reports usage that happened, and repeated calls accumulate.
+      def track_billing_event(**args)
+        record_usage(**args, quantity_kind: COUNTER)
+      end
+
+      # A point-in-time reading: each call reports the current total, so repeated calls
+      # within a day supersede one another rather than adding up. Only air-gapped local
+      # persistence distinguishes the two; both emit identically over the network.
+      def track_billing_snapshot(**args)
+        record_usage(**args, quantity_kind: SNAPSHOT)
+      end
+
+      # Overridden in EE, where an air-gapped instance persists a local daily
+      # aggregate instead of emitting. Always false without EE.
+      def local_persistence_enabled?
+        false
+      end
+
+      # Overridden in EE, where an instance licensed offline has no route to the
+      # billing collector and must not attempt the connection. Always true without EE.
+      def emission_enabled?
+        true
+      end
+
+      private
+
+      def record_usage( # rubocop:disable Metrics/ParameterLists -- billing schema has many fields
         event_type:,
         category:,
         quantity:,
         unit_of_measure:,
         namespace:,
+        quantity_kind:,
         project: nil,
         user: nil,
         idempotency_key: nil,
         timestamp: nil,
         metadata: nil
       )
-        return unless Feature.enabled?(:billing_event_tracking, :instance)
-
-        if !quantity.is_a?(Numeric) || quantity <= 0
-          return Gitlab::AppLogger.warn(
-            message: 'BillingEvents: invalid quantity',
-            quantity: quantity,
-            event_type: event_type
-          )
-        end
+        return warn_invalid_quantity(quantity, event_type) if !quantity.is_a?(Numeric) || quantity <= 0
 
         event_id = generate_event_id(idempotency_key)
         root_namespace = namespace&.root_ancestor
@@ -53,24 +73,34 @@ module Gitlab
           metadata: metadata
         )
 
-        billing_context = SnowplowTracker::SelfDescribingJson.new(
-          BILLABLE_USAGE_SCHEMA,
-          context
-        )
-
-        Gitlab::Tracking.billing_event(
-          category,
-          event_type,
-          context: [billing_context]
-        )
-
-        Gitlab::AppLogger.info(
-          message: 'BillingEvents: billing event tracked',
-          event_type: event_type,
-          event_id: event_id,
-          quantity: quantity,
-          namespace_id: namespace&.id
-        )
+        # An air-gapped instance cannot reach the billing collector, so the local path
+        # replaces emission rather than supplementing it, and when local persistence is
+        # off emission is skipped rather than attempted. The billing destination skips
+        # EventEligibilityChecker, which checks telemetry settings, not licensing.
+        # Only emission is affected: the internal event is a separate concern that works
+        # without connectivity, so it is tracked in every case.
+        if local_persistence_enabled?
+          # Defined in EE. Unreachable here, since local_persistence_enabled? is
+          # always false without it.
+          persist_local_aggregate(context, quantity_kind)
+        elsif emission_enabled? && emit(category, event_type, context)
+          Gitlab::AppLogger.info(
+            message: 'BillingEvents: billing event tracked',
+            event_type: event_type,
+            event_id: event_id,
+            quantity: quantity,
+            namespace_id: namespace.id
+          )
+        else
+          Gitlab::AppLogger.info(
+            message: 'BillingEvents: billing event emission skipped',
+            event_type: event_type,
+            event_id: event_id,
+            quantity: quantity,
+            quantity_kind: quantity_kind,
+            namespace_id: namespace.id
+          )
+        end
 
         Gitlab::InternalEvents.track_event(
           'usage_billing_event',
@@ -99,7 +129,27 @@ module Gitlab
         )
       end
 
-      private
+      def warn_invalid_quantity(quantity, event_type)
+        Gitlab::AppLogger.warn(
+          message: 'BillingEvents: invalid quantity',
+          quantity: quantity,
+          event_type: event_type
+        )
+      end
+
+      # Returns whether the tracker handed the event to the emitter.
+      def emit(category, event_type, context)
+        billing_context = SnowplowTracker::SelfDescribingJson.new(
+          BILLABLE_USAGE_SCHEMA,
+          context
+        )
+
+        Gitlab::Tracking.billing_event(
+          category,
+          event_type,
+          context: [billing_context]
+        )
+      end
 
       def build_context( # rubocop:disable Metrics/ParameterLists -- mirrors billing schema fields
         event_id:, event_type:, unit_of_measure:, quantity:, timestamp:,
@@ -113,14 +163,8 @@ module Gitlab
           timestamp: (timestamp || Time.current).iso8601,
           namespace_id: namespace.id,
           root_namespace_id: root_namespace&.id,
-          realm: realm,
-          deployment_type: deployment_type,
-          instance_id: ::Gitlab::GlobalAnonymousId.instance_id,
-          unique_instance_id: ::Gitlab::GlobalAnonymousId.instance_uuid,
-          instance_version: Gitlab.version_info.to_s,
-          host_name: Gitlab.config.gitlab.host,
           correlation_id: ::Labkit::Correlation::CorrelationId.current_or_new_id
-        }
+        }.merge(InstanceIdentity.to_h)
 
         payload[:project_id] = project.id if project
 
@@ -139,14 +183,6 @@ module Gitlab
         return SecureRandom.uuid if idempotency_key.blank?
 
         Digest::UUID.uuid_v5(::Gitlab::GlobalAnonymousId.instance_uuid, idempotency_key)
-      end
-
-      def realm
-        'SM'
-      end
-
-      def deployment_type
-        'self-managed'
       end
     end
   end

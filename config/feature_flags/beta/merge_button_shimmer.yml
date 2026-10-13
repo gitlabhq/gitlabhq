@@ -1,0 +1,12 @@
+---
+name: merge_button_shimmer
+description: |
+  Adds an animated gradient ring and glow to the merge button in the merge request widget on hover,
+  as a Playlabs experiment.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3673
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259043
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631706
+milestone: '19.5'
+group: group::code review
+type: beta
+default_enabled: false

@@ -11,8 +11,7 @@ RSpec.describe 'OmniAuth::Strategies::SAML', type: :strategy do
   before do
     mock_session = {}
 
-    allow(mock_session).to receive(:enabled?).and_return(true)
-    allow(mock_session).to receive(:loaded?).and_return(true)
+    allow(mock_session).to receive_messages(enabled?: true, loaded?: true)
 
     env('rack.session', mock_session)
   end
@@ -40,10 +39,11 @@ RSpec.describe 'OmniAuth::Strategies::SAML', type: :strategy do
     it 'creates callback_url from the full_host and callback_path' do
       strategy = OmniAuth::Strategies::SAML.new({})
 
-      allow(strategy).to receive(:full_host).and_return(base_url)
-      allow(strategy).to receive(:callback_path).and_return(callback_path)
-      allow(strategy).to receive(:query_string)
-        .and_return('?redirect_to=/twitter/Typeahead.Js/-/merge_requests/2/saml_approval')
+      allow(strategy).to receive_messages(
+        full_host: base_url,
+        callback_path: callback_path,
+        query_string: '?redirect_to=/twitter/Typeahead.Js/-/merge_requests/2/saml_approval'
+      )
 
       expect(strategy.callback_url).to eq(base_url + callback_path)
     end
@@ -53,10 +53,11 @@ RSpec.describe 'OmniAuth::Strategies::SAML', type: :strategy do
     it 'is built from the full_host and callback_path' do
       strategy = OmniAuth::Strategies::SAML.new({})
 
-      allow(strategy).to receive(:full_host).and_return(base_url)
-      allow(strategy).to receive(:callback_path).and_return(callback_path)
-      allow(strategy).to receive(:query_string)
-        .and_return('?redirect_to=/twitter/Typeahead.Js/-/merge_requests/2/saml_approval')
+      allow(strategy).to receive_messages(
+        full_host: base_url,
+        callback_path: callback_path,
+        query_string: '?redirect_to=/twitter/Typeahead.Js/-/merge_requests/2/saml_approval'
+      )
 
       expect(strategy.callback_url).to eq(base_url + callback_path)
 

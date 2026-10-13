@@ -4,6 +4,7 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { boardColumnQuery } from '~/work_items/board/utils';
 import { getWorkItemsConnection } from '~/work_items/utils';
+import { WI_REALTIME_TAG_KEY } from './realtime_request_tag';
 
 // The backend rejects a `workItems(ids:)` filter longer than this (`WorkItems::
 // SharedFilterArguments::MAX_FIELD_LIMIT`), so a flush bigger than this can't be checked in one go.
@@ -40,8 +41,8 @@ export const evictWorkItem = (cache, workItemId) => {
 };
 
 // Re-runs the query the view already renders with, narrowed to just these ids — the server's
-// answer is the visibility check, and Apollo normalizes whatever nodes come back into the cache
-// as a side effect, patching them for free. Returns `null` when there are too many ids to ask about.
+// answer is the visibility check, and Apollo normalizes the returned nodes into the cache for
+// free. Returns the matched nodes (a board needs their fields), or `null` above `MAX_MATCH_IDS`.
 export const findMatchingWorkItems = async ({
   client,
   queryVariables,
@@ -72,10 +73,13 @@ export const findMatchingWorkItems = async ({
       lastPageSize: null,
     },
     fetchPolicy: 'network-only',
-    context: { featureCategory: 'portfolio_management' },
+    context: {
+      featureCategory: 'portfolio_management',
+      requestTag: { [WI_REALTIME_TAG_KEY]: 'match' },
+    },
   });
 
-  return new Set(getWorkItemsConnection(data, useRestApi)?.nodes.map((node) => node.id) ?? []);
+  return getWorkItemsConnection(data, useRestApi)?.nodes ?? [];
 };
 
 // Namespace-scoped `workItems` and the top-level `restWorkItems` are the two places a work item

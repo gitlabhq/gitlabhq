@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'vite_ruby'
 
 VITE_GDK_CONFIG_FILEPATH = "config/vite.gdk.json"
 

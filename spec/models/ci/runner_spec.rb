@@ -604,7 +604,7 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     end
 
     context 'with instance runner' do
-      let(:runner) { create(:ci_runner, :instance) }
+      let(:runner) { build_stubbed(:ci_runner, :instance) }
 
       it 'raises an error' do
         expect { assign_to }
@@ -613,7 +613,7 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     end
 
     context 'with group runner' do
-      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let(:runner) { build_stubbed(:ci_runner, :group, groups: [group]) }
 
       it 'raises an error' do
         expect { assign_to }
@@ -1337,6 +1337,27 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     end
   end
 
+  describe '#predefined_variables' do
+    subject(:runner_tags) { runner.predefined_variables['CI_RUNNER_TAGS'].value }
+
+    let(:runner) { create(:ci_runner, tag_list: tag_list).reload }
+
+    context 'with ordinary tags' do
+      let(:tag_list) { %w[docker ruby] }
+
+      it { is_expected.to eq('["docker", "ruby"]') }
+    end
+
+    context 'with a tag that requires JSON escaping' do
+      let(:tag) { "prefix\u001bsuffix" }
+      let(:tag_list) { [tag] }
+
+      it 'returns valid JSON that preserves the tag' do
+        expect(Gitlab::Json::SafeParser.parse(runner_tags)).to eq([tag])
+      end
+    end
+  end
+
   describe '.search' do
     let_it_be(:runner, freeze: true) { create(:ci_runner, token: '123abc', description: 'test runner') }
 
@@ -1362,6 +1383,16 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
 
     it 'returns runners with a matching description regardless of the casing' do
       expect(described_class.search(runner.description.upcase)).to eq([runner])
+    end
+
+    context 'with several db_key_base keys' do
+      include DbKeyBaseHelpers
+
+      it 'returns runners with a token encrypted with the previous key' do
+        stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+
+        expect(described_class.search(runner.token)).to eq([runner])
+      end
     end
   end
 
@@ -1776,6 +1807,38 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
 
         expect(subject).to start_with(token_without_prefixes[0...described_class::RUNNER_SHORT_SHA_LENGTH])
       end
+
+      it 'keeps the short SHA after the feature flag is disabled' do
+        expect { stub_feature_flags(custom_prefix_for_all_token_types: false) }.not_to change { runner.short_sha }
+      end
+    end
+
+    context 'with a stored token and a changed instance prefix' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:runner) { build(:ci_runner, registration_type: :authenticated_user, token: token) }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      where(:instance_prefix, :token) do
+        'instanceprefix' | 'instanceprefix-glrt-t1_foobar'
+        'otherprefix'    | 'instanceprefix-glrt-t1_foobar'
+        ''               | 'instanceprefix-glrt-t1_foobar'
+        'instanceprefix' | 'glrt-t1_foobar'
+        'g'              | 'glrt-t1_foobar'
+      end
+
+      with_them do
+        it { is_expected.to eq('foobar') }
+      end
+    end
+
+    context 'without a token' do
+      let(:runner) { build(:ci_runner) }
+
+      it { is_expected.to be_nil }
     end
 
     context 'when legacy token' do
@@ -2321,7 +2384,7 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
 
     context 'when runner already has a uuid' do
       let(:existing_uuid) { '01966aa0-f383-7a6b-b694-cd4f2f96cca1' }
-      let(:runner) { create(:ci_runner, uuid: existing_uuid) }
+      let(:runner) { build_stubbed(:ci_runner, uuid: existing_uuid) }
 
       it 'returns the existing uuid without changing it' do
         expect(runner.uuid).to eq(existing_uuid)

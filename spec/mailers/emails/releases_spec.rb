@@ -5,7 +5,10 @@ require 'email_spec'
 
 RSpec.describe Emails::Releases do
   include EmailSpec::Matchers
-  include_context 'gitlab email notification'
+
+  let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
+  let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
 
   describe '#new_release_email' do
     let_it_be(:user) { create(:user) }

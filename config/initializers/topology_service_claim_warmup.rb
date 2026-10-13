@@ -6,10 +6,12 @@
 # This runs once per worker process via on_worker_start (after fork for clustered
 # Puma, immediately for Sidekiq / single Puma), which is required because gRPC
 # channels are not fork-safe and must be created in the worker process.
+# Skip outside Puma and Sidekiq: on_worker_start yields at boot there too, and processes
+# such as `gitlab-rails runner` that later fork crash when children free the inherited gRPC channel.
 # Skip in test environment: on_worker_start yields immediately in non-clustered processes
 # (Spring server, single Puma), so the warmup would create a gRPC channel in the Spring
 # server process before it forks to run specs. gRPC channels cannot cross a fork on macOS.
-if Gitlab.config.cell.enabled && !Rails.env.test?
+if Gitlab.config.cell.enabled && Gitlab::Runtime.application? && !Rails.env.test?
   Gitlab::Cluster::LifecycleEvents.on_worker_start do
     Gitlab::TopologyServiceClient::ClaimService.instance.warmup!
   rescue StandardError => e

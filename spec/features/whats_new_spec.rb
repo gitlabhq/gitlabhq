@@ -5,8 +5,17 @@ require "spec_helper"
 RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :onboarding do
   let_it_be(:user) { create(:user) }
 
+  before do
+    # Other specs stub Time.now, which leaves the class-level file list memoized as empty.
+    ReleaseHighlight.instance_variable_set(:@file_paths, nil)
+  end
+
   def open_help_dropdown
     within_testid('super-sidebar') { find_by_testid('sidebar-help-button').click }
+  end
+
+  def open_user_dropdown
+    find_by_testid('user-menu-toggle').click
   end
 
   context 'when not logged in' do
@@ -41,10 +50,22 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
       visit root_dashboard_path
 
+      open_user_dropdown
+
+      within_testid('user-dropdown') do
+        expect(page).to have_button(text: "What's new")
+      end
+    end
+
+    it "doesn't render what's new in the help dropdown" do
+      Gitlab::CurrentSettings.update!(whats_new_variant: ApplicationSetting.whats_new_variants[:all_tiers])
+
+      visit root_dashboard_path
+
       open_help_dropdown
 
       within_testid('disclosure-content') do
-        expect(page).to have_button(text: "What's new")
+        expect(page).not_to have_button(text: "What's new")
       end
     end
 
@@ -53,9 +74,9 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
       visit root_dashboard_path
 
-      open_help_dropdown
+      open_user_dropdown
 
-      within_testid('disclosure-content') do
+      within_testid('user-dropdown') do
         expect(page).not_to have_button(text: "What's new")
       end
     end
@@ -72,9 +93,9 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       it 'keeps the menu item full-time after all articles are read' do
         visit root_dashboard_path
 
-        open_help_dropdown
+        open_user_dropdown
 
-        within_testid('disclosure-content') do
+        within_testid('user-dropdown') do
           expect(page).to have_button(text: "What's new")
           click_on "What's new"
         end
@@ -89,9 +110,9 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
           find('.gl-drawer-close-button').click
         end
 
-        open_help_dropdown
+        open_user_dropdown
 
-        within_testid('disclosure-content') do
+        within_testid('user-dropdown') do
           expect(page).to have_button(text: "What's new")
         end
       end
@@ -100,13 +121,15 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
 
   context 'when items in the latest release does not populate the infinite scroll fully', :saas do
     it 'automatically fetches more items' do
+      sign_in(user)
+
       visit user_path(user)
 
       page.current_window.resize_to(1200, 2400)
 
-      open_help_dropdown
+      open_user_dropdown
 
-      within_testid('disclosure-content') { click_on "What's new" }
+      within_testid('user-dropdown') { click_on "What's new" }
 
       expect(page).to have_selector('[data-testid="whats-new-release-heading"]', minimum: 2)
     end

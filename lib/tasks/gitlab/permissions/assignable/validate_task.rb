@@ -18,12 +18,10 @@ module Tasks
           #   - `download_code` via `Gitlab::GitAccess` (git protocol commands)
           #   - `create_editor_telemetry` via `EventForwardController`
           #   - `read_dependency_proxy` via `Auth::ContainerProxyAuthenticationService` (dependency proxy JWT flow)
-          #   - `archive_work_item_type` via `Mutations::WorkItems::Types::Update` (optional `archive` argument)
           GRANULAR_TOKEN_NON_API_CONSUMERS = Set[
             :download_code,
             :create_editor_telemetry,
-            :read_dependency_proxy,
-            :archive_work_item_type
+            :read_dependency_proxy
           ].freeze
 
           def initialize
@@ -188,10 +186,9 @@ module Tasks
                 label: rest_route_label(route)
               }
 
-              [authorization, *Array(authorization[:additional_scopes])].each do |scope|
-                Array(scope[:permissions]).product(rest_boundary_types(scope)).each do |permission, boundary_type|
-                  consumers[[permission.to_sym, boundary_type.to_sym]] << entry
-                end
+              Array(authorization[:permissions])
+                .product(rest_boundary_types(authorization)).each do |permission, boundary_type|
+                consumers[[permission.to_sym, boundary_type.to_sym]] << entry
               end
             end
           end

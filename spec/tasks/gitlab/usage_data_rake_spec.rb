@@ -52,12 +52,13 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, :with_license, f
   end
 
   describe 'generate_and_send' do
+    # The test environment is not production, so the default destination is staging.
     let(:service_ping_payload_url) do
-      File.join(ServicePing::SubmitService::STAGING_BASE_URL, ServicePing::SubmitService::USAGE_DATA_PATH)
+      File.join(Gitlab::TelemetryEndpoint::STAGING_URL, ServicePing::SubmitService::USAGE_DATA_PATH)
     end
 
     let(:service_ping_metadata_url) do
-      File.join(ServicePing::SubmitService::STAGING_BASE_URL, ServicePing::SubmitService::METADATA_PATH)
+      File.join(Gitlab::TelemetryEndpoint::STAGING_URL, ServicePing::SubmitService::METADATA_PATH)
     end
 
     let(:payload) { { recorded_at: Time.current } }

@@ -4,6 +4,9 @@ module API
   # Deployments RESTful API endpoints
   class Deployments < ::API::Base
     include PaginationParams
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     deployments_tags = %w[deploy_resources]
     before { authenticate! }
@@ -229,7 +232,7 @@ module API
       route_setting :authorization, permissions: :delete_deployment, boundary_type: :project,
         job_token_policies: :admin_deployments
       delete ':id/deployments/:deployment_id' do
-        check_rate_limit!(:deployment_delete, scope: current_user)
+        check_rate_limit!(:deployment_delete, scope: { user: current_user })
 
         deployment = user_project.deployments.find(params[:deployment_id])
 

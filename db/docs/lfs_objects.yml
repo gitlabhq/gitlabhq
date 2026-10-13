@@ -4,7 +4,7 @@ classes:
 - LfsObject
 feature_categories:
 - source_code_management
-description: LFS files
+description: LFS files, deduplicated by OID within a cell and shared across organizations (see doc/development/lfs.md)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1727
 milestone: '8.2'
 gitlab_schema: gitlab_main_cell_local

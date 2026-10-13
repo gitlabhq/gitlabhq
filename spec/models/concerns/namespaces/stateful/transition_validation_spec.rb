@@ -13,7 +13,7 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
       expect(described_class::FORBIDDEN_ANCESTOR_STATES).to eq({
         archive: %i[archived deletion_in_progress deletion_scheduled],
         unarchive: %i[deletion_in_progress deletion_scheduled],
-        schedule_deletion: %i[deletion_in_progress deletion_scheduled]
+        schedule_deletion: %i[deletion_in_progress deletion_scheduled transfer_in_progress]
       })
     end
 
@@ -43,8 +43,10 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
           :unarchive         | :archived           | :deletion_scheduled
           :schedule_deletion | :ancestor_inherited | :deletion_in_progress
           :schedule_deletion | :ancestor_inherited | :deletion_scheduled
+          :schedule_deletion | :ancestor_inherited | :transfer_in_progress
           :schedule_deletion | :archived           | :deletion_in_progress
           :schedule_deletion | :archived           | :deletion_scheduled
+          :schedule_deletion | :archived           | :transfer_in_progress
         end
 
         with_them do
@@ -117,6 +119,49 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
               .to change { child.reload.state_name }.from(child_from).to(child_to)
             expect(child.errors).to be_empty
           end
+        end
+      end
+
+      describe 'when namespace_state_propagation is disabled' do
+        before do
+          stub_feature_flags(namespace_state_propagation: false)
+        end
+
+        describe 'blocks transition when any ancestor in blocking state' do
+          where(:event, :child_from, :grandparent_state) do
+            :archive           | :ancestor_inherited | :archived
+            :unarchive         | :archived           | :deletion_scheduled
+            :schedule_deletion | :ancestor_inherited | :deletion_in_progress
+            :schedule_deletion | :ancestor_inherited | :transfer_in_progress
+          end
+
+          with_them do
+            it "prevents #{params[:event]} when grandparent is #{params[:grandparent_state]}" do
+              grandparent.update!(state: grandparent_state)
+              child.update!(state: child_from)
+
+              expect { child.public_send(event, transition_user: user) }.not_to change { child.reload.state_name }
+              expect(child.errors[:state]).to include(
+                format(
+                  "cannot be changed as ancestor ID %{id} is %{state_name}",
+                  id: grandparent.id,
+                  state_name: grandparent_state
+                )
+              )
+            end
+          end
+        end
+
+        it 'allows transition when no ancestor is in a blocking state' do
+          expect { child.schedule_deletion(transition_user: user) }
+            .to change { child.reload.state_name }.from(:ancestor_inherited).to(:deletion_scheduled)
+          expect(child.errors).to be_empty
+        end
+
+        it 'allows transition when namespace has no ancestors' do
+          expect { namespace.schedule_deletion(transition_user: user) }
+            .to change { namespace.reload.state_name }.from(:ancestor_inherited).to(:deletion_scheduled)
+          expect(namespace.errors).to be_empty
         end
       end
 

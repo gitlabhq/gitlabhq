@@ -6,9 +6,9 @@ import { dimensionMetricValidationError } from '../../../utils/chart_validation'
 // Shared shell for the chart display types that plot dimensions against
 // metrics (column, bar, line, area). Owns the wiring each of them would
 // otherwise repeat: the loading skeleton, dimension/metric validation
-// (emitted as `error` for the embedded-view alert), and routing on dimension
-// count. The owning presenter supplies the actual chart through the
-// `one-dimension` / `two-dimensions` scoped slots.
+// (emitted as `error` for the embedded-view alert), routing on dimension
+// count, and the `stacked` display option. The owning presenter supplies the
+// actual chart through the `one-dimension` / `two-dimensions` scoped slots.
 export default {
   name: 'DimensionRoutedChart',
   components: {
@@ -29,6 +29,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    displayConfig: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
     minDimensions: {
       required: false,
       type: Number,
@@ -47,6 +52,11 @@ export default {
     },
     metrics() {
       return metricsOf(this.fields);
+    },
+    // A second dimension becomes the series and is always stacked, so the
+    // option only reaches the one-dimension slot.
+    stacked() {
+      return this.displayConfig?.stacked === true;
     },
     validationError() {
       if (!this.fields.length) return null;
@@ -79,6 +89,7 @@ export default {
         name="one-dimension"
         :dimension="dimensions[0]"
         :metrics="metrics"
+        :stacked="stacked"
       ></slot>
       <slot
         v-else-if="dimensions.length === 2"

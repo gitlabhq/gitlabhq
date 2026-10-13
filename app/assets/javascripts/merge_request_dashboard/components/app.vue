@@ -1,9 +1,10 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlButton, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
+import { GlBadge, GlButton, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { formatNumber } from '~/locale';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { RESOURCE_TYPE_MERGE_REQUEST } from '~/vue_shared/components/new_resource_dropdown/constants';
@@ -52,6 +53,7 @@ export default {
     IndexLayout,
     NewResourceDropdown,
     ConfigDropdown,
+    GlBadge,
     GlButton,
     GlAlert,
     GlTabs,
@@ -80,6 +82,7 @@ export default {
     return {
       currentTab,
       isVisible: !Visibility.hidden(),
+      searchCount: null,
       visitedTabs: new Set([currentTab]),
     };
   },
@@ -96,11 +99,15 @@ export default {
     searchRoute() {
       return { path: SEARCH_TAB_KEY, query: { assignee_username: gon.current_username } };
     },
+    hasSearchCount() {
+      return Number.isInteger(this.searchCount);
+    },
   },
   mounted() {
     Visibility.change(() => this.onVisibilityChange());
   },
   methods: {
+    formatNumber,
     onVisibilityChange() {
       this.isVisible = !Visibility.hidden();
     },
@@ -215,26 +222,20 @@ export default {
                     class="gl-border-b gl-col-span-full gl-grid gl-grid-cols-subgrid gl-px-5 gl-pb-3"
                     role="row"
                   >
-                    <div class="gl-text-sm gl-font-[700] gl-text-subtle" role="columnheader">
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Status') }}
                     </div>
-                    <div class="gl-text-sm gl-font-[700] gl-text-subtle" role="columnheader">
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Title') }}
                     </div>
-                    <div
-                      class="gl-text-center gl-text-sm gl-font-[700] gl-text-subtle"
-                      role="columnheader"
-                    >
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Assignee') }}
                     </div>
-                    <div
-                      class="gl-text-center gl-text-sm gl-font-[700] gl-text-subtle"
-                      role="columnheader"
-                    >
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Reviewers') }}
                     </div>
                     <div
-                      class="gl-text-right gl-text-sm gl-font-[700] gl-text-subtle"
+                      class="gl-text-right gl-text-sm gl-font-bold gl-text-subtle"
                       role="columnheader"
                     >
                       {{ __('Checks') }}
@@ -293,8 +294,16 @@ export default {
         data-testid="merge-request-dashboard-search-tab"
         @click="clickSearchTab"
       >
-        <template #title>{{ __('Search') }}</template>
-        <search-list />
+        <template #title>
+          {{ __('Search') }}
+          <gl-badge
+            v-if="hasSearchCount"
+            class="gl-tab-counter-badge"
+            data-testid="search-tab-count"
+            >{{ formatNumber(searchCount) }}</gl-badge
+          >
+        </template>
+        <search-list @count-change="searchCount = $event" />
       </gl-tab>
       <template #tabs-end>
         <li v-if="!vueSearchEnabled" role="presentation" class="nav-item">

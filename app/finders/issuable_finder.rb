@@ -103,18 +103,18 @@ class IssuableFinder
     end
   end
 
+  def initialize(current_user, params = {})
+    @current_user = current_user
+    @original_params = params
+    @params = params_class.new(params, current_user, klass)
+  end
+
   def params_class
     IssuableFinder::Params
   end
 
   def klass
     raise NotImplementedError
-  end
-
-  def initialize(current_user, params = {})
-    @current_user = current_user
-    @original_params = params
-    @params = params_class.new(params, current_user, klass)
   end
 
   def execute
@@ -460,9 +460,8 @@ class IssuableFinder
     return false unless params[:label_name].present?
     return false if params.parent.present?
     return false unless bounded_by_user_filter?
-    return false unless cte_safe_query?
 
-    Feature.enabled?(:use_cte_for_label_filter, current_user)
+    cte_safe_query?
   end
   strong_memoize_attr :use_cte_for_label_filter?
 

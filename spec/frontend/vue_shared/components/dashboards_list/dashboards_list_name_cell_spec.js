@@ -1,10 +1,8 @@
-import { GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DashboardsListNameCell from '~/vue_shared/components/dashboards_list/dashboards_list_name_cell.vue';
 
 const mockDashboard = {
   name: 'Built in dashboard',
-  isStarred: true,
   dashboardUrl: '/fake/link/to/share',
 };
 
@@ -13,8 +11,7 @@ describe('DashboardsListNameCell', () => {
   let wrapper;
 
   const findDashboardLink = () => wrapper.findByTestId('dashboard-redirect-link');
-  const findStarIcon = () => wrapper.findComponentByTestId('dashboard-star-icon');
-  const findDescription = () => wrapper.findComponent(GlTruncate);
+  const findDescription = () => wrapper.findByTestId('dashboard-description');
 
   const createWrapper = (props = {}, mountFn = shallowMountExtended) => {
     wrapper = mountFn(DashboardsListNameCell, {
@@ -34,12 +31,34 @@ describe('DashboardsListNameCell', () => {
       expect(findDashboardLink().text()).toBe(mockDashboard.name);
     });
 
-    it('does not render the star icon', () => {
-      expect(findStarIcon().exists()).toBe(false);
+    it('does not stretch the link, so table rows stay individually clickable', () => {
+      expect(findDashboardLink().classes()).not.toContain('gl-stretched-link');
     });
 
     it('does not render the description', () => {
       expect(findDescription().exists()).toBe(false);
+    });
+  });
+
+  describe('with a long unbroken name', () => {
+    beforeEach(() => {
+      createWrapper({
+        name: 'a_71_character_unbroken_name_that_would_otherwise_overflow_the_card_yes',
+      });
+    });
+
+    it('breaks the name anywhere so unbroken strings wrap inside the card', () => {
+      expect(findDashboardLink().classes()).toContain('gl-break-anywhere');
+    });
+  });
+
+  describe('when stretched', () => {
+    beforeEach(() => {
+      createWrapper({ stretched: true });
+    });
+
+    it('stretches the link over the closest positioned ancestor', () => {
+      expect(findDashboardLink().classes()).toContain('gl-stretched-link');
     });
   });
 
@@ -49,23 +68,19 @@ describe('DashboardsListNameCell', () => {
     });
 
     it('renders the description', () => {
-      expect(findDescription().props('text')).toBe('Built in dashboard description');
-    });
-  });
-
-  describe('with withStars=true', () => {
-    it('renders the starred icon when the dashboard is starred', () => {
-      createWrapper({ withStars: true });
-
-      expect(findStarIcon().props('icon')).toBe('star');
-      expect(findStarIcon().attributes('title')).toBe('Remove from favorites');
+      expect(findDescription().text()).toBe('Built in dashboard description');
     });
 
-    it('renders the unstarred icon when the dashboard is not starred', () => {
-      createWrapper({ withStars: true, isStarred: false });
+    it('clamps the description to two lines instead of truncating mid-word', () => {
+      expect(findDescription().classes()).toContain('gl-line-clamp-2');
+    });
 
-      expect(findStarIcon().props('icon')).toBe('star-o');
-      expect(findStarIcon().attributes('title')).toBe('Add to favorites');
+    it('exposes the full description as a native title so clamped text stays recoverable', () => {
+      expect(findDescription().attributes('title')).toBe('Built in dashboard description');
+    });
+
+    it('breaks the description anywhere so unbroken strings clamp instead of overflowing', () => {
+      expect(findDescription().classes()).toContain('gl-break-anywhere');
     });
   });
 });

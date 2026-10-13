@@ -35,7 +35,7 @@ module API
       tags ['templates']
     end
     params do
-      optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
+      optional :popular, type: Boolean, desc: "If `true`, returns only popular licenses. If `false`, returns only licenses that aren't popular."
       use :pagination
     end
 
@@ -55,9 +55,9 @@ module API
       tags ['templates']
     end
     params do
-      requires :name, type: String, desc: 'The name of the license template'
-      optional :project, type: String, desc: 'The copyrighted project name'
-      optional :fullname, type: String, desc: 'The full-name of the copyright holder'
+      requires :name, type: String, desc: 'Name of the license template.'
+      optional :project, type: String, desc: 'Name of the copyrighted project.'
+      optional :fullname, type: String, desc: 'Full name of the copyright holder.'
     end
 
     route_setting :authorization, skip_granular_token_authorization: :public_endpoint

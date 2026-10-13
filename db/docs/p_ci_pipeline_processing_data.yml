@@ -1,0 +1,16 @@
+---
+table_name: p_ci_pipeline_processing_data
+classes:
+- Ci::PipelineProcessingData
+feature_categories:
+- continuous_integration
+description: One row per pipeline holding the data that is only needed while the pipeline
+  can still be processed, such as whether a non-interruptible job has taken it out
+  of reach of auto-cancellation. Partitions are detached once every pipeline in them
+  is archived. Partitioned using the same strategy as p_ci_pipelines.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253751
+milestone: '19.5'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

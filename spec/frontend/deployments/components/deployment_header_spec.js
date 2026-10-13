@@ -1,12 +1,22 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import DeploymentCommit from '~/environments/components/commit.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+
+jest.mock('~/behaviors/markdown/render_gfm');
+
+const release = {
+  name: 'v1.0.0',
+  descriptionHtml: '<p>Release notes</p>',
+  links: { selfUrl: '/releases/v1.0.0' },
+};
 
 const {
   data: {
@@ -32,6 +42,8 @@ describe('~/deployments/components/deployment_header.vue', () => {
       },
     });
   };
+
+  const findReleaseDescription = () => wrapper.findByTestId('release-description-content');
 
   describe('loading', () => {
     it('shows a skeleton loader while loading', () => {
@@ -101,6 +113,28 @@ describe('~/deployments/components/deployment_header.vue', () => {
       const timeago = wrapper.findComponent(TimeAgoTooltip);
 
       expect(timeago.text()).toBe(`Started Jan 1, 2019 by @${deployment.triggerer.username}`);
+    });
+  });
+
+  describe('release notes', () => {
+    it('renders the release notes and runs renderGFM on them', async () => {
+      createComponent({ propsData: { release } });
+      await nextTick();
+
+      expect(findReleaseDescription().html()).toContain('Release notes');
+      expect(renderGFM).toHaveBeenCalledWith(findReleaseDescription().element);
+    });
+
+    it('runs renderGFM once the release loads', async () => {
+      createComponent({ propsData: { release: null } });
+      await nextTick();
+
+      expect(renderGFM).not.toHaveBeenCalled();
+
+      await wrapper.setProps({ release });
+      await nextTick();
+
+      expect(renderGFM).toHaveBeenCalledWith(findReleaseDescription().element);
     });
   });
 });

@@ -16,7 +16,7 @@ RSpec.describe Types::MergeRequests::WorkItemRelationType, feature_category: :co
   describe 'id' do
     subject { described_class.fields['id'] }
 
-    it { is_expected.to have_non_null_graphql_type(::Types::GlobalIDType[::MergeRequestsClosingIssues]) }
+    it { is_expected.to have_non_null_graphql_type(::Types::GlobalIDType[::MergeRequestIssue]) }
   end
 
   describe 'link_type' do

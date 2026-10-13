@@ -20,8 +20,11 @@ module Mcp
             properties: {
               url: {
                 type: 'string',
-                description: 'GitLab URL of the merge request or work item. The URL determines the target ' \
-                  'type, so no other identifier is needed'
+                description: 'GitLab URL of a merge request or work item, including issues and epics ' \
+                  '(.../-/merge_requests/<iid>, .../-/work_items/<iid>, .../-/issues/<iid>, or ' \
+                  '.../groups/<full_path>/-/epics/<iid>). Issue URLs are project-scoped; epic URLs are group-scoped ' \
+                  'and must include the groups/ prefix. ' \
+                  'The URL determines the target type, so no other identifier is needed'
               },
               project_id: {
                 type: 'string',
@@ -44,9 +47,10 @@ module Mcp
               },
               body: {
                 type: 'string',
-                description: 'Content of the note/comment (max 1,048,576 characters). Lines beginning with ' \
+                description: 'Content of the note/comment (max ' \
+                  "#{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters). Lines beginning with " \
                   '"/" are rejected to avoid triggering quick actions such as /merge',
-                maxLength: 1_048_576
+                maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               internal: {
                 type: 'boolean',

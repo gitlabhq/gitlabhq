@@ -21,7 +21,7 @@ module Sidebars # rubocop:disable Gitlab/BoundedContexts -- This has to be named
 
         override :render?
         def render?
-          !!context.current_user && Feature.enabled?(:personal_homepage, context.current_user)
+          !!context.current_user
         end
 
         override :active_routes

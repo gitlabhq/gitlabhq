@@ -19,7 +19,6 @@ import path from 'node:path';
 import { program } from 'commander';
 import * as prettier from 'prettier';
 import { cruise } from 'dependency-cruiser';
-// eslint-disable-next-line import/no-unresolved -- valid subpath export that the resolver misses
 import extractWebpackResolveConfig from 'dependency-cruiser/config-utl/extract-webpack-resolve-config';
 
 const ROOT_PATH = path.resolve(import.meta.dirname, '../../');

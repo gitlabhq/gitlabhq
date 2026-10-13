@@ -187,6 +187,22 @@ RSpec.shared_examples 'a resource event for merge requests' do
       event.save!
     end
   end
+
+  describe '#merge_request_project' do
+    context 'when the event belongs to a merge request' do
+      let_it_be(:event, freeze: false) { create(resource_event, merge_request: merge_request1) }
+
+      it 'returns the merge request project' do
+        expect(event.merge_request_project).to eq(merge_request1.project)
+      end
+    end
+
+    context 'when the event does not belong to a merge request' do
+      it 'returns nil' do
+        expect(subject.merge_request_project).to be_nil
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'a note for work item resource event' do
@@ -200,6 +216,17 @@ RSpec.shared_examples 'a note for work item resource event' do
     event = build(resource_event, issue: work_item)
 
     expect(event.work_item_synthetic_system_note.class.name).to eq(event.synthetic_note_class.name)
+  end
+
+  context 'with a group level work item' do
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group_work_item, freeze: false) { create(:work_item, :group_level, namespace: group, author: user) }
+
+    it 'builds the synthetic note against the group' do
+      event = build(resource_event, issue: group_work_item)
+
+      expect(event.work_item_synthetic_system_note.resource_parent).to eq(group)
+    end
   end
 
   context 'on callbacks' do

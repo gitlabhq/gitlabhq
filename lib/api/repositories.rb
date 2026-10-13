@@ -16,46 +16,54 @@ module API
     helpers ::API::Helpers::HeadersHelpers
     helpers ::API::Helpers::BlobHelpers
 
-    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
+    # blobs/batch is a read that takes its file list in a POST body, so admit it by path
+    # rather than opening every POST route to the scope.
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || batch_blobs_read?(request)
+    end
+
+    def self.batch_blobs_read?(request)
+      request.post? && request.path.match?(%r{/api/v\d+/projects/[^/]+/repository/blobs/batch$})
+    end
 
     helpers do
       params :release_params do
         requires :version,
           type: String,
           regexp: Gitlab::Regex.unbounded_semver_regex,
-          desc: 'The version of the release, using the semantic versioning format',
+          desc: 'Version to generate the changelog for. Must follow [semantic versioning](https://semver.org/) format.',
           documentation: { example: '1.0.0' },
           allow_blank: false
 
         optional :from,
           type: String,
-          desc: 'The first commit in the range of commits to use for the changelog',
+          desc: 'First commit in the range of commits, as a SHA, to use for the changelog. This commit is not included in the changelog. If omitted, the most recent stable version tag before `version` is used.',
           documentation: { example: 'ed899a2f4b50b4370feeea94676502b42383c746' }
 
         optional :to,
           type: String,
-          desc: 'The last commit in the range of commits to use for the changelog',
+          desc: 'Last commit in the range of commits, as a SHA, to use for the changelog. This commit is included in the changelog. If omitted, uses the latest commit on the default branch. For the Add changelog data to file operation, uses the latest commit on `branch` instead. The range can contain at most 15,000 commits.',
           documentation: { example: '6104942438c14ec7bd21c6cd5bd995272b3faff6' }
 
         optional :date,
           type: DateTime,
-          desc: 'The date and time of the release',
+          desc: 'Date and time of the release. Defaults to the current time.',
           documentation: { type: 'dateTime', example: '2021-09-20T11:50:22.001+00:00' }
 
         optional :trailer,
           type: String,
-          desc: 'The Git trailer to use for determining if commits are to be included in the changelog',
+          desc: 'Git trailer to use for including commits. Case-sensitive: `Example` does not match `example` or `eXaMpLE`.',
           default: ::Repositories::ChangelogService::DEFAULT_TRAILER,
           documentation: { example: 'Changelog' }
 
         optional :config_file,
           type: String,
           documentation: { example: '.gitlab/changelog_config.yml' },
-          desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
+          desc: "Path to the changelog configuration file in the project's Git repository. If omitted, uses `.gitlab/changelog_config.yml`."
 
         optional :config_file_ref,
           type: String,
-          desc: 'The git reference (for example, branch) where the changelog configuration file is defined. Defaults to the default repository branch.',
+          desc: 'Git reference, for example a branch, where the changelog configuration file is defined. Defaults to the default branch of the repository.',
           documentation: { example: 'main' }
       end
     end
@@ -66,7 +74,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the project',
+        desc: 'ID or URL-encoded path of the project.',
         documentation: { example: 1 }
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -127,19 +135,19 @@ module API
       end
       params do
         optional :ref, type: String, limit: 1024,
-          desc: 'The name of a repository branch or tag, if not given the default branch is used',
+          desc: 'Name of a repository branch or tag. If omitted, uses the default branch.',
           documentation: { example: 'main' }
-        optional :path, type: String, limit: 1024, desc: 'The path of the tree', documentation: { example: 'files/html' }
-        optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+        optional :path, type: String, limit: 1024, desc: 'Path inside the repository, used to get the contents of subdirectories.', documentation: { example: 'files/html' }
+        optional :recursive, type: Boolean, default: false, desc: 'If `true`, returns a recursive tree.'
         optional :with_last_commit, type: Boolean, default: false,
-          desc: 'Include the last commit for each tree entry. Cannot be combined with "recursive"'
+          desc: 'If `true`, includes the last commit for each tree entry. Cannot be combined with `recursive`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234455) in GitLab 19.3.'
 
         use :pagination
-        optional :pagination, type: String, values: %w[legacy keyset none], default: 'legacy', desc: 'Specify the pagination method ("none" is only valid if "recursive" is true)'
+        optional :pagination, type: String, values: %w[legacy keyset none], default: 'legacy', desc: 'Pagination method. `keyset` uses the [keyset-based pagination method](https://docs.gitlab.com/api/rest/#keyset-based-pagination). `none` is valid only if `recursive` is `true`.'
 
         given pagination: ->(value) { value == 'keyset' } do
           optional :page_token, type: String,
-            desc: 'Record from which to start the keyset pagination',
+            desc: 'Tree record ID at which to fetch the next page. Used only with keyset pagination.',
             documentation: { example: 'a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba' }
         end
 
@@ -175,7 +183,7 @@ module API
       end
       params do
         requires :sha, type: String,
-          desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+          desc: 'SHA of the blob.', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha/raw' do
         assign_blob_vars!(limit: 0)
@@ -192,7 +200,7 @@ module API
       end
       params do
         requires :sha, type: String,
-          desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+          desc: 'SHA of the blob.', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       route_setting :authorization, permissions: :read_repository_blob, boundary_type: :project
       get ':id/repository/blobs/:sha' do
@@ -222,18 +230,18 @@ module API
       end
       params do
         optional :sha, type: String,
-          desc: 'The commit sha of the archive to be downloaded',
+          desc: 'Commit SHA to download. Accepts a tag, branch reference, or SHA. If omitted, defaults to the tip of the default branch.',
           documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
-        optional :ref_type, type: String, values: %w[heads tags], desc: 'Type of ref in sha, heads (branch) or tags (tag)'
-        optional :format, type: String, desc: 'The archive format', documentation: { example: 'tar.gz' }
+        optional :ref_type, type: String, values: %w[heads tags], desc: 'Type of ref in `sha`. Use to select the correct ref when a branch and tag share a name.'
+        optional :format, type: String, desc: 'Archive format.', documentation: { example: 'tar.gz' }
         optional :path, type: String,
-          desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
+          desc: 'Subpath of the repository to download. An empty string returns the whole repository.', documentation: { example: 'files/archives' }
         optional :include_lfs_blobs, type: Boolean, default: true,
-          desc: 'Used to exclude LFS objects from archive'
+          desc: 'If `true`, LFS objects are included in the archive. When set to `false`, LFS objects are excluded.'
         optional :exclude_paths, type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           default: [],
-          desc: 'Comma-separated list of paths to exclude from the archive'
+          desc: 'Comma-separated list of paths to exclude from the archive.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_repository_archive, boundary_type: :project,
@@ -297,13 +305,13 @@ module API
       end
       params do
         requires :from, type: String,
-          desc: 'The commit, branch name, or tag name to start comparison',
+          desc: 'Ref to compare from. Accepts a commit SHA, branch name, or tag name.',
           documentation: { example: 'main' }
         requires :to, type: String,
-          desc: 'The commit, branch name, or tag name to stop comparison',
+          desc: 'Ref to compare to. Accepts a commit SHA, branch name, or tag name.',
           documentation: { example: 'feature' }
-        optional :from_project_id, type: Integer, desc: 'The project to compare from', documentation: { example: 1 }
-        optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
+        optional :from_project_id, type: Integer, desc: 'ID of the project to compare from.', documentation: { example: 1 }
+        optional :straight, type: Boolean, desc: 'If `true`, comparison method is direct comparison between `from` and `to` (`from`..`to`). If `false`, compares using merge base (`from`...`to`).', default: false
         use :with_unidiff
       end
       route_setting :authorization, permissions: :read_repository_comparison, boundary_type: :project
@@ -339,7 +347,7 @@ module API
         tags ['repositories']
       end
       params do
-        optional :generate, type: Boolean, default: false, desc: 'Triggers a new health report to be generated'
+        optional :generate, type: Boolean, default: false, desc: 'If `true`, generates a new health report. Set this if the endpoint returns `404`.'
       end
       route_setting :authorization, permissions: :read_repository_health, boundary_type: :project
       get ':id/repository/health', urgency: :low do
@@ -347,7 +355,7 @@ module API
 
         generate = params[:generate] || false
         if generate
-          check_rate_limit!(:project_repositories_health, scope: [user_project]) do
+          check_rate_limit!(:project_repositories_health, scope: { project: user_project }) do
             render_api_error!({ error: 'Repository health has been requested too many times. Try again later.' }, 429)
           end
         end
@@ -369,10 +377,10 @@ module API
       params do
         use :pagination
         optional :ref, type: String,
-          desc: 'The name of a repository branch or tag, if not given the default branch is used',
+          desc: 'Name of a repository branch or tag. If omitted, uses the default branch.',
           documentation: { example: 'main' }
-        optional :order_by, type: String, values: %w[email name commits], default: 'commits', desc: 'Return contributors ordered by `name` or `email` or `commits`'
-        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :order_by, type: String, values: %w[email name commits], default: 'commits', desc: 'Sort results by the specified field.'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort results in ascending or descending order.'
       end
       route_setting :authorization, permissions: :read_repository_contributor, boundary_type: :project
       get ':id/repository/contributors' do
@@ -390,7 +398,7 @@ module API
       params do
         requires :refs, type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-          desc: 'The refs to find the common ancestor of, multiple refs can be passed',
+          desc: 'Refs to find the common ancestor of. Accepts multiple refs.',
           documentation: { example: %w[main feature] }
       end
       route_setting :authorization, permissions: :read_repository_merge_base, boundary_type: :project
@@ -432,10 +440,10 @@ module API
         end
         params do
           requires :files, type: Array, allow_blank: false, limit: MAX_BATCH_BLOBS_FILES,
-            desc: 'Array of file objects to retrieve (max 20)' do
-            requires :path, type: String, file_path: true, desc: 'The file path',
+            desc: 'Array of file objects to retrieve, up to a maximum of 20.' do
+            requires :path, type: String, file_path: true, desc: 'Path of the file in the repository.',
               documentation: { example: 'app/models/user.rb' }
-            optional :ref, type: String, desc: 'The branch, tag, or commit. Defaults to the default branch',
+            optional :ref, type: String, desc: 'Branch, tag, or commit to read the file from. Defaults to the default branch.',
               documentation: { example: 'main' }
           end
         end
@@ -444,7 +452,7 @@ module API
         post ':id/repository/blobs/batch', urgency: :low do
           not_found! unless Feature.enabled?(:repository_blobs_batch_api, user_project)
 
-          check_rate_limit!(:project_repositories_blobs_batch, scope: [user_project, current_user])
+          check_rate_limit!(:project_repositories_blobs_batch, scope: { project: user_project, user: current_user })
 
           default_ref = user_project.default_branch
 
@@ -493,7 +501,7 @@ module API
         get ':id/repository/changed_paths', urgency: :low do
           not_found! unless Feature.enabled?(:repository_changed_paths_api, user_project)
 
-          check_rate_limit!(:project_repositories_changed_paths, scope: [current_user, user_project])
+          check_rate_limit!(:project_repositories_changed_paths, scope: { user: current_user, project: user_project })
 
           diff_tree = Gitlab::Git::DiffTree.new(params[:from], params[:to])
 
@@ -515,11 +523,11 @@ module API
           tags ['repositories']
         end
         params do
-          requires :from, type: String, desc: 'The ref to compare from', limit: 255,
+          requires :from, type: String, desc: 'Ref to compare from. Accepts a commit SHA, branch name, or tag name.', limit: 255,
             documentation: { example: 'main' }
-          requires :to, type: String, desc: 'The ref to compare to', limit: 255,
+          requires :to, type: String, desc: 'Ref to compare to. Accepts a commit SHA, branch name, or tag name.', limit: 255,
             documentation: { example: 'feature' }
-          optional :max_count, type: Integer, desc: 'Maximum number of commits to count. 0 for unlimited', default: 0, values: 0..,
+          optional :max_count, type: Integer, desc: 'Maximum number of commits to count. Use `0` for unlimited.', default: 0, values: 0..,
             documentation: { example: 1000 }
         end
         route_setting :authorization, permissions: :read_commit, boundary_type: :project
@@ -527,7 +535,7 @@ module API
         get ':id/repository/diverging_commits', urgency: :low do
           not_found! unless Feature.enabled?(:repository_diverging_commits_api, user_project)
 
-          check_rate_limit!(:project_repositories_diverging_commits, scope: [current_user, user_project])
+          check_rate_limit!(:project_repositories_diverging_commits, scope: { user: current_user, project: user_project })
 
           service = ::Branches::DivergingCommitCountsService.new(user_project.repository)
           counts = service.diverging_counts(params[:from], params[:to], max_count: params[:max_count])
@@ -558,7 +566,7 @@ module API
         get ':id/repository/diff_stats', urgency: :low do
           not_found! unless Feature.enabled?(:repository_diff_stats_api, user_project)
 
-          check_rate_limit!(:project_repositories_diff_stats, scope: [current_user, user_project])
+          check_rate_limit!(:project_repositories_diff_stats, scope: { user: current_user, project: user_project })
 
           from_commit = user_project.repository.commit(params[:from])
           to_commit = user_project.repository.commit(params[:to])
@@ -587,7 +595,7 @@ module API
       route_setting :authorization, permissions: :read_repository_changelog, boundary_type: :project, job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/changelog', requirements: { format: /txt/ } do
-        check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
+        check_rate_limit!(:project_repositories_changelog, scope: { user: current_user, project: user_project }) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
         end
 
@@ -618,23 +626,23 @@ module API
 
         optional :branch,
           type: String,
-          desc: 'The branch to commit the changelog changes to',
+          desc: "Name of the branch to commit the changelog changes to. If omitted, defaults to the project's default branch.",
           documentation: { example: 'main' }
 
         optional :file,
           type: String,
-          desc: 'The file to commit the changelog changes to',
+          desc: 'File to commit the changes to.',
           default: ::Repositories::ChangelogService::DEFAULT_FILE,
           documentation: { example: 'CHANGELOG.md' }
 
         optional :message,
           type: String,
-          desc: 'The commit message to use when committing the changelog',
+          desc: 'Commit message to use when committing the changelog changes. If omitted, defaults to `Add changelog for version X`, where `X` is the value of the `version` parameter.',
           documentation: { example: 'Initial commit' }
       end
       route_setting :authorization, permissions: :create_repository_changelog, boundary_type: :project
       post ':id/repository/changelog' do
-        check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
+        check_rate_limit!(:project_repositories_changelog, scope: { user: current_user, project: user_project }) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
         end
 

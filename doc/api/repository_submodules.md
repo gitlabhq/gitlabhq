@@ -58,6 +58,11 @@ Example response:
   ],
   "committed_date": "2018-09-20T09:26:24.000-07:00",
   "authored_date": "2018-09-20T09:26:24.000-07:00",
-  "status": null
+  "trailers": {},
+  "extended_trailers": {},
+  "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746",
+  "status": null,
+  "project_id": 5,
+  "last_pipeline": null
 }
 ```

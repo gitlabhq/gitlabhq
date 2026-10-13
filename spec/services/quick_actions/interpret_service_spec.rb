@@ -215,7 +215,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'multiple unlabel command' do
-      it 'fetches label ids and populates remove_label_ids if content contains  mutiple /unlabel' do
+      it 'fetches label ids and populates remove_label_ids if content contains mutiple /unlabel' do
         issuable.update!(label_ids: [inprogress.id, bug.id]) # populate the label
         _, updates, _ = service.execute(content, issuable)
 
@@ -648,7 +648,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         inreview_label # populate this label
         _, updates, _ = service.execute(content, issuable)
 
-        expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
+        expect(updates[:add_label_ids]).to match_array(expected_label_ids)
 
         if source_issuable.milestone
           expect(updates[:milestone_id]).to eq(source_issuable.milestone.id)
@@ -658,11 +658,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       it 'returns the copy metadata message' do
-        _, _, message = service.execute("/copy_metadata #{source_issuable.to_reference}", issuable)
-        translated_string = _("Copied labels and milestone from %{source_issuable_to_reference}.")
-        formatted_message = format(translated_string, source_issuable_to_reference: source_issuable.to_reference.to_s)
+        _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq(formatted_message)
+        expect(message).to eq(expected_message)
       end
     end
 
@@ -1173,7 +1171,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
       end
 
-      context 'non persisted merge request  cant be merged' do
+      context 'non persisted merge request cant be merged' do
         it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { build(:merge_request) }
@@ -2132,6 +2130,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
         let(:issuable) { build(:issue, project: project) }
+        let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+        let(:expected_message) { "Copied labels from #{source_issuable.to_reference}." }
       end
 
       it_behaves_like 'copy_metadata command' do
@@ -2139,6 +2139,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
         let(:issuable) { issue }
+        let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+        let(:expected_message) { "Copied labels from #{source_issuable.to_reference}." }
       end
 
       context "when a work item type issue is passed" do
@@ -2151,6 +2153,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               wi.labels << [todo_label, inreview_label]
             end
           end
+
+          let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+          let(:expected_message) { "Copied labels and milestone from #{source_issuable.to_reference}." }
         end
 
         it_behaves_like 'failed command' do
@@ -2169,6 +2174,30 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
           let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
           let(:issuable) { issue }
+          let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+          let(:expected_message) { "Copied labels and milestone from #{source_issuable.to_reference}." }
+        end
+      end
+
+      context 'when source issuable has milestone only (no labels)' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:issue, project: project, milestone: milestone) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+          let(:issuable) { issue }
+          let(:expected_label_ids) { [] }
+          let(:expected_message) { "Copied milestone from #{source_issuable.to_reference}." }
+        end
+      end
+
+      context 'when source issuable has neither labels nor milestone' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:issue, project: project) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+          let(:issuable) { issue }
+          let(:expected_label_ids) { [] }
+          let(:expected_message) { "No labels or milestone to copy from #{source_issuable.to_reference}." }
         end
       end
 
@@ -2180,6 +2209,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
           let(:content) { "/copy_metadata #{source_issuable.to_reference} #{other_source_issuable.to_reference}" }
           let(:issuable) { issue }
+          let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+          let(:expected_message) { "Copied labels from #{source_issuable.to_reference}." }
         end
       end
 
@@ -2439,7 +2470,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           end
         end
 
-        context 'ignores non-existing / invalid  emojis' do
+        context 'ignores non-existing / invalid emojis' do
           it_behaves_like 'failed command' do
             let(:content) { "#{command} noop" }
             let(:issuable) { issue }
@@ -2749,7 +2780,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             expect_next_instance_of(
               MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
             ) do |service|
-              expect(service).to receive(:execute).with(merge_request).and_return(true)
+              expect(service).to receive(:execute).with(merge_request).and_return(ServiceResponse.success)
             end
 
             _, _, message = service.execute('/submit_review approve', merge_request)
@@ -2761,7 +2792,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             expect_next_instance_of(
               MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
             ) do |service|
-              expect(service).to receive(:execute).with(merge_request).and_return(false)
+              expect(service).to receive(:execute).with(merge_request)
+                .and_return(ServiceResponse.error(message: 'Nope', reason: :not_eligible))
             end
 
             _, _, message = service.execute('/submit_review approve', merge_request)
@@ -3875,6 +3907,36 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq(_('Parent item removed successfully.'))
         end
       end
+    end
+  end
+
+  describe '#remove_type_change_success_message' do
+    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+
+    it 'removes the promote_to_incident message and keeps the others' do
+      _, _, message, _ = service.execute("/promote_to_incident\n/close", work_item)
+
+      expect(message).to eq('Promoted successfully. Closed this item.')
+      expect(service.remove_type_change_success_message(message)).to eq('Closed this item.')
+    end
+
+    it 'removes every occurrence when two commands share the same success message' do
+      expect(service.remove_type_change_success_message('Promoted successfully. Promoted successfully. Closed this item.'))
+        .to eq('Closed this item.')
+    end
+
+    it 'removes the type message and keeps the others' do
+      _, _, message, _ = service.execute("/type Task\n/close", work_item)
+
+      expect(service.remove_type_change_success_message(message)).to eq('Closed this item.')
+    end
+
+    it 'keeps a type error and removes the promote_to_incident message' do
+      _, _, message, _ = service.execute("/type Nonexistent\n/promote_to_incident", work_item)
+
+      expect(message).to include('Failed to convert this work item: Provided type is not supported.')
+      expect(service.remove_type_change_success_message(message))
+        .to eq('Failed to convert this work item: Provided type is not supported.')
     end
   end
 

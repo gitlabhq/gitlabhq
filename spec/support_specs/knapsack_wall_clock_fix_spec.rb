@@ -87,5 +87,44 @@ RSpec.describe Support::KnapsackWallClockFix, feature_category: :tooling do # ru
       expect(migration_time).to be >= 0.04
       expect(migration_time).to be > user_time
     end
+
+    context 'with multiple top-level groups in the same file' do
+      let(:file) { 'spec/requests/api/users_spec.rb' }
+
+      it 'sums the wall-clock duration of every top-level group' do
+        first_block = notification_for("./#{file}")
+        second_block = notification_for("./#{file}")
+
+        formatter.example_group_started(first_block)
+        sleep 0.05
+        formatter.example_group_finished(first_block)
+
+        formatter.example_group_started(second_block)
+        sleep 0.02
+        formatter.example_group_finished(second_block)
+
+        expect(tracker.test_files_with_time[file]).to be >= 0.07
+      end
+
+      it "does not double-count knapsack's own accumulated durations" do
+        first_block = notification_for("./#{file}")
+        second_block = notification_for("./#{file}")
+
+        # Knapsack's Tracker#stop_timer accumulates into this hash for every
+        # top-level group before each formatter event; the formatter must
+        # overwrite with its own sum rather than add on top.
+        tracker.test_files_with_time[file] = 50.0
+        formatter.example_group_started(first_block)
+        sleep 0.05
+        formatter.example_group_finished(first_block)
+
+        tracker.test_files_with_time[file] += 40.0
+        formatter.example_group_started(second_block)
+        sleep 0.02
+        formatter.example_group_finished(second_block)
+
+        expect(tracker.test_files_with_time[file]).to be < 1.0
+      end
+    end
   end
 end

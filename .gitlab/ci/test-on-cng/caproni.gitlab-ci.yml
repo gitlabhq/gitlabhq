@@ -1,22 +1,16 @@
-# E2E smoke tests against CNG, deployed by caproni on job-local k3d
+# E2E tests against CNG, deployed by caproni on job-local k3d
 
 .caproni-deploy-cmd:
   # Paths are absolute: .qa-install does `cd qa` partway through before_script.
   script:
-    - source $CI_PROJECT_DIR/qa/caproni/scripts/cng-image-tags.sh
+    # Best effort: caproni fetches the chart itself when nothing is cached
     - |
-      section_start "package_chart" "Packaging GitLab chart at GITLAB_HELM_CHART_REF"
-      source $CI_PROJECT_DIR/qa/caproni/scripts/package-chart.sh
-      section_end "package_chart"
+      cached_chart="${CNG_HELM_REPOSITORY_CACHE}/gitlab-${GITLAB_HELM_CHART_REF}.tgz"
+      if [ -f "${cached_chart}" ]; then export GITLAB_CHART_PACKAGE="${cached_chart}"; fi
     # nip.io, not /etc/hosts: sibling dind containers have their own hosts file
     - GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
-    # In a file, not an env var: base config wins over environment
-    - |
-      {
-        echo "variables:"
-        echo "  BASE_DOMAIN: ${GITLAB_DOMAIN}"
-      } > $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
-      cat $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
+    - export GITLAB_DOMAIN
+    - $CI_PROJECT_DIR/qa/caproni/scripts/write_local_config.rb
     - |
       section_start "caproni_up" "Deploying CNG with Caproni"
       # --debug not LOG_LEVEL: the env var corrupts k3d JSON output
@@ -25,8 +19,21 @@
       caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} wait --for=condition=Ready \
         --selector="app=webservice" pods --timeout=600s
       section_end "caproni_up"
+    - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}${QA_RELATIVE_URL_ROOT}"
+    - |
+      section_start "gitlab_ready" "Waiting for GitLab to serve the sign-in page"
+      # Pod Ready only means the probe passed; boot and migrations continue past it, and both
+      # the token seeding below and the suite's own 180s readiness check need a served page
+      deadline=$(( $(date +%s) + ${GITLAB_READY_TIMEOUT:-600} ))
+      until curl --fail --silent --connect-timeout 5 --max-time 15 --output /dev/null "${QA_GITLAB_URL}/users/sign_in"; do
+        if [ "$(date +%s)" -ge "${deadline}" ]; then
+          echo "GitLab did not serve ${QA_GITLAB_URL}/users/sign_in in ${GITLAB_READY_TIMEOUT:-600}s" >&2
+          exit 1
+        fi
+        sleep 5
+      done
+      section_end "gitlab_ready"
     - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
-    - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
     # Read back, not pre-created: Caproni has no pre-install hook
     - |
       export GITLAB_ADMIN_PASSWORD="$(caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} \
@@ -38,7 +45,7 @@
   extends:
     - .e2e-test-base
     - .with-ignored-runtime-data
-    # For CNG_HELM_REPOSITORY_CACHE: package-chart.sh reuses the orchestrator's chart cache
+    # For CNG_HELM_REPOSITORY_CACHE: the chart the orchestrator packaged, if any
     - .cng-qa-cache
   needs:
     - job: build-cng-env
@@ -111,15 +118,36 @@
       - qa/tmp/cluster-logs/*.envoy.log
   allow_failure: true
 
+# No QA_SCENARIO: run_e2e_specs defaults to Test::Instance::All
 cng-instance-caproni:
+  extends: .caproni-test
+  parallel: 10
+  variables:
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
+
+cng-relative-url-caproni:
   extends: .caproni-test
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
+    QA_RELATIVE_URL_ROOT: "/relative"
 
 cng-registry-caproni:
   extends: .caproni-test
   variables:
     QA_SCENARIO: Test::Integration::Registry
     QA_RUN_IN_PARALLEL: "false"
+
+# This job is a placeholder: the only :oauth spec (login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb) is
+# quarantined, so it won't run until the quarantine is removed
+# https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015
+cng-oauth-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Integration::OAuth
+    QA_RSPEC_TAGS: --tag oauth
+    QA_RUN_IN_PARALLEL: "false"
+    QA_GITHUB_OAUTH_APP_ID: $QA_GITHUB_OAUTH_APP_ID
+    QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET

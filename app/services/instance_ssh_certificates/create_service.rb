@@ -38,3 +38,5 @@ module InstanceSshCertificates # rubocop:disable Gitlab/BoundedContexts -- Mirro
     attr_reader :current_user, :params
   end
 end
+
+InstanceSshCertificates::CreateService.prepend_mod_with('InstanceSshCertificates::CreateService')

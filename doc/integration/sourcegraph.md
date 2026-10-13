@@ -98,7 +98,7 @@ To enable this feature in your GitLab user preferences:
 
 ## References
 
-- [Privacy information](https://sourcegraph.com/docs/integration/browser_extension/references/privacy) in the Sourcegraph documentation
+- [Privacy information](https://sourcegraph.com/docs/integration/browser-extension/references/privacy) in the Sourcegraph documentation
 
 ## Troubleshooting
 

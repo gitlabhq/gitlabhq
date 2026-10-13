@@ -38,13 +38,13 @@ RSpec.shared_context 'with expected presenters dependency groups' do
 
   def create_dependencies_for(package)
     dependency1 = Packages::Dependency.find_by(name: 'Newtonsoft.Json', version_pattern: '12.0.3') ||
-      create(:packages_dependency, name: 'Newtonsoft.Json', version_pattern: '12.0.3')
+      create(:packages_dependency, name: 'Newtonsoft.Json', version_pattern: '12.0.3', project: package.project)
     dependency2 = Packages::Dependency.find_by(name: 'Castle.Core', version_pattern: '4.4.1') ||
-      create(:packages_dependency, name: 'Castle.Core', version_pattern: '4.4.1')
+      create(:packages_dependency, name: 'Castle.Core', version_pattern: '4.4.1', project: package.project)
 
     empty_dep_name = "#{::Packages::Nuget::EMPTY_DEPENDENCY_PREFIX}-.NETCore4.5"
     dependency3 = Packages::Dependency.find_by(name: empty_dep_name) ||
-      create(:packages_dependency, name: empty_dep_name)
+      create(:packages_dependency, name: empty_dep_name, project: package.project)
 
     create(:packages_dependency_link, :with_nuget_metadatum, package: package, dependency: dependency1)
     create(:packages_dependency_link, package: package, dependency: dependency2)

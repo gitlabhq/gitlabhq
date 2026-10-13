@@ -349,6 +349,66 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
     end
   end
 
+  describe '#msgid_namespace_contains_whitespace?' do
+    it 'is true when the msgid namespace contains whitespace' do
+      entry = described_class.new(entry_data: { msgid: 'Compliance Center|Export' }, nplurals: 2)
+
+      expect(entry.msgid_namespace_contains_whitespace?).to be(true)
+    end
+
+    it 'is true when the plural id namespace contains whitespace' do
+      data = { msgid: 'Commit|1 commit', msgid_plural: 'Commit History|%d commits' }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.msgid_namespace_contains_whitespace?).to be(true)
+    end
+
+    it 'is false when the namespace has no whitespace' do
+      entry = described_class.new(entry_data: { msgid: 'ApprovalRule|day(s)' }, nplurals: 2)
+
+      expect(entry.msgid_namespace_contains_whitespace?).to be(false)
+    end
+
+    it 'is false when the msgid has no namespace' do
+      entry = described_class.new(entry_data: { msgid: 'Hello world' }, nplurals: 2)
+
+      expect(entry.msgid_namespace_contains_whitespace?).to be(false)
+    end
+  end
+
+  describe '#msgid_contains_multiple_namespace_pipes?' do
+    it 'is true when the msgid has a doubled pipe' do
+      entry = described_class.new(entry_data: { msgid: 'ApprovalRule||year(s)' }, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_namespace_pipes?).to be(true)
+    end
+
+    it 'is true when the msgid has a two-part namespace' do
+      entry = described_class.new(entry_data: { msgid: 'Pipeline|Source|Security Policy' }, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_namespace_pipes?).to be(true)
+    end
+
+    it 'is true when the plural id has more than one pipe' do
+      data = { msgid: 'Commit|1 commit', msgid_plural: 'Commit|History|%d commits' }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_namespace_pipes?).to be(true)
+    end
+
+    it 'is false when the msgid has a single namespace pipe' do
+      entry = described_class.new(entry_data: { msgid: 'ApprovalRule|day(s)' }, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_namespace_pipes?).to be(false)
+    end
+
+    it 'is false when the msgid has pipes but no namespace' do
+      entry = described_class.new(entry_data: { msgid: '%{reason} Manage: %{url} | Help: %{help_url}' }, nplurals: 2)
+
+      expect(entry.msgid_contains_multiple_namespace_pipes?).to be(false)
+    end
+  end
+
   describe '#translations_contain_namespace' do
     it 'is true when the msgstr contains namespace' do
       data = {

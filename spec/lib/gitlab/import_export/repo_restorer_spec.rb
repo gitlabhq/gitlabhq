@@ -68,8 +68,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer, :clean_gitlab_redis_shared_st
 
     context 'when the repository already exists' do
       it 'deletes the existing repository before importing', :aggregate_failures do
-        allow(project.repository).to receive(:exists?).and_return(true)
-        allow(project.repository).to receive(:disk_path).and_return('repository_path')
+        allow(project.repository).to receive_messages(exists?: true, disk_path: 'repository_path')
 
         expect_next_instance_of(::Repositories::DestroyService) do |instance|
           expect(instance).to receive(:execute).and_call_original

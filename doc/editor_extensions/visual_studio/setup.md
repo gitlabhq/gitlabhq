@@ -91,7 +91,22 @@ prerequisites:
 - For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
 - You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
 - For flows, you have [foundational flows turned on](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- For Code Suggestions, you meet the [additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
 - Your project is in a [group namespace](../../user/namespace/_index.md).
 - You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
   set or have a project open that has GitLab Duo access.
-- For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
+
+#### Turn Code Suggestions on or off
+
+Code Suggestions is on by default.
+
+To turn Code Suggestions on or off in Visual Studio, either:
+
+- In the top bar, select **Extensions** > **GitLab** > **Toggle Code Suggestions**.
+- [Assign a keyboard shortcut](#configure-the-extension) to the `GitLab.ToggleCodeSuggestions`
+  command, then use that shortcut.
+
+## Uninstall the extension
+
+To disable or uninstall the extension, see the
+[Microsoft Visual Studio documentation on uninstalling or disabling the extension](https://learn.microsoft.com/en-us/visualstudio/ide/finding-and-using-visual-studio-extensions?view=vs-2022#uninstall-or-disable-an-extension).

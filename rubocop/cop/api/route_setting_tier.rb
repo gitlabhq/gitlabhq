@@ -7,6 +7,8 @@ module RuboCop
       #
       # Tier indicates which paid GitLab subscription tier an endpoint requires.
       # CE (Community Edition) endpoints are implicitly Free and should not declare a tier.
+      # Only literal values are checked. A dynamic value is allowed so that shared CE
+      # route definitions can take the tier from an EE-provided entry.
       #
       # @example
       #
@@ -24,6 +26,9 @@ module RuboCop
       #
       #   # good - endpoint requires Ultimate tier
       #   route_setting :tier, :ultimate
+      #
+      #   # good - tier supplied by an EE override of a shared CE route
+      #   route_setting :tier, noteable_type.tier if noteable_type.tier
       class RouteSettingTier < RuboCop::Cop::Base
         VALID_VALUES = %i[premium ultimate].freeze
 
@@ -49,6 +54,8 @@ module RuboCop
         private
 
         def valid_value?(node)
+          return true unless node.literal?
+
           node.sym_type? && VALID_VALUES.include?(node.value)
         end
       end

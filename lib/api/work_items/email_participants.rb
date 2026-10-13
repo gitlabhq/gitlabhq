@@ -76,8 +76,7 @@ module API
           route_setting :authorization,
             permissions: :read_work_item,
             boundary: -> { namespace_path_boundary },
-            boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
-            job_token_policies: :read_work_items
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           get ':work_item_iid/email_participants' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])
 
@@ -111,8 +110,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
-            boundary_type: :project,
-            job_token_policies: :read_work_items
+            boundary_type: :project
           get ':work_item_iid/email_participants' do
             project = find_project!(params[:id])
 
@@ -146,8 +144,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
-            boundary_type: :group,
-            job_token_policies: :read_work_items
+            boundary_type: :group
           get ':work_item_iid/email_participants' do
             group = find_group!(params[:id])
 

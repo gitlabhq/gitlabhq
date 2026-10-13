@@ -20,4 +20,22 @@ RSpec.shared_examples 'performs exclusions service validations' do
       expect(execute.message).to eq('not authorized')
     end
   end
+
+  context 'when a project is nil', :enable_admin_mode do
+    let(:projects) { [nil] }
+
+    it 'returns an error response' do
+      expect(execute).to be_error
+      expect(execute.message).to eq('not authorized')
+    end
+  end
+
+  context 'when a group is nil', :enable_admin_mode do
+    let(:groups) { [nil] }
+
+    it 'returns an error response' do
+      expect(execute).to be_error
+      expect(execute.message).to eq('not authorized')
+    end
+  end
 end

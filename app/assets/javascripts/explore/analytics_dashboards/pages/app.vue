@@ -3,12 +3,6 @@ import { buildDocumentTitle } from '../utils';
 
 export default {
   name: 'ExploreAnalyticsDashboards',
-  props: {
-    currentUserId: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
       baseTitle: document.title,
@@ -32,5 +26,5 @@ export default {
 </script>
 
 <template>
-  <router-view :current-user-id="currentUserId" />
+  <router-view />
 </template>

@@ -3,9 +3,15 @@
 FactoryBot.define do
   factory :work_item, traits: [:has_internal_id] do
     title { generate(:title) }
-    project
+    project do
+      case @overrides[:namespace]
+      when Group, Namespaces::UserNamespace then nil
+      when Namespaces::ProjectNamespace then @overrides[:namespace].project
+      else association(:project)
+      end
+    end
     namespace { project&.project_namespace }
-    author { project.creator }
+    author { project&.creator || association(:user) }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
     association :work_item_type, factory: :work_item_system_defined_type

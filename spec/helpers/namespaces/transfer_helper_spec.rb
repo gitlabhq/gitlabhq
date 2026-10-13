@@ -60,8 +60,8 @@ RSpec.describe Namespaces::TransferHelper, feature_category: :groups_and_project
 
     where(:namespace, :expected_message) do
       # rubocop:disable Layout/LineLength -- TableSyntax
-      ref(:group)   | s_('TransferGroup|This group is scheduled for transfer. Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.')
-      ref(:project) | s_('TransferProject|This project is scheduled for transfer. Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.')
+      ref(:group)   | s_('TransferGroup|This group is scheduled for transfer. If the transfer fails, the user who started it receives a to-do item with the reason.')
+      ref(:project) | s_('TransferProject|This project is scheduled for transfer. If the transfer fails, the user who started it receives a to-do item with the reason.')
       # rubocop:enable Layout/LineLength
     end
 

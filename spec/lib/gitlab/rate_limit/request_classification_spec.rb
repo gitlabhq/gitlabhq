@@ -65,6 +65,16 @@ RSpec.describe Gitlab::RateLimit::RequestClassification, feature_category: :rate
     end
   end
 
+  describe 'MCP_PATH_REGEX' do
+    subject { described_class::MCP_PATH_REGEX }
+
+    it { is_expected.to match('/api/v4/mcp') }
+    it { is_expected.to match('/api/v5/mcp') }
+    it { is_expected.not_to match('/api/v4/mcp_tokens') }
+    it { is_expected.not_to match('/api/v4/orbit/mcp') }
+    it { is_expected.not_to match('/.well-known/oauth-protected-resource/api/v4/mcp') }
+  end
+
   describe '#api_internal_request?' do
     subject { request.api_internal_request? }
 

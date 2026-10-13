@@ -48,27 +48,12 @@ RSpec.describe Sidebars::Admin::Panel, feature_category: :navigation do
     end
   end
 
-  describe 'SSH certificate authorities menu' do
-    before do
-      allow(InstanceSshCertificate).to receive(:available?).and_return(available)
-    end
+  describe 'Access menu' do
+    it 'renders directly below the instance overview' do
+      menu_classes = panel.instance_variable_get(:@menus).map(&:class)
+      overview_index = menu_classes.index(Sidebars::Admin::Menus::AdminOverviewMenu)
 
-    context 'when instance SSH certificates are available' do
-      let(:available) { true }
-
-      it 'includes the SshCertificatesMenu' do
-        expect(panel.instance_variable_get(:@menus).map(&:class))
-          .to include(Sidebars::Admin::Menus::SshCertificatesMenu)
-      end
-    end
-
-    context 'when instance SSH certificates are unavailable' do
-      let(:available) { false }
-
-      it 'does not include the SshCertificatesMenu' do
-        expect(panel.instance_variable_get(:@menus).map(&:class))
-          .not_to include(Sidebars::Admin::Menus::SshCertificatesMenu)
-      end
+      expect(menu_classes[overview_index + 1]).to eq(Sidebars::Admin::Menus::AccessMenu)
     end
   end
 end

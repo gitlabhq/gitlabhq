@@ -35,8 +35,9 @@ Parameters:
 | `simple`  | boolean        | no       | If `true`, only returns limited fields for each release. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>"
-   --url "https://gitlab.example.com/api/v4/groups/5/releases"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/releases"
 ```
 
 Example response:

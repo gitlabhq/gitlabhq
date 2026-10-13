@@ -313,8 +313,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
 
   describe 'GET external_file' do
     before do
-      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-      allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+      allow(Gitlab.config.pages).to receive_messages(enabled: true, artifacts_server: true)
     end
 
     context 'when the file exists' do
@@ -420,8 +419,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
 
       context 'with pages access control enabled' do
         before do
-          allow(Gitlab.config.pages).to receive(:access_control).and_return(true)
-          allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+          allow(Gitlab.config.pages).to receive_messages(access_control: true, artifacts_server: true)
         end
 
         it 'renders the file view' do

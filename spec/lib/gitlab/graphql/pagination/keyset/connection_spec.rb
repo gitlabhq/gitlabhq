@@ -142,7 +142,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
           let(:nodes) { Project.all.order(Gitlab::Pagination::Keyset::Order.build([column_order_id_desc])) }
 
           it 'returns the correct nodes' do
-            expect(subject.sliced_nodes).to contain_exactly(*projects[2..])
+            expect(subject.sliced_nodes).to match_array(projects[2..])
           end
         end
       end
@@ -151,7 +151,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
         let(:arguments) { { after: encoded_cursor(projects[1]) } }
 
         it 'only returns the project before the selected one' do
-          expect(subject.sliced_nodes).to contain_exactly(*projects[2..])
+          expect(subject.sliced_nodes).to match_array(projects[2..])
         end
 
         context 'when the sort order is descending' do

@@ -134,6 +134,16 @@ module CommitsHelper
     }
   end
 
+  def commit_pipeline_summary_data(project, pipeline)
+    return unless pipeline&.iid && can?(current_user, :read_pipeline, pipeline)
+
+    {
+      full_path: project.full_path,
+      iid: pipeline.iid,
+      graphql_resource_etag: graphql_etag_pipeline_path(pipeline)
+    }
+  end
+
   def conditionally_paginate_diff_files(diffs, paginate:, page:, per:)
     if paginate
       diff_files = diffs.diff_files.to_a

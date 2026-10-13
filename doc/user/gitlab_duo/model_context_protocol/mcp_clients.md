@@ -44,7 +44,7 @@ The same MCP configuration file works across all supported IDEs and the GitLab D
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
 - [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md)
-- The [Software Development Flow](../../duo_agent_platform/flows/foundational_flows/software_development.md)
+- The [Software Development Flow](../../../editor_extensions/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
 
@@ -280,6 +280,14 @@ GitLab uses a two-tier approval system for MCP tools:
   These approvals are cleared when you close your IDE or end the workflow.
 
 A tool is approved if either condition is met.
+
+### Sandbox settings
+
+When the [local sandbox](../../../editor_extensions/local_sandbox.md) is turned on,
+MCP servers that use the `stdio` transport run in the sandbox.
+To change the sandbox rules for one server, add a `sandbox` object to its configuration.
+For more information, see
+[configure the sandbox for an MCP server](../../../editor_extensions/local_sandbox.md#configure-the-sandbox-for-an-mcp-server).
 
 ### Example MCP server configurations
 

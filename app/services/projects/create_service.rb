@@ -128,6 +128,8 @@ module Projects
     def after_create_actions
       log_info("#{current_user.name} created a new project \"#{@project.full_name}\"")
 
+      setup_authorizations
+
       if @project.import?
         Gitlab::Tracking.event(self.class.name, 'import_project', user: current_user)
       end
@@ -144,8 +146,6 @@ module Projects
 
       event_service.create_project(@project, current_user)
       execute_hooks
-
-      setup_authorizations
 
       project.invalidate_personal_projects_count_of_owner
 

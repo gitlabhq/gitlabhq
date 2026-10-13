@@ -151,4 +151,31 @@ RSpec.shared_examples 'known sign in' do
       post_action
     end
   end
+
+  context 'when the sign-in write is throttled', :clean_gitlab_redis_shared_state do
+    before do
+      # Takes the hourly lease, so the sign-in under test does not write the tracked fields.
+      user.update_tracked_fields!(instance_double(ActionDispatch::Request, remote_ip: '169.0.0.1'))
+      user.update_columns(last_sign_in_ip: '10.0.0.1', current_sign_in_at: 40.minutes.ago)
+    end
+
+    it 'does not notify the user when the remote IP matches the previous sign-in IP' do
+      stub_remote_ip('169.0.0.1')
+
+      expect(NotificationService).not_to receive(:new)
+
+      post_action
+    end
+
+    it 'passes the time of this sign-in to the notification' do
+      stub_remote_ip('8.8.8.8')
+
+      expect_next_instance_of(NotificationService) do |instance|
+        expect(instance).to receive(:unknown_sign_in)
+          .with(user, '8.8.8.8', a_value_within(1.minute).of(Time.current), anything)
+      end
+
+      post_action
+    end
+  end
 end

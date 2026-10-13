@@ -29,6 +29,18 @@ test the complete restore process before using it in production.
 
 ## Restore prerequisites
 
+### The backup directory must have enough free space
+
+Before a restore extracts the backup archive, GitLab checks the free space in the backup directory.
+The directory must have free space equal to at least three times the size of the archive.
+If there isn't enough space, or GitLab can't check, the restore stops before it extracts or
+restores any data.
+
+This check is an estimate. The restore can still run out of space if data expands beyond the
+estimate, or on other file systems.
+The check doesn't run when you [restore an untarred backup](#restore-untarred-backups).
+To skip it, see [Skip the disk space check](#skip-the-disk-space-check).
+
 ### The destination GitLab instance must already be working
 
 You need to have a working GitLab installation before you can perform a
@@ -449,6 +461,32 @@ To disable these prompts, set the `GITLAB_ASSUME_YES` environment variable to `1
   ```
 
 The `force=yes` environment variable also disables these prompts.
+
+### Skip the disk space check
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260096) in GitLab 19.5.
+
+{{< /history >}}
+
+Before a restore extracts the backup archive, GitLab
+[checks for enough free space](#the-backup-directory-must-have-enough-free-space).
+To skip this check, set the `BACKUP_SKIP_STORAGE_CHECK` environment variable to `true`.
+Skip the check only after you confirm your instance has enough storage.
+If storage fills up, the restore can fail or stop responding.
+
+- Linux package installations:
+
+  ```shell
+  sudo BACKUP_SKIP_STORAGE_CHECK=true gitlab-backup restore BACKUP=<backup-id>
+  ```
+
+- Self-compiled installations:
+
+  ```shell
+  sudo -u git -H BACKUP_SKIP_STORAGE_CHECK=true bundle exec rake gitlab:backup:restore BACKUP=<backup-id> RAILS_ENV=production
+  ```
 
 ### Excluding tasks on restore
 

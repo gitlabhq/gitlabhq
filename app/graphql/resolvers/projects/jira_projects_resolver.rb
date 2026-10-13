@@ -21,7 +21,7 @@ module Resolvers
         if response.success?
           projects_array = response.payload[:projects]
 
-          GraphQL::Pagination::ArrayConnection.new(
+          Gitlab::Graphql::Pagination::ArrayConnection.new(
             projects_array,
             # override default max_page_size to whatever the size of the response is,
             # see https://gitlab.com/gitlab-org/gitlab/-/issues/231394

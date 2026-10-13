@@ -6,7 +6,6 @@
 # - `organization`: the request's organization, able to enter maintenance mode
 #   (must not already be in maintenance; the example transitions it)
 # - `request`: makes the request under test
-# - `success_status`: the HTTP status returned when maintenance is not enforced
 RSpec.shared_examples 'an API request enforcing organization maintenance mode' do
   context 'for a time-bounded maintenance reason' do
     before do
@@ -38,18 +37,43 @@ RSpec.shared_examples 'an API request enforcing organization maintenance mode' d
       expect(response.headers['Retry-After']).to be_nil
     end
   end
+end
 
-  context 'when enforcement is disabled' do
+# Shared example for controller (HTML) requests that enforce organization
+# maintenance mode. Unlike the API variant, the response is not JSON, so the
+# message is asserted against the response body rather than json_response.
+#
+# Requires the caller to define:
+# - `organization`: the request's organization, able to enter maintenance mode
+#   (must not already be in maintenance; the example transitions it)
+# - `request`: makes the request under test
+RSpec.shared_examples 'a controller request enforcing organization maintenance mode' do
+  context 'for a time-bounded maintenance reason' do
     before do
       organization.start_maintenance(maintenance_reason: 'migration')
       organization.confirm_maintenance
-      stub_feature_flags(organization_maintenance_enforcement: false)
     end
 
-    it 'allows the request' do
+    it 'blocks the request with service unavailable and a Retry-After header', :aggregate_failures do
       request
 
-      expect(response).to have_gitlab_http_status(success_status)
+      expect(response).to have_gitlab_http_status(:service_unavailable)
+      expect(response.headers['Retry-After']).to eq('60')
+      expect(response.body).to include(_('This organization is temporarily unavailable due to maintenance.'))
+    end
+  end
+
+  context 'for an indefinite maintenance reason' do
+    before do
+      organization.start_maintenance(maintenance_reason: 'legal')
+      organization.confirm_maintenance
+    end
+
+    it 'blocks the request with forbidden and no Retry-After header', :aggregate_failures do
+      request
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response.headers['Retry-After']).to be_nil
     end
   end
 end

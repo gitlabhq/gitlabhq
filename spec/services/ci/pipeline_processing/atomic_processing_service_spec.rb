@@ -1164,7 +1164,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
     context 'when a bridge job has parallel:matrix config', :sidekiq_inline do
       let(:parent_config) do
-        <<-EOY
+        <<-YAML
         test:
           stage: test
           script: echo test
@@ -1177,15 +1177,15 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
             matrix:
               - PROVIDER: ovh
                 STACK: [monitoring, app]
-        EOY
+        YAML
       end
 
       let(:child_config) do
-        <<-EOY
+        <<-YAML
         test:
           stage: test
           script: echo test
-        EOY
+        YAML
       end
 
       let(:pipeline) do
@@ -1227,7 +1227,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
     context 'when a bridge job has invalid downstream project', :sidekiq_inline do
       let(:config) do
-        <<-EOY
+        <<-YAML
         test:
           stage: test
           script: echo test
@@ -1236,7 +1236,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           stage: deploy
           trigger:
             project: invalid-project
-        EOY
+        YAML
       end
 
       let(:pipeline) do
@@ -1260,7 +1260,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
     context 'when the dependency is stage-independent', :sidekiq_inline do
       let(:config) do
-        <<-EOY
+        <<-YAML
         stages: [A, B]
 
         A1:
@@ -1277,7 +1277,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           stage: B
           needs: [A2]
           script: exit 0
-        EOY
+        YAML
       end
 
       let(:pipeline) do
@@ -1300,10 +1300,10 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     end
 
     context 'when the exclusive lease is taken' do
+      let(:pipeline) { build_stubbed(:ci_empty_pipeline, ref: 'master', project: project) }
       let(:lease_key) { "ci/pipeline_processing/atomic_processing_service::pipeline_id:#{pipeline.id}" }
 
       before do
-        create_build('linux', stage_idx: 0)
         stub_exclusive_lease_taken(lease_key)
       end
 

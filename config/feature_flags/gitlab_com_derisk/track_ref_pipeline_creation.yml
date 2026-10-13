@@ -1,0 +1,10 @@
+---
+name: track_ref_pipeline_creation
+description: Track pipeline creation at the ref level to prevent auto-merge race conditions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595420
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258481
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/597220
+milestone: "19.5"
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

@@ -1,6 +1,6 @@
 import hljsCore from 'highlight.js/lib/core';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
-import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
+import { ROUGE_TO_HLJS_LANGUAGE_MAP } from './constants';
 import { registerPlugins } from './plugins/index';
 
 const loadLanguage = async (language, hljs) => {

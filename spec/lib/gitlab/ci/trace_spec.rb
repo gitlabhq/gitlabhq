@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
   context 'when trace is migrated to object storage' do
     let!(:job) { create(:ci_build, :trace_artifact) }
     let!(:artifact1) { job.job_artifacts_trace }
-    let!(:artifact2) { job.reload.job_artifacts_trace }
     let(:test_data) { "hello world" }
 
     before do
@@ -54,6 +53,14 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
   describe '#update_interval' do
     context 'it is not being watched' do
       it { expect(trace.update_interval).to eq(60.seconds) }
+
+      context 'with a configured update interval' do
+        before do
+          stub_application_setting(ci_job_trace_update_interval: 10)
+        end
+
+        it { expect(trace.update_interval).to eq(10.seconds) }
+      end
     end
 
     context 'it is being watched' do
@@ -63,6 +70,14 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
 
       it 'returns 3 seconds' do
         expect(trace.update_interval).to eq(3.seconds)
+      end
+
+      context 'with a configured update interval' do
+        before do
+          stub_application_setting(ci_job_trace_update_interval_when_being_watched: 5)
+        end
+
+        it { expect(trace.update_interval).to eq(5.seconds) }
       end
     end
   end

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   include Ci::PipelineVariableHelpers
+  include ExclusiveLeaseHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
@@ -26,7 +27,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     )
   end
 
-  describe 'GET /projects/:id/pipelines ' do
+  describe 'GET /projects/:id/pipelines' do
     describe 'mcp route setting' do
       subject { get api("/projects/#{project.id}/pipelines", user) }
 
@@ -823,7 +824,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     it_behaves_like 'listing trigger jobs by pipeline', 'bridges'
   end
 
-  describe 'POST /projects/:id/pipeline ' do
+  describe 'POST /projects/:id/pipeline' do
     def expect_variables(variables, expected_variables)
       variables.each_with_index do |variable, index|
         expected_variable = expected_variables[index]
@@ -875,6 +876,21 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
             expect(json_response).to be_a Hash
             expect(json_response['sha']).to eq project.commit.id
             expect(json_response).not_to have_key('variables')
+          end
+        end
+
+        context 'when a variables entry is not an object' do
+          [['UPLOAD_TO_S3=true'], [%w[UPLOAD_TO_S3 true]], [nil]].each do |variables|
+            it "rejects #{variables.inspect}", :aggregate_failures do
+              expect do
+                post api("/projects/#{project.id}/pipeline", user),
+                  params: { ref: project.default_branch, variables: variables }.to_json,
+                  headers: { 'Content-Type' => 'application/json' }
+              end.not_to change { project.ci_pipelines.count }
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['error']).to eq('variables[0] is not an object')
+            end
           end
         end
 
@@ -1340,7 +1356,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
   end
 
-  describe 'DELETE /projects/:id/pipelines/:pipeline_id' do
+  describe 'DELETE /projects/:id/pipelines/:pipeline_id', :clean_gitlab_redis_rate_limiting do
     describe 'mcp route setting' do
       subject { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", project.first_owner) }
 
@@ -1367,6 +1383,23 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       it 'does not log an audit event' do
         expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.not_to change { AuditEventReader.count }
+      end
+
+      context 'when the rate limit is exceeded', :freeze_time do
+        before do
+          stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+
+          ::Ci::DestroyPipelineService.new(project, owner).execute(create(:ci_pipeline, project: project))
+        end
+
+        it 'returns 429 and leaves the pipeline in place', :aggregate_failures do
+          delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+          expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+          expect(pipeline.reload).to be_persisted
+        end
       end
 
       context 'when the pipeline has jobs' do
@@ -1582,6 +1615,46 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(json_response['id']).to be_nil
       end
     end
+
+    context 'when the pipeline retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      let_it_be(:pipeline) do
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+      end
+
+      before do
+        stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+      end
+
+      it 'returns 429', :aggregate_failures do
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+        expect(response).to have_gitlab_http_status(:created)
+
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']).to eq(_('This endpoint has been requested too many times. Try again later.'))
+      end
+    end
+
+    context 'when another retry of the pipeline is in progress' do
+      let_it_be(:pipeline) do
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+      end
+
+      before do
+        stub_exclusive_lease_taken(
+          "ci:retry_pipeline_service:lock:#{pipeline.id}",
+          timeout: ::Ci::RetryPipelineService::LOCK_TIMEOUT
+        )
+      end
+
+      it 'returns 409', :aggregate_failures do
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+
+        expect(response).to have_gitlab_http_status(:conflict)
+        expect(json_response['message']).to eq('Pipeline is already being retried')
+      end
+    end
   end
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do
@@ -1616,6 +1689,23 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         let(:boundary_object) { project }
         let(:request) do
           post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", personal_access_token: pat)
+        end
+      end
+
+      context 'when the pipeline cancel rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        before do
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+        end
+
+        it 'returns 429', :aggregate_failures do
+          post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
+          expect(response).to have_gitlab_http_status(:ok)
+
+          post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+          expect(json_response['message']).to eq(_('This endpoint has been requested too many times. Try again later.'))
         end
       end
     end
@@ -1807,6 +1897,96 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
       end
+    end
+  end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of get_pipeline_jobs' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_pipeline_jobs').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'pipeline_id' => {
+            type: 'integer',
+            description: 'ID of the pipeline.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          }
+        },
+        required: %w[id pipeline_id],
+        additionalProperties: false
+      })
+    end
+
+    it 'locks the full input schema of list_pipelines' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'list_pipelines').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'ref' => {
+            type: 'string',
+            description: 'Return pipelines for the specified branch or tag.'
+          },
+          'status' => {
+            type: 'string',
+            description: 'Return pipelines with the specified status.',
+            enum: %w[
+              created waiting_for_resource preparing waiting_for_callback pending running success failed canceling
+              canceled skipped manual scheduled
+            ]
+          },
+          'source' => {
+            type: 'string',
+            description: 'The source of pipelines',
+            enum: %w[
+              unknown push web trigger schedule api external pipeline chat webide merge_request_event
+              external_pull_request_event parent_pipeline ondemand_dast_scan ondemand_dast_validation
+              security_orchestration_policy container_registry_push duo_workflow pipeline_execution_policy_schedule
+              dependency_management_security_update
+            ]
+          },
+          'created_after' => {
+            type: 'string',
+            description: 'Return pipelines created after the specified time.'
+          },
+          'created_before' => {
+            type: 'string',
+            description: 'Return pipelines created before the specified time.'
+          },
+          'order_by' => {
+            type: 'string',
+            description: 'Sort results by the specified field.',
+            enum: %w[id status ref updated_at user_id]
+          },
+          'sort' => {
+            type: 'string',
+            description: 'Sort results in ascending or descending order.',
+            enum: %w[asc desc]
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          }
+        },
+        required: %w[id],
+        additionalProperties: false
+      })
     end
   end
 end

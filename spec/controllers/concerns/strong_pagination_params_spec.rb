@@ -33,7 +33,7 @@ RSpec.describe StrongPaginationParams, feature_category: :tooling do
       )
     end
 
-    expect(controller.pagination_params.keys).to contain_exactly(*%w[page per_page limit sort order_by pagination])
+    expect(controller.pagination_params.keys).to match_array(%w[page per_page limit sort order_by pagination])
   end
 
   it 'returns a StrongParameters object' do

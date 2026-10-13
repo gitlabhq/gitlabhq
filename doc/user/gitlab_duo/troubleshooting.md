@@ -187,6 +187,6 @@ you can also do the following:
   - Verify that [a subscription add-on has been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
   - Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - For your IDE:
-  - Verify that the [extension](../project/repository/code_suggestions/set_up.md#configure-editor-extension)
+  - Verify that the [extension](../project/repository/code_suggestions/set_up.md#configure-an-editor-extension)
     or plugin is up-to-date.
   - Run health checks, and test the authentication.

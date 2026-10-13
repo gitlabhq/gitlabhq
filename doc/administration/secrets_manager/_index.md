@@ -9,7 +9,6 @@ title: GitLab Secrets Manager (OpenBao)
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -17,6 +16,7 @@ title: GitLab Secrets Manager (OpenBao)
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16319) in GitLab 18.8 as an experiment, made available to some initial testers in a closed [beta](../../policy/development_stages_support.md#beta) in GitLab 18.8.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/21731) from closed beta to public beta in GitLab 19.0.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/17903) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -146,7 +146,7 @@ and provisioning spikes without over-reserving on the node during steady state.
 
 **Memory** is driven by the number of OpenBao namespaces, which corresponds to
 the number of GitLab groups and projects with Secrets Manager enabled.
-Allocate approximately 5 MB per namespace, plus a 1 GB safety margin,
+Allocate approximately 1 MB per namespace, plus a 1 GB safety margin,
 with a minimum of 2 GB.
 Set the memory limit equal to the memory request (Guaranteed QoS class).
 OpenBao crashes immediately when it exceeds its memory limit with no graceful degradation.
@@ -197,20 +197,9 @@ Allocating 5 to 10 GB of database storage provides ample headroom.
 
 {{< /history >}}
 
-When Secrets Manager is enabled for the instance,
-you can then enable it for specific [groups and projects](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager).
+After you install OpenBao, an administrator can enable GitLab Secrets Manager for the instance.
 
-Prerequisites:
-
-- Administrator access.
-- OpenBao must be installed and configured.
-
-To enable the Secret Manager for the instance:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **General**.
-1. Expand **GitLab Secrets Manager**.
-1. Turn on the **Secrets Manager** toggle.
+For more information, see [enable GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md#for-gitlab-self-managed).
 
 ## Monitor your OpenBao deployment
 
@@ -239,11 +228,11 @@ sum(container_memory_working_set_bytes{container="openbao-server"})
 ```
 
 The result is in bytes. Memory grows as groups and projects enable Secrets Manager, at approximately
-5 MB per namespace. After a restart, memory stabilizes as OpenBao loads namespace metadata
+1 MB per namespace. After a restart, memory stabilizes as OpenBao loads namespace metadata
 from the database.
 
 To calculate the correct memory request, count the groups and projects with Secrets Manager
-enabled and multiply by 5 MB, then add 1 GB. Update your pod resources if the result exceeds
+enabled and multiply by 1 MB, then add 1 GB. Update your pod resources if the result exceeds
 your current memory request. If memory shows a sustained upward trend with no active
 provisioning, investigate for potential issues.
 
@@ -372,6 +361,10 @@ connected to a PostgreSQL read replica.
 PostgreSQL streaming replication carries all OpenBao data (secrets, policies, authentication
 configuration) from the primary to the secondary site automatically.
 
+> [!note]
+> Geo [selective synchronization](../geo/replication/selective_synchronization.md) does not apply to
+> OpenBao secrets or policies, which replicate regardless of selective synchronization settings.
+
 Both GitLab instances (primary and secondary) connect to the primary OpenBao URL. The secondary
 OpenBao deployment remains in standby, and is promoted to active when the secondary
 PostgreSQL database becomes writable during a
@@ -386,7 +379,7 @@ acquire the HA leader lock on a read-only database.
 Prerequisites:
 
 - Geo must be configured. For more information, see [Set up Geo](../geo/setup/_index.md).
-- OpenBao must be installed and working on the primary site before you deploy it on the secondary.
+- OpenBao must be installed and working on the primary site before you deploy it on the secondary site.
   For more information, see [Install OpenBao](#install-openbao).
 
 1. The secondary OpenBao must use the same unseal configuration as the primary to decrypt replicated data.

@@ -15,11 +15,12 @@ module NotesActions
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_last_fetched_at_header!, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
-    before_action :authorize_admin_note!, only: [:update, :destroy]
+    before_action :authorize_update_note!, only: [:update]
+    before_action :authorize_delete_note!, only: [:destroy]
     before_action :note_project, only: [:create]
     before_action -> {
       check_rate_limit!(:notes_create,
-        scope: current_user,
+        scope: { user: current_user },
         users_allowlist: Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist)
     }, only: [:create]
   end
@@ -40,6 +41,8 @@ module NotesActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
     @note = Notes::CreateService.new(note_project, current_user, create_note_params).execute
+
+    update_discussion_resolved_state(@note) if @note.persisted?
 
     respond_to do |format|
       format.json do
@@ -222,8 +225,12 @@ module NotesActions
     )
   end
 
-  def authorize_admin_note!
-    access_denied! unless can?(current_user, :admin_note, note)
+  def authorize_update_note!
+    access_denied! unless can?(current_user, :update_note, note)
+  end
+
+  def authorize_delete_note!
+    access_denied! unless can?(current_user, :delete_note, note)
   end
 
   def create_note_params
@@ -260,6 +267,23 @@ module NotesActions
 
   def note_context_params
     params.permit(:merge_request_diff_head_sha, :in_reply_to_discussion_id)
+  end
+
+  def update_discussion_resolved_state(note)
+    resolve = Gitlab::Utils.to_boolean(params.permit(:resolve_discussion)[:resolve_discussion])
+    return if resolve.nil?
+
+    note.discussion.tap do |discussion|
+      break unless discussion.can_resolve?(current_user)
+
+      if resolve
+        Discussions::ResolveService.new(note.project, current_user, one_or_more_discussions: discussion).execute
+      else
+        Discussions::UnresolveService.new(discussion, current_user).execute
+      end
+
+      note.reset
+    end
   end
 
   def note_commit_id_param

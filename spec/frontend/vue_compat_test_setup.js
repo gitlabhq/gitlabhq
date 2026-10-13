@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import-x/no-commonjs */
 const Vue = require('vue');
 const VTU = require('@vue/test-utils');
 const { installCompat: installVTUCompat, fullCompatConfig } = require('vue-test-utils-compat');

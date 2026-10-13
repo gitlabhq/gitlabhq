@@ -11,7 +11,7 @@ RSpec.describe Gitlab::HealthChecks::Redis do
 
     it "contains a check for each active redis instance" do
       active_classes = Gitlab::Redis::ALL_CLASSES.select(&:active?)
-      expect(subject.map(&:redis_instance_class_name)).to contain_exactly(*active_classes)
+      expect(subject.map(&:redis_instance_class_name)).to match_array(active_classes)
     end
   end
 

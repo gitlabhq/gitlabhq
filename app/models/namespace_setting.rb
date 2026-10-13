@@ -8,7 +8,9 @@ class NamespaceSetting < ApplicationRecord
   include SafelyChangeColumnDefault
   include NullifyIfBlank
 
-  columns_changing_default :require_dpop_for_manage_api_endpoints
+  columns_changing_default :require_dpop_for_manage_api_endpoints, :mcp_server_enabled
+
+  attribute :mcp_server_enabled, default: true
 
   MAX_AI_CUSTOM_INSTRUCTIONS_LENGTH = 2_000
 

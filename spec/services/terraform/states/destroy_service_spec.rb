@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Terraform::States::DestroyService, feature_category: :infrastructure_as_code do
-  let_it_be(:state) { create(:terraform_state, :with_version, :deletion_in_progress) }
+  let(:state) { create(:terraform_state, :with_version, :deletion_in_progress) }
 
   let(:file) { instance_double(Terraform::StateUploader, relative_path: 'path') }
 
@@ -14,22 +14,79 @@ RSpec.describe Terraform::States::DestroyService, feature_category: :infrastruct
   end
 
   describe '#execute' do
-    subject { described_class.new(state).execute }
+    subject(:execute) { described_class.new(state).execute }
 
-    it 'removes version files from object storage, followed by the state record' do
-      expect(file).to receive(:remove!).once
-      expect(state).to receive(:destroy!)
+    context 'when delayed deletion is disabled' do
+      before do
+        stub_feature_flags(terraform_state_delayed_deletion: false)
+      end
 
-      subject
+      it 'removes version files from object storage, followed by the state record' do
+        expect(file).to receive(:remove!).once
+        expect(state).to receive(:destroy!)
+
+        execute
+      end
     end
 
-    context 'state is not marked for deletion' do
+    context 'when delayed deletion is enabled' do
+      let(:state) { create(:terraform_state, :with_version, :deletion_in_progress) }
+
+      around do |example|
+        travel_to(Time.zone.local(2026, 1, 1, 12, 0, 0)) { example.run }
+      end
+
+      before do
+        stub_feature_flags(terraform_state_delayed_deletion: state.project)
+      end
+
+      context 'when the state was deleted within the grace period' do
+        before do
+          state.update!(deleted_at: Terraform::State::GRACE_PERIOD.ago + 1.second)
+        end
+
+        it 'does not remove files or destroy the state record' do
+          expect(file).not_to receive(:remove!)
+          expect(state).not_to receive(:destroy!)
+
+          execute
+        end
+      end
+
+      context 'when the state was deleted exactly at the grace-period boundary' do
+        before do
+          state.update!(deleted_at: Terraform::State::GRACE_PERIOD.ago)
+        end
+
+        it 'removes version files and destroys the state record' do
+          expect(file).to receive(:remove!).once
+          expect(state).to receive(:destroy!)
+
+          execute
+        end
+      end
+
+      context 'when the state was deleted before the grace period' do
+        before do
+          state.update!(deleted_at: Terraform::State::GRACE_PERIOD.ago - 1.second)
+        end
+
+        it 'removes version files and destroys the state record' do
+          expect(file).to receive(:remove!).once
+          expect(state).to receive(:destroy!)
+
+          execute
+        end
+      end
+    end
+
+    context 'when the state is not marked for deletion' do
       let(:state) { create(:terraform_state) }
 
       it 'does not delete the state' do
         expect(state).not_to receive(:destroy!)
 
-        subject
+        execute
       end
     end
   end

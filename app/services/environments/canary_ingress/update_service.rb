@@ -46,7 +46,8 @@ module Environments
           return error(_('There are running deployments on the environment. Please retry later.'))
         end
 
-        if ::Gitlab::ApplicationRateLimiter.throttled?(:update_environment_canary_ingress, scope: [environment])
+        if ::Gitlab::ApplicationRateLimiter.throttled?(:update_environment_canary_ingress,
+          scope: { environment: environment })
           return error(_("This environment's canary ingress has been updated recently. Please retry later."))
         end
 

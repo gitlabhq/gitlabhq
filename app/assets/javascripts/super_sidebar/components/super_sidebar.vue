@@ -6,9 +6,19 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { s__ } from '~/locale';
-import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { JS_TOGGLE_EXPAND_CLASS, SETTINGS_DISCLOSURE_PORTAL_NAME } from '../constants';
+import AccessorUtilities from '~/lib/utils/accessor';
+import {
+  JS_TOGGLE_EXPAND_CLASS,
+  PANEL_TYPES,
+  PANELS_WITH_HIDEABLE_UNPINNED_ITEMS,
+  SETTINGS_DISCLOSURE_PORTAL_NAME,
+  SIDEBAR_NAV_MODE_PINNED_ONLY,
+  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
+  SIDEBAR_NAV_MODE_GROUPED_PINS,
+  SIDEBAR_NAV_MODES,
+  SIDEBAR_NAV_MODE_STORAGE_KEY,
+} from '../constants';
 import { sidebarState } from '../state';
 import {
   isCollapsed,
@@ -16,11 +26,11 @@ import {
   toggleSuperSidebarIconOnly,
 } from '../super_sidebar_collapsed_state_manager';
 import { trackContextAccess } from '../utils';
-import SidebarPortalTarget from './sidebar_portal_target.vue';
 import IconOnlyToggle from './icon_only_toggle.vue';
 import ManageOrganizationButton from './manage_organization_button.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
+import SidebarPreferences from './sidebar_preferences.vue';
 import ScrollScrim from './scroll_scrim.vue';
 
 export default {
@@ -30,14 +40,14 @@ export default {
     ManageOrganizationButton,
     HelpCenter,
     SidebarMenu,
-    SidebarPortalTarget,
+    SidebarPreferences,
     ScrollScrim,
     PortalTarget,
     TrialWidget: defineAsyncComponent(
       () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
     ),
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin()],
   settingsDisclosurePortalName: SETTINGS_DISCLOSURE_PORTAL_NAME,
   i18n: {
     primaryNavigation: s__('Navigation|Primary navigation'),
@@ -46,6 +56,7 @@ export default {
   provide() {
     return {
       isIconOnly: computed(() => this.isIconOnly),
+      panelType: this.sidebarData.panel_type,
     };
   },
   props: {
@@ -60,6 +71,9 @@ export default {
       isMouseover: false,
       isAnimatable: false,
       wasToggledManually: false,
+      // User's chosen navigation mode (persisted), one of SIDEBAR_NAV_MODE_*.
+      // The three modes are mutually exclusive by construction.
+      navMode: this.readNavMode(),
     };
   },
   computed: {
@@ -82,6 +96,39 @@ export default {
     },
     manageOrganizationPath() {
       return this.sidebarData.manage_organization_link;
+    },
+    isInOrganizationAdminArea() {
+      return this.sidebarData.panel_type === PANEL_TYPES.ORGANIZATION_ADMIN;
+    },
+    panelType() {
+      return this.sidebarData.panel_type;
+    },
+    // Mirror of SidebarMenu#showUnpinnedItems: the control only makes sense when
+    // the flag hides unpinned items for a pinnable, non-organization panel.
+    canToggleOldCategories() {
+      return (
+        this.glFeatures.hideUnpinnedSidebarItems &&
+        PANELS_WITH_HIDEABLE_UNPINNED_ITEMS.includes(this.panelType)
+      );
+    },
+    // SidebarMenu still consumes two independent booleans; derive them from the
+    // single navMode so the mutual exclusivity is guaranteed by construction.
+    showOldCategories() {
+      return this.navMode === SIDEBAR_NAV_MODE_ALL_CATEGORIES;
+    },
+    groupPinned() {
+      return this.navMode === SIDEBAR_NAV_MODE_GROUPED_PINS;
+    },
+    // Settings portals into the context header when it renders, else the footer.
+    showHeaderSettingsDisclosure() {
+      return (
+        this.glFeatures.hideUnpinnedSidebarItems &&
+        Boolean(this.sidebarData.current_context_header) &&
+        !this.isIconOnly
+      );
+    },
+    showFooterSettingsDisclosure() {
+      return this.glFeatures.hideUnpinnedSidebarItems && !this.showHeaderSettingsDisclosure;
     },
   },
   watch: {
@@ -180,6 +227,19 @@ export default {
     handleTransitionEnd() {
       this.wasToggledManually = false;
     },
+    readNavMode() {
+      if (!AccessorUtilities.canUseLocalStorage()) return SIDEBAR_NAV_MODE_PINNED_ONLY;
+
+      const stored = localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY);
+
+      return SIDEBAR_NAV_MODES.includes(stored) ? stored : SIDEBAR_NAV_MODE_PINNED_ONLY;
+    },
+    setNavMode(mode) {
+      this.navMode = mode;
+      if (AccessorUtilities.canUseLocalStorage()) {
+        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, mode);
+      }
+    },
   },
 };
 </script>
@@ -206,9 +266,17 @@ export default {
         <div
           v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"
-          class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
+          class="super-sidebar-context-header gl-m-0 gl-flex gl-items-center gl-gap-2 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
-          {{ sidebarData.current_context_header }}
+          <span id="super-sidebar-context-header-title" class="gl-min-w-0 gl-grow">{{
+            sidebarData.current_context_header
+          }}</span>
+          <portal-target
+            v-if="showHeaderSettingsDisclosure"
+            :name="$options.settingsDisclosurePortalName"
+            class="gl-shrink-0"
+          />
+          <sidebar-preferences v-if="canToggleOldCategories" :mode="navMode" @select="setNavMode" />
         </div>
         <scroll-scrim class="gl-grow" data-testid="nav-container">
           <sidebar-menu
@@ -218,13 +286,14 @@ export default {
             :is-logged-in="sidebarData.is_logged_in"
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"
-            :show-feedback-link="sidebarData.show_feature_library_feedback"
             :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
+            :show-old-categories="showOldCategories"
+            :group-pinned="groupPinned"
+            :settings-in-header="showHeaderSettingsDisclosure"
           />
-          <sidebar-portal-target />
         </scroll-scrim>
         <portal-target
-          v-if="glFeatures.hideUnpinnedSidebarItems"
+          v-if="showFooterSettingsDisclosure"
           :name="$options.settingsDisclosurePortalName"
           class="gl-px-3"
         />
@@ -234,7 +303,10 @@ export default {
           />
         </div>
         <div v-if="manageOrganizationPath" class="gl-px-3 gl-pt-3">
-          <manage-organization-button :href="manageOrganizationPath" />
+          <manage-organization-button
+            :href="manageOrganizationPath"
+            :is-exit="isInOrganizationAdminArea"
+          />
         </div>
         <help-center
           v-if="canIconOnly"

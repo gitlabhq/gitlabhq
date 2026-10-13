@@ -29,6 +29,10 @@ RSpec.describe ObjectPool::DestroyWorker, feature_category: :source_code_managem
 
       subject { described_class.new }
 
+      before do
+        pool.source_project.update_column(:pool_repository_id, nil)
+      end
+
       it 'requests Gitaly to remove the object pool' do
         expect(Gitlab::GitalyClient).to receive(:call).with(
           pool.shard_name,
@@ -54,6 +58,20 @@ RSpec.describe ObjectPool::DestroyWorker, feature_category: :source_code_managem
           perform_multiple(job_args)
 
           expect(PoolRepository.find_by_id(pool.id)).to be_nil
+        end
+      end
+
+      context 'when a project joined the pool after it was marked obsolete' do
+        let!(:member) { create(:project, pool_repository: pool) }
+
+        it 'does not remove the object pool' do
+          expect(Gitlab::GitalyClient).not_to receive(:call)
+            .with(anything, :object_pool_service, :delete_object_pool, anything, anything)
+          expect(subject).to receive(:log_extra_metadata_on_done).with(:destroy_skipped, 'members_exist')
+
+          subject.perform(pool.id)
+
+          expect(PoolRepository.find_by_id(pool.id)).to eq(pool)
         end
       end
 

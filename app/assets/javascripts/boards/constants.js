@@ -106,8 +106,6 @@ export const listIssuablesQueries = {
       dueDate: null,
       emailsEnabled: true,
       hidden: false,
-      humanTimeEstimate: null,
-      humanTotalTimeSpent: null,
       id: 'gid://gitlab/Issue/-1',
       iid: '-1',
       labels: { nodes: [], __typename: 'LabelConnection' },
@@ -136,10 +134,13 @@ export const listIssuablesQueries = {
 export const FilterFields = {
   [TYPE_ISSUE]: [
     'assigneeUsername',
+    'assigneeUsernames',
     'assigneeWildcardId',
     'authorUsername',
+    'authorUsernames',
     'confidential',
     'labelName',
+    'labelNames',
     'milestoneTitle',
     'milestoneWildcardId',
     'myReactionEmoji',

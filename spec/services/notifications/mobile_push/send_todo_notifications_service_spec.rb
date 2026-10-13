@@ -185,7 +185,7 @@ RSpec.describe Notifications::MobilePush::SendTodoNotificationsService, feature_
       context 'when the user exceeds the push rate limit', :clean_gitlab_redis_shared_state do
         before do
           allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-            .with(described_class::RATE_LIMIT_KEY, scope: [user])
+            .with(described_class::RATE_LIMIT_KEY, scope: { user: user })
             .and_return(true)
         end
 

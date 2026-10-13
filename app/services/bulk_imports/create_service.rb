@@ -33,13 +33,14 @@ module BulkImports
       Entity::PROJECT_ENTITY_SOURCE_TYPE => 'projects'
     }.freeze
 
-    attr_reader :current_user, :params, :credentials, :fallback_organization
+    attr_reader :current_user, :params, :credentials, :fallback_organization, :request_channel
 
-    def initialize(current_user, params, credentials, fallback_organization:)
+    def initialize(current_user, params, credentials, fallback_organization:, request_channel: :api)
       @current_user = current_user
       @fallback_organization = fallback_organization
       @params = params
       @credentials = credentials
+      @request_channel = request_channel
     end
 
     def execute
@@ -53,6 +54,8 @@ module BulkImports
         label: 'bulk_import_group',
         extra: { source_equals_destination: bulk_import.source_equals_destination? }
       )
+
+      ::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel = request_channel
 
       ::Import::BulkImports::SourceUsersAttributesWorker.perform_async(bulk_import.id)
 

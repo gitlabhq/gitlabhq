@@ -1,17 +1,21 @@
-import { GlButtonGroup, GlDrawer, GlSegmentedControl } from '@gitlab/ui';
+import { GlDrawer } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
   DISPLAY_SETTINGS_PAGE_ROOT,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
-  VIEW_MODE_TABLE,
 } from '~/work_items/constants';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
 import WorkItemDisplaySettingsSort from '~/work_items/list/components/work_item_display_settings_sort.vue';
 import WorkItemDisplaySettingsMetadata from '~/work_items/list/components/work_item_display_settings_metadata.vue';
 import WorkItemDisplaySettingsUserPreferences from '~/work_items/list/components/work_item_display_settings_user_preferences.vue';
 import WorkItemDisplaySettingsGroupBy from '~/work_items/list/components/work_item_display_settings_group_by.vue';
+import WorkItemDisplaySettingsEmptyGroups from '~/work_items/list/components/work_item_display_settings_empty_groups.vue';
+
+// Pin this to the CE view modes regardless of which alias environment the suite runs
+// under (FOSS_ONLY or not) — the CE/EE difference itself is covered by view_modes_spec.js.
+jest.mock('ee_else_ce/work_items/view_modes', () => jest.requireActual('~/work_items/view_modes'));
 
 const SORT_OPTIONS = [
   {
@@ -35,13 +39,10 @@ describe('WorkItemDisplaySettingsDrawer', () => {
   const findSort = () => wrapper.findComponent(WorkItemDisplaySettingsSort);
   const findMetadata = () => wrapper.findComponent(WorkItemDisplaySettingsMetadata);
   const findUserPreferences = () => wrapper.findComponent(WorkItemDisplaySettingsUserPreferences);
-  const findViewModeToggle = () => wrapper.findComponent(GlSegmentedControl);
-  const findIconViewModeToggle = () => wrapper.findComponent(GlButtonGroup);
-  const findIconViewModeButton = (viewMode) =>
-    wrapper.findComponentByTestId(`view-mode-${viewMode}`);
   const findGroupByRow = () => wrapper.findByTestId('group-by-row');
   const findGroupByBackButton = () => wrapper.findComponentByTestId('group-by-back-button');
   const findGroupBy = () => wrapper.findComponent(WorkItemDisplaySettingsGroupBy);
+  const findEmptyGroups = () => wrapper.findComponent(WorkItemDisplaySettingsEmptyGroups);
   const findTitle = () => wrapper.find('h2');
 
   const createComponent = ({ props = {}, provide = {} } = {}) => {
@@ -69,111 +70,6 @@ describe('WorkItemDisplaySettingsDrawer', () => {
     findDrawer().vm.$emit('close');
 
     expect(wrapper.emitted('close')).toHaveLength(1);
-  });
-
-  describe('view mode toggles', () => {
-    it('renders the toggles with list and board options', () => {
-      createComponent();
-
-      expect(findViewModeToggle().exists()).toBe(true);
-      expect(findViewModeToggle().props('options')).toEqual([
-        {
-          value: VIEW_MODE_LIST,
-          text: 'List',
-          props: { icon: 'list-bulleted' },
-        },
-        {
-          value: VIEW_MODE_BOARD,
-          text: 'Board (Beta)',
-          props: { icon: 'work-item-issue-board' },
-        },
-      ]);
-    });
-
-    it('reflects the current chosen view mode', () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
-
-      expect(findViewModeToggle().props('value')).toBe(VIEW_MODE_BOARD);
-    });
-
-    it('switches view mode with the selected value when toggled', () => {
-      createComponent();
-
-      findViewModeToggle().vm.$emit('input', VIEW_MODE_BOARD);
-
-      expect(wrapper.emitted('toggle-view-mode')).toEqual([[VIEW_MODE_BOARD]]);
-    });
-
-    it('does not render the toggles when planningViewBoards feature flag is disabled', () => {
-      createComponent({ provide: { glFeatures: { planningViewBoards: false } } });
-
-      expect(findViewModeToggle().exists()).toBe(false);
-    });
-  });
-
-  describe('icon-only view mode toggles', () => {
-    const createWithTableEnabled = ({ props = {}, planningViewBoards = true } = {}) =>
-      createComponent({
-        props,
-        provide: { glFeatures: { planningViewBoards, planningViewTable: true } },
-      });
-
-    describe('when planningViewTable feature flag is enabled', () => {
-      beforeEach(() => {
-        createWithTableEnabled();
-      });
-
-      it('replaces the labelled toggles with the icon-only ones', () => {
-        expect(findViewModeToggle().exists()).toBe(false);
-        expect(findIconViewModeToggle().exists()).toBe(true);
-      });
-
-      it.each`
-        viewMode           | icon                       | label
-        ${VIEW_MODE_LIST}  | ${'list-bulleted'}         | ${'List'}
-        ${VIEW_MODE_TABLE} | ${'table'}                 | ${'Table'}
-        ${VIEW_MODE_BOARD} | ${'work-item-issue-board'} | ${'Board (Beta)'}
-      `(
-        'renders $label as a $icon button labelled for assistive tech',
-        ({ viewMode, icon, label }) => {
-          expect(findIconViewModeButton(viewMode).props('icon')).toBe(icon);
-          expect(findIconViewModeButton(viewMode).attributes('aria-label')).toBe(label);
-          expect(findIconViewModeButton(viewMode).attributes('title')).toBe(label);
-        },
-      );
-
-      it.each([VIEW_MODE_TABLE, VIEW_MODE_BOARD])(
-        'switches view mode to %s on click',
-        (viewMode) => {
-          findIconViewModeButton(viewMode).vm.$emit('click');
-
-          expect(wrapper.emitted('toggle-view-mode')).toEqual([[viewMode]]);
-        },
-      );
-    });
-
-    describe('when the current view mode is table', () => {
-      beforeEach(() => {
-        createWithTableEnabled({ props: { viewMode: VIEW_MODE_TABLE } });
-      });
-
-      it('marks that view mode as pressed and selected', () => {
-        expect(findIconViewModeButton(VIEW_MODE_TABLE).props('selected')).toBe(true);
-        expect(findIconViewModeButton(VIEW_MODE_TABLE).attributes('aria-pressed')).toBe('true');
-        expect(findIconViewModeButton(VIEW_MODE_LIST).props('selected')).toBe(false);
-        expect(findIconViewModeButton(VIEW_MODE_LIST).attributes('aria-pressed')).toBe('false');
-      });
-    });
-
-    describe('when planningViewTable feature flag is disabled', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('does not render the icon-only toggles', () => {
-        expect(findIconViewModeToggle().exists()).toBe(false);
-      });
-    });
   });
 
   describe('sort section', () => {
@@ -258,27 +154,12 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findGroupByRow().exists()).toBe(false);
     });
 
-    it('does not render the group by row when planningViewBoards is disabled', () => {
-      createComponent({
-        props: { viewMode: VIEW_MODE_BOARD },
-        provide: { glFeatures: { planningViewBoards: false } },
-      });
+    // CE has no board view mode (it needs status, which is EE-only), so the row never
+    // renders here regardless of feature flags. See ee/spec for the board-enabled cases.
+    it('does not render the group by row in board view mode', () => {
+      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
 
       expect(findGroupByRow().exists()).toBe(false);
-    });
-
-    it('renders the group by row with the current strategy label in board view mode', () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
-
-      expect(findGroupByRow().text()).toContain('Status');
-    });
-
-    it('emits page-change with groupBy when the row is clicked', async () => {
-      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
-
-      await findGroupByRow().trigger('click');
-
-      expect(wrapper.emitted('page-change')).toEqual([[DISPLAY_SETTINGS_PAGE_GROUP_BY]]);
     });
 
     it('emits page-change with root when the back button is clicked', async () => {
@@ -313,7 +194,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
     it('renders whichever page the page prop changes to, since the parent owns it', async () => {
       createComponent({ props: { open: true, viewMode: VIEW_MODE_BOARD } });
 
-      expect(findTitle().text()).toBe('Display');
+      expect(findTitle().text()).toBe('Display options');
 
       await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_GROUP_BY });
 
@@ -322,8 +203,24 @@ describe('WorkItemDisplaySettingsDrawer', () => {
 
       await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_ROOT });
 
-      expect(findTitle().text()).toBe('Display');
+      expect(findTitle().text()).toBe('Display options');
       expect(findGroupBy().exists()).toBe(false);
+    });
+  });
+
+  describe('empty groups section', () => {
+    it('does not render the row outside board view mode', () => {
+      createComponent({ props: { viewMode: VIEW_MODE_LIST } });
+
+      expect(findEmptyGroups().exists()).toBe(false);
+    });
+
+    // CE has no board view mode (it needs status, which is EE-only), so the row never
+    // renders here regardless of feature flags. See ee/spec for the board-enabled cases.
+    it('does not render the row in board view mode', () => {
+      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
+
+      expect(findEmptyGroups().exists()).toBe(false);
     });
   });
 });

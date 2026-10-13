@@ -1,0 +1,9 @@
+#import "./merge_widget.fragment.graphql"
+
+# @feature_category: code_review_workflow
+query mergeWidget($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    id
+    ...MergeWidget
+  }
+}

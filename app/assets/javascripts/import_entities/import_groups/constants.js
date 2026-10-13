@@ -42,6 +42,7 @@ export const PLACEHOLDER_STATUS_REASSIGNING = 'REASSIGNMENT_IN_PROGRESS';
 export const PLACEHOLDER_STATUS_FAILED = 'FAILED';
 export const PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER = 'KEEP_AS_PLACEHOLDER';
 export const PLACEHOLDER_STATUS_COMPLETED = 'COMPLETED';
+export const PLACEHOLDER_STATUS_REVOKED = 'REVOKED';
 
 export const PLACEHOLDER_USER_STATUS = {
   UNASSIGNED: [
@@ -51,7 +52,11 @@ export const PLACEHOLDER_USER_STATUS = {
     PLACEHOLDER_STATUS_REASSIGNING,
     PLACEHOLDER_STATUS_FAILED,
   ],
-  REASSIGNED: [PLACEHOLDER_STATUS_COMPLETED, PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER],
+  REASSIGNED: [
+    PLACEHOLDER_STATUS_COMPLETED,
+    PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
+    PLACEHOLDER_STATUS_REVOKED,
+  ],
 };
 
 export const PLACEHOLDER_TAB_REASSIGNED = 'reassigned';
@@ -88,6 +93,10 @@ export const PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS = [
   {
     value: PLACEHOLDER_STATUS_COMPLETED.toLowerCase(),
     title: __('Success'),
+  },
+  {
+    value: PLACEHOLDER_STATUS_REVOKED.toLowerCase(),
+    title: s__('UserMapping|Revoked'),
   },
 ];
 
@@ -126,6 +135,11 @@ export const placeholderUserBadges = {
     text: __('Success'),
     variant: 'success',
     tooltip: s__('UserMapping|Reassignment succeeded.'),
+  },
+  [PLACEHOLDER_STATUS_REVOKED]: {
+    text: s__('UserMapping|Revoked'),
+    variant: 'danger',
+    tooltip: s__('UserMapping|Reassignment approval revoked by user.'),
   },
 };
 

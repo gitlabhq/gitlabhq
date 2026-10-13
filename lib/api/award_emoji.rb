@@ -3,10 +3,22 @@
 module API
   class AwardEmoji < ::API::Base
     include PaginationParams
+    include APIGuard
 
     helpers ::API::Helpers::AwardEmoji
 
     AWARD_EMOJI_TAG = %w[award_emoji].freeze
+
+    # Keep `ai_workflows` award emoji access aligned with issue, merge request, and epic APIs.
+    # Snippet award emoji access requires separate approval.
+    AI_WORKFLOWS_AWARDABLE_PATH = %r{/(?:issues|merge_requests|epics)/[^/]+/(?:notes/[^/]+/)?award_emoji}
+
+    def self.ai_workflows_readable?(request)
+      (request.get? || request.head?) && request.path.match?(AI_WORKFLOWS_AWARDABLE_PATH)
+    end
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { ai_workflows_readable?(request) }
+
     Helpers::AwardEmoji.awardables.each do |awardable_params|
       resource awardable_params[:resource], requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize
@@ -47,6 +59,7 @@ module API
           params do
             use :pagination
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"read_#{permission_suffix}", boundary_type: boundary_type
           get endpoint, feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
@@ -72,6 +85,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'ID of the emoji reaction.'
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"read_#{permission_suffix}", boundary_type: boundary_type
           get "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
@@ -92,6 +106,7 @@ module API
           params do
             requires :name, type: String, desc: 'Name of the emoji without colons.'
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"create_#{permission_suffix}", boundary_type: boundary_type
           post endpoint, feature_category: awardable_params[:feature_category] do
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
@@ -117,6 +132,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'ID of an emoji reaction.'
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"delete_#{permission_suffix}", boundary_type: boundary_type
           delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])

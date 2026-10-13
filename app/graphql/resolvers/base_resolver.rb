@@ -154,6 +154,8 @@ module Resolvers
       end
     end
 
+    # Called with (nodes, current_user, context) once the connection's nodes load,
+    # before any of their fields resolve.
     def self.before_connection_authorization(&block)
       @before_connection_authorization_block = block
     end
@@ -163,6 +165,16 @@ module Resolvers
       @before_connection_authorization_block
     end
     # rubocop: enable Style/TrivialAccessors
+
+    def self.authorization
+      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(
+        try(:required_permissions), authorization_scopes
+      )
+    end
+
+    def self.authorized?(object, context)
+      authorization.ok?(object, context[:current_user], scope_validator: context[:scope_validator])
+    end
 
     def offset_pagination(relation)
       ::Gitlab::Graphql::Pagination::OffsetPaginatedRelation.new(relation)
@@ -187,16 +199,6 @@ module Resolvers
     # Overridden in sub-classes (see .single, .last)
     def select_result(results)
       results
-    end
-
-    def self.authorization
-      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(
-        try(:required_permissions), authorization_scopes
-      )
-    end
-
-    def self.authorized?(object, context)
-      authorization.ok?(object, context[:current_user], scope_validator: context[:scope_validator])
     end
 
     private

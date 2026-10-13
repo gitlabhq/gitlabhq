@@ -62,7 +62,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
           allow(Gitlab::ApplicationRateLimiter::LabkitAdapter)
             .to receive(:run!).with(:permanent_email_failure, any_args).and_return(false, true)
 
-          2.times { Gitlab::ApplicationRateLimiter.throttled?(:permanent_email_failure, scope: user.email) }
+          2.times { Gitlab::ApplicationRateLimiter.throttled?(:permanent_email_failure, scope: { email: user.email }) }
         end
 
         it 'returns false' do
@@ -77,7 +77,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
         end
 
         it 'returns false' do
-          2.times { Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: user.email) }
+          2.times { Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: { email: user.email }) }
 
           expect(recipient.notifiable?).to be(false)
         end

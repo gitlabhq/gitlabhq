@@ -192,6 +192,22 @@ export default {
       required: false,
       default: false,
     },
+    level: {
+      type: Number,
+      required: false,
+      default: 1,
+      validator: (value) => value === 1 || value === 2,
+    },
+    persistContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showContentWhenCollapsed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['is-loading', 'toggle'],
   data() {
@@ -241,6 +257,9 @@ export default {
     },
     isLoadingCollapsedContent(newValue) {
       this.$emit('is-loading', newValue);
+    },
+    isCollapsible(newValue) {
+      if (!newValue) this.isCollapsed = true;
     },
   },
   created() {
@@ -350,15 +369,40 @@ export default {
 </script>
 
 <template>
-  <section class="media-section" data-testid="widget-extension">
-    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4">
-      <status-icon
-        :name="widgetName"
-        :is-loading="shouldShowLoadingIcon"
-        :icon-name="summaryStatusIcon"
-      />
+  <content-row
+    v-if="level === 2"
+    :level="2"
+    :widget-name="widgetName"
+    :status-icon-name="summaryStatusIcon"
+    :is-loading="shouldShowLoadingIcon"
+    :help-popover="helpPopover"
+    :action-buttons="actionButtons"
+  >
+    <template #header>
+      <div class="gl-grow" data-testid="widget-extension-row-summary">
+        <span v-if="summaryError">{{ summaryError }}</span>
+        <slot v-else name="summary"
+          ><div v-safe-html="isSummaryLoading ? loadingText : generatedSummary"></div>
+          <div
+            v-if="!isSummaryLoading && generatedSubSummary"
+            v-safe-html="generatedSubSummary"
+            class="gl-text-sm gl-text-subtle"
+          ></div
+        ></slot>
+      </div>
+    </template>
+  </content-row>
+  <section v-else class="media-section" data-testid="widget-extension">
+    <div class="gl-flex gl-items-center gl-px-5 gl-py-4 gl-pr-4">
+      <slot name="status-icon">
+        <status-icon
+          :name="widgetName"
+          :is-loading="shouldShowLoadingIcon"
+          :icon-name="summaryStatusIcon"
+        />
+      </slot>
       <div
-        class="media-body gl-flex !gl-flex-row gl-self-center"
+        class="media-body gl-flex !gl-flex-row gl-items-center gl-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-grow" data-testid="widget-extension-top-level-summary">
@@ -423,7 +467,8 @@ export default {
       </div>
     </div>
     <div
-      v-if="!isCollapsed || contentError"
+      v-if="persistContent || !isCollapsed || contentError"
+      v-show="!isCollapsed || contentError || showContentWhenCollapsed"
       class="gl-border-t gl-relative gl-border-t-section gl-bg-subtle"
       data-testid="widget-extension-collapsed-section"
     >

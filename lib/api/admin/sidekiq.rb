@@ -15,7 +15,7 @@ module API
               tags ['sidekiq']
             end
             params do
-              requires :queue_name, type: String, desc: 'The Sidekiq queue name'
+              requires :queue_name, type: String, desc: 'Name of the queue to delete jobs from.'
 
               Gitlab::SidekiqQueue::ALLOWED_KEYS.each do |key|
                 optional key, type: String, desc: 'Metadata key to match', allow_blank: false
@@ -23,7 +23,8 @@ module API
 
               at_least_one_of(*Gitlab::SidekiqQueue::ALLOWED_KEYS)
             end
-            route_setting :authorization, permissions: :drop_sidekiq_job, boundary_type: :instance
+            route_setting :authorization, permissions: :drop_sidekiq_job, boundary_type: :instance,
+              assignable_when: [:admin]
             delete ':queue_name' do
               result =
                 Gitlab::SidekiqQueue

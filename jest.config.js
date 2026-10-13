@@ -4,7 +4,7 @@ const baseConfig = require('./jest.config.base');
 
 // TODO: Remove existsSync once jh has added jest.config.js
 if (IS_JH && fs.existsSync('./jh/jest.config.js')) {
-  // We can't be explicit with eslint-disable rules because in JH it'll pass import/no-unresolved
+  // We can't be explicit with eslint-disable rules because in JH it'll pass import-x/no-unresolved
   // eslint-disable-next-line
   module.exports = require('./jh/jest.config');
 } else {

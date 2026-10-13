@@ -1,0 +1,13 @@
+---
+name: read_security_scan_profiles
+description: >-
+  Grants the ability to read security scan profiles, the reusable scanner, triage,
+  and remediation settings a top-level group attaches to its projects. Includes each
+  profile's triggers and configuration, and which projects it covers.
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - read_security_scan_profiles

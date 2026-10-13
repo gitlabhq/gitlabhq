@@ -1,0 +1,10 @@
+---
+name: ai_model_release
+description: Make env-injected model definitions resolvable in the AI Gateway, used to activate a new model on launch day without a deploy.
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/work_items/2522
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251860
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/626874
+milestone: '19.4'
+group: group::ai core infra
+type: ops
+default_enabled: false

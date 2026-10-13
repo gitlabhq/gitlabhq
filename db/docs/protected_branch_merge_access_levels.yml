@@ -11,4 +11,4 @@ gitlab_schema: gitlab_main_org
 sharding_key:
   protected_branch_project_id: projects
   protected_branch_namespace_id: namespaces
-table_size: small
+table_size: medium

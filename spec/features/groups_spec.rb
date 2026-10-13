@@ -111,13 +111,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
         it 'automatically populates the `Group URL` field' do
           fill_in 'Group name', with: 'Foo bar'
-          # Wait for debounce in app/assets/javascripts/group.js#18
-          sleep(1)
           fill_in 'Group name', with: 'Bar baz'
-          # Wait for debounce in app/assets/javascripts/group.js#18
-          sleep(1)
-
-          wait_for_requests
 
           expect(page).to have_field('Group URL', with: 'bar-baz1')
         end

@@ -11,11 +11,12 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
   let_it_be(:past_report) { create_default(:abuse_report, :closed, user: user) }
   let_it_be(:similar_open_report) { create_default(:abuse_report, user: user, category: report.category) }
 
+  let(:admin) { build_stubbed(:user, :admin) }
   let(:entity) do
-    described_class.new(report)
+    described_class.new(report, current_user: admin)
   end
 
-  describe '#as_json' do
+  describe '#as_json', :enable_admin_mode do
     subject(:entity_hash) { entity.as_json }
 
     it 'exposes correct attributes' do

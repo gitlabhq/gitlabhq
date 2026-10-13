@@ -169,6 +169,7 @@ export const buildWorkItemNode = (id, overrides = {}) => ({
   webPath: `/group/project/-/issues/${id}`,
   webUrl: `http://gdk.test/group/project/-/issues/${id}`,
   confidential: false,
+  externalAuthor: null,
   hidden: false,
   userDiscussionsCount: 0,
   closedAt: null,
@@ -195,6 +196,10 @@ export const buildWorkItemNode = (id, overrides = {}) => ({
     id: 'gid://gitlab/WorkItems::Type/1',
     name: 'Issue',
     iconName: 'issue-type-issue',
+  },
+  userPermissions: {
+    __typename: 'WorkItemPermissions',
+    updateWorkItem: true,
   },
   ...overrides,
 });
@@ -260,21 +265,6 @@ export const buildBoardWorkItemsCountResponse = (count = 0) => ({
   },
 });
 
-// REST count response: exposes `count` under `restWorkItems` at the query root.
-export const buildBoardRestWorkItemsCountResponse = (count = 0) => ({
-  data: {
-    namespace: {
-      __typename: 'Group',
-      id: mockGroupId,
-      name: 'Test',
-    },
-    restWorkItems: {
-      __typename: 'WorkItemConnection',
-      count,
-    },
-  },
-});
-
 export const buildWorkItemTypesResponse = (types = []) => ({
   data: {
     namespace: {
@@ -293,7 +283,7 @@ export const buildWorkItemTypesResponse = (types = []) => ({
   },
 });
 
-export const buildNamespaceStatusesResponse = (statuses = []) => ({
+export const buildNamespaceStatusesResponse = (statuses = [], workItemTypes = []) => ({
   data: {
     namespace: {
       __typename: 'Group',
@@ -305,6 +295,10 @@ export const buildNamespaceStatusesResponse = (statuses = []) => ({
           __typename: 'WorkItemStatusConnection',
           nodes: statuses,
         },
+      },
+      workItemTypes: {
+        __typename: 'WorkItemTypeConnection',
+        nodes: workItemTypes,
       },
     },
   },

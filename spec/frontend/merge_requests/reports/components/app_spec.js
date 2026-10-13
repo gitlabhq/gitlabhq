@@ -27,6 +27,11 @@ describe('Merge request reports App component', () => {
   const findSecurityNavItem = () => wrapper.findComponent({ name: 'SecurityNavItem' });
   const findCodeQualityProvider = () => wrapper.findComponent({ name: 'CodeQualityProvider' });
   const findCodeQualityNavItem = () => wrapper.findComponent({ name: 'CodeQualityNavItem' });
+  const findAccessibilityProvider = () => wrapper.findComponent({ name: 'AccessibilityProvider' });
+  const findAccessibilityNavItem = () => wrapper.findComponent({ name: 'AccessibilityNavItem' });
+  const findTestSummaryProvider = () => wrapper.findComponent({ name: 'TestSummaryProvider' });
+  const findTestSummaryNavItem = () => wrapper.findComponent({ name: 'TestSummaryNavItem' });
+  const findTerraformNavItem = () => wrapper.findComponent({ name: 'TerraformNavItem' });
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findKeepAlive = () => wrapper.findByTestId('keep-alive');
   const findRouterView = () => wrapper.findComponent({ name: 'RouterView' });
@@ -37,11 +42,15 @@ describe('Merge request reports App component', () => {
   const expectProvidersToExist = (exists) => {
     expect(findSecurityScansProvider().exists()).toBe(exists);
     expect(findCodeQualityProvider().exists()).toBe(exists);
+    expect(findAccessibilityProvider().exists()).toBe(exists);
+    expect(findTestSummaryProvider().exists()).toBe(exists);
   };
 
   const expectNavItemsToExist = (exists) => {
     expect(findSecurityNavItem().exists()).toBe(exists);
     expect(findCodeQualityNavItem().exists()).toBe(exists);
+    expect(findAccessibilityNavItem().exists()).toBe(exists);
+    expect(findTestSummaryNavItem().exists()).toBe(exists);
   };
 
   const mockNoPipeline = () => {
@@ -66,6 +75,9 @@ describe('Merge request reports App component', () => {
   };
 
   const codeQualityConfigured = { codequality_reports_path: 'codequality_reports.json' };
+  const terraformConfigured = { terraform_reports_path: 'terraform_reports.json' };
+  const accessibilityConfigured = { accessibility_report_path: 'accessibility_report.json' };
+  const testSummaryConfigured = { test_reports_path: 'test_reports.json' };
 
   const emitSecurityScansChange = async (enabled) => {
     findSecurityScansProvider().vm.$emit('enabled-scans-change', enabled);
@@ -116,12 +128,44 @@ describe('Merge request reports App component', () => {
           name: 'CodeQualityNavItem',
           template: '<div></div>',
         },
+        AccessibilityProvider: {
+          name: 'AccessibilityProvider',
+          template: '<div><slot /></div>',
+        },
+        AccessibilityNavItem: {
+          name: 'AccessibilityNavItem',
+          template: '<div></div>',
+        },
+        TestSummaryProvider: {
+          name: 'TestSummaryProvider',
+          template: '<div><slot /></div>',
+        },
+        TestSummaryNavItem: {
+          name: 'TestSummaryNavItem',
+          template: '<div></div>',
+        },
         MetricsProvider: {
           name: 'MetricsProvider',
           template: '<div><slot /></div>',
         },
         MetricsNavItem: {
           name: 'MetricsNavItem',
+          template: '<div></div>',
+        },
+        TerraformProvider: {
+          name: 'TerraformProvider',
+          template: '<div><slot /></div>',
+        },
+        StatusChecksProvider: {
+          name: 'StatusChecksProvider',
+          template: '<div><slot /></div>',
+        },
+        StatusChecksNavItem: {
+          name: 'StatusChecksNavItem',
+          template: '<div></div>',
+        },
+        TerraformNavItem: {
+          name: 'TerraformNavItem',
           template: '<div></div>',
         },
       },
@@ -216,7 +260,11 @@ describe('Merge request reports App component', () => {
 
   describe('when pipeline is complete', () => {
     beforeEach(async () => {
-      mockPipeline(false, codeQualityConfigured);
+      mockPipeline(false, {
+        ...codeQualityConfigured,
+        ...accessibilityConfigured,
+        ...testSummaryConfigured,
+      });
       createComponent();
       await waitForPromises();
       await emitSecurityScansChange(true);
@@ -261,6 +309,8 @@ describe('Merge request reports App component', () => {
 
       expect(findSecurityNavItem().exists()).toBe(false);
       expect(findCodeQualityNavItem().exists()).toBe(true);
+      expect(findAccessibilityNavItem().exists()).toBe(false);
+      expect(findTestSummaryNavItem().exists()).toBe(false);
       expect(wrapper.vm.$route.name).toBe('code-quality');
     });
 
@@ -286,6 +336,16 @@ describe('Merge request reports App component', () => {
 
       expect(wrapper.vm.$route.path).toBe('/');
       expect(findEmptyState().props('type')).toBe('no-reports');
+    });
+
+    it('shows the terraform nav item and navigates to it when only terraform is configured', async () => {
+      mockPipeline(false, terraformConfigured);
+      createComponent();
+      await waitForPromises();
+      await emitSecurityScansChange(false);
+
+      expect(findTerraformNavItem().exists()).toBe(true);
+      expect(wrapper.vm.$route.name).toBe('terraform');
     });
 
     it('shows the sidebar when a report is configured', async () => {

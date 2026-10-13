@@ -22,6 +22,8 @@ module Mutations
         description: "Issue after mutation."
 
       authorize :update_subscription
+      authorize_granular_token permissions: :subscribe_issue, boundary_argument: :project_path,
+        boundary_type: :project
 
       private
 

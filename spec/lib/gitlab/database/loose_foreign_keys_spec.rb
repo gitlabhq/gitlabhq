@@ -67,11 +67,11 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       end
 
       it 'does not include partitions as source tables' do
-        expect(included_partitioned_tables).to be_blank, <<~END
+        expect(included_partitioned_tables).to be_blank, <<~TEXT
           Please remove these partitions #{included_partitioned_tables.map(&:name).join(', ')}.
           And include their partitioned tables #{included_partitioned_tables.map(&:parent_identifier)} instead
           if you haven't done so.
-        END
+        TEXT
       end
     end
 
@@ -103,10 +103,10 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       end
 
       it 'has installed trigger for all partitioned tables' do
-        expect(partitioned_tables_without_trigger).to be_blank, <<~END
+        expect(partitioned_tables_without_trigger).to be_blank, <<~TEXT
           #{partitioned_tables_without_trigger.join(',')} need(s) LFK trigger.
           Please create migration using `track_record_deletions_override_table_name` to install the trigger.
-        END
+        TEXT
       end
     end
 
@@ -231,11 +231,11 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
     it 'all YAML tables do have `track_record_deletions` installed' do
       missing_trigger_tables = all_tables_from_yaml - all_tables_with_triggers
 
-      expect(missing_trigger_tables).to be_empty, <<~END
+      expect(missing_trigger_tables).to be_empty, <<~TEXT
         The loose foreign keys definitions require using `track_record_deletions`
         for the following tables: #{missing_trigger_tables}.
         Read more at https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
-      END
+      TEXT
     end
 
     it 'no extra tables have `track_record_deletions` installed' do
@@ -243,12 +243,12 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
 
       pending 'This result of this test is informatory, and not critical' if extra_trigger_tables.any?
 
-      expect(extra_trigger_tables).to be_empty, <<~END
+      expect(extra_trigger_tables).to be_empty, <<~TEXT
         The following tables have unused `track_record_deletions` triggers installed,
         but they are not referenced by any of the loose foreign key definitions: #{extra_trigger_tables}.
         You can remove them in one of the future releases as part of `db/post_migrate`.
         Read more at https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
-      END
+      TEXT
     end
   end
 
@@ -339,6 +339,55 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
 
       it 'raises ArgumentError with descriptive message' do
         expect { subject }.to raise_error(ArgumentError, "Cleaner class 'UnknownCleaner' is not in the allowed list")
+      end
+    end
+
+    context 'when cleaner_class is allowed but not loadable' do
+      let(:loose_foreign_keys_yaml) do
+        {
+          'projects' => [
+            {
+              'table' => 'namespaces',
+              'column' => 'namespace_id',
+              'on_delete' => 'async_delete',
+              'cleaner_class' => 'Ee::Only::Cleaner'
+            }
+          ]
+        }
+      end
+
+      subject { described_class.definitions }
+
+      before do
+        stub_const("#{described_class}::ALLOWED_CLEANER_CLASSES", ['Ee::Only::Cleaner'])
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
+      end
+
+      after do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, nil)
+      end
+
+      # EE-only cleaners are absent on FOSS, where `ee/` is removed.
+      context 'on FOSS' do
+        before do
+          allow(Gitlab).to receive(:ee?).and_return(false)
+        end
+
+        it 'leaves the cleaner_class unset so the generic cleaner is used' do
+          expect(subject.first.options[:cleaner_class]).to be_nil
+        end
+      end
+
+      context 'on EE' do
+        before do
+          allow(Gitlab).to receive(:ee?).and_return(true)
+        end
+
+        it 'raises, so a genuine load failure is not mistaken for missing EE code' do
+          expect { subject }.to raise_error(NameError)
+        end
       end
     end
 

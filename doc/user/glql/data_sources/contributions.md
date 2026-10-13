@@ -16,6 +16,7 @@ title: Contributions
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.2.
 - Configurable `granularity` parameter [introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
+- `!=` and `not in` operators on the `user` filter [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -34,14 +35,17 @@ your projects or groups.
 | `project` | Query contributions in a specific project.                               |
 | `group`   | Query contributions across all projects in a group, including subgroups. |
 
-## Query fields
+To aggregate contributions across multiple groups or projects, use a list with the `in` operator.
+For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
+
+## Query filters
 
 Use these fields in the `query` parameter to filter your results.
 
 | Field                      | Name      | Operators                 |
 | -------------------------- | --------- | ------------------------- |
 | [Created at](#created-at)  | `created` | `=`, `>`, `<`, `>=`, `<=` |
-| [User](#user)              | `user`    | `=`, `in`                 |
+| [User](#user)              | `user`    | `=`, `!=`, `in`, `not in` |
 
 ### Created at {#created-at}
 
@@ -64,7 +68,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `Number` (user ID)
-- `List` (use `in` operator for multiple user IDs)
+- `List` (use `in` or `not in` operator for multiple user IDs)
 
 > [!note]
 > Support for username filtering is being tracked in [GLQL issue 143](https://gitlab.com/gitlab-org/glql/-/work_items/143).
@@ -73,7 +77,7 @@ Use these fields in the `query` parameter to filter your results.
 
 | Dimension  | Name      | Description                                          |
 | ---------- | --------- | ----------------------------------------------------- |
-| Created at | `created` | Group by contribution creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `monthly`). For example, `created(weekly)`. |
+| Created at | `created` | Group by contribution creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `created(weekly)` or `created(granularity=30d, origin=2026-07-16)`. |
 
 ## Metrics
 

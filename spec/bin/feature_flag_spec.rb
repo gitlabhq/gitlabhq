@@ -33,8 +33,7 @@ RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
 
     before do
       allow(creator).to receive(:all_feature_flag_names) { existing_flags }
-      allow(creator).to receive(:branch_name).and_return('feature-branch')
-      allow(creator).to receive(:editor).and_return(nil)
+      allow(creator).to receive_messages(branch_name: 'feature-branch', editor: nil)
 
       allow(File).to receive(:write).and_return(true)
       allow(Readline).to receive(:readline).and_raise('EOF')

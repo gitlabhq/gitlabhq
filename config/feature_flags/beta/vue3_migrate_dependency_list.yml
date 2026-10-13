@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_dependency_list
+description: Enables Vue 3 in compatibility mode for the dependency list pages (project and group)
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607915
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259052
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631505
+milestone: '19.5'
+group: group::vulnerability management
+type: beta
+default_enabled: false

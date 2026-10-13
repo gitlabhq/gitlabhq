@@ -193,7 +193,7 @@ unit_primitives:
   - ask_issue
   - ask_merge_request
   - documentation_search
-  - duo_chat
+  - chat_engine
   - explain_code
   - fix_code
   - include_dependency_context
@@ -229,7 +229,7 @@ services:
     bundled_with:
       duo_pro:
         unit_primitives:
-          - duo_chat
+          - chat_engine
           - documentation_search
 ```
 

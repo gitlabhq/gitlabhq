@@ -9,12 +9,12 @@ module Authz
     def add_granular_scopes(granular_scopes)
       scopes_array = Array(granular_scopes)
 
-      scopes_array.each do |granular_scope|
-        validation_result = validate_unique_namespace(granular_scope)
-        return validation_result if validation_result&.error?
-      end
+      duplicate = GranularScopes::UniquenessCheck
+        .new(scopes_array, existing_scopes: existing_scopes)
+        .first_duplicate
+      return duplicate_error(duplicate) if duplicate
 
-      scopes_array.each do |granular_scope| # rubocop:disable Style/CombinableLoops -- Intentionally separate: validate all first, then build
+      scopes_array.each do |granular_scope|
         granular_scope.organization_id = personal_access_token.organization_id
 
         personal_access_token.personal_access_token_granular_scopes.build(
@@ -32,34 +32,21 @@ module Authz
 
     attr_reader :personal_access_token
 
-    def validate_unique_namespace(granular_scope)
-      return unless namespace_already_exists?(granular_scope.namespace_id)
+    def existing_scopes
+      join_rows = personal_access_token.personal_access_token_granular_scopes.to_a
+      ActiveRecord::Associations::Preloader.new(records: join_rows, associations: :granular_scope).call
 
-      error_message = if granular_scope.namespace_id
-                        s_('PersonalAccessToken|The token cannot have multiple granular scopes for the same namespace')
-                      else
-                        s_('PersonalAccessToken|The token cannot have multiple instance-level granular scopes')
-                      end
-
-      ServiceResponse.error(message: error_message)
+      join_rows.map(&:granular_scope)
     end
 
-    def namespace_already_exists?(namespace_id)
-      check_persisted_scopes(namespace_id) || check_built_scopes(namespace_id)
-    end
+    def duplicate_error(granular_scope)
+      message = if granular_scope.namespace_id
+                  s_('PersonalAccessToken|The token cannot have multiple granular scopes for the same namespace')
+                else
+                  s_('PersonalAccessToken|The token cannot have multiple granular scopes with the same access level')
+                end
 
-    def check_persisted_scopes(namespace_id)
-      if personal_access_token.granular_scopes.loaded?
-        personal_access_token.granular_scopes.any? { |gs| gs.namespace_id == namespace_id }
-      else
-        personal_access_token.granular_scopes.with_namespace(namespace_id).exists?
-      end
-    end
-
-    def check_built_scopes(namespace_id)
-      personal_access_token.personal_access_token_granular_scopes
-        .select(&:new_record?)
-        .any? { |join| join.granular_scope&.namespace_id == namespace_id }
+      ServiceResponse.error(message: message)
     end
   end
 end

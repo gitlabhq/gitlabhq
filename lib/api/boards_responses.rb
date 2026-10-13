@@ -7,7 +7,7 @@ module API
     included do
       helpers do
         def board
-          board_parent.boards.find(params[:board_id])
+          @board ||= board_parent.boards.find(params[:board_id])
         end
 
         def create_board
@@ -16,17 +16,24 @@ module API
           response =
             ::Boards::CreateService.new(board_parent, current_user, { name: params[:name] }).execute
 
+          if response.error?
+            # render_validation_error! renders nothing when the board has no errors
+            render_validation_error!(response.payload[:board])
+            bad_request!(response.message)
+          end
+
           present response.payload[:board], with: Entities::Board
         end
 
         def update_board
           service = ::Boards::UpdateService.new(board_parent, current_user, declared_params(include_missing: false))
-          service.execute(board)
 
-          if board.valid?
+          if service.execute(board)
             present board, with: Entities::Board
           else
-            bad_request!("Failed to save board #{board.errors.messages}")
+            # render_validation_error! renders nothing when the board has no errors
+            render_validation_error!(board)
+            bad_request!('Failed to save board')
           end
         end
 

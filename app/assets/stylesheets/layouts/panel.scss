@@ -22,14 +22,34 @@
 
 // Dynamic panel portal
 .paneled-view-portal {
-  @apply gl-z-[252];
+  @apply gl-@container/panel;
+  z-index: $dynamic-panel-z-index;
+  @apply gl-absolute;
+  @apply gl-right-0;
   @apply gl-w-full;
+  @apply gl-bg-default;
+  @apply gl-rounded-l-xl;
+  @apply gl-shadow-lg;
+  @apply gl-overflow-clip;
+
   @apply sm:gl-w-8/10;
+
+  @apply @xl/content-panels:gl-relative;
+  @apply @xl/content-panels:gl-w-1/2;
+  @apply @xl/content-panels:gl-bg-transparent;
+  @apply @xl/content-panels:gl-rounded-l-none;
+  @apply @xl/content-panels:gl-shadow-none;
+
+  // Fixes a Firefox 115.40.0esr issue. Keep this seperate from the below selector
+  // as otherwise it won't be interpret by Firefox as it will drop this
+  // style rule as the other selector is unknown
+  &:empty {
+    @apply gl-hidden;
+  }
 
   // The panel width resizer keeps a node mounted inside the portal, so the
   // portal is never `:empty`; hide it based on mounted panel content instead.
   // stylelint-disable-next-line gitlab/no-has -- scoped to the portal's own content
-  &:empty,
   &:not(:has(> .vue-portal-target)) {
     @apply gl-hidden;
   }
@@ -55,7 +75,7 @@
 }
 
 // stylelint-disable-next-line gitlab/no-has -- targeting directly the AI panel
-.panels-container:has(+ .ai-panels > div > .ai-panel) {
+.panels-container:has(+ .ai-related-panels > .ai-panel-wrapper > .ai-panel) {
   @apply lg:gl-rounded-r-none;
   @apply lg:gl-border-r-0;
 }
@@ -78,6 +98,18 @@
   @include media-breakpoint-up(lg) {
     // Hides shadow from left side where panels meet
     clip-path: inset(-0.5rem -0.5rem -0.5rem 0);
+  }
+}
+
+// Session pill status icon in Duo Chat
+@include keyframes(session-pill-pulse) {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
   }
 }
 
@@ -222,11 +254,14 @@
 
 // Only display breadcrumb-free panel-header when it has action buttons or feedback badges
 // See `page_breadcrumbs_in_top_bar` feature flag
+// Match direct children (e.g. classification badge) and anything in the actions container
+// (including the portal target), but not buttons inside the breadcrumbs. GlBreadcrumb renders
+// an overflow toggle while measuring, which would otherwise toggle the header in a loop.
 .panel-header .panel-header-inner.without-breadcrumbs {
   display: none;
 
   /* stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to a specific panel-header-inner element */
-  &:has(> :is(.gl-badge, .gl-button)) {
+  &:has(> :is(.gl-badge, .gl-button), .panel-header-inner-actions :is(.gl-badge, .gl-button)) {
     display: flex;
     justify-content: end;
   }
@@ -258,9 +293,9 @@
   @include media-breakpoint-up(lg) {
     @apply gl-top-0;
     @apply gl-left-0;
-    @apply gl-mt-0;
+    @apply gl-m-0;
     width: var(--ai-panel-width);
-    height: auto;
+    @apply gl-h-full;
     z-index: auto;
   }
 }

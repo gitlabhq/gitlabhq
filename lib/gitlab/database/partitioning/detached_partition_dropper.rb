@@ -84,7 +84,11 @@ module Gitlab
 
           # We want to load all of these into memory at once to get a consistent view to loop over,
           # since we'll be deleting from this list as we go
-          fks_to_drop = PostgresForeignKey.by_constrained_table_identifier(partition_identifier).to_a
+          #
+          # Detaching a partition whose foreign key references a partitioned table gives that key one
+          # inherited child per referenced partition, which Postgres refuses to drop directly. We drop
+          # only the `.not_inherited` keys, and Postgres removes their children with them.
+          fks_to_drop = PostgresForeignKey.by_constrained_table_identifier(partition_identifier).not_inherited.to_a
           fks_to_drop.each do |foreign_key|
             drop_foreign_key_if_present(detached_partition, foreign_key)
           end
@@ -134,17 +138,7 @@ module Gitlab
         # dropping it from here would take ACCESS EXCLUSIVE on the parent. FINALIZE unlinks it
         # under SHARE UPDATE EXCLUSIVE instead, after which the drop takes no lock on the parent.
         def finalize_detach(pg_partition)
-          with_lock_retries(partition_name: pg_partition.name) do
-            connection.transaction(requires_new: false) do
-              connection.execute(<<~SQL)
-                ALTER TABLE #{connection.quote_table_name(pg_partition.parent_identifier)}
-                DETACH PARTITION #{connection.quote_table_name(pg_partition.identifier)} FINALIZE
-              SQL
-            end
-          end
-
-          Gitlab::AppLogger.info(message: 'Finalized a pending partition detach',
-            partition_name: pg_partition.name)
+          PendingDetachPartitionFinalizer.new.finalize(pg_partition)
         end
 
         def find_pg_partition(partition_identifier)

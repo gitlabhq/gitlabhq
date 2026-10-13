@@ -386,7 +386,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     let(:destroy_abilities) do
       %i[
         delete_custom_emoji
-        delete_o11y_settings
         destroy_deploy_token
         destroy_epic
         destroy_issue
@@ -2063,7 +2062,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
 
     context 'when the group has request_access_enabled disabled' do
-      subject { described_class.new(logged_in_user, create(:group, :public, request_access_enabled: false)) }
+      subject { described_class.new(logged_in_user, build_stubbed(:group, :public, request_access_enabled: false)) }
 
       it { expect_disallowed(:request_access) }
     end
@@ -2072,6 +2071,107 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       subject { described_class.new(guest, group) }
 
       it { expect_disallowed(:request_access) }
+    end
+  end
+
+  describe 'read_boundary' do
+    context 'with a private group' do
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_group_member }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'organization owner' do
+        # Not the shared organization_owner: another example in this file sets admin
+        # on it, and the in-memory flag outlives that example's rollback.
+        let_it_be(:owner_of_organization) do
+          create(:organization_user, :owner, organization: organization).user
+        end
+
+        let(:current_user) { owner_of_organization }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'member of a descendant project but not of the group' do
+        let_it_be(:project_in_group) { create(:project, group: group) }
+        let_it_be(:descendant_project_member) { create(:user, developer_of: project_in_group) }
+
+        let(:current_user) { descendant_project_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      %w[guest planner reporter developer maintainer owner].each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { expect_allowed(:read_boundary) }
+        end
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed(:read_boundary) }
+        end
+
+        context 'when admin mode is disabled' do
+          it { expect_disallowed(:read_boundary) }
+        end
+      end
+    end
+
+    context 'with an internal group' do
+      let(:group) { create(:group, :internal) }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_group_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+    end
+
+    context 'with a public group' do
+      let(:group) { create(:group, :public) }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_group_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it { expect_allowed(:read_boundary) }
+      end
     end
   end
 end

@@ -1,0 +1,10 @@
+---
+name: agent_presence_consolidation
+description: Show the agent presence actor line and session link on agent-created work items, merge requests, comments, and system notes.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22957
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255699
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629188
+milestone: '19.4'
+type: wip
+group: group::agent execution
+default_enabled: false

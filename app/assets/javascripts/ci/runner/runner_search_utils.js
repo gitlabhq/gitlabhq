@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
 import {
   filterToQueryObject,
@@ -6,7 +7,6 @@ import {
   urlQueryToFilter,
   prepareTokens,
 } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,

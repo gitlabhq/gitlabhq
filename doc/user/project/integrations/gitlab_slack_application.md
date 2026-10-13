@@ -77,6 +77,19 @@ To install the GitLab for Slack app from the Slack App Directory:
 1. Go to the [GitLab for Slack page](https://gitlab.com/-/profile/slack/edit).
 1. Select a GitLab project to link with your Slack workspace.
 
+### Effect on the Slack notifications integration
+
+The deprecated [Slack notifications](slack.md) integration is hidden from the list of
+integrations in a project's settings when all of the following are true:
+
+- The GitLab for Slack app is available on the instance.
+- The project has no Slack notifications integration, including one that is turned off
+  or inherited from a group.
+- No Slack notifications integration exists for the instance.
+
+Hiding affects only the list. Projects that have Slack notifications configured still
+see it in the list and keep receiving notifications.
+
 ## Reinstall the GitLab for Slack app
 
 When GitLab releases new features for the GitLab for Slack app, you might have to reinstall the app to use these features.
@@ -102,7 +115,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
@@ -112,6 +125,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Enabled on GitLab.com and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/592185) in GitLab 19.4.
+- Direct messages and the Slack top bar agent [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606312) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent_app`. Disabled by default.
 
 {{< /history >}}
 
@@ -161,7 +175,7 @@ After users interact with GitLab Duo, it creates an agent session that is visibl
   If your accounts are not linked, GitLab sends you a message
   with a link to authorize the connection on first mention.
 - [Set a default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- Turn on the [Developer Flow](../../duo_agent_platform/flows/foundational_flows/developer.md) for the top-level group.
+- Turn on the [Developer Flow](../merge_requests/developer.md) for the top-level group.
 - Add the GitLab bot to the Slack channel where you want to use it.
 - For existing installations, [reinstall the GitLab for Slack app](#reinstall-the-gitlab-for-slack-app)
   to grant the additional permissions required for GitLab Duo.
@@ -182,15 +196,18 @@ This message is visible only to you.
 
 To leave feedback on this feature's performance, use the thumbs up or thumbs down on any response.
 
-GitLab Duo in Slack works in the following channels and threads:
+GitLab Duo in Slack works in the following places:
 
-- Public and private channels where the agent is a member of the channel.
-- In a group direct messages between more than two people. GitLab Duo only sees the message it was mentioned in, not the earlier conversation.
+- Public and private channels where the agent is a member of the channel. Mention `@GitLab` to start.
+- Group direct messages that include the agent. GitLab Duo responds to every message, with or without a mention.
+- One-to-one direct messages with the agent, including when you open the agent from the Slack top bar.
 
-GitLab Duo does not work in the following threads:
+In direct messages, GitLab Duo uses the earlier messages in the conversation as context.
 
-- One-to-one direct messages with the agent.
-- In the agent panel in the Slack top bar.
+Direct messages require the `assistant:write`, `im:history`, and
+`mpim:history` [permissions](#gitlab-for-slack-app-permissions). If the GitLab for Slack app
+was installed before these permissions were added, you must
+[reinstall the app](#reinstall-the-gitlab-for-slack-app) before GitLab Duo responds in these places.
 
 ### Workspace project
 
@@ -199,7 +216,7 @@ is automatically created in your default GitLab Duo namespace. This project serv
 execution environment for any flows triggered from Slack.
 
 You can customize the agent behavior in the workspace project.
-For more information, see [Developer Flow](../../duo_agent_platform/flows/foundational_flows/developer.md).
+For more information, see [Developer Flow](../merge_requests/developer.md).
 
 ### GitLab for Slack app permissions
 
@@ -208,12 +225,17 @@ GitLab Duo requires the following additional GitLab for Slack app permissions:
 | Scope               | Purpose |
 |---------------------|---------|
 | `app_mentions:read` | Receives events when users mention the bot in a channel. |
+| `assistant:write`   | Marks the app as an agent that appears in the Slack top bar and shows a status while it works. |
 | `channels:history`  | Reads conversation history in public channels to provide thread and channel context to the agent. |
 | `groups:history`    | Reads conversation history in private channels to provide thread and channel context to the agent. |
+| `im:history`        | Reads conversation history in direct messages with the agent. |
+| `mpim:history`      | Reads conversation history in group direct messages that include the agent. |
 | `reactions:write`   | Adds emoji reactions to messages to indicate agent lifecycle status. |
 
-New installations receive these permissions automatically.
-Existing installations receive these permissions only after you
+New installations receive the permissions that are available for your GitLab instance automatically.
+The `assistant:write`, `im:history`, and `mpim:history` permissions are available only when the
+`slack_duo_agent_app` feature flag is enabled. For more information, see the history.
+Existing installations receive new permissions only after you
 [reinstall the GitLab for Slack app](#reinstall-the-gitlab-for-slack-app).
 
 ## Slash commands

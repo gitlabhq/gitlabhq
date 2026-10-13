@@ -620,6 +620,10 @@ lib/api/entities/member.rb:
   - expires_at
   - two_factor_enabled
   - user
+lib/api/entities/merge_request_author.rb:
+  usage_radius: 27
+  fields:
+  - bot?
 lib/api/entities/merge_request_basic.rb:
   usage_radius: 21
   fields:

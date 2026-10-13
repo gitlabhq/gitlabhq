@@ -9,6 +9,10 @@ module Gitlab
     end
 
     def can_push_for_ref?(ref)
+      # Full branch refs come from PushCheck; BranchCheck enforces protection on the bare name.
+      # Other refs, including bare names, are still checked here.
+      return can_access_git? && can_collaborate?(ref) if Gitlab::Git.branch_ref?(ref)
+
       can_push_to_branch?(ref)
     end
 

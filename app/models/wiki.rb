@@ -71,7 +71,7 @@ class Wiki
   VALID_USER_MARKUPS = MARKUPS.select { |_, v| v[:created_by_user] }.freeze unless defined?(VALID_USER_MARKUPS)
 
   unless defined?(ALLOWED_EXTENSIONS_REGEX)
-    ALLOWED_EXTENSIONS_REGEX = Regexp.union(MARKUPS.map { |key, value| value[:extension_regex] }).freeze
+    ALLOWED_EXTENSIONS_REGEX = Regexp.union(MARKUPS.map { |_key, value| value[:extension_regex] }).freeze
   end
 
   CouldNotCreateWikiError = Class.new(StandardError)

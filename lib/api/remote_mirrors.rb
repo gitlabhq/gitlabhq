@@ -32,7 +32,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all remote mirrors for a project' do
@@ -64,7 +64,7 @@ module API
         tags %w[remote_mirrors]
       end
       params do
-        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+        requires :mirror_id, type: String, desc: 'ID of the remote mirror.'
       end
       route_setting :authorization, permissions: :read_remote_mirror, boundary_type: :project
       get ':id/remote_mirrors/:mirror_id' do
@@ -84,7 +84,7 @@ module API
         tags %w[remote_mirrors]
       end
       params do
-        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+        requires :mirror_id, type: String, desc: 'ID of the remote mirror.'
       end
       route_setting :authorization, permissions: :sync_remote_mirror, boundary_type: :project
       post ':id/remote_mirrors/:mirror_id/sync' do
@@ -110,11 +110,12 @@ module API
         tags %w[remote_mirrors]
       end
       params do
-        requires :url, type: String, desc: 'The URL for a remote mirror', documentation: { example: 'https://*****:*****@example.com/gitlab/example.git' }
-        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: false }
-        optional :auth_method, type: String, desc: 'Determines the mirror authentication method',
+        requires :url, type: String, desc: 'Target URL to which the repository is mirrored.',
+          documentation: { example: 'https://*****:*****@example.com/gitlab/example.git' }
+        optional :enabled, type: Boolean, desc: 'If `true`, the mirror is enabled.', documentation: { example: false }
+        optional :auth_method, type: String, desc: 'Mirror authentication method.',
           values: %w[ssh_public_key password]
-        optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
+        optional :keep_divergent_refs, type: Boolean, desc: 'If `true`, divergent refs are kept when mirroring.',
           documentation: { example: false }
         use :mirror_branches_setting
         use :host_key_params
@@ -149,10 +150,10 @@ module API
         tags %w[remote_mirrors]
       end
       params do
-        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
-        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: true }
-        optional :auth_method, type: String, desc: 'Determines the mirror authentication method'
-        optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
+        requires :mirror_id, type: String, desc: 'ID of the remote mirror.'
+        optional :enabled, type: Boolean, desc: 'If `true`, the mirror is enabled.', documentation: { example: true }
+        optional :auth_method, type: String, desc: 'Mirror authentication method.'
+        optional :keep_divergent_refs, type: Boolean, desc: 'If `true`, divergent refs are kept when mirroring.',
           documentation: { example: false }
         use :mirror_branches_setting
         use :host_key_params
@@ -186,7 +187,7 @@ module API
         tags %w[remote_mirrors]
       end
       params do
-        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+        requires :mirror_id, type: String, desc: 'ID of the remote mirror.'
       end
       route_setting :authorization, permissions: :delete_remote_mirror, boundary_type: :project
       delete ':id/remote_mirrors/:mirror_id' do
@@ -209,7 +210,7 @@ module API
         tags %w[remote_mirrors]
       end
       params do
-        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+        requires :mirror_id, type: String, desc: 'ID of the remote mirror.'
       end
       route_setting :authorization, permissions: :read_remote_mirror_public_key, boundary_type: :project
       get ':id/remote_mirrors/:mirror_id/public_key' do

@@ -17,10 +17,30 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
 
   subject(:policy) { described_class.new(token, boundary) }
 
-  context 'when the policy actor is not a PAT' do
-    let(:token) { create(:oauth_access_token) }
+  context 'when the token is an OAuth access token' do
+    let_it_be(:application) { create(:oauth_application) }
+    let_it_be_with_reload(:consent_grant) do
+      create(:oauth_consent_grant, user: user, application: application, boundary: Authz::Boundary.for(project),
+        permissions: permissions)
+    end
 
-    it { expect_disallowed(*permissions) }
+    let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+    it { expect_allowed(*permissions) }
+
+    context 'when the token does not carry the granular scope' do
+      let(:token) { create(:oauth_access_token, resource_owner: user, application: application) }
+
+      it { expect_disallowed(*permissions) }
+    end
+
+    context 'when the consent grant is revoked' do
+      before do
+        consent_grant.revoked!
+      end
+
+      it { expect_disallowed(*permissions) }
+    end
   end
 
   context 'when the token is a non-PAT class that includes Authz::GranularTokenInterface' do
@@ -37,7 +57,7 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
     let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: Array(permissions)) }
     let(:token) { token_class.new(user, [granular_scope]) }
 
-    it 'evaluates permissions via the membership rule' do
+    it 'evaluates permissions from the token scope' do
       expect_allowed(*permissions)
     end
 
@@ -61,18 +81,12 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
       it { expect_disallowed(*permissions) }
     end
 
-    context 'when the user is not a member' do
-      let_it_be(:user) { create(:user) }
-
-      it { expect_disallowed(*permissions) }
-    end
-
-    context 'when an anonymous caller would be granted the permission' do
+    context 'when an anonymous caller would be granted a permission outside the token scope' do
       let_it_be(:user) { create(:user) }
       let_it_be(:boundary_object) { create(:project, :public) }
 
       let(:permission) { :read_work_item }
-      let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: [permission]) }
+      let(:granular_scope) { create(:granular_scope, boundary: boundary, permissions: [:update_wiki]) }
 
       it 'does not apply the PAT-only anonymous rule' do
         expect(::Users::Anonymous.can?(permission, boundary_object)).to be(true)
@@ -112,15 +126,25 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
     it { expect_disallowed(:not_allowed_permission) }
   end
 
-  context 'when the user is not a member' do
+  context 'when the user is not a member of the boundary' do
     let_it_be(:user) { create(:user) }
 
-    it { expect_disallowed(*permissions) }
+    it 'grants the permission on a private boundary' do
+      expect_allowed(*permissions)
+    end
 
-    context 'when the user is an admin', :enable_admin_mode do
-      let_it_be(:user) { create(:admin) }
+    context 'and the boundary is a public project' do
+      let_it_be(:boundary_object) { create(:project, :public) }
 
-      it { expect_allowed(*permissions) }
+      # create_work_item is an assignable permission group, and it expands to
+      # include the create_issue permission asserted below.
+      let_it_be(:permissions) { :create_work_item }
+
+      it 'grants a permission the anonymous rule does not cover' do
+        expect(::Users::Anonymous.can?(:create_issue, boundary_object)).to be(false)
+
+        expect_allowed(:create_issue)
+      end
     end
   end
 
@@ -136,116 +160,6 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
 
     with_them do
       it { expect_allowed(*permissions) }
-    end
-  end
-
-  describe ':read_boundary' do
-    subject(:visible) { policy.allowed?(:read_boundary) }
-
-    context 'when the user is a member of the boundary' do
-      it { is_expected.to be(true) }
-    end
-
-    context 'when the user is not a member' do
-      let_it_be(:user) { create(:user) }
-
-      context 'and the boundary is a private project' do
-        let_it_be(:boundary_object) { create(:project, :private) }
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'and the boundary is an internal project' do
-        let_it_be(:boundary_object) { create(:project, :internal) }
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'and the boundary is a public project' do
-        let_it_be(:boundary_object) { create(:project, :public) }
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'and the boundary is a private group' do
-        let_it_be(:boundary_object) { create(:group, :private) }
-
-        it { is_expected.to be(false) }
-      end
-
-      context 'and the boundary is an internal group' do
-        let_it_be(:boundary_object) { create(:group, :internal) }
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'and the boundary is a public group' do
-        let_it_be(:boundary_object) { create(:group, :public) }
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'and the user is an admin', :enable_admin_mode do
-        let_it_be(:user) { create(:admin) }
-        let_it_be(:boundary_object) { create(:project, :private) }
-
-        it { is_expected.to be(true) }
-      end
-    end
-  end
-
-  describe 'public-access bypass' do
-    let_it_be(:public_project) { create(:project, :public) }
-    let_it_be(:public_group) { create(:group, :public) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:token) { create(:granular_pat, user:) }
-
-    let(:permission) { :read_issue }
-    let(:resource_policy) { instance_double(::DeclarativePolicy::Base) }
-
-    before do
-      allow(::DeclarativePolicy).to receive(:policy_for).and_call_original
-      allow(::DeclarativePolicy).to receive(:policy_for)
-        .with(nil, boundary_object, hash_including(:cache)).and_return(resource_policy)
-    end
-
-    shared_examples 'mirrors the anonymous policy outcome' do
-      context 'when an anonymous caller would be granted the permission' do
-        before do
-          allow(resource_policy).to receive(:allowed?).with(permission).and_return(true)
-        end
-
-        it { expect_allowed(permission) }
-      end
-
-      context 'when an anonymous caller would be denied the permission' do
-        before do
-          allow(resource_policy).to receive(:allowed?).with(permission).and_return(false)
-        end
-
-        it { expect_disallowed(permission) }
-      end
-    end
-
-    context 'with a project boundary' do
-      let(:boundary_object) { public_project }
-
-      it_behaves_like 'mirrors the anonymous policy outcome'
-    end
-
-    context 'with a group boundary' do
-      let(:boundary_object) { public_group }
-
-      it_behaves_like 'mirrors the anonymous policy outcome'
-    end
-
-    context 'when the boundary resource is neither a project nor a group' do
-      let(:boundary_object) { :instance }
-
-      it 'does not consult the anonymous-parity bypass' do
-        expect(::DeclarativePolicy).not_to receive(:policy_for).with(nil, anything, anything)
-        policy.allowed?(permission)
-      end
     end
   end
 end

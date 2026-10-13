@@ -97,7 +97,9 @@ module Gitlab
               mean :"#{name}.mean", :float, expression, description: descriptions[:mean], authorize: authorize
               quantile :"#{name}.quantile", :float, expression, description: descriptions[:quantile],
                 authorize: authorize, parameters: { quantile: { type: :float, in: 0.0..1.0 } }
-              sum :"#{name}.sum", type, expression, description: descriptions[:sum], authorize: authorize if summable
+
+              # Float rather than the base type: integer sums overflow GraphQL `Int` quickly.
+              sum :"#{name}.sum", :float, expression, description: descriptions[:sum], authorize: authorize if summable
             end
           end
 

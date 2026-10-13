@@ -123,7 +123,7 @@ export default {
       if (this.selectedNamespace && this.selectedNamespace?.fullPath) {
         return this.selectedNamespace.fullPath;
       }
-      return null;
+      return '';
     },
     loading() {
       return this.$apollo.queries.currentUser.loading;

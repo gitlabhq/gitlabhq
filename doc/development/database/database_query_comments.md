@@ -22,6 +22,7 @@ Queries generated from Rails include the following metadata in comments:
 - `correlation_id`
 - `endpoint_id`
 - `db_config_database`
+- `feature_category`
 - `line`
 
 Queries generated from Sidekiq workers include the following metadata
@@ -32,6 +33,7 @@ in comments:
 - `correlation_id`
 - `endpoint_id`
 - `db_config_database`
+- `feature_category`
 - `line`
 
 `endpoint_id` is a single field that can represent any endpoint in the application:
@@ -42,6 +44,8 @@ in comments:
 
 `db_config_database` is a single field that represents the `database` field in the database configuration hash in `database.yml`.
 
+`feature_category` is the feature category of the endpoint or worker that issued the query. For example, `source_code_management`.
+
 `line` is not present in production logs due to the additional overhead required.
 It is also disabled in CI by default, and can be enabled with `QUERY_LOG_LINE=true`.
 
@@ -50,17 +54,17 @@ Examples of queries with comments:
 - Rails:
 
   ```sql
-  /*application:web,correlation_id:01EZVMR923313VV44ZJDJ7PMEZ,endpoint_id:Projects::BlobController#show,db_config_database:gitlabhq_production*/ SELECT "routes".* FROM "routes" WHERE "routes"."source_id" = 75 AND "routes"."source_type" = 'Namespace' LIMIT 1
+  /*application:web,correlation_id:01EZVMR923313VV44ZJDJ7PMEZ,endpoint_id:Projects::BlobController#show,db_config_database:gitlabhq_production,feature_category:source_code_management*/ SELECT "routes".* FROM "routes" WHERE "routes"."source_id" = 75 AND "routes"."source_type" = 'Namespace' LIMIT 1
   ```
 
 - Grape:
 
   ```sql
-  /*application:web,correlation_id:01EZVN0DAYGJF5XHG9N4VX8FAH,endpoint_id:/api/:version/users/:id,db_config_database:gitlabhq_production*/ SELECT COUNT(*) FROM "users" INNER JOIN "user_follow_users" ON "users"."id" = "user_follow_users"."followee_id" WHERE "user_follow_users"."follower_id" = 1
+  /*application:web,correlation_id:01EZVN0DAYGJF5XHG9N4VX8FAH,endpoint_id:/api/:version/users/:id,db_config_database:gitlabhq_production,feature_category:user_profile*/ SELECT COUNT(*) FROM "users" INNER JOIN "user_follow_users" ON "users"."id" = "user_follow_users"."followee_id" WHERE "user_follow_users"."follower_id" = 1
   ```
 
 - Sidekiq:
 
   ```sql
-  /*application:sidekiq,correlation_id:df643992563683313bc0a0288fb55e23,jid:15fbc506590c625d7664b074,endpoint_id:UserStatusCleanup::BatchWorker,db_config_database:gitlabhq_production,line:/app/workers/user_status_cleanup/batch_worker.rb:19:in `perform'*/ SELECT $1 AS one FROM "user_statuses" WHERE "user_statuses"."clear_status_at" <= $2 LIMIT $3
+  /*application:sidekiq,correlation_id:df643992563683313bc0a0288fb55e23,jid:15fbc506590c625d7664b074,endpoint_id:UserStatusCleanup::BatchWorker,db_config_database:gitlabhq_production,feature_category:user_profile,line:/app/workers/user_status_cleanup/batch_worker.rb:19:in `perform'*/ SELECT $1 AS one FROM "user_statuses" WHERE "user_statuses"."clear_status_at" <= $2 LIMIT $3
   ```

@@ -8,11 +8,13 @@ module Gitlab
         @raw_repository = repository.raw_repository
       end
 
-      def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30)
+      def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30, sorted: false)
         changed_paths = @raw_repository.find_changed_paths(
           [Gitlab::Git::DiffTree.new(diff_refs.base_sha, diff_refs.head_sha)],
           find_renames: true
         )
+
+        changed_paths = Gitlab::Diff::FileCollectionSorter.new(changed_paths).sort if sorted
 
         changed_paths.drop(offset).each_slice(batch_size) do |batched_changed_paths|
           blob_pairs = batched_changed_paths.reject(&:submodule_change?).map do |changed_path|

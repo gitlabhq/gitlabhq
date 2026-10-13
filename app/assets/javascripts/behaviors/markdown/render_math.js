@@ -105,7 +105,8 @@ class SafeMathRenderer {
           // We do not want to put the alert in the <copy-code> element's nearest
           // positioned ancestor, otherwise it will display over the alert instead of
           // the code block. Instead, put the alert *before* that ancestor.
-          mountBeforeEl: el.closest('.js-markdown-code'),
+          // Inline math has no such wrapper, so fall back to the block itself.
+          mountBeforeEl: el.closest('.js-markdown-code') || el,
           isTextTooLong,
           onDisplayAnyway: () => {
             this.renderElement(codeElement);

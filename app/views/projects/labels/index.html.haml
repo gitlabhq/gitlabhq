@@ -1,5 +1,6 @@
 - page_title _("Labels")
-- can_admin_label = can?(current_user, :admin_label, @project)
+- can_create_label = can?(current_user, :create_label, @project)
+- can_update_label = can?(current_user, :update_label, @project)
 - search = params[:search]
 - subscribed = params[:subscribed]
 - archived = params[:archived]
@@ -8,11 +9,11 @@
 
 %h1.gl-sr-only= page_title
 
-= render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
+= render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_create_label: can_create_label
 
 - if labels_or_filters
   #js-promote-label-modal
-  - if can_admin_label && search.blank?
+  - if can_update_label && search.blank?
     %p.gl-text-subtle.gl-mt-5.gl-mb-0
       - if archived
         = _('Archived labels are not available for use. Unarchive a label you want to use, or delete a label you want to permanently remove.')
@@ -23,13 +24,13 @@
     -# Only show it in the first page and hide when viewing archived tab
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1') || params[:archived] == 'true'
     = render ::Layouts::CrudComponent.new(_('Prioritized labels'),
-      options: {class: ['prioritized-labels', ('gl-hidden' if hide), ('is-not-draggable' unless can_admin_label)].compact.join(' ')},
+      options: {class: ['prioritized-labels', ('gl-hidden' if hide), ('is-not-draggable' unless can_update_label)].compact.join(' ')},
       count: number_with_delimiter(@prioritized_labels.size),
       icon: 'label',
       body_options: { class: '!gl-m-0' },
       description: _('Drag to reorder prioritized labels and change their relative priority.')) do |c|
       - c.with_body do
-        %ul.js-prioritized-labels.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
+        %ul.js-prioritized-labels.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_update_label } }
           %li#js-priority-labels-empty-state.priority-labels-empty-state.gl-list-none{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
             = render 'shared/empty_states/priority_labels'
           - if @prioritized_labels.any?

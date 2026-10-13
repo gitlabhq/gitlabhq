@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'rack/test'
+require 'rack'
 
 RSpec.describe Gitlab::Middleware::StripCookies, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax

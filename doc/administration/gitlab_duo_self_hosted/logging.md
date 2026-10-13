@@ -375,12 +375,12 @@ For information about how GitLab handles AI prompt and response data when using 
 
 ## Cross-referencing logs between the AI Gateway and GitLab
 
-The property `correlation_id` is assigned to every request and is carried across different components that respond to a
-request. For more information, see the [documentation on finding logs with a correlation ID](../logs/tracing_correlation_id.md).
+The `correlation_id` property is assigned to every request and is carried
+across different components that respond to a request.
+You can find the correlation ID in your AI Gateway and GitLab logs.
+It's not present in your model provider logs.
 
-The Correlation ID can be found in your AI Gateway and GitLab logs. However, it is not present in your model provider logs.
+For more information, see:
 
-### Related topics
-
-- [Parsing GitLab logs with jq](../logs/log_parsing.md)
-- [Searching your logs for the correlation ID](../logs/tracing_correlation_id.md#searching-your-logs-for-the-correlation-id)
+- [Find relevant log entries with a correlation ID](../logs/tracing_correlation_id.md)
+- [Parsing GitLab logs with `jq`](../logs/log_parsing.md)

@@ -2,7 +2,8 @@
 
 module RapidDiffsHelpers
   def diff_file(path)
-    find('diff-file header h2', text: path, exact_text: true, match: :first).ancestor('diff-file')
+    header = XPath.descendant(:header).descendant(:h2)[XPath.string.n == path]
+    find(:xpath, XPath.descendant(:'diff-file')[header], match: :first)
   end
 
   def within_diff_file(path, &block)
@@ -19,13 +20,18 @@ module RapidDiffsHelpers
   end
 
   def select_inline_view
-    open_diff_view_preferences
-    inline_view_option.click
+    switch_diff_view('hunk-lines-inline') { inline_view_option.click }
   end
 
   def select_parallel_view
+    switch_diff_view('hunk-lines-parallel') { parallel_view_option.click }
+  end
+
+  def switch_diff_view(rendered_testid)
     open_diff_view_preferences
-    parallel_view_option.click
+    yield
+
+    page.assert_selector("[data-testid='#{rendered_testid}']")
   end
 
   def inline_view_option

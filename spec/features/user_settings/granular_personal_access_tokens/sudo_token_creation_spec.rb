@@ -43,7 +43,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > sudo capabilit
 
       check 'Use token to act on behalf of other users (sudo)'
 
-      choose 'All groups and projects that I\'m a member of'
+      choose 'All groups and projects I have access to'
 
       within_testid('resource-tree') do
         click_button 'Toggle Groups category'

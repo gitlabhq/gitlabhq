@@ -1,0 +1,10 @@
+---
+name: analyze_partitioned_tables_with_default_interval
+description: Ops kill-switch for the whole-table ANALYZE that Database::PartitionManagementWorker runs on partitioned tables that rely on the default analyze_interval, because they do not set one. It gates only that whole-table pass. Tables with an explicit analyze_interval are not affected, and the ANALYZE of newly created partitions is controlled separately by analyze_partitioned_tables_on_rotation. Enabled by default; disable to stop the whole-table ANALYZE for those tables if it causes unexpected database load.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/624175
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252300
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630895
+milestone: '19.5'
+group: group::database frameworks
+type: ops
+default_enabled: true

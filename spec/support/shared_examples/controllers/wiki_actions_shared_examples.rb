@@ -15,6 +15,15 @@ RSpec.shared_examples 'wiki controller actions' do
     sign_in(user)
   end
 
+  shared_context 'when the page was renamed' do
+    let!(:version_before_rename) { wiki.find_page(wiki_title).version.id }
+
+    before do
+      wiki.update_page(wiki.find_page(wiki_title).page, title: 'renamed', content: 'hello world')
+      wiki.update_page(wiki.find_page('renamed').page, title: 'renamed', content: 'hello again')
+    end
+  end
+
   shared_examples 'renders 404 with CTA to create page' do
     it 'shows the 404 page with CTA button' do
       expect(response).to have_gitlab_http_status(:not_found)
@@ -173,6 +182,33 @@ RSpec.shared_examples 'wiki controller actions' do
     it_behaves_like 'fetching history', :not_found do
       let(:allow_read_wiki)   { false }
     end
+
+    context 'when the page was renamed' do
+      include_context 'when the page was renamed'
+
+      let(:allow_read_wiki) { true }
+
+      it 'counts and lists the commits from before the rename', :aggregate_failures do
+        get :history, params: routing_params.merge(id: 'renamed')
+
+        expect(assigns(:commits_count)).to eq(3)
+        expect(assigns(:commits).size).to eq(3)
+        expect(assigns(:commits).last.message).to match(/created page: #{wiki_title}/)
+      end
+
+      context 'when wiki_page_history_follow_renames is disabled' do
+        before do
+          stub_feature_flags(wiki_page_history_follow_renames: false)
+        end
+
+        it 'counts and lists only the commits on the current path', :aggregate_failures do
+          get :history, params: routing_params.merge(id: 'renamed')
+
+          expect(assigns(:commits_count)).to eq(2)
+          expect(assigns(:commits).size).to eq(2)
+        end
+      end
+    end
   end
 
   describe 'GET #diff' do
@@ -202,10 +238,62 @@ RSpec.shared_examples 'wiki controller actions' do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      context 'when a version is given' do
+        it 'returns a 404 error' do
+          get :diff, params: routing_params.merge(id: 'invalid', version_id: wiki.repository.commit.id)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     it_behaves_like 'recovers from git errors' do
       subject(:request) { get :diff, params: routing_params.merge(id: wiki_title, version_id: wiki.repository.commit.id) }
+    end
+
+    context 'when the commit is from before the page was renamed' do
+      include_context 'when the page was renamed'
+
+      subject(:request) { get :diff, params: routing_params.merge(id: 'renamed', version_id: version_before_rename) }
+
+      it 'renders the diff of the page at its previous path as a version of the current page', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:diffs).diff_files.map(&:new_path)).to eq(['page-title-test.md'])
+        expect(assigns(:page).slug).to eq('renamed')
+      end
+
+      context 'when wiki_page_history_follow_renames is disabled' do
+        before do
+          stub_feature_flags(wiki_page_history_follow_renames: false)
+        end
+
+        it 'returns a 404 error' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when the commit deleted the page at its previous path' do
+      let!(:deletion) do
+        wiki.delete_page(wiki.find_page(wiki_title).page)
+        wiki.repository.commit.id
+      end
+
+      before do
+        create(:wiki_page, wiki: wiki, title: wiki_title, content: 'hello world')
+        wiki.update_page(wiki.find_page(wiki_title).page, title: 'renamed', content: 'hello world')
+      end
+
+      it 'returns a 404 error' do
+        get :diff, params: routing_params.merge(id: 'renamed', version_id: deletion)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 
@@ -229,6 +317,11 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(assigns(:page).title).to eq(wiki_title)
       end
 
+      it_behaves_like 'pushes frontend feature flag', :wiki_collaborative_editing do
+        let(:feature_args) { [container.root_ancestor] }
+        let(:make_request) { request }
+      end
+
       context 'page view tracking' do
         it_behaves_like 'internal event tracking' do
           let(:event) { 'view_wiki_page' }
@@ -246,6 +339,49 @@ RSpec.shared_examples 'wiki controller actions' do
           end
 
           request
+        end
+      end
+
+      context 'when viewing a version from before the page was renamed' do
+        include_context 'when the page was renamed'
+
+        subject(:request) { get :show, params: routing_params.merge(id: 'renamed', version_id: version_before_rename) }
+
+        it 'renders the old content as a version of the current page', :aggregate_failures do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          app = Nokogiri::HTML(response.body).at_css('#js-vue-wiki-app')
+
+          expect(Gitlab::Json::SafeParser.parse(app['data-page-info'])).to include(
+            'slug' => 'renamed',
+            'title' => 'renamed',
+            'path' => controller.wiki_page_path(wiki, 'renamed'),
+            'last_commit_sha' => wiki.find_page('renamed').last_commit_sha,
+            'content' => 'hello world'
+          )
+          expect(app['data-content-api']).to end_with("/wikis/page-title-test?version=#{version_before_rename}")
+        end
+
+        it 'logs the view against the current page' do
+          expect_next_instance_of(::Gitlab::Search::RecentWikiPages) do |service|
+            expect(service).to receive(:log_view).with(have_attributes(canonical_slug: 'renamed'))
+          end
+
+          request
+        end
+
+        context 'when wiki_page_history_follow_renames is disabled' do
+          before do
+            stub_feature_flags(wiki_page_history_follow_renames: false)
+          end
+
+          it 'does not find the version' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 

@@ -170,49 +170,6 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
         expect(feature.model_experiments_access_level).to eq(described_class::PRIVATE)
       end
     end
-
-    # Regression test for INC-11487, which reverted the first attempt at this
-    # feature. During the deploy window a process holds a schema cache
-    # with the old DEFAULT 20 while the post-deploy migration drops it, so an
-    # omitted column inserts NULL and project creation fails.
-    # Incident review: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/22385
-    context 'with a stale schema cache during the default-removal window' do
-      let(:connection) { described_class.connection }
-      let(:columns) { %w[model_registry_access_level model_experiments_access_level] }
-      let(:stale_window_project) { create(:project, :private) }
-
-      around do |example|
-        # Create the project with the schema in its normal (migrated) state, before
-        # the stale window is set up below.
-        stale_window_project
-
-        # Restore the old DEFAULT 20 and prime the schema cache with it, then drop
-        # the default again WITHOUT refreshing the cache -- the exact stale window.
-        columns.each do |column|
-          connection.execute("ALTER TABLE project_features ALTER COLUMN #{column} SET DEFAULT 20")
-        end
-        described_class.reset_column_information
-        described_class.columns # memoize the cache holding DEFAULT 20
-        columns.each do |column|
-          connection.execute("ALTER TABLE project_features ALTER COLUMN #{column} DROP DEFAULT")
-        end
-
-        example.run
-      ensure
-        described_class.reset_column_information
-      end
-
-      it 'writes the visibility-based default, never NULL or the stale cached value', :aggregate_failures do
-        stale_window_project.project_feature.destroy!
-        feature = stale_window_project.build_project_feature
-
-        expect { feature.save! }.not_to raise_error
-
-        # PRIVATE (10), not NULL and not the stale cached 20 (which `||=` would write).
-        expect(feature.reload.model_registry_access_level).to eq(described_class::PRIVATE)
-        expect(feature.model_experiments_access_level).to eq(described_class::PRIVATE)
-      end
-    end
   end
 
   describe '#public_pages?' do

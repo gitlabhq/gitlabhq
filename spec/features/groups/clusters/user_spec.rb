@@ -12,7 +12,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
     group.add_maintainer(user)
     sign_in(user)
 
-    allow(Groups::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    allow(Groups::ClustersController).to receive(:STATUS_POLLING_INTERVAL).and_return(100)
     allow_next_instance_of(Clusters::Kubernetes::CreateOrUpdateNamespaceService) do |instance|
       allow(instance).to receive(:execute)
     end

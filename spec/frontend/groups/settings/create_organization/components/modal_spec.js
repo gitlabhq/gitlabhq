@@ -225,6 +225,10 @@ describe('OrganizationReconciliationModal', () => {
           expect(findStep1().props('organization')).toEqual(mockNewOrganization);
         });
 
+        it('passes the shouldCreateNewOrganization to step component', () => {
+          expect(findStep1().props('shouldCreateNewOrganization')).toBe(true);
+        });
+
         it('does not refetch when modal is closed and reopened', async () => {
           expect(successHandler).toHaveBeenCalledTimes(1);
 
@@ -344,6 +348,19 @@ describe('OrganizationReconciliationModal', () => {
         await nextTick();
 
         expect(wrapper.emitted('change')).toEqual([[false]]);
+      });
+
+      describe('when update-organization event is fired', () => {
+        it('updates organization prop', async () => {
+          const updatedOrganization = { ...mockNewOrganization, name: 'custom name' };
+
+          expect(findStep1().props('organization')).toEqual(mockNewOrganization);
+          findStep1().vm.$emit('update-organization', updatedOrganization);
+
+          await nextTick();
+
+          expect(findStep1().props('organization')).toEqual(updatedOrganization);
+        });
       });
 
       describe('when next button advances to a step that is not the last', () => {
@@ -503,6 +520,7 @@ describe('OrganizationReconciliationModal', () => {
           it('creates the organization from the group', () => {
             expect(axiosMock.history.post).toHaveLength(1);
             expect(axiosMock.history.post[0].url).toBe(createOrganizationPath);
+            expect(JSON.parse(axiosMock.history.post[0].data).name).toBe(mockNewOrganization.name);
           });
 
           it('transfers the moved groups to the created organization and confirms it', () => {

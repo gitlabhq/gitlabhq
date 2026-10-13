@@ -7,7 +7,6 @@ module Integrations::Actions
     include Integrations::Params
     include IntegrationsHelper
 
-    # :overrides is defined in Admin:IntegrationsController
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :ensure_integration_enabled, only: [:edit, :update, :overrides, :test]
     before_action :integration, only: [:edit, :update, :overrides, :test]
@@ -31,8 +30,7 @@ module Integrations::Actions
       format.html do
         if saved
           PropagateIntegrationWorker.perform_async(integration.id)
-          redirect_to scoped_edit_integration_path(integration, project: integration.project, group: integration.group),
-            notice: success_message
+          redirect_to integration_edit_path, notice: success_message
         else
           render 'shared/integrations/edit'
         end
@@ -67,6 +65,10 @@ module Integrations::Actions
   end
 
   private
+
+  def integration_edit_path
+    scoped_edit_integration_path(integration, project: integration.project, group: integration.group)
+  end
 
   def integration
     @integration ||= find_or_initialize_non_project_specific_integration(permitted_params[:id])

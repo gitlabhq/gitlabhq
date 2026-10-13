@@ -1,4 +1,5 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -9,10 +10,14 @@ import { sortableStart, sortableEnd } from '~/sortable/utils';
 import WorkItemChildrenLoadMore from '~/work_items/components/shared/work_item_children_load_more.vue';
 import { DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT } from '~/work_items/constants';
 import { getWorkItemsConnection } from '~/work_items/utils';
-import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 
-import { boardColumnQuery, boardColumnQueryVariables, boardColumnCountVariables } from '../utils';
-import { BOARD_DND_GROUP, BOARD_CARD_CLASS, BOARD_CARD_DROP_INDICATOR_CLASS } from '../constants';
+import { boardColumnQuery, boardColumnQueryVariables } from '../utils';
+import {
+  BOARD_DND_GROUP,
+  BOARD_CARD_CLASS,
+  BOARD_CARD_DROP_INDICATOR_CLASS,
+  BOARD_CARD_NO_DRAG_CLASS,
+} from '../constants';
 import ColumnHeader from './column_header.vue';
 import WorkItemCard from './work_item_card.vue';
 import WorkItemCardSkeleton from './work_item_card_skeleton.vue';
@@ -24,17 +29,21 @@ export default {
     ...defaultSortableOptions,
     draggable: `.${BOARD_CARD_CLASS}`,
     ghostClass: BOARD_CARD_DROP_INDICATOR_CLASS,
+    filter: `.${BOARD_CARD_NO_DRAG_CLASS}`,
+    preventOnFilter: false,
     delay: DRAG_DELAY,
     delayOnTouchOnly: true,
   },
   i18n: {
     emptyText: s__('WorkItemBoard|No items'),
+    dropText: s__('WorkItemBoard|Drop here to move item.'),
     fetchError: s__('WorkItemBoard|An error occurred while fetching work items for this column.'),
     loadMoreError: s__('WorkItemBoard|An error occurred while fetching more work items.'),
   },
   components: {
     ColumnHeader,
     DraggableCompat,
+    GlIcon,
     WorkItemCard,
     WorkItemCardSkeleton,
     WorkItemChildrenLoadMore,
@@ -55,6 +64,10 @@ export default {
     },
     baseQueryVariables: {
       type: Object,
+      required: true,
+    },
+    count: {
+      type: Number,
       required: true,
     },
     dragDisabled: {
@@ -122,9 +135,15 @@ export default {
       required: false,
       default: false,
     },
+    canReorderCards: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: [
     'card-move',
+    'card-move-to-position',
     'set-active-item',
     'toggle-collapse',
     'drag-start',
@@ -136,11 +155,11 @@ export default {
   data() {
     return {
       workItemsConnection: { nodes: [], pageInfo: {} },
-      totalCount: 0,
       error: null,
       loadMoreError: false,
       fetchNextPageInProgress: false,
       columnBodyId: uniqueId('board-column-body-'),
+      isDropTarget: false,
     };
   },
   computed: {
@@ -182,16 +201,9 @@ export default {
       // strategy has flagged as invalid for this item.
       return { name: BOARD_DND_GROUP, put: this.dropDisabled ? false : [BOARD_DND_GROUP] };
     },
-    countQueryVariables() {
-      return boardColumnCountVariables({
-        rootPageFullPath: this.rootPageFullPath,
-        baseQueryVariables: this.baseQueryVariables,
-        groupFilter: this.strategy.groupFilter(this.value),
-      });
-    },
     columnClasses() {
       return [
-        this.collapsed ? 'gl-w-8 gl-self-start' : 'gl-h-full gl-w-48',
+        this.collapsed ? 'gl-w-[2.75rem] gl-self-start' : 'gl-h-full gl-w-48',
         {
           'gl-opacity-5': this.dropDisabled || this.showBusyIndicator,
           'gl-cursor-not-allowed': this.dropDisabled,
@@ -235,20 +247,18 @@ export default {
         },
       };
     },
-    totalCount() {
-      return {
-        query: getWorkItemsCountOnlyQuery,
-        variables() {
-          return this.countQueryVariables;
-        },
-        update(data) {
-          return data?.namespace?.workItems?.count ?? 0;
-        },
-        error(error) {
-          Sentry.captureException(error);
-        },
-      };
-    },
+  },
+  mounted() {
+    // SortableJS inserts the drop indicator outside Vue's render, so watch the DOM for it.
+    this.dropTargetObserver = new MutationObserver(() => {
+      this.isDropTarget =
+        this.showEmptyState &&
+        Boolean(this.$refs.columnBody.querySelector(`.${BOARD_CARD_DROP_INDICATOR_CLASS}`));
+    });
+    this.dropTargetObserver.observe(this.$refs.columnBody, { childList: true, subtree: true });
+  },
+  beforeDestroy() {
+    this.dropTargetObserver.disconnect();
   },
   methods: {
     onDragStart(evt) {
@@ -264,6 +274,13 @@ export default {
       // reliably clean up the body class `sortableStart` added.
       sortableEnd();
       this.$emit('card-move', evt);
+    },
+    moveCardToPosition(oldIndex, newIndex) {
+      this.$emit('card-move-to-position', {
+        workItemId: this.workItems[oldIndex]?.id,
+        oldIndex,
+        newIndex,
+      });
     },
     fetchNextPage() {
       if (!this.hasNextPage || this.fetchNextPageInProgress) {
@@ -331,7 +348,7 @@ export default {
     <column-header
       :value="value"
       :decoration="decoration"
-      :count="totalCount"
+      :count="count"
       :collapsed="collapsed"
       :controls-id="columnBodyId"
       :reorderable="reorderable"
@@ -347,6 +364,7 @@ export default {
     <div
       v-show="!collapsed"
       :id="columnBodyId"
+      ref="columnBody"
       class="gl-flex gl-min-h-0 gl-flex-1 gl-flex-col gl-overflow-y-auto gl-overflow-x-hidden gl-px-3 gl-pb-3"
     >
       <p
@@ -370,6 +388,7 @@ export default {
         :group="groupConfig"
         :disabled="dragDisabled"
         class="board-card-list gl-m-0 gl-flex gl-flex-1 gl-list-none gl-flex-col gl-gap-3 gl-p-0"
+        :class="{ 'is-drop-target': isDropTarget }"
         @start="onDragStart"
         @end="onDragEnd"
       >
@@ -379,14 +398,19 @@ export default {
           <work-item-card-skeleton v-if="insertingCard" />
         </template>
         <work-item-card
-          v-for="workItem in workItems"
+          v-for="(workItem, index) in workItems"
           :key="workItem.id"
           :item="workItem"
           :hidden-metadata-keys="hiddenMetadataKeys"
           :root-page-full-path="rootPageFullPath"
           :active-item="activeItem"
           :detail-panel-enabled="detailPanelEnabled"
+          :can-reorder="canReorderCards"
+          :is-first="index === 0"
+          :is-last="index === workItems.length - 1"
           @set-active-item="$emit('set-active-item', $event)"
+          @move-to-start="moveCardToPosition(index, 0)"
+          @move-to-end="moveCardToPosition(index, workItems.length - 1)"
         />
         <template #footer>
           <work-item-card-skeleton
@@ -396,9 +420,11 @@ export default {
           <li
             v-if="showEmptyState"
             data-testid="empty-state"
-            class="gl-list-none gl-py-3 gl-text-center gl-text-sm gl-text-subtle"
+            :data-drop-text="$options.i18n.dropText"
+            class="board-column-empty-state gl-flex gl-flex-1 gl-list-none gl-flex-col gl-items-center gl-justify-center gl-gap-3 gl-text-subtle"
           >
-            {{ $options.i18n.emptyText }}
+            <gl-icon name="work-items" :size="24" />
+            <span>{{ $options.i18n.emptyText }}</span>
           </li>
           <li v-if="hasNextPage && !fetchNextPageInProgress" class="gl-list-none">
             <work-item-children-load-more

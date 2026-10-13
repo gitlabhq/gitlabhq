@@ -1,0 +1,169 @@
+<script>
+import { defineAsyncComponent } from 'vue';
+import { uniqueId } from 'lodash-es';
+import { GlTooltipDirective, GlButton, GlIcon, GlLink, GlTruncate } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
+import defaultAvatarUrl from 'images/no_avatar.png';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
+import { getAgentSessionUrls } from '../utils';
+
+export default {
+  name: 'BlameCommitInfo',
+  components: {
+    GlButton,
+    GlIcon,
+    GlLink,
+    GlTruncate,
+    TimeagoTooltip,
+    UserAvatarImage,
+    CommitPopover,
+    AgentSessionLink: defineAsyncComponent(
+      () => import('ee_component/blob/components/agent_session_link.vue'),
+    ),
+    AgentSessionPopover: defineAsyncComponent(
+      () => import('ee_component/blob/components/agent_session_popover.vue'),
+    ),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [glFeatureFlagsMixin()],
+  props: {
+    commit: {
+      type: Object,
+      required: true,
+    },
+    previousBlamePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      popoverTargetId: uniqueId('blame-commit-popover-'),
+    };
+  },
+  computed: {
+    commitTitle() {
+      return this.commit.title || '';
+    },
+    avatarLinkAltText() {
+      return sprintf(__(`%{username}'s avatar`), { username: this.commit.authorName });
+    },
+    avatarUrl() {
+      return this.commit.authorGravatar || this.commit.avatarUrl || this.$options.defaultAvatarUrl;
+    },
+    commitUrl() {
+      return this.commit.webPath || this.commit.commitUrl;
+    },
+    hasMessage() {
+      return Boolean(this.commit.message || this.commit.title);
+    },
+    agentSessionUrls() {
+      if (!this.glFeatures.blameAgentSessions) return [];
+      return getAgentSessionUrls(this.commit);
+    },
+    author() {
+      return this.commit.author;
+    },
+    authorUserId() {
+      return this.author?.id ? getIdFromGraphQLId(this.author.id) : null;
+    },
+    authorUsername() {
+      return this.author?.username || '';
+    },
+    authorWebPath() {
+      return this.author?.webPath || '';
+    },
+    avatarWrapperProps() {
+      if (!this.author) return {};
+      return {
+        href: this.authorWebPath,
+        'data-user-id': this.authorUserId,
+        'data-username': this.authorUsername,
+        class: 'js-user-link',
+        'data-testid': 'commit-author-link',
+      };
+    },
+  },
+  defaultAvatarUrl,
+  i18n: {
+    viewBlamePrior: __('View blame prior to this change'),
+  },
+};
+</script>
+
+<template>
+  <div
+    style="height: var(--source-line-height)"
+    class="gl-flex gl-w-full gl-items-center gl-gap-3"
+    data-testid="blame-commit-info"
+  >
+    <timeago-tooltip
+      :time="commit.authoredDate || commit.committedDate"
+      tooltip-placement="top"
+      class="gl-w-12 gl-shrink-0 gl-truncate gl-text-sm gl-text-subtle"
+      data-testid="commit-time"
+    />
+
+    <component :is="author ? 'a' : 'span'" v-bind="avatarWrapperProps" class="gl-pb-[0.15rem]">
+      <user-avatar-image
+        :img-src="avatarUrl"
+        :size="16"
+        :img-alt="avatarLinkAltText"
+        data-testid="commit-author-avatar"
+        lazy
+      />
+    </component>
+
+    <div class="gl-min-w-0 gl-flex-1">
+      <gl-link
+        :id="popoverTargetId"
+        :href="commitUrl"
+        :class="{ 'gl-italic': !hasMessage }"
+        class="gl-text-sm gl-text-default hover:gl-text-default focus-visible:gl-focus-inset"
+        data-testid="commit-message-link"
+      >
+        <gl-truncate :text="commitTitle" class="gl-pb-2" />
+      </gl-link>
+      <commit-popover :popover-target-id="popoverTargetId" :commit="commit" class="gl-z-3">
+        <div
+          v-if="agentSessionUrls.length"
+          class="gl-inline-flex gl-items-center gl-gap-2"
+          data-testid="commit-agent-session"
+        >
+          <gl-icon name="session-ai" class="gl-text-subtle" />
+          <agent-session-link
+            :href="agentSessionUrls[0]"
+            tracking-property="commit_popover"
+            data-testid="commit-agent-session-link"
+          >
+            {{ s__('Blame|View session') }}
+          </agent-session-link>
+        </div>
+      </commit-popover>
+    </div>
+
+    <agent-session-popover v-if="agentSessionUrls.length" :session-urls="agentSessionUrls" />
+
+    <gl-button
+      v-gl-tooltip
+      :href="previousBlamePath"
+      :title="$options.i18n.viewBlamePrior"
+      :aria-label="$options.i18n.viewBlamePrior"
+      category="tertiary"
+      size="small"
+      icon="doc-versions"
+      data-event-tracking="click_previous_blame_on_blob_page"
+      data-testid="view-previous-blame-button"
+      style="min-height: var(--source-line-height)"
+      class="!gl-text-subtle focus:!gl-focus-inset"
+      :class="{ 'gl-invisible': !previousBlamePath }"
+    />
+  </div>
+</template>

@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { projectNewMergeRequestPath } from '~/lib/utils/path_helpers/merge_requests';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import branchMergeRequestQuery from '../graphql/queries/branch_merge_request.query.graphql';
 import branchNamesQuery from '../graphql/queries/branch_names.query.graphql';
 
@@ -99,11 +100,26 @@ export default {
       );
     },
     openMergeRequest() {
-      return this.project?.mergeRequests?.nodes?.[0] || null;
+      return this.project?.mergeRequests?.nodes?.[0] || this.openForkSourcedMergeRequest;
+    },
+    openForkSourcedMergeRequest() {
+      // Non-forks keep the fork-local lookup: a second merge request toward a
+      // different target branch is legitimate there. null on old backends
+      // that predate sourcedMergeRequests (@gl_introduced).
+      if (!this.project?.forkedFrom) return null;
+      return this.project.sourcedMergeRequests?.nodes?.[0] || null;
+    },
+    mergeRequestTargetProject() {
+      if (!this.project) return null;
+      // null = old backend (@gl_introduced) or a target the user cannot see:
+      // fall back to gating on the project itself.
+      return this.project.defaultMergeRequestTarget || this.project;
     },
     hasCreateMergeRequestPermissions() {
-      const permissions = this.project?.userPermissions;
-      return Boolean(permissions?.createMergeRequestFrom && permissions?.createMergeRequestIn);
+      return Boolean(
+        this.project?.userPermissions?.createMergeRequestFrom &&
+        this.mergeRequestTargetProject?.userPermissions?.createMergeRequestIn,
+      );
     },
     isBranch() {
       if (this.refType === 'heads') return true;
@@ -122,8 +138,15 @@ export default {
       );
     },
     createMergeRequestPath() {
+      const mergeRequestParams = { source_branch: this.currentRef };
+      const targetProject = this.mergeRequestTargetProject;
+
+      if (targetProject && targetProject.id !== this.project.id) {
+        mergeRequestParams.target_project_id = getIdFromGraphQLId(targetProject.id);
+      }
+
       return projectNewMergeRequestPath(this.projectFullPath, {
-        merge_request: { source_branch: this.currentRef },
+        merge_request: mergeRequestParams,
       });
     },
     mergeRequestAction() {

@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'shared/milestones/_issuable.html.haml', feature_category: :portfolio_management do
-  let_it_be(:project, freeze: false) { create(:project) }
-  let_it_be(:user, freeze: false) { create(:user) }
-  let_it_be(:milestone, freeze: false) { create(:milestone, project: project) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:user) { create(:user) }
+
+  let(:milestone) { build_stubbed(:milestone, project: project) }
 
   before do
     assign(:project, project)
@@ -15,7 +16,7 @@ RSpec.describe 'shared/milestones/_issuable.html.haml', feature_category: :portf
   subject(:rendered) { render 'shared/milestones/issuable', issuable: issuable, show_project_name: true }
 
   context 'for issue' do
-    let(:issuable) { create(:issue, project: project, assignees: [user]) }
+    let_it_be(:issuable) { create(:issue, project: project, assignees: [user]) }
 
     it 'links to the page for the issue' do
       expect(rendered).to have_css("a[href$='#{::Gitlab::UrlBuilder.instance.issue_path(issuable)}']", class: 'issue-link')
@@ -39,7 +40,7 @@ RSpec.describe 'shared/milestones/_issuable.html.haml', feature_category: :portf
   end
 
   context 'for merge request' do
-    let(:issuable) { create(:merge_request, source_project: project, target_project: project, assignees: [user]) }
+    let_it_be(:issuable) { create(:merge_request, source_project: project, target_project: project, assignees: [user]) }
 
     it 'links to merge requests page for user' do
       expect(rendered).to have_css("a[href='#{project_merge_requests_path(project, milestone_title: milestone.title, assignee_id: user.id, state: 'all')}']")

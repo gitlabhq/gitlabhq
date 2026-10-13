@@ -6,6 +6,7 @@ export const extractGroupOrProject = (url = window.location.href) => {
   /* eslint-disable @gitlab/no-hardcoded-urls */
   let fullPath = url
     .replace(window.location.origin, '')
+    .split(/[?#]/)[0]
     .split('/-/')[0]
     .replace(new RegExp(`^${gon.relative_url_root}/`), '/');
 

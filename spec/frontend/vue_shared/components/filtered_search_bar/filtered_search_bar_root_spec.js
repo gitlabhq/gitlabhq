@@ -42,7 +42,7 @@ const mockServiceResults = (results) => {
 };
 
 jest.mock('~/filtered_search/services/recent_searches_service', () => {
-  const ServiceMock = jest.fn(function ServiceMock() {
+  const ServiceMock = jest.fn(function ServiceMockFactory() {
     Object.assign(this, {
       fetch: mockFetch,
       save: jest.fn(),

@@ -53,7 +53,7 @@ gl-emoji img {
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class
-.gl-label-scoped {
+.gl-label.gl-label-scoped {
   border-width: $gl-spacing-scale-1;
   border-style: solid;
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::RadioComponent, :aggregate_failures, type: :component do
+RSpec.describe Pajamas::RadioComponent, :aggregate_failures do
   include FormBuilderHelpers
 
   let_it_be(:method) { :access_level }

@@ -22,7 +22,6 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
   let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
-  let(:importer_user_mapping_enabled) { false }
   let(:schedule_attributes) { {} }
   let(:schedule) do
     {
@@ -42,7 +41,6 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
       allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [schedule]))
     end
 
-    allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
     allow(Import::PlaceholderReferences::PushService).to receive(:from_record).and_call_original
 
     allow(pipeline).to receive(:set_source_objects_counter)
@@ -66,9 +64,7 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
     end
   end
 
-  context 'when importer_user_mapping is enabled' do
-    let(:importer_user_mapping_enabled) { true }
-
+  context 'when the schedule has an owner reference' do
     let(:schedule_attributes) { { 'owner_id' => 101 } }
 
     it 'imports schedules and does not push placeholder references', :aggregate_failures do

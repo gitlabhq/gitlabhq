@@ -139,9 +139,135 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 | `feature_maturity` | String | Yes | Maturity level: "experimental", "beta", or "ga"                        |
 | `ai_feature` | String | Yes | Associated AI feature name (typically "duo_agent_platform")            |
 | `agent_privileges` | Array | Yes | Required permissions (see [Agent Privileges](#agent-privileges))        |
+| `pre_approved_agent_privileges` | Array | No | Subset of `agent_privileges` the flow can use without requesting approval. When omitted, all privileges in `agent_privileges` are pre-approved. An explicit empty array pre-approves nothing. See [Agent privileges](#agent-privileges). |
+| `allow_agent_to_request_user` | Boolean | No | Whether the flow can pause to ask its user for input or approval (default: `false`). See [Agent privileges](#agent-privileges). |
 | `avatar` | String | No | Icon filename (must exist in GitLab SVGs)                              |
 | `environment` | String | No | Execution environment: "web", "ambient", or "cli" (default: "ambient") |
 | `triggers` | Array | No | Event types that can trigger the flow (default: empty array)           |
+| `coding_environment` | Enum | No | Repository setup required before execution: `full` or `none` (default: `full`). `full` prepares a checkout and tooling. `none` skips the repository clone and setup for API-only flows. See the [custom flow YAML schema](../../user/duo_agent_platform/flows/custom_flows_schema.md#coding_environment). |
+
+### Session lifecycle hooks
+
+A flow that keeps a record outside its session, such as a placeholder row a widget
+reads, can react to the session's own lifecycle instead of polling or setting a
+timer. Declare the hooks you need. All hooks are optional. When a hook writes data,
+use a class instead of a lambda, so the hook gets its own tests and owner.
+
+| Attribute | Runs when | Execution | Called by |
+|-----------|-----------|-----------|-----------|
+| `on_session_created` | GitLab creates the session. | Synchronous | `Ai::DuoWorkflows::CreateWorkflowService`, inline |
+| `on_session_finished` | The session completes successfully. | Asynchronous | `Ai::DuoWorkflows::SessionLifecycleWorker`, on `Ai::DuoWorkflows::WorkflowFinishedCloudEvent` |
+| `on_session_failed` | The session is dropped, so it failed and never reports back. | Asynchronous | `Ai::DuoWorkflows::SessionLifecycleWorker`, on `Ai::DuoWorkflows::WorkflowFailedEvent` |
+| `on_session_stopped` | A user cancels the session. | Asynchronous | `Ai::DuoWorkflows::SessionLifecycleWorker`, on `Ai::DuoWorkflows::WorkflowStoppedEvent` |
+
+#### Synchronous and asynchronous hooks
+
+A synchronous hook runs inline. It runs in the same process and request as the code
+that creates the session, before that call returns. It runs once for each created
+session.
+
+A synchronous hook can stop the run. If the hook raises an error, GitLab tracks the
+error, drops the session, and records the failure event and the audit event. The caller
+gets an error response with the `could_not_prepare_session` reason, and the session does
+not start. The hook blocks session creation, so keep it fast.
+
+An asynchronous hook runs later, in a Sidekiq job, after the session changes state.
+It cannot block or undo the state change. Delivery is at least once and can be out of
+order, so you must write these hooks to be idempotent.
+
+#### Run code when GitLab creates a session
+
+Use `on_session_created` for side effects the flow needs in place before it runs, for
+example a placeholder record that a widget reads. To refuse a run, use
+`start_request_validator` instead.
+
+The hook is either a `->(resource:)` lambda or an object that responds to
+`call(resource:)`.
+
+```ruby
+on_session_created: ->(resource:) do
+  ::MergeRequests::RiskAssessment.ensure_for!(resource)
+end
+```
+
+The hook runs:
+
+- After GitLab saves the session record and the runner precondition check passes.
+- For every caller of `Ai::DuoWorkflows::CreateWorkflowService`. These include the
+  REST API (`POST /api/v4/ai/duo_workflows/workflows`),
+  `Ai::DuoWorkflows::CreateAndStartWorkflowService`, and flow triggers.
+- When GitLab creates the session, even if the session then fails to start in CI. Give
+  the record that the hook creates its own cleanup.
+
+The hook does not run:
+
+- When GitLab cannot save the session record, or the runner precondition check drops
+  the session.
+- When the session is client-executed, for example a session that an IDE or the CLI
+  runs locally. GitLab does not run these sessions, and their caller is not authorized
+  as a consumer of the flow's catalog item.
+- When a session resumes, because resuming does not create a session. A restart
+  creates a new session, so the hook runs again.
+- When there is no resource, or when the resource type is not in the flow's
+  `supported_resource_types`.
+
+The `resource` argument is the resource the caller passed. For flow triggers, it is
+the resource the trigger fired on. If the caller passed no resource, it is the issue
+or merge request of the session.
+
+#### Run code when a session ends
+
+The `on_session_finished`, `on_session_failed`, and `on_session_stopped` hooks are
+asynchronous. Each is either a `->(workflow:)` lambda or a class that responds to
+`call(workflow:)`.
+Declare only the hooks you want. A flow that treats a cancellation differently from a
+failure declares both. A flow that only cares about failures declares one.
+
+Declaring the hook is all you must do. `Ai::DuoWorkflows::SessionLifecycleWorker`
+finds the flow that a session ran, and calls the hook for that ending. A flow with no
+hook for that ending is never enqueued. This check happens when the event is
+published, not in a job.
+
+These hooks run for every session, whatever started it. A drop publishes
+`Ai::DuoWorkflows::WorkflowFailedEvent`. A cancellation publishes
+`Ai::DuoWorkflows::WorkflowStoppedEvent`. Both events carry the flow identifier,
+which is how the worker finds your flow.
+
+A session that starts from a messaging surface, such as Slack or a GitLab Duo note,
+also publishes a combined `Ai::DuoWorkflows::WorkflowFailedEvent` for both endings.
+That extra event is for the messaging callback that replies to the surface. It
+carries no flow identifier, so it never reaches a hook. A future release removes it.
+Track this work in
+[work item 630318](https://gitlab.com/gitlab-org/gitlab/-/work_items/630318).
+
+```ruby
+on_session_failed: ->(workflow:) do
+  merge_request = workflow.merge_request
+  next unless merge_request
+
+  merge_request.risk_assessment&.mark_failed
+end
+```
+
+Write asynchronous hooks to this contract:
+
+- Make them idempotent. The same event can be delivered more than once.
+- Do not assume the session is still in the state the hook is named for. A retried
+  session can be running again by then, so read `workflow.status_name` before acting
+  on state.
+- Authorize the writes yourself. A caller supplies `workflow_definition`, so a session
+  can name your flow without GitLab having vouched for it.
+- Do not assume the hook always runs. A session can be deleted or stay in a
+  non-terminal state, so give the hook's record its own cleanup.
+- Keep them cheap. To wait before acting, the hook must schedule its own worker.
+
+The three terminal points exist today for asynchronous hooks. An `on_session_started` hook
+does not exist, because `Ai::DuoWorkflows::WorkflowStartedEvent` still publishes only for
+messaging sessions. Adding one means migrating that event first.
+
+A session that finishes has not necessarily done what the flow asked of it. An agent can
+complete its run without writing the record the flow depends on. So `on_session_finished`
+must check for that record instead of assuming it exists.
 
 ### Agent privileges
 
@@ -167,6 +293,36 @@ agent_privileges = [
   ::Ai::DuoWorkflows::Workflow::AgentPrivileges::USE_GIT
 ]
 ```
+
+`agent_privileges` sets the upper bound of what a flow can use, and `pre_approved_agent_privileges` is the subset of those privileges the flow can use without pausing for approval.
+Because it is a subset, `pre_approved_agent_privileges` must not name any privilege that `agent_privileges` does not grant.
+When `pre_approved_agent_privileges` is `nil`, it falls back to `agent_privileges`, so every granted privilege is pre-approved, while an explicit empty array `[]` pre-approves nothing.
+A privilege that is granted but not pre-approved can make a running workflow pause and enter an approval-required state, but only when the execution surface and the Duo Workflow Service flow configuration support approvals.
+The `allow_agent_to_request_user` setting (model default `false`) declares that a flow can pause to ask its user, so set it to `true` only for a flow with a user-facing continuation path, such as a messaging surface. It does not by itself enable approval prompts because the Duo Workflow Service flow configuration must also enable approval handling, such as `require_tool_approval: true` where supported.
+
+For example, this flow grants read, write, and start-flow privileges but pre-approves only read:
+
+```ruby
+{
+  display_name: "Slack Assistant",
+  foundational_flow_reference: "slack_assistant/v1",
+  agent_privileges: [
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB,
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_WRITE_GITLAB,
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::START_FLOWS
+  ],
+  pre_approved_agent_privileges: [
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB
+  ],
+  allow_agent_to_request_user: true,
+  environment: "ambient",
+  coding_environment: "none",
+  triggers: []
+}
+```
+
+Read operations run without approval, while write operations and starting another flow stay granted but require approval.
+The `coding_environment: "none"` value means the flow needs no prepared repository checkout.
 
 ### Triggers
 
@@ -263,7 +419,7 @@ For flows defined directly in GitLab Duo Workflow Service:
 
 ## Architecture design
 
-[Foundational flows](glossary.md#flow-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
+[Foundational flows](glossary.md#flow-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, GitLab Self-Managed, and Dedicated).
 
 The architecture of how foundational flows are made available avoids connecting to AI Catalog to fetch definitions at runtime and allows GitLab engineering teams full control over when they are released.
 

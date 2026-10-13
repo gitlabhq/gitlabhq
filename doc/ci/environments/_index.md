@@ -398,6 +398,8 @@ To stop an environment in the GitLab UI:
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
 
+You can also [stop an environment without running the `on_stop` action](#stop-an-environment-without-running-the-on_stop-action).
+
 ### Default stopping behavior
 
 GitLab automatically stops environments when the associated branch is deleted or merged.
@@ -690,12 +692,48 @@ teardown-cloud-b:
 
 ### Stop an environment without running the `on_stop` action
 
-There may be times when you want to stop an environment without running the defined
-[`on_stop`](../yaml/_index.md#environmenton_stop) action. For example, you want to delete many
-environments without using [compute quota](../pipelines/compute_minutes.md).
+{{< history >}}
 
-To stop an environment without running the defined `on_stop` action, execute the
-[Stop an environment API](../../api/environments.md#stop-an-environment) with the parameter
+- **Force stop** option in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432937) in GitLab 19.5.
+
+{{< /history >}}
+
+You can force stop an environment to skip its [`on_stop`](../yaml/_index.md#environmenton_stop) action.
+Use this option to:
+
+- Delete many environments without using [compute quota](../pipelines/compute_minutes.md) to run their stop jobs.
+- Recover an environment that's stuck in the `stopping` state. This can happen, for example, when
+  the source branch is deleted before an `auto_stop_in` timer triggers the stop job.
+
+Force stopping an environment marks it as stopped immediately and moves it to the **Stopped** tab.
+GitLab doesn't run or wait for the `on_stop` job, so the cleanup steps in that job don't run.
+You must do this cleanup yourself. GitLab still deletes
+[GitLab-managed Kubernetes resources](../../user/clusters/agent/managed_kubernetes_resources.md#resource-lifecycle-management)
+that use `delete_resources: on_stop`.
+
+A forced stop doesn't cancel an `on_stop` job that is already pending or running. If the job
+finishes later, the environment stays stopped. To prevent the job from running, cancel it manually.
+
+Prerequisites:
+
+- To force stop an unprotected environment, you must have at least the Developer role.
+- To force stop a protected environment, you must be allowed to deploy to the environment.
+
+To force stop an environment in the GitLab UI:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Operate** > **Environments**.
+1. If the environment is available and has an `on_stop` action defined:
+   1. Next to the environment, select **Stop**.
+   1. On the confirmation dialog, select the **Force stop** checkbox.
+   1. Select **Force stop environment**.
+1. If the environment is stuck in the `stopping` state:
+   1. Next to the environment, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Force stop environment**.
+   1. On the confirmation dialog, select **Force stop environment**.
+      Alternatively, on the environment details page, select **Force stop**.
+
+You can also force stop an environment by using the
+[stop an environment API](../../api/environments.md#stop-an-environment) with the parameter
 `force=true`.
 
 ### Delete an environment

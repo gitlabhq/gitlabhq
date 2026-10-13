@@ -19,7 +19,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
     subject { get_show }
 
-    shared_examples 'limited number of Gitaly request' do |request_count: 3|
+    shared_examples 'limited number of Gitaly request' do |request_count: 2|
       it 'makes a limited number of Gitaly request', :request_store, :clean_gitlab_redis_cache do
         # Warm up to populate repository cache
         get_show
@@ -78,7 +78,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       it_behaves_like 'a controller that can serve LFS files'
       it_behaves_like 'project cache control headers'
-      include_examples 'limited number of Gitaly request', request_count: 6
+      include_examples 'limited number of Gitaly request', request_count: 4
     end
 
     context 'when the endpoint receives requests above the limit' do
@@ -87,7 +87,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       before do
         allow(::Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:raw_blob, scope: [project, path_without_ref]).and_return(true)
+          receive(:throttled?).with(:raw_blob, scope: { project: project, path: path_without_ref }).and_return(true)
         )
       end
 
@@ -125,10 +125,10 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       before do
         allow(::Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:raw_blob, scope: [project, path_without_ref]).and_return(false)
+          receive(:throttled?).with(:raw_blob, scope: { project: project, path: path_without_ref }).and_return(false)
         )
         allow(::Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:raw_blob_unauthenticated, scope: project).and_return(true)
+          receive(:throttled?).with(:raw_blob_unauthenticated, scope: { project: project }).and_return(true)
         )
       end
 
@@ -149,7 +149,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
         it 'does not apply the unauthenticated rate limit' do
           expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:raw_blob_unauthenticated,
-            scope: project)
+            scope: { project: project })
 
           get_show
         end
@@ -158,10 +158,10 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
     context 'as a sessionless user' do
       let_it_be_with_reload(:project) { create(:project, :private, :repository) }
-      let_it_be_with_reload(:user) { create(:user, static_object_token: 'very-secure-token', developer_of: project) }
+      let_it_be_with_reload(:user) { create(:user, developer_of: project) }
       let_it_be(:file_path) { 'master/README.md' }
 
-      let(:token) { user.static_object_token }
+      let(:token) { user.reload.static_object_token }
 
       context 'when no token is provided' do
         it 'redirects to sign in page' do

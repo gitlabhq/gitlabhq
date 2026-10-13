@@ -20,16 +20,11 @@ such as fixing bugs, writing code, or resolving vulnerabilities.
 
 ## Trigger a flow
 
-{{< details >}}
-
-- Status: Experiment
-
-{{< /details >}}
-
 {{< history >}}
 
 - Requirement for a composite identity service account when `start_workflow` is `true` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/601901) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `enforce_composite_identity_for_api_started_workflows`. Disabled by default.
 - `callback_hook_id` and `client_reference` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249147) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258242) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -60,20 +55,20 @@ Supported attributes:
 | `ai_catalog_item_consumer_id` | integer | No | ID of the AI Catalog item consumer that configures which catalog item to execute. Requires `project_id`. Cannot be used with `workflow_definition`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. See [Look up the consumer ID](#look-up-the-consumer-id). |
 | `ai_catalog_item_version_id` | integer | No | ID of the AI Catalog item version that sourced the flow configuration. |
 | `allow_agent_to_request_user` | boolean | No | When `true` (default), the agent may pause to ask the user questions before proceeding. When `false`, the agent runs to completion without user input. |
-| `callback_hook_id` | integer | No | ID of a webhook with [GitLab Duo flow webhook callbacks](../user/duo_agent_platform/flows/webhook_callbacks.md) turned on. GitLab sends flow lifecycle events to that webhook, so you do not have to poll for the flow status. The webhook must belong to the project or namespace the flow runs in, or to one of its ancestor groups. |
-| `client_reference` | string | No | Opaque string echoed back in every callback payload, to correlate callbacks with the request that triggered the flow. Maximum 255 characters. Has no effect without `callback_hook_id`. |
+| `callback_hook_id` | integer | No | ID of a webhook with [GitLab Duo flow webhook callbacks](../user/duo_agent_platform/flows/webhook_callbacks.md) turned on. GitLab sends flow lifecycle events to that webhook, so you do not have to poll for the flow status. The webhook must belong to the project or namespace the flow runs in, or to one of its ancestor groups. This attribute is an [experiment](../policy/development_stages_support.md). |
+| `client_reference` | string | No | Opaque string echoed back in every callback payload, to correlate callbacks with the request that triggered the flow. Maximum 255 characters. Has no effect without `callback_hook_id`. This attribute is an [experiment](../policy/development_stages_support.md). |
 | `environment` | string | No | Execution environment. One of: `ide`, `web`, `chat_partial`, `chat`, `ambient`. |
 | `goal` | string | No | Description of the task for the agent to complete. Example: `Fix the failing pipeline`. |
-| `image` | string | No | Container image to use when running the flow in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution/images.md#use-a-custom-image). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
+| `image` | string | No | Container image to use for the flow. Applies only when the flow runs in a CI pipeline. Must meet the [custom image requirements](../user/duo_agent_platform/flows/execution/images.md#use-a-custom-image). Example: `registry.gitlab.com/gitlab-org/duo-workflow/custom-image:latest`. |
 | `issue_id` | integer | No | IID of the issue to associate the flow with. Requires `project_id`. |
 | `merge_request_id` | integer | No | IID of the merge request to associate the flow with. Requires `project_id`. |
 | `namespace_id` | string | No | ID or path of the namespace to associate the flow with. |
 | `pre_approved_agent_privileges` | integer array | No | Privilege IDs the agent can use without asking for user approval. Must be a subset of `agent_privileges`. |
 | `project_id` | string | No | ID or path of the project to associate the flow with. |
-| `source_branch` | string | No | Source branch for the CI pipeline. Defaults to the project's default branch. |
+| `source` | string | No | Where the session was triggered from. One of the GitLab feature entry points (for example, `merge_request_code_conflict`) or the client surface that created the session (`duo_cli_interactive`, `duo_cli_run`, `duo_cli_acp`, `ide_extension`). Persisted as the session's `source_type`. |
+| `source_branch` | string | No | Source branch for the flow. Applies only when the flow runs in a CI pipeline. When not specified, a flow whose goal is a pipeline or merge request, such as `fix_pipeline/v1` or `code_review/v1`, runs on that pipeline's or merge request's branch. For `fix_pipeline/v1`, the `merge_request` and `pipeline` entries in `additional_context` are also filled in from the pipeline. Other flows run on the project's default branch. |
 | `start_workflow` | boolean | No | When `true`, starts the flow immediately after creation. |
 | `workflow_definition` | string | No | Flow type identifier. Example: `developer/v1`. Cannot be used with `ai_catalog_item_consumer_id`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. |
-| `source`                        | string | No | Where the session was triggered from in the UI. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
 attributes:
@@ -93,13 +88,14 @@ attributes:
 | `pre_approved_agent_privileges` | integer array | Privilege IDs the agent can use without asking for approval. |
 | `pre_approved_agent_privileges_names` | string array | Names corresponding to `pre_approved_agent_privileges`. |
 | `project_id` | integer | ID of the associated project. `null` if not set. |
-| `status` | string | Current flow status. One of `created`, `running`, `paused`, `finished`, `failed`, `stopped`, `input_required`, `plan_approval_required`, or `tool_call_approval_required`. |
+| `status` | string | Current flow status. One of `created`, `running`, `paused`, `finished`, `failed`, `stopped`, `input_required`, `plan_approval_required`, or `tool_call_approval_required`. GitLab might add new values. |
 | `summary` | string | Short text summary of the workflow. |
 | `title` | string | Title of the session. |
+| `web_url` | string | URL of the session in the GitLab UI. `null` if the session is not for a project. |
 | `workflow_definition` | string | Flow type identifier. |
 | `workload` | object | Information about the workload. |
-| `workload.id` | string | ID of the workload. |
-| `workload.message` | string | Status message for the workload. |
+| `workload.id` | integer | ID of the workload. `null` if no workload was created, for example when `start_workflow` is not `true`. |
+| `workload.message` | string | Status message for the workload. `null` if no workload was created. |
 
 If the user must complete [identity verification](../security/identity_verification.md) before they can use
 GitLab Duo Agent Platform, GitLab returns [`403 Forbidden`](rest/troubleshooting.md#status-codes) with a
@@ -173,6 +169,7 @@ Example response:
 ```json
 {
   "id": 1,
+  "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/1",
   "project_id": 5,
   "namespace_id": null,
   "agent_privileges": [1, 2, 3, 4, 5, 6],
@@ -199,6 +196,43 @@ Example response:
   "mcp_enabled": false,
   "gitlab_url": "https://gitlab.example.com"
 }
+```
+
+## Restart a flow
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+Restarts a failed or stopped flow by starting a new flow with the same flow parameters. The new flow runs
+from the beginning. The original flow is not modified and keeps its `failed` or `stopped` status.
+
+Only project-level flows with a `failed` or `stopped` status can be restarted. Restarting a
+flow with any other status, or a group-level flow, returns `403 Forbidden`. Restarting the same flow again while a restart is still
+in progress returns `409 Conflict`.
+
+```plaintext
+POST /ai/duo_workflows/workflows/:workflow_id/restart
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `workflow_id` | integer | Yes | ID of the flow to restart. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the same response
+attributes as [Trigger a flow](#trigger-a-flow). The response describes the new flow, so `id` is
+the ID of the new flow rather than the one you restarted.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/42/restart"
 ```
 
 ## Get workflow trace as JSONL
@@ -248,7 +282,8 @@ GitLab Duo Agent Platform, GitLab returns [`403 Forbidden`](rest/troubleshooting
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/1/trace.jsonl"
 ```
 
@@ -262,7 +297,8 @@ Example response (each line is a separate JSON object):
 You can pipe the output into `jq` to filter entries by type:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/1/trace.jsonl" \
   | jq 'select(.message_type == "ai")'
 ```
@@ -292,7 +328,8 @@ attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/agent_privileges"
 ```
 

@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/commits/_commit.html.haml', feature_category: :source_code_management do
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+
   let(:template) { 'projects/commits/commit' }
-  let(:project) { create(:project, :repository) }
   let(:commit) { project.repository.commit(ref) }
 
   before do
@@ -28,20 +29,21 @@ RSpec.describe 'projects/commits/_commit.html.haml', feature_category: :source_c
   end
 
   context 'with ci status' do
-    let(:ref) { 'master' }
-
     let_it_be(:user) { create(:user) }
-
-    before do
-      allow(view).to receive(:current_user).and_return(user)
-
+    let_it_be(:pipeline) do
       create(
         :ci_empty_pipeline,
         ref: 'master',
-        sha: commit.id,
+        sha: project.repository.commit('master').id,
         status: 'success',
         project: project
       )
+    end
+
+    let(:ref) { 'master' }
+
+    before do
+      allow(view).to receive(:current_user).and_return(user)
     end
 
     context 'when pipelines are disabled' do
@@ -62,7 +64,7 @@ RSpec.describe 'projects/commits/_commit.html.haml', feature_category: :source_c
 
     context 'when pipelines are enabled' do
       context 'when user has access' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 

@@ -100,6 +100,25 @@ describe('Registry Breadcrumb', () => {
     });
   });
 
+  describe('when the details route name is not available yet', () => {
+    beforeEach(() => {
+      const routes = [
+        routesWithNameGenerator[0],
+        { ...routesWithNameGenerator[1], params: {}, meta: { nameGenerator: () => '' } },
+      ];
+      mountComponent({ $route: routes[1], routes });
+    });
+
+    it('only passes root to `items` prop', () => {
+      expect(wrapper.findComponent(GlBreadcrumb).props('items')).toEqual([
+        {
+          text: 'mock name',
+          to: '/',
+        },
+      ]);
+    });
+  });
+
   it('passes static breadcrumbs along with route breadcrumbs', () => {
     mountComponent({
       $route: defaultRoutes[1],

@@ -29,7 +29,7 @@ module Authn
       def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        Users::DestroySessionService.new(current_user: current_user, user: revocable,
+        ::Users::DestroySessionService.new(current_user: current_user, user: revocable,
           private_session_id: session_id.private_id).execute
       end
 

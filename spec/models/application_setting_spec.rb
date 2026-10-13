@@ -53,6 +53,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         can_create_organization: true,
         ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year'),
         ci_job_live_trace_enabled: false,
+        ci_job_trace_update_interval: described_class::CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT,
+        ci_job_trace_update_interval_when_being_watched:
+          described_class::CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT,
         ci_max_caches_per_job: 4,
         ci_max_includes: 150,
         ci_max_total_yaml_size_bytes: 314572800,
@@ -113,6 +116,10 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
         downstream_pipeline_trigger_limit_per_project_user_sha: 0,
+        job_erase_limit_per_user_project: 400,
+        job_play_limit_per_user_project: 200,
+        job_retry_limit_per_user_project: 320,
+        pipeline_delete_limit_per_user_project: 400,
         dsa_key_restriction: 0,
         ecdsa_key_restriction: 0,
         ecdsa_sk_key_restriction: 0,
@@ -218,6 +225,10 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         personal_access_token_prefix: 'glpat-',
+        pg_ash_sample_interval_seconds: 1,
+        pg_ash_sampling_enabled: false,
+        pipeline_cancel_limit_per_user_project: 120,
+        pipeline_retry_limit_per_user_project: 200,
         plantuml_enabled: false,
         plantuml_diagram_proxy_enabled: false,
         project_api_limit: 400,
@@ -305,6 +316,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
         throttle_authenticated_dependency_proxy_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
+        throttle_authenticated_mcp_enabled: false,
+        throttle_authenticated_mcp_requests_per_period: 600,
+        throttle_authenticated_mcp_period_in_seconds: 60,
         throttle_unauthenticated_git_http_enabled: false,
         throttle_unauthenticated_git_http_period_in_seconds: 3600,
         throttle_unauthenticated_git_http_requests_per_period: 3600,
@@ -680,6 +694,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           decompress_archive_file_timeout
           dependency_proxy_ttl_group_policy_worker_capacity
           downstream_pipeline_trigger_limit_per_project_user_sha
+          pipeline_delete_limit_per_user_project
           gitlab_shell_operation_limit
           group_api_limit
           group_projects_api_limit
@@ -687,6 +702,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           groups_api_limit
           inactive_projects_min_size_mb
           issues_create_limit
+          job_erase_limit_per_user_project
+          job_play_limit_per_user_project
+          job_retry_limit_per_user_project
           jobs_per_stage_page_size
           max_decompressed_archive_size
           max_export_size
@@ -699,11 +717,15 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           pages_extra_deployments_default_expiry_seconds
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
+          pipeline_cancel_limit_per_user_project
           pipeline_limit_per_project_user_sha
+          pipeline_retry_limit_per_user_project
           create_organization_api_limit
           project_api_limit
           project_create_limit
           group_create_limit
+          group_deletion_jobs_concurrency_limit
+          project_deletion_jobs_concurrency_limit
           project_repositories_blobs_batch_limit
           projects_api_limit
           projects_api_rate_limit_unauthenticated
@@ -1153,6 +1175,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
 
       it { is_expected.to allow_value(valid_import_sources).for(:import_sources) }
       it { is_expected.not_to allow_value(invalid_import_sources).for(:import_sources) }
+
+      it 'coerces a nil column value to an empty array' do
+        setting.update_column(:import_sources, nil)
+
+        expect(setting.reload.import_sources).to eq([])
+      end
     end
 
     describe 'default_artifacts_expire_in' do
@@ -1567,6 +1595,47 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         setting.update_column(:gitaly_timeout_default, Settings.gitlab.max_request_duration_seconds + 1)
 
         expect(setting.reload).to be_valid
+      end
+    end
+
+    describe 'iframe_rendering_allowlist' do
+      it 'accepts known embed providers' do
+        setting.iframe_rendering_allowlist = %w[youtube figma]
+
+        expect(setting).to be_valid
+      end
+
+      it 'rejects unknown embed providers' do
+        setting.iframe_rendering_allowlist = %w[youtube unknown]
+
+        expect(setting).to be_invalid
+        expect(setting.errors[:iframe_rendering_allowlist])
+          .to contain_exactly("'unknown' is not a known embed provider")
+      end
+
+      context 'when the allowlist already contains an unknown embed provider' do
+        before do
+          setting.update_column(:iframe_rendering_allowlist, %w[youtube unknown])
+          setting.reload
+        end
+
+        it 'does not prevent saving other settings' do
+          setting.home_page_url = 'https://example.com'
+
+          expect(setting).to be_valid
+        end
+
+        it 'rejects keeping the unknown embed provider when the allowlist changes' do
+          setting.iframe_rendering_allowlist = %w[figma unknown]
+
+          expect(setting).to be_invalid
+        end
+
+        it 'accepts removing the unknown embed provider' do
+          setting.iframe_rendering_allowlist = %w[youtube]
+
+          expect(setting).to be_valid
+        end
       end
     end
 
@@ -2001,6 +2070,60 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           end
 
           it { is_expected.not_to allow_value(true).for(:ci_job_live_trace_enabled) }
+        end
+      end
+
+      describe 'ci_job_trace_update_interval default values' do
+        it 'has correct defaults for trace update intervals' do
+          expect(setting.ci_job_trace_update_interval).to eq(60)
+          expect(setting.ci_job_trace_update_interval_when_being_watched)
+            .to eq(described_class::CI_JOB_TRACE_UPDATE_INTERVAL_MIN)
+        end
+      end
+
+      describe '#ci_job_trace_update_interval validations' do
+        it { is_expected.to allow_value(3).for(:ci_job_trace_update_interval) }
+        it { is_expected.to allow_value(10).for(:ci_job_trace_update_interval) }
+        it { is_expected.to allow_value(3600).for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value(2).for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value(3601).for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value('').for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value(nil).for(:ci_job_trace_update_interval) }
+      end
+
+      describe '#ci_job_trace_update_interval_when_being_watched validations' do
+        it { is_expected.to allow_value(3).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.to allow_value(10).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value(2).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value(3601).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value('').for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value(nil).for(:ci_job_trace_update_interval_when_being_watched) }
+
+        context 'when the default trace update interval allows the maximum value' do
+          before do
+            setting.ci_job_trace_update_interval = 3600
+          end
+
+          it { is_expected.to allow_value(3600).for(:ci_job_trace_update_interval_when_being_watched) }
+        end
+
+        context 'when the watched interval is greater than the default interval' do
+          before do
+            setting.ci_job_trace_update_interval = 10
+          end
+
+          it { is_expected.to allow_value(10).for(:ci_job_trace_update_interval_when_being_watched) }
+          it { is_expected.not_to allow_value(11).for(:ci_job_trace_update_interval_when_being_watched) }
+        end
+
+        it 'does not add a cross-field error when the default interval is invalid', :aggregate_failures do
+          setting.ci_job_trace_update_interval = 2
+          setting.ci_job_trace_update_interval_when_being_watched = 3
+
+          setting.validate
+
+          expect(setting.errors[:ci_job_trace_update_interval]).to include('must be greater than or equal to 3')
+          expect(setting.errors[:ci_job_trace_update_interval_when_being_watched]).to be_empty
         end
       end
 
@@ -3280,7 +3403,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
   describe '#database_settings' do
     let(:valid_settings) do
       {
-        background_operations_max_jobs: 10
+        background_operations_max_jobs: 10,
+        pg_ash_sampling_enabled: true,
+        pg_ash_sample_interval_seconds: 5
       }
     end
 
@@ -3292,9 +3417,14 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
     it { is_expected.not_to allow_value({ background_operations_max_jobs: 0 }).for(:database_settings) }
     it { is_expected.not_to allow_value({ background_operations_max_jobs: -1 }).for(:database_settings) }
     it { is_expected.not_to allow_value({ invalid_key: 10 }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ pg_ash_sampling_enabled: 'yes' }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ pg_ash_sample_interval_seconds: 0 }).for(:database_settings) }
+    it { is_expected.not_to allow_value({ pg_ash_sample_interval_seconds: 61 }).for(:database_settings) }
 
     it 'sets the correct default value' do
       expect(setting.background_operations_max_jobs).to eq(10)
+      expect(setting.pg_ash_sampling_enabled).to be(false)
+      expect(setting.pg_ash_sample_interval_seconds).to eq(1)
     end
   end
 

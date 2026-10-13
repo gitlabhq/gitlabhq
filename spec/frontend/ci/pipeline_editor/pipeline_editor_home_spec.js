@@ -30,7 +30,7 @@ jest.mock('~/lib/utils/common_utils');
 describe('Pipeline editor home wrapper', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, glFeatures = {}, stubs = {} } = {}) => {
+  const createComponent = ({ glFeatures = {}, stubs = {} } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(PipelineEditorHome, {
         propsData: {
@@ -38,12 +38,13 @@ describe('Pipeline editor home wrapper', () => {
           ciFileContent: mockCiYml,
           isCiConfigDataLoading: false,
           isNewCiConfigFile: false,
-          ...props,
         },
         provide: {
           aiChatAvailable: false,
           projectFullPath: '',
           totalBranches: 19,
+          identityVerificationRequired: false,
+          identityVerificationPath: '',
           glFeatures: {
             ...glFeatures,
           },

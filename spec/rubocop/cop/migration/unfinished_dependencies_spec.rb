@@ -15,9 +15,7 @@ RSpec.describe RuboCop::Cop::Migration::UnfinishedDependencies, feature_category
   end
 
   before do
-    allow(cop).to receive(:in_migration?).and_return(true)
-
-    allow(cop).to receive(:version).and_return(version)
+    allow(cop).to receive_messages(in_migration?: true, version: version)
   end
 
   shared_examples 'migration with rubocop offense' do

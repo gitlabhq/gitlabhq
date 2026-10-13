@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestCurrentUserEntity, feature_category: :code_review_workflow do
-  let(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let(:namespace) { build_stubbed(:user_namespace) }
+  let(:user) { build_stubbed(:user, namespace: namespace) }
+  let(:project) { build_stubbed(:project) }
   let(:request) { EntityRequest.new(project: project, current_user: user) }
 
   let(:entity) do

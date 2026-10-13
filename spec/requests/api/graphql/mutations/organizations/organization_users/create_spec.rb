@@ -124,7 +124,7 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Create, feature_cate
     context 'when the request is rate limited' do
       it 'returns an error' do
         expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:organization_user_create, scope: [current_user]).and_return(true)
+          .with(:organization_user_create, scope: { user: current_user }).and_return(true)
 
         create_organization_user
 

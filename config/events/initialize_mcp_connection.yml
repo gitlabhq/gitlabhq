@@ -1,0 +1,26 @@
+---
+description: Tracks the MCP initialize handshake
+internal_events: true
+action: initialize_mcp_connection
+identifiers:
+- user
+product_group: agent_execution
+product_categories:
+- mcp_server
+additional_properties:
+  protocol_version:
+    description: The MCP protocol version negotiated with the client
+  declared_client_name:
+    description: The client name from the clientInfo of the initialize request, when present
+  declared_client_version:
+    description: The client version from the clientInfo of the initialize request, when present
+  mcp_client_name:
+    description: The MCP client name, from the clientInfo in the request _meta or else the User-Agent
+  mcp_client_version:
+    description: The MCP client version, from the same source as mcp_client_name
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256984
+tiers:
+- free
+- premium
+- ultimate

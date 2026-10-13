@@ -102,4 +102,83 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
+
+  describe 'POST /projects/:id/-/work_items/:work_item_iid/discussions' do
+    include_context 'for creating a note on a project work item'
+
+    let(:path_for) { ->(item) { "/projects/#{item.project.id}/-/work_items/#{item.iid}/discussions" } }
+
+    it_behaves_like 'a work item endpoint creating a discussion'
+
+    it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
+
+  describe 'POST /namespaces/:id/-/work_items/:work_item_iid/discussions' do
+    include_context 'for creating a note on a project work item'
+
+    let(:path_for) do
+      ->(item) { "/namespaces/#{CGI.escape(item.namespace.full_path)}/-/work_items/#{item.iid}/discussions" }
+    end
+
+    it_behaves_like 'a work item endpoint creating a discussion'
+
+    it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id' do
+    let(:api_request_path) do
+      "/projects/#{project.id}/-/work_items/#{work_item.iid}/discussions/#{discussion_note.discussion_id}"
+    end
+
+    let(:discussion_note) { create(:discussion_note_on_work_item, noteable: work_item, author: user, project: project) }
+
+    it_behaves_like 'a work item endpoint resolving a discussion'
+
+    it_behaves_like 'authorizing granular token permissions', :update_issue_discussion do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api(api_request_path, personal_access_token: pat), params: { resolved: true }
+      end
+    end
+
+    it 'returns not_found when the user cannot read the work item' do
+      put api(api_request_path, non_member), params: { resolved: true }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  describe 'PUT /namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id' do
+    let(:api_request_path) do
+      "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items/#{work_item.iid}/discussions/" \
+        "#{discussion_note.discussion_id}"
+    end
+
+    let(:discussion_note) { create(:discussion_note_on_work_item, noteable: work_item, author: user, project: project) }
+
+    it_behaves_like 'a work item endpoint resolving a discussion'
+
+    it_behaves_like 'authorizing granular token permissions', :update_issue_discussion do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api(api_request_path, personal_access_token: pat), params: { resolved: true }
+      end
+    end
+
+    it 'returns not_found when the user cannot read the work item' do
+      put api(api_request_path, non_member), params: { resolved: true }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
 end

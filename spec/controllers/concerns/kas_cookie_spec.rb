@@ -70,8 +70,7 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
     before do
       stub_config_setting(gitlab_config)
       sign_in(user)
-      allow(::Gitlab::Kas).to receive(:enabled?).and_return(true)
-      allow(::Gitlab::Kas).to receive(:tunnel_url).and_return(kas_tunnel_url)
+      allow(::Gitlab::Kas).to receive_messages(enabled?: true, tunnel_url: kas_tunnel_url)
     end
 
     subject(:kas_csp_connect_src) do

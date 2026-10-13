@@ -137,7 +137,7 @@ describe('AutovacuumConfigSection component', () => {
       createComponent();
 
       expect(findStatusIcon().props('name')).toBe('warning');
-      expect(wrapper.findByTestId('settings-flagged-count').text()).toBe('2');
+      expect(wrapper.findByTestId('settings-count').text()).toBe('2');
     });
 
     it('shows a danger icon when the check reported an error', () => {
@@ -157,7 +157,7 @@ describe('AutovacuumConfigSection component', () => {
       createComponent({ config: healthyConfig });
 
       expect(findStatusIcon().props('name')).toBe('check-circle-filled');
-      expect(wrapper.findByTestId('settings-flagged-count').exists()).toBe(false);
+      expect(wrapper.findByTestId('settings-count').exists()).toBe(false);
     });
   });
 

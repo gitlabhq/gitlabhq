@@ -115,7 +115,7 @@ The following is an example of one of these log events in `/var/log/gitlab/gitla
   "correlation_id": null,
   "pid": 2725,
   "worker_id": "puma_0",
-  "memwd_handler_class": "Gitlab::Memory::Watchdog::PumaHandler",
+  "memwd_handler_class": "Gitlab::Memory::Watchdog::Handlers::PumaHandler",
   "memwd_sleep_time_s": 5,
   "memwd_rss_bytes": 1077682176,
   "memwd_max_rss_bytes": 629145600,

@@ -4,11 +4,12 @@ import {
   GlDisclosureDropdownItem,
   GlEmptyState,
   GlSprintf,
+  GlLink,
+  GlIcon,
 } from '@gitlab/ui';
-import organizationsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-organizations-md.svg?url';
+import organizationsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/rocket-launch-md.svg?url';
 import { s__, sprintf } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import LeaveOrganizationModal from './leave_organization_modal.vue';
 
 export default {
@@ -20,10 +21,12 @@ export default {
     GlSprintf,
     HelpPageLink,
     LeaveOrganizationModal,
+    GlLink,
+    GlIcon,
   },
-  mixins: [glSlotsMixin],
   organizationsEmptyStateSvgPath,
   leaveModalId: 'leave-organization-modal',
+  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/629432',
   props: {
     organization: {
       type: Object,
@@ -118,8 +121,15 @@ export default {
           </gl-sprintf>
         </slot>
       </template>
-      <template v-if="glSlots().actions" #actions>
-        <slot name="actions"></slot>
+      <template #actions>
+        <div class="gl-flex gl-flex-col gl-items-center gl-gap-5">
+          <slot name="actions"></slot>
+          <gl-link :href="$options.feedbackUrl" target="_blank">
+            <gl-icon name="comment" class="gl-mr-2" />{{
+              s__('Organization|Give Organization feedback')
+            }}
+          </gl-link>
+        </div>
       </template>
     </gl-empty-state>
     <leave-organization-modal

@@ -1,0 +1,13 @@
+---
+table_name: oauth_consent_grant_granular_scopes
+classes:
+- Authz::OauthConsentGrantGranularScope
+feature_categories:
+- permissions
+description: Joins OAuth consent grants with granular scopes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255384
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

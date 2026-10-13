@@ -1,6 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
@@ -128,6 +129,45 @@ describe('Rapid Diffs App Facade', () => {
     createApp({ lazy: true });
     app.init();
     expect(useDiffsList().streamInitialDiffs).toHaveBeenCalledWith('/reload');
+  });
+
+  describe('single file mode', () => {
+    const initialFile = { old_path: 'old.txt', new_path: 'new.txt' };
+    const initSingleFile = async (data = {}) => {
+      createApp(data);
+      useDiffsView().singleFileMode = true;
+      app.init();
+      await waitForPromises();
+    };
+
+    describe('when the server named the rendered file', () => {
+      it('selects that file and does not load the current file', async () => {
+        await initSingleFile({ lazy: false, initialFile });
+
+        expect(useDiffsView().resolveInitialFileIndex).toHaveBeenCalledWith({ file: initialFile });
+        expect(useDiffsView().loadCurrentFile).not.toHaveBeenCalled();
+      });
+    });
+
+    describe.each`
+      scenario          | lazy
+      ${'lazy app'}     | ${true}
+      ${'non-lazy app'} | ${false}
+    `('when the server rendered no file ($scenario)', ({ lazy }) => {
+      it('loads the current file without resolving an index', async () => {
+        await initSingleFile({ lazy, initialFile: null });
+
+        expect(useDiffsView().loadCurrentFile).toHaveBeenCalledTimes(1);
+        expect(useDiffsView().resolveInitialFileIndex).not.toHaveBeenCalled();
+      });
+    });
+
+    it('does not stream diffs', async () => {
+      await initSingleFile({ lazy: false, initialFile: null });
+
+      expect(useDiffsList().streamInitialDiffs).not.toHaveBeenCalled();
+      expect(useDiffsList().streamRemainingDiffs).not.toHaveBeenCalled();
+    });
   });
 
   it('reports mounted files to the store once per frame', () => {

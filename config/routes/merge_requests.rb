@@ -43,6 +43,8 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
       get :commits, defaults: { tab: 'commits' }
       get :pipelines, defaults: { tab: 'pipelines' }
       get :diffs, to: 'merge_requests#diffs', defaults: { tab: 'diffs' }
+      get :reports, to: 'merge_requests#reports', defaults: { tab: 'reports' }
+      get '/reports(/*vueroute)', to: 'merge_requests#reports', defaults: { tab: 'reports' }
     end
 
     get :diff_for_path, controller: 'merge_requests/diffs'

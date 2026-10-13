@@ -11,7 +11,7 @@ module Mutations
           boundaries: [
             { boundary_argument: :project_id, boundary_type: :project },
             { boundary_argument: :group_id, boundary_type: :group },
-            { boundary: :instance, boundary_type: :instance }
+            { boundary: :instance, boundary_type: :instance, assignable_when: [:admin] }
           ]
 
         include Mutations::Ci::Runner::CommonMutationArguments

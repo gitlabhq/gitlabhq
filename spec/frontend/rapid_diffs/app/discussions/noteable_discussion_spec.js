@@ -272,7 +272,7 @@ describe('NoteableDiscussion', () => {
       const discussion = createDiscussion({ isReplying: true });
       createComponent({ props: { discussion } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note');
+      expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note', undefined);
       expect(wrapper.emitted('stop-replying')).toStrictEqual([[]]);
     });
 
@@ -645,29 +645,79 @@ describe('NoteableDiscussion', () => {
       },
     );
 
-    it.each`
-      shouldResolve | expectToggle
-      ${true}       | ${true}
-      ${false}      | ${false}
-    `(
-      'toggleResolveNote called=$expectToggle when shouldResolve=$shouldResolve',
-      async ({ shouldResolve, expectToggle }) => {
-        const toggleResolveNote = jest.fn().mockResolvedValue();
-        const discussion = createDiscussion(
-          { isReplying: true, resolvable: true, resolved: false },
-          resolvableNote,
-        );
-        createComponent({
-          props: { discussion, toggleResolveNote },
-        });
-        await wrapper.findComponent(NoteForm).props('saveNote')('test note', shouldResolve);
-        expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note');
-        if (expectToggle) {
-          expect(toggleResolveNote).toHaveBeenCalledWith(discussion);
-        } else {
-          expect(toggleResolveNote).not.toHaveBeenCalled();
-        }
-      },
-    );
+    it('saves the resolved state with the reply', async () => {
+      const toggleResolveNote = jest.fn().mockResolvedValue();
+      const discussion = createDiscussion(
+        { isReplying: true, resolvable: true, resolved: false },
+        resolvableNote,
+      );
+      createComponent({
+        props: { discussion, toggleResolveNote },
+      });
+      await wrapper.findComponent(NoteForm).props('saveNote')('test note', true);
+      expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note', true);
+      expect(toggleResolveNote).not.toHaveBeenCalled();
+    });
+  });
+  describe('code suggestions', () => {
+    const suggestionsStub = (Component, template) =>
+      stubComponent(Component, {
+        inject: { codeSuggestions: { default: null } },
+        computed: {
+          suggestions() {
+            return JSON.stringify(this.codeSuggestions?.() ?? null);
+          },
+        },
+        template,
+      });
+    const findSuggestions = (testid) =>
+      JSON.parse(wrapper.find(`[data-testid="${testid}"]`).attributes('data-suggestions'));
+    const config = { canSuggest: true, lines: ['const a = 1;'] };
+
+    it('provides the suggestions resolved for the thread to the reply form', () => {
+      const resolveCodeSuggestions = jest.fn().mockReturnValue(config);
+      const discussion = createDiscussion({ isReplying: true });
+      createComponent({
+        props: { discussion },
+        provide: { resolveCodeSuggestions },
+        stubs: {
+          NoteForm: suggestionsStub(
+            NoteForm,
+            '<div data-testid="reply-form" :data-suggestions="suggestions"></div>',
+          ),
+        },
+      });
+
+      expect(findSuggestions('reply-form')).toEqual(config);
+      expect(resolveCodeSuggestions).toHaveBeenCalledWith(discussion);
+    });
+
+    it('provides the same suggestions to the notes, where comments are edited', () => {
+      createComponent({
+        provide: { resolveCodeSuggestions: () => config },
+        stubs: {
+          DiscussionNotes: suggestionsStub(
+            DiscussionNotes,
+            '<ul data-testid="notes" :data-suggestions="suggestions"></ul>',
+          ),
+        },
+      });
+
+      expect(findSuggestions('notes')).toEqual(config);
+    });
+
+    it('provides no suggestions when the thread is not on a diff line', () => {
+      createComponent({
+        props: { discussion: createDiscussion({ isReplying: true }) },
+        stubs: {
+          NoteForm: suggestionsStub(
+            NoteForm,
+            '<div data-testid="reply-form" :data-suggestions="suggestions"></div>',
+          ),
+        },
+      });
+
+      expect(findSuggestions('reply-form')).toBeNull();
+    });
   });
 });

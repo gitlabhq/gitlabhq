@@ -8,7 +8,8 @@ module API
           check_work_item_rest_api_feature_flag!
           authorize! :update_work_item, work_item
 
-          update_params = build_update_work_item_params
+          validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+          update_params = build_update_work_item_params.merge(scope_validator: validator)
           widget_params = extract_update_feature_params(work_item)
           validate_supported_widgets!(work_item.work_item_type, work_item.resource_parent, widget_params)
 
@@ -18,6 +19,8 @@ module API
             params: update_params,
             widget_params: widget_params
           ).execute(work_item)
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => e
+          forbidden!(e.message)
         end
 
         def render_work_item_update(result)

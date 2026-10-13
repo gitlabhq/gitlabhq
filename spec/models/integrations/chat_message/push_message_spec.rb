@@ -17,7 +17,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
     }
   end
 
-  let(:color) { '#345' }
+  let(:color) { '#334455' }
 
   it_behaves_like Integrations::ChatMessage
 
@@ -217,7 +217,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
 
   describe '#attachment_color' do
     it 'returns the correct color' do
-      expect(subject.attachment_color).to eq('#345')
+      expect(subject.attachment_color).to eq('#334455')
     end
   end
 end

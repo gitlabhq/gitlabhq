@@ -45,6 +45,11 @@ RSpec.describe ::Search::SortOptions, feature_category: :global_search do
         expect(described_class.sort_and_direction('due_date', 'asc')).to eq(:due_date_asc)
         expect(described_class.sort_and_direction('due_date', 'desc')).to eq(:due_date_desc)
       end
+
+      it 'returns matched options for title' do
+        expect(described_class.sort_and_direction('title', 'asc')).to eq(:title_asc)
+        expect(described_class.sort_and_direction('title', 'desc')).to eq(:title_desc)
+      end
     end
 
     context 'with just sort' do
@@ -86,6 +91,11 @@ RSpec.describe ::Search::SortOptions, feature_category: :global_search do
       it 'returns matched options for due' do
         expect(described_class.sort_and_direction(nil, 'due_date_asc')).to eq(:due_date_asc)
         expect(described_class.sort_and_direction(nil, 'due_date_desc')).to eq(:due_date_desc)
+      end
+
+      it 'returns matched options for title' do
+        expect(described_class.sort_and_direction(nil, 'title_asc')).to eq(:title_asc)
+        expect(described_class.sort_and_direction(nil, 'title_desc')).to eq(:title_desc)
       end
     end
 

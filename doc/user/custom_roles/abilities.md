@@ -114,8 +114,8 @@ You can create a [custom role](_index.md) by adding one or more custom permissio
 
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
-| Manage security attributes | Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission. | [`admin_security_attributes`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195554) | Group | GitLab [18.2](https://gitlab.com/groups/gitlab-org/-/epics/18010) |
-| View security attributes | Allows read-only access to the security categories and attributes that belong to a top-level group. | [`read_security_attribute`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209670) | Group | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/567237) |
+| Manage security attributes | Manage the security categories and attributes. Also requires the `read_security_attribute` permission. | [`admin_security_attributes`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195554) | Group,<br> Project | GitLab [18.2](https://gitlab.com/groups/gitlab-org/-/epics/18010) |
+| View security attributes | Allows read-only access to the security categories and attributes. | [`read_security_attribute`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209670) | Group,<br> Project | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/567237) |
 
 ## Security policy management
 

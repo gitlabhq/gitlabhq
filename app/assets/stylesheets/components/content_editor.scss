@@ -84,11 +84,14 @@
   audio.ProseMirror-selectednode,
   .ProseMirror-selectednode audio,
   video.ProseMirror-selectednode,
-  .ProseMirror-selectednode video,
-  iframe.ProseMirror-selectednode,
-  .ProseMirror-selectednode iframe {
+  .ProseMirror-selectednode video {
     outline: 3px solid $blue-200;
     outline-offset: -3px;
+  }
+
+  .ProseMirror-selectednode .iframe-embed,
+  .content-editor-selection .iframe-embed {
+    outline: 3px solid $blue-200;
   }
 
   .selectedCell::after {
@@ -428,6 +431,19 @@
   @apply gl-border-solid;
   @apply gl-border-alpha-dark-24;
   background-color: var(--gl-color-chip-color);
+}
+
+.content-editor-placeholder {
+  @apply gl-rounded-base;
+  @apply gl-border-1;
+  @apply gl-border-dashed;
+  @apply gl-border-default;
+  @apply gl-px-2;
+
+  &.content-editor-placeholder-selected {
+    @apply gl-border-solid;
+    border-color: var(--gl-focus-ring-outer-color);
+  }
 }
 
 .content-editor-comment {

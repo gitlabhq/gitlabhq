@@ -3,7 +3,7 @@
 require './spec/support/sidekiq_middleware'
 
 Gitlab::Seeder.quiet do
-  admin_user = User.admins.first
+  admin_user = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin
 
   Sidekiq::Worker.skipping_transaction_check do
     Project.not_mass_generated.each do |project|

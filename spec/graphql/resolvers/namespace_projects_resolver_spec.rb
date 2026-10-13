@@ -53,27 +53,27 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
       let(:namespace) { group }
       let(:expected_projects) { group_namespaced_projects }
 
-      it { is_expected.to contain_exactly(*expected_projects) }
+      it { is_expected.to match_array(expected_projects) }
 
       context 'when include_subgroups is true' do
         let(:args) { default_args.merge(include_subgroups: true) }
         let(:expected_projects) { group_namespaced_projects + nested_group_projects }
 
-        it { is_expected.to contain_exactly(*expected_projects) }
+        it { is_expected.to match_array(expected_projects) }
       end
 
       context 'when not_aimed_for_deletion is true' do
         let(:args) { default_args.merge(not_aimed_for_deletion: true, include_subgroups: true) }
         let(:expected_projects) { group_namespaced_projects.first(2) << nested_group_projects.first }
 
-        it { is_expected.to contain_exactly(*expected_projects) }
+        it { is_expected.to match_array(expected_projects) }
       end
 
       context 'when include_archived is false' do
         let(:args) { default_args.merge(include_archived: false) }
         let(:expected_projects) { group_namespaced_projects - [group_namespaced_projects.second] }
 
-        it { is_expected.to contain_exactly(*expected_projects) }
+        it { is_expected.to match_array(expected_projects) }
       end
 
       context 'search and similarity sorting' do
@@ -188,7 +188,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         context 'when ids is nil' do
           let(:args) { super().merge(ids: nil) }
 
-          it { is_expected.to contain_exactly(*group_namespaced_projects) }
+          it { is_expected.to match_array(group_namespaced_projects) }
         end
       end
 
@@ -206,7 +206,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         let(:args) { default_args.merge(with_namespace_domain_pages: true) }
         let(:expected_projects) { group_namespaced_projects[0...-1] }
 
-        it { is_expected.to contain_exactly(*expected_projects) }
+        it { is_expected.to match_array(expected_projects) }
       end
 
       context 'archived_only argument' do
@@ -214,21 +214,21 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
           let(:args) { default_args.merge(archived_only: true) }
           let(:expected_projects) { group_namespaced_projects.second }
 
-          it { is_expected.to contain_exactly(*expected_projects) }
+          it { is_expected.to match_array(expected_projects) }
         end
 
         context 'when archived_only is false' do
           let(:args) { default_args.merge(archived_only: false) }
           let(:expected_projects) { group_namespaced_projects }
 
-          it { is_expected.to contain_exactly(*expected_projects) }
+          it { is_expected.to match_array(expected_projects) }
         end
 
         context 'when archived_only is not specified' do
           let(:args) { default_args.merge(archived_only: nil) }
           let(:expected_projects) { group_namespaced_projects }
 
-          it { is_expected.to contain_exactly(*expected_projects) }
+          it { is_expected.to match_array(expected_projects) }
         end
       end
     end
@@ -236,7 +236,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
     context 'with an user namespace' do
       let(:namespace) { current_user.namespace }
 
-      it { is_expected.to contain_exactly(*user_namespaced_projects) }
+      it { is_expected.to match_array(user_namespaced_projects) }
     end
 
     context "when passing a non existent, batch loaded namespace" do

@@ -18,7 +18,9 @@ module Admin
 
     def abuse_report_data(report)
       {
-        abuse_report_data: Admin::AbuseReportDetailsSerializer.new.represent(report).to_json,
+        abuse_report_data: Admin::AbuseReportDetailsSerializer.new
+          .represent(report, current_user: current_user)
+          .to_json,
         abuse_reports_list_path: admin_abuse_reports_path
       }
     end

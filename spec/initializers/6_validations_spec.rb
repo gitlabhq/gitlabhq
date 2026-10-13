@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../support/helpers/gitaly_setup'
 require_relative '../../config/initializers/6_validations'
 
 RSpec.describe '6_validations' do

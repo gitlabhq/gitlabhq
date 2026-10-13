@@ -10,20 +10,29 @@ module Authz
     feature_category :permissions
     idempotent!
     deduplicate :until_executing
-    concurrency_limit -> { 5 }
+    concurrency_limit -> { 10 }
+    defer_on_database_health_signal :gitlab_main_org, [], 5.minutes,
+      indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
 
-    MAX_RUNTIME = 270.seconds
+    MAX_RUNTIME = 200.seconds
+
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:defer_safety_net_auth_refresh_on_wal_rate, :instance)
+    end
 
     def perform
-      return unless Feature.enabled?(:use_db_to_queue_safety_net_auth_refresh, :instance)
+      return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
 
       requeue_abandoned
 
       users_processed = 0
+      queue_lag_s = nil
 
       result = loop_with_runtime_limit(MAX_RUNTIME) do
         batch = Authz::ProjectAuthorizationReverification.claim_batch
         break :complete if batch.empty?
+
+        queue_lag_s ||= lag_seconds(batch)
 
         batch.each do |reverification|
           users_processed += 1 if process(reverification)
@@ -35,9 +44,16 @@ module Authz
 
       log_extra_metadata_on_done(:users_processed, users_processed)
       log_extra_metadata_on_done(:queue_drained, queue_drained)
+      log_extra_metadata_on_done(:queue_lag_s, queue_lag_s || 0)
     end
 
     private
+
+    def lag_seconds(batch)
+      processed_at = batch.map(&:enqueued_at).min + Authz::ProjectAuthorizationReverification::MIN_AGE
+
+      (Time.current - processed_at).round
+    end
 
     def process(reverification)
       refresh_authorizations(reverification.user)

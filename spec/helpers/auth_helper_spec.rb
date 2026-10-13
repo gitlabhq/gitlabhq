@@ -12,7 +12,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
       [[], []]].each do |(allow_single_sign_on, result)|
       context "when allow_single_sign_on is #{allow_single_sign_on}" do
         before do
-          allow(helper).to receive(:enabled_button_based_providers) { %w[github gitlab] }
+          allow(helper).to receive(:enabled_button_based_providers).and_return(%w[github gitlab])
           stub_omniauth_config(allow_single_sign_on: allow_single_sign_on)
         end
 
@@ -44,48 +44,48 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
   describe "button_based_providers" do
     it 'returns all enabled providers from devise' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :github])
       expect(helper.button_based_providers).to include(*[:twitter, :github])
     end
 
     it 'does not return ldap provider' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :ldapmain])
       expect(helper.button_based_providers).to include(:twitter)
     end
 
     it 'returns empty array' do
-      allow(helper).to receive(:auth_providers) { [] }
+      allow(helper).to receive(:auth_providers).and_return([])
       expect(helper.button_based_providers).to eq([])
     end
   end
 
   describe "providers_for_base_controller" do
     it 'returns all enabled providers from devise' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :github])
       expect(helper.providers_for_base_controller).to include(*[:twitter, :github])
     end
 
     it 'excludes ldap providers' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :ldapmain])
       expect(helper.providers_for_base_controller).not_to include(:ldapmain)
     end
   end
 
   describe "form_based_providers" do
     it 'includes LDAP providers' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :ldapmain])
       expect(helper.form_based_providers).to eq %i[ldapmain]
     end
 
     it 'includes crowd provider' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :crowd] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :crowd])
       expect(helper.form_based_providers).to eq %i[crowd]
     end
   end
 
   describe 'form_based_auth_provider_has_active_class?' do
     it 'selects main LDAP server' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :ldapprimary, :ldapsecondary, :kerberos] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :ldapprimary, :ldapsecondary, :kerberos])
       expect(helper.form_based_auth_provider_has_active_class?(:twitter)).to be(false)
       expect(helper.form_based_auth_provider_has_active_class?(:ldapprimary)).to be(true)
       expect(helper.form_based_auth_provider_has_active_class?(:ldapsecondary)).to be(false)
@@ -99,20 +99,19 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     it 'detects form-based providers' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :ldapmain])
       expect(helper.any_form_based_providers_enabled?).to be(true)
     end
 
     it 'ignores ldap providers when ldap web sign in is disabled' do
-      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
-      allow(helper).to receive(:ldap_sign_in_enabled?).and_return(false)
+      allow(helper).to receive_messages(auth_providers: [:twitter, :ldapmain], ldap_sign_in_enabled?: false)
       expect(helper.any_form_based_providers_enabled?).to be(false)
     end
   end
 
   describe 'enabled_button_based_providers' do
     before do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github, :google_oauth2, :openid_connect] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :github, :google_oauth2, :openid_connect])
     end
 
     context 'all providers are enabled to sign in' do
@@ -139,7 +138,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     context 'when chatgpt provider is configured' do
       before do
-        allow(helper).to receive(:auth_providers) { [:twitter, :github, :chatgpt] }
+        allow(helper).to receive(:auth_providers).and_return([:twitter, :github, :chatgpt])
       end
 
       it 'includes chatgpt in providers' do
@@ -150,15 +149,15 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
   describe 'popular_enabled_button_based_providers' do
     it 'returns the intersection set of popular & enabled providers', :aggregate_failures do
-      allow(helper).to receive(:enabled_button_based_providers) { %w[twitter github google_oauth2] }
+      allow(helper).to receive(:enabled_button_based_providers).and_return(%w[twitter github google_oauth2])
 
       expect(helper.popular_enabled_button_based_providers).to eq(%w[github google_oauth2])
 
-      allow(helper).to receive(:enabled_button_based_providers) { %w[google_oauth2 bitbucket] }
+      allow(helper).to receive(:enabled_button_based_providers).and_return(%w[google_oauth2 bitbucket])
 
       expect(helper.popular_enabled_button_based_providers).to eq(%w[google_oauth2])
 
-      allow(helper).to receive(:enabled_button_based_providers) { %w[bitbucket] }
+      allow(helper).to receive(:enabled_button_based_providers).and_return(%w[bitbucket])
 
       expect(helper.popular_enabled_button_based_providers).to be_empty
     end
@@ -166,7 +165,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
   describe 'button_based_providers_enabled?' do
     before do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+      allow(helper).to receive(:auth_providers).and_return([:twitter, :github])
     end
 
     context 'button based providers enabled' do
@@ -251,7 +250,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   end
 
   describe '#allow_admin_mode_password_authentication_for_web?' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     subject { helper.allow_admin_mode_password_authentication_for_web? }
 
@@ -278,16 +277,14 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     context 'when user got password automatically set' do
-      before do
-        user.update_attribute(:password_automatically_set, true)
-      end
+      let(:user) { build_stubbed(:user, password_automatically_set: true) }
 
       it { is_expected.to be(false) }
     end
   end
 
   describe '#auth_active?' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     def auth_active?
       helper.auth_active?(provider)
@@ -337,7 +334,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     context 'when owner is a user' do
-      let_it_be(:application) { create(:oauth_application) }
+      let(:application) { build_stubbed(:oauth_application) }
 
       let(:path_to_owner) { user_path(application.owner) }
 
@@ -353,10 +350,10 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     context 'when the user is missing' do
-      let_it_be(:application) { create(:oauth_application, :without_owner) }
+      let(:application) { build_stubbed(:oauth_application, :without_owner) }
 
       context 'when the application is dynamically created' do
-        let_it_be(:application) { create(:oauth_application, :dynamic) }
+        let(:application) { build_stubbed(:oauth_application, :dynamic) }
 
         it 'returns a warning' do
           expect(helper.auth_app_owner_text(application))
@@ -906,7 +903,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   end
 
   describe '#current_password_required?' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user, password_automatically_set: password_automatically_set) }
 
     subject(:current_password_required) { helper.current_password_required? }
 
@@ -925,7 +922,6 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     with_them do
       it "returns the correct expectation" do
-        user.update_attribute(:password_automatically_set, password_automatically_set)
         stub_application_setting(password_authentication_enabled_for_web: allow_password_authentication_for_web)
 
         expect(current_password_required).to eq(expectation)

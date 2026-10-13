@@ -10,47 +10,32 @@ RSpec.describe Gitlab::Cells::HttpRouter::SnapshotComparison do
     pretty ? "#{JSON.pretty_generate(routes)}\n" : JSON.generate(routes)
   end
 
-  describe "#identical?" do
-    it "is true for byte-identical payloads" do
-      snapshot = payload("/a")
+  describe "#covered?" do
+    it "is true when the router has every GitLab template" do
+      comparison = described_class.new(gitlab_payload: payload("/a"), router_payload: payload("/a"))
 
-      comparison = described_class.new(gitlab_payload: snapshot, router_payload: snapshot)
-
-      expect(comparison).to be_identical
-      expect(comparison).not_to be_formatting_only
-      expect(comparison.gitlab_only).to be_empty
-      expect(comparison.router_only).to be_empty
+      expect(comparison).to be_covered
     end
 
-    it "is false when only the serialization differs" do
+    it "is true when only the serialization differs" do
       comparison = described_class.new(
         gitlab_payload: payload("/a", pretty: true),
         router_payload: payload("/a", pretty: false)
       )
 
-      expect(comparison).not_to be_identical
-    end
-  end
-
-  describe "#formatting_only?" do
-    it "is true when the templates match but the bytes do not" do
-      comparison = described_class.new(
-        gitlab_payload: payload("/a", pretty: true),
-        router_payload: payload("/a", pretty: false)
-      )
-
-      expect(comparison).to be_formatting_only
-      expect(comparison.gitlab_only).to be_empty
-      expect(comparison.router_only).to be_empty
+      expect(comparison).to be_covered
     end
 
-    it "is false when a template differs" do
-      comparison = described_class.new(
-        gitlab_payload: payload("/a"),
-        router_payload: payload("/b")
-      )
+    it "is true when the router has extra templates" do
+      comparison = described_class.new(gitlab_payload: payload("/a"), router_payload: payload("/a", "/extra"))
 
-      expect(comparison).not_to be_formatting_only
+      expect(comparison).to be_covered
+    end
+
+    it "is false when the router lacks a GitLab template" do
+      comparison = described_class.new(gitlab_payload: payload("/a", "/new"), router_payload: payload("/a"))
+
+      expect(comparison).not_to be_covered
     end
   end
 
@@ -128,8 +113,8 @@ RSpec.describe Gitlab::Cells::HttpRouter::SnapshotComparison do
         router_payload: JSON.generate(enriched)
       )
 
-      expect(comparison).not_to be_identical
-      expect(comparison).to be_formatting_only
+      expect(comparison).to be_covered
+      expect(comparison.router_only).to be_empty
     end
   end
 end

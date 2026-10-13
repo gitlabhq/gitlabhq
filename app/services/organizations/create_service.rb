@@ -16,6 +16,7 @@ module Organizations
       end
 
       if saved
+        grant_organization_admin_roles(organization)
         ServiceResponse.success(payload: { organization: organization })
       else
         error_creating(organization)
@@ -28,6 +29,15 @@ module Organizations
 
     def add_organization_owner_attributes
       @params[:organization_users_attributes] = [{ user: current_user, access_level: :owner }]
+    end
+
+    # The first owner is written through nested attributes on the organization
+    # row, so no organization-user service ever sees that membership. Without
+    # a current_user no owner was added, so there is nothing to sync.
+    def grant_organization_admin_roles(organization)
+      return unless current_user && ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      ::Authz::Organizations::GrantOwnerRoleWorker.perform_async(organization.id, nil, current_user.id)
     end
 
     def error_no_permissions

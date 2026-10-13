@@ -290,6 +290,7 @@
       "properties": {
         "artifacts": true,
         "job": true,
+        "optional": true,
         "pipeline": true,
         "project": true,
         "ref": true

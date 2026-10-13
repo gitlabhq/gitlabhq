@@ -1,0 +1,13 @@
+<%= docs_render 'page_metadata', title: 'Interfaces', description: 'Sets of fields that object types share, so they can be queried together.' %>
+
+An interface defines a set of fields that multiple object types can implement. For more
+information, see the [GraphQL interface documentation](https://graphql.org/learn/schema/#interfaces).
+
+<%= docs_render 'deprecation_warning_header' %>
+
+<% sorted_by_name(@interfaces).each do |interface| %>
+
+## <%= name(interface) %>
+
+<%= render_interface_body(interface) %>
+<% end %>

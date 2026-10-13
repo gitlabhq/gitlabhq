@@ -8,23 +8,56 @@ title: Merge trains
 
 {{< details >}}
 
-- Édition : GitLab Premium, GitLab Ultimate
-- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Édition : GitLab Premium, GitLab Ultimate
+- Offre : GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 Dans les projets avec des fusions fréquentes vers la branche par défaut, les modifications apportées dans différentes merge requests peuvent entrer en conflit les unes avec les autres. Utilisez les merge trains pour placer les merge requests dans une file d'attente. Chaque merge request est comparée aux autres merge requests antérieures pour s'assurer qu'elles fonctionnent toutes ensemble.
 
-Pour plus d'informations sur :
+Un [pipeline de résultats fusionnés](merged_results_pipelines.md) teste les modifications d'une merge request combinées avec la branche cible. Un pipeline de résultats fusionnés ne tient pas compte des autres merge requests qui fusionnent à peu près au même moment. Deux merge requests peuvent chacune passer leur propre pipeline, mais leurs modifications combinées peuvent toujours être en conflit. Si les deux fusionnent, la branche cible peut se retrouver en erreur, même si chaque pipeline a réussi.
 
-- Le fonctionnement des merge trains, consultez le [workflow du merge train](#merge-train-workflow).
-- Les raisons pour lesquelles vous pourriez vouloir utiliser les merge trains, lisez [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/all-aboard-merge-trains/).
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph LR
+accTitle: Two merge requests that pass individually but conflict together
+accDescr: Merge request A and merge request B each pass a pipeline that tests their changes combined with the target branch alone. When both merge, the combined changes break the target branch.
+
+  subgraph Without merge trains
+    target[Target branch] --> pipeline_a[Pipeline for A: passes]
+    target --> pipeline_b[Pipeline for B: passes]
+    pipeline_a --> merge_both[Both merge]
+    pipeline_b --> merge_both
+    merge_both -.-> broken[Target branch breaks]
+  end
+```
+
+Les merge trains évitent cela en testant chaque merge request par rapport aux modifications combinées de toutes les merge requests qui la précèdent dans la file d'attente. Cela permet de détecter les conflits avant qu'ils n'atteignent la branche cible.
+
+Utilisez les merge trains si votre projet présente les caractéristiques suivantes :
+
+- Fusions fréquentes vers la branche par défaut
+- Plusieurs merge requests souvent prêtes à fusionner à peu près au même moment
+- Une exigence de maintien des pipelines en état de réussite sur la branche par défaut en permanence
 
 ## Workflow du merge train {#merge-train-workflow}
 
 Un merge train démarre lorsqu'aucune merge request n'est en attente de fusion et que vous sélectionnez [**Fusionner** ou **Configurer la fusion automatique**](#start-a-merge-train). GitLab lance un pipeline de merge train qui vérifie que les modifications peuvent être fusionnées dans la branche par défaut. Ce premier pipeline est identique à un [pipeline de résultats fusionnés](merged_results_pipelines.md), qui s'exécute sur les modifications des branches source et cible combinées. L'auteur du commit de résultat fusionné interne est l'utilisateur qui a initié la fusion.
 
 Pour mettre en file d'attente une deuxième merge request afin qu'elle fusionne immédiatement après la fin du premier pipeline, sélectionnez [**Fusionner** ou **Configurer la fusion automatique**](#add-a-merge-request-to-a-merge-train) pour l'ajouter au train. Ce deuxième pipeline de merge train s'exécute sur les modifications des _deux_ merge requests combinées avec la branche cible. De même, si vous ajoutez une troisième merge request, ce pipeline s'exécute sur les modifications des trois merge requests fusionnées avec la branche cible. Les pipelines s'exécutent tous en parallèle.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph LR
+accTitle: Merge train pipelines test combined changes
+accDescr: Pipeline 1 tests merge request A against the target branch. Pipeline 2 tests merge request A and B together against the target branch. Pipeline 3 tests merge request A, B, and C together against the target branch. The three pipelines run in parallel.
+
+  subgraph Merge train
+    target[Target branch] --> pipeline_1[Pipeline 1: A]
+    target --> pipeline_2[Pipeline 2: A + B]
+    target --> pipeline_3[Pipeline 3: A + B + C]
+  end
+```
 
 Chaque merge request fusionne dans la branche cible uniquement après :
 
@@ -124,10 +157,10 @@ Vous pouvez également supprimer ({{< icon name="close" >}}) une merge request d
 
 {{< history >}}
 
-- La fusion automatique pour les merge trains [introduite](https://gitlab.com/groups/gitlab-org/-/epics/10874) dans GitLab 17.2 [avec un flag](../../administration/feature_flags/_index.md) nommé `merge_when_checks_pass_merge_train`. Désactivée par défaut. Désactivé par défaut.
+- La fusion automatique pour les merge trains a été [introduite](https://gitlab.com/groups/gitlab-org/-/work_items/10874) dans GitLab 17.2 [avec un feature flag](../../administration/feature_flags/_index.md) nommé `merge_when_checks_pass_merge_train`. Désactivé par défaut.
 - La fusion automatique pour les merge trains [activée](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) sur GitLab.com dans GitLab 17.2.
 - La fusion automatique pour les merge trains [activée](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) par défaut dans GitLab 17.4.
-- La fusion automatique pour les merge trains [généralement disponible](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) dans GitLab 17.7. L'indicateur de fonctionnalité `merge_when_checks_pass_merge_train` a été supprimé.
+- La fusion automatique pour les merge trains [généralement disponible](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) dans GitLab 17.7. Suppression du feature flag `merge_when_checks_pass_merge_train`.
 
 {{< /history >}}
 
@@ -145,6 +178,8 @@ Pour ajouter une merge request à un merge train :
 Le statut du merge train de la merge request s'affiche sous le widget du pipeline avec un message similaire à `This merge request is 2 of 3 in queue.`
 
 Chaque merge train peut exécuter un [nombre maximum de pipelines en parallèle](#merge-train-parallel-pipeline-limit). La limite par défaut est de 20. Si vous ajoutez au merge train plus de merge requests que la limite autorisée, les merge requests supplémentaires sont mises en file d'attente jusqu'à ce qu'un pipeline se termine. Le nombre de merge requests en file d'attente est illimité.
+
+Lorsqu'une merge request rejoint un merge train, les nouveaux fils de discussion ne la suppriment pas du train ni n'empêchent la fusion, même lorsque [tous les fils de discussion doivent être résolus](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved) est activé. Ce comportement est intentionnel. Pour plus d'informations, consultez le [ticket 220916](https://gitlab.com/gitlab-org/gitlab/-/issues/220916).
 
 ## Supprimer une merge request d'un merge train {#remove-a-merge-request-from-a-merge-train}
 
@@ -180,13 +215,13 @@ Lorsque vous fusionnez une merge request immédiatement :
 
 {{< details >}}
 
-- Statut :  Expérience
+- Statut : Expérience
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) dans GitLab 16.5 [avec un flag](../../administration/feature_flags/_index.md) nommé `merge_trains_skip_train`. Désactivé par défaut.
+- [Introduite](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) dans GitLab 16.5 [avec un feature flag](../../administration/feature_flags/_index.md) nommé `merge_trains_skip_train`. Désactivé par défaut.
 - [Activée](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) en tant que [fonctionnalité expérimentale](../../policy/development_stages_support.md) dans GitLab 16.10.
 
 {{< /history >}}
@@ -228,18 +263,53 @@ La merge request fusionne, et les pipelines de merge train existants ne sont pas
 
 {{< /history >}}
 
-Par défaut, chaque [merge train](../../ci/pipelines/merge_trains.md) peut exécuter un maximum de 20 pipelines en parallèle. Lorsque cette limite est atteinte, les merge requests supplémentaires sont mises en file d'attente jusqu'à ce qu'un emplacement de pipeline soit disponible.
+Par défaut, chaque merge train peut exécuter un maximum de 20 pipelines en parallèle. Lorsque cette limite est atteinte, les merge requests supplémentaires sont mises en file d'attente jusqu'à ce qu'un emplacement de pipeline soit disponible.
 
 Pour modifier cette limite pour votre projet :
 
 1. Dans la barre supérieure, sélectionnez **Rechercher ou aller à** et trouvez votre projet.
 1. Dans la barre latérale gauche, sélectionnez **Paramètres** > **Requêtes de fusion**.
-1. Dans la section **Options de fusion**, définissez une valeur pour **Maximum parallel pipelines per merge train**. La valeur minimale est `1`. Une valeur de `1` traite les merge requests séquentiellement sans parallélisme.
+1. Dans la section **Options de fusion**, définissez une valeur pour **Nombre maximal de pipelines parallèles par train de fusion**. La valeur minimale est `1`. Une valeur de `1` traite les merge requests séquentiellement sans parallélisme.
 1. Sélectionnez **Sauvegarder les modifications**.
 
 La limite du projet ne peut pas dépasser la [limite de l'instance](../../administration/cicd/limits.md#merge-train-parallel-pipeline-limit).
 
 Vous pouvez également utiliser l'[API des projets](../../api/projects.md), ou l'[API GraphQL](../../api/graphql/reference/_index.md#projectcicdsetting).
+
+## Appliquer les merge trains {#enforce-merge-trains}
+
+{{< history >}}
+
+- [Introduction](https://gitlab.com/gitlab-org/gitlab/-/issues/597962) dans GitLab 19.2 [avec le feature flag](../../administration/feature_flags/_index.md) `merge_train_enforcement`. Désactivé par défaut.
+- [Passage en disponibilité générale](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245861) dans GitLab 19.3. Suppression du feature flag `merge_train_enforcement`.
+
+{{< /history >}}
+
+Par défaut, si vous avez l'autorisation de fusionner, vous pouvez contourner le merge train. L'application requiert que chaque merge request passe par le train.
+
+Lorsque l'application est activée :
+
+- GitLab masque les options **Fusionner immédiatement**, y compris **Fusionner maintenant et ne pas redémarrer le train**.
+- L'API REST et l'API GraphQL rejettent les fusions directes.
+- La fusion automatique achemine toutes les fusions vers le train.
+
+L'application du merge train comporte trois niveaux :
+
+- **Autoriser les contournements** (par défaut) : les utilisateurs et utilisatrices ayant l'autorisation de fusionner peuvent contourner le merge train via l'interface utilisateur ou l'API.
+- **Appliquer à l'ensemble des utilisateurs et utilisatrices** : toutes les merge requests doivent passer par le merge train. Personne ne peut contourner le merge train, y compris les propriétaires et les administrateurs.
+- **Appliquer avec priorité aux propriétaires** : toutes les merge requests doivent passer par le merge train, mais les propriétaires et les administrateurs peuvent contourner le merge train pour des merge requests individuelles.
+
+Prérequis :
+
+- Vous devez disposer du rôle Maintainer.
+- Vous devez [activer les merge trains](#enable-merge-trains) pour le projet.
+
+Pour configurer l'application du merge train :
+
+1. Dans la barre supérieure, sélectionnez **Rechercher ou aller à** et trouvez votre projet.
+1. Dans la barre latérale gauche, sélectionnez **Paramètres** > **Requêtes de fusion**.
+1. Dans la section **Options de fusion**, sous **Application du train de fusion**, sélectionnez un niveau d'application.
+1. Sélectionnez **Sauvegarder les modifications**.
 
 ## Dépannage {#troubleshooting}
 
@@ -249,7 +319,6 @@ Si une merge request devient impossible à fusionner pendant l'exécution d'un p
 
 - La conversion de la merge request en [brouillon](../../user/project/merge_requests/drafts.md).
 - Un conflit de fusion.
-- Un nouveau fil de discussion non résolu, lorsque [tous les fils de discussion doivent être résolus](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved) est activé.
 
 Vous pouvez trouver la raison pour laquelle la merge request a été retirée du merge train dans les notes système. Vérifiez la section **Activité** dans l'onglet **Vue d'ensemble** pour trouver un message similaire à : `User removed this merge request from the merge train because ...`
 
@@ -279,4 +348,10 @@ Avant de pouvoir rajouter une merge request à un merge train, vous pouvez essay
 - Relancez l'intégralité du pipeline. Dans l'onglet **Pipelines**, sélectionnez **Exécuter le pipeline**.
 - Poussez un nouveau commit qui résout le problème, ce qui déclenche également un nouveau pipeline.
 
-Consultez [le ticket associé](https://gitlab.com/gitlab-org/gitlab/-/issues/35135) pour plus d'informations.
+Pour plus d'informations, consultez le [ticket 35135](https://gitlab.com/gitlab-org/gitlab/-/issues/35135).
+
+### Les outils d'automatisation échouent à fusionner avec une erreur 405 {#automation-tools-fail-to-merge-with-a-405-error}
+
+Si l'application du merge train est activée, tout outil qui appelle l'[API des merge requests](../../api/merge_requests.md#merge-a-merge-request) sans `auto_merge=true` reçoit une réponse `405 Method Not Allowed`. Cela inclut les scripts, les jobs CI/CD et les bots.
+
+Pour résoudre ce problème, mettez à jour l'outil afin qu'il transmette `auto_merge=true`, ce qui ajoute la merge request au merge train au lieu de la fusionner directement. Par exemple, si vous utilisez [Renovate](https://docs.renovatebot.com/configuration-options/#platformautomerge), activez l'option de configuration `platformAutomerge`.

@@ -276,7 +276,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           it_behaves_like 'issues statistics'
         end
 
-        context 'sort does not affect statistics ' do
+        context 'sort does not affect statistics' do
           let(:params) { { state: :opened, order_by: 'updated_at' } }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
 
@@ -956,7 +956,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns a related merge request count > 0 if there are related merge requests', :aggregate_failures do
-        create(:merge_requests_closing_issues, issue: issue)
+        create(:merge_request_issue, issue: issue)
 
         get api('/issues', user)
 
@@ -1022,7 +1022,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           it_behaves_like 'issues statistics'
         end
 
-        context 'sort does not affect statistics ' do
+        context 'sort does not affect statistics' do
           let(:params) { { state: :opened, order_by: 'updated_at' } }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
 
@@ -1515,6 +1515,17 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", developer)
       expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: owner, scopes: [:ai_workflows]) }
+
+      it 'is rejected, since DELETE is not an ai_workflows-scoped verb' do
+        delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
     end
 
     context 'when the user is project owner' do

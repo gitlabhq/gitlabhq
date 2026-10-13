@@ -65,7 +65,7 @@ module Cells
 
       def classify(request, target_kind:)
         response = stub.classify(request)
-        response&.proxy&.address
+        usable_address(response&.proxy&.address, target_kind: target_kind)
       rescue GRPC::NotFound
         nil
       rescue GRPC::BadStatus => e
@@ -74,6 +74,30 @@ module Cells
           Labkit::Fields::ERROR_MESSAGE => e.message
         )
         nil
+      end
+
+      # Treats an address we cannot turn into a URL authority as unresolved, so
+      # the caller falls back to the default cell rather than forwarding to a
+      # nonsense host. GitLab Shell's resolver rejects the same shapes.
+      def usable_address(address, target_kind:)
+        return if address.nil? || address.empty?
+        return address if bare_host?(address)
+
+        logger.warn(
+          Labkit::Fields::LOG_MESSAGE => "Topology Service returned an unusable cell address for #{target_kind}",
+          Labkit::Fields::TCP_ADDRESS => address
+        )
+        nil
+      end
+
+      # True for a hostname or IPv4 address, optionally with a port. Cells are
+      # never addressed by IPv6, so a colon left after stripping the port means
+      # the address is not something we can use.
+      def bare_host?(address)
+        return false if address.include?('/')
+
+        host = address.include?(':') ? address.rpartition(':').first : address
+        !host.empty? && !host.include?(':')
       end
 
       def classify_request(target)

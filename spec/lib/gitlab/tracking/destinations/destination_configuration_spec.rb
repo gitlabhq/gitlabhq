@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature_category: :application_instrumentation do
   include StubENV
+  using RSpec::Parameterized::TableSyntax
 
   describe '.snowplow_configuration' do
     subject(:configuration) { described_class.snowplow_configuration }
@@ -93,6 +94,34 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
         expect(configuration.hostname).to eq('billing.stgsub.gitlab.net')
         expect(configuration.protocol).to eq('https')
         expect(configuration.uri.to_s).to eq(described_class::BILLING_COLLECT_ENDPOINT_STG)
+      end
+    end
+
+    context 'on a self-managed instance licensed against the staging Customers Portal' do
+      let(:host) { 'mysite.com' }
+
+      before do
+        stub_env('CUSTOMER_PORTAL_URL', 'https://customers.staging.gitlab.com')
+        stub_env('STAGING_CUSTOMER_PORTAL_URL', nil)
+      end
+
+      it 'returns configuration with staging billing endpoint', :aggregate_failures do
+        expect(configuration.hostname).to eq('billing.stgsub.gitlab.net')
+        expect(configuration.protocol).to eq('https')
+        expect(configuration.uri.to_s).to eq(described_class::BILLING_COLLECT_ENDPOINT_STG)
+      end
+    end
+
+    context 'on a self-managed instance licensed against the production Customers Portal' do
+      let(:host) { 'mysite.com' }
+
+      before do
+        stub_env('CUSTOMER_PORTAL_URL', 'https://customers.gitlab.com')
+        stub_env('STAGING_CUSTOMER_PORTAL_URL', nil)
+      end
+
+      it 'returns configuration with production billing endpoint' do
+        expect(configuration.uri.to_s).to eq(described_class::BILLING_COLLECT_ENDPOINT)
       end
     end
   end
@@ -373,6 +402,31 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
       it_behaves_like 'staging check with host', 'gitlab.example.com', false
       it_behaves_like 'staging check with host', 'example.test', false
       it_behaves_like 'staging check with host', 'example.com', false
+
+      context 'with a production host and a configured Customers Portal' do
+        where(:customer_portal_url, :staging_customer_portal_url, :expected_result) do
+          'https://customers.staging.gitlab.com'  | nil                         | true
+          'https://customers.staging.gitlab.com/' | nil                         | true
+          'https://customers.gitlab.com'          | nil                         | false
+          'https://cdot.example.test'             | 'https://cdot.example.test' | true
+          'https://customers.staging.gitlab.com'  | 'https://cdot.example.test' | false
+          'https://customers.staging.gitlab.com'  | ''                          | true
+          nil                                     | nil                         | false
+          ''                                      | nil                         | false
+        end
+
+        with_them do
+          before do
+            stub_config_setting(host: 'example.com')
+            stub_env('CUSTOMER_PORTAL_URL', customer_portal_url)
+            stub_env('STAGING_CUSTOMER_PORTAL_URL', staging_customer_portal_url)
+          end
+
+          it 'follows the configured Customers Portal' do
+            expect(non_production_environment?).to eq(expected_result)
+          end
+        end
+      end
     end
   end
 end

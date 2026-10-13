@@ -810,22 +810,22 @@ GitLab Flavored Markdown recognizes the following:
 | Issue                                                                                | ``#123``, `GL-123`, or `[issue:123]`                  | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
 | [Work item](work_items/_index.md)                                                    | `[work_item:123]`                                     | `[work_item:namespace/project/123]`            | `[work_item:project/123]`          |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
-| Snippet <sup>3</sup>                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| Personal snippet <sup>3</sup>                                                                     | `$123`                                                |                                                |                                    |
+| Snippet[^snippet-ids-unique]                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| Personal snippet[^snippet-ids-unique]                                                                     | `$123`                                                |                                                |                                    |
 | [Epic](group/epics/_index.md)                                                        | `#123`, `&123`, `[work_item:123]`, or `[epic:123]`    | `group1/subgroup#123`, `group1/subgroup&123`, `[work_item:group1/subgroup/123]`, or `[epic:group1/subgroup/123]` |  |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                 |                                                |                                    |
+| [Iteration cadence](group/iterations/_index.md) by ID[^iteration-cadence-references]                    | `[cadence:123]`                                       |                                                |                                    |
+| [Iteration cadence](group/iterations/_index.md) by title (one word)[^iteration-cadence-references]      | `[cadence:plan]`                                      |                                                |                                    |
+| [Iteration cadence](group/iterations/_index.md) by title (multiple words)[^iteration-cadence-references] | `[cadence:"plan a"]`                                 |                                                |                                    |
 | [Vulnerability](application_security/vulnerabilities/_index.md)                       | `[vulnerability:123]`                                | `[vulnerability:namespace/project/123]`        | `[vulnerability:project/123]`      |
 | Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`         | `[feature_flag:project/123]`       |
-| Label by ID <sup>2</sup>                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
-| Label by name (one word) <sup>2</sup>                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
-| Label by name (multiple words) <sup>2</sup>                                          | `~"feature request"`                                  | `namespace/project~"feature request"`          | `project~"feature request"`        |
-| Label by name (scoped) <sup>2</sup>                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`           | `project~"priority::high"`         |
-| Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                        | `project%123`                      |
-| Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`                      | `project%v1.23`                    |
-| Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"`        | `project%"release candidate"`      |
+| Label by ID[^labels-milestones-prepend]                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
+| Label by name (one word)[^labels-milestones-prepend]                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
+| Label by name (multiple words)[^labels-milestones-prepend]                                          | `~"feature request"`                                  | `namespace/project~"feature request"`          | `project~"feature request"`        |
+| Label by name (scoped)[^labels-milestones-prepend]                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`           | `project~"priority::high"`         |
+| Project milestone by ID[^labels-milestones-prepend]                                                 | `%123`                                                | `namespace/project%123`                        | `project%123`                      |
+| Milestone by name (one word)[^labels-milestones-prepend]                                            | `%v1.23`                                              | `namespace/project%v1.23`                      | `project%v1.23`                    |
+| Milestone by name (multiple words)[^labels-milestones-prepend]                                      | `%"release candidate"`                                | `namespace/project%"release candidate"`        | `project%"release candidate"`      |
 | Commit (specific)                                                                    | `9ba12248`                                            | `namespace/project@9ba12248`                   | `project@9ba12248`                 |
 | Commit range comparison                                                              | `9ba12248...b19a04f5`                                 | `namespace/project@9ba12248...b19a04f5`        | `project@9ba12248...b19a04f5`      |
 | Repository file reference                                                            | `[README](doc/README.md)`                             |                                                |                                    |
@@ -835,15 +835,13 @@ GitLab Flavored Markdown recognizes the following:
 | [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)      | `[[Home]]` or `[wiki_page:Home]`                      | `[wiki_page:namespace/project:Home]` or `[wiki_page:group1/subgroup:Home]` |        |
 | [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)   | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
-**Footnotes**:
-
-1. Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
-   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
-   iterations cadence's ID is `1`.
-1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
-   or milestone, removing any possible ambiguity.
-1. Snippet IDs are unique across personal and project snippets, so a given ID always identifies
-   a single snippet.
+[^iteration-cadence-references]: Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+    For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
+    iterations cadence's ID is `1`.
+[^labels-milestones-prepend]: For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
+    or milestone, removing any possible ambiguity.
+[^snippet-ids-unique]: Snippet IDs are unique across personal and project snippets, so a given ID always identifies
+    a single snippet.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
@@ -1060,33 +1058,29 @@ entry and paste the spreadsheet:
 
 ### Sort tables
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239559) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `markdown_sortable_table_columns`. Disabled by default. This feature is in [beta](../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239559) as a [beta](../policy/development_stages_support.md#beta) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `markdown_sortable_table_columns`. Disabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/23004) in GitLab 19.5. Feature flag `markdown_sortable_table_columns` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 In a rendered table, you can sort the rows by the values in a column.
 
 To sort a table:
 
-1. Select a column header.
-   The rows sort in ascending order, and an arrow in the header shows the sort direction.
-1. To sort in descending order, select the same column header again.
+1. In a column header, select **Sort ascending** ({{< icon name="sort-lowest" >}}).
+1. Select **Sort descending** ({{< icon name="sort-highest" >}}).
+1. Select **Reset sorting** ({{< icon name="redo" >}}) to restore the original row order.
 
-To sort with a keyboard, move the focus to a column header and press <kbd>Enter</kbd> or
-<kbd>Space</kbd>.
+You can also select anywhere in the column header cell, including text and empty space,
+to perform the same sort actions.
+Links in headers open without sorting the table.
+
+The button's icon and tooltip show the next action.
+To view the tooltip, hover over the button or move keyboard focus to it.
+To sort with a keyboard, move focus to the column header or its sort button and press
+<kbd>Enter</kbd> or <kbd>Space</kbd>.
 
 Sorting behavior:
 
@@ -1096,7 +1090,6 @@ Sorting behavior:
 
 You can sort by only one column at a time.
 When you sort by a different column, the previous sort clears.
-To restore the original order of the rows, reload the page.
 
 Exclusions:
 
@@ -1128,15 +1121,6 @@ Watch the following video walkthrough of this feature:
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
 </figure>
-
-> [!note]
-> Administrators can enable rendering of iframes in Markdown and configure the allowed iframe `src`
-> hosts for an instance.
-> You can manage these settings with the [application settings API](../api/settings.md#available-settings) using:
->
-> - `iframe_rendering_enabled`
-> - `iframe_rendering_allowlist`
-> - `iframe_rendering_allowlist_raw`.
 
 The `items` attribute is a list of objects representing the data points.
 
@@ -1395,6 +1379,52 @@ This example only works when [rendered in GitLab](https://gitlab.com/gitlab-org/
 
 > ![Sample Audio](img/markdown_audio.mp3)
 
+### Embedded content
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204952) in GitLab 18.5 [with a feature flag](../administration/feature_flags/_index.md) named `allow_iframes_in_markdown`. Disabled by default.
+- Embed providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599713) in GitLab 19.5. Embed providers replace the allowlist of domains.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Image tags that link to content from an allowed embed provider render as embedded content.
+The content loads in a sandboxed frame, with a label that shows where it loads from.
+For some providers, you must select **Load external content** before the content loads.
+If a URL doesn't match an allowed provider, it renders as a standard image.
+
+GitLab defines the available embed providers. Administrators choose which providers to allow:
+
+- In the **Admin** area, in **Settings** > **General**, in the **Embedded content** section.
+- With the [application settings API](../api/settings.md#available-settings), by using the
+  `iframe_rendering_enabled` and `iframe_rendering_allowlist` attributes.
+
+The following embed providers are available:
+
+| Provider | ID        | Accepted URLs |
+|----------|-----------|---------------|
+| YouTube  | `youtube` | `https://www.youtube.com/watch?v=<id>`, `https://youtu.be/<id>`, or `https://www.youtube.com/embed/<id>` |
+| Figma    | `figma`   | `https://www.figma.com/<type>/<id>` or `https://embed.figma.com/<type>/<id>`, where `<type>` is `proto`, `design`, `board`, `file`, or `slides` |
+
+You can also paste the `<iframe>` embed code from the provider.
+
+For example, if the YouTube provider is allowed:
+
+```markdown
+![Demo: JSON Tables in Markdown](https://www.youtube.com/watch?v=12yWKw1AdKY)
+```
+
 ## Blockquotes
 
 Use a blockquote to highlight information, such as a side note. It's generated
@@ -1545,13 +1575,9 @@ When rendered, the example looks similar to:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246838) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `blob_permalink_embed`. Disabled by default.
+- Generally available in GitLab 19.5. Feature flag `blob_permalink_embed` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 When you paste a [permalink](project/repository/files/_index.md#create-permalinks) to lines of a file
 in a repository, GitLab replaces the link with a syntax-highlighted snippet of those lines.
@@ -1629,7 +1655,7 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 {{< /history >}}
 
 Visit the [official page](https://mermaidjs.github.io/) for more details. The
-[Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) helps you
+[Mermaid Live Editor](https://mermaid.live/edit) helps you
 learn Mermaid and debug issues in your Mermaid code. Use it to identify and resolve
 issues in your diagrams.
 

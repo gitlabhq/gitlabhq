@@ -42,9 +42,11 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
 
       it 'reports error message on chrome browser' do
-        allow(described_class).to receive(:parse_five_c_page_request_id).and_return('foo123')
+        allow(described_class).to receive_messages(
+          parse_five_c_page_request_id: 'foo123',
+          return_chrome_errors: 'chrome errors'
+        )
         allow(QA::Support::Loglinking).to receive(:failure_metadata).with('foo123').and_return('Logging: foo123')
-        allow(described_class).to receive(:return_chrome_errors).and_return('chrome errors')
         allow(page).to receive(:current_path).and_return(test_path)
         allow(QA::Runtime::Env).to receive(:browser).and_return(:chrome)
 
@@ -55,9 +57,11 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
 
       it 'reports basic message on non-chrome browser' do
-        allow(described_class).to receive(:parse_five_c_page_request_id).and_return('foo123')
+        allow(described_class).to receive_messages(
+          parse_five_c_page_request_id: 'foo123',
+          status_code_report: 'foo status'
+        )
         allow(QA::Support::Loglinking).to receive(:failure_metadata).with('foo123').and_return('Logging: foo123')
-        allow(described_class).to receive(:status_code_report).and_return('foo status')
         allow(page).to receive(:current_path).and_return(test_path)
         allow(QA::Runtime::Env).to receive(:browser).and_return(:firefox)
 
@@ -68,11 +72,13 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
 
       it 'does not report failure metadata on non 500 error' do
-        allow(described_class).to receive(:parse_five_c_page_request_id).and_return('foo123')
+        allow(described_class).to receive_messages(
+          parse_five_c_page_request_id: 'foo123',
+          status_code_report: 'foo status'
+        )
 
         expect(QA::Support::Loglinking).not_to receive(:failure_metadata)
 
-        allow(described_class).to receive(:status_code_report).and_return('foo status')
         allow(page).to receive(:current_path).and_return(test_path)
         allow(QA::Runtime::Env).to receive(:browser).and_return(:firefox)
 

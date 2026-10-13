@@ -98,11 +98,9 @@ For more information, see [offline deployment](offline_deployment.md).
 |-----------|----------|------|---------|
 | CustomersDot | `customers.gitlab.com` | `443` | Keep license and subscription information in sync. |
 | Cloud AI Gateway | `cloud.gitlab.com` | `443` | Perform usage quota checks for Agent Platform features. |
-| Cloud GitLab Duo Workflow Service <sup>1</sup> | `duo-workflow-svc.runway.gitlab.net` | `443` | Send usage billing metadata for GitLab Duo Agent Platform features. |
+| Cloud GitLab Duo Workflow Service[^requires-http2] | `duo-workflow-svc.runway.gitlab.net` | `443` | Send usage billing metadata for GitLab Duo Agent Platform features. |
 
-**Footnotes**:
-
-1. Requires HTTP/2
+[^requires-http2]: Requires HTTP/2
 
 Only billing metadata is sent to these components. Prompts, code inputs, and model responses
 do not leave your network.

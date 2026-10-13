@@ -46,6 +46,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         expect(facts_for('/-/collector/i')).to include(web_or_frontend: false)
       end
 
+      # An LFS path matches the git regex too, since repository_git_lfs_route_regex
+      # nests inside it, so one fact excludes both from the unauthenticated rules.
+      it 'is git_http for a git path and for an LFS path, and not for anything else', :aggregate_failures do
+        expect(facts_for('/group/project.git/info/refs')).to include(git_http: true)
+        expect(facts_for('/group/project.git/info/lfs/objects/batch')).to include(git_http: true)
+        expect(facts_for('/group/project.git/gitlab-lfs/objects/abc')).to include(git_http: true)
+        expect(facts_for('/group/project')).to include(git_http: false)
+        expect(facts_for('/api/v4/projects')).to include(git_http: false)
+      end
+
       it 'reflects the bypass header only when set to 1', :aggregate_failures do
         allow(Gitlab::Throttle).to receive(:bypass_header).and_return('HTTP_X_BYPASS')
 
@@ -103,6 +113,13 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         allow(request).to receive(:request_authenticator).and_return(authenticator)
 
         expect(request.labkit_facts).to include(runner_id: '1', requester_id: nil)
+      end
+
+      it 'resolves the runner from the Runner-Token header router discovery sends' do
+        runner = create(:ci_runner)
+
+        expect(facts_for('/api/v4/runners/router/discovery', 'HTTP_RUNNER_TOKEN' => runner.token))
+          .to include(runner_id: runner.id.to_s, requester_id: nil)
       end
     end
 
@@ -179,10 +196,36 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
 
       it 'returns a strict boolean for every classification fact' do
-        raw_keys = %i[ip requester_id requester_type runner_id aid path method]
-        classification = facts_for('/api/v4/projects').except(*raw_keys)
+        # Asks the request for its identity facts rather than listing them, so this
+        # CE spec does not have to name the EE plan facts that EE adds to them.
+        request = described_class.new(Rack::MockRequest.env_for('/api/v4/projects'))
+        classification = request.labkit_facts.except(*request.send(:identity_facts).keys)
 
         expect(classification.values).to all(be_in([true, false]))
+      end
+    end
+
+    describe 'a CI job token the endpoint accepts' do
+      let_it_be(:user) { build_stubbed(:user) }
+
+      let(:job) { build(:ci_build, user: user, status: :running) }
+
+      before do
+        allow(::Ci::Build).to receive(:find_by_token).with('glcbt-token_value').and_return(job)
+      end
+
+      it 'counts a job token sent as basic auth against the job user' do
+        credentials = ActionController::HttpAuthentication::Basic.encode_credentials(
+          Gitlab::Auth::CI_JOB_USER, 'glcbt-token_value'
+        )
+
+        expect(facts_for('/api/v4/projects/1/terraform/state/production', 'HTTP_AUTHORIZATION' => credentials))
+          .to include(requester_id: user.id.to_s, requester_type: 'user')
+      end
+
+      it 'counts a job token sent as a bearer token against the job user' do
+        expect(facts_for('/api/v4/job', 'HTTP_AUTHORIZATION' => 'Bearer glcbt-token_value'))
+          .to include(requester_id: user.id.to_s, requester_type: 'user')
       end
     end
 

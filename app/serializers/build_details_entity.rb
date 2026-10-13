@@ -44,13 +44,9 @@ class BuildDetailsEntity < Ci::JobEntity
       fast_keep_project_job_artifacts_path(project, build)
     end
 
-    expose :expire_at, if: ->(*) { build.artifacts_expire_at.present? } do |build|
-      build.artifacts_expire_at
-    end
+    expose :expire_at, if: ->(*) { build.artifacts_expire_at.present? }, &:artifacts_expire_at
 
-    expose :expired, if: ->(*) { build.artifacts_expire_at.present? } do |build|
-      build.artifacts_expired?
-    end
+    expose :expired, if: ->(*) { build.artifacts_expire_at.present? }, &:artifacts_expired?
 
     expose :locked do |build|
       build.pipeline.artifacts_locked?
@@ -102,13 +98,9 @@ class BuildDetailsEntity < Ci::JobEntity
   end
 
   expose :runners do
-    expose :online do |build|
-      build.any_runners_online?
-    end
+    expose :online, &:any_runners_online?
 
-    expose :available do |build|
-      build.any_runners_available?
-    end
+    expose :available, &:any_runners_available?
 
     expose :settings_path, if: ->(*) { can_admin_build? } do |build|
       project_runners_path(project)

@@ -12,9 +12,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Inputs, feature_category: :pipeline_c
   subject(:inputs) { factory.create! }
 
   before do
-    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-      inputs.compose!
-    end
+    inputs.compose!
   end
 
   context 'with valid inputs' do

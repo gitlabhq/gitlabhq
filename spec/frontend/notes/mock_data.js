@@ -68,8 +68,6 @@ export const noteableDataMock = {
   archived: false,
 };
 
-export const lastFetchedAt = '1501862675';
-
 export const individualNote = {
   expanded: true,
   id: '0fb4e0e3f9276e55ff32eb4195add694aece4edd',

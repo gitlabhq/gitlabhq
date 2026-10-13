@@ -50,6 +50,7 @@ module PersonalAccessTokens
 
     def granular_tokens_enforced?
       return false unless Feature.enabled?(:granular_personal_access_tokens, token.user)
+      return false unless target_user.human?
 
       Gitlab::CurrentSettings.granular_tokens_enforced? && !token.granular?
     end
@@ -63,9 +64,7 @@ module PersonalAccessTokens
 
       if new_token.persisted?
         if token.granular_scopes.any?
-          response = ::Authz::GranularScopeService.new(new_token).add_granular_scopes(
-            token.granular_scopes.map(&:build_copy)
-          )
+          response = ::Authz::GranularScopeService.new(new_token).add_granular_scopes(granular_scope_copies)
         end
 
         return response if response&.error?
@@ -81,6 +80,19 @@ module PersonalAccessTokens
 
     def valid_access_level?
       true
+    end
+
+    # Older tokens can hold duplicate scopes, which add_granular_scopes rejects.
+    # Authorization unions the permissions of matching scopes, so merging keeps the same access.
+    def granular_scope_copies
+      token.granular_scopes
+        .group_by { |scope| ::Authz::GranularScopes::UniquenessCheck.key_for(scope) }
+        .values
+        .map do |scopes|
+          copy = scopes.first.build_copy
+          copy.permissions = scopes.flat_map(&:permissions).uniq
+          copy
+        end
     end
 
     def update_project_bot_membership(target_user, expires_at)

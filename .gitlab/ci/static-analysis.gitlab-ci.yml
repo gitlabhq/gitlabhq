@@ -152,10 +152,15 @@ haml-lint:
     paths:
       - tmp/feature_flags/
 
+.rubocop-large-runner:
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
+
 update-static-analysis-cache:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache-push
+    - .rubocop-large-runner
     - .caching:rules:rubocop-cache-update
   stage: prepare
   needs:
@@ -172,6 +177,7 @@ rubocop:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
+    - .rubocop-large-runner
     - .static-analysis:rules:rubocop
   needs:
     - !reference [.lint-base, needs]
@@ -190,7 +196,12 @@ rubocop:
         fi
         fail_on_warnings bundle exec rake rubocop:check:graceful
       else
-        select_existing_files < "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
+        # detect-tests is an optional dependency, so its list of changed files
+        # is missing whenever that job did not run. Leave the target files
+        # unwritten in that case, which the check below treats as nothing to do.
+        if [ -s "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" ]; then
+          select_existing_files < "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
+        fi
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
           fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})
@@ -203,6 +214,7 @@ rubocop-docs:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
+    - .rubocop-large-runner
     - .docs:rules:docs-lint
   script:
     - bundle exec rubocop --only Gitlab/DocumentationLinks/Link
@@ -285,7 +297,7 @@ semgrep-appsec-custom-rules:
     - if: $CI_MERGE_REQUEST_DRAFT == "true"
       when: never
     - !reference [.semgrep-appsec-custom-rules:rules, rules]
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}returntocorp/semgrep:1.99.0
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}semgrep/semgrep:1.99.0
   script:
     - git clone $CUSTOM_RULES_REPOSITORY sast-custom-rules
     - |
@@ -335,6 +347,7 @@ custom-roles-verify:
 permissions-verify:
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   extends:
     - .default-retry
     - .ruby-cache
@@ -350,6 +363,7 @@ permissions-verify:
 ci-job-token-policies-verify:
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   extends:
     - .default-retry
     - .ruby-cache

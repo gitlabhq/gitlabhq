@@ -19,7 +19,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the group accessible by the authenticated user'
+        desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all registry repositories for a group' do

@@ -100,6 +100,10 @@ The token also includes custom claims provided by GitLab:
 | `job_project_path`      | Always                                     | Path of the project running the job. Use this to scope to the project by path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
 | `job_namespace_id`      | Always                                     | Namespace ID of the project running the job. Use this to scope to group or user level namespace by ID. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
 | `job_namespace_path`    | Always                                     | Namespace path of the project running the job. Use this to scope to group or user level namespace by path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
+| `source_project_id`     | Always                                     | ID of the project that contains the source code. In a merge request pipeline, this is the ID of the source project of the merge request. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565925) in GitLab 19.5. |
+| `source_project_path`   | Always                                     | Path of the project that contains the source code. In a merge request pipeline, this is the path of the source project of the merge request. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565925) in GitLab 19.5. |
+| `source_namespace_id`   | Always                                     | Namespace ID of the project that contains the source code. In a merge request pipeline, this is the namespace ID of the source project of the merge request. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565925) in GitLab 19.5. |
+| `source_namespace_path` | Always                                     | Namespace path of the project that contains the source code. In a merge request pipeline, this is the namespace path of the source project of the merge request. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565925) in GitLab 19.5. |
 | `user_identities`       | User Preference setting                    | List of the user's external identities. |
 | `pipeline_id`           | Always                                     | ID of the pipeline. |
 | `pipeline_source`       | Always                                     | [Pipeline source](../jobs/job_rules.md#common-if-clauses-with-predefined-variables). |
@@ -251,16 +255,19 @@ Make sure that:
 You might receive this error when a CI/CD job requests an ID token:
 
 ```plaintext
-ID token issuance is disabled in CI because this project's path was previously used by a different project.
+ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project.
 ```
 
-GitLab blocks ID token issuance when the configured `sub` claim contains a `project_path` with a path that another
-project previously used.
+GitLab blocks ID token issuance when the configured `sub` claim contains a `project_path`, `job_project_path`,
+or `source_project_path` with a path that another project previously used.
 This restriction prevents a new project from inheriting external trust policies that belong to the
 previous project.
 
 To resolve the error, use the [projects API](../../api/projects.md#update-a-project) to set
-`ci_id_token_sub_claim_components` with `project_id` as the first value:
+`ci_id_token_sub_claim_components` with an ID component as the first value.
+Use the ID component that matches the path component you had: `project_id` for `project_path`,
+`job_project_id` for `job_project_path`, or `source_project_id` for `source_project_path`.
+For example:
 
 ```json
 {

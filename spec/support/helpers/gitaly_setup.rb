@@ -243,8 +243,10 @@ module GitalySetup
     raise "could not connect to #{service}"
   end
 
+  # The Gitaly node itself, never the gitway hop that a configured gitway_address can put in front of it: this
+  # locates the install directory and socket the test env starts Gitaly from.
   def gitaly_socket_path
-    Gitlab::GitalyClient.address(REPOS_STORAGE).delete_prefix('unix:')
+    Gitlab::GitalyClient.gitaly_address(REPOS_STORAGE).delete_prefix('unix:')
   end
 
   # Extracts the gitaly install directory based on the gitaly socket configured

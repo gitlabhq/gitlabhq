@@ -13,3 +13,11 @@
     strong_tag_pair,
     source_hostname: hostname,
     start_date: start_date)
+
+%p{ style: text_style }
+  = safe_format(s_('OfflineTransferExport|Partial export artifacts may have been written to %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket. You can safely delete any files found at that path.'),
+    strong_tag_pair,
+    export_prefix: @configuration.export_prefix)
+
+%p{ style: text_style }
+  = s_('OfflineTransferExport|To try again, start a new export from your source GitLab instance.')

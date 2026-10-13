@@ -1,9 +1,9 @@
 import { nextTick } from 'vue';
 import { GlButton, GlIcon, GlBadge, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 describe('CRUD Component', () => {
   useLocalStorageSpy();

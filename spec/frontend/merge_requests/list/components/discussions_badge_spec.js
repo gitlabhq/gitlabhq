@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlIcon } from '@gitlab/ui';
 import DiscussionsBadge from '~/merge_requests/list/components/discussions_badge.vue';
 
 describe('Merge requests list discussions badge component', () => {
@@ -7,11 +7,13 @@ describe('Merge requests list discussions badge component', () => {
 
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findButton = () => wrapper.find('button');
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
-  function createComponent(mergeRequest = {}) {
+  function createComponent(mergeRequest = {}, props = {}) {
     wrapper = mount(DiscussionsBadge, {
       propsData: {
         mergeRequest,
+        ...props,
       },
     });
   }
@@ -78,5 +80,41 @@ describe('Merge requests list discussions badge component', () => {
         expect(findButton().attributes('title')).toBe(tooltip);
       },
     );
+  });
+
+  describe('when neutral', () => {
+    beforeEach(() => {
+      createComponent(
+        { resolvedDiscussionsCount: 1, resolvableDiscussionsCount: 2 },
+        { neutral: true },
+      );
+    });
+
+    it('does not render the badge', () => {
+      expect(findBadge().exists()).toBe(false);
+    });
+
+    it('renders a subtle comments icon and the count', () => {
+      expect(findIcon().props('name')).toBe('comments');
+      expect(findIcon().props('variant')).toBe('subtle');
+      expect(wrapper.text()).toBe('1 of 2');
+    });
+
+    it('keeps the tooltip', () => {
+      expect(findButton().attributes('title')).toBe('1 of 2 threads resolved');
+    });
+  });
+
+  describe('when neutral and all discussions are resolved', () => {
+    beforeEach(() => {
+      createComponent(
+        { resolvedDiscussionsCount: 4, resolvableDiscussionsCount: 4 },
+        { neutral: true },
+      );
+    });
+
+    it('shows the count rather than the Resolved label', () => {
+      expect(wrapper.text()).toBe('4 of 4');
+    });
   });
 });

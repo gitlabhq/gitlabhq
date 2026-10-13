@@ -344,13 +344,13 @@ module Gitlab
 
         desc { _('Promote issue to incident') }
         explanation { _('Promotes issue to incident') }
-        execution_message { _('Issue has been promoted to incident') }
         types Issue
         condition do
           !quick_action_target.work_item_type&.incident? &&
             current_user.can?(:"set_#{quick_action_target.issue_type}_metadata", quick_action_target)
         end
         command :promote_to_incident do
+          @execution_message[:promote_to_incident] = success_msg[:promote_to_incident]
           @updates[:work_item_type] =
             ::WorkItems::TypesFramework::Provider.new(quick_action_target.namespace).find_by_base_type(:incident)
         end

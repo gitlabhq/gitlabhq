@@ -18,4 +18,16 @@ RSpec.describe Authn::IamReplication, feature_category: :system_access do
       end
     end
   end
+
+  describe '.replicator_for' do
+    it 'returns the replicator class for a known entity type' do
+      expect(described_class.replicator_for('oauth_application'))
+        .to eq(Authn::IamReplication::OauthApplicationReplicator)
+    end
+
+    it 'raises for an unknown entity type' do
+      expect { described_class.replicator_for('unknown') }
+        .to raise_error(ArgumentError, /unknown entity_type/)
+    end
+  end
 end

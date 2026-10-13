@@ -24,7 +24,7 @@ module Mcp
 
               ref_name: {
                 type: 'string',
-                description: 'Branch or tag to list commits from. Defaults to the project default branch.'
+                description: 'Branch or tag to list commits from. Omit to use the default branch.'
               },
               author: {
                 type: 'string',
@@ -44,7 +44,7 @@ module Mcp
               },
               order: {
                 type: 'string',
-                description: 'Ordering strategy. Defaults to reverse chronological when omitted.',
+                description: 'Ordering strategy. Omit for reverse chronological order.',
                 # Source of truth is the CommitOrder GraphQL enum; a spec guards against drift.
                 enum: %w[topo date]
               },
@@ -55,8 +55,7 @@ module Mcp
               with_stats: {
                 type: 'boolean',
                 description: 'Include per-commit line-count stats (additions, deletions, files changed). ' \
-                  'Each commit costs a Gitaly call, so the page is capped at 10 when set: first defaults to 10 ' \
-                  'and must not exceed 10.'
+                  'Each commit costs a Gitaly call, so the page is capped at 10 when set.'
               },
 
               after: {

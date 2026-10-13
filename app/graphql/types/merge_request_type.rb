@@ -147,7 +147,6 @@ module Types
     field :mergeability_checks, [::Types::MergeRequests::MergeabilityCheckType],
       null: false,
       description: 'Status of all mergeability checks of the merge request.',
-      method: :all_mergeability_checks_results,
       experiment: { milestone: '16.5' },
       calls_gitaly: true
 
@@ -219,6 +218,7 @@ module Types
       type: Types::MergeRequests::AssigneeType.connection_type,
       null: true,
       complexity: 5,
+      max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS,
       description: 'Assignees of the merge request.'
     field :author, Types::MergeRequests::AuthorType, null: true,
       description: 'User who created the merge request.'
@@ -278,6 +278,7 @@ module Types
       type: Types::MergeRequests::ReviewerType.connection_type,
       null: true,
       complexity: 5,
+      max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS,
       description: 'Users from whom a review has been requested.'
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
       description: 'Indicates if the currently logged in user is subscribed to the merge request.'
@@ -341,6 +342,11 @@ module Types
     field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
       null: true,
       description: 'List of emoji reactions associated with the merge request.'
+
+    field :resource_label_events,
+      null: true,
+      description: 'Label events of the merge request.',
+      resolver: Resolvers::MergeRequests::ResourceLabelEventsResolver
 
     field :codequality_reports_comparer,
       type: ::Types::Security::CodequalityReportsComparerType,
@@ -450,8 +456,20 @@ module Types
       object.merge_schedule&.merge_after
     end
 
+    def mergeability_checks
+      @mergeability_checks_results = object.all_mergeability_checks_results
+    end
+
+    # Resolved lazily so that `mergeability_checks`, which is eager, always runs
+    # first when a query selects both and its results can be reused here,
+    # whatever order the two fields appear in the document.
     def detailed_merge_status
-      ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: object).execute
+      ::Gitlab::Graphql::Lazy.new do
+        ::MergeRequests::Mergeability::DetailedMergeStatusService.new(
+          merge_request: object,
+          precomputed_results: @mergeability_checks_results
+        ).execute
+      end
     end
 
     # This is temporary to fix a bug where `committers` is already loaded and memoized

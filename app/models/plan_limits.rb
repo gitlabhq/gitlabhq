@@ -2,14 +2,16 @@
 
 class PlanLimits < ApplicationRecord
   include SafelyChangeColumnDefault
+  include ActiveRecord::FixedItemsModel::HasOne
 
-  columns_changing_default :active_versioned_pages_deployments_limit_by_namespace
+  columns_changing_default :active_versioned_pages_deployments_limit_by_namespace, :ai_flow_schedules
+
+  attribute :ai_flow_schedules, default: 100
 
   ALLOWED_LIMITS_HISTORY_ATTRIBUTES = %i[notification_limit enforcement_limit storage_size_limit
     dashboard_limit_enabled_at].freeze
 
   ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
-  ignore_column :ci_max_artifact_size_environment_key, remove_with: '19.3', remove_after: '2026-07-10' # https://gitlab.com/gitlab-org/gitlab/-/work_items/602166
   ignore_column :ci_max_artifact_size_scip, remove_with: '19.4', remove_after: '2026-07-01'
 
   attribute :limits_history, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
@@ -17,11 +19,12 @@ class PlanLimits < ApplicationRecord
 
   LimitUndefinedError = Class.new(StandardError)
 
-  belongs_to :plan
+  belongs_to_fixed_items :plan, fixed_items_class: ::GitlabSubscriptions::SystemDefined::Plan,
+    foreign_key: 'plan_name_uid'
 
-  before_validation :set_plan_name_uid
+  before_save :sync_plan_id
 
-  validates :plan_name_uid, presence: true
+  validates :plan_name_uid, inclusion: { in: ::GitlabSubscriptions::SystemDefined::Plan.all.map(&:id) }
   validates :notification_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :enforcement_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :web_hook_calls, numericality: { only_integer: true, greater_than_or_equal_to: 0 },
@@ -85,10 +88,20 @@ class PlanLimits < ApplicationRecord
     limits_history
   end
 
-  def set_plan_name_uid
-    return if plan_name_uid.present? && !plan_id_changed?
+  private
 
-    self.plan_name_uid = plan&.plan_name_uid_before_type_cast
+  def sync_plan_id
+    return unless plan_name_uid_changed?
+
+    # plan_name_uid is the authoritative write input; plan_id stays in sync only for
+    # fk_rails_69f8b6184f until plan_id is dropped (https://gitlab.com/gitlab-org/gitlab/-/work_items/600314).
+    # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- creates the missing plans row
+    plan_for_uid = Plan.safe_find_or_create_by(plan_name_uid: plan_name_uid) do |new_plan|
+      new_plan.name = plan.name
+      new_plan.title = plan.title
+    end
+    # rubocop:enable Performance/ActiveRecordSubtransactionMethods
+    self.plan_id = plan_for_uid.id if plan_for_uid && plan_for_uid.id != plan_id
   end
 end
 

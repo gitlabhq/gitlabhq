@@ -33,16 +33,24 @@ module Auth
       include ::Gitlab::Utils::StrongMemoize
 
       def secret
-        OpenSSL::HMAC.hexdigest(
-          'sha256',
-          ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
-          HMAC_KEY
-        )
+        derive_secret(::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret)
       end
       strong_memoize_attr :secret
 
+      # Current key first, so tokens signed before a db_key_base rotation still verify
+      def secrets
+        ::Gitlab::Encryption::KeyProvider[:db_key_base].decryption_keys_current_first
+          .map { |key| derive_secret(key.secret) }
+      end
+
       def token_expire_at
         Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
+      end
+
+      private
+
+      def derive_secret(db_key_base)
+        OpenSSL::HMAC.hexdigest('sha256', db_key_base, HMAC_KEY)
       end
     end
 

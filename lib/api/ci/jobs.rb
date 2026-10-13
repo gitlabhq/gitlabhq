@@ -16,12 +16,12 @@ module API
         before { authenticate! }
 
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         end
 
         helpers do
           params :optional_scope do
-            optional :scope, type: Array[String], desc: 'The scope of builds to show',
+            optional :scope, type: Array[String], desc: 'Filter jobs by status. Accepts a single value or an array of values. If omitted, returns all jobs.',
               values: ::CommitStatus::AVAILABLE_STATUSES,
               coerce_with: ->(scope) {
                 case scope
@@ -53,14 +53,14 @@ module API
         end
         params do
           use :optional_scope
-          optional :ref, type: String, desc: 'The branch name (ref) to filter jobs by', documentation: { example: 'feature-branch' }
+          optional :ref, type: String, desc: 'Branch name (ref) to filter jobs by.', documentation: { example: 'feature-branch' }
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs, permissions: :read_job, boundary_type: :project
         get ':id/jobs', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:jobs_index, scope: current_user)
+          check_rate_limit!(:jobs_index, scope: { user: current_user })
 
           authorize_read_builds!
 
@@ -84,7 +84,7 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
         end
         route_setting :authorization, permissions: :read_job, boundary_type: :project
         get ':id/jobs/:job_id', urgency: :low, feature_category: :continuous_integration do
@@ -95,37 +95,6 @@ module API
           present build, with: Entities::Ci::Job
         end
 
-        desc 'Get the runtime environment key for a job' do
-          detail 'Retrieves the runtime environment key linked to a job, if the job is resuming a suspended environment.'
-          success code: 200, model: Entities::Ci::RuntimeEnvironmentKey
-          failure [
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
-          ]
-          tags ['ci_jobs']
-        end
-        params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-        end
-        route_setting :authorization, permissions: :update_job, boundary_type: :project
-        get ':id/jobs/:job_id/runtime_environment_key', urgency: :low, feature_category: :runner_core do
-          not_found! unless ::Feature.enabled?(:ci_suspendable_environment_runner_routing, user_project,
-            type: :gitlab_com_derisk)
-
-          build = find_build!(params[:job_id])
-          authorize!(:update_build, build)
-
-          runtime_environment_key = build.job_runtime_environment&.runtime_environment&.environment_key
-
-          not_found!('Runtime environment key') unless runtime_environment_key
-
-          present build, with: Entities::Ci::RuntimeEnvironmentKey
-        end
-
-        # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
-        #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
-        #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
         desc 'Get a trace of a specific job of a project' do
           detail 'Retrieves a log file for a job.'
           success code: 200, model: Entities::Ci::Job
@@ -137,11 +106,11 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :byte_offset, type: Integer, desc: 'Byte offset to start reading from',
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
+          optional :byte_offset, type: Integer, desc: 'Byte offset to start reading the trace from.',
             values: 0.., documentation: { example: 0 }
-          optional :byte_limit, type: Integer, desc: 'Maximum number of bytes to return',
+          optional :byte_limit, type: Integer, desc: 'Maximum number of bytes to return.',
             values: 1..Gitlab::Ci::Trace::Stream::LIMIT_SIZE, documentation: { example: 51200 }
         end
 
@@ -153,21 +122,26 @@ module API
 
           authorize_read_build_trace!(build) if build
 
-          header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
-          content_type 'text/plain'
-          env['api.format'] = :binary
+          range_requested = params[:byte_offset] || params[:byte_limit]
+          byte_offset = params[:byte_offset] || 0
+          byte_limit = params[:byte_limit]
 
-          trace = if params[:byte_offset] || params[:byte_limit]
-                    byte_offset = params[:byte_offset] || 0
-                    byte_limit = params[:byte_limit]
+          if !range_requested && send_archived_trace_via_workhorse?(build)
+            send_archived_trace_via_workhorse!(build)
+          elsif range_requested && send_archived_trace_range_via_workhorse?(build)
+            send_archived_trace_range_via_workhorse!(build, byte_offset: byte_offset, byte_limit: byte_limit)
+          else
+            set_trace_response_headers!(build)
 
-                    build.trace.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
-                  else
-                    build.trace.raw
-                  end
+            trace = if range_requested
+                      build.trace.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
+                    else
+                      build.trace.raw
+                    end
 
-          # The trace can be nil but body method expects a string as an argument.
-          body trace || ''
+            # The trace can be nil but body method expects a string as an argument.
+            body trace || ''
+          end
         end
 
         desc 'Cancel a job' do
@@ -181,8 +155,8 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :force, type: Boolean, desc: 'Force cancellation for a job with a state of `canceling`', documentation: { example: true }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
+          optional :force, type: Boolean, desc: 'If `true`, [forces cancellation](https://docs.gitlab.com/ci/jobs/#force-cancel-a-job) of a job in `canceling` state.', documentation: { example: true }
         end
 
         route_setting :authorization, permissions: :cancel_job, boundary_type: :project
@@ -208,13 +182,14 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :inputs, type: Hash, desc: 'Input values for the job', documentation: { example: { 'environment' => 'production' } }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
+          optional :inputs, type: Hash, desc: 'Input values for the job.', documentation: { example: { 'environment' => 'production' } }
         end
         # This endpoint can be used for retrying both builds and bridges.
         route_setting :authorization, permissions: :retry_job, boundary_type: :project
@@ -231,6 +206,8 @@ module API
 
           if response.success?
             present response[:job], with: Entities::Ci::Job
+          elsif response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_retry))
           elsif response.payload[:reason] == :not_retryable
             forbidden!('Job is not retryable')
           else
@@ -245,12 +222,13 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' },
-            { code: 409, message: 'Conflict' }
+            { code: 409, message: 'Conflict' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
         end
         route_setting :authorization, permissions: :erase_job, boundary_type: :project
         post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
@@ -260,7 +238,11 @@ module API
 
           reject_if_build_artifacts_size_refreshing!(build.project)
 
-          ::Ci::BuildEraseService.new(build, current_user).execute
+          response = ::Ci::BuildEraseService.new(build, current_user).execute
+
+          if response.error? && response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_erase))
+          end
 
           present build, with: Entities::Ci::Job
         end
@@ -272,19 +254,20 @@ module API
             { code: 400, message: 'Bad request' },
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a Job', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
           optional :job_variables_attributes,
-            type: Array, desc: 'User defined variables that will be included when running the job' do
-            requires :key, type: String, desc: 'The name of the variable', documentation: { example: 'foo' }
-            requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'bar' }
+            type: Array, desc: 'User-defined variables to include when running the job.' do
+            requires :key, type: String, desc: 'Name of the variable.', documentation: { example: 'foo' }
+            requires :value, type: String, desc: 'Value of the variable.', documentation: { example: 'bar' }
           end
           optional :job_inputs,
-            type: Hash, desc: 'Input values for the job', documentation: { example: { environment: 'production' } }
+            type: Hash, desc: 'Hash of [job input](https://docs.gitlab.com/ci/jobs/job_inputs/) values to use when playing the job. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17833) in GitLab 18.10.', documentation: { example: { environment: 'production' } }
         end
 
         route_setting :authorization, permissions: :play_job, boundary_type: :project
@@ -299,6 +282,10 @@ module API
           bad_request!("Unplayable Job") unless job.playable?
 
           result = job.play(current_user, params[:job_variables_attributes], params[:job_inputs] || {})
+
+          if result.error? && result.reason == :rate_limited
+            too_many_requests!(result.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_play))
+          end
 
           bad_request!(result.message) if result.error?
 
@@ -392,6 +379,84 @@ module API
       end
 
       helpers do
+        def set_trace_response_headers!(build)
+          header 'Content-Disposition', trace_content_disposition(build)
+          content_type 'text/plain'
+          env['api.format'] = :binary
+        end
+
+        def trace_content_disposition(build)
+          "infile; filename=\"#{build.id}.log\""
+        end
+
+        # Only archived logs qualify: live logs are assembled from chunks in Rails.
+        def send_archived_trace_via_workhorse?(build)
+          Feature.enabled?(:ci_job_trace_api_archived_log_via_workhorse, build.project, type: :beta) && build.trace.archived?
+        end
+
+        # Not present_disk_file!/present_carrierwave_file!: both replace the
+        # Content-Disposition this endpoint has always sent. Object storage sets
+        # its own Content-Type, so the send-url branch pins both headers.
+        def send_archived_trace_via_workhorse!(build)
+          trace_artifact = build.job_artifacts_trace
+          file = trace_artifact.file
+
+          # Before any response header, so a rejected request gets a plain 403.
+          verify_workhorse_api! unless file.file_storage?
+
+          set_trace_response_headers!(build)
+          apply_etag_or_suppress_rack_etag!(nil)
+
+          # Grape routes HEAD to this block; without this, Workhorse would fetch
+          # the whole object only to discard the body.
+          if request.head?
+            header 'Content-Length', trace_artifact.size.to_s
+            body ''
+          elsif file.file_storage?
+            sendfile file.path
+          else
+            header(*Gitlab::Workhorse.send_url(file.url, response_headers: trace_send_url_response_headers(build)))
+            status :ok
+            body ''
+          end
+        end
+
+        # Local disk keeps Stream#raw_range: a seek and read from disk is cheap.
+        def send_archived_trace_range_via_workhorse?(build)
+          Feature.enabled?(:ci_job_trace_api_range_via_workhorse, build.project, type: :beta) &&
+            build.trace.archived? && !build.job_artifacts_trace.file.file_storage?
+        end
+
+        # Workhorse fetches exactly this span and answers 200, so the client sees
+        # the same response as the Rails read. Rails clamps to the artifact size
+        # itself, as Stream#raw_range does, instead of letting storage answer 416.
+        def send_archived_trace_range_via_workhorse!(build, byte_offset:, byte_limit:)
+          trace_artifact = build.job_artifacts_trace
+
+          verify_workhorse_api!
+
+          set_trace_response_headers!(build)
+          apply_etag_or_suppress_rack_etag!(nil)
+
+          size = trace_artifact.size
+          first_byte = [byte_offset, size].min
+          last_byte = [byte_limit ? first_byte + byte_limit : size, size].min - 1
+
+          if request.head? || last_byte < first_byte
+            header 'Content-Length', (last_byte - first_byte + 1).to_s
+          else
+            header(*Gitlab::Workhorse.send_url(trace_artifact.file.url,
+              response_headers: trace_send_url_response_headers(build), upstream_range: "bytes=#{first_byte}-#{last_byte}"))
+            status :ok
+          end
+
+          body ''
+        end
+
+        def trace_send_url_response_headers(build)
+          { 'Content-Type' => 'text/plain', 'Content-Disposition' => trace_content_disposition(build) }
+        end
+
         # rubocop: disable CodeReuse/ActiveRecord
         def filter_builds_by_scope(builds, scope)
           return builds if scope.nil? || scope.empty?

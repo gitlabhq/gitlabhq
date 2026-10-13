@@ -41,7 +41,7 @@ by highlighting additional work to fix a bug where [nested variables in `build:r
 “This bug had 23 upvotes in addition to documented customer demand in the issue itself,” says Jocelyn.
 “The quick turnaround on reviewer feedback means we were able to get this into GitLab 17.1!”
 
-This is Joe’s second GitLab MVP after previously being awarded in [GitLab 16.6](https://about.gitlab.com/releases/2023/11/16/gitlab-16-6-released/#mvp).
+This is Joe’s second GitLab MVP after previously being awarded in [GitLab 16.6](../16/gitlab-16-6-released.md#this-months-notable-contributor-joe-snyder).
 Joe is a Senior R&D Engineer at [Kitware](https://www.kitware.com/) and has been contributing to GitLab since 2021.
 
 ## Primary features
@@ -175,7 +175,7 @@ These enhancements improve ease of use, discoverability, and content management 
 
 With the addition of the new Reports Generation Tool for Value Stream Management, we empower decision-makers to be more efficient and effective in the software development life cycle (SDLC) optimization.
 
-You can now schedule [DevSecOps comparison metrics reports](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report) or the [AI Impact analytics](https://about.gitlab.com/releases/2024/05/16/gitlab-17-0-released/#ai-impact-analytics-in-the-value-streams-dashboard) report to be delivered automatically, proactively, and with relevant information in GitLab issues. With scheduled reports, managers can focus on analyzing insights and making informed decisions, rather than spending time manually searching for the right dashboard with the required data.
+You can now schedule [DevSecOps comparison metrics reports](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report) or the [AI Impact analytics](gitlab-17-0-released.md#ai-impact-analytics-in-the-value-streams-dashboard) report to be delivered automatically, proactively, and with relevant information in GitLab issues. With scheduled reports, managers can focus on analyzing insights and making informed decisions, rather than spending time manually searching for the right dashboard with the required data.
 
 You can access the scheduled reports tool using the [CI/CD Catalog](https://gitlab.com/explore/catalog).
 
@@ -502,7 +502,7 @@ the source GitLab instance.
 {{< /details >}}
 
 In GitLab 16.11, we introduced the ability to
-[add custom headers when you create or edit a webhook](https://about.gitlab.com/releases/2024/04/18/gitlab-16-11-released/#custom-webhook-headers).
+[add custom headers when you create or edit a webhook](../16/gitlab-16-11-released.md#custom-webhook-headers).
 
 With this release, you can now use the GitLab REST API to set custom webhook headers.
 

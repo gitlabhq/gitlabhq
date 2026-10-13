@@ -21,6 +21,26 @@ RSpec.describe PropagateIntegrationInheritWorker, feature_category: :integration
       end
     end
 
+    context 'with an integration inheriting from an instance integration in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_instance_integration) do
+        create(:redmine_integration, :instance, organization: other_organization)
+      end
+
+      let_it_be(:other_inherited_integration) do
+        create(:redmine_integration, project: create(:project, organization: other_organization),
+          inherit_from_id: other_instance_integration.id)
+      end
+
+      it 'does not pass it to Integrations::Propagation::BulkUpdateService' do
+        expect(Integrations::Propagation::BulkUpdateService).to receive(:new)
+          .with(integration, match_array(integration1))
+          .and_return(instance_double(Integrations::Propagation::BulkUpdateService, execute: nil))
+
+        described_class.new.perform(integration.id, integration1.id, other_inherited_integration.id)
+      end
+    end
+
     context 'with an invalid integration id' do
       it 'returns without failure' do
         expect(Integrations::Propagation::BulkUpdateService).not_to receive(:new)

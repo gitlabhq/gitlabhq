@@ -1,0 +1,7 @@
+---
+name: _read_agent_build
+description: Private permission that gates reading the log of jobs run by an
+  agent flow (pipeline source duo_workflow). The build policy combines this
+  permission with the job's pipeline source to allow read_build_trace. Must not
+  be checked directly at enforcement points.
+conditionally_enables: null

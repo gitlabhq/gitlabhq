@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Aggregation::Formatter, feature_category: :database do
+RSpec.describe Gitlab::Database::Aggregation::Formatter, feature_category: :value_stream_management do
   subject(:formatter) { described_class.new(engine, plan) }
 
   let(:engine) do

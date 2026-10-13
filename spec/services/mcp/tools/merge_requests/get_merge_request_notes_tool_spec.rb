@@ -130,6 +130,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestNotesTool, feature_cate
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text]).to include('Merge request not found')
       end
     end

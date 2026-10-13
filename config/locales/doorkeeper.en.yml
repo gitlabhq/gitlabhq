@@ -87,6 +87,7 @@ en:
       ai_features: Access to API endpoints needed for GitLab Duo features
       read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
       self_rotate: Grants permission for token to rotate itself
+      granular: Grants only the fine-grained permissions this application declared
       user:*: Grants access only if both the token owner and user:<id> has access to the resource.
     scope_desc:
       api: Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.
@@ -113,6 +114,7 @@ en:
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       read_service_ping: Grants access to download Service Ping payloads through the API when authenticated as an administrator user.
       self_rotate: Grants permission for token to rotate itself.
+      granular: Grants only the fine-grained permissions this application declared, limited to the resources you can already access.
     group_access_token_scope_desc:
       api: Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.
       read_api: Grants read access to the scoped group and related project API, including the package registry.

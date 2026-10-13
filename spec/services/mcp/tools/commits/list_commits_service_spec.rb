@@ -50,7 +50,7 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsService, feature_category: :mcp_s
           },
           ref_name: {
             type: 'string',
-            description: 'Branch or tag to list commits from. Defaults to the project default branch.'
+            description: 'Branch or tag to list commits from. Omit to use the default branch.'
           },
           author: {
             type: 'string',
@@ -70,7 +70,7 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsService, feature_category: :mcp_s
           },
           order: {
             type: 'string',
-            description: 'Ordering strategy. Defaults to reverse chronological when omitted.',
+            description: 'Ordering strategy. Omit for reverse chronological order.',
             enum: %w[topo date]
           },
           first_parent: {
@@ -81,9 +81,7 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsService, feature_category: :mcp_s
             type: 'boolean',
             description: 'Include per-commit line-count stats (additions, deletions, files changed). ' \
               'Each commit costs a Gitaly call, so the page is capped at ' \
-              "#{Mcp::Tools::Commits::ListCommitsTool.stats_max_first} when set: first defaults to " \
-              "#{Mcp::Tools::Commits::ListCommitsTool.stats_max_first} and must not exceed " \
-              "#{Mcp::Tools::Commits::ListCommitsTool.stats_max_first}."
+              "#{Mcp::Tools::Commits::ListCommitsTool.stats_max_first} when set."
           },
           after: {
             type: 'string',

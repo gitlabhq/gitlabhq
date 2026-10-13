@@ -18,6 +18,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
+If you also plan to upgrade GitLab Runner alongside GitLab, review the GitLab Runner [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md) for changes that might affect your setup.
+
 For additional information for Helm chart installations, see
 [the Helm chart 10.0 upgrade notes](https://docs.gitlab.com/charts/releases/10_0/).
 
@@ -39,6 +41,14 @@ Each list item points to a specific section that holds more information.
 Items marked with an installation method, like `(Geo)` or `(Linux package)`,
 apply only to that method. All other items apply to all installation methods.
 
+### Upgrade to 19.5
+
+Before upgrading to GitLab 19.5, review the following:
+
+- [19.5.0] - [Agent for Kubernetes address defaults to native gRPC](#agent-for-kubernetes-address-defaults-to-native-grpc) (Linux package, Helm chart)
+- [19.5.0] - [Duo Agent Platform checkpoint migration](#duo-agent-platform-checkpoint-migration)
+- [19.5.0] - [Geo upload checksumming by upload type enabled by default](#geo-upload-checksumming-by-upload-type-enabled-by-default) (Geo)
+
 ### Upgrade to 19.4
 
 Before upgrading to GitLab 19.4, review the following:
@@ -52,6 +62,7 @@ Before upgrading to GitLab 19.4, review the following:
 Before upgrading to GitLab 19.3, review the following:
 
 - [19.3.0 - 19.3.1] - [New groups require SHA parameter for merge requests API calls](#new-groups-require-sha-parameter-for-merge-requests-api-calls)
+- [19.3.0] - [Geo verification concurrency limit applied as a global total](#geo-verification-concurrency-limit-applied-as-a-global-total)
 
 ### Upgrade to 19.2
 
@@ -68,6 +79,7 @@ Before upgrading to GitLab 19.0, review the following:
 - [19.0.0] - [Container registry S3 storage driver replaced by s3_v2](#container-registry-s3-storage-driver-replaced-by-s3_v2) (Linux package, self-compiled)
 - [19.0.0 - 19.1.0] - [Orphaned `.agents` and `.claude` directories on Linux package RPM installs](#orphaned-agents-and-claude-directories-on-linux-package-rpm-installs) (Linux package)
 - [19.0.0] - [PostgreSQL 17 minimum requirement](#postgresql-17-minimum-requirement)
+- [19.0.0] - [Webhook payload timestamps changed to ISO 8601 format](#webhook-payload-timestamps-changed-to-iso-8601-format)
 - [19.0.0] - [Linux package support for Ubuntu 20.04 discontinued](#linux-package-support-for-ubuntu-2004-discontinued) (Linux package)
 - [19.0.0] - [Redis 6 support removed](#redis-6-support-removed) (Linux package)
 - [19.0.0] - [Mattermost removed from the Linux package](#mattermost-removed-from-the-linux-package) (Linux package)
@@ -81,6 +93,91 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### Agent for Kubernetes address defaults to native gRPC
+
+- Affects: Linux package, Helm chart
+- Affected versions: 19.5.0 and later
+
+In GitLab 19.5, the Linux package and the GitLab Helm chart advertise a native gRPC address
+to the agent for Kubernetes by default, instead of a WebSocket address. The address is shown
+in the agent installation instructions and stored in `gitlab_kas.external_url`.
+
+- Linux package: `grpcs://gitlab.example.com` instead of `wss://gitlab.example.com/-/kubernetes-agent/`,
+  when `external_url` uses HTTPS without a relative URL root and the bundled NGINX terminates TLS with HTTP/2.
+- Helm chart: `grpcs://kas.example.com` instead of `wss://kas.example.com`, with Gateway API or
+  with the NGINX Ingress provider.
+
+In other configurations, the WebSocket address is kept. Agents that are already connected over
+WebSocket are not affected, because GitLab Relay (KAS) serves both protocols on the same port.
+Agents installed after the upgrade connect over gRPC, which needs HTTP/2 end to end. If a proxy
+between your clusters and GitLab does not pass HTTP/2, new agents fail to connect and the error
+looks like a network problem. For example, a WAF or a TLS-inspecting proxy might connect to GitLab
+over HTTP/1.1. In that case, keep advertising WebSocket by setting the address explicitly:
+
+- Linux package: `gitlab_rails['gitlab_kas_external_url']` in `/etc/gitlab/gitlab.rb`.
+- Helm chart: `global.appConfig.gitlab_kas.externalUrl`.
+
+For more information, see [GitLab Relay (KAS)](../../administration/clusters/kas.md) and the
+[KAS chart documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#agent-connection-protocol).
+
+### Duo Agent Platform checkpoint migration
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: All installation methods
+- Affected versions: 19.5.0
+
+GitLab 19.5 queues a batched background migration named `BackfillDuoWorkflowsCheckpointHeadersAndBlobs`.
+It copies GitLab Duo Agent Platform session checkpoints from the table
+`p_duo_workflows_checkpoints` into the tables `p_duo_workflows_checkpoint_headers` and
+`p_duo_workflows_checkpoint_blobs`. This is the storage format the application now writes and reads.
+
+The migration runs in the background after the upgrade. It only processes rows that are not
+already stored in the new format, and it skips sessions older than 30 days because their data
+is past the retention period.
+
+Sessions created before the upgrade remain readable while the migration runs. A later GitLab
+version removes the code that reads the old table, so this migration must finish before that
+upgrade. Before you upgrade past 19.5, check the migration status on the **Admin area** >
+**Background migrations** page (`/admin/background_migrations`). For more information on how
+to check the status and how to finish the migration manually, see
+[background migrations](../background_migrations.md).
+
+The time the migration takes depends on how many sessions the instance stored in the last 30
+days. Each processed checkpoint can be several megabytes.
+
+### Geo upload checksumming by upload type enabled by default
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Geo
+- Affected versions: 19.5.0
+
+In GitLab 19.5, Geo adds 23 new data types for uploads, one for each kind of upload, for example project uploads and group uploads.
+Only the primary site uses the new data types, and it checksums the uploads for each one in the background. The secondary sites
+keep replicating and verifying uploads through the existing uploads data type.
+
+On the primary, most uploads reuse the checksum from the existing uploads data type, so GitLab reads only the files that
+do not have a successful checksum yet.
+Checksumming shares the **Verification concurrency limit** of the primary site with all other data types.
+On sites with millions of uploads, checksumming can take several days at a limit of `1`, which many sites upgraded from earlier versions use.
+You can raise the limit while checksumming runs, monitor database load, and restore the previous value afterward.
+In GitLab testing, raising the limit from `1` to `10` made upload checksumming about eight times faster, with little extra database load.
+For more information, see [tuning Geo](../../administration/geo/replication/tuning.md#changing-the-syncverification-concurrency-values).
+
+To stop checksumming for one data type, you must
+[disable both of its feature flags](../../administration/feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags):
+`geo_<name>_upload_replication` and `geo_<name>_upload_force_primary_checksumming`, where `<name>` is, for example, `project` or `group`.
+Disabling only the `_replication` flag does not stop checksumming.
 
 ### Geo SSH proxying enabled by default
 
@@ -383,6 +480,30 @@ The minimum supported version of PostgreSQL is now version 17. Before installing
   [upgrade the packaged PostgreSQL server](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 - If you use an [external PostgreSQL](../../administration/postgresql/external.md) instance,
   upgrade it to PostgreSQL 17.
+
+### Webhook payload timestamps changed to ISO 8601 format
+
+- Affects: All installation methods
+- Affected versions: 19.0.0
+
+Before GitLab 19.0, timestamp values in webhook payloads (for example `object_attributes.created_at`)
+used the format `YYYY-MM-DD HH:MM:SS` followed by a time zone. For example, `2026-04-23 12:30:45 UTC`.
+In GitLab 19.0 and later, these timestamps use ISO 8601 format with millisecond precision and a time zone
+designator. For example, `2026-04-23T12:30:45.123Z`.
+
+This change applies to all timestamps for project webhooks, group webhooks, and
+custom webhook templates, with one exception. Pipeline events keep the previous format
+for the `created_at`, `started_at`, and `finished_at` fields inside `builds[]` and `bridges[]`.
+
+If your webhook receiver parses these timestamp fields, update it to accept ISO 8601 with
+millisecond precision.
+For the format of each field, see
+[webhook events](../../user/project/integrations/webhook_events.md).
+
+This change was introduced in
+[merge request 233400](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233400).
+It is tracked in
+[issue 622832](https://gitlab.com/gitlab-org/gitlab/-/work_items/622832).
 
 ### Geo container repository sync silently skips OCI image index tags
 

@@ -14,7 +14,5 @@ class DeploymentClusterEntity < Grape::Entity
     deployment.cluster.present(current_user: request.current_user).show_path
   end
 
-  expose :kubernetes_namespace, if: ->(deployment) { can?(request.current_user, :read_cluster, deployment.cluster) } do |deployment|
-    deployment.kubernetes_namespace
-  end
+  expose :kubernetes_namespace, if: ->(deployment) { can?(request.current_user, :read_cluster, deployment.cluster) }
 end

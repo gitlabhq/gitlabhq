@@ -177,15 +177,23 @@ class Projects::CommitController < Projects::ApplicationController
     target_project = find_cherry_pick_target_project
     return render_404 unless target_project
 
-    @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
+    if create_new_branch?
+      branch_name_generator = ->(project) { @commit.cherry_pick_branch_name(repository: project.repository) }
+    else
+      @branch_name = @start_branch
+    end
+
+    change_type_title = @commit.change_type_title(current_user)
 
     create_commit(
       Commits::CherryPickService,
-      success_notice: "The #{@commit.change_type_title(current_user)} has been successfully " \
-        "cherry-picked into #{@branch_name}.",
+      success_notice: -> do
+        "The #{change_type_title} has been successfully cherry-picked into #{@branch_name}."
+      end,
       success_path: -> { successful_change_path(target_project) },
       failure_path: failed_change_path,
-      target_project: target_project
+      target_project: target_project,
+      branch_name_generator: branch_name_generator
     )
   end
 
@@ -414,7 +422,7 @@ class Projects::CommitController < Projects::ApplicationController
   def rate_limit_for_expanded_diff_files
     return unless diffs_expanded?
 
-    check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
+    check_rate_limit!(:expanded_diff_files, scope: current_user ? { user: current_user } : { ip: request.ip })
   end
 
   def complete_diff_path

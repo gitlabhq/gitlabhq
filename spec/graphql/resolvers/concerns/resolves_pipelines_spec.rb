@@ -40,7 +40,7 @@ RSpec.describe ResolvesPipelines, feature_category: :source_code_management do
   it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :ref_type, :sha, :source, :updated_after, :updated_before, :username, :ids) }
 
   it 'finds all pipelines' do
-    expect(resolve_pipelines).to contain_exactly(*all_pipelines)
+    expect(resolve_pipelines).to match_array(all_pipelines)
   end
 
   it 'allows filtering by status' do

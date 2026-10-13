@@ -30,15 +30,15 @@ module AdminModeHelper
     visit new_admin_session_path
 
     # When JavaScript is enabled, wait for the password field, with class `.js-password`,
-    # to be replaced by the Vue password component,
-    # `app/assets/javascripts/authentication/password/components/password_input.vue`.
+    # to be replaced by the Vue password component mounted from
+    # `app/assets/javascripts/authentication/password/index.js`.
     expect(page).not_to have_selector('.js-password') if javascript_test?
 
     fill_in 'user_password', with: user.password
     click_button _('Enter admin mode')
 
     if with_2fa
-      expect(page).to have_button(_('Verify code'))
+      expect(page).to have_button(s_('TwoFactorAuth|Verify code'))
     else
       expect(page).to have_content(_('Admin mode is active'))
     end

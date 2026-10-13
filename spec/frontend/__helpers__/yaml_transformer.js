@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import-x/no-commonjs */
 const JsYaml = require('js-yaml');
 
 // This will transform YAML files to JSON strings

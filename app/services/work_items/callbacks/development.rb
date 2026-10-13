@@ -53,8 +53,8 @@ module WorkItems
       end
 
       def mentioned_link?
-        ::MergeRequestsClosingIssues.link_types.fetch(link_type.to_s, nil) ==
-          ::MergeRequestsClosingIssues.link_types[:mentioned]
+        ::MergeRequestIssue.link_types.fetch(link_type.to_s, nil) ==
+          ::MergeRequestIssue.link_types[:mentioned]
       end
     end
   end

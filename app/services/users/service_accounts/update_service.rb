@@ -5,12 +5,15 @@ module Users
     class UpdateService < BaseService
       attr_reader :current_user, :user, :params
 
-      ALLOWED_PARAMS = [:username, :name, :email].freeze
+      ALLOWED_PARAMS = [:username, :name, :email, :external].freeze
 
       def initialize(current_user, user, params = {})
         @current_user = current_user
         @user = user
-        @params = params.slice(*ALLOWED_PARAMS).compact_blank
+        @params = params.slice(*ALLOWED_PARAMS).select do |key, value|
+          # `false` is a meaningful value for `external` and must not be filtered out as blank.
+          value.present? || (key == :external && value == false)
+        end
       end
 
       def execute

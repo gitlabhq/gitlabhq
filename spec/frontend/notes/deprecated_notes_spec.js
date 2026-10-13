@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs, no-new */
+/* eslint-disable import-x/no-commonjs, no-new */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';

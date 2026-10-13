@@ -200,7 +200,9 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         end
 
         it 'reschedules the deletion by transitioning state back' do
-          expect(group).to receive(:reschedule_deletion!).with(transition_user: user).and_call_original
+          expect(group).to receive(:reschedule_deletion!)
+            .with(transition_user: user, deletion_error: anything)
+            .and_call_original
 
           expect { destroy_group(group, user, false) }.to raise_error(StandardError)
           expect(group.state).to eq('deletion_scheduled')
@@ -268,6 +270,79 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
             expect(group.reload.state).to eq(group_state.to_s)
             expect(nested_group.reload.state).to eq(nested_group_state.to_s)
           end
+        end
+      end
+
+      context 'when a descendant is in a transient transfer state during deletion' do
+        # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/608541
+        where(:nested_group_state) do
+          [[:transfer_in_progress], [:transfer_scheduled]]
+        end
+
+        with_them do
+          before do
+            nested_group.update!(state: nested_group_state)
+          end
+
+          it 'destroys the group and its descendant', :aggregate_failures do
+            destroy_group(group, user, false)
+
+            expect(Group.unscoped.all).not_to include(group)
+            expect(Group.unscoped.all).not_to include(nested_group)
+          end
+        end
+      end
+
+      context 'when reschedule_deletion! itself raises during the rescue block' do
+        # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/608541
+        #
+        # If reschedule_deletion! raises (e.g. due to an unexpected state), the
+        # original exception must still be re-raised so callers and logs see the
+        # real root cause rather than a secondary StateMachines::InvalidTransition.
+        before do
+          group.update!(state: :deletion_scheduled)
+          allow(group).to receive(:destroy).and_raise(StandardError, 'original error')
+          allow(group).to receive(:reschedule_deletion!).and_raise(RuntimeError, 'reschedule failed')
+        end
+
+        it 're-raises the original exception, not the reschedule error' do
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError, 'original error')
+        end
+
+        it 'logs the reschedule failure alongside the original error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: "Rescheduling group deletion failed",
+              reschedule_error_class: RuntimeError,
+              reschedule_error_message: 'reschedule failed'
+            )
+          )
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError, 'original error')
+        end
+
+        it 'tracks the reschedule exception on Sentry' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(RuntimeError).and(having_attributes(message: 'reschedule failed')),
+            group_id: group.id
+          )
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError, 'original error')
+        end
+      end
+
+      context 'when deletion fails without a current_user' do
+        before do
+          allow(group).to receive(:start_deletion!).and_raise(StandardError, 'original error')
+        end
+
+        it 'logs the failure with a nil user and re-raises' do
+          allow(Gitlab::AppLogger).to receive(:error)
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(group_id: group.id, current_user: nil, error_message: 'original error')
+          )
+
+          expect { described_class.new(group, nil).unsafe_execute }.to raise_error(StandardError, 'original error')
         end
       end
     end
@@ -676,6 +751,107 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
             .to receive(:new).with(array_including(project.id)).and_call_original
 
           destroy_group(shared_with_group, user, false)
+        end
+      end
+    end
+  end
+
+  describe '#track_destroy_failure' do
+    before do
+      allow(group).to receive(:destroy).and_raise(StandardError, 'something broke')
+      allow(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+    end
+
+    it 'increments deletion_attempt_count on each failed destroy' do
+      expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+
+      expect(group.reload.deletion_attempt_count).to eq(1)
+    end
+
+    it 'records deletion_last_failed_at' do
+      freeze_time do
+        expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+
+        expect(group.reload.deletion_last_failed_at).to be_within(1.second).of(Time.current)
+      end
+    end
+
+    context 'when deletion_attempt_count is below MAX_DESTROY_ATTEMPTS' do
+      before do
+        below_threshold = described_class::MAX_DESTROY_ATTEMPTS - 2
+        group.namespace_details.update!(
+          state_metadata: group.namespace_details.state_metadata.merge('deletion_attempt_count' => below_threshold)
+        )
+      end
+
+      it 'reports the per-failure error to Sentry but does not escalate with DeletionStuckError' do
+        expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+
+        expect(Gitlab::ErrorTracking).to have_received(:track_exception).once.with(
+          an_object_having_attributes(message: a_string_including('something broke')),
+          hash_including(group_id: group.id, deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS - 1)
+        )
+        expect(Gitlab::ErrorTracking).not_to have_received(:track_exception).with(
+          an_instance_of(described_class::DeletionStuckError), anything
+        )
+      end
+    end
+
+    context 'when deletion_attempt_count reaches MAX_DESTROY_ATTEMPTS' do
+      before do
+        one_below = described_class::MAX_DESTROY_ATTEMPTS - 1
+        group.namespace_details.update!(
+          state_metadata: group.namespace_details.state_metadata.merge('deletion_attempt_count' => one_below)
+        )
+      end
+
+      context 'when the previous failure is recent (inside STUCK_FAILURE_WINDOW)' do
+        before do
+          group.namespace_details.update!(
+            state_metadata: group.namespace_details.state_metadata.merge(
+              'deletion_last_failed_at' => 1.hour.ago.iso8601
+            )
+          )
+        end
+
+        it 'reports the per-failure error but does not escalate with DeletionStuckError' do
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).once.with(
+            an_object_having_attributes(message: a_string_including('something broke')),
+            hash_including(group_id: group.id, deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS)
+          )
+          expect(Gitlab::ErrorTracking).not_to have_received(:track_exception).with(
+            an_instance_of(described_class::DeletionStuckError), anything
+          )
+        end
+      end
+
+      context 'when the previous failure is older than STUCK_FAILURE_WINDOW' do
+        before do
+          group.namespace_details.update!(
+            state_metadata: group.namespace_details.state_metadata.merge(
+              'deletion_last_failed_at' => 13.hours.ago.iso8601
+            )
+          )
+        end
+
+        it 'reports the per-failure error and escalates with DeletionStuckError' do
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError)
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
+            an_instance_of(StandardError).and(having_attributes(message: 'something broke')),
+            hash_including(group_id: group.id, deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS)
+          )
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
+            an_instance_of(described_class::DeletionStuckError).and(having_attributes(
+              message: 'Group stuck in deletion: something broke'
+            )),
+            hash_including(
+              group_id: group.id,
+              deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS
+            )
+          )
         end
       end
     end

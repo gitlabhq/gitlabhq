@@ -27,4 +27,17 @@ RSpec.describe ResetProjectCacheService, feature_category: :continuous_integrati
       expect { subject }.to change { project.reload.jobs_cache_index }.by(1)
     end
   end
+
+  it 'logs an audit event' do
+    expect(::Gitlab::Audit::Auditor).to receive(:audit).with(
+      hash_including(
+        name: 'project_runner_cache_cleared',
+        author: user,
+        scope: project,
+        target: project
+      )
+    )
+
+    subject
+  end
 end

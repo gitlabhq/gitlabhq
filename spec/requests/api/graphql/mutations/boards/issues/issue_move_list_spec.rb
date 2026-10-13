@@ -97,6 +97,26 @@ RSpec.describe 'Reposition and move issue within board lists', feature_category:
       end
     end
 
+    context 'when moving to a list would exceed the work item labels limit' do
+      # Moving between two label lists swaps labels, so only a move from the backlog grows the set.
+      let(:capped_issue) { create(:labeled_issue, project: project, labels: create_list(:label, 2, project: project)) }
+      let(:params) { { board_id: board_id, project_path: project.full_path, iid: capped_issue.iid.to_s } }
+      let(:issue_move_params) { { from_list_id: board.lists.backlog.first.id, to_list_id: list2.id } }
+
+      before do
+        stub_const('Issue::MAX_NUMBER_OF_LABELS', 2)
+      end
+
+      it 'returns the error in the mutation errors and leaves the labels unchanged', :aggregate_failures do
+        post_graphql_mutation(mutation(params), current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        mutation_response = json_response['data'][mutation_result_identifier]
+        expect(mutation_response['errors']).to include(a_string_matching(/Cannot add more than 2 labels/))
+        expect(capped_issue.reload.labels).not_to include(testing)
+      end
+    end
+
     context 'when moving an issue using position_in_list' do
       let(:issue_move_params) { { from_list_id: list1.id, to_list_id: list2.id, position_in_list: 0 } }
 

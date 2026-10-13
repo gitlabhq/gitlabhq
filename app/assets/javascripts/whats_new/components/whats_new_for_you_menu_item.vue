@@ -26,6 +26,10 @@ export default {
       required: true,
       validator: (value) => PLACEMENTS.includes(value),
     },
+    trackingProperty: {
+      type: String,
+      required: true,
+    },
     icon: {
       type: String,
       required: false,
@@ -50,9 +54,9 @@ export default {
       return {
         text: this.$options.i18n.label,
         extraAttrs: {
-          'data-track-action': 'click_whats_new_for_you_menu_item',
-          'data-track-property': this.placement,
-          'data-track-experiment': 'whats_new_placement',
+          'data-track-action': 'click_button',
+          'data-track-label': 'whats_new',
+          'data-track-property': this.trackingProperty,
         },
       };
     },
@@ -100,7 +104,7 @@ export default {
     <gl-disclosure-dropdown-item :item="item" :data-testid="dataTestId" @action="open">
       <template #list-item>
         <span class="gl-flex gl-w-full gl-items-center gl-gap-3">
-          <gl-icon v-if="icon" :name="icon" variant="subtle" />
+          <gl-icon v-if="icon" :name="icon" />
           <span>{{ $options.i18n.label }}</span>
           <gl-badge
             v-if="unreadCount"

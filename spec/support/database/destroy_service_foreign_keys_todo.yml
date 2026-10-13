@@ -163,6 +163,7 @@ issues:
 - duo_workflows_workflows.issue_id
 - epic_issues.issue_id
 - epics.issue_id
+- import_sync_external_objects.issue_id
 - incident_management_issuable_escalation_statuses.issue_id
 - incident_management_pending_issue_escalations.issue_id
 - incident_management_timeline_events.issue_id
@@ -274,6 +275,7 @@ merge_requests:
 - duo_workflows_workflows.merge_request_id
 - environments.merge_request_id
 - excluded_merge_requests.merge_request_id
+- import_sync_external_objects.merge_request_id
 - merge_request_approval_metrics.merge_request_id
 - merge_request_assignees.merge_request_id
 - merge_request_assignment_events.merge_request_id
@@ -327,6 +329,8 @@ namespaces:
 - ai_catalog_item_consumers.group_id
 - ai_catalog_mcp_server_blocks.namespace_id
 - ai_compliance_anthropic_integrations.namespace_id
+# No group-scoped triggers exist yet; Groups::DestroyService handling lands in #627517
+- ai_flow_triggers.group_id
 - ai_namespace_feature_access_rules.root_namespace_id
 - ai_namespace_feature_access_rules.through_namespace_id
 - ai_namespace_feature_settings.namespace_id
@@ -425,6 +429,7 @@ namespaces:
 - duo_workflows_workflow_notes.namespace_id
 - duo_workflows_workflow_pipelines.namespace_id
 - duo_workflows_workflow_work_items.namespace_id
+- duo_workflows_workflow_workflows.namespace_id
 - duo_workflows_workflows.namespace_id
 - elastic_group_index_statuses.namespace_id
 - elasticsearch_indexed_namespaces.namespace_id
@@ -491,6 +496,9 @@ namespaces:
 - jira_connect_subscriptions.namespace_id
 - jira_tracker_data.group_id
 - knowledge_graph_enabled_namespaces.root_namespace_id
+# Exclusion rows contain no application-managed resources and are intentionally
+# removed by the cascading foreign key when their top-level group is deleted.
+- knowledge_graph_excluded_namespaces.root_namespace_id
 - label_links.namespace_id
 - labels.group_id
 - lists.group_id
@@ -537,6 +545,7 @@ namespaces:
 - observability_metrics_issues_connections.namespace_id
 - observability_project_o11y_settings.namespace_id
 - onboarding_progresses.namespace_id
+- orbit_namespace_enrollments.namespace_id
 - p_ai_active_context_code_enabled_namespaces.namespace_id
 - packages_debian_group_architectures.group_id
 - packages_debian_group_component_files.group_id
@@ -604,6 +613,9 @@ namespaces:
 - timelog_categories.namespace_id
 - timelogs.namespace_id
 - todos.group_id
+# Cascade-only by design: trial usage snapshots are row-only children of the
+# namespace with nothing beyond the row to clean up.
+- trial_usages.namespace_id
 - upcoming_reconciliations.namespace_id
 - uploads.namespace_id
 - user_achievements.namespace_id
@@ -671,13 +683,13 @@ namespaces:
 - zoekt_enabled_namespaces.root_namespace_id
 - zoekt_replicas.namespace_id
 notes:
-- abuse_report_user_mentions.note_id
 - alert_management_alert_user_mentions.note_id
 - commit_user_mentions.note_id
 - design_user_mentions.note_id
 - diff_note_positions.note_id
 - duo_workflows_workflow_notes.note_id
 - epic_user_mentions.note_id
+- import_sync_external_objects.note_id
 - incident_management_timeline_events.promoted_from_note_id
 - issue_user_mentions.note_id
 - merge_request_user_mentions.note_id
@@ -697,6 +709,10 @@ oauth_applications:
 - application_settings.o11y_oauth_application_id
 - application_settings.web_ide_oauth_application_id
 - application_settings.workspaces_oauth_application_id
+# Cascade-only delete is intended: applications are also destroyed outside their
+# destroy service, and the granular scope cleanup trigger fires on cascaded deletes
+- oauth_application_granular_scopes.application_id
+- oauth_consent_grants.application_id
 - oauth_device_grants.application_id
 operations_feature_flags:
 - operations_feature_flags_issues.feature_flag_id
@@ -705,7 +721,6 @@ organizations:
 - abuse_events.organization_id
 - abuse_report_events.organization_id
 - abuse_report_upload_states.organization_id
-- abuse_report_user_mentions.organization_id
 - abuse_reports.organization_id
 - admin_roles.organization_id
 - agent_organization_authorizations.organization_id
@@ -764,7 +779,6 @@ organizations:
 - dependency_list_export_part_upload_states.organization_id
 - dependency_list_export_upload_states.organization_id
 - emails.organization_id
-- enabled_foundational_flow_check_results.organization_id
 - granular_scopes.organization_id
 - iam_outbox.organization_id
 - import_failures.organization_id
@@ -785,7 +799,11 @@ organizations:
 - notes.organization_id
 - oauth_access_grants.organization_id
 - oauth_access_tokens.organization_id
+- oauth_application_granular_scopes.organization_id
 - oauth_applications.organization_id
+# Sharding keys: hard-deleting an organization removes all of its data through the cascade
+- oauth_consent_grant_granular_scopes.organization_id
+- oauth_consent_grants.organization_id
 - oauth_device_grants.organization_id
 - oauth_openid_requests.organization_id
 - organization_cluster_agent_mappings.organization_id
@@ -795,6 +813,7 @@ organizations:
 - organization_isolations.organization_id
 - organization_push_rules.organization_id
 - organization_settings.organization_id
+- organization_teams.organization_id
 - organization_user_details.organization_id
 - organization_users.organization_id
 - personal_access_token_granular_scopes.organization_id
@@ -812,7 +831,6 @@ organizations:
 - slack_api_scopes.organization_id
 - slack_integrations.organization_id
 - slack_integrations_scopes.organization_id
-- snippet_repository_states.snippet_organization_id
 - spam_logs.organization_id
 - subscription_add_on_purchases.organization_id
 - subscription_seat_assignments.organization_id
@@ -909,6 +927,7 @@ projects:
 - custom_software_licenses.project_id
 - dependency_firewall_activity_stats.project_id
 - dependency_firewall_policy_rules.security_policy_management_project_id
+- dependency_firewall_prevented_packages.project_id
 - dependency_list_export_upload_states.project_id
 - dependency_proxy_packages_settings.project_id
 - deploy_keys_projects.project_id
@@ -930,6 +949,7 @@ projects:
 - duo_workflows_workflow_notes.project_id
 - duo_workflows_workflow_pipelines.project_id
 - duo_workflows_workflow_work_items.project_id
+- duo_workflows_workflow_workflows.project_id
 - duo_workflows_workflows.project_id
 - duo_workflows_workloads.project_id
 - elasticsearch_indexed_projects.project_id
@@ -952,6 +972,9 @@ projects:
 - import_export_uploads.project_id
 - import_failures.project_id
 - import_placeholder_memberships.project_id
+- import_sync_external_objects.project_id
+- import_sync_repositories.project_id
+- import_sync_repository_states.project_id
 - incident_management_escalation_policies.project_id
 - incident_management_escalation_rules.project_id
 - incident_management_oncall_participants.project_id
@@ -986,7 +1009,6 @@ projects:
 - merge_request_context_commits.project_id
 - merge_request_diff_details.project_id
 - merge_request_diff_files.project_id
-- merge_request_diff_files_archived.project_id
 - merge_request_diffs.project_id
 - merge_request_merge_schedules.project_id
 - merge_request_metrics.target_project_id
@@ -1335,6 +1357,7 @@ users:
 - import_source_users.placeholder_user_id
 - import_source_users.reassign_to_user_id
 - import_source_users.reassigned_by_user_id
+- import_sync_repositories.connected_by_user_id
 - incident_management_escalation_rules.user_id
 - incident_management_oncall_participants.user_id
 - incident_management_timeline_events.author_id
@@ -1462,6 +1485,10 @@ users:
 work_item_custom_lifecycles:
 - work_item_custom_lifecycle_statuses.lifecycle_id
 - work_item_type_custom_lifecycles.lifecycle_id
+work_item_decisions:
+# Cascade-only by design: options are row-only children capped at 5, with
+# nothing beyond the row to clean up. Revisit in a follow-up if that changes.
+- work_item_decision_options.work_item_decision_id
 work_item_parent_links:
 - epic_issues.work_item_parent_link_id
 - epics.work_item_parent_link_id

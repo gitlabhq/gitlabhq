@@ -3,6 +3,7 @@ import { GlButton, GlPopover } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { stripHtml } from '~/lib/utils/text_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 /**
  * Render a button with a question mark icon
@@ -17,6 +18,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [glSlotsMixin],
   props: {
     options: {
       type: Object,
@@ -39,6 +41,7 @@ export default {
       default: __('Help'),
     },
   },
+  emits: ['shown'],
   computed: {
     composedAriaLabel() {
       if (this.ariaLabel !== __('Help')) {
@@ -72,15 +75,14 @@ export default {
       :icon="icon"
       :aria-label="composedAriaLabel"
     />
-    <gl-popover :target="targetFn" v-bind="options">
+    <gl-popover :target="targetFn" v-bind="options" @shown="$emit('shown')">
       <template v-if="options.title" #title>
         <span v-safe-html="options.title"></span>
       </template>
       <template #default>
         <div v-safe-html="options.content"></div>
       </template>
-      <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-      <template v-for="slot in Object.keys($slots)" #[slot]>
+      <template v-for="slot in Object.keys(glSlots())" #[slot]>
         <slot :name="slot"></slot>
       </template>
     </gl-popover>

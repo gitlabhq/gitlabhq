@@ -15,11 +15,11 @@ module API
       urgency :low
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource 'projects/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :tag_name, type: String, desc: 'The tag associated with the release'
+          requires :tag_name, type: String, desc: 'Tag associated with the release.'
         end
         resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
           resource :assets do
@@ -56,15 +56,16 @@ module API
               tags release_links_tags
             end
             params do
-              requires :name, type: String, desc: 'The name of the link. Link names must be unique in the release'
-              requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique in the release.'
-              optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
-              optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
+              requires :name, type: String, desc: 'Name of the link. Link names must be unique in the release.'
+              requires :url, type: String, desc: 'URL of the link. Link URLs must be unique in the release.'
+              optional :direct_asset_path, type: String, desc: 'Path for a [direct asset link](https://docs.gitlab.com/user/project/releases/release_fields/#permanent-links-to-release-assets).'
+              optional :filepath, type: String, desc: 'Path for a direct asset link. Deprecated. Use ' \
+                                                  '`direct_asset_path` instead.'
               optional :link_type,
                 type: String,
                 values: %w[other runbook image package],
                 default: 'other',
-                desc: 'The type of the link: `other`, `runbook`, `image`, or `package`. Defaults to `other`'
+                desc: 'Type of the link.'
             end
             route_setting :authentication, job_token_allowed: true
             route_setting :authorization, permissions: :create_release_link, boundary_type: :project,
@@ -84,7 +85,7 @@ module API
             end
 
             params do
-              requires :link_id, type: Integer, desc: 'The ID of the link'
+              requires :link_id, type: Integer, desc: 'ID of the link.'
             end
             resource 'links/:link_id' do
               desc 'Retrieve a release link' do
@@ -116,15 +117,16 @@ module API
                 tags release_links_tags
               end
               params do
-                optional :name, type: String, desc: 'The name of the link'
-                optional :url, type: String, desc: 'The URL of the link'
-                optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
-                optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
+                optional :name, type: String, desc: 'Name of the link.'
+                optional :url, type: String, desc: 'URL of the link.'
+                optional :direct_asset_path, type: String, desc: 'Path for a [direct asset link](https://docs.gitlab.com/user/project/releases/release_fields/#permanent-links-to-release-assets).'
+                optional :filepath, type: String, desc: 'Path for a direct asset link. Deprecated. Use ' \
+                                                    '`direct_asset_path` instead.'
                 optional :link_type,
                   type: String,
                   values: %w[other runbook image package],
                   default: 'other',
-                  desc: 'The type of the link: `other`, `runbook`, `image`, or `package`. Defaults to `other`'
+                  desc: 'Type of the link.'
 
                 at_least_one_of :name, :url
               end

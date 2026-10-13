@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitlab/cells/topology_service/metadata_client'
+require 'prometheus/client'
 
 RSpec.describe 'Topology Service Metrics Integration', feature_category: :cell do
   let(:cell_id) { '1' }

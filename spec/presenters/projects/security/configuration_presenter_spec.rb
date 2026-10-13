@@ -30,9 +30,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         )
       end
 
-      let!(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline) }
-      let!(:build_dast) { create(:ci_build, :dast, pipeline: pipeline) }
-      let!(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
+      let_it_be(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline) }
+      let_it_be(:build_dast) { create(:ci_build, :dast, pipeline: pipeline) }
+      let_it_be(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
 
       it 'includes links to auto devops and secure product docs' do
         expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/_index.md'))
@@ -63,8 +63,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       context 'with group_full_path value' do
         context 'when project has root group' do
-          let_it_be(:parent) { create(:group) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let(:parent) { build_stubbed(:group) }
+          let(:project) { build_stubbed(:project, namespace: parent) }
 
           it 'includes a link to group_full_path' do
             expect(html_data[:group_full_path]).to eq(parent.full_path)
@@ -72,8 +72,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         context 'when project is under a user namespace' do
-          let_it_be(:parent) { create(:user_namespace) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let(:parent) { build_stubbed(:user_namespace) }
+          let(:project) { build_stubbed(:project, namespace: parent) }
 
           it 'returns nil' do
             expect(html_data[:group_full_path]).to be_nil
@@ -83,8 +83,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       context 'with scan profiles permissions' do
         context 'when project has root group' do
-          let_it_be(:parent) { create(:group) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let(:parent) { build_stubbed(:group) }
+          let(:project) { build_stubbed(:project, namespace: parent) }
 
           where(:has_permission, :result) do
             true  | true
@@ -106,8 +106,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         context 'when project is under a user namespace' do
-          let_it_be(:parent) { create(:user_namespace) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let(:parent) { build_stubbed(:user_namespace) }
+          let(:project) { build_stubbed(:project, namespace: parent) }
 
           before do
             allow_next_instance_of(described_class) do |presenter|
@@ -123,8 +123,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       context 'with attributes permissions' do
         context 'when project has root group' do
-          let_it_be(:parent) { create(:group) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let(:parent) { build_stubbed(:group) }
+          let(:project) { build_stubbed(:project, namespace: parent) }
 
           where(:permission, :field, :has_permission, :result) do
             :read_security_attribute   | :can_read_attributes   | true  | true
@@ -137,7 +137,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
             before do
               allow_next_instance_of(described_class) do |presenter|
                 allow(presenter).to receive(:can?).and_return(false) # default stub for any other permission checks
-                allow(presenter).to receive(:can?).with(anything, permission, parent).and_return(has_permission)
+                allow(presenter).to receive(:can?).with(anything, permission, project).and_return(has_permission)
               end
             end
 
@@ -148,8 +148,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
 
         context 'when project is under a user namespace' do
-          let_it_be(:parent) { create(:user_namespace) }
-          let_it_be(:project) { create(:project, namespace: parent) }
+          let(:parent) { build_stubbed(:user_namespace) }
+          let(:project) { build_stubbed(:project, namespace: parent) }
 
           where(:field) { [:can_read_attributes, :can_manage_attributes] }
 
@@ -249,6 +249,10 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
           )
         end
 
+        let_it_be(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline) }
+        let_it_be(:build_dast) { create(:ci_build, :dast, pipeline: pipeline) }
+        let_it_be(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
+
         let(:features) { Gitlab::Json.parse(html_data[:features]) }
         let(:artifacts) do
           { artifacts: { reports: { annotations: ['gl-other-report.json'], sast: ['gl-sast-report.json'] } } }
@@ -291,9 +295,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
 
       context "while retrieving information about gitlab ci file" do
-        let(:project) { create(:project, :repository) }
-
         context 'when a .gitlab-ci.yml file exists' do
+          let(:project) { create(:project, :repository) }
+
           let!(:ci_config) do
             project.repository.create_file(
               project.creator,
@@ -321,7 +325,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     end
 
     context 'when the project is empty' do
-      let(:project) { create(:project) }
+      let(:project) { build_stubbed(:project) }
 
       it 'includes a blank gitlab_ci history path' do
         expect(html_data[:gitlab_ci_history_path]).to eq('')
@@ -427,7 +431,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     end
 
     describe 'secret_push_protection' do
-      let_it_be(:project) { create(:project, :repository) }
+      let(:project) { build_stubbed(:project) }
       let(:features) { Gitlab::Json.parse(html_data[:features]) }
 
       it 'feature includes secret_push_protection' do
@@ -435,6 +439,35 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
         feature = features.find { |scan| scan["type"] == 'secret_push_protection' }
         expect(feature).not_to be_nil
+      end
+    end
+
+    describe 'business_logic' do
+      let(:project) { build_stubbed(:project) }
+      let(:feature) { Gitlab::Json.parse(html_data[:features]).find { |scan| scan['type'] == 'business_logic' } }
+
+      it 'includes business_logic' do
+        expect(feature).not_to be_nil
+      end
+
+      context 'when bl_security_analyzer feature flag is disabled' do
+        before do
+          stub_feature_flags(bl_security_analyzer: false)
+        end
+
+        it 'does not include business_logic' do
+          expect(feature).to be_nil
+        end
+      end
+
+      context 'when bl_security_analyzer feature flag is enabled only for the root namespace' do
+        before do
+          stub_feature_flags(bl_security_analyzer: project.root_ancestor)
+        end
+
+        it 'includes business_logic' do
+          expect(feature).not_to be_nil
+        end
       end
     end
 

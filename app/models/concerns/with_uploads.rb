@@ -73,8 +73,6 @@ module WithUploads
   private
 
   def sweep_mounted_uploads
-    return unless Feature.enabled?(:sweep_orphaned_mounted_uploads, :instance)
-
     # After commit so carrierwave's hook goes first; what it leaves is orphaned.
     run_after_commit do
       mounted_uploads.delete_all

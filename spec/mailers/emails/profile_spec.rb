@@ -5,7 +5,12 @@ require 'email_spec'
 
 RSpec.describe Emails::Profile, feature_category: :user_profile do
   include EmailSpec::Matchers
-  include_context 'gitlab email notification'
+
+  let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
+  let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
+  let(:user) { build_stubbed(:user) }
+  let(:token) { build_stubbed(:personal_access_token, user: user, organization: build_stubbed(:organization)) }
 
   shared_examples 'a new user email' do
     it 'is sent to the new user with the correct subject and body' do
@@ -14,6 +19,16 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_subject(/^Account was created for you$/i)
         is_expected.to have_body_text(new_user_address)
       end
+    end
+  end
+
+  shared_examples 'a plain-text email with an unpunctuated settings URL' do |settings_url_helper|
+    it 'includes the settings URL without trailing punctuation' do
+      settings_url = public_send(settings_url_helper)
+      body = subject.text_part.body.decoded
+
+      expect(body).to include(settings_url)
+      expect(body).not_to match(/#{Regexp.escape(settings_url)}[.,;:!?]/)
     end
   end
 
@@ -111,6 +126,17 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     context 'with SSH key that does not exist' do
       it { expect { Notify.new_ssh_key_email('foo') }.not_to raise_error }
     end
+
+    describe 'notification footer without a project', feature_category: :notifications do
+      subject(:footer_marker) do
+        Nokogiri::HTML(Notify.new_ssh_key_email(key.id).html_part.body.decoded)
+          .at_css('.footer span:contains("Notification message regarding")')&.text&.strip
+      end
+
+      it 'uses a random marker' do
+        expect(footer_marker).to match(/\ANotification message regarding #{Regexp.escape(user_url(key.user))} at \h{32}\z/)
+      end
+    end
   end
 
   describe 'user added gpg key' do
@@ -144,9 +170,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been created' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:token) { create(:personal_access_token, user: user) }
-
     context 'when valid' do
       subject { Notify.access_token_created_email(user, token.name) }
 
@@ -170,6 +193,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
       end
@@ -177,14 +202,14 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'personal access token is about to expire' do
-    let_it_be_with_reload(:user) { create(:user) }
-
     subject { Notify.access_token_about_to_expire_email(user, ['example token']) }
 
     it { is_expected.to deliver_to(user) }
     it { is_expected.to have_subject(/^Your personal access tokens will expire in 7 days or less$/i) }
     it { is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/) }
     it { is_expected.to have_body_text(/example token/) }
+
+    it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
 
     context 'when passed days_to_expire parameter' do
       subject { Notify.access_token_about_to_expire_email(user, ['example token'], days_to_expire: 42) }
@@ -245,7 +270,11 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'resource access token is about to expire' do
-    let_it_be_with_reload(:user) { create(:user) }
+    let(:project_bot) { build_stubbed(:user, :project_bot) }
+    let(:expiring_token) do
+      build_stubbed(:personal_access_token, user: project_bot, organization: build_stubbed(:organization),
+        expires_at: 5.days.from_now)
+    end
 
     shared_examples 'resource about to expire email' do
       it 'is sent to the owners' do
@@ -270,10 +299,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     context 'when access token belongs to a group' do
-      let_it_be(:project_bot) { create(:user, :project_bot) }
-      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
-      let_it_be(:resource) { create(:group, owners: user, developers: project_bot) }
-      let_it_be(:resource_access_tokens_path) { group_settings_access_tokens_path(resource) }
+      let(:resource) { build_stubbed(:group) }
+      let(:resource_access_tokens_path) { group_settings_access_tokens_path(resource) }
 
       subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
@@ -289,17 +316,18 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when passed days_to_expire parameter' do
-        subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name, days_to_expire: 42) }
+        subject do
+          Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name,
+            days_to_expire: 42)
+        end
 
         it { is_expected.to have_body_text('42') }
       end
     end
 
     context 'when access token belongs to a project' do
-      let_it_be(:project_bot) { create(:user, :project_bot) }
-      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
-      let_it_be(:resource) { create(:project, maintainers: user, reporters: project_bot) }
-      let_it_be(:resource_access_tokens_path) { project_settings_access_tokens_path(resource) }
+      let(:resource) { build_stubbed(:project) }
+      let(:resource_access_tokens_path) { project_settings_access_tokens_path(resource) }
 
       subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
@@ -315,7 +343,10 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when passed days_to_expire parameter' do
-        subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name, days_to_expire: 42) }
+        subject do
+          Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name,
+            days_to_expire: 42)
+        end
 
         it { is_expected.to have_body_text('42') }
       end
@@ -323,8 +354,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has expired' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:pat) { create(:personal_access_token, user: user) }
+    let(:pat) { build_stubbed(:personal_access_token, user: user, organization: build_stubbed(:organization)) }
 
     context 'when valid' do
       subject { Notify.access_token_expired_email(user, [pat.name]) }
@@ -350,6 +380,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
       end
@@ -363,9 +395,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when user is not active' do
-        before do
-          user.block!
-        end
+        let(:user) { build_stubbed(:user, state: 'blocked') }
 
         it do
           expect { Notify.access_token_expired_email(user) }.not_to change { ActionMailer::Base.deliveries.count }
@@ -375,9 +405,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been revoked' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:token) { create(:personal_access_token, user: user) }
-
     context 'when valid' do
       subject { Notify.access_token_revoked_email(user, token.name) }
 
@@ -400,6 +427,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it 'wont include the revocation reason' do
         is_expected.not_to have_body_text %r{We found your token in a public project and have automatically revoked it to protect your account.$}
       end
+
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
 
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
@@ -436,9 +465,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been rotated' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:token) { create(:personal_access_token, user: user) }
-
     context 'when valid' do
       subject { Notify.access_token_rotated_email(user, token.name) }
 
@@ -462,6 +488,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
       end
@@ -475,9 +503,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when user is not active' do
-        before do
-          user.block!
-        end
+        let(:user) { build_stubbed(:user, state: 'blocked') }
 
         it do
           expect { Notify.access_token_rotated_email(user, token.name) }.not_to change { ActionMailer::Base.deliveries.count }
@@ -487,7 +513,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'SSH key notification' do
-    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }
 
     shared_examples 'is sent to the user' do
@@ -507,7 +532,9 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     shared_examples 'includes the email reason' do
-      it { is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>} }
+      it do
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
+      end
     end
 
     shared_examples 'valid use case' do
@@ -517,6 +544,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it_behaves_like 'is sent to the user'
       it_behaves_like 'includes a link to ssh key page'
       it_behaves_like 'includes the email reason'
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_ssh_keys_url
     end
 
     shared_examples 'does not send email' do
@@ -526,9 +554,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     shared_context 'block user' do
-      before do
-        user.block!
-      end
+      let(:user) { build_stubbed(:user, state: 'blocked') }
     end
 
     context 'notification email for expired ssh key' do
@@ -565,7 +591,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         include_examples 'valid use case'
 
         it_behaves_like 'has the correct subject', /Your SSH key expires soon/
-        it_behaves_like 'has the correct body text', /SSH keys with the following fingerprints are scheduled to expire soon/
+        it_behaves_like 'has the correct body text',
+          /SSH keys with the following fingerprints are scheduled to expire soon/
       end
 
       context 'when invalid' do
@@ -586,8 +613,21 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  describe 'notification footer without a project', feature_category: :notifications do
+    subject(:footer_marker) do
+      Nokogiri::HTML((email.html_part || email).body.decoded)
+        .at_css('.footer span:contains("Notification message regarding")').text.strip
+    end
+
+    let(:email) { Notify.ssh_key_expiring_soon_email(user, ['aa:bb:cc:dd:ee:zz']) }
+    let(:marker_prefix) { "Notification message regarding #{user_settings_ssh_keys_url} at " }
+
+    it 'uses a random marker' do
+      expect(footer_marker).to match(/\A#{Regexp.escape(marker_prefix)}\h{32}\z/)
+    end
+  end
+
   describe 'user unknown sign in email' do
-    let_it_be_with_reload(:user) { create(:user) }
     let(:ip) { '169.0.0.1' }
     let(:current_time) { Time.current }
     let(:country) { 'Germany' }
@@ -647,7 +687,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     context 'when two factor authentication is enabled' do
-      let(:user) { create(:user, :two_factor) }
+      let(:user) { build_stubbed(:user, otp_required_for_login: true) }
 
       it 'does not mention two factor authentication' do
         expect(Notify.unknown_sign_in_email(user, ip, current_time))
@@ -657,7 +697,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user attempted sign in with wrong 2FA OTP email' do
-    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be(:user) { build_stubbed(:user) }
     let_it_be(:ip) { '169.0.0.1' }
     let_it_be(:current_time) { Time.current }
     let_it_be(:email) { Notify.two_factor_otp_attempt_failed_email(user, ip, current_time) }
@@ -690,8 +730,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'enabled two-factor authentication emails' do
-    let_it_be_with_reload(:user) { create(:user) }
-
     describe 'Passkey' do
       subject { Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey) }
 
@@ -758,8 +796,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'disabled two-factor authentication emails' do
-    let_it_be_with_reload(:user) { create(:user) }
-
     describe 'Two Factor' do
       subject { Notify.disabled_two_factor_email(user) }
 
@@ -850,8 +886,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'added a new email address' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:email) { create(:email, user: user) }
+    let(:email) { build_stubbed(:email, user: user) }
 
     subject { Notify.new_email_address_added_email(user, email) }
 
@@ -873,11 +908,10 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'awarded a new achievement' do
-    let_it_be(:group) { create(:group) }
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:achievement) { create(:achievement, namespace: group) }
-    let_it_be(:user_achievement) do
-      create(:user_achievement, user: user, achievement: achievement, show_on_profile: false)
+    let(:group) { build_stubbed(:group) }
+    let(:achievement) { build_stubbed(:achievement, namespace: group) }
+    let(:user_achievement) do
+      build_stubbed(:user_achievement, user: user, achievement: achievement, show_on_profile: false)
     end
 
     subject { Notify.new_achievement_email(user, achievement, user_achievement) }
@@ -907,8 +941,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     context 'when the achievement was already accepted' do
-      let_it_be(:user_achievement) do
-        create(:user_achievement, user: user, achievement: achievement, show_on_profile: true)
+      let(:user_achievement) do
+        build_stubbed(:user_achievement, user: user, achievement: achievement, show_on_profile: true)
       end
 
       it 'does not include an accept link' do
@@ -921,6 +955,9 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     context 'when award message is present' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:user) { create(:user) }
+      let_it_be(:achievement) { create(:achievement, namespace: group) }
       let_it_be(:user_achievement) do
         create(:user_achievement, user: user, achievement: achievement, award_message: 'For outstanding work')
       end

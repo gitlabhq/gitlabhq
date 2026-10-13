@@ -64,7 +64,7 @@ Create a merge request pipeline for the project that downloads the latest versio
 
    > [!note]
    > When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
-   > For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
+   > For more information, see [Cover Pipeline for GitLab](https://cover-docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
 1. Enter a commit message.
 1. Enter a new **Branch** name. For example, `add-diffblue-cover-pipeline`.
 1. Select **Start a new merge request with these changes**.
@@ -87,4 +87,4 @@ The resulting diff can then be analyzed to check the new behavior, catch regress
 
 This topic demonstrates some of the key features of Cover Pipeline for GitLab and how to use the integration in a pipeline.
 The wider and deeper functionality, provided through `dcover` commands in the pipeline template, can be implemented to expand your unit test capabilities even further.
-For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
+For more information, see [Cover Pipeline for GitLab](https://cover-docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.

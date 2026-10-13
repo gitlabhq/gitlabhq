@@ -12,6 +12,13 @@ Instructions: Replace placeholders. Keep comments as needed during drafting; rem
 ## Scope and Non-Goals
 <!-- What this tool will cover vs. what it will not. Note any future follow-ups. -->
 
+## Toolset
+<!-- Which toolset does this tool belong to? Each tool must belong to exactly one toolset.
+Available toolsets: meta, core, merge_requests, work_items, repository, ci, duo_agent_platform, wikis, code_security.
+See https://docs.gitlab.com/development/duo_agent_platform/mcp/#declaring-a-toolset for definitions. -->
+
+- Toolset: `<toolset_name>`
+
 ## API Interactions
 <!-- If this tool interacts with existing APIs, document them here. -->
 

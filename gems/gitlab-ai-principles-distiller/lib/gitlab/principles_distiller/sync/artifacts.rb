@@ -6,17 +6,19 @@ module Gitlab
       # The contract between the per-principle `distill` CI jobs and the single `collect` job that fans them back in
       # (see `.gitlab/ci/sync-principles/child.gitlab-ci.yml`).
       #
-      # Each distill job writes exactly two files into the artifact directory for its principle:
+      # Each distill job writes up to two files into the artifact directory for its principle:
       #
-      #   <name>.status  one of updated / unchanged / failed
-      #   <name>.md      the fully assembled distilled file, only when
-      #                  the status is `updated`
+      #   <name>.status           one of updated / unchanged / failed
+      #   <name>.md               the fully assembled distilled file, only when
+      #                           the status is `updated`
+      #   <name>.checkpoint.json  the metadata to record, only when the status
+      #                           is `unchanged` (see MetadataCheckpoint)
       #
       # The status file is written unconditionally (the CI job declares `artifacts: when: always`), which is what lets
       # the collect job tell the three outcomes apart:
       #
       #   status `updated`    -> distilled content to publish
-      #   status `unchanged`  -> ran cleanly, no meaningful diff, nothing to publish
+      #   status `unchanged`  -> ran cleanly, no meaningful diff, only metadata to publish
       #   status `failed`     -> failed after retries (phase 1 semantics from #607364)
       #   NO status file      -> the job never ran to completion (concurrency
       #                          starvation, runner outage, job-level timeout)
@@ -29,14 +31,15 @@ module Gitlab
         STATUS_UNCHANGED = 'unchanged'
         STATUS_FAILED    = 'failed'
 
-        STATUS_SUFFIX  = '.status'
-        CONTENT_SUFFIX = '.md'
+        STATUS_SUFFIX     = '.status'
+        CONTENT_SUFFIX    = '.md'
+        CHECKPOINT_SUFFIX = '.checkpoint.json'
 
         # Outcome of a fan-in over one run's artifacts.
         #
-        # `contents` maps principle name => assembled file content, matching what `build_distilled_contents` returns in
-        # the single-job path, so the publish code downstream is identical either way.
-        Collected = Struct.new(:contents, :failed, :not_run, keyword_init: true)
+        # `contents` and `checkpoints` mirror Sync::DistillResult from the single-job path, so the
+        # publish code downstream is identical either way.
+        Collected = Struct.new(:contents, :checkpoints, :failed, :not_run, keyword_init: true)
 
         def initialize(dir)
           @dir = dir
@@ -44,13 +47,14 @@ module Gitlab
 
         attr_reader :dir
 
-        # Records one principle's outcome. `content` is required for
-        # STATUS_UPDATED and ignored otherwise.
-        def write(name, status, content: nil)
+        # Records one principle's outcome. `content` is required for STATUS_UPDATED, `checkpoint` is optional for
+        # STATUS_UNCHANGED, and both are ignored otherwise.
+        def write(name, status, content: nil, checkpoint: nil)
           FileUtils.mkdir_p(dir)
 
           File.write(status_path(name), status)
           File.write(content_path(name), content) if status == STATUS_UPDATED && content
+          File.write(checkpoint_path(name), JSON.generate(checkpoint.to_h)) if status == STATUS_UNCHANGED && checkpoint
         end
 
         # Fans the per-principle artifacts back in, in `expected` order so the published MRs keep the manifest's
@@ -59,12 +63,15 @@ module Gitlab
         # An unreadable or unrecognised status is treated as `not_run` rather than raising: a corrupt artifact is an
         # infrastructure problem, and misclassifying it as `failed` would wrongly imply the principle is undistillable.
         def collect(expected)
-          result = Collected.new(contents: {}, failed: [], not_run: [])
+          # Checked up front: the read helpers rescue StandardError, which would demote a traversal to `not_run`.
+          expected.each { |name| Workspace.check_path_traversal!(name) }
+
+          result = Collected.new(contents: {}, checkpoints: {}, failed: [], not_run: [])
 
           expected.each do |name|
             case read_status(name)
             when STATUS_UPDATED   then collect_updated(name, result)
-            when STATUS_UNCHANGED then puts "  #{name}: #{Rainbow('no meaningful changes').faint}"
+            when STATUS_UNCHANGED then collect_unchanged(name, result)
             when STATUS_FAILED    then result.failed << name
             else result.not_run << name
             end
@@ -88,6 +95,25 @@ module Gitlab
           end
 
           result.contents[name] = content
+        end
+
+        # A missing or unreadable checkpoint only forgoes the metadata update: the principle stays stale and the next
+        # scheduled run re-evaluates it.
+        def collect_unchanged(name, result)
+          puts "  #{name}: #{Rainbow('no meaningful changes').faint}"
+
+          checkpoint = read_checkpoint(name)
+          result.checkpoints[name] = checkpoint if checkpoint
+        end
+
+        def read_checkpoint(name)
+          path = checkpoint_path(name)
+          return unless File.exist?(path)
+
+          MetadataCheckpoint.from_h(JSON.parse(File.read(path)))
+        rescue StandardError => e
+          warn Rainbow("  WARNING: could not read the checkpoint artifact for #{name} (#{e.message})").yellow
+          nil
         end
 
         def read_status(name)
@@ -118,6 +144,10 @@ module Gitlab
 
         def content_path(name)
           artifact_path("#{name}#{CONTENT_SUFFIX}")
+        end
+
+        def checkpoint_path(name)
+          artifact_path("#{name}#{CHECKPOINT_SUFFIX}")
         end
 
         def artifact_path(filename)

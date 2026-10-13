@@ -18,51 +18,62 @@ export default {
       items: [
         {
           text: __('Alert'),
+          icon: 'warning',
           action: () => this.execute('insertAlert', 'alert'),
         },
         {
           text: __('Code block'),
+          icon: 'code',
           action: () => this.insert('codeBlock'),
         },
         {
           text: __('Collapsible section'),
+          icon: 'details-block',
           action: () => this.insertList('details', 'detailsContent'),
         },
         {
           text: __('Bullet list'),
+          icon: 'list-bulleted',
           action: () => this.insertList('bulletList', 'listItem'),
           wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Ordered list'),
+          icon: 'list-numbered',
           action: () => this.insertList('orderedList', 'listItem'),
           wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Task list'),
+          icon: 'list-task',
           action: () => this.insertList('taskList', 'taskItem'),
           wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Horizontal rule'),
+          icon: 'dash',
           action: () => this.execute('setHorizontalRule', 'horizontalRule'),
         },
         {
           text: __('Embedded view'),
+          icon: 'kind',
           action: () => this.execute('insertGLQLView', 'glqlView'),
         },
         {
           text: __('Mermaid diagram'),
+          icon: 'diagram',
           action: () => this.execute('insertMermaid', 'diagram'),
         },
         {
           text: __('PlantUML diagram'),
+          icon: 'diagram',
           action: () => this.execute('insertPlantUML', 'diagram'),
         },
         ...(this.contentEditor.drawioEnabled
           ? [
               {
                 text: __('Create or edit diagram'),
+                icon: 'pencil-square',
                 action: () => this.execute('createOrEditDiagram', 'drawioDiagram'),
               },
             ]
@@ -71,6 +82,7 @@ export default {
           ? [
               {
                 text: __('Table of contents'),
+                icon: 'title',
                 action: () => this.execute('insertTableOfContents', 'tableOfContents'),
               },
             ]
@@ -122,11 +134,7 @@ export default {
       right
       @shown="isDropdownOpen = true"
       @hidden="isDropdownOpen = false"
-    >
-      <template #list-item="{ item }">
-        {{ item.text }}
-      </template>
-    </gl-disclosure-dropdown>
+    />
     <gl-tooltip v-if="!isDropdownOpen" :target="toggleId" placement="top">
       {{ __('More options') }}
     </gl-tooltip>

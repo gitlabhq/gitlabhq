@@ -533,17 +533,4 @@ RSpec.describe Banzai::Filter::RepositoryBlobEmbedFilter, :request_store, featur
       expect(result.at_css('a')['href']).to eq(blob_url)
     end
   end
-
-  context 'when the feature flag is disabled' do
-    before do
-      stub_feature_flags(blob_permalink_embed: false)
-    end
-
-    it 'leaves the link untouched', :aggregate_failures do
-      result = filter_html(standalone_paragraph(blob_url))
-
-      expect(result.at_css('.blob-embed')).to be_nil
-      expect(result.at_css('a')['href']).to eq(blob_url)
-    end
-  end
 end

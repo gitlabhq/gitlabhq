@@ -47,8 +47,8 @@ project:
   - read_audit_event
   - read_avatar
   - read_badge
+  - read_boundary
   - read_branch
-  - read_branch_rule
   - read_build
   - read_cluster
   - read_code
@@ -80,6 +80,7 @@ project:
   - read_incident_management_escalation_policy
   - read_incident_management_oncall_schedule
   - read_insights
+  - read_issuable_metric_image
   - read_issuable_resource_link
   - read_issue
   - read_issue_board
@@ -112,7 +113,6 @@ project:
   - read_milestone
   - read_namespace
   - read_namespace_cluster_agent_mapping
-  - read_namespace_via_membership
   - read_note
   - read_npm_package
   - read_npm_package_tag
@@ -149,10 +149,12 @@ project:
   - read_runners
   - read_saved_replies
   - read_saved_view
+  - read_security_attribute
   - read_security_inventory
   - read_security_orchestration_policies
   - read_security_project_tracked_ref
   - read_security_resource
+  - read_security_scan_profiles
   - read_security_settings
   - read_snippet
   - read_software_license_policy
@@ -178,6 +180,7 @@ group:
   - read_audit_event
   - read_billable_member
   - read_billing
+  - read_boundary
   - read_cluster
   - read_cluster_agent
   - read_compliance_adherence_report
@@ -204,6 +207,7 @@ group:
   - read_group_stage
   - read_licenses
   - read_namespace_cluster_agent_mapping
+  - read_orbit_trial
   - read_package
   - read_package_within_public_registries
   - read_placeholder_reassignment
@@ -213,9 +217,11 @@ group:
   - read_saml_user
   - read_saved_replies
   - read_saved_view
+  - read_security_attribute
   - read_security_inventory
   - read_security_orchestration_policies
   - read_security_resource
+  - read_security_scan_profiles
   - read_vulnerability
   - read_vulnerability_statistics
   - read_wiki
@@ -224,3 +230,7 @@ group:
   - view_group_devops_adoption
   - view_productivity_analytics
   - view_type_of_work_charts
+organization:
+  permissions: []
+  raw_permissions:
+  - read_user_access_level

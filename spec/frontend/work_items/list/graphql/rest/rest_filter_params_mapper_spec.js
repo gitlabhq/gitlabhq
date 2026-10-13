@@ -32,6 +32,8 @@ describe('convertGraphQLVarsToRestParams', () => {
       ['RELATIVE_POSITION_ASC', 'relative_position', 'asc'],
       ['LABEL_PRIORITY_ASC', 'label_priority', 'asc'],
       ['LABEL_PRIORITY_DESC', 'label_priority', 'desc'],
+      ['STATUS_ASC', 'status', 'asc'],
+      ['STATUS_DESC', 'status', 'desc'],
     ])('maps %s to order_by=%s sort=%s', (input, orderBy, sort) => {
       const params = convertGraphQLVarsToRestParams({ sort: input });
 

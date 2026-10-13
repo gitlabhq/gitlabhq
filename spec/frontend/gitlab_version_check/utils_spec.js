@@ -1,9 +1,8 @@
-import { parseBoolean, getCookie, setCookie } from '~/lib/utils/common_utils';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { getHideAlertModalCookie, setHideAlertModalCookie } from '~/gitlab_version_check/utils';
 import { COOKIE_EXPIRATION, COOKIE_SUFFIX } from '~/gitlab_version_check/constants';
 
 jest.mock('~/lib/utils/common_utils', () => ({
-  parseBoolean: jest.fn().mockReturnValue(true),
   getCookie: jest.fn().mockReturnValue('true'),
   setCookie: jest.fn(),
 }));
@@ -22,13 +21,12 @@ describe('GitLab Version Check Utils', () => {
   });
 
   describe('getHideAlertModalCookie', () => {
-    it('properly generates a key based on the currentVersion, fetches said Cooke, and parsesBoolean it', () => {
+    it('properly generates a key based on the currentVersion, fetches said Cookie, and parsesBoolean it', () => {
       const currentVersion = '99.9.9';
 
       const res = getHideAlertModalCookie(currentVersion);
 
       expect(getCookie).toHaveBeenCalledWith(`${currentVersion}${COOKIE_SUFFIX}`);
-      expect(parseBoolean).toHaveBeenCalledWith('true');
       expect(res).toBe(true);
     });
   });

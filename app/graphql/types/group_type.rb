@@ -442,7 +442,7 @@ module Types
     field :project_statistics, Types::Namespaces::ProjectStatisticsType,
       method: :itself,
       null: true,
-      description: 'Statistics of the projects in the group. Only available from [Query.groups](#querygroups).',
+      description: 'Statistics of the projects in the group. Only available from `Query.groups`.',
       experiment: { milestone: '18.2' }
 
     def label(title:)

@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillAiGovernanceSessionsFromDuoWorkflows
+description: Backfills ai_governance_sessions with one row per existing Duo workflow, skipping external and private messaging sessions
+feature_category: compliance_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258135
+milestone: '19.5'
+queued_migration_version: 20260928100728
+finalized_by: # version of the migration that finalized this BBM

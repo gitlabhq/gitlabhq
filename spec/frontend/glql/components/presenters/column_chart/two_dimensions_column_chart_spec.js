@@ -18,8 +18,9 @@ const DATA = {
 describe('TwoDimensionsColumnChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsColumnChart, {
+      provide,
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
@@ -47,6 +48,63 @@ describe('TwoDimensionsColumnChart', () => {
       { name: 'ruby', data: [12, 6] },
       { name: 'python', data: [6, 5] },
     ]);
+  });
+
+  it('leaves pairs with no row empty rather than zero', () => {
+    createComponent({ data: { nodes: DATA.nodes.slice(0, 3) } });
+
+    expect(findChart().props('bars')[1]).toEqual({ name: 'python', data: [6, '-'] });
+  });
+
+  describe('with maxSeries', () => {
+    const nodes = [
+      { user: 'u0', language: 'go', totalCount: 1 },
+      { user: 'u0', language: 'ruby', totalCount: 12 },
+      { user: 'u0', language: 'python', totalCount: 6 },
+      { user: 'u0', language: 'rust', totalCount: 2 },
+      { user: 'u2', language: 'ruby', totalCount: 6 },
+      { user: 'u2', language: 'python', totalCount: 5 },
+      { user: 'u2', language: 'rust', totalCount: 3 },
+    ];
+
+    it('keeps the biggest series and folds the rest into Other, skipping empty cells', () => {
+      createComponent({ data: { nodes }, maxSeries: 2 });
+
+      expect(findChart().props('bars')).toEqual([
+        { name: 'ruby', data: [12, 6] },
+        { name: 'python', data: [6, 5] },
+        { name: 'Other (2)', data: [3, 3] },
+      ]);
+    });
+
+    it('keeps a cell empty when none of the folded series have a value there', () => {
+      createComponent({
+        data: {
+          nodes: [
+            { user: 'u0', language: 'ruby', totalCount: 12 },
+            { user: 'u0', language: 'go', totalCount: 1 },
+            { user: 'u0', language: 'rust', totalCount: 2 },
+            { user: 'u2', language: 'ruby', totalCount: 6 },
+          ],
+        },
+        maxSeries: 1,
+      });
+
+      expect(findChart().props('bars')).toEqual([
+        { name: 'ruby', data: [12, 6] },
+        { name: 'Other (2)', data: [3, '-'] },
+      ]);
+    });
+
+    it('leaves a single series past the limit as-is', () => {
+      createComponent({ data: { nodes }, maxSeries: 3 });
+
+      expect(
+        findChart()
+          .props('bars')
+          .map(({ name }) => name),
+      ).toEqual(['ruby', 'python', 'rust', 'go']);
+    });
   });
 
   it('labels the axes from both dimensions and the metric', () => {
@@ -157,6 +215,42 @@ describe('TwoDimensionsColumnChart', () => {
 
       expect(w.text()).toContain('1,234');
       expect(w.text()).toContain('567');
+    });
+
+    it('omits padded pairs but keeps genuine zeros', () => {
+      const w = mountExtended(TwoDimensionsColumnChart, {
+        propsData: {
+          data: DATA,
+          primaryDimension: PRIMARY_DIM,
+          secondaryDimension: SECONDARY_DIM,
+          metric: METRIC,
+        },
+        stubs: {
+          GlStackedColumnChart: chartTooltipStub({
+            seriesData: [
+              { seriesName: 'ruby', value: 0, color: '#aaa' },
+              { seriesName: 'python', value: '-', color: '#bbb' },
+            ],
+          }),
+        },
+      });
+
+      expect(w.text()).toContain('ruby');
+      expect(w.text()).not.toContain('python');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().attributes('accessible-title')).toBe('');
     });
   });
 });

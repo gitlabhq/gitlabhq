@@ -9,6 +9,8 @@ MultiplePartitionScanDetector:
     #   issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/XXXX"
     - fingerprint: 955968b0f17eca7c
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/627306'
+    - fingerprint: c869fcbfa3050bf9
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/631236'
   allowed:
     - fingerprint: efc08db52e27a805
       reason: 'Runner jobs keyset pagination walks a global ID order across partitions; filtering by partition_id would omit jobs'

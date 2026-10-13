@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe IssuesHelper, feature_category: :team_planning do
   include Features::MergeRequestHelpers
 
-  let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -89,7 +88,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
 
   describe '#link_to_discussions_to_resolve' do
     describe 'passing only a merge request' do
-      let(:merge_request) { create(:merge_request) }
+      let(:merge_request) { build_stubbed(:merge_request) }
 
       it 'links just the merge request' do
         expected_path = project_merge_request_path(merge_request.project, merge_request)
@@ -103,7 +102,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     end
 
     describe 'when passing a discussion' do
-      let(:diff_note) { create(:diff_note_on_merge_request) }
+      let_it_be_with_reload(:diff_note) { create(:diff_note_on_merge_request) }
+
       let(:merge_request) { diff_note.noteable }
       let(:discussion) { diff_note.to_discussion }
 
@@ -157,14 +157,13 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     let_it_be_with_reload(:project1) { create(:project, service_desk_enabled: true) }
     let_it_be_with_reload(:project2) { create(:project, service_desk_enabled: true) }
     let_it_be(:support_bot) { create(:support_bot) }
-    let_it_be_with_reload(:old_issue) { create(:issue, :ticket, author: support_bot, project: project1) }
     let_it_be_with_reload(:new_issue) { create(:issue, :ticket, author: support_bot, project: project2) }
+    let_it_be_with_reload(:old_issue) do
+      create(:issue, :ticket, author: support_bot, project: project1, moved_to: new_issue)
+    end
 
     before do
-      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
-
-      old_issue.update!(moved_to: new_issue)
+      allow(Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
     end
 
     it 'is true when moved issue project has service desk disabled' do
@@ -184,9 +183,11 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     let(:issuable_sidebar_issue) { serialize_issuable_sidebar(current_user, project, merge_request) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:issuable_sidebar).and_return(issuable_sidebar_issue)
+      allow(helper).to receive_messages(
+        current_user: current_user,
+        can?: true,
+        issuable_sidebar: issuable_sidebar_issue
+      )
     end
 
     it 'returns expected result' do
@@ -216,9 +217,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     let(:current_user) { double.as_null_object }
 
     it 'returns expected result' do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:image_path).and_return('#')
-      allow(helper).to receive(:url_for).and_return('#')
+      allow(helper).to receive_messages(current_user: current_user, image_path: '#', url_for: '#')
 
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
@@ -238,9 +237,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   end
 
   describe '#issue_repositioning_disabled?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
-
     subject { helper.issue_repositioning_disabled? }
 
     context 'for project' do
@@ -278,8 +274,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
 
   describe '#issue_hidden?' do
     context 'when issue is hidden' do
-      let_it_be(:banned_user) { build(:user, :banned) }
-      let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
+      let(:banned_user) { build_stubbed(:user, state: 'banned') }
+      let(:hidden_issue) { build_stubbed(:issue, author: banned_user) }
 
       it 'returns `true`' do
         expect(helper.issue_hidden?(hidden_issue)).to be(true)

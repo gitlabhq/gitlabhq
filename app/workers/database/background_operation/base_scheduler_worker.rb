@@ -46,3 +46,5 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- This is the best pla
     end
   end
 end
+
+Database::BackgroundOperation::BaseSchedulerWorker.prepend_mod

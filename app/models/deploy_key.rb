@@ -44,15 +44,15 @@ class DeployKey < Key
   end
 
   def orphaned?
-    self.deploy_keys_projects.empty?
+    deploy_keys_projects.empty?
   end
 
   def almost_orphaned?
-    self.deploy_keys_projects.size == 1
+    deploy_keys_projects.size == 1
   end
 
   def destroyed_when_orphaned?
-    self.private?
+    private?
   end
 
   def user
@@ -94,7 +94,7 @@ class DeployKey < Key
   private
 
   def reject_deploy_keys_projects?
-    !self.valid?
+    !valid?
   end
 
   def self.search(term, field = nil)

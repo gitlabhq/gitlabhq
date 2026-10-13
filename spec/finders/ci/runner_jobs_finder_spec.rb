@@ -42,10 +42,6 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
   end
 
   context 'when user is developer' do
-    before_all do
-      project.add_developer(user)
-    end
-
     it { is_expected.to match_array(jobs) }
   end
 

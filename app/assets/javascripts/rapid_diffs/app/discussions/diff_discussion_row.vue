@@ -68,6 +68,9 @@ export default {
         discussions.every((d) => d.hidden),
       );
     },
+    hideableDiscussions() {
+      return this.regularDiscussionsByPosition.flat().filter((discussion) => !discussion.isForm);
+    },
     hasDrafts() {
       return this.discussionsByPosition.some((discussions) => discussions.some((d) => d.isDraft));
     },
@@ -85,7 +88,7 @@ export default {
       if (value) this.$emit('empty');
     },
     allResolved(resolved) {
-      this.positions.forEach((p) => this.store.setPositionDiscussionsHidden(p, resolved));
+      this.setHidden(resolved);
     },
   },
   mounted() {
@@ -103,7 +106,7 @@ export default {
             noteId,
           )
         ) {
-          this.toggle(false);
+          this.setHidden(false);
           return;
         }
       }
@@ -119,8 +122,11 @@ export default {
       if (this.allHidden) return this.discussionsByPosition[index].filter((d) => d.isDraft);
       return this.discussionsByPosition[index];
     },
-    toggle(expanded) {
-      this.positions.forEach((p) => this.store.setPositionDiscussionsHidden(p, expanded));
+    setHidden(hidden) {
+      this.hideableDiscussions.forEach((discussion) => {
+        if (hidden) this.store.collapseDiscussion(discussion);
+        else this.store.expandDiscussion(discussion);
+      });
     },
   },
 };
@@ -138,7 +144,7 @@ export default {
         :class="{ 'gl-ml-[-1px] gl-mt-[-1px]': !allHidden }"
         :discussions="discussionsForGutter(index)"
         :expanded="!allHidden"
-        @toggle="toggle"
+        @toggle="setHidden"
       />
       <diff-line-discussions
         v-if="visibleDiscussions(index).length"

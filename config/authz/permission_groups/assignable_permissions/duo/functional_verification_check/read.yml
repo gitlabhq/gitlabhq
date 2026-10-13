@@ -1,0 +1,9 @@
+---
+name: read_functional_verification_check
+description: Grants the ability to read the result of a functional verification check
+available_for:
+  - granular_access_token
+permissions:
+  - read_functional_verification_check
+boundaries:
+  - instance

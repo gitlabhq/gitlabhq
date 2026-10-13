@@ -97,8 +97,7 @@ RSpec.shared_examples Integrations::Actions do
     context 'with testable integration' do
       before do
         allow_next_found_instance_of(integration.class) do |integration|
-          allow(integration).to receive(:testable?).and_return(true)
-          allow(integration).to receive(:test).and_return({ success: true, data: [] })
+          allow(integration).to receive_messages(testable?: true, test: { success: true, data: [] })
         end
       end
 

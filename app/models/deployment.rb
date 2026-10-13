@@ -16,9 +16,6 @@ class Deployment < ApplicationRecord
 
   ARCHIVABLE_OFFSET = 50_000
 
-  ignore_column :id_convert_to_bigint, :project_id_convert_to_bigint, :environment_id_convert_to_bigint,
-    :user_id_convert_to_bigint, remove_with: '18.3', remove_after: '2025-09-01'
-
   belongs_to :project, optional: false
   belongs_to :environment, optional: false
   belongs_to :user
@@ -329,8 +326,11 @@ class Deployment < ApplicationRecord
   def update_merge_request_metrics!
     return unless environment.production? && success?
 
+    # join_metrics scopes by merge_request_metrics.target_project_id so Postgres can seek the
+    # (target_project_id, merged_at) index instead of scanning every MR in the project.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/628635
     merge_requests = project.merge_requests
-                     .joins(:metrics)
+                     .join_metrics(project.id)
                      .where(target_branch: ref, merge_request_metrics: { first_deployed_to_production_at: nil })
                      .where("merge_request_metrics.merged_at <= ?", finished_at)
 

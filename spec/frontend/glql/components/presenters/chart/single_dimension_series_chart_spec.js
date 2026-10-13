@@ -75,7 +75,7 @@ const DATA = {
 describe('SingleDimensionSeriesChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(SingleDimensionSeriesChart, {
       propsData: {
         variant: 'line',
@@ -84,6 +84,7 @@ describe('SingleDimensionSeriesChart', () => {
         metrics: [TOTAL_COUNT],
         ...props,
       },
+      provide,
     });
   };
 
@@ -138,6 +139,20 @@ describe('SingleDimensionSeriesChart', () => {
 
     it('disables legend avg/max', () => {
       expect(findLineChart().props('includeLegendAvgMax')).toBe(false);
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      expect(findLineChart().attributes('accessible-title')).toBe('');
+    });
+  });
+
+  describe('inside a dashboard panel', () => {
+    beforeEach(() => {
+      createComponent({}, { getVisualizationTitle: () => 'Sessions by language' });
+    });
+
+    it('names the chart with the panel title for assistive technology', () => {
+      expect(findLineChart().attributes('accessible-title')).toBe('Sessions by language');
     });
   });
 

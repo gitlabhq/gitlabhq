@@ -12,7 +12,8 @@ module MergeRequests
         'properties' => {
           'current_user_id' => { 'type' => 'integer' },
           'merge_request_id' => { 'type' => 'integer' },
-          'approved_at' => { 'type' => 'string', 'format' => 'date-time' }
+          'approved_at' => { 'type' => 'string', 'format' => 'date-time' },
+          'organization_id' => { 'type' => 'integer' }
         }
       }
     end

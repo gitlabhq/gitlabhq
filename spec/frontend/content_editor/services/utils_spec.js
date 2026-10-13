@@ -1,4 +1,8 @@
-import { rectUnion, getColumnHeaderText } from '~/content_editor/services/utils';
+import {
+  rectUnion,
+  getColumnHeaderText,
+  decodePlaceholders,
+} from '~/content_editor/services/utils';
 import { builders, doc } from '../serialization_utils';
 
 describe('rectUnion', () => {
@@ -191,5 +195,19 @@ describe('getColumnHeaderText', () => {
     );
 
     expect(getColumnHeaderText(d, findTaskItemPos(d))).toBeNull();
+  });
+});
+
+describe('decodePlaceholders', () => {
+  it.each`
+    input                                                        | output
+    ${'http://%%7Bgitlab_server%7D/%%7Bproject_path%7D'}         | ${'http://%{gitlab_server}/%{project_path}'}
+    ${'http://%25%7Bgitlab_server%7D/'}                          | ${'http://%{gitlab_server}/'}
+    ${'http://%25%7bgitlab_server%7d/'}                          | ${'http://%{gitlab_server}/'}
+    ${'http://%{gitlab_server}/'}                                | ${'http://%{gitlab_server}/'}
+    ${'http://example.com/%7Bnot_a_placeholder%7D'}              | ${'http://example.com/%7Bnot_a_placeholder%7D'}
+    ${'http://example.com/foo%23%2fbar/%25%7Bgitlab_server%7D/'} | ${'http://example.com/foo%23%2fbar/%{gitlab_server}/'}
+  `('decodes $input to $output', ({ input, output }) => {
+    expect(decodePlaceholders(input)).toBe(output);
   });
 });

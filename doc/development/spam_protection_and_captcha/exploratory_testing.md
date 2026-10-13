@@ -80,7 +80,7 @@ no CAPTCHA popup displays. You are prevented from submitting the form at all.
 ### HTML page to render reCAPTCHA
 
 > [!note]
-> If you use **the Google official test reCAPTCHA credentials** listed in
+> If you use the Google official test reCAPTCHA credentials listed in
 > [Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the
 > CAPTCHA response string does not matter. It can be any string. If you use a
 > real, valid key pair, you must solve the CAPTCHA to obtain a
@@ -133,7 +133,7 @@ For the prerequisites, you must:
    and force form submissions to require a CAPTCHA.
 1. Ensure you have created an HTML page to render CAPTCHA under the `/public` directory,
    with a page that contains a form to manually generate a valid CAPTCHA response string.
-   If you use **Google's official test reCAPTCHA credentials** listed in
+   If you use Google's official test reCAPTCHA credentials listed in
    [Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the contents of the
    CAPTCHA response string don't matter.
 1. Go to **Admin** > **Settings** > **Reporting** > **Spam and Anti-bot protection**.

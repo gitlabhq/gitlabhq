@@ -27,7 +27,7 @@ module API
       params do
         requires :id,
           type: String,
-          desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user."
+          desc: "ID or URL-encoded path of the #{source_type}."
       end
       resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all badges for a #{source_type}" do
@@ -38,7 +38,7 @@ module API
         end
         params do
           use :pagination
-          optional :name, type: String, desc: 'Name for the badge'
+          optional :name, type: String, desc: 'Name of the badge.'
         end
 
         route_setting :authentication, job_token_allowed: is_project
@@ -63,8 +63,8 @@ module API
           tags %w[badges]
         end
         params do
-          requires :link_url, type: String, desc: 'URL of the badge link'
-          requires :image_url, type: String, desc: 'URL of the badge image'
+          requires :link_url, type: String, desc: 'URL of the badge link.'
+          requires :image_url, type: String, desc: 'URL of the badge image.'
         end
 
         route_setting :authentication, job_token_allowed: is_project
@@ -92,7 +92,7 @@ module API
           tags %w[badges]
         end
         params do
-          requires :badge_id, type: Integer, desc: 'The badge ID'
+          requires :badge_id, type: Integer, desc: 'ID of the badge.'
         end
         # TODO: Set PUT /projects/:id/badges/:badge_id to low urgency and GET to default urgency
         # after different urgencies are supported for different HTTP verbs.
@@ -116,9 +116,9 @@ module API
           tags %w[badges]
         end
         params do
-          requires :link_url, type: String, desc: 'URL of the badge link'
-          requires :image_url, type: String, desc: 'URL of the badge image'
-          optional :name, type: String, desc: 'Name for the badge'
+          requires :link_url, type: String, desc: 'URL of the badge link.'
+          requires :image_url, type: String, desc: 'URL of the badge image.'
+          optional :name, type: String, desc: 'Name of the badge.'
         end
 
         route_setting :authentication, job_token_allowed: is_project
@@ -143,9 +143,9 @@ module API
           tags %w[badges]
         end
         params do
-          optional :link_url, type: String, desc: 'URL of the badge link'
-          optional :image_url, type: String, desc: 'URL of the badge image'
-          optional :name, type: String, desc: 'Name for the badge'
+          optional :link_url, type: String, desc: 'URL of the badge link.'
+          optional :image_url, type: String, desc: 'URL of the badge image.'
+          optional :name, type: String, desc: 'Name of the badge.'
         end
 
         route_setting :authentication, job_token_allowed: is_project
@@ -172,7 +172,7 @@ module API
           tags %w[badges]
         end
         params do
-          requires :badge_id, type: Integer, desc: 'The badge ID'
+          requires :badge_id, type: Integer, desc: 'ID of the badge.'
         end
 
         route_setting :authentication, job_token_allowed: is_project

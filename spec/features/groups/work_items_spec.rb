@@ -188,22 +188,4 @@ RSpec.describe 'Group work items page', feature_category: :planning_views do
       expect(page).to have_css('.issue:nth-child(3) .title', text: 'Issue #1')
     end
   end
-
-  context 'with issues pagination', :js do
-    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
-
-    let!(:issues) do
-      (1..25).to_a.map { |index| create(:issue, project: project, title: "Issue #{index}") }
-    end
-
-    before do
-      sign_in(user_in_group)
-      visit group_work_items_path(group)
-    end
-
-    it 'shows the pagination' do
-      expect(page).to have_button 'Prev', disabled: true
-      expect(page).to have_button 'Next'
-    end
-  end
 end

@@ -5,6 +5,7 @@ query getPipeline(
   $includeJobs: Boolean = false
   $includeDownstreamPipelines: Boolean = false
   $includeBridgeJobs: Boolean = false
+  $includeArtifacts: Boolean = false
   $jobStatuses: [CiJobStatus!]
   $first: Int
   $after: String
@@ -51,6 +52,27 @@ query getPipeline(
           project {
             id
             fullPath
+          }
+        }
+      }
+      artifactsJobs: jobs(jobKind: BUILD, first: $first, after: $after)
+        @include(if: $includeArtifacts) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          name
+          artifacts {
+            nodes {
+              id
+              name
+              size
+              fileType
+              expireAt
+              expired
+            }
           }
         }
       }

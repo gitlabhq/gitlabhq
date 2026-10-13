@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GroupLink::ProjectGroupLinkEntity, feature_category: :groups_and_projects do
-  let_it_be(:current_user) { create(:user) }
-  let_it_be(:project_group_link) { create(:project_group_link) }
+  let(:current_user) { build_stubbed(:user) }
+  let(:project_group_link) { build_stubbed(:project_group_link) }
 
   let(:entity) { described_class.new(project_group_link, { current_user: current_user, source: project_group_link.project }) }
 
@@ -95,8 +95,8 @@ RSpec.describe GroupLink::ProjectGroupLinkEntity, feature_category: :groups_and_
     end
 
     context 'when group is private' do
-      let_it_be(:private_group) { create(:group, :private) }
-      let_it_be(:project_group_link) { create(:project_group_link, group: private_group) }
+      let(:private_group) { build_stubbed(:group, :private) }
+      let(:project_group_link) { build_stubbed(:project_group_link, group: private_group) }
 
       it 'does not expose shared_with_group details' do
         expect(as_json[:shared_with_group].keys).to contain_exactly(:id)

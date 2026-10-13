@@ -298,17 +298,13 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
   end
 
   describe "POST create" do
+    let_it_be(:project) { create(:project) }
+
     let(:bitbucket_username) { user.username }
-
-    let(:bitbucket_user) do
-      double(username: bitbucket_username)
-    end
-
+    let(:bitbucket_user) { double(username: bitbucket_username) }
     let(:bitbucket_repo) do
       double(slug: "vim", owner: bitbucket_username, name: 'vim')
     end
-
-    let(:project) { create(:project) }
 
     before do
       allow_any_instance_of(Bitbucket::Client).to receive(:repo).and_return(bitbucket_repo)
@@ -332,6 +328,16 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
       )
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'stashes request_channel: :ui for the created import state', :request_store do
+      allow(Gitlab::BitbucketImport::ProjectCreator)
+        .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params)
+        .and_return(double(execute: project))
+
+      post :create, format: :json
+
+      expect(Gitlab::Import::RequestChannel.stashed).to eq(:ui)
     end
 
     it 'returns 422 response when the project could not be imported' do

@@ -1,5 +1,5 @@
 ---
-description: Selected an option from the to-do items filter dropdown in the "Items that need your attention" widget on the personal homepage (not the separate To-Do List page).
+description: Selected a filter tab in the "Items that need your attention" to-do widget on the personal homepage (not the separate To-Do List page).
 internal_events: true
 status: active
 action: filter_todos_on_homepage
@@ -7,7 +7,7 @@ identifiers:
 - user
 additional_properties:
   property:
-    description: Which option the person selected in the dropdown - a to-do action type such as assigned or build_failed, or "everything" for the unfiltered default. The homepage offers a shortlist of six options, not the full set of reasons available on the To-Do List page.
+    description: Which tab the person selected - a to-do action type (review_requested, assigned, build_failed, unmergeable or review_submitted), or "everything" for the unfiltered "All" tab. The homepage exposes a shortlist of five reasons, not the full set available on the To-Do List page.
 product_group: engagement
 product_categories:
 - notifications

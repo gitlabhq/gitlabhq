@@ -17,7 +17,7 @@ class SnippetInputActionCollection
 
   def to_commit_actions
     strong_memoize(:commit_actions) do
-      actions.map { |action| action.to_commit_action }
+      actions.map(&:to_commit_action)
     end
   end
 

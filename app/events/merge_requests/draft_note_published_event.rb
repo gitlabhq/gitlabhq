@@ -12,7 +12,8 @@ module MergeRequests
         'properties' => {
           'current_user_id' => { 'type' => 'integer' },
           'merge_request_id' => { 'type' => 'integer' },
-          'review_id' => { 'type' => 'integer' }
+          'review_id' => { 'type' => 'integer' },
+          'summary_note_id' => { 'type' => 'integer' }
         }
       }
     end

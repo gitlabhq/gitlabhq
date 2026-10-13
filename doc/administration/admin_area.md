@@ -615,6 +615,10 @@ attempt to flag common problems with the database:
 To run each check, select the run button for the check. Selecting the run button
 schedules a background job that will report information from the check to the page.
 
+The page also shows PostgreSQL information that loads with the page, including running vacuums and
+the autovacuum settings in effect. For more information, see
+[Monitor autovacuum](postgresql/vacuum.md#monitor-autovacuum).
+
 #### Collation health check
 
 The collation health check attempts to detect PostgreSQL issues that

@@ -11,7 +11,8 @@ module Mutations
 
         authorize_granular_token permissions: :update_custom_attribute,
           boundary: :instance,
-          boundary_type: :instance
+          boundary_type: :instance,
+          assignable_when: [:admin]
 
         argument :user_id, ::Types::GlobalIDType[::User],
           required: true,

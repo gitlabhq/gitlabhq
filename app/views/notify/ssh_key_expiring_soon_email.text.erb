@@ -1,0 +1,9 @@
+<%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
+
+<%= _('SSH keys with the following fingerprints are scheduled to expire soon. Expired SSH keys can not be used:') %>
+
+<% @fingerprints.each do |fingerprint| %>
+  - <%= fingerprint %>
+<% end %>
+
+<%= _('Go to %{ssh_key_link} to check your SSH keys or create a new one.') % { ssh_key_link: @target_url } %>

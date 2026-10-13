@@ -286,6 +286,39 @@ describe('TimeAgo utils', () => {
         expect(element.innerText).toBe(text);
       });
     });
+
+    describe('when an element has a datetime that cannot be parsed', () => {
+      let invalid;
+      let valid;
+
+      beforeEach(() => {
+        localeDateFormat.reset();
+        window.gon = { time_display_relative: true };
+        document.body.innerHTML = `
+          <time title="Dec 6, 292277024627 3:30pm" datetime="292277024627-12-06T15:30:07Z">Dec 06, 292277024627</time>
+          <time title="some time" datetime="2020-02-18T22:22:32Z">1 hour ago</time>
+        `;
+        [invalid, valid] = document.querySelectorAll('time');
+      });
+
+      it('keeps the server-rendered text and title of that element and does not throw', () => {
+        expect(() => {
+          localTimeAgo([invalid, valid]);
+          jest.runAllTimers();
+        }).not.toThrow();
+
+        expect(invalid.textContent).toBe('Dec 06, 292277024627');
+        expect(invalid.getAttribute('title')).toBe('Dec 6, 292277024627 3:30pm');
+      });
+
+      it('still renders the other elements', () => {
+        localTimeAgo([invalid, valid]);
+        jest.runAllTimers();
+
+        expect(valid.innerText).toBe('4 months ago');
+        expect(valid.getAttribute('title')).toBe('Tuesday, February 18, 2020 at 10:22:32 PM GMT');
+      });
+    });
   });
 
   describe('initLocalDateTimes', () => {

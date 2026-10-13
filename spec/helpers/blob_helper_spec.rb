@@ -7,6 +7,9 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   include FakeBlobHelpers
   include Devise::Test::ControllerHelpers
 
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project) }
+
   describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
     let(:data) { File.read(input_svg_path) }
@@ -19,15 +22,13 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe "#edit_blob_button" do
-    let(:namespace) { create(:namespace, name: 'gitlab') }
-    let(:project) { create(:project, :repository, namespace: namespace) }
+    let_it_be(:namespace) { create(:namespace, name: 'gitlab') }
+    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
 
     subject(:link) { helper.edit_blob_button(project, 'master', 'README.md') }
 
     before do
-      allow(helper).to receive(:current_user).and_return(nil)
-      allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
+      allow(helper).to receive_messages(current_user: nil, can?: true, can_collaborate_with_project?: true)
     end
 
     it 'does not render edit button when blob is not text' do
@@ -59,7 +60,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe "#relative_raw_path" do
-    let_it_be(:project, freeze: false) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     before do
       assign(:project, project)
@@ -82,8 +83,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   context 'viewer related' do
-    let_it_be(:project, freeze: false) { create(:project, lfs_enabled: true) }
-
+    let(:project) { build_stubbed(:project, lfs_enabled: true) }
     let(:viewer_class) do
       Class.new(BlobViewer::Base) do
         include BlobViewer::ServerSide
@@ -211,13 +211,12 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#ide_edit_path' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let(:current_user) { create(:user) }
+    let(:project) { build_stubbed(:project) }
+    let(:current_user) { user }
     let(:can_push_code) { true }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(can_push_code)
+      allow(helper).to receive_messages(current_user: current_user, can?: can_push_code)
     end
 
     around do |example|
@@ -278,8 +277,9 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#ide_merge_request_path' do
-    let_it_be(:project, freeze: false) { create(:project, :repository) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
 
     it 'returns IDE path for the given MR if MR is not merged' do
       expect(helper.ide_merge_request_path(merge_request)).to eq("/-/ide/project/#{project.full_path}?merge_request_id=#{merge_request.iid}")
@@ -312,12 +312,10 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
 
     context 'when the MR is merged' do
       let(:current_user) { build(:user) }
-
-      let_it_be(:merge_request) { create(:merge_request, :merged, source_project: project, source_branch: 'testing-1', target_branch: 'feature-1') }
+      let(:merge_request) { build_stubbed(:merge_request, :merged, source_project: project, source_branch: 'testing-1', target_branch: 'feature-1') }
 
       before do
-        allow(helper).to receive(:current_user).and_return(current_user)
-        allow(helper).to receive(:can?).and_return(true)
+        allow(helper).to receive_messages(current_user: current_user, can?: true)
       end
 
       it 'returns default IDE url with master branch' do
@@ -341,14 +339,11 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#ide_fork_and_edit_path' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
+    let(:project) { build_stubbed(:project) }
     let(:current_user) { user }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: current_user, can?: true)
     end
 
     it 'returns path to fork the repo with a redirect param to the full IDE path' do
@@ -379,14 +374,11 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#fork_and_edit_path' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
+    let(:project) { build_stubbed(:project) }
     let(:current_user) { user }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: current_user, can?: true)
     end
 
     it 'returns path to fork the repo with a redirect param to the full edit path' do
@@ -409,7 +401,6 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
 
   describe '#vue_blob_app_data' do
     let(:blob) { fake_blob(path: 'file.md', size: 2.megabytes) }
-    let(:project) { create(:project) }
     let(:user) { build_stubbed(:user) }
     let(:ref) { 'main' }
 
@@ -489,8 +480,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
     let(:id) { "#{ref}/#{blob.path}" }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:selected_branch).and_return(ref)
+      allow(helper).to receive_messages(current_user: user, selected_branch: ref)
       allow(user).to receive(:namespace).and_return(build_stubbed(:namespace, owner: user))
     end
 
@@ -500,9 +490,8 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       before do
         allow(helper).to receive(:can?).with(user, :push_code, project).and_return(true)
         allow(helper).to receive(:can?).with(user, :create_merge_request_in, project).and_return(true)
-        allow(project).to receive(:present).and_return(project_presenter)
         allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(true)
-        allow(project).to receive(:empty_repo?).and_return(false)
+        allow(project).to receive_messages(present: project_presenter, empty_repo?: false)
         allow(blob).to receive(:stored_externally?).and_return(false)
         allow(project).to receive(:branch_allows_collaboration?).with(user, ref).and_return(false)
         assign(:last_commit_sha, '782426692977b2cedb4452ee6501a404410f9b00')
@@ -560,8 +549,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         fork_project = build_stubbed(:project, id: 999)
         fork_repository = instance_double(Repository, next_branch: 'patch-1')
         allow(user).to receive(:fork_of).with(project).and_return(fork_project)
-        allow(fork_project).to receive(:repository).and_return(fork_repository)
-        allow(fork_project).to receive(:full_path).and_return('user/fork-project')
+        allow(fork_project).to receive_messages(repository: fork_repository, full_path: 'user/fork-project')
         allow(helper).to receive(:can?).with(user, :push_code, project).and_return(false)
         allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
 
@@ -583,8 +571,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
 
         before do
           allow(user).to receive(:fork_of).with(project).and_return(fork_project)
-          allow(fork_project).to receive(:repository).and_return(fork_repository)
-          allow(fork_project).to receive(:full_path).and_return('user/fork-project')
+          allow(fork_project).to receive_messages(repository: fork_repository, full_path: 'user/fork-project')
           allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
         end
 
@@ -922,14 +909,11 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#edit_fork_button_tag' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
+    let(:project) { build_stubbed(:project) }
     let(:current_user) { user }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: current_user, can?: true)
     end
 
     it 'renders the edit fork button' do
@@ -941,8 +925,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
   end
 
   describe '#vue_blob_header_app_data' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:blob, freeze: false) { fake_blob(path: 'README.md') }
+    let(:blob) { fake_blob(path: 'README.md') }
     let(:ref) { 'feature' }
     let(:ref_type) { :branch }
     let(:breadcrumb_data) { { title: 'README.md', 'is-last': true } }
@@ -953,8 +936,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       assign(:project, project)
       assign(:ref, ref)
       assign(:ref_type, ref_type)
-      allow(helper).to receive(:breadcrumb_data_attributes).and_return(breadcrumb_data)
-      allow(helper).to receive(:show_xcode_link?).and_return(true)
+      allow(helper).to receive_messages(breadcrumb_data_attributes: breadcrumb_data, show_xcode_link?: true)
       allow(helper).to receive(:xcode_uri_to_repo).with(project).and_return('xcode://example.com/project.git')
     end
 
@@ -976,11 +958,23 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         http_url: http_clone_url_to_repo(project),
         xcode_url: 'xcode://example.com/project.git',
         download_links: helper.send(:archive_download_links, project, ref, "#{project.path}-#{ref.tr('/', '-')}", ref_type).to_json,
-        web_ide_button_options: helper.web_ide_button_data({ blob: blob }).merge(helper.fork_modal_options(project, blob)).to_json,
-        web_ide_button_default_branch: project.default_branch_or_main,
+        web_ide_button_options: helper.repository_header_web_ide_button_options(blob),
         show_no_ssh_key_message: '',
         user_settings_ssh_keys_path: user_settings_ssh_keys_path
       })
+    end
+
+    it 'includes the custom Code dropdown clients' do
+      stub_feature_flags(custom_code_dropdown_clients: true)
+      stub_application_setting(code_dropdown_custom_clients: [
+        { 'name' => 'VSCodium', 'http_url_template' => 'vscodium://vscode.git/clone?url={url}' }
+      ])
+
+      parsed = Gitlab::Json::SafeParser.parse(
+        helper.vue_blob_header_app_data(project, blob, ref)[:custom_code_dropdown_clients]
+      )
+
+      expect(parsed.pluck('name')).to eq(['VSCodium'])
     end
 
     context 'when SSH is disabled' do

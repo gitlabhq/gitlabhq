@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestPresenter do
   let_it_be(:project) { create(:project, :repository) }
-  let(:resource) { create(:merge_request, source_project: project) }
-
   let_it_be(:user) { create(:user) }
+
+  let(:resource) { build_stubbed(:merge_request, source_project: project) }
 
   describe '#mergeable_discussions_state' do
     subject { described_class.new(resource).mergeable_discussions_state }
@@ -120,7 +120,10 @@ RSpec.describe MergeRequestPresenter do
   end
 
   context 'issues links' do
-    let_it_be(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
+    let_it_be(:project) do
+      create(:project, :private, :repository, creator: user, namespace: user.namespace, developers: user)
+    end
+
     let_it_be_with_reload(:issue_a) { create(:issue, project: project, iid: 1) }
     let_it_be_with_reload(:issue_b) { create(:issue, project: project, iid: 3) }
 
@@ -133,10 +136,6 @@ RSpec.describe MergeRequestPresenter do
       )
     end
 
-    before_all do
-      project.add_developer(user)
-    end
-
     before do
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
@@ -144,7 +143,7 @@ RSpec.describe MergeRequestPresenter do
     end
 
     describe '#issues_sentence' do
-      let(:issue_c) { create(:issue, project: project, iid: 10) }
+      let(:issue_c) { build_stubbed(:issue, project: project, iid: 10) }
       let(:issues) { [issue_b, issue_c, issue_a] }
 
       subject { described_class.new(resource, current_user: user).send(:issues_sentence, project, issues) }
@@ -213,7 +212,7 @@ RSpec.describe MergeRequestPresenter do
       end
 
       context 'single closing issue' do
-        let(:issue) { create(:issue) }
+        let(:issue) { build_stubbed(:issue) }
         let(:assignable_issues) { [issue] }
 
         it 'returns correct count' do

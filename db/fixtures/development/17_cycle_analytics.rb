@@ -149,7 +149,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
 
       @merge_requests << merge_request
 
-      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
+      MergeRequestIssue.create!(issue: issue, merge_request: merge_request)
     end
   end
 
@@ -229,7 +229,8 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
           name: "VSM User#{i}",
           email: "vsm-user-#{i}@#{suffix}.com",
           confirmed_at: DateTime.now,
-          password: ::User.random_password
+          password: ::User.random_password,
+          organization: project.organization
         ) do |user|
           user.assign_personal_namespace(project.organization)
         end
@@ -270,7 +271,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
   end
 
   def admin
-    @admin ||= User.admins.first
+    @admin ||= Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin
   end
 
   def suffix

@@ -212,19 +212,6 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
         end
       end
     end
-
-    context 'as a guest' do
-      before do
-        project.add_guest(user)
-        visit project_issue_path(project, issue)
-      end
-
-      it 'does not have a option to edit widgets' do
-        within_testid('work-item-overview-right-sidebar') do
-          expect(page).not_to have_selector('.block.labels .js-sidebar-dropdown-toggle')
-        end
-      end
-    end
   end
 
   def open_assignees_dropdown

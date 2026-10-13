@@ -68,7 +68,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = User.find_by_login(username)
 
       user&.increment_failed_attempts!
-      log_failed_login(username, failed_strategy.name)
+      log_failed_login(user || username, failed_strategy.name)
     end
 
     super
@@ -143,7 +143,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement.counter
   end
 
-  def log_failed_login(user, provider)
+  def log_failed_login(user_or_login, provider)
     # overridden in EE
   end
 
@@ -217,12 +217,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def redirect_identity_link_failed(error_message)
-    redirect_to profile_account_path,
+    redirect_to profile_two_factor_auth_path,
       notice: safe_format(_("Authentication failed: %{error_message}"), error_message: error_message)
   end
 
   def redirect_identity_linked
-    redirect_to profile_account_path, notice: _('Authentication method updated')
+    redirect_to profile_two_factor_auth_path, notice: _('Authentication method updated')
   end
 
   def redirect_authorize_identity_link(identity_linker)
@@ -390,7 +390,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def fail_login(user)
-    log_failed_login(user.username, oauth['provider'])
+    log_failed_login(user, oauth['provider'])
 
     return prompt_login_to_link_identity if existing_user_for_email_link
 
@@ -424,7 +424,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def redirect_unverified_saml_initiation
-    redirect_to profile_account_path, notice: _('Request to link SAML account must be authorized')
+    redirect_to profile_two_factor_auth_path, notice: _('Request to link SAML account must be authorized')
   end
 
   def handle_identity_with_untrusted_extern_uid

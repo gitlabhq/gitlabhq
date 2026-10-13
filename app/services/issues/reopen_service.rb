@@ -13,7 +13,7 @@ module Issues
     private
 
     # overridden in EE
-    def after_reopen(issue, _status)
+    def after_reopen(issue, _status, old_associations: {})
       event_service.reopen_issue(issue, current_user)
 
       if current_user.project_bot?
@@ -25,7 +25,7 @@ module Issues
       user = current_user
       issue.run_after_commit_or_now { NotificationService.new.async.reopen_issue(issue, user) }
       perform_incident_management_actions(issue)
-      execute_hooks(issue, 'reopen')
+      execute_hooks(issue, 'reopen', old_associations: old_associations)
       invalidate_cache_counts(issue, users: issue.assignees)
       issue.invalidate_project_counter_caches
       Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone

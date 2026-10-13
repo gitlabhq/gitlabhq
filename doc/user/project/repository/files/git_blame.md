@@ -23,6 +23,7 @@ commit hash.
 
 - Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with a feature flag](../../../../administration/feature_flags/_index.md) named `inline_blame`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/501539) in GitLab 19.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/602273) in GitLab 19.5. Feature flag `inline_blame` removed.
 
 {{< /history >}}
 
@@ -37,9 +38,7 @@ To view the blame for a file:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
-1. Either:
-   - To change the view of the current file, in the file header, select **Blame**.
-   - To open the full blame page, in the upper-right corner, select **Blame**.
+1. In the file header, select **Blame**.
 1. Go to the line you want to see.
 
 When you select **Blame**, this information is displayed:
@@ -56,7 +55,7 @@ To see earlier revisions of a specific line:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
-1. In the upper-right corner, select **Blame**, and go to the line you want to see.
+1. In the file header, select **Blame**, and go to the line you want to see.
 1. Select **View blame prior to this change** ({{< icon name="doc-versions" >}})
    until you've found the changes you're interested in viewing.
 

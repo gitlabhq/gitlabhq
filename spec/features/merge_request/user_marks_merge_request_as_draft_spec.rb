@@ -23,7 +23,7 @@ RSpec.describe 'Merge request > User marks merge request as draft', :js, feature
 
     find('#new-actions-header-dropdown button').click
 
-    page.within('.detail-page-header') do
+    page.within('.panel-header-inner-actions') do
       click_button 'Mark as ready'
     end
 

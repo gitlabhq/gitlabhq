@@ -252,8 +252,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
 
       it 'does not redirect if user has temporary oauth email' do
         oauth_user = create(:user, email: 'temp-email-for-oauth@email.com')
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).and_return(oauth_user)
+        allow(controller).to receive_messages(two_factor_authentication_required?: true, current_user: oauth_user)
 
         expect(controller).not_to receive(:redirect_to)
 
@@ -261,8 +260,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
 
       it 'does not redirect if 2FA is not required' do
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(false)
-        allow(controller).to receive(:current_user).and_return(create(:user))
+        allow(controller).to receive_messages(two_factor_authentication_required?: false, current_user: create(:user))
 
         expect(controller).not_to receive(:redirect_to)
 
@@ -270,8 +268,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
 
       it 'does not redirect if user is not logged in' do
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
-        allow(controller).to receive(:current_user).and_return(nil)
+        allow(controller).to receive_messages(two_factor_authentication_required?: true, current_user: nil)
 
         expect(controller).not_to receive(:redirect_to)
 
@@ -289,10 +286,9 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
 
       it 'does not redirect if 2FA setup can be skipped' do
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
         allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
-        allow(controller).to receive(:skip_two_factor?).and_return(true)
+        allow(controller).to receive_messages(two_factor_authentication_required?: true, skip_two_factor?: true)
 
         expect(controller).not_to receive(:redirect_to)
 
@@ -300,10 +296,9 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
 
       it 'redirects to 2FA setup otherwise' do
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
         allow(controller).to receive(:current_user).thrice.and_return(user)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
-        allow(controller).to receive(:skip_two_factor?).and_return(false)
+        allow(controller).to receive_messages(two_factor_authentication_required?: true, skip_two_factor?: false)
         allow(controller).to receive(:profile_two_factor_auth_path)
 
         expect(controller).to receive(:redirect_to)
@@ -466,17 +461,15 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
 
       it 'returns false if the 2FA grace period has expired' do
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
-        allow(controller).to receive(:two_factor_grace_period_expired?).and_return(true)
+        allow(controller).to receive_messages(two_factor_authentication_required?: true, two_factor_grace_period_expired?: true)
 
         expect(subject).to be_falsey
       end
 
       it 'returns true otherwise' do
-        allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
         allow(user).to receive(:two_factor_enabled?).and_return(false)
-        allow(controller).to receive(:two_factor_grace_period_expired?).and_return(false)
+        allow(controller).to receive_messages(two_factor_authentication_required?: true, two_factor_grace_period_expired?: false)
 
         expect(subject).to be_truthy
       end

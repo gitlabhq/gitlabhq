@@ -43,12 +43,15 @@ If a body is included:
 - 72 characters maximum per line
 - Explain why the change is being made, not what it does
 
-### Issue and MR references
+### Work item and MR references
 
-Use full URLs. Do not use short references.
+When mentioning any work item (issue, epic, task) or merge request, write the
+entire URL. Do not use short references.
 
-- Correct: `Resolves https://gitlab.com/gitlab-org/gitlab/-/issues/123456`
+- Correct: `Resolves https://gitlab.com/gitlab-org/gitlab/-/work_items/123456`
+- Correct: `Follow-up to https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123456`
 - Incorrect: `Resolves #123456`
+- Incorrect: `Follow-up to !123456`
 
 This applies to merge request titles and descriptions as well, not only
 commit messages. Danger scans the MR description and fails when it finds

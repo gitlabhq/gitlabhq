@@ -28,6 +28,12 @@ export default {
       required: false,
       default: '',
     },
+    // Rendered between the label and the listbox, unlike `description` which follows the listbox.
+    labelDescription: {
+      type: String,
+      required: false,
+      default: '',
+    },
     name: {
       type: String,
       required: true,
@@ -90,7 +96,7 @@ export default {
   },
   computed: {
     wrapperComponent() {
-      return this.label || this.description ? 'gl-form-group' : 'div';
+      return this.label || this.labelDescription || this.description ? 'gl-form-group' : 'div';
     },
     allOptions() {
       const allOptions = [];
@@ -157,7 +163,13 @@ export default {
 </script>
 
 <template>
-  <component :is="wrapperComponent" :label="label" :description="description" v-bind="$attrs">
+  <component
+    :is="wrapperComponent"
+    :label="label"
+    :label-description="labelDescription"
+    :description="description"
+    v-bind="$attrs"
+  >
     <gl-collapsible-listbox
       :selected="selected"
       :toggle-id="toggleId"

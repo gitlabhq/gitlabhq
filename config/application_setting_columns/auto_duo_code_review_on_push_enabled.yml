@@ -1,0 +1,12 @@
+---
+api_type:
+attr: auto_duo_code_review_on_push_enabled
+clusterwide: false
+column: auto_duo_code_review_on_push_enabled
+db_type: boolean
+default: 'true'
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

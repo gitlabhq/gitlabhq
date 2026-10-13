@@ -36,7 +36,8 @@ module Types
 
     field :ci_config_path_or_default, GraphQL::Types::String,
       null: false,
-      description: 'Path of the CI configuration file.'
+      description: 'Path of the CI configuration file. Returns an empty string ' \
+        'if the user does not have permission to read the repository.'
 
     field :ci_config_variables, [Types::Ci::ConfigVariableType],
       null: true,
@@ -250,6 +251,17 @@ module Types
       description: 'Indicates if no merge commits should be created and all merges should instead be ' \
         'fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
 
+    field :merge_requests_default_target_self, GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if merge requests of a forked project target the fork itself by default ' \
+        'instead of the upstream project.'
+
+    field :default_merge_request_target, Types::ProjectType,
+      null: true,
+      description: 'Default target project of merge requests created from the project. ' \
+        'For a fork, this is the upstream project when the fork can target it, and the fork itself otherwise. ' \
+        'Returns `null` when the target project is not visible to the current user.'
+
     field :shared_runners_enabled, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if shared runners are enabled for the project.'
@@ -393,6 +405,13 @@ module Types
       null: true,
       description: 'A single merge request of the project.',
       resolver: Resolvers::MergeRequestsResolver.single
+
+    field :sourced_merge_requests,
+      Types::MergeRequestType.connection_type,
+      null: true,
+      description: 'Merge requests that have this project as their source, ' \
+        'including merge requests targeting other projects. Ordered by ID in descending order.',
+      resolver: Resolvers::Projects::SourcedMergeRequestsResolver
 
     field :issues,
       Types::IssueType.connection_type,
@@ -978,14 +997,28 @@ module Types
     end
 
     def pages_use_unique_domain
-      lazy_project_settings = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
-        ::ProjectSetting.for_projects(project_ids).each do |project_setting|
-          loader.call(project_setting.project_id, project_setting)
-        end
-      end
-
       Gitlab::Graphql::Lazy.with_value(lazy_project_settings) do |settings|
         (settings || object.project_setting).pages_unique_domain_enabled?
+      end
+    end
+
+    def merge_requests_default_target_self
+      Gitlab::Graphql::Lazy.with_value(lazy_project_settings) do |settings|
+        (settings || object.project_setting).mr_default_target_self
+      end
+    end
+
+    # Batched by hand: the model method touches project_setting, the fork
+    # relation, and the upstream's project_feature per project. Preloading
+    # those keeps the rule in the model without N+1 on project lists.
+    def default_merge_request_target
+      BatchLoader::GraphQL.for(unpresented).batch(key: :default_merge_request_target) do |projects, loader|
+        ActiveRecord::Associations::Preloader.new(
+          records: projects,
+          associations: [:project_setting, { forked_from_project: :project_feature }]
+        ).call
+
+        projects.each { |project| loader.call(project, project.default_merge_request_target) }
       end
     end
 
@@ -1084,7 +1117,11 @@ module Types
     end
 
     def container_repositories_count
-      project.container_repositories.size
+      BatchLoader::GraphQL.for(project.id).batch(default_value: 0) do |project_ids, loader|
+        ::ContainerRepository.for_project_id(project_ids).counts_by_project_id.each do |project_id, count|
+          loader.call(project_id, count)
+        end
+      end
     end
 
     def ci_pipeline_creation_inputs(ref:, fail_on_cache_miss: false)
@@ -1143,6 +1180,12 @@ module Types
     def job(id:)
       object.commit_statuses.find(id.model_id)
     rescue ActiveRecord::RecordNotFound
+    end
+
+    def ci_config_path_or_default
+      return '' unless Ability.allowed?(current_user, :read_code, object)
+
+      object.ci_config_path_or_default
     end
 
     def sast_ci_configuration
@@ -1265,6 +1308,14 @@ module Types
 
     def project
       @project ||= object.respond_to?(:sync) ? object.sync : object
+    end
+
+    def lazy_project_settings
+      BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::ProjectSetting.for_projects(project_ids).each do |project_setting|
+          loader.call(project_setting.project_id, project_setting)
+        end
+      end
     end
 
     def add_file_docs_link

@@ -1,0 +1,10 @@
+#import "./merge_widget_merge_request.fragment.graphql"
+
+# @feature_category: code_review_workflow
+subscription mergeWidgetSubscription($issuableId: IssuableID!) {
+  mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
+    ... on MergeRequest {
+      ...MergeWidgetMergeRequest
+    }
+  }
+}

@@ -103,50 +103,98 @@ RSpec.describe Organizations::OrganizationUsers::DestroyService, feature_categor
           create(:organization_user, :without_common_organization, organization: organization)
         end
 
+        let(:user) { organization_user.user }
+
         before do
           add_membership_to(organization_user)
         end
 
-        it 'returns an error for a group membership' do
+        it 'removes a direct group membership and deletes the organization user' do
           group = create(:group, organization: organization)
-          group.add_developer(organization_user.user)
-
-          expect { response }.not_to change { Organizations::OrganizationUser.count }
-
-          expect(response).to be_error
-          expect(response.reason).to eq(:has_memberships)
-          expect(response.message).to match_array(
-            [_('You cannot remove a user from an organization while they are a member of groups ' \
-              'or projects in the organization')]
-          )
-        end
-
-        it 'returns an error for a project membership' do
-          project = create(:project, organization: organization)
-          project.add_developer(organization_user.user)
-
-          expect { response }.not_to change { Organizations::OrganizationUser.count }
-
-          expect(response).to be_error
-          expect(response.reason).to eq(:has_memberships)
-        end
-
-        it 'deletes the organization user when the membership is in another organization' do
-          group = create(:group, organization: other_organization)
-          group.add_developer(organization_user.user)
+          group.add_developer(user)
 
           expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
 
           expect(response).to be_success
+          expect(group.member?(user)).to be(false)
+        end
+
+        it 'removes a direct project membership and deletes the organization user' do
+          project = create(:project, organization: organization)
+          project.add_developer(user)
+
+          expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+          expect(response).to be_success
+          expect(project.member?(user)).to be(false)
+        end
+
+        it 'removes memberships across the group hierarchy' do
+          group = create(:group, organization: organization)
+          subgroup = create(:group, parent: group, organization: organization)
+          project = create(:project, group: subgroup, organization: organization)
+          group.add_developer(user)
+          subgroup.add_developer(user)
+          project.add_developer(user)
+
+          expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+          expect(response).to be_success
+          expect(group.member?(user)).to be(false)
+          expect(subgroup.member?(user)).to be(false)
+          expect(project.member?(user)).to be(false)
+        end
+
+        it 'logs the removal with the count of cascaded memberships' do
+          group = create(:group, organization: organization)
+          group.add_developer(user)
+
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: 'Removed user from organization and cascaded membership removal',
+            Labkit::Fields::GL_ORGANIZATION_ID => organization.id,
+            target_user_id: user.id,
+            current_user_id: current_user.id,
+            removed_memberships_count: 1
+          )
+
+          expect(response).to be_success
+        end
+
+        it 'leaves memberships in other organizations untouched' do
+          group = create(:group, organization: other_organization)
+          group.add_developer(user)
+
+          expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
+
+          expect(response).to be_success
+          expect(group.member?(user)).to be(true)
         end
 
         it 'deletes the organization user when the membership is a pending access request' do
           group = create(:group, organization: organization)
-          create(:group_member, :access_request, group: group, user: organization_user.user)
+          create(:group_member, :access_request, group: group, user: user)
 
           expect { response }.to change { Organizations::OrganizationUser.count }.by(-1)
 
           expect(response).to be_success
+        end
+
+        it 'does not destroy the organization user when a group membership removal fails' do
+          group = create(:group, organization: organization)
+          group.add_developer(user)
+
+          allow_next_instance_of(::Members::DestroyService) do |service|
+            allow(service).to receive(:execute)
+          end
+
+          expect { response }.not_to change { Organizations::OrganizationUser.count }
+
+          expect(response).to be_error
+          expect(response.reason).to eq(:membership_removal_failed)
+          expect(response.message).to match_array(
+            [_('Failed to remove the user from groups or projects in the organization')]
+          )
+          expect(group.member?(user)).to be(true)
         end
       end
 
@@ -194,14 +242,96 @@ RSpec.describe Organizations::OrganizationUsers::DestroyService, feature_categor
         before do
           add_membership_to(organization_user)
 
-          allow(organization_user).to receive(:destroy)
-          allow(organization_user).to receive(:destroyed?).and_return(false)
+          allow(organization_user).to receive(:destroy!)
+            .and_raise(ActiveRecord::RecordNotDestroyed.new('failed', organization_user))
         end
 
         it 'returns an error' do
           expect(response).to be_error
           expect(response.message).to match_array([_('Failed to delete the organization user')])
         end
+      end
+    end
+  end
+
+  describe 'Organization Administrator role sync' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_owner) { create(:organization_owner, organization: organization) }
+
+    subject(:execute) do
+      described_class.new(organization_user, current_user: current_user).execute
+    end
+
+    before do
+      allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+    end
+
+    context 'when removing an owner' do
+      let_it_be_with_refind(:organization_owner) { create(:organization_owner, organization: organization) }
+      let(:organization_user) { organization_owner }
+      let(:current_user) { other_owner.user }
+
+      before_all do
+        # A user must remain associated with at least one organization, so the
+        # target needs a second membership for the destroy itself to succeed.
+        create(:organization_user, user: organization_owner.user)
+      end
+
+      it 'enqueues RevokeOwnerRoleWorker with the acting user as the third argument' do
+        expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+          .with(organization.id, organization_owner.user_id, other_owner.user.id)
+
+        execute
+      end
+
+      context 'when the owner removes themselves' do
+        let(:current_user) { organization_owner.user }
+
+        it 'enqueues RevokeOwnerRoleWorker with themselves as the acting user' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+            .with(organization.id, organization_owner.user_id, organization_owner.user_id)
+
+          execute
+        end
+      end
+
+      context 'when the owner role sync is unavailable' do
+        before do
+          allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not enqueue RevokeOwnerRoleWorker' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          execute
+        end
+      end
+
+      context 'when the removal fails' do
+        let(:organization_user) { create(:organization_owner, organization: organization) }
+
+        before do
+          create(:organization_user, user: organization_user.user)
+          allow(organization_user).to receive(:destroy!)
+            .and_raise(ActiveRecord::RecordNotDestroyed.new('failed', organization_user))
+        end
+
+        it 'does not enqueue RevokeOwnerRoleWorker' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          execute
+        end
+      end
+    end
+
+    context 'when removing a non-owner' do
+      let(:organization_user) { create(:organization_user, organization: organization) }
+      let(:current_user) { other_owner.user }
+
+      it 'does not enqueue RevokeOwnerRoleWorker' do
+        expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+        execute
       end
     end
   end

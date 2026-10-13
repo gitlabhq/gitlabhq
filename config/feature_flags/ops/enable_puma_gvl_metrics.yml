@@ -1,0 +1,10 @@
+---
+name: enable_puma_gvl_metrics
+description: Instrument GVL wait time in Puma processes
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/622752
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251880
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/622752
+milestone: '19.5'
+group: group::async
+type: ops
+default_enabled: false

@@ -19,6 +19,8 @@ import {
   OPEN_INTELLIJ_HTTPS,
   IDE_TYPE_VSCODE,
   IDE_TYPE_INTELLIJ,
+  OPEN_CUSTOM_IDE_LINK,
+  EXTERNAL_LINK_REL,
 } from './constants';
 
 const IDE_TRACKING_EVENTS = {
@@ -110,6 +112,11 @@ export default {
       required: false,
       default: '',
     },
+    customClients: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     httpLabel() {
@@ -175,9 +182,38 @@ export default {
         actions.push({
           text: __('Xcode'),
           href: this.xcodeUrl,
-          extraAttrs: { isUnsafeLink: true },
+          extraAttrs: { isUnsafeLink: true, rel: EXTERNAL_LINK_REL },
         });
       }
+
+      this.customClients.forEach((client) => {
+        const items = [];
+        if (client.sshUrl) {
+          items.push({
+            text: __('SSH'),
+            href: client.sshUrl,
+            tracking: {
+              action: OPEN_CUSTOM_IDE_LINK,
+              additionalProperties: { protocol: 'ssh' },
+            },
+            extraAttrs: { isUnsafeLink: true, rel: EXTERNAL_LINK_REL },
+          });
+        }
+        if (client.httpUrl) {
+          items.push({
+            text: __('HTTPS'),
+            href: client.httpUrl,
+            tracking: {
+              action: OPEN_CUSTOM_IDE_LINK,
+              additionalProperties: { protocol: 'https' },
+            },
+            extraAttrs: { isUnsafeLink: true, rel: EXTERNAL_LINK_REL },
+          });
+        }
+        if (items.length > 0) {
+          actions.push({ text: client.name, items });
+        }
+      });
 
       return actions;
     },
@@ -255,6 +291,7 @@ export default {
                   tracking: { action: IDE_TRACKING_EVENTS[ideType].ssh },
                   extraAttrs: {
                     isUnsafeLink: true,
+                    rel: EXTERNAL_LINK_REL,
                   },
                 },
               ]
@@ -267,6 +304,7 @@ export default {
                   tracking: { action: IDE_TRACKING_EVENTS[ideType].https },
                   extraAttrs: {
                     isUnsafeLink: true,
+                    rel: EXTERNAL_LINK_REL,
                   },
                 },
               ]

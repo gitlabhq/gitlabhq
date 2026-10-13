@@ -12,7 +12,7 @@ RSpec.describe 'Merge request shortcuts', :js, feature_category: :code_review_wo
     project.add_developer(user)
   end
 
-  describe 'pressing "r"', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4085' do
+  describe 'pressing "r"' do
     before do
       create(:note, noteable: merge_request, project: project, note: note_text)
       sign_in(user)
@@ -46,33 +46,31 @@ RSpec.describe 'Merge request shortcuts', :js, feature_category: :code_review_wo
     end
   end
 
-  describe 'pressing "a"', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6978' do
+  describe 'pressing "a"' do
     before do
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
       wait_for_requests
     end
 
-    it "opens assignee dropdown for editing",
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6979' do
+    it "opens assignee dropdown for editing" do
       find('body').native.send_key('a')
 
-      expect(find('.block.assignee')).to have_selector('.dropdown-menu-user')
+      expect(find('.block.assignee')).to have_selector('[data-testid="listbox-search-input"]')
     end
   end
 
-  describe 'pressing "m"', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3815' do
+  describe 'pressing "m"' do
     before do
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
       wait_for_requests
     end
 
-    it "opens milestones dropdown for editing",
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6980' do
+    it "opens milestones dropdown for editing" do
       find('body').native.send_key('m')
 
-      expect(find_by_testid('milestone-edit')).to have_selector('.gl-dropdown-inner')
+      expect(find('.block.milestone')).to have_selector('[data-testid="listbox-search-input"]')
     end
   end
 

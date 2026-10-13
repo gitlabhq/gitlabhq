@@ -57,6 +57,12 @@ export default function createRouter(projectFullPath, baseRef, fullName) {
         ...treePathRoute,
       },
       {
+        name: 'treePathEncodedSlashes',
+        // External tools (e.g. Jira) link refs with encoded slashes (%2F)
+        path: `/:dash(-)?/tree/${escapeRegExp(baseRef?.replace(/\//g, '%2F'))}/:path*`,
+        ...treePathRoute,
+      },
+      {
         name: 'treePath',
         // Support without decoding as well just in case the ref doesn't need to be decoded
         path: `/:dash(-)?/tree/${escapeRegExp(baseRef)}/:path*`,
@@ -72,6 +78,12 @@ export default function createRouter(projectFullPath, baseRef, fullName) {
         name: 'blobPathEncoded',
         // Support encoded refs for branches with special characters (e.g., #, %, etc.)
         path: `/:dash(-)?/blob/${encodeRepositoryPath(baseRef)}/:path*`,
+        ...blobPathRoute,
+      },
+      {
+        name: 'blobPathEncodedSlashes',
+        // External tools (e.g. Jira) link refs with encoded slashes (%2F)
+        path: `/:dash(-)?/blob/${escapeRegExp(baseRef?.replace(/\//g, '%2F'))}/:path*`,
         ...blobPathRoute,
       },
       {
@@ -91,6 +103,13 @@ export default function createRouter(projectFullPath, baseRef, fullName) {
           refType: 'HEADS',
         },
       },
+      {
+        // Fallback: history navigation can land on non-repository paths (e.g. wikis)
+        // while this app is loaded
+        path: '*',
+        name: 'notFound',
+        component: { render: () => null },
+      },
     ],
   });
 
@@ -103,7 +122,7 @@ export default function createRouter(projectFullPath, baseRef, fullName) {
   // .js-static-panel-inner, so class selectors alone would match the wrong element.
   const containerEl = document.getElementById('content-body')?.parentElement;
 
-  router.afterEach(({ params: { path }, name }) => {
+  router.afterEach(({ params: { path }, name = '' }) => {
     const needsClosingSlash = !name.includes('blobPath');
     const normalizedPath = normalizePathParam(path);
     window.gl.webIDEPath = webIDEUrl(
@@ -123,7 +142,7 @@ export default function createRouter(projectFullPath, baseRef, fullName) {
     setTitle(titlePath || '', baseRef, fullName);
 
     if (containerEl) {
-      const wideRoute = name?.startsWith('treePath') || name?.startsWith('blobPath');
+      const wideRoute = name.startsWith('treePath') || name.startsWith('blobPath');
       containerEl.classList.toggle('repository-max-width', wideRoute);
     }
   });

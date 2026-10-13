@@ -24,3 +24,10 @@ export const trendChangeFor = (value, previousValue) => {
  */
 export const formatChange = (change) =>
   formatNumber(Math.abs(change), { style: 'percent', maximumFractionDigits: 1 });
+
+/**
+ * Formats a change as a signed percentage (`+7%`, `-4%`, `0%`), for a label with room for
+ * neither an arrow nor a tooltip to carry the direction.
+ */
+export const formatSignedChange = (change) =>
+  formatNumber(change, { style: 'percent', maximumFractionDigits: 1, signDisplay: 'exceptZero' });

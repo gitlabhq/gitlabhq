@@ -2,7 +2,7 @@
 stage: Agent Foundations
 group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Replace the default Docker image with a custom, hardened, or offline image to run GitLab Duo Agent Platform flows in CI/CD.
+description: Default image contents, and how to replace it with a custom, hardened, or offline image to run GitLab Duo Agent Platform flows in CI/CD.
 title: Configure images for flow execution
 ---
 
@@ -17,6 +17,55 @@ Flows that run with CI/CD execute inside a Docker image. By default, GitLab prov
 an image that includes the tools and network protection flows need. You can replace
 the default image with a custom or hardened image to add project dependencies, meet compliance
 requirements, or run flows in an offline environment.
+
+## Default image for flows
+
+If you do not set `image` in `agent-config.yml`, flows use the default image. The default image is based on
+Red Hat UBI 9 Minimal and runs as root. It includes Anthropic Sandbox Runtime (SRT)
+and a set of common language runtimes, so many projects can run flows without a custom image.
+
+The default image is published at
+`registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image`.
+
+It is built for `linux/amd64` and `linux/arm64`, and uses the following tag scheme:
+
+- `:<short-sha>` for each build
+- `:<git-tag>` for each release
+
+### Image contents
+
+For the authoritative and up-to-date list of all components and pinned versions,
+see the [default image runtime inventory](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#default-image)
+in the `default-docker-image` README.
+
+The following table lists the current pinned versions:
+
+| Component                             | Version or source                                       |
+|---------------------------------------|---------------------------------------------------------|
+| Base image                            | Red Hat UBI 9 Minimal (`ubi9-minimal:9.7-1776833838`)   |
+| `git`                                 | 2.47.x (UBI 9 stock)                                    |
+| `git-lfs`                             | UBI 9 stock                                             |
+| Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                    |
+| `npm`                                 | Bundled with Node.js 20                                 |
+| `@gitlab/duo-cli`                     | 9.27.0                                                  |
+| `glab` (GitLab CLI)                   | 1.120.0                                                 |
+| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                        |
+| `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, root-based sandboxing)  |
+| `socat`                               | AlmaLinux 9 EPEL                                        |
+| `rg` (ripgrep)                        | AlmaLinux 9 EPEL                                        |
+| `unshare`                             | UBI 9 (`util-linux-core`)                               |
+| Python                                | 3.12 with pip (`python3.12`, `python3.12-pip`)          |
+| Go                                    | 1.22.12 (upstream tarball)                              |
+| Ruby                                  | 3.3 (UBI 9 module stream `ruby:3.3`)                    |
+| Java                                  | 17 (`java-17-openjdk-headless`)                         |
+| Runtime user                          | root                                                    |
+
+The default and hardened images share a single base layer. The hardened image adds the
+GitLab Duo CLI, `glab`, and SRT to that layer. The default image adds the language
+runtimes, then the same tools. The two images differ in runtime user and in how the
+sandbox obtains its privileges. The default image runs as root and uses root-based
+sandboxing, and the hardened image runs as UID 1001 and relies on unprivileged user
+namespaces.
 
 ## Change the default Docker image
 
@@ -62,7 +111,7 @@ Docker image with your preferred version:
 
 ```Docker
 # Install srt sandboxing with cache clearing and verification
-ARG SANDBOX_RUNTIME_VERSION=0.0.63
+ARG SANDBOX_RUNTIME_VERSION=0.0.77
 RUN npm cache clean --force && \
     npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
     test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
@@ -113,7 +162,7 @@ and [configure a network policy](../../environment_sandbox.md#configure-a-networ
 
 To reduce job startup time by approximately 15-20 seconds, include the
 GitLab Duo CLI binary and the `glab` CLI in your custom image.
-The hardened image pre-installs both tools.
+The default and hardened images pre-install both tools.
 
 ## Use a custom image in an offline environment
 
@@ -128,22 +177,26 @@ Prerequisites:
 - GitLab 18.9 or later.
 - Access to an online machine to build the image and download artifacts.
 
+Executor images `v0.0.11` and later include the GitLab Duo CLI in `/usr/local/bin/duo`,
+so flows do not download it at runtime. Build a custom image only if your GitLab version
+requests an earlier tag, or if you need a different GitLab Duo CLI version.
+
 To configure flows for an offline environment:
 
 1. On an online machine, download the GitLab Duo CLI binary from the
    [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
 
    ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.8.0/duo-linux-x64" \
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.27.0/duo-linux-x64" \
      --output duo-linux-x64
    ```
 
 1. Build a custom image that includes the binary:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
-   COPY duo-linux-x64 /usr/bin/duo
-   RUN chmod +x /usr/bin/duo
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.21
+   COPY duo-linux-x64 /usr/local/bin/duo
+   RUN chmod +x /usr/local/bin/duo
    ```
 
 1. Transfer the image to your offline environment.
@@ -164,14 +217,84 @@ To configure flows for an offline environment:
    1. In the upper-right corner, select **Admin**.
    1. In the left sidebar, select **GitLab Duo**.
    1. Select **Change configuration**.
-   1. In the **Image registry** text box, enter your internal registry URL
-      (for example, `registry.internal.example.com`).
+   1. In the **Image registry** text box, enter the full reference of your custom image
+      (for example, `registry.internal.example.com/duo-executor:latest`).
+      If you enter only a registry hostname, a flow that does not set its own image pulls
+      `<hostname>/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image`
+      with the tag your GitLab version requests.
 1. In the top bar, select **Search or go to** and find your project.
 1. To use the custom image, update the `agent-config.yml` file:
 
    ```yaml
    image: registry.internal.example.com/duo-executor:latest
    ```
+
+### Configure flows to pull the image from the GitLab container registry
+
+If you push the image to a project's container registry on the same GitLab
+instance, a flow's CI/CD job pulls it across projects. That pull fails until
+you configure it, because the job runs as the
+[service account](../../composite_identity.md) GitLab creates for flows, and
+GitLab creates that account as an
+[external user](../../../../administration/external_users.md). An internal
+project looks private to an external account, so the registry refuses the
+pull.
+
+Two conditions must both hold for the pull to succeed. The service account
+must be able to read the host project's container registry, and so must the
+person who triggers the flow.
+[Composite identity](../../composite_identity.md) limits the service account
+to the access of that person, so a flow never has permissions the triggering
+user lacks. Satisfying one condition alone leaves the pull refused.
+
+To give the service account access, either make it non-external, or make it a
+member of the host project.
+
+To make the account non-external:
+
+1. Set the project that hosts the image to
+   [internal visibility](../../../public_access.md#change-project-visibility).
+   Set the container registry visibility to **Everyone With Access**. If you select **Only Project Members**, the pull fails. For more information, see
+   [Configure project features and permissions](../../../project/settings/_index.md#configure-project-features-and-permissions).
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Overview** > **Users**.
+1. Find the service account GitLab created for flows, then select **Edit**.
+1. In the **Access** section, clear the **External** checkbox.
+1. Select **Save changes**.
+
+To make the account a member of the host project instead:
+
+1. Add the service account to the host project as a member with at least the
+   Developer role.
+1. Add the project that runs the flow to the host project's
+   [job token allowlist](../../../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist).
+
+Membership without the allowlist entry is not enough.
+
+The people who trigger flows need access to the host project by the same
+rules as any other user. On an internal host project, they must not be
+external users. On a private host project, they must be members with at least
+the Reporter role. The Guest role is not enough, because a Guest can see the
+project but cannot pull from its container registry.
+
+### Provide credentials for the image pull
+
+If the registry that contains the image requires credentials, configure them on
+the runner that runs the flow's jobs. You can configure credentials on registries
+that GitLab hosts and does not host.
+By default, a flow's job does not receive CI/CD variables configured at the
+project, group, or instance level, so a `DOCKER_AUTH_CONFIG` variable defined
+there does not apply, and the value cannot be
+[masked](../../../../ci/variables/_index.md#mask-a-cicd-variable).
+
+To supply credentials on the runner:
+
+1. On the project that hosts the image, create a
+   [deploy token](../../../project/deploy_tokens/_index.md#pull-images-from-a-container-registry)
+   with the `read_registry` scope.
+1. [Add `DOCKER_AUTH_CONFIG` to the runner](../../../../ci/docker/using_docker_images.md#configuring-a-runner)
+   as an entry in the `environment` list of the `[[runners]]` section of its
+   `config.toml` file.
 
 ## Use a Red Hat Universal Base Image 9 Minimal
 
@@ -211,7 +334,8 @@ image: registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow
 ### Image contents
 
 For the authoritative and up-to-date list of all components and pinned versions,
-see the runtime inventory in the `default-docker-image` [README](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#runtime-inventory).
+see the [hardened image runtime inventory](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#hardened-ubi-9-minimal-image)
+in the `default-docker-image` README.
 
 The following table lists the current pinned versions:
 
@@ -222,9 +346,9 @@ The following table lists the current pinned versions:
 | `git-lfs`                             | UBI 9 stock                                              |
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                     |
 | `npm`                                 | Bundled with Node.js 20                                  |
-| `@gitlab/duo-cli`                     | 8.109.0                                                  |
-| `glab` (GitLab CLI)                   | 1.107.0                                                  |
-| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.63 (via npm)                                         |
+| `@gitlab/duo-cli`                     | 9.27.0                                                   |
+| `glab` (GitLab CLI)                   | 1.120.0                                                  |
+| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                         |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |
 | `socat`                               | AlmaLinux 9 EPEL                                         |
 | `rg` (ripgrep)                        | AlmaLinux 9 EPEL                                         |

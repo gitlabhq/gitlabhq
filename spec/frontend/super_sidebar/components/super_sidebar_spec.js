@@ -9,9 +9,15 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
-import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
+import SidebarPreferences from '~/super_sidebar/components/sidebar_preferences.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
+import {
+  SIDEBAR_NAV_MODE_PINNED_ONLY,
+  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
+  SIDEBAR_NAV_MODE_GROUPED_PINS,
+  SIDEBAR_NAV_MODE_STORAGE_KEY,
+} from '~/super_sidebar/constants';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
 import ManageOrganizationButton from '~/super_sidebar/components/manage_organization_button.vue';
 import { sidebarState } from '~/super_sidebar/state';
@@ -47,7 +53,6 @@ describe('SuperSidebar component', () => {
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
-  const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findSettingsDisclosureTarget = () =>
     wrapper
       .findAllComponents(PortalTarget)
@@ -57,6 +62,7 @@ describe('SuperSidebar component', () => {
   const findManageOrganizationButton = () => wrapper.findComponent(ManageOrganizationButton);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findContextHeader = () => wrapper.find('#super-sidebar-context-header');
+  const findPreferences = () => wrapper.findComponent(SidebarPreferences);
 
   const createWrapper = ({
     provide = {},
@@ -119,20 +125,48 @@ describe('SuperSidebar component', () => {
       expect(findSidebarMenu().props('items')).toBe(mockSidebarData.current_menu_items);
     });
 
-    it('renders SidebarPortalTarget', () => {
-      createWrapper();
-      expect(findSidebarPortalTarget().exists()).toBe(true);
-    });
-
     describe('settings disclosure portal target', () => {
+      const findContextHeaderPortalTarget = () => findContextHeader().findComponent(PortalTarget);
+
       it('is not rendered when hideUnpinnedSidebarItems is disabled', () => {
         createWrapper();
         expect(findSettingsDisclosureTarget()).toBeUndefined();
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(false);
       });
 
       it('is rendered when hideUnpinnedSidebarItems is enabled', () => {
         createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
         expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+      });
+
+      it('renders in the context header when the sidebar is expanded', () => {
+        createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
+
+        expect(findContextHeaderPortalTarget().exists()).toBe(true);
+        expect(wrapper.findAllComponents(PortalTarget)).toHaveLength(1);
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(true);
+      });
+
+      it('renders outside the context header when the sidebar is icon-only', () => {
+        createWrapper({
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          sidebarState: { isIconOnly: true },
+        });
+
+        expect(findContextHeader().exists()).toBe(false);
+        expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(false);
+      });
+
+      it('still renders a target when expanded but the panel has no context header', () => {
+        createWrapper({
+          sidebarData: { ...mockSidebarData, current_context_header: null },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+
+        expect(findContextHeader().exists()).toBe(false);
+        expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(false);
       });
     });
 
@@ -188,6 +222,19 @@ describe('SuperSidebar component', () => {
 
       expect(findManageOrganizationButton().exists()).toBe(true);
       expect(findManageOrganizationButton().props('href')).toBe(manageOrganizationLink);
+      expect(findManageOrganizationButton().props('isExit')).toBe(false);
+    });
+
+    it('puts the manage organization button in exit mode within the organization admin panel', () => {
+      createWrapper({
+        sidebarData: {
+          ...mockSidebarData,
+          manage_organization_link: '/o/my-org/-/overview',
+          panel_type: 'organization_admin',
+        },
+      });
+
+      expect(findManageOrganizationButton().props('isExit')).toBe(true);
     });
 
     it('renders the context header', () => {
@@ -196,10 +243,114 @@ describe('SuperSidebar component', () => {
       expect(wrapper.text()).toContain('Your work');
     });
 
+    it('puts the labelling id on the title text only, not the whole header', () => {
+      // The non-static items list is labelled by this id. Keeping it on the
+      // title span (not the container that also holds the preferences dropdown)
+      // stops "Customize sidebar" leaking into that computed accessible name.
+      createWrapper();
+
+      const title = wrapper.find('#super-sidebar-context-header-title');
+
+      expect(title.exists()).toBe(true);
+      expect(title.text()).toBe('Your work');
+    });
+
     it('does not render a context header if it does not exist', () => {
       createWrapper({ sidebarData: { ...mockSidebarData, current_context_header: null } });
 
       expect(findContextHeader().exists()).toBe(false);
+    });
+
+    describe('sidebar preferences', () => {
+      // The preferences are persisted to localStorage, so clear it between
+      // tests to stop opted-in state leaking into later examples.
+      afterEach(() => {
+        localStorage.clear();
+      });
+
+      const createPinnablePanel = (provide = {}) =>
+        createWrapper({
+          sidebarData: { ...mockSidebarData, panel_type: 'project' },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true }, ...provide },
+        });
+
+      it('renders the control in the context header for a pinnable panel with the flag on', () => {
+        createPinnablePanel();
+
+        expect(findPreferences().exists()).toBe(true);
+      });
+
+      it('does not render the control when unpinned items are shown', () => {
+        createWrapper({
+          sidebarData: { ...mockSidebarData, panel_type: 'project' },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: false } },
+        });
+
+        expect(findPreferences().exists()).toBe(false);
+      });
+
+      it('does not render the control on a non-pinnable panel', () => {
+        createPinnablePanel();
+        // your_work is the default mock panel_type and is not pinnable
+        createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
+
+        expect(findPreferences().exists()).toBe(false);
+      });
+
+      it('seeds the mode from localStorage', () => {
+        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+        createPinnablePanel();
+
+        expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+      });
+
+      it('defaults to pinned-only when localStorage holds an unknown value', () => {
+        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, 'nonsense');
+        createPinnablePanel();
+
+        expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_PINNED_ONLY);
+      });
+
+      describe('when a mode is selected', () => {
+        it('persists the all-categories mode and forwards booleans to the menu', async () => {
+          createPinnablePanel();
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          await nextTick();
+
+          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe(
+            SIDEBAR_NAV_MODE_ALL_CATEGORIES,
+          );
+          expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          expect(findSidebarMenu().props('showOldCategories')).toBe(true);
+          expect(findSidebarMenu().props('groupPinned')).toBe(false);
+        });
+
+        it('persists the grouped-pins mode and forwards booleans to the menu', async () => {
+          createPinnablePanel();
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_GROUPED_PINS);
+          await nextTick();
+
+          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe(
+            SIDEBAR_NAV_MODE_GROUPED_PINS,
+          );
+          expect(findSidebarMenu().props('groupPinned')).toBe(true);
+          expect(findSidebarMenu().props('showOldCategories')).toBe(false);
+        });
+
+        // A single mode makes the two views mutually exclusive by construction:
+        // switching directly from one to the other cannot leave both enabled.
+        it('switches cleanly between modes without leaving both views enabled', async () => {
+          createPinnablePanel();
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_GROUPED_PINS);
+          await nextTick();
+
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          await nextTick();
+
+          expect(findSidebarMenu().props('showOldCategories')).toBe(true);
+          expect(findSidebarMenu().props('groupPinned')).toBe(false);
+        });
+      });
     });
 
     describe('item access tracking', () => {
@@ -457,7 +608,6 @@ describe('SuperSidebar component', () => {
         stubs: {
           UserBar: true,
           HelpCenter: true,
-          SidebarPortalTarget: true,
           IconOnlyToggle: true,
           TrialWidget: true,
           PinnedSection: true,

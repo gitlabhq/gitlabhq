@@ -57,7 +57,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/cleanup/policy"
 ```
@@ -229,7 +230,8 @@ DELETE /groups/:id/-/virtual_registries/cleanup/policy
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
      --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/cleanup/policy"
 ```

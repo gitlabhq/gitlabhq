@@ -69,7 +69,7 @@ RSpec.describe ::Integrations::Field, feature_category: :integrations do
   described_class::ATTRIBUTES.each do |name|
     describe "##{name}" do
       it "responds to #{name}" do
-        expect(field).to be_respond_to(name)
+        expect(field).to respond_to(name)
       end
 
       context 'when not set' do

@@ -50,8 +50,12 @@ If the secondary site is not able to reconnect, use the following steps to remov
        SELECT pg_drop_replication_slot('<name_of_inactive_slot>');
        ```
 
-    1. [Re-initiate the replication process](../../setup/database.md#step-3-initiate-the-replication-process),
-       which recreates the replication slot correctly.
+    1. [Re-initiate the replication process (non-Patroni database)](../../setup/database.md#step-3-initiate-the-replication-process),
+       which re-creates the replication slot correctly.
+
+       > [!note]
+       > Replication slots for Patroni-managed databases are not re-created when you initiate the replication process on the secondary site.
+       > You must first configure them with the [`patroni['replication_slots']` setting on the primary site](../../setup/database.md#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site).
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), follow the steps [to remove that Geo site](../remove_geo_site.md).
 
@@ -117,6 +121,111 @@ log data to build up in `pg_xlog`.
 
 [Removing the inactive slots](#removing-an-inactive-replication-slot) can reduce the amount of space used in the `pg_xlog`.
 
+## Free up disk space used by old PostgreSQL data directories
+
+If a site that uses the Linux package is running low on disk space,
+delete leftover PostgreSQL data directories.
+A site can accumulate them over several PostgreSQL upgrades
+or Geo replication re-initializations.
+Each directory is a full copy of a database.
+
+The following directories are in `/var/opt/gitlab/postgresql/`.
+On secondary sites, `data` and `data.<old_version>` are also in
+`/var/opt/gitlab/geo-postgresql/` (the tracking database):
+
+| Directory                                              | Created by                          | Safe to delete when                 |
+|--------------------------------------------------------|-------------------------------------|-------------------------------------|
+| `data`                                                 | Not applicable                      | Never.                              |
+| `data.<old_version>`, for example `data.14`            | `gitlab-ctl pg-upgrade`             | You confirm that the upgrade works. |
+| `data.<unix_timestamp>`, for example `data.1712345678` | `gitlab-ctl replicate-geo-database` | You confirm that replication works. |
+
+The timestamp in `data.<unix_timestamp>` shows when `gitlab-ctl replicate-geo-database`
+replaced that copy of the database.
+The timestamp does not mean the directory is in use.
+
+If you ran `gitlab-ctl pg-upgrade` with `--tmp-dir=<DIR>`,
+the `data.<old_version>` directory is in `<DIR>` instead of `/var/opt/gitlab/postgresql/`.
+On secondary sites, the tracking database copy is `<DIR>/geo-data.<old_version>`.
+To revert the upgrade, run `gitlab-ctl revert-pg-upgrade` with the same `--tmp-dir` option.
+
+> [!warning]
+> Do not delete the `data` directory, which is the live database.
+> Keep the `data.<old_version>` directory from your most recent PostgreSQL upgrade
+> until you confirm that the upgrade works.
+> If you used `--tmp-dir`, keep the directories in `<DIR>`.
+> On secondary sites, keep the tracking database copy too.
+> On Linux package versions that include more than one PostgreSQL version,
+> the `gitlab-ctl revert-pg-upgrade` command needs the `data.<old_version>` directories.
+
+To free up disk space:
+
+1. Confirm which directory is live.
+
+   - On all sites, run the following command:
+
+     ```shell
+     sudo gitlab-psql -c 'SHOW data_directory;'
+     ```
+
+   - On secondary sites, also run the following command to check the tracking database:
+
+     ```shell
+     sudo gitlab-geo-psql -c 'SHOW data_directory;'
+     ```
+
+1. List the leftover directories:
+
+   ```shell
+   sudo ls -d /var/opt/gitlab/*postgresql/data.*
+   ```
+
+   If you changed `postgresql['dir']`, use your custom path instead.
+   If you ran `gitlab-ctl pg-upgrade` with `--tmp-dir=<DIR>`, also list the directories in `<DIR>`:
+
+   ```shell
+   sudo ls -d <DIR>/*data.*
+   ```
+
+1. Confirm that the site is healthy.
+
+   - On primary sites, run the following command.
+     Make sure the output lists each secondary site:
+
+     ```shell
+     sudo gitlab-psql -xc 'SELECT * FROM pg_stat_replication;'
+     ```
+
+   - On secondary sites, run the following command. Make sure the output includes `Database replication working? ... yes`:
+
+     ```shell
+     sudo gitlab-rake gitlab:geo:check
+     ```
+
+1. Delete each leftover directory you no longer need.
+   Keep the `data.<old_version>` directory from your most recent upgrade
+   until you confirm that the upgrade works.
+   To be cautious, also keep the most recent `data.<unix_timestamp>` directory
+   until you confirm that the new replica works, and delete the older ones.
+
+   Do not delete `data`.
+   To delete a leftover directory, run the following command with the exact path
+   from the list of leftover directories:
+
+   ```shell
+   sudo rm -rf <path_to_leftover_directory>
+   ```
+
+1. Recommended. If you deleted the `data.<old_version>` directories from your most recent upgrade,
+   delete the version file.
+   The `gitlab-ctl revert-pg-upgrade` command uses this file to choose its default target version.
+   To delete the file, run:
+
+   ```shell
+   sudo rm -f /var/opt/gitlab/postgresql-version.old
+   ```
+
+For more information, see [upgrade packaged PostgreSQL server](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
+
 ## Message: `ERROR: canceling statement due to conflict with recovery`
 
 This error message occurs infrequently under typical usage, and the system is resilient
@@ -127,7 +236,7 @@ excessively long, which increases the frequency of this error message. This can 
 where some queries never complete due to being canceled on every replication.
 
 These long-running queries are
-[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
+[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/work_items/34269),
 but as a workaround, we recommend enabling
 [`hot_standby_feedback`](https://www.postgresql.org/docs/16/hot-standby.html#HOT-STANDBY-CONFLICT).
 This increases the likelihood of bloat on the primary site as it prevents
@@ -148,7 +257,7 @@ sudo gitlab-ctl reconfigure
 ```
 
 To help us resolve this problem, consider commenting on
-[the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4489).
+[the issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/4489).
 
 ## Message: `server certificate for "PostgreSQL" does not match host name`
 
@@ -203,7 +312,7 @@ is aborted to prevent accidental data loss. To bypass this message, pass the `--
 
 ## Message: `FATAL:  could not map anonymous shared memory: Cannot allocate memory`
 
-If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381585) that tracks this problem.
+If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/381585) that tracks this problem.
 
 Example error message in Patroni logs (located at `/var/log/gitlab/patroni/current` for Linux package installations):
 

@@ -41,15 +41,18 @@ you to use.
      or `<Your Name>'s GitLab` or something else descriptive.
    - **Application description**: Optional. Fill this in if you wish.
    - **Callback URL**: (Required)
-     The URL to your GitLab installation, such as
-     `https://gitlab.example.com/users/auth`. Leaving this
-     field empty results in an `Invalid redirect_uri` message.
+     Enter both of the following URLs, replacing `gitlab.example.com` with the URL of your
+     GitLab installation:
+
+     - To sign in with Bitbucket: `https://gitlab.example.com/users/auth/bitbucket/callback`
+     - To import projects from Bitbucket: `https://gitlab.example.com/users/auth/-/import/bitbucket/callback`
+
+     Leaving this field empty results in an `Invalid redirect_uri` message.
 
      > [!warning]
      > To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
-     > attack, append `/users/auth` to the end of your Bitbucket authorization callback URL. You must
-     > include this authorization endpoint to authenticate with Bitbucket and import data from Bitbucket
-     > repositories.
+     > attack, enter the full callback URLs, including the `/bitbucket/callback` and
+     > `/-/import/bitbucket/callback` endpoints.
 
    - **URL**: The URL to your GitLab installation, such as `https://gitlab.example.com`.
 

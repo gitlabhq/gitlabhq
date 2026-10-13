@@ -92,20 +92,12 @@ RSpec.describe Namespaces::ServiceAccounts::GroupUpdateService, feature_category
           end
         end
 
-        context 'when group owns the email domain' do
-          it 'skips confirmation and updates the email directly', :aggregate_failures do
-            resource = service.send(:resource)
-            allow(resource).to receive(:owner_of_email?).with(params[:email]).and_return(true)
+        it 'requires confirmation of the new email', :aggregate_failures do
+          result = service.execute
 
-            result = service.execute
-
-            expect(result.status).to eq(:success)
-            expect(result.payload[:user].email).to eq(params[:email])
-            expect(result.payload[:user].unconfirmed_email).to be_nil
-          end
+          expect(result.status).to eq(:success)
+          expect(result.payload[:user].unconfirmed_email).to eq(params[:email])
         end
-
-        # domain_verification is EE-only - see ee/spec counterpart
       end
     end
 

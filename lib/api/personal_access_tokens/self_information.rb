@@ -48,7 +48,8 @@ module API
         end
         route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
         get 'self' do
-          present access_token, with: Entities::PersonalAccessToken
+          present access_token, with: Entities::PersonalAccessToken,
+            **granular_scopes_options_for([access_token])
         end
 
         desc 'List all token associations' do
@@ -64,7 +65,8 @@ module API
         params do
           # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :min_access_level, type: Integer, values: Gitlab::Access.all_values,
-            desc: 'Limit by minimum access level of authenticated user'
+            desc: 'Return groups and projects where the current user has at least the specified access level. For a ' \
+              'list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).'
           # rubocop:enable API/AccessLevelStringType
           use :pagination
         end

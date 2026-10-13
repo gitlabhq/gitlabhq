@@ -5,7 +5,11 @@ module Types
     class SourceUserType < BaseObject
       graphql_name 'ImportSourceUser'
 
-      authorize :admin_import_source_user
+      authorize :read_import_source_user
+
+      authorize_granular_token permissions: :read_import_source_user,
+        boundary: :user,
+        boundary_type: :user
 
       field :id,
         Types::GlobalIDType[::Import::SourceUser],
@@ -53,6 +57,11 @@ module Types
         Types::Import::ImportSourceEnum,
         null: false,
         description: 'Name of the importer.'
+
+      field :namespace,
+        Types::NamespaceType,
+        null: true,
+        description: 'Namespace the contributions were imported to.'
 
       field :status,
         Types::Import::SourceUserStatusEnum,

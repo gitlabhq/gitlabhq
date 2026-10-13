@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
-import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '~/vue_shared/translate';
 import SettingsApp from 'ee_else_ce/packages_and_registries/settings/group/components/group_settings_app.vue';
 import { apolloProvider } from './graphql';

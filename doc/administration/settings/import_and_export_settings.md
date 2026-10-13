@@ -363,9 +363,10 @@ To modify this setting:
 1. Expand **Import and export settings**.
 1. In **Maximum import remote file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
-## Maximum download file size for imports by direct transfer
+## Maximum download file size for imports by direct or offline transfer
 
-By default, the maximum download file size for imports by direct transfer is 5 GiB.
+By default, the maximum download file size for imports by [direct transfer](../../user/group/import/_index.md) and by
+[offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) is 5 GiB.
 
 To modify this setting:
 
@@ -485,9 +486,14 @@ For more information, see [application settings API](../../api/settings.md).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4
+  [with a feature flag](../../administration/feature_flags/_index.md) named `limit_concurrent_project_exports`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Project file exports run on Sidekiq nodes with limited memory and disk space, so too many
 concurrent exports can saturate those nodes and delay every export on the instance.

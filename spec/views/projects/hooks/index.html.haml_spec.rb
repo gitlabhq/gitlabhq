@@ -3,10 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/hooks/index' do
-  let(:existing_hook) { create(:project_hook, project: project) }
+  let(:project) { build_stubbed(:project) }
+  let(:existing_hook) { build_stubbed(:project_hook, project: project) }
   let(:new_hook) { ProjectHook.new }
-
-  let_it_be_with_refind(:project) { create(:project) }
 
   before do
     assign :project, project

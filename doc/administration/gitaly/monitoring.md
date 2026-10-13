@@ -10,7 +10,7 @@ Use the available logs and [Prometheus metrics](../monitoring/prometheus/_index.
 Metric definitions are available:
 
 - Directly from Prometheus `/metrics` endpoint configured for Gitaly.
-- Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
+- Using [Grafana Explore](https://grafana.com/docs/grafana/latest/visualizations/explore/) on a
   Grafana instance configured against Prometheus.
 
 Gitaly can be configured to limit requests based on concurrency of requests (adaptive or non-adaptive).

@@ -203,6 +203,10 @@ RSpec.describe MetricsServer, feature_category: :durability_metrics do
 
     before do
       allow(Gitlab::ProcessSupervisor).to receive(:instance).and_return(supervisor)
+      # Ensure that the `at_exit` hook is not registered as this will be called
+      # outside the test when RSpec exits. This would call `supervisor.shutdown`
+      # on the mock object and raise an `OutsideOfExampleError`
+      allow(described_class).to receive(:at_exit)
     end
 
     it 'spawns a server process and supervises it' do
@@ -210,6 +214,15 @@ RSpec.describe MetricsServer, feature_category: :durability_metrics do
         include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
       ).once.and_return(42)
       expect(supervisor).to receive(:supervise).with(42)
+
+      described_class.start_for_puma
+    end
+
+    it 'registers an at_exit hook that shuts down the supervisor' do
+      expect(supervisor).to receive(:supervise)
+
+      expect(described_class).to receive(:at_exit).and_yield
+      expect(supervisor).to receive(:shutdown)
 
       described_class.start_for_puma
     end

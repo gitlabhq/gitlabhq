@@ -91,7 +91,7 @@ module Gitlab
           source_user_id: source_user.id,
           import_type: source_user.import_type,
           namespace_id: source_user.namespace_id,
-          user_id: user.id
+          Labkit::Fields::GL_USER_ID => user.id
         )
       end
 

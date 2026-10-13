@@ -1,27 +1,21 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { parseBoolean } from '~/lib/utils/common_utils';
-import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
-import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
+import HighlightWorker from '~/highlight_js/workers/highlight_worker?worker';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
 import initHeaderApp from './init_header_app';
-import repositoryPathMixin from './mixins/repository_path';
+import initLastCommitApp from './init_last_commit_app';
+import initForkInfoApp from './init_fork_info_app';
 import RepositoryApp from './components/app.vue';
-import RepositoryBreadcrumbs from './components/header_area/breadcrumbs.vue';
-import ForkInfo from './components/fork_info.vue';
-import LastCommit from './components/last_commit.vue';
 
 import apolloProvider from './graphql';
-import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
-import { updateFormAction } from './utils/dom';
-import { generateHistoryUrl } from './utils/url_utility';
 
 Vue.use(Vuex);
 Vue.use(PerformancePlugin, {
@@ -49,13 +43,6 @@ export default function setupVueRepositoryList() {
   initFileTreeBrowser(router, { projectPath, ref, refType });
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
-    query: commitsQuery,
-    data: {
-      commits: [],
-    },
-  });
-
-  apolloProvider.clients.defaultClient.cache.writeQuery({
     query: projectPathQuery,
     data: {
       projectPath,
@@ -77,142 +64,9 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  const initForkInfo = () => {
-    const forkEl = document.getElementById('js-fork-info');
-    if (!forkEl) {
-      return null;
-    }
-    const {
-      selectedBranch,
-      sourceName,
-      sourcePath,
-      sourceDefaultBranch,
-      createMrPath,
-      viewMrPath,
-      canSyncBranch,
-      aheadComparePath,
-      behindComparePath,
-    } = forkEl.dataset;
-    return new Vue({
-      el: forkEl,
-      name: 'ForkInfoRoot',
-      apolloProvider,
-      render(h) {
-        return h(ForkInfo, {
-          props: {
-            canSyncBranch: parseBoolean(canSyncBranch),
-            projectPath,
-            selectedBranch,
-            sourceName,
-            sourcePath,
-            sourceDefaultBranch,
-            aheadComparePath,
-            behindComparePath,
-            createMrPath,
-            viewMrPath,
-          },
-        });
-      },
-    });
-  };
-
-  const lastCommitEl = document.getElementById('js-last-commit');
-
-  const initLastCommitApp = () =>
-    new Vue({
-      el: lastCommitEl,
-      name: 'RepositoryLastCommitRoot',
-      router,
-      apolloProvider,
-      mixins: [repositoryPathMixin],
-      computed: {
-        refType() {
-          return this.$route.meta.refType || this.$route.query.ref_type;
-        },
-        historyUrl() {
-          return generateHistoryUrl(
-            lastCommitEl.dataset.historyLink,
-            this.computedPath,
-            this.refType,
-          );
-        },
-      },
-      render(h) {
-        return h(LastCommit, {
-          props: {
-            currentPath: this.computedPath,
-            refType: this.refType,
-            historyUrl: this.historyUrl.href,
-          },
-        });
-      },
-    });
-
   initHeaderApp({ router });
-  initLastCommitApp();
-  initForkInfo();
-
-  const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
-
-  if (breadcrumbEl) {
-    const {
-      canCollaborate,
-      canEditTree,
-      canPushCode,
-      canPushToBranch,
-      selectedBranch,
-      newBranchPath,
-      newTagPath,
-      newBlobPath,
-      forkNewBlobPath,
-      forkNewDirectoryPath,
-      forkUploadBlobPath,
-      uploadPath,
-      newDirPath,
-    } = breadcrumbEl.dataset;
-
-    router.afterEach(({ params: { path } }) => {
-      updateFormAction('.js-create-dir-form', newDirPath, path);
-    });
-
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: breadcrumbEl,
-      name: 'RepositoryBreadcrumbsRoot',
-      router,
-      apolloProvider,
-      mixins: [repositoryPathMixin],
-      computed: {
-        currentRefType() {
-          return this.$route.query.ref_type;
-        },
-      },
-      render(h) {
-        return h(RepositoryBreadcrumbs, {
-          props: {
-            currentPath: this.computedPath,
-            refType: this.currentRefType,
-            canCollaborate: parseBoolean(canCollaborate),
-            canPushToBranch: parseBoolean(canPushToBranch),
-            canEditTree: parseBoolean(canEditTree),
-            canPushCode: parseBoolean(canPushCode),
-            originalBranch: ref,
-            selectedBranch,
-            newBranchPath,
-            newTagPath,
-            newBlobPath,
-            forkNewBlobPath,
-            forkNewDirectoryPath,
-            forkUploadBlobPath,
-            uploadPath,
-            newDirPath,
-          },
-        });
-      },
-    });
-  }
-
-  initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
+  initLastCommitApp(router);
+  initForkInfoApp();
 
   // eslint-disable-next-line no-new
   new Vue({

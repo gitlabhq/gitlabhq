@@ -2,13 +2,13 @@ import Vue, { computed, nextTick, ref } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import MockAdapter from 'axios-mock-adapter';
-import { GlAlert, GlIntersectionObserver } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIntersectionObserver } from '@gitlab/ui';
 import { createMockSubscription } from 'mock-apollo-client';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { resolvers } from '~/graphql_shared/issuable_client';
@@ -66,13 +66,11 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TICKET,
   STATE_CLOSED,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
   VIEW_MODE_TABLE,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -87,7 +85,12 @@ import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_save
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import namespaceWorkItemChangesSubscription from '~/work_items/list/graphql/namespace_work_item_changes.subscription.graphql';
+import workItemSavedViewUpdatedSubscription from '~/work_items/list/graphql/work_item_saved_view_updated.subscription.graphql';
 import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
+import {
+  markRealtimeRefetch,
+  COUNT_OPERATIONS,
+} from '~/work_items/list/graphql/realtime_request_tag';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 
@@ -100,6 +103,8 @@ import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filte
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
+import WorkItemViewModeToggle from '~/work_items/components/work_item_view_mode_toggle.vue';
+import WorkItemDisplaySettingsButton from '~/work_items/components/work_item_display_settings_button.vue';
 import InfoBanner from '~/work_items/list/components/info_banner.vue';
 import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
 import EmptyStateWithAnyTickets from '~/work_items/list/components/empty_state_with_any_tickets.vue';
@@ -154,6 +159,10 @@ const emptySavedViewsResult = {
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/work_items/list/graphql/realtime_request_tag', () => ({
+  ...jest.requireActual('~/work_items/list/graphql/realtime_request_tag'),
+  markRealtimeRefetch: jest.fn(),
+}));
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
@@ -169,6 +178,15 @@ jest.mock('ee_else_ce/work_items/list/utils', () => {
     getFilterTokens: jest.fn(actual.getFilterTokens),
   };
 });
+// The board view mode is EE-only, but most of the board behaviour below is shared, so this
+// defaults to true (overridden per test) rather than testing every case under FOSS_ONLY too.
+let mockHasBoardViewMode = true;
+jest.mock('ee_else_ce/work_items/view_modes', () => ({
+  ...jest.requireActual('ee_else_ce/work_items/view_modes'),
+  get hasBoardViewMode() {
+    return mockHasBoardViewMode;
+  },
+}));
 
 useLocalStorageSpy();
 
@@ -260,6 +278,8 @@ const boardViewStub = {
     'detailPanelEnabled',
     'preselectedWorkItemType',
     'canCreateWorkItem',
+    'hasWorkItems',
+    'hasWorkItemsLoading',
   ],
   template: '<div />',
 };
@@ -276,7 +296,9 @@ const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSa
 const findViewNotFoundModal = () => wrapper.findComponentByTestId('view-not-found-modal');
 const findViewLimitWarningModal = () => wrapper.findComponentByTestId('view-limit-warning-modal');
 const findDisplaySettingsDrawer = () => wrapper.findComponent(WorkItemDisplaySettingsDrawer);
-const findDisplaySettingsButton = () => wrapper.findComponentByTestId('display-settings-button');
+const findViewModeToggle = () => wrapper.findComponent(WorkItemViewModeToggle);
+const findToolbarViewActions = () => wrapper.findByTestId('toolbar-view-actions');
+const findDisplaySettingsButton = () => wrapper.findComponent(WorkItemDisplaySettingsButton);
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
 const findBulkEditStartButton = () => wrapper.findComponentByTestId('bulk-edit-start-button');
@@ -292,10 +314,6 @@ const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown)
 const getCache = () => apolloProvider.defaultClient.cache;
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
-
-const defaultFeatureFlags = {
-  okrsMvc: true,
-};
 
 const mountComponent = async ({
   hasWorkItemsHandler = defaultHasWorkItemsHandler,
@@ -331,10 +349,7 @@ const mountComponent = async ({
 
   router = new VueRouter({
     mode: 'history',
-    routes: [
-      { name: 'base', path: '/', component: PlanningView },
-      ...routes({ fullPath: '/work_item' }),
-    ],
+    routes: [{ name: 'base', path: '/', component: PlanningView }, ...routes],
   });
 
   isLoggedIn.mockReturnValue(isLoggedInValue);
@@ -344,7 +359,6 @@ const mountComponent = async ({
     router,
     provide: {
       glFeatures: {
-        ...defaultFeatureFlags,
         ...provideGlFeatures,
       },
       metadataLoading: false,
@@ -352,8 +366,6 @@ const mountComponent = async ({
       isGroupIssuesList: false,
       isServiceDeskSupported: true,
       hasEpicsFeature: false,
-      hasOkrsFeature: false,
-      hasQualityManagementFeature: false,
       workItemType: null,
       isIssueRepositioningDisabled: false,
       groupId: 'gid://gitlab/Group/1',
@@ -372,9 +384,7 @@ const mountComponent = async ({
       canCreateWorkItem: false,
       autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
       canAdminIssue: true,
-      canBulkAdminEpic: true,
       canCreateProjects: true,
-      hasGroupBulkEditFeature: true,
       hasIterationsFeature: false,
       hasProjects: true,
       getWorkItemTypeConfiguration: jest
@@ -426,6 +436,7 @@ describe('planning-view', () => {
       jest.requireActual('~/lib/utils/url_utility').getParameterByName(...args),
     );
     resetPlanningViewState();
+    mockHasBoardViewMode = true;
   });
 
   it('passes correct queryVariables to list-view', async () => {
@@ -545,20 +556,6 @@ describe('planning-view', () => {
       });
     });
 
-    describe('when rendering epics list', () => {
-      beforeEach(async () => {
-        await mountComponent({
-          provide: {
-            workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          },
-        });
-      });
-
-      it('uses work item drawer', () => {
-        expect(findDetailPanel().exists()).toBe(true);
-      });
-    });
-
     it('closes the drawer when set-active-item emits null', async () => {
       const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
       await mountComponent();
@@ -631,7 +628,7 @@ describe('planning-view', () => {
 
     describe('when workItemType is defined', () => {
       it('renders all tokens except "Type"', async () => {
-        await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
+        await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_TICKET } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -1119,33 +1116,6 @@ describe('planning-view', () => {
       });
     });
 
-    describe('when epics list', () => {
-      it('does not render "Priority", "Label priority", "Manual", "Status", and "Weight" sort options', async () => {
-        await mountComponent({
-          provide: {
-            hasBlockedIssuesFeature: true,
-            hasIssuableHealthStatusFeature: true,
-            hasIssueWeightsFeature: true,
-            hasStatusFeature: true,
-            workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          },
-        });
-
-        expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
-          expect.objectContaining({ title: 'Created date' }),
-          expect.objectContaining({ title: 'Updated date' }),
-          expect.objectContaining({ title: 'Closed date' }),
-          expect.objectContaining({ title: 'Milestone due date' }),
-          expect.objectContaining({ title: 'Due date' }),
-          expect.objectContaining({ title: 'Popularity' }),
-          expect.objectContaining({ title: 'Title' }),
-          expect.objectContaining({ title: 'Start date' }),
-          expect.objectContaining({ title: 'Health' }),
-          expect.objectContaining({ title: 'Blocking' }),
-        ]);
-      });
-    });
-
     describe('when service desk list', () => {
       it('does not render "Status" sort options', async () => {
         await mountComponent({
@@ -1220,22 +1190,12 @@ describe('planning-view', () => {
 
   describe('when workItemType is provided', () => {
     it('passes "workItemTypeIds" property to list-view queryVariables', async () => {
-      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
+      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_TICKET } });
 
       await waitForPromises();
 
       expect(findListView().props('queryVariables')).toMatchObject({
         workItemTypeIds: 'gid://gitlab/WorkItems::Type/1',
-      });
-    });
-  });
-
-  describe('when workItemType Epic is provided', () => {
-    it('passes "excludeProjects" property to list-view queryVariables', async () => {
-      await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-
-      expect(findListView().props('queryVariables')).toMatchObject({
-        excludeProjects: true,
       });
     });
   });
@@ -1649,7 +1609,7 @@ describe('planning-view', () => {
           stubs: { BoardView: boardViewStub },
         });
 
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
       });
 
@@ -2129,12 +2089,14 @@ describe('planning-view', () => {
       });
 
       it.each`
-        message                      | planningViewBoards | listViewExists | boardViewExists
-        ${'falls back to list view'} | ${false}           | ${true}        | ${false}
-        ${'restores board view'}     | ${true}            | ${false}       | ${true}
+        message                      | hasBoardViewMode | planningViewBoards | listViewExists | boardViewExists
+        ${'falls back to list view'} | ${false}         | ${true}            | ${true}        | ${false}
+        ${'falls back to list view'} | ${true}          | ${false}           | ${true}        | ${false}
+        ${'restores board view'}     | ${true}          | ${true}            | ${false}       | ${true}
       `(
-        '$message from the unsaved draft when planningViewBoards is $planningViewBoards',
-        async ({ planningViewBoards, listViewExists, boardViewExists }) => {
+        '$message from the unsaved draft when hasBoardViewMode is $hasBoardViewMode and planningViewBoards is $planningViewBoards',
+        async ({ hasBoardViewMode, planningViewBoards, listViewExists, boardViewExists }) => {
+          mockHasBoardViewMode = hasBoardViewMode;
           localStorage.setItem(
             'full/path-saved-view-3',
             JSON.stringify({
@@ -2509,31 +2471,21 @@ describe('planning-view', () => {
 
   describe('when bulk editing', () => {
     describe('user permissions', () => {
-      describe('when workItemType=Epic', () => {
-        it.each([true, false])('renders=$s when canBulkAdminEpic=%s', async (canBulkAdminEpic) => {
-          await mountComponent({
-            provide: { canBulkAdminEpic, workItemType: WORK_ITEM_TYPE_NAME_EPIC },
-          });
-
-          expect(findBulkEditStartButton().exists()).toBe(canBulkAdminEpic);
-        });
-      });
-
       describe('when group', () => {
         it.each`
-          canAdminIssue | hasGroupBulkEditFeature | renders
-          ${true}       | ${true}                 | ${true}
-          ${true}       | ${false}                | ${false}
-          ${false}      | ${true}                 | ${false}
-          ${false}      | ${false}                | ${false}
+          canAdminIssue | hasProjects | renders
+          ${true}       | ${true}     | ${true}
+          ${true}       | ${false}    | ${true}
+          ${false}      | ${true}     | ${false}
+          ${false}      | ${false}    | ${false}
         `(
-          'renders=$renders when canAdminIssue=$canAdminIssue and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
-          async ({ canAdminIssue, hasGroupBulkEditFeature, renders }) => {
+          'renders=$renders when canAdminIssue=$canAdminIssue and hasProjects=$hasProjects',
+          async ({ canAdminIssue, hasProjects, renders }) => {
             await mountComponent({
               provide: {
                 isGroup: true,
                 canAdminIssue,
-                hasGroupBulkEditFeature,
+                hasProjects,
                 hasEpicsFeature: true,
               },
             });
@@ -2551,7 +2503,6 @@ describe('planning-view', () => {
               canAdminIssue: true,
               hasProjects: true,
               hasEpicsFeature: false,
-              hasGroupBulkEditFeature: false,
             },
           });
 
@@ -2565,7 +2516,19 @@ describe('planning-view', () => {
               canAdminIssue: false,
               hasProjects: true,
               hasEpicsFeature: false,
-              hasGroupBulkEditFeature: false,
+            },
+          });
+
+          expect(findBulkEditStartButton().exists()).toBe(false);
+        });
+
+        it('does not allow bulk editing when group has no projects', async () => {
+          await mountComponent({
+            provide: {
+              isGroup: true,
+              canAdminIssue: true,
+              hasProjects: false,
+              hasEpicsFeature: false,
             },
           });
 
@@ -2587,7 +2550,7 @@ describe('planning-view', () => {
         await mountComponent({
           provide: { glFeatures: { planningViewBoards: true } },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findBulkEditStartButton().exists()).toBe(false);
@@ -2737,29 +2700,20 @@ describe('planning-view', () => {
       expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
     });
 
-    describe('alwaysShowWorkItemTypeSelect', () => {
-      it.each`
-        workItemType                 | value
-        ${WORK_ITEM_TYPE_NAME_ISSUE} | ${true}
-        ${WORK_ITEM_TYPE_NAME_EPIC}  | ${false}
-      `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
-        await mountComponent({ provide: { workItemType } });
+    it.each`
+      isGroup  | hideNamespaceSelector
+      ${true}  | ${false}
+      ${false} | ${true}
+    `(
+      'passes hideNamespaceSelector as $hideNamespaceSelector when isGroup is $isGroup',
+      async ({ isGroup, hideNamespaceSelector }) => {
+        await mountComponent({ provide: { isGroup } });
 
-        expect(findCreateWorkItemModal().props('alwaysShowWorkItemTypeSelect')).toBe(value);
-      });
-    });
-
-    describe('preselectedWorkItemType', () => {
-      it.each`
-        workItemType                 | value
-        ${WORK_ITEM_TYPE_NAME_ISSUE} | ${WORK_ITEM_TYPE_NAME_ISSUE}
-        ${WORK_ITEM_TYPE_NAME_EPIC}  | ${WORK_ITEM_TYPE_NAME_EPIC}
-      `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
-        await mountComponent({ provide: { workItemType } });
-
-        expect(findCreateWorkItemModal().props('preselectedWorkItemType')).toBe(value);
-      });
-    });
+        expect(findCreateWorkItemModal().props('hideNamespaceSelector')).toBe(
+          hideNamespaceSelector,
+        );
+      },
+    );
   });
 
   describe('empty states', () => {
@@ -2965,6 +2919,18 @@ describe('planning-view', () => {
       expect(findDisplaySettingsButton().exists()).toBe(true);
     });
 
+    it('renders the view mode toggle with the current view mode', () => {
+      expect(findViewModeToggle().props('viewMode')).toBe(VIEW_MODE_LIST);
+    });
+
+    it('right-aligns the view mode toggle and Display button as a group', () => {
+      expect(findToolbarViewActions().classes()).toContain('gl-ml-auto');
+      expect(findToolbarViewActions().findComponent(WorkItemViewModeToggle).exists()).toBe(true);
+      expect(
+        findToolbarViewActions().find('[data-testid="display-settings-button"]').exists(),
+      ).toBe(true);
+    });
+
     it('renders the drawer closed by default with the Display button unselected', () => {
       expect(findDisplaySettingsDrawer().props('open')).toBe(false);
       expect(findDisplaySettingsButton().props('selected')).toBe(false);
@@ -3119,8 +3085,8 @@ describe('planning-view', () => {
         expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_LIST);
       });
 
-      it('switches to board view when the drawer emits toggle-view-mode with "board"', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+      it('switches to board view when the view mode toggle emits toggle-view-mode with "board"', async () => {
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findListView().exists()).toBe(false);
@@ -3129,7 +3095,7 @@ describe('planning-view', () => {
       });
 
       it('passes rootPageFullPath and queryVariables to the board view', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', 'board');
+        findViewModeToggle().vm.$emit('toggle-view-mode', 'board');
         await waitForPromises();
 
         expect(findBoardView().props('rootPageFullPath')).toBe('full/path');
@@ -3141,15 +3107,161 @@ describe('planning-view', () => {
       });
 
       it('passes the preselected work item type to the board view for in-column creation', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', 'board');
+        findViewModeToggle().vm.$emit('toggle-view-mode', 'board');
         await waitForPromises();
 
         expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
       });
 
+      describe('when the board view is shown', () => {
+        beforeEach(async () => {
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('passes hasWorkItems and its loading state to the board view', () => {
+          expect(findBoardView().props()).toMatchObject({
+            hasWorkItems: true,
+            hasWorkItemsLoading: false,
+          });
+        });
+
+        describe('when the board emits work-item-created', () => {
+          beforeEach(async () => {
+            defaultHasWorkItemsHandler.mockClear();
+
+            findBoardView().vm.$emit('work-item-created', {});
+            await waitForPromises();
+          });
+
+          it('refetches hasWorkItems so the columns replace the empty state', () => {
+            expect(defaultHasWorkItemsHandler).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+
+      describe('when hasWorkItems fails and a refetch then finds no work items', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            // vue-apollo retries once after an error, so both the first request and the retry fail.
+            hasWorkItemsHandler: jest
+              .fn()
+              .mockRejectedValueOnce(new Error('Network error'))
+              .mockRejectedValueOnce(new Error('Network error'))
+              .mockResolvedValue({
+                data: { namespace: { id: 'namespace', workItems: { nodes: [] } } },
+              }),
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: boardViewStub,
+            },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('keeps the columns while the failure stands, then shows the empty state', async () => {
+          expect(findBoardView().props('hasWorkItems')).toBe(true);
+
+          findBoardView().vm.$emit('work-item-created', {});
+          await waitForPromises();
+
+          expect(findBoardView().props('hasWorkItems')).toBe(false);
+        });
+      });
+
+      describe('when the board view is shown for a namespace with no work items', () => {
+        const findBoardEmptyStateModal = () =>
+          findEmptyStateWithoutAnyIssues().findComponent(CreateWorkItemModal);
+
+        beforeEach(async () => {
+          await mountComponent({
+            hasWorkItemsHandler: emptyHasWorkItemsHandler,
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: stubComponent(boardViewStub, {
+                template: '<div><slot name="empty-state"></slot></div>',
+              }),
+            },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('fills the board empty state with the list empty state', () => {
+          expect(findBoardView().props('hasWorkItems')).toBe(false);
+          expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+            hasProjects: true,
+            showNewIssueDropdown: false,
+          });
+        });
+
+        it('offers the list create modal with the board create source', () => {
+          expect(findBoardEmptyStateModal().props()).toMatchObject({
+            creationContext: CREATION_CONTEXT_LIST_ROUTE,
+            createSource: 'work_item_board',
+          });
+        });
+
+        describe('when an item is created from the empty state', () => {
+          beforeEach(async () => {
+            emptyHasWorkItemsHandler.mockClear();
+            defaultCountsOnlyHandler.mockClear();
+
+            findBoardEmptyStateModal().vm.$emit('work-item-created', {});
+            await waitForPromises();
+          });
+
+          it('refetches hasWorkItems and the counts so the columns replace the empty state', () => {
+            expect(emptyHasWorkItemsHandler).toHaveBeenCalledTimes(1);
+            expect(defaultCountsOnlyHandler).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+
+      describe('when the board shows its empty state for a namespace with work items', () => {
+        const findBoardEmptyStateModal = () =>
+          findEmptyStateWithAnyIssues().findComponent(CreateWorkItemModal);
+
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: stubComponent(boardViewStub, {
+                template: '<div><slot name="empty-state"></slot></div>',
+              }),
+              EmptyStateWithAnyIssues,
+              GlEmptyState: stubComponent(GlEmptyState, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+            },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('fills the board empty state with the no results state', () => {
+          expect(findBoardView().props('hasWorkItems')).toBe(true);
+          expect(findEmptyStateWithAnyIssues().props('withTabs')).toBe(false);
+          expect(findEmptyStateWithAnyIssues().findComponent(GlEmptyState).props()).toMatchObject({
+            title: 'No results found',
+            description: 'To widen your search, change or remove filters above.',
+          });
+          expect(findEmptyStateWithoutAnyIssues().exists()).toBe(false);
+        });
+
+        it('offers the list create modal with the board create source', () => {
+          expect(findBoardEmptyStateModal().props()).toMatchObject({
+            creationContext: CREATION_CONTEXT_LIST_ROUTE,
+            createSource: 'work_item_board',
+          });
+        });
+      });
+
       describe('when the board asks for the group by settings', () => {
         beforeEach(async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           findBoardView().vm.$emit('open-group-by-settings');
@@ -3168,6 +3280,13 @@ describe('planning-view', () => {
           expect(findDisplaySettingsDrawer().props('page')).toBe('root');
         });
 
+        it('goes back to the root page when switching away from the board view', async () => {
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          await waitForPromises();
+
+          expect(findDisplaySettingsDrawer().props('page')).toBe('root');
+        });
+
         it('re-opens the group by page after the drawer navigates itself back to root', async () => {
           findDisplaySettingsDrawer().vm.$emit('page-change', 'root');
           await nextTick();
@@ -3182,7 +3301,7 @@ describe('planning-view', () => {
       describe('when board card is selected', () => {
         it('opens the detail panel and marks the card active', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           findBoardView().vm.$emit('set-active-item', payload);
@@ -3195,13 +3314,13 @@ describe('planning-view', () => {
 
         it('keeps the detail panel open when switching from board to list view', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           findBoardView().vm.$emit('set-active-item', payload);
           await waitForPromises();
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
           await waitForPromises();
 
           expect(findBoardView().exists()).toBe(false);
@@ -3237,7 +3356,7 @@ describe('planning-view', () => {
             }),
           });
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           expect(findBoardView().props('detailPanelEnabled')).toBe(false);
@@ -3246,7 +3365,7 @@ describe('planning-view', () => {
       });
 
       it('enforces Manual sort on the board and restores the list sort on exit', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
@@ -3254,7 +3373,7 @@ describe('planning-view', () => {
         ]);
         expect(findDisplaySettingsDrawer().props('sortKey')).toBe(RELATIVE_POSITION_ASC);
 
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findDisplaySettingsDrawer().props('sortOptions').length).toBeGreaterThan(1);
@@ -3262,7 +3381,7 @@ describe('planning-view', () => {
       });
 
       it('does not persist the sort when the locked Manual option is selected on the board', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         findDisplaySettingsDrawer().vm.$emit('sort', RELATIVE_POSITION_ASC);
@@ -3273,16 +3392,16 @@ describe('planning-view', () => {
         );
 
         // The list sort is preserved so it is restored on exit.
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findDisplaySettingsDrawer().props('sortKey')).toBe(CREATED_DESC);
       });
 
-      it('switches back to list view when the drawer emits toggle-view-mode with "list"', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+      it('switches back to list view when the view mode toggle emits toggle-view-mode with "list"', async () => {
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findListView().exists()).toBe(true);
@@ -3296,7 +3415,7 @@ describe('planning-view', () => {
         it('tracks switching to board view', async () => {
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
@@ -3307,11 +3426,11 @@ describe('planning-view', () => {
         });
 
         it('tracks switching back to list view', async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
           await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
@@ -3323,7 +3442,7 @@ describe('planning-view', () => {
       });
 
       it('persists view mode for All Items', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         await mountComponent({
@@ -3354,7 +3473,7 @@ describe('planning-view', () => {
           userPreferenceMutationResponse: mutationHandler,
         });
 
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(mutationHandler).toHaveBeenCalledWith({
@@ -3389,7 +3508,7 @@ describe('planning-view', () => {
 
       describe('when creating a new saved view in board mode', () => {
         beforeEach(async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
         });
 
@@ -3411,7 +3530,7 @@ describe('planning-view', () => {
         const message = 'Something went wrong when fetching the board columns.';
 
         beforeEach(async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
           findBoardView().vm.$emit('set-error', message);
           await nextTick();
@@ -3442,7 +3561,7 @@ describe('planning-view', () => {
             userPreferenceMutationResponse: mutationHandler,
           });
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_TABLE);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_TABLE);
           await waitForPromises();
         });
 
@@ -3456,7 +3575,6 @@ describe('planning-view', () => {
           expect(findTableView().props()).toMatchObject({
             rootPageFullPath: 'full/path',
             queryVariables: expect.objectContaining({ fullPath: 'full/path' }),
-            hasWorkItems: true,
           });
         });
 
@@ -3515,7 +3633,7 @@ describe('planning-view', () => {
             provide: { glFeatures: { planningViewBoards: true } },
             stubs: { BoardView: boardViewStub },
           });
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
         });
 
@@ -3531,6 +3649,23 @@ describe('planning-view', () => {
 
         it('opens in a new tab', () => {
           expect(findBoardFeedbackLink().attributes('target')).toBe('_blank');
+        });
+      });
+
+      describe('when planningViewBoardsGroup is also enabled and board view is active', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true, planningViewBoardsGroup: true } },
+            stubs: { BoardView: boardViewStub },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('links to the public feedback work item', () => {
+          expect(findBoardFeedbackLink().attributes('href')).toBe(
+            'https://gitlab.com/gitlab-org/gitlab/-/work_items/632391',
+          );
         });
       });
 
@@ -3591,7 +3726,7 @@ describe('planning-view', () => {
         beforeEach(async () => {
           await mountSavedViewWithDrawer({ displaySettings: { viewMode: VIEW_MODE_LIST } });
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await nextTick();
         });
 
@@ -3646,7 +3781,6 @@ describe('planning-view', () => {
           provide: {
             glFeatures: {
               planningViewBoards: true,
-              workItemListDisplaySettingsDrawer: true,
             },
           },
           stubs: {
@@ -3655,7 +3789,7 @@ describe('planning-view', () => {
           },
           ...options,
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
       };
 
@@ -3704,7 +3838,7 @@ describe('planning-view', () => {
 
             await mountComponent({
               provide: {
-                glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+                glFeatures: { planningViewBoards: true },
               },
               stubs: {
                 WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
@@ -3713,7 +3847,7 @@ describe('planning-view', () => {
               mockPreferencesHandler: deferredHandler,
               skipLastWait: true,
             });
-            findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+            findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
             await waitForPromises();
 
             // The preferences query is still in flight, so the selection isn't known yet.
@@ -3822,7 +3956,6 @@ describe('planning-view', () => {
             provide: {
               glFeatures: {
                 planningViewBoards: true,
-                workItemListDisplaySettingsDrawer: true,
               },
             },
             savedViewHandler: jest
@@ -3880,7 +4013,7 @@ describe('planning-view', () => {
       const mountAllItemsBoard = async (options = {}) => {
         await mountComponent({
           provide: {
-            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+            glFeatures: { planningViewBoards: true },
           },
           stubs: {
             WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
@@ -3888,7 +4021,7 @@ describe('planning-view', () => {
           },
           ...options,
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
       };
 
@@ -3899,7 +4032,7 @@ describe('planning-view', () => {
         };
         await mountComponent({
           provide: {
-            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+            glFeatures: { planningViewBoards: true },
           },
           savedViewHandler: jest
             .fn()
@@ -3938,6 +4071,7 @@ describe('planning-view', () => {
           const mutationHandler = userPrefUpdateHandlerWith({
             hiddenMetadataKeys: ['labels'],
             groupOrder,
+            groupSort: 'manual',
           });
           await mountAllItemsBoard({
             mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
@@ -3949,7 +4083,7 @@ describe('planning-view', () => {
 
           expect(mutationHandler).toHaveBeenCalledWith({
             namespace: 'full/path',
-            displaySettings: { hiddenMetadataKeys: ['labels'], groupOrder },
+            displaySettings: { hiddenMetadataKeys: ['labels'], groupOrder, groupSort: 'manual' },
           });
         });
 
@@ -3960,6 +4094,25 @@ describe('planning-view', () => {
           await waitForPromises();
 
           expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        });
+
+        it('switches groupSort to manual, since a drag or move only means something there', async () => {
+          // Echoes groupSort: 'desc' back after the view-mode-toggle mutation that
+          // mountAllItemsBoard triggers, so the reorder mutation below starts from a real
+          // (non-manual) baseline instead of one the test already hardcoded as the answer.
+          const mutationHandler = userPrefUpdateHandlerWith({ groupSort: 'desc' });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ groupSort: 'desc' }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { groupSort: 'manual', groupOrder },
+          });
         });
 
         it('shows an alert when persisting the reorder fails', async () => {
@@ -4163,7 +4316,7 @@ describe('planning-view', () => {
     const cachedWorkItemId = 'gid://gitlab/WorkItem/1';
     const uncachedWorkItemId = 'gid://gitlab/WorkItem/2';
     const cursor = btoa(JSON.stringify({ created_at: '2025-12-14 17:09:52.000000000 +0000' }));
-    const BoardViewStub = { name: 'BoardView', template: '<div />' };
+    const BoardViewStub = { name: 'BoardView', props: ['realtimeMatches'], template: '<div />' };
 
     let subscription;
     let subscriptionHandler;
@@ -4263,6 +4416,7 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
+        expect(markRealtimeRefetch).toHaveBeenCalledWith('count', COUNT_OPERATIONS);
       });
     });
 
@@ -4293,6 +4447,29 @@ describe('planning-view', () => {
 
         expect(evictedFields(evictSpy)).toEqual([]);
         expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(true);
+      });
+
+      it('passes it to the board instead of removing it, when it still matches in board view', async () => {
+        await mountWithSubscription({
+          provide: { glFeatures: { planningViewBoards: true } },
+          stubs: { BoardView: BoardViewStub },
+        });
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+        cacheWorkItem(cachedWorkItemId);
+        const matchedNode = buildWorkItemNode(1);
+        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([matchedNode]));
+        const evictSpy = jest.spyOn(getCache(), 'evict');
+        const modifySpy = jest.spyOn(getCache(), 'modify');
+
+        emitChange(cachedWorkItemId, 'UPDATED');
+        await flushChanges();
+
+        expect(evictedFields(evictSpy)).toEqual([]);
+        expect(wasRemovedFromLists(modifySpy, cachedWorkItemId)).toBe(false);
+        const matches = findBoardView().props('realtimeMatches');
+        expect(matches.created).toEqual([]);
+        expect(matches.updated.map((node) => node.id)).toEqual([cachedWorkItemId]);
       });
     });
 
@@ -4328,7 +4505,7 @@ describe('planning-view', () => {
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         cacheWorkItem(cachedWorkItemId);
@@ -4355,6 +4532,7 @@ describe('planning-view', () => {
 
         expect(slimMatchHandler).toHaveBeenCalled();
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(markRealtimeRefetch).toHaveBeenCalledWith('refetch');
       });
 
       it('does not reload the list when the new item does not match the current filters', async () => {
@@ -4410,14 +4588,15 @@ describe('planning-view', () => {
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
       });
 
-      it('reloads the board when the new item matches, probing with the board query', async () => {
+      it('passes the matched item to the board instead of reloading it', async () => {
         await mountWithSubscription({
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
-        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([buildWorkItemNode(2)]));
+        const matchedNode = buildWorkItemNode(2);
+        boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([matchedNode]));
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         emitChange(uncachedWorkItemId, 'CREATED');
@@ -4425,7 +4604,10 @@ describe('planning-view', () => {
 
         expect(boardMatchHandler).toHaveBeenCalled();
         expect(slimMatchHandler).not.toHaveBeenCalled();
-        expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(evictedFields(evictSpy)).toEqual([]);
+        const matches = findBoardView().props('realtimeMatches');
+        expect(matches.created.map((node) => node.id)).toEqual([uncachedWorkItemId]);
+        expect(matches.updated).toEqual([]);
       });
 
       it('does not reload the list when the match query fails', async () => {
@@ -4524,6 +4706,7 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
+        expect(markRealtimeRefetch).toHaveBeenCalledWith('reconnect');
       });
 
       it('does nothing when the workItemsRealtime feature flag is off', async () => {
@@ -4534,6 +4717,7 @@ describe('planning-view', () => {
         await flushChanges();
 
         expect(evictSpy).not.toHaveBeenCalled();
+        expect(markRealtimeRefetch).not.toHaveBeenCalled();
       });
 
       it('does not act on a reconnect that arrives just before the component is destroyed', async () => {
@@ -4546,6 +4730,230 @@ describe('planning-view', () => {
         await waitForPromises();
 
         expect(evictSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('realtime saved view changes', () => {
+    const savedViewId = 'gid://gitlab/WorkItems::SavedViews::SavedView/3';
+    const groupOrder = [
+      'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2',
+      'status:gid://gitlab/WorkItems::Statuses::Custom::Status/1',
+    ];
+    const boardSavedView = {
+      ...singleSavedView[0],
+      displaySettings: { viewMode: VIEW_MODE_BOARD },
+    };
+    const savedViewRoute = { name: 'savedView', params: { type: 'work_items', view_id: '3' } };
+    const allItemsRoute = { name: 'planningView', params: { type: 'work_items' } };
+
+    let subscriptionHandler;
+    let savedViewHandler;
+
+    // The synchronous `debounce` mock would let the reconnect spec pass without the debounce running.
+    beforeEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 500;
+    });
+
+    afterEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    // Every subscribe call gets its own mock subscription, so a re-subscribe can be told apart
+    // from the original one.
+    const currentSubscription = () => subscriptionHandler.mock.results.at(-1).value;
+
+    const savedViewResponse = (savedView) => savedViewResponseFactory({ savedViews: [savedView] });
+
+    // The default counts mock identifies the namespace as Group:gid://gitlab/Group/3 while every
+    // other handler here uses Namespace:namespace. Mixed identities leave the saved view unreadable
+    // from the cache after a broadcast, so Apollo would refetch it for reasons unrelated to this.
+    const countsOnlyHandler = jest.fn().mockResolvedValue({
+      data: {
+        namespace: {
+          ...workItemCountsOnlyResponse.data.namespace,
+          __typename: 'Namespace',
+          id: 'namespace',
+        },
+      },
+    });
+
+    // Apollo tears down the subscription's websocket inside a setTimeout, so
+    // fake timers must run before we can assert the subscription is closed.
+    const flushUnsubscribe = () => jest.runOnlyPendingTimers();
+
+    const mountWithSavedViewSubscription = async ({ provide = {}, ...options } = {}) => {
+      subscriptionHandler = jest.fn(() => createMockSubscription());
+      savedViewHandler = jest.fn().mockResolvedValue(savedViewResponse(boardSavedView));
+
+      await mountComponent({
+        route: savedViewRoute,
+        ...options,
+        provide: {
+          ...provide,
+          glFeatures: {
+            planningViewBoards: true,
+            workItemsRealtime: true,
+            ...provide.glFeatures,
+          },
+        },
+        savedViewHandler,
+        countsOnlyHandler,
+        additionalHandlers: [
+          [workItemSavedViewUpdatedSubscription, subscriptionHandler],
+          [namespaceWorkItemChangesSubscription, jest.fn(() => createMockSubscription())],
+        ],
+        stubs: { BoardView: boardViewStub },
+      });
+    };
+
+    const emitSavedViewUpdate = async (savedView) => {
+      currentSubscription().next({ data: { workItemSavedViewUpdated: savedView } });
+      await waitForPromises();
+    };
+
+    it('subscribes to updates of the loaded saved view', async () => {
+      await mountWithSavedViewSubscription();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+      expect(subscriptionHandler).toHaveBeenCalledWith({ savedViewId });
+    });
+
+    describe('when another viewer reorders the board columns', () => {
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        await emitSavedViewUpdate({
+          ...boardSavedView,
+          displaySettings: { viewMode: VIEW_MODE_BOARD, groupOrder },
+        });
+      });
+
+      it('re-renders the board with the new column order', () => {
+        expect(findBoardView().props('groupOrder')).toEqual(groupOrder);
+      });
+
+      it('does not refetch the saved view', () => {
+        expect(savedViewHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('keeps the one subscription open instead of subscribing again', () => {
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+        expect(currentSubscription().closed).toBe(false);
+      });
+
+      it('treats the pushed configuration as the saved state, so there is nothing to save', () => {
+        expect(findUpdateViewButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when a push arrives while the viewer has unsaved changes', () => {
+      const localOrder = [...groupOrder].reverse();
+
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        findBoardView().vm.$emit('reorder-groups', localOrder);
+        await nextTick();
+        await emitSavedViewUpdate({
+          ...boardSavedView,
+          displaySettings: { viewMode: VIEW_MODE_BOARD, groupOrder },
+        });
+      });
+
+      it('keeps the local column order', () => {
+        expect(findBoardView().props('groupOrder')).toEqual(localOrder);
+      });
+
+      it('still offers to save the local changes', () => {
+        expect(findUpdateViewButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when another viewer switches the view from board to list', () => {
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        await emitSavedViewUpdate({
+          ...boardSavedView,
+          displaySettings: { viewMode: VIEW_MODE_LIST },
+        });
+      });
+
+      it('renders the list view instead of the board', () => {
+        expect(findBoardView().exists()).toBe(false);
+        expect(findListView().exists()).toBe(true);
+      });
+    });
+
+    describe('when navigating to another saved view', () => {
+      const otherSavedViewId = 'gid://gitlab/WorkItems::SavedViews::SavedView/4';
+      let firstSubscription;
+
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        firstSubscription = currentSubscription();
+        savedViewHandler.mockResolvedValue(
+          savedViewResponse({ ...boardSavedView, id: otherSavedViewId }),
+        );
+
+        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
+        await waitForPromises();
+        flushUnsubscribe();
+      });
+
+      it('closes the previous subscription and subscribes to the new view', () => {
+        expect(firstSubscription.closed).toBe(true);
+        expect(subscriptionHandler).toHaveBeenCalledTimes(2);
+        expect(subscriptionHandler).toHaveBeenLastCalledWith({ savedViewId: otherSavedViewId });
+      });
+    });
+
+    describe('when the websocket reconnects', () => {
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        jest.advanceTimersByTime(500);
+        await waitForPromises();
+      });
+
+      it('refetches the saved view, since missed payloads are not replayed', () => {
+        expect(savedViewHandler).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('when the component is destroyed', () => {
+      it('closes the subscription', async () => {
+        await mountWithSavedViewSubscription();
+        const subscription = currentSubscription();
+
+        wrapper.destroy();
+        flushUnsubscribe();
+
+        expect(subscription.closed).toBe(true);
+      });
+    });
+
+    describe('when the workItemsRealtime feature flag is off', () => {
+      it('does not subscribe to saved view updates', async () => {
+        await mountWithSavedViewSubscription({
+          provide: { glFeatures: { workItemsRealtime: false } },
+        });
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the user is not logged in', () => {
+      it('does not subscribe to saved view updates', async () => {
+        await mountWithSavedViewSubscription({ isLoggedInValue: false });
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when not on a saved view', () => {
+      it('does not subscribe to saved view updates', async () => {
+        await mountWithSavedViewSubscription({ route: allItemsRoute });
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
       });
     });
   });

@@ -23,7 +23,9 @@ module Environments
       if params[:force]
         actions = []
 
-        environment.stop_complete!
+        # Non-bang: `stop_complete` has no transition out of `stopped`, so a
+        # repeated forced stop must be a no-op rather than raise.
+        environment.stop_complete
       else
         actions = environment.stop_with_actions!
       end

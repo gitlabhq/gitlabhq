@@ -4,7 +4,7 @@ require "spec_helper"
 
 require_relative './shared'
 
-RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, feature_category: :code_review_workflow do
   include_context "with diff file component tests"
 
   let(:merge_request) { build(:merge_request, source_project: project, target_project: project) }

@@ -1,0 +1,11 @@
+---
+name: start_orbit_trial
+description: Grants the ability to start an Orbit trial for a top-level group on GitLab.com.
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - start_orbit_trial
+assignable_when:
+  - condition: saas

@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createDefaultClient from '~/lib/graphql';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteLabelModal from './components/delete_label_modal.vue';
 import LabelActions from './components/label_actions.vue';
 import PromoteLabelModal from './components/promote_label_modal.vue';
@@ -109,14 +109,13 @@ export function initLabels() {
   initLabelsActions();
 }
 
-export function initLabelIndex() {
-  Vue.use(Translate);
-
-  initLabels();
-  initDeleteLabelModal();
+export function initPromoteLabelModal() {
+  // The page renders the mount point only when the project has labels or an active filter.
+  const el = document.getElementById('js-promote-label-modal');
+  if (!el) return null;
 
   return new Vue({
-    el: '#js-promote-label-modal',
+    el,
     name: 'PromoteLabelModal',
     data() {
       return {
@@ -151,6 +150,14 @@ export function initLabelIndex() {
       });
     },
   });
+}
+
+export function initLabelIndex() {
+  Vue.use(Translate);
+
+  initLabels();
+  initDeleteLabelModal();
+  initPromoteLabelModal();
 }
 
 export function initAdminLabels() {

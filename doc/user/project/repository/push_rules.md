@@ -29,6 +29,10 @@ GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular 
 in push rules. You can test them at the [regex101 regex tester](https://regex101.com/).
 Each regular expression is limited to 511 characters.
 
+RE2 does not support the `/pattern/flags` format.
+To set a flag, add it to the start of the expression.
+For example, use `(?i)pattern` for case-insensitive pattern matching.
+
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 
 > [!note]
@@ -217,6 +221,12 @@ Some validation examples:
 
   ```plaintext
   -JIRA$
+  ```
+
+- Branches must start with `feature/`, in any combination of uppercase and lowercase letters.
+
+  ```plaintext
+  (?i)^feature/
   ```
 
 - Branches must be between `4` and `15` characters long,

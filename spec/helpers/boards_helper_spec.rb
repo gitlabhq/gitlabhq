@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe BoardsHelper, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
-  let_it_be(:base_group) { create(:group, path: 'base') }
-  let_it_be(:project) { create(:project, group: base_group) }
-  let_it_be(:project_board) { create(:board, project: project) }
-  let_it_be(:group_board) { create(:board, group: base_group) }
+
+  let(:base_group) { build_stubbed(:group, path: 'base') }
+  let(:project) { build_stubbed(:project, group: base_group) }
+  let(:project_board) { build_stubbed(:board, project: project) }
+  let(:group_board) { build_stubbed(:board, group: base_group) }
 
   describe '#board_base_url' do
     context 'when group board' do
@@ -51,10 +52,10 @@ RSpec.describe BoardsHelper, feature_category: :planning_views do
     end
 
     context 'project under user namespace' do
-      let_it_be(:project_under_user) { create(:project, namespace: user.namespace) }
+      let(:project_under_user) { build_stubbed(:project, namespace: user.namespace) }
 
       context 'when project board' do
-        let_it_be(:project_board) { create(:board, project: project_under_user) }
+        let(:project_board) { build_stubbed(:board, project: project_under_user) }
 
         it 'returns the correct namespace' do
           assign(:project, project_under_user)
@@ -77,7 +78,7 @@ RSpec.describe BoardsHelper, feature_category: :planning_views do
         allow(helper).to receive(:can?).with(user, :admin_issue, project_board).and_return(true)
         allow(helper).to receive(:can?).with(user, :admin_issue_board_list, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :admin_issue_board, project).and_return(false)
-        allow(helper).to receive(:can?).with(user, :admin_label, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :create_label, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_saved_replies, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_saved_replies, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_work_item, project).and_return(false)
@@ -137,7 +138,7 @@ RSpec.describe BoardsHelper, feature_category: :planning_views do
         allow(helper).to receive(:can?).with(user, :admin_issue, group_board).and_return(true)
         allow(helper).to receive(:can?).with(user, :admin_issue_board_list, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :admin_issue_board, base_group).and_return(false)
-        allow(helper).to receive(:can?).with(user, :admin_label, base_group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :create_label, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_saved_replies, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_work_item, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :bulk_admin_epic, base_group).and_return(false)

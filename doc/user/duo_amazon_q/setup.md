@@ -2,7 +2,7 @@
 stage: AI Platform
 group: AI Model Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Set up and manage GitLab Duo with Amazon Q on a Self-Managed instance using AWS integration.
+description: Set up and manage GitLab Duo with Amazon Q on a GitLab Self-Managed instance using AWS integration.
 title: Set up GitLab Duo with Amazon Q
 ---
 

@@ -13,6 +13,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   prepend_before_action :set_current_organization
 
+  before_action :enforce_organization_maintenance_mode
   before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
@@ -50,6 +51,13 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
       url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670'
     ) { authorization.authorize }
+  end
+
+  # doorkeeper-openid_connect >= 1.10 lets `prompt=none` silently skip
+  # authorization when an active token covers the request; restrict that to
+  # confidential clients so public clients (e.g. MCP apps) keep the consent step.
+  def oidc_matching_subset_token?(owner)
+    super && pre_auth.client.application.confidential?
   end
 
   def permitted_params

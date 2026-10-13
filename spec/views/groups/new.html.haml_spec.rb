@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'groups/new.html.haml' do
-  let_it_be(:user) { create(:user) }
   let_it_be(:group) { build(:group, namespace_settings: build(:namespace_settings)) }
+
+  let(:user) { build_stubbed(:user) }
 
   before do
     assign(:group, group)
@@ -25,7 +26,7 @@ RSpec.describe 'groups/new.html.haml' do
   end
 
   context 'when a subgroup' do
-    let_it_be(:group) { create(:group, :nested) }
+    let(:group) { build_stubbed(:group, :nested) }
 
     it 'renders the visibility level section' do
       expect(rendered).to have_content('Visibility level')

@@ -21,7 +21,9 @@ module Mcp
 
         override :execute
         def execute(request: nil, params: nil)
-          return Response.error("#{self.class.name}: current_user is not set") unless current_user.present?
+          unless current_user.present?
+            return Response.error("#{self.class.name}: current_user is not set", reason: Response::Reason::UNAUTHORIZED)
+          end
 
           super
         end

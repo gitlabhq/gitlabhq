@@ -6,12 +6,14 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   include StubVersion
   let_it_be_with_refind(:user) { create(:user) }
 
+  let(:admin) { build_stubbed(:user, :admin) }
+
   before do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
   describe '.show_gke_cluster_integration_callout?' do
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     subject { helper.show_gke_cluster_integration_callout?(project) }
 
@@ -63,8 +65,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   end
 
   describe '.show_registration_enabled_user_callout?', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-
     subject { helper.show_registration_enabled_user_callout? }
 
     using RSpec::Parameterized::TableSyntax
@@ -89,8 +89,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   end
 
   describe '.show_openssl_callout?', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-
     subject { helper.show_openssl_callout? }
 
     using RSpec::Parameterized::TableSyntax
@@ -177,8 +175,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   end
 
   describe '.show_transition_to_jihu_callout?', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-
     subject { helper.show_transition_to_jihu_callout? }
 
     using RSpec::Parameterized::TableSyntax
@@ -324,8 +320,7 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
   end
 
   describe 'show_single_origin_fallback_callout?', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-    let_it_be(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     subject { helper.show_single_origin_fallback_callout? }
 

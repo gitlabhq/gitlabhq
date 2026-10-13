@@ -31,8 +31,12 @@ export default {
       type: Array,
       required: true,
     },
+    shouldCreateNewOrganization: {
+      type: Boolean,
+      required: true,
+    },
   },
-  emits: ['update'],
+  emits: ['update', 'update-organization'],
   data() {
     return {
       pendingChanges: {},
@@ -134,7 +138,11 @@ export default {
           :key="organization.id"
           class="gl-w-1/2 gl-p-2 first:gl-ml-auto last:gl-mr-auto @lg:gl-w-1/3"
         >
-          <organization-card :organization="organization">
+          <organization-card
+            :organization="organization"
+            :allow-edit-mode="shouldCreateNewOrganization"
+            @update="$emit('update-organization', $event)"
+          >
             <template #default="{ isDefaultOrganization }">
               <draggable
                 class="organizations-reconciliation-draggable gl-flex gl-min-h-11 gl-flex-col gl-gap-4"

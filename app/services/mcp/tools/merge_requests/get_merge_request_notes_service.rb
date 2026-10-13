@@ -9,6 +9,13 @@ module Mcp
           ['list_all_merge_request_notes']
         end
 
+        # Unlisted pending removal: superseded by the get_merge_request notes facet
+        # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
+        override :unlisted?
+        def unlisted?
+          true
+        end
+
         register_version '0.1.0', {
           toolset: :merge_requests,
           description: 'Get the notes (comments and system notes) for a specific merge request.',

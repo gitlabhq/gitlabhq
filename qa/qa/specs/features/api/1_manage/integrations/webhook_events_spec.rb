@@ -19,6 +19,7 @@ module QA
 
       let(:session) { SecureRandom.hex(5) }
       let(:tag_name) { SecureRandom.hex(5) }
+      let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
 
       # Live Time values are normalized to ISO 8601 with millisecond precision on
       # delivery; values the payload builder pre-stringifies are delivered verbatim.
@@ -28,42 +29,102 @@ module QA
       # (Deployment#serialize_params_for_sidekiq! + String#to_time), so they render
       # with a numeric offset instead of Z.
       let(:offset_normalized_timestamp) { /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}\z/ }
+      # Pipeline builds[] are wrapped in Gitlab::Lazy, which Gitlab::WebHooks.normalize_dates
+      # does not unwrap, so their timestamps still arrive as Ruby Time#to_s.
+      let(:legacy_timestamp) { /\A\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} (?:UTC|[+-]\d{4})\z/ }
 
-      it 'sends a push event' do
-        Resource::ProjectWebHook.setup(session: session, push: true) do |webhook, smocker|
+      it 'sends push and commit note events' do
+        Resource::ProjectWebHook.setup(session: session, push: true, note: true) do |webhook, smocker|
           Resource::Repository::ProjectPush.fabricate! do |project_push|
             project_push.project = webhook.project
           end
 
           expect_web_hook_single_event_success(webhook, smocker, type: 'push')
 
-          commits = smocker.events(session).first[:commits]
+          push_event = smocker.events(session).first
+          webhook.project.comment_on_commit(sha: push_event[:checkout_sha], note: 'commit comment')
+
+          expect { smocker.events(session).size }.to eventually_eq(2)
+                                                 .within(max_duration: 30, sleep_interval: 2),
+            -> { "Should have 2 events, got: #{smocker.stringified_history(session)}" }
+
           aggregate_failures do
-            expect(commits).not_to be_empty
-            expect(commits).to all(match(a_hash_including(timestamp: match(commit_timestamp))))
+            expect(push_event[:commits]).not_to be_empty
+            expect(push_event[:commits]).to all(match(a_hash_including(timestamp: match(commit_timestamp))))
+            expect(smocker.events(session)).to include(
+              a_hash_including(
+                object_kind: 'note',
+                object_attributes: a_hash_including(
+                  noteable_type: 'Commit',
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                )
+              )
+            )
           end
         end
       end
 
-      it 'sends a merge request event' do
-        Resource::ProjectWebHook.setup(session: session, merge_requests: true) do |webhook, smocker|
-          create(:merge_request, project: webhook.project)
+      it 'sends merge request and note events' do
+        Resource::ProjectWebHook.setup(session: session, merge_requests: true, note: true) do |webhook, smocker|
+          label = create(:project_label, project: webhook.project)
+          merge_request = create(:merge_request, project: webhook.project, labels: [label.title])
 
-          # MR creation can trigger multiple webhook events (open + merge status update)
-          expect { smocker.events(session).size >= 1 }.to eventually_be_truthy
-            .within(max_duration: 30, sleep_interval: 2),
-            -> { "Should have at least 1 event, got: #{smocker.stringified_history(session)}" }
+          # MergeRequests::AfterCreateService sets prepared_at before firing the 'open' hook, and an
+          # 'update' hook with empty changes can follow it, so wait for content rather than a count.
+          expect { smocker.events(session).any? { |event| event.dig(:object_attributes, :action) == 'open' } }
+            .to eventually_be_truthy.within(max_duration: 30, sleep_interval: 2),
+              -> { "Expected an open merge request event, got: #{smocker.stringified_history(session)}" }
 
-          expect(smocker.events(session)).to include(
-            a_hash_including(
-              object_kind: 'merge_request',
-              project: a_hash_including(name: webhook.project.name),
-              object_attributes: a_hash_including(
-                created_at: match(normalized_timestamp),
-                updated_at: match(normalized_timestamp)
+          merge_request.add_comment(body: 'merge request comment')
+
+          expect { smocker.events(session).any? { |event| event[:object_kind] == 'note' } }
+            .to eventually_be_truthy.within(max_duration: 30, sleep_interval: 2),
+              -> { "Expected a note event, got: #{smocker.stringified_history(session)}" }
+
+          events = smocker.events(session)
+          label_timestamps = a_hash_including(
+            created_at: match(normalized_timestamp),
+            updated_at: match(normalized_timestamp)
+          )
+
+          aggregate_failures do
+            expect(events).to include(
+              a_hash_including(
+                object_kind: 'merge_request',
+                project: a_hash_including(name: webhook.project.name),
+                object_attributes: a_hash_including(
+                  action: 'open',
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp),
+                  actioned_at: match(normalized_timestamp),
+                  prepared_at: match(normalized_timestamp),
+                  labels: [label_timestamps]
+                ),
+                labels: [label_timestamps],
+                changes: a_hash_including(
+                  updated_at: a_hash_including(
+                    previous: match(normalized_timestamp),
+                    current: match(normalized_timestamp)
+                  ),
+                  prepared_at: a_hash_including(current: match(normalized_timestamp))
+                )
+              ),
+              a_hash_including(
+                object_kind: 'note',
+                object_attributes: a_hash_including(
+                  noteable_type: 'MergeRequest',
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                ),
+                merge_request: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp),
+                  last_commit: a_hash_including(timestamp: match(commit_timestamp))
+                )
               )
             )
-          )
+          end
         end
       end
 
@@ -75,28 +136,97 @@ module QA
         end
       end
 
-      it 'sends an issues and note event' do
-        Resource::ProjectWebHook.setup(session: session, issues: true, note: true) do |webhook, smocker|
-          issue = create(:issue, project: webhook.project)
+      it 'sends issue, note, emoji, milestone and snippet note events' do
+        Resource::ProjectWebHook.setup(session: session,
+          issues: true, note: true, emoji: true, milestone: true) do |webhook, smocker|
+          project = webhook.project
+          milestone = create(:project_milestone, project: project)
+          first_label = create(:project_label, project: project)
+          second_label = create(:project_label, project: project)
 
-          create(:issue_note, project: issue.project, issue: issue)
+          issue = create(:issue, project: project, labels: [first_label.title], milestone: milestone)
+          note = issue.add_comment(body: 'issue comment')
+          issue.award_emoji_on_note(note_id: note[:id], name: 'thumbsup')
+          issue.set_labels([second_label.title])
 
-          expect { smocker.events(session).size }.to eventually_eq(2)
-                                                .within(max_duration: 30, sleep_interval: 2),
-            -> { "Should have 2 events, got: #{smocker.stringified_history(session)}" }
+          snippet = create(:project_snippet, project: project)
+          snippet.add_comment(body: 'snippet comment')
+
+          # milestone create, issue open, note, emoji, issue update, snippet note
+          expect { smocker.events(session).size }.to eventually_eq(6)
+                                                 .within(max_duration: 60, sleep_interval: 2),
+            -> { "Should have 6 events, got: #{smocker.stringified_history(session)}" }
 
           events = smocker.events(session)
+          label_timestamps = a_hash_including(
+            created_at: match(normalized_timestamp),
+            updated_at: match(normalized_timestamp)
+          )
 
           aggregate_failures do
             expect(events).to include(
               a_hash_including(
-                object_kind: 'note',
-                object_attributes: a_hash_including(created_at: match(normalized_timestamp)),
-                issue: a_hash_including(created_at: match(normalized_timestamp))
+                object_kind: 'milestone',
+                object_attributes: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                )
               ),
               a_hash_including(
                 object_kind: 'issue',
                 object_attributes: a_hash_including(
+                  action: 'open',
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                ),
+                labels: [label_timestamps]
+              ),
+              a_hash_including(
+                object_kind: 'issue',
+                object_attributes: a_hash_including(action: 'update'),
+                changes: a_hash_including(
+                  updated_at: a_hash_including(
+                    previous: match(normalized_timestamp),
+                    current: match(normalized_timestamp)
+                  ),
+                  labels: a_hash_including(previous: [label_timestamps], current: [label_timestamps])
+                )
+              ),
+              a_hash_including(
+                object_kind: 'note',
+                object_attributes: a_hash_including(
+                  noteable_type: 'Issue',
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                ),
+                issue: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                )
+              ),
+              a_hash_including(
+                object_kind: 'emoji',
+                object_attributes: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                ),
+                note: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                ),
+                issue: a_hash_including(
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                )
+              ),
+              a_hash_including(
+                object_kind: 'note',
+                object_attributes: a_hash_including(
+                  noteable_type: 'Snippet',
+                  created_at: match(normalized_timestamp),
+                  updated_at: match(normalized_timestamp)
+                ),
+                snippet: a_hash_including(
                   created_at: match(normalized_timestamp),
                   updated_at: match(normalized_timestamp)
                 )
@@ -161,6 +291,54 @@ module QA
               status_changed_at: match(offset_normalized_timestamp)
             )
           )
+        end
+      end
+
+      it 'sends pipeline events' do
+        Resource::ProjectWebHook.setup(session: session, pipeline: true) do |webhook, smocker|
+          runner = create(:project_runner, project: webhook.project, name: executor, tags: [executor])
+
+          begin
+            runner.wait_until_online
+
+            create(:commit, project: webhook.project, commit_message: 'Add .gitlab-ci.yml', actions: [
+              {
+                action: 'create',
+                file_path: '.gitlab-ci.yml',
+                content: <<~YAML
+                  test-webhook-pipeline:
+                    tags: [#{executor}]
+                    script: echo ok
+                YAML
+              }
+            ])
+
+            Flow::Pipeline.wait_for_pipeline_creation_via_api(project: webhook.project)
+            Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: webhook.project, status: 'success')
+
+            expect { smocker.events(session).any? { |event| event.dig(:object_attributes, :status) == 'success' } }
+              .to eventually_be_truthy.within(max_duration: 60, sleep_interval: 2),
+                -> { "Expected a success pipeline event, got: #{smocker.stringified_history(session)}" }
+
+            succeeded = smocker.events(session).find do |event|
+              event[:object_kind] == 'pipeline' && event.dig(:object_attributes, :status) == 'success'
+            end
+
+            aggregate_failures do
+              expect(succeeded[:object_attributes]).to match(a_hash_including(
+                created_at: match(normalized_timestamp),
+                finished_at: match(normalized_timestamp)
+              ))
+              expect(succeeded[:builds]).not_to be_empty
+              expect(succeeded[:builds]).to all(match(a_hash_including(
+                created_at: match(legacy_timestamp),
+                started_at: match(legacy_timestamp),
+                finished_at: match(legacy_timestamp)
+              )))
+            end
+          ensure
+            runner.remove_via_api!
+          end
         end
       end
 

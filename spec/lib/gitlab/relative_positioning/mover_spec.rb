@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe RelativePositioning::Mover, feature_category: :portfolio_management do
   using RSpec::Parameterized::TableSyntax
 
+  before do
+    stub_feature_flags(
+      read_relative_positions_from_work_item_positions: false,
+      write_relative_positions_to_work_item_positions: false
+    )
+  end
+
   range = (101..105)
   indices = (0..).take(range.size)
 

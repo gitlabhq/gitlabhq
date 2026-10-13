@@ -23,6 +23,35 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+// Kept local instead of importing url_utility: many specs replace that module
+// with a partial factory mock, which would turn every request into a TypeError.
+const isSameOrigin = (url) => {
+  if (typeof url !== 'string') return false;
+
+  const { origin } = window.location;
+
+  try {
+    return new URL(url, origin).origin === origin;
+  } catch {
+    return false;
+  }
+};
+
+// Attributes the request, and any job it enqueues, to the browser client for
+// analytics; Rails reads the browser family from the User-Agent. Same origin
+// only: a third party would have to allow this header in its CORS preflight.
+axios.interceptors.request.use((config) => {
+  if (!isSameOrigin(config.url)) return config;
+
+  return {
+    ...config,
+    headers: {
+      ...config.headers,
+      'X-GitLab-Client-Type': 'browser',
+    },
+  };
+});
+
 setupAxiosStartupCalls(axios);
 
 // Remove the global counter

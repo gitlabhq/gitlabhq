@@ -1,11 +1,9 @@
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
-import GpgBadges from '~/gpg_badges';
 import initBlob from '~/pages/projects/init_blob';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import '~/sourcegraph/load';
-import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
+import HighlightWorker from '~/highlight_js/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
-import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
@@ -16,8 +14,6 @@ import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import initLastCommitApp from '~/repository/init_last_commit_app';
 import initRepositoryApp from '~/repository/init_repository_app';
 import initForkInfoApp from '~/repository/init_fork_info_app';
-import initTreeHistoryLinkApp from '~/repository/init_tree_history_link_app';
-import initCommitPipelineStatus from '~/projects/tree/init_commit_pipeline_status';
 import initTableOfContentsApp from '~/blob/init_table_of_contents_app';
 import initPerformancePlugin from '~/performance/init_performance_plugin';
 
@@ -30,7 +26,6 @@ export default function initBlobShow() {
 
   initPerformancePlugin(performancePluginComponents);
   initAmbiguousRefModal();
-  initFindFileShortcut();
   showAlertFromLocalStorage();
 
   if (viewBlobEl) {
@@ -88,7 +83,6 @@ export default function initBlobShow() {
   }
 
   initForkInfoApp();
-  initCommitPipelineStatus();
   initWebIdeLink({ el: webIdeLinkEl });
 
   if (codeNavEl && !viewBlobEl) {
@@ -103,6 +97,4 @@ export default function initBlobShow() {
   }
 
   initTableOfContentsApp();
-  initTreeHistoryLinkApp();
-  GpgBadges.fetch();
 }

@@ -275,7 +275,7 @@ The **Partially completed badge** was added in this release and identifies a com
 
 Groups that an import process was started for have a **View details** link that shows imported subgroups and projects for that particular group. From there, you can see
 the list of items that couldn’t be imported (if any) by clicking a **See failures** link. **See failures** was
-[released in the last release](https://about.gitlab.com/releases/2023/11/16/gitlab-16-6-released/#comprehensive-list-of-items-that-failed-to-be-imported).
+[released in the last release](gitlab-16-6-released.md#comprehensive-list-of-items-that-failed-to-be-imported).
 
 In this milestone we also improved navigation with the breadcrumbs between those pages.
 

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::StageEvents::IssueDeployedToPr
 
   it_behaves_like 'LEFT JOIN-able value stream analytics event' do
     let_it_be(:record_with_data) do
-      mr_closing_issue = FactoryBot.create(:merge_requests_closing_issues)
+      mr_closing_issue = FactoryBot.create(:merge_request_issue)
       mr = mr_closing_issue.merge_request
       mr.metrics.update!(first_deployed_to_production_at: Time.current)
 

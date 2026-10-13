@@ -54,6 +54,9 @@ module ApplicationSettingImplementation
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         ci_job_live_trace_enabled: false,
+        ci_job_trace_update_interval: ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT,
+        ci_job_trace_update_interval_when_being_watched:
+          ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         ci_delete_pipelines_in_seconds_limit_human_readable: '1 year',
         ci_partitions_in_seconds_limit_human_readable: '1 month',
@@ -241,6 +244,9 @@ module ApplicationSettingImplementation
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
         throttle_authenticated_dependency_proxy_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
+        throttle_authenticated_mcp_enabled: false,
+        throttle_authenticated_mcp_requests_per_period: 600,
+        throttle_authenticated_mcp_period_in_seconds: 60,
         throttle_authenticated_git_lfs_enabled: false,
         throttle_authenticated_git_lfs_period_in_seconds: 60,
         throttle_authenticated_git_lfs_requests_per_period: 1000,
@@ -378,6 +384,8 @@ module ApplicationSettingImplementation
         reindexing_minimum_relative_bloat_size: 0.2,
         git_push_pipeline_limit: 4,
         disable_invite_members: false,
+        group_deletion_jobs_concurrency_limit: 0,
+        project_deletion_jobs_concurrency_limit: 0,
         enforce_pipl_compliance: false,
         model_prompt_cache_enabled: true,
         lock_model_prompt_cache_enabled: false,
@@ -390,6 +398,8 @@ module ApplicationSettingImplementation
         pipeline_limit_per_user: 0,
         ci_lint_limit_per_user: 0,
         background_operations_max_jobs: 10,
+        pg_ash_sampling_enabled: false,
+        pg_ash_sample_interval_seconds: 1,
         oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN,
         logging_field_schema_version: 0,
         logging_field_dual_emit_target: nil
@@ -537,16 +547,6 @@ module ApplicationSettingImplementation
 
   def search_rate_limit_allowlist_raw=(values)
     self.search_rate_limit_allowlist = strings_to_array(values).map(&:downcase)
-  end
-
-  def coerce_iframe_rendering_allowlist
-    self.iframe_rendering_allowlist = iframe_rendering_allowlist.map do |entry|
-      # We mandate https://, and always add a trailing slash; we expect the configured
-      # list has neither present, so we remove them if present.
-      entry
-        .sub(%r{\Ahttps?://}i, '')
-        .sub(%r{/+\z}, '')
-    end.sort
   end
 
   def iframe_rendering_allowlist_raw

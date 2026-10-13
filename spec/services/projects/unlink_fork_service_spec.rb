@@ -232,8 +232,40 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
 
     subject { described_class.new(project, user) }
 
-    it 'when unlinked leaves pool repository' do
-      expect { subject.execute }.to change { project.reload.has_pool_repository? }.from(true).to(false)
+    it 'leaves the pool repository asynchronously', :aggregate_failures do
+      expect(project).to receive(:schedule_leave_pool_repository).and_call_original
+      expect(ObjectPool::DisconnectWorker).to receive(:perform_async)
+        .with(project.id, pool_repository.disk_path) do
+          expect(project.reload.fork_network_member).to be_nil
+        end.once
+
+      subject.execute
+    end
+
+    context 'when the project is pending deletion' do
+      before do
+        project.update!(pending_delete: true)
+      end
+
+      it 'clears pool membership without scheduling a disconnect', :aggregate_failures do
+        expect(ObjectPool::DisconnectWorker).not_to receive(:perform_async)
+        expect(project.repository).not_to receive(:disconnect_alternates)
+
+        subject.execute
+
+        expect(project.reload.pool_repository).to be_nil
+      end
+    end
+
+    context 'when async object pool disconnection is disabled' do
+      before do
+        stub_feature_flags(async_object_pool_disconnect: false)
+      end
+
+      it 'leaves the pool repository synchronously', :aggregate_failures do
+        expect(project).to receive(:leave_pool_repository).and_call_original
+        expect { subject.execute }.to change { project.reload.has_pool_repository? }.from(true).to(false)
+      end
     end
   end
 

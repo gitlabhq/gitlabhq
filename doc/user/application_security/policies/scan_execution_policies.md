@@ -220,14 +220,14 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `pipeline` | The rule's type. |
-| `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). For compatibility with merge request approval policies, you should target all branches to include the scans in the feature branch and default branch |
-| `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist | `default`, `protected`, `all`, `target_default` <sup>2</sup>, or `target_protected` <sup>2</sup> | The types of branches the given policy applies to. |
+| `branches`[^specify-either-branches] | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). For compatibility with merge request approval policies, you should target all branches to include the scans in the feature branch and default branch |
+| `branch_type`[^specify-either-branches] | `string` | true if `branches` field does not exist | `default`, `protected`, `all`, `target_default`[^options-available-flexible], or `target_protected`[^options-available-flexible] | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `pipeline_sources` <sup>2</sup> | `object` | false | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event` <sup>3</sup>, `pipeline`, `push` <sup>3</sup>, `schedule`, `trigger`, `unknown`, `web` | An object with an `including` key set to an array of pipeline sources that determine when the scan execution job triggers. For more information, see [`CI_PIPELINE_SOURCE` predefined variable](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
+| `pipeline_sources`[^options-available-flexible] | `object` | false | `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`[^branch-type-options], `pipeline`, `push`[^branch-type-options], `schedule`, `trigger`, `unknown`, `web` | An object with an `including` key set to an array of pipeline sources that determine when the scan execution job triggers. For more information, see [`CI_PIPELINE_SOURCE` predefined variable](../../../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
 
-1. You must specify either `branches` or `branch_type`, but not both.
-1. Some options are only available with the `flexible_scan_execution` feature flag enabled. See the history for details.
-1. When the `branch_type` options `target_default` or `target_protected` are specified, the `pipeline_sources:including` field supports only the `merge_request_event` and `push` fields.
+[^specify-either-branches]: You must specify either `branches` or `branch_type`, but not both.
+[^options-available-flexible]: Some options are only available with the `flexible_scan_execution` feature flag enabled. See the history for details.
+[^branch-type-options]: When the `branch_type` options `target_default` or `target_protected` are specified, the `pipeline_sources:including` field supports only the `merge_request_event` and `push` fields.
 
 ## `schedule` rule type
 
@@ -262,17 +262,23 @@ A scheduled pipeline:
 | Field      | Type | Required | Possible values | Description |
 |------------|------|----------|-----------------|-------------|
 | `type`     | `string` | true | `schedule` | The rule's type. |
-| `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
-| `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected`, or `all` | The types of branches the given policy applies to. |
+| `branches`[^specify-one-branches] | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branch_type`[^specify-one-branches] | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected`, or `all` | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `cadence`  | `string` | true | Cron expression with limited options. For example, `0 0 * * *` creates a schedule to run every day at midnight (12:00 AM). | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `time_window` | `object` | false |  | Distribution and duration settings for scheduled security scans. |
-| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exist   |  | The name of the [GitLab agents for Kubernetes](../../clusters/agent/_index.md) where [Operational container scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
+| `agents`[^specify-one-branches]   | `object` | true if either `branch_type` or `branches` fields do not exist   |  | The name of the [GitLab agents for Kubernetes](../../clusters/agent/_index.md) where [Operational container scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
-1. You must specify only one of `branches`, `branch_type`, or `agents`.
+[^specify-one-branches]: You must specify only one of `branches`, `branch_type`, or `agents`.
 
 ### Cadence
+
+{{< history >}}
+
+- Monthly cadence support in rule mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606441) in GitLab 19.4.
+
+{{< /history >}}
 
 Use the `cadence` field to schedule when you want the policy's actions to run. The `cadence` field
 uses [cron syntax](../../../topics/cron/_index.md), but with some restrictions:
@@ -280,8 +286,19 @@ uses [cron syntax](../../../topics/cron/_index.md), but with some restrictions:
 - Only the following types of cron syntax are supported:
   - A daily cadence of once per hour around specified time, for example: `0 18 * * *`
   - A weekly cadence of once per week on a specified day and around specified time, for example: `0 13 * * 0`
+  - A monthly cadence on one or more specified days of the month and around specified time,
+    for example: `0 0 1 * *` or, for multiple days, a comma-separated list in the day-of-month
+    field: `0 0 1,15 * *`. A day greater than the number of days in a given month is skipped
+    for that month, so a scan scheduled for day 31 does not run in a 30-day month.
 - Use of the comma (,), hyphens (-), or step operators (/) are not supported for minutes and hours.
   Any scheduled pipeline using these characters is skipped.
+
+> [!note]
+> Cron syntax that uses ranges, step operators, or a non-zero minute (for example `0 22 * * 1-5` or
+> `30 2 * * *`) is valid but rule mode cannot display it. If your policy uses one of these formats,
+> the Conditions section is read-only in rule mode and shows the cron expression as written. Edit
+> the schedule in YAML mode instead. The
+> policy continues to run on its existing schedule either way.
 
 Consider the following when choosing a value for the `cadence` field:
 
@@ -531,7 +548,7 @@ SECRET_DETECTION_HISTORIC_SCAN: false
 SAST_EXCLUDED_ANALYZERS: ''
 DEFAULT_SAST_EXCLUDED_PATHS: spec, test, tests, tmp
 DS_EXCLUDED_ANALYZERS: ''
-SECURE_ENABLE_LOCAL_CONFIGURATION: true
+ADVANCED_SAST_PARTIAL_SCAN: false
 ```
 
 ## Policy scope schema

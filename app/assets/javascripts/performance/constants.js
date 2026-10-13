@@ -126,3 +126,22 @@ export const COMMIT_LIST_MARK_DATA_RENDERED = 'commit-list-data-rendered';
 export const COMMIT_LIST_MEASURE_TIME_TO_MOUNT = 'Commit List: Time to mount';
 export const COMMIT_LIST_MEASURE_DATA_FETCH = 'Commit List: Data fetch';
 export const COMMIT_LIST_MEASURE_RENDER = 'Commit List: Render';
+
+//
+// Explore analytics dashboards namespace
+//
+
+// Marks
+export const EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START = 'explore-dashboard-scope-picker-start';
+export const EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED = 'explore-dashboard-scope-groups-loaded';
+export const EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED = 'explore-dashboard-scope-resolved';
+export const EXPLORE_DASHBOARD_MARK_SCOPE_SET = 'explore-dashboard-scope-set';
+export const EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED =
+  'explore-dashboard-panels-in-view-loaded';
+
+// Measures
+export const EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS = 'Explore dashboard: Scope picker groups';
+export const EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED =
+  'Explore dashboard: Scope picker starting scope';
+export const EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW =
+  'Explore dashboard: Panels in view after scope set';

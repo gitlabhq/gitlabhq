@@ -28,7 +28,6 @@ module Gitlab
         def reference_store_pending?
           import_settings = import_settings(project)
 
-          return false unless import_settings.user_mapping_enabled?
           return false if import_settings.map_to_personal_namespace_owner?
           return false unless placeholder_reference_store.any?
 

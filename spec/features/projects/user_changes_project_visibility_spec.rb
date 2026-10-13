@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe 'User changes public project visibility', :js, feature_category: :groups_and_projects do
   include ProjectForksHelper
 
+  let_it_be_with_reload(:project) { create(:project, :empty_repo, :public) }
+
   shared_examples 'changing visibility to private' do
     it 'requires confirmation' do
       visibility_select = find_by_testid('project-visibility-dropdown')
@@ -44,7 +46,11 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
   end
 
   context 'when the project has forks' do
+    let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+
     before do
+      project.update!(visibility_level: visibility_level)
+
       fork_project(project, project.first_owner)
 
       sign_in(project.first_owner)
@@ -53,20 +59,16 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
     end
 
     context 'when a project is public' do
-      let(:project) { create(:project, :empty_repo, :public) }
-
       it_behaves_like 'changing visibility to private'
     end
 
     context 'when the project is internal' do
-      let(:project) { create(:project, :empty_repo, :internal) }
+      let(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
 
       it_behaves_like 'changing visibility to private'
     end
 
     context 'when the visibility level is untouched' do
-      let(:project) { create(:project, :empty_repo, :public) }
-
       it 'saves without confirmation' do
         expect(page).to have_selector('.js-emails-enabled', visible: :visible)
         find('.js-emails-enabled input[type="checkbox"]').click
@@ -84,8 +86,6 @@ RSpec.describe 'User changes public project visibility', :js, feature_category: 
   end
 
   context 'when the project is not forked' do
-    let(:project) { create(:project, :empty_repo, :public) }
-
     before do
       sign_in(project.first_owner)
 

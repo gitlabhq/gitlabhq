@@ -1,6 +1,6 @@
 = render 'doorkeeper/pointer_events_guard'
 
-- gitlab_provided = @application && Gitlab.com? && !@application.owner && !@application.dynamic?
+- gitlab_provided = Gitlab.com? && !@application.owner && !@application.dynamic?
 #container.gl-mx-auto.gl-pointer-events-none{ class: '@sm/panel:gl-w-1/2' }
   .gl-text-size-h1
     = s_('DeviceAuth|Authorize a device to access your GitLab account.')
@@ -16,13 +16,10 @@
   - if current_user.admin?
     = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
       - c.with_body do
-        - if @application
-          = safe_format(_('You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application.'),
-            { client_name: @application.name },
-            tag_pair(tag.strong, :strong_start, :strong_end))
-        - else
-          = s_('DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well.')
-  - elsif @application && !gitlab_provided
+        = safe_format(_('You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application.'),
+          { client_name: @application.name },
+          tag_pair(tag.strong, :strong_start, :strong_end))
+  - elsif !gitlab_provided
     = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
       - c.with_body do
         = safe_format(_('Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing.'),
@@ -36,17 +33,16 @@
         = render Pajamas::AccordionItemComponent.new(title: title, state: :closed, button_options: { class: '!gl-text-default gl-font-bold' }) do
           .gl-text-subtle.gl-text-sm
             = description
-  - if @application
-    .info-well
-      .well-segment
-        - if gitlab_provided
-          %p.gl-text-success
-            = sprite_icon('tanuki-verified', css_class: 'gl-fill-icon-success')
-            = _('This application is provided by GitLab.')
-        %p
-          = safe_format(_('%{owner} %{created_date} ago.'),
-            { owner: auth_app_owner_text(@application),
-              created_date: time_ago_in_words(@application.created_at) })
+  .info-well
+    .well-segment
+      - if gitlab_provided
+        %p.gl-text-success
+          = sprite_icon('tanuki-verified', css_class: 'gl-fill-icon-success')
+          = _('This application is provided by GitLab.')
+      %p
+        = safe_format(_('%{owner} %{created_date} ago.'),
+          { owner: auth_app_owner_text(@application),
+            created_date: time_ago_in_words(@application.created_at) })
   %div
     = form_with url: oauth_device_authorizations_authorize_url, method: :post, class: 'gl-inline-block gl-pr-3' do |f|
       = f.hidden_field :user_code, value: params[:user_code]

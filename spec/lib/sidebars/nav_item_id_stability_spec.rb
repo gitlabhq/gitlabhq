@@ -42,6 +42,7 @@ KNOWN_STABLE_CE_IDS = %i[
   dashboard
   database_diagnostics
   dependency_proxy
+  deploy_keys
   dev_ops_reports
   environments
   error_tracking
@@ -85,14 +86,14 @@ KNOWN_STABLE_CE_IDS = %i[
   monitor
   new_issue
   notification_channels
-  o11y_settings
   observability_alerts
   observability_dashboard
   organization_admin_dashboard
   organization_admin_settings_general
+  organization_admin_settings_integrations
   organization_admin_users
+  organization_groups_and_projects
   organization_overview
-  organization_users
   organizations
   packages_and_registries
   packages_registry
@@ -117,6 +118,7 @@ KNOWN_STABLE_CE_IDS = %i[
   service_map
   services
   setup
+  ssh_certificates
   ssh_keys
   system_info
   tags
@@ -148,6 +150,7 @@ KNOWN_STABLE_EE_IDS = %i[
   geo_nodes
   geo_settings
   get_started
+  governance
   group_epic_list
   group_wiki
   insights

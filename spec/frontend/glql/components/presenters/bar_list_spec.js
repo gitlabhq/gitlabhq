@@ -1,12 +1,17 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlKeysetPagination, GlSkeletonLoader } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BarListPresenter from '~/glql/components/presenters/bar_list.vue';
+import TwoDimensionsBarList from '~/glql/components/presenters/bar_list/two_dimensions_bar_list.vue';
 import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_routed_chart.vue';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+  MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
   MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
   MOCK_AGGREGATED_DATA_ONE_DIM,
+  MOCK_AGGREGATED_DATA_TWO_DIMS,
+  MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM,
 } from '../../mock_data';
 
 // Deliberately not in value order, so the descending sort is observable.
@@ -33,16 +38,47 @@ const sevenRows = () => ({
   })),
 });
 
+// Two quantiles of one duration metric, aliased the way a block writes them.
+const QUANTILE_FIELDS = [
+  {
+    key: 'Median',
+    field: 'timeToMergeQuantile',
+    label: 'Median',
+    type: 'metric',
+    parameters: { quantile: 0.5 },
+  },
+  {
+    key: 'p75',
+    field: 'timeToMergeQuantile',
+    label: 'p75',
+    type: 'metric',
+    parameters: { quantile: 0.75 },
+  },
+];
+
+// 9h 24m and 23h, in milliseconds.
+const QUANTILES = { nodes: [{ Median: 33840, p75: 82800 }] };
+
+// The shape the MR cycle time panels use: two quantiles to plot, plus a count for the
+// description.
+const QUANTILE_FIELDS_WITH_COUNT = [
+  ...QUANTILE_FIELDS,
+  { key: 'throughputCount', field: 'throughputCount', label: 'Merged', type: 'metric' },
+];
+
+const QUANTILES_WITH_COUNT = { nodes: [{ Median: 33840, p75: 82800, throughputCount: 2362 }] };
+
 describe('BarListPresenter', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(BarListPresenter, {
       propsData: {
         data: MOCK_AGGREGATED_DATA_ONE_DIM,
         fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
         ...props,
       },
+      provide,
       // Render the real routing shell so validation and loading behave as they
       // do in production; the chart itself stays stubbed.
       stubs: { DimensionRoutedChart },
@@ -51,6 +87,8 @@ describe('BarListPresenter', () => {
 
   const findChart = () => wrapper.findComponent(BarListChart);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findEmittedErrorMessage = () => wrapper.emitted('error')?.[0]?.[0]?.message;
   const rows = () => findChart().props('data');
 
   describe('default', () => {
@@ -73,6 +111,20 @@ describe('BarListPresenter', () => {
       const total = rows().reduce((sum, { share }) => sum + share, 0);
 
       expect(total).toBeCloseTo(100);
+    });
+  });
+
+  describe('chart title for assistive technology', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Where credits went' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Where credits went');
+    });
+
+    it('passes no title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
     });
   });
 
@@ -110,33 +162,303 @@ describe('BarListPresenter', () => {
     });
   });
 
-  describe('when the query returns more rows than the default maximum', () => {
-    beforeEach(() => createComponent({ data: eightRows() }));
+  describe('when the query has no dimension', () => {
+    beforeEach(() => createComponent({ fields: QUANTILE_FIELDS, data: QUANTILES }));
 
-    it('keeps six rows and rolls the tail into one', () => {
-      expect(rows()).toHaveLength(7);
-      expect(
-        rows()
-          .slice(0, 6)
-          .map(({ name }) => name),
-      ).toEqual(['lang-0', 'lang-1', 'lang-2', 'lang-3', 'lang-4', 'lang-5']);
+    it('renders one row per metric, in query order', () => {
+      expect(rows().map(({ name }) => name)).toEqual(['Median', 'p75']);
     });
 
-    it('names the rolled-up row with the number of rows it covers', () => {
-      expect(rows().at(-1)).toEqual({ name: 'Other (2)', value: 6, share: 6 });
+    // A count would read 33,840 here; the metric's own unit makes it a duration.
+    it('labels each row in the unit of its metric', () => {
+      expect(rows().map(({ label }) => label)).toEqual(['9h 24m', '23h']);
     });
 
-    it('still makes the shares sum to 100', () => {
-      const total = rows().reduce((sum, { share }) => sum + share, 0);
+    it('keeps the value and gives each row its share of the summed values', () => {
+      expect(rows()).toMatchObject([
+        { value: 33840, share: (33840 / 116640) * 100 },
+        { value: 82800, share: (82800 / 116640) * 100 },
+      ]);
+    });
 
-      expect(total).toBeCloseTo(100);
+    it('names an unaliased row after the metric and its parameter', () => {
+      createComponent({
+        fields: [
+          {
+            key: 'timeToMergeQuantile',
+            label: 'Time to merge quantile',
+            type: 'metric',
+            parameters: { quantile: 0.5 },
+          },
+        ],
+        data: { nodes: [{ timeToMergeQuantile: 33840 }] },
+      });
+
+      expect(rows()).toMatchObject([{ name: 'Time to merge quantile (0.5)', label: '9h 24m' }]);
+    });
+
+    // A quantile over no merge requests comes back null. That is no data rather than a duration
+    // of 0s, so the row keeps an empty bar and shows the same dash the stat presenter does.
+    it('shows no value for a metric the response left null', () => {
+      createComponent({ fields: QUANTILE_FIELDS, data: { nodes: [{ Median: null }] } });
+
+      expect(rows()).toEqual([
+        { name: 'Median', value: 0, share: 0, label: '\u2014' },
+        { name: 'p75', value: 0, share: 0, label: '\u2014' },
+      ]);
+    });
+
+    it('renders the skeleton loader and no chart while loading', () => {
+      createComponent({ fields: QUANTILE_FIELDS, data: QUANTILES, loading: true });
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findChart().exists()).toBe(false);
+    });
+
+    it('renders no chart for a display option it does not know', () => {
+      createComponent({
+        fields: QUANTILE_FIELDS,
+        data: QUANTILES,
+        displayConfig: { color: 'green' },
+      });
+
+      expect(findChart().exists()).toBe(false);
+      expect(findEmittedErrorMessage()).toBe(
+        'Unknown `color`: `green`. Supported values are: `orange`, `blue`, `gray`.',
+      );
     });
   });
 
-  describe('when the query returns exactly one row more than the maximum', () => {
-    beforeEach(() => createComponent({ data: sevenRows() }));
+  describe('description', () => {
+    const findDescription = () => wrapper.findByTestId('description');
 
-    it('keeps the row rather than naming it Other (1)', () => {
+    it('renders no description when the block sets none', () => {
+      createComponent();
+
+      expect(findDescription().exists()).toBe(false);
+    });
+
+    it('renders a static description above the chart', () => {
+      createComponent({ displayConfig: { description: 'Share of credits by capability' } });
+
+      expect(findDescription().text()).toBe('Share of credits by capability');
+    });
+
+    describe('when the description quotes a metric', () => {
+      beforeEach(() =>
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: QUANTILES_WITH_COUNT,
+          displayConfig: { description: '%{throughputCount} merged merge requests' },
+        }),
+      );
+
+      it('fills the placeholder with the formatted value', () => {
+        expect(findDescription().text()).toBe('2,362 merged merge requests');
+      });
+
+      it('still draws that metric as a bar', () => {
+        expect(rows().map(({ name }) => name)).toEqual(['Median', 'p75', 'Merged']);
+      });
+    });
+
+    describe('when hiddenMetrics names the quoted metric', () => {
+      beforeEach(() =>
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: QUANTILES_WITH_COUNT,
+          displayConfig: {
+            description: '%{throughputCount} merged merge requests',
+            hiddenMetrics: ['throughputCount'],
+          },
+        }),
+      );
+
+      it('still fills the placeholder', () => {
+        expect(findDescription().text()).toBe('2,362 merged merge requests');
+      });
+
+      it('leaves that metric out of the bars', () => {
+        expect(rows().map(({ name }) => name)).toEqual(['Median', 'p75']);
+      });
+    });
+
+    // A placeholder reads the first row, which with a dimension is only one group.
+    it.each`
+      case                | fields                                        | data
+      ${'one dimension'}  | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${MOCK_AGGREGATED_DATA_ONE_DIM}
+      ${'two dimensions'} | ${MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC} | ${MOCK_AGGREGATED_DATA_TWO_DIMS}
+    `('emits an error for a placeholder when the query has $case', ({ fields, data }) => {
+      createComponent({ fields, data, displayConfig: { description: '%{totalCount} sessions' } });
+
+      expect(findEmittedErrorMessage()).toBe(
+        'Description placeholders cannot be used with dimensions.',
+      );
+      expect(findChart().exists()).toBe(false);
+      expect(wrapper.findComponent(TwoDimensionsBarList).exists()).toBe(false);
+    });
+
+    describe('when the result has no rows', () => {
+      it('renders a static description', () => {
+        createComponent({
+          data: { nodes: [] },
+          displayConfig: { description: 'Share of credits by capability' },
+        });
+
+        expect(findDescription().text()).toBe('Share of credits by capability');
+      });
+
+      it('renders the no-data placeholder for each quoted metric', () => {
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: { nodes: [] },
+          displayConfig: { description: '%{throughputCount} merged merge requests' },
+        });
+
+        expect(findDescription().text()).toBe('— merged merge requests');
+      });
+    });
+
+    describe('while loading', () => {
+      it('renders a static description', () => {
+        createComponent({
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: 'Share of credits by capability' },
+        });
+
+        expect(findDescription().text()).toBe('Share of credits by capability');
+      });
+
+      it('renders no description that quotes a metric', () => {
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: '%{throughputCount} merged merge requests' },
+        });
+
+        expect(findDescription().exists()).toBe(false);
+      });
+    });
+
+    it('renders the no-data placeholder for a metric the row leaves null', () => {
+      createComponent({
+        fields: QUANTILE_FIELDS_WITH_COUNT,
+        data: { nodes: [{ Median: 33840, p75: 82800, throughputCount: null }] },
+        displayConfig: { description: '%{throughputCount} merged merge requests' },
+      });
+
+      expect(findDescription().text()).toBe('— merged merge requests');
+    });
+
+    it('emits an error for a placeholder naming a metric the query does not select', () => {
+      createComponent({ displayConfig: { description: 'Across %{usersCount} users' } });
+
+      expect(findEmittedErrorMessage()).toBe('Unknown description placeholder: `usersCount`.');
+      expect(findChart().exists()).toBe(false);
+    });
+  });
+
+  describe('hiddenMetrics', () => {
+    // Listed ahead of totalCount, so the chart would plot it if it were not hidden.
+    it('leaves a hidden metric out of the chart when the query has a dimension', () => {
+      const [dimension, metric] = MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC;
+
+      createComponent({
+        fields: [dimension, { key: 'usersCount', label: 'Users', type: 'metric' }, metric],
+        displayConfig: { hiddenMetrics: ['usersCount'] },
+      });
+
+      expect(findEmittedErrorMessage()).toBeUndefined();
+      expect(rows().map(({ value }) => value)).toEqual([21, 14, 10]);
+    });
+
+    // The pager reads the same visible fields the chart does, so hiding every
+    // metric leaves neither a chart nor controls.
+    it('renders no page controls when every metric is hidden', () => {
+      const [dimension, metric] = MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC;
+
+      createComponent({
+        data: eightRows(),
+        fields: [dimension, metric],
+        displayConfig: { hiddenMetrics: [metric.key] },
+      });
+
+      expect(findChart().exists()).toBe(false);
+      expect(findPagination().exists()).toBe(false);
+    });
+
+    it('matches a metric by its base key as well as its alias', () => {
+      createComponent({
+        fields: QUANTILE_FIELDS_WITH_COUNT,
+        data: QUANTILES_WITH_COUNT,
+        displayConfig: { hiddenMetrics: ['timeToMergeQuantile'] },
+      });
+
+      expect(rows().map(({ name }) => name)).toEqual(['Merged']);
+    });
+
+    it.each`
+      hiddenMetrics        | message
+      ${['Median', 'p75']} | ${'barList display type requires at least one metric not in `hiddenMetrics`'}
+      ${['usersCount']}    | ${'Unknown metric for `hiddenMetrics`: `usersCount`.'}
+      ${'Median'}          | ${'`hiddenMetrics` must be a list of metric names.'}
+    `('emits an error for hiddenMetrics $hiddenMetrics', ({ hiddenMetrics, message }) => {
+      createComponent({
+        fields: QUANTILE_FIELDS,
+        data: QUANTILES,
+        displayConfig: { hiddenMetrics },
+      });
+
+      expect(findEmittedErrorMessage()).toBe(message);
+      expect(findChart().exists()).toBe(false);
+    });
+  });
+
+  // A window metric can't drop its date dimension, so a panel that wants one row per metric
+  // has to ask for that layout explicitly - `metricRows` reads its values off the first row.
+  describe('with metricRows in the display config', () => {
+    const createWithMetricRows = (displayConfig) =>
+      createComponent({
+        fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
+        displayConfig,
+      });
+
+    it.each([undefined, { metricRows: false }])(
+      'lays the dimension out as rows for %p',
+      (displayConfig) => {
+        createWithMetricRows(displayConfig);
+
+        expect(rows().map(({ name }) => name)).toEqual(['ruby', 'python', 'go']);
+      },
+    );
+
+    it('renders one row per metric instead, valued from the first node', () => {
+      createWithMetricRows({ metricRows: true });
+
+      expect(rows()).toMatchObject([
+        { name: 'Total count', value: 21 },
+        { name: 'Acceptance rate', value: 0.625 },
+      ]);
+    });
+
+    // With no metrics there's nothing to build rows from, so `metricRows` has no effect and
+    // the query falls through to the routing shell, which doesn't handle it either.
+    it('renders no chart when the query selected no metrics', () => {
+      createComponent({
+        fields: [{ key: 'language', label: 'Language', name: 'language', type: 'dimension' }],
+        displayConfig: { metricRows: true },
+      });
+
+      expect(findChart().exists()).toBe(false);
+    });
+  });
+
+  describe('when the query returns more rows than fit one page', () => {
+    beforeEach(() => createComponent({ data: eightRows() }));
+
+    it('shows the first page of rows', () => {
       expect(rows().map(({ name }) => name)).toEqual([
         'lang-0',
         'lang-1',
@@ -144,44 +466,340 @@ describe('BarListPresenter', () => {
         'lang-3',
         'lang-4',
         'lang-5',
-        'lang-6',
       ]);
+    });
+
+    it('keeps shares relative to the grand total across pages', () => {
+      expect(rows().at(0).share).toBeCloseTo(30);
+    });
+
+    it('shows the remaining rows on the next page', async () => {
+      findPagination().vm.$emit('next');
+      await nextTick();
+
+      expect(rows().map(({ name }) => name)).toEqual(['lang-6', 'lang-7']);
+      expect(findPagination().props('hasNextPage')).toBe(false);
+      expect(findPagination().props('hasPreviousPage')).toBe(true);
+    });
+
+    it('returns to the first page on Previous', async () => {
+      findPagination().vm.$emit('next');
+      await nextTick();
+      findPagination().vm.$emit('prev');
+      await nextTick();
+
+      expect(rows().at(0).name).toBe('lang-0');
+      expect(findPagination().props('hasPreviousPage')).toBe(false);
+    });
+  });
+
+  describe('when every row fits one page', () => {
+    beforeEach(() => createComponent({ data: sevenRows(), displayConfig: { maxRows: 7 } }));
+
+    it('renders no page controls', () => {
+      expect(findPagination().exists()).toBe(false);
+    });
+  });
+
+  describe('when the page count shrinks past the current page', () => {
+    it('returns to the first page', async () => {
+      createComponent({ data: eightRows() });
+      findPagination().vm.$emit('next');
+      await nextTick();
+
+      await wrapper.setProps({ displayConfig: { maxRows: 8 } });
+
+      expect(rows().at(0).name).toBe('lang-0');
+      expect(findPagination().exists()).toBe(false);
+    });
+  });
+
+  describe('when the data changes', () => {
+    it('returns to the first page', async () => {
+      createComponent({ data: eightRows() });
+      findPagination().vm.$emit('next');
+      await nextTick();
+
+      await wrapper.setProps({ data: eightRows() });
+
+      expect(rows().at(0).name).toBe('lang-0');
+    });
+  });
+
+  describe('when a single row is past the page size', () => {
+    beforeEach(() => createComponent({ data: sevenRows() }));
+
+    it('widens the page rather than paging one row on its own', () => {
+      expect(rows()).toHaveLength(7);
+      expect(findPagination().exists()).toBe(false);
     });
   });
 
   describe('with maxRows in the display config', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: 4 } }));
 
-    it('caps the rows at the configured number instead of the default', () => {
-      expect(rows()).toHaveLength(5);
-      expect(rows().at(-1)).toEqual({ name: 'Other (4)', value: 20, share: 20 });
+    it('sizes the page at the configured number', () => {
+      expect(rows()).toHaveLength(4);
+      expect(rows().at(-1).name).toBe('lang-3');
     });
   });
 
   describe('when maxRows arrives as a YAML string', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: '4' } }));
 
-    it('caps the rows all the same', () => {
-      expect(rows()).toHaveLength(5);
-      expect(rows().at(-1).name).toBe('Other (4)');
+    it('sizes the page all the same', () => {
+      expect(rows()).toHaveLength(4);
     });
   });
 
   describe('when maxRows is not a positive whole number', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: 0 } }));
 
-    it('falls back to the default maximum', () => {
-      expect(rows()).toHaveLength(7);
-      expect(rows().at(-1).name).toBe('Other (2)');
+    it('falls back to the default page size', () => {
+      expect(rows()).toHaveLength(6);
+      expect(rows().at(-1).name).toBe('lang-5');
     });
   });
 
   describe('when maxRows is larger than the default maximum', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: 10 } }));
 
-    it('widens the cap rather than clamping it back to the default', () => {
+    it('widens the page rather than clamping it back to the default', () => {
       expect(rows()).toHaveLength(8);
       expect(rows().at(-1).name).toBe('lang-7');
+    });
+  });
+
+  describe('valueLabels', () => {
+    it('defaults the chart to share and value labels', () => {
+      createComponent();
+
+      expect(findChart().props('valueLabels')).toBe('shareAndValue');
+    });
+
+    it('forwards a value-only format from the display config', () => {
+      createComponent({ displayConfig: { valueLabels: 'value' } });
+
+      expect(findChart().props('valueLabels')).toBe('value');
+    });
+  });
+
+  describe('color', () => {
+    it('defaults the chart to orange bars', () => {
+      createComponent();
+
+      expect(findChart().props('color')).toBe('orange');
+    });
+
+    it('forwards blue from the display config', () => {
+      createComponent({ displayConfig: { color: 'blue' } });
+
+      expect(findChart().props('color')).toBe('blue');
+    });
+
+    it('forwards gray from the display config', () => {
+      createComponent({ displayConfig: { color: 'gray' } });
+
+      expect(findChart().props('color')).toBe('gray');
+    });
+  });
+
+  describe('scale', () => {
+    it('defaults the chart to bars sized by share of the total', () => {
+      createComponent();
+
+      expect(findChart().props('scale')).toBe('total');
+    });
+
+    it('forwards max from the display config', () => {
+      createComponent({ displayConfig: { scale: 'max' } });
+
+      expect(findChart().props('scale')).toBe('max');
+    });
+
+    it('forwards log from the display config', () => {
+      createComponent({ displayConfig: { scale: 'log' } });
+
+      expect(findChart().props('scale')).toBe('log');
+    });
+  });
+
+  describe('when a display option has a value it does not know', () => {
+    it.each`
+      key              | value        | supportedValues
+      ${'valueLabels'} | ${'percent'} | ${'`shareAndValue`, `value`'}
+      ${'color'}       | ${'green'}   | ${'`orange`, `blue`, `gray`'}
+      ${'scale'}       | ${'largest'} | ${'`total`, `max`, `log`'}
+    `('emits an error naming $key and renders no chart', ({ key, value, supportedValues }) => {
+      createComponent({ displayConfig: { [key]: value } });
+
+      expect(findEmittedErrorMessage()).toBe(
+        `Unknown \`${key}\`: \`${value}\`. Supported values are: ${supportedValues}.`,
+      );
+      expect(findChart().exists()).toBe(false);
+    });
+
+    it('emits the error before the fields are populated', () => {
+      createComponent({ fields: [], displayConfig: { color: 'green' } });
+
+      expect(findEmittedErrorMessage()).toBe(
+        'Unknown `color`: `green`. Supported values are: `orange`, `blue`, `gray`.',
+      );
+    });
+  });
+
+  describe('with comparison data', () => {
+    const trendProps = {
+      comparisonData: MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM,
+      source: 'CodeSuggestions',
+    };
+    const trendOf = (name) => rows().find((row) => row.name === name).trend;
+
+    beforeEach(() => createComponent(trendProps));
+
+    // ruby: 21 against 20. python: 14 against 14. go has no previous row.
+    it('gives each paired row a signed change, coloured by its direction', () => {
+      expect(rows()).toEqual([
+        {
+          name: 'ruby',
+          value: 21,
+          share: (21 / 45) * 100,
+          trend: { text: '+5%', variant: 'success' },
+        },
+        {
+          name: 'python',
+          value: 14,
+          share: (14 / 45) * 100,
+          trend: { text: '0%', variant: 'neutral' },
+        },
+        { name: 'go', value: 10, share: (10 / 45) * 100 },
+      ]);
+    });
+
+    describe('when a value falls', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          data: { nodes: [{ language: 'ruby', totalCount: 15 }] },
+        }),
+      );
+
+      it('marks the fall as a bad move for a count', () => {
+        expect(trendOf('ruby')).toEqual({ text: '-25%', variant: 'danger' });
+      });
+    });
+
+    describe('when the metric is better going down', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          fields: [
+            MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC[0],
+            { key: 'rejectedCount', label: 'Rejected count', type: 'metric' },
+          ],
+          data: { nodes: [{ language: 'ruby', rejectedCount: 30 }] },
+          comparisonData: { nodes: [{ language: 'ruby', rejectedCount: 20 }] },
+        }),
+      );
+
+      it('marks a rise as a bad move', () => {
+        expect(trendOf('ruby')).toEqual({ text: '+50%', variant: 'danger' });
+      });
+    });
+
+    describe('when the previous value was 0', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          comparisonData: { nodes: [{ language: 'ruby', totalCount: 0 }] },
+        }),
+      );
+
+      // A move from 0 has no percentage to show.
+      it('says the row is new', () => {
+        expect(trendOf('ruby')).toEqual({ text: 'New', variant: 'neutral' });
+      });
+    });
+
+    describe('when trended rows continue on the next page', () => {
+      const previous = (values) => ({
+        nodes: values.map((totalCount, i) => ({ language: `lang-${i}`, totalCount })),
+      });
+
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          data: eightRows(),
+          comparisonData: previous([30, 25, 15, 10, 8, 6, 2, 1]),
+        }),
+      );
+
+      it('keeps each row paired with its own previous value across pages', async () => {
+        findPagination().vm.$emit('next');
+        await nextTick();
+
+        expect(rows().at(0)).toMatchObject({
+          name: 'lang-6',
+          value: 4,
+          trend: { text: '+100%', variant: 'success' },
+        });
+      });
+    });
+
+    describe('when the previous period returned no rows', () => {
+      beforeEach(() => createComponent({ ...trendProps, comparisonData: { nodes: [] } }));
+
+      it('gives no row a trend', () => {
+        expect(rows().every((row) => !('trend' in row))).toBe(true);
+      });
+    });
+
+    describe('when the dimension buckets by date', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          fields: [
+            {
+              key: 'created',
+              label: 'Created',
+              type: 'dimension',
+              parameters: { granularity: 'weekly' },
+            },
+            MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC[1],
+          ],
+          data: { nodes: [{ created: '2026-01-05', totalCount: 10 }] },
+          comparisonData: { nodes: [{ created: '2025-12-29', totalCount: 5 }] },
+        }),
+      );
+
+      // The buckets are different dates in the shifted window, so nothing pairs.
+      it('gives no row a trend', () => {
+        expect(rows()).toHaveLength(1);
+        expect(rows()[0]).not.toHaveProperty('trend');
+      });
+    });
+
+    describe('when a row is duplicated in the previous period', () => {
+      beforeEach(() =>
+        createComponent({
+          ...trendProps,
+          comparisonData: {
+            nodes: [
+              { language: 'ruby', totalCount: 5 },
+              { language: 'ruby', totalCount: 15 },
+              { language: 'python', totalCount: 7 },
+            ],
+          },
+        }),
+      );
+
+      it('gives that row no trend, since either pairing would be a guess', () => {
+        expect(rows().find((row) => row.name === 'ruby')).not.toHaveProperty('trend');
+      });
+
+      it('leaves the rows it can still tell apart with their own', () => {
+        expect(trendOf('python')).toEqual({ text: '+100%', variant: 'success' });
+      });
     });
   });
 
@@ -194,12 +812,79 @@ describe('BarListPresenter', () => {
     });
   });
 
-  describe('validation', () => {
-    it('rejects a second dimension', () => {
-      createComponent({ fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC });
+  describe('two dimensions', () => {
+    const TWO_DIM_DATA = {
+      nodes: [
+        { user: 'alice', language: 'ruby', totalCount: 40 },
+        { user: 'bob', language: 'ruby', totalCount: 30 },
+      ],
+    };
+
+    const findTwoDimensions = () => wrapper.findComponent(TwoDimensionsBarList);
+
+    it('routes to the two-dimension bar list with the dimensions, metric and caps', () => {
+      createComponent({
+        data: TWO_DIM_DATA,
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        displayConfig: { maxRows: 2, maxSeries: 1 },
+      });
+
+      expect(findTwoDimensions().props()).toMatchObject({
+        data: TWO_DIM_DATA,
+        primaryDimension: expect.objectContaining({ key: 'user' }),
+        secondaryDimension: expect.objectContaining({ key: 'language' }),
+        metric: expect.objectContaining({ key: 'totalCount' }),
+        pageSize: 2,
+        maxSeries: 1,
+      });
+    });
+
+    // Rows are the distinct first-dimension values, not the nodes behind them.
+    it('counts pages from the grouped rows rather than the nodes', () => {
+      createComponent({
+        data: {
+          nodes: ['alice', 'bob', 'carol'].flatMap((user) =>
+            ['ruby', 'go', 'python'].map((language) => ({ user, language, totalCount: 10 })),
+          ),
+        },
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+      });
+
+      expect(findPagination().exists()).toBe(false);
+    });
+
+    it('renders no two-dimension list when a display option is invalid', () => {
+      createComponent({
+        data: TWO_DIM_DATA,
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        displayConfig: { color: 'green' },
+      });
+
+      expect(findTwoDimensions().exists()).toBe(false);
+    });
+
+    // The pager must not outlive the chart: a rejected query renders neither.
+    it('rejects a third dimension', () => {
+      createComponent({
+        data: {
+          nodes: Array.from({ length: 9 }, (_, i) => ({
+            user: `u-${i}`,
+            language: 'ruby',
+            ideName: 'vs',
+            totalCount: 10,
+          })),
+        },
+        fields: [
+          { key: 'user', label: 'User', name: 'user', type: 'dimension' },
+          { key: 'language', label: 'Language', name: 'language', type: 'dimension' },
+          { key: 'ideName', label: 'IDE', name: 'ideName', type: 'dimension' },
+          { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
+        ],
+      });
 
       expect(findChart().exists()).toBe(false);
-      expect(wrapper.emitted('error')[0][0].message).toBe('barList supports exactly one dimension');
+      expect(findPagination().exists()).toBe(false);
+      expect(findEmittedErrorMessage()).toBe('barList supports a maximum of 2 dimensions');
     });
   });
 });

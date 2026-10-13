@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::DiffFileHeaderComponent, feature_category: :code_review_workflow do
   let_it_be_with_reload(:diff_file) { build(:diff_file) }
   let(:header) { page.find('[data-testid="rd-diff-file-header"]') }
 
@@ -54,9 +54,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
   it "renders path change" do
     old = 'old/path'
     new = 'new/path'
-    allow(diff_file).to receive(:renamed_file?).and_return(true)
-    allow(diff_file).to receive(:old_path).and_return(old)
-    allow(diff_file).to receive(:new_path).and_return(new)
+    allow(diff_file).to receive_messages(renamed_file?: true, old_path: old, new_path: new)
     render_component
     expect(header).to have_css("h2[aria-label=\"File moved from #{old} to #{new}\"] a", text: "#{old}→#{new}")
   end
@@ -74,8 +72,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
   end
 
   it "renders LFS message" do
-    allow(diff_file).to receive(:stored_externally?).and_return(true)
-    allow(diff_file).to receive(:external_storage).and_return(:lfs)
+    allow(diff_file).to receive_messages(stored_externally?: true, external_storage: :lfs)
     render_component
     expect(header).to have_text('LFS')
   end
@@ -126,8 +123,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
   context "with blob diff" do
     before do
-      allow(diff_file).to receive(:binary?).and_return(true)
-      allow(diff_file).to receive(:stored_externally?).and_return(false)
+      allow(diff_file).to receive_messages(binary?: true, stored_externally?: false)
       allow(diff_file).to receive_message_chain(:old_blob, :size).and_return(100)
       allow(diff_file).to receive_message_chain(:new_blob, :size).and_return(1024)
     end
@@ -139,16 +135,14 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     end
 
     it "renders deleted blob size" do
-      allow(diff_file).to receive(:new_file?).and_return(false)
-      allow(diff_file).to receive(:deleted_file?).and_return(true)
+      allow(diff_file).to receive_messages(new_file?: false, deleted_file?: true)
       render_component
       expect(page).to have_text("−100 B")
     end
 
     context 'with changed blob' do
       before do
-        allow(diff_file).to receive(:new_file?).and_return(false)
-        allow(diff_file).to receive(:deleted_file?).and_return(false)
+        allow(diff_file).to receive_messages(new_file?: false, deleted_file?: false)
       end
 
       it "renders blob size changed to more bytes" do
@@ -166,8 +160,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
         new_blob = double
         old_blob = double
 
-        allow(diff_file).to receive(:new_blob).and_return(new_blob)
-        allow(diff_file).to receive(:old_blob).and_return(old_blob)
+        allow(diff_file).to receive_messages(new_blob: new_blob, old_blob: old_blob)
         expect(new_blob).to receive(:size).once.and_return(1024)
         expect(old_blob).to receive(:size).once.and_return(100)
 
@@ -180,8 +173,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     context 'when a blob is missing' do
       context 'with changed blob' do
         before do
-          allow(diff_file).to receive(:new_file?).and_return(false)
-          allow(diff_file).to receive(:deleted_file?).and_return(false)
+          allow(diff_file).to receive_messages(new_file?: false, deleted_file?: false)
         end
 
         it 'does not render a total size when the new blob is missing', :aggregate_failures do
@@ -207,8 +199,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
         end
 
         it 'does not render binary size stats when both blobs are missing', :aggregate_failures do
-          allow(diff_file).to receive(:new_blob).and_return(nil)
-          allow(diff_file).to receive(:old_blob).and_return(nil)
+          allow(diff_file).to receive_messages(new_blob: nil, old_blob: nil)
 
           render_component
 
@@ -220,8 +211,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
       end
 
       it 'does not render an added size when the new file blob is missing', :aggregate_failures do
-        allow(diff_file).to receive(:new_file?).and_return(true)
-        allow(diff_file).to receive(:new_blob).and_return(nil)
+        allow(diff_file).to receive_messages(new_file?: true, new_blob: nil)
 
         render_component
 
@@ -229,9 +219,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
       end
 
       it 'does not render a removed size when the deleted file blob is missing', :aggregate_failures do
-        allow(diff_file).to receive(:new_file?).and_return(false)
-        allow(diff_file).to receive(:deleted_file?).and_return(true)
-        allow(diff_file).to receive(:old_blob).and_return(nil)
+        allow(diff_file).to receive_messages(new_file?: false, deleted_file?: true, old_blob: nil)
 
         render_component
 
@@ -311,8 +299,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
       context 'when file is renamed' do
         before do
-          allow(diff_file).to receive(:new_path).and_return('new/file/path.rb')
-          allow(diff_file).to receive(:old_path).and_return('old/file/path.rb')
+          allow(diff_file).to receive_messages(new_path: 'new/file/path.rb', old_path: 'old/file/path.rb')
           allow(environment).to receive(:external_url_for) do |path, _sha|
             path == diff_file.new_path ? environment_path : nil
           end
@@ -393,9 +380,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
     context 'with diffable text' do
       before do
-        allow(diff_file).to receive(:diffable_text?).and_return(true)
-        allow(diff_file).to receive(:fully_expanded?).and_return(false)
-        allow(diff_file).to receive(:manually_expanded?).and_return(false)
+        allow(diff_file).to receive_messages(diffable_text?: true, fully_expanded?: false, manually_expanded?: false)
       end
 
       it 'adds show full file menu item' do
@@ -409,8 +394,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
       context 'with manually expanded file' do
         before do
-          allow(diff_file).to receive(:fully_expanded?).and_return(true)
-          allow(diff_file).to receive(:manually_expanded?).and_return(true)
+          allow(diff_file).to receive_messages(fully_expanded?: true, manually_expanded?: true)
         end
 
         it 'adds show changes only file menu item' do

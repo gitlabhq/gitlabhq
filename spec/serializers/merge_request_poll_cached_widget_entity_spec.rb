@@ -9,7 +9,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
   let_it_be_with_refind(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user) { create(:user) }
 
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { build_stubbed(:ci_empty_pipeline, project: project) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -137,8 +137,8 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'when events exists' do
-        let!(:closed_event) { create(:event, :closed, project: project, target: resource) }
-        let!(:merge_event) { create(:event, :merged, project: project, target: resource) }
+        let_it_be(:closed_event) { create(:event, :closed, project: project, target: resource) }
+        let_it_be(:merge_event) { create(:event, :merged, project: project, target: resource) }
 
         it 'matches merge request metrics schema' do
           expect(subject[:metrics].with_indifferent_access)

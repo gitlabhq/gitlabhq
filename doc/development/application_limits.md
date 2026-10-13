@@ -1,6 +1,6 @@
 ---
-stage: Tenant Scale
-group: Tenant Services
+stage: Async
+group: Async
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Application limits development
 ---
@@ -204,7 +204,7 @@ The process for adding a new throttle is loosely:
    and apply it to the desired requests.
 1. Add the new settings to the **Admin** area form in `app/views/admin/application_settings/_ip_limits.html.haml`.
 1. Document the new settings in [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md) and [Application settings API](../api/settings.md).
-1. Configure the rate limit for GitLab.com and document it in [rate limits on GitLab.com](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
+1. Configure the rate limit for GitLab.com and document it in [rate limits on GitLab.com](../user/gitlab_com/rate_limits.md).
 
 Refer to these past issues for implementation details:
 
@@ -221,6 +221,51 @@ See the `CheckRateLimit` concern for use in controllers. In other parts of the c
 the `Gitlab::ApplicationRateLimiter` module can be called directly.
 
 Be sure to [document the new limit](#documentation).
+
+Pass `scope:` as a hash keyed by the characteristic names the key registers in
+`Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits`:
+
+```ruby
+Gitlab::ApplicationRateLimiter.throttled?(:issues_create, scope: { project: project, user: current_user })
+```
+
+ActiveRecord values contribute their primary key and primitives their string
+form. Omitted (or `nil`) characteristics are keyed on labkit's `_unknown_`
+sentinel, and a scope key that is not a characteristic of the rule raises in
+development and test.
+
+### Characteristic names
+
+Each rate limit key registers an ordered list of characteristics. They are
+defined per rule in `Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits`
+(in `lib/gitlab/application_rate_limiter/labkit_adapter/supported_rate_limits.rb`)
+and, for EE-only keys and EE overrides, in
+`ee/lib/ee/gitlab/application_rate_limiter/labkit_adapter/supported_rate_limits.rb`.
+Names are bare nouns: `:user`, `:project`, `:ip`, `:group`, `:namespace`. They
+are never suffixed with `_id`, even though an ActiveRecord value contributes its
+primary key.
+
+Limits that are global rather than per-actor register a single characteristic
+literally named `scope`, so the call reads `scope: { scope: :global }`:
+
+```ruby
+Gitlab::ApplicationRateLimiter.throttled?(:fetch_google_ip_list, scope: { scope: :global })
+```
+
+The repetition is the characteristic name colliding with the keyword argument
+name. It is not a mistake.
+
+The `RateLimitedService` concern takes the same characteristic names, mapped to
+the service methods that supply each value:
+
+```ruby
+rate_limit key: :issues_create,
+  opts: { scope: { project: :project, user: :current_user } }
+```
+
+A characteristic name is part of the Redis key. Renaming one starts a new
+counter and discards whatever the old one had accumulated, so treat renames as a
+behavior change rather than a refactor.
 
 ## Next rate limiting architecture
 

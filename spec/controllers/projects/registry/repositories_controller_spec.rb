@@ -17,7 +17,6 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
   shared_examples 'renders 200 for html and 404 for json' do
     it 'successfully renders container repositories', :snowplow do
       expect(go_to_index_response).to have_gitlab_http_status(:ok)
-      # event tracked in GraphQL API: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
       expect_no_snowplow_event
     end
 
@@ -117,7 +116,6 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     context 'when user has access to registry' do
       it 'successfully renders the container repository index page', :snowplow do
         expect(go_to_show_response).to have_gitlab_http_status(:ok)
-        # event tracked in GraphQL API: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44926
         expect_no_snowplow_event
       end
     end
@@ -147,8 +145,7 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     end
 
     it 'tracks the event', :snowplow do
-      delete_repository_response
-
+      expect(delete_repository_response).to have_gitlab_http_status(:no_content)
       expect_snowplow_event(category: anything, action: 'delete_repository')
     end
   end

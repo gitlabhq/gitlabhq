@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Diagnostics
       module Checks
-        class SchemaResolution
+        class SchemaResolution < Base
           USER_TOKEN = '$user'
 
           SCHEMAS_SQL = <<~SQL
@@ -37,26 +37,15 @@ module Gitlab
               AND c.relkind IN ('r', 'p', 'v', 'm', 'S')
           SQL
 
-          def initialize(connection)
-            @connection = connection
-          end
-
           def execute
-            findings = search_path_findings
-
             {
               current_user: current_user,
               search_path: search_path,
-              schemas: schemas,
-              findings: Findings.sort(findings),
-              severity: Findings.worst(findings.pluck(:severity)),
-              counts: Findings.counts(findings)
-            }
+              schemas: schemas
+            }.merge(verdict(search_path_findings))
           end
 
           private
-
-          attr_reader :connection
 
           def search_path
             @search_path ||= connection.select_value('SHOW search_path').to_s

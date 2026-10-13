@@ -67,7 +67,19 @@ If you have issues:
 - If you use reverse proxies like Apache, you might see GitLab Duo Chat connection issues in your
   logs, like **WebSocket connection to .... failures**.
 
-To resolve this issue, edit your proxy settings:
+To resolve this issue, edit your proxy settings.
+
+For Apache 2.4.47 and later, add `upgrade=websocket` to the `ProxyPass` directive
+so that Apache upgrades the connection for WebSocket traffic:
+
+```apache
+# Needs proxy_http and proxy_wstunnel enabled
+ProxyPass / http://127.0.0.1:8181/ upgrade=websocket
+ProxyPassReverse / http://127.0.0.1:8181/
+```
+
+For earlier Apache versions, use rewrite rules to route WebSocket
+traffic to the `ws://` protocol:
 
 ```apache
 # Enable WebSocket reverse Proxy
@@ -77,10 +89,16 @@ To resolve this issue, edit your proxy settings:
   RewriteRule ^/?(.*) "ws://127.0.0.1:8181/$1" [P,L]
 ```
 
+A missing WebSocket upgrade on the proxy also breaks other GitLab features that
+stream over Action Cable (`/-/cable`), like live updates of merge request and
+pipeline status.
+
 ## Allow connections from the runner
 
 For GitLab Duo Agent Platform features that make use of runners, like flows,
 the runner must be able to connect to the GitLab instance.
+For more information, see
+[configure runners to execute flows](../../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows).
 
 The same [inbound connections from clients to the GitLab instance](#allow-inbound-connections-from-clients-to-the-gitlab-instance)
 must be allowed as outbound connections from the runner to the GitLab instance.
@@ -159,7 +177,7 @@ You can determine if your instance meets the requirements to use GitLab Duo.
 When the health check completes, it displays a pass or fail result and the types of issues.
 If the health check fails any of the tests, users might not be able to use GitLab Duo features in your instance.
 
-This is a [beta](../../../policy/development_stages_support.md) feature.
+The health check is a [beta](../../../policy/development_stages_support.md) feature.
 
 Prerequisites:
 
@@ -182,7 +200,7 @@ These tests are performed:
 | Code Suggestions          | GitLab Duo Self-Hosted models only. Tests whether Code Suggestions is available: <br>- Your license includes access to Code Suggestions.<br>- You have the necessary permissions to use the feature. |
 | GitLab Duo Agent Platform | Tests whether the backend service is operational and accessible. This service is required for agentic features like the Agent Platform and GitLab Duo Agentic Chat.<br><br>For GitLab Duo Self-Hosted, this test does not pass until you [select a self-hosted model for the GitLab Duo Agent Platform feature](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature).<br><br>Also verifies the following foundational flows prerequisites:<br>- The instance-level flow execution setting is enabled.<br>- The instance-level foundational flows setting is enabled.<br>- At least one active instance runner with the `gitlab--duo` tag is registered and connected, and uses a Docker-compatible executor.|
 | System exchange           | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
-| Usage billing           | Tests whether your instance can connect to usage billing endpoints, including Customers Portal, the AI Gateway, and Duo Workflow Service. |
+| Usage billing | Tests whether your instance can connect to usage billing endpoints, including Customers Portal, the AI Gateway, and GitLab Duo Workflow Service. |
 
 For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check,
 see the [troubleshooting page](../../../user/gitlab_duo/troubleshooting.md).

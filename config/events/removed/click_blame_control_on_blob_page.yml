@@ -1,0 +1,20 @@
+---
+description: Navigated from Blob view to Blame view
+internal_events: true
+action: click_blame_control_on_blob_page
+identifiers:
+- project
+- namespace
+- user
+product_group: source_code
+product_categories:
+- source_code_management
+milestone: '16.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147673
+tiers:
+- free
+- premium
+- ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257407
+milestone_removed: '19.5'

@@ -294,7 +294,7 @@ RSpec.describe Gitlab::ContributionsCalendar, feature_category: :user_profile do
     context 'when the user cannot read cross project' do
       before do
         allow(Ability).to receive(:allowed?).and_call_original
-        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+        expect(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
       end
 
       it 'does not return any events' do

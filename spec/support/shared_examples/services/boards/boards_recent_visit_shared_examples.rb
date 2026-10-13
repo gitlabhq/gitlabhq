@@ -30,6 +30,21 @@ RSpec.shared_examples 'boards recent visit' do
 
     it_behaves_like 'was visited previously'
 
+    context 'when visited again within the touch interval' do
+      let_it_be(:visit, freeze: false) do
+        create(visit_relation,
+          board_parent_relation => board_parent,
+          board_relation => board,
+          user: user,
+          updated_at: 30.seconds.ago
+        )
+      end
+
+      it 'does not update the timestamp' do
+        expect { described_class.visited!(user, board) }.not_to change { visit.reload.updated_at }
+      end
+    end
+
     context 'when we try to create a visit that is not unique' do
       before do
         expect(described_class).to receive(:find_or_create_by).and_raise(ActiveRecord::RecordNotUnique, 'record not unique')

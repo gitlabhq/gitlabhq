@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - create_ai_catalog_third_party_flow
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

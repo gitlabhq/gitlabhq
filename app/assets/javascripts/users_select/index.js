@@ -4,13 +4,14 @@
 
 import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { AJAX_USERS_SELECT_PARAMS_MAP } from '~/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
 import axios from '~/lib/utils/axios_utils';
-import { parseBoolean, spriteIcon } from '~/lib/utils/common_utils';
+import { spriteIcon } from '~/lib/utils/common_utils';
 import { s__, __, sprintf } from '~/locale';
 import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import { getAjaxUsersSelectParams } from './utils';

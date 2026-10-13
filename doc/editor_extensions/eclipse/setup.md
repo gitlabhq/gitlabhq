@@ -66,3 +66,29 @@ To authenticate with GitLab:
    Your token is hidden and stored using Eclipse secure storage.
 1. Select **Verify Setup**.
 1. Select **Apply and Close**.
+
+## Configure Code Suggestions
+
+Prerequisites:
+
+- You meet the [prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites) for Code Suggestions.
+- You open an Eclipse project instead of a single file.
+
+Code Suggestions is on by default. To verify:
+
+1. In Eclipse, open your GitLab project.
+1. In the Eclipse bottom toolbar, select the GitLab icon.
+1. Check the status of **Code Suggestions**.
+
+To turn off Code Suggestions for a project:
+
+1. In the Eclipse bottom toolbar, select the GitLab icon.
+1. Select **Disable Code Suggestions**.
+
+To turn off Code Suggestions for a specific language:
+
+1. In the Eclipse bottom toolbar, select the GitLab icon.
+1. Select **Show Settings**.
+1. Under **Code Suggestions Enabled Languages**, clear the checkbox for the language you want to turn off.
+
+You can also [add support for more languages](../../user/project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages).

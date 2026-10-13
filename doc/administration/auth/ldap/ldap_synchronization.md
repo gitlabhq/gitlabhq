@@ -193,6 +193,10 @@ A blocked user is unblocked when they sign in with LDAP if all of the following 
 - All the access check conditions are true.
 - The LDAP server is available when the user signs in.
 
+An administrator can trigger this check for one user without waiting for the user to sign in or
+for the next scheduled sync. For more information, see
+[Resync a user blocked by LDAP](../../moderate_users.md#resync-a-user-blocked-by-ldap).
+
 All users are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
 
 > [!note]
@@ -665,8 +669,8 @@ membership of a top-level group configured for LDAP synchronization.
 
 When global group memberships lock is enabled:
 
-- You cannot set a group or subgroup as a Code Owner.
-  For more information, see [Incompatibility with Global group memberships locks](../../../user/project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
+- To use a group or subgroup as a Code Owner, see
+  [Incompatibility with Global group memberships locks](../../../user/project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 - Only an administrator can manage memberships of any group including access levels.
 - Users are not allowed to share a project with other groups or invite members to
   a project created in a group.
@@ -932,6 +936,7 @@ administrative duties.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a feature flag](../../feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/594044) in GitLab 19.5. Feature flag `bso_minimal_access_fallback` removed.
 
 {{< /history >}}
 

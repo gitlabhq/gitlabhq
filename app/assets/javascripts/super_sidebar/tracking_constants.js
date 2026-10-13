@@ -19,3 +19,5 @@ export const EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL =
   'navigate_to_feature_from_feature_library_modal';
 export const EVENT_SEARCH_WITH_GEMINI_IN_FEATURE_LIBRARY_MODAL =
   'search_with_gemini_in_feature_library_modal';
+export const EVENT_SELECT_SIDEBAR_NAVIGATION_MODE_IN_SIDEBAR_PREFERENCES =
+  'select_sidebar_navigation_mode_in_sidebar_preferences';

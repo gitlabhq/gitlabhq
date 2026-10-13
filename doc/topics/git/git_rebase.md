@@ -23,7 +23,7 @@ When you rebase:
    a branch named `feature` is created (in orange), four commits from `main` (in purple) are
    imported into the `feature` branch:
 
-   ![Git rebase diagram showing a feature branch rebased onto main, preserving a linear commit history](img/rebase_v17_10.drawio.svg)
+   ![A feature branch rebased onto the main branch.](img/rebase_v17_10.drawio.svg)
 
 While most rebases are performed against `main`, you can rebase against any other
 branch. You can also specify a different remote repository.

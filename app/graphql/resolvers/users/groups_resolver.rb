@@ -8,7 +8,6 @@ module Resolvers
 
       type Types::GroupType.connection_type, null: true
 
-      authorize :read_user_groups
       authorizes_object!
 
       argument :permission_scope,
@@ -18,13 +17,27 @@ module Resolvers
       argument :search, GraphQL::Types::String,
         required: false,
         description: 'Search by group name or path.'
+      argument :solo_owned, GraphQL::Types::Boolean,
+        required: false,
+        description: 'When true, returns only groups in the current organization ' \
+          'where the user is the sole owner.'
       argument :sort,
         Types::Namespaces::GroupSortEnum,
         required: false,
         description: 'Sort groups by given criteria.'
 
+      validates mutually_exclusive: [:permission_scope, :solo_owned]
+
       before_connection_authorization do |nodes, current_user|
         Preloaders::GroupPolicyPreloader.new(nodes, current_user).execute
+      end
+
+      def self.authorized?(user, context)
+        current_user = context[:current_user]
+
+        super &&
+          (current_user&.can?(:read_user_groups, user) ||
+            current_user&.can?(:read_user_groups, context[:current_organization]))
       end
 
       private

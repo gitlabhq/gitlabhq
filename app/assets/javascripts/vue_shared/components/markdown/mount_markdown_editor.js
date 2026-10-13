@@ -1,12 +1,15 @@
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createApolloClient from '~/lib/graphql';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '../../constants';
 import MarkdownEditor from './markdown_editor.vue';
 import eventHub from './eventhub';
+
+Vue.use(VueApollo);
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';

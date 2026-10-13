@@ -267,6 +267,13 @@ OpenAI Codex:
 - `gpt-5.4-mini`
 - `gpt-5.4-nano`
 
+> [!note]
+> On GitLab.com, the top-level group can [restrict Agentic Chat to specific models](../model_selection.md#select-a-model-for-agentic-chat).
+> If it does, external agents can use only those models.
+> Add the models your agent uses to the list.
+> This restriction is controlled by a feature flag.
+> For more information, see the history of that topic.
+
 ## Configure CI/CD variables
 
 Add variables to your project to determine how GitLab connects to the third-party provider.
@@ -317,7 +324,7 @@ The following CI/CD variables are available:
 
 Every external agent receives a GitLab OAuth token set as the environment variable `AI_FLOW_GITLAB_TOKEN`.
 These tokens are limited to the scope granted to them. They can only access
-[GitLab API endpoints with the `ai_workflows` scope](../flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
+[GitLab API endpoints with the `ai_workflows` scope](../../../editor_extensions/software_development.md#apis-that-the-flow-has-access-to).
 Endpoints outside that scope are refused even when the token is sent correctly.
 
 To call the GitLab API from an external agent, send `AI_FLOW_GITLAB_TOKEN` as an `Authorization: Bearer` token.

@@ -3,13 +3,14 @@
 module Terraform
   class StateUploader < GitlabUploader
     include ObjectStorage::Concern
+    include Gitlab::Encryption::DbKeyBaseLockboxKeys
 
     storage_location :terraform_state
 
     delegate :terraform_state, :project_id, to: :model
 
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
-    encrypt(key: :key)
+    encrypt(key: :key, previous_versions: :previous_key_versions)
 
     alias_method :lockbox_encrypt, :encrypt
 
@@ -65,7 +66,7 @@ module Terraform
     end
 
     def key
-      OpenSSL::HMAC.digest('SHA256', Gitlab::Application.credentials.db_key_base, project_id.to_s)
+      db_key_base_lockbox_key(project_id.to_s)
     end
 
     class << self
@@ -80,6 +81,12 @@ module Terraform
       def default_store
         object_store_enabled? ? ObjectStorage::Store::REMOTE : ObjectStorage::Store::LOCAL
       end
+    end
+
+    private
+
+    def previous_key_versions
+      db_key_base_lockbox_previous_versions(project_id.to_s)
     end
   end
 end

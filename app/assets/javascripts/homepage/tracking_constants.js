@@ -1,23 +1,19 @@
 // Event names
 export const EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE = 'user_follows_link_on_homepage';
 export const EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED = 'user_clicks_link_in_activity_feed';
-export const EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE =
-  'open_todos_filter_dropdown_on_homepage';
 export const EVENT_FILTER_TODOS_ON_HOMEPAGE = 'filter_todos_on_homepage';
 
 // Labels
-export const TRACKING_LABEL_MERGE_REQUESTS = 'Merge requests';
-export const TRACKING_LABEL_WORK_ITEMS = 'Issues';
+export const TRACKING_LABEL_MERGE_REQUESTS_WIDGET = 'Merge requests widget';
 export const TRACKING_LABEL_TODO_ITEMS = 'To-do items';
 export const TRACKING_LABEL_RECENTLY_VIEWED = 'Recently viewed';
 export const TRACKING_LABEL_PROJECTS = 'Projects';
-export const TRACKING_LABEL_PIPELINES = 'Pipelines';
 
 // Properties
 export const TRACKING_PROPERTY_REVIEW_REQUESTED = 'Review requested';
 export const TRACKING_PROPERTY_ASSIGNED_TO_YOU = 'Assigned to you';
-export const TRACKING_PROPERTY_AUTHORED_BY_YOU = 'Authored by you';
 export const TRACKING_PROPERTY_ALL_TODOS = 'All to-dos';
+export const TRACKING_PROPERTY_ALL_MERGE_REQUESTS = 'All merge requests';
 export const TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK = 'Quick access project link';
 
 // Scope

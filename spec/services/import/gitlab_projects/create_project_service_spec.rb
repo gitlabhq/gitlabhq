@@ -97,6 +97,20 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
       expect(project.import_type).to eq('gitlab_project')
     end
 
+    describe 'request_channel', :clean_gitlab_redis_shared_state, :request_store do
+      it 'defaults to :api' do
+        expect(subject.execute.payload.import_state.request_channel).to eq('api')
+      end
+
+      it 'uses the given channel' do
+        service = described_class.new(
+          user, params: params, file_acquisition_strategy: FakeStrategy, request_channel: :ui
+        )
+
+        expect(service.execute.payload.import_state.request_channel).to eq('ui')
+      end
+    end
+
     context 'when the project creation raises an error' do
       it 'fails to create a project' do
         expect_next_instance_of(Projects::GitlabProjectsImportService) do |service|

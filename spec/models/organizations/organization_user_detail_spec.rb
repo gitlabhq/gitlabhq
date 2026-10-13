@@ -23,12 +23,12 @@ RSpec.describe Organizations::OrganizationUserDetail, type: :model, feature_cate
       let_it_be(:organization) { create(:organization) }
       let_it_be(:other_organization) { create(:organization) }
 
-      let(:username) { 'capybara' }
+      let_it_be(:username) { 'capybara' }
 
       it { is_expected.to be_valid }
 
       context 'when a User exists in the same organization with the same username' do
-        let!(:user) { create(:user, :with_namespace, username: username, organization: organization) }
+        let_it_be(:user) { create(:user, :with_namespace, username: username, organization: organization) }
 
         it 'adds a validation error on username' do
           expect(organization_user_detail).not_to be_valid
@@ -45,13 +45,13 @@ RSpec.describe Organizations::OrganizationUserDetail, type: :model, feature_cate
       end
 
       context 'when a User exists in another organization with the same username' do
-        let!(:user) { create(:user, :with_namespace, username: username, organization: other_organization) }
+        let_it_be(:user) { create(:user, :with_namespace, username: username, organization: other_organization) }
 
         it { is_expected.to be_valid }
       end
 
       context 'when a group exists in the same organization with a path equal to the username' do
-        let!(:group) { create(:group, path: username, organization: organization) }
+        let_it_be(:group) { create(:group, path: username, organization: organization) }
 
         it 'adds a validation error on username' do
           expect(organization_user_detail).not_to be_valid
@@ -60,7 +60,7 @@ RSpec.describe Organizations::OrganizationUserDetail, type: :model, feature_cate
       end
 
       context 'when a group exists in another organization with a path equal to the username' do
-        let!(:group) { create(:group, path: username, organization: other_organization) }
+        let_it_be(:group) { create(:group, path: username, organization: other_organization) }
 
         it { is_expected.to be_valid }
       end

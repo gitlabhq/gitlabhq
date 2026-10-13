@@ -220,6 +220,8 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       expect(schema['properties']['gitlab_user_id']['type']).to eq('number')
       expect(schema['properties']['gitlab_user_username']['type']).to eq('string')
       expect(schema['properties']['gitlab_organization_id']['type']).to eq('number')
+      expect(schema['properties']['gitlab_composite_actor_id']['type']).to eq('number')
+      expect(schema['properties']['gitlab_duo_workflow_id']['type']).to eq('number')
       expect(schema['properties']['time']['type']).to eq('string')
       expect(schema['properties']['time']['format']).to eq('date-time')
       expect(schema['properties']['datacontenttype']['type']).to eq('string')
@@ -390,6 +392,103 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       )
 
       expect(cloud_event.event_data).to eq({})
+    end
+
+    describe 'gitlab_composite_actor_id', :request_store do
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      let(:test_class) do
+        Class.new(described_class) do
+          event_category 'merge_requests'
+          event_type 'assigned_reviewers'
+
+          def data_schema
+            {}
+          end
+        end
+      end
+
+      subject(:data) do
+        test_class.build_cloud_event(source: source, subject: subject_path, current_user: user).data
+      end
+
+      it 'is not set without a linked composite identity' do
+        expect(data).not_to have_key(:gitlab_composite_actor_id)
+      end
+
+      it 'is the service account when the user is scoped by an authentication link' do
+        ::Gitlab::Auth::Identity.fabricate(service_account).link!(user, context: :authentication)
+
+        expect(data[:gitlab_user_id]).to eq(user.id)
+        expect(data[:gitlab_composite_actor_id]).to eq(service_account.id)
+      end
+
+      it 'is the service account when the event is attributed to another user' do
+        ::Gitlab::Auth::Identity.fabricate(service_account).link!(create(:user), context: :authentication)
+
+        expect(data[:gitlab_user_id]).to eq(user.id)
+        expect(data[:gitlab_composite_actor_id]).to eq(service_account.id)
+      end
+
+      it 'is not set when the user is scoped by a permission check link' do
+        ::Gitlab::Auth::Identity.fabricate(service_account).link!(user, context: :permission_check)
+
+        expect(data).not_to have_key(:gitlab_composite_actor_id)
+      end
+
+      describe 'gitlab_duo_workflow_id' do
+        def build_with_workflow_id(value)
+          ::Gitlab::ApplicationContext.with_context(duo_workflow_id: value) { data }
+        end
+
+        context 'with an authentication link' do
+          before do
+            ::Gitlab::Auth::Identity.fabricate(service_account).link!(user, context: :authentication)
+          end
+
+          it 'is the workflow id from the request context' do
+            expect(build_with_workflow_id('123')[:gitlab_duo_workflow_id]).to eq(123)
+          end
+
+          it 'is not set when the context has no workflow id' do
+            expect(data).not_to have_key(:gitlab_duo_workflow_id)
+          end
+
+          it 'is not set when the workflow id is not an integer' do
+            expect(build_with_workflow_id('12abc')).not_to have_key(:gitlab_duo_workflow_id)
+          end
+
+          where(:value) { %w[0 -7 2147483648] }
+
+          with_them do
+            it 'is not set when the workflow id is outside the positive int32 range' do
+              expect(build_with_workflow_id(value)).not_to have_key(:gitlab_duo_workflow_id)
+            end
+          end
+
+          it 'keeps the largest int32 workflow id through protobuf' do
+            cloud_event = ::Gitlab::ApplicationContext.with_context(duo_workflow_id: '2147483647') do
+              test_class.build_cloud_event(source: source, subject: subject_path, current_user: user)
+            end
+            described_class.register(cloud_event.data[:type], test_class)
+
+            expect(described_class.from_proto(cloud_event.to_proto).data[:gitlab_duo_workflow_id]).to eq(2147483647)
+          end
+
+          it 'is kept when the event is converted to protobuf and back' do
+            cloud_event = ::Gitlab::ApplicationContext.with_context(duo_workflow_id: '123') do
+              test_class.build_cloud_event(source: source, subject: subject_path, current_user: user)
+            end
+            described_class.register(cloud_event.data[:type], test_class)
+
+            expect(described_class.from_proto(cloud_event.to_proto).data[:gitlab_duo_workflow_id]).to eq(123)
+          end
+        end
+
+        it 'is not set without a composite actor' do
+          expect(build_with_workflow_id('123')).not_to have_key(:gitlab_duo_workflow_id)
+        end
+      end
     end
 
     context 'without current_user' do

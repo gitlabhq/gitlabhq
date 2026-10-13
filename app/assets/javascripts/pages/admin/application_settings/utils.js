@@ -1,5 +1,5 @@
 import { includes } from 'lodash-es';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 
 /**
  * Returns a new dataset that has all the values of keys indicated in

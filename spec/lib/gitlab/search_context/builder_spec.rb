@@ -131,8 +131,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
         let(:action_name) { '' }
 
         before do
-          allow(controller).to receive(:controller_name).and_return('groups')
-          allow(controller).to receive(:action_name).and_return(action_name)
+          allow(controller).to receive_messages(controller_name: 'groups', action_name: action_name)
         end
 
         it 'returns nil without groups controller action' do

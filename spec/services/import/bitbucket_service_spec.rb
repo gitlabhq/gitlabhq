@@ -43,8 +43,7 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
       allow(service).to receive(:authorized?).and_return(true)
 
       allow_next_instance_of(Bitbucket::Client) do |client|
-        allow(client).to receive(:repo).and_return(repo)
-        allow(client).to receive(:user).and_return(bitbucket_user)
+        allow(client).to receive_messages(repo: repo, user: bitbucket_user)
       end
     end
 
@@ -111,6 +110,26 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
           end
         end
 
+        context 'when creating the target namespace raises an error' do
+          let(:target_namespace) { 'another_group/subgroup' }
+          let(:exception) { StandardError.new('boom') }
+
+          before do
+            allow_next_instance_of(Groups::NestedCreateService) do |service|
+              allow(service).to receive(:execute).and_raise(exception)
+            end
+          end
+
+          it 'tracks the exception and creates the project under the user namespace' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+              .with(exception, namespace_path: target_namespace)
+
+            service.execute
+
+            expect(user.projects.find_by_name('foo')).to be_present
+          end
+        end
+
         context 'when bitbucket user is not authorized' do
           it 'return an error' do
             allow_next_instance_of(Bitbucket::Client) do |client|
@@ -146,9 +165,9 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
     context 'when repo returns an error' do
       it 'returns an error' do
         allow_next_instance_of(Bitbucket::Client) do |client|
-          allow(client).to receive(:user).and_return(bitbucket_user)
-          allow(client).to receive(:repo).and_return(
-            Bitbucket::Representation::Repo.new('error' => { 'message' => 'error!' })
+          allow(client).to receive_messages(
+            user: bitbucket_user,
+            repo: Bitbucket::Representation::Repo.new('error' => { 'message' => 'error!' })
           )
         end
 
@@ -165,9 +184,9 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
     context 'when repo does not have clone links' do
       it 'returns an error' do
         allow_next_instance_of(Bitbucket::Client) do |client|
-          allow(client).to receive(:user).and_return(bitbucket_user)
-          allow(client).to receive(:repo).and_return(
-            Bitbucket::Representation::Repo.new('name' => 'foo', 'is_private' => false)
+          allow(client).to receive_messages(
+            user: bitbucket_user,
+            repo: Bitbucket::Representation::Repo.new('name' => 'foo', 'is_private' => false)
           )
         end
 

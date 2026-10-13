@@ -9,10 +9,7 @@ module Gitlab
             super(name, type, expression, operation: :difference, over: over, lag_offset: lag_offset, **kwargs)
           end
 
-          # Project the expression column (ex: user_id) explicitly rather than relying on
-          # the primary key passthrough, which only covers it for tables that happen to
-          # sort by it. GROUP BY ALL adds it to the inner grouping key, and the :difference
-          # operation applies arrayDistinct, so repeated values do not inflate the count.
+          # Project the expression column explicitly, so the inner query keys on it.
           def to_inner_arel(context)
             expression ? expression.call : context[:scope][source_column]
           end

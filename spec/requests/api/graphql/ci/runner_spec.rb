@@ -50,15 +50,15 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     create(:ci_runner, :project, :with_runner_manager, projects: [project1], token_expires_at: 1.week.from_now)
   end
 
+  let(:query_path) do
+    [
+      [:runner, { id: runner.to_global_id.to_s }]
+    ]
+  end
+
   shared_examples 'runner details fetch' do
     let(:query) do
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
-    end
-
-    let(:query_path) do
-      [
-        [:runner, { id: runner.to_global_id.to_s }]
-      ]
     end
 
     it 'retrieves expected fields' do
@@ -135,12 +135,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
     end
 
-    let(:query_path) do
-      [
-        [:runner, { id: runner.to_global_id.to_s }]
-      ]
-    end
-
     it 'retrieves expected fields' do
       post_graphql(query, current_user: user)
 
@@ -155,12 +149,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   shared_examples 'retrieval by unauthorized user' do
     let(:query) do
       wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
-    end
-
-    let(:query_path) do
-      [
-        [:runner, { id: runner.to_global_id.to_s }]
-      ]
     end
 
     it 'returns null runner' do
@@ -179,11 +167,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       let_it_be(:user) { create(:user) }
 
       let(:query) { wrap_fields(query_graphql_path(query_path, 'id maintenanceNote maintenanceNoteHtml')) }
-      let(:query_path) do
-        [
-          [:runner, { id: runner.to_global_id.to_s }]
-        ]
-      end
 
       it 'does not retrieve maintenance note fields' do
         stub_commonmark_sourcepos_disabled
@@ -200,12 +183,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     context 'when tagList is not requested' do
       let(:query) do
         wrap_fields(query_graphql_path(query_path, 'id'))
-      end
-
-      let(:query_path) do
-        [
-          [:runner, { id: runner.to_global_id.to_s }]
-        ]
       end
 
       it 'does not retrieve tagList' do
@@ -343,18 +320,13 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for group runner' do
     let_it_be(:group_runner) { active_group_runner }
+    let(:runner) { group_runner }
 
     describe 'maintenanceNote' do
       let_it_be(:user) { create(:user, owner_of: group_runner.groups) }
 
       let(:query) do
         wrap_fields(query_graphql_path(query_path, 'id maintenanceNote maintenanceNoteHtml'))
-      end
-
-      let(:query_path) do
-        [
-          [:runner, { id: group_runner.to_global_id.to_s }]
-        ]
       end
 
       before do
@@ -401,6 +373,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       )
     end
 
+    let(:runner) { project_runner }
+
     describe 'locked' do
       where(is_locked: [true, false])
 
@@ -411,12 +385,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
         let(:query) do
           wrap_fields(query_graphql_path(query_path, 'id locked'))
-        end
-
-        let(:query_path) do
-          [
-            [:runner, { id: project_runner.to_global_id.to_s }]
-          ]
         end
 
         it 'retrieves correct locked value' do
@@ -476,7 +444,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     describe 'ownerProject' do
-      let_it_be(:project2) { create(:project) }
+      let_it_be(:project2) { create(:project, namespace: project1.namespace) }
       let_it_be(:runner1) { create(:ci_runner, :project, projects: [project2, project1]) }
       let_it_be(:runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
 
@@ -510,22 +478,9 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       end
 
       context 'with a job from a non-owned project' do
-        let(:runner_query_fragment) do
-          %(
-            id
-            jobs {
-              nodes {
-                id status shortSha finishedAt duration queuedDuration tags webPath
-                project { id }
-                runner { id }
-              }
-            }
-          )
-        end
-
         let_it_be(:owned_project_owner) { create(:user) }
-        let_it_be(:owned_project) { create(:project, owners: owned_project_owner) }
-        let_it_be(:other_project) { create(:project) }
+        let_it_be(:owned_project) { create(:project, namespace: project1.namespace, owners: owned_project_owner) }
+        let_it_be(:other_project) { create(:project, namespace: project1.namespace) }
         let_it_be(:project_runner) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
         let_it_be(:owned_project_pipeline) { create(:ci_pipeline, project: owned_project) }
         let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: other_project) }
@@ -537,6 +492,19 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         let_it_be(:other_build) do
           create(:ci_build, :success, runner: project_runner, pipeline: other_project_pipeline,
             tag_list: %i[d e f], created_at: 30.minutes.ago, started_at: 19.minutes.ago, finished_at: 1.minute.ago)
+        end
+
+        let(:runner_query_fragment) do
+          %(
+            id
+            jobs {
+              nodes {
+                id status shortSha finishedAt duration queuedDuration tags webPath
+                project { id }
+                runner { id }
+              }
+            }
+          )
         end
 
         it 'returns empty values for sensitive fields in non-owned jobs' do
@@ -574,12 +542,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         wrap_fields(query_graphql_path(query_path, 'id maintenanceNote maintenanceNoteHtml'))
       end
 
-      let(:query_path) do
-        [
-          [:runner, { id: project_runner.to_global_id.to_s }]
-        ]
-      end
-
       before do
         stub_commonmark_sourcepos_disabled
       end
@@ -599,12 +561,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     describe 'a query fetching all fields' do
       let(:query) do
         wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
-      end
-
-      let(:query_path) do
-        [
-          [:runner, { id: project_runner.to_global_id.to_s }]
-        ]
       end
 
       it 'does not execute more queries per runner', :use_sql_query_cache, :aggregate_failures do
@@ -660,11 +616,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       wrap_fields(query_graphql_path(query_path, group_path))
     end
 
-    let(:query_path) do
-      [
-        [:runner, { id: active_group_runner.to_global_id }]
-      ]
-    end
+    let(:runner) { active_group_runner }
 
     it 'retrieves groups field with expected value' do
       post_graphql(query, current_user: user)
@@ -675,6 +627,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'ephemeralRegisterUrl' do
+    let(:creator) { user }
     let(:runner_args) { { registration_type: :authenticated_user, creator: creator } }
     let(:runner_traits) { [] }
     let(:query) do
@@ -702,7 +655,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     context 'with an instance runner' do
-      let(:creator) { user }
       let(:runner) { create(:ci_runner, *runner_traits, **runner_args) }
 
       context 'with valid ephemeral registration' do
@@ -727,7 +679,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     context 'with a group runner' do
-      let(:creator) { user }
       let(:runner) { create(:ci_runner, *runner_traits, :group, groups: [group], **runner_args) }
 
       context 'with valid ephemeral registration' do
@@ -750,7 +701,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     context 'with a project runner' do
-      let(:creator) { user }
       let(:runner) { create(:ci_runner, *runner_traits, :project, projects: [project1], **runner_args) }
 
       context 'with valid ephemeral registration' do
@@ -810,7 +760,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'for multiple runners' do
-    let_it_be(:project2) { create(:project, :test_repo) }
+    let_it_be(:project2) { create(:project, namespace: project1.namespace) }
     let_it_be(:project_runner1) { create(:ci_runner, :project, projects: [project1, project2], description: 'Runner 1') }
     let_it_be_with_reload(:project_runner2) { create(:ci_runner, :project, :without_projects, description: 'Runner 2') }
 
@@ -916,12 +866,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
       let(:query) do
         wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
-      end
-
-      let(:query_path) do
-        [
-          [:runner, { id: runner.to_global_id.to_s }]
-        ]
       end
 
       it 'retrieves expected fields' do
@@ -1096,7 +1040,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       )
     end
 
-    let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
+    let_it_be(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
 
     let(:query) do
       <<~QUERY
@@ -1190,7 +1134,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
     context 'with project search term' do
       let_it_be(:project1) { create(:project, description: 'abc') }
-      let_it_be(:project2) { create(:project, description: 'def') }
+      let_it_be(:project2) { create(:project, namespace: project1.namespace, description: 'def') }
       let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
 
       let(:variables) { { id: project_runner.to_global_id.to_s, n: n, project_search_term: search_term } }

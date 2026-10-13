@@ -62,6 +62,64 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
       it { is_expected.to eq(:verified) }
     end
 
+    context 'when the committer_email belongs to a uid of the key that has been revoked' do
+      let(:public_key) { GpgHelpers::UserWithRevokedUid.public_key }
+      let(:signature) { GpgHelpers::UserWithRevokedUid.signed_commit_signature }
+      let(:signed_text) { GpgHelpers::UserWithRevokedUid.signed_commit_base_data }
+      let(:committer_email) { GpgHelpers::UserWithRevokedUid.revoked_emails.first }
+
+      context 'and the user has confirmed that email' do
+        let(:user) do
+          create(:user, email: GpgHelpers::UserWithRevokedUid.emails.first).tap do |user|
+            create :email, :confirmed, user: user, email: committer_email
+          end
+        end
+
+        it { is_expected.to eq(:same_user_different_email) }
+      end
+
+      context 'and the email belongs to another user' do
+        let(:user) { create(:user, email: GpgHelpers::UserWithRevokedUid.emails.first) }
+
+        before do
+          create(:user, email: committer_email)
+        end
+
+        it { is_expected.to eq(:other_user) }
+      end
+
+      context 'and the commit was signed with a subkey' do
+        let(:signature) { GpgHelpers::UserWithRevokedUid.subkey_signed_commit_signature }
+        let(:signed_text) { GpgHelpers::UserWithRevokedUid.subkey_signed_commit_base_data }
+
+        let(:user) do
+          create(:user, email: GpgHelpers::UserWithRevokedUid.emails.first).tap do |user|
+            create :email, :confirmed, user: user, email: committer_email
+          end
+        end
+
+        it { is_expected.to eq(:same_user_different_email) }
+      end
+    end
+
+    context 'when the committer_email belongs to the live uid of a key that also has a revoked uid' do
+      let(:public_key) { GpgHelpers::UserWithRevokedUid.public_key }
+      let(:signature) { GpgHelpers::UserWithRevokedUid.signed_commit_signature }
+      let(:signed_text) { GpgHelpers::UserWithRevokedUid.signed_commit_base_data }
+      let(:committer_email) { GpgHelpers::UserWithRevokedUid.emails.first }
+
+      it { is_expected.to eq(:verified) }
+    end
+
+    context 'when every uid of the key has been revoked' do
+      let(:public_key) { GpgHelpers::UserWithOnlyRevokedUid.public_key }
+      let(:signature) { GpgHelpers::UserWithOnlyRevokedUid.signed_commit_signature }
+      let(:signed_text) { GpgHelpers::UserWithOnlyRevokedUid.signed_commit_base_data }
+      let(:committer_email) { GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first }
+
+      it { is_expected.to eq(:unverified_key) }
+    end
+
     context 'when gpg key email does not match the committer_email but is the same user when the committer_email \
       belongs to the user as a confirmed secondary email' do
       let(:committer_email) { GpgHelpers::User2.emails.first }
@@ -231,6 +289,19 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
       it { is_expected.to eq(gpg_key_subkey) }
     end
 
+    context 'when commit signed with a subkey of a key that has a revoked uid' do
+      let(:committer_email) { GpgHelpers::UserWithRevokedUid.revoked_emails.first }
+      let(:public_key) { GpgHelpers::UserWithRevokedUid.public_key }
+      let(:signature) { GpgHelpers::UserWithRevokedUid.subkey_signed_commit_signature }
+      let(:signed_text) { GpgHelpers::UserWithRevokedUid.subkey_signed_commit_base_data }
+
+      let(:gpg_key_subkey) do
+        gpg_key.subkeys.find_by(fingerprint: GpgHelpers::UserWithRevokedUid.subkey_fingerprints.first)
+      end
+
+      it { is_expected.to eq(gpg_key_subkey) }
+    end
+
     context 'when there is no matching gpg key' do
       let(:gpg_key) { nil }
 
@@ -251,6 +322,33 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
     end
 
     it_behaves_like 'called with temporary keychain'
+  end
+
+  describe '#user_infos' do
+    subject(:user_infos) { gpg_signature.user_infos }
+
+    context 'when the key has a revoked uid beside a live one' do
+      let(:public_key) { GpgHelpers::UserWithRevokedUid.public_key }
+      let(:signature) { GpgHelpers::UserWithRevokedUid.signed_commit_signature }
+      let(:signed_text) { GpgHelpers::UserWithRevokedUid.signed_commit_base_data }
+      let(:committer_email) { GpgHelpers::UserWithRevokedUid.revoked_emails.first }
+
+      it 'returns the live uid' do
+        is_expected.to eq(
+          name: GpgHelpers::UserWithRevokedUid.names.first,
+          email: GpgHelpers::UserWithRevokedUid.emails.first
+        )
+      end
+    end
+
+    context 'when every uid of the key has been revoked' do
+      let(:public_key) { GpgHelpers::UserWithOnlyRevokedUid.public_key }
+      let(:signature) { GpgHelpers::UserWithOnlyRevokedUid.signed_commit_signature }
+      let(:signed_text) { GpgHelpers::UserWithOnlyRevokedUid.signed_commit_base_data }
+      let(:committer_email) { GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first }
+
+      it { is_expected.to eq({}) }
+    end
   end
 
   describe '#gpg_key_primary_keyid' do

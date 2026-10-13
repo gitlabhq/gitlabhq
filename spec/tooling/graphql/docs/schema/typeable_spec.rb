@@ -5,8 +5,10 @@ require 'spec_helper'
 require Rails.root.join('tooling/graphql/docs/schema/item')
 require Rails.root.join('tooling/graphql/docs/schema/enum')
 require Rails.root.join('tooling/graphql/docs/schema/input_object')
+require Rails.root.join('tooling/graphql/docs/schema/object')
 require Rails.root.join('tooling/graphql/docs/schema/scalar')
-require Rails.root.join('tooling/graphql/docs/schema/temp_undocumented')
+require Rails.root.join('tooling/graphql/docs/schema/interface')
+require Rails.root.join('tooling/graphql/docs/schema/union')
 require Rails.root.join('tooling/graphql/docs/schema/concerns/typeable')
 
 RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api do
@@ -65,7 +67,7 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api 
       end
     end
 
-    context 'with a type that has no docs page yet' do
+    context 'with an object type' do
       let(:object_type) do
         Class.new(Types::BaseObject) do
           graphql_name 'Object'
@@ -75,9 +77,69 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api 
 
       subject(:typeable) { typeable_for(object_type) }
 
-      it 'falls back to TempUndocumented', :aggregate_failures do
-        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::TempUndocumented)
+      it 'identifies an Object without loading its fields', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Object)
+        expect(typeable.type.fields).to be_nil
         expect(typeable.type_signature).to eq('Object')
+      end
+    end
+
+    context 'with a wrapped object type' do
+      let(:object_type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'Object'
+          field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+        end
+      end
+
+      subject(:typeable) { typeable_for(object_type.to_non_null_type) }
+
+      it 'unwraps to identify an Object', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Object)
+        expect(typeable.type_signature).to eq('Object!')
+      end
+    end
+
+    context 'with an interface type' do
+      let(:interface_type) do
+        Module.new do
+          include Types::BaseInterface
+          graphql_name 'Interface'
+          field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+        end
+      end
+
+      subject(:typeable) { typeable_for(interface_type) }
+
+      it 'identifies an Interface without loading its fields', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Interface)
+        expect(typeable.type.fields).to be_nil
+        expect(typeable.type_signature).to eq('Interface')
+      end
+    end
+
+    context 'with a union type' do
+      let(:member_type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'Member'
+          field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+        end
+      end
+
+      let(:union_type) do
+        member = member_type
+
+        Class.new(Types::BaseUnion) do
+          graphql_name 'Union'
+          possible_types member
+        end
+      end
+
+      subject(:typeable) { typeable_for(union_type) }
+
+      it 'identifies a Union', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Union)
+        expect(typeable.type_signature).to eq('Union')
       end
     end
   end

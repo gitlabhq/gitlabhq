@@ -1,9 +1,9 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import NavItem from '~/super_sidebar/components/nav_item.vue';

@@ -32,10 +32,10 @@ import {
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_NOTIFICATIONS,
-  WIDGET_TYPE_AGENT_PLAN,
+  WIDGET_TYPE_WORKPLAN,
+  WIDGET_TYPE_DECISION_LOG,
 } from 'ee_else_ce/work_items/constants';
 import {
-  findCurrentUserTodosWidget,
   findHierarchyWidget,
   findHierarchyWidgetChildren,
   findNotesWidget,
@@ -48,7 +48,6 @@ import {
   getWorkItemFeatures,
 } from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
-import workItemCurrentUserTodosQuery from './work_item_current_user_todos.query.graphql';
 import workItemCrmContactsQuery from './work_item_crm_contacts.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -67,6 +66,8 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
     draftData.namespace.workItem.widgets[noteWidgetIndex] = notesWidget;
   }
 };
+
+const workItemFeaturesEnabled = () => Boolean(window.gon?.features?.workItemFeaturesField);
 
 /**
  * Work Item note create subscription update query callback
@@ -200,7 +201,7 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
     query: getWorkItemTreeQuery,
     variables: {
       id,
-      useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+      useWorkItemFeatures: workItemFeaturesEnabled(),
     },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -281,7 +282,7 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
     query: getWorkItemTreeQuery,
     variables: {
       id,
-      useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+      useWorkItemFeatures: workItemFeaturesEnabled(),
     },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -309,7 +310,7 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
     variables: {
       fullPath,
       iid,
-      useWorkItemFeatures: Boolean(window.gon.features.workItemFeaturesField),
+      useWorkItemFeatures: workItemFeaturesEnabled(),
     },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -326,35 +327,6 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
       if (index >= 0) children.splice(index, 1);
     }),
   });
-};
-
-export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }) => {
-  const query = {
-    query: workItemCurrentUserTodosQuery,
-    variables: {
-      fullPath,
-      iid,
-      useWorkItemFeatures: Boolean(window.gon.features.workItemFeaturesField),
-    },
-  };
-
-  const sourceData = cache.readQuery(query);
-
-  if (!sourceData) {
-    return;
-  }
-
-  const newData = produce(sourceData, (draftState) => {
-    const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.namespace.workItem);
-
-    if (!widgetCurrentUserTodos?.currentUserTodos) {
-      return;
-    }
-
-    widgetCurrentUserTodos.currentUserTodos.nodes = todos;
-  });
-
-  cache.writeQuery({ ...query, data: newData });
 };
 
 export const getNewWorkItemSharedCache = ({
@@ -586,10 +558,15 @@ export const getNewWorkItemSharedCache = ({
       __typename: 'WorkItemWidgetProgress',
     },
     agentPlan: {
-      ...widgetDefinitionsHash[WIDGET_TYPE_AGENT_PLAN],
-      type: WIDGET_TYPE_AGENT_PLAN,
+      ...widgetDefinitionsHash[WIDGET_TYPE_WORKPLAN],
+      type: WIDGET_TYPE_WORKPLAN,
       aiPlanningEnabled: false,
       __typename: 'WorkItemWidgetAgentPlan',
+    },
+    decisionLog: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_DECISION_LOG],
+      type: WIDGET_TYPE_DECISION_LOG,
+      __typename: 'WorkItemWidgetDecisionLog',
     },
     customFields: {
       customFieldValues: [],
@@ -990,6 +967,7 @@ export const setNewWorkItemCache = ({
   workItemDescription = '',
   confidential = false,
   useWorkItemFeatures = false,
+  cache = apolloProvider.clients.defaultClient.cache,
 }) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_STATUS,
@@ -1029,7 +1007,7 @@ export const setNewWorkItemCache = ({
   let features = {};
 
   if (useWorkItemFeatures) {
-    const cache = getNewWorkItemSharedCache({
+    const sharedCache = getNewWorkItemSharedCache({
       workItemAttributesWrapperOrder,
       widgetDefinitions,
       fullPath,
@@ -1039,10 +1017,10 @@ export const setNewWorkItemCache = ({
       workItemDescription,
       relatedItemId,
     });
-    draftTitle = cache.draftTitle;
-    features = { __typename: 'WorkItemFeatures', ...cache.features };
+    draftTitle = sharedCache.draftTitle;
+    features = { __typename: 'WorkItemFeatures', ...sharedCache.features };
   } else {
-    const cache = legacyGetNewWorkItemSharedCache({
+    const sharedCache = legacyGetNewWorkItemSharedCache({
       workItemAttributesWrapperOrder,
       widgetDefinitions,
       fullPath,
@@ -1052,9 +1030,9 @@ export const setNewWorkItemCache = ({
       workItemDescription,
       relatedItemId,
     });
-    draftTitle = cache.draftTitle;
+    draftTitle = sharedCache.draftTitle;
     features = {};
-    widgets.push(...cache.widgets);
+    widgets.push(...sharedCache.widgets);
   }
 
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
@@ -1081,7 +1059,7 @@ export const setNewWorkItemCache = ({
     clearDraft(autosaveKey);
   }
 
-  apolloProvider.clients.defaultClient.cache.writeQuery({
+  cache.writeQuery({
     query: workItemByIidQuery,
     variables: {
       fullPath: newWorkItemPath,
@@ -1152,7 +1130,7 @@ export const setNewWorkItemCache = ({
 
   // CRM contacts live in their own query, so the draft has to be seeded there too. Without
   // this the widget would fire a request for an IID that doesn't exist yet.
-  apolloProvider.clients.defaultClient.cache.writeQuery({
+  cache.writeQuery({
     query: workItemCrmContactsQuery,
     variables: {
       fullPath: newWorkItemPath,
@@ -1176,20 +1154,6 @@ export const setNewWorkItemCache = ({
   });
 };
 
-export const optimisticUserPermissions = {
-  adminParentLink: false,
-  adminWorkItemLink: false,
-  createNote: false,
-  deleteWorkItem: false,
-  markNoteAsInternal: false,
-  moveWorkItem: false,
-  reportSpam: false,
-  setWorkItemMetadata: false,
-  summarizeComments: false,
-  updateWorkItem: false,
-  __typename: 'WorkItemPermissions',
-};
-
 export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing }) => {
   if (!parentId) {
     return null;
@@ -1197,7 +1161,7 @@ export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing
 
   const variables = {
     id: parentId,
-    useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+    useWorkItemFeatures: workItemFeaturesEnabled(),
   };
 
   const parent = cache.readQuery({

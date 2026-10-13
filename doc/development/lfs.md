@@ -74,6 +74,35 @@ Handles requests from Workhorse that contain information on a file that workhors
   For more information, see
   [`ProjectStatistics#update_lfs_objects_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project_statistics.rb#L82-84).
 
+#### Deduplication across organizations
+
+`LfsObject` records store one physical blob for each `oid`, and that blob is shared
+by every project that references it, including projects in different organizations.
+When a project uploads a file whose `oid` and size match an existing record,
+`LfsObject.for_oid_and_size` reuses that record instead of storing the blob again.
+Deduplication is scoped to a cell.
+Each cell keeps its own `LfsObject` for a given `oid`, so a blob is never shared across cells.
+
+Sharing a blob across organizations is intended.
+Deleting a project removes only its `lfs_objects_projects` rows, not the `LfsObject` itself.
+`RemoveUnreferencedLfsObjectsWorker` removes the blob later.
+It uses `LfsObject.unreferenced_in_batches` to delete a blob only when no link from any
+organization remains.
+The `has_many :lfs_objects_projects, dependent: :restrict_with_exception` association
+on `LfsObject` is the last check during `destroy_all`, in case a link was added after
+the batch was selected.
+This check is needed because `lfs_objects` is a `gitlab_main_cell_local` table and
+`lfs_objects_projects` is a `gitlab_main_org` table, so the two live in
+different database schemas and cannot share a database foreign key.
+
+Because this check runs in Rails, `delete_all` and raw SQL `DELETE` statements on
+`lfs_objects` skip it.
+To delete `LfsObject` records, use `destroy` or `destroy_all`.
+
+Read access requires a link: `LfsObject#project_allowed_access?` checks that
+the requesting project, or a project in its fork network, holds a link to the
+object before serving it.
+
 ### Repositories::LfsLocksApiController
 
 Handles the lock API for LFS. Delegates mostly to corresponding services:

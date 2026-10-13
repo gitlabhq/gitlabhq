@@ -6,36 +6,35 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   include Import::UserMappingHelper
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_project, freeze: false) { create(:project, namespace: group, import_type: 'github') }
+  let_it_be_with_reload(:group_project) { create(:project, namespace: group, import_type: 'github') }
 
   let_it_be(:user) { create(:user, :with_namespace) }
   let_it_be(:personal_project, freeze: false) { create(:project, namespace: user.namespace, import_type: 'github') }
 
   let(:project) { group_project }
 
-  let(:reassign_user) { create(:user) }
-  let(:record) { create(:note, project: project) }
+  let_it_be(:reassign_user) { create(:user) }
   let(:attribute) { :author_id }
   let(:user_mapping_enabled) { true }
   let(:cached_references) { placeholder_user_references('github', import_state.id) }
 
-  let!(:import_state) { create(:import_state, project: project) }
+  let_it_be(:import_state) { create(:import_state, project: group_project) }
 
-  let!(:import_source_user) do
+  let_it_be(:import_source_user) do
     create(:import_source_user, :awaiting_approval,
-      namespace: project.namespace,
+      namespace: group_project.namespace,
       placeholder_user: create(:user, :import_user))
   end
 
-  let!(:placeholder_source_user) do
+  let_it_be(:placeholder_source_user) do
     create(:import_source_user, :awaiting_approval,
-      namespace: project.namespace,
+      namespace: group_project.namespace,
       placeholder_user: create(:user, :placeholder))
   end
 
-  let!(:mapped_source_user) do
+  let_it_be(:mapped_source_user) do
     create(:import_source_user, :completed,
-      namespace: project.namespace,
+      namespace: group_project.namespace,
       reassign_to_user: reassign_user)
   end
 
@@ -67,6 +66,8 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#push_reference' do
+    let_it_be(:record) { create(:note, project: group_project) }
+
     it 'creates a placeholder reference in the store' do
       expect { pusher.push_reference(project, record, attribute, import_source_user_identifier) }
         .to change { store.count }.by(1)
@@ -89,9 +90,8 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
     # gitlab-org/gitlab#628379: user mapping is now always on except for
     # Bitbucket Server with the bitbucket_server_user_mapping FF disabled.
     context 'when user mapping is disabled (Bitbucket Server with FF off)' do
-      let(:project) { create(:project, namespace: group, import_type: 'bitbucket_server') }
-
       before do
+        group_project.update!(import_type: 'bitbucket_server')
         stub_feature_flags(bitbucket_server_user_mapping: false)
       end
 
@@ -147,9 +147,9 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#push_references_by_ids' do
-    let(:note1) { create(:note, project: project) }
-    let(:note2) { create(:note, project: project) }
-    let(:note3) { create(:note, project: project) }
+    let_it_be(:note1) { create(:note, project: group_project) }
+    let_it_be(:note2) { create(:note, project: group_project) }
+    let_it_be(:note3) { create(:note, project: group_project) }
     let(:ids) { [note1.id, note2.id, note3.id] }
     let(:model) { Note }
 
@@ -209,8 +209,8 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#push_reference_with_composite_key' do
-    let(:issue) { create(:issue, project: project) }
-    let(:issue_assignee) { create(:issue_assignee, issue: issue) }
+    let_it_be(:issue) { create(:issue, project: group_project) }
+    let_it_be(:issue_assignee) { create(:issue_assignee, issue: issue) }
     let(:composite_key) { { 'user_id' => issue_assignee.user_id, 'issue_id' => issue_assignee.issue_id } }
 
     it 'creates a placeholder reference with composite key' do
@@ -291,6 +291,44 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
 
       it 'returns false' do
         expect(pusher.user_mapping_enabled?(project)).to be false
+      end
+    end
+
+    context 'when the import is GitHub' do
+      it 'returns true without reading import_data' do
+        expect(project).not_to receive(:import_data)
+
+        expect(pusher.user_mapping_enabled?(project)).to be true
+      end
+
+      it 'pushes a reference when import_data is nil' do
+        record = create(:note, project: project)
+        allow(project).to receive(:import_data).and_return(nil)
+
+        expect { pusher.push_reference(project, record, attribute, import_source_user_identifier) }
+          .to change { store.count }.by(1)
+      end
+    end
+
+    context 'when the import is not GitHub' do
+      before do
+        group_project.update!(import_type: 'bitbucket_server')
+      end
+
+      it 'follows import_data.user_mapping_enabled?' do
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
+
+        expect(pusher.user_mapping_enabled?(project)).to be false
+
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(true)
+
+        expect(pusher.user_mapping_enabled?(project)).to be true
+      end
+
+      it 'returns true when import_data is nil' do
+        allow(project).to receive(:import_data).and_return(nil)
+
+        expect(pusher.user_mapping_enabled?(project)).to be true
       end
     end
   end

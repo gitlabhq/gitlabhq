@@ -22,7 +22,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
     sign_in(user)
     project.namespace.update!(owner: user)
     allow_next_instance_of(Project) do |instance|
-      allow(instance).to receive(:pages_deployed?) { true }
+      allow(instance).to receive(:pages_deployed?).and_return(true)
     end
   end
 

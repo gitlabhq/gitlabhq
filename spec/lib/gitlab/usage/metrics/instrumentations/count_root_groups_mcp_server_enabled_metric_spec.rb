@@ -56,7 +56,9 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountRootGroupsMcpServe
     end
 
     context 'when a root group has mcp_server_enabled not set (NULL)' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group) do
+        create(:group).tap { |g| g.namespace_settings.update!(mcp_server_enabled: nil) }
+      end
 
       it_behaves_like 'a correct instrumented metric value',
         options: { mcp_server_enabled: false }, time_frame: 'all' do

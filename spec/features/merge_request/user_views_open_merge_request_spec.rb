@@ -108,10 +108,10 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
       sign_in(user)
     end
 
-    it 'renders edit button in preferred language' do
+    it 'renders edit button in preferred language', :js do
       visit(merge_request_path(merge_request))
 
-      page.within('.detail-page-header') do
+      page.within('.panel-header-inner-actions') do
         expect(page).to have_link('Edit')
       end
 
@@ -119,7 +119,7 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
 
       visit(merge_request_path(merge_request))
 
-      page.within('.detail-page-header') do
+      page.within('.panel-header-inner-actions') do
         expect(page).to have_link('Bearbeiten')
       end
     end

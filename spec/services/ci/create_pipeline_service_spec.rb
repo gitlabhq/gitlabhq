@@ -692,6 +692,54 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
+    context 'when merge request title contains a [ci skip] directive' do
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_project: project,
+          target_branch: 'master',
+          title: 'Merge request title [ci skip]')
+      end
+
+      let(:pipeline) do
+        execute_service(
+          source: :merge_request_event,
+          merge_request: merge_request,
+          ref: merge_request.ref_path,
+          source_sha: project.commit(merge_request.source_branch).id
+        ).payload
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(<<~YAML)
+          workflow:
+            rules:
+              - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          rspec:
+            script: rspec
+        YAML
+      end
+
+      it 'creates a skipped merge request pipeline' do
+        expect(pipeline).to be_persisted
+        expect(pipeline).to be_merge_request_event
+        expect(pipeline).to be_skipped
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_skip_pipeline_from_mr_title: false)
+        end
+
+        it 'does not skip the merge request pipeline' do
+          expect(pipeline).to be_persisted
+          expect(pipeline).to be_merge_request_event
+          expect(pipeline).not_to be_skipped
+        end
+      end
+    end
+
     context 'when push options contain ci.skip' do
       let(:push_options) do
         { 'ci' => { 'skip' => true } }
@@ -1236,6 +1284,33 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           expect(pipeline).to be_failed
           expect(pipeline.variables).to be_empty
           expect(pipeline.errors[:base]).to eq(['Duplicate variable name: hello'])
+        end
+      end
+
+      context 'with string keys, as Sidekiq delivers them to CreatePipelineWorker' do
+        let(:variables_attributes) do
+          [{ 'key' => 'first', 'value' => 'world' },
+            { 'key' => 'first', 'value' => 'second_world' }]
+        end
+
+        it 'reads the entries the same way as symbol keys and still detects duplicates' do
+          expect(pipeline).to be_failed
+          expect(pipeline.errors[:base]).to eq(['Duplicate variable name: first'])
+        end
+      end
+
+      # Projects::PipelinesController permits the entries, so each one arrives as
+      # ActionController::Parameters rather than a Hash. Those already read
+      # indifferently, so they are passed through untouched.
+      context 'with permitted params, as the pipelines controller passes them' do
+        let(:variables_attributes) do
+          [ActionController::Parameters.new(key: 'first', value: 'world').permit!,
+            ActionController::Parameters.new(key: 'first', value: 'second_world').permit!]
+        end
+
+        it 'reads the entries the same way as symbol keys and still detects duplicates' do
+          expect(pipeline).to be_failed
+          expect(pipeline.errors[:base]).to eq(['Duplicate variable name: first'])
         end
       end
 
@@ -2110,7 +2185,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         {
           'pipeline_creation_request' => {
             'key' => Ci::PipelineCreation::Requests.request_key(project, 'test-id'),
-            'id' => 'test-id'
+            'id' => 'test-id',
+            'started_at' => a_kind_of(Numeric)
           }
         }
       )

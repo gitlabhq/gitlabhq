@@ -12,11 +12,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
 
   let(:input_name) { 'environment' }
 
-  subject(:entry) do
-    Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-      factory.create!.tap(&:compose!)
-    end
-  end
+  subject(:entry) { factory.create!.tap(&:compose!) }
 
   describe 'validations' do
     let(:required_config) { {} }

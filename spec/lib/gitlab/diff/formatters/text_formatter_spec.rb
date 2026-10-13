@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../support/shared_examples/lib/gitlab/position_formatters_shared_examples'
 
 RSpec.describe Gitlab::Diff::Formatters::TextFormatter, feature_category: :code_review_workflow do
   let!(:base) do
@@ -32,13 +33,13 @@ RSpec.describe Gitlab::Diff::Formatters::TextFormatter, feature_category: :code_
   describe '#line_age' do
     subject { formatter.line_age }
 
-    context ' when there is only new_line' do
+    context 'when there is only new_line' do
       let(:attrs) { base.merge(new_line: 1) }
 
       it { is_expected.to eq('new') }
     end
 
-    context ' when there is only old_line' do
+    context 'when there is only old_line' do
       let(:attrs) { base.merge(old_line: 1) }
 
       it { is_expected.to eq('old') }

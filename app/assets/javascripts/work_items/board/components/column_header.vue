@@ -115,20 +115,22 @@ export default {
       // `move-column` carries a delta (columns to shift by): -1 = left, +1 = right.
       // Sending a delta instead of a target index means board_view's handler
       // doesn't need to know where the column actually is.
-      return [
-        {
+      const items = [];
+      if (this.canMoveLeft) {
+        items.push({
           text: this.$options.i18n.moveLeft,
           icon: 'arrow-left',
           action: () => this.$emit('move-column', -1),
-          extraAttrs: { disabled: !this.canMoveLeft },
-        },
-        {
+        });
+      }
+      if (this.canMoveRight) {
+        items.push({
           text: this.$options.i18n.moveRight,
           icon: 'arrow-right',
           action: () => this.$emit('move-column', 1),
-          extraAttrs: { disabled: !this.canMoveRight },
-        },
-      ];
+        });
+      }
+      return items;
     },
     actionItems() {
       return [...this.hideActionItems, ...this.moveActionItems];

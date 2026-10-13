@@ -242,6 +242,35 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         expect(new_granular_scope.permissions).to match_array(prev_granular_scope.permissions)
       end
 
+      context 'when the token holds duplicate scopes' do
+        let_it_be(:other_project) { create(:project, developers: current_user) }
+        let_it_be(:instance_boundary) { Authz::Boundary.for(:instance) }
+        let_it_be_with_reload(:token) do
+          create(:granular_pat, user: current_user, boundary: boundary, permissions: :create_work_item,
+            additional_scopes: [
+              { boundary: boundary, permissions: :read_work_item },
+              { boundary: Authz::Boundary.for(other_project), permissions: :read_work_item },
+              { boundary: instance_boundary, permissions: :read_runner },
+              { boundary: instance_boundary, permissions: :create_member_role },
+              { boundary: Authz::Boundary.for(:user), permissions: :read_member_role }
+            ])
+        end
+
+        it 'copies each access level and namespace once with the combined permissions', :aggregate_failures do
+          expect(token.granular_scopes.size).to eq(6)
+          expect(response).to be_success
+
+          new_scopes = response.payload[:personal_access_token].granular_scopes
+          expect(new_scopes.map { |scope| [scope.access, scope.namespace_id, scope.permissions.sort] })
+            .to contain_exactly(
+              ['selected_memberships', project.project_namespace_id, %w[create_work_item read_work_item]],
+              ['selected_memberships', other_project.project_namespace_id, %w[read_work_item]],
+              ['instance', nil, %w[create_member_role read_runner]],
+              ['user', nil, %w[read_member_role]]
+            )
+        end
+      end
+
       context 'when granular scopes addition fails' do
         before do
           allow_next_instance_of(Authz::GranularScopeService) do |instance|
@@ -304,6 +333,14 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
 
             it 'does not create PersonalAccessToken records' do
               expect { response }.not_to change { PersonalAccessToken.count }
+            end
+
+            context 'when the token belongs to a bot' do
+              let_it_be_with_reload(:token) do
+                create(:personal_access_token, user: create(:user, :project_bot), expires_at: Time.zone.today + 30.days)
+              end
+
+              it_behaves_like 'rotates token successfully'
             end
           end
 

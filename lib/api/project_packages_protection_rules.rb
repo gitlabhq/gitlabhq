@@ -11,7 +11,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource ':id/packages/protection/rules' do
@@ -45,23 +45,21 @@ module API
         end
         params do
           requires :package_name_pattern, type: String,
-            desc: 'Package name protected by the rule. For example @my-scope/my-package-*.
-            Wildcard character * allowed.'
+            desc: 'Package name protected by the protection rule, for example `@my-scope/my-package-*`. Wildcard ' \
+              'character `*` is allowed.'
           requires :package_type, type: String, values: Packages::Protection::Rule.package_types.keys,
-            desc: 'Package type protected by the rule. For example npm.'
+            desc: 'Package type protected by the protection rule, for example `npm`.'
           optional :minimum_access_level_for_delete, type: String,
             values: Packages::Protection::Rule.minimum_access_level_for_deletes.keys,
-            desc: 'Minimum GitLab access level required to delete a package. ' \
-              'Valid values include `null`, `owner` or `admin`. ' \
-              'If the value is `null`, the default minimum access level is `maintainer`. ' \
-              'Must be provided when `minimum_access_level_for_push` is not set. ' \
-              'Behind a feature flag named `packages_protected_packages_delete`. Disabled by default.'
+            desc: 'Minimum GitLab access level required to delete a package. If the value is `null`, the default ' \
+              'minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push` is ' \
+              'not set. Behind a feature flag named `packages_protected_packages_delete`. Disabled by ' \
+              'default.'
           optional :minimum_access_level_for_push, type: String,
             values: Packages::Protection::Rule.minimum_access_level_for_pushes.keys,
-            desc: 'Minimum GitLab access level required to push a package. ' \
-              'Valid values include `null`, `maintainer`, `owner` or `admin`. ' \
-              'If the value is `null`, the default minimum access level is `developer`. ' \
-              'Must be provided when `minimum_access_level_for_delete` is not set.'
+            desc: 'Minimum GitLab access level required to push a package. If the value is `null`, the default ' \
+              'minimum access level is `developer`. Must be provided when `minimum_access_level_for_delete` is ' \
+              'not set.'
           at_least_one_of :minimum_access_level_for_push, :minimum_access_level_for_delete
         end
         route_setting :authorization, permissions: :create_package_protection_rule, boundary_type: :project
@@ -81,7 +79,7 @@ module API
         end
 
         params do
-          requires :package_protection_rule_id, type: Integer, desc: 'The ID of the package protection rule'
+          requires :package_protection_rule_id, type: Integer, desc: 'ID of the package protection rule.'
         end
         resource ':package_protection_rule_id' do
           desc 'Update a package protection rule' do
@@ -98,23 +96,20 @@ module API
           end
           params do
             optional :package_name_pattern, type: String,
-              desc: 'Package name protected by the rule. For example @my-scope/my-package-*.
-              Wildcard character * allowed.'
+              desc: 'Package name protected by the protection rule, for example `@my-scope/my-package-*`. Wildcard ' \
+                'character `*` is allowed.'
             optional :package_type, type: String, values: Packages::Protection::Rule.package_types.keys,
-              desc: 'Package type protected by the rule. For example npm.'
+              desc: 'Package type protected by the protection rule, for example `npm`.'
             optional :minimum_access_level_for_delete, type: String,
               values: Packages::Protection::Rule.minimum_access_level_for_deletes.keys,
-              desc: 'Minimum GitLab access level required to delete a package. ' \
-                'Valid values include `null`, `owner` or `admin`. ' \
-                'If the value is `null`, the default minimum access level is `maintainer`. ' \
-                'Must be provided when `minimum_access_level_for_push` is not set. ' \
-                'Behind a feature flag named `packages_protected_packages_delete`. Disabled by default.'
+              desc: 'Minimum GitLab access level required to delete a package. If the value is `null`, the default ' \
+                'minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push` is ' \
+                'not set. Behind a feature flag named `packages_protected_packages_delete`. Disabled by default.'
             optional :minimum_access_level_for_push, type: String,
               values: Packages::Protection::Rule.minimum_access_level_for_pushes.keys,
-              desc: 'Minimum GitLab access level required to push a package. ' \
-                'Valid values include `null`, `maintainer`, `owner` or `admin`. ' \
-                'If the value is `null`, the default minimum access level is `developer`. ' \
-                'Must be provided when `minimum_access_level_for_delete` is not set.'
+              desc: 'Minimum GitLab access level required to push a package. If the value is `null`, the default ' \
+                'minimum access level is `developer`. Must be provided when `minimum_access_level_for_delete` is ' \
+                'not set.'
           end
           route_setting :authorization, permissions: :update_package_protection_rule, boundary_type: :project
           patch do

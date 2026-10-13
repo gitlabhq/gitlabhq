@@ -115,6 +115,50 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       expect(ret).to be_kind_of(Gitlab::GitalyClient::DiffStitcher)
     end
 
+    it 'enables the stitcher look-ahead' do
+      expect(Gitlab::GitalyClient::DiffStitcher)
+        .to receive(:new).with(anything, lookahead: true).and_call_original
+
+      client.diff_from_parent(commit)
+    end
+
+    context 'when diff_stitcher_single_file_lookahead is disabled' do
+      before do
+        stub_feature_flags(diff_stitcher_single_file_lookahead: false)
+      end
+
+      it 'disables the stitcher look-ahead' do
+        expect(Gitlab::GitalyClient::DiffStitcher)
+          .to receive(:new).with(anything, lookahead: false).and_call_original
+
+        client.diff_from_parent(commit)
+      end
+    end
+
+    context 'when the repository container cannot be a flag actor' do
+      let(:repository) { project.wiki.repository }
+
+      it 'falls back to the global flag state instead of raising' do
+        expect(Gitlab::GitalyClient::DiffStitcher)
+          .to receive(:new).with(anything, lookahead: true).and_call_original
+
+        expect { client.diff_from_parent(commit) }.not_to raise_error
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(diff_stitcher_single_file_lookahead: false)
+        end
+
+        it 'disables the look-ahead' do
+          expect(Gitlab::GitalyClient::DiffStitcher)
+            .to receive(:new).with(anything, lookahead: false).and_call_original
+
+          expect { client.diff_from_parent(commit) }.not_to raise_error
+        end
+      end
+    end
+
     it 'encodes paths correctly' do
       expect { client.diff_from_parent(commit, paths: ['encoding/test.txt', 'encoding/テスト.txt', nil]) }.not_to raise_error
     end
@@ -648,6 +692,26 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'with tree entry sorting' do
+      let(:pagination_params) { { limit: 3, page_token: nil } }
+
+      def expect_sort(sort)
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:get_tree_entries)
+          .with(gitaly_request_with_params({
+            pagination_params: Gitaly::PaginationParameter.new(limit: 3),
+            sort: sort
+          }), kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+      end
+
+      it 'uses TREES_FIRST_FILESYSTEM' do
+        expect_sort(:TREES_FIRST_FILESYSTEM)
+
+        is_expected.to eq([[], nil])
+      end
+    end
+
     context 'with structured errors' do
       context 'with ResolveTree error' do
         before do
@@ -1108,6 +1172,59 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'with follow' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'sets follow to true on the request when follow is truthy', :aggregate_failures do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.follow).to be(true)
+            expect(request.paths.size).to eq(1)
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { path: 'files/ruby/popen.rb', follow: true })
+      end
+
+      it 'sets follow to false when follow is falsy' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.follow).to be(false)
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { path: 'files/ruby/popen.rb' })
+      end
+    end
+
+    context 'with trailers' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'sets trailers on the request when trailers is truthy' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.trailers).to be(true)
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { trailers: true })
+      end
+
+      it 'does not set trailers when trailers is falsy' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.trailers).to be(false)
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', {})
+      end
+    end
+
     describe 'pagination' do
       it 'returns an opaque next_cursor and accepts it in the following request', :aggregate_failures do
         response_1 = client.list_commits('master', { pagination_params: { limit: 1 } })
@@ -1335,6 +1452,28 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         .with(request, kind_of(Hash)).and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
 
       client.find_commits(order: 'default', path: ' ')
+    end
+
+    it 'sends an RPC request with include_shortstat enabled' do
+      request = Gitaly::FindCommitsRequest.new(
+        repository: repository_message,
+        disable_walk: true,
+        include_shortstat: true,
+        global_options: Gitaly::GlobalOptions.new(literal_pathspecs: false)
+      )
+
+      # Earlier examples may have populated the process-wide stub cache.
+      ::Gitlab::GitalyClient.clear_stubs!
+
+      expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+        expect(service).to receive(:find_commits)
+          .with(request, kind_of(Hash))
+          .and_return(
+            instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {})
+          )
+      end
+
+      client.find_commits(include_shortstat: true)
     end
   end
 

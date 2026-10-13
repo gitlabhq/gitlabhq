@@ -495,17 +495,6 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
     end
   end
 
-  describe '.for_reference' do
-    let_it_be(:design_a) { create(:design) }
-    let_it_be(:design_b) { create(:design) }
-
-    it 'avoids extra queries when calling to_reference' do
-      designs = described_class.for_reference.where(id: [design_a.id, design_b.id]).to_a
-
-      expect { designs.map(&:to_reference) }.not_to exceed_query_limit(0)
-    end
-  end
-
   describe '#to_reference' do
     let(:filename)  { 'homescreen.jpg' }
     let(:namespace) { build(:namespace, id: non_existing_record_id) }

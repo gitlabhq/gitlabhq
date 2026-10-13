@@ -18,6 +18,7 @@ Migration/UpdateLargeTable:
   - :lfs_objects_projects
   - :merge_request_diff_commits
   - :merge_request_diff_files
+  - :merge_request_diff_files_archived
   - :merge_request_diffs
   - :merge_request_metrics
   - :merge_requests
@@ -41,6 +42,7 @@ Migration/UpdateLargeTable:
   - :todos
   - :vulnerabilities
   - :vulnerability_finding_links
+  - :vulnerability_occurrence_identifiers
   - :vulnerability_occurrences
   - :vulnerability_reads
   - :web_hook_logs_daily
@@ -57,6 +59,7 @@ Migration/UpdateLargeTable:
   - :lfs_objects
   - :lfs_objects_projects
   - :merge_request_cleanup_schedules
+  - :merge_request_user_mentions
   - :namespaces
   - :packages_package_files
   - :personal_access_tokens
@@ -66,8 +69,10 @@ Migration/UpdateLargeTable:
   - :projects
   - :resource_state_events
   - :sbom_occurrences
+  - :security_finding_enrichments
   - :security_scans
   - :vulnerabilities
+  - :vulnerability_detection_transitions
   - :vulnerability_occurrence_identifiers
   - :vulnerability_state_transitions
   DeniedMethods:

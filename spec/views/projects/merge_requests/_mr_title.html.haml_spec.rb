@@ -16,15 +16,16 @@ RSpec.describe 'projects/merge_requests/_mr_title.html.haml', feature_category: 
     allow(view).to receive_messages(current_user: user, markdown_field: merge_request.title)
   end
 
-  describe '.js-mr-more-dropdown' do
+  describe '.js-mr-title-actions' do
     it 'uses a relative data-url so the cached fragment cannot carry a request host' do
       view.request.host = 'attacker.example.com'
 
       render
 
-      expect(rendered).to have_selector(
-        ".js-mr-more-dropdown[data-url='/#{project.full_path}/-/merge_requests/#{merge_request.iid}']"
-      )
+      node = Nokogiri::HTML.fragment(rendered).at_css('.js-mr-title-actions')
+      dropdown_data = Gitlab::Json::SafeParser.parse(node['data-more-dropdown'])
+
+      expect(dropdown_data['url']).to eq("/#{project.full_path}/-/merge_requests/#{merge_request.iid}")
     end
   end
 end

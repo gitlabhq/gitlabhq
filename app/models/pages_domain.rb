@@ -86,8 +86,6 @@ class PagesDomain < ApplicationRecord
 
   scope :with_logging_info, -> { includes(project: [:namespace, :route]) }
 
-  scope :instance_serverless, -> { where(wildcard: true, scope: :instance, usage: :serverless) }
-
   def self.find_by_domain_case_insensitive(domain)
     find_by("LOWER(domain) = LOWER(?)", domain)
   end

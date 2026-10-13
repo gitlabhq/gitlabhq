@@ -272,8 +272,19 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
   describe '.send_git_diff' do
     let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
+    let(:client_name) { nil }
 
-    subject { described_class.send_git_diff(repository, diff_refs) }
+    subject { described_class.send_git_diff(repository, diff_refs, client_name: client_name) }
+
+    context 'with a client name' do
+      let(:client_name) { 'orbit-indexer' }
+
+      it 'includes the client name in call metadata' do
+        _, _, params = decode_workhorse_header(subject)
+
+        expect(params.dig('GitalyServer', 'call_metadata', 'client_name')).to eq(client_name)
+      end
+    end
 
     it 'sets the header correctly' do
       key, command, params = decode_workhorse_header(subject)
@@ -597,7 +608,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
     context 'when receive_max_input_size has been updated' do
       it 'returns custom git config' do
-        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
+        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size).and_return(1)
 
         expect(subject[:GitConfigOptions]).to be_present
       end
@@ -605,7 +616,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
     context 'when receive_max_input_size is empty' do
       it 'returns an empty git config' do
-        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size).and_return(nil)
 
         expect(subject[:GitConfigOptions]).to be_empty
       end
@@ -833,6 +844,18 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
         key, command, params = decode_workhorse_header(
           described_class.send_url(url, body: body, headers: headers, response_headers: response_headers, method: method)
         )
+
+        expect(key).to eq("Gitlab-Workhorse-Send-Data")
+        expect(command).to eq("send-url")
+        expect(params).to eq(expected_params)
+      end
+    end
+
+    context 'when upstream_range is set' do
+      let(:expected_params) { super().merge('UpstreamRange' => 'bytes=10-14') }
+
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(described_class.send_url(url, upstream_range: 'bytes=10-14'))
 
         expect(key).to eq("Gitlab-Workhorse-Send-Data")
         expect(command).to eq("send-url")

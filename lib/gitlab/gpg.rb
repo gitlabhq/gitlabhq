@@ -61,6 +61,14 @@ module Gitlab
 
         GPGME::Key.find(:public, fingerprints).flat_map do |raw_key|
           raw_key.uids.each_with_object([]) do |uid, arr|
+            # A revoked UID is still carried inside the key, because a revocation
+            # adds a signature rather than removing the UID. The key holder has
+            # withdrawn that identity, so it must not be offered for verification
+            # against their email addresses. GPGME's invalid flag is not checked
+            # here: GnuPG drops a UID without a valid self-signature at import,
+            # so such a UID never reaches this listing.
+            next if uid.revoked?
+
             name = uid.name.force_encoding('UTF-8')
             email = uid.email.force_encoding('UTF-8')
             arr << { name: name, email: email.downcase } if name.valid_encoding? && email.valid_encoding?

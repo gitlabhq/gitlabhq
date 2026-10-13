@@ -1102,7 +1102,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       let(:repository) { diff_with_commits.project.repository }
 
       it 'calls diffs_by_changed_paths with given offset' do
-        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
+        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0, sorted: true) do |_, &block|
           expect(block).to be(expected_block)
         end
 
@@ -1113,7 +1113,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         let(:offset) { 5 }
 
         it 'calls diffs_by_changed_paths with given offset' do
-          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
+          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset, sorted: true) do |_, &block|
             expect(block).to be(expected_block)
           end
 
@@ -1222,10 +1222,38 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
       end
 
+      context 'when the diff is the fallback for an unsaved merge request' do
+        let(:merge_request_diff) { build(:merge_request).merge_request_diff }
+
+        it 'returns an empty DiffCollection' do
+          expect(merge_request_diff.merge_request).to be_nil
+          expect(merge_request_diff.raw_diffs).to be_empty
+        end
+      end
+
       context 'when the raw diffs exist' do
         it 'returns the diffs' do
           expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
           expect(diff_with_commits.raw_diffs).not_to be_empty
+        end
+
+        it 'skips charset detection when the flag is enabled for the project' do
+          stub_feature_flags(diff_skip_redundant_charset_detection: diff_with_commits.project)
+
+          expect(Gitlab::Git::DiffCollection).to receive(:new)
+            .with(anything, hash_including(skip_charset_detection: true)).and_call_original
+
+          diff_with_commits.raw_diffs
+        end
+
+        it 'does not skip charset detection when the flag is enabled for another project' do
+          merge_request_diff = diff_with_commits
+          stub_feature_flags(diff_skip_redundant_charset_detection: build_stubbed(:project))
+
+          expect(Gitlab::Git::DiffCollection).to receive(:new)
+            .with(anything, hash_including(skip_charset_detection: false)).and_call_original
+
+          merge_request_diff.raw_diffs
         end
 
         context 'when the :paths option is set' do
@@ -1356,8 +1384,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         context 'when base_sha and head_sha dont match' do
           before do
             mr_diff.update!(patch_id_sha: nil)
-            allow(mr_diff).to receive(:head_commit_sha).and_return('123123')
-            allow(mr_diff).to receive(:base_commit_sha).and_return('43121')
+            allow(mr_diff).to receive_messages(head_commit_sha: '123123', base_commit_sha: '43121')
           end
 
           it 'returns nil' do
@@ -1606,6 +1633,128 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect(diff.state).to eq('collected')
         expect(diff.external_diff_store).to eq(remote_store)
       end
+
+      context 'when the gitaly data is preloaded' do
+        subject(:diff) { merge_request.merge_request_diffs.build }
+
+        it 'uploads the external diff outside of the save transaction' do
+          merge_request # created inside its own transaction, before the upload tracking starts
+          upload_transaction_depths = []
+          baseline = described_class.connection.open_transactions
+
+          allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
+            allow(storage).to receive(:store!).and_wrap_original do |original, *args|
+              upload_transaction_depths << (described_class.connection.open_transactions - baseline)
+              original.call(*args)
+            end
+          end
+
+          diff.preload_gitaly_data
+
+          expect(upload_transaction_depths).to eq([0])
+          expect(diff).to be_new_record
+          expect(diff).to be_stored_externally
+          expect(diff.external_diff.exists?).to be(true)
+
+          diff.save!
+
+          expect(upload_transaction_depths).to eq([0])
+          expect(diff.reload).to be_stored_externally
+          expect(diff.state).to eq('collected')
+          expect(diff.external_diff_store).to eq(remote_store)
+          expect(diff.external_diff_identifier).to match(/\Adiff-\h{8}-/)
+          expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/#{diff.external_diff_identifier}")
+          expect(diff.merge_request_diff_files.size).to eq(20)
+          expect(diff.merge_request_diff_files.pluck(:external_diff_size).sum).to be > 0
+        end
+
+        context 'when the external_diff_upload_before_save flag is disabled' do
+          before do
+            stub_feature_flags(external_diff_upload_before_save: false)
+          end
+
+          it 'uploads the external diff inside the save transaction, named after the id' do
+            merge_request
+            upload_transaction_depths = []
+            baseline = described_class.connection.open_transactions
+
+            allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
+              allow(storage).to receive(:store!).and_wrap_original do |original, *args|
+                upload_transaction_depths << (described_class.connection.open_transactions - baseline)
+                original.call(*args)
+              end
+            end
+
+            diff.preload_gitaly_data
+
+            expect(upload_transaction_depths).to be_empty
+            expect(diff).not_to be_stored_externally
+
+            diff.save!
+
+            expect(upload_transaction_depths.size).to eq(1)
+            expect(upload_transaction_depths.first).to be >= 1
+            expect(diff.reload).to be_stored_externally
+            expect(diff.state).to eq('collected')
+            expect(diff.external_diff_store).to eq(remote_store)
+            expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/diff-#{diff.id}")
+            expect(diff.merge_request_diff_files.size).to eq(20)
+          end
+        end
+      end
+
+      context 'when the gitaly data is not preloaded' do
+        subject(:diff) { merge_request.merge_request_diffs.create! }
+
+        it 'creates a diff in object storage named after the id' do
+          expect(diff).to be_stored_externally
+          expect(diff.state).to eq('collected')
+          expect(diff.external_diff_store).to eq(remote_store)
+          expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/diff-#{diff.id}")
+          expect(diff.merge_request_diff_files.size).to eq(20)
+        end
+      end
+    end
+
+    context 'diff with commits but no changed files' do
+      let(:project) { create(:project, :test_repo) }
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          target_project: project,
+          source_branch: 'no-net-change',
+          target_branch: 'master'
+        )
+      end
+
+      subject(:diff) { merge_request.merge_request_diffs.build }
+
+      before do
+        create_file_in_repo(project, 'master', 'no-net-change', 'temporary-file', 'content')
+        project.repository.delete_file(
+          project.creator, 'temporary-file', message: 'Remove temporary file', branch_name: 'no-net-change')
+      end
+
+      it 'does not upload an external diff' do
+        merge_request
+
+        allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
+          expect(storage).not_to receive(:store!)
+        end
+
+        diff.preload_gitaly_data
+
+        expect(diff).not_to be_stored_externally
+        expect(diff.external_diff_identifier).to be_nil
+
+        diff.save!
+
+        expect(diff.reload).not_to be_stored_externally
+        expect(diff.state).to eq('empty')
+        expect(diff.commits_count).to eq(2)
+        expect(diff.merge_request_diff_files).to be_empty
+      end
     end
 
     context 'diff adding an empty file' do
@@ -1675,6 +1824,71 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       mr = create(:merge_request, :merged_last_month)
 
       expect(mr.merge_request_diff).to be_stored_externally
+    end
+  end
+
+  describe 'scheduling a restore of missing commit rows' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    let(:diff) { described_class.find(merge_request.merge_request_diff.id) }
+    let(:worker) { MergeRequests::RestoreDiffCommitsWorker }
+
+    before do
+      stub_read_new_commits_table
+    end
+
+    context 'when the rows are missing' do
+      before do
+        MergeRequestDiffCommit.where(merge_request_diff_id: diff.id).delete_all
+      end
+
+      it 'schedules from #commits' do
+        expect(worker).to receive(:perform_async).with(diff.id)
+
+        diff.commits
+      end
+
+      it 'schedules from #commits when loading from gitaly' do
+        expect(worker).to receive(:perform_async).with(diff.id)
+
+        diff.commits(load_from_gitaly: true)
+      end
+
+      it 'does not schedule for a later page' do
+        expect(worker).not_to receive(:perform_async)
+
+        diff.commits(limit: 1, page: 2)
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(restore_missing_mr_diff_commits: false)
+        end
+
+        it 'only checks the flag', :aggregate_failures do
+          expect(worker).not_to receive(:perform_async)
+          expect(described_class).not_to receive(:inside_transaction?)
+
+          diff.commits
+        end
+      end
+    end
+
+    context 'when the rows are present' do
+      it 'does not schedule' do
+        expect(worker).not_to receive(:perform_async)
+
+        diff.commits
+      end
+
+      it 'does not schedule when gitaly returns nothing for the stored shas' do
+        allow(Gitlab::Git::Commit).to receive(:batch_by_oid).and_return([])
+
+        expect(worker).not_to receive(:perform_async)
+
+        expect(diff.commits(load_from_gitaly: true)).to be_empty
+      end
     end
   end
 
@@ -1897,139 +2111,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   describe '#last_commit' do
     it 'returns last commit' do
       expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
-    end
-  end
-
-  describe '#includes_any_commits?' do
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be_with_refind(:merge_request_diff) do
-      create(:merge_request, source_project: project, target_project: project).merge_request_diff
-    end
-
-    let_it_be(:diff_commit_with_metadata) do
-      create(:merge_request_diff_commit,
-        merge_request_diff: merge_request_diff,
-        sha: 'abc123',
-        relative_order: merge_request_diff.merge_request_diff_commits.count + 1
-      )
-    end
-
-    let_it_be(:diff_commit_without_metadata) do
-      create(:diff_commit_without_metadata,
-        merge_request_diff: merge_request_diff,
-        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
-        sha: 'def456'
-      )
-    end
-
-    let_it_be(:diff_commit_with_duplicated_data) do
-      create(:merge_request_diff_commit,
-        :with_duplicated_data,
-        merge_request_diff: merge_request_diff,
-        sha: 'ghi789',
-        relative_order: merge_request_diff.merge_request_diff_commits.count + 1
-      )
-    end
-
-    let(:non_existent_shas) do
-      Array.new(30) { Digest::SHA1.hexdigest(SecureRandom.hex) }
-    end
-
-    before do
-      merge_request_diff.clear_memoization(:read_new_commits_table?)
-    end
-
-    it 'returns true when the sha exists in merge_request_commits_metadata' do
-      expect(merge_request_diff.includes_any_commits?(['abc123'])).to be(true)
-    end
-
-    it 'returns false when the sha exists only in merge_request_diff_commits (unmigrated)' do
-      expect(merge_request_diff.includes_any_commits?(['def456'])).to be(false)
-    end
-
-    it 'returns false if passed commits do not exist' do
-      expect(merge_request_diff.includes_any_commits?([])).to be(false)
-      expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to be(false)
-    end
-
-    it 'does not reference columns missing from the new diff commits table' do
-      stub_const('MergeRequestDiff::BATCH_SIZE', 5)
-
-      expect do
-        merge_request_diff.includes_any_commits?(Array.new(6) { |i| "sha#{i}" } + ['abc123'])
-      end.not_to query_missing_diff_commit_columns
-    end
-
-    it 'includes a project_id filter on merge_request_diff_commits for partition pruning' do
-      expect { merge_request_diff.includes_any_commits?(['abc123']) }
-        .not_to query_diff_commits_without_project_id
-    end
-
-    context 'when reading from the legacy commits table' do
-      before do
-        stub_read_new_commits_table(false)
-      end
-
-      shared_examples 'merge request diff with commit shas' do
-        let(:args_with_existing_commits) { non_existent_shas + existing_shas }
-
-        it 'performs a separate request for each batch' do
-          stub_const('MergeRequestDiff::BATCH_SIZE', 5)
-
-          recorder = ActiveRecord::QueryRecorder.new do
-            merge_request_diff.includes_any_commits?(args_with_existing_commits)
-          end
-
-          metadata_queries = recorder.log.select do |q|
-            q.include?("SELECT 1 AS one FROM \"merge_request_commits_metadata\"")
-          end
-
-          commit_queries = recorder.log.select do |q|
-            q.include?("SELECT 1 AS one FROM \"merge_request_diff_commits\"")
-          end
-
-          expect(metadata_queries.count).to eq(expected_metadata_queries)
-          expect(commit_queries.count).to eq(expected_commit_queries)
-        end
-
-        it 'returns false if passed commits do not exist' do
-          expect(merge_request_diff.includes_any_commits?([])).to be(false)
-          expect(merge_request_diff.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to be(false)
-        end
-
-        it 'returns true if passed commits exists' do
-          expect(merge_request_diff.includes_any_commits?(args_with_existing_commits)).to be(true)
-        end
-      end
-
-      context 'when SHA is present only in `merge_request_diff_commits` table' do
-        let(:expected_metadata_queries) { 7 }
-        let(:expected_commit_queries) { 7 }
-        let(:existing_shas) { ['def456'] }
-
-        it_behaves_like 'merge request diff with commit shas'
-      end
-
-      context 'when SHA is present only in `merge_request_commits_metadata` table' do
-        let(:expected_metadata_queries) { 7 }
-        let(:expected_commit_queries) { 6 }
-        let(:existing_shas) { ['abc123'] }
-
-        it_behaves_like 'merge request diff with commit shas'
-      end
-
-      context 'when `sha` data is present across both tables' do
-        let(:expected_metadata_queries) { 7 }
-        let(:expected_commit_queries) { 6 }
-        let(:existing_shas) { %w[abc123 def456 ghi789] }
-
-        it_behaves_like 'merge request diff with commit shas'
-      end
-
-      it 'omits the project_id filter on merge_request_diff_commits' do
-        expect { merge_request_diff.includes_any_commits?(['def456']) }
-          .to query_diff_commits_without_project_id
-      end
     end
   end
 

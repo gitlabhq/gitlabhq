@@ -5,15 +5,25 @@ require 'spec_helper'
 RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category: :permissions do
   let(:worker) { described_class.new }
 
+  before do
+    stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: false)
+  end
+
   it_behaves_like 'an idempotent worker'
 
   it 'has the `until_executing` deduplicate strategy' do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executing)
   end
 
-  it 'allows at most 5 concurrent executions' do
-    expect(described_class.get_concurrency_limit).to eq(5)
+  it 'allows at most 10 concurrent executions' do
+    expect(described_class.get_concurrency_limit).to eq(10)
   end
+
+  it_behaves_like 'defers on database health signal behind a feature flag',
+    feature_flag: :defer_safety_net_auth_refresh_on_wal_rate,
+    gitlab_schema: :gitlab_main_org,
+    delay_by: 5.minutes,
+    indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
 
   describe '#perform' do
     subject(:perform) { worker.perform }
@@ -26,7 +36,7 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
     end
 
     context 'when a queued user is missing a project authorization' do
-      let_it_be(:reverification) do
+      let_it_be_with_reload(:reverification) do
         create(:project_authorization_reverification, :to_be_processed, user: user)
       end
 
@@ -51,10 +61,19 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       end
 
       it 'logs the number of users processed' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, true)
+        freeze_time do
+          reverification.update!(enqueued_at: 70.minutes.ago)
 
-        perform
+          allow_next_instance_of(Users::RefreshAuthorizedProjectsService) do |service|
+            allow(service).to receive(:execute) { travel(5.minutes) }
+          end
+
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, true)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_lag_s, 600)
+
+          perform
+        end
       end
     end
 
@@ -77,10 +96,24 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
         stub_feature_flags(use_db_to_queue_safety_net_auth_refresh: false)
       end
 
-      it 'leaves the record pending without refreshing the user' do
+      it 'still drains records queued while the flag was enabled' do
         expect { perform }
-          .to not_change { authorized? }.from(false)
-          .and not_change { reverification.reload.status }.from('pending')
+          .to change { authorized? }.from(false).to(true)
+          .and change { queued? }.from(true).to(false)
+      end
+    end
+
+    context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is enabled' do
+      let_it_be(:reverification) do
+        create(:project_authorization_reverification, :to_be_processed, user: user)
+      end
+
+      before do
+        stub_feature_flags(do_not_run_safety_net_auth_refresh_jobs: true)
+      end
+
+      it 'leaves the record pending' do
+        expect { perform }.not_to change { reverification.reload.status }.from('pending')
       end
     end
 
@@ -126,7 +159,7 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
     end
 
     context 'when the runtime limit is reached before the queue is drained' do
-      let_it_be(:reverification) do
+      let_it_be_with_reload(:reverification) do
         create(:project_authorization_reverification, :to_be_processed, user: user)
       end
 
@@ -137,10 +170,15 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       end
 
       it 'finishes the claimed batch and reports the queue as not drained' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, false)
+        freeze_time do
+          reverification.update!(enqueued_at: 70.minutes.ago)
 
-        expect { perform }.to change { queued? }.from(true).to(false)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, false)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_lag_s, 600)
+
+          expect { perform }.to change { queued? }.from(true).to(false)
+        end
       end
     end
 
@@ -148,6 +186,7 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       it 'reports an empty queue as drained' do
         expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 0)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, true)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_lag_s, 0)
 
         perform
       end

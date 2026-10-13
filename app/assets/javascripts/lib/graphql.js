@@ -22,6 +22,7 @@ import { getOperationFinishedLink } from './apollo/operation_finished_link';
 import { persistenceMapper } from './apollo/persistence_mapper';
 import { sentryBreadcrumbLink } from './apollo/sentry_breadcrumb_link';
 import { correlationIdLink } from './apollo/correlation_id_link';
+import { createEtagFetch } from './apollo/etag_fetch';
 
 export const ERROR_POLICY_ALL = 'all';
 export const ERROR_POLICY_NONE = 'none';
@@ -130,6 +131,18 @@ export const typePolicies = {
   },
 };
 
+/**
+ * Builds an InMemoryCache from a per-client `cacheConfig`, merging it over the global
+ * type policies and possibleTypes. Callers get the globals plus their own, and win on a
+ * key collision.
+ */
+export const createCache = (cacheConfig = { typePolicies: {}, possibleTypes: {} }) =>
+  new InMemoryCache({
+    ...cacheConfig,
+    typePolicies: { ...typePolicies, ...cacheConfig.typePolicies },
+    possibleTypes: { ...possibleTypes, ...cacheConfig.possibleTypes },
+  });
+
 export const stripWhitespaceFromQuery = (url, path) => {
   const [, params] = url.split(path);
 
@@ -186,6 +199,8 @@ function createApolloClient(resolvers = {}, config = {}) {
     httpHeaders['x-gitlab-version'] = gon.version;
   }
 
+  httpHeaders['X-GitLab-Client-Type'] = 'browser';
+
   if (gon.current_organization?.id) {
     httpHeaders['X-GitLab-Organization-ID'] = gon.current_organization.id;
   }
@@ -214,18 +229,26 @@ function createApolloClient(resolvers = {}, config = {}) {
     Apollo Client issue: https://github.com/apollographql/apollo-feature-requests/issues/182
   */
 
-  const fetchIntervention = (url, options) => {
+  const fetchIntervention = createEtagFetch((url, options) => {
     return fetch(stripWhitespaceFromQuery(url, uri), options);
+  });
+
+  // Lets a link tag its own request for the logs by appending `context.requestTag` to the query
+  // string — `json.path` has its query string stripped by Lograge, but `json.params` keeps it.
+  const requestUri = (operation) => {
+    const tag = operation.getContext().requestTag;
+    return tag ? `${uri}?${objectToQuery(tag)}` : uri;
   };
 
   const requestLink = ApolloLink.split(
     (operation) => operation.getContext().batchKey,
     new BatchHttpLink({
       ...httpOptions,
+      uri: requestUri,
       batchKey: (operation) => operation.getContext().batchKey,
       fetch: fetchIntervention,
     }),
-    new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
+    new HttpLink({ ...httpOptions, uri: requestUri, fetch: fetchIntervention }),
   );
 
   const uploadsLink = ApolloLink.split(
@@ -303,17 +326,7 @@ function createApolloClient(resolvers = {}, config = {}) {
     ),
   );
 
-  const newCache = new InMemoryCache({
-    ...cacheConfig,
-    typePolicies: {
-      ...typePolicies,
-      ...cacheConfig.typePolicies,
-    },
-    possibleTypes: {
-      ...possibleTypes,
-      ...cacheConfig.possibleTypes,
-    },
-  });
+  const newCache = createCache(cacheConfig);
 
   ac = new ApolloClient({
     typeDefs,

@@ -44,7 +44,8 @@ SDLC data, [Knowledge Graph](../project/repository/knowledge_graph/_index.md), [
 
 GitLab Duo Agentic Chat can autonomously retrieve and use:
 
-- Files (by searching your project or when you provide file paths)
+- Files, including images (PNG, JPEG, WebP), by searching your project or when you provide file paths
+- Images attached to issues and merge requests in the project, when you give the upload reference as it appears in the Markdown
 - Epics
 - Issues
 - Merge requests
@@ -53,6 +54,8 @@ GitLab Duo Agentic Chat can autonomously retrieve and use:
 - Work items
 
 Unlike non-agentic Chat, agentic Chat can search for these resources without requiring you to specify exact IDs or URLs. For example, you can ask "Find the merge request about authentication" and Chat searches for relevant merge requests.
+
+For image requirements, see [Image requirements](../project/merge_requests/developer.md#image-requirements).
 
 ### Extended context
 
@@ -76,7 +79,8 @@ The following context is available to the software development flow in GitLab Du
 
 ### When referenced explicitly
 
-- Files
+- Files, including images (PNG, JPEG, WebP)
+- Images attached to issues and merge requests in the project
 - Epics
 - Issues
 - Merge requests
@@ -114,3 +118,19 @@ To specify content that GitLab Duo excludes:
 1. Specify which project files and directories are excluded from GitLab Duo context, and select **Save exclusions**.
 1. Optional. To delete an existing exclusion, select **Delete** ({{< icon name="remove" >}}) for the appropriate exclusion.
 1. Select **Save changes**.
+
+### Known issues
+
+The following are known issues for context exclusions in the [GitLab MCP server](../model_context_protocol/mcp_server.md):
+
+- The `get_merge_request` tool might return commit diffs that include
+  content from excluded files.
+  The GitLab MCP server does not check for exclusions when it fetches diffs.
+- The `add_commit` tool has a `move` action that
+  copies a file from one path to another. If the source file is excluded, the exclusion
+  check is not applied to the source path. An agent with push access could move an
+  excluded file to a non-excluded path and then read its content.
+
+These known issues are tracked in
+[issue 628141](https://gitlab.com/gitlab-org/gitlab/-/work_items/628141).
+To ensure protection of sensitive information, review which tools and permissions are granted to MCP clients that access sensitive projects.

@@ -107,6 +107,7 @@ $dracula-gh: #6272a4;
   --diff-expansion-background-color: #{$gl-color-neutral-600};
 
   --code-background: #{$dracula-bg};
+  --code-text-color: #{$dracula-text-color};
   --code-empty-background: #{color.adjust($dracula-bg, $lightness: -1.5%)};
   --code-border-color: #{$gl-color-neutral-700};
   --code-changed-border-color: #{rgba(255,255,255,0.1)};

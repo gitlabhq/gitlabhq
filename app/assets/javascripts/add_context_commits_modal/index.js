@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import AddContextCommitsModalTrigger from './components/add_context_commits_modal_trigger.vue';
 import AddContextCommitsModalWrapper from './components/add_context_commits_modal_wrapper.vue';
 import createStore from './store';

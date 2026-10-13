@@ -47,11 +47,11 @@ RSpec.describe GroupImportWorker, feature_category: :importers do
     end
 
     context 'when it fails' do
-      it 'raises an exception when params are invalid' do
+      it 'does not call the ImportService when the user or group does not exist' do
         expect_any_instance_of(::Groups::ImportExport::ImportService).not_to receive(:execute)
 
-        expect { subject.perform(non_existing_record_id, group.id) }.to raise_exception(ActiveRecord::RecordNotFound)
-        expect { subject.perform(user.id, non_existing_record_id) }.to raise_exception(ActiveRecord::RecordNotFound)
+        expect { subject.perform(non_existing_record_id, group.id) }.not_to raise_error
+        expect { subject.perform(user.id, non_existing_record_id) }.not_to raise_error
       end
 
       context 'when the import service fails' do

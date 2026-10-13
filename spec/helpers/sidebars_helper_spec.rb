@@ -63,21 +63,24 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     before do
       allow(Time).to receive(:now).and_return(Time.utc(2021, 1, 1))
       allow(helper).to receive(:current_user) { user }
-      allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:session).and_return(session)
-      allow(helper).to receive(:header_search_context).and_return({ some: "search data" })
-      allow(helper).to receive(:current_user_mode).and_return(current_user_mode)
-      allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
-      allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
+      allow(helper).to receive_messages(
+        can?: true,
+        session: session,
+        header_search_context: { some: "search data" },
+        current_user_mode: current_user_mode
+      )
+      allow(panel).to receive_messages(super_sidebar_menu_items: nil, super_sidebar_context_header: nil)
 
       if user
-        allow(user).to receive(:assigned_open_issues_count).and_return(1)
-        allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
-        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(0)
-        allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
-        allow(user).to receive(:todos_pending_count).and_return(3)
         allow(helper).to receive(:show_feature_library_shimmer?).and_return(true)
-        allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
+        allow(user).to receive_messages(
+          assigned_open_issues_count: 1,
+          assigned_open_merge_requests_count: 4,
+          returned_to_you_merge_requests_count: 0,
+          review_requested_open_merge_requests_count: 0,
+          todos_pending_count: 3,
+          pinned_nav_items: { panel_type => %w[foo bar], 'another_panel' => %w[baz] }
+        )
       end
     end
 
@@ -132,7 +135,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         shortcut_links: global_shortcut_links,
         work_items: nil,
         has_multiple_organizations: false,
-        show_feature_library_feedback: true,
         show_feature_library_shimmer: true
       })
     end
@@ -206,10 +208,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    describe 'show_feature_library_feedback' do
-      it { is_expected.to include(show_feature_library_feedback: true) }
-    end
-
     describe 'ai_search_available' do
       it { is_expected.to include(ai_search_available: false) }
 
@@ -279,6 +277,65 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
                 css_class: 'shortcuts-new-issue'
               }
             ])
+          end
+        end
+
+        context 'when the request is organization-scoped' do
+          let(:organization_scoped_shortcut_links) do
+            [
+              {
+                title: _('Milestones'),
+                href: dashboard_milestones_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-milestones'
+              },
+              {
+                title: _('Snippets'),
+                href: dashboard_snippets_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-snippets'
+              },
+              {
+                title: _('Activity'),
+                href: activity_dashboard_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-activity'
+              },
+              {
+                title: _('Groups'),
+                href: dashboard_groups_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-groups'
+              },
+              {
+                title: _('Projects'),
+                href: dashboard_projects_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-projects'
+              }
+            ]
+          end
+
+          before do
+            Current.organization_resolver =
+              instance_double(
+                Gitlab::Current::Organization,
+                from_organization_params: organization,
+                from_request: organization,
+                from_params: organization
+              )
+            Current.data_context = Gitlab::Current::DataContext.new(organization: organization, user: user)
+          end
+
+          context 'and the organization is not isolated' do
+            let_it_be(:organization) { build_stubbed(:organization) }
+
+            it 'returns shortcut links scoped to the organization' do
+              expect(subject[:shortcut_links]).to eq(organization_scoped_shortcut_links)
+            end
+          end
+
+          context 'and the organization is isolated' do
+            let_it_be(:organization) { build_stubbed(:organization, :isolated) }
+
+            it 'still returns shortcut links scoped to the organization' do
+              expect(subject[:shortcut_links]).to eq(organization_scoped_shortcut_links)
+            end
           end
         end
       end
@@ -539,9 +596,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         show_get_started_menu: false
       }
 
-      allow(helper).to receive(:project_sidebar_context_data).and_return(project_context_data)
-      allow(helper).to receive(:group_sidebar_context_data).and_return(
-        { current_user: nil, container: group, show_discover_group_security: false })
+      allow(helper).to receive_messages(
+        project_sidebar_context_data: project_context_data,
+        group_sidebar_context_data: { current_user: nil, container: group, show_discover_group_security: false }
+      )
 
       allow(group).to receive(:to_global_id).and_return(5)
     end
@@ -789,7 +847,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     context 'when there is a user' do
-      subject(:path) { helper.send(:manage_organization_link, user) }
+      subject(:path) { helper.send(:manage_organization_link, user, panel_type) }
+
+      let(:panel_type) { 'organization' }
 
       context 'when the user can access the organization admin area' do
         before do
@@ -800,6 +860,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
         it 'returns the organization admin root path' do
           expect(path).to eq(organization_admin_root_path(current_organization))
+        end
+
+        context 'when already in the organization admin area' do
+          let(:panel_type) { 'organization_admin' }
+
+          it 'returns the organization overview path' do
+            expect(path).to eq(organization_path(current_organization))
+          end
         end
 
         context 'when the request is not organization-scoped' do
@@ -832,7 +900,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     context 'when there is no user' do
-      subject(:path) { helper.send(:manage_organization_link, nil) }
+      subject(:path) { helper.send(:manage_organization_link, nil, 'organization') }
 
       it { is_expected.to be_nil }
     end

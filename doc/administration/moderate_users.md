@@ -220,8 +220,11 @@ The user's state is set to active and they consume a
 > [!note]
 > Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
 
-The unblock option may be unavailable for LDAP users. To enable the unblock option,
-the LDAP identity first needs to be deleted:
+The unblock option is unavailable for users blocked by LDAP.
+To resync the user with LDAP and unblock them only if the check passes, see
+[Resync a user blocked by LDAP](#resync-a-user-blocked-by-ldap).
+
+To unblock the user regardless of what LDAP says, delete the LDAP identity:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Users**.
@@ -229,6 +232,33 @@ the LDAP identity first needs to be deleted:
 1. Select a user.
 1. Select the **Identities** tab.
 1. Find the LDAP provider and select **Delete**.
+
+### Resync a user blocked by LDAP
+
+{{< history >}}
+
+- Resync a user blocked by LDAP [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/210576) in GitLab 19.5.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator for the instance.
+- LDAP must be configured for the instance.
+
+You can resync a single user blocked by LDAP without waiting for the user to sign in or for the
+next scheduled LDAP user sync.
+
+To resync a user blocked by LDAP:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Overview** > **Users**.
+1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
+1. For the user you want to resync, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Resync with LDAP**.
+1. On the confirmation dialog, select **Resync with LDAP**.
+
+If the check passes, GitLab unblocks the user.
+If the check fails, the user stays blocked.
 
 ## Deactivate and reactivate users
 

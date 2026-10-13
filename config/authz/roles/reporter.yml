@@ -30,6 +30,7 @@ project:
   - create_epic
   - create_incident
   - create_iteration
+  - create_label
   - create_merge_request_in
   - create_project_secrets
   - create_requirement
@@ -42,6 +43,8 @@ project:
   - create_timelog
   - create_work_item_saved_view
   - daily_statistics
+  - delete_issuable_metric_image
+  - delete_label
   - delete_project_secrets
   - destroy_design
   - download_code
@@ -100,9 +103,12 @@ project:
   - read_timelog_category
   - reopen_issue
   - update_design
+  - update_issuable_metric_image
   - update_issue
+  - update_label
   - update_project_secrets
   - update_requirement
+  - upload_issuable_metric_image
 group:
   permissions: []
   raw_permissions:
@@ -122,18 +128,22 @@ group:
   - admin_milestone
   - admin_value_stream
   - admin_work_item
+  - bulk_admin_epic
   - create_epic
   - create_iteration
   - create_iteration_cadence
+  - create_label
   - create_saved_view
   - create_secret
   - create_secrets_manager_api_jwt
   - create_timelog
   - create_work_item_saved_view
+  - delete_label
   - delete_secret
   - download_wiki_code
   - manage_devops_adoption_namespaces
   - mark_note_as_internal
+  - promote_label
   - read_ci_cd_analytics
   - read_confidential_epic
   - read_confidential_issues
@@ -161,6 +171,7 @@ group:
   - rollover_issues
   - update_epic
   - update_issue
+  - update_label
   - update_secret
   - view_group_ci_cd_analytics
   - view_group_devops_adoption

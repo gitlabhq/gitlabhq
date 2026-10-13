@@ -67,6 +67,10 @@ export default Node.create({
     ];
   },
 
+  renderHTML() {
+    return ['span', { class: 'gfm-color_chip' }];
+  },
+
   addProseMirrorPlugins() {
     return [colorDecoratorPlugin];
   },

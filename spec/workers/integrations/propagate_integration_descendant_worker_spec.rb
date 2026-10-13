@@ -28,6 +28,29 @@ RSpec.describe Integrations::PropagateIntegrationDescendantWorker, feature_categ
     end
   end
 
+  context 'with a descendant integration in another organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+    let_it_be(:subgroup_in_other_org) { create(:group, parent: group_in_other_org) }
+
+    let!(:group_integration_in_other_org) do
+      create(:beyond_identity_integration, project: nil, group: group_in_other_org)
+    end
+
+    let!(:subgroup_integration_in_other_org) do
+      create(:beyond_identity_integration, project: nil, group: subgroup_in_other_org,
+        inherit_from_id: group_integration_in_other_org.id)
+    end
+
+    it 'does not pass it to Integrations::Propagation::BulkUpdateService' do
+      expect(Integrations::Propagation::BulkUpdateService).to receive(:new)
+        .with(group_integration, match_array([subgroup_integration, custom_settings_subgroup_integration]))
+        .and_return(instance_double(Integrations::Propagation::BulkUpdateService, execute: nil))
+
+      described_class.new.perform(group_integration.id, subgroup_integration.id, subgroup_integration_in_other_org.id)
+    end
+  end
+
   context 'with an invalid integration id' do
     it 'returns without failure' do
       expect(Integrations::Propagation::BulkUpdateService).not_to receive(:new)

@@ -5,6 +5,7 @@ import { PiniaVuePlugin } from 'pinia';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import ReviewDrawer from '~/batch_comments/components/review_drawer.vue';
@@ -20,8 +21,10 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import reviewDrawerQuery from '~/batch_comments/queries/review_drawer.query.graphql';
 import toast from '~/vue_shared/plugins/global_toast';
+import { createAlert } from '~/alert';
 
 jest.mock('~/vue_shared/plugins/global_toast');
+jest.mock('~/alert');
 
 jest.mock('~/autosave');
 jest.mock('~/vue_shared/components/markdown/eventhub');
@@ -55,6 +58,8 @@ describe('ReviewDrawer', () => {
 
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
   };
+
+  const submitDrawerForm = () => findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
   const createComponent = ({
     canApprove = true,
@@ -94,6 +99,7 @@ describe('ReviewDrawer', () => {
     wrapper = mountExtended(ReviewDrawer, {
       pinia,
       apolloProvider,
+      stubs: { PreviewItem: stubComponent(PreviewItem) },
     });
   };
 
@@ -430,6 +436,62 @@ describe('ReviewDrawer', () => {
     },
   );
 
+  it('disables the approve option when the merge request is merged', async () => {
+    useNotes().noteableData = { ...useNotes().noteableData, state: 'merged' };
+    useBatchComments().drawerOpened = true;
+
+    createComponent({ canApprove: true });
+
+    await findPlaceholderField().vm.$emit('focus');
+
+    await waitForPromises();
+
+    expect(wrapper.find('.custom-control-input[value="approved"]').attributes('disabled')).toBe(
+      'disabled',
+    );
+  });
+
+  describe('when the review was published but the approval was refused', () => {
+    beforeEach(async () => {
+      jest.spyOn(diffsEventHub, '$emit');
+      window.mrTabs = { tabShown: jest.fn() };
+      useBatchComments().drafts = [];
+      useBatchComments().drawerOpened = true;
+      useBatchComments().publishReview.mockResolvedValue({
+        review_id: 1,
+        reviewer_state_error: 'Merge request is already merged',
+      });
+
+      createComponent();
+
+      await waitForPromises();
+      await wrapper.find('.custom-control-input[value="approved"]').trigger('change');
+
+      submitDrawerForm();
+
+      await waitForPromises();
+    });
+
+    it('shows a warning', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Your review was submitted, but the merge request was not approved: Merge request is already merged',
+        variant: 'warning',
+      });
+    });
+
+    it('does not emit the approval event', () => {
+      expect(diffsEventHub.$emit).not.toHaveBeenCalledWith(
+        'mr:reviewDrawer:submit:approval',
+        expect.anything(),
+      );
+    });
+
+    it('does not switch to the overview tab', () => {
+      expect(window.mrTabs.tabShown).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when discarding a review', () => {
     beforeEach(() => {
       useBatchComments().drawerOpened = true;
@@ -515,6 +577,51 @@ describe('ReviewDrawer', () => {
     findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
     expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
+  });
+
+  describe('failed batch publish', () => {
+    beforeEach(() => {
+      useBatchComments().drafts = new Array(1).fill({});
+      useBatchComments().drawerOpened = true;
+    });
+
+    it('shows the server message if the body has one', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      useBatchComments().publishReviewInBatches.mockRejectedValue({
+        response: { data: { message: 'Unable to save Note: Note is too long' } },
+      });
+
+      submitDrawerForm();
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Unable to save Note: Note is too long' }),
+      );
+    });
+
+    it.each([
+      ['a body with no message', { response: { data: { status: 500, error: 'Server Error' } } }],
+      ['an HTML body', { response: { data: '<!DOCTYPE html><title>500</title>' } }],
+      ['no response', new Error('Network Error')],
+    ])('shows a generic alert given %s', async (_, rejection) => {
+      createComponent();
+
+      await waitForPromises();
+
+      useBatchComments().publishReviewInBatches.mockRejectedValue(rejection);
+
+      submitDrawerForm();
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Something went wrong. Please try again.' }),
+      );
+    });
   });
 
   it('disables table of contents support in the markdown editor', async () => {

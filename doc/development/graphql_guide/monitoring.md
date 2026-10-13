@@ -43,11 +43,13 @@ Some relevant Kibana fields include:
 | `json.graphql_errors.extensions.argumentName` | Name of argument that caused a [top-level error](../api_graphql_styleguide.md#failure-irrelevant-to-the-user). |
 | `json.query_string` | The query string itself. |
 | `json.is_mutation` | `true` when a mutation, `false` when not. |
+| `json.graphql_connection_nodes` | The number of connection nodes the query loaded. For most queries, this equals the nodes returned. The count is taken after authorization removes nodes the user can't see. Nested connections add up. It's `0` when the query loads no connection nodes. |
 | `json.query_analysis.used_fields` | List of GraphQL fields selected by the query. |
 | `json.query_analysis.used_deprecated_fields` | List of deprecated GraphQL fields selected by the query. |
 | `json.query_analysis.used_deprecated_arguments` | List of deprecated GraphQL arguments selected by the query. |
 | `json.query_analysis.duration_s` | Duration of query execution in seconds. |
-| `json.query_analysis.complexity` | The [complexity](../api_graphql_styleguide.md#max-complexity) score of the query. |
+| `json.query_analysis.complexity` | The [complexity](../api_graphql_styleguide.md#max-complexity) score of the query, rounded down to an integer. |
+| `json.query_analysis.graphql_complexity_raw` | The exact, unrounded complexity score of the query, as a decimal. |
 
 ### Useful filters
 
@@ -116,3 +118,4 @@ Some differences from the [query logs](#logs-of-each-graphql-query) described ab
 
 - Some of the [Kibana fields mentioned above](#logs-of-each-graphql-query) are not available in the full request logs.
 - The names of filters differ. For example, instead of `json.query_analysis.used_fields` you select `json.graphql.used_fields`.
+- `json.graphql_connection_nodes` is available as `json.graphql.graphql_connection_nodes`. This log also holds the database counters, such as `json.db_main_replica_count`.

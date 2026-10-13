@@ -570,6 +570,56 @@ RSpec.describe Todo, feature_category: :notifications do
     end
   end
 
+  describe '#transfer_failure_reason' do
+    subject { todo.reload.transfer_failure_reason }
+
+    context 'when todo is not transfer_failed' do
+      let_it_be(:todo) { create(:todo, project: project, user: user, target: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when todo is a project transfer failure' do
+      let_it_be(:todo) do
+        create(:todo, project: project, user: user, action: Todo::TRANSFER_FAILED, target: project)
+      end
+
+      it 'returns the error recorded on the project namespace' do
+        project_namespace = project.project_namespace
+        project_namespace.transfer_last_error = 'Namespace already taken'
+        project_namespace.namespace_details.save!
+
+        is_expected.to eq('Namespace already taken')
+      end
+
+      it 'returns nil when no error was recorded' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when todo is a group transfer failure' do
+      let_it_be(:todo) do
+        create(:todo, project: nil, group: group, user: user, action: Todo::TRANSFER_FAILED, target: group)
+      end
+
+      it 'returns the error recorded on the group' do
+        group_record = Group.find(group.id)
+        group_record.transfer_last_error = 'Namespace already taken'
+        group_record.namespace_details.save!
+
+        is_expected.to eq('Namespace already taken')
+      end
+    end
+
+    context 'when the target no longer exists' do
+      let(:todo) { build_stubbed(:todo, action: Todo::TRANSFER_FAILED, target: nil) }
+
+      it 'returns nil' do
+        expect(todo.transfer_failure_reason).to be_nil
+      end
+    end
+  end
+
   describe '#transfer_failed_retry_url' do
     subject { todo.reload.transfer_failed_retry_url }
 

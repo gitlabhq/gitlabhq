@@ -1,6 +1,6 @@
 ---
-source_checksum: a9ee8fe00bd4e2b4
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 615af46f58d924d1
+distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -54,7 +54,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Run `./ee/bin/custom-ability <ABILITY_NAME>` to generate the YAML configuration file for a new custom ability under `ee/config/custom_abilities/`.
 - Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` to update the permissions validation schema and create a spec file.
 - Define permissions declaratively in the custom ability YAML using `project_permissions` and `group_permissions` fields; DO NOT manually add policy rules to `ProjectPolicy` or `GroupPolicy` for custom abilities.
-- Mark a custom ability as `wip: true` in its YAML when implementing across multiple MRs; remove the `wip:` key when the ability is ready to ship.
+- Mark a custom ability as `wip: true` in its YAML when implementing across multiple MRs; remove the `wip:` key when the ability is ready to ship. Specs run with wip abilities visible by default (via `GITLAB_LOAD_WIP_CUSTOM_ABILITIES=true` in `spec_helper.rb`); use the `:disable_wip_custom_abilities` RSpec metadata to test production-like gating behavior.
 - Consolidate custom role abilities to a minimum: use `read_*` for all view-related actions and `admin_*` for object updates; avoid introducing additional abilities unless necessary.
 - Ensure `admin_*` custom abilities declare `read_*` as a requirement in the YAML `requirements` field.
 - Add the ability as a trait in the `MemberRoles` factory (`ee/spec/factories/member_roles.rb`) and add request specs under `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb`.

@@ -8,13 +8,8 @@ module API
     urgency :low
 
     namespace 'usage_data' do
-      before do
-        not_found! unless Feature.enabled?(:usage_data_queries_api, type: :ops)
-      end
-
       desc 'List all Service Ping SQL queries' do
-        detail 'Lists all raw SQL queries used to compute Service Ping. This action is behind the ' \
-          '`usage_data_queries_api` feature flag. Administrators only.'
+        detail 'Lists all raw SQL queries used to compute Service Ping. Administrators only.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -24,7 +19,8 @@ module API
         tags ['usage_data']
       end
 
-      route_setting :authorization, permissions: :read_usage_data_query, boundary_type: :instance
+      route_setting :authorization, permissions: :read_usage_data_query, boundary_type: :instance,
+        assignable_when: [:admin]
       get 'queries' do
         data = ::ServicePing::QueriesServicePing.for_current_reporting_cycle.pick(:payload) || {}
 

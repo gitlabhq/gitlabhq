@@ -41,13 +41,28 @@ All usage in a root namespace or top-level group is consolidated for billing pur
 GitLab provides three ways to obtain credits:
 
 - Included credits
-- Monthly Commitment Pool
-- On-Demand credits
+- Monthly commitment pool
+- On-demand credits
 
 For a click-through demo, see [GitLab Credits](https://gitlab.navattic.com/credits-dashboard).
 <!-- Demo published on 2026-01-28 -->
 
 For information about credit pricing, see [GitLab pricing](https://about.gitlab.com/pricing/).
+
+## Features
+
+The following features are usage-based and available with GitLab Credits.
+
+### Agentic features
+
+- [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md)
+
+### Non-Agentic features
+
+These features use a different consumption model:
+
+- [GitLab Secrets Manager](../ci/secrets/secrets_manager/credit_usage.md)
+- [Hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md#usage-and-monitoring)
 
 ## For the Free tier
 
@@ -65,7 +80,7 @@ For information about credit pricing, see [GitLab pricing](https://about.gitlab.
 
 {{< /history >}}
 
-Users on the Free tier can purchase a Monthly Commitment Pool of GitLab Credits for their instance or group namespace. This provides access to a set of [GitLab Duo Agent Platform features](../user/duo_agent_platform/_index.md), without needing a Premium or Ultimate subscription.
+Users on the Free tier can purchase a monthly commitment pool of GitLab Credits for their instance or group namespace. This provides access to a set of [GitLab Duo Agent Platform features](../user/duo_agent_platform/_index.md), without needing a Premium or Ultimate subscription.
 
 On-demand usage for Free namespaces is capped at $25,000 for each calendar month. Upon reaching this limit, on-demand usage is automatically turned off and resets at the beginning of the following month.
 
@@ -79,14 +94,14 @@ Unused credits do not roll over to the next month.
 [Community program subscriptions](community_programs.md) do not receive included credits.
 
 Non-human subjects do not receive included credits.
-Their consumption is billed at the namespace level from the Monthly Commitment Pool and On-Demand credits,
+Their consumption is billed at the namespace level from the monthly commitment pool and on-demand credits,
 in the same usage order as for human users.
 
 For more information about included credits, see [GitLab Promotions Terms & Conditions](https://about.gitlab.com/pricing/terms/).
 
 ## Temporary evaluation credits
 
-If you have not purchased the Monthly Commitment Pool or accepted the usage billing terms for On-Demand credits,
+If you have not purchased the monthly commitment pool or accepted the usage billing terms for on-demand credits,
 you can request a free temporary pool of credits to evaluate credit-based features.
 
 Credits are allocated based on the number of users you request for the evaluation,
@@ -97,17 +112,17 @@ To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
 
 If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
 
-## Monthly Commitment Pool
+## Monthly commitment pool
 
-Monthly Commitment Pool is a shared pool of credits available to all users in the subscription.
+Monthly commitment pool is a shared pool of credits available to all users in the subscription.
 All users in your subscription can draw from this shared pool after they have consumed their included credits.
 
 You can't reserve the pool for a subset of users or isolate consumption to specific users, groups, or projects.
 To limit how much individual users consume, use [usage caps](gitlab_credits_dashboard.md#usage-caps).
 
-When you purchase a Monthly Commitment Pool, you accept the usage billing terms.
+When you purchase a monthly commitment pool, you accept the usage billing terms.
 
-You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
+You can purchase the monthly commitment pool as a recurring annual or multi-year term.
 The number of credits purchased for the year is divided by 12.
 
 For example, when you purchase a monthly commitment pool of 1,000 credits,
@@ -123,13 +138,13 @@ The commitment is billed up front at the start of the contract term.
 Credits become available immediately after purchase, and reset on the first of every month.
 Unused credits do not roll over to the next month.
 
-## On-Demand credits
+## On-demand credits
 
-On-Demand credits cover usage incurred after you have used all included credits
-and the credits in the Monthly Committed Pool.
-On-Demand credits are billed monthly, at the list price of $1 per credit used.
+On-demand credits cover usage incurred after you have used all included credits
+and the credits in the monthly commitment pool.
+On-demand credits are billed monthly, at the list price of $1 per credit used.
 
-To use On-Demand credits, you must accept the usage billing terms.
+To use on-demand credits, you must accept the usage billing terms.
 
 For example, a subscription has a monthly commitment of 50 credits per month.
 If 75 credits are used in that month, the first 50 credits are part of the monthly commitment pool,
@@ -141,22 +156,22 @@ GitLab Credits are consumed in the following order:
 
 1. Included credits are used by each user first.
 1. Temporary evaluation credits are used after a user's included credits are consumed.
-1. Monthly Commitment Pool of credits is used after all included credits have been consumed.
-1. On-Demand credits are used after all other available credits
-   (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
+1. Monthly commitment pool of credits is used after all included credits have been consumed.
+1. On-demand credits are used after all other available credits
+   (included credits and monthly commitment pool, if applicable) are depleted and usage billing terms are signed.
 
 Other credit types, such as One-Time Charge credits, might apply to your subscription.
 For details, contact your account team.
 
 ## Usage billing terms
 
-When you buy a Monthly Commitment Pool, you accept the usage billing terms, including On-Demand credit usage.
-By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
-in the current monthly billing period, and any On-Demand charges incurred going forward.
+When you buy a monthly commitment pool, you accept the usage billing terms, including on-demand credit usage.
+By accepting usage billing terms, you agree to pay for all on-demand credit charges already accrued
+in the current monthly billing period, and incurred going forward.
 
-You can accept the usage billing terms when you purchase a Monthly Commitment Pool, or directly in the GitLab Credits dashboard in Customers Portal.
+You can accept the usage billing terms when you purchase a monthly commitment pool, or directly in the GitLab Credits dashboard in Customers Portal.
 
-After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals,
+After you accept the usage billing terms, they stay active for the rest of your subscription and subsequent self-serve renewals,
 and you cannot opt out.
 
 If you don't accept the usage billing terms, you can keep using credit-based features until you consume your
@@ -164,7 +179,7 @@ included credits and any temporary evaluation credits.
 
 ## Buy GitLab Credits
 
-You can buy GitLab Credits for your Monthly Commitment Pool in Customers Portal.
+You can buy GitLab Credits for your monthly commitment pool in Customers Portal.
 
 {{< tabs >}}
 
@@ -254,10 +269,8 @@ This represents one interaction from the user's perspective.
 A model call represents the underlying API calls made to LLMs to fulfill a user request.
 A single user request might trigger multiple model calls. For example, one call to understand context and another call to generate a response.
 
-### Models
-
-The following table lists the number of LLM calls you can make with one GitLab Credit for different [models](../user/duo_agent_platform/model_selection.md).
-Newer, more complex models have a higher multiplier and require more credits.
+The number of LLM calls you get from one GitLab Credit depends on the [model](../user/duo_agent_platform/model_selection.md) you use.
+Newer, more complex models have a higher multiplier, so they cost more credits per call.
 
 You are charged for model usage based on the following billing methods:
 
@@ -268,66 +281,78 @@ You are charged for model usage based on the following billing methods:
   - On GitLab.com with GitLab-managed models, a flow that fails before it completes deducts no credits, even if some LLM calls were already made.
   - On GitLab Self-Managed with self-hosted models, for features that do not use a flat price, billing is based on individual LLM calls, not flow completion. Each call is metered when it starts, so calls made before a flow fails are still billed. This means a flow that fails partway through may still consume credits for the calls that were already initiated. For flat-priced features, the full flat price is charged even if the flow fails, regardless of how many LLM calls were actually made.
 
-For subsidized models with basic integration:
+### Basic models
+
+The following table lists the number of LLM calls you can make with one GitLab Credit
+for models with basic integration:
 
 | Model | Calls with one credit |
 |-------|------------------------|
-| `claude-3-haiku` | 8.0 |
 | `codestral-2501` | 8.0 |
 | `gemini-2.5-flash` | 8.0 |
 | `gpt-5-mini` | 8.0 |
 | `gpt-5-4-nano` | 8.0 |
 
-For premium models with optimized integration:
+### Premium models
 
-| Model | Calls with one credit |
-|-------|------------------------|
-| `gpt-5.6-luna` | 8.0 |
-| `claude-4.5-haiku` | 6.7 |
-| `gemini-3.6-flash` <sup>1</sup> | 6.7 |
-| `gemini-3.7-flash` <sup>1</sup> | 6.7 |
-| `gemini-3.8-flash` <sup>1</sup> | 6.7 |
-| `gpt-5-4-mini` | 6.7 |
-| `gemini-3.5-flash` | 3.3 |
-| `gpt-5` | 3.3 |
-| `gpt-5-codex` | 3.3 |
-| `claude-sonnet-5` | 3.2 |
-| `gpt-5.2` | 2.5 |
-| `gpt-5.2-codex` | 2.5 |
-| `gpt-5.3-codex` | 2.5 |
-| `gpt-5.6-terra` <sup>3</sup> | 2.5 |
-| `claude-3.5-sonnet` | 2.0 |
-| `claude-3.7-sonnet` | 2.0 |
-| `claude-sonnet-4.5` | 2.0 |
-| `claude-sonnet-4.6` | 2.0 |
-| `gpt-5.4` <sup>3</sup> | 2.0 |
-| `gpt-5.6-terra` <sup>4</sup> | 1.43 |
-| `gpt-5.6-sol` <sup>2</sup> <sup>3</sup> | 1.33 |
-| `claude-opus-4.5` | 1.2 |
-| `gpt-5.4` <sup>4</sup> | 1.11 |
-| `claude-opus-4.6` | 1.1 |
-| `claude-opus-4.7` | 1.1 |
-| `claude-opus-4.8` | 1.1 |
-| `claude-opus-5` | 1.1 |
-| `gpt-5.5` <sup>3</sup> | 1.0 |
-| `gpt-5.6-sol` <sup>4</sup> | 0.76 |
-| `claude-fable-5` | 0.6 |
-| `claude-fable-5.1` | 0.6 |
-| `gpt-5.5` <sup>4</sup> | 0.57 |
-| `gpt-6-astra` <sup>3</sup> | 0.54 |
-| `gpt-6-astra` <sup>4</sup> | 0.31 |
+The following table lists the number of LLM calls you can make with one GitLab Credit
+for premium models with optimized integration:
 
-**Footnotes**:
+| Model                                                            | Calls with one credit |
+|------------------------------------------------------------------|-----------------------|
+| `claude-haiku-5.5`                                               | 8.0                   |
+| `gpt-5.6-luna`                                                   | 8.0                   |
+| `gpt-6-luna`                                                     | 8.0                   |
+| `minimax-m3`                                                     | 8.0                   |
+| `claude-4.5-haiku`                                               | 6.7                   |
+| `gemini-3.6-flash`[^promotional-pricing-through]                 | 6.7                   |
+| `gemini-3.7-flash`[^promotional-pricing-through]                 | 6.7                   |
+| `gemini-3.8-flash`[^promotional-pricing-through]                 | 6.7                   |
+| `gpt-5-4-mini`                                                   | 6.7                   |
+| `glm-5.3`                                                        | 5.0                   |
+| `gemini-3.5-flash`                                               | 3.3                   |
+| `gpt-5`                                                          | 3.3                   |
+| `gpt-5-codex`                                                    | 3.3                   |
+| `claude-sonnet-5`                                                | 3.2                   |
+| `claude-sonnet-5.5`                                              | 3.2                   |
+| `gpt-6-sol`[^short-context-window]                               | 2.86                  |
+| `gpt-6.1-sol`[^short-context-window]                             | 2.86                  |
+| `gpt-5.2`                                                        | 2.5                   |
+| `gpt-5.2-codex`                                                  | 2.5                   |
+| `gpt-5.3-codex`                                                  | 2.5                   |
+| `gpt-5.6-terra`[^short-context-window]                           | 2.5                   |
+| `claude-sonnet-4.5`                                              | 2.0                   |
+| `claude-sonnet-4.6`                                              | 2.0                   |
+| `gpt-5.4`[^short-context-window]                                 | 2.0                   |
+| `kimi-k3`                                                        | 1.82                  |
+| `gpt-6-sol`[^long-context-window]                                | 1.54                  |
+| `gpt-6.1-sol`[^long-context-window]                              | 1.54                  |
+| `gpt-5.6-terra`[^long-context-window]                            | 1.43                  |
+| `claude-opus-5.5`                                                | 1.35                  |
+| `gpt-5.6-sol`[^promotional-pricing-gpt], [^short-context-window] | 1.33                  |
+| `claude-opus-4.5`                                                | 1.2                   |
+| `gpt-5.4`[^long-context-window]                                  | 1.11                  |
+| `claude-opus-4.6`                                                | 1.1                   |
+| `claude-opus-4.7`                                                | 1.1                   |
+| `claude-opus-4.8`                                                | 1.1                   |
+| `claude-opus-5`                                                  | 1.1                   |
+| `gpt-5.5`[^short-context-window]                                 | 1.0                   |
+| `gpt-5.6-sol`[^long-context-window]                              | 0.76                  |
+| `claude-fable-5`                                                 | 0.6                   |
+| `claude-fable-5.1`                                               | 0.6                   |
+| `gpt-5.5`[^long-context-window]                                  | 0.57                  |
+| `gpt-6-astra`[^short-context-window]                             | 0.54                  |
+| `gpt-6-astra`[^long-context-window]                              | 0.31                  |
 
-1. Promotional pricing through December 31, 2026.
-   Afterwards, the rate changes to approximately 3.3 calls per credit.
-1. Promotional pricing for GPT-5.6 Sol through November 21, 2026.
-   Afterwards, the rates change to approximately 1.0 calls per credit
-   for the short context window and 0.57 for the long context window.
-1. Short context window of up to 272,000 tokens.
-1. Long context window of more than 272,000 tokens.
+[^promotional-pricing-through]: Promotional pricing through December 31, 2026.
+    Afterwards, the rate changes to approximately 3.3 calls per credit.
+[^promotional-pricing-gpt]: Promotional pricing for GPT-5.6 Sol through November 21, 2026.
+    Afterwards, the rates change to approximately 1.0 calls per credit
+    for the short context window and 0.57 for the long context window.
+[^short-context-window]: Short context window of up to 272,000 tokens.
+[^long-context-window]: Long context window of more than 272,000 tokens.
 
-### Features
+### Feature-specific
 
 {{< history >}}
 
@@ -339,10 +364,16 @@ For premium models with optimized integration:
 > The availability of the self-hosted model discount is controlled by a feature flag.
 > For more information, see the history.
 
-The following table lists the number of executions you can make with one GitLab Credit for different features.
-This pricing applies to all models (including self-hosted models) available for the feature.
-
+Most agentic features are billed for each model call, so their cost depends on the model you select.
 A feature that runs on a [self-hosted model](../administration/gitlab_duo_self_hosted/_index.md) receives a 20% discount.
+
+For GitLab Duo Agentic Chat, one sent message counts as one or more billable requests,
+because one or more LLM calls are made to answer the question.
+One conversation window can include multiple messages, and so multiple billable requests.
+
+The following table lists the number of executions you can make with one GitLab Credit for different features
+that are billed at a flat rate for each end-to-end execution.
+This pricing applies to all models (including self-hosted models) available for the feature.
 
 | Feature | Executions with one credit (GitLab-managed model) | Executions with one credit (self-hosted model) |
 |---------|----------------------------|------------------------------------------------|
@@ -350,13 +381,3 @@ A feature that runs on a [self-hosted model](../administration/gitlab_duo_self_h
 | Code Review Flow | 4 | 5 |
 | SAST False Positive Detection Flow | 1 | 1.25 |
 | SAST Vulnerability Resolution Flow | 0.25 | 0.3125 |
-
-For GitLab Duo Agentic Chat, one sent message counts as one or more billable requests,
-because one or more LLM calls are made to answer the question.
-One conversation window can include multiple messages, and so multiple billable requests.
-The pricing depends on the selected model.
-
-The following features also consume credits, but with a different consumption model:
-
-- [GitLab Secrets Manager](../ci/secrets/secrets_manager/secrets_manager_billing.md)
-- [Hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md#usage-cap-exemptions)

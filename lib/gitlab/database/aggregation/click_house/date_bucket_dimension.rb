@@ -46,10 +46,13 @@ module Gitlab
             origin = instance_parameter(:origin, configuration)
             days = dynamic_granularity_days(granularity)
 
-            arguments = [super, interval_sql(granularity, days)]
-            arguments << origin_literal(context[:scope], origin, days) if origin && days&.positive?
+            column = super
+            interval = interval_sql(granularity, days)
+            scope = context[:scope]
 
-            context[:scope].func('toStartOfInterval', arguments)
+            return scope.func('toStartOfInterval', [column, interval]) unless origin && days&.positive?
+
+            anchored_bucket(scope, column, interval, origin_literal(scope, origin, days))
           end
 
           def validate_part(part)
@@ -74,13 +77,21 @@ module Gitlab
             Arel.sql("INTERVAL 1 #{GRANULARITIES_MAP[granularity]}")
           end
 
-          # ClickHouse requires the origin to be on or before every bucketed value,
-          # so the user-supplied origin is shifted back to its phase-equivalent
-          # anchor near the unix epoch. Bucket boundaries are unchanged; rows older
-          # than the user-supplied origin land in earlier buckets instead of
-          # failing the query. The anchor is strftime'd and quoted as a string
-          # because the ClickHouse client renders a raw Ruby Time as a bare unix
-          # float, which is not a valid DateTime64 literal.
+          # toStartOfInterval is evaluated over the whole block, so NULL positions of a
+          # Nullable column arrive as the type default 1970-01-01 and trip the "origin
+          # must be before the value" check. Filling them with the anchor keeps the
+          # call valid; the outer `if` puts the NULL back.
+          def anchored_bucket(scope, column, interval, anchor)
+            bucketed = scope.func('toStartOfInterval', [scope.func('ifNull', [column, anchor]), interval, anchor])
+
+            scope.func('if', [scope.func('isNull', [column]), Arel.sql('NULL'), bucketed])
+          end
+
+          # The origin is shifted to a phase-equivalent anchor in the first period after
+          # the epoch, so it precedes every real value while leaving bucket boundaries
+          # unchanged. It must not go earlier: ClickHouse 25.3 rejects any pre-epoch
+          # origin outright, and GitLab still supports 25.x. The anchor is strftime'd
+          # because the client renders a raw Time as a bare unix float.
           def origin_literal(scope, origin, days)
             # Callers must pass a Time: a String would silently anchor near the
             # epoch through String#to_i. GraphQL inputs are coerced by the API layer.

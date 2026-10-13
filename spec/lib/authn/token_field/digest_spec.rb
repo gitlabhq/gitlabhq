@@ -35,7 +35,7 @@ RSpec.describe Authn::TokenField::Digest, feature_category: :system_access do
         allow(test_class).to receive(:where)
           .and_return(test_class)
         allow(test_class).to receive(:find_by)
-          .with(digest_field => Gitlab::CryptoHelper.sha256(original_token))
+          .with(digest_field => Gitlab::CryptoHelper.sha256_candidates(original_token))
           .and_return(instance)
       end
 
@@ -43,6 +43,33 @@ RSpec.describe Authn::TokenField::Digest, feature_category: :system_access do
         expect(strategy.find_token_authenticatable(original_token))
           .to eq(instance)
       end
+    end
+  end
+
+  describe '#find_token_authenticatable with several db_key_base keys' do
+    include DbKeyBaseHelpers
+
+    let_it_be(:user) { create(:user) }
+
+    let(:personal_access_token) { create(:personal_access_token, user: user) }
+    let(:token) { personal_access_token.token }
+
+    subject(:strategy) { described_class.new(PersonalAccessToken, field, options) }
+
+    before do
+      token
+    end
+
+    it 'finds a token digested with the previous key' do
+      stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+
+      expect(strategy.find_token_authenticatable(token)).to eq(personal_access_token)
+    end
+
+    it 'does not find it with an unrelated key only' do
+      stub_db_key_base_keys(SecureRandom.hex(64))
+
+      expect(strategy.find_token_authenticatable(token)).to be_nil
     end
   end
 

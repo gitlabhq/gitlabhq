@@ -53,7 +53,7 @@ To deploy the Agent Platform in an offline environment, complete the following s
 - GitLab 18.9 or later with an [offline cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing).
 - A machine with internet connection to download artifacts.
 - [skopeo](https://github.com/containers/skopeo) and
-  [jq](https://jqlang.github.io/jq/) installed on
+  [jq](https://jqlang.org/) installed on
   the connected machine and the offline host
   (`dnf install --assumeyes skopeo jq` on Red Hat systems).
 - A method to transfer files to the offline environment
@@ -348,8 +348,13 @@ After the AI Gateway and vLLM are running, configure GitLab to use them:
    enter `<ai-gateway-host>:50052`.
 1. Turn on **GitLab Duo Agent Platform**.
    After you turn it on, the **Flow execution** section expands.
-1. Under **Image registry**, enter your internal registry URL
-   (for example, `registry.internal.example.com/duo`).
+1. Under **Image registry**, enter the full reference of the executor image
+   you loaded along with its tag
+   (for example, `registry.internal.example.com/duo/workflow-generic-image:<executor_version>`).
+   GitLab uses a full image reference as is.
+   If you enter only a registry hostname, a flow that does not set its own image pulls
+   `<hostname>/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image`
+   with the tag your GitLab version requests.
 1. Select **Save changes**.
 
 ## Add the self-hosted model
@@ -370,13 +375,18 @@ Add the self-hosted model deployment to your GitLab instance:
 
 ## Configure offline flow execution
 
-For offline flow execution, use a custom executor image with
-`duo-cli` pre-installed.
+Executor images `v0.0.11` and later include `duo-cli` in `/usr/local/bin/duo`.
+When `duo` is already in the image, the flow's CI/CD job skips the download
+and does not contact `gitlab.com` for `duo-cli`.
+
+Executor images earlier than `v0.0.11` do not include `duo-cli`.
+If your GitLab version requests one of those tags, or if you need a different
+`duo-cli` version, build a custom executor image:
 
 1. On a connected machine, download the `duo-cli` binary:
 
    ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.8.0/duo-linux-x64" \
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.27.0/duo-linux-x64" \
      --output duo-linux-x64
    ```
 
@@ -387,20 +397,33 @@ For offline flow execution, use a custom executor image with
 1. Build the custom image with the binary included:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.14
-   COPY duo-linux-x64 /usr/bin/duo
-   RUN chmod +x /usr/bin/duo
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.21
+   COPY duo-linux-x64 /usr/local/bin/duo
+   RUN chmod +x /usr/local/bin/duo
    ```
 
-   Replace `v0.0.14` with the tag your GitLab version requests.
+   Replace `v0.0.21` with the tag your GitLab version requests.
 
 1. Transfer the image to your internal registry using the same
    `skopeo copy` procedure described above, then reference it
    in your project's `agent-config.yml`:
 
    ```yaml
-   image: registry.internal.example.com/duo/duo-executor:v0.0.14
+   image: registry.internal.example.com/duo/duo-executor:v0.0.21
    ```
+
+If the image is in a project's container registry on this GitLab instance,
+the flow's CI/CD job pulls it across projects. The job runs as an external
+account, and an internal project looks private to an external account, so
+the registry refuses the pull.
+For the access the host project must grant, see
+[Configure flows to pull the image from the GitLab container registry](../../user/duo_agent_platform/flows/execution/images.md#configure-flows-to-pull-the-image-from-the-gitlab-container-registry).
+If the registry requires credentials, configure them on the runner.
+By default, a flow's job does not receive CI/CD variables configured at the
+project, group, or instance level, so a `DOCKER_AUTH_CONFIG` variable defined
+there does not apply.
+For more information, see
+[Provide credentials for the image pull](../../user/duo_agent_platform/flows/execution/images.md#provide-credentials-for-the-image-pull).
 
 ## Verify the deployment
 
@@ -448,7 +471,74 @@ with the AI Gateway image.
 Model weights do not need to be updated when you upgrade GitLab.
 Updates are only required when you change to a different model.
 
+## Rotate the Cloud Connector key
+
+Your GitLab instance signs the tokens it sends to the AI Gateway with its Cloud Connector key.
+The AI Gateway caches the public keys of your instance and rejects a token signed with a key
+it has not loaded.
+
+Prerequisites:
+
+- A single Cloud Connector key. To check, run `sudo gitlab-rake cloud_connector:keys:list`.
+
+To rotate the Cloud Connector key:
+
+1. On the GitLab instance, create a new key:
+
+   ```shell
+   sudo gitlab-rake cloud_connector:keys:create
+   ```
+
+   GitLab publishes the new key and continues to sign tokens with the current key.
+
+1. Restart every AI Gateway container so that the AI Gateway loads the new key:
+
+   ```shell
+   docker restart <container_name>
+   ```
+
+1. Make the new key the signing key:
+
+   ```shell
+   sudo gitlab-rake cloud_connector:keys:rotate
+   ```
+
+1. On every node that runs Puma or Sidekiq, restart them so that they sign with the new key:
+
+   ```shell
+   sudo gitlab-ctl restart puma
+   sudo gitlab-ctl restart sidekiq
+   ```
+
+1. Wait at least one hour after you restart Puma and Sidekiq.
+   Tokens signed with the old key stay valid for up to one hour after they are signed.
+
+1. Remove the old key:
+
+   ```shell
+   sudo gitlab-rake cloud_connector:keys:trim
+   ```
+
+1. Restart every AI Gateway container again.
+   Until every container restarts, the AI Gateway still accepts tokens signed with the old key.
+
 ## Related topics
 
 - [Offline GitLab](../../topics/offline/_index.md)
 - [Self-hosted models](_index.md)
+
+## Troubleshooting
+
+When you work with Agent Platform Self-Hosted in an offline environment,
+you might encounter the following issues.
+
+### Error: `Forbidden by auth provider` when using a new Cloud Connector key
+
+If you run `cloud_connector:keys:rotate` before you restart the AI Gateway, the AI Gateway
+rejects tokens signed with the new key with `Forbidden by auth provider`.
+Puma and Sidekiq processes sign with the new key after they restart,
+and their GitLab Duo requests then fail.
+For example, flows fail to start with `Could not obtain Duo Workflow token`.
+
+To resolve this issue, restart the AI Gateway
+after you create the new key and before GitLab signs tokens with it.

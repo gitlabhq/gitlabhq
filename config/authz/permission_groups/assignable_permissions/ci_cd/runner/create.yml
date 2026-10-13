@@ -10,3 +10,7 @@ available_for:
   - granular_access_token
 permissions:
   - create_runner
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

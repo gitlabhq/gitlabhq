@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createDefaultClient from '~/lib/graphql';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { sprintf } from '~/locale';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import TransferGroupForm, { i18n } from './components/transfer_group_form.vue';
 

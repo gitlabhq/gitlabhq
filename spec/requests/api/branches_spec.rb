@@ -1294,4 +1294,33 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       end
     end
   end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of list_branches' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'list_branches').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'ID or URL-encoded path of the project.'
+          },
+          'search' => {
+            type: 'string',
+            description: 'Return branches containing the search string. Use `^term` to find branches ' \
+              'that begin with `term`, and `term$` to find branches that end with `term`.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          }
+        },
+        required: %w[id],
+        additionalProperties: false
+      })
+    end
+  end
 end

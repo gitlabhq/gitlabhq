@@ -93,14 +93,15 @@ module Gitlab
             # Support key with files and optional prefix
             key_config = {}
 
-            # Limits files to 2, ensures strings
+            # Limits files to the CI cache:key:files limit, ensures strings
             if cache.dig('key', 'files').present?
               files = Array(cache.dig('key', 'files'))
-              key_config['files'] = files[0..1].map(&:to_s)
+              max_files = cache_key_files_limit
+              key_config['files'] = files.first(max_files).map(&:to_s)
               # Log warning if files were truncated
-              if files.size > 2
+              if files.size > max_files
                 Gitlab::AppLogger.warn(message: "Cache key files truncated", original_count: files.size,
-                  truncated_count: 2)
+                  truncated_count: max_files)
               end
 
               # Optional prefix to combine with SHA (only if files are present)
@@ -174,6 +175,16 @@ module Gitlab
 
       def candidate?
         ::Feature.enabled?(:dap_agent_config_candidate, project, type: :gitlab_com_derisk)
+      end
+
+      # Must match the CI cache:key:files limit, or a DAP workflow builds a different
+      # cache key than a CI job using the same cache block.
+      def cache_key_files_limit
+        if ::Feature.enabled?(:increase_ci_cache_key_files_limit, project)
+          ::Gitlab::Ci::Config::Entry::Key::ComplexKey::MAX_FILES
+        else
+          ::Gitlab::Ci::Config::Entry::Files::DEFAULT_MAX_SIZE
+        end
       end
 
       # Flipping the flag does not move the SHA, so without the suffix a flip keeps serving

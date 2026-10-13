@@ -276,7 +276,7 @@ export default {
   <div class="gl-flex gl-flex-col gl-gap-3 gl-p-4">
     <div class="gl-flex" dir="auto">
       <h3
-        class="board-card-title gl-isolate gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
+        class="board-card-title gl-isolate gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base gl-leading-20"
         :class="{ 'gl-mr-6': hasActions }"
       >
         <gl-icon

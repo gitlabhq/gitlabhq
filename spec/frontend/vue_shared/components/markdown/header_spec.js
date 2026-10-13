@@ -16,6 +16,7 @@ import {
   extendedWrapper,
 } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockResizeObserver } from 'helpers/mock_dom_observer';
 import { updateText } from '~/lib/utils/text_markdown';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -566,6 +567,116 @@ describe('Markdown field header component', () => {
         findFindAndReplaceBar().element.dispatchEvent(event);
 
         expect(preventDefault).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('clone div geometry', () => {
+      const { trigger: triggerResize } = useMockResizeObserver();
+
+      const CONTAINER_BORDER = 2;
+      const CONTAINER_RECT = { top: 100, left: 50, width: 600, height: 500 };
+      const TEXTAREA_RECT = { top: 110, left: 60, width: 400, height: 300 };
+
+      const asDomRect = ({ top, left, width, height }) => ({
+        top,
+        left,
+        width,
+        height,
+        right: left + width,
+        bottom: top + height,
+        x: left,
+        y: top,
+        toJSON: () => ({}),
+      });
+
+      const setTextareaRect = (rect) => {
+        findTextarea().getBoundingClientRect = () => asDomRect(rect);
+      };
+
+      const cloneStyle = () => findCloneDiv().element.style;
+
+      const showHighlights = async () => {
+        await showFindAndReplace();
+        await triggerSearch('lorem');
+      };
+
+      beforeEach(() => {
+        form.style.border = `${CONTAINER_BORDER}px solid`;
+        form.getBoundingClientRect = () => asDomRect(CONTAINER_RECT);
+        setTextareaRect(TEXTAREA_RECT);
+
+        jest.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(form);
+      });
+
+      it('aligns the clone with the border box of the textarea', async () => {
+        await showHighlights();
+
+        expect(cloneStyle().top).toBe(
+          `${TEXTAREA_RECT.top - CONTAINER_RECT.top - CONTAINER_BORDER}px`,
+        );
+        expect(cloneStyle().left).toBe(
+          `${TEXTAREA_RECT.left - CONTAINER_RECT.left - CONTAINER_BORDER}px`,
+        );
+        expect(cloneStyle().width).toBe(`${TEXTAREA_RECT.width}px`);
+        expect(cloneStyle().height).toBe(`${TEXTAREA_RECT.height}px`);
+      });
+
+      it('sizes the clone as a border box without a margin of its own', async () => {
+        await showHighlights();
+
+        expect(cloneStyle().boxSizing).toBe('border-box');
+        expect(cloneStyle().margin).toBe('0px');
+      });
+
+      describe('when the textarea is resized', () => {
+        const RESIZED_RECT = { top: 130, left: 70, width: 250, height: 700 };
+
+        it('realigns and resizes the clone', async () => {
+          await showHighlights();
+
+          setTextareaRect(RESIZED_RECT);
+          triggerResize(findTextarea());
+
+          expect(cloneStyle().top).toBe(
+            `${RESIZED_RECT.top - CONTAINER_RECT.top - CONTAINER_BORDER}px`,
+          );
+          expect(cloneStyle().left).toBe(
+            `${RESIZED_RECT.left - CONTAINER_RECT.left - CONTAINER_BORDER}px`,
+          );
+          expect(cloneStyle().width).toBe(`${RESIZED_RECT.width}px`);
+          expect(cloneStyle().height).toBe(`${RESIZED_RECT.height}px`);
+        });
+
+        it('keeps the clone scrolled to the same offset as the textarea', async () => {
+          await showHighlights();
+
+          findTextarea().scrollTop = 40;
+          triggerResize(findTextarea());
+
+          expect(findCloneDiv().element.scrollTop).toBe(40);
+        });
+      });
+
+      describe('when the textarea is not rendered', () => {
+        it('leaves the geometry of the clone untouched', async () => {
+          await showHighlights();
+          const { top, left, width, height } = cloneStyle();
+
+          jest.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(null);
+          setTextareaRect({ top: 0, left: 0, width: 0, height: 0 });
+          triggerResize(findTextarea());
+
+          expect(cloneStyle()).toMatchObject({ top, left, width, height });
+        });
+      });
+
+      describe('when the find and replace bar is closed', () => {
+        it('stops responding to resizes of the textarea', async () => {
+          await showHighlights();
+          await closeFindAndReplace();
+
+          expect(() => triggerResize(findTextarea())).not.toThrow();
+        });
       });
     });
 

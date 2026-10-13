@@ -351,35 +351,55 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       sign_in(user)
     end
 
+    it 'permits blob: media sources' do
+      get root_path
+
+      expect(response.headers['Content-Security-Policy']).to match(/media-src[^;]*blob:/)
+    end
+
     context 'when configuring iframes in Markdown' do
-      let(:iframe_rendering_allowlist) { ['www.youtube.com', 'embed.figma.com', 'www.figma.com'] }
+      def frame_src
+        response.headers['Content-Security-Policy'][/frame-src [^;]*/]
+      end
+
+      let(:iframe_rendering_allowlist) { %w[youtube] }
 
       before do
-        allow(Gitlab::CurrentSettings).to receive_messages(
-          iframe_rendering_enabled?: iframe_rendering_enabled?,
+        stub_application_setting(
+          iframe_rendering_enabled: iframe_rendering_enabled,
           iframe_rendering_allowlist: iframe_rendering_allowlist)
       end
 
       context 'when disabled' do
-        let(:iframe_rendering_enabled?) { false }
+        let(:iframe_rendering_enabled) { false }
 
         it 'does not modify frame-src' do
           get root_path
 
-          expect(response.headers['Content-Security-Policy']).not_to include('www.youtube.com')
-          expect(response.headers['Content-Security-Policy']).not_to include('figma.com')
+          expect(frame_src).not_to include('https://www.youtube.com')
         end
       end
 
       context 'when enabled' do
-        let(:iframe_rendering_enabled?) { true }
+        let(:iframe_rendering_enabled) { true }
 
-        it 'adds the domains to frame-src' do
+        it 'adds the enabled providers to frame-src' do
           get root_path
 
-          expect(response.headers['Content-Security-Policy']).to include('https://www.youtube.com')
-          expect(response.headers['Content-Security-Policy']).to include('https://embed.figma.com')
-          expect(response.headers['Content-Security-Policy']).to include('https://www.figma.com')
+          expect(frame_src).to include('https://www.youtube.com')
+          expect(frame_src).not_to include('https://embed.figma.com')
+          expect(frame_src).not_to include('https://www.figma.com')
+        end
+
+        context 'with a provider that has additional CSP hosts' do
+          let(:iframe_rendering_allowlist) { %w[figma] }
+
+          it 'adds them to frame-src alongside the src origin' do
+            get root_path
+
+            expect(frame_src).to include('https://embed.figma.com')
+            expect(frame_src).to include('https://www.figma.com')
+          end
         end
       end
     end

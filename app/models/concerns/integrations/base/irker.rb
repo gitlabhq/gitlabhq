@@ -44,7 +44,7 @@ module Integrations
           help: -> { s_('IrkerService|irker daemon hostname. The default value is `localhost`.') }
 
         field :server_port,
-          placeholder: 6659,
+          placeholder: '6659',
           type: :number,
           title: -> { s_('IrkerService|Server port (optional)') },
           help: -> { s_('IrkerService|irker daemon port. The default value is `6659`.') }

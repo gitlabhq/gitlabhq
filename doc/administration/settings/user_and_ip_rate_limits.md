@@ -22,7 +22,7 @@ The following limits are disabled by default:
 - [Unauthenticated web requests (per IP)](#enable-unauthenticated-web-request-rate-limit).
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
-- [Authenticated dependency proxy requests (per user)](#enable-authenticated-dependency-proxy-request-rate-limit).
+- [Authenticated dependency proxy requests (per user or deploy token)](#enable-authenticated-dependency-proxy-request-rate-limit).
 
 > [!note]
 > By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
@@ -104,6 +104,15 @@ image manifest and blob endpoints under `/v2/<group>/dependency_proxy/containers
 applies only to authenticated requests. GitLab does not provide a rate limit for unauthenticated
 dependency proxy requests.
 
+Requests that authenticate with a deploy token count against that deploy token, and each deploy
+token has its own budget. They don't count against the IP address of the client.
+
+The following requests count against the authenticated web request rate limit, per user or per
+deploy token, and not against this limit:
+
+- The Docker authentication request, `GET /v2`.
+- Requests that GitLab makes to store images in the dependency proxy cache.
+
 To enable the authenticated dependency proxy rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -125,6 +134,29 @@ authenticated web request rate limit.
 > requests-per-period and period-in-seconds values. This can only loosen limits: dependency proxy
 > traffic that previously shared a budget with web traffic gets its own budget of the same size.
 > If the authenticated web request rate limit is disabled, this limit remains disabled.
+
+## Enable authenticated MCP server request rate limit
+
+Authenticated requests to the
+[GitLab MCP server](../../user/model_context_protocol/mcp_server.md) count against the
+[authenticated API request rate limit](#enable-authenticated-api-request-rate-limit).
+
+To add restrictions to MCP server traffic, enable a rate limit for the `POST /api/v4/mcp` endpoint.
+This limit applies in addition to the authenticated API rate limit. Requests are refused if either limits are
+exceeded. It counts every request to the endpoint,
+not only tool calls. This limit applies only to authenticated requests and is disabled by default.
+
+To enable the authenticated MCP server rate limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Network**.
+1. Expand **GitLab MCP server rate limits**.
+1. Select **Enable authenticated MCP server request rate limit**.
+
+   - Optional. Update the **Max authenticated MCP server requests per period per user** value.
+     Defaults to `600`.
+   - Optional. Update the **Authenticated MCP server rate limit period in seconds** value.
+     Defaults to `60`.
 
 ## Use a custom rate limit response
 
@@ -258,6 +290,12 @@ At application startup, the allowlist is logged in [`auth.log`](../logs/_index.m
 
 ## Try out throttling settings before enforcing them
 
+{{< history >}}
+
+- Logging the rate limit state of the LabKit rate limiter to per-request structured logs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256645) in GitLab 19.5.
+
+{{< /history >}}
+
 You can try out throttling settings by setting the `GITLAB_THROTTLE_DRY_RUN` environment variable to
 a comma-separated list of throttle names.
 
@@ -282,6 +320,7 @@ The possible names are:
 - `throttle_authenticated_deprecated_api`
 - `throttle_unauthenticated_git_http`
 - `throttle_authenticated_git_http`
+- `throttle_authenticated_mcp`
 
 For example, you can try out throttles for all authenticated requests to
 non-protected paths by setting
@@ -289,10 +328,22 @@ non-protected paths by setting
 
 To enable dry run mode for all throttles, the variable can be set to `*`.
 
-Setting a throttle to dry run mode logs a message to the
-[`auth.log`](../logs/_index.md#authlog) when it would hit the limit, while letting the
-request continue. The log message contains an `env` field set to `track`. The `matched`
-field contains the name of the throttle that was hit.
+In dry run mode, GitLab does not block requests that would hit the limit of a throttle.
+These requests continue to be processed as usual.
+Where GitLab logs these requests depends on the rate limiter that evaluates them:
+
+- Legacy `Rack::Attack` rate limiter: GitLab logs a message to [`auth.log`](../logs/_index.md#authlog)
+  and [`auth_json.log`](../logs/_index.md#auth_jsonlog) when a request would hit the limit.
+  The log message contains an `env` field set to `track`.
+  The `matched` field contains the name of the throttle that was hit.
+- LabKit rate limiter: GitLab does not emit a separate `auth.log` or `auth_json.log` message
+  for this event. Instead, GitLab adds the rate limit state to the `rate_limit_state` field of the
+  [per-request structured logs](../logs/_index.md#production_jsonlog), including `production_json.log` and `api_json.log`.
+  Each entry has the format `<limiter>:<rule>:<result>`.
+  When a request would hit the limit of a throttle in dry run mode, the result is `log`
+  (for example, `["rack_request:unauthenticated_api:log"]` for a request that returns a `200` status code).
+  To confirm that dry run mode works with this rate limiter, check the `rate_limit_state` field,
+  not the `env` field in `auth.log`.
 
 It is important to set the environment variable before enabling
 the rate limiting in the settings. The settings in the **Admin** area

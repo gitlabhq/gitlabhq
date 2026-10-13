@@ -15,6 +15,11 @@ module Mutations
         description: 'Global ID of the board to destroy.'
 
       authorize :admin_issue_board
+      authorize_granular_token permissions: :delete_issue_board,
+        boundaries: [
+          { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
+          { boundary_argument: :id, boundary: :resource_parent, boundary_type: :group }
+        ]
 
       def resolve(id:)
         board = authorized_find!(id: id)

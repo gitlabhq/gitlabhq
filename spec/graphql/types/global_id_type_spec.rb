@@ -103,6 +103,11 @@ RSpec.describe Types::GlobalIDType do
 
     context 'with a deprecation' do
       around do |example|
+        # Build the schema before resetting the memoized types below. Otherwise a
+        # lazily-loaded schema registers fresh `*ID` classes next to the ones
+        # already referenced and raises `GraphQL::Schema::DuplicateNamesError`.
+        GitlabSchema.types
+
         # Unset all previously memoized GlobalIDTypes to allow us to define one
         # that will use the constants stubbed in the `before` block.
         previous_id_types = described_class.instance_variable_get(:@id_types)
@@ -247,6 +252,16 @@ RSpec.describe Types::GlobalIDType do
 
     it 'is has a valid GraphQL identifier for a name' do
       expect(type.graphql_name).to eq('CiBuildID')
+    end
+  end
+
+  describe 'a renamed parameterized type' do
+    it 'uses the new name in the description' do
+      expect(GitlabSchema.types['JobID'].description).to eq(<<~MD.strip)
+        A `JobID` is a global ID. It is encoded as a string.
+
+        An example `JobID` is: `"gid://gitlab/CommitStatus/1"`.
+      MD
     end
   end
 

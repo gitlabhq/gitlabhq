@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_environments
+description: Enables Vue 3 in compatibility mode for the project environments pages.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629443
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255998
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629443
+milestone: '19.5'
+group: group::environments
+type: beta
+default_enabled: false

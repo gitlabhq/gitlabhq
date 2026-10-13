@@ -8,7 +8,7 @@
     - c.with_actions do
       = gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'gl-inline-block' } do |unarchive_form|
         = unarchive_form.hidden_field :archived, value: false
-        = unarchive_form.submit _('Unarchive label'), pajamas_button: true
+        = unarchive_form.submit _('Unarchive label'), pajamas_button: true, size: :small
 
 = gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit' } do |f|
   = form_errors(@label)

@@ -1,15 +1,12 @@
 fragment WorkItemAvailableFeatures on NamespaceAvailableFeatures {
   hasIssueWeightsFeature
   hasIterationsFeature
-  hasOkrsFeature
   hasSubepicsFeature
   hasIssuableHealthStatusFeature
   hasEpicsFeature
   hasScopedLabelsFeature
-  hasQualityManagementFeature
   hasLinkedItemsEpicsFeature
   hasBlockedIssuesFeature
-  hasGroupBulkEditFeature
   hasCustomFieldsFeature
   hasDuoRemoteFlowsFeature
 }

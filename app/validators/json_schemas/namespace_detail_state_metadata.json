@@ -24,6 +24,19 @@
         "null"
       ]
     },
+    "deletion_attempt_count": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "deletion_last_failed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
     "correlation_id": {
       "type": [
         "string",
@@ -59,6 +72,12 @@
     "transfer_last_error": {
       "type": [
         "string",
+        "null"
+      ]
+    },
+    "organization_transfer_source_id": {
+      "type": [
+        "number",
         "null"
       ]
     },

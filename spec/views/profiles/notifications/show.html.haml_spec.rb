@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'profiles/notifications/show' do
   let(:groups) { GroupsFinder.new(user).execute.page(1) }
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:option_default) { _('Use primary email (%{email})') % { email: user.email } }
   let(:option_primary_email) { user.email }
   let(:expected_primary_email_attr) { "[data-emails='#{[option_primary_email].to_json}']" }

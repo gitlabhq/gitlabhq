@@ -28,6 +28,21 @@
   z-index: #{$zindex-modal-backdrop - 1};
 }
 
+// duo-ui overrides the block background to match the app color mode while
+// token colors still come from the user's syntax highlighting scheme, which
+// can mismatch (e.g. light scheme tokens on a dark panel). Force the
+// scheme's own background/foreground pair instead, like blob viewers do.
+pre.duo-message-pre-block.code-syntax-highlight-theme {
+  background-color: var(--code-background, var(--gl-background-color-preformat));
+  color: var(--code-text-color, var(--gl-text-color-strong));
+
+  // duo-ui sets color directly on the code child (.duo-chat-markdown pre code),
+  // which would bypass the inherited color above on the markdown path.
+  code {
+    color: inherit;
+  }
+}
+
 .duo-chat-message a.anchor {
  @apply gl-hidden;
 }

@@ -51,6 +51,7 @@ module Gitlab
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           NeedAudit: need_audit,
+          BundleURIDedicatedRPC: Feature.enabled?(:bundle_uri_dedicated_rpc, repository.project),
           Repository: repository.gitaly_repository.to_h,
           GitConfigOptions: [],
           GitalyServer: {
@@ -173,9 +174,9 @@ module Gitlab
         ]
       end
 
-      def send_git_diff(repository, diff_refs)
+      def send_git_diff(repository, diff_refs, client_name: nil)
         params = {
-          'GitalyServer' => gitaly_server_hash(repository),
+          'GitalyServer' => gitaly_server_hash(repository, client_name: client_name),
           'RawDiffRequest' => Gitaly::RawDiffRequest.new(
             gitaly_diff_or_patch_hash(repository, diff_refs)
           ).to_json
@@ -267,7 +268,8 @@ module Gitlab
         response_headers: {},
         allowed_endpoints: [],
         restrict_forwarded_response_headers: {},
-        transform_config: {}
+        transform_config: {},
+        upstream_range: nil
       )
         params = {
           'URL' => url,
@@ -278,7 +280,8 @@ module Gitlab
           'Body' => body.to_s,
           'Header' => headers.transform_values { |v| Array.wrap(v) },
           'ResponseHeaders' => response_headers.transform_values { |v| Array.wrap(v) },
-          'Method' => method
+          'Method' => method,
+          'UpstreamRange' => upstream_range
         }.merge(restrict_forwarded_response_headers_params(restrict_forwarded_response_headers)).compact
 
         if timeouts.present?

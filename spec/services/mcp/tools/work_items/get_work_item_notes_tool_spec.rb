@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, :issue, project: project, iid: 42) }
@@ -317,7 +319,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
 
       it 'raises error before executing GraphQL' do
         expect { tool.execute }
-          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
+          .to raise_error(not_found_error, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 

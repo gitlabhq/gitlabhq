@@ -120,7 +120,9 @@ module Projects
       end
 
       def scan_types
-        Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types
+        types = Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types
+        types -= [:business_logic] unless ::Feature.enabled?(:bl_security_analyzer, project.root_ancestor)
+        types
       end
 
       def project_settings
@@ -151,13 +153,13 @@ module Projects
       def can_read_attributes?
         return false unless root_group
 
-        can?(current_user, :read_security_attribute, root_group)
+        can?(current_user, :read_security_attribute, project)
       end
 
       def can_manage_attributes?
         return false unless root_group
 
-        can?(current_user, :admin_security_attributes, root_group)
+        can?(current_user, :admin_security_attributes, project)
       end
 
       def root_group

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_entity'
 
 RSpec.describe API::Entities::Ci::JobArtifactEntry, feature_category: :job_artifacts do
   let(:entry) { instance_double(Gitlab::Ci::Build::Artifacts::Metadata::Entry) }

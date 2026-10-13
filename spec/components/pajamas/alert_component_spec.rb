@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::AlertComponent, :aggregate_failures, feature_category: :design_system do
   context 'slots' do
     let_it_be(:body) { 'Alert body' }
     let_it_be(:actions) { 'Alert actions' }

@@ -6,6 +6,9 @@ module Types
     description 'A custom emoji uploaded by user'
 
     authorize :read_custom_emoji
+    authorize_granular_token permissions: :read_custom_emoji,
+      boundary: :group,
+      boundary_type: :group
 
     connection_type_class Types::CountableConnectionType
 

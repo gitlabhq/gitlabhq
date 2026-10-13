@@ -1,6 +1,6 @@
 ---
-source_checksum: 1998f0eb79fa4026
-distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
+source_checksum: dbbc53aa2afafbf2
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -110,10 +110,16 @@ distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 - When renaming or swapping a replicated PostgreSQL table, update `db/siphon/tables/<table>.yml` across two releases: before the required stop set `renamed_table_name` and `original_table_name`; after the required stop set `table` to the new name and remove `renamed_table_name` (keep `original_table_name` to preserve the NATS subject).
 - DO NOT configure both a parent table and its partitions at the same time — the partitions are replicated twice and the initial snapshot runs twice for each of them.
 - Rely on the parent's configuration file for partitions named `<parent>_<suffix>`; add a dedicated configuration file only for a partition whose name does not start with the parent's name, setting `table` and `renamed_table_name` to the partition names before and after the rename, `schema` to the schema holding the partition (the default is `public`), and `original_table_name` to the parent table name so all partitions publish to the same subject.
+- Use `Gitlab::ClickHouse.siphon_enabled?('table_name')` (passing the PostgreSQL table name) as a guard at the start of any feature that reads a Siphon-replicated table; use the no-argument form to check whether Siphon has replicated anything at all.
+- DO NOT pass partitioned routing table names such as `p_ci_builds` to `siphon_enabled?`; Siphon tracks individual partitions, so the routing table name never matches.
+- DO NOT use `siphon_enabled?` to check data freshness or ongoing replication; `true` only means replication occurred at some point. Account for `true` being cached for the Ruby process lifetime, while `false` is checked again on the next call.
 
 ### Testing
 
 - Tag RSpec tests that require a running ClickHouse server with `:click_house` to ensure the database schema is set up before the test case.
+- When a query or migration needs a privilege that production does not grant, add it to the grant block in `doc/integration/clickhouse.md` and plan the change for GitLab Self-Managed, GitLab.com, and GitLab Dedicated — CI/CD runs `:main` as the least-privilege `gitlab` user, so the code fails there with `ACCESS_DENIED` even though it passes locally, where GDK uses the `default` administrator.
+- DO NOT reference `:main_admin` directly in tests — it does not exist locally; use the `click_house_admin_database` helper from `ClickHouseHelpers` (available in any `:click_house`-tagged test), which returns `:main_admin` in CI/CD and falls back to `:main` locally.
+- Use the `click_house_admin_database` helper only for test scaffolding statements that require elevated privileges (e.g., `SYSTEM RELOAD DICTIONARY`), not for the behavior under test.
 
 ### Verify Before Flagging
 

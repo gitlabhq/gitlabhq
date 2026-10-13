@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../../app/models/concerns/checksummable'
 
 RSpec.describe Gitlab::Ci::Trace::SectionParser do
   def lines_with_pos(text)

@@ -11,8 +11,8 @@
 # Exit codes are distinct so CI can treat a download problem differently from
 # real drift:
 #
-#   0  in sync
-#   1  the two snapshots differ
+#   0  the router has every route template on this branch
+#   1  the router lacks a route template on this branch
 #   2  the router's snapshot could not be downloaded, or was not a snapshot
 #
 # The snapshot is read through the Repository Files API rather than /-/raw,
@@ -39,11 +39,11 @@ require "tmpdir"
 require_relative "../../gems/gitlab-cells-http_router/lib/gitlab/cells/http_router"
 
 module CheckRouterRoutesSync
+  RouterSnapshot = Gitlab::Cells::HttpRouter::RouterSnapshot
+
   LOCAL_SNAPSHOT = "config/routing/gitlab_routes.json"
-  ROUTER_SNAPSHOT = "test/routes/gitlab_routes.json"
   DOCS_URL = "https://docs.gitlab.com/development/cells/http_router/#check-the-http-router-is-in-sync"
   ROUTER_DOCS_URL = "https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/adding-gitlab-routes.md"
-  SKIP_LABEL = "pipeline:skip-router-sync"
 
   MAX_LISTED_TEMPLATES = 20
   MAX_DIFF_LINES = 100
@@ -76,7 +76,7 @@ module CheckRouterRoutesSync
         router_payload: router_payload
       )
 
-      return report_in_sync if comparison.identical?
+      return report_in_sync if comparison.covered?
 
       report_drift(comparison, local_payload, router_payload)
       DRIFT
@@ -107,15 +107,7 @@ module CheckRouterRoutesSync
     end
 
     def snapshot_url
-      @snapshot_url ||= ENV["CELLS_ROUTER_SNAPSHOT_URL"] || begin
-        api_url = ENV["CI_API_V4_URL"] || "https://gitlab.com/api/v4"
-        project = ENV["CELLS_ROUTER_PROJECT"] || "gitlab-org/cells/http-router"
-        ref = ENV["CELLS_ROUTER_REF"] || "main"
-
-        file = CGI.escape(ROUTER_SNAPSHOT)
-
-        "#{api_url}/projects/#{CGI.escape(project)}/repository/files/#{file}/raw?ref=#{CGI.escape(ref)}"
-      end
+      @snapshot_url ||= RouterSnapshot.url_from_env
     end
 
     def download
@@ -152,13 +144,14 @@ module CheckRouterRoutesSync
 
     def build_request(uri)
       request = Net::HTTP::Get.new(uri)
-      request["JOB-TOKEN"] = ENV["CI_JOB_TOKEN"] if ENV["CI_JOB_TOKEN"].to_s != ""
+      token = RouterSnapshot.job_token
+      request["JOB-TOKEN"] = token if token
       request
     end
 
     def report_in_sync
       puts "cells-routes: #{snapshot_url}"
-      puts "cells-routes: matches #{LOCAL_SNAPSHOT} on this branch."
+      puts "cells-routes: has every route template in #{LOCAL_SNAPSHOT} on this branch."
       IN_SYNC
     end
 
@@ -184,9 +177,8 @@ module CheckRouterRoutesSync
 
         DOWNLOAD FAILED - this is not route drift.
 
-        The HTTP Router's snapshot could not be downloaded, so nothing was compared. Your
-        routes are fine and no HTTP Router merge request is needed. Retry the job; this check
-        does not block the merge.
+        The HTTP Router's snapshot could not be downloaded, so nothing was compared.
+        Retry the job.
       MESSAGE
 
       DOWNLOAD_FAILED
@@ -194,15 +186,11 @@ module CheckRouterRoutesSync
 
     def report_drift(comparison, local_payload, router_payload)
       warn "cells-routes: #{snapshot_url}"
-      warn "cells-routes: does not match #{LOCAL_SNAPSHOT} on this branch."
+      warn "cells-routes: lacks route templates from #{LOCAL_SNAPSHOT} on this branch."
 
       report_side(comparison.gitlab_only, "exist only in GitLab (the router has not seen them)")
-      report_side(comparison.router_only, "exist only in the HTTP Router (usually removed from GitLab)")
-
-      if comparison.formatting_only?
-        warn ""
-        warn "The route templates match. Only the file's formatting or extra per-route fields differ."
-      end
+      report_side(comparison.router_only,
+        "exist only in the HTTP Router (allowed: removed from GitLab, or from open merge requests)")
 
       report_diff(local_payload, router_payload)
       warn drift_guidance
@@ -245,7 +233,7 @@ module CheckRouterRoutesSync
     def drift_guidance
       <<~MESSAGE
 
-        The HTTP Router's committed route snapshot does not match the routes on this branch.
+        The HTTP Router's committed route snapshot lacks some routes on this branch.
 
         Open a paired merge request in gitlab-org/cells/http-router that runs:
           npm run download-gitlab-routes -- <this-branch-name>
@@ -255,9 +243,6 @@ module CheckRouterRoutesSync
         snapshot. The step-by-step procedure, including how to tell that case apart
         from one that needs a routing change, is here:
           #{ROUTER_DOCS_URL}
-
-        This check does not block merging yet. To merge anyway, apply the
-        #{SKIP_LABEL} label and say why in the merge request description.
 
         Docs: #{DOCS_URL}
       MESSAGE

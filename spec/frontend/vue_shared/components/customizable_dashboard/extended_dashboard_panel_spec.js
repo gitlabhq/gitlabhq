@@ -4,6 +4,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import ExtendedDashboardPanel from '~/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
 import { stubComponent } from 'helpers/stub_component';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 describe('ExtendedDashboardPanel', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
@@ -13,6 +14,7 @@ describe('ExtendedDashboardPanel', () => {
     props = {},
     slots = {},
     scopedSlots = {},
+    directives = {},
     mountFn = shallowMountExtended,
   } = {}) => {
     wrapper = mountFn(ExtendedDashboardPanel, {
@@ -21,6 +23,7 @@ describe('ExtendedDashboardPanel', () => {
       },
       slots,
       scopedSlots,
+      directives,
       stubs: {
         GlPopover: stubComponent(GlPopover, {
           props: { ...GlPopover.props, delay: {} },
@@ -247,6 +250,7 @@ describe('ExtendedDashboardPanel', () => {
             body: '<div data-testid="panel-body-slot"></div>',
             footer: '<a data-testid="panel-footer-slot">View adoption</a>',
           },
+          directives: { GlResizeObserver: createMockDirective('gl-resize-observer') },
         });
       });
 
@@ -269,8 +273,52 @@ describe('ExtendedDashboardPanel', () => {
 
       // A scrollable region has to be reachable by keyboard, or content the footer
       // pushed out of view cannot be scrolled to without a pointer.
-      it('makes the scrollable body focusable', () => {
-        expect(findBodyWrapper().attributes('tabindex')).toBe('0');
+      describe('keyboard focus on the body', () => {
+        const resizeBody = async ({ scrollHeight, clientHeight }) => {
+          const { element } = findBodyWrapper();
+          Object.defineProperty(element, 'scrollHeight', {
+            value: scrollHeight,
+            configurable: true,
+          });
+          Object.defineProperty(element, 'clientHeight', {
+            value: clientHeight,
+            configurable: true,
+          });
+          getBinding(element, 'gl-resize-observer').value();
+          await nextTick();
+        };
+
+        it('is not a tab stop while the content fits', async () => {
+          await resizeBody({ scrollHeight: 100, clientHeight: 100 });
+
+          expect(findBodyWrapper().attributes('tabindex')).toBeUndefined();
+        });
+
+        it('becomes a tab stop once the content overflows', async () => {
+          await resizeBody({ scrollHeight: 120, clientHeight: 100 });
+
+          expect(findBodyWrapper().attributes('tabindex')).toBe('0');
+        });
+
+        it('stops being a tab stop when the content fits again', async () => {
+          await resizeBody({ scrollHeight: 120, clientHeight: 100 });
+          await resizeBody({ scrollHeight: 100, clientHeight: 100 });
+
+          expect(findBodyWrapper().attributes('tabindex')).toBeUndefined();
+        });
+
+        it('becomes a tab stop when only the content grows', async () => {
+          const { element } = findBodyWrapper();
+          Object.defineProperty(element, 'scrollHeight', { value: 120, configurable: true });
+          Object.defineProperty(element, 'clientHeight', { value: 100, configurable: true });
+          getBinding(
+            wrapper.findByTestId('panel-body-content-inner').element,
+            'gl-resize-observer',
+          ).value();
+          await nextTick();
+
+          expect(findBodyWrapper().attributes('tabindex')).toBe('0');
+        });
       });
     });
 

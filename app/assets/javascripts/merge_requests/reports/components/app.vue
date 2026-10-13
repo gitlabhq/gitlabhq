@@ -6,8 +6,13 @@ import {
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
+  ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
+  TEST_SUMMARY_ROUTE,
+  TERRAFORM_ROUTE,
+  STATUS_CHECKS_ROUTE,
   ROOT_ROUTE,
   EMPTY_STATE_NO_PIPELINE,
   EMPTY_STATE_PIPELINE_RUNNING,
@@ -19,8 +24,13 @@ const REPORT_ROUTES = [
   SECURITY_SCAN_ROUTE,
   LICENSE_COMPLIANCE_ROUTE,
   CODE_QUALITY_ROUTE,
+  BROWSER_PERFORMANCE_ROUTE,
   LOAD_PERFORMANCE_ROUTE,
+  ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
+  TEST_SUMMARY_ROUTE,
+  TERRAFORM_ROUTE,
+  STATUS_CHECKS_ROUTE,
 ];
 const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
 
@@ -50,6 +60,14 @@ export default {
     CodeQualityNavItem: defineAsyncComponent(
       () => import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
     ),
+    BrowserPerformanceProvider: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/browser_performance/browser_performance_provider.vue'),
+    ),
+    BrowserPerformanceNavItem: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/browser_performance/browser_performance_nav_item.vue'),
+    ),
     LoadPerformanceProvider: defineAsyncComponent(
       () =>
         import('ee_component/merge_requests/reports/load_performance/load_performance_provider.vue'),
@@ -58,11 +76,35 @@ export default {
       () =>
         import('ee_component/merge_requests/reports/load_performance/load_performance_nav_item.vue'),
     ),
+    AccessibilityProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/accessibility/accessibility_provider.vue'),
+    ),
+    AccessibilityNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/accessibility/accessibility_nav_item.vue'),
+    ),
     MetricsProvider: defineAsyncComponent(
       () => import('ee_component/merge_requests/reports/metrics/metrics_provider.vue'),
     ),
     MetricsNavItem: defineAsyncComponent(
       () => import('ee_component/merge_requests/reports/metrics/metrics_nav_item.vue'),
+    ),
+    TestSummaryProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/test_summary/test_summary_provider.vue'),
+    ),
+    TestSummaryNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/test_summary/test_summary_nav_item.vue'),
+    ),
+    TerraformProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/terraform/terraform_provider.vue'),
+    ),
+    TerraformNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/terraform/terraform_nav_item.vue'),
+    ),
+    StatusChecksProvider: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/status_checks/status_checks_provider.vue'),
+    ),
+    StatusChecksNavItem: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/status_checks/status_checks_nav_item.vue'),
     ),
   },
   mixins: [mergeRequestData],
@@ -80,11 +122,21 @@ export default {
         [SECURITY_SCAN_ROUTE]: this.hasSecurityScans,
         [LICENSE_COMPLIANCE_ROUTE]: this.hasLicenseComplianceReports,
         [CODE_QUALITY_ROUTE]: this.hasCodeQualityReports,
+        [BROWSER_PERFORMANCE_ROUTE]: this.hasBrowserPerformanceReports,
         [LOAD_PERFORMANCE_ROUTE]: this.hasLoadPerformanceReports,
+        [ACCESSIBILITY_ROUTE]: this.hasAccessibilityReports,
         [METRICS_ROUTE]: this.hasMetricsReports,
+        [TEST_SUMMARY_ROUTE]: this.hasTestSummaryReports,
+        [TERRAFORM_ROUTE]: this.hasTerraformReports,
+        [STATUS_CHECKS_ROUTE]: this.hasStatusChecksReports,
       };
 
-      return REPORT_ROUTES.filter((route) => isConfigured[route]);
+      return REPORT_ROUTES.filter((route) => {
+        if (!isConfigured[route]) return false;
+
+        // Status checks do not come from a pipeline, so they list without one.
+        return this.isPipelineComplete || route === STATUS_CHECKS_ROUTE;
+      });
     },
     isPipelineComplete() {
       return this.pipelineState === PIPELINE_STATE.complete;
@@ -92,8 +144,13 @@ export default {
     isSecurityScanStateKnown() {
       return this.hasSecurityScans !== null;
     },
+    isReportSetKnown() {
+      if (this.isPipelineComplete) return this.isSecurityScanStateKnown;
+
+      return this.hasStatusChecksReports;
+    },
     hasConfiguredReports() {
-      return this.isPipelineComplete && this.configuredRoutes.length > 0;
+      return this.configuredRoutes.length > 0;
     },
     emptyStateType() {
       if (this.pipelineState === PIPELINE_STATE.noPipeline) return EMPTY_STATE_NO_PIPELINE;
@@ -107,6 +164,11 @@ export default {
   },
   watch: {
     $route() {
+      this.syncRouteWithConfiguredReports();
+    },
+    // Status checks can become configured while the pipeline still runs, and no
+    // provider emits in that case, so the report set itself has to drive the sync.
+    configuredRoutes() {
       this.syncRouteWithConfiguredReports();
     },
   },
@@ -125,8 +187,7 @@ export default {
       if (action === 'reports') this.syncRouteWithConfiguredReports();
     },
     syncRouteWithConfiguredReports() {
-      if (!this.isPipelineComplete) return;
-      if (!this.isSecurityScanStateKnown) return;
+      if (!this.isReportSetKnown) return;
       if (!window.location.pathname.startsWith(this.basePath)) return;
 
       const { name } = this.$route;
@@ -163,13 +224,28 @@ export default {
           <code-quality-provider v-if="hasCodeQualityReports" :mr="mr">
             <code-quality-nav-item />
           </code-quality-provider>
+          <browser-performance-provider v-if="hasBrowserPerformanceReports" :mr="mr">
+            <browser-performance-nav-item />
+          </browser-performance-provider>
           <load-performance-provider v-if="hasLoadPerformanceReports" :mr="mr">
             <load-performance-nav-item />
           </load-performance-provider>
+          <accessibility-provider v-if="hasAccessibilityReports" :mr="mr">
+            <accessibility-nav-item />
+          </accessibility-provider>
           <metrics-provider v-if="hasMetricsReports" :mr="mr">
             <metrics-nav-item />
           </metrics-provider>
+          <test-summary-provider v-if="hasTestSummaryReports" :mr="mr">
+            <test-summary-nav-item />
+          </test-summary-provider>
+          <terraform-provider v-if="hasTerraformReports" :mr="mr">
+            <terraform-nav-item />
+          </terraform-provider>
         </template>
+        <status-checks-provider v-if="hasStatusChecksReports" :mr="mr">
+          <status-checks-nav-item />
+        </status-checks-provider>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">

@@ -1,5 +1,8 @@
 import { isEmpty } from 'lodash-es';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
+import { ERROR_POLICY_NONE } from '~/lib/graphql';
+import { logError } from '~/lib/logger';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 
 const blobsDefault = [];
 
@@ -7,6 +10,8 @@ export const getSnippetMixin = {
   apollo: {
     snippet: {
       query: GetSnippetQuery,
+      // Skip update() on errored responses; it only handles well-formed data.
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         return {
           ids: [this.snippetGid],
@@ -30,6 +35,11 @@ export const getSnippetMixin = {
       skip() {
         return this.newSnippet;
       },
+      error(error) {
+        this.snippetLoadError = true;
+        logError(`Unexpected error while fetching snippet`, error);
+        captureException(error, { tags: { vue_component: 'GetSnippetMixin' } });
+      },
     },
   },
   props: {
@@ -47,6 +57,7 @@ export const getSnippetMixin = {
     return {
       snippet: {},
       newSnippet: !this.snippetGid,
+      snippetLoadError: false,
     };
   },
   computed: {

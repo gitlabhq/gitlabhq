@@ -9,12 +9,16 @@ module Gitlab
       include ::Gitlab::Utils::StrongMemoize
 
       API_PATH_REGEX = %r{^/api/|/oauth/}
+      MCP_PATH_REGEX = %r{^/api/v\d+/mcp(?:/|$)}
       FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}
       RUNNER_JOBS_PATH_REGEX = %r{^/api/v\d+/jobs/}
       API_INTERNAL_PATH_REGEX = %r{^/api/v\d+/internal/}
       HEALTH_CHECK_PATH_REGEX = %r{^/-/(health|liveness|readiness|metrics)}
       CONTAINER_REGISTRY_EVENT_PATH_REGEX = %r{^/api/v\d+/container_registry_event/}
+
+      # The widest list, so one resolution covers every caller.
+      REQUESTER_FORMATS = [:api, :rss, :ics].freeze
 
       def api_request?
         matches?(API_PATH_REGEX)
@@ -55,7 +59,7 @@ module Gitlab
       end
 
       def authenticated_identifier(request_formats)
-        requester = request_authenticator.find_authenticated_requester(request_formats)
+        requester = authenticated_requester(request_formats)
 
         return unless requester
 
@@ -66,6 +70,14 @@ module Gitlab
                           end
 
         { identifier_type: identifier_type, identifier_id: requester.id }
+      end
+
+      # Memoized per format list: the callers above and EE's plan facts both need
+      # the record, and a second call would re-run token and session auth.
+      def authenticated_requester(request_formats = REQUESTER_FORMATS)
+        strong_memoize_with(:authenticated_requester, request_formats) do
+          request_authenticator.find_authenticated_requester(request_formats)
+        end
       end
 
       def request_authenticator
@@ -98,6 +110,10 @@ module Gitlab
 
       def packages_api_path?
         matches?(::Gitlab::Regex::Packages::API_PATH_REGEX)
+      end
+
+      def mcp_path?
+        matches?(MCP_PATH_REGEX)
       end
 
       def git_path?

@@ -185,9 +185,8 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
     context 'when creation of a model_version fails' do
       it 'returns error' do
         allow_next_instance_of(::Ml::ModelVersion) do |model_version|
-          allow(model_version).to receive(:save).and_return(false)
           errors = ActiveModel::Errors.new(model_version).tap { |e| e.add(:id, 'some error') }
-          allow(model_version).to receive(:errors).and_return(errors)
+          allow(model_version).to receive_messages(save: false, errors: errors)
         end
 
         expect { service }.to not_change { Ml::ModelVersion.count }.and not_change { Packages::MlModel::Package.count }

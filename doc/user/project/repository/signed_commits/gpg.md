@@ -25,7 +25,8 @@ For GitLab to consider a commit verified:
 - The committer must have a GPG public/private key pair.
 - The committer's public key must be uploaded to their GitLab account.
 - One of the email addresses in the GPG public key must match a verified email address
-  used by the committer in GitLab. To keep this address private, use the automatically generated
+  used by the committer in GitLab. GitLab ignores email addresses from revoked user IDs.
+  To keep this address private, use the automatically generated
   [private commit email address](../../../profile/_index.md#use-an-automatically-generated-private-commit-email)
   GitLab provides in your profile.
 - The committer's email address must match the verified email address from the
@@ -127,6 +128,8 @@ To add a GPG key to your user settings:
 1. To add the key to your account, select **Add key**.
 
 GitLab shows the key's fingerprint, email address, and creation date.
+If you revoke a user ID in your GPG key, GitLab does not show its email address.
+Commits that use that address as the committer email are marked as unverified.
 
 After you add a key, you cannot edit it. Instead, remove the offending key and re-add it.
 
@@ -260,12 +263,17 @@ If a GPG key becomes compromised, revoke it. Revoking a key changes both future 
 - Past commits signed by this key are marked as unverified.
 - Future commits signed by this key are marked as unverified.
 
+Revoking a key in GitLab is not the same as revoking one of the key's user IDs
+with GnuPG.
+If you revoke a user ID, only the commits that use that user ID's
+email address as the committer email are marked as unverified.
+
 To revoke a GPG key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the left sidebar, select **Access** > **GPG keys**.
-1. Select **Revoke** next to the GPG key you want to delete.
+1. Select **Revoke** next to the GPG key you want to revoke.
 
 ## Remove a GPG key
 

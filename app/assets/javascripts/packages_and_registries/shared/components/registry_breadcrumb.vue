@@ -25,7 +25,7 @@ export default {
       return this.$route.name === this.detailsRoute.name;
     },
     detailsRouteName() {
-      return this.detailsRoute.meta?.nameGenerator() || (this.$route.params?.id ?? '');
+      return this.detailsRoute.meta?.nameGenerator() || String(this.$route.params?.id ?? '');
     },
     allCrumbs() {
       const crumbs = [
@@ -35,7 +35,7 @@ export default {
           to: this.rootRoute.path,
         },
       ];
-      if (this.isDetailsRoute) {
+      if (this.isDetailsRoute && this.detailsRouteName) {
         crumbs.push({
           text: this.detailsRouteName,
           to: { name: this.detailsRoute.name, params: this.$route.params },

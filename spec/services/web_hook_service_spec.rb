@@ -1127,7 +1127,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
     def expect_to_rate_limit(hook, threshold:, throttled: false)
       expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:web_hook_calls, scope: [hook.parent.root_namespace], threshold: threshold)
+        .with(:web_hook_calls, scope: { namespace: hook.parent.root_namespace }, threshold: threshold)
         .and_return(throttled)
     end
 

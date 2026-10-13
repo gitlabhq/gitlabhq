@@ -51,6 +51,13 @@ see [GLQL fields](fields.md).
 
 ### Operators
 
+{{< history >}}
+
+- Combining `=` with another comparison on the same date or range field [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/516) to return an error in GitLab 19.5. Previously only one of the two conditions was applied.
+- `not in` operator [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5 for list filters on analytics data sources.
+
+{{< /history >}}
+
 **Comparison operators**:
 
 | GLQL operator | Description                             | Equivalent in search   |
@@ -58,6 +65,7 @@ see [GLQL fields](fields.md).
 | `=`           | Equals / Includes all in list           | `is` (equal to)        |
 | `!=`          | Doesn't equal / Isn't contained in list | `is not` (equal to)    |
 | `in`          | Contained in list                       | `or` / `is one of`     |
+| `not in`      | Not contained in list                   | `is not one of`        |
 | `>`           | Greater than                            | {{< no >}} |
 | `<`           | Less than                               | {{< no >}} |
 | `>=`          | Greater than or equal to                | {{< no >}} |
@@ -65,6 +73,17 @@ see [GLQL fields](fields.md).
 
 **Logical operators**: Only `and` is supported.
 `or` is indirectly supported for some fields by using the `in` comparison operator.
+
+The `not in` operator excludes every value in a list, for example
+`flowType not in ("chat", "agentic_chat/v1")`. It is available on the analytics
+data source fields that list it, and the list must contain at least one value.
+Use `!=` to exclude a single value.
+
+> [!note]
+> On fields where `=` selects a range, such as a single day on date fields or an exact count on
+> range filters like `activeDays`, you cannot combine `=` with another comparison on the same
+> field. For example, `created = 2024-01-01 and created > 2023-01-01` returns an error.
+> Use either the equality or the range. This applies to every data source and mode.
 
 ### Values
 
@@ -272,19 +291,26 @@ limit: <number>
 | `metrics` | Yes | Aggregated values to compute. At least one metric is required. |
 | `dimensions` | No | Fields to group results by. Select any combination, or omit entirely to return a single aggregated row. |
 | `sort` | No | Sort fields must also appear in your selected dimensions or metrics. |
-| `limit` | No | Defaults to `100`. Maximum value is `100`. |
+| `limit` | No | Rows per page, up to `100`. Analytics-mode display types such as charts and stats fetch every page automatically when `limit` is omitted, up to 1,000 rows. See [Pagination support](display_types.md#pagination-support). |
 
 ### Field parameters
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
+- List values in field parameters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/522) in GitLab 19.5.
+- Fixed-day `granularity` values [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
+- `origin` parameter [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/529) in GitLab 19.5.
 
 {{< /history >}}
 
 Some dimensions and metrics accept a parameter in parentheses after the field name.
 If you omit the parameter, the field uses its default value.
 You can pass the parameter by position (`finished(weekly)`) or by name (`finished(granularity=weekly)`).
+
+A single positional argument binds to the field's first parameter, for example `created(30d)`.
+When you pass more than one parameter, use named syntax, for example
+`created(granularity=30d, origin=2026-07-16)`. Two positional arguments return an error.
 
 For the fields that accept parameters and their default values, see the
 [data source](data_sources/_index.md) pages.
@@ -302,6 +328,62 @@ metrics: durationQuantile(0.5)
 sort: finished desc
 ```
 ````
+
+#### List values
+
+Some parameters take a list. Write it in square brackets, for example `name(key=[v1, v2])` or
+`name([v1, v2])`. `[]` is the empty list. Numbers can be negative. A single value passed to a
+list parameter is read as a one-item list, so `userTier(8)` equals `userTier(thresholds=[8])`
+and `totalCount(event="request_duo_chat_response")` equals `totalCount(event=["request_duo_chat_response"])`.
+
+Square brackets are for field parameters only. Filter lists in `query` still use parentheses,
+for example `status in (paused, failed)`.
+
+#### Granularity
+
+Every date dimension accepts a `granularity` parameter. Accepted values are `daily`, `weekly`,
+`monthly`, or a fixed number of days from `1d` to `399d`, for example `created(30d)`. You can
+write the day count bare (`created(30d)`), quoted (`created("30d")`), or by name
+(`created(granularity=30d)`).
+
+Fixed-day buckets are counted from the Unix epoch (January 1, 1970) unless you anchor them with
+`origin`, so they rarely line up with your date filter on their own.
+
+Each data source page lists the default granularity per dimension.
+
+#### Origin
+
+`origin` is an optional second parameter on every date dimension. It sets the instant from which
+fixed-day buckets are counted.
+
+The value is an ISO 8601 date or date-time. Write a date bare, like filter dates
+(`origin=2026-07-16`). A date-time must be quoted (`origin="2026-07-16T00:00:00Z"`). A time zone
+offset is converted to UTC. Fractional seconds are not accepted.
+Bucket labels use calendar dates and do not show time-of-day boundaries, so an `origin` with a time
+of day labels each bucket by the UTC date it starts on.
+
+`origin` is only valid with a fixed-day granularity. Both `created(granularity=weekly, origin=...)`
+and `created(origin=...)` alone, which uses the calendar default, return an error.
+
+Relative values such as `-60d` or `today()` are not accepted. Support is proposed in
+[issue 230](https://gitlab.com/gitlab-org/glql/-/work_items/230).
+
+For example, this query compares merge requests merged in two consecutive 30-day periods:
+
+````yaml
+```glql
+title: "Merge requests merged per 30-day period"
+display: table
+mode: analytics
+query: type = MergeRequest and group = "gitlab-org" and merged >= 2026-07-16 and merged < 2026-09-14
+dimensions: merged(granularity=30d, origin=2026-07-16) as "Period"
+metrics: totalCount as "Merge requests"
+sort: merged asc
+```
+````
+
+The `origin` aligns the 30-day buckets with the start of the selected period, so the query returns
+one row per period. Empty buckets are omitted.
 
 ### Custom aliases
 

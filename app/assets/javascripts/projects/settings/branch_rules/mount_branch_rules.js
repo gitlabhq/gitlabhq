@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import View from 'ee_else_ce/projects/settings/branch_rules/components/index.vue';
 
 export default function mountBranchRules(el, store, squashOptionsFeatureAvailable = false) {
@@ -27,9 +27,10 @@ export default function mountBranchRules(el, store, squashOptionsFeatureAvailabl
     showApprovers,
     showCodeOwners,
     showEnterpriseAccessLevels,
-    customRolesForProtectedBranchesEnabled,
+    customRolesLicensed,
     canAdminProtectedBranches,
     canAdminGroupProtectedBranches,
+    canReadProtectedBranches,
     groupSettingsRepositoryPath,
     canReadSquashOption = 'false',
     canUpdateSquashOption = 'false',
@@ -51,9 +52,10 @@ export default function mountBranchRules(el, store, squashOptionsFeatureAvailabl
       showApprovers: parseBoolean(showApprovers),
       showCodeOwners: parseBoolean(showCodeOwners),
       showEnterpriseAccessLevels: parseBoolean(showEnterpriseAccessLevels),
-      customRolesForProtectedBranchesEnabled: parseBoolean(customRolesForProtectedBranchesEnabled),
+      customRolesLicensed: parseBoolean(customRolesLicensed),
       canAdminProtectedBranches: parseBoolean(canAdminProtectedBranches),
       canAdminGroupProtectedBranches: parseBoolean(canAdminGroupProtectedBranches),
+      canReadProtectedBranches: parseBoolean(canReadProtectedBranches),
       groupSettingsRepositoryPath,
       squashOptionsFeatureAvailable,
       canReadSquashOption: parseBoolean(canReadSquashOption),

@@ -293,6 +293,32 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsTool, feature_category: :mcp_serv
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to eq('Project not found or inaccessible')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+      end
+    end
+
+    context 'when the caller can see the project but not its code' do
+      let_it_be(:private_project) { create(:project, :repository, :private) }
+      let_it_be(:guest) { create(:user, guest_of: private_project) }
+
+      let(:tool) { described_class.new(current_user: guest, params: { project_id: private_project.full_path }) }
+
+      it 'reports unauthorized', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:content].first[:text]).to eq('Operation returned no data')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
+      end
+    end
+
+    context 'when the repository resolves without a commits connection' do
+      before do
+        allow(GitlabSchema).to receive(:execute)
+          .and_return({ 'data' => { 'project' => { 'repository' => { 'commits' => nil } } } })
+      end
+
+      it 'stays at the default reason' do
+        expect(Mcp::Tools::Base::Response.error_reason(tool.execute)).to eq(:error)
       end
     end
   end

@@ -57,10 +57,6 @@ class SearchServicePresenter < Gitlab::View::Presenter::Delegated
   def zoekt_enabled?
     false
   end
-
-  def zoekt_language_aggregations_enabled?
-    false
-  end
 end
 
 SearchServicePresenter.prepend_mod_with('SearchServicePresenter')

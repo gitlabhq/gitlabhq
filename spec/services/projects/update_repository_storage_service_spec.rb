@@ -19,6 +19,178 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
       stub_storage_settings(storage_destination => {})
     end
 
+    context 'when rechecking the old pool after a storage move', :delete do
+      subject(:service) { described_class.new(repository_storage_move) }
+
+      let(:organization) { create(:organization) }
+      let(:old_pool) { create(:pool_repository, :without_project, state: :ready, organization: organization) }
+      let!(:destination_pool) do
+        create(:pool_repository, :without_project, state: :ready, organization: organization,
+          disk_path: old_pool.disk_path, shard: Shard.by_name(storage_destination))
+      end
+
+      let(:project) { create(:project, pool_repository: old_pool) }
+      let!(:other_member) { create(:project, pool_repository: old_pool) }
+      let(:repository_storage_move) do
+        create(:project_repository_storage_move, :scheduled, container: project,
+          destination_storage_name: storage_destination)
+      end
+
+      before do
+        stub_move_io(service, repository_storage_move, project)
+        allow(ObjectPool::DestroyWorker).to receive(:perform_async)
+      end
+
+      it 'rechecks the old pool after commit, keeping the destination pool ready', :aggregate_failures do
+        pool_state_at_commit = nil
+        allow(service).to receive(:track_repository).and_wrap_original do |track, *args|
+          track.call(*args)
+          other_member.update_column(:pool_repository_id, nil)
+          PoolRepository.current_transaction.after_commit do
+            pool_state_at_commit = old_pool.reload.state
+          end
+        end
+
+        result = service.execute
+
+        expect(pool_state_at_commit).to eq('ready')
+        expect(result).to be_success
+        expect(old_pool.reload).to be_obsolete
+        expect(destination_pool.reload).to be_ready
+        expect(project.reload.pool_repository).to eq(destination_pool)
+        expect(ObjectPool::DestroyWorker).to have_received(:perform_async).with(old_pool.id).at_least(:once)
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async).with(destination_pool.id)
+        expect(repository_storage_move.reload).to be_finished
+      end
+
+      it 'keeps the old pool ready when another member remains', :aggregate_failures do
+        result = service.execute
+
+        expect(result).to be_success
+        expect(old_pool.reload).to be_ready
+        expect(old_pool.member_projects).to contain_exactly(other_member)
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+      end
+
+      it 'does not clean up the old pool when tracking rolls back', :aggregate_failures do
+        allow(service).to receive(:track_repository).and_wrap_original do |track, *args|
+          track.call(*args)
+          other_member.update_column(:pool_repository_id, nil)
+          raise StandardError, 'tracking failed'
+        end
+
+        expect { service.execute }.to raise_error(StandardError, 'tracking failed')
+
+        expect(project.reload.pool_repository).to eq(old_pool)
+        expect(old_pool.reload).to be_ready
+        expect(old_pool.member_projects).to contain_exactly(project, other_member)
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+      end
+
+      it 'reports a recheck error and finishes the move including source cleanup', :aggregate_failures do
+        error = ActiveRecord::QueryCanceled.new('pool recheck timed out')
+        source_repository = instance_double(Gitlab::Git::Repository, remove: nil)
+        allow(repository_storage_move).to receive(:container).and_return(project)
+        allow(project.pool_repository).to receive(:mark_obsolete_if_empty).and_raise(error)
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+        allow(service).to receive_messages(same_filesystem?: false, mirror_object_pool: nil, mirror_repositories: nil)
+        allow(Gitlab::Git::Repository).to receive(:new).and_call_original
+        allow(Gitlab::Git::Repository).to receive(:new)
+          .with(storage_source, "#{project.disk_path}.git", nil, nil)
+          .and_return(source_repository)
+
+        result = service.execute
+
+        expect(Gitlab::ErrorTracking).to have_received(:track_exception)
+          .with(error, pool_repository_id: old_pool.id).once
+        expect(result).to be_success
+        expect(source_repository).to have_received(:remove).once
+        expect(repository_storage_move.reload).to be_finished
+        expect(repository_storage_move.error_message).to be_nil
+        expect(project.reload.pool_repository).to eq(destination_pool)
+        expect(project.repository_storage).to eq(storage_destination)
+        expect(project).not_to be_repository_read_only
+      end
+
+      it 'does not schedule destruction twice when unlink already marked the pool obsolete' do
+        other_member.update_column(:pool_repository_id, nil)
+
+        service.execute
+
+        expect(ObjectPool::DestroyWorker).to have_received(:perform_async).with(old_pool.id).once
+      end
+
+      context 'when the last two members move concurrently' do
+        it 'cleans up the empty old pool after both moves commit', :aggregate_failures do
+          run_concurrent_moves
+
+          expect(old_pool.member_projects).to be_empty
+          expect(old_pool.reload).to be_obsolete
+          expect(destination_pool.reload).to be_ready
+          expect(destination_pool.member_projects).to contain_exactly(project, other_member)
+          expect(ObjectPool::DestroyWorker).to have_received(:perform_async).with(old_pool.id).at_least(:once)
+          expect(repository_storage_move.reload).to be_finished
+        end
+
+        context 'when a third member remains' do
+          let!(:remaining_member) { create(:project, pool_repository: old_pool) }
+
+          it 'does not mark the old pool obsolete', :aggregate_failures do
+            run_concurrent_moves
+
+            expect(old_pool.reload).to be_ready
+            expect(old_pool.member_projects).to contain_exactly(remaining_member)
+            expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+          end
+        end
+      end
+
+      def stub_move_io(move_service, move, member)
+        allow(move).to receive(:project).and_return(member)
+        allow(move_service).to receive(:same_filesystem?).and_return(true)
+        allow(member).to receive_messages(repository_exists?: true, track_project_repository: nil,
+          link_pool_repository: nil)
+        allow(member.repository).to receive_messages(shard: storage_destination, disconnect_alternates: nil)
+      end
+
+      def run_concurrent_moves
+        second_move = create(:project_repository_storage_move, :scheduled, container: other_member,
+          destination_storage_name: storage_destination)
+        second_service = described_class.new(second_move)
+        stub_move_io(second_service, second_move, other_member)
+        first_tracked = Concurrent::Event.new
+        release_first = Concurrent::Event.new
+
+        allow(service).to receive(:track_repository).and_wrap_original do |track, *args|
+          track.call(*args)
+          first_tracked.set
+          raise 'Timed out waiting to commit the first move' unless release_first.wait(10)
+        end
+
+        first = Thread.new do
+          Project.connection_pool.with_connection { service.execute }
+        end
+
+        raise 'Timed out waiting for the first move to track its repository' unless first_tracked.wait(10)
+
+        expect(second_service.execute).to be_success
+        expect(old_pool.reload).to be_ready
+
+        release_first.set
+        raise 'Timed out waiting for the first move to finish' unless first.join(10)
+
+        expect(first.value).to be_success
+        expect(second_move.reload).to be_finished
+      ensure
+        release_first&.set
+
+        if first
+          first.kill if first.alive?
+          first.join
+        end
+      end
+    end
+
     context 'without wiki and design repository' do
       let_it_be(:shard_source) { create(:shard, name: 'default') }
       let_it_be(:shard_destination) { create(:shard, name: 'test_second_storage') }

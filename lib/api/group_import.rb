@@ -72,7 +72,7 @@ module API
       post 'import' do
         authorize_create_group!
         require_gitlab_workhorse!
-        check_rate_limit! :group_import, scope: current_user
+        check_rate_limit! :group_import, scope: { user: current_user }
         validate_file!
 
         group_params = {
@@ -88,7 +88,11 @@ module API
         group = response[:group]
 
         if response.success?
-          ::Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
+          ::Groups::ImportExport::ImportService.new(
+            group: group,
+            user: current_user,
+            request_channel: ::Gitlab::Import::RequestChannel.detect(request)
+          ).async_execute
 
           accepted!
         else

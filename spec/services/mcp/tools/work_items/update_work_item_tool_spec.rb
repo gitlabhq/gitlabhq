@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+  let(:forbidden_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be_with_reload(:work_item) { create(:work_item, :issue, project: project, title: 'Original title') }
@@ -260,7 +263,7 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
       let(:params) { { project_id: project.id.to_s, work_item_iid: non_existing_record_iid, title: 'New title' } }
 
       it 'raises a uniform not-found error' do
-        expect { tool.execute }.to raise_error(ArgumentError, /Work item ##{non_existing_record_iid} not found/)
+        expect { tool.execute }.to raise_error(not_found_error, /Work item ##{non_existing_record_iid} not found/)
       end
     end
 
@@ -274,9 +277,9 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
 
       let(:tool) { described_class.new(current_user: non_member, params: params) }
 
-      it 'raises the same not-found error' do
+      it 'raises with the same message as a nonexistent work item' do
         expect { tool.execute }
-          .to raise_error(ArgumentError, /Work item ##{confidential_work_item.iid} not found/)
+          .to raise_error(forbidden_error, /Work item ##{confidential_work_item.iid} not found/)
       end
     end
 
@@ -290,6 +293,7 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:unauthorized)
         expect(result[:content].first[:text])
           .to include('Work item not found: it does not exist or you do not have access to it.')
       end

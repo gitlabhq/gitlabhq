@@ -14,12 +14,16 @@ module Organizations
     before_action :authorize_read_organization!, only: [:activity, :show, :groups_and_projects]
 
     skip_before_action :authenticate_user!, only: [:activity, :show, :groups_and_projects]
-    # Checks `org_creation` organization flag in `authorize_create_organization!`
-    skip_before_action :check_feature_flag!, only: [:new]
+    # #new checks `org_creation` organization flag in `authorize_create_organization!`
+    # #index isn't scoped to an organization, so it checks `your_work_sidebar_org_menu_item`
+    # (the flag gating the nav item that links here) directly instead
+    skip_before_action :check_feature_flag!, only: [:new, :index]
 
     urgency :low, [:activity]
 
-    def index; end
+    def index
+      access_denied! unless Organizations::Release.enrolled?(current_user, flag: :your_work_sidebar_org_menu_item)
+    end
 
     def new
       authorize_create_organization!

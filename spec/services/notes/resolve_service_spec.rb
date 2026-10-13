@@ -16,6 +16,18 @@ RSpec.describe Notes::ResolveService, feature_category: :team_planning do
       expect(note.resolved_by).to eq(user)
     end
 
+    context "when the note is already resolved" do
+      before do
+        note.resolve!(user)
+      end
+
+      it "does not send notifications" do
+        expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+        described_class.new(merge_request.project, user).execute(note)
+      end
+    end
+
     context "when noteable is not a MergeRequest" do
       let(:note) { create(:note_on_issue, project: merge_request.project) }
 

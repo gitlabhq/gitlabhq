@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import Cookies from '~/lib/utils/cookies';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
@@ -10,6 +11,7 @@ import {
   PINNED_NAV_STORAGE_KEY,
   SIDEBAR_PINS_EXPANDED_COOKIE,
   SIDEBAR_COOKIE_EXPIRATION,
+  SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY,
 } from '~/super_sidebar/constants';
 import { setCookie } from '~/lib/utils/common_utils';
 
@@ -20,7 +22,15 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 describe('PinnedSection component', () => {
+  useLocalStorageSpy();
+
   let wrapper;
+
+  const setGroupStates = (states) =>
+    localStorage.setItem(SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY, JSON.stringify(states));
+
+  const getGroupStates = () =>
+    JSON.parse(localStorage.getItem(SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY));
 
   const findToggle = () => wrapper.find('button');
 
@@ -94,6 +104,81 @@ describe('PinnedSection component', () => {
 
       it('is expanded', () => {
         expect(wrapper.findComponent(NavItem).isVisible()).toBe(true);
+      });
+    });
+
+    describe('when rendered as a category group', () => {
+      // is_active: true (current page is in this category) must not override storage.
+      const groupItem = { id: 'code', title: 'Code', is_active: true };
+      // Group state is scoped by panel type so the same category id in the
+      // project and group sidebars persists independently.
+      const groupKey = 'project-code';
+
+      const createGroupWrapper = (props = {}) =>
+        createWrapper({ groupItem, provide: { panelType: 'project' }, ...props });
+
+      it('reads its collapse state from local storage, not the flat section cookie', () => {
+        // Flat section cookie collapsed, group state untouched: the group stays expanded.
+        Cookies.set(SIDEBAR_PINS_EXPANDED_COOKIE, 'false');
+        createGroupWrapper();
+
+        expect(wrapper.findComponent(NavItem).isVisible()).toBe(true);
+      });
+
+      it('is collapsed when its own group state is false', () => {
+        setGroupStates({ [groupKey]: false });
+        createGroupWrapper();
+
+        expect(wrapper.findComponent(NavItem).isVisible()).toBe(false);
+      });
+
+      it('is expanded when collapsed but a pinned nav item in it was used before', () => {
+        setGroupStates({ [groupKey]: false });
+        createGroupWrapper({ wasPinnedNav: true });
+
+        expect(wrapper.findComponent(NavItem).isVisible()).toBe(true);
+      });
+
+      it('keeps the same category independent across panels', () => {
+        // The group panel collapsed "code"; the project panel's "code" is untouched.
+        setGroupStates({ 'group-code': false });
+        createGroupWrapper();
+
+        expect(wrapper.findComponent(NavItem).isVisible()).toBe(true);
+      });
+
+      it('writes collapse state to its own group key without clobbering others', async () => {
+        setGroupStates({ [groupKey]: true, 'project-docs': false });
+        createGroupWrapper();
+
+        findToggle().trigger('click');
+        await nextTick();
+
+        expect(getGroupStates()).toEqual({ [groupKey]: false, 'project-docs': false });
+      });
+
+      it('does not write the flat section cookie', async () => {
+        createGroupWrapper();
+
+        findToggle().trigger('click');
+        await nextTick();
+
+        expect(setCookie).not.toHaveBeenCalled();
+      });
+
+      // MenuSection re-syncs isExpanded to the real (collapsed) state when the
+      // sidebar leaves icon-only mode, emitting collapse-toggle with a false
+      // payload without any user interaction. The section must honor that
+      // payload rather than blindly toggling, or a collapsed group's state
+      // would flip to true and the group would wrongly reopen on next load.
+      it('does not reopen a collapsed group when re-synced to collapsed', async () => {
+        setGroupStates({ [groupKey]: false });
+        createGroupWrapper();
+
+        wrapper.findComponent(MenuSection).vm.$emit('collapse-toggle', false);
+        await nextTick();
+
+        expect(getGroupStates()).toMatchObject({ [groupKey]: false });
       });
     });
   });
@@ -273,6 +358,47 @@ describe('PinnedSection component', () => {
       expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe(null);
       wrapper.findComponent(NavItem).vm.$emit('nav-link-click');
       expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe('true');
+    });
+  });
+
+  describe('when rendered as a category group', () => {
+    const groupItem = { id: 'code', title: 'Code', is_active: true };
+
+    beforeEach(() => {
+      createWrapper({ groupItem });
+    });
+
+    it('uses the category title as the section header', () => {
+      expect(wrapper.findComponent(MenuSection).props('item').title).toBe('Code');
+    });
+
+    it('renders the section header without an icon', () => {
+      expect(wrapper.findComponent(MenuSection).props('item').icon).toBe(null);
+    });
+
+    it('renders the category title in a heavier font weight', () => {
+      expect(wrapper.findComponent(MenuSection).props('boldTitle')).toBe(true);
+    });
+
+    it('labels the pinned list with the category title', () => {
+      expect(findList().attributes('aria-label')).toBe('Code');
+    });
+  });
+
+  describe('when not rendered as a category group', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('uses the thumbtack icon and Pinned title', () => {
+      const item = wrapper.findComponent(MenuSection).props('item');
+
+      expect(item.title).toBe('Pinned');
+      expect(item.icon).toBe('thumbtack');
+    });
+
+    it('does not render the header in a heavier font weight', () => {
+      expect(wrapper.findComponent(MenuSection).props('boldTitle')).toBe(false);
     });
   });
 });

@@ -26,7 +26,7 @@ module Ci
       end
 
       def logs_url
-        first_job = pipeline.builds.order(id: :asc).first
+        first_job = pipeline.builds.latest.order(id: :asc).first
         return unless first_job
 
         Gitlab::Routing.url_helpers.project_job_url(project, first_job)

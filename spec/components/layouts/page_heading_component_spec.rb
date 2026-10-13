@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Layouts::PageHeadingComponent, type: :component, feature_category: :shared do
+RSpec.describe Layouts::PageHeadingComponent, feature_category: :shared do
   let(:heading) { 'Page heading' }
   let(:actions) { 'Page actions go here' }
   let(:description) { 'Page description goes here' }

@@ -167,7 +167,8 @@ class Gitlab::Seeder::TriageOps
       email: 'triagebot@example.com',
       confirmed_at: DateTime.now,
       password: SecureRandom.hex.slice(0, 16),
-      user_type: :project_bot
+      user_type: :project_bot,
+      organization: @organization
     ) do |user|
       user.assign_personal_namespace(@organization)
     end
@@ -260,7 +261,7 @@ end
 
 if ENV['SEED_TRIAGE_OPS']
   Gitlab::Seeder.quiet do
-    organization = User.admins.first.organizations.first
+    organization = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin_organization
 
     seeder = Gitlab::Seeder::TriageOps.new(organization: organization)
     seeder.seed!

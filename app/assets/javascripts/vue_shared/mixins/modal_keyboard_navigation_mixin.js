@@ -44,7 +44,7 @@ export default {
       } else if (code === ESC_KEY) {
         this.$refs.modal.close();
       } else if (code === NUMPAD_ENTER_KEY) {
-        event.target?.firstChild.click();
+        event.target?.firstElementChild.click();
       } else {
         stop = false;
       }

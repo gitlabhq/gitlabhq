@@ -44,22 +44,24 @@ $detail-layout-gap: 2rem;
       position: sticky;
       top: var(--detail-layout-sidebar-top, var(--layout-sticky-header-height, 0));
       align-self: start;
-      // Reserve the sticky header height so the sidebar can never scroll under it.
-      // The reserved var is stable (set once); the live --layout-sticky-header-height
-      // toggles on scroll and would resize the sidebar, stuttering the UI.
-      height: var(
+      // Cap (not force) the height so a short sidebar can't cause a phantom scrollbar.
+      // --detail-layout-sidebar-space is set in detail_layout.vue.
+      min-height: 0;
+      max-height: var(
         --detail-layout-sidebar-height,
         calc(
           var(--panel-content-inner-height, #{$calc-application-viewport-height}) -
-            var(--layout-sticky-header-reserved-height, 0px)
+            var(--detail-layout-sidebar-space, 0px)
         )
       );
       overflow-y: auto;
       overflow-x: hidden;
+      overscroll-behavior: contain;
       outline: none;
-      // Matches the transition of the sticky header appearing/disappearing,
-      // which shifts the top value
-      transition: top $gl-transition-duration-medium $gl-easing-out-cubic;
+      @apply gl-px-3;
+      // Adding top spacing and aligning it back to the baseline with the negative margin
+      @apply gl-py-4;
+      @apply -gl-mt-4;
     }
 
     > .gl-detail-layout-widgets {

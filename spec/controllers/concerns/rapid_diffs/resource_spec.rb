@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :source_code_management do
+RSpec.describe RapidDiffs::Resource, feature_category: :source_code_management do
   subject(:controller) do
     Class.new(ApplicationController) do
       include RapidDiffs::Resource

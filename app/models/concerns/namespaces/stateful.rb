@@ -45,6 +45,7 @@ module Namespaces
         before_transition on: :schedule_deletion, do: :ensure_transition_user
         before_transition on: :schedule_deletion, do: :set_deletion_schedule_data
         before_transition on: :cancel_deletion, do: :clear_deletion_schedule_data
+        before_transition on: :cancel_deletion, do: :clear_deletion_data
         before_transition on: :schedule_transfer, do: :ensure_transition_user
         before_transition on: :schedule_transfer, do: :set_transfer_schedule_data
         before_transition on: :start_transfer, do: :ensure_transition_user
@@ -52,6 +53,10 @@ module Namespaces
         before_transition on: :complete_transfer, do: :clear_transfer_data
         before_transition on: :cancel_transfer, from: :transfer_scheduled, do: :clear_transfer_data
         before_transition on: :cancel_transfer, from: :transfer_in_progress, do: :clear_transfer_data_preserving_target
+        before_transition on: :schedule_deletion, do: :set_deletion_data
+        # Declared after the clear_transfer_data* callbacks: state_machine runs before_transition
+        # hooks in declaration order, and those two clear `transfer_last_error`.
+        before_transition on: :cancel_transfer, do: :set_transfer_error_data
         before_transition on: :reschedule_deletion, do: :set_deletion_error_data
 
         event :archive do
@@ -69,7 +74,9 @@ module Namespaces
         end
 
         event :start_deletion do
-          transition %i[ancestor_inherited archived deletion_scheduled] => :deletion_in_progress
+          # Descendant states are not propagated yet, so a descendant stuck in a
+          # transient state must not block deletion of its ancestors.
+          transition any => :deletion_in_progress
         end
 
         event :reschedule_deletion do

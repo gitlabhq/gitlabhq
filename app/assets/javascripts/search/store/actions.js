@@ -11,6 +11,7 @@ import {
   queryToObject,
 } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
+import { HTTP_STATUS_REQUEST_TIMEOUT } from '~/lib/utils/http_status';
 import { __ } from '~/locale';
 import {
   SCOPE_BLOB,
@@ -117,6 +118,10 @@ export const setFrequentProject = ({ state, commit }, item) => {
   commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
+// Only SearchController#render_timeout answers 408 here. It already reports
+// the timeout to error tracking, so the client has nothing new to log.
+const isSearchTimeout = (error) => error?.response?.status === HTTP_STATUS_REQUEST_TIMEOUT;
+
 const filterBlobs = (navigationItemScope, skipBlobs) => {
   return navigationItemScope !== SCOPE_BLOB ? true : skipBlobs;
 };
@@ -152,7 +157,11 @@ export const fetchSidebarCount = ({ commit, state }, skipBlobs) => {
       .then(({ data: { count } }) => {
         commit(types.RECEIVE_NAVIGATION_COUNT, { key: navigationItem.scope, count });
       })
-      .catch((e) => logError(e)),
+      .catch((e) => {
+        if (isSearchTimeout(e)) return;
+
+        logError(e);
+      }),
   );
 
   return Promise.all(promises);
@@ -200,10 +209,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
     // A new search term shifts the underlying result set, so the language
     // buckets must be recomputed. Skipping this leaves stale counts pinned
     // to the previous term until the user reloads the page.
-    await syncZoektUrl(
-      { state, commit, dispatch },
-      { refetchAggregations: state.zoektLanguageAggregationsEnabled },
-    );
+    await syncZoektUrl({ state, commit, dispatch }, { refetchAggregations: true });
   }
 
   // Language filter is applied live (without requiring an "Apply" click) for
@@ -211,7 +217,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   // and refresh the sidebar counts. Aggregation buckets are intentionally NOT
   // refetched here — they are faceted (computed against the language-stripped
   // result set) so they remain stable across language ticks.
-  if (isZoektSearch && key === LANGUAGE_FILTER_PARAM && state.zoektLanguageAggregationsEnabled) {
+  if (isZoektSearch && key === LANGUAGE_FILTER_PARAM) {
     await syncZoektUrl({ state, commit, dispatch });
   }
 
@@ -221,7 +227,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   // filters DO shift bucket counts (unlike language ticks), so we re-fetch.
   const isArchivedOrForksFilter =
     key === INCLUDE_ARCHIVED_FILTER_PARAM || key === EXCLUDE_FORKS_FILTER_PARAM;
-  if (isZoektSearch && isArchivedOrForksFilter && state.zoektLanguageAggregationsEnabled) {
+  if (isZoektSearch && isArchivedOrForksFilter) {
     await syncZoektUrl({ state, commit, dispatch }, { refetchAggregations: true });
   }
 
@@ -282,8 +288,7 @@ export const fetchAllAggregation = ({ commit, state }) => {
   // the fetch so the sidebar can render a "refreshing" state (dimmed +
   // spinner) over the last-known buckets. Non-Zoekt paths (Elasticsearch)
   // keep the original loading behavior.
-  const preserveBuckets =
-    state.searchType === SEARCH_TYPE_ZOEKT && state.zoektLanguageAggregationsEnabled;
+  const preserveBuckets = state.searchType === SEARCH_TYPE_ZOEKT;
   commit(preserveBuckets ? types.REQUEST_AGGREGATIONS_LOADING : types.REQUEST_AGGREGATIONS);
 
   return axios
@@ -292,7 +297,8 @@ export const fetchAllAggregation = ({ commit, state }) => {
       commit(types.RECEIVE_AGGREGATIONS_SUCCESS, prepareSearchAggregations(state, data));
     })
     .catch((e) => {
-      logError(e);
+      if (!isSearchTimeout(e)) logError(e);
+
       commit(types.RECEIVE_AGGREGATIONS_ERROR);
     });
 };

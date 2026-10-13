@@ -1,8 +1,6 @@
 <script>
-import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
-import { getDueDateStatus, humanTimeframe, newDate } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
 import { STATE_CLOSED, METADATA_KEYS } from '~/work_items/constants';
 import {
   findMilestoneWidget,
@@ -12,6 +10,7 @@ import {
 } from '~/work_items/utils';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
+import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 
 export default {
@@ -19,8 +18,8 @@ export default {
   components: {
     IssuableMilestone,
     WorkItemAttribute,
+    WorkItemDatesAttribute,
     WorkItemParentMetadata,
-    GlIcon,
     GlSkeletonLoader,
   },
   constants: {
@@ -53,22 +52,11 @@ export default {
     dueDate() {
       return this.issue.dueDate || findStartAndDueDateWidget(this.issue)?.dueDate;
     },
-    datesText() {
-      if (this.startDate || this.dueDate) {
-        return humanTimeframe(newDate(this.startDate), newDate(this.dueDate));
-      }
-
-      return null;
+    hasDates() {
+      return Boolean(this.startDate || this.dueDate);
     },
     isClosed() {
       return this.issue.state === STATUS_CLOSED || this.issue.state === STATE_CLOSED;
-    },
-    dueDateStatus() {
-      return getDueDateStatus(this.dueDate, !this.isClosed);
-    },
-    datesTooltipTitle() {
-      const { statusLabel } = this.dueDateStatus;
-      return statusLabel ? `${__('Dates')} (${statusLabel})` : __('Dates');
     },
     startDate() {
       return findStartAndDueDateWidget(this.issue)?.startDate;
@@ -103,24 +91,14 @@ export default {
       <gl-skeleton-loader :width="55" :lines="1" equal-width-lines />
     </span>
     <slot name="iteration"></slot>
-    <work-item-attribute
-      v-if="datesText && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.DATES)"
-      anchor-id="issuable-due-date"
-      wrapper-component="button"
+    <work-item-dates-attribute
+      v-if="hasDates && !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.DATES)"
       wrapper-component-class="issuable-due-date gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
-      :title="datesText"
-      :tooltip-text="datesTooltipTitle"
-      tooltip-placement="top"
-    >
-      <template #icon>
-        <gl-icon
-          :variant="dueDateStatus.iconVariant"
-          :name="dueDateStatus.iconName"
-          :size="12"
-          class="gl-shrink-0"
-        />
-      </template>
-    </work-item-attribute>
+      :start-date="startDate"
+      :due-date="dueDate"
+      :is-closed="isClosed"
+      :icon-size="12"
+    />
     <span v-else-if="detailLoading">
       <gl-skeleton-loader :width="30" :lines="1" equal-width-lines />
     </span>

@@ -73,6 +73,15 @@ RSpec.describe Members::AcceptInviteService, feature_category: :user_management 
       end
 
       it { expect { service.execute }.to publish_event(Members::AcceptedInviteEvent).with(data) }
+
+      it 'publishes the cloud event' do
+        expect { service.execute }.to publish_event(Members::AcceptedInviteCloudEvent).with(
+          source_id: member.source_id,
+          source_type: member.source.class.name,
+          user_id: user.id,
+          member_id: member.id
+        )
+      end
     end
   end
 end

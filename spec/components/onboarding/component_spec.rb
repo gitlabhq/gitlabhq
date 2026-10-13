@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Onboarding::Component, type: :component, feature_category: :shared do
+RSpec.describe Onboarding::Component, feature_category: :shared do
   subject(:component) { described_class.new }
 
   describe '#filter_attribute' do

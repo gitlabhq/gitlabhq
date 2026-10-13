@@ -12,7 +12,7 @@ import { __ } from '~/locale';
 import {
   OPTIONS_NONE_ANY,
   OPTIONS_NONE_ANY_ME,
-  OPERATORS_IS_NOT,
+  OPERATORS_IS_NOT_OR,
   OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
@@ -37,12 +37,10 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 import WorkItemTypeToken from '~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'IssueBoardFilteredSearch',
   components: { BoardFilteredSearch },
-  mixins: [glFeatureFlagMixin()],
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
   props: {
     board: {
@@ -70,10 +68,11 @@ export default {
           icon: 'user',
           title: TOKEN_TITLE_ASSIGNEE,
           type: TOKEN_TYPE_ASSIGNEE,
-          operators: OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           token: UserToken,
           dataType: 'user',
           unique: true,
+          multiSelect: true,
           isProject: !this.isGroupBoard,
           fullPath: this.fullPath,
           preloadedUsers: this.preloadedUsers(),
@@ -83,11 +82,12 @@ export default {
           icon: 'pencil',
           title: TOKEN_TITLE_AUTHOR,
           type: TOKEN_TYPE_AUTHOR,
-          operators: OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           symbol: '@',
           token: UserToken,
           dataType: 'user',
           unique: true,
+          multiSelect: true,
           isProject: !this.isGroupBoard,
           fullPath: this.fullPath,
           preloadedUsers: this.preloadedUsers(),
@@ -96,9 +96,10 @@ export default {
           icon: 'labels',
           title: TOKEN_TITLE_LABEL,
           type: TOKEN_TYPE_LABEL,
-          operators: OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           token: LabelToken,
           unique: false,
+          multiSelect: true,
           recentSuggestionsStorageKey: `${this.fullPath}-board-recent-tokens-label`,
           symbol: '~',
           fetchLabels,
@@ -155,6 +156,8 @@ export default {
           title: TOKEN_TITLE_TYPE,
           icon: 'work-item-issue',
           unique: true,
+          multiSelect: true,
+          operators: OPERATORS_IS_NOT_OR,
           token: WorkItemTypeToken,
           fullPath: this.fullPath,
           isFilterableBoardView: true,

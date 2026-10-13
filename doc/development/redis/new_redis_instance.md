@@ -236,8 +236,8 @@ or not we expect GitLab Self-Managed instances to perform this migration.
 [`gitlab-com/gl-infra/scalability#1131`](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1131#note_603354746)
 contains a discussion on this topic for the trace chunks feature flag. It may
 be - as in that case - that we decide that the maintenance costs of supporting
-the migration code are higher than the benefits of allowing self-managed
-instances to perform this migration seamlessly, if we expect self-managed
+the migration code are higher than the benefits of allowing GitLab Self-Managed
+instances to perform this migration seamlessly, if we expect GitLab Self-Managed
 instances to cope without this functional partition.
 
 If we decide to keep the migration code:

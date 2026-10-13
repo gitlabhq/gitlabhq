@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Deployments::DeploymentPresenter do
-  let(:deployment) { create(:deployment) }
+  let(:environment) { build_stubbed(:environment, project: build_stubbed(:project)) }
+  let(:deployment) { build_stubbed(:deployment, environment: environment, project: environment.project, iid: 1) }
   let(:presenter) { described_class.new(deployment) }
 
   describe '#tags' do

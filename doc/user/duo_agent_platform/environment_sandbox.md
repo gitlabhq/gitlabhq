@@ -34,7 +34,9 @@ The execution environment sandbox is automatically applied when using a compatib
 The sandbox is enabled when:
 
 - Anthropic Sandbox Runtime (SRT) is available in the Docker image.
-- GitLab Duo Agent Platform sessions are being executed on a runner (local environments are not being sandboxed).
+- GitLab Duo Agent Platform sessions are being executed on a runner.
+
+For agents that run on your computer, see [local sandbox](../../editor_extensions/local_sandbox.md).
 
 For information about CI/CD variable differences between default and custom
 image configurations, see
@@ -164,8 +166,8 @@ reachable from the runner.
 
 #### Administrator network policy controls
 
-When a top-level group owner on GitLab.com or instance administrator on GitLab
-Self-Managed configures network access controls, those settings define the
+When a top-level group owner on GitLab.com or instance administrator on
+GitLab Self-Managed configures network access controls, those settings define the
 baseline policy for all flows. The **Allow projects to extend network sandbox
 settings** checkbox determines which settings are applied when project owners
 configure them in `agent-config.yml`.

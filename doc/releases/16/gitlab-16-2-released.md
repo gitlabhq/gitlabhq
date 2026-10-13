@@ -603,7 +603,7 @@ GitLab SAST includes [many security analyzers](../../user/application_security/s
 
 During the 16.2 release milestone, our changes focused on the Semgrep-based analyzer and the GitLab-maintained rules it uses for scanning. We released the following changes:
 
-- Clarified the explanation and guidance for JavaScript rules, building on [improvements for other languages released in GitLab 16.1](https://about.gitlab.com/releases/2023/06/22/gitlab-16-1-released/#clearer-guidance-and-better-coverage-for-sast-rules)
+- Clarified the explanation and guidance for JavaScript rules, building on [improvements for other languages released in GitLab 16.1](gitlab-16-1-released.md#clearer-guidance-and-better-coverage-for-sast-rules)
 - Updated rules to find additional vulnerabilities in Java and JavaScript.
 - Changed the default configuration for which files are ignored in scans by:
   - Removing `.gitignore` exclusion. Thanks to [`@SimonGurney`](https://gitlab.com/SimonGurney) for this community contribution.
@@ -617,7 +617,7 @@ We’re tracking further improvements to GitLab-managed rulesets in [epic 10907]
 If you [include the GitLab-managed SAST template](../../user/application_security/sast/_index.md) ([`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)) and run GitLab 16.0 or higher, you automatically receive these updates.
 To remain on a specific version of any analyzer and prevent automatic updates, you can [pin its version](../../user/application_security/sast/_index.md).
 
-For previous changes, see [last month’s updates](https://about.gitlab.com/releases/2023/06/22/gitlab-16-1-released/#sast-analyzer-updates).
+For previous changes, see [last month’s updates](gitlab-16-1-released.md#sast-analyzer-updates).
 
 ### Secret Detection updates
 
@@ -644,7 +644,7 @@ See the [CHANGELOG](https://gitlab.com/gitlab-org/security-products/analyzers/se
 If you [use the GitLab-managed Secret Detection template](../../user/application_security/secret_detection/_index.md) ([`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)) and run GitLab 16.0 or higher, you automatically receive these updates.
 To remain on a specific version of any analyzer and prevent automatic updates, you can [pin its version](../../user/application_security/secret_detection/_index.md).
 
-For previous changes, see [the most recent Secret Detection update](https://about.gitlab.com/releases/2023/05/22/gitlab-16-0-released/#secret-detection-updates).
+For previous changes, see [the most recent Secret Detection update](gitlab-16-0-released.md#secret-detection-updates).
 
 ### Support for NuGet v2 in Dependency and License Scanning
 

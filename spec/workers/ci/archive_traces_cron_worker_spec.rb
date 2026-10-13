@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integration do
-  subject { described_class.new.perform }
-
+RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integration, factory_default: :keep do
+  let_it_be(:project) { create_default(:project) }
   let(:finished_at) { 1.day.ago }
+
+  subject { described_class.new.perform }
 
   before do
     stub_application_setting(ci_job_live_trace_enabled: true)

@@ -2,7 +2,6 @@ import {
   TREND_CHANGE_KEY,
   TREND_PREVIOUS_KEY,
   hasTemporalDimension,
-  hasUniqueRowKeys,
   withTrendValues,
 } from '~/glql/components/presenters/utils/table';
 
@@ -16,68 +15,6 @@ const mockProject = (name, id = `gid://gitlab/Project/${name}`) => ({
   nameWithNamespace: name,
 });
 const mockUser = (id, name) => ({ __typename: 'UserCore', id, name });
-
-describe('hasUniqueRowKeys', () => {
-  it('is true when a single dimension distinguishes the rows', () => {
-    const nodes = [{ language: 'ruby' }, { language: 'go' }];
-
-    expect(hasUniqueRowKeys(nodes, [mockLanguageDimension])).toBe(true);
-  });
-
-  it('is true when the rows differ only in their second dimension', () => {
-    const nodes = [
-      { project: mockProject('a/b'), language: 'ruby' },
-      { project: mockProject('a/b'), language: 'go' },
-    ];
-
-    expect(hasUniqueRowKeys(nodes, [mockProjectDimension, mockLanguageDimension])).toBe(true);
-  });
-
-  it('is true for a single row with no dimensions', () => {
-    expect(hasUniqueRowKeys([{ totalCount: 1 }], [])).toBe(true);
-  });
-
-  describe('when an object dimension value has no id', () => {
-    it('is true, because unidentifiable rows never pair and cannot be mispaired', () => {
-      const nodes = [
-        { project: { __typename: 'Namespace', fullName: 'Group A', webUrl: '/groups/group-a' } },
-        { project: { __typename: 'Namespace', fullName: 'Group B', webUrl: '/groups/group-b' } },
-      ];
-
-      expect(hasUniqueRowKeys(nodes, [mockProjectDimension])).toBe(true);
-    });
-  });
-
-  describe('when two rows share a label but not an identity', () => {
-    it('is true, because they are told apart by id', () => {
-      const nodes = [
-        { user: mockUser('gid://gitlab/User/1', 'Alex Smith') },
-        { user: mockUser('gid://gitlab/User/2', 'Alex Smith') },
-      ];
-
-      expect(hasUniqueRowKeys(nodes, [{ key: 'user', type: 'dimension' }])).toBe(true);
-    });
-  });
-
-  describe('when two rows share an identity', () => {
-    it('is false', () => {
-      const nodes = [
-        { user: mockUser('gid://gitlab/User/1', 'Alex Smith') },
-        { user: mockUser('gid://gitlab/User/1', 'Alex Smith') },
-      ];
-
-      expect(hasUniqueRowKeys(nodes, [{ key: 'user', type: 'dimension' }])).toBe(false);
-    });
-  });
-
-  describe('when two rows share a dimension value', () => {
-    it('is false', () => {
-      const nodes = [{ language: 'ruby' }, { language: 'ruby' }];
-
-      expect(hasUniqueRowKeys(nodes, [mockLanguageDimension])).toBe(false);
-    });
-  });
-});
 
 describe('hasTemporalDimension', () => {
   it('is true when a dimension buckets by date', () => {
@@ -209,7 +146,7 @@ describe('withTrendValues', () => {
     ];
     const dimensions = [mockProjectDimension, mockLanguageDimension];
 
-    it('pairs it with the previous period row that is also null', () => {
+    it('pairs it with the blank row of the previous period, which is the same bucket', () => {
       const rows = withTrendValues(nullDimensionNodes, {
         comparisonNodes: [{ project: null, language: 'ruby', totalCount: 5 }],
         dimensions,
@@ -231,18 +168,46 @@ describe('withTrendValues', () => {
       expect(rows[1][TREND_PREVIOUS_KEY]).toBe(5);
     });
 
-    it('stays distinct from a row whose value is the literal Unknown', () => {
-      const literalUnknownNodes = [
-        { project: null, language: 'ruby' },
-        { project: 'Unknown', language: 'ruby' },
-      ];
-
-      expect(hasUniqueRowKeys(literalUnknownNodes, dimensions)).toBe(true);
-    });
-
     it('does not pair it with a row whose value is the literal Unknown', () => {
       const rows = withTrendValues([{ project: null, language: 'ruby', totalCount: 10 }], {
         comparisonNodes: [{ project: 'Unknown', language: 'ruby', totalCount: 5 }],
+        dimensions,
+        metric: mockTotalCountMetric,
+      });
+
+      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
+    });
+  });
+
+  describe('when several rows of a period share a dimension value', () => {
+    const dimensions = [mockProjectDimension];
+
+    it('leaves them unpaired, because neither can be told from the other', () => {
+      const rows = withTrendValues(
+        [
+          { project: null, totalCount: 10 },
+          { project: null, totalCount: 8 },
+          { project: mockProject('a/b'), totalCount: 6 },
+        ],
+        {
+          comparisonNodes: [
+            { project: null, totalCount: 5 },
+            { project: mockProject('a/b'), totalCount: 3 },
+          ],
+          dimensions,
+          metric: mockTotalCountMetric,
+        },
+      );
+
+      expect(rows.map((row) => row[TREND_PREVIOUS_KEY])).toEqual([null, null, 3]);
+    });
+
+    it('leaves the matching row of the other period unpaired too', () => {
+      const rows = withTrendValues([{ project: null, totalCount: 10 }], {
+        comparisonNodes: [
+          { project: null, totalCount: 5 },
+          { project: null, totalCount: 3 },
+        ],
         dimensions,
         metric: mockTotalCountMetric,
       });
@@ -285,44 +250,35 @@ describe('withTrendValues', () => {
   });
 
   describe('when a dimension value cannot be identified', () => {
+    const mockNamespace = (fullName) => ({ __typename: 'Namespace', fullName });
+
     it('leaves the row unpaired rather than matching it on its label', () => {
-      const rows = withTrendValues(
-        [
-          {
-            project: { __typename: 'Namespace', fullName: 'Group A', webUrl: '/groups/group-a' },
-            totalCount: 10,
-          },
-        ],
-        {
-          comparisonNodes: [
-            {
-              project: { __typename: 'Namespace', fullName: 'Group B', webUrl: '/groups/group-b' },
-              totalCount: 5,
-            },
-          ],
-          dimensions: [mockProjectDimension],
-          metric: mockTotalCountMetric,
-        },
-      );
+      const rows = withTrendValues([{ project: mockNamespace('Group A'), totalCount: 10 }], {
+        comparisonNodes: [{ project: mockNamespace('Group B'), totalCount: 5 }],
+        dimensions: [mockProjectDimension],
+        metric: mockTotalCountMetric,
+      });
 
       expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
       expect(rows[0][TREND_CHANGE_KEY]).toBe(null);
     });
 
+    it('leaves it unpaired even against the same unidentified value, unlike a blank', () => {
+      const rows = withTrendValues([{ project: mockNamespace('Group A'), totalCount: 10 }], {
+        comparisonNodes: [{ project: mockNamespace('Group A'), totalCount: 5 }],
+        dimensions: [mockProjectDimension],
+        metric: mockTotalCountMetric,
+      });
+
+      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
+    });
+
     it('does not pair it with an identifiable row either', () => {
-      const rows = withTrendValues(
-        [
-          {
-            project: { __typename: 'Namespace', fullName: 'Group A', webUrl: '/groups/group-a' },
-            totalCount: 10,
-          },
-        ],
-        {
-          comparisonNodes: [{ project: mockProject('acme / cli'), totalCount: 5 }],
-          dimensions: [mockProjectDimension],
-          metric: mockTotalCountMetric,
-        },
-      );
+      const rows = withTrendValues([{ project: mockNamespace('Group A'), totalCount: 10 }], {
+        comparisonNodes: [{ project: mockProject('acme / cli'), totalCount: 5 }],
+        dimensions: [mockProjectDimension],
+        metric: mockTotalCountMetric,
+      });
 
       expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
     });

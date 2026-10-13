@@ -71,7 +71,7 @@ In this example, the change to ignore the column went into release `12.5`.
 
 > [!note]
 > Ignoring and dropping columns should not occur simultaneously in the same release. Dropping a column before properly ignoring it in the model can cause problems with zero-downtime migrations,
-> where the running instances can fail trying to look up the removed column until the Rails schema cache expires. This can be an issue for self-managed customers who attempt to follow zero-downtime upgrades,
+> where the running instances can fail trying to look up the removed column until the Rails schema cache expires. This can be an issue for GitLab Self-Managed customers who attempt to follow zero-downtime upgrades,
 > forcing them to explicitly restart all running GitLab instances to re-load the updated schema. To avoid this scenario, first, ignore the column (release M), then, drop it in the next release (release M+1).
 
 #### Ignoring columns referenced by database views
@@ -491,7 +491,7 @@ Doing this requires steps in two minor releases:
 1. [Add the `SafelyChangeColumnDefault` concern to the model](#add-the-safelychangecolumndefault-concern-to-the-model-and-change-the-default-in-a-post-migration) and change the default in a post-migration.
 1. [Clean up the `SafelyChangeColumnDefault` concern](#clean-up-the-safelychangecolumndefault-concern-in-the-next-minor-release) in the next minor release.
 
-We must wait a minor release before cleaning up the `SafelyChangeColumnDefault` because self-managed
+We must wait a minor release before cleaning up the `SafelyChangeColumnDefault` because GitLab Self-Managed
 releases bundle an entire minor release into a single zero-downtime deployment.
 
 ### Add the `SafelyChangeColumnDefault` concern to the model and change the default in a post-migration

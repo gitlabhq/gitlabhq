@@ -6,7 +6,7 @@ export default {
   provide: {
     organizationGid: 'gid://gitlab/Organizations::Organization/1',
     organizationName: 'GitLab',
-    searchUrl: '/-/autocomplete/users.json',
+    searchUrl: '/o/my-org/admin/users/invite_search.json',
   },
 };
 

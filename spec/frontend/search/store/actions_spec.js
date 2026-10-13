@@ -9,7 +9,11 @@ import { createAlert } from '~/alert';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_REQUEST_TIMEOUT,
+} from '~/lib/utils/http_status';
 import * as urlUtils from '~/lib/utils/url_utility';
 
 import {
@@ -335,7 +339,7 @@ describe('Global Search Store Actions', () => {
             payload,
             { ...state, ...getters },
             [{ type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } }],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
         });
       });
@@ -356,7 +360,7 @@ describe('Global Search Store Actions', () => {
               { type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } },
               { type: types.SET_QUERY, payload: { key: 'page', value: 1 } },
             ],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
         });
       });
@@ -374,7 +378,7 @@ describe('Global Search Store Actions', () => {
             payload,
             { ...state, ...getters },
             [{ type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } }],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
 
           expect(updateHistory).toHaveBeenCalled();
@@ -398,7 +402,7 @@ describe('Global Search Store Actions', () => {
               { type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } },
               { type: types.SET_QUERY, payload: { key: 'page', value: 1 } },
             ],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
         });
       });
@@ -525,6 +529,7 @@ describe('Global Search Store Actions', () => {
     ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${'issues'}   | ${[MOCK_NAVIGATION_ACTION_MUTATION]} | ${0}
     ${actions.fetchSidebarCount} | ${{ method: null, code: 0 }}                                    | ${'error'}   | ${'projects'} | ${[]}                                | ${1}
     ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${'issues'}   | ${[]}                                | ${1}
+    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: HTTP_STATUS_REQUEST_TIMEOUT }}       | ${'timeout'} | ${'issues'}   | ${[]}                                | ${0}
   `('fetchSidebarCount', ({ action, axiosMock, type, expectedMutations, scope, errorLogs }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {
@@ -576,8 +581,6 @@ describe('Global Search Store Actions', () => {
         return `http://test.host/search/count?search=${params.search || '*'}`;
       });
 
-      storeUtils.skipBlobESCount = jest.fn().mockReturnValue(true);
-
       mock.onGet().reply(HTTP_STATUS_OK, MOCK_ENDPOINT_RESPONSE);
     });
 
@@ -597,6 +600,7 @@ describe('Global Search Store Actions', () => {
     ${actions.fetchAllAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION} | ${0}
     ${actions.fetchAllAggregation} | ${{ method: 'onPut', code: 0 }}                                 | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
     ${actions.fetchAllAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+    ${actions.fetchAllAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_REQUEST_TIMEOUT }}       | ${'timeout'} | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${0}
   `('fetchAllAggregation', ({ action, axiosMock, type, expectedMutations, errorLogs }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {
@@ -668,7 +672,6 @@ describe('Global Search Store Actions', () => {
       state = createState({
         query: MOCK_QUERY,
         searchType: 'zoekt',
-        zoektLanguageAggregationsEnabled: true,
       });
     });
 
@@ -703,7 +706,6 @@ describe('Global Search Store Actions', () => {
       state = createState({
         query: MOCK_QUERY,
         searchType: 'advanced',
-        zoektLanguageAggregationsEnabled: false,
       });
     });
 
@@ -724,7 +726,6 @@ describe('Global Search Store Actions', () => {
       state = createState({
         query: { ...MOCK_QUERY, search: 'foo' },
         searchType: 'zoekt',
-        zoektLanguageAggregationsEnabled: true,
       });
       setWindowLocation('https://gdk.test/search?scope=blobs&search=foo');
       urlUtils.updateHistory.mockClear();

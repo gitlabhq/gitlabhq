@@ -41,10 +41,6 @@ describe('tooltips/index.js', () => {
     target.dispatchEvent(event);
   };
 
-  beforeEach(() => {
-    window.gon.features = { glTooltips: true };
-  });
-
   afterEach(() => {
     document.body.childNodes.forEach((node) => node.remove());
     destroy();

@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - read_oauth_application
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

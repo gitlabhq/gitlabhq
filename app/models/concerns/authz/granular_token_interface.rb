@@ -9,6 +9,10 @@ module Authz
   # - #granular?: whether the token carries granular scopes
   # - #granular_scopes: the token's Authz::GranularScope collection
   #   (an ActiveRecord association or any enumerable)
+  #
+  # Includers may override:
+  # - #subject_to_granular_enforcement?: whether a legacy token is denied in
+  #   namespaces that enforce granular tokens
   module GranularTokenInterface
     extend ActiveSupport::Concern
 
@@ -16,6 +20,10 @@ module Authz
 
     def legacy?
       !granular?
+    end
+
+    def subject_to_granular_enforcement?
+      legacy?
     end
 
     def permitted_for_boundary?(boundary, permissions)

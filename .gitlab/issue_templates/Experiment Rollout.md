@@ -4,31 +4,25 @@
 
 This issue tracks the rollout and status of an experiment through to removal.
 
-1. Feature flag name: `<feature-flag-name>`
-1. Epic or issue link: `<issue or epic link>`
+1. Feature implementation: `<implementation issue link>`
+1. Cleanup issue: `<cleanup issue link>`
+1. Experiment Dashboard: `https://experiment-dashboard-90c264.gitlab.io/experiment/<feature-flag-name>` - rollout percentage, forced variant assignment, and per-variant event counts for this experiment. Replace the placeholder in the path to make it a working link.
 
-This is an experiment rollout issue
-using the scoped [experiment label](https://about.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-rollout-issue). 
-As well as defining the experiment rollout and cleanup, this issue incorporates the relevant 
-[`Feature Flag Roll Out`](https://gitlab.com/gitlab-org/gitlab/-/edit/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md) steps. 
+> [!note]
+> Process and guidance live in the docs. This issue holds the commands and tracks the rollout.
+> [Experiment rollouts](https://docs.gitlab.com/development/experiment_guide/experiment_rollout/) · [Feature flag controls](https://docs.gitlab.com/development/feature_flags/controls/) · [Growth experimentation handbook](https://handbook.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-rollout-issue)
+>
+> The scoped `experiment::` label is the experiment's status: `pending` → `active` → `validated` / `invalidated` / `inconclusive`.
+> Whoever completes a step sets the label for it.
 
 ## Owners
 
 - Team: `group::TEAM_NAME`
-- Most appropriate slack channel to reach out to: `#g_TEAM_NAME`
-- Best individual to reach out to: NAME
+- Slack channel: `#g_TEAM_NAME`
+- Engineering DRI: NAME
 - Product manager (PM): NAME
 
-### Stakeholders
-
-<!--
-Are there any other stages or teams involved that need to be kept in the loop?
-
-- PM: Name
-- Group: `group::TEAM_NAME`
-- The Support Team
-- The Delivery Team
--->
+<!-- Other teams to keep in the loop, for example Support or Delivery. -->
 
 ## Expectations
 
@@ -42,109 +36,121 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 ### What can we monitor to detect problems with this?
 
-<!-- Which dashboards from https://dashboards.gitlab.net are most relevant? -->
+<!-- Which dashboards from https://dashboards.gitlab.net are most relevant for application health?
+     For the experiment's own signals - rollout percentage, assignment split, per-variant event counts - use the Experiment Dashboard: https://experiment-dashboard-90c264.gitlab.io/ -->
 
 ## Tracked data
-<!-- brief description or link to issue or Sisense dashboard -->
 
-Note: you can use the [CXL calculator](https://cxl.com/ab-test-calculator/) to determine if your experiment has reached significance. The calculator includes an estimate for how much longer an experiment must run for before reaching significance.
+<!-- Link the implementation issue's tracking table. -->
 
-### Pre-staging validation (Development)
+To check significance, use the [CXL calculator](https://cxl.com/ab-test-calculator/). It also estimates how much longer the run needs.
 
-Before deploying to staging, engineers must validate event structure locally using [Snowplow Micro](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/local_setup_and_debugging/#snowplow-micro).
+### Event-shape proof (local / CI)
 
-**Event structure validation should happen during development, not in staging or production.**
+Event **shape** - which events fire per variant, their category/action/label, and the `gitlab_experiment` Snowplow context - is proven locally before code review with a [tracking journey contract](https://docs.gitlab.com/development/internal_analytics/capturing_snowplow_events_in_specs/#assert-a-tracking-journey-contract), and re-proven by CI on every pipeline.
 
-After triggering all experiment events locally for each variant (control and candidate), paste the raw Snowplow Micro output below as proof that events are correctly structured.
+**Staging and production do not re-validate shape.** They validate that these events are flowing (see below).
+
+- Contract fixture: `spec/fixtures/snowplow_tracking_journeys/<experiment-name>.yml`
+- Feature spec: `{ee/,}spec/features/<area>/<some_feature>_spec.rb:<line>` <!-- the spec for the surface the experiment changes, wherever that already lives -->
+- Local run: `bin/rspec <path to feature spec>` - `<paste the pass/fail line here>`
+
+The run writes `events.yml` (the structured events) and `payloads.json` (the raw payloads) per example — see [Read the events a spec captured](https://docs.gitlab.com/development/internal_analytics/capturing_snowplow_events_in_specs/#read-the-events-a-spec-captured) for where they land locally and in CI.
+
+Paste the `events.yml` contents for each variant below, and attach that variant's `payloads.json` from the same run as a file (or link the CI job artifact, which keeps both for 31 days).
 
 <details>
-<summary>Snowplow Micro raw dump (expand to view)</summary>
+<summary>Events validation - control (expand to view)</summary>
 
-<!-- Paste the raw JSON response from Snowplow Micro's /micro/good endpoint here. -->
+<!-- Paste the events.yml contents for the control variant here. -->
+<!-- Attach the payloads.json for the control variant here. -->
 
 </details>
 
-### Staging validation
+<details>
+<summary>Events validation - candidate (expand to view)</summary>
 
-In staging, validate **only** that events are being received in Snowplow — not their structure (which was validated locally).
+<!-- Paste the events.yml contents for the candidate variant here. -->
+<!-- Attach the payloads.json for the candidate variant here. -->
 
-**UX validation:**
-- [ ] Verify the control experience renders correctly
-- [ ] Verify the candidate experience renders correctly
-- [ ] Verify transitions between control and candidate are smooth
+</details>
 
-**Tracking event validation:**
-- [ ] Confirm assignment events appear in the [Growth Experiment Event Validation Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard)
-- [ ] Confirm all expected events are received (events may take 24+ hours to appear)
+<!-- A/B/n experiment: add one details block per additional variant, named after that variant. -->
 
-### Production validation
+### Reproduction steps (UAT)
 
-In production, validate that events are flowing correctly into Snowflake.
+<!-- These are the steps the tracking journey feature spec drives in CI, written out so a human can
+     walk them by hand during UAT. Derive them from the spec rather than writing them from scratch,
+     so the manual walkthrough and the automated proof stay the same journey. -->
 
-**Tracking event validation:**
-- [ ] Confirm events appear in the [GLEX Experiment Analysis Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard)
-- [ ] Confirm events appear in the [General Snowplow Event Exploration Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/SnowplowEventExplorationLast30Days/SnowplowEventExplorationLast30D)
+- **Page / URL:** `<url or path>`
+- **Steps:**
+  1. `<step>`
+  1. `<step>`
+- **Control looks like:** `<what renders on screen>` (`data-testid="<testid>"`)
+- **Candidate looks like:** `<what renders on screen>` (`data-testid="<testid>"`)
 
-**Note:** Events may take 24+ hours to appear in Tableau dashboards.
+**How to force a variant:**
 
-## Rollout plan
-<!-- Add an overview and method for modifying the feature flag -->
+| Where | How |
+| --- | --- |
+| Local | Enable [SaaS simulation](https://docs.gitlab.com/development/ee_features/#simulate-a-saas-instance) (`GITLAB_SIMULATE_SAAS=1`), then in the Rails console run `include Gitlab::Experiment::Dsl` followed by `Feature.enable(:<feature-flag-name>, experiment(:<feature-flag-name>, actor: User.first))`. For control, either do not enable the flag for that actor, or use a second actor a percentage rollout assigned to control. |
+| Staging / production | On the [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/), under **Forced Assignment** — [steps](https://gitlab.com/gitlab-org/growth/experiment-dashboard#forcing-a-variant-for-uat). Pick the environment first. |
 
-- Runtime in days, or until we expect to reach statistical significance: `30`
-- We will roll this out behind a feature flag and expose this to `<rollout-percentage>`% of actors to start then ramp it up from there.
+## Rollout
 
-`/chatops gitlab run feature set <feature-flag-name> <rollout-percentage> --actors`
+Runtime: `30` days, or until significance.
 
-### Status
+<!-- The steps come from the implementation issue's Rollout strategy section. Adjust them to this experiment. -->
 
+| Step | Environment | Percentage | Planned date | ChatOps command |
+| --- | --- | --- | --- | --- |
+| 1 | staging | `50` | `<date>` | `/chatops gitlab run feature set <feature-flag-name> 50 --actors --staging` |
+| 2 | production | `10` | `<date>` | `/chatops gitlab run feature set <feature-flag-name> 10 --actors` |
+| 3 | production | `50` | `<date>` | `/chatops gitlab run feature set <feature-flag-name> 50 --actors` |
 
-#### Preferred workflow
+Staging behaves like production, so always ramp with `--actors`. Never set the flag to `true`: that resolves the experiment and gives every actor the candidate.
 
-The issue should be assigned to the Product manager (PM) or Engineer (Eng) as follows:
+Run production ChatOps in `#production` and cross-post to the team channel. If the experiment touches a critical path (for example sign-up, checkout, or authentication), notify `#support_gitlab-com` before step 2 ([when to communicate](https://docs.gitlab.com/development/feature_flags/controls/#communicate-the-change)). Check each step on the [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/) before the next.
 
-1. PM determines and manages the status of the experiment (assign this issue to the PM)
-1. PM asks for initial rollout on production, or changes to the status (assign to an Eng)
-1. Eng changes the status using `chatops` (reassign to the PM)
-1. When concluded, PM updates the 'Roll Out Steps' and adds a milestone (assigns to an Eng)
+### Rollback
 
-The current status and history can be viewed using the: 
-
-- [API](https://gitlab.com/api/v4/experiments) (GitLab team members)
-- [Feature flag log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&utf8=%E2%9C%93&state=all) (GitLab team members)
-- [Experiment rollout board](https://gitlab.com/groups/gitlab-org/-/boards/1352542)
-
-In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
-
-### Experiment Results
-<!-- update when experiment in/validated, set the scoped `~experiment::` status accordingly -->
-
-## Roll Out Steps
-
-- [ ] [Confirm that end-to-end tests pass with the feature flag enabled](https://docs.gitlab.com/development/testing_guide/end_to_end/feature_flags/#confirming-that-end-to-end-tests-pass-with-a-feature-flag-enabled). If there are failing tests, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) to collaborate in updating the tests or confirming that the failing tests are not caused by the changes behind the enabled feature flag.
-  - See [`#e2e-run-staging` Slack channel](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) and look for the following messages:
-    - test kicked off: `Feature flag <feature-flag-name> has been set to true on **gstg**`
-    - test result: `This pipeline was triggered due to toggling of <feature-flag-name> feature flag`
-- [ ] Enable on staging (`/chatops gitlab run feature set <feature-flag-name> true --staging`)
-- [ ] Test on staging
-- [ ] Ensure that documentation has been updated
-- [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour  (`/chatops gitlab run feature set --project=gitlab-org/gitlab <feature-flag-name> true`)
-- [ ] Coordinate a time to enable the flag with the SRE oncall and release managers
-  - In `#production` mention `@sre-oncall` and `@release-managers`. Once an SRE on call and Release Manager on call confirm, you can proceed with the rollout
-- [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
-- [ ] Enable on GitLab.com by running chatops command in `#production` (`/chatops gitlab run feature set <feature-flag-name> true`)
-- [ ] Cross post chatops Slack command to `#support_gitlab-com` ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/development/feature_flags/controls/#where-to-run-commands)) and in your team channel
-- [ ] Announce on the issue that the flag has been enabled
-- [ ] Remove experiment code and feature flag and add changelog entry via the linked [cleanup issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Experiment%20Cleanup) (created during implementation)
-- [ ] After the flag removal is deployed, [clean up the feature flag](https://docs.gitlab.com/development/feature_flags/controls/#cleaning-up) by running chatops command in `#production` channel
-- [ ] Assign to the product manager to update the [knowledge base](https://about.gitlab.com/direction/growth/#growth-insights-knowledge-base) (if applicable)
-
-## Rollback Steps
-
-- [ ] This feature can be disabled by running the following Chatops command:
-
+```plaintext
+/chatops gitlab run feature set <feature-flag-name> false            # this experiment, production
+/chatops gitlab run feature set <feature-flag-name> false --staging  # this experiment, staging
 ```
-/chatops gitlab run feature set <feature-flag-name> false
-```
+
+## Validation
+
+### Staging UAT
+
+Gates the production ramp. Use the [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/) with the environment set to `staging`:
+
+- [ ] The experiment is live at the expected rollout percentage
+- [ ] Force **control**, walk the reproduction steps above, and check the control experience
+- [ ] Force **candidate**, walk the same steps, and check the candidate experience
+
+### Production
+
+- [ ] When the first production step is live, set `~"experiment::active"` on this issue
+
+### Event population
+
+Does not gate the ramp. Tick these as the data arrives:
+
+- [ ] Staging: on the [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/) set to `staging`, the event-validation card shows every declared action, for every variant
+- [ ] Production: on the [Experiment Dashboard](https://experiment-dashboard-90c264.gitlab.io/) set to `production`, the event-validation card shows the expected events, for every variant
+
+The dashboard's counts are a daily snapshot, so events can take 24+ hours to appear. Staging has far less traffic than production, so what matters there is whether each event fires for every variant, not the counts. To cross-check, you can view the same data in Tableau: [staging](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard), [production](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard). Before comparing counts, see [reading the numbers carefully](https://gitlab.com/gitlab-org/growth/experiment-dashboard#reading-the-numbers-carefully).
+
+## Experiment Results
+
+<!-- The PM records the result and the reasoning here, with a link to the analysis. Update the Growth knowledge base if applicable. -->
+
+- [ ] PM sets the scoped label `~"experiment::validated"`, `~"experiment::invalidated"` or `~"experiment::inconclusive"`. The cleanup issue takes its path from this label, so cleanup cannot start without it.
+
+> [!note]
+> Removing the experiment code and the feature flag, and closing this issue, happen in the linked cleanup issue.
 
 ## Experiment Successful Cleanup Concerns
 
@@ -157,5 +163,13 @@ before becoming permanent parts of the product.
 Example: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70451#note_727246104
 -->
 
+<!--
+Due date: the planned end of the experiment run. Take it from the implementation issue's
+"Rollout strategy" section (for example "run for ~3 weeks" after the production rollout)
+and replace the placeholder below with an ISO date (YYYY-MM-DD). If the end date is not
+known yet, delete the /due line and set the due date once the rollout is scheduled.
+Adjust the due date later if the rollout period changes.
+-->
+/due <YYYY-MM-DD>
 /label ~"feature flag" ~"devops::growth" ~"growth experiment" ~"experiment-rollout" ~Engineering ~"workflow::scheduling" ~"experiment::pending"
 /milestone %"Next 1-3 releases" 

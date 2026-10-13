@@ -4,12 +4,14 @@ require 'spec_helper'
 
 RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
+  let_it_be(:organization) { create(:common_organization) }
 
   let(:gpg_key) { build(:gpg_key, user: user) }
 
   subject(:service) { described_class.new(gpg_key) }
 
   before do
+    stub_current_organization(organization)
     gpg_key.valid?
   end
 
@@ -24,6 +26,42 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
       expect(::Gitlab::BeyondIdentity::Client).not_to receive(:new)
 
       expect(service.execute).to be(true)
+    end
+  end
+
+  context 'when BeyondIdentity is activated in another organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:integration) { create(:beyond_identity_integration, :instance, organization: other_organization) }
+
+    before do
+      stub_current_organization(other_organization)
+    end
+
+    it 'does not verify the key' do
+      expect(::Gitlab::BeyondIdentity::Client).not_to receive(:new)
+
+      expect(service.execute).to be(true)
+      expect(gpg_key.externally_verified).to be_falsey
+    end
+  end
+
+  context 'when the key owner has an active integration in a different organization from the request' do
+    let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+    let_it_be(:other_organization) { create(:organization) }
+
+    before do
+      stub_current_organization(other_organization)
+    end
+
+    it 'verifies the key against the owner organization integration' do
+      expect_next_instance_of(::Gitlab::BeyondIdentity::Client) do |instance|
+        expect(instance).to receive(:execute).with(
+          { key_id: 'CCFBE19F00AC8B1D', committer_email: user.email }
+        )
+      end
+
+      expect(service.execute).to be(true)
+      expect(gpg_key.externally_verified).to be_truthy
     end
   end
 

@@ -307,8 +307,7 @@ export default {
   },
   methods: {
     hasSlotContents(slotName) {
-      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
-      return Boolean(this.$slots[slotName]);
+      return Boolean(this.glSlots()[slotName]);
     },
     scopedLabel(label) {
       const allowsScopedLabels =
@@ -317,6 +316,9 @@ export default {
     },
     labelTitle(label) {
       return label.title || label.name;
+    },
+    labelFooter(label) {
+      return label.archived ? __('Archived') : '';
     },
     labelTarget(label) {
       const value = encodeURIComponent(this.labelTitle(label));
@@ -383,7 +385,7 @@ export default {
     class="issue !gl-flex gl-flex-col gl-gap-y-3 !gl-px-5 @sm/panel:gl-flex-row"
     :class="{
       closed: issuable.closedAt,
-      '!gl-bg-feedback-info': isActive,
+      '!gl-bg-strong': isActive,
       'issue-clickable gl-relative gl-cursor-pointer': isClickableLink,
       'hover:gl-bg-subtle': isClickableLink && !isActive,
     }"
@@ -564,6 +566,7 @@ export default {
             :title="labelTitle(label)"
             :description="label.description"
             :scoped="scopedLabel(label)"
+            :footer="labelFooter(label)"
             :target="labelTarget(label)"
             @click.stop
           />
@@ -575,8 +578,7 @@ export default {
         v-if="showIssuableMeta"
         class="controls gl-flex gl-max-w-full gl-flex-wrap-reverse gl-justify-end gl-gap-3 gl-gap-y-2"
       >
-        <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-        <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
+        <li v-if="glSlots().status" data-testid="issuable-status" class="!gl-mr-0">
           <button
             v-if="!isOpen"
             v-gl-tooltip.top

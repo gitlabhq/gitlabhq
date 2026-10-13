@@ -1,0 +1,25 @@
+---
+description: Tracks when a completed placeholder user reassignment is revoked
+internal_events: true
+action: revoke_placeholder_user_reassignment
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: id of the placeholder user
+  property:
+    description: id of the user that revoked the reassignment
+  import_type:
+    description: the import source e.g. gitlab_migration, github, bitbucket, gitea
+  reassign_to_user_state:
+    description: the state of the user that revoked the reassignment e.g. active, blocked
+product_group: import
+product_categories:
+- importers
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256175
+tiers:
+- free
+- premium
+- ultimate

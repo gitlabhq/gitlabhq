@@ -37,8 +37,7 @@ describe('~/security_configuration/components/app', () => {
 
   const createComponent = ({
     shouldShowCallout = true,
-    vulnerabilitiesAcrossContexts = true,
-    glFeatures = {},
+    refTrackingAvailable = true,
     mergeRequestsEnabled = true,
     licensedFeatures = {},
     ...propsData
@@ -55,10 +54,7 @@ describe('~/security_configuration/components/app', () => {
       },
       provide: {
         ...provideMock,
-        glFeatures: {
-          vulnerabilitiesAcrossContexts,
-          ...glFeatures,
-        },
+        refTrackingAvailable,
       },
       stubs: {
         ...stubChildren(SecurityConfigurationApp),
@@ -400,10 +396,10 @@ describe('~/security_configuration/components/app', () => {
     });
   });
 
-  describe('when the "vulnerabilitiesAcrossContexts" feature flag is disabled', () => {
+  describe('when ref tracking is unavailable', () => {
     beforeEach(() => {
       createComponent({
-        vulnerabilitiesAcrossContexts: false,
+        refTrackingAvailable: false,
       });
     });
 

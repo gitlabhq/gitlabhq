@@ -15,6 +15,7 @@ module Tasks
             error_tracking_token_auth: 'Error tracking token',
             geo_jwt_auth: 'Geo node JWT',
             geo_proxy_auth: 'Geo proxy',
+            github_oauth_webhook_signature_auth: 'GitHub OAuth webhook signature',
             gitlab_shared_secret_auth: 'GitLab shared secret',
             gitlab_shell_token_auth: 'GitLab Shell token',
             iam_oauth_token_auth: 'IAM OAuth token',

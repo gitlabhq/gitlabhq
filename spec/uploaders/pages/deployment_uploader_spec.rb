@@ -60,6 +60,96 @@ RSpec.describe Pages::DeploymentUploader, feature_category: :pages do
     end
   end
 
+  describe '.object_store_credentials' do
+    before do
+      allow(described_class).to receive(:object_store_options).and_return(
+        Gitlab::Configs.build_options(
+          'enabled' => true,
+          'remote_directory' => 'pages',
+          'connection' => connection.deep_stringify_keys
+        )
+      )
+    end
+
+    subject(:credentials) { described_class.object_store_credentials }
+
+    context 'when the provider is AWS with an IAM profile' do
+      let(:connection) { { provider: 'AWS', use_iam_profile: true, region: 'eu-central-1' } }
+
+      it 'defaults the credential refresh threshold to cover the Pages cache lifetime' do
+        expect(credentials).to eq(
+          provider: 'AWS',
+          use_iam_profile: true,
+          region: 'eu-central-1',
+          aws_credentials_refresh_threshold_seconds: described_class::AWS_CREDENTIALS_REFRESH_THRESHOLD_SECONDS
+        )
+      end
+
+      it 'is honoured by the fog connection built from the credentials' do
+        Fog.mock!
+        allow(Fog::AWS::Storage).to receive(:fetch_credentials).and_return(
+          aws_access_key_id: 'AKIATEMPORARY',
+          aws_secret_access_key: SecureRandom.hex(20),
+          aws_session_token: SecureRandom.hex(20),
+          aws_credentials_expire_at: 1.hour.from_now
+        )
+
+        storage = Fog::Storage.new(credentials)
+
+        expect(storage.send(:credentials_refresh_threshold))
+          .to eq(described_class::AWS_CREDENTIALS_REFRESH_THRESHOLD_SECONDS)
+      end
+
+      context 'when use_iam_profile is a string' do
+        let(:connection) { { provider: 'AWS', use_iam_profile: 'true', region: 'eu-central-1' } }
+
+        it 'defaults the credential refresh threshold' do
+          expect(credentials[:aws_credentials_refresh_threshold_seconds])
+            .to eq(described_class::AWS_CREDENTIALS_REFRESH_THRESHOLD_SECONDS)
+        end
+      end
+
+      context 'when the refresh threshold is set explicitly' do
+        let(:connection) do
+          {
+            provider: 'AWS',
+            use_iam_profile: true,
+            region: 'eu-central-1',
+            aws_credentials_refresh_threshold_seconds: 60
+          }
+        end
+
+        it 'keeps the explicit value' do
+          expect(credentials[:aws_credentials_refresh_threshold_seconds]).to eq(60)
+        end
+      end
+    end
+
+    context 'when the provider is AWS with static keys' do
+      let(:connection) { { provider: 'AWS', aws_access_key_id: 'static-id', region: 'eu-central-1' } }
+
+      it 'returns the connection settings unchanged' do
+        expect(credentials).to eq(connection)
+      end
+    end
+
+    context 'when the provider is AWS with use_iam_profile disabled' do
+      let(:connection) { { provider: 'AWS', use_iam_profile: false, region: 'eu-central-1' } }
+
+      it 'returns the connection settings unchanged' do
+        expect(credentials).to eq(connection)
+      end
+    end
+
+    context 'when the provider is not AWS' do
+      let(:connection) { { provider: 'Google', google_project: 'project', use_iam_profile: true } }
+
+      it 'returns the connection settings unchanged' do
+        expect(credentials).to eq(connection)
+      end
+    end
+  end
+
   describe '#trim_filename_if_needed' do
     where(:input_filename, :expected_output, :description) do
       [

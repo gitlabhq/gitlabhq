@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Files do
+RSpec.describe Gitlab::Ci::Config::Entry::Files, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -99,12 +99,57 @@ RSpec.describe Gitlab::Ci::Config::Entry::Files do
         end
       end
 
+      context 'when entry value is an empty array' do
+        let(:config) { [] }
+
+        it 'saves errors' do
+          expect(entry.errors)
+            .to include 'files config requires at least 1 item'
+        end
+      end
+
       context 'when entry value contains more than two values' do
         let(:config) { %w[file1 file2 file3] }
 
         it 'saves errors' do
           expect(entry.errors)
             .to include 'files config has too many items (maximum is 2)'
+        end
+      end
+
+      context 'when a maximum is given' do
+        let(:entry) do
+          Gitlab::Ci::Config::FeatureFlags.with_actor(nil) { described_class.new(config, max_size: 3) }
+        end
+
+        context 'when entry value is within the maximum' do
+          let(:config) { %w[file1 file2 file3] }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'when entry value exceeds the maximum' do
+          let(:config) { %w[file1 file2 file3 file4] }
+
+          it 'saves errors' do
+            expect(entry.errors)
+              .to include 'files config has too many items (maximum is 3)'
+          end
+        end
+
+        context 'when the increase_ci_cache_key_files_limit feature flag is disabled' do
+          let(:config) { %w[file1 file2 file3] }
+
+          before do
+            stub_feature_flags(increase_ci_cache_key_files_limit: false)
+          end
+
+          it 'uses the default maximum' do
+            expect(entry.errors)
+              .to include 'files config has too many items (maximum is 2)'
+          end
         end
       end
     end

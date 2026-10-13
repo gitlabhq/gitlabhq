@@ -19,9 +19,9 @@ module Integrations
       def self.update_scopes(slack_integrations, scopes)
         return if slack_integrations.empty?
 
-        slack_integrations = slack_integrations.preload_integration_organization
+        slack_integrations = slack_integrations.preloaded_sharding_key_parents
         organization_ids_by_integration = slack_integrations.each_with_object({}) do |slack_integration, result|
-          result[slack_integration.id] = slack_integration.integration.organization_id_from_parent
+          result[slack_integration.id] = slack_integration.organization_id_from_parent
         end
 
         scopes_by_organization = ApiScope.find_or_initialize_by_names_and_organizations(
@@ -35,9 +35,9 @@ module Integrations
             {
               slack_integration_id: slack_integration.id,
               slack_api_scope_id: scope.id,
-              organization_id: slack_integration.integration.organization_id,
-              group_id: slack_integration.integration.group_id,
-              project_id: slack_integration.integration.project_id
+              organization_id: slack_integration.organization_id,
+              group_id: slack_integration.group_id,
+              project_id: slack_integration.project_id
             }
           end
         end
@@ -52,13 +52,9 @@ module Integrations
       private
 
       def ensure_sharding_key
-        # TODO: get sharding key directly from SlackIntegration
-        # https://gitlab.com/gitlab-org/gitlab/-/work_items/582748
-        parent_integration = slack_integration.integration
-
-        self.project_id = parent_integration.project_id
-        self.group_id = parent_integration.group_id
-        self.organization_id = parent_integration.organization_id
+        self.project_id = slack_integration.project_id
+        self.group_id = slack_integration.group_id
+        self.organization_id = slack_integration.organization_id
       end
     end
   end

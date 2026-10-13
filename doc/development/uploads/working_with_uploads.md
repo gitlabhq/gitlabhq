@@ -29,7 +29,7 @@ to use the same Uploader class for different mount points or different
 models.
 
 If you do want or need your own Uploader class then you should make it
-a **subclass of `AttachmentUploader`**. You then inherit the storage
+a subclass of `AttachmentUploader`. You then inherit the storage
 location and directory scheme from that class. The directory scheme
 is:
 
@@ -39,7 +39,7 @@ File.join(model.class.underscore, mounted_as.to_s, model.id.to_s)
 
 If you look around in the GitLab code base you find quite a few
 Uploaders that have their own storage location. For object storage,
-this means Uploaders have their own buckets. We now **discourage**
+this means Uploaders have their own buckets. We now discourage
 adding new buckets for the following reasons:
 
 - Using a new bucket adds to development time because you need to make downstream changes in [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit), [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) and [CNG](https://gitlab.com/gitlab-org/build/CNG).
@@ -156,7 +156,7 @@ GitLab uses a modified version of
 manage uploads. Below we describe how we use CarrierWave and how
 we modified it.
 
-The central concept of CarrierWave is the **Uploader** class. The
+The central concept of CarrierWave is the Uploader class. The
 Uploader defines where files get stored, and optionally contains
 validation and processing logic. To use an Uploader you must associate
 it with a text column on an ActiveRecord model. This is called "mounting"

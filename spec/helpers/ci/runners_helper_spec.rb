@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
-  let_it_be(:admin_user) { create(:user, :admin) }
   let_it_be(:non_admin_user) { create(:user) }
   let_it_be(:user) { non_admin_user }
+
+  let(:admin_user) { build_stubbed(:user, :admin) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -20,7 +21,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   end
 
   describe '#admin_runners_app_data', :enable_admin_mode do
-    let_it_be(:user) { admin_user }
+    let(:user) { admin_user }
 
     subject(:data) { helper.admin_runners_app_data }
 
@@ -51,7 +52,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   end
 
   describe '#admin_runners_fleet_dashboard_data', :enable_admin_mode do
-    let_it_be(:user) { admin_user }
+    let(:user) { admin_user }
 
     subject(:data) { helper.admin_runners_fleet_dashboard_data }
 
@@ -165,7 +166,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   end
 
   describe '#group_runners_data_attributes' do
-    let(:group) { create(:group) }
+    let(:group) { build_stubbed(:group) }
 
     context 'when user can register group runners' do
       before do
@@ -272,8 +273,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   describe '#toggle_shared_runners_settings_data' do
     let_it_be(:group) { create(:group) }
 
-    let(:project_with_runners) { create(:project, namespace: group, shared_runners_enabled: true) }
-    let(:project_without_runners) { create(:project, namespace: group, shared_runners_enabled: false) }
+    let(:project_with_runners) { build_stubbed(:project, namespace: group, shared_runners_enabled: true) }
+    let(:project_without_runners) { build_stubbed(:project, namespace: group, shared_runners_enabled: false) }
 
     context 'when project has runners' do
       it 'returns the correct value for is_enabled' do
@@ -316,7 +317,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
       end
 
       it 'returns false for is_disabled_and_unoverridable when project has no group' do
-        project = create(:project)
+        project = build_stubbed(:project)
 
         data = helper.toggle_shared_runners_settings_data(project)
         expect(data[:is_disabled_and_unoverridable]).to eq("false")
@@ -332,8 +333,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
 
       with_them do
         it 'returns the override runner status for project with group' do
-          group = create(:group, shared_runners_setting)
-          project = create(:project, group: group, shared_runners_enabled: false)
+          group = build_stubbed(:group, shared_runners_setting)
+          project = build_stubbed(:project, group: group, shared_runners_enabled: false)
 
           data = helper.toggle_shared_runners_settings_data(project)
           expect(data[:is_disabled_and_unoverridable]).to eq(is_disabled_and_unoverridable)

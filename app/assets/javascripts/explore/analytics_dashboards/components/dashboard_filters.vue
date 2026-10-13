@@ -17,25 +17,39 @@ export default {
     scopeLabel: s__('AnalyticsDashboards|Scope'),
     dateRangeLabel: s__('AnalyticsDashboards|Date range'),
   },
-  // The page is mounted at instance, group and project level. Only the latter two put a group on
-  // the body dataset, and the picker browses the user's own top-level groups without one.
-  inject: {
-    defaultGroupFullPath: { default: null },
-  },
   props: {
     dashboardFilters: {
       type: Object,
       required: false,
       default: () => ({}),
     },
-    scopePath: {
-      type: String,
+    scopePaths: {
+      type: Array,
       required: false,
-      default: '',
+      default: () => [],
+    },
+    // The range the page resolved for this load from the URL. The date
+    // filter owns its selection after mount, so this only seeds it.
+    dateRangeFilter: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
-  emits: ['set-date-range', 'set-scope', 'error'],
+  emits: ['set-date-range', 'set-scope', 'ready', 'error'],
   computed: {
+    scopeConfig() {
+      return this.dashboardFilters?.scope ?? {};
+    },
+    showScopePicker() {
+      return this.scopeConfig.enabled !== false;
+    },
+    scopeMultiSelect() {
+      return this.scopeConfig.multiSelect === true;
+    },
+    scopeRequirePermissions() {
+      return this.scopeConfig.requirePermissions ?? [];
+    },
     dateRangeConfig() {
       return this.dashboardFilters?.dateRange ?? {};
     },
@@ -51,6 +65,13 @@ export default {
     dateRangeLimit() {
       return this.dateRangeConfig.numberOfDaysLimit ?? 0;
     },
+    dateRangeSelectedOption() {
+      return this.dateRangeFilter.dateRangeOption ?? this.dateRangeDefaultOption;
+    },
+  },
+  mounted() {
+    // Call ready immediately if the scope picker is disabled
+    if (!this.showScopePicker) this.$emit('ready');
   },
 };
 </script>
@@ -61,17 +82,25 @@ export default {
     :aria-label="$options.i18n.region"
     class="gl-flex gl-flex-col gl-gap-5 md:gl-flex-row md:gl-gap-3"
   >
-    <gl-form-group class="gl-full-w gl-mb-0" :label="$options.i18n.scopeLabel">
+    <gl-form-group
+      v-if="showScopePicker"
+      class="gl-full-w gl-mb-0"
+      :label="$options.i18n.scopeLabel"
+    >
       <scope-picker
-        :group-full-path="defaultGroupFullPath || ''"
-        :initial-path="scopePath"
+        :multi-select="scopeMultiSelect"
+        :require-permissions="scopeRequirePermissions"
+        :initial-paths="scopePaths"
         @change="$emit('set-scope', $event)"
+        @ready="$emit('ready')"
         @error="$emit('error', $event)"
       />
     </gl-form-group>
     <gl-form-group v-if="showDateRangeFilter" class="gl-mb-0" :label="$options.i18n.dateRangeLabel">
       <date-range-filter
-        :default-option="dateRangeDefaultOption"
+        :default-option="dateRangeSelectedOption"
+        :start-date="dateRangeFilter.startDate || null"
+        :end-date="dateRangeFilter.endDate || null"
         :options="dateRangeOptions"
         :date-range-limit="dateRangeLimit"
         @change="$emit('set-date-range', $event)"

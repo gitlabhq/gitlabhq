@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# Serves the instance under a subpath.
+#
+# Opt-in, not part of the base rig. A job enables it from caproni.local.yaml
+# with QA_RELATIVE_URL_ROOT exported:
+#
+#   extends:
+#     - caproni.relative-url.yaml
+
+variables:
+  # Fail the config load, not the Helm install, when the subpath is missing
+  QA_RELATIVE_URL_ROOT: ${QA_RELATIVE_URL_ROOT:?export QA_RELATIVE_URL_ROOT}
+
+deployers:
+  gitlab:
+    helm:
+      # Appended to the base overrides, so only the subpath key goes here
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            global.appConfig.relativeUrlRoot: ${QA_RELATIVE_URL_ROOT}

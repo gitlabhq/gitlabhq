@@ -15,7 +15,7 @@ module API
         params :request_job_params do
           requires :token, type: String, desc: "Runner's authentication token"
           optional :system_id, type: String, desc: "Runner's system identifier"
-          optional :last_update, type: String, desc: "Runner's queue last_update token"
+          optional :last_update, type: String, desc: '`last_update` token of the runner queue.'
           optional :info, type: Hash, desc: "Runner's metadata" do
             optional :name, type: String, desc: "Runner's name"
             optional :version, type: String, desc: "Runner's version"
@@ -29,10 +29,10 @@ module API
             end
             optional :labels, type: Hash, desc: "Runner's labels"
           end
-          optional :session, type: Hash, desc: "Runner's session data" do
-            optional :url, type: String, desc: "Session's url"
-            optional :certificate, type: String, desc: "Session's certificate"
-            optional :authorization, type: String, desc: "Session's authorization"
+          optional :session, type: Hash, desc: 'Session data of the runner.' do
+            optional :url, type: String, desc: 'URL of the session.'
+            optional :certificate, type: String, desc: 'Certificate of the session.'
+            optional :authorization, type: String, desc: 'Authorization of the session.'
           end
         end
 

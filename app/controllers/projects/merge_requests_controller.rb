@@ -43,22 +43,25 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)
     push_frontend_feature_flag(:explicit_mr_work_item_relations, project)
+    push_frontend_feature_flag(:merge_button_shimmer, current_user, type: :beta)
+    push_frontend_feature_flag(:merge_request_reports_widget_group, project)
     gon.push({ rapid_diffs_page_enabled: rapid_diffs_page_enabled? })
   end
 
   before_action do
     push_frontend_feature_flag(:merge_widget_stop_polling, current_user)
+    push_frontend_feature_flag(:improved_review_email, project)
   end
 
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :reports, :discussions]
 
-  after_action :log_merge_request_show, only: [:show, :diffs]
+  after_action :log_merge_request_show, only: [:show, :diffs, :reports]
 
   feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :toggle_award_emoji, :toggle_subscription, :update,
+    :show, :diffs, :reports, :toggle_award_emoji, :toggle_subscription, :update,
     :versions
   ]
 
@@ -76,6 +79,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :diffs,
     :diff_files_metadata,
     :diffs_stats,
+    :reports,
     :commits,
     :bulk_update,
     :edit,
@@ -120,6 +124,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return show_merge_request unless rapid_diffs_page_enabled?
 
     show_rapid_diffs
+  end
+
+  def reports
+    show_merge_request
   end
 
   def commits
@@ -444,25 +452,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     rapid_diffs_presenter.baseline_offset = 5
 
     show_merge_request
-  rescue StandardError => exception
-    log_exception(exception)
-
-    feedback_link = view_context.link_to(
-      _("Leave feedback"),
-      "https://gitlab.com/gitlab-org/gitlab/-/work_items/596236",
-      class: 'gl-link',
-      target: '_blank',
-      rel: 'noopener noreferrer'
-    )
-
-    redirect_to(
-      diffs_project_merge_request_path(project, @merge_request, rapid_diffs_disabled: 'true'),
-      alert: safe_format(
-        _("Rapid Diffs encountered an error and has been temporarily disabled. " \
-          "The page has loaded using the standard diff view. %{feedback_link}"),
-        feedback_link: feedback_link
-      )
-    )
   end
 
   def show_merge_request

@@ -651,7 +651,9 @@ class Environment < ApplicationRecord
   def run_stop_action!(job, link_identity:)
     ::Gitlab::Auth::Identity.link_from_job(job) if link_identity
 
-    result = job.play(job.user)
+    # rate_limit: false because a throttled stop action would leave the environment stopped
+    # without ever running its on_stop job.
+    result = job.play(job.user, rate_limit: false)
     result.payload[:job]
   rescue StateMachines::InvalidTransition
     # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry.

@@ -26,7 +26,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The group ID or full group path.'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
       end
 
       namespace ':id/-/packages/debian' do
@@ -34,7 +34,7 @@ module API
 
         # GET groups/:id/-/packages/debian/pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name
         params do
-          requires :project_id, type: Integer, desc: 'The Project Id'
+          requires :project_id, type: Integer, desc: 'ID of the project.'
           use :shared_package_file_params
         end
 
@@ -50,11 +50,11 @@ module API
           tags %w[packages_debian]
         end
         params do
-          requires :distribution, type: String, desc: 'The Debian distribution name'
-          requires :letter, type: String, desc: 'The package name first letter'
-          requires :package_name, type: String, desc: 'The package name'
-          requires :package_version, type: String, desc: 'The package version'
-          requires :file_name, type: String, desc: 'The package file name'
+          requires :distribution, type: String, desc: 'Codename or suite of the Debian distribution.'
+          requires :letter, type: String, desc: 'Debian classification of the package, either first-letter or lib-first-letter.'
+          requires :package_name, type: String, desc: 'Name of the source package.'
+          requires :package_version, type: String, desc: 'Version of the source package.'
+          requires :file_name, type: String, desc: 'Name of the package file.'
         end
 
         route_setting :authorization, permissions: :download_debian_package, boundary_type: :group

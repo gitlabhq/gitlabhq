@@ -63,43 +63,38 @@ You can also use advanced search in a project or group.
 - Searching comments on merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572590) in GitLab 18.6 [with a feature flag](../../administration/feature_flags/_index.md) named `search_merge_request_queries_notes`. Disabled by default.
 - Searching comments on merge requests [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/573750) in GitLab 18.7. Feature flag `search_merge_request_queries_notes` removed.
 - Groups scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+- Groups scope [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/607018) in GitLab 19.5. Feature flag `elasticsearch_group_search` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the Groups scope is controlled by a feature flag.
-> For more information, see the history.
 
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:
 
-| Scope                       | Global <sup>1</sup> <sup>2</sup> | Group       | Project     |
+| Scope                       | Global[^disable-global-search-scopes], [^global-search-saas] | Group       | Project     |
 |-----------------------------|----------------------------------|-------------|-------------|
 | Code                        | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Comments                    | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Commits                     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| Groups <sup>5</sup>         | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
-| Work items <sup>3</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| Merge requests <sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| Milestones <sup>4</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Groups[^group-search-returns]         | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
+| Work items[^search-work-items]     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Merge requests[^search-work-items] | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Milestones[^advanced-search-returns]     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Projects                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
 | Users                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Wikis                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 
-**Footnotes**:
-
-1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
-   On GitLab Self-Managed, global search is not available when limited indexing is enabled by default.
-   An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces).
-1. On GitLab.com, global search is not enabled for code, commits, and wikis.
-1. When you search work items and merge requests, results
-   include comments that match your search term.
-1. Advanced search returns only project milestones because group milestones are not indexed
-   in Elasticsearch. For more information, see
-   [issue 428589](https://gitlab.com/gitlab-org/gitlab/-/issues/428589).
-1. Group search returns the subgroups of the group you're searching in, not the group itself.
-   The `backfill_groups_to_elasticsearch` advanced search migration must be complete before
-   this scope returns results.
+[^disable-global-search-scopes]: An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
+    On GitLab Self-Managed, global search is not available when limited indexing is enabled by default.
+    An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces).
+[^global-search-saas]: On GitLab.com, global search is not enabled for code, commits, and wikis.
+[^search-work-items]: When you search work items and merge requests, results
+    include comments that match your search term.
+[^advanced-search-returns]: Advanced search returns only project milestones because group milestones are not indexed
+    in Elasticsearch. For more information, see
+    [issue 428589](https://gitlab.com/gitlab-org/gitlab/-/issues/428589).
+[^group-search-returns]: Group search returns the subgroups of the group you're searching in, not the group itself.
+    The `backfill_groups_to_elasticsearch` advanced search migration must be complete before
+    this scope returns results.
 
 ## Syntax
 

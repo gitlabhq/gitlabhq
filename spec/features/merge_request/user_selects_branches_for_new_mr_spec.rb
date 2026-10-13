@@ -68,7 +68,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     fill_in "merge_request_title", with: "Orphaned MR test"
     click_button "Create merge request"
 
-    page.within 'main' do
+    page.within '.panel-header-inner-actions' do
       click_button 'Code'
       click_button "Check out branch"
     end

@@ -7,14 +7,15 @@ import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import PanelActionsPortal from '~/vue_shared/components/panel_actions_portal.vue';
 import { buildFixPipelineContext, reportToSentry } from '~/ci/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
+import { InternalEvents } from '~/tracking';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
@@ -47,6 +48,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     PageHeading,
+    PanelActionsPortal,
     HeaderActions,
     HeaderBadges,
     TimeAgoTooltip,
@@ -67,7 +69,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [InternalEvents.mixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',
@@ -98,10 +100,15 @@ export default {
         return !this.pipelineIid;
       },
       update(data) {
-        const newFavicon = data?.project?.pipeline?.detailedStatus?.favicon;
-        this.setFavicon(newFavicon);
+        const pipeline = data?.project?.pipeline;
 
-        return data.project.pipeline;
+        if (!pipeline) {
+          return this.pipeline;
+        }
+
+        this.setFavicon(pipeline.detailedStatus?.favicon);
+
+        return pipeline;
       },
       result({ data }) {
         // we use a manual subscribeToMore call due to issues with
@@ -228,7 +235,7 @@ export default {
       return this.pipeline?.commit?.webPath || '';
     },
     commitTitle() {
-      return this.pipeline?.commit?.title || '';
+      return this.pipeline?.commit?.title || this.pipeline?.commitTitle || '';
     },
     totalJobsText() {
       const totalJobs = this.pipeline?.totalJobs || 0;
@@ -343,6 +350,9 @@ export default {
         this.favicon = newFavicon;
       }
     },
+    trackHeaderAction(event) {
+      this.trackEvent(event, { label: this.pipeline?.source });
+    },
     reportFailure(errorType, errorMessages = []) {
       this.failureType = errorType;
       this.failureMessages = errorMessages;
@@ -377,10 +387,12 @@ export default {
       this.postPipelineAction(pipelineCancel, cancelPipelineMutation, id);
     },
     retryPipeline(id) {
+      this.trackHeaderAction('click_retry_pipeline_in_pipeline_header');
       this.isRetrying = true;
       this.postPipelineAction(pipelineRetry, retryPipelineMutation, id);
     },
     async deletePipeline(id) {
+      this.trackHeaderAction('click_delete_pipeline_in_pipeline_header');
       this.isDeleting = true;
 
       try {
@@ -419,10 +431,13 @@ export default {
     <gl-alert
       v-if="hasError"
       class="gl-mb-4"
-      :title="failure.text"
+      :title="failureMessages.length > 0 ? failure.text : ''"
       :variant="failure.variant"
       :dismissible="false"
     >
+      <div v-if="failureMessages.length === 0">
+        {{ failure.text }}
+      </div>
       <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
         {{ failureMessage }}
       </div>
@@ -529,35 +544,45 @@ export default {
       </template>
 
       <template #actions>
-        <duo-workflow-action
-          v-if="showFixPipelineButton"
-          class="gl-self-start"
-          :project-path="paths.fullProject"
-          workflow-definition="fix_pipeline/v1"
-          :goal="pipelinePath"
-          size="medium"
-          :source-branch="sourceBranch"
-          :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
-          :additional-context="getAdditionalContext"
-          :source="$options.SOURCE"
-        >
-          {{ __('Fix pipeline with Duo') }}
-        </duo-workflow-action>
-        <header-actions
-          v-if="pipeline.id"
-          class="gl-self-start"
-          :pipeline="pipeline"
-          :is-retrying="isRetrying"
-          :is-canceling="isCanceling"
-          :is-deleting="isDeleting"
-          @retry-pipeline="retryPipeline($event)"
-          @cancel-pipeline="cancelPipeline($event)"
-          @delete-pipeline="deletePipeline($event)"
-        />
+        <panel-actions-portal>
+          <duo-workflow-action
+            v-if="showFixPipelineButton"
+            :project-path="paths.fullProject"
+            workflow-definition="fix_pipeline/v1"
+            :goal="pipelinePath"
+            size="medium"
+            :source-branch="sourceBranch"
+            :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
+            :additional-context="getAdditionalContext"
+            :source="$options.SOURCE"
+            @triggering="trackHeaderAction('click_fix_pipeline_in_pipeline_header')"
+          >
+            {{ __('Fix pipeline with Duo') }}
+          </duo-workflow-action>
+          <header-actions
+            v-if="pipeline.id"
+            :pipeline="pipeline"
+            :is-retrying="isRetrying"
+            :is-canceling="isCanceling"
+            :is-deleting="isDeleting"
+            @retry-pipeline="retryPipeline($event)"
+            @cancel-pipeline="cancelPipeline($event)"
+            @delete-pipeline="deletePipeline($event)"
+          />
+        </panel-actions-portal>
       </template>
     </page-heading>
 
     <pipeline-agent-sessions v-if="pipeline" class="gl-mt-4" />
-    <pipeline-account-verification-alert class="gl-mt-4" />
+    <pipeline-account-verification-alert
+      class="gl-mt-4"
+      :title="s__('IdentityVerification|Verify your identity to run this pipeline')"
+      :description="
+        s__(
+          'IdentityVerification|This step is separate from the verification you completed during registration.',
+        )
+      "
+      :button-text="s__('IdentityVerification|Verify identity')"
+    />
   </div>
 </template>

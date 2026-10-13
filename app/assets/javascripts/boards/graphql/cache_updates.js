@@ -6,6 +6,12 @@ import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.grap
 import { listsDeferredQuery } from 'ee_else_ce/boards/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import {
+  convertToGraphQLId,
+  getIdFromGraphQLId,
+  getTypeFromGraphQLId,
+} from '~/graphql_shared/utils';
 
 import setErrorMutation from './client/set_error.mutation.graphql';
 
@@ -61,19 +67,21 @@ export function updateIssueCountAndWeight({
   shouldClone,
   cache,
 }) {
+  // The list query is not cached until its list has rendered; updateQuery passes null then.
   if (!shouldClone) {
     cache.updateQuery(
       {
         query: listQuery,
         variables: { id: fromListId, filters: filterParams },
       },
-      ({ boardList }) => ({
-        boardList: {
-          ...boardList,
-          issuesCount: boardList.issuesCount - 1,
-          totalIssueWeight: boardList.totalIssueWeight - issue.weight,
+      (data) =>
+        data && {
+          boardList: {
+            ...data.boardList,
+            issuesCount: data.boardList.issuesCount - 1,
+            totalIssueWeight: data.boardList.totalIssueWeight - issue.weight,
+          },
         },
-      }),
     );
   }
 
@@ -82,15 +90,16 @@ export function updateIssueCountAndWeight({
       query: listQuery,
       variables: { id: toListId, filters: filterParams },
     },
-    ({ boardList }) => ({
-      boardList: {
-        ...boardList,
-        issuesCount: boardList.issuesCount + 1,
-        ...(issue.weight
-          ? { totalIssueWeight: toNumber(boardList.totalIssueWeight) + issue.weight }
-          : {}),
+    (data) =>
+      data && {
+        boardList: {
+          ...data.boardList,
+          issuesCount: data.boardList.issuesCount + 1,
+          ...(issue.weight
+            ? { totalIssueWeight: toNumber(data.boardList.totalIssueWeight) + issue.weight }
+            : {}),
+        },
       },
-    }),
   );
 }
 
@@ -110,16 +119,17 @@ export function updateEpicsCount({
         query: listsDeferredQuery[issuableType].query,
         variables: { id: fromListId, filters: filterParams },
       },
-      ({ epicBoardList }) => ({
-        epicBoardList: {
-          ...epicBoardList,
-          metadata: {
-            ...epicBoardList.metadata,
-            epicsCount: epicBoardList.metadata.epicsCount - 1,
-            totalWeight: epicBoardList.metadata.totalWeight - epicWeight,
+      (data) =>
+        data && {
+          epicBoardList: {
+            ...data.epicBoardList,
+            metadata: {
+              ...data.epicBoardList.metadata,
+              epicsCount: data.epicBoardList.metadata.epicsCount - 1,
+              totalWeight: data.epicBoardList.metadata.totalWeight - epicWeight,
+            },
           },
         },
-      }),
     );
   }
 
@@ -128,17 +138,35 @@ export function updateEpicsCount({
       query: listsDeferredQuery[issuableType].query,
       variables: { id: toListId, filters: filterParams },
     },
-    ({ epicBoardList }) => ({
-      epicBoardList: {
-        ...epicBoardList,
-        metadata: {
-          ...epicBoardList.metadata,
-          epicsCount: epicBoardList.metadata.epicsCount + 1,
-          totalWeight: epicBoardList.metadata.totalWeight + epicWeight,
+    (data) =>
+      data && {
+        epicBoardList: {
+          ...data.epicBoardList,
+          metadata: {
+            ...data.epicBoardList.metadata,
+            epicsCount: data.epicBoardList.metadata.epicsCount + 1,
+            totalWeight: data.epicBoardList.metadata.totalWeight + epicWeight,
+          },
         },
       },
-    }),
   );
+}
+
+/**
+ * A board card is an `Issue`, but the detail drawer reads the same record as a `WorkItem`,
+ * so writing the mutation result leaves the drawer's copy stale. Evicting it forces a refetch.
+ */
+export function evictWorkItemForIssue({ cache, issueId }) {
+  if (getTypeFromGraphQLId(issueId) !== TYPENAME_ISSUE) {
+    return;
+  }
+
+  cache.evict({
+    id: cache.identify({
+      __typename: TYPENAME_WORK_ITEM,
+      id: convertToGraphQLId(TYPENAME_WORK_ITEM, getIdFromGraphQLId(issueId)),
+    }),
+  });
 }
 
 export function setError({ message, error, captureError = true }) {

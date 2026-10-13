@@ -9,6 +9,7 @@ import AdminProjectsApp from '~/admin/projects/index/components/app.vue';
 import routes from './routes';
 
 Vue.use(VueRouter);
+Vue.use(VueApollo);
 
 export const createRouter = (basePath) => {
   const router = new VueRouter({

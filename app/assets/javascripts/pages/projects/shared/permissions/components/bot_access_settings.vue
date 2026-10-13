@@ -2,7 +2,7 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
 import { s__ } from '~/locale';
-import ProjectSettingRow from './project_setting_row.vue';
+import ProjectSettingRow from '~/projects/settings/components/project_setting_row.vue';
 
 export default {
   name: 'BotAccessSettings',

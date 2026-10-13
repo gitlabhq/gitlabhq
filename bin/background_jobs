@@ -51,7 +51,9 @@ start_sidekiq()
   cmd="exec"
   chpst=$(command -v chpst || true)
 
-  if [ -n "$chpst" ]; then
+  # Foreground supervisors (runit, Caproni) stop Sidekiq by signalling our
+  # process group, which `chpst -P` would move it out of.
+  if [ -n "$chpst" ] && [ "$action" != "start_foreground" ]; then
     cmd="${cmd} ${chpst} -P"
   fi
 

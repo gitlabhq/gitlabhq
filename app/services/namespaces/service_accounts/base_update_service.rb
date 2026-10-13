@@ -4,6 +4,7 @@ module Namespaces
   module ServiceAccounts
     class BaseUpdateService < ::Users::ServiceAccounts::UpdateService
       extend ::Gitlab::Utils::Override
+      include ::Gitlab::Utils::StrongMemoize
 
       attr_reader :resource_id
 
@@ -65,6 +66,13 @@ module Namespaces
       def resource_not_found_message
         raise Gitlab::AbstractMethodError
       end
+
+      def root_namespace
+        resource&.root_ancestor
+      end
+      strong_memoize_attr :root_namespace
     end
   end
 end
+
+Namespaces::ServiceAccounts::BaseUpdateService.prepend_mod

@@ -52,6 +52,19 @@ type streamManager struct {
 	cloudServiceStream selfHostedWorkflowStream
 	originalReq        *http.Request
 	sendMu             sync.Mutex
+
+	// teardownReason reports what workhorse recorded as the cause for the
+	// stream ending. runner wires this to its own tracker; it is nil where
+	// there is no runner, in which case nothing recorded a cause.
+	teardownReason func() teardownReason
+}
+
+// teardownReasonLabel returns the teardown_reason value for sessionErrorsTotal.
+func (sm *streamManager) teardownReasonLabel() string {
+	if sm.teardownReason == nil {
+		return teardownUnsolicited.String()
+	}
+	return sm.teardownReason().String()
 }
 
 func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, error) {
@@ -120,7 +133,14 @@ func (sm *streamManager) Close() error {
 		cloudServiceErrs = errors.Join(cloudServiceErrs, sm.cloudServiceClient.Close())
 	}
 
-	return errors.Join(sm.wf.CloseSend(), sm.client.Close(), cloudServiceErrs)
+	var workflowErr error
+	// Skip the half-close once the caller is gone: grpc-go is already resetting
+	// the stream, and an END_STREAM that wins that race shows DWS a clean EOF.
+	if sm.originalReq.Context().Err() == nil {
+		workflowErr = sm.wf.CloseSend()
+	}
+
+	return errors.Join(workflowErr, sm.client.Close(), cloudServiceErrs)
 }
 
 // handleCloudServiceTracking sends tracking data to cloud service for self-hosted deployments
@@ -200,7 +220,7 @@ func (sm *streamManager) Recv() (*pb.Action, error) {
 		}
 
 		grpcCode := status.Code(err)
-		sessionErrorsTotal.WithLabelValues(grpcCode.String()).Inc()
+		sessionErrorsTotal.WithLabelValues(grpcCode.String(), sm.teardownReasonLabel()).Inc()
 
 		// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
 		if sm.isUsageQuotaExceededError(err) {

@@ -23,6 +23,9 @@ To help manage vulnerabilities outside development:
 - Vulnerabilities detected in the default branch appear in [the vulnerability report](../vulnerability_report/_index.md). Use this report
   to triage, analyze, and remediate vulnerabilities.
 
+[Security Review Flow](../security_review.md) analyzes merge requests for business logic
+vulnerabilities and complements CI/CD-based security scanning.
+
 ## Security scanning
 
 To get the most from security scanning, it's important to understand:

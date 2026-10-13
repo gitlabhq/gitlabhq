@@ -50,8 +50,9 @@ across multiple projects and groups at once, use the
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 - Turn on **Allow foundational flows** and **SAST False Positive Detection** [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
 - Set [a default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace) in your user preferences.
+- [Configure your own runners](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
+- Recommended. Create an [agent configuration file](../../duo_agent_platform/flows/execution/_index.md#create-the-agent-configuration-file) so the flow has access to your project's toolchain and dependencies.
 
 ## Allow foundational flow for a group
 
@@ -112,7 +113,7 @@ The GitLab Duo analysis runs and results are displayed on the vulnerability deta
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21890) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `bulk_vulnerabilities_duo_workflow_api`. Disabled by default.
-- [Enabled by default for GitLab.com and GitLab Self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253325) in GitLab 19.4.
+- [Enabled by default for GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253325) in GitLab 19.4.
 
 {{< /history >}}
 

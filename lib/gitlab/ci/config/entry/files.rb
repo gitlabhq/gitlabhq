@@ -10,14 +10,22 @@ module Gitlab
         class Files < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
 
+          DEFAULT_MAX_SIZE = 2
+
           validations do
             validates :config, array_of_strings: true
             validates :config, length: {
               minimum: 1,
-              maximum: 2,
+              maximum: ->(entry) { entry.max_size },
               too_short: 'requires at least %{count} item',
               too_long: 'has too many items (maximum is %{count})'
             }
+          end
+
+          def max_size
+            return DEFAULT_MAX_SIZE unless opt(:max_size) && increased_limit_enabled?
+
+            opt(:max_size)
           end
 
           def value
@@ -28,6 +36,12 @@ module Gitlab
                 file_path
               end
             end
+          end
+
+          private
+
+          def increased_limit_enabled?
+            ::Gitlab::Ci::Config::FeatureFlags.enabled?(:increase_ci_cache_key_files_limit)
           end
         end
       end

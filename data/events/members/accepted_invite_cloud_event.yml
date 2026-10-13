@@ -1,0 +1,5 @@
+---
+event: Members::AcceptedInviteCloudEvent
+description: CloudEvent published when a user accepts a membership invitation to a group
+  or project.
+feature_category: user_management

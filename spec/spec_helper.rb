@@ -20,10 +20,13 @@ CrystalballEnv.start!
 
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
-ENV["GITLAB_SECURITY_MANAGER_ROLE"] = 'true'
 ENV["GITLAB_LOAD_WIP_CUSTOM_ABILITIES"] = 'true'
 
 require_relative '../config/environment'
+
+# Rails 8 draws routes lazily, so API::API may not be loaded when grape-path-helpers
+# memoizes its api_v4_*_path helpers. Draw them at boot as Rails 7.2 does.
+Rails.application.reload_routes_unless_loaded if Gitlab.next_rails?
 
 require 'rspec/mocks'
 require 'rspec/rails'
@@ -131,6 +134,7 @@ RSpec.configure do |config|
   config.include NonExistingRecordsHelpers
   config.include GitlabRoutingHelper
   config.include StubGitlabCalls
+  config.include StubIframeProviders
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include FileReadHelpers
@@ -303,9 +307,6 @@ RSpec.configure do |config|
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
 
-      # New personal homepage is still a WIP and not functional.
-      stub_feature_flags(personal_homepage: false)
-
       # Hiding unpinned sidebar items is WIP; disable globally to avoid
       # breaking feature specs that interact with sidebar sections.
       stub_feature_flags(hide_unpinned_sidebar_items: false)
@@ -330,10 +331,6 @@ RSpec.configure do |config|
       # Feature specs for when two_step_sign_in is enabled will be added in
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/584318
       stub_feature_flags(two_step_sign_in: false)
-
-      # Disable work_item_features_field while we work on it. Enabled in 18.10.
-      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220909
-      stub_feature_flags(work_item_features_field: false)
 
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
@@ -381,12 +378,6 @@ RSpec.configure do |config|
       allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
         current_user_mode.send(:user)&.can_access_admin_area?
       end
-    end
-
-    # Security manager is enabled by default via ENV var
-    # Tests can opt out with :disable_security_manager tag
-    if example.metadata[:disable_security_manager]
-      stub_env('GITLAB_SECURITY_MANAGER_ROLE', 'false')
     end
 
     # Make sure specs test by default admin mode setting on, unless forced to the opposite
@@ -442,12 +433,14 @@ RSpec.configure do |config|
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
-    # data_isolation is checked on every organizations query, causing it to appear in exception
-    # payloads via feature_flag_states. Suppress it to avoid polluting exception log assertions.
+    # data_isolation is checked on every organizations query, and attr_encrypted_multi_key_decrypt
+    # on every attr_encrypted read, causing them to appear in exception payloads via
+    # feature_flag_states. Suppress them to avoid polluting exception log assertions.
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226037
     RequestStore.delete(:feature_flag_events)
     allow(Feature).to receive(:log_feature_flag_states?).and_call_original
     allow(Feature).to receive(:log_feature_flag_states?).with(:data_isolation).and_return(false)
+    allow(Feature).to receive(:log_feature_flag_states?).with(:attr_encrypted_multi_key_decrypt).and_return(false)
   end
 
   config.before(:example, :assume_throttled) do |example|
@@ -598,8 +591,10 @@ RSpec.configure do |config|
 
     example.run
 
+    # The configuration is deliberately kept: resetting it restores a $stdout logger, and a
+    # checkpoint logged after teardown (feature specs keep serving requests) then reaches the
+    # LabKit field validator and fails the job on an offense no example is responsible for.
     Labkit::UserExperienceSli::Current.reset
-    Labkit::UserExperienceSli.reset_configuration
   end
 
   config.backtrace_exclusion_patterns << %r{lib/gitlab/database}

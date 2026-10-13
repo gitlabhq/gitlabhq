@@ -19,8 +19,11 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
     MERMAID
   end
 
+  let(:use_mermaid_v12) { true }
+  let(:sandbox_path) { sandbox_mermaid_v12_path }
+
   let(:mermaid_frame_selector) do
-    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_mermaid_v11_path}"
+    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_path}"
     "iframe[src^='#{src_prefix}'][sandbox='allow-scripts']"
   end
 
@@ -29,6 +32,7 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
   end
 
   before do
+    stub_feature_flags(use_mermaid_v12: use_mermaid_v12)
     sign_in user
     visit project_edit_blob_path(project, File.join(project.default_branch, 'README.md'))
   end
@@ -68,6 +72,20 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
 
       page.within('.js-markdown-code') do
         expect(page).to have_css(mermaid_frame_selector)
+      end
+    end
+
+    context 'when use_mermaid_v12 is disabled' do
+      let(:use_mermaid_v12) { false }
+      let(:sandbox_path) { sandbox_mermaid_v11_path }
+
+      it 'renders mermaid graphs with the Mermaid 11 sandbox' do
+        fill_editor(content_mermaid_graph)
+        click_link 'Preview'
+
+        page.within('.js-markdown-code') do
+          expect(page).to have_css(mermaid_frame_selector)
+        end
       end
     end
   end

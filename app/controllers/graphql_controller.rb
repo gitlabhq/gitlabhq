@@ -371,7 +371,7 @@ class GraphqlController < ApplicationController
 
     additional_properties = {
       label: graphql_operation_name,
-      pat_type: token_info[:pat_type],
+      pat_type: token_info[:token_granularity],
       response_code: response.status
     }
 

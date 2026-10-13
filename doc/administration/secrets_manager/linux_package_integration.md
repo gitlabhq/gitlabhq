@@ -42,7 +42,7 @@ Run OpenBao in one of two ways:
 
 > [!note]
 > For this installation procedure, provision a dedicated PostgreSQL instance for OpenBao.
-> Use a self-managed or managed PostgreSQL service that is separate from the PostgreSQL
+> Use a PostgreSQL service that is separate from the PostgreSQL
 > instance used by GitLab.
 > For more information, see [issue 7292](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/7292).
 

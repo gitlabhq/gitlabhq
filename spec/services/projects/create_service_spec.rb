@@ -246,6 +246,26 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
         create_proj
       end
+
+      context 'when a different step in after_create_actions raises an error' do
+        before do
+          stub_application_setting(pages_unique_domain_default_enabled: true)
+
+          allow(Gitlab::Pages).to receive(:add_unique_domain_to).and_raise(StandardError, 'boom')
+        end
+
+        it 'authorizes the creator and enqueues the refresh workers', :aggregate_failures do
+          expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async)
+          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+            .to receive(:perform_async).with(group.id)
+
+          project = create_proj
+
+          expect(project).to be_persisted
+          expect(project.project_authorizations.where(user_id: user.id).pluck(:access_level))
+            .to contain_exactly(50)
+        end
+      end
     end
   end
 

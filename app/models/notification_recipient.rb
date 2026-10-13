@@ -113,8 +113,8 @@ class NotificationRecipient
   def email_blocked?
     recipient_email = user.notification_email_for(@group)
 
-    Gitlab::ApplicationRateLimiter.peek(:permanent_email_failure, scope: recipient_email) ||
-      Gitlab::ApplicationRateLimiter.peek(:temporary_email_failure, scope: recipient_email)
+    Gitlab::ApplicationRateLimiter.peek(:permanent_email_failure, scope: { email: recipient_email }) ||
+      Gitlab::ApplicationRateLimiter.peek(:temporary_email_failure, scope: { email: recipient_email })
   end
 
   def has_access?

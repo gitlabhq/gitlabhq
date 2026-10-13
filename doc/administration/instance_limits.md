@@ -126,9 +126,6 @@ To set this limit for a GitLab Self-Managed instance, use the [Plan Limits API](
 or run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(web_hook_calls: 10)
 ```
 
@@ -167,9 +164,6 @@ To set these limits for a GitLab Self-Managed instance, use the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(
   service_desk_outbound_emails_per_hour: 100,
   service_desk_outbound_emails_per_day: 1000
@@ -180,7 +174,7 @@ Set a limit to `0` to disable it.
 
 - **Default rate limit**: Disabled (unlimited) on GitLab Self-Managed.
   For GitLab.com plan-specific limits, see
-  [Rate limits on GitLab.com](../user/gitlab_com/_index.md#service-desk-email-rate-limit).
+  [Rate limits on GitLab.com](../user/gitlab_com/rate_limits.md#service-desk-email-rate-limit).
 
 ### Search rate limit
 
@@ -227,6 +221,15 @@ Authenticated requests to the
 instead of the authenticated web request rate limit.
 
 - **Default rate limit**: Disabled. When enabled, defaults to 1,000 requests per 15 seconds per user.
+
+### MCP server rate limit
+
+Authenticated requests to the
+[GitLab MCP server](../user/model_context_protocol/mcp_server.md) (`POST /api/v4/mcp`) can use a
+[dedicated rate limit](settings/user_and_ip_rate_limits.md#enable-authenticated-mcp-server-request-rate-limit)
+in addition to the authenticated API request rate limit.
+
+- **Default rate limit**: Disabled. When enabled, defaults to 600 requests per 60 seconds per user.
 
 ## Gitaly concurrency limit
 
@@ -471,16 +474,14 @@ Some API endpoints have specific JSON validation limits.
 | Endpoint                                                                                     | Description           | Methods | Max depth | Max array size | Max hash size | Max total elements | Max JSON size | Mode |
 |:---------------------------------------------------------------------------------------------|:----------------------|:--------|:----------|:---------------|:--------------|:-------------------|:--------------|:-----|
 | All other paths                                                                              | Default               | All     | 32        | 50,000         | 50,000        | 100,000            | 0 (disabled)  | enforced |
-| `/api/v4/projects/{id}/terraform/state/`                                                     | Terraform state       | POST    | 64        | 50,000         | 50,000        | 250,000            | 50 MB         | logging <sup>1</sup> |
+| `/api/v4/projects/{id}/terraform/state/`                                                     | Terraform state       | POST    | 64        | 50,000         | 50,000        | 250,000            | 50 MB         | logging[^terraform-state-max] |
 | `/api/v4/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\|audits/quick}`               | NPM instance packages | POST    | 32        | 50,000         | 50,000        | 250,000            | 50 MB         | enforced |
 | `/api/v4/groups/{id}/-/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\|audits/quick}` | NPM group packages    | POST    | 32        | 50,000         | 50,000        | 250,000            | 50 MB         | enforced |
 | `/api/v4/projects/{id}/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\|audits/quick}` | NPM project packages  | POST    | 32        | 50,000         | 50,000        | 250,000            | 50 MB         | enforced |
 | `/api/v4/internal/*`                                                                         | Internal API          | POST    | 32        | 50,000         | 50,000        | 0 (disabled)       | 10 MB         | enforced |
 | `/api/v4/ai/duo_workflows/workflows/*`                                                        | GitLab Duo Workflow API      | POST    | 32        | 5,000          | 5,000         | 0 (disabled)       | 25 MB         | enforced |
 
-**Footnotes**:
-
-1. The Terraform state max size limit can be set by using the [application settings API](../api/settings.md) to set `max_terraform_state_size_bytes`.
+[^terraform-state-max]: The Terraform state max size limit can be set by using the [application settings API](../api/settings.md) to set `max_terraform_state_size_bytes`.
 
 ### Environment variable configuration
 
@@ -521,9 +522,6 @@ To set the maximum number of group or project webhooks for a GitLab Self-Managed
 run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 # For project webhooks
 Plan.default.actual_limits.update!(project_hooks: 200)
 
@@ -596,9 +594,6 @@ The default limit for [GitLab Self-Managed](../subscriptions/manage_subscription
 To change this limit for a GitLab Self-Managed instance, run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(import_placeholder_user_limit_tier_1: 200)
 ```
 
@@ -617,9 +612,6 @@ To change this limit for a GitLab Self-Managed instance, run the following in th
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(pull_mirror_interval_seconds: 200)
 ```
 
@@ -644,9 +636,6 @@ To set this limit for a GitLab Self-Managed instance, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(offset_pagination_limit: 10000)
 ```
 
@@ -949,6 +938,20 @@ Issues and merge requests enforce these maximums:
 - Maximum assignees: 200
 - Maximum reviewers: 200
 
+## Maximum number of labels on a work item
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606182) in GitLab 19.5 [with a feature flag](feature_flags/_index.md) named `limit_labels_per_work_item`. Disabled by default.
+
+{{< /history >}}
+
+Work items (issues, epics, and tasks) can have a maximum of 100 labels.
+Work items that already have more than 100 labels are not affected. You can
+still remove their labels, but you cannot add more.
+
+Merge requests are not affected by this limit.
+
 ## Maximum number of project push mirrors
 
 {{< history >}}
@@ -1020,7 +1023,11 @@ The [dependency scanning using SBOM feature](../user/application_security/depend
 - Maximum number of upload requests per project per hour: 400
 - Maximum number of download requests per project per hour: 6000
 
-You can configure these limits for GitLab Self-Managed instances using the [dependency scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
+You can configure these upload and download limits for GitLab Self-Managed instances using the [dependency scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
+
+The API also applies a soft throttle of 50 SBOM scans per project per hour, across all pipelines in a project.
+Scans above this threshold still run, but at a lower priority, so they can take longer to complete.
+This throttle is separate from the upload and download limits, and you cannot configure it.
 
 ## Commits and Files API limits
 

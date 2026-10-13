@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::CardComponent, :aggregate_failures, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::CardComponent, :aggregate_failures, feature_category: :design_system do
   let(:header) { 'Slot header' }
   let(:body) { 'Slot body' }
   let(:footer) { 'Slot footer' }

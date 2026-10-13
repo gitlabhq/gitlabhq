@@ -156,7 +156,20 @@ namespace :gitlab do
       if doc == renderer.contents
         puts "GraphQL documentation is up to date"
       else
-        format_output('GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.')
+        format_output(
+          'GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.',
+          '',
+          'If this merge request does not change the GraphQL schema, the drift probably came',
+          'from master: this check runs against your branch alone, so a schema change that',
+          'landed after you branched fails here until you pick it up. Check with:',
+          '',
+          '  git fetch origin master',
+          '  git log --oneline HEAD..origin/master -- doc/api/graphql/reference/_index.md',
+          '',
+          'and rebase if that lists anything:',
+          '',
+          '  git rebase origin/master'
+        )
         abort
       end
     end

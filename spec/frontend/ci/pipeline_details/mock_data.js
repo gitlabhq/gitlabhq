@@ -52,23 +52,6 @@ export const pipelineDeleteMutationResponseFailed = {
   data: { pipelineDestroy: { errors: ['error'] } },
 };
 
-export const mockPipelineHeader = {
-  detailedStatus: {},
-  id: 123,
-  userPermissions: {
-    destroyPipeline: true,
-    updatePipeline: true,
-  },
-  createdAt: threeWeeksAgo.toISOString(),
-  user: {
-    id: 'user-1',
-    name: 'Foo',
-    username: 'foobar',
-    email: 'foo@bar.com',
-    avatarUrl: 'link',
-  },
-};
-
 export const pipelineHeaderFailedNoPermissions = {
   data: {
     project: {

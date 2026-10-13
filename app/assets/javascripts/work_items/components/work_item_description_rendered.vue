@@ -22,7 +22,6 @@ import { installRevertOnEscapePlugin } from '~/sortable/plugins/revert_on_escape
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -49,7 +48,7 @@ export default {
     ),
     GlButton,
   },
-  mixins: [trackingMixin, glFeatureFlagsMixin()],
+  mixins: [trackingMixin],
   props: {
     enableTruncation: {
       type: Boolean,
@@ -114,9 +113,6 @@ export default {
       return this.workItemDescription?.description;
     },
     descriptionHtml() {
-      if (this.withoutHeadingAnchors) {
-        return this.stripHeadingAnchors(this.workItemDescription?.descriptionHtml);
-      }
       return this.workItemDescription?.descriptionHtml;
     },
     isDescriptionEmpty() {
@@ -217,14 +213,14 @@ export default {
       }
     },
     renderSortableLists() {
-      // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
+      // We exclude GLFM table of contents, including nested lists within their `section-nav` root.
       // We also exclude footnotes, which are in an `ol` inside a `section.footnotes`.
       const lists = this.$el.querySelectorAll?.(
-        '.description ul:not(.section-nav), .description ul:not(.section-nav) ul, .description :not(section.footnotes) > ol',
+        '.description ul, .description :not(section.footnotes) > ol',
       );
 
       lists?.forEach((list) => {
-        if (list.children.length <= 1) {
+        if (list.closest('.section-nav') || list.children.length <= 1) {
           return;
         }
 
@@ -388,18 +384,14 @@ export default {
         });
         if (!replacement) return;
 
-        if (this.glFeatures.workItemsTaskListToggle) {
-          this.$emit('task-item-toggled', {
-            checked,
-            lineSource: replacement.oldLine,
-            lineSourcepos: replacement.sourcepos,
-            revert: () => {
-              target.checked = !checked;
-            },
-          });
-        } else {
-          this.$emit('description-updated', replacement.newMarkdown);
-        }
+        this.$emit('task-item-toggled', {
+          checked,
+          lineSource: replacement.oldLine,
+          lineSourcepos: replacement.sourcepos,
+          revert: () => {
+            target.checked = !checked;
+          },
+        });
       }
     },
     truncateLongDescription() {
@@ -412,10 +404,6 @@ export default {
       this.trackEvent('expand_description_on_workitem', {
         label: this.workItemType,
       });
-    },
-    stripHeadingAnchors(htmlString) {
-      const regex = /(<a[^>]+?aria-hidden="true" class="anchor)(")/g;
-      return htmlString?.replace(regex, '$1 after:!gl-hidden$2');
     },
   },
 };
@@ -434,7 +422,11 @@ export default {
         ref="gfm-content"
         v-safe-html="descriptionHtml"
         data-testid="work-item-description"
-        :class="{ truncated: isTruncated, 'has-task-list-item-actions': hasTaskListItemActions }"
+        :class="{
+          truncated: isTruncated,
+          'has-task-list-item-actions': hasTaskListItemActions,
+          '[&_a.anchor]:gl-hidden': withoutHeadingAnchors,
+        }"
         @change="toggleCheckboxes"
       ></div>
       <div v-if="isTruncated" class="description-more gl-z-1 -gl-ml-6 gl-block gl-w-full gl-pl-6">
@@ -456,9 +448,10 @@ export default {
       :description="childDescription"
       :full-path="fullPath"
       hide-button
+      :hide-namespace-selector="!isGroup"
+      :hide-type-selector="!isGroup"
       :is-group="isGroup"
       :parent-id="workItemId"
-      :show-project-selector="isGroup"
       :title="childTitle"
       :visible="visible"
       :preselected-work-item-type="childItemType"

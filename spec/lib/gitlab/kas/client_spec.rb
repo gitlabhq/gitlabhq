@@ -21,8 +21,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
     context 'internal url is not set' do
       before do
-        allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
-        allow(Gitlab::Kas).to receive(:internal_url).and_return(nil)
+        allow(Gitlab::Kas).to receive_messages(enabled?: true, internal_url: nil)
       end
 
       it 'raises a configuration error' do
@@ -37,8 +36,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     let(:feature_flags) { { 'kas-feature-a' => 'true', 'kas-feature-b': 'false' } }
 
     before do
-      allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
-      allow(Gitlab::Kas).to receive(:internal_url).and_return(kas_url)
+      allow(Gitlab::Kas).to receive_messages(enabled?: true, internal_url: kas_url)
 
       allow(JSONWebToken::HMACToken).to receive(:new)
         .with(Gitlab::Kas.secret)

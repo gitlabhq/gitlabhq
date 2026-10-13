@@ -9,6 +9,18 @@
       "minimum": 1,
       "default": 10,
       "description": "Maximum number of background operations jobs that can run concurrently"
+    },
+    "pg_ash_sampling_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to sample active session history with pg_ash"
+    },
+    "pg_ash_sample_interval_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60,
+      "default": 1,
+      "description": "Seconds between pg_ash active session history samples"
     }
   }
 }

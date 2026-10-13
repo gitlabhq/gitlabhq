@@ -8,7 +8,7 @@
 %tr
   %td.text-content
     %p
-    - if Feature.enabled?(:ui_for_organizations, member.present.user)
+    - if Organizations::Release.enabled?(:org_reference_in_member_access_granted_emails, member.present.user)
       - organization_name = link_to(member_source_organization.name, member_source_organization.web_url, target: '_blank', rel: 'noopener noreferrer', class: :highlight)
       = safe_format(_('You have been granted access to the %{source_name} %{source_type}, which is part of the %{organization_name} organization with the following role: %{role_name}.'), source_name: source_name, source_type: source_type, organization_name: organization_name, role_name: role_name)
     - else

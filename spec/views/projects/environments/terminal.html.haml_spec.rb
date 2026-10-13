@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/environments/terminal' do
-  let!(:environment) { create(:environment, :with_review_app) }
+  let_it_be_with_reload(:environment) { create(:environment, :with_review_app) }
 
   before do
     assign(:environment, environment)

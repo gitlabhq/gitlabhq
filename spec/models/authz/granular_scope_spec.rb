@@ -46,23 +46,6 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     it { is_expected.to belong_to(:namespace) }
   end
 
-  describe 'scopes' do
-    describe '.with_namespace' do
-      it 'returns scopes for the given namespace' do
-        expect(described_class.with_namespace(subgroup)).to match_array(scopes_for(:subgroup))
-      end
-
-      it 'returns empty when namespace_id is nil' do
-        expect(described_class.with_namespace(nil))
-          .to match_array(scopes_for(:instance, :standalone_user, :all_memberships))
-      end
-
-      it 'returns empty when namespace does not exist' do
-        expect(described_class.with_namespace(-1)).to be_empty
-      end
-    end
-  end
-
   describe '#expanded_permissions' do
     let(:scope) { build(:granular_scope, permissions: permissions) }
 

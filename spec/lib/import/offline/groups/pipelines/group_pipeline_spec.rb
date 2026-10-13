@@ -27,6 +27,7 @@ RSpec.describe Import::Offline::Groups::Pipelines::GroupPipeline, feature_catego
         'id' => 38,
         'name' => 'Source Group Name',
         'path' => 'source-group-path',
+        'created_at' => '2016-08-12T09:41:03',
         'visibility_level' => 0,
         'project_creation_level' => 2,
         'subgroup_creation_level' => 1,
@@ -68,6 +69,7 @@ RSpec.describe Import::Offline::Groups::Pipelines::GroupPipeline, feature_catego
       expect(imported_group).not_to be_nil
       expect(imported_group.parent).to eq(parent)
       expect(imported_group.path).to eq(destination_slug)
+      expect(imported_group.created_at).to eq(group_data['created_at'])
       expect(imported_group.description).to eq(group_data['description'])
       expect(imported_group.visibility_level).to eq(group_data['visibility_level'])
       expect(imported_group.project_creation_level).to eq(group_data['project_creation_level'])

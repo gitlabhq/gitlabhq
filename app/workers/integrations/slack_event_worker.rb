@@ -6,7 +6,10 @@ module Integrations
 
     EVENTS = {
       'app_home_opened' => SlackEvents::AppHomeOpenedService,
-      'app_mention' => SlackEvents::AppMentionedService
+      'app_mention' => SlackEvents::AppMentionedService,
+      # 1:1 and group DMs arrive as `message` events with channel_type `im` or
+      # `mpim`; SlackEventService only routes those variants here.
+      'message' => SlackEvents::AgentDmService
     }.freeze
 
     feature_category :integrations

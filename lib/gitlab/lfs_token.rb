@@ -96,7 +96,7 @@ module Gitlab
       end
 
       def token_valid?(token_to_check)
-        decoded_token = JSONWebToken::HMACToken.decode(token_to_check, secret).first
+        decoded_token = JSONWebToken::HMACToken.decode(token_to_check, secrets).first
         return false if decoded_token.dig('data', 'actor') != actor_name
 
         token_container = decoded_token.dig('data', 'container_gid')
@@ -111,16 +111,28 @@ module Gitlab
 
       attr_reader :actor, :container
 
+      # The current key is the last one
       def secret
+        secret_for(-1)
+      end
+
+      # Current key first, so tokens signed before a db_key_base rotation still verify
+      def secrets
+        key_count = ::Gitlab::Encryption::KeyProvider[:db_key_base].decryption_keys.size
+
+        (key_count - 1).downto(0).map { |key_index| secret_for(key_index) }
+      end
+
+      def secret_for(key_index)
         case actor
         when DeployKey, Key
           actor.fingerprint_sha256.first(16) +
             # Since fingerprint is based on the public key, let's take more bytes from db_key_base
-            ::Gitlab::Encryption::KeyProvider[:db_key_base_32].encryption_key.secret
+            ::Gitlab::Encryption::KeyProvider[:db_key_base_32].decryption_keys[key_index].secret
         when User
           # Take the last 16 characters as they're more unique than the first 16
           actor.id.to_s + actor.encrypted_password.last(16) +
-            ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret.first(16)
+            ::Gitlab::Encryption::KeyProvider[:db_key_base].decryption_keys[key_index].secret.first(16)
         end
       end
     end

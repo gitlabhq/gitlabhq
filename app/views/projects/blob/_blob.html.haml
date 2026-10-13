@@ -19,7 +19,7 @@
       #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
     = render "projects/blob/auxiliary_viewer", blob: blob, ref: @ref
 
-#blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
+#blob-content-holder.blob-content-holder
   - if @code_navigation_path
     #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref, ref_type: @ref_type) } }
   - if !expanded

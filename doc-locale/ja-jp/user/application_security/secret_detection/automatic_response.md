@@ -1,7 +1,8 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLabが、トークンを失効させるかパートナーに通知することで、流出したシークレットに自動的に対応する方法を説明します。また、ベンダーがパートナーAPIを介して統合する方法についても説明します。
 title: 流出したシークレットへの自動対応
 ---
 
@@ -12,47 +13,89 @@ title: 流出したシークレットへの自動対応
 
 {{< /details >}}
 
-GitLabのシークレット検出は、特定の種類の流出したシークレットを検出すると、自動的に応答します。自動応答では、次のことが可能です:
+GitLabシークレット検出は、特定の種類の流出したシークレットを検出すると自動的に対応します。自動応答では次のことができます:
 
-- シークレットを自動的に失効します。
-- シークレットを発行したパートナーに通知します。パートナーはシークレットを失効し、オーナーに通知するか、その他の方法で悪用を防ぐことができます。
+- シークレットを自動的に失効させます。
+- シークレットを発行したパートナーに通知します。パートナーは、シークレットを失効させたり、オーナーに通知したり、その他の方法で不正利用から保護したりできます。
 
-## サポートされているシークレットのタイプとアクション {#supported-secret-types-and-actions}
+## サポートされているシークレットの種類とアクション {#supported-secret-types-and-actions}
 
-GitLabは、次の種類のシークレットに対する自動応答をサポートしています:
+GitLabは、以下の種類のシークレットに対する自動応答をサポートしています:
 
-| シークレットの種類 | 実行されるアクション | GitLab.comでサポート | GitLab Self-Managedでサポート |
+| シークレットの種類 | 実行されたアクション | GitLab.comでサポートされています | GitLab Self-Managedでサポートされています |
 | ----- | --- | --- | --- |
-| GitLabの[パーソナルアクセストークン](../../profile/personal_access_tokens.md) | すぐにトークンを失効し、オーナーにメールを送信します。<sup>1</sup> | ✅ | ✅ |
+| GitLab [パーソナルアクセストークン](../../profile/personal_access_tokens.md) | トークンを即座に失効させ、オーナーにメールを送信します。[^supported-personal-access] | ✅ | ✅ |
 | Amazon Web Services（AWS）[IAMアクセスキー](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) | AWSに通知します。 | ✅ | ⚙ |
-| Google Cloudの[サービスアカウントキー](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys) 、[APIキー](https://cloud.google.com/docs/authentication/api-keys) 、および[OAuthクライアントシークレット](https://support.google.com/cloud/answer/6158849#rotate-client-secret) | Google Cloudに通知します。 | ✅ | ⚙ |
-| Postman [APIキー](https://learning.postman.com/docs/developer/postman-api/authentication/) | Postmanに通知します。Postmanは[キーのオーナーに通知します](https://learning.postman.com/docs/administration/managing-your-team/secret-scanner/#protect-postman-api-keys-in-gitlab)。 | ✅ | ⚙ |
+| Google Cloud [サービスアカウントキー](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)、[APIキー](https://cloud.google.com/docs/authentication/api-keys)、および[OAuthクライアントシークレット](https://support.google.com/cloud/answer/6158849#rotate-client-secret) | Google Cloudに通知します。 | ✅ | ⚙ |
+| Postman [APIキー](https://learning.postman.com/docs/developer/postman-api/authentication/) | Postmanに通知します。Postmanは[キーオーナーに通知します](https://learning.postman.com/docs/administration/managing-your-team/secret-scanner/#protect-postman-api-keys-in-gitlab)。 | ✅ | ⚙ |
 
-**脚注**: 
+[^supported-personal-access]: `gitlab_personal_access_token`、`gitlab_personal_access_token_routable`、`gitlab_personal_access_token_routable_versioned`の[検出ルール](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/3204c843e960cec1b26a6cf8f95f609c68400de8/rules/mit/gitlab/gitlab.toml)でサポートされています。
 
-1. [`gitlab_personal_access_token`](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/a9ea19d0d9e06f266a80975467b4b3a8360c04eb/rules/mit/gitlab/gitlab.toml#L2)でのみサポートされます。
+**コンポーネントの凡例**:
 
-**Component legend**（コンポーネント凡例）:
-
-- ✅ - デフォルトで使用可能
+- ✅ - デフォルトで利用可能
 - ⚙ - トークン失効APIを使用した手動インテグレーションが必要です
 
 ## 機能の可用性 {#feature-availability}
 
-{{< history >}}
+認証情報は、シークレット検出によって発見された場合にのみ後処理されます:
 
-- GitLab 15.11で[デフォルト以外のブランチに対して有効](https://gitlab.com/gitlab-org/gitlab/-/issues/299212)。
+- 公開プロジェクトでは、公開された認証情報が増大する脅威をもたらすためです。プライベートプロジェクトへの拡張は、[イシュー391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379)で検討されています。
+- GitLab Ultimateを使用するプロジェクトでは、技術的な理由のためです。すべてのプランへの拡張は、[イシュー391763](https://gitlab.com/gitlab-org/gitlab/-/issues/391763)で追跡されています。
 
-{{< /history >}}
+## トークンの自動失効を有効にする {#turn-on-automatic-token-revocation}
 
-認証情報は、シークレット検出で検出された場合にのみ、処理されます:
+GitLab.comでは、トークンの自動失効はデフォルトで有効になっており、アクションは不要です。
 
-- 公開プロジェクトでは、公開されている認証情報は脅威が増大するためです。プライベートプロジェクトへの拡大は、[issue 391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379)で検討されています。
-- 技術的な理由から、GitLab Ultimateを使用しているプロジェクトに限られます。すべてのUltimateプランへの拡張は、[issue 391763](https://gitlab.com/gitlab-org/gitlab/-/issues/391763)で追跡されています。
+GitLab Self-ManagedおよびGitLab Dedicatedでは、管理者が`secret_detection_token_revocation_enabled`を`true`に設定することで有効にする必要があります。この設定にはUIがなく、[アプリケーション設定API](../../../api/settings.md)または[Railsコンソール](../../../administration/operations/rails_console.md)を介して設定する必要があります。
+
+{{< tabs >}}
+
+{{< tab title="API" >}}
+
+管理者のアクセストークンを使用して、[アプリケーション設定API](../../../api/settings.md)を使用します。
+
+現在の値を確認するには、レスポンス内の`secret_detection_token_revocation_enabled`フィールドを見つけます:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_admin_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/settings"
+```
+
+この設定を有効にするには:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_admin_access_token>" \
+  --data "secret_detection_token_revocation_enabled=true" \
+  --url "https://gitlab.example.com/api/v4/application/settings"
+```
+
+{{< /tab >}}
+
+{{< tab title="Railsコンソール" >}}
+
+[Railsコンソールセッション](../../../administration/operations/rails_console.md#starting-a-rails-console-session)を開きます。
+
+現在の値を確認するには:
+
+```ruby
+::Gitlab::CurrentSettings.secret_detection_token_revocation_enabled?
+```
+
+この設定を有効にするには:
+
+```ruby
+::Gitlab::CurrentSettings.update!(secret_detection_token_revocation_enabled: true)
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## 高レベルアーキテクチャ {#high-level-architecture}
 
-この図は、後処理フックがGitLabアプリケーションでシークレットを失効する方法を示しています:
+この図は、後処理フックがGitLabアプリケーションでシークレットを失効させる方法を示しています:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -73,20 +116,20 @@ accDescr: How a post-processing hook revokes a secret in the GitLab application.
 ```
 
 1. シークレット検出ジョブを含むパイプラインが完了し、スキャンレポート（**1**）が生成されます。
-1. このレポートは、サービスクラスによって処理（**2**）され、トークンの失効が可能な場合は、非同期ワーカーをスケジュールします。
-1. この非同期ワーカー（**3**）は、外部にデプロイされたHTTPサービス（**4**および**5**）と通信して、どの種類のシークレットを自動的に失効できるかを判断します。
-1. ワーカーは、GitLabトークン失効APIが失効できる検出されたシークレットのリストを送信（**6**および**7**）します。
-1. GitLabトークン失効APIは、失効可能な各トークンをそれぞれのベンダーの[パートナーAPI](#implement-a-partner-api)に送信（**8**および**9**）します。
+1. レポートはサービスクラスによって処理され（**2**）、トークンの失効が可能であれば非同期ワーカーをスケジュールします。
+1. 非同期ワーカー（**3**）は、外部にデプロイされたHTTPサービス（**4**および**5**）と通信し、どの種類のシークレットを自動的に失効できるかを決定します。
+1. ワーカーは、GitLabトークン失効APIが失効できる検出されたシークレットのリストを送信します（**6**および**7**）。
+1. GitLabトークン失効APIは、失効可能な各トークンをそれぞれのベンダーの[パートナーAPI](#implement-a-partner-api)に送信します（**8**および**9**）。
 
-## 流出した認証情報の通知に関するパートナープログラム {#partner-program-for-leaked-credential-notifications}
+## 流出した認証情報の通知のためのパートナープログラム {#partner-program-for-leaked-credential-notifications}
 
-GitLabは、パートナーが発行した認証情報がGitLab.comの公開リポジトリで流出したシークレットとして検出された場合に、そのパートナーに通知します。クラウド製品またはSaaS製品を運用していて、これらの通知の受信に関心がある場合は、[エピック4944](https://gitlab.com/groups/gitlab-org/-/epics/4944)をご覧ください。パートナーは[パートナーAPIを実装](#implement-a-partner-api)する必要があります。これは、GitLabトークン失効APIによって呼び出すされます。
+GitLabは、パートナーが発行した認証情報がGitLab.comのパブリックリポジトリで流出した場合に、パートナーに通知します。クラウドまたはSaaS製品を運用しており、これらの通知を受け取ることに興味がある場合は、[エピック4944](https://gitlab.com/groups/gitlab-org/-/epics/4944)で詳細をご覧ください。パートナーは、GitLabトークン失効APIによって呼び出される[パートナーAPIを実装する](#implement-a-partner-api)必要があります。
 
 ### パートナーAPIを実装する {#implement-a-partner-api}
 
-パートナーAPIは、GitLabトークン失効APIとインテグレーションして、流出したトークンの失効リクエストを受信して応答します。このサービスは、べき等でレート制限されている、公開されているHTTP APIである必要があります。
+パートナーAPIは、GitLabトークン失効APIとインテグレーションし、流出したトークンの失効リクエストを受信して応答します。このサービスは、べき等でレート制限された、公開アクセス可能なHTTP APIである必要があります。
 
-このサービスへのリクエストには、1つ以上の流出したトークンと、リクエスト本文の署名を含むヘッダーを含めることができます。この署名を使用して受信リクエストを検証し、GitLabからの本物のリクエストであることを証明することを強くお勧めします。次の図は、流出したトークンを受信、検証、失効するために必要なステップを示しています:
+サービスへのリクエストには、1つ以上の流出したトークンと、リクエスト本文の署名を含むヘッダーを含めることができます。GitLabからの正当なリクエストであることを証明するために、この署名を使用して受信リクエストを検証することを強くお勧めします。以下の図は、流出したトークンを受信、検証、および失効させるために必要なステップを示しています:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -103,17 +146,17 @@ accDescr: How a partner API should receive and respond to leaked token revocatio
     Partner API-->>+GitLab token revocation API: HTTP status
 ```
 
-1. GitLabトークン失効APIは、パートナーAPIに（**1**）[失効リクエスト](#revocation-request)を送信します。このリクエストには、公開キー識別子とリクエスト本文の署名を含むヘッダーが含まれています。
-1. パートナーAPIは、GitLabから**2**）[公開キー](#public-keys-endpoint)のリストをリクエストします。この応答（**3**）には、キーのローテーション時に複数の公開キーが含まれる場合があり、リクエストヘッダー内の識別子でフィルタリングする必要があります。
-1. パートナーAPIは、公開キー（**4**）を使用して、実際のリクエスト本文に対して[署名を検証](#verifying-the-request)します。
-1. パートナーAPIは、流出したトークンを処理します。これには、自動失効（**5**）が含まれる場合があります。
-1. パートナーAPIは、適切なHTTPステータスコードを使用して、GitLabトークン失効API（**6**）に応答します:
-   - 成功した応答コード（HTTP 200～299）は、パートナーがリクエストを受信して処理したことを確認します。
-   - エラーコード（HTTP 400以上）が発生すると、GitLabトークン失効APIはリクエストを再試行します。
+1. GitLabトークン失効APIは、パートナーAPIに[失効リクエスト](#revocation-request)を送信します（**1**）。リクエストには、公開キー識別子とリクエスト本文の署名を含むヘッダーが含まれています。
+1. パートナーAPIは、GitLabから[公開キー](#public-keys-endpoint)のリストをリクエストします（**2**）。レスポンス（**3**）には、キーローテーションの場合に複数の公開キーが含まれる可能性があり、リクエストヘッダー内の識別子でフィルタリングする必要があります。
+1. パートナーAPIは、公開キー（**4**）を使用して、実際のリクエスト本文に対して[署名を検証します](#verifying-the-request)。
+1. パートナーAPIは、流出したトークンを処理し、自動失効（**5**）を伴う場合があります。
+1. パートナーAPIは、適切なHTTPステータスコードでGitLabトークン失効API（**6**）に応答します:
+   - 成功応答コード（HTTP 200～299）は、パートナーがリクエストを受信して処理したことを確認します。
+   - エラーコード（HTTP 400以上）は、GitLabトークン失効APIにリクエストの再試行を促します。
 
 #### 失効リクエスト {#revocation-request}
 
-このJSONスキーマドキュメントは、失効リクエストの本文について説明しています:
+このJSONスキーマドキュメントは、失効リクエストの本文を記述します:
 
 ```json
 {
@@ -154,22 +197,22 @@ accDescr: How a partner API should receive and respond to leaked token revocatio
 [{"type": "my_api_token", "token": "XXXXXXXXXXXXXXXX", "url": "https://example.com/some-repo/-/raw/abcdefghijklmnop/compromisedfile1.java"}]
 ```
 
-この例では、シークレット検出により、`my_api_token`のインスタンスが流出したシークレットとして検出されたことが判明しています。トークンの値は、流出したトークンを含むファイルのrawコンテンツへの公開されているURLに加えて、あなたに提供されます。
+この例では、シークレット検出によって`my_api_token`のインスタンスが流出したと判断されています。トークンの値は、流出したトークンを含むファイルのrawコンテンツへの公開アクセス可能なURLに加えて、提供されます。
 
-このリクエストには、2つの特別なヘッダーが含まれています:
+リクエストには2つの特別なヘッダーが含まれています:
 
-| ヘッダー | 型 | 説明 |
+| ヘッダー | タイプ | 説明 |
 |--------|------|-------------|
-| `Gitlab-Public-Key-Identifier` | 文字列 | このリクエストの署名に使用されたキーペアの固有識別子。主に、キーのローテーションを支援するために使用されます。 |
-| `Gitlab-Public-Key-Signature` | 文字列 | リクエスト本文のBase64エンコードされた署名。 |
+| `Gitlab-Public-Key-Identifier` | 文字列 | このリクエストに署名するために使用されるキーペアの固有識別子。主にキーローテーションを支援するために使用されます。 |
+| `Gitlab-Public-Key-Signature` | 文字列 | リクエスト本文のbase64エンコードされた署名。 |
 
-これらのヘッダーをGitLab公開キーエンドポイントと組み合わせて使用すると、失効リクエストが本物であることを確認できます。
+これらのヘッダーをGitLab公開キーエンドポイントと合わせて使用すると、失効リクエストが正当なものであったことを検証できます。
 
 #### 公開キーエンドポイント {#public-keys-endpoint}
 
-GitLabは、失効リクエストの検証に使用される公開キーを取得するための、公開されているエンドポイントを維持しています。このエンドポイントは、リクエストに応じて提供できます。
+GitLabは、失効リクエストを検証するために使用される公開キーを取得するための、公開アクセス可能なエンドポイントを維持しています。エンドポイントはリクエストに応じて提供できます。
 
-このJSONスキーマドキュメントは、公開キーエンドポイントの応答本文について説明しています:
+このJSONスキーマドキュメントは、公開キーエンドポイントのレスポンス本文を記述します:
 
 ```json
 {
@@ -216,9 +259,9 @@ GitLabは、失効リクエストの検証に使用される公開キーを取�
 
 #### リクエストの検証 {#verifying-the-request}
 
-上記のAPI応答から取得した対応する公開キーを使用して、リクエスト本文に対して`Gitlab-Public-Key-Signature`ヘッダーを検証することにより、失効リクエストが本物かどうかを確認できます。SHA256ハッシュによる[ECDSA](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)を使用して署名を生成し、ヘッダー値にBase64エンコードします。
+上記APIレスポンスから取得した対応する公開キーを使用して、`Gitlab-Public-Key-Signature`ヘッダーとリクエスト本文を照合することで、失効リクエストが正当なものであるかを確認できます。署名の生成にはSHA256ハッシュを使用した[ECDSA](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)を使用しており、その署名はbase64エンコードされてヘッダー値になります。
 
-次のPythonスクリプトは、署名を検証する方法を示しています。これは、暗号学的操作のために、一般的な[pyca/cryptography](https://cryptography.io/en/latest/)モジュールを使用します:
+以下のPythonスクリプトは、署名を検証する方法を示しています。これは、暗号学的操作のために一般的な[pyca/cryptography](https://cryptography.io/en/latest/)モジュールを使用しています:
 
 ```python
 import hashlib
@@ -239,8 +282,8 @@ pk.verify(decoded_signature, request_body, ec.ECDSA(hashes.SHA256()))  # throws 
 print("Signature verified!")
 ```
 
-主な手順は次のとおりです:
+主なステップは次のとおりです:
 
-1. 使用している暗号ライブラリに適した形式で、公開キーを読み込む。
-1. `Gitlab-Public-Key-Signature`ヘッダー値をBase64デエンコードする。
-1. SHA256ハッシュによるECDSAを指定して、デエンコードされた署名に対して本文を検証します。
+1. 使用している暗号ライブラリに適した形式に公開キーを読み込みます。
+1. `Gitlab-Public-Key-Signature`ヘッダー値をBase64デコードします。
+1. デコードされた署名に対して本文を検証し、SHA256ハッシュを使用したECDSAを指定します。

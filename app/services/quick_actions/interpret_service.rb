@@ -53,6 +53,14 @@ module QuickActions
       [content, @updates, execution_messages_for(commands), command_names(commands)]
     end
 
+    def remove_type_change_success_message(message)
+      %i[type promote_to promote_to_incident]
+        .map { |name| success_msg[name] }
+        .uniq
+        .reduce(message) { |text, type_message| text.gsub(type_message, '') }
+        .squish
+    end
+
     # Similar to `execute` except also tries to extract any quick actions from original_text,
     # and if found removes them from the main list of quick actions.
     def execute_with_original_text(new_text, quick_action_target, only: nil, original_text: nil)

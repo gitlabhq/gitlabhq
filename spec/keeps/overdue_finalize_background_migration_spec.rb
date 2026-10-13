@@ -36,7 +36,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
         batched_background_migrations: { yaml_file => migration_yaml },
         migration_finalized?: false,
         fetch_migration_status: migration_record,
-        last_migration_for_job: last_migration_file
+        last_queueing_migration: last_migration_file
       )
     end
 
@@ -84,13 +84,30 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       end
     end
 
-    context 'when last_migration_for_job returns nil' do
+    context 'when the migration file does not queue the migration' do
       before do
-        allow(keep).to receive(:last_migration_for_job).and_return(nil)
+        allow(keep).to receive_messages(
+          last_queueing_migration: nil,
+          migration_files_for_job: ['db/post_migrate/20230101000000_noop_migration.rb']
+        )
       end
 
       it 'does not yield' do
         expect { |b| keep.each_identified_change(&b) }.not_to yield_control
+      end
+    end
+
+    context 'when the queueing migration has been squashed' do
+      before do
+        allow(keep).to receive_messages(last_queueing_migration: nil, migration_files_for_job: [])
+      end
+
+      it 'still yields, so the migration can be finalized from the archived record' do
+        changes = []
+        keep.each_identified_change { |change| changes << change }
+
+        expect(changes.size).to eq(1)
+        expect(changes.first.context[:last_migration_file]).to be_nil
       end
     end
   end
@@ -198,13 +215,13 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     end
   end
 
-  describe '#last_migration_for_job' do
+  describe '#last_queueing_migration' do
     let(:job_name) { 'TestBackgroundMigration' }
     let(:grep_args) do
       ['git', 'grep', '--name-only', "MIGRATION = .#{job_name}.", '--', 'db/migrate/*.rb', 'db/post_migrate/*.rb']
     end
 
-    subject(:result) { keep.send(:last_migration_for_job, job_name) }
+    subject(:result) { keep.send(:last_queueing_migration, keep.send(:migration_files_for_job, job_name)) }
 
     context 'when matching files exist with queue_batched_background_migration' do
       before do
@@ -255,7 +272,9 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     context 'when a documentation file also mentions the job' do
       let(:tmp_dir) { Pathname(Dir.mktmpdir) }
 
-      subject(:result) { Dir.chdir(tmp_dir) { keep.send(:last_migration_for_job, job_name) } }
+      subject(:result) do
+        Dir.chdir(tmp_dir) { keep.send(:last_queueing_migration, keep.send(:migration_files_for_job, job_name)) }
+      end
 
       before do
         FileUtils.mkdir_p(tmp_dir.join('db', 'post_migrate'))
@@ -276,6 +295,68 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
       it 'returns the migration file' do
         expect(result).to eq('db/post_migrate/20230101_queue_test.rb')
+      end
+    end
+  end
+
+  describe 'the finalize migration generated from an archived record' do
+    let(:tmp_dir) { Pathname(Dir.mktmpdir) }
+    let(:migration_file) { tmp_dir.join('finalize_migration.rb').to_s }
+    let(:postgres_ai) { instance_double(Keeps::Helpers::PostgresAi) }
+    let(:job_arguments) { '[]' }
+
+    # A raw PG row, where jsonb arrives as a String.
+    let(:record_data) do
+      {
+        'id' => 1, 'status' => 3, 'gitlab_schema' => 'gitlab_main',
+        'table_name' => 'users', 'column_name' => 'id', 'job_arguments' => job_arguments
+      }
+    end
+
+    after do
+      FileUtils.rm_rf(tmp_dir)
+    end
+
+    before do
+      result = [record_data]
+      allow(result).to receive(:count).and_return(1)
+      allow(keep).to receive(:postgres_ai).and_return(postgres_ai)
+      allow(postgres_ai).to receive(:fetch_background_migration_status).and_return(result)
+
+      File.write(migration_file, <<~RUBY)
+        # frozen_string_literal: true
+        class FinalizeHKTestMigration < Gitlab::Database::Migration[2.2]
+          def up
+            # placeholder
+          end
+
+          def down; end
+        end
+      RUBY
+
+      record = keep.send(:fetch_migration_status, 'TestMigration')
+      Keeps::OverdueFinalizeBackgroundMigrations::MigrationRewriter.new
+        .add_ensure_call_to_migration(migration_file, nil, 'TestMigration', record)
+    end
+
+    it 'writes an empty array rather than ["[]"]' do
+      expect(File.read(migration_file)).to include('job_arguments: []')
+      expect(File.read(migration_file)).not_to include('job_arguments: ["[]"]')
+    end
+
+    context 'when the queued arguments had values' do
+      let(:job_arguments) { '[4, 5]' }
+
+      it 'writes the parsed values' do
+        expect(File.read(migration_file)).to include('job_arguments: [4, 5]')
+      end
+    end
+
+    context 'when job_arguments is already an array' do
+      let(:job_arguments) { [] }
+
+      it 'writes it unchanged' do
+        expect(File.read(migration_file)).to include('job_arguments: []')
       end
     end
   end
@@ -589,6 +670,19 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
       it 'falls back to updated_at in the description' do
         expect(description).to include('2023-06-15 10:00:00')
+      end
+    end
+
+    context 'when the queueing migration has been squashed' do
+      let(:last_migration_file) { nil }
+
+      before do
+        allow(keep).to receive(:migration_code_present?).and_return(true)
+      end
+
+      it 'says the arguments came from the archived record' do
+        expect(description).to include('has since been squashed')
+        expect(description).not_to include('/-/blob/master/')
       end
     end
   end

@@ -7,15 +7,15 @@ module API
 
       params :label_create_params do
         requires :name, type: String, desc: 'The name of the label to be created'
-        requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The description of label to be created'
+        requires :color, type: String, desc: 'Color of the label in 6-digit hex notation with a leading `#` sign, for example `#FFAABB`, or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).'
+        optional :description, type: String, desc: 'Description of the label.'
         optional :archived, type: Boolean, desc: 'Whether the label is archived'
       end
 
       params :label_update_params do
         optional :new_name, type: String, desc: 'The new name of the label'
-        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The new description of label'
+        optional :color, type: String, desc: 'New color of the label, given in 6-digit hex notation with a leading `#` sign (for example, `#FFAABB`), or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).'
+        optional :description, type: String, desc: 'New description of label.'
         optional :archived, type: Boolean, desc: 'Whether the label is archived'
       end
 
@@ -55,7 +55,7 @@ module API
       end
 
       def create_label(parent, entity)
-        authorize! :admin_label, parent
+        authorize! :create_label, parent
 
         label = available_labels_for(parent).find_by_title(params[:name])
         conflict!('Label already exists') if label
@@ -77,7 +77,7 @@ module API
       end
 
       def update_label(parent, entity)
-        authorize! :admin_label, parent
+        authorize! :update_label, parent
 
         label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
         update_priority = params.key?(:priority)
@@ -90,7 +90,7 @@ module API
         update_params = declared_params(include_missing: false)
 
         if update_params.present?
-          authorize! :admin_label, label
+          authorize! :update_label, label
 
           label = ::Labels::UpdateService.new(current_user, update_params).execute(label)
           render_validation_error!(label) unless label.valid?
@@ -110,7 +110,7 @@ module API
       def delete_label(parent)
         label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
 
-        authorize! :admin_label, label
+        authorize! :delete_label, label
 
         destroy_conditionally!(label) do |label_to_destroy|
           ::Labels::DestroyService.new(current_user, label_to_destroy).execute
@@ -124,7 +124,7 @@ module API
           render_api_error!('Failed to promote project label to group label', 400)
         end
 
-        authorize! :admin_label, parent.group
+        authorize! :promote_label, parent.group
 
         label = find_label(parent, params[:name], include_ancestor_groups: false)
 

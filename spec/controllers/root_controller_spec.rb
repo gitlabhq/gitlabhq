@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe RootController, feature_category: :shared do
-  before do
-    stub_feature_flags(personal_homepage: true)
-  end
-
   describe 'GET index' do
     context 'when user is not logged in' do
       it 'redirects to the sign-in page' do

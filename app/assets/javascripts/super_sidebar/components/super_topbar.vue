@@ -1,10 +1,10 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { GlBreadcrumb, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
 import { RedirectScrollKeysToPanelDirective } from '~/vue_shared/directives/redirect_scroll_keys_to_panel';
@@ -52,7 +52,6 @@ export default {
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
     analyticsDashboardsBtnText: s__('AnalyticsDashboards|View analytics dashboards'),
-    menuLabel: __('Open navigation menu'),
   },
   inject: ['isSaas'],
   provide() {
@@ -137,13 +136,7 @@ export default {
     <div class="gl-flex gl-items-center gl-gap-3">
       <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
-      <super-sidebar-toggle
-        v-if="sidebarData.current_menu_items.length"
-        icon="hamburger"
-        type="expand"
-        class="xl:gl-hidden"
-        :aria-label="$options.i18n.menuLabel"
-      />
+      <super-sidebar-toggle v-if="sidebarData.current_menu_items.length" class="xl:gl-hidden" />
 
       <promo-menu
         v-if="!isLoggedIn"

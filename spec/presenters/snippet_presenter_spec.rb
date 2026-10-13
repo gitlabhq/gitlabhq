@@ -6,15 +6,11 @@ RSpec.describe SnippetPresenter do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:personal_snippet) { create(:personal_snippet, author: user) }
-  let_it_be(:project_snippet) { create(:project_snippet, author: user) }
 
+  let(:personal_snippet) { build_stubbed(:personal_snippet, author: user) }
+  let(:project_snippet) { build_stubbed(:project_snippet, author: user) }
   let(:project) { project_snippet.project }
   let(:presenter) { described_class.new(snippet, current_user: user) }
-
-  before do
-    project.add_developer(user)
-  end
 
   describe '#web_url' do
     subject { presenter.web_url }

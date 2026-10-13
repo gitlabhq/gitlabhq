@@ -29,6 +29,7 @@ title: Merge requests API
 - `security_policy_violations` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/473704) in GitLab 18.4. Feature flag `policy_mergability_check` removed.
 - `draft` filter parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098) in GitLab 19.0.
 - `wip` filter parameter [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098) in GitLab 19.0.
+- `author.bot` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256381/) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -135,6 +136,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `assignees.web_url`                      | string   | Full URL to the assignee's profile page. |
 | `author[]`                               | object   | Object with information about the user who created the merge request. |
 | `author.avatar_url`                      | string   | Full URL to the author's avatar image. |
+| `author.bot`                             | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `author.id`                              | integer  | The unique ID of the user who created the merge request. |
 | `author.locked`                          | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
 | `author.name`                            | string   | Display name of the author. Might be redacted, based on current user's permissions. |
@@ -285,6 +287,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 1,
       "name": "Administrator",
       "username": "admin",
@@ -447,6 +450,7 @@ response attributes:
 | `[].assignee`                      | object   | First assignee of the merge request. |
 | `[].assignees`                     | array    | Assignees of the merge request. |
 | `[].author`                        | object   | User who created this merge request. |
+| `[].author.bot`                    | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `[].blocking_discussions_resolved` | boolean  | Indicates if all discussions are resolved only if all are required before the merge request can be merged. |
 | `[].closed_at`                     | datetime | Timestamp of when the merge request was closed. |
 | `[].closed_by`                     | object   | User who closed this merge request. |
@@ -540,6 +544,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 1,
       "name": "Administrator",
       "username": "admin",
@@ -713,6 +718,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `assignees.web_url`                      | string   | Full URL to the assignee's profile page. |
 | `author[]`                               | object   | Object with information about the user who created the merge request. |
 | `author.avatar_url`                      | string   | Full URL to the author's avatar image. |
+| `author.bot`                             | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `author.id`                              | integer  | The unique ID of the user who created the merge request. |
 | `author.locked`                          | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
 | `author.name`                            | string   | Display name of the author. Might be redacted, based on current user's permissions. |
@@ -861,6 +867,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 1,
       "name": "Administrator",
       "username": "admin",
@@ -995,6 +1002,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `assignees.web_url`                                         | string   | Full URL to the assignee's profile page. |
 | `author[]`                                                  | object   | Object with information about the user who created the merge request. |
 | `author.avatar_url`                                         | string   | Full URL to the author's avatar image. |
+| `author.bot`                                                | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `author.id`                                                 | integer  | The unique ID of the user who created the merge request. |
 | `author.locked`                                             | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
 | `author.name`                                               | string   | Display name of the author. Might be redacted, based on current user's permissions. |
@@ -1187,6 +1195,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 4155490,
     "username": "marcel.amirault",
     "name": "Marcel Amirault",
@@ -1578,6 +1587,7 @@ Example response:
       "upvotes": 0,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 2,
         "username": "aiguy123",
         "name": "AI GUY",
@@ -1688,6 +1698,7 @@ Example response:
       "upvotes": 1,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 2,
         "username": "aiguy123",
         "name": "AI GUY",
@@ -1891,6 +1902,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 2,
       "username": "aiguy123",
       "name": "AI GUY",
@@ -2047,6 +2059,7 @@ Example response:
       "upvotes": 0,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 40,
         "username": "i-user-0-1720208283",
         "name": "I User0",
@@ -2120,6 +2133,7 @@ Example response:
       "upvotes": 0,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 1,
         "username": "root",
         "name": "Administrator",
@@ -2225,6 +2239,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "name": "Chad Hamill",
     "username": "jarrett",
     "id": 5,
@@ -2608,6 +2623,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -2746,7 +2762,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `reviewer_ids`             | integer array     | No       | The ID of the users set as a reviewer to the merge request. Set the value to `0` or provide an empty value to unset all reviewers. |
 | `squash`                   | boolean           | No       | If `true`, squash all commits into a single commit on merge. When not provided, defaults to the [project's squash option setting](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project). If the project is configured to **Require** or **Do not allow** squashing, that setting takes precedence at merge time. |
 | `state_event`              | string            | No       | New state (close/reopen). |
-| `target_branch`            | string            | No       | The target branch. |
+| `target_branch`            | string            | No       | The target branch. Ignored if the merge request is merged. |
 | `title`                    | string            | No       | Title of MR. |
 
 Must include at least one non-required attribute.
@@ -2768,6 +2784,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -2977,6 +2994,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -3140,7 +3158,11 @@ Example response:
 }
 ```
 
-## Cancel merge when pipeline succeeds
+## Cancel merge when pipeline succeeds (deprecated)
+
+> [!warning]
+> This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255704) in GitLab 19.5.
+> Use the [`cancel_auto_merge` endpoint](#cancel-auto-merge) instead.
 
 Cancels an active auto-merge for a merge request. If the merge request is on a
 [merge train](../ci/pipelines/merge_trains.md), this also removes it from the train.
@@ -3158,12 +3180,81 @@ Supported attributes:
 
 This API returns specific HTTP status codes:
 
-| HTTP Status | Message  | Reason |
-|-------------|----------|--------|
-| `201`       | _(none)_ | Success, or the merge request has already merged. |
-| `406`       | `Can't cancel the automatic merge` | The merge request is closed. |
+| HTTP status | `status`  | Reason |
+|-------------|-----------|--------|
+| `201`       | `success` | The auto-merge was canceled. |
+| `201`       | `error`   | The merge request is not set to auto-merge. |
+| `401`       | _(none)_  | You do not have permission to cancel the auto-merge for this merge request. |
+| `404`       | _(none)_  | The merge request does not exist, or you do not have permission to access it. |
+
+This endpoint does not return the merge request.
+
+If the merge request exists and you have permission to cancel its auto-merge, the endpoint returns
+`201 Created`. The `status` field specifies whether or not the auto-merge was canceled.
+
+Example response when the endpoint cancels an auto-merge:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Example response when the merge request is not set to auto-merge:
+
+```json
+{
+  "message": "Can't cancel the automatic merge",
+  "status": "error",
+  "http_status": 406
+}
+```
+
+The `http_status` field of that response is not the status code of the response, which is
+`201 Created`. To confirm the outcome, check the `status` field.
+
+## Cancel auto merge
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255702) in GitLab 19.5.
+
+{{< /history >}}
+
+Cancel an active auto-merge for a merge request. If the merge request is on a
+[merge train](../ci/pipelines/merge_trains.md), this also removes it from the train.
+
+Use this endpoint instead of `cancel_merge_when_pipeline_succeeds`, which returns a status hash
+instead of the merge request.
+
+```plaintext
+POST /projects/:id/merge_requests/:merge_request_iid/cancel_auto_merge
+```
+
+Supported attributes:
+
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | Internal ID of the merge request. |
+
+This API returns specific HTTP status codes:
+
+| HTTP Status | Message                            | Reason |
+|-------------|------------------------------------|--------|
+| `201`       | _(none)_                           | Success. Returns the merge request. |
+| `403`       | `403 Forbidden`                    | You do not have permission to cancel the auto-merge for this merge request. |
+| `409`       | `Can't cancel the automatic merge` | The merge request is not set to auto-merge. |
 
 For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/17/cancel_auto_merge"
+```
 
 Example response:
 
@@ -3174,7 +3265,7 @@ Example response:
   "project_id": 3,
   "title": "test1",
   "description": "fixed login page css paddings",
-  "state": "merged",
+  "state": "opened",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
   "target_branch": "main",
@@ -3182,6 +3273,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -3236,7 +3328,7 @@ Example response:
   },
   "merge_when_pipeline_succeeds": false,
   "merge_status": "can_be_merged",
-  "detailed_merge_status": "not_open",
+  "detailed_merge_status": "mergeable",
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
@@ -3262,23 +3354,9 @@ Example response:
   "squash": false,
   "subscribed": false,
   "changes_count": "1",
-  "merged_by": { // Deprecated and will be removed in API v5, use `merge_user` instead
-    "id": 87854,
-    "name": "Douwe Maan",
-    "username": "DouweM",
-    "state": "active",
-    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
-    "web_url": "https://gitlab.com/DouweM"
-  },
-  "merge_user": {
-    "id": 87854,
-    "name": "Douwe Maan",
-    "username": "DouweM",
-    "state": "active",
-    "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
-    "web_url": "https://gitlab.com/DouweM"
-  },
-  "merged_at": "2018-09-07T11:16:17.520Z",
+  "merged_by": null, // Deprecated and will be removed in API v5, use `merge_user` instead
+  "merge_user": null,
+  "merged_at": null,
   "merge_after": "2018-09-07T11:16:00.000Z",
   "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
@@ -3656,6 +3734,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -3821,6 +3900,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -4003,6 +4083,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "name": "Jarret O'Keefe",
       "username": "francisca",
       "id": 14,

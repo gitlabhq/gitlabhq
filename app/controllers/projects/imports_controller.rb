@@ -18,7 +18,10 @@ class Projects::ImportsController < Projects::ApplicationController
   def new; end
 
   def create
-    @project.import_state.reset.schedule if @project.update(import_params)
+    if @project.update(import_params)
+      @project.import_state.request_channel = ::Gitlab::Import::RequestChannel::UI
+      @project.import_state.reset.schedule
+    end
 
     redirect_to project_import_path(@project)
   end

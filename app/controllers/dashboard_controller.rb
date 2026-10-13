@@ -47,13 +47,9 @@ class DashboardController < Dashboard::ApplicationController
   urgency :low, [:issues, :issues_calendar, :work_items, :work_items_calendar]
 
   def home
-    if Feature.enabled?(:personal_homepage, current_user)
-      track_internal_event('user_views_homepage', user: current_user)
-      @homepage_app_data = homepage_app_data(current_user)
-      render('root/index')
-    else
-      not_found
-    end
+    track_internal_event('user_views_homepage', user: current_user)
+    @homepage_app_data = homepage_app_data(current_user)
+    render('root/index')
   end
 
   def activity

@@ -1,5 +1,5 @@
-mutation stopEnvironment($environment: LocalEnvironment) {
-  stopEnvironmentREST(environment: $environment) @client {
+mutation stopEnvironment($environment: LocalEnvironment, $force: Boolean) {
+  stopEnvironmentREST(environment: $environment, force: $force) @client {
     errors
   }
 }

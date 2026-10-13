@@ -2,9 +2,9 @@
 import { GlFormCheckboxGroup, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   ARCHIVED_TRACKING_NAMESPACE,
   ARCHIVED_TRACKING_LABEL_CHECKBOX,

@@ -36,6 +36,24 @@ RSpec.describe Authn::TokenField::Finders::BaseEncrypted, feature_category: :con
       end
     end
 
+    context 'with several db_key_base keys' do
+      include DbKeyBaseHelpers
+
+      let(:new_key) { SecureRandom.hex(64) }
+
+      it 'finds a token encrypted with the previous key' do
+        stub_db_key_base_keys(Settings.db_key_base_keys.last, new_key)
+
+        expect(finder.execute).to eq(runner)
+      end
+
+      it 'does not find it with an unrelated key only' do
+        stub_db_key_base_keys(new_key)
+
+        expect(finder.execute).to be_nil
+      end
+    end
+
     context 'with invalid strategy' do
       let(:strategy) { Authn::TokenField::Insecure.fabricate(Ci::Runner, :token, options) }
       let(:options) { { expires_at: :compute_token_expiration } }

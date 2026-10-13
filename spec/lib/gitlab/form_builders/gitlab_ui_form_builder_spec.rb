@@ -58,6 +58,24 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
           expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
         end
       end
+
+      context 'with custom size' do
+        subject(:submit_html) do
+          form_builder.submit('Save', pajamas_button: true, size: :small)
+        end
+
+        it 'renders a submit button with the specified size' do
+          expected_html = <<~HTML
+          <button type="submit" class="gl-button btn btn-sm btn-confirm ">
+            <span class="gl-button-text">
+              Save
+            </span>
+          </button>
+          HTML
+
+          expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
+        end
+      end
     end
   end
 

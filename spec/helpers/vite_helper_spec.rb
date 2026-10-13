@@ -23,8 +23,7 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
       with_them do
         before do
-          allow(helper.controller).to receive(:controller_path).and_return(path)
-          allow(helper.controller).to receive(:action_name).and_return(action)
+          allow(helper.controller).to receive_messages(controller_path: path, action_name: action)
           allow(ViteRuby.instance.manifest).to receive(:path_for).and_return("/some/path")
         end
 
@@ -34,8 +33,7 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
     context 'with js_action_name instance variable set' do
       before do
-        allow(helper.controller).to receive(:controller_path).and_return('some_path')
-        allow(helper.controller).to receive(:action_name).and_return('new')
+        allow(helper.controller).to receive_messages(controller_path: 'some_path', action_name: 'new')
         allow(ViteRuby.instance.manifest).to receive(:path_for).and_return("/some/path")
       end
 
@@ -46,8 +44,7 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
     context 'with missing entrypoint' do
       before do
-        allow(helper.controller).to receive(:controller_path).and_return('some_path')
-        allow(helper.controller).to receive(:action_name).and_return('new')
+        allow(helper.controller).to receive_messages(controller_path: 'some_path', action_name: 'new')
         allow(ViteRuby.instance.manifest).to receive(:path_for).and_raise(
           ViteRuby::MissingEntrypointError.new(
             file_name: 'some/path.js',
@@ -71,8 +68,7 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
     context 'with a missing Vue 3 entrypoint' do
       before do
-        allow(helper.controller).to receive(:controller_path).and_return('some_path')
-        allow(helper.controller).to receive(:action_name).and_return('new')
+        allow(helper.controller).to receive_messages(controller_path: 'some_path', action_name: 'new')
         allow(Gitlab::Vue3Migration).to receive(:entrypoint_for) { |name, **| name }
         allow(Gitlab::Vue3Migration).to receive(:entrypoint_for)
           .with('pages.some_path.new', current_user: user)

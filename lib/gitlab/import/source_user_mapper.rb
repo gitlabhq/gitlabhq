@@ -144,7 +144,10 @@ module Gitlab
       end
 
       def reset_source_user?(source_user)
-        source_user && source_user.mapped_user_id.nil?
+        return unless source_user
+        return true if source_user.revoked?
+
+        source_user.mapped_user_id.nil?
       end
 
       def reset_source_user!(source_user)
@@ -164,10 +167,16 @@ module Gitlab
             source_user_placeholder_user_id: source_user.placeholder_user_id
           )
 
+          # Revoked source users may have leftover placeholder user if reassignment couldn't delete it, but
+          # they must never use the same placeholder to avoid misattributing contributions on past imports.
+          if source_user.revoked? || source_user.placeholder_user.nil?
+            source_user.placeholder_user = create_placeholder_user(source_user)
+          end
+
           source_user.status = 0
           source_user.reassignment_token = nil
           source_user.reassign_to_user = nil
-          source_user.placeholder_user ||= create_placeholder_user(source_user)
+          source_user.reassigned_by_user = nil
 
           next source_user if source_user.save
 

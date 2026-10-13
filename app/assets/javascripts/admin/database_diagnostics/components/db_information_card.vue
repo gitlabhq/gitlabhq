@@ -1,16 +1,20 @@
 <script>
-import { GlAlert, GlBadge, GlButton, GlCard, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlCard, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import DbSchemasSection from './db_schemas_section.vue';
-
-const SEVERITY_VARIANTS = {
-  error: 'danger',
-  warning: 'warning',
-};
+import DbTimeoutsSection from './db_timeouts_section.vue';
+import DiagnosticsSection from './diagnostics_section.vue';
 
 export default {
   name: 'DbInformationCard',
-  components: { GlAlert, GlBadge, GlButton, GlCard, GlIcon, GlSprintf, DbSchemasSection },
+  components: {
+    GlAlert,
+    GlCard,
+    GlSprintf,
+    DbSchemasSection,
+    DbTimeoutsSection,
+    DiagnosticsSection,
+  },
   props: {
     dbName: {
       type: String,
@@ -21,44 +25,14 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      expanded: false,
-    };
-  },
   computed: {
-    // Ordered and scored by Checks::SchemaResolution.
     findings() {
       return this.payload.findings || [];
-    },
-    // Green when there are no findings; otherwise reflects the worst severity.
-    isError() {
-      return this.payload.severity === 'error';
-    },
-    statusIcon() {
-      if (this.isError) return { name: 'error', variant: 'danger' };
-      if (this.payload.severity === 'warning') return { name: 'warning', variant: 'warning' };
-      return { name: 'check-circle-filled', variant: 'success' };
-    },
-    badgeVariant() {
-      return this.isError ? 'danger' : 'warning';
-    },
-    ariaControlsId() {
-      return `search-path-details-${this.dbName}`;
-    },
-  },
-  methods: {
-    variantFor(severity) {
-      return SEVERITY_VARIANTS[severity] || 'warning';
-    },
-    toggle() {
-      this.expanded = !this.expanded;
     },
   },
   i18n: {
     header: s__('DatabaseDiagnostics|Database: %{name}'),
     searchPath: s__('DatabaseDiagnostics|Search path'),
-    details: s__('DatabaseDiagnostics|Details'),
     currentUserLabel: s__('DatabaseDiagnostics|Current user:'),
     searchPathLabel: s__('DatabaseDiagnostics|Search path:'),
   },
@@ -81,30 +55,12 @@ export default {
       </gl-alert>
 
       <template v-else>
-        <!-- Foldable "Search path" row: status icon + always-present Details toggle -->
-        <div class="gl-flex gl-items-center gl-justify-between gl-rounded-base gl-bg-subtle gl-p-3">
-          <div class="gl-flex gl-items-center gl-gap-2">
-            <gl-icon v-bind="statusIcon" data-testid="status-icon" />
-            <h4 class="gl-heading-5 !gl-mb-0">{{ $options.i18n.searchPath }}</h4>
-            <gl-badge v-if="findings.length" :variant="badgeVariant" data-testid="findings-count">
-              {{ findings.length }}
-            </gl-badge>
-          </div>
-
-          <gl-button
-            category="tertiary"
-            size="small"
-            data-testid="search-path-toggle"
-            :icon="expanded ? 'chevron-up' : 'chevron-down'"
-            :aria-expanded="expanded.toString()"
-            :aria-controls="ariaControlsId"
-            @click="toggle"
-          >
-            {{ $options.i18n.details }}
-          </gl-button>
-        </div>
-
-        <div v-if="expanded" :id="ariaControlsId" class="gl-mt-3" data-testid="search-path-details">
+        <diagnostics-section
+          :title="$options.i18n.searchPath"
+          :severity="payload.severity"
+          :findings="findings"
+          testid-prefix="search-path"
+        >
           <p class="gl-text-sm gl-text-subtle">
             <span data-testid="current-user">
               <strong>{{ $options.i18n.currentUserLabel }}</strong>
@@ -115,18 +71,9 @@ export default {
               <code>{{ payload.search_path }}</code>
             </span>
           </p>
+        </diagnostics-section>
 
-          <gl-alert
-            v-for="(finding, index) in findings"
-            :key="`${finding.code}-${index}`"
-            :variant="variantFor(finding.severity)"
-            :dismissible="false"
-            class="gl-mb-3"
-            :data-testid="`finding-${finding.code}`"
-          >
-            {{ finding.message }}
-          </gl-alert>
-        </div>
+        <db-timeouts-section v-if="payload.timeouts" :timeouts="payload.timeouts" class="gl-mt-5" />
 
         <db-schemas-section :schemas="payload.schemas" class="gl-mt-5" />
       </template>

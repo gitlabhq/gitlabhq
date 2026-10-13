@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_groups_entrypoint
+description: Enables Vue 3 for the groups page entrypoint
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630034
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257684
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631034
+milestone: '19.5'
+group: group::portfolio planning
+type: beta
+default_enabled: false

@@ -12,6 +12,9 @@
 #     search: string used for search on path and group name
 #     sort: string (see Types::Namespaces::GroupSortEnum)
 #     exact_matches_first: boolean used to enable priotization of exact matches
+#     solo_owned: boolean to return only groups where the target user is the sole owner
+#     organization: scopes the result to the given organization and enables users with
+#       :read_user_groups on it to read the target user's groups
 #
 # Initially created to filter user groups and descendants where the user can create projects
 module Groups
@@ -23,8 +26,8 @@ module Groups
     end
 
     def execute
-      return Group.none unless current_user&.can?(:read_user_groups, target_user)
       return Group.none if target_user.blank?
+      return Group.none unless can_read_user_groups?
 
       items = by_permission_scope
       items = by_organization(items)
@@ -47,6 +50,8 @@ module Groups
         Groups::AcceptingProjectTransfersFinder.new(target_user).execute # rubocop: disable CodeReuse/Finder
       elsif permission_scope_import_projects?
         Groups::AcceptingProjectImportsFinder.new(target_user).execute # rubocop: disable CodeReuse/Finder
+      elsif params[:solo_owned]
+        target_user.solo_owned_groups
       else
         target_user.groups
       end
@@ -62,6 +67,13 @@ module Groups
 
     def permission_scope_import_projects?
       params[:permission_scope] == :import_projects
+    end
+
+    def can_read_user_groups?
+      return false unless current_user
+
+      current_user.can?(:read_user_groups, target_user) ||
+        current_user.can?(:read_user_groups, params[:organization])
     end
 
     def by_organization(items)

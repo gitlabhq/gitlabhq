@@ -300,6 +300,77 @@ For Semantic Code Search, add the new model under the [`embeddings_code` feature
 
 For new Semantic Search Collections, you must add a new feature setting entry.
 
+### Embeddings generation on AI Gateway
+
+The [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
+generates embeddings by routing requests through the same `Prompt` object used for chat and completion prompts.
+This approach lets embeddings reuse existing AI Gateway capabilities such as model selection,
+prompt registry resolution and prompt invocation, and observability and instrumentation.
+
+#### Overview of end-to-end flow
+
+1. **Embeddings request:** a client sends an
+   [embeddings request](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md#embeddings)
+   to the AI Gateway.
+
+   For Code Embeddings, the endpoint implementations are found in `ai_gateway/api/v1/embeddings/code_embeddings.py`.
+
+1. **[Model Selection](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/model_selection.md):**
+   A `ModelMetadata` object is resolved from the request parameters through the `create_model_metadata` method.
+
+   The `ModelMetadata` carries the model metadata from the request parameters as well as the `llm_definition` object,
+   which contains the `model_class_provider`. For embeddings, the `model_class_provider` is `'litellm_embedding'`
+   (enum key: `ModelClassProvider.LITE_LLM_EMBEDDING`).
+
+1. **[Prompt Registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/aigw_prompt_registry.md):**
+   A `Prompt` object is created through `prompt_registry.get_on_behalf(...)`, with the parameters
+   `prompt_id` (`"embeddings_code"`) and `model_metadata` (the created `ModelMetadata` object).
+
+   The `Prompt` object contains the `model_factory` and `prompt_template_factory` based on the `model_class_provider`.
+
+   For embeddings, the `model_factory` is `lite_llm_embedding_fn`, which specifies `EmbeddingLiteLLM` as the
+   actual model class to invoke for embeddings generation.
+
+   Unlike other models, embeddings generation does not require a prompt template, so the Prompt Registry
+   uses a passthrough prompt template factory (`embedding_prompt_template_factory`).
+
+1. **Invocation:** Embeddings generation is invoked through `prompt.ainvoke`, which under the hood invokes the
+   actual model class (`EmbeddingLiteLLM`). Since embeddings uses a passthrough prompt template, the parameters
+   passed to `prompt.ainvoke` (`contents`, `dimensions`, and so on) are passed directly to `EmbeddingLiteLLM.ainvoke`.
+
+   `prompt.ainvoke` also handles retries, instrumentation, and internal events tracking.
+
+1. **The `EmbeddingLiteLLM` class:** This implements the actual calls to
+   [LiteLLM `/embeddings`](https://docs.litellm.ai/docs/embedding/supported_embedding), supporting
+   async invocations (`litellm.aembedding`).
+
+   This class translates the parameters from the `Prompt` invocation to the format expected by `litellm`,
+   and in turn transforms the `litellm.aembedding` result to an object type expected by the `Prompt`.
+   It also transforms expected `litellm` exception classes to types expected by endpoint implementation in
+   `ai_gateway/api/v1/embeddings/code_embeddings.py`.
+
+#### `model_metadata` for GitLab-managed vs self-hosted models
+
+AI Gateway determines the type of model based on the request parameter's `model_metadata` payload.
+
+For GitLab-managed models:
+
+- `model_metadata['provider']='gitlab'`
+- `model_metadata['name']` should not be specified
+- `model_metadata['identifier']` refers to the `gitlab_identifier` in the `ai_gateway/model_selection/models.yml` lookup
+- Additional model metadata such as custom parameters and model family are specified in the
+  `ai_gateway/model_selection/models.yml` entry
+
+For Self-hosted models:
+
+- `model_metadata['provider']='litellm'`
+- `model_metadata['name']='embedding'`
+- `model_metadata['identifier']` refers to the [Self-hosted model identifier](../../../administration/gitlab_duo_self_hosted/offline_deployment.md#add-the-self-hosted-model)
+- `model_metadata['endpoint']` is required
+- `model_metadata['api_key']` can be set optionally
+
+Any other `model_metadata` configuration is not accepted and will result in a `422` error.
+
 ## Troubleshooting
 
 ### Semantic search returns no results

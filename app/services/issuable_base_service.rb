@@ -588,6 +588,7 @@ class IssuableBaseService < ::BaseContainerService
     raise ActiveRecord::RecordNotFound unless issuable_before || issuable_after
 
     issuable_position.move_between(issuable_before, issuable_after)
+    @repositioned = true
   end
 
   def has_changes?(issuable, old_labels: [], old_assignees: [], old_reviewers: [])

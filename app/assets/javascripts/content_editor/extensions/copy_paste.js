@@ -1,11 +1,17 @@
 import OrderedMap from 'orderedmap';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
-import { Schema, Slice, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
+import {
+  Fragment,
+  Schema,
+  Slice,
+  DOMParser as ProseMirrorDOMParser,
+  DOMSerializer,
+} from '@tiptap/pm/model';
 import { handlePaste as handleTablePaste, isInTable, CellSelection } from '@tiptap/pm/tables';
 import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
-import { sanitize } from '~/lib/dompurify';
+import { sanitize, defaultConfig as sanitizeConfig } from '~/lib/dompurify';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
 import { ALERT_EVENT, EXTENSION_PRIORITY_HIGHEST } from '../constants';
@@ -13,6 +19,7 @@ import CodeBlockHighlight from './code_block_highlight';
 import CodeSuggestion from './code_suggestion';
 import Diagram from './diagram';
 import Frontmatter from './frontmatter';
+import Iframe from './iframe';
 import { loadingPlugin, findLoader } from './loading';
 
 const TEXT_FORMAT = 'text/plain';
@@ -35,18 +42,85 @@ function buildPasteSchema(schema) {
   return new Schema(pasteSchemaSpec);
 }
 
+function buildClipboardParser(schema) {
+  const { rules } = ProseMirrorDOMParser.fromSchema(schema);
+  return new ProseMirrorDOMParser(
+    schema,
+    rules.filter((rule) => rule.node !== Iframe.name),
+  );
+}
+
+// Blocks a paste merges into when the caret already sits in the same kind of
+// block; list flavours count as one kind, and so do their items.
+const MERGEABLE_WRAPPERS = {
+  bulletList: 'list',
+  orderedList: 'list',
+  taskList: 'list',
+  listItem: 'listItem',
+  taskItem: 'listItem',
+  blockquote: 'blockquote',
+};
+
+// Depth to open the pasted fragment so its content merges into the caret's
+// blocks instead of recreating them; 0 keeps the closed insertion.
+function mergeDepth($pos, fragment) {
+  if (!$pos.parent.isTextblock) return 0;
+
+  const wrappers = [];
+  let textblock = fragment.firstChild;
+  while (textblock?.isBlock && !textblock.isTextblock) {
+    wrappers.push(textblock);
+    textblock = textblock.firstChild;
+  }
+  if (!textblock?.isTextblock) return 0;
+
+  const isParagraph = textblock.type.name === 'paragraph';
+  if (!isParagraph && textblock.type !== $pos.parent.type) return 0;
+  if (isParagraph && !wrappers.length) return 0;
+
+  const wrappersMatch = wrappers.every((wrapper, i) => {
+    const depth = $pos.depth - (wrappers.length - i);
+    const kind = MERGEABLE_WRAPPERS[wrapper.type.name];
+    return depth > 0 && kind && kind === MERGEABLE_WRAPPERS[$pos.node(depth).type.name];
+  });
+
+  return wrappersMatch ? wrappers.length + 1 : 0;
+}
+
+// Like a native paste, the end stays open so the text after the caret
+// continues in the last pasted block; isolating nodes stay closed.
+function openEndDepth(fragment) {
+  let depth = 0;
+  for (
+    let node = fragment.lastChild;
+    node && !node.isLeaf && !node.type.spec.isolating;
+    node = node.lastChild
+  ) {
+    depth += 1;
+  }
+  return depth;
+}
+
 function parseHTML(schema, html) {
   const parser = new DOMParser();
   const startTag = '<body>';
   const endTag = '</body>';
   const { body } = parser.parseFromString(startTag + html + endTag, 'text/html');
-  return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
+  return { document: buildClipboardParser(schema).parse(body) };
 }
+
+// The editor's HTML clipboard payload carries HTML comments as <comment> elements (see the
+// htmlComment extension); DOMPurify would drop the unknown tag.
+const sanitizeClipboardHTML = (html) =>
+  sanitize(html, { ADD_TAGS: [...sanitizeConfig.ADD_TAGS, 'comment'] });
 
 function parseHTMLSlice(schema, html) {
   const parser = new DOMParser();
-  const { body } = parser.parseFromString(`<body>${sanitize(html)}</body>`, 'text/html');
-  return ProseMirrorDOMParser.fromSchema(schema).parseSlice(body);
+  const { body } = parser.parseFromString(
+    `<body>${sanitizeClipboardHTML(html)}</body>`,
+    'text/html',
+  );
+  return buildClipboardParser(schema).parseSlice(body);
 }
 
 function hasTableCells(html) {
@@ -62,14 +136,14 @@ function hasTableCells(html) {
 // through the markdown-based paste path, preserving GFM fidelity.
 function extractMultiCellTableHTML(html) {
   const parser = new DOMParser();
-  let { body } = parser.parseFromString(`<body>${sanitize(html)}</body>`, 'text/html');
+  let { body } = parser.parseFromString(`<body>${sanitizeClipboardHTML(html)}</body>`, 'text/html');
   let table = body.querySelector('table');
 
   // Wrap orphan rows before sanitizing: DOMPurify drops <tr>/<td> structure
   // that has no <table> ancestor.
   if (!table && /<tr[\s>]/i.test(html)) {
     ({ body } = parser.parseFromString(
-      `<body>${sanitize(`<table>${html}</table>`)}</body>`,
+      `<body>${sanitizeClipboardHTML(`<table>${html}</table>`)}</body>`,
       'text/html',
     ));
     table = body.querySelector('table');
@@ -183,15 +257,28 @@ export default Extension.create({
               const chain = editor.chain().setMeta(loadingPlugin, { remove: { loaderId } });
 
               if (document && pos !== null) {
-                const { firstChild, childCount } = document.content;
-                const toPaste =
-                  childCount === 1 && firstChild.type.name === 'paragraph'
-                    ? firstChild.content
-                    : document.content;
+                // rehydrate in the editor schema: node types are schema-bound and
+                // the document was parsed with the restricted paste schema
+                const fragment = Fragment.fromJSON(editor.schema, document.content.toJSON());
+                const openStart = mergeDepth(editor.state.doc.resolve(pos), fragment);
 
-                chain.insertContentAt(pos, toPaste.toJSON(), {
-                  updateSelection: false,
-                });
+                if (openStart) {
+                  const slice = new Slice(fragment, openStart, openEndDepth(fragment));
+                  chain.command(({ tr }) => {
+                    tr.replaceRange(pos, pos, slice);
+                    return true;
+                  });
+                } else {
+                  const { firstChild, childCount } = fragment;
+                  const toPaste =
+                    childCount === 1 && firstChild.type.name === 'paragraph'
+                      ? firstChild.content
+                      : fragment;
+
+                  chain.insertContentAt(pos, toPaste.toJSON(), {
+                    updateSelection: false,
+                  });
+                }
               }
 
               chain.run();
@@ -325,6 +412,7 @@ export default Extension.create({
       new Plugin({
         key: new PluginKey('copyPaste'),
         props: {
+          clipboardParser: buildClipboardParser(this.editor.schema),
           handleDOMEvents: {
             copy: handleCutAndCopy,
             cut: (view, event) => {

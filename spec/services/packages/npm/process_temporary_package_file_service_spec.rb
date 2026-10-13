@@ -145,16 +145,36 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileService, feature_catego
       end
     end
 
-    context 'when JSON parser error' do
+    context 'when JSON is malformed' do
       let(:content) { '{ name": "package-name"}' }
 
       it 'returns error' do
-        result = execute
-        expect(result).to be_error.and have_attributes(reason: :json_parser_error)
-        expect(result.message).to match(/not a number or other value/)
-        expect(result.message).to match(/line 1/)
-        expect(result.message).to match(/column 2/)
-        expect(result.message).to match(/\{ name"/)
+        expect(execute).to be_error.and have_attributes(
+          message: a_string_matching(/unexpected/i),
+          reason: :json_parser_error
+        )
+      end
+    end
+
+    context 'when JSON contains oversized array' do
+      let(:content) { %({"a":[#{'1,' * 100000}1]}) }
+
+      it 'returns error' do
+        expect(execute).to be_error.and have_attributes(
+          message: 'Array parameter too large',
+          reason: :json_parser_error
+        )
+      end
+    end
+
+    context 'when JSON contains deep nesting' do
+      let(:content) { %(#{'{"a":' * 200}1#{'}' * 200}) }
+
+      it 'returns error' do
+        expect(execute).to be_error.and have_attributes(
+          message: 'Parameters nested too deeply',
+          reason: :json_parser_error
+        )
       end
     end
   end

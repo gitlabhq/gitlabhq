@@ -17,27 +17,6 @@ class Projects::BlameController < Projects::ApplicationController
 
   def show
     @ref_type = ref_type
-
-    return if Feature.enabled?(:inline_blame, @project)
-
-    load_environment
-    load_blame
-  rescue Gitlab::Git::Blame::IgnoreRevsFormatError
-    redirect_show_with_flash(_('Malformed .git-blame-ignore-revs'))
-  rescue Gitlab::Git::Blame::IgnoreRevsFileError
-    redirect_show_with_flash(_('.git-blame-ignore-revs is not a file'))
-  end
-
-  def streaming
-    show
-    render action: 'show'
-  end
-
-  def page
-    load_environment
-    load_blame
-
-    render partial: 'page'
   end
 
   private
@@ -55,65 +34,6 @@ class Projects::BlameController < Projects::ApplicationController
 
     redirect_to project_blob_path(@project, File.join(@ref, @path)),
       notice: _('Blame for binary files is not supported.')
-  end
-
-  def load_environment
-    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-    environment_params[:find_latest] = true
-    @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(
-      @project,
-      current_user,
-      environment_params
-    ).execute.last
-  end
-
-  def load_blame
-    @blame_mode = Gitlab::Git::BlameMode.new(@commit.project, blame_params)
-    @blame_pagination = Gitlab::Git::BlamePagination.new(@blob, @blame_mode, blame_params)
-
-    blame = Gitlab::Blame.new(@blob, @commit,
-      range: @blame_pagination.blame_range,
-      ignore_revs: ignore_revs
-    )
-
-    @blame = Gitlab::View::Presenter::Factory.new(
-      blame,
-      project: @project,
-      path: @path,
-      page: @blame_pagination.page
-    ).fabricate!
-  end
-
-  def ignore_revs
-    Gitlab::Utils.to_boolean(blame_params[:ignore_revs], default: false)
-  end
-
-  def blame_attributes
-    [:page, :no_pagination, :streaming, :ignore_revs]
-  end
-
-  def blame_params
-    params.permit(*blame_attributes)
-  end
-
-  def redirect_show_with_flash(message)
-    flash[:notice] = message
-    redirect_to project_blame_path(@project, @id, ref_type: ref_type)
-  end
-
-  # Override because #streaming and #page don't have their own templates.
-  # Always render the 'show' template which handles @gitaly_unavailable.
-  #
-  def handle_gitaly_error(exception)
-    Gitlab::ErrorTracking.track_exception(exception)
-
-    @gitaly_unavailable = true
-
-    respond_to do |format|
-      format.html { render action: 'show', status: :service_unavailable }
-      format.json { render json: { error: gitaly_unavailable_message }, status: :service_unavailable }
-      format.any { render plain: gitaly_unavailable_message, status: :service_unavailable }
-    end
   end
 end
 

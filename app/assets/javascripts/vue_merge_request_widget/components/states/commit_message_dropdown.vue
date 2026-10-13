@@ -15,7 +15,6 @@ export default {
     commits: {
       type: Array,
       required: true,
-      default: () => [],
     },
     aiCommitMessageEnabled: {
       type: Boolean,

@@ -88,15 +88,7 @@ module Gitlab
       end
 
       def timeout
-        if import_settings.enabled?(:single_endpoint_notes_import)
-          Gitlab::Cache::Import::Caching::LONGER_TIMEOUT
-        else
-          Gitlab::Cache::Import::Caching::TIMEOUT
-        end
-      end
-
-      def import_settings
-        ::Gitlab::GithubImport::Settings.new(project)
+        Gitlab::Cache::Import::Caching::LONGER_TIMEOUT
       end
     end
   end

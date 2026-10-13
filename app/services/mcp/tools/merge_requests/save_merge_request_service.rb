@@ -138,6 +138,8 @@ module Mcp
           'save_merge_request'
         end
 
+        container_arguments project: %i[project_id target_project_id]
+
         override :tool_aliases
         def self.tool_aliases
           %w[create_merge_request update_merge_request]
@@ -152,7 +154,7 @@ module Mcp
           params[:arguments] = transformed_args.except(:operation)
           tool = select_tool(transformed_args)
 
-          raise Mcp::Tools::Manager::ToolNotFoundError, self.class.tool_name unless tool
+          raise Base::AggregatedService::ToolNotConfiguredError, self.class.tool_name unless tool
 
           execute_tool_with_enhanced_response(tool, operation, ignored_params(arguments, operation))
         end

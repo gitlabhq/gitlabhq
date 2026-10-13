@@ -370,7 +370,7 @@ The following languages and dependency managers are supported by dependency scan
     <tr>
       <td rowspan="5">Python</td>
       <td rowspan="5">3.11<sup>7</sup></td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup>8</sup></td>
+      <td><a href="https://setuptools.pypa.io/en/latest/">setuptools</a><sup>8</sup></td>
       <td><code>setup.py</code></td>
       <td>N</td>
     </tr>
@@ -574,7 +574,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Controls Gradle dependency resolution strictness. Accepts `"none"` to allow partial results, or `"failed"` to fail the scan when any dependencies fail to resolve. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
 | `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
-| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning**: Read [the following security consideration](#python-projects) when using this environment variable. |
+| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Space-separated. **Warning**: Read [the following security consideration](#python-projects) when using this environment variable. |
 | `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. This is a filename and not a path. When this environment variable is set only the specified file is scanned. |
 | `PIPENV_PYPI_MIRROR`                 | `gemnasium-python` |                              | If set, overrides the PyPi index used by Pipenv with a [mirror](https://github.com/pypa/pipenv/blob/v2022.1.8/pipenv/environments.py#L263). |
 | `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. |
@@ -720,7 +720,7 @@ Prerequisites:
 - A GitLab Runner with the `docker` or `kubernetes` executor
 - Local copies of the dependency scanning analyzer images
 - Access to the [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
-- Access to the [Package Metadata Database](../../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database)
+- Access to the [Package Metadata Database](../../../../topics/offline/package-metadata-database.md)
 
 #### Local copies of analyzer images
 

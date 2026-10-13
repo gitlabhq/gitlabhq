@@ -1281,10 +1281,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
         with_them do
           it do
-            expect(issue.designs.pluck(:filename)).to contain_exactly(*design_filenames)
-            expect(issue.design_versions.pluck(:sha)).to contain_exactly(*version_shas)
-            expect(issue.design_versions.flat_map(&:actions).map(&:event)).to contain_exactly(*events)
-            expect(issue.design_versions.map(&:author).map(&:email)).to contain_exactly(*author_emails)
+            expect(issue.designs.pluck(:filename)).to match_array(design_filenames)
+            expect(issue.design_versions.pluck(:sha)).to match_array(version_shas)
+            expect(issue.design_versions.flat_map(&:actions).map(&:event)).to match_array(events)
+            expect(issue.design_versions.map(&:author).map(&:email)).to match_array(author_emails)
           end
         end
       end
@@ -1305,7 +1305,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
         with_them do
           it do
-            expect(design.versions.pluck(:sha)).to contain_exactly(*version_shas)
+            expect(design.versions.pluck(:sha)).to match_array(version_shas)
           end
         end
       end

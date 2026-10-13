@@ -6,7 +6,7 @@ RSpec.describe Projects::AlertManagementHelper, feature_category: :incident_mana
   include Gitlab::Routing.url_helpers
 
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { build_stubbed(:user) }
 
   let(:project_path) { project.full_path }
   let(:project_id) { project.id }

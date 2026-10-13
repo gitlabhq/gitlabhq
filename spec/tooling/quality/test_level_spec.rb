@@ -243,7 +243,7 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
 
     it 'ensures all spec/ folders are covered by a test level' do
       Dir['{,ee/}spec/**/*/'].each do |path|
-        next if %r{\A(ee/)?spec/(benchmarks|docs_screenshots|fixtures|frontend_integration|support)/}.match?(path)
+        next if %r{\A(ee/)?spec/(benchmarks|docs_screenshots|fixtures|support)/}.match?(path)
 
         expect { subject.level_for(path) }.not_to raise_error
       end

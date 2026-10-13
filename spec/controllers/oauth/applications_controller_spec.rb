@@ -300,6 +300,17 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
         end
       end
 
+      context 'when the backend-only granular scope is submitted' do
+        let(:scopes) { %w[api granular] }
+
+        it 'drops the granular scope' do
+          subject
+
+          expect(response).to render_template :show
+          expect(Authn::OauthApplication.last.scopes.to_a).to eq(['api'])
+        end
+      end
+
       context 'when scopes are invalid' do
         let(:scopes) { %w[api foo] }
 
@@ -308,7 +319,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
         it 'shows an error for invalid scopes' do
           subject
 
-          expect(response.body).to include 'Scopes doesn&#39;t match configured on the server.'
+          expect(response.body).to include 'Scopes doesn&#39;t match those configured on the server.'
           expect(response).to render_template('doorkeeper/applications/index')
         end
       end

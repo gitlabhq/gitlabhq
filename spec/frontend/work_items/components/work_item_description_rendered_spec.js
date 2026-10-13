@@ -40,7 +40,6 @@ describe('WorkItemDescriptionRendered', () => {
     workItemType = 'ISSUE',
     withoutHeadingAnchors = false,
     enableTruncation = true,
-    workItemsTaskListToggle = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDescriptionRendered, {
       propsData: {
@@ -52,9 +51,6 @@ describe('WorkItemDescriptionRendered', () => {
         workItemType,
         withoutHeadingAnchors,
         enableTruncation,
-      },
-      provide: {
-        glFeatures: { workItemsTaskListToggle },
       },
       stubs: {
         CreateWorkItemModal,
@@ -176,42 +172,45 @@ describe('WorkItemDescriptionRendered', () => {
     });
   });
 
-  describe('`disableHeadingAnchors` prop', () => {
-    const baseAnchorHtml =
-      '<a href="#this-is-an-anchor" aria-hidden="true" class="anchor" id="user-content-this-is-an-anchor"></a>';
-    const uninteractiveAnchorHtml =
-      '<a href="#this-is-an-anchor" aria-hidden="true" class="anchor after:!gl-hidden" id="user-content-this-is-an-anchor"></a>';
-    const baseHtml =
-      '<h1 data-sourcepos="1:1-1:19" dir="auto">&#x000A;<a href="#this-is-an-anchor" aria-hidden="true" class="anchor" id="user-content-this-is-an-anchor"></a>This is an anchor</h1>';
-    it('renders anchor links as normal when prop is `false`', () => {
+  describe('`withoutHeadingAnchors` prop', () => {
+    const hiddenAnchorsClass = '[&_a.anchor]:gl-hidden';
+    // Matches the heading markup our Markdown pipeline emits today.
+    const headingAnchorHtml =
+      '<a href="#this-is-an-anchor" aria-label="Link to heading \'This is an anchor\'" data-heading-content="This is an anchor" class="anchor"></a>';
+    const headingHtml = `<h1 id="user-content-this-is-an-anchor" data-sourcepos="1:1-1:19" dir="auto">This is an anchor${headingAnchorHtml}</h1>`;
+
+    const createAnchorComponent = (withoutHeadingAnchors) =>
       createComponent({
-        withoutHeadingAnchors: false,
+        withoutHeadingAnchors,
         workItemDescription: {
           description: 'This is an anchor',
-          descriptionHtml: baseHtml,
+          descriptionHtml: headingHtml,
         },
       });
 
-      const renderedHtml = findDescription().html();
-      expect(renderedHtml).toContain(baseAnchorHtml);
+    describe('when `false`', () => {
+      beforeEach(() => createAnchorComponent(false));
+
+      it('does not hide the heading anchors', () => {
+        expect(findDescription().classes()).not.toContain(hiddenAnchorsClass);
+      });
     });
 
-    it('makes anchor links uninteractive when prop is `true`', () => {
-      createComponent({
-        withoutHeadingAnchors: true,
-        workItemDescription: {
-          description: 'This is an anchor',
-          descriptionHtml: baseHtml,
-        },
+    describe('when `true`', () => {
+      beforeEach(() => createAnchorComponent(true));
+
+      it('hides the heading anchors', () => {
+        expect(findDescription().classes()).toContain(hiddenAnchorsClass);
       });
 
-      const renderedHtml = findDescription().html();
-      expect(renderedHtml).toContain(uninteractiveAnchorHtml);
+      it('renders the description HTML unchanged', () => {
+        expect(findDescription().html()).toContain(headingAnchorHtml);
+      });
     });
   });
 
   describe('with checkboxes', () => {
-    const createCheckboxComponent = (options = {}) => {
+    beforeEach(() => {
       createComponent({
         canEdit: true,
         workItemDescription: {
@@ -223,67 +222,30 @@ describe('WorkItemDescriptionRendered', () => {
 <input class="task-list-item-checkbox" type="checkbox"> todo 2</li>
 </ul>`,
         },
-        ...options,
       });
 
       jest.spyOn(wrapper.vm, 'createTaskListItemActions').mockReturnValue({});
-    };
-
-    describe.each([false, true])('with workItemsTaskListToggle %s', (workItemsTaskListToggle) => {
-      beforeEach(() => {
-        createCheckboxComponent({ workItemsTaskListToggle });
-      });
-
-      it('disables checkbox while updating', async () => {
-        findCheckboxAtIndex(1).setChecked();
-
-        await nextTick();
-
-        expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
-      });
-
-      it('re-enables checkboxes once updating is done', async () => {
-        await wrapper.setProps({ isUpdating: true });
-
-        expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
-
-        await wrapper.setProps({ isUpdating: false });
-
-        expect(findCheckboxAtIndex(1).attributes().disabled).toBeUndefined();
-      });
     });
 
-    describe('when workItemsTaskListToggle is disabled', () => {
-      beforeEach(() => {
-        createCheckboxComponent();
-      });
+    it('disables checkbox while updating', async () => {
+      findCheckboxAtIndex(1).setChecked();
 
-      it('checks unchecked checkbox', async () => {
-        findCheckboxAtIndex(1).setChecked();
+      await nextTick();
 
-        await nextTick();
-
-        const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
-        expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
-        expect(findReadMore().exists()).toBe(false);
-      });
-
-      it('unchecks checked checkbox', async () => {
-        findCheckboxAtIndex(0).setChecked(false);
-
-        await nextTick();
-
-        const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
-        expect(wrapper.emitted('description-updated')).toEqual([[updatedDescription]]);
-        expect(findReadMore().exists()).toBe(false);
-      });
+      expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
     });
 
-    describe('when workItemsTaskListToggle is enabled', () => {
-      beforeEach(() => {
-        createCheckboxComponent({ workItemsTaskListToggle: true });
-      });
+    it('re-enables checkboxes once updating is done', async () => {
+      await wrapper.setProps({ isUpdating: true });
 
+      expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
+
+      await wrapper.setProps({ isUpdating: false });
+
+      expect(findCheckboxAtIndex(1).attributes().disabled).toBeUndefined();
+    });
+
+    describe('when checking an unchecked checkbox', () => {
       it('emits task-item-toggled with a line locator instead of the full description', async () => {
         findCheckboxAtIndex(1).setChecked();
 
@@ -301,8 +263,10 @@ describe('WorkItemDescriptionRendered', () => {
         ]);
         expect(wrapper.emitted('description-updated')).toBeUndefined();
       });
+    });
 
-      it('emits task-item-toggled when unchecking a checked checkbox', async () => {
+    describe('when unchecking a checked checkbox', () => {
+      it('emits task-item-toggled with a line locator instead of the full description', async () => {
         findCheckboxAtIndex(0).setChecked(false);
 
         await nextTick();
@@ -398,6 +362,34 @@ describe('WorkItemDescriptionRendered', () => {
 
       expect(Sortable.create).not.toHaveBeenCalled();
     });
+
+    describe('when the description contains a table of contents', () => {
+      beforeEach(async () => {
+        createComponent({
+          canEdit: true,
+          workItemDescription: {
+            description: 'test',
+            descriptionHtml: `
+              <ul class="section-nav">
+                <li>Heading
+                  <ul><li>Section A</li><li>Section B</li></ul>
+                </li>
+              </ul>
+              <ul><li>task 1</li><li>task 2</li></ul>
+              <ol><li>step 1</li><li>step 2</li></ol>
+            `,
+          },
+        });
+        await nextTick();
+      });
+
+      it('excludes its nested lists while keeping ordinary lists sortable', () => {
+        const sortableLists = Sortable.create.mock.calls.map(([list]) => list);
+
+        expect(sortableLists).toHaveLength(2);
+        expect(sortableLists.map((list) => list.tagName)).toEqual(['UL', 'OL']);
+      });
+    });
   });
 
   describe('task list item actions', () => {
@@ -428,7 +420,6 @@ describe('WorkItemDescriptionRendered', () => {
         await nextTick();
 
         expect(findCreateWorkItemModal().props()).toEqual({
-          alwaysShowWorkItemTypeSelect: false,
           asDropdownItem: false,
           confidential: false,
           createSource: null,
@@ -441,18 +432,16 @@ and more text
 and even more`,
           fullPath: 'full/path',
           hideButton: true,
+          hideNamespaceSelector: true,
+          hideTypeSelector: true,
           isGroup: false,
-          namespaceFullName: '',
           parentId: 'gid://gitlab/WorkItem/818',
           relatedItem: null,
-          showProjectSelector: false,
           suppressCreatedToast: false,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
           preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
-          isEpicsList: false,
-          allowAnyNamespace: false,
           allowProjectsOnly: false,
           mergeRequestId: null,
           mergeRequestLinkType: null,
@@ -490,9 +479,10 @@ and even more`,
             asDropdownItem: false,
             description: ``,
             hideButton: true,
+            hideNamespaceSelector: false,
+            hideTypeSelector: false,
             isGroup: true,
             parentId: 'gid://gitlab/WorkItem/818',
-            showProjectSelector: true,
             title: 'item 1',
             visible: true,
             preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
@@ -516,9 +506,10 @@ and even more`,
             asDropdownItem: false,
             description: ``,
             hideButton: true,
+            hideNamespaceSelector: true,
+            hideTypeSelector: true,
             isGroup: false,
             parentId: 'gid://gitlab/WorkItem/818',
-            showProjectSelector: false,
             title: 'item 1',
             visible: true,
             preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,

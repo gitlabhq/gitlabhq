@@ -3,6 +3,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getScrollingElement } from '~/lib/utils/panels';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import Log from '~/ci/job_details/components/log/log.vue';
 import LogLine from '~/ci/job_details/components/log/line.vue';
@@ -14,6 +15,7 @@ import { mockJobLog, mockJobLogLineCount } from './mock_data';
 const mockPagePath = 'project/-/jobs/99';
 
 jest.mock('~/lib/utils/scroll_utils');
+jest.mock('~/lib/utils/panels');
 
 describe('Job Log', () => {
   let wrapper;
@@ -185,6 +187,26 @@ describe('Job Log', () => {
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
+      });
+
+      it('offsets the scroll by the sticky top bar bottom so the line is not hidden behind it', async () => {
+        const topBar = document.createElement('div');
+        topBar.className = 'js-job-log-top-bar';
+        jest.spyOn(topBar, 'getBoundingClientRect').mockReturnValue({ bottom: 139 });
+        jest.spyOn(document, 'querySelector').mockImplementation((selector) => {
+          return selector === '.js-job-log-top-bar' ? topBar : null;
+        });
+        getScrollingElement.mockReturnValue({
+          getBoundingClientRect: () => ({ top: 57 }),
+        });
+
+        createComponent();
+        await waitForPromises();
+
+        wrapper.vm.$store.state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
+        await waitForPromises();
+
+        expect(scrollToElement).toHaveBeenCalledWith(null, { offset: -82 });
       });
 
       it('line number within collapsed section is visible', () => {

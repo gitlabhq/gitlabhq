@@ -9,6 +9,11 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
   let(:worker) { described_class.new }
 
+  it 'defers only on database-wide health signals, not per-table autovacuum' do
+    expect(described_class.database_health_check_attrs)
+      .to include(indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS)
+  end
+
   describe '#perform', :clean_gitlab_redis_shared_state do
     subject(:perform) { worker.perform(group.id, new_parent_group.id, user.id) }
 
@@ -29,8 +34,28 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           .with(namespace_type: 'group', result: 'success')
         expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
           .with(duration_s: kind_of(Numeric), namespace_type: 'group')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_end_to_end_transfer_duration)
+          .with(scheduled_at: kind_of(String), namespace_type: 'group')
 
         perform
+      end
+
+      context 'when state_metadata is nil' do
+        it 'observes the end-to-end duration with a nil scheduled_at' do
+          allow(Group).to receive(:find_by_id).and_call_original
+          allow(Group).to receive(:find_by_id).with(group.id).and_return(group)
+          allow_next_instance_of(::Groups::TransferService) do |service|
+            allow(service).to receive(:execute) do
+              allow(group).to receive_messages(state_metadata: nil, complete_transfer!: true)
+              true
+            end
+          end
+
+          expect(::Gitlab::Metrics::Transfers).to receive(:observe_end_to_end_transfer_duration)
+            .with(scheduled_at: nil, namespace_type: 'group').and_call_original
+
+          perform
+        end
       end
 
       context 'when a pending transfer-failed todo exists for the user' do
@@ -94,6 +119,17 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
           expect(group.reload.state).to eq('ancestor_inherited')
         end
+
+        it 'records the service error so the to-do item can show it' do
+          expect_next_instance_of(::Groups::TransferService, group, user) do |service|
+            expect(service).to receive(:execute).with(new_parent_group).and_return(false)
+            allow(service).to receive(:error).and_return('Namespace already taken')
+          end
+
+          perform
+
+          expect(group.reload.transfer_last_error).to eq('Namespace already taken')
+        end
       end
 
       context 'when TransferService raises an error' do
@@ -118,6 +154,8 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           }.by(1)
 
           expect(group.reload.state).to eq('ancestor_inherited')
+          expect(group.transfer_last_error)
+            .to eq('The transfer failed unexpectedly. Contact your administrator if it continues to fail.')
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
             'message' => 'Namespaces::Groups::TransferWorker failed',
             'group_id' => group.id,

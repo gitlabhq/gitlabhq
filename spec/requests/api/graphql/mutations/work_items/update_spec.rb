@@ -367,32 +367,6 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
         it_behaves_like 'a mutation that returns a top-level access error'
       end
-
-      context 'when the work_items_task_list_toggle feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items_task_list_toggle: false)
-        end
-
-        it 'returns an argument error mentioning the feature flag' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(graphql_errors.first['message']).to include('work_items_task_list_toggle')
-        end
-      end
-
-      context 'when the work_items_task_list_toggle feature flag is enabled for the root ancestor only' do
-        before do
-          stub_feature_flags(work_items_task_list_toggle: group)
-        end
-
-        it 'toggles the item' do
-          expect do
-            post_graphql_mutation(mutation, current_user: current_user)
-            mutation_work_item.reload
-          end.to change { mutation_work_item.description }
-            .to("Intro\n\n- [x] Task 1\n- [x] Task 2")
-        end
-      end
     end
 
     context 'with labels widget input' do
