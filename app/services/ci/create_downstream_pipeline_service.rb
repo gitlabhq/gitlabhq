@@ -51,6 +51,8 @@ module Ci
 
     private
 
+    attr_reader :bridge
+
     def update_bridge_status!(bridge, pipeline)
       if pipeline.created_successfully?
         Gitlab::OptimisticLocking.retry_lock(bridge,
@@ -202,7 +204,12 @@ module Ci
 
       # only applies to parent-child pipelines not multi-project
       ancestors_of_new_child = @bridge.pipeline.self_and_project_ancestors
-      ancestors_of_new_child.count > MAX_NESTED_CHILDREN
+      ancestors_of_new_child.count > max_nested_children
+    end
+
+    # Overridden in EE
+    def max_nested_children
+      MAX_NESTED_CHILDREN
     end
 
     def pipeline_tree_too_large?

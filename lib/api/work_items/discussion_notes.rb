@@ -15,6 +15,7 @@ module API
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::NotesHelpers
       helpers ::API::Helpers::WorkItems::NoteCreation
+      helpers ::API::Helpers::WorkItems::NoteUpdate
 
       helpers do
         def no_readable_notes_in_discussion?(parent_work_item)
@@ -112,7 +113,7 @@ module API
           if params.key?(:resolved)
             resolve_discussion_note(parent_work_item, note)
           else
-            update_note_body(parent_work_item, note)
+            update_work_item_note(parent_work_item, note)
           end
         end
 
@@ -125,17 +126,6 @@ module API
           not_found!('Note') unless note&.readable_by?(current_user)
 
           note
-        end
-
-        def update_note_body(parent_work_item, note)
-          authorize! :update_note, note
-
-          # Group-level work items have no project; the service accepts nil, as the legacy epic notes path does.
-          note = ::Notes::UpdateService.new(parent_work_item.project, current_user, note: params[:body]).execute(note)
-
-          process_note_creation_result(note) do
-            present note, with: ::API::Entities::Note, current_user: current_user
-          end
         end
 
         # Not called `resolve_note`: NotesHelpers already defines one that takes different arguments.

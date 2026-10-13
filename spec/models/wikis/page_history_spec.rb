@@ -253,6 +253,33 @@ RSpec.describe Wikis::PageHistory, :clean_gitlab_redis_repository_cache, feature
     end
   end
 
+  describe '#previous_path_at' do
+    let(:title) { 'sub/renamed' }
+    let(:commits) { repository.commits(wiki.default_branch, follow: false, limit: 10).index_by(&:message) }
+
+    before do
+      create_page('original')
+      edit_page('original', rename_to: 'sub/renamed', content: "original content\n", message: 'rename')
+      edit_page('sub/renamed', content: "edit\n", message: 'edit')
+    end
+
+    it 'returns the path the page was renamed from, at the commit that renamed it', :aggregate_failures do
+      expect(history.previous_path_at(commits['rename'].id)).to eq('original.md')
+      expect(history.previous_path_at(commits['edit'].id)).to be_nil
+      expect(history.previous_path_at(commits['create original'].id)).to be_nil
+    end
+
+    context 'when the history is longer than MAX_VERSIONS' do
+      before do
+        stub_const("#{described_class}::MAX_VERSIONS", 2)
+      end
+
+      it 'returns nil' do
+        expect(history.previous_path_at(commits['rename'].id)).to be_nil
+      end
+    end
+  end
+
   describe 'caching' do
     let(:title) { 'cached' }
     let(:expected) { ['edit 1', 'rename', 'create original-cached'] }
@@ -264,7 +291,7 @@ RSpec.describe Wikis::PageHistory, :clean_gitlab_redis_repository_cache, feature
     end
 
     it 'does not walk the history again for the same page version', :aggregate_failures do
-      first_commit_id = repository.commits(wiki.default_branch, limit: 3).last.id
+      commits = repository.commits(wiki.default_branch, limit: 3).index_by(&:message)
       described_class.new(wiki.find_page(title)).count
       cached = described_class.new(wiki.find_page(title))
 
@@ -274,7 +301,8 @@ RSpec.describe Wikis::PageHistory, :clean_gitlab_redis_repository_cache, feature
 
       expect(cached.count).to eq(expected.size)
       expect(messages(cached.versions)).to eq(expected)
-      expect(cached.slug_at(first_commit_id)).to eq('original-cached')
+      expect(cached.slug_at(commits['create original-cached'].id)).to eq('original-cached')
+      expect(cached.previous_path_at(commits['rename'].id)).to eq('original-cached.md')
     end
 
     it 'walks the history again after a new commit' do

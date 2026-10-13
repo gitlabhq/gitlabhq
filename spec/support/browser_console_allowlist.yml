@@ -205,12 +205,6 @@
   - spec/features/work_items/issues/list/**/*_spec.rb
   - spec/features/work_items/issues/user_sees_breadcrumb_links_spec.rb
   - spec/features/work_items/list/**/*_spec.rb
-- message: "[Vue warn]: Invalid prop: type check failed for prop areScopedVariablesAvailable"
-  specs:
-  - spec/features/group_variables_spec.rb
-  - spec/features/groups/settings/ci_cd_spec.rb
-  - spec/features/groups/settings/user_searches_in_settings_spec.rb
-  - spec/lib/search/group_settings_spec.rb
 # FOSS only: these pages link an EE page bundle stylesheet that the FOSS build does not ship, so the
 # server answers with HTML. The link tag should be EE only.
 - message: "Refused to apply style from"

@@ -4,18 +4,13 @@ require 'open3'
 
 module Tooling
   module PredictiveTests
-    # The git side of file-based selection: this MR's files, and what changed on master since the map's last capture.
+    # The git side of file-based selection: what changed on master since the map's last capture.
     class GitChanges
       def initialize(base_sha:, clickhouse_client:, project_path:, git: method(:run_git))
         @base_sha = base_sha
         @clickhouse_client = clickhouse_client
         @project_path = project_path
         @git = git
-      end
-
-      def mr_files
-        ensure_commit(base_sha)
-        git.call('diff', '--name-only', '--no-renames', base_sha, 'HEAD').split("\n")
       end
 
       # Files changed on master since the map's last capture. Nil when that can't be worked out.

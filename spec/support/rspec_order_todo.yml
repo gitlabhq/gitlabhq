@@ -6093,7 +6093,6 @@
 - './spec/requests/api/graphql/mutations/todos/restore_spec.rb'
 - './spec/requests/api/graphql/mutations/uploads/delete_spec.rb'
 - './spec/requests/api/graphql/mutations/user_callouts/create_spec.rb'
-- './spec/requests/api/graphql/mutations/user_preferences/update_spec.rb'
 - './spec/requests/api/graphql/mutations/work_items/create_from_task_spec.rb'
 - './spec/requests/api/graphql/mutations/work_items/create_spec.rb'
 - './spec/requests/api/graphql/mutations/work_items/delete_spec.rb'

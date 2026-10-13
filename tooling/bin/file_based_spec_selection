@@ -7,6 +7,7 @@
 require 'json'
 require 'gitlab_quality/test_tooling'
 
+require_relative '../lib/tooling/find_changes'
 require_relative '../lib/tooling/predictive_tests/file_based_selector'
 require_relative '../lib/tooling/predictive_tests/git_changes'
 require_relative '../quality/test_level'
@@ -23,7 +24,7 @@ git_changes = Tooling::PredictiveTests::GitChanges.new(
   clickhouse_client: client,
   project_path: ENV.fetch('CI_PROJECT_PATH')
 )
-changed_files = git_changes.mr_files
+changed_files = Tooling::FindChanges.new(from: :api).execute
 
 result = Tooling::PredictiveTests::FileBasedSelector.new(
   changed_files: changed_files,

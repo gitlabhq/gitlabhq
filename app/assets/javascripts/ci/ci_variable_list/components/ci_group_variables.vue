@@ -19,7 +19,7 @@ export default {
   inject: ['groupPath', 'groupId'],
   computed: {
     areScopedVariablesAvailable() {
-      return this.glLicensedFeatures.groupScopedCiVariables;
+      return Boolean(this.glLicensedFeatures.groupScopedCiVariables);
     },
     graphqlId() {
       return convertToGraphQLId(TYPENAME_GROUP, this.groupId);

@@ -400,8 +400,8 @@ class WikiPage
     version&.commit&.committed_date
   end
 
-  def diffs(diff_options = {})
-    Gitlab::Diff::FileCollection::WikiPage.new(self, diff_options: diff_options)
+  def diffs(diff_options = {}, previous_path: nil)
+    Gitlab::Diff::FileCollection::WikiPage.new(self, diff_options: diff_options, previous_path: previous_path)
   end
 
   private

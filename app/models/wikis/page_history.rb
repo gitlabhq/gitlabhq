@@ -8,6 +8,8 @@ module Wikis
     CHANGED_PATH_STATUSES = %i[DIFF_STATUS_ADDED DIFF_STATUS_DELETED DIFF_STATUS_RENAMED].freeze
     CACHE_TTL = 1.hour
 
+    attr_reader :wiki_page
+
     def initialize(wiki_page)
       @wiki_page = wiki_page
     end
@@ -28,14 +30,18 @@ module Wikis
     end
 
     def slug_at(commit_id)
-      path = entries_by_commit_id&.dig(commit_id)
+      _, path = entries_by_commit_id&.dig(commit_id)
 
       url_path(path) if path
     end
 
-    private
+    def previous_path_at(commit_id)
+      _, _, previous_path = entries_by_commit_id&.dig(commit_id)
 
-    attr_reader :wiki_page
+      previous_path
+    end
+
+    private
 
     delegate :wiki, to: :wiki_page
     delegate :repository, to: :wiki
@@ -56,7 +62,7 @@ module Wikis
 
     def cache_key
       [
-        'wiki_page_history:v1',
+        'wiki_page_history:v2',
         repository.raw_repository.gl_repository,
         MAX_VERSIONS,
         head_sha,
@@ -65,7 +71,7 @@ module Wikis
     end
 
     def entries_by_commit_id
-      entries&.to_h
+      entries&.index_by(&:first)
     end
     strong_memoize_attr :entries_by_commit_id
 
@@ -92,7 +98,7 @@ module Wikis
         rename_index = segment_commits.find_index { |commit| previous_paths.key?(commit.id) }
 
         segment_commits = segment_commits.first(rename_index + 1) if rename_index
-        collected.concat(segment_commits.map { |commit| [commit.id, path] })
+        collected.concat(segment_commits.map { |commit| [commit.id, path, previous_paths[commit.id]] })
         segment = rename_index && previous_segment(segment_commits[rename_index], previous_paths)
       end
 

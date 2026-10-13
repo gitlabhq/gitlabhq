@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profile do
   include GraphqlHelpers
 
-  let_it_be(:current_user) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
 
   let(:sort_value) { 'TITLE_ASC' }
 

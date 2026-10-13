@@ -53,7 +53,8 @@ Read more on [pagination](rest/_index.md#pagination).
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/groups/90/ssh_certificates"
 ```
 

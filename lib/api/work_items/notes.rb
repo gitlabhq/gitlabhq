@@ -20,6 +20,7 @@ module API
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::NotesHelpers
       helpers ::API::Helpers::WorkItems::NoteCreation
+      helpers ::API::Helpers::WorkItems::NoteUpdate
 
       helpers do
         params :notes_filter_params do
@@ -40,19 +41,34 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
 
-        def render_note_for(parent_work_item)
-          authorize_work_item_feature!(parent_work_item)
-          authorize! :read_note, parent_work_item
+        params :note_update_params do
+          use :work_item_note_params
+          requires :body, type: String, allow_blank: false, desc: 'The content of a note'
+        end
 
-          # Scoped to the work item's own notes, so a note id belonging to another noteable 404s.
-          # Deliberately not NotesHelpers#get_note: its EE override presents epics with the legacy
-          # LegacyEpicNote entity, whereas this API renders every scope with Entities::Note.
+        # Scoped to the work item's own notes, so a note id belonging to another noteable 404s.
+        # Deliberately not NotesHelpers#get_note: its EE override presents epics with the legacy
+        # LegacyEpicNote entity, whereas this API renders every scope with Entities::Note.
+        def find_work_item_note!(parent_work_item)
           note = parent_work_item.notes
             .preload(::API::Helpers::WorkItems::Preloads::NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
             .find_by_id(params[:note_id])
           not_found!('Note') unless note&.readable_by?(current_user)
 
-          present note, with: ::API::Entities::Note, current_user: current_user
+          note
+        end
+
+        def render_note_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+          authorize! :read_note, parent_work_item
+
+          present find_work_item_note!(parent_work_item), with: ::API::Entities::Note, current_user: current_user
+        end
+
+        def update_note_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+
+          update_work_item_note(parent_work_item, find_work_item_note!(parent_work_item))
         end
 
         def create_note_for(parent_work_item)
@@ -135,6 +151,27 @@ module API
             render_note_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
           end
 
+          desc 'Update a note on a work item.' do
+            detail 'Update an existing note on a work item in a namespace. Project and group namespaces are supported.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :note_update_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_note,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+
+          put ':work_item_iid/notes/:note_id' do
+            update_note_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
+
           desc 'Create a note on a work item.' do
             detail 'Create a new note on a work item in a namespace. Project and group namespaces are supported.'
             hidden true
@@ -208,6 +245,27 @@ module API
             render_note_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
           end
 
+          desc 'Update a note on a work item.' do
+            detail 'Update an existing note on a work item in a project.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :note_update_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_note,
+            boundary_type: :project
+
+          put ':work_item_iid/notes/:note_id' do
+            update_note_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
+
           desc 'Create a note on a work item in a project.' do
             detail 'Create a new note on a work item in a project.'
             hidden true
@@ -278,6 +336,27 @@ module API
 
           get ':work_item_iid/notes/:note_id' do
             render_note_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Update a note on a work item.' do
+            detail 'Update an existing note on a work item in a group.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :note_update_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_note,
+            boundary_type: :group
+
+          put ':work_item_iid/notes/:note_id' do
+            update_note_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
 
           desc 'Create a note on a work item in a group.' do

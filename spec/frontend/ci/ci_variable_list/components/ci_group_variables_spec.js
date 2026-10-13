@@ -90,5 +90,15 @@ describe('Ci Group Variable wrapper', () => {
         expect(findCiShared().props('areScopedVariablesAvailable')).toBe(false);
       });
     });
+
+    describe('When not pushed to the page', () => {
+      beforeEach(() => {
+        createComponent({ licensedFeatures: { groupScopedCiVariables: undefined } });
+      });
+
+      it('Passes down `false` to variable shared component', () => {
+        expect(findCiShared().props('areScopedVariablesAvailable')).toBe(false);
+      });
+    });
   });
 });

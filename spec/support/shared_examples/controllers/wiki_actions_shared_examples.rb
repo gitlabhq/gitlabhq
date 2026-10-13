@@ -252,6 +252,37 @@ RSpec.shared_examples 'wiki controller actions' do
       subject(:request) { get :diff, params: routing_params.merge(id: wiki_title, version_id: wiki.repository.commit.id) }
     end
 
+    context 'when the commit renamed the page' do
+      include_context 'when the page was renamed'
+
+      let(:rename_commit) { wiki.repository.commits(wiki.default_branch, path: 'renamed.md', follow: false, limit: 2).last }
+
+      subject(:request) { get :diff, params: routing_params.merge(id: 'renamed', version_id: rename_commit.id) }
+
+      it 'renders the diff as a rename', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:diffs).diff_files).to contain_exactly(
+          have_attributes(renamed_file?: true, old_path: 'page-title-test.md', new_path: 'renamed.md')
+        )
+      end
+
+      context 'when wiki_page_history_follow_renames is disabled' do
+        before do
+          stub_feature_flags(wiki_page_history_follow_renames: false)
+        end
+
+        it 'renders the diff of the current path only' do
+          request
+
+          expect(assigns(:diffs).diff_files).to contain_exactly(
+            have_attributes(new_file?: true, new_path: 'renamed.md')
+          )
+        end
+      end
+    end
+
     context 'when the commit is from before the page was renamed' do
       include_context 'when the page was renamed'
 

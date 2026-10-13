@@ -1193,7 +1193,7 @@ RSpec.shared_examples 'wiki_page' do |container_type|
     include_context 'when subject is a persisted page'
 
     it 'returns a diff instance' do
-      diffs = subject.diffs(foo: 'bar')
+      diffs = subject.diffs({ foo: 'bar' })
 
       expect(diffs).to be_a(Gitlab::Diff::FileCollection::WikiPage)
       expect(diffs.diffable).to be_a(Commit)
@@ -1204,6 +1204,14 @@ RSpec.shared_examples 'wiki_page' do |container_type|
         paths: [subject.path],
         foo: 'bar'
       )
+    end
+
+    context 'with a previous path' do
+      it 'includes the previous path in the diff' do
+        diffs = subject.diffs({}, previous_path: 'previous/path.md')
+
+        expect(diffs.diff_options).to include(paths: ['previous/path.md', subject.path])
+      end
     end
   end
 

@@ -299,7 +299,7 @@ module WikiActions
 
     apply_diff_view_cookie!
 
-    @diffs = page.diffs(diff_options)
+    @diffs = page.diffs(diff_options, previous_path: version_page_history&.previous_path_at(version_id_param))
     @diff_notes_disabled = true
 
     render 'shared/wikis/diff'
@@ -393,17 +393,23 @@ module WikiActions
   end
 
   def page_at_previous_slug
-    return unless %w[show diff].include?(action_name) && version_id_param.present?
-    return unless Feature.enabled?(:wiki_page_history_follow_renames, container)
+    return unless version_page_history
 
-    current_page = wiki.find_page(id_param, load_content: false)
-    return unless current_page
-
-    slug = Wikis::PageHistory.new(current_page).slug_at(version_id_param)
+    current_page = version_page_history.wiki_page
+    slug = version_page_history.slug_at(version_id_param)
     return if slug.nil? || slug == current_page.slug
 
     wiki.find_page(slug, version_id_param, load_content: load_content?)&.as_version_of(current_page)
   end
+
+  def version_page_history
+    return unless %w[show diff].include?(action_name) && version_id_param.present?
+    return unless Feature.enabled?(:wiki_page_history_follow_renames, container)
+
+    current_page = wiki.find_page(id_param, load_content: false)
+    Wikis::PageHistory.new(current_page) if current_page
+  end
+  strong_memoize_attr :version_page_history
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def load_sidebar

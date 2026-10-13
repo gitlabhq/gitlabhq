@@ -2498,9 +2498,11 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Update | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
@@ -2525,6 +2527,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
@@ -2535,6 +2538,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Update | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 
