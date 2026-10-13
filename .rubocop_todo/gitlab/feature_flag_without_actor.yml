@@ -110,7 +110,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/slash_commands/incident_management/incident_new.rb'
     - 'lib/gitlab/untrusted_regexp.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/cert_based_clusters_ff_metric.rb'
-    - 'lib/gitlab/usage_data_counters/hll_redis_counter.rb'
     - 'lib/gitlab/workhorse.rb'
     - 'lib/gitlab/x509/signature.rb'
     - 'lib/tasks/gitlab/db.rake'

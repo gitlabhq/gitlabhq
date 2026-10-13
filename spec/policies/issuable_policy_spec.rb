@@ -41,7 +41,7 @@ RSpec.describe IssuablePolicy, :models do
 
       context 'Timeline events' do
         it 'allows non-members to read time line events' do
-          expect(permissions(guest, issue)).to be_allowed(:read_incident_management_timeline_event)
+          expect(permissions(guest, issue)).to be_allowed(:read_timeline_event)
         end
 
         it 'disallows planners from managing timeline events' do
@@ -81,11 +81,11 @@ RSpec.describe IssuablePolicy, :models do
 
         context 'Timeline events' do
           it 'disallows non-members from reading timeline events' do
-            expect(permissions(user, issue)).to be_disallowed(:read_incident_management_timeline_event)
+            expect(permissions(user, issue)).to be_disallowed(:read_timeline_event)
           end
 
           it 'allows guests to read time line events' do
-            expect(permissions(guest, issue)).to be_allowed(:read_incident_management_timeline_event)
+            expect(permissions(guest, issue)).to be_allowed(:read_timeline_event)
           end
 
           it 'disallows planners from managing timeline events' do

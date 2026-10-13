@@ -7,7 +7,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, name: 'Build pipeline', project: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, name: 'Build pipeline', project: project) }
 
   let(:request) { double('request', current_user: user) }
   let(:options) { {} }
@@ -139,7 +139,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline ref is empty' do
-      let(:pipeline) { build_stubbed(:ci_empty_pipeline, project: project) }
+      let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
       before do
         allow(pipeline).to receive(:ref).and_return(nil)
@@ -152,7 +152,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
 
     context 'when pipeline has a failure reason set' do
       let(:pipeline) do
-        build_stubbed(:ci_empty_pipeline, project: project, status: :failed, failure_reason: :config_error)
+        build_stubbed(:ci_pipeline, project: project, status: :failed, failure_reason: :config_error)
       end
 
       it 'has a correct failure reason' do

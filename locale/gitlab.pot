@@ -15452,6 +15452,15 @@ msgstr ""
 msgid "Billable users"
 msgstr ""
 
+msgid "BillableUsageExport|Export exceeds the file size limit"
+msgstr ""
+
+msgid "BillableUsageExport|No license is installed"
+msgstr ""
+
+msgid "BillableUsageExport|Summed quantity for %{event_type} on %{date} exceeds the export ceiling"
+msgstr ""
+
 msgid "Billing"
 msgstr ""
 

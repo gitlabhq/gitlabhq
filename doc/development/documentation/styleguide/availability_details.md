@@ -190,8 +190,8 @@ Or:
 For features that move to another subscription tier, use `moved`:
 
 ```markdown
-- [Moved](https://work-item-link) from GitLab Ultimate to GitLab Premium in 11.8.
-- [Moved](https://work-item-link) from GitLab Premium to GitLab Free in 12.0.
+- [Moved](https://work-item-link) from GitLab Ultimate to GitLab Premium in GitLab 18.8.
+- [Moved](https://work-item-link) from GitLab Premium to GitLab Free in GitLab 19.0.
 ```
 
 #### Changed billing method

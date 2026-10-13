@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'projects/merge_requests/creations/_new_submit.html.haml', feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
-  let!(:pipeline) { create(:ci_empty_pipeline) }
+  let!(:pipeline) { create(:ci_pipeline) }
 
   before do
     controller.prepend_view_path('app/views/projects')

@@ -498,6 +498,11 @@ This script:
 1. Updates the filename of the migration
 1. Handles both regular and post-deployment migrations
 
+By default, the script compares your branch against `origin/master`, or `master`
+if that ref doesn't exist, to find the migrations it should rename. To compare
+against a different branch, set the `TARGET` environment variable, for example
+`TARGET=upstream/master`.
+
 > [!note]
 > Run this script before merging if your migrations have been in review for a long time (_> 3 weeks_) or when rebasing old migration branches.
 

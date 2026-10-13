@@ -54,7 +54,7 @@ class IssuablePolicy < BasePolicy
   end
 
   rule { can?(:read_issue) }.policy do
-    enable :read_incident_management_timeline_event
+    enable :read_timeline_event
   end
 
   rule { ~can_read_issuable }.policy do

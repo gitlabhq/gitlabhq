@@ -135,6 +135,28 @@ If a vulnerability doesn't match:
 - The original vulnerability is marked as "no longer detected" in the vulnerability report.
 - A new vulnerability is then created based on the Semgrep-based finding.
 
+## Identify the bundled Semgrep rules version
+
+Each Semgrep analyzer image bundles a version of the GitLab-managed `sast-rules` ruleset.
+When you [pin the analyzer image version](_index.md#pin-analyzer-image-version), you also pin
+the bundled rules. You cannot pin the bundled rules independently of the analyzer image.
+
+To identify the rules bundled with an analyzer image:
+
+1. Find the full analyzer version, including the patch version, in the
+   [Semgrep analyzer changelog](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/CHANGELOG.md).
+1. Find the most recent `sast-rules` update at that version or an earlier version.
+   If the release entry does not update `sast-rules`, the image uses the rules version
+   from the previous update.
+
+Alternatively, read the `SAST_RULES_VERSION` variable in the analyzer's `Dockerfile` at the
+matching tag, for example
+[`v6.26.1`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/v6.26.1/Dockerfile).
+The analyzer image is built from this value, so it identifies the bundled rules in one step.
+
+For example, analyzer image `6.26.1` bundles `sast-rules` version `2.10.1`, as recorded in
+the [changelog entry for `v6.26.1`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/v6.26.1/CHANGELOG.md#v6261).
+
 ## Customize analyzers
 
 Use [CI/CD variables](_index.md#available-cicd-variables)

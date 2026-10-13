@@ -91,10 +91,23 @@ class MigrationsTimestampRefresher
   ##
   # Return the name of the target branch
   #
-  # Get source ref from CI environment variable, or read the +TARGET+
-  # environment+ variable, or default to +HEAD+.
+  # Get the target branch from CI environment variables, or read the +TARGET+
+  # environment variable, or default to +origin/master+ (falling back to a
+  # local +master+ when the remote-tracking ref does not exist).
   def target_branch
-    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || ENV['CI_DEFAULT_BRANCH'] || 'master'
+    ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['TARGET'] || ENV['CI_DEFAULT_BRANCH'] || default_target_branch
+  end
+
+  ##
+  # Prefer +origin/master+: a local +master+ is often behind, and a stale
+  # merge base makes migrations merged since then look like they belong to
+  # this branch, so they would be renamed too.
+  def default_target_branch
+    _, status = Open3.capture2e('git rev-parse --verify --quiet origin/master')
+    return 'origin/master' if status.success?
+
+    warn "\e[33morigin/master not found, comparing against local master, which may be behind\e[0m"
+    'master'
   end
 
   ##

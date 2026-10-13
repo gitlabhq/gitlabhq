@@ -22,7 +22,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
         end
 
         context 'when a single object is being serialized' do
-          let(:resource) { build_stubbed(:ci_empty_pipeline, project: project) }
+          let(:resource) { build_stubbed(:ci_pipeline, project: project) }
 
           it 'serializers the pipeline object' do
             expect(subject[:id]).to eq resource.id
@@ -54,7 +54,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
         context 'when resource is not paginatable' do
           context 'when a single pipeline object is being serialized' do
-            let(:resource) { build_stubbed(:ci_empty_pipeline, project: project) }
+            let(:resource) { build_stubbed(:ci_pipeline, project: project) }
             let(:query) { { page: 1, per_page: 1 } }
 
             it 'raises error' do
@@ -70,7 +70,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
           context 'when a single pipeline object is present in relation' do
             before do
-              create(:ci_empty_pipeline, project: project)
+              create(:ci_pipeline, project: project)
             end
 
             it 'serializes pipeline relation' do
@@ -80,7 +80,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
           context 'when a multiple pipeline objects are being serialized' do
             before_all do
-              create_list(:ci_empty_pipeline, 3, project: project)
+              create_list(:ci_pipeline, 3, project: project)
             end
 
             it 'serializes appropriate number of objects' do
@@ -279,7 +279,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
         def create_pipeline(status)
           create(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             project: project,
             status: status,
             name: 'Build pipeline',

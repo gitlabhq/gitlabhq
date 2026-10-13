@@ -23,7 +23,7 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
   end
 
   describe '#as_json' do
-    let_it_be_with_refind(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
     subject { entity.as_json }
 

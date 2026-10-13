@@ -579,6 +579,26 @@ describe('ReviewDrawer', () => {
     expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
   });
 
+  it('navigates to the summary note when the publish response has a summary note id', async () => {
+    useBatchComments().drafts = [];
+    useBatchComments().drawerOpened = true;
+    useBatchComments().publishReview.mockResolvedValue({ summary_note_id: 10 });
+    useNotes().userData = { id: 1 };
+
+    createComponent();
+
+    await submitForm();
+    await waitForPromises();
+
+    useDiscussions().discussions = [
+      { id: 'a', notes: [{ id: 10, author: { id: 1 } }] },
+      { id: 'b', notes: [{ id: 20, author: { id: 1 } }] },
+    ];
+    await waitForPromises();
+
+    expect(window.location.hash).toBe('#note_10');
+  });
+
   describe('failed batch publish', () => {
     beforeEach(() => {
       useBatchComments().drafts = new Array(1).fill({});

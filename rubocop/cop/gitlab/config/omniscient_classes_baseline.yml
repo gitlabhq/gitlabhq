@@ -944,6 +944,7 @@ EE::Group:
   - update_repository_read_only_column
   - use_elasticsearch?
   - user_cap_reached?
+  - user_exempt_from_cap?
   - users_count
   - users_without_bots
   - virtual_registry_policy_subject

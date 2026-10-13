@@ -9,25 +9,25 @@ RSpec.describe API::Ci::UserPipelines, feature_category: :continuous_integration
   let_it_be(:private_project) { create(:project, :private) }
 
   let_it_be(:pipeline) do
-    create(:ci_empty_pipeline, project: project, user: user, name: 'Build pipeline', created_at: 1.day.ago)
+    create(:ci_pipeline, project: project, user: user, name: 'Build pipeline', created_at: 1.day.ago)
   end
 
   let_it_be(:pipeline2) do
-    create(:ci_empty_pipeline, project: project, user: user, status: 'success', source: :web,
+    create(:ci_pipeline, project: project, user: user, status: 'success', source: :web,
       created_at: 3.days.ago, started_at: 3.days.ago + 60.seconds,
       finished_at: 3.days.ago + 187.seconds, duration: 127)
   end
 
   let_it_be(:child_pipeline) do
-    create(:ci_empty_pipeline, project: project, user: user, source: :parent_pipeline)
+    create(:ci_pipeline, project: project, user: user, source: :parent_pipeline)
   end
 
   let_it_be(:other_user_pipeline) do
-    create(:ci_empty_pipeline, project: project, user: non_member)
+    create(:ci_pipeline, project: project, user: non_member)
   end
 
   let_it_be(:inaccessible_pipeline) do
-    create(:ci_empty_pipeline, project: private_project, user: user, created_at: 5.days.ago)
+    create(:ci_pipeline, project: private_project, user: user, created_at: 5.days.ago)
   end
 
   describe 'GET /pipelines' do
@@ -81,7 +81,7 @@ RSpec.describe API::Ci::UserPipelines, feature_category: :continuous_integration
         end
 
         let_it_be(:mr_pipeline) do
-          create(:ci_empty_pipeline, project: mr_project, user: user, source: :merge_request_event,
+          create(:ci_pipeline, project: mr_project, user: user, source: :merge_request_event,
             merge_request: merge_request, created_at: 12.hours.ago)
         end
 
@@ -111,7 +111,7 @@ RSpec.describe API::Ci::UserPipelines, feature_category: :continuous_integration
           end
 
           let_it_be(:hidden_mr_pipeline) do
-            create(:ci_empty_pipeline, project: no_mr_project, user: user, source: :merge_request_event,
+            create(:ci_pipeline, project: no_mr_project, user: user, source: :merge_request_event,
               merge_request: hidden_merge_request, created_at: 11.hours.ago)
           end
 
@@ -195,7 +195,7 @@ RSpec.describe API::Ci::UserPipelines, feature_category: :continuous_integration
       it 'avoids N+1 queries when pipelines from more projects are returned', :request_store, :use_sql_query_cache do
         control_mr_project = create(:project, :repository, maintainers: user)
         control_mr = create(:merge_request, source_project: control_mr_project, target_project: control_mr_project)
-        create(:ci_empty_pipeline, project: control_mr_project, user: user, source: :merge_request_event,
+        create(:ci_pipeline, project: control_mr_project, user: user, source: :merge_request_event,
           merge_request: control_mr)
 
         get api('/pipelines', user) # warm up
@@ -203,12 +203,12 @@ RSpec.describe API::Ci::UserPipelines, feature_category: :continuous_integration
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api('/pipelines', user) }
 
         create_list(:project, 3, maintainers: user).each do |other_project|
-          create(:ci_empty_pipeline, project: other_project, user: user)
+          create(:ci_pipeline, project: other_project, user: user)
         end
 
         create_list(:project, 2, :repository, maintainers: user).each do |other_project|
           merge_request = create(:merge_request, source_project: other_project, target_project: other_project)
-          create(:ci_empty_pipeline, project: other_project, user: user, source: :merge_request_event,
+          create(:ci_pipeline, project: other_project, user: user, source: :merge_request_event,
             merge_request: merge_request)
         end
 

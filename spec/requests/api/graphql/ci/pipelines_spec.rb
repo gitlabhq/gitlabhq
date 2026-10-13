@@ -282,7 +282,7 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
 
   describe '.stages' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, project: project) }
     let_it_be(:other_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'other') }
 
@@ -994,8 +994,8 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
 
     context 'when filtered by updated_at' do
-      let_it_be(:oldish_pipeline) { create(:ci_empty_pipeline, project: project, updated_at: 3.days.ago) }
-      let_it_be(:older_pipeline) { create(:ci_empty_pipeline, project: project, updated_at: 10.days.ago) }
+      let_it_be(:oldish_pipeline) { create(:ci_pipeline, project: project, updated_at: 3.days.ago) }
+      let_it_be(:older_pipeline) { create(:ci_pipeline, project: project, updated_at: 10.days.ago) }
 
       let(:updated_after_arg) { 5.days.ago }
       let(:updated_before_arg) { 1.day.ago }

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['TimelineEventType'] do
   specify { expect(described_class.graphql_name).to eq('TimelineEventType') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_incident_management_timeline_event) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_timeline_event) }
 
   it 'exposes the expected fields' do
     expected_fields = %i[

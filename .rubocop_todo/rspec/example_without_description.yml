@@ -175,7 +175,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/views/admin/application_settings/security_and_compliance.html.haml_spec.rb'
     - 'ee/spec/views/registrations/groups/new.html.haml_spec.rb'
     - 'ee/spec/views/registrations/welcome/show.html.haml_spec.rb'
-    - 'ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb'
     - 'ee/spec/views/trial_registrations/new.html.haml_spec.rb'
     - 'ee/spec/workers/active_user_count_threshold_worker_spec.rb'
     - 'ee/spec/workers/compliance_management/update_default_framework_worker_spec.rb'

@@ -628,10 +628,12 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(merge_request.notes.reload.size).to be(2)
       end
 
-      it 'adds the note to the review' do
+      it 'adds the note to the review and returns its id' do
         post :publish, params: params.merge!(note: 'Hello world')
 
-        expect(merge_request.notes.find_by(note: 'Hello world').review).to eq(merge_request.reviews.sole)
+        summary_note = merge_request.notes.find_by(note: 'Hello world')
+        expect(summary_note.review).to eq(merge_request.reviews.sole)
+        expect(json_response['summary_note_id']).to eq(summary_note.id)
       end
 
       context 'when improved_review_email is disabled' do

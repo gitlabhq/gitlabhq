@@ -136,7 +136,7 @@ RSpec.shared_examples 'prevents access to project-level {issues|work_items} with
       %i[
         read_cross_project admin_all_resources read_all_resources change_repository_storage resolve_note read_issue
         update_issue reopen_issue update_merge_request reopen_merge_request create_note admin_note award_emoji
-        read_incident_management_timeline_event admin_incident_management_timeline_event create_timelog read_issuable
+        read_timeline_event admin_incident_management_timeline_event create_timelog read_issuable
         read_issuable_participables read_note ead_internal_note set_note_created_at mark_note_as_internal
         reposition_note create_issue admin_issue destroy_issue read_issue_iid read_design create_design update_design
         destroy_design move_design create_todo update_subscription set_issue_metadata admin_issue_link

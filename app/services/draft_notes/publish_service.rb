@@ -19,11 +19,9 @@ module DraftNotes
 
       summary_note = create_summary_note(review)
 
-      if (draft || review) && !params[:defer_notifications]
-        handle_notifications(current_user, merge_request, review, summary_note)
-      end
+      handle_notifications(current_user, merge_request, review, summary_note) if notify?(draft, review)
 
-      success(review_id: review&.id)
+      success(review_id: review&.id, summary_note_id: summary_note&.id)
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "
       error(message)
@@ -45,10 +43,15 @@ module DraftNotes
     end
     strong_memoize_attr :existing_review
 
+    def notify?(draft, review)
+      (draft || review) && !params[:defer_notifications]
+    end
+
     def create_summary_note(review)
       return unless params[:summary_note]
 
-      note = Notes::CreateService.new(project, current_user, params[:summary_note].merge(review_id: review&.id)).execute
+      note_params = params[:summary_note].merge(review_id: review&.id, created_at: review&.created_at)
+      note = Notes::CreateService.new(project, current_user, note_params).execute
 
       if note.errors.any?
         Gitlab::AppLogger.warn(

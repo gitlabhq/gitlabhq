@@ -17,7 +17,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   let_it_be(:pipeline) do
     create(
-      :ci_empty_pipeline,
+      :ci_pipeline,
       project: project,
       sha: project.commit.id,
       ref: project.default_branch,
@@ -83,7 +83,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         3.times do
           create(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             project: project,
             sha: project.commit.id,
             ref: project.default_branch,
@@ -356,7 +356,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'when name is provided' do
-          let_it_be(:pipeline2) { create(:ci_empty_pipeline, project: project, user: user, name: 'Chatops pipeline') }
+          let_it_be(:pipeline2) { create(:ci_pipeline, project: project, user: user, name: 'Chatops pipeline') }
 
           it 'filters by name' do
             get api("/projects/#{project.id}/pipelines", user), params: { name: 'Build pipeline' }
@@ -503,7 +503,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'jobs in different pipelines' do
-          let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+          let!(:pipeline2) { create(:ci_pipeline, project: project) }
           let!(:job2) { create(:ci_build, pipeline: pipeline2) }
 
           it 'excludes jobs from other pipelines' do
@@ -721,7 +721,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
 
         context 'bridges in different pipelines' do
-          let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+          let!(:pipeline2) { create(:ci_pipeline, project: project) }
           let!(:bridge2) { create(:ci_bridge, pipeline: pipeline2) }
 
           it 'excludes bridges from other pipelines' do
@@ -1207,7 +1207,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       let_it_be(:second_pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           sha: second_branch.target,
           ref: second_branch.name,
@@ -1218,7 +1218,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       before_all do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           sha: project.commit.parent.id,
           ref: project.default_branch,
@@ -1309,7 +1309,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
     context 'user is a developer' do
       let_it_be(:pipeline_owner_user) { create(:user) }
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, user: pipeline_owner_user) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: pipeline_owner_user) }
 
       before do
         project.add_developer(api_user)
@@ -1659,7 +1659,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do
     let_it_be(:pipeline) do
-      create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
     let_it_be_with_reload(:job) { create(:ci_build, :running, pipeline: pipeline) }

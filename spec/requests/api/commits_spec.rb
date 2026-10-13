@@ -2945,7 +2945,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
     shared_examples_for 'ref with pipeline' do
       let!(:pipeline) do
-        create(:ci_empty_pipeline, project: project, status: :created, source: :push, ref: 'master', sha: commit.sha, protected: false)
+        create(:ci_pipeline, project: project, status: :created, source: :push, ref: 'master', sha: commit.sha, protected: false)
       end
 
       it 'includes status as "created" and a last_pipeline object' do
@@ -2977,7 +2977,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
     shared_examples_for 'ref with unaccessible pipeline' do
       let(:pipeline) do
-        create(:ci_empty_pipeline,
+        create(:ci_pipeline,
           project: project,
           status: :created,
           source: :push,

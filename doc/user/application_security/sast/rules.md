@@ -70,6 +70,9 @@ GitLab updates rules regularly based on customer feedback and internal research.
 Rules are released as part of the container image for each analyzer.
 You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](_index.md#pin-analyzer-image-version).
 
+To identify the rules version bundled with a Semgrep analyzer image, see
+[Identify the bundled Semgrep rules version](analyzers.md#identify-the-bundled-semgrep-rules-version).
+
 Analyzers and their rules are updated [at least monthly](../detect/vulnerability_scanner_maintenance.md) if relevant updates are available.
 
 ### Rule update policies

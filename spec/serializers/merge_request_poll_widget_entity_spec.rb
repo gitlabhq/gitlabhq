@@ -147,7 +147,7 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
   end
 
   describe 'pipeline' do
-    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+    let!(:pipeline) { create(:ci_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
     before do
       allow_any_instance_of(MergeRequestPresenter).to receive(:can?).and_call_original

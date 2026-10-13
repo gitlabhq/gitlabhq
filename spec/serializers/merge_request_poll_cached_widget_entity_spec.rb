@@ -9,7 +9,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
   let_it_be_with_refind(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user) { create(:user) }
 
-  let(:pipeline) { build_stubbed(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -215,7 +215,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
   end
 
   describe 'pipeline' do
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
     before do
       allow_any_instance_of(MergeRequestPresenter).to receive(:can?).and_call_original
@@ -264,7 +264,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
 
     context 'when is merged', :sidekiq_inline do
       let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
-      let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+      let(:pipeline) { create(:ci_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
 
       before_all do
         project.add_maintainer(user)
@@ -346,7 +346,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'with pipeline' do
-        let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+        let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
         it 'returns merged favicon overlay' do
           expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/mr_favicons/favicon_status_merged.png')
@@ -360,7 +360,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'with pipeline' do
-        let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
+        let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
         it 'returns pipeline favicon overlay' do
           expect(subject[:favicon_overlay_path]).to match_asset_path('/assets/ci_favicons/favicon_status_pending.png')

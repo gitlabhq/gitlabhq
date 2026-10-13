@@ -76,7 +76,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     if result[:status] == :success
       submit_experience.complete
 
-      payload = { review_id: result[:review_id] }
+      payload = { review_id: result[:review_id], summary_note_id: result[:summary_note_id] }
       payload[:reviewer_state_error] = reviewer_state_error if reviewer_state_error
 
       render json: payload

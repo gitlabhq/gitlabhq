@@ -1448,7 +1448,7 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 {{< /history >}}
 
-Use `after_script` to define an array of commands to run last, after a job's `before_script` and
+Use `after_script` to define commands to run last, after a job's `before_script` and
 `script` sections complete. `after_script` commands also run when:
 
 - The job is canceled while the `before_script` or `script` sections are still running.
@@ -1461,7 +1461,7 @@ the job configuration takes precedence and the default configuration is not used
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Supported values**: An array including:
+**Supported values**: A string or an array of strings, including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
@@ -2071,13 +2071,13 @@ job:
 
 ### `before_script`
 
-Use `before_script` to define an array of commands that should run before each job's
+Use `before_script` to define commands that should run before each job's
 `script` commands, but after [artifacts](#artifacts) are restored.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
 
-**Supported values**: An array including:
+**Supported values**: A string or an array of strings, including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
@@ -5970,7 +5970,7 @@ All jobs except [trigger jobs](#trigger) require a `script` keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Supported values**: An array including:
+**Supported values**: A string or an array of strings, including:
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).

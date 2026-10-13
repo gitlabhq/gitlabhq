@@ -312,7 +312,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       let_it_be_with_reload(:project) { create(:project, :repository) }
       let_it_be_with_reload(:user) { project.first_owner }
       let_it_be_with_reload(:trigger) { create(:ci_trigger, project: project) }
-      let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, trigger: trigger) }
 
       let(:build) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
 

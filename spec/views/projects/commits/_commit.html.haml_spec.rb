@@ -32,7 +32,7 @@ RSpec.describe 'projects/commits/_commit.html.haml', feature_category: :source_c
     let_it_be(:user) { create(:user) }
     let_it_be(:pipeline) do
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         ref: 'master',
         sha: project.repository.commit('master').id,
         status: 'success',

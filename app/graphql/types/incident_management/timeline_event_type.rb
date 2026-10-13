@@ -6,7 +6,7 @@ module Types
       graphql_name 'TimelineEventType'
       description 'Describes an incident management timeline event'
 
-      authorize :read_incident_management_timeline_event
+      authorize :read_timeline_event
 
       field :id,
         Types::GlobalIDType[::IncidentManagement::TimelineEvent],

@@ -49,7 +49,6 @@ Rails/WhereRange:
     - 'ee/app/models/ee/description_version.rb'
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/group.rb'
-    - 'ee/app/models/ee/group_member.rb'
     - 'ee/app/models/ee/personal_access_token.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/project_authorization.rb'

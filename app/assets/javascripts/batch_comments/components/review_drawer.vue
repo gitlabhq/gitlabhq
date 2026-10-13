@@ -107,6 +107,7 @@ export default {
       'getCurrentUserLastNote',
       'getUserData',
       'openState',
+      'notesById',
     ]),
     getDrawerHeaderHeight() {
       if (!this.drawerOpened) return '0';
@@ -219,7 +220,7 @@ export default {
           this.draftsCount > 0
             ? await this.publishReviewInBatches(this.noteData)
             : await this.publishReview({ ...this.noteData });
-
+        const summaryNoteId = response?.summary_note_id;
         const approvalRefused = Boolean(response?.reviewer_state_error);
 
         if (approvalRefused) {
@@ -240,16 +241,16 @@ export default {
 
         if (note) {
           this.userLastNoteWatcher = this.$watch(
-            'getCurrentUserLastNote',
-            () => {
-              if (note) {
-                window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
-              }
+            () => (summaryNoteId ? this.notesById[summaryNoteId] : this.getCurrentUserLastNote),
+            (scrollNote) => {
+              if (!scrollNote) return;
+
+              window.location.hash = `note_${scrollNote.id}`;
 
               window.mrTabs?.tabShown('show');
 
               setTimeout(() => {
-                scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`));
+                scrollToElement(document.getElementById(`note_${scrollNote.id}`));
 
                 this.clearDrafts();
                 this.setDrawerOpened(false);

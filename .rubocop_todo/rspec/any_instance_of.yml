@@ -51,7 +51,6 @@ RSpec/AnyInstanceOf:
     - 'spec/controllers/projects/artifacts_controller_spec.rb'
     - 'spec/controllers/projects/branches_controller_spec.rb'
     - 'spec/controllers/projects/commit_controller_spec.rb'
-    - 'spec/controllers/projects/commits_controller_spec.rb'
     - 'spec/controllers/projects/environments_controller_spec.rb'
     - 'spec/controllers/projects/imports_controller_spec.rb'
     - 'spec/controllers/projects/jobs_controller_spec.rb'

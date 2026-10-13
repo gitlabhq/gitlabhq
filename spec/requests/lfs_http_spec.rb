@@ -181,7 +181,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
         context 'when build is authorized as' do
           let(:authorization) { authorize_ci_project }
-          let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+          let(:pipeline) { create(:ci_pipeline, project: project) }
           let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
           shared_examples 'can download LFS only from own projects' do
@@ -200,7 +200,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
             end
 
             context 'for other project' do
-              let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+              let(:pipeline) { create(:ci_pipeline, project: other_project) }
 
               it 'rejects downloading code' do
                 expect(response).to have_gitlab_http_status(:not_found)
@@ -500,7 +500,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
             shared_examples 'can download LFS only from own projects' do
               context 'for own project' do
-                let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+                let(:pipeline) { create(:ci_pipeline, project: project) }
 
                 before do
                   authorize_download
@@ -510,7 +510,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               end
 
               context 'for other project' do
-                let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+                let(:pipeline) { create(:ci_pipeline, project: other_project) }
 
                 it 'rejects downloading code' do
                   expect(response).to have_gitlab_http_status(:not_found)
@@ -721,7 +721,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
             context 'when build is authorized' do
               let(:authorization) { authorize_ci_project }
-              let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+              let(:pipeline) { create(:ci_pipeline, project: project) }
 
               context 'build has an user' do
                 let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
@@ -743,7 +743,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 end
 
                 context 'tries to push to other project' do
-                  let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+                  let(:pipeline) { create(:ci_pipeline, project: other_project) }
 
                   context 'when the project is public' do
                     it_behaves_like 'LFS http 403 response'
@@ -1188,7 +1188,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
           context 'when build is authorized' do
             let(:authorization) { authorize_ci_project }
-            let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+            let(:pipeline) { create(:ci_pipeline, project: project) }
 
             context 'build has an user' do
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
@@ -1258,7 +1258,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               end
 
               context 'tries to push to other project' do
-                let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+                let(:pipeline) { create(:ci_pipeline, project: other_project) }
 
                 before do
                   put_authorize
@@ -1432,7 +1432,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
           context 'when build is authorized' do
             let(:authorization) { authorize_ci_project }
-            let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+            let(:pipeline) { create(:ci_pipeline, project: project) }
 
             before do
               put_authorize
@@ -1446,7 +1446,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               end
 
               context 'tries to push to other project' do
-                let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
+                let(:pipeline) { create(:ci_pipeline, project: other_project) }
 
                 context 'when the project is public' do
                   it_behaves_like 'LFS http 403 response'

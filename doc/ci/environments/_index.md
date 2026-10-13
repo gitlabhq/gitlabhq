@@ -128,7 +128,8 @@ Prerequisites:
 
 To create a static environment, in your `.gitlab-ci.yml` file:
 
-1. Define a job in the `deploy` stage.
+1. Define a job in any stage.
+   The following example uses `deploy` by convention.
 1. In the job, define the environment `name` and `url`. If an
    environment of that name doesn't exist when the pipeline runs, it is created.
 
@@ -159,7 +160,8 @@ Prerequisites:
 
 To create a dynamic environment, in your `.gitlab-ci.yml` file:
 
-1. Define a job in the `deploy` stage.
+1. Define a job in any stage.
+   The following example uses `deploy` by convention.
 1. In the job, define the following environment attributes:
    - `name`: Use a related CI/CD variable like `$CI_COMMIT_REF_SLUG`. Optionally, add a static
      prefix to the environment's name, which [groups in the UI](#group-similar-environments) all

@@ -21,7 +21,7 @@ module IncidentManagement
     attr_reader :user, :incident, :params
 
     def allowed?
-      Ability.allowed?(user, :read_incident_management_timeline_event, incident)
+      Ability.allowed?(user, :read_timeline_event, incident)
     end
 
     def by_id(collection)

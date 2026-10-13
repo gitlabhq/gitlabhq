@@ -1892,7 +1892,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     context 'merge_request_metrics' do
       let_it_be_with_reload(:milestone) { create(:milestone, title: '1.0.0', project: project) }
       let_it_be_with_reload(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       before do
         merge_request.metrics.update!(
@@ -2590,8 +2590,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     let_it_be(:merge_request, freeze: false) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
     context 'when authorized' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
-      let_it_be(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user, ref: merge_request.source_branch, sha: merge_request.diff_head_sha) }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project) }
 
       describe 'mcp route setting' do
         subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/pipelines", user) }

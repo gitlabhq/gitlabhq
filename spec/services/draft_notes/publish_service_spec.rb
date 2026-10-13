@@ -205,16 +205,23 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       let(:summary) { 'Review summary' }
       let(:params) { { summary_note: { note: summary, noteable_type: 'MergeRequest', noteable_id: merge_request.id } } }
 
-      it 'adds the summary note to the review and to the event' do
+      it 'adds the summary note to the review, the event and the response' do
         allow(::Gitlab::EventStore).to receive(:publish).and_call_original
 
-        publish
+        result = publish
 
         summary_note = merge_request.notes.find_by(note: summary)
         expect(summary_note.review).to eq(Review.last)
+        expect(result[:summary_note_id]).to eq(summary_note.id)
         expect(::Gitlab::EventStore).to have_received(:publish)
           .with(an_instance_of(MergeRequests::DraftNotePublishedEvent)
             .and(having_attributes(data: hash_including(summary_note_id: summary_note.id))))
+      end
+
+      it 'sorts the summary note before the review notes' do
+        publish
+
+        expect(merge_request.notes.order_created_at_id_asc.map(&:note)).to eq([summary, 'first note', 'second note'])
       end
 
       context 'when the summary note only contains quick actions' do
