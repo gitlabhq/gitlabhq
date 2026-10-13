@@ -48,6 +48,7 @@ Before upgrading to GitLab 18.11, review the following:
 - [18.11.0 - 18.11.1] - [CI job token regression pulling container images from internal and public projects](#ci-job-token-regression-pulling-container-images-from-internal-and-public-projects)
 - [18.11.0] - [Upgrading to 18.11 triggers a PostgreSQL 17.7 version upgrade](#postgresql-version-177-upgrade-on-gitlab-1811) (Linux package, Docker, Geo)
 - [18.11.0] - [Mattermost and Spamcheck removed from SLES 12.5 packages](#mattermost-and-spamcheck-removed-from-sles-125-packages) (Linux package)
+- [18.11.0] - [Gitaly cgroup metrics changed and some were removed](#gitaly-cgroup-metrics-changed-and-some-were-removed)
 - [18.11.0] - [Compiled per-job config is subject to a 1 MiB size limit](#compiled-per-job-config-is-subject-to-a-1-mib-size-limit)
 
 ### Upgrade to 18.10
@@ -347,6 +348,34 @@ If you rely on Mattermost on SLES 12.5, you can
 [migrate Mattermost to a standalone deployment](https://docs.mattermost.com/administration-guide/onboard/migrate-gitlab-omnibus.html).
 If you use Spamcheck on SLES 12.5, you can
 [deploy it using Docker](../../administration/reporting/spamcheck.md).
+
+### Gitaly cgroup metrics changed and some were removed
+
+- Affects: All installation methods
+- Affected versions:
+
+  | Release      | Affected patch releases | Fixed patch level |
+  | ------------ | ------------------------ | ------------------ |
+  | 18.11 - 19.2 | All patch releases       | 19.3.0             |
+
+In GitLab 18.11, Gitaly's cgroup metrics moved to a new `LoadMonitor` component
+(see [Gitaly!8639](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/8639)). As a result:
+
+- Metrics are now reported for the parent Gitaly cgroup only, instead of per repository cgroup.
+- The `metrics_enabled` setting under `[cgroups]` no longer has any effect.
+- The following metrics were removed: `gitaly_cgroup_cpu_usage_total`, `gitaly_cgroup_procs_total`,
+  `gitaly_cgroup_cpu_cfs_periods_total`, `gitaly_cgroup_cpu_cfs_throttled_periods_total`,
+  `gitaly_cgroup_cpu_cfs_throttled_seconds_total`, `gitaly_cgroup_memory_reclaim_attempts_total`,
+  `gitaly_cgroup_memory_events_oom_total`, `gitaly_cgroup_memory_pgfault_total`, and
+  `gitaly_cgroup_memory_pgmajfault_total`.
+
+Additionally, due to [Gitaly issue 7280](https://gitlab.com/gitlab-org/gitaly/-/work_items/7280), no
+Gitaly cgroup metrics of any kind were exported in GitLab 18.11 through 19.2. This was fixed in GitLab 19.3.
+
+If you rely on the removed metrics, use a cgroup-aware exporter such as
+[cAdvisor](https://github.com/google/cadvisor). For the current list of metrics and a mapping of
+removed metrics to their cAdvisor equivalents, see
+[Monitor Gitaly cgroups](../../administration/gitaly/monitoring.md#monitor-gitaly-cgroups).
 
 ### Geo secondary throttled jobs not draining
 

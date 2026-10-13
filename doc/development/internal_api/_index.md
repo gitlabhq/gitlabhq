@@ -1054,11 +1054,54 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use the discovery endpoints to let a SCIM identity provider find out which SCIM schemas GitLab supports.
+Use the discovery endpoints to let a SCIM identity provider find out which SCIM features and schemas GitLab supports.
 For more information, see [the RFC7644 service provider configuration section](https://www.rfc-editor.org/rfc/rfc7644#section-4).
 These endpoints only describe what GitLab supports. They do not change how users are provisioned.
 
 The group SCIM API supports only the `User` schema.
+
+#### Get the service provider configuration
+
+Returns the SCIM features that GitLab supports.
+
+```plaintext
+GET /api/scim/v2/groups/:group_path/ServiceProviderConfig
+```
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/groups/test_group/ServiceProviderConfig" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
+  "documentationUri": "https://gitlab.example.com/help/user/group/saml_sso/scim_setup.md",
+  "patch": { "supported": true },
+  "bulk": { "supported": false, "maxOperations": 0, "maxPayloadSize": 0 },
+  "filter": { "supported": true, "maxResults": 100 },
+  "changePassword": { "supported": false },
+  "sort": { "supported": false },
+  "etag": { "supported": false },
+  "authenticationSchemes": [
+    {
+      "type": "oauthbearertoken",
+      "name": "OAuth Bearer Token",
+      "description": "Authentication with a GitLab SCIM token sent as a bearer token.",
+      "primary": true
+    }
+  ],
+  "meta": {
+    "resourceType": "ServiceProviderConfig",
+    "location": "https://gitlab.example.com/api/scim/v2/groups/test_group/ServiceProviderConfig"
+  }
+}
+```
 
 #### Get the schemas
 
@@ -1869,11 +1912,54 @@ Returns an empty response with a `204` status code if successful.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use the discovery endpoints to let a SCIM identity provider find out which SCIM schemas GitLab supports.
+Use the discovery endpoints to let a SCIM identity provider find out which SCIM features and schemas GitLab supports.
 For more information, see [the RFC7644 service provider configuration section](https://www.rfc-editor.org/rfc/rfc7644#section-4).
 These endpoints only describe what GitLab supports. They do not change how users are provisioned.
 
 The instance SCIM API supports the `User` and `Group` schemas.
+
+#### Get the service provider configuration
+
+Returns the SCIM features that GitLab supports.
+
+```plaintext
+GET /api/scim/v2/application/ServiceProviderConfig
+```
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/application/ServiceProviderConfig" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
+  "documentationUri": "https://gitlab.example.com/help/administration/settings/scim_setup.md",
+  "patch": { "supported": true },
+  "bulk": { "supported": false, "maxOperations": 0, "maxPayloadSize": 0 },
+  "filter": { "supported": true, "maxResults": 100 },
+  "changePassword": { "supported": false },
+  "sort": { "supported": false },
+  "etag": { "supported": false },
+  "authenticationSchemes": [
+    {
+      "type": "oauthbearertoken",
+      "name": "OAuth Bearer Token",
+      "description": "Authentication with a GitLab SCIM token sent as a bearer token.",
+      "primary": true
+    }
+  ],
+  "meta": {
+    "resourceType": "ServiceProviderConfig",
+    "location": "https://gitlab.example.com/api/scim/v2/application/ServiceProviderConfig"
+  }
+}
+```
 
 #### Get the schemas
 

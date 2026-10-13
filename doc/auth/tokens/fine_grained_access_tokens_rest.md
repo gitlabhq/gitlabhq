@@ -4066,6 +4066,7 @@ incompatible with personal access tokens.
 | `DELETE` | `/api/scim/:version/application/Groups/:id` | SCIM token |
 | `GET` | `/api/scim/:version/application/Schemas` | SCIM token |
 | `GET` | `/api/scim/:version/application/Schemas/:id` | SCIM token |
+| `GET` | `/api/scim/:version/application/ServiceProviderConfig` | SCIM token |
 | `GET` | `/api/scim/:version/application/Users` | SCIM token |
 | `POST` | `/api/scim/:version/application/Users` | SCIM token |
 | `GET` | `/api/scim/:version/application/Users/:id` | SCIM token |
@@ -4073,6 +4074,7 @@ incompatible with personal access tokens.
 | `DELETE` | `/api/scim/:version/application/Users/:id` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Schemas` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Schemas/:id` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/ServiceProviderConfig` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Users` | SCIM token |
 | `POST` | `/api/scim/:version/groups/:group/Users` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Users/:id` | SCIM token |

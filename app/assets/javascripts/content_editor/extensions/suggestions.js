@@ -193,6 +193,8 @@ function createSuggestionPlugin({
           popup = tippy('body', {
             getReferenceClientRect: props.clientRect,
             appendTo: () => props.editor.view.dom.parentNode || document.body,
+            // Matches $gl-new-dropdown-max-width; tippy defaults to 350px
+            maxWidth: 456,
             onHide: () => {
               isHidden = true;
             },

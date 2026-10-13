@@ -37,7 +37,8 @@ GET /projects/:id/environments
 | `states`  | string         | no       | List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
 ```
 
@@ -79,7 +80,8 @@ GET /projects/:id/environments/:environment_id
 | `environment_id` | integer        | yes      | The ID of the environment. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
@@ -225,7 +227,8 @@ POST /projects/:id/environments
 If successful, returns `201`. Returns `400` for wrong parameters.
 
 ```shell
-curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
+curl --request POST \
+  --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments"
 ```

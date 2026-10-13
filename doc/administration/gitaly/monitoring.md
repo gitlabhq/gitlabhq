@@ -138,17 +138,61 @@ When investigating issues with adaptive limiting, correlate these metrics with t
 
 ## Monitor Gitaly cgroups
 
-You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) using Prometheus:
+{{< history >}}
 
-- `gitaly_cgroups_reclaim_attempts_total`, a gauge for the total number of times
-  there has been a memory reclaim attempt. This number resets each time a server is
-  restarted.
-- `gitaly_cgroups_cpu_usage`, a gauge that measures CPU usage per cgroup.
-- `gitaly_cgroup_procs_total`, a gauge that measures the total number of
-  processes Gitaly has spawned under the control of cgroups.
-- `gitaly_cgroup_cpu_cfs_periods_total`, a counter for the value of [`nr_periods`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
-- `gitaly_cgroup_cpu_cfs_throttled_periods_total`, a counter for the value of [`nr_throttled`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
-- `gitaly_cgroup_cpu_cfs_throttled_seconds_total`, a counter for the value of [`throttled_time`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics) in seconds.
+- `gitaly_cgroup_memory_pressure_percent`, `gitaly_cgroup_io_pressure_percent`,
+  `gitaly_cgroup_memory_events_high_total`, and `gitaly_cgroup_memory_events_max_total`
+  [introduced](https://gitlab.com/gitlab-org/gitaly/-/work_items/7043) in GitLab 18.9.
+- `gitaly_cgroup_cpu_pressure_percent`
+  [introduced](https://gitlab.com/gitlab-org/gitaly/-/work_items/7078) in GitLab 18.10.
+- [Changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/8639) in GitLab 18.11.
+  Metrics are reported for the parent Gitaly cgroup only, the `metrics_enabled` setting under `[cgroups]`
+  no longer has any effect, and `gitaly_cgroup_memory_reclaim_attempts_total`, `gitaly_cgroup_cpu_usage_total`,
+  `gitaly_cgroup_procs_total`, `gitaly_cgroup_cpu_cfs_periods_total`, `gitaly_cgroup_cpu_cfs_throttled_periods_total`,
+  `gitaly_cgroup_cpu_cfs_throttled_seconds_total`, `gitaly_cgroup_memory_events_oom_total`,
+  `gitaly_cgroup_memory_pgfault_total`, and `gitaly_cgroup_memory_pgmajfault_total` were removed.
+- Because of [issue 7280](https://gitlab.com/gitlab-org/gitaly/-/work_items/7280), no cgroup metrics are exported
+  in GitLab 18.11 to 19.2.
+  Fixed in GitLab 19.3.
+
+{{< /history >}}
+
+You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) by using Prometheus.
+These metrics are reported for the parent Gitaly cgroup and are available only when the Gitaly node uses cgroups v2.
+Each metric has a `path` label containing the cgroup path.
+No additional configuration is required beyond
+[enabling cgroups](configure_gitaly.md#control-groups).
+
+- `gitaly_cgroup_cpu_pressure_percent`, a gauge for the percentage of time processes were stalled waiting for CPU,
+  read from [`cpu.pressure`](https://docs.kernel.org/accounting/psi.html).
+  Available labels: `type` (`some` only) and `window` (`avg10`, `avg60`, or `avg300`).
+- `gitaly_cgroup_memory_pressure_percent`, a gauge for the percentage of time processes were stalled because of memory
+  pressure, read from `memory.pressure`.
+  Available labels: `type` (`some` or `full`) and `window`.
+- `gitaly_cgroup_io_pressure_percent`, a gauge for the percentage of time processes were stalled because of I/O
+  pressure, read from `io.pressure`.
+  Available labels: `type` (`some` or `full`) and `window`.
+- `gitaly_cgroup_memory_events_high_total`, a counter for the number of times the cgroup memory usage exceeded
+  `memory.high`, read from `memory.events`.
+- `gitaly_cgroup_memory_events_max_total`, a counter for the number of times the cgroup memory usage was about to
+  exceed `memory.max`, read from `memory.events`.
+
+In GitLab 18.11 and later, Gitaly does not export CPU usage, CPU throttling, process count, or OOM metrics for cgroups.
+To collect these, use a cgroup-aware exporter such as [cAdvisor](https://github.com/google/cadvisor).
+On Linux package installations, you must install and configure the exporter yourself.
+The following table maps the removed metrics to their cAdvisor equivalents:
+
+| Removed Gitaly metric                           | cAdvisor equivalent                                          |
+|:------------------------------------------------|:-------------------------------------------------------------|
+| `gitaly_cgroup_cpu_usage_total`                 | `container_cpu_usage_seconds_total`                          |
+| `gitaly_cgroup_cpu_cfs_periods_total`           | `container_cpu_cfs_periods_total`                            |
+| `gitaly_cgroup_cpu_cfs_throttled_periods_total` | `container_cpu_cfs_throttled_periods_total`                  |
+| `gitaly_cgroup_cpu_cfs_throttled_seconds_total` | `container_cpu_cfs_throttled_seconds_total`                  |
+| `gitaly_cgroup_procs_total`                     | `container_processes`                                        |
+| `gitaly_cgroup_memory_reclaim_attempts_total`   | `container_memory_failures_total`                            |
+| `gitaly_cgroup_memory_events_oom_total`         | `container_oom_events_total`                                 |
+| `gitaly_cgroup_memory_pgfault_total`            | `container_memory_failures_total{failure_type="pgfault"}`    |
+| `gitaly_cgroup_memory_pgmajfault_total`         | `container_memory_failures_total{failure_type="pgmajfault"}` |
 
 ## `pack-objects` cache
 

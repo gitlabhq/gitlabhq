@@ -462,13 +462,12 @@
 }
 
 .content-editor-suggestions-dropdown {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-new-dropdown-panel {
+  .content-editor-suggestions-panel {
     width: max-content;
+    max-width: min(#{$gl-new-dropdown-max-width}, calc(100vw - 2rem));
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
-  li.focused div.gl-new-dropdown-item-content {
+  .focused .content-editor-suggestions-item-content {
     @include gl-focus($inset: true);
     background-color: var(--gl-dropdown-option-background-color-unselected-hover);
   }

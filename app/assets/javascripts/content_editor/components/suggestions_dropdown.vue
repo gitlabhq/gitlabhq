@@ -343,7 +343,10 @@ export default {
 
 <template>
   <div class="gl-new-dropdown-container content-editor-suggestions-dropdown">
-    <div v-if="!loading && items.length > 0" class="gl-new-dropdown-panel gl-relative !gl-block">
+    <div
+      v-if="!loading && items.length > 0"
+      class="gl-new-dropdown-panel content-editor-suggestions-panel gl-relative !gl-block"
+    >
       <div class="gl-new-dropdown-inner">
         <ul
           id="content-editor-suggestions"
@@ -366,10 +369,10 @@ export default {
               type="button"
               role="option"
               :aria-selected="index === selectedIndex ? 'true' : 'false'"
-              class="gl-new-dropdown-item-content"
+              class="gl-new-dropdown-item-content content-editor-suggestions-item-content"
               @click="selectItem(index)"
             >
-              <div class="gl-new-dropdown-item-text-wrapper">
+              <div class="gl-new-dropdown-item-text-wrapper gl-wrap-anywhere">
                 <span v-if="isUser" class="gl-flex gl-items-center gl-gap-3">
                   <gl-avatar
                     :src="item.avatar_url"
