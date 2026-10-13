@@ -27691,12 +27691,13 @@ CREATE TABLE pm_checkpoints (
     sequence integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    purl_type smallint NOT NULL,
+    purl_type smallint,
     chunk smallint NOT NULL,
     data_type smallint DEFAULT 1 NOT NULL,
     version_format smallint DEFAULT 1 NOT NULL,
     id bigint NOT NULL,
-    full_sync_target_sequence integer
+    full_sync_target_sequence integer,
+    CONSTRAINT check_pm_checkpoints_data_type_and_purl_type CHECK (((data_type = 3) OR (purl_type IS NOT NULL)))
 );
 
 CREATE SEQUENCE pm_checkpoints_id_seq
@@ -49765,6 +49766,8 @@ CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_package
 
 CREATE INDEX index_pm_affected_packages_on_purl_type_and_package_name ON pm_affected_packages USING btree (purl_type, package_name);
 
+CREATE UNIQUE INDEX index_pm_checkpoints_on_path_components ON pm_checkpoints USING btree (purl_type, data_type, version_format) NULLS NOT DISTINCT;
+
 CREATE UNIQUE INDEX index_pm_cve_enrichment_on_cve ON pm_cve_enrichment USING btree (cve);
 
 CREATE INDEX index_pm_cve_enrichment_on_updated_at_and_id ON pm_cve_enrichment USING btree (updated_at, id);
@@ -51894,8 +51897,6 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orches
 CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
-
-CREATE UNIQUE INDEX pm_checkpoints_path_components ON pm_checkpoints USING btree (purl_type, data_type, version_format);
 
 CREATE INDEX project_import_export_relatio_model_id_model_type_uploader__idx ON project_import_export_relation_export_upload_uploads USING btree (model_id, model_type, uploader, created_at);
 
