@@ -71,6 +71,24 @@ RSpec.describe 'Gitlab::HTTP upstream IP fallback', feature_category: :shared do
         expect(response.code).to eq(200)
         expect(response.body).to eq('ok')
       end
+
+      context 'when the last resolved IP also raises it' do
+        before do
+          allow(TCPSocket).to receive(:open)
+            .with(reachable_ip, anything, anything, anything)
+            .and_raise(error_class)
+        end
+
+        it 'returns nil from try_get because the error is rescued as an HTTP error' do
+          response = Gitlab::HTTP_V2.try_get(
+            "http://#{hostname}:#{port}/",
+            allow_local_requests: true,
+            dns_rebinding_protection_enabled: true
+          )
+
+          expect(response).to be_nil
+        end
+      end
     end
   end
 
