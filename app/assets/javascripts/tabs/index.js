@@ -1,6 +1,7 @@
 import { uniqueId } from 'lodash-es';
-import { historyReplaceState } from '~/lib/utils/common_utils';
+import { handleLocationHash, historyReplaceState } from '~/lib/utils/common_utils';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import {
   ACTIVE_TAB_CLASSES,
   ATTR_ROLE,
@@ -9,6 +10,7 @@ import {
   ATTR_ARIA_SELECTED,
   ATTR_ARIA_LABELLEDBY,
   ACTIVE_PANEL_CLASS,
+  PANEL_SELECTOR,
   KEY_CODE_LEFT,
   KEY_CODE_UP,
   KEY_CODE_RIGHT,
@@ -84,6 +86,9 @@ export { TAB_SHOWN_EVENT, HISTORY_TYPE_HASH };
  *
  * Exactly one tab/panel must be active in the original markup.
  *
+ * With `history: 'hash'`, the tabs follow the location hash on load and on `hashchange`.
+ * A hash naming an element inside a panel opens that panel and keeps the hash.
+ *
  * Call the `destroy` method on an instance to remove event listeners that were
  * added during construction. Other DOM mutations (like ARIA attributes) are
  * _not_ reverted.
@@ -112,7 +117,11 @@ export class GlTabsBehavior {
 
     this.setAccessibilityAttrs();
     this.bindEvents();
-    if (this.history === HISTORY_TYPE_HASH) this.loadInitialTab();
+
+    if (this.history === HISTORY_TYPE_HASH) {
+      this.loadInitialTab();
+      this.bindEvent(window, 'hashchange', () => this.onHashChange());
+    }
   }
 
   setAccessibilityAttrs() {
@@ -177,8 +186,82 @@ export class GlTabsBehavior {
   }
 
   loadInitialTab() {
-    const tab = this.tabList.querySelector(`a[href="${CSS.escape(window.location.hash)}"]`);
-    this.activateTab(tab || this.activeTab);
+    const hash = this.getDecodedHash();
+    const tab = hash && this.getTabForHash(hash);
+    if (tab) {
+      this.activateTab(tab);
+      return;
+    }
+
+    const target = hash && document.getElementById(hash);
+    if (target) {
+      this.activateTab(this.getTabForElement(target) ?? this.activeTab, { updateHistory: false });
+      return;
+    }
+
+    this.activateTab(this.activeTab);
+  }
+
+  onHashChange() {
+    const hash = this.getDecodedHash();
+    if (!hash) return;
+
+    const tab = this.getTabForHash(hash);
+    if (tab) {
+      if (tab !== this.activeTab) this.activateTab(tab);
+      return;
+    }
+
+    const tabForElement = this.getTabForElement(document.getElementById(hash));
+    if (tabForElement && tabForElement !== this.activeTab) {
+      this.activateTab(tabForElement, { updateHistory: false });
+      // The global `hashchange` handler scrolled while the panel was still hidden.
+      handleLocationHash();
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getDecodedHash() {
+    const hash = getLocationHash();
+    if (!hash) return null;
+
+    try {
+      return decodeURIComponent(hash);
+    } catch {
+      return null;
+    }
+  }
+
+  getTabForHash(hash) {
+    return this.tabs.find((tab) => tab.getAttribute('href') === `#${hash}`) ?? null;
+  }
+
+  getTabForPanel(panel) {
+    return this.tabs.find((tab) => this.getPanelForTab(tab) === panel) ?? null;
+  }
+
+  // Walks up through nested panels so an element in another tab set's panel is not claimed.
+  getTabForElement(element) {
+    for (
+      let panel = element?.closest(PANEL_SELECTOR);
+      panel;
+      panel = panel.parentElement?.closest(PANEL_SELECTOR)
+    ) {
+      const tab = this.getTabForPanel(panel);
+      if (tab) return tab;
+    }
+
+    return null;
+  }
+
+  // Opens the panel containing `element` without touching the hash, for example a field
+  // that failed validation. Returns false when `element` is not in one of this instance's panels.
+  revealElement(element) {
+    const tab = this.getTabForElement(element);
+    if (!tab) return false;
+
+    if (tab !== this.activeTab) this.activateTab(tab, { updateHistory: false });
+    return true;
   }
 
   activatePreviousTab() {
@@ -216,7 +299,7 @@ export class GlTabsBehavior {
     return document.querySelector(tab.getAttribute('href'));
   }
 
-  activateTab(tabToActivate) {
+  activateTab(tabToActivate, { updateHistory = true } = {}) {
     // Deactivate active tab first
     this.activeTab.setAttribute(ATTR_ARIA_SELECTED, 'false');
     this.activeTab.setAttribute(ATTR_TABINDEX, '-1');
@@ -233,7 +316,9 @@ export class GlTabsBehavior {
     const tabPanel = this.getPanelForTab(tabToActivate);
     tabPanel.classList.add(ACTIVE_PANEL_CLASS);
 
-    if (this.history === HISTORY_TYPE_HASH) historyReplaceState(tabToActivate.getAttribute('href'));
+    if (updateHistory && this.history === HISTORY_TYPE_HASH) {
+      historyReplaceState(tabToActivate.getAttribute('href'));
+    }
     this.activeTab = tabToActivate;
 
     this.dispatchTabShown(tabToActivate, tabPanel);

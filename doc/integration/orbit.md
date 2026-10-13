@@ -59,6 +59,41 @@ Only Orbit can use the trial credits.
 When the trial ends or the credits run out, Orbit pauses.
 To keep using Orbit, add GitLab credits from the group usage quotas page.
 
+## Turn Orbit on or off for your groups
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1364) in GitLab 19.6.
+
+{{< /history >}}
+
+The **Group status** tab lists your top-level groups with their Orbit state and index status.
+For a group that Orbit is indexing, select the information icon ({{< icon name="information-o" >}})
+to see the index status of each area.
+
+Prerequisites:
+
+- To turn Orbit on or off, you must have the Owner role for the top-level group.
+
+To turn Orbit on or off for your groups:
+
+1. In the left sidebar, select **Your work**.
+1. Select **Orbit**.
+1. Select the **Group status** tab.
+1. Select the groups.
+1. Select **Actions** > **Turn on Orbit** or **Actions** > **Turn off Orbit**.
+1. On the confirmation dialog, select **Turn on Orbit** or **Turn off Orbit**.
+
+On GitLab.com, turning on Orbit for an eligible group starts the free trial of that group.
+The confirmation dialog shows the trial that each group gets.
+
 ## Orbit in GitLab Duo default
 
 {{< history >}}

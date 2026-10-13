@@ -24,17 +24,17 @@ module Gitlab
           [
             {
               title: "Assignee",
-              value: resource.assignees.any? ? resource.assignees.first.name : "_None_",
+              value: resource.assignees.any? ? strip_markup(resource.assignees.first.name) : "_None_",
               short: true
             },
             {
               title: "Milestone",
-              value: resource.milestone ? resource.milestone.title : "_None_",
+              value: resource.milestone ? strip_markup(resource.milestone.title) : "_None_",
               short: true
             },
             {
               title: "Labels",
-              value: resource.labels.any? ? resource.label_names.join(', ') : "_None_",
+              value: resource.labels.any? ? strip_markup(resource.label_names.join(', ')) : "_None_",
               short: true
             }
           ]

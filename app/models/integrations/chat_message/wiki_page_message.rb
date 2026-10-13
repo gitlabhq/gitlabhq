@@ -50,7 +50,7 @@ module Integrations
       end
 
       def description_message
-        [{ text: format(@description), color: attachment_color }]
+        [{ text: format_user_text(@description), color: attachment_color }]
       end
 
       def diff_link

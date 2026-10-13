@@ -47,9 +47,10 @@ The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`
 
 To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
 
-GitLab Duo Chat events (`request_duo_chat_response`) do not populate the `extras` field.
+The GitLab Duo Chat `request_duo_chat_response` event does not populate the `extras` field.
 Unlike Code Suggestions events, Chat interactions do not carry language or suggestion metadata.
-An empty `extras` object on Chat events is expected behavior.
+An empty `extras` object on this event is expected behavior.
+For the events that carry Chat token counts, see [GitLab Duo Non-Agentic Chat token usage](#gitlab-duo-non-agentic-chat-token-usage).
 
 ### For projects and groups
 
@@ -246,6 +247,64 @@ The query returns the following output:
   }
 }
 ```
+
+### GitLab Duo Non-Agentic Chat token usage
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/631777) in GitLab 19.6.
+
+{{< /history >}}
+
+GitLab Duo Non-Agentic Chat records the tokens it uses as AI usage events.
+The token counts are in the `extras` field, which the `aiUsageData` query returns only [for instances](#for-instances).
+
+Chat records these events:
+
+- `REPORT_DUO_CHAT_TOKEN_USAGE`: Recorded for each agent turn that the AI Gateway reports token usage for.
+  A question can take several agent turns.
+  The `extras` field contains the `request_id` and a `usage` object that maps each model to its `input_tokens` and `output_tokens`.
+- `COMPLETE_DUO_CHAT_RESPONSE`: Recorded once for each response.
+  The `extras` field contains the `request_id` and, if the response failed, its `error_code`.
+
+The agent turns and the response for one question share a `request_id`.
+
+Only agent turns are recorded.
+When a Chat tool sends its own request to a model, for example to read an issue, those tokens are not recorded.
+Slash commands do not use agent turns and record neither event.
+When GitLab Duo answers a merge request comment that [mentions `@GitLabDuo`](../../user/gitlab_duo/code_review.md#interact-with-gitlab-duo-in-reviews), the answer uses agent turns and records both events.
+Requests for a code review record neither event, and neither do answers from the [Code Review Flow](../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md).
+
+The token counts are the values the AI Gateway reports.
+If a self-hosted model does not report token usage, the AI Gateway estimates the counts.
+The `REPORT_DUO_CHAT_TOKEN_USAGE` event does not indicate that the counts are estimates.
+
+#### Turn off token usage recording
+
+By default, GitLab records token usage for GitLab Duo Non-Agentic Chat.
+When you turn it off, GitLab stops recording `REPORT_DUO_CHAT_TOKEN_USAGE` events.
+GitLab still records `COMPLETE_DUO_CHAT_RESPONSE` events and keeps existing events.
+If [AI logs](../../administration/gitlab_duo_self_hosted/logging.md#turn-on-data-collection-for-gitlab-duo) are on, they still record token counts.
+
+Prerequisites:
+
+- Administrator access.
+
+To turn off token usage recording:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, under **Record GitLab Duo Non-Agentic Chat token usage**, clear the checkbox.
+1. Select **Save changes**.
+
+You can also use the `duo_token_usage_tracking_enabled` [application setting](../settings.md).
 
 ## Retrieve AI user metrics
 

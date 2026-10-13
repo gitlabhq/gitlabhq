@@ -20,7 +20,7 @@ export default {
       required: true,
     },
   },
-  emits: ['update:hideBacklogList', 'update:hideClosedList'],
+  emits: ['update:hide-backlog-list', 'update:hide-closed-list'],
 };
 </script>
 
@@ -36,14 +36,14 @@ export default {
       :checked="!hideBacklogList"
       :disabled="readonly"
       data-testid="backlog-list-checkbox"
-      @change="$emit('update:hideBacklogList', !hideBacklogList)"
+      @change="$emit('update:hide-backlog-list', !hideBacklogList)"
       >{{ __('Show the Open list') }}
     </gl-form-checkbox>
     <gl-form-checkbox
       :checked="!hideClosedList"
       :disabled="readonly"
       data-testid="closed-list-checkbox"
-      @change="$emit('update:hideClosedList', !hideClosedList)"
+      @change="$emit('update:hide-closed-list', !hideClosedList)"
       >{{ __('Show the Closed list') }}
     </gl-form-checkbox>
   </div>

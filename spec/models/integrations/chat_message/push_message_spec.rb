@@ -194,6 +194,18 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
           'test.user removed branch master from <http://url.com|project_name>')
         expect(subject.attachments).to be_empty
       end
+
+      context 'when the branch name contains an HTML link' do
+        before do
+          args[:ref] = 'refs/heads/<a href="https://evil.example.com">https://gitlab.example.com/branch</a>'
+        end
+
+        it 'does not convert the HTML link into a Slack link' do
+          expect(subject.pretext).to eq(
+            'test.user removed branch <a href="https://evil.example.com">https://gitlab.example.com/branch</a> ' \
+              'from <http://url.com|project_name>')
+        end
+      end
     end
 
     context 'with markdown' do

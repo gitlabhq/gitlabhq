@@ -9887,6 +9887,12 @@ msgstr ""
 msgid "AiPowered|Reason: %{reason}. %{message}"
 msgstr ""
 
+msgid "AiPowered|Record GitLab Duo Non-Agentic Chat token usage"
+msgstr ""
+
+msgid "AiPowered|Record the input and output tokens that each GitLab Duo Non-Agentic Chat request uses, by user and model. Turning off this setting stops new records. Existing records are kept."
+msgstr ""
+
 msgid "AiPowered|Remove"
 msgstr ""
 
@@ -58372,6 +58378,9 @@ msgstr ""
 msgid "OnCallSchedules|Failed to edit schedule"
 msgstr ""
 
+msgid "OnCallSchedules|Failed to load rotations"
+msgstr ""
+
 msgid "OnCallSchedules|For this rotation, on-call will be:"
 msgstr ""
 
@@ -59159,6 +59168,9 @@ msgid_plural "Orbit|%{credits} free credits when turned on"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Orbit|%{days}-day free trial, %{credits}"
+msgstr ""
+
 msgid "Orbit|%{entity} connects to %{count} entity. Select it to move to it."
 msgid_plural "Orbit|%{entity} connects to %{count} entities. Select one to move to it."
 msgstr[0] ""
@@ -59185,16 +59197,6 @@ msgstr ""
 
 msgid "Orbit|%{groupName} is out of GitLab credits"
 msgstr ""
-
-msgid "Orbit|%{groups} gets %{credits} for Orbit, valid for %{days}."
-msgid_plural "Orbit|%{groups} each get their own %{credits} for Orbit, valid for %{days}."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Orbit|%{groups} starts a free trial of Orbit."
-msgid_plural "Orbit|%{groups} each start their own free trial of Orbit."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Orbit|%{group}: %{reason}"
 msgstr ""
@@ -59246,6 +59248,9 @@ msgid "Orbit|Ask GitLab Duo a question that spans projects."
 msgstr ""
 
 msgid "Orbit|Ask GitLab Duo a question that spans projects. GitLab Duo is not available for your groups."
+msgstr ""
+
+msgid "Orbit|Ask an Owner of %{group} to turn on Orbit."
 msgstr ""
 
 msgid "Orbit|Automatic indexing is on, so Orbit turns on again for this group within an hour. To keep Orbit off, exclude the group from automatic indexing."
@@ -59403,6 +59408,9 @@ msgstr ""
 msgid "Orbit|Counts are not available right now. Try again later."
 msgstr ""
 
+msgid "Orbit|Credits used up"
+msgstr ""
+
 msgid "Orbit|Default group is not selected"
 msgstr ""
 
@@ -59419,12 +59427,6 @@ msgid "Orbit|Documentation"
 msgstr ""
 
 msgid "Orbit|Double-click to explore connections"
-msgstr ""
-
-msgid "Orbit|Each group gets its own %{credits} for Orbit, valid for %{days}."
-msgstr ""
-
-msgid "Orbit|Each group starts its own free trial of Orbit."
 msgstr ""
 
 msgid "Orbit|Entities"
@@ -59519,6 +59521,9 @@ msgstr ""
 msgid "Orbit|Follow a relationship for one to three hops."
 msgstr ""
 
+msgid "Orbit|Free trial"
+msgstr ""
+
 msgid "Orbit|Free trial active"
 msgstr ""
 
@@ -59529,6 +59534,9 @@ msgid "Orbit|Free trial ended"
 msgstr ""
 
 msgid "Orbit|Free trial for Orbit"
+msgstr ""
+
+msgid "Orbit|Free trial status is not available right now. Try again later."
 msgstr ""
 
 msgid "Orbit|Free trial when turned on"
@@ -59588,6 +59596,9 @@ msgstr ""
 msgid "Orbit|Group by minute, hour, day, week, month, quarter, or year."
 msgstr ""
 
+msgid "Orbit|Group status"
+msgstr ""
+
 msgid "Orbit|Groups"
 msgstr ""
 
@@ -59610,6 +59621,9 @@ msgid "Orbit|Index status"
 msgstr ""
 
 msgid "Orbit|Index status is not available right now"
+msgstr ""
+
+msgid "Orbit|Index status of each area of %{group}"
 msgstr ""
 
 msgid "Orbit|Indexed"
@@ -59747,6 +59761,9 @@ msgstr ""
 msgid "Orbit|Not eligible for a free trial"
 msgstr ""
 
+msgid "Orbit|Not eligible for a free trial."
+msgstr ""
+
 msgid "Orbit|Not indexed"
 msgstr ""
 
@@ -59792,6 +59809,9 @@ msgstr ""
 msgid "Orbit|Orbit could not index this group. Check the Orbit indexer logs."
 msgstr ""
 
+msgid "Orbit|Orbit could not index this group. Contact support if this continues."
+msgstr ""
+
 msgid "Orbit|Orbit did not report any services. Make sure the Orbit service is running and that GitLab can reach it."
 msgstr ""
 
@@ -59810,10 +59830,16 @@ msgstr ""
 msgid "Orbit|Orbit indexes top-level groups. Create a group to start."
 msgstr ""
 
+msgid "Orbit|Orbit indexes top-level groups. The top-level groups you are a member of show here."
+msgstr ""
+
 msgid "Orbit|Orbit is available"
 msgstr ""
 
 msgid "Orbit|Orbit is available on Premium and Ultimate"
+msgstr ""
+
+msgid "Orbit|Orbit is available on Premium and Ultimate."
 msgstr ""
 
 msgid "Orbit|Orbit is degraded"
@@ -60002,6 +60028,15 @@ msgstr ""
 msgid "Orbit|SecurityScan"
 msgstr ""
 
+msgid "Orbit|See the Orbit state of every top-level group, and turn Orbit on or off."
+msgstr ""
+
+msgid "Orbit|See the Orbit state of your top-level groups, and turn Orbit on or off."
+msgstr ""
+
+msgid "Orbit|See the Orbit state of your top-level groups. Owners of each group turn Orbit on or off."
+msgstr ""
+
 msgid "Orbit|Select %{group}"
 msgstr ""
 
@@ -60097,6 +60132,12 @@ msgstr ""
 msgid "Orbit|The examples are not available. Try again later."
 msgstr ""
 
+msgid "Orbit|The free trial ended on %{date}. Orbit queries are paused."
+msgstr ""
+
+msgid "Orbit|The free trial ends on %{date}."
+msgstr ""
+
 msgid "Orbit|The free trial is for this group only. When the trial ends or the credits run out, Orbit pauses until you add GitLab credits."
 msgstr ""
 
@@ -60124,6 +60165,9 @@ msgstr ""
 msgid "Orbit|This group cannot be indexed."
 msgstr ""
 
+msgid "Orbit|This group has no GitLab credits left. Orbit queries are paused until the group has credits again."
+msgstr ""
+
 msgid "Orbit|This group is excluded, so Orbit turns off for it within an hour."
 msgstr ""
 
@@ -60144,6 +60188,9 @@ msgstr ""
 msgid "Orbit|To %{entity}"
 msgstr ""
 
+msgid "Orbit|To find part of a group name, enter at least %{count} characters."
+msgstr ""
+
 msgid "Orbit|To use Orbit in another group, ask an Owner of that group to turn it on."
 msgstr ""
 
@@ -60151,6 +60198,9 @@ msgid "Orbit|Top-level groups"
 msgstr ""
 
 msgid "Orbit|Traversal: entities and their relationships"
+msgstr ""
+
+msgid "Orbit|Trial ended"
 msgstr ""
 
 msgid "Orbit|Try Orbit for free"
@@ -60233,6 +60283,9 @@ msgid "Orbit|Values"
 msgstr ""
 
 msgid "Orbit|Version %{version}"
+msgstr ""
+
+msgid "Orbit|View usage quotas"
 msgstr ""
 
 msgid "Orbit|Vulnerabilities"
@@ -60334,10 +60387,16 @@ msgstr ""
 msgid "Orbit|You do not have access to this. Check that admin mode is on."
 msgstr ""
 
+msgid "Orbit|You do not have access to this. Sign in again, then reload the page."
+msgstr ""
+
 msgid "Orbit|You don't have permission to start an Orbit trial for this group."
 msgstr ""
 
 msgid "Orbit|You don't have permission to update Orbit for this namespace."
+msgstr ""
+
+msgid "Orbit|You need the Owner role in this group to change Orbit."
 msgstr ""
 
 msgid "Orbit|Your GitLab Orbit trial has ended."
@@ -64545,6 +64604,9 @@ msgid "PolicyStore|None added"
 msgstr ""
 
 msgid "PolicyStore|Not available"
+msgstr ""
+
+msgid "PolicyStore|Not available with %{trigger}, which runs after the change: there is nothing left to stop."
 msgstr ""
 
 msgid "PolicyStore|Notify the user and log the violation"

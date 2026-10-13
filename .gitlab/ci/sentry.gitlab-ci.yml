@@ -1,7 +1,7 @@
 .sentry-set-commits: &sentry-set-commits
   stage: notify
   image:
-    name: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}getsentry/sentry-cli:3.3.3
+    name: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}getsentry/sentry-cli:3.8.0
     entrypoint: [""]
   rules:
     - if: '$SENTRY_AUTH_TOKEN == null || $SENTRY_AUTH_TOKEN == ""'

@@ -45,6 +45,46 @@ RSpec.describe Gitlab::SlashCommands::Presenters::IssueShow do
     end
   end
 
+  context 'when user-controlled text contains Slack link markup' do
+    let(:markup) { '<https://evil.example.com|https://gitlab.example.com/issue>' }
+    let(:stripped) { 'https://evil.example.comhttps://gitlab.example.com/issue' }
+    let(:assignee) { create(:user) }
+    let(:milestone) { create(:milestone, project: project, title: markup) }
+    let(:label) { create(:label, project: project, title: markup) }
+    let(:issue) do
+      create(:issue, project: project, title: markup, milestone: milestone, assignees: [assignee], labels: [label])
+    end
+
+    before do
+      issue
+      # User#sanitize_attrs rewrites the markup on save, so persist it directly to exercise the presenter.
+      assignee.update_column(:name, markup)
+      user.update_column(:name, markup)
+    end
+
+    it 'strips the markup from the title, author, fallback, and fields' do
+      expect(attachment[:title]).to start_with(stripped)
+      expect(attachment[:author_name]).to eq(stripped)
+      expect(attachment[:fallback]).to eq("Issue #{issue.to_reference}: #{stripped}")
+
+      %w[Assignee Milestone Labels].each do |name|
+        field = attachment[:fields].find { |f| f[:title] == name }
+
+        expect(field[:value]).to eq(stripped)
+      end
+    end
+  end
+
+  context 'when the project belongs to a user whose name contains a Markdown link' do
+    let_it_be(:owner) { create(:user, :with_namespace, name: '[https://gitlab.example.com/x](https://evil.example.com)') }
+    let_it_be(:project) { create(:project, namespace: owner.namespace, creator: owner) }
+
+    it 'does not turn the project name into a Slack link' do
+      expect(attachment[:pretext]).to include('https://gitlab.example.com/x')
+      expect(attachment[:pretext]).not_to include('<https://evil.example.com')
+    end
+  end
+
   context 'confidential issue' do
     let(:issue) { create(:issue, project: project) }
 

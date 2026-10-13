@@ -20,6 +20,7 @@ module API
     before do
       require_repository_enabled!
       authorize_read_code!
+      verify_pagination_params!
     end
 
     rescue_from Gitlab::Git::Repository::NoRepository do

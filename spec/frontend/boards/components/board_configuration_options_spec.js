@@ -48,7 +48,7 @@ describe('BoardConfigurationOptions', () => {
 
     backlogListCheckbox().vm.$emit('change');
 
-    expect(wrapper.emitted('update:hideBacklogList')).toEqual([[true]]);
+    expect(wrapper.emitted('update:hide-backlog-list')).toEqual([[true]]);
   });
 
   it('emits a correct value on closed checkbox change', () => {
@@ -56,7 +56,7 @@ describe('BoardConfigurationOptions', () => {
 
     closedListCheckbox().vm.$emit('change');
 
-    expect(wrapper.emitted('update:hideClosedList')).toEqual([[true]]);
+    expect(wrapper.emitted('update:hide-closed-list')).toEqual([[true]]);
   });
 
   it('renders checkboxes disabled when user does not have edit rights', () => {

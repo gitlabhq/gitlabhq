@@ -126,6 +126,21 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       end
     end
 
+    it 'leaves the gem link formatters out of the middleware stack' do
+      messenger = nil
+      allow(::Slack::Messenger).to receive(:new).and_wrap_original do |original, *args, &block|
+        messenger = original.call(*args, &block)
+      end
+
+      execute_integration
+
+      stack = messenger.send(:middleware).stack
+      expect(stack.map(&:class)).to eq([
+        ::Slack::Messenger::PayloadMiddleware::At,
+        ::Slack::Messenger::PayloadMiddleware::Channels
+      ])
+    end
+
     context 'push events' do
       let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
@@ -157,6 +172,37 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       let(:data) { issue.to_hook_data(user) }
 
       it_behaves_like 'calls the integration API with the event message', /Issue (.*?) opened by/
+
+      context 'when the description contains link markup' do
+        let(:description) do
+          '<a href="https://evil.example.com">https://gitlab.example.com/issue</a> ' \
+            '[https://gitlab.example.com/issue](https://evil.example.com)'
+        end
+
+        let(:issue) { create(:issue, project: project, description: description) }
+        let(:data) { issue.to_hook_data(user, action: 'open') }
+
+        it 'sends the description as text without converting it into Slack links' do
+          execute_integration
+
+          expect(WebMock).to have_requested(:post, stubbed_resolved_hostname)
+            .with { |request| description_sent_as_text?(request) }
+        end
+
+        def description_sent_as_text?(request)
+          text = attachment_text(request)
+
+          text.include?('&lt;a href="https://evil.example.com"&gt;https://gitlab.example.com/issue&lt;/a&gt;') &&
+            text.include?('[https://gitlab.example.com/issue](https://evil.example.com)') &&
+            text.exclude?('<https://evil.example.com')
+        end
+
+        def attachment_text(request)
+          payload = Gitlab::Json::SafeParser.parse(Rack::Utils.parse_nested_query(request.body)['payload'])
+
+          payload['attachments'].first['text']
+        end
+      end
 
       context 'whith event channel' do
         let(:chat_integration_params) { { issue_channel: 'random' } }

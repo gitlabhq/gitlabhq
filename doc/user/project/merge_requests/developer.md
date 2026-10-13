@@ -20,6 +20,7 @@ title: Developer Flow
 - Feature flags `duo_workflow_in_ci`, `duo_developer_button`, and `duo_workflow` removed in GitLab 18.9.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - Mention triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228817) in GitLab 18.11.
+- Work item status change triggers, and workplan support when you assign the flow, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/633027) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -110,6 +111,34 @@ To create a merge request from an issue:
 1. To monitor progress, in the left sidebar, select **AI** > **Sessions**.
 1. When the session completes, review the merge request from the link in
    the **Activity** section of the issue.
+
+When you assign the flow to an issue that has a [workplan](../../work_items/workplan.md),
+the flow follows the workplan. If the description and the workplan disagree,
+the flow follows the workplan.
+
+### Start the flow when a work item status changes
+
+When a work item changes to a status that you select, the Developer Flow implements
+the work item and creates a merge request. The flow uses the
+[workplan](../../work_items/workplan.md) of the work item as its specification.
+If the work item has no workplan, the flow uses the description.
+
+Prerequisites:
+
+- [Create a trigger](../../duo_agent_platform/triggers/_index.md#create-a-trigger)
+  for the Developer Flow with the **Work item** event type and only the
+  **Status changed** action. If you also select **Created**, you cannot select statuses,
+  and the flow does not start when a work item is created.
+- In the trigger, select the statuses that start the work. If you select no status,
+  every status change starts a session, including a change to a done status.
+
+To start the flow:
+
+1. Change the status of the work item to one of the statuses selected in the trigger.
+1. To monitor progress, in the left sidebar, select **AI** > **Sessions**.
+1. When the session completes, review the merge request from the link in
+   the **Activity** section of the work item. The flow assigns the merge request
+   to the user who changed the status.
 
 ### Use the flow in Agentic Chat
 

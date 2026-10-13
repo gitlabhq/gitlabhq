@@ -61,7 +61,7 @@ module Integrations
         [{
           title: issue_title,
           title_link: issue_url,
-          text: format(SlackMarkdownSanitizer.sanitize_slack_link(description)),
+          text: format_user_text(description),
           color: attachment_color
         }]
       end

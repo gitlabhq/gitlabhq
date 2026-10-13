@@ -58,6 +58,23 @@ RSpec.describe Integrations::ChatMessage::IssueMessage, feature_category: :integ
             }
           ])
       end
+
+      context 'when the description contains link markup' do
+        before do
+          args[:object_attributes][:description] =
+            '<a href="https://evil.example.com">https://gitlab.example.com/issue</a> ' \
+              '[https://gitlab.example.com/issue](https://evil.example.com) ' \
+              '<https://evil.example.com|https://gitlab.example.com/issue>'
+        end
+
+        it 'sends the description as text without converting any of it into Slack links' do
+          expect(subject.attachments.first[:text]).to eq(
+            '&lt;a href="https://evil.example.com"&gt;https://gitlab.example.com/issue&lt;/a&gt; ' \
+              '[https://gitlab.example.com/issue](https://evil.example.com) ' \
+              '&lt;https://evil.example.com|https://gitlab.example.com/issue&gt;'
+          )
+        end
+      end
     end
 
     context 'close' do

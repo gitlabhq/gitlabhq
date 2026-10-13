@@ -20,4 +20,14 @@ RSpec.describe Gitlab::SlashCommands::Presenters::IssueNew do
       text: expected_text
     )
   end
+
+  context 'when the project belongs to a user whose name contains a Markdown link' do
+    let_it_be(:owner) { create(:user, :with_namespace, name: '[https://gitlab.example.com/x](https://evil.example.com)') }
+    let_it_be(:project) { create(:project, namespace: owner.namespace, creator: owner) }
+
+    it 'links the project name only to the project' do
+      expect(subject[:text]).to include("<#{project.web_url}|https://gitlab.example.com/x")
+      expect(subject[:text]).not_to include('<https://evil.example.com')
+    end
+  end
 end

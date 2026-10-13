@@ -252,6 +252,57 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       end
     end
 
+    context 'when pagination params are invalid' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:request) do
+        get api(route, user), params: { page: page, per_page: per_page }.compact
+      end
+
+      where(:page, :per_page, :error_message) do
+        0   | nil | 'page does not have a valid value'
+        -1  | nil | 'page does not have a valid value'
+        'a' | nil | 'page is invalid'
+        nil | 0   | 'per_page does not have a valid value'
+        nil | -1  | 'per_page does not have a valid value'
+        nil | 'a' | 'per_page is invalid'
+      end
+
+      with_them do
+        it 'returns 400 response' do
+          request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq(error_message)
+        end
+      end
+
+      context 'when FF is off' do
+        before do
+          stub_feature_flags(only_positive_pagination_values: false)
+        end
+
+        where(:page, :per_page, :error_message, :status) do
+          0   | nil | nil                               | :success
+          -10 | nil | nil                               | :success
+          'a' | nil | 'page is invalid'                 | :bad_request
+          nil | 0   | 'per_page has a value not allowed' | :bad_request
+          nil | -1  | nil                               | :success
+          nil | 'a' | 'per_page is invalid'             | :bad_request
+        end
+
+        with_them do
+          it 'returns a response' do
+            request
+
+            expect(response).to have_gitlab_http_status(status)
+
+            expect(json_response['error']).to eq(error_message) if error_message
+          end
+        end
+      end
+    end
+
     context 'when unauthenticated', 'and project is public' do
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)

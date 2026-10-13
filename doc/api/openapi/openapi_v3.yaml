@@ -14595,6 +14595,8 @@ paths:
           description: 403 Forbidden
         '404':
           description: 404 Not found
+        '503':
+          description: 503 Service Unavailable
       parameters:
       - name: id
         required: true
@@ -93375,6 +93377,8 @@ components:
           type: string
         ai_audit_events_streaming_enabled:
           type: boolean
+        duo_token_usage_tracking_enabled:
+          type: boolean
         duo_namespace_access_rules:
           type: string
         duo_remote_flows_enabled:
@@ -112766,6 +112770,9 @@ components:
           type: string
           nullable: true
         ai_audit_events_streaming_enabled:
+          type: string
+          nullable: true
+        duo_token_usage_tracking_enabled:
           type: string
           nullable: true
         duo_remote_flows_availability:

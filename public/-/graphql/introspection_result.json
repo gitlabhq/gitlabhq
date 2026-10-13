@@ -192705,7 +192705,7 @@
             },
             {
               "name": "orbitAccess",
-              "description": "Orbit access state of the top-level group. Returns null when the user cannot read the Orbit setting of the group. This field can only be resolved for one group in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Orbit access state of the top-level group. Returns null when the user cannot read the Orbit setting of the group. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -204102,6 +204102,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "readOrbitSetting",
+              "description": "If `true`, the user can perform `read_orbit_setting` on this resource Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "readOrbitTrial",

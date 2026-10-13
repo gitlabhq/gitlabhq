@@ -26,8 +26,8 @@ module Gitlab
 
             {
               color: color(issue),
-              fallback: "#{issue.to_reference} #{issue.title}",
-              text: "#{url} · #{issue.title} (#{status_text(issue)})",
+              fallback: "#{issue.to_reference} #{strip_markup(issue.title)}",
+              text: "#{url} · #{strip_markup(issue.title)} (#{status_text(issue)})",
 
               mrkdwn_in: [
                 :text

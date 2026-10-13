@@ -48,7 +48,7 @@ module Integrations
         if markdown
           detail
         else
-          [{ text: format(detail), color: attachment_color }]
+          [{ text: format_user_text(detail), color: attachment_color }]
         end
       end
 

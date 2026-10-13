@@ -72,7 +72,7 @@ module Integrations
       end
 
       def description_message
-        [{ text: format(note), color: attachment_color }]
+        [{ text: format_user_text(note), color: attachment_color }]
       end
 
       def project_link

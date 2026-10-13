@@ -1,6 +1,7 @@
 export const ACTIVE_TAB_CLASSES = Object.freeze(['active', 'gl-tab-nav-item-active']);
 
 export const ACTIVE_PANEL_CLASS = 'active';
+export const PANEL_SELECTOR = '.tab-pane';
 
 export const KEY_CODE_LEFT = 'ArrowLeft';
 export const KEY_CODE_UP = 'ArrowUp';

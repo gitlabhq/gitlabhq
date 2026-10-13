@@ -95,6 +95,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('<http://custom-url.com|click here>') }
     it { is_expected.to match('<custom-url.com|any-Charact3r$>') }
     it { is_expected.to match('<any-Charact3r$|any-Charact3r$>') }
+    it { is_expected.to match('<http://custom-url.com|click|here>') }
     it { is_expected.to match(('<<|' * 1000) + '<https://gitlab.example|click here>') }
   end
 

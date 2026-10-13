@@ -36,7 +36,7 @@ module Gitlab
         end
 
         def pretext
-          "Issue *#{resource.to_reference}* from #{project.full_name}"
+          "Issue *#{resource.to_reference}* from #{strip_markup(project.full_name)}"
         end
       end
     end

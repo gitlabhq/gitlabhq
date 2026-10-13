@@ -33,7 +33,9 @@ Example request:
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 

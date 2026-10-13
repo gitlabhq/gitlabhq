@@ -392,9 +392,11 @@ export default {
       </div>
 
       <board-configuration-options
-        :hide-backlog-list.sync="board.hideBacklogList"
-        :hide-closed-list.sync="board.hideClosedList"
+        :hide-backlog-list="board.hideBacklogList"
+        :hide-closed-list="board.hideClosedList"
         :readonly="readonly"
+        @update:hide-backlog-list="board.hideBacklogList = $event"
+        @update:hide-closed-list="board.hideClosedList = $event"
       />
 
       <board-scope

@@ -6,6 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 
+import BoardConfigurationOptions from '~/boards/components/board_configuration_options.vue';
 import BoardForm from '~/boards/components/board_form.vue';
 import { formType } from '~/boards/constants';
 import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql';
@@ -54,6 +55,7 @@ describe('BoardForm', () => {
   const findInput = () => wrapper.find('#board-new-name');
   const findInputFormWrapper = () => wrapper.findComponent(GlForm);
   const findDeleteButton = () => wrapper.findComponentByTestId('delete-board-button');
+  const findConfigurationOptions = () => wrapper.findComponent(BoardConfigurationOptions);
 
   const defaultHandlers = {
     createBoardMutationHandler: jest.fn().mockResolvedValue({
@@ -321,6 +323,21 @@ describe('BoardForm', () => {
 
       await mockApollo.resolveMutation(updateBoardMutation);
       expect(global.window.location.href).toContain('?group_by=epic');
+    });
+
+    it('submits the list options changed in the configuration options', async () => {
+      await createComponent({
+        props: { canAdminBoard: true, currentPage: formType.edit },
+      });
+
+      findConfigurationOptions().vm.$emit('update:hide-backlog-list', true);
+      findConfigurationOptions().vm.$emit('update:hide-closed-list', true);
+      findInputFormWrapper().trigger('submit');
+      await waitForPromises();
+
+      expect(requestHandlers.updateBoardMutationHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({ hideBacklogList: true, hideClosedList: true }),
+      });
     });
 
     it('sets error in state if GraphQL mutation fails', async () => {

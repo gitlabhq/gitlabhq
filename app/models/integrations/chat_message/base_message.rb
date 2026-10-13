@@ -58,7 +58,13 @@ module Integrations
       end
 
       def format(string)
-        ::Slack::Messenger::Util::LinkFormatter.format(format_relative_links(string))
+        SlackMarkdownSanitizer.format_links(format_relative_links(string))
+      end
+
+      # User-written text is sent as written: angle brackets are escaped and link markup
+      # is not converted, so only links GitLab builds itself become Slack links.
+      def format_user_text(string)
+        SlackMarkdownSanitizer.escape(format_relative_links(string))
       end
 
       def format_relative_links(string)

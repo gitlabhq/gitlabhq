@@ -114,7 +114,7 @@ module Integrations
       def failed_stages_field
         {
           title: s_("ChatMessage|Failed stage").pluralize(failed_stages.length),
-          value: ::Slack::Messenger::Util::LinkFormatter.format(failed_stages_links),
+          value: SlackMarkdownSanitizer.format_links(failed_stages_links),
           short: true
         }
       end
@@ -122,7 +122,7 @@ module Integrations
       def failed_jobs_field
         {
           title: s_("ChatMessage|Failed job").pluralize(failed_jobs.length),
-          value: ::Slack::Messenger::Util::LinkFormatter.format(failed_jobs_links),
+          value: SlackMarkdownSanitizer.format_links(failed_jobs_links),
           short: true
         }
       end
@@ -147,12 +147,12 @@ module Integrations
         fields = [
           {
             title: ref_type == "tag" ? s_("ChatMessage|Tag") : s_("ChatMessage|Branch"),
-            value: ::Slack::Messenger::Util::LinkFormatter.format(ref_link),
+            value: SlackMarkdownSanitizer.format_links(ref_link),
             short: true
           },
           {
             title: s_("ChatMessage|Commit"),
-            value: ::Slack::Messenger::Util::LinkFormatter.format(commit_link),
+            value: SlackMarkdownSanitizer.format_links(commit_link),
             short: true
           }
         ]

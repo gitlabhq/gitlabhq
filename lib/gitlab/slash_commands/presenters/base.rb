@@ -61,9 +61,13 @@ module Gitlab
           response
         end
 
-        # Convert Markdown to slacks format
         def format(string)
-          ::Slack::Messenger::Util::LinkFormatter.format(string)
+          SlackMarkdownSanitizer.format_links(string)
+        end
+
+        # User-controlled text rendered with mrkdwn must not carry link markup.
+        def strip_markup(string)
+          SlackMarkdownSanitizer.sanitize(string)
         end
 
         def resource_url
@@ -76,7 +80,7 @@ module Gitlab
         end
 
         def project_link
-          "[#{project.full_name}](#{project.web_url})"
+          "[#{strip_markup(project.full_name)}](#{project.web_url})"
         end
 
         def author_profile_link
@@ -87,11 +91,11 @@ module Gitlab
           {
             attachments: [
               {
-                title: "#{issue.title} · #{issue.to_reference}",
+                title: "#{strip_markup(issue.title)} · #{issue.to_reference}",
                 title_link: resource_url,
-                author_name: author.name,
+                author_name: strip_markup(author.name),
                 author_icon: author.avatar_url(only_path: false),
-                fallback: fallback_message,
+                fallback: strip_markup(fallback_message),
                 pretext: custom_pretext,
                 text: text,
                 color: color(resource),
