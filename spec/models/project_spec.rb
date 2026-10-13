@@ -7940,18 +7940,50 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it 'executes the system hooks with the specified scope' do
-      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(data, :merge_request_hooks)
-
       project = build(:project)
+
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks)
+        .with(data, :merge_request_hooks, organization: project.organization)
+
       project.execute_hooks(data, :merge_request_hooks)
+    end
+
+    context 'with system hooks in multiple organizations' do
+      let_it_be(:other_organization) { create(:organization) }
+
+      let!(:system_hook) do
+        create(:system_hook, organization: project.organization,
+          push_events: true, tag_push_events: true, merge_requests_events: true)
+      end
+
+      let!(:other_system_hook) do
+        create(:system_hook, organization: other_organization,
+          push_events: true, tag_push_events: true, merge_requests_events: true)
+      end
+
+      before do
+        allow(WebHookWorker).to receive(:perform_async)
+        allow(Gitlab::FileHook).to receive(:execute_all_async)
+      end
+
+      %i[push_hooks tag_push_hooks merge_request_hooks].each do |scope|
+        it "only queues system hooks of the project organization for #{scope}" do
+          project.execute_hooks(data, scope)
+
+          expect(WebHookWorker).to have_received(:perform_async)
+            .with(system_hook.id, anything, anything, anything)
+          expect(WebHookWorker).not_to have_received(:perform_async)
+            .with(other_system_hook.id, anything, anything, anything)
+        end
+      end
     end
 
     it 'executes the system hooks when inside a transaction' do
       allow_any_instance_of(WebHookService).to receive(:execute)
 
-      create(:system_hook, merge_requests_events: true)
-
       project = build(:project)
+
+      create(:system_hook, merge_requests_events: true, organization: project.organization)
 
       # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
       # but since the entire spec run takes place in a transaction, we never
@@ -8154,10 +8186,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it 'returns true when a matching system hook exists' do
-      create(:system_hook, push_events: true)
+      create(:system_hook, push_events: true, organization: project.organization)
 
       expect(project.has_active_hooks?(:merge_request_hooks)).to be(false)
       expect(project.has_active_hooks?).to be(true)
+    end
+
+    it 'returns false when a matching system hook only exists in another organization' do
+      create(:system_hook, push_events: true, organization: create(:organization))
+
+      expect(project.has_active_hooks?).to be(false)
     end
 
     it 'returns true when a plugin exists' do

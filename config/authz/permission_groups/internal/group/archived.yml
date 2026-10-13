@@ -49,6 +49,7 @@ permissions:
   - change_seat_control
   - change_share_with_group_lock
   - change_visibility_level
+  - create_achievement
   - create_cluster
   - create_custom_emoji
   - create_deploy_token
@@ -73,6 +74,7 @@ permissions:
   - create_test_case
   - create_vulnerability_export
   - create_wiki
+  - delete_achievement
   - delete_label
   - delete_note
   - delete_timelog
@@ -99,6 +101,7 @@ permissions:
   - set_note_created_at
   - set_show_diff_preview_in_email
   - transfer_projects
+  - update_achievement
   - update_approval_rule
   - update_cluster
   - update_default_branch_protection

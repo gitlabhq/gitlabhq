@@ -48,6 +48,26 @@ RSpec.describe SystemHook, feature_category: :webhooks do
     it { is_expected.to belong_to :organization }
   end
 
+  describe '.for_organization' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:hook) { create(:system_hook, organization: organization) }
+    let_it_be(:other_hook) { create(:system_hook, organization: other_organization) }
+
+    it 'returns only hooks of the given organization' do
+      expect(described_class.for_organization(organization)).to contain_exactly(hook)
+      expect(described_class.for_organization(other_organization)).to contain_exactly(other_hook)
+    end
+
+    it 'accepts an organization id' do
+      expect(described_class.for_organization(organization.id)).to contain_exactly(hook)
+    end
+
+    it 'returns no hooks when the organization is nil' do
+      expect(described_class.for_organization(nil)).to be_empty
+    end
+  end
+
   describe '#destroy' do
     it 'does not cascade to web_hook_logs' do
       web_hook = create(:system_hook)

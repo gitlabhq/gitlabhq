@@ -65,6 +65,7 @@ This table lists the default model for each feature in the Agent Platform.
 - Claude Sonnet 5.5 and Claude Sonnet 5.5 Gemini Enterprise Agent Platform [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) as supported models for Code Review Flow on October 5, 2026.
 - Claude Haiku 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7364) as a supported model for GitLab Duo Agentic Chat and all other agents on October 7, 2026.
 - Claude Haiku 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7370) as a supported model for Recommend Reviewers Flow on October 8, 2026.
+- Gemini 4 Argon [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7445) as a supported model for GitLab Duo Agentic Chat and all other agents on October 13, 2026.
 
 {{< /history >}}
 
@@ -95,6 +96,7 @@ For information about model availability during trials, see
 | Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Gemini 3.7 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Gemini 3.8 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
+| Gemini 4 Argon              | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | GLM 5.3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | GPT-5                       | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | GPT-5.1                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |

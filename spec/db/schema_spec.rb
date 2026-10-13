@@ -139,9 +139,7 @@ RSpec.describe 'Database schema',
       # backfill. It will get foreign keys after the partitioning is finished.
       merge_request_diff_commits_b5377a7a34: %w[merge_request_commits_metadata_id merge_request_diff_id project_id
         commit_author_id committer_id],
-      # file_template_project_id and custom_project_templates_group_id will be removed from namespaces
-      # as part of https://gitlab.com/gitlab-org/gitlab/-/work_items/592091
-      namespaces: %w[owner_id file_template_project_id custom_project_templates_group_id],
+      namespaces: %w[owner_id],
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id updated_by_id resolved_by_id discussion_id],
       notification_settings: %w[source_id],

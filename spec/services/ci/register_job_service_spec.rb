@@ -1086,6 +1086,27 @@ module Ci
           end
         end
 
+        context 'when the pipeline variables file is missing from storage' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
+          end
+
+          subject { build_on(project_runner) }
+
+          before do
+            artifact = create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+            artifact.file.remove!
+          end
+
+          it 'drops the build with pipeline_variables_file_missing' do
+            expect(subject).to be_nil
+
+            pending_job.reload
+            expect(pending_job).to be_failed
+            expect(pending_job).to be_pipeline_variables_file_missing
+          end
+        end
+
         context 'with a request timeout for job assignment phases' do
           let!(:pending_job) do
             create(:ci_build, :pending, :queued, pipeline: pipeline)

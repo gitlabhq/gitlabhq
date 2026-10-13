@@ -149,7 +149,6 @@
 - message: "PipelineUsageApp: error fetching subscriptionPermissions query."
   specs:
   - ee/spec/features/ci/ci_minutes_spec.rb
-  - ee/spec/features/profiles/usage_quotas/usage_quotas_spec.rb
 - message: "Error sending the query 'subscriptionPermissions' ServerParseError: Unexpected token '<', <!DOCTYPE ... is not valid JSON"
   specs:
   - spec/features/groups/usage_quotas/storage_tab_spec.rb

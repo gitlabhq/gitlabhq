@@ -1,6 +1,6 @@
 import { TableHeader } from '@tiptap/extension-table-header';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
-import { CellSelection } from '@tiptap/pm/tables';
+import { CellSelection, isInTable, selectionCell } from '@tiptap/pm/tables';
 import TableCellHeaderWrapper from '../components/wrappers/table_cell_header.vue';
 
 export default TableHeader.extend({
@@ -21,35 +21,36 @@ export default TableHeader.extend({
     return {
       ...this.parent?.(),
       alignColumn:
-        (pos, align) =>
-        ({ commands }) => {
-          commands.selectColumn(pos);
-          commands.updateAttributes('tableHeader', { align });
-          commands.updateAttributes('tableCell', { align });
-        },
-      alignColumnLeft:
-        (pos) =>
-        ({ commands }) =>
-          commands.alignColumn(pos, 'left'),
-      alignColumnCenter:
-        (pos) =>
-        ({ commands }) =>
-          commands.alignColumn(pos, 'center'),
-      alignColumnRight:
-        (pos) =>
-        ({ commands }) =>
-          commands.alignColumn(pos, 'right'),
-      selectColumn:
-        (pos) =>
-        ({ tr, dispatch }) => {
+        (align) =>
+        ({ state, tr, dispatch }) => {
+          if (!isInTable(state)) return false;
+
           if (dispatch) {
-            const position = tr.doc.resolve(pos);
-            const colSelection = CellSelection.colSelection(position);
-            tr.setSelection(colSelection);
+            const { selection } = state;
+            const columns =
+              selection instanceof CellSelection
+                ? CellSelection.colSelection(selection.$anchorCell, selection.$headCell)
+                : CellSelection.colSelection(selectionCell(state));
+
+            columns.forEachCell((cell, pos) => {
+              tr.setNodeMarkup(pos, undefined, { ...cell.attrs, align });
+            });
           }
 
           return true;
         },
+      alignColumnLeft:
+        () =>
+        ({ commands }) =>
+          commands.alignColumn('left'),
+      alignColumnCenter:
+        () =>
+        ({ commands }) =>
+          commands.alignColumn('center'),
+      alignColumnRight:
+        () =>
+        ({ commands }) =>
+          commands.alignColumn('right'),
     };
   },
 

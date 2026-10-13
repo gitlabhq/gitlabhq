@@ -26,7 +26,7 @@ RSpec.describe Git::TagHooksService, :service, feature_category: :source_code_ma
       expect_next_instance_of(SystemHooksService) do |system_hooks_service|
         expect(system_hooks_service)
           .to receive(:execute_hooks)
-          .with(push_data, :tag_push_hooks)
+          .with(push_data, :tag_push_hooks, organization: project.organization)
       end
 
       service.execute

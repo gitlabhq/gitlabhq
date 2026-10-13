@@ -10,6 +10,17 @@ RSpec.describe Achievements::CreateService, feature_category: :user_profile do
 
     subject(:response) { described_class.new(namespace: group, current_user: user, params: params).execute }
 
+    context 'when there is no user' do
+      let_it_be(:group) { create(:group) }
+      let(:user) { nil }
+
+      it 'returns an error' do
+        expect(response).to be_error
+        expect(response.message).to match_array(
+          ['You have insufficient permissions to create achievements for this namespace'])
+      end
+    end
+
     context 'when user does not have permission' do
       let_it_be(:group) { create(:group) }
 

@@ -82,14 +82,10 @@ columns:
   type: Nullable(Int64)
 - name: runners_token
   type: Nullable(String)
-- name: file_template_project_id
-  type: Nullable(Int64)
 - name: saml_discovery_token
   type: Nullable(String)
 - name: runners_token_encrypted
   type: Nullable(String)
-- name: custom_project_templates_group_id
-  type: Nullable(Int64)
 - name: auto_devops_enabled
   type: Nullable(Bool)
 - name: extra_shared_runners_minutes_limit

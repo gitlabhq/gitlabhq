@@ -10,6 +10,17 @@ RSpec.describe Achievements::UpdateService, feature_category: :user_profile do
 
     subject(:response) { described_class.new(user, group, params).execute }
 
+    context 'when there is no user' do
+      let_it_be(:group, freeze: false) { create(:group) }
+      let(:user) { nil }
+
+      it 'returns an error' do
+        expect(response).to be_error
+        expect(response.message).to match_array(
+          ['You have insufficient permission to update this achievement'])
+      end
+    end
+
     context 'when user does not have permission' do
       let_it_be(:group, freeze: false) { create(:group) }
       let_it_be(:achievement, freeze: false) { create(:achievement, namespace: group) }

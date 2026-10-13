@@ -5,7 +5,7 @@ require_migration!
 
 RSpec.describe RemoveMergeRequestEventFromDeveloperAiFlowTriggers,
   migration: :gitlab_main_org,
-  feature_category: :duo_agent_platform do
+  feature_category: :dap_triggers do
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

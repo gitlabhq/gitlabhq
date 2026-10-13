@@ -17,6 +17,16 @@ RSpec.describe Achievements::DestroyService, feature_category: :user_profile do
       group.add_maintainer(maintainer)
     end
 
+    context 'when there is no user' do
+      let(:current_user) { nil }
+
+      it 'returns an error' do
+        expect(response).to be_error
+        expect(response.message).to match_array(
+          ['You have insufficient permissions to delete this achievement'])
+      end
+    end
+
     context 'when user does not have permission' do
       let(:current_user) { developer }
 

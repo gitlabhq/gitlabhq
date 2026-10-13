@@ -22,6 +22,9 @@ the entire GitLab instance, not just individual projects.
 These hooks capture events such as user creation, project and
 group changes, and repository pushes from any project.
 
+A system hook belongs to an organization. It runs only for events
+that occur in that organization.
+
 ## Triggered events
 
 | Event type                                | Trigger |

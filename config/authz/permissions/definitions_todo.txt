@@ -316,7 +316,6 @@ manage_self_hosted_models_settings
 manage_trigger
 mark_issue_for_publication
 mark_note_as_internal
-measure_comment_temperature
 metrics_dashboard
 modify_approvers_rules
 modify_merge_request_author_setting

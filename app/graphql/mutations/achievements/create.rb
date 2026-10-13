@@ -28,7 +28,7 @@ module Mutations
         required: false,
         description: 'Description of or notes for the achievement.'
 
-      authorize :admin_achievement
+      authorize :create_achievement
 
       authorize_granular_token permissions: :create_achievement,
         boundary_argument: :namespace_id,

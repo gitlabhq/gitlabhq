@@ -153,6 +153,13 @@ SystemHooksService.new.execute_hooks_for(user, :create)
 
 You need to update `SystemHooksService` to have it build data for the resource.
 
+System hooks run only for events in their own organization. `execute_hooks_for` resolves the organization from the model.
+If you call `SystemHooksService#execute_hooks` directly, pass the `organization:` of the event:
+
+```ruby
+SystemHooksService.new.execute_hooks(payload, :member_approval_hooks, organization: project.organization)
+```
+
 ### Trigger with accurate payloads
 
 Webhook payloads must accurately represent the state of data at the time of the event.

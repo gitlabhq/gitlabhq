@@ -477,17 +477,6 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, :clean_git
         end
       end
 
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(rate_limit_job_retry: false)
-          stub_application_setting(job_retry_limit_per_user_project: 1)
-        end
-
-        it 'does not throttle' do
-          2.times { expect(retry_job.reason).not_to eq(:rate_limited) }
-        end
-      end
-
       context 'when the caller opts out with rate_limit: false' do
         before do
           stub_application_setting(job_retry_limit_per_user_project: 1)

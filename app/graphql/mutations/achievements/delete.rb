@@ -16,7 +16,7 @@ module Mutations
         required: true,
         description: 'Global ID of the achievement being deleted.'
 
-      authorize :admin_achievement
+      authorize :delete_achievement
 
       authorize_granular_token permissions: :delete_achievement,
         boundary_argument: :achievement_id,

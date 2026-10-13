@@ -34,30 +34,28 @@ describe 'update_issue' do
 end
 ```
 
-### Use table syntax for role-based checks
+### Role grants
 
-Use `where` table syntax to test each role explicitly. This makes it immediately
-clear which roles are expected to have access and which are not, and avoids
-repetitive `it` blocks.
+`ee/spec/lib/authz/role_definitions_spec.rb` checks that each role in `config/authz/roles/`
+gets exactly the permissions its YAML lists.
+Do not repeat this check role by role in policy specs.
+
+Instead, test what the policy adds:
+
+- Prevents, such as licenses, feature flags, settings, visibility, feature access levels,
+  archived projects, and admin mode.
+- Grants outside role YAML, such as custom roles and deploy tokens.
+
+Pair each prevent with one allowed example, so the test fails if no one holds the permission.
+
+### Delegating policies
+
+If a policy only delegates to another policy, check the delegation with `delegate_to`
+and test only the rules the policy adds.
 
 ```ruby
-describe 'read_vulnerability' do
-  where(:current_user, :allowed) do
-    ref(:guest)      | false
-    ref(:planner)    | false
-    ref(:reporter)   | false
-    ref(:developer)  | true
-    ref(:maintainer) | true
-    ref(:auditor)    | false
-    ref(:owner)      | true
-    ref(:admin)      | true
-  end
-end
+it { is_expected.to delegate_to(ProjectPolicy) }
 ```
-
-Always include every role in the table - do not omit roles that are expected
-to be disallowed. Explicit `false` values are as important as `true` values
-because they document the intended access boundary.
 
 ### Specify the subject in every block
 

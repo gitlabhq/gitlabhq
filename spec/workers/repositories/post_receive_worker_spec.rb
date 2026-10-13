@@ -100,6 +100,7 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
       it 'does not call any PushService but runs after project hooks' do
         expect(Git::ProcessRefChangesService).not_to receive(:new)
         expect_next(SystemHooksService).to receive(:execute_hooks)
+          .with(anything, :repository_update_hooks, organization: project.organization)
 
         perform(changes: "")
       end
@@ -306,10 +307,23 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
 
         it 'calls SystemHooksService' do
           expect_next(SystemHooksService)
-            .to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks)
+            .to receive(:execute_hooks)
+            .with(fake_hook_data, :repository_update_hooks, organization: project.organization)
             .and_return(true)
 
           perform
+        end
+
+        it 'only queues repository update system hooks of the project organization' do
+          hook = create(:system_hook, organization: project.organization)
+          other_hook = create(:system_hook, organization: create(:organization))
+          allow(WebHookWorker).to receive(:perform_async)
+          allow(Gitlab::FileHook).to receive(:execute_all_async)
+
+          perform
+
+          expect(WebHookWorker).to have_received(:perform_async).with(hook.id, anything, anything, anything)
+          expect(WebHookWorker).not_to have_received(:perform_async).with(other_hook.id, anything, anything, anything)
         end
 
         it_behaves_like 'internal event tracking' do

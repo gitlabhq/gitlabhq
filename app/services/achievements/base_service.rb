@@ -9,10 +9,6 @@ module Achievements
 
     private
 
-    def allowed?
-      current_user&.can?(:admin_achievement, @namespace)
-    end
-
     def error(message)
       ServiceResponse.error(message: Array(message))
     end

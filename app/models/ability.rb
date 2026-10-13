@@ -118,12 +118,6 @@ class Ability
       end
 
       result && with_composite_identity_check(user, ability, subject, **opts)
-
-    ensure
-      # TODO: replace with runner invalidation:
-      # See: https://gitlab.com/gitlab-org/declarative-policy/-/merge_requests/24
-      # See: https://gitlab.com/gitlab-org/declarative-policy/-/merge_requests/25
-      forget_runner_result(policy.runner(ability)) if policy && ability_forgetting?
     end
 
     # Hook call right before ability check.
@@ -147,27 +141,17 @@ class Ability
     # `admin_mode`)
     #
     # To deal with this we need to clear two elements of state: the offending
-    # conditions (selected by 'pattern') and the cached ability checks (cached
-    # on the `policy#runner(ability)`).
+    # conditions (selected by 'pattern') and the cached ability checks that
+    # used them, including abilities checked by other abilities through `can?`.
     #
-    # Clearing the conditions (see `forget_all_but`) is fairly robust, provided
-    # the pattern is not _under_-selective. Clearing the runners is harder,
-    # since there is not good way to know which abilities any given condition
-    # may affect. The approach taken here (see `forget_runner_result`) is to
-    # discard all runner results generated during a `forgetting` block. This may
-    # be _under_-selective if a runner prior to this block cached a state value
-    # that might now be invalid.
-    #
-    # TODO: add some kind of reverse-dependency mapping in DeclarativePolicy
-    # See: https://gitlab.com/gitlab-org/declarative-policy/-/issues/14
+    # `DeclarativePolicy.invalidate` does both. It deletes the conditions and
+    # discards the result of every cached ability check that read them. This
+    # relies on the pattern not being _under_-selective.
     def forgetting(pattern, &block)
-      was_forgetting = ability_forgetting?
-      ::Gitlab::SafeRequestStore[:ability_forgetting] = true
       keys_before = ::Gitlab::SafeRequestStore.storage.keys
 
       yield
     ensure
-      ::Gitlab::SafeRequestStore[:ability_forgetting] = was_forgetting
       forget_all_but(keys_before, matching: pattern)
     end
 
@@ -182,23 +166,15 @@ class Ability
       container.team.max_member_access_for_user_ids(users.map(&:id))
     end
 
-    def ability_forgetting?
-      ::Gitlab::SafeRequestStore[:ability_forgetting]
-    end
-
     def forget_all_but(keys_before, matching:)
-      keys_after = ::Gitlab::SafeRequestStore.storage.keys
+      storage = ::Gitlab::SafeRequestStore.storage
+      added_keys = storage.keys - keys_before
 
-      added_keys = keys_after - keys_before
-      added_keys.each do |key|
-        ::Gitlab::SafeRequestStore.delete(key) if key.is_a?(String) && key.start_with?('/dp') && key =~ matching
+      forgotten_keys = added_keys.select do |key|
+        key.is_a?(String) && key.start_with?('/dp') && key =~ matching
       end
-    end
 
-    def forget_runner_result(runner)
-      # TODO: add support in DP for this
-      # See: https://gitlab.com/gitlab-org/declarative-policy/-/issues/15
-      runner.instance_variable_set(:@state, nil)
+      DeclarativePolicy.invalidate(storage, forgotten_keys)
     end
 
     def apply_filters_if_needed(elements, user, filters)

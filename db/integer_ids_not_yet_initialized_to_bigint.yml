@@ -426,8 +426,6 @@ namespace_statistics:
 - id
 - namespace_id
 namespaces:
-- custom_project_templates_group_id
-- file_template_project_id
 - id
 - owner_id
 - parent_id

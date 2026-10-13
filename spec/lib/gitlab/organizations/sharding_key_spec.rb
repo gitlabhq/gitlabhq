@@ -15,6 +15,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     # push_rules' check_1d23f0a102 is validated on GitLab.com only
     # (https://gitlab.com/gitlab-org/gitlab/-/work_items/607950) and remains NOT VALID for self-managed
     # until https://gitlab.com/gitlab-org/gitlab/-/work_items/607955 (19.6, after required stop 19.5)
+    #
+    # merge_request_diff_commits is swapped to a non-nullable on GitLab.com only
+    # in db/post_migrate/20260824105520_swap_merge_request_diff_commits_table.rb
+    # https://gitlab.com/groups/gitlab-org/-/work_items/22634 will schedule this swap for self-managed.
     %w[
       web_hook_logs_daily.organization_id
       web_hook_logs_daily.group_id

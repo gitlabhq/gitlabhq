@@ -45,7 +45,13 @@ function pasteItems() {
   ];
 }
 
-function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, align = 'left' }) {
+function headerAlignments({ map, table, left, right }) {
+  return map
+    .cellsInRect({ left, right, top: 0, bottom: 1 })
+    .map((pos) => table.nodeAt(pos).attrs.align);
+}
+
+function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, aligns = ['left'] }) {
   const totalRows = selectedRect?.map.height;
   const totalCols = selectedRect?.map.width;
   const isTableBodyCell = cellType === TableCell.name;
@@ -59,9 +65,10 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, al
   const showDeleteColumnOption = totalCols > selectedCols;
 
   const isTableBodyHeader = cellType === TableHeader.name;
-  const showAlignLeftOption = isTableBodyHeader && (align === 'center' || align === 'right');
-  const showAlignCenterOption = isTableBodyHeader && align !== 'center';
-  const showAlignRightOption = isTableBodyHeader && align !== 'right';
+  const isAlignedEverywhere = (value) => aligns.every((align) => align === value);
+  const showAlignLeftOption = isTableBodyHeader && !isAlignedEverywhere('left');
+  const showAlignCenterOption = isTableBodyHeader && !isAlignedEverywhere('center');
+  const showAlignRightOption = isTableBodyHeader && !isAlignedEverywhere('right');
 
   return [
     {
@@ -148,7 +155,7 @@ export default {
           cellType: cell.type.name,
           rowspan: cell.attrs.rowspan,
           colspan: cell.attrs.colspan,
-          align: cell.attrs.align,
+          aligns: headerAlignments(this.selectedRect),
         });
       } catch (e) {
         // ignore error if the selection is not in a table
@@ -172,8 +179,7 @@ export default {
     },
 
     runCommand({ value: command }) {
-      const { state } = this.tiptapEditor;
-      this.tiptapEditor.chain()[command](selectionCell(state)).run();
+      this.tiptapEditor.chain().focus()[command]().run();
     },
   },
 };

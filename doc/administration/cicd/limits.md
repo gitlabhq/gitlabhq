@@ -478,11 +478,9 @@ To configure the per user and project limit:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627273) in GitLab 19.5 [with feature flags](../feature_flags/_index.md) named `rate_limit_job_retry` and `rate_limit_job_play`. Disabled by default.
+- Generally available in GitLab 19.6. Feature flags `rate_limit_job_retry` and `rate_limit_job_play` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261718).
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by feature flags. For more information, see the history.
 
 Retrying a job or running a manual job creates a new job and re-evaluates the pipeline,
 so repeated requests add up to significant load on your instance. You can limit how often

@@ -92,7 +92,7 @@ export default {
 
 <template>
   <panel-actions-portal>
-    <code-dropdown v-if="codeDropdownProps" v-bind="codeDropdownProps" />
+    <code-dropdown v-if="codeDropdownProps" v-bind="codeDropdownProps" size="small" />
     <gl-button
       v-if="canUpdate"
       v-gl-tooltip.bottom.html

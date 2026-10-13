@@ -10621,18 +10621,6 @@
               "deprecationReason": null
             },
             {
-              "name": "measureCommentTemperature",
-              "description": "Input for measure_comment_temperature AI action.",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "AiMeasureCommentTemperatureInput",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "generateDescription",
               "description": "Input for generate_description AI action.",
               "type": {
@@ -26633,49 +26621,6 @@
           ],
           "inputFields": null,
           "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "AiMeasureCommentTemperatureInput",
-          "description": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "resourceId",
-              "description": "Global ID of the resource to mutate.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "AiModelID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "content",
-              "description": "Content of the message.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -229874,12 +229819,6 @@
             {
               "name": "SECURITY_SCANS_API",
               "description": "Security scans api feature.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "MEASURE_COMMENT_TEMPERATURE",
-              "description": "Measure comment temperature feature.",
               "isDeprecated": false,
               "deprecationReason": null
             },

@@ -76,7 +76,7 @@ FactoryBot.define do
         metrics = merge_request.build_metrics
         metrics.merged_at = evaluator.merged_at || 1.week.from_now
         metrics.merged_by = evaluator.merged_by
-        metrics.pipeline = create(:ci_empty_pipeline)
+        metrics.pipeline = create(:ci_pipeline)
       end
     end
 

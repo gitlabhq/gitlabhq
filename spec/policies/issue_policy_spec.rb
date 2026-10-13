@@ -3,10 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe IssuePolicy, feature_category: :team_planning do
-  include_context 'ProjectPolicyTable context'
   include ExternalAuthorizationServiceHelpers
-  include ProjectHelpers
-  include UserHelpers
 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:admin) { create(:user, :admin) }
@@ -78,19 +75,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
   end
 
-  shared_examples 'grants the expected permissions' do |policy|
-    specify do
-      enable_admin_mode!(user) if admin_mode
-      update_feature_access_level(project, feature_access_level)
-
-      if expected_count == 1
-        expect(permissions(user, issue)).to be_allowed(policy)
-      else
-        expect(permissions(user, issue)).to be_disallowed(policy)
-      end
-    end
-  end
-
   context 'a private project' do
     let_it_be_with_reload(:project) { create(:project, :private) }
     let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
@@ -110,6 +94,8 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
       create(:project_group_link, group: group, project: project)
     end
+
+    it { expect(permissions(guest, issue)).to delegate_to(ProjectPolicy) }
 
     it 'allows guests to award emoji' do
       expect(permissions(guest, issue)).to be_allowed(:award_emoji)
@@ -903,36 +889,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
             expect_allowed(:read_crm_contacts, :set_issue_crm_contacts)
           end
         end
-      end
-    end
-  end
-
-  context 'when user is an inherited member from the group' do
-    let(:user) { create_user_from_membership(group, membership) }
-    let(:project) { create(:project, project_level, group: group) }
-    let(:issue) { create(:issue, project: project) }
-
-    context 'and policy allows guest access' do
-      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
-        permission_table_for_guest_feature_access
-      end
-
-      with_them do
-        it_behaves_like 'grants the expected permissions', :read_issue
-        it_behaves_like 'grants the expected permissions', :read_issue_iid
-      end
-    end
-
-    context 'and policy allows reporter access' do
-      where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
-        permission_table_for_reporter_issue_access
-      end
-
-      with_them do
-        it_behaves_like 'grants the expected permissions', :update_issue
-        it_behaves_like 'grants the expected permissions', :admin_issue
-        it_behaves_like 'grants the expected permissions', :set_issue_metadata
-        it_behaves_like 'grants the expected permissions', :set_confidentiality
       end
     end
   end

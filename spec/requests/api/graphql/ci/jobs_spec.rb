@@ -506,7 +506,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     let_it_be(:downstream_project) { create(:project, :public, :repository) }
     let_it_be(:manual_downstream_project) { create(:project, :public, :repository) }
 
-    # The pipeline jobs page fields that read CI-database associations.
+    # The pipeline jobs page fields that read CI-database associations, plus source.
     let(:query) do
       %(
         query {
@@ -519,6 +519,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
                   id refName refPath tags shortSha commitPath
                   stage { id name }
                   name duration finishedAt coverage retryable cancelable active stuck
+                  source
                 }
               }
             }
@@ -529,6 +530,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
 
     def create_page_jobs
       create(:ci_build, :success, :artifacts, pipeline: pipeline)
+      create(:ci_build_source, job: create(:ci_build, pipeline: pipeline), source: :scan_execution_policy)
       create(:ci_build, :manual, pipeline: pipeline, tag_list: %w[tag1 tag2])
       create(:generic_commit_status, pipeline: pipeline, ref: pipeline.ref)
       create(:ci_build, :running, :deploy_job, :with_deployment, pipeline: pipeline, environment: environment.name)
@@ -553,6 +555,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
 
       expect { post_graphql(query, current_user: maintainer) }.not_to exceed_query_limit(control)
       expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).size).to eq(pipeline.statuses.count)
+      expect(graphql_data_at(:project, :pipeline, :jobs, :nodes, :source)).to include('scan_execution_policy')
     end
 
     context 'with the policy-backed fields as well' do

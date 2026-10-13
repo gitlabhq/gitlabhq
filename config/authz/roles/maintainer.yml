@@ -216,7 +216,6 @@ group:
   - admin_pipeline
   - admin_push_rules
   - admin_security_attributes
-  - admin_security_testing
   - admin_timelog
   - admin_upload
   - admin_vulnerability
@@ -230,6 +229,7 @@ group:
   - change_reject_non_dco_commits
   - change_reject_unsigned_commits
   - configure_work_item_type
+  - create_achievement
   - create_ai_catalog_agent_item_consumer
   - create_ai_catalog_flow_item_consumer
   - create_ai_catalog_item_consumer
@@ -243,6 +243,7 @@ group:
   - create_subgroup
   - create_virtual_registry
   - create_work_item_type
+  - delete_achievement
   - delete_custom_emoji
   - delete_note
   - delete_security_scan_profiles
@@ -276,6 +277,7 @@ group:
   - read_work_item_setting
   - start_trial
   - transfer_projects
+  - update_achievement
   - update_ci_namespace_settings
   - update_cluster
   - update_note

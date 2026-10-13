@@ -19,7 +19,7 @@ module Achievements
     private
 
     def allowed?
-      current_user&.can?(:admin_achievement, achievement)
+      current_user&.can?(:delete_achievement, achievement)
     end
 
     def error_no_permissions

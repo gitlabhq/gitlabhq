@@ -315,6 +315,7 @@ for premium models with optimized integration:
 | `gpt-5-codex`                                                    | 3.3                   |
 | `claude-sonnet-5`                                                | 3.2                   |
 | `claude-sonnet-5.5`                                              | 3.2                   |
+| `gemini-4-argon`[^promotional-pricing-argon]                     | 2.86                  |
 | `gpt-6-sol`[^short-context-window]                               | 2.86                  |
 | `gpt-6.1-sol`[^short-context-window]                             | 2.86                  |
 | `gpt-5.2`                                                        | 2.5                   |
@@ -346,6 +347,8 @@ for premium models with optimized integration:
 
 [^promotional-pricing-through]: Promotional pricing through December 31, 2026.
     Afterwards, the rate changes to approximately 3.3 calls per credit.
+[^promotional-pricing-argon]: Promotional pricing for Gemini 4 Argon through November 30, 2026.
+    Afterwards, the rate changes to approximately 1.33 calls per credit.
 [^promotional-pricing-gpt]: Promotional pricing for GPT-5.6 Sol through November 21, 2026.
     Afterwards, the rates change to approximately 1.0 calls per credit
     for the short context window and 0.57 for the long context window.

@@ -3611,7 +3611,6 @@ Licensed features that can be checked for availability on a namespace or project
 | `LINKED_ITEMS_EPICS` | Linked items epics feature. |
 | `MAINTENANCE_MODE` | Maintenance mode feature. |
 | `MCP_SERVER` | Mcp server feature. |
-| `MEASURE_COMMENT_TEMPERATURE` | Measure comment temperature feature. |
 | `MEMBER_LOCK` | Member lock feature. |
 | `MERGE_PIPELINES` | Merge pipelines feature. |
 | `MERGE_REQUEST_APPROVERS` | Merge request approvers feature. |

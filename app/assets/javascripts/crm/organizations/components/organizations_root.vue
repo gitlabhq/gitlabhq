@@ -107,6 +107,7 @@ export default {
     fetchSortedData({ sortBy, sortDesc }) {
       const sortingColumn = convertToSnakeCase(sortBy).toUpperCase();
       const sortingDirection = sortDesc ? 'DESC' : 'ASC';
+      this.sortDesc = sortDesc;
       this.pagination = initialPaginationState;
       this.sort = `${sortingColumn}_${sortingDirection}`;
     },
@@ -218,7 +219,7 @@ export default {
           stacked="md"
           :tbody-tr-class="tbodyTrClass"
           sort-direction="asc"
-          :sort-desc.sync="sortDesc"
+          :sort-desc="sortDesc"
           sort-by="createdAt"
           show-empty
           no-local-sorting

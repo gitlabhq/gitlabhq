@@ -263,9 +263,9 @@ build-behind-proxy:
         --frontend dockerfile.v0 \
         --local context=. \
         --local dockerfile=. \
-        --build-arg http_proxy=$http_proxy \
-        --build-arg https_proxy=$https_proxy \
-        --build-arg no_proxy=$no_proxy \
+        --opt build-arg:http_proxy=$http_proxy \
+        --opt build-arg:https_proxy=$https_proxy \
+        --opt build-arg:no_proxy=$no_proxy \
         --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
 ```
 

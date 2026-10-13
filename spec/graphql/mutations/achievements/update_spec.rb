@@ -53,5 +53,5 @@ RSpec.describe Mutations::Achievements::Update, feature_category: :user_profile 
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_achievement) }
+  specify { expect(described_class).to require_graphql_authorizations(:update_achievement) }
 end

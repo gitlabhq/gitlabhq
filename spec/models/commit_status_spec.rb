@@ -946,6 +946,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
         :archived_failure | false
         :scheduler_failure | false
         :data_integrity_failure | false
+        :pipeline_variables_file_missing | false
         :unknown_failure | true
         :api_failure | true
         :stuck_or_timeout_failure | true

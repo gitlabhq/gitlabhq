@@ -1,5 +1,5 @@
 import { GlLoadingIcon, GlTable } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -139,6 +139,16 @@ describe('Customer relations contacts root app', () => {
       await waitForPromises();
 
       expect(findTable().props('showErrorMsg')).toBe(false);
+    });
+  });
+
+  describe('sorting', () => {
+    it('passes the new sort direction back to the table', async () => {
+      mountComponent();
+      findGlTable().vm.$emit('sort-changed', { sortBy: 'createdAt', sortDesc: true });
+      await nextTick();
+
+      expect(findGlTable().props('sortDesc')).toBe(true);
     });
   });
 

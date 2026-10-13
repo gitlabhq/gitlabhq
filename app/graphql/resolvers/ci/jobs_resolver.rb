@@ -121,6 +121,7 @@ module Resolvers
           ref_path: [:project],
           retryable: [:job_definition],
           retry_path: [:project, :job_definition],
+          source: [:job_source],
           stuck: [:project],
           tags: [:job_definition],
           web_path: [:project],

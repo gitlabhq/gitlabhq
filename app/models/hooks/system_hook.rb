@@ -30,6 +30,8 @@ class SystemHook < WebHook
   validates :url, system_hook_url: true, unless: ->(hook) { hook.url_variables? }
   validates :organization_id, presence: true
 
+  scope :for_organization, ->(organization) { where(organization: organization) }
+
   # Allow urls pointing localhost and the local network
   def allow_local_requests?
     Gitlab::CurrentSettings.allow_local_requests_from_system_hooks?

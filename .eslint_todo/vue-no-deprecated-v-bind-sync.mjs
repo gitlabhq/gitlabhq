@@ -4,8 +4,6 @@
 export default {
   files: [
     'app/assets/javascripts/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue',
-    'app/assets/javascripts/crm/contacts/components/contacts_root.vue',
-    'app/assets/javascripts/crm/organizations/components/organizations_root.vue',
     'app/assets/javascripts/incidents/components/incidents_list.vue',
     'ee/app/assets/javascripts/analytics/contribution_analytics/components/group_members_table.vue',
     'ee/app/assets/javascripts/analytics/dashboards/dora_projects_comparison/components/comparison_table.vue',

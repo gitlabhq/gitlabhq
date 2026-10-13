@@ -3622,7 +3622,6 @@ Arguments:
 | <a id="mutation-aiaction-explainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | <a id="mutation-aiaction-generatecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutation-aiaction-generatedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
-| <a id="mutation-aiaction-measurecommenttemperature"></a>`measureCommentTemperature` | [`AiMeasureCommentTemperatureInput`](#aimeasurecommenttemperatureinput) | Input for measure_comment_temperature AI action. |
 | <a id="mutation-aiaction-platformorigin"></a>`platformOrigin` | [`String`](#string) | Specifies the origin platform of the request. |
 | <a id="mutation-aiaction-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutation-aiaction-resolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
@@ -73127,7 +73126,6 @@ Licensed features that can be checked for availability on a namespace or project
 | <a id="licensedfeature-linked_items_epics"></a>`LINKED_ITEMS_EPICS` | Linked items epics feature. |
 | <a id="licensedfeature-maintenance_mode"></a>`MAINTENANCE_MODE` | Maintenance mode feature. |
 | <a id="licensedfeature-mcp_server"></a>`MCP_SERVER` | Mcp server feature. |
-| <a id="licensedfeature-measure_comment_temperature"></a>`MEASURE_COMMENT_TEMPERATURE` | Measure comment temperature feature. |
 | <a id="licensedfeature-member_lock"></a>`MEMBER_LOCK` | Member lock feature. |
 | <a id="licensedfeature-merge_pipelines"></a>`MERGE_PIPELINES` | Merge pipelines feature. |
 | <a id="licensedfeature-merge_request_approvers"></a>`MERGE_REQUEST_APPROVERS` | Merge request approvers feature. |
@@ -80239,15 +80237,6 @@ Arguments:
 | <a id="aigovernancesessionnegatedfilterinput-flowtype"></a>`flowType` | [`String`](#string) | Exclude sessions with the flow type. |
 | <a id="aigovernancesessionnegatedfilterinput-projectpath"></a>`projectPath` | [`String`](#string) | Exclude sessions belonging to the project full path. |
 | <a id="aigovernancesessionnegatedfilterinput-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Exclude sessions triggered by the user with the given global ID. |
-
-### `AiMeasureCommentTemperatureInput`
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimeasurecommenttemperatureinput-content"></a>`content` | [`String!`](#string) | Content of the message. |
-| <a id="aimeasurecommenttemperatureinput-resourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiResolveVulnerabilityInput`
 

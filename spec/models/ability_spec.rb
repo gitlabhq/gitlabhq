@@ -682,5 +682,28 @@ RSpec.describe Ability, feature_category: :system_access do
           .to change { check_ability }.from(false).to(true)
       end
     end
+
+    context 'when an ability checked inside the block checks an admin-only ability' do
+      let(:user) { build_stubbed(:admin) }
+      let(:thing) { ForgettingTestThing.new(1) }
+
+      before do
+        stub_const('ForgettingTestThing', Struct.new(:id))
+        stub_const('ForgettingTestThingPolicy', Class.new(BasePolicy) do
+          # `&` keeps the `can?` from being inlined, so it is checked separately
+          rule { can?(:admin_all_resources) & default }.enable :manage_thing
+        end)
+      end
+
+      it 'discards the result of the inner check too' do
+        inside = described_class.forgetting(/admin/) { described_class.allowed?(user, :manage_thing, thing) }
+        expect(inside).to be(false)
+
+        Gitlab::Auth::CurrentUserMode.bypass_session!(user.id)
+
+        expect(described_class.allowed?(user, :admin_all_resources, thing)).to be(true)
+        expect(described_class.allowed?(user, :manage_thing, thing)).to be(true)
+      end
+    end
   end
 end

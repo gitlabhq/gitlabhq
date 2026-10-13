@@ -29,8 +29,6 @@ module Ci
 
     # Shares the play buckets with builds: a played trigger job creates a downstream pipeline.
     def rate_limited_response(bridge)
-      return unless Feature.enabled?(:rate_limit_job_play, project)
-
       job_rate_limited_response(
         bridge, key: :job_play, per_project_key: :job_play_per_project, log_message: 'Job play rate limit exceeded'
       )

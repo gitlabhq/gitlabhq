@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillAiFlowSchedulesPlanLimit, migration: :gitlab_main, feature_category: :code_suggestions do
+RSpec.describe BackfillAiFlowSchedulesPlanLimit, migration: :gitlab_main, feature_category: :dap_triggers do
   let(:plans) { table(:plans) }
   let(:plan_limits) { table(:plan_limits) }
 

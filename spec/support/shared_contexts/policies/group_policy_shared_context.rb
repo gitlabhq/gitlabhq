@@ -131,12 +131,15 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_push_rules
         admin_upload
         award_achievement
+        create_achievement
         create_cluster
         create_projects
+        delete_achievement
         destroy_package
         destroy_upload
         read_group_all_available_runners
         read_runners
+        update_achievement
         update_cluster
       ]
     ).uniq

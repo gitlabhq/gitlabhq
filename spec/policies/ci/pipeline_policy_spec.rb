@@ -11,6 +11,8 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
     described_class.new(user, pipeline)
   end
 
+  it { is_expected.to delegate_to(ProjectPolicy) }
+
   describe 'rules for protected ref' do
     context 'when no one can push or merge to the branch' do
       let_it_be(:protected_branch) do
@@ -159,30 +161,6 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
     it { is_expected.not_to be_allowed(:read_pipeline) }
   end
 
-  describe 'destroy_pipeline' do
-    context 'when user has owner access' do
-      let_it_be(:user) { project.first_owner }
-
-      it { is_expected.to be_allowed(:destroy_pipeline) }
-    end
-
-    context 'when user is not owner' do
-      it { is_expected.not_to be_allowed(:destroy_pipeline) }
-    end
-
-    context 'when the user is an instance administrator' do
-      let_it_be(:user) { create(:admin) }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:destroy_pipeline) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.not_to be_allowed(:destroy_pipeline) }
-      end
-    end
-  end
-
   describe 'read_pipeline_variable' do
     context 'when user has owner access' do
       let_it_be(:user) { project.first_owner }
@@ -259,14 +237,14 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
     context 'when user has read_pipeline ability' do
-      let_it_be(:project) { create(:project, :private, :repository, guests: user) }
+      let_it_be(:project) { create(:project, :private, guests: user) }
 
       it { is_expected.to be_allowed(:read_pipeline) }
       it { is_expected.to be_allowed(:read_pipeline_metadata) }
     end
 
     context 'when user does not have read_pipeline ability' do
-      let_it_be(:project) { create(:project, :private, :repository) }
+      let_it_be(:project) { create(:project, :private) }
 
       it { is_expected.to be_disallowed(:read_pipeline) }
       it { is_expected.to be_disallowed(:read_pipeline_metadata) }

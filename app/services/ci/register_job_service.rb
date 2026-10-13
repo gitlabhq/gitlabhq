@@ -491,12 +491,14 @@ module Ci
       track_exception_for_build(ex, build)
     end
 
-    # Hook for EE: map an exception raised while assigning or presenting a
-    # build to a specific failure_reason, when it represents an expected,
-    # already-logged denial rather than a bug. `nil` means unknown, so the
-    # generic scheduler_failure handling above (which also reports to
-    # Sentry) applies. See EE::Ci::RegisterJobService.
-    def known_exception_failure_reason(_exception)
+    # Maps an exception raised while assigning or presenting a build to a
+    # specific failure_reason, when it represents an expected, already-logged
+    # failure rather than a bug. `nil` means unknown, so the generic
+    # scheduler_failure handling above (which also reports to Sentry) applies.
+    # EE extends it, see EE::Ci::RegisterJobService.
+    def known_exception_failure_reason(exception)
+      return :pipeline_variables_file_missing if exception.is_a?(::Ci::Pipeline::VariablesFileMissingError)
+
       nil
     end
 

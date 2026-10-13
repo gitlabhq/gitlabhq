@@ -187,7 +187,9 @@ module Repositories
 
     def after_project_changes_hooks(project, user, refs, changes)
       repository_update_hook_data = Gitlab::DataBuilder::Repository.update(project, user, changes, refs)
-      SystemHooksService.new.execute_hooks(repository_update_hook_data, :repository_update_hooks)
+      SystemHooksService.new.execute_hooks(
+        repository_update_hook_data, :repository_update_hooks, organization: project.organization
+      )
       Gitlab::InternalEvents.track_event('source_code_pushed', project: project, user: user)
     end
 

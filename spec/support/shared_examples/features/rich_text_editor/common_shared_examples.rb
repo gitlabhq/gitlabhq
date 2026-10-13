@@ -256,4 +256,29 @@ lists with text or multiple items) are not supported in Markdown and will be con
 </table>'
     end
   end
+
+  describe 'aligning a table column from the cell menu', feature_category: :markdown do
+    it 'aligns the whole column and keeps the cursor in the cell' do
+      switch_to_content_editor
+
+      click_on 'Insert table'
+      click_on 'Insert a 2×2 table'
+
+      type_in_content_editor 'Item'
+      type_in_content_editor :tab
+      type_in_content_editor 'Quantity'
+
+      click_button 'Select action'
+      click_button 'Align column center'
+
+      within(content_editor_testid) do
+        expect(page).to have_css("th[align='center']", count: 1)
+        expect(page).to have_css("td[align='center']", count: 1)
+      end
+
+      type_in_content_editor ' (kg)'
+
+      wait_until_hidden_field_is_updated(/\| Item \| Quantity \(kg\) \|\n\|-+\|:-+:\|/)
+    end
+  end
 end

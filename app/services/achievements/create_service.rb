@@ -14,6 +14,10 @@ module Achievements
 
     private
 
+    def allowed?
+      current_user&.can?(:create_achievement, @namespace)
+    end
+
     def error_no_permissions
       error('You have insufficient permissions to create achievements for this namespace')
     end

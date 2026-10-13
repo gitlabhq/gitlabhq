@@ -336,7 +336,6 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `explainVulnerability` | [`AiExplainVulnerabilityInput`](input_objects.md#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | `generateCommitMessage` | [`AiGenerateCommitMessageInput`](input_objects.md#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | `generateDescription` | [`AiGenerateDescriptionInput`](input_objects.md#aigeneratedescriptioninput) | Input for generate_description AI action. |
-| `measureCommentTemperature` | [`AiMeasureCommentTemperatureInput`](input_objects.md#aimeasurecommenttemperatureinput) | Input for measure_comment_temperature AI action. |
 | `platformOrigin` | [`String`](scalars.md#string) | Specifies the origin platform of the request. |
 | `projectId` | [`ProjectID`](scalars.md#projectid) | Global ID of the project the user is acting on. |
 | `resolveVulnerability` | [`AiResolveVulnerabilityInput`](input_objects.md#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |

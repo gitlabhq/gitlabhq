@@ -2370,7 +2370,7 @@ class Project < ApplicationRecord
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
       triggered_hooks(hooks_scope, data).execute
-      SystemHooksService.new.execute_hooks(data, hooks_scope)
+      SystemHooksService.new.execute_hooks(data, hooks_scope, organization: organization)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -2408,7 +2408,7 @@ class Project < ApplicationRecord
     return @has_active_hooks[hooks_scope] if @has_active_hooks.key?(hooks_scope)
 
     @has_active_hooks[hooks_scope] = hooks.hooks_for(hooks_scope).any? ||
-      SystemHook.hooks_for(hooks_scope).any? ||
+      SystemHook.for_organization(organization).hooks_for(hooks_scope).any? ||
       Gitlab::FileHook.any?
   end
 

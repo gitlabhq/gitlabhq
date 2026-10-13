@@ -39,7 +39,6 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     before do
-      stub_feature_flags(comment_temperature: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
       sign_in(user)
       visit work_items_path

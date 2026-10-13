@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
-import { CellSelection } from '@tiptap/pm/tables';
+import { CellSelection, cellAround } from '@tiptap/pm/tables';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import TableBubbleMenu from '~/content_editor/components/bubble_menus/table_bubble_menu.vue';
@@ -44,9 +44,38 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
     return cellPos;
   }
 
+  function tableAlignments() {
+    const rows = [];
+
+    tiptapEditor.state.doc.descendants((node) => {
+      if (node.type.name === 'tableRow') {
+        const row = [];
+        node.forEach((cell) => row.push(cell.attrs.align));
+        rows.push(row);
+      }
+
+      return true;
+    });
+
+    return rows;
+  }
+
+  function cellPositionContaining(text) {
+    const textPos = selectCellContaining(text);
+
+    return cellAround(tiptapEditor.state.doc.resolve(textPos)).pos;
+  }
+
+  function selectCellsBetween(anchorText, headText) {
+    const anchor = cellPositionContaining(anchorText);
+    const head = cellPositionContaining(headText);
+    const { tr } = tiptapEditor.state;
+
+    tiptapEditor.view.dispatch(tr.setSelection(CellSelection.create(tr.doc, anchor, head)));
+  }
+
   function selectColumnContaining(text) {
-    const pos = selectCellContaining(text);
-    const resolved = tiptapEditor.state.doc.resolve(pos - 2);
+    const resolved = tiptapEditor.state.doc.resolve(cellPositionContaining(text));
     const { tr } = tiptapEditor.state;
 
     tiptapEditor.view.dispatch(tr.setSelection(CellSelection.colSelection(resolved)));
@@ -179,8 +208,8 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
           }
         });
 
-        it(`executes a command to run action ${action}`, async () => {
-          commands = mockChainedCommands(tiptapEditor, [action, 'run']);
+        it(`returns focus to the editor and runs ${action}`, async () => {
+          commands = mockChainedCommands(tiptapEditor, ['focus', action, 'run']);
 
           for (const text of cells) {
             selectCellContaining(text);
@@ -189,6 +218,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
             // eslint-disable-next-line no-await-in-loop
             await wrapper.findByRole('button', { name: label }).trigger('click');
 
+            expect(commands.focus).toHaveBeenCalled();
             expect(commands[action]).toHaveBeenCalled();
           }
         });
@@ -258,7 +288,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
       });
 
       it('executes a command to insert row above', async () => {
-        commands = mockChainedCommands(tiptapEditor, ['addRowBefore', 'run']);
+        commands = mockChainedCommands(tiptapEditor, ['focus', 'addRowBefore', 'run']);
 
         selectCellContaining('Row 1 Cell 1');
         await showBubbleMenu();
@@ -291,14 +321,21 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
         expect(wrapper.text()).toContain('Align column left');
       });
 
-      it('executes a command to align column left', async () => {
-        commands = mockChainedCommands(tiptapEditor, ['alignColumnLeft', 'run']);
-
-        selectCellContaining('Header 2');
+      it('aligns the column left and keeps the cursor in the cell', async () => {
+        const cursor = selectCellContaining('Header 2');
         await showBubbleMenu();
         await wrapper.findByRole('button', { name: 'Align column left' }).trigger('click');
 
-        expect(commands.alignColumnLeft).toHaveBeenCalled();
+        expect(tableAlignments()).toEqual([
+          ['left', 'left', 'right'],
+          ['left', 'left', 'left'],
+          ['left', 'left', 'left'],
+        ]);
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({
+          type: 'text',
+          anchor: cursor,
+          head: cursor,
+        });
       });
     });
 
@@ -325,14 +362,21 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
         expect(wrapper.text()).toContain('Align column center');
       });
 
-      it('executes a command to align column center', async () => {
-        commands = mockChainedCommands(tiptapEditor, ['alignColumnCenter', 'run']);
-
-        selectCellContaining('Header 1');
+      it('aligns the column center and keeps the cursor in the cell', async () => {
+        const cursor = selectCellContaining('Header 1');
         await showBubbleMenu();
         await wrapper.findByRole('button', { name: 'Align column center' }).trigger('click');
 
-        expect(commands.alignColumnCenter).toHaveBeenCalled();
+        expect(tableAlignments()).toEqual([
+          ['center', 'center', 'right'],
+          ['center', 'left', 'left'],
+          ['center', 'left', 'left'],
+        ]);
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({
+          type: 'text',
+          anchor: cursor,
+          head: cursor,
+        });
       });
     });
 
@@ -359,15 +403,53 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
         expect(wrapper.text()).toContain('Align column right');
       });
 
-      it('executes a command to align column right', async () => {
-        commands = mockChainedCommands(tiptapEditor, ['alignColumnRight', 'run']);
-
-        selectCellContaining('Header 1');
+      it('aligns the column right and keeps the cursor in the cell', async () => {
+        const cursor = selectCellContaining('Header 1');
         await showBubbleMenu();
         await wrapper.findByRole('button', { name: 'Align column right' }).trigger('click');
 
-        expect(commands.alignColumnRight).toHaveBeenCalled();
+        expect(tableAlignments()).toEqual([
+          ['right', 'center', 'right'],
+          ['right', 'left', 'left'],
+          ['right', 'left', 'left'],
+        ]);
+        expect(tiptapEditor.state.selection.toJSON()).toEqual({
+          type: 'text',
+          anchor: cursor,
+          head: cursor,
+        });
       });
+    });
+
+    describe('align actions on a selection spanning several columns', () => {
+      it('offers every alignment the selected columns do not all share', async () => {
+        selectCellsBetween('Header 1', 'Header 2');
+        await showBubbleMenu();
+
+        expect(wrapper.text()).toContain('Align column left');
+        expect(wrapper.text()).toContain('Align column center');
+        expect(wrapper.text()).toContain('Align column right');
+      });
+
+      it.each`
+        anchor        | head          | action                   | expected
+        ${'Header 1'} | ${'Header 2'} | ${'Align column center'} | ${['center', 'center', 'right']}
+        ${'Header 3'} | ${'Header 2'} | ${'Align column left'}   | ${['left', 'left', 'left']}
+      `(
+        '$action aligns every column from "$anchor" to "$head" and keeps the selection',
+        async ({ anchor, head, action, expected }) => {
+          selectCellsBetween(anchor, head);
+          const selection = tiptapEditor.state.selection.toJSON();
+          await showBubbleMenu();
+          await wrapper.findByRole('button', { name: action }).trigger('click');
+
+          expect(tableAlignments()[0]).toEqual(expected);
+          expect(tiptapEditor.state.selection.toJSON()).toEqual(selection);
+
+          await showBubbleMenu();
+          expect(wrapper.text()).not.toContain(action);
+        },
+      );
     });
 
     describe('action: Delete row', () => {
@@ -402,7 +484,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
       });
 
       it('executes a command to delete row', async () => {
-        commands = mockChainedCommands(tiptapEditor, ['deleteRow', 'run']);
+        commands = mockChainedCommands(tiptapEditor, ['focus', 'deleteRow', 'run']);
 
         selectCellContaining('Row 1 Cell 1');
         await showBubbleMenu();
@@ -443,7 +525,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
       });
 
       it('executes a command to delete column', async () => {
-        commands = mockChainedCommands(tiptapEditor, ['deleteColumn', 'run']);
+        commands = mockChainedCommands(tiptapEditor, ['focus', 'deleteColumn', 'run']);
 
         selectCellContaining('Row 1 Cell 1');
         await showBubbleMenu();
@@ -523,7 +605,7 @@ describe('content_editor/components/bubble_menus/table_bubble_menu', () => {
           </table>
         `);
 
-        commands = mockChainedCommands(tiptapEditor, ['mergeCells', 'run']);
+        commands = mockChainedCommands(tiptapEditor, ['focus', 'mergeCells', 'run']);
 
         selectColumnContaining('Cell 3');
         await showBubbleMenu();
