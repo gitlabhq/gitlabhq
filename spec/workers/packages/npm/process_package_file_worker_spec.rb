@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Npm::ProcessPackageFileWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Npm::ProcessPackageFileWorker, feature_category: :package_registry do
   let_it_be(:package_file) { create(:package_file, :npm) }
 
   describe '#perform' do

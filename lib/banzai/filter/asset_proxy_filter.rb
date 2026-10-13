@@ -22,8 +22,6 @@ module Banzai
         return doc unless asset_proxy_enabled?
 
         doc.search('img').each do |element|
-          next if element.classes.include?('js-render-iframe')
-
           original_src = element['src']
           next unless original_src
 

@@ -76,17 +76,8 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
               source_project: project, target_project: project)
           end
 
-          it 'displays the "Run pipeline" button' do
-            visit project_merge_request_path(project, merge_request)
-
-            page.within('.merge-request-tabs') do
-              click_link('Pipelines')
-            end
-
-            expect(page).to have_testid('run-mr-pipeline-button', text: 'Run pipeline')
-          end
-
-          it 'increments the pipelines tab badge count without a page reload', :sidekiq_inline, :aggregate_failures do
+          it 'displays the "Run pipeline" button and increments the pipelines tab badge count without a page reload',
+            :sidekiq_inline, :aggregate_failures do
             stub_ci_pipeline_yaml_file(
               YAML.dump({ test: { script: 'test', rules: [{ if: '$CI_MERGE_REQUEST_ID' }] } })
             )
@@ -102,6 +93,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
             end
 
             within('.merge-request-tabs') { expect(page).to have_link('Pipelines 2') }
+            expect(page).to have_testid('run-mr-pipeline-button', text: 'Run pipeline')
 
             click_button 'Run pipeline'
 
@@ -183,8 +175,13 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
             create(:ci_build, :failed, :retried, name: 'old-failed-job', stage: 'test', pipeline: pipeline)
           end
 
-          it 'shows the failed jobs count and job details, excluding retried jobs', :aggregate_failures do
+          it 'shows the failed jobs, excluding retried jobs, and refreshes the count and pipeline row on retry',
+            :aggregate_failures do
             visit_pipelines_tab
+
+            within_testid('pipeline-table-row', match: :first) do
+              expect(page).to have_testid('ci-icon', text: 'Failed')
+            end
 
             within_testid('failed-jobs-card') do
               expect(page).to have_testid('crud-count', text: '2', exact_text: true)
@@ -199,16 +196,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
               expect(page).to have_testid('job-id-link', text: "##{failed_job.id}")
               expect(page).to have_no_content('old-failed-job')
             end
-          end
 
-          it 'retries a failed job from the widget and refreshes the count and pipeline row', :aggregate_failures do
-            visit_pipelines_tab
-
-            within_testid('pipeline-table-row', match: :first) do
-              expect(page).to have_testid('ci-icon', text: 'Failed')
-            end
-
-            expand_failed_jobs_widget
             retry_job('failed-job-1')
 
             expect(page).to have_content('failed-job-1 job is being retried')
@@ -269,14 +257,9 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
           visit project_merge_request_path(project, merge_request)
         end
 
-        it 'user visits merge request page' do
+        it 'shows the Pipelines tab and its empty state with run pipeline button' do
           page.within('.merge-request-tabs') do
             expect(page).to have_link('Pipelines')
-          end
-        end
-
-        it 'shows empty state with run pipeline button' do
-          page.within('.merge-request-tabs') do
             click_link('Pipelines')
           end
 
@@ -422,44 +405,49 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
         end
       end
     end
+  end
 
-    describe 'race condition' do
-      let(:project) { create(:project, :repository) }
-      let(:user) { create(:user) }
-      let(:build_push_data) { { ref: 'feature', checkout_sha: TestEnv::BRANCH_SHA['feature'] } }
+  describe 'race condition' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+    let(:build_push_data) { { ref: 'feature', checkout_sha: TestEnv::BRANCH_SHA['feature'] } }
 
-      let(:merge_request_params) do
-        { "source_branch" => "feature", "source_project_id" => project.id,
-          "target_branch" => "master", "target_project_id" => project.id, "title" => "A" }
+    let(:merge_request_params) do
+      { "source_branch" => "feature", "source_project_id" => project.id,
+        "target_branch" => "master", "target_project_id" => project.id, "title" => "A" }
+    end
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    context 'when pipeline and merge request were created simultaneously', :delete do
+      before do
+        stub_ci_pipeline_to_return_yaml_file
+
+        threads = []
+
+        threads << Thread.new do
+          Sidekiq::Worker.skipping_transaction_check do
+            @merge_request = MergeRequests::CreateService.new(project: project, current_user: user, params: merge_request_params).execute
+          end
+        end
+
+        threads << Thread.new do
+          Sidekiq::Worker.skipping_transaction_check do
+            @pipeline = Ci::CreatePipelineService.new(project, user, build_push_data).execute(:push).payload
+          end
+        end
+
+        threads.each { |thr| thr.join }
       end
 
-      context 'when pipeline and merge request were created simultaneously', :delete do
-        before do
-          stub_ci_pipeline_to_return_yaml_file
+      it 'user sees pipeline in merge request widget', :sidekiq_might_not_need_inline do
+        visit project_merge_request_path(project, @merge_request)
 
-          threads = []
-
-          threads << Thread.new do
-            Sidekiq::Worker.skipping_transaction_check do
-              @merge_request = MergeRequests::CreateService.new(project: project, current_user: user, params: merge_request_params).execute
-            end
-          end
-
-          threads << Thread.new do
-            Sidekiq::Worker.skipping_transaction_check do
-              @pipeline = Ci::CreatePipelineService.new(project, user, build_push_data).execute(:push).payload
-            end
-          end
-
-          threads.each { |thr| thr.join }
-        end
-
-        it 'user sees pipeline in merge request widget', :sidekiq_might_not_need_inline do
-          visit project_merge_request_path(project, @merge_request)
-
-          expect(page.find(".ci-widget")).to have_content(TestEnv::BRANCH_SHA['feature'])
-          expect(page.find(".ci-widget")).to have_content("##{@pipeline.id}")
-        end
+        expect(page.find(".ci-widget")).to have_content(TestEnv::BRANCH_SHA['feature'])
+        expect(page.find(".ci-widget")).to have_content("##{@pipeline.id}")
       end
     end
   end

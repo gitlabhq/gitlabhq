@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ConfirmationsController, :with_current_organization, type: :request, feature_category: :system_access do
+RSpec.describe ConfirmationsController, :with_current_organization, feature_category: :system_access do
   describe '#show' do
     let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
     let(:expected_context) do

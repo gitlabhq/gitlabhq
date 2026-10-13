@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PasswordsController, :with_current_organization, type: :request, feature_category: :system_access do
+RSpec.describe PasswordsController, :with_current_organization, feature_category: :system_access do
   describe '#edit' do
     let_it_be_with_reload(:user) { create(:user) }
     let(:reset_password_token) { user.send_reset_password_instructions }

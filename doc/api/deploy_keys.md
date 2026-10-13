@@ -23,7 +23,7 @@ see [get user by deploy key fingerprint](keys.md#retrieve-user-by-deploy-key-fin
 The following attributes contain the deploy key fingerprint:
 
 - `fingerprint`: Uses an MD5 hash. Not available on FIPS-enabled systems.
-- `fingerprint_sha256`: Uses a SHA256 hash.
+- `fingerprint_sha256`: Uses a SHA256 hash. Returned without the `SHA256:` prefix. To look up a key by this fingerprint with the keys API, add the prefix.
 
 ## List all deploy keys
 
@@ -63,10 +63,12 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
+    "usage_type": "auth_and_signing",
     "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-    "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
+    "fingerprint_sha256": "Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
     "created_at": "2013-10-02T10:12:29Z",
     "expires_at": null,
+    "last_used_at": "2024-10-03T01:32:21.992Z",
     "projects_with_write_access": [
       {
         "id": 73,
@@ -93,10 +95,12 @@ Example response:
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ==",
+    "usage_type": "auth_and_signing",
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
-    "": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
+    "fingerprint_sha256": "lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
     "expires_at": null,
+    "last_used_at": "2024-10-03T01:32:21.992Z",
     "projects_with_write_access": [],
     "projects_with_readonly_access": [
       {
@@ -161,10 +165,11 @@ Example response:
   "title": "My deploy key",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
   "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-  "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
+  "fingerprint_sha256": "Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
   "usage_type": "auth_and_signing",
   "created_at": "2024-10-03T01:32:21.992Z",
-  "expires_at": "2024-12-31T08:00:00.000Z"
+  "expires_at": "2024-12-31T08:00:00.000Z",
+  "last_used_at": null
 }
 ```
 
@@ -194,20 +199,24 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
+    "usage_type": "auth_and_signing",
     "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-    "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
+    "fingerprint_sha256": "Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
     "created_at": "2013-10-02T10:12:29Z",
     "expires_at": null,
+    "last_used_at": "2024-10-03T01:32:21.992Z",
     "can_push": false
   },
   {
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ==",
+    "usage_type": "auth_and_signing",
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
-    "": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
+    "fingerprint_sha256": "lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
     "expires_at": null,
+    "last_used_at": "2024-10-03T01:32:21.992Z",
     "can_push": false
   }
 ]
@@ -227,29 +236,6 @@ Parameters:
 |------------------- |--------|----------|------------------------------------------------------------------- |
 | `id_or_username`   | string | yes      | The ID or username of the user to get the project deploy keys for. |
 
-```json
-[
-  {
-    "id": 1,
-    "title": "Key A",
-    "created_at": "2022-05-30T12:28:27.855Z",
-    "expires_at": null,
-    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkYXU2fVeO4/0rDCSsswP5iIX2+B6tv15YT3KObgyDl Key",
-    "fingerprint": "40:8e:fa:df:70:f7:a7:06:1e:0d:6f:ae:f2:27:92:01",
-    "fingerprint_sha256": "SHA256:Ojq2LZW43BFK/AMP81jBkDGn9YpPWYRNcViKBB44LPU"
-  },
-  {
-    "id": 2,
-    "title": "Key B",
-    "created_at": "2022-05-30T13:34:56.219Z",
-    "expires_at": null,
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
-    "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-    "": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU"
-  }
-]
-```
-
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -265,9 +251,11 @@ Example response:
     "title": "Key A",
     "created_at": "2022-05-30T12:28:27.855Z",
     "expires_at": "2022-10-30T12:28:27.855Z",
+    "last_used_at": "2022-10-03T01:32:21.992Z",
     "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkYXU2fVeO4/0rDCSsswP5iIX2+B6tv15YT3KObgyDl Key",
+    "usage_type": "auth_and_signing",
     "fingerprint": "40:8e:fa:df:70:f7:a7:06:1e:0d:6f:ae:f2:27:92:01",
-    "fingerprint_sha256": "SHA256:Ojq2LZW43BFK/AMP81jBkDGn9YpPWYRNcViKBB44LPU"
+    "fingerprint_sha256": "Ojq2LZW43BFK/AMP81jBkDGn9YpPWYRNcViKBB44LPU"
   }
 ]
 ```
@@ -300,10 +288,12 @@ Example response:
   "id": 1,
   "title": "Public key",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
+  "usage_type": "auth_and_signing",
   "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-  "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
+  "fingerprint_sha256": "Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
   "created_at": "2013-10-02T10:12:29Z",
   "expires_at": null,
+  "last_used_at": "2024-10-03T01:32:21.992Z",
   "can_push": false
 }
 ```
@@ -340,11 +330,15 @@ Example response:
 ```json
 {
   "key": "ssh-rsa AAAA...",
+  "usage_type": "auth_and_signing",
+  "fingerprint": "2b:37:85:21:6c:21:b9:cd:9e:b5:40:63:a8:5e:2c:40",
+  "fingerprint_sha256": "WoQDyP9jgzGAIPspbB/N2i+aqnSnln1b4GJ+Ytky01g",
   "id": 12,
   "title": "My deploy key",
   "can_push": true,
   "created_at": "2015-08-29T12:44:31.550Z",
-  "expires_at": null
+  "expires_at": null,
+  "last_used_at": "2024-10-03T01:32:21.992Z"
 }
 ```
 
@@ -381,8 +375,12 @@ Example response:
   "id": 11,
   "title": "New deploy key",
   "key": "ssh-rsa AAAA...",
+  "usage_type": "auth_and_signing",
+  "fingerprint": "fc:0e:f1:22:82:82:8c:b6:2c:78:0c:d8:41:5c:bd:53",
+  "fingerprint_sha256": "hl3Xaoz4j0KTyTYAqaB4eXFEPs1BiGkybNW6H/6cA2E",
   "created_at": "2015-08-29T12:44:31.550Z",
   "expires_at": null,
+  "last_used_at": "2024-10-03T01:32:21.992Z",
   "can_push": true
 }
 ```
@@ -430,10 +428,14 @@ Example response:
 ```json
 {
   "key": "ssh-rsa AAAA...",
+  "usage_type": "auth_and_signing",
+  "fingerprint": "2b:37:85:21:6c:21:b9:cd:9e:b5:40:63:a8:5e:2c:40",
+  "fingerprint_sha256": "WoQDyP9jgzGAIPspbB/N2i+aqnSnln1b4GJ+Ytky01g",
   "id": 12,
   "title": "My deploy key",
   "created_at": "2015-08-29T12:44:31.550Z",
-  "expires_at": null
+  "expires_at": null,
+  "last_used_at": "2024-10-03T01:32:21.992Z"
 }
 ```
 

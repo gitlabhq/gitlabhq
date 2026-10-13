@@ -1,3 +1,4 @@
+import { buildParagraphWithIframeEmbed } from 'helpers/iframe_embeds';
 import AssetResolver from '~/content_editor/services/asset_resolver';
 import {
   RESOLVED_ISSUE_HTML,
@@ -50,7 +51,10 @@ describe('content_editor/services/asset_resolver', () => {
   describe('resolveIframeSrc', () => {
     it('resolves an iframe canonical URL to a transformed src and its provider', async () => {
       renderMarkdown.mockResolvedValue({
-        body: '<p><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" data-iframe-provider-id="youtube"></span></p>',
+        body: buildParagraphWithIframeEmbed({
+          src: 'https://www.youtube.com/embed/abc',
+          canonicalSrc: 'https://www.youtube.com/watch?v=abc',
+        }).outerHTML,
       });
 
       expect(await assetResolver.resolveIframeSrc('https://www.youtube.com/watch?v=abc')).toEqual({

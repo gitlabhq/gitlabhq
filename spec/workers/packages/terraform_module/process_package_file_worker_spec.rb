@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::TerraformModule::ProcessPackageFileWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::TerraformModule::ProcessPackageFileWorker, feature_category: :package_registry do
   let_it_be(:package_file) { create(:package_file, :terraform_module) }
 
   it_behaves_like 'an idempotent worker' do

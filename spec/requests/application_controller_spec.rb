@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationController, type: :request, feature_category: :shared do
+RSpec.describe ApplicationController, feature_category: :shared do
   let_it_be_with_reload(:user) { create(:user) }
 
   it_behaves_like 'Base action controller' do

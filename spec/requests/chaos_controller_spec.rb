@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ChaosController, type: :request, feature_category: :tooling do
+RSpec.describe ChaosController, feature_category: :tooling do
   it_behaves_like 'Base action controller' do
     before do
       # Stub leak_mem so we don't actually leak memory for the base action controller tests.

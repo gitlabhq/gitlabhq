@@ -28,34 +28,25 @@ export const isIframeSrcAllowed = (src, providerId) => Boolean(iframeProviderFor
 const elsProcessingMap = new WeakMap();
 
 function renderIframeEl(el) {
-  const { src } = el;
+  const {
+    iframeSrc: src,
+    iframeCanonicalSrc: canonicalSrc,
+    iframeProviderId,
+    width,
+    height,
+  } = el.dataset;
 
-  const provider = iframeProviderFor(src, el.dataset.iframeProviderId);
-  if (!provider) {
-    // This URL passed the allowlist at the time the Markdown content was
-    // created/last updated, but no longer does. We must remove the node
-    // entirely: if this instance uses the asset proxy, allowing it to remain in
-    // the DOM would create a bypass. Re-modifying the source content will allow
-    // it to show again (through the asset proxy, if enabled).
-    el.remove();
-    return;
-  }
+  const provider = iframeProviderFor(src, iframeProviderId);
+  if (!provider) return;
 
   const mountEl = document.createElement('div');
-  el.hidden = true;
-  el.closest('.media-container').replaceChildren(el, mountEl);
+  el.replaceChildren(mountEl);
 
   initVueApp({
     el: mountEl,
     name: 'EmbeddedIframeRoot',
     component: EmbeddedIframe,
-    props: {
-      provider,
-      src,
-      canonicalSrc: el.dataset.iframeCanonicalSrc,
-      width: el.getAttribute('width'),
-      height: el.getAttribute('height'),
-    },
+    props: { provider, src, canonicalSrc, width, height },
   });
 }
 

@@ -161,31 +161,6 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
               expect(merge_request.approvals.last.patch_id_sha).to eq(derived)
             end
           end
-
-          context 'when patch_id_sha_fallback_when_diff_missing is disabled' do
-            before do
-              stub_feature_flags(patch_id_sha_fallback_when_diff_missing: false)
-            end
-
-            it 'records the diff-derived value and never consults the asserted SHA' do
-              expect(merge_request).not_to receive(:patch_id_sha_for_head)
-
-              service.execute(merge_request)
-
-              expect(merge_request.approvals.last.patch_id_sha).to eq(merge_request.current_patch_id_sha)
-            end
-
-            context 'when there is no diff to read it from' do
-              it 'records nil' do
-                allow(merge_request).to receive(:current_patch_id_sha).and_return(nil)
-                expect(merge_request).not_to receive(:patch_id_sha_for_head)
-
-                service.execute(merge_request)
-
-                expect(merge_request.approvals.last.patch_id_sha).to be_nil
-              end
-            end
-          end
         end
       end
 

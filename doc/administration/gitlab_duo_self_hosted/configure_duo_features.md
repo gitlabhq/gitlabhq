@@ -332,6 +332,11 @@ To enable self-hosted beta models and features:
 
 ### Select a self-hosted model for a feature
 
+Direct connections from the IDE to the AI Gateway are unavailable when code completion uses a self-hosted model.
+Code completion requests always go through your GitLab Self-Managed instance, which sends them to your AI Gateway.
+The IDE does not need access to `https://cloud.gitlab.com:443` for code completion.
+For more information, see [direct and indirect connections](../../user/project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
+
 To select a self-hosted model:
 
 1. In the upper-right corner, select **Admin**.

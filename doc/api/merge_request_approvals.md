@@ -144,15 +144,6 @@ Example response from GitLab Enterprise Edition:
 
 ### Prevent approval resets in automated merge requests
 
-{{< history >}}
-
-- Record the approved version with `sha` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395506) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `patch_id_sha_fallback_when_diff_missing`. Disabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
-
 If you use the API to create and immediately approve a merge request, your automation
 might approve the merge request before the commit is fully processed. By default, adding
 a new commit to a merge request

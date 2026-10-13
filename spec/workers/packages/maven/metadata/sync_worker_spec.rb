@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
+RSpec.describe Packages::Maven::Metadata::SyncWorker do
   let_it_be_with_reload(:versionless_package_for_versions) { create(:maven_package, name: 'MyDummyMavenPkg', version: nil) }
   let_it_be_with_reload(:metadata_package_file) { create(:package_file, :xml, package: versionless_package_for_versions) }
 

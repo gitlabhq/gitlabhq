@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Npm::CleanupStaleMetadataCacheWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Npm::CleanupStaleMetadataCacheWorker, feature_category: :package_registry do
   let(:worker) { described_class.new }
 
   it_behaves_like 'an idempotent worker'

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ServiceDesk::CustomEmailVerificationCleanupWorker, type: :worker, feature_category: :service_desk do
+RSpec.describe ServiceDesk::CustomEmailVerificationCleanupWorker, feature_category: :service_desk do
   describe '#perform' do
     let_it_be(:project) { create(:project) }
     let_it_be(:other_project) { create(:project) }

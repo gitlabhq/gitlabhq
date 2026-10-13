@@ -34,8 +34,13 @@ module Ci
 
     def latest_pipeline_per_ref(pipelines)
       if Feature.enabled?(:branches_page_pipeline_lookup_by_sha, project)
-        # Implied by the (ref, sha) join, but lets PostgreSQL use the (project_id, sha) index.
-        pipelines = pipelines.for_sha(ref_sha_pairs.map(&:last).uniq)
+        pipelines = if ref_type == :tags
+                      # Tag names are selective, while tag commits can have many non-tag pipelines.
+                      pipelines.for_ref(ref_sha_pairs.map(&:first).uniq)
+                    else
+                      # Implied by the (ref, sha) join, but lets PostgreSQL use the (project_id, sha) index.
+                      pipelines.for_sha(ref_sha_pairs.map(&:last).uniq)
+                    end
       end
 
       pipelines.latest_pipeline_per_ref(ref_sha_pairs)

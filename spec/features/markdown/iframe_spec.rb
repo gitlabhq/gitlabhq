@@ -62,6 +62,7 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
           expect(page).to have_content('External content from Example (iframe.example)')
           expect(page).to have_no_css(expected_selector)
+          expect(page).to have_no_css('[src*="iframe.example"]', visible: :all)
 
           click_button 'Load external content'
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SshKeys::UpdateLastUsedAtWorker, type: :worker, feature_category: :source_code_management do
+RSpec.describe SshKeys::UpdateLastUsedAtWorker, feature_category: :source_code_management do
   let_it_be(:key) { create(:key) }
 
   it_behaves_like 'an idempotent worker' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::CreateSymbolsWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Nuget::CreateSymbolsWorker, feature_category: :package_registry do
   describe '#perform' do
     let_it_be(:package) { create(:nuget_package, without_package_files: true) }
     let_it_be(:package_file) do

@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/analytics/cycle_analytics/components/stage_table.vue',
     'app/assets/javascripts/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue',
     'app/assets/javascripts/crm/contacts/components/contacts_root.vue',
     'app/assets/javascripts/crm/organizations/components/organizations_root.vue',

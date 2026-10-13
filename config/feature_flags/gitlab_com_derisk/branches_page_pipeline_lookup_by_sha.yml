@@ -1,6 +1,6 @@
 ---
 name: branches_page_pipeline_lookup_by_sha
-description: Filter branches and tags page pipeline status lookups by commit SHA so PostgreSQL can use the project_id and sha index.
+description: Filter branches page pipeline status lookups by SHA and tags page lookups by ref name so PostgreSQL can use selective indexes.
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592913
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259021
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632210

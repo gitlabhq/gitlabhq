@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker, feature_category: :compliance_management do
+RSpec.describe SshKeys::ExpiredNotificationWorker, feature_category: :compliance_management do
   subject(:worker) { described_class.new }
 
   it 'uses a cronjob queue' do

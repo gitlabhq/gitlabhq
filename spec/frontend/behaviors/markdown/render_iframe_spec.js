@@ -1,16 +1,14 @@
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { resetHTMLFixture } from 'helpers/fixtures';
 import { iframeProviders, YOUTUBE_SANDBOX, FIGMA_SANDBOX } from 'helpers/iframe_providers';
-import renderIframes from '~/behaviors/markdown/render_iframe';
-import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import {
   YOUTUBE_URL,
   YOUTUBE_EMBED_URL,
-  fixtureDefault,
-  fixtureWithDimensions,
-  fixtureWithWidthOnly,
-} from './mock_data';
+  buildParagraphWithIframeEmbed,
+} from 'helpers/iframe_embeds';
+import renderIframes from '~/behaviors/markdown/render_iframe';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 
 describe('Embedded iframe renderer', () => {
   const findEmbeddedIframes = (src = null) => {
@@ -25,6 +23,10 @@ describe('Embedded iframe renderer', () => {
     jest.runAllTimers();
   };
 
+  const mountEmbed = (options) => document.body.append(buildParagraphWithIframeEmbed(options));
+
+  const findContainer = () => document.querySelector('.js-render-iframe');
+  const findFallbackLink = () => document.querySelector('.js-render-iframe > a');
   const findWarning = () => document.querySelector('[data-testid="external-content-warning"]');
   const findOpenInNewTab = () =>
     document.querySelector('[data-testid="external-content-open-in-new-tab"]');
@@ -47,7 +49,7 @@ describe('Embedded iframe renderer', () => {
   });
 
   it('renders an embedded iframe', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     expect(findEmbeddedIframes()).toHaveLength(0);
 
@@ -57,7 +59,7 @@ describe('Embedded iframe renderer', () => {
   });
 
   it("applies the provider's sandbox", () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     renderAllIframes();
 
@@ -66,10 +68,11 @@ describe('Embedded iframe renderer', () => {
 
   it("applies the matched provider's sandbox", async () => {
     const figmaEmbedUrl = 'https://embed.figma.com/design/abc?embed-host=gitlab';
-    setHTMLFixture(fixtureDefault);
-    const img = document.querySelector('img');
-    img.src = figmaEmbedUrl;
-    img.dataset.iframeProviderId = 'figma';
+    mountEmbed({
+      src: figmaEmbedUrl,
+      canonicalSrc: 'https://www.figma.com/design/abc',
+      providerId: 'figma',
+    });
 
     renderAllIframes();
     findActivationButton().click();
@@ -79,7 +82,7 @@ describe('Embedded iframe renderer', () => {
   });
 
   it('warns that the content is external', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     renderAllIframes();
 
@@ -89,26 +92,24 @@ describe('Embedded iframe renderer', () => {
   });
 
   it('links to the canonical source in a new tab', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     renderAllIframes();
 
     expect(findOpenInNewTab().getAttribute('href')).toBe(YOUTUBE_URL);
   });
 
-  it('keeps the original image hidden alongside the embed', () => {
-    setHTMLFixture(fixtureDefault);
-    const img = document.querySelector('img');
+  it('renders the embed inside the container', () => {
+    mountEmbed();
 
     renderAllIframes();
 
-    expect(img.hidden).toBe(true);
-    expect(img.parentElement.classList.contains('media-container')).toBe(true);
+    expect(findContainer().contains(findEmbeddedIframes(YOUTUBE_EMBED_URL)[0])).toBe(true);
   });
 
-  it('removes the link wrapping the original image', () => {
-    setHTMLFixture(fixtureDefault);
-    const link = document.querySelector('a');
+  it('removes the fallback link', () => {
+    mountEmbed();
+    const link = findFallbackLink();
 
     renderAllIframes();
 
@@ -123,7 +124,7 @@ describe('Embedded iframe renderer', () => {
     };
 
     beforeEach(() => {
-      setHTMLFixture(fixtureDefault);
+      mountEmbed();
       renderAllIframes();
     });
 
@@ -139,7 +140,7 @@ describe('Embedded iframe renderer', () => {
   });
 
   it('names the frame after the provider and host', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     renderAllIframes();
 
@@ -150,7 +151,7 @@ describe('Embedded iframe renderer', () => {
 
   describe('when the provider requires activation', () => {
     beforeEach(() => {
-      setHTMLFixture(fixtureDefault);
+      mountEmbed();
       window.gon.iframe_rendering_providers.youtube.require_activation = true;
       renderAllIframes();
     });
@@ -197,34 +198,33 @@ describe('Embedded iframe renderer', () => {
 
   describe('when the provider is no longer enabled', () => {
     beforeEach(() => {
-      setHTMLFixture(fixtureDefault);
+      mountEmbed();
       window.gon.iframe_rendering_providers = { figma: iframeProviders().figma };
     });
 
-    it('does not render an embedded iframe and removes the image', () => {
+    it('does not render an embedded iframe and keeps the fallback link', () => {
       renderAllIframes();
 
       expect(findEmbeddedIframes()).toHaveLength(0);
-      expect(document.querySelectorAll('img')).toHaveLength(0);
+      expect(findFallbackLink().getAttribute('href')).toBe(YOUTUBE_URL);
     });
   });
 
   describe("when the src origin does not match the provider's", () => {
     beforeEach(() => {
-      setHTMLFixture(fixtureDefault);
-      document.querySelector('img').dataset.iframeProviderId = 'figma';
+      mountEmbed({ providerId: 'figma' });
     });
 
-    it('does not render an embedded iframe and removes the image', () => {
+    it('does not render an embedded iframe and keeps the fallback link', () => {
       renderAllIframes();
 
       expect(findEmbeddedIframes()).toHaveLength(0);
-      expect(document.querySelectorAll('img')).toHaveLength(0);
+      expect(findFallbackLink().getAttribute('href')).toBe(YOUTUBE_URL);
     });
   });
 
   it('does not render an embedded iframe when the feature flag is not enabled for the project or group', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     window.gon.features.allowIframesInMarkdown = false;
 
@@ -234,7 +234,7 @@ describe('Embedded iframe renderer', () => {
   });
 
   it('does not render an embedded iframe when the instance-wide setting is disabled', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     window.gon.iframe_rendering_providers = null;
 
@@ -244,7 +244,7 @@ describe('Embedded iframe renderer', () => {
   });
 
   it('does not render an embedded iframe on a page that pushes no feature flags', () => {
-    setHTMLFixture(fixtureDefault);
+    mountEmbed();
 
     delete window.gon.features;
 
@@ -257,7 +257,7 @@ describe('Embedded iframe renderer', () => {
 
     describe('for any embed', () => {
       beforeEach(() => {
-        setHTMLFixture(fixtureDefault);
+        mountEmbed();
         renderAllIframes();
       });
 
@@ -274,7 +274,7 @@ describe('Embedded iframe renderer', () => {
 
     describe('when both width and height are provided', () => {
       beforeEach(() => {
-        setHTMLFixture(fixtureWithDimensions);
+        mountEmbed({ width: '560', height: '315' });
         renderAllIframes();
       });
 
@@ -295,7 +295,7 @@ describe('Embedded iframe renderer', () => {
 
     describe('when only width is provided', () => {
       beforeEach(() => {
-        setHTMLFixture(fixtureWithWidthOnly);
+        mountEmbed({ width: '560' });
         renderAllIframes();
       });
 
@@ -311,7 +311,7 @@ describe('Embedded iframe renderer', () => {
 
     describe('when no dimensions are provided', () => {
       beforeEach(() => {
-        setHTMLFixture(fixtureDefault);
+        mountEmbed();
         renderAllIframes();
       });
 

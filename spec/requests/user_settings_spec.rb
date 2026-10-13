@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "UserSettings", type: :request, feature_category: :system_access do
+RSpec.describe "UserSettings", feature_category: :system_access do
   let(:user) { create(:user) }
 
   describe 'GET authentication_log' do

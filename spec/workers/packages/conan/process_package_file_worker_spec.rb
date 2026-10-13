@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::ProcessPackageFileWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Conan::ProcessPackageFileWorker, feature_category: :package_registry do
   let_it_be(:package_file) { create(:conan_package_file, :conan_package_info) }
 
   let(:worker) { described_class.new }

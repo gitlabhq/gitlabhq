@@ -17,6 +17,10 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
 
   subject(:execute) { described_class.new(runner, user, params).execute }
 
+  before do
+    stub_feature_flags(lateral_runner_jobs_api_pagination: false)
+  end
+
   context 'when params is empty' do
     let!(:job1) { create(:ci_build, project: project) }
 
@@ -138,6 +142,78 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
 
     it 'returns jobs from projects with enabled repository and builds' do
       is_expected.to include(*enabled_jobs)
+    end
+  end
+
+  context 'with lateral authorization' do
+    subject(:lateral_jobs) { described_class.new(runner, user, params).execute }
+
+    before do
+      stub_feature_flags(lateral_runner_jobs_api_pagination: true)
+    end
+
+    it 'keeps permission checks correlated with each job', :aggregate_failures do
+      sql = lateral_jobs.to_sql
+
+      expect(sql).to include('CROSS JOIN LATERAL', 'OFFSET 0', 'LIMIT 1')
+      expect(sql).to include('ci_project_mirrors', 'p_ci_builds')
+    end
+
+    context 'when filtering by status' do
+      let(:params) { { status: 'success' } }
+
+      it 'applies the status filter outside the authorization join', :aggregate_failures do
+        _, lateral_and_outer_query = lateral_jobs.to_sql.split('CROSS JOIN LATERAL (', 2)
+        lateral_query, outer_query = lateral_and_outer_query.split(') allowed_project', 2)
+
+        expect(lateral_query).not_to include('"p_ci_builds"."status"')
+        expect(outer_query).to include('"p_ci_builds"."status"')
+      end
+    end
+
+    it 'returns only authorized jobs in the requested order' do
+      inaccessible_project = create(:project)
+      create(:ci_build, runner: runner, project: inaccessible_project)
+      successful_jobs = create_list(:ci_build, 2, runner: runner, project: project, status: :success)
+      create(:ci_build, runner: runner, project: project, status: :failed)
+      filtered_jobs = described_class
+        .new(runner, user, { status: 'success', order_by: 'id', sort: 'desc' })
+        .execute
+
+      expect(filtered_jobs.to_a).to eq(successful_jobs.reverse)
+    end
+
+    it 'preserves the full authorized count for pagination' do
+      inaccessible_project = create(:project)
+      create(:ci_build, runner: runner, project: inaccessible_project)
+
+      expect(lateral_jobs.count).to eq(jobs.size)
+    end
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let(:user) { create(:user, :admin) }
+
+      it 'uses the legacy relation without a lateral join' do
+        expect(lateral_jobs.to_sql).not_to include('LATERAL')
+      end
+    end
+
+    context 'when system_id is specified' do
+      let(:params) { { system_id: runner_manager.system_xid } }
+
+      it 'uses lateral authorization with the runner manager scope' do
+        expect(lateral_jobs.to_sql).to include('CROSS JOIN LATERAL')
+        expect(lateral_jobs).to match_array(jobs)
+      end
+    end
+
+    context 'when keyset pagination is requested' do
+      let(:params) { { pagination: 'keyset', order_by: 'id', sort: 'desc' } }
+
+      it 'uses lateral authorization for keyset pagination' do
+        expect(lateral_jobs.to_sql).to include('CROSS JOIN LATERAL')
+        expect(lateral_jobs).to match_array(jobs)
+      end
     end
   end
 end

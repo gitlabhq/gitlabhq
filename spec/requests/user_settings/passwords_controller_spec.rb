@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-RSpec.describe UserSettings::PasswordsController, type: :request, feature_category: :system_access do
+RSpec.describe UserSettings::PasswordsController, feature_category: :system_access do
   let(:deactivated_user) { create(:user, :deactivated) }
 
   let(:password) { User.random_password }

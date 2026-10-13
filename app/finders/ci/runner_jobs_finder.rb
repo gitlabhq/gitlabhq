@@ -30,7 +30,13 @@ module Ci
     def by_permission(items)
       return items if @user.can_read_all_resources?
 
-      items.for_project(@user.authorized_project_mirrors(Gitlab::Access::REPORTER).select(:project_id))
+      authorized_projects = @user.authorized_project_mirrors(Gitlab::Access::REPORTER).select(:project_id)
+
+      if Feature.enabled?(:lateral_runner_jobs_api_pagination, Feature.current_request, type: :gitlab_com_derisk)
+        items.with_authorized_project_mirrors(authorized_projects)
+      else
+        items.for_project(authorized_projects)
+      end
     end
 
     def by_status(items)

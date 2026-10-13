@@ -5,6 +5,7 @@
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
 $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
+$merge-request-sticky-description-height: 28px;
 
 .apply-suggestions-input-min-width {
   @include gl-container-width-up(lg, panel) {
@@ -132,7 +133,7 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
     @include gl-container-width-up(md, panel) {
       // stylelint-disable-next-line gitlab/no-has -- scoped to a specific sticky-header element
       &:has(.detail-page-description)::after {
-        height: calc(#{$merge-request-sticky-header-height} + 28px); // Height of the 2 sticky bars combined
+        height: calc(#{$merge-request-sticky-header-height} + #{$merge-request-sticky-description-height}); // Height of the 2 sticky bars combined
       }
 
       &::after {
@@ -184,6 +185,41 @@ $merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
           @apply gl-z-1;
         }
       }
+    }
+  }
+
+  // Flash alerts scroll with the page until the merge request header sticks, then stick below it
+  // (both bars, as _mr_box always renders the description bar). Classes set by sticky_header_stuck_state.js.
+  .flash-container.sticky.is-sticky-header-observed {
+    @include gl-container-width-up(md, panel) {
+      position: relative;
+      // Scroll under the panel's top border (.panel-content-inner::before, z-index 2) like other content
+      z-index: 1;
+    }
+  }
+
+  .flash-container.sticky.is-sticky-header-stuck {
+    @include gl-container-width-up(md, panel) {
+      position: sticky;
+      z-index: $flash-z-index;
+      top: calc(#{$calc-application-header-height} + #{$merge-request-sticky-header-height} + #{$merge-request-sticky-description-height} + #{$gl-spacing-scale-3});
+    }
+  }
+
+  // Match the Overview discussion column (.merge-request-overview grid) so the alert doesn't cover the sidebar
+  // stylelint-disable-next-line gitlab/no-has -- scoped to the flash container preceding the merge request page
+  .flash-container.sticky.is-sticky-header-stuck:has(~ .merge-request .notes-tab.active) {
+    @include gl-container-width-up(lg, panel) {
+      max-width: calc(100% - #{$right-sidebar-width} - #{$gl-spacing-scale-7});
+    }
+  }
+
+  // Span the fluid Changes tab like the stuck header does, overriding the .diffs-container-limited cap
+  // stylelint-disable-next-line gitlab/no-has -- scoped to the flash container preceding the merge request page
+  .flash-container.sticky.is-sticky-header-stuck:has(~ .merge-request .diffs-tab.active) {
+    @include gl-container-width-up(md, panel) {
+      max-width: none;
+      @apply gl-mx-0;
     }
   }
 }

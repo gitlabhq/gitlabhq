@@ -206,6 +206,16 @@ module Ci
     scope :id_before, ->(id) { where(arel_table[:id].lt(id)) }
     scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
 
+    scope :with_authorized_project_mirrors, ->(authorized_projects) do
+      project_mirrors = Ci::ProjectMirror.arel_table
+      allowed = Ci::ProjectMirror
+        .where(project_mirrors[:project_id].eq(arel_table[:project_id]))
+        .where(project_id: authorized_projects)
+
+      # OFFSET 0 keeps the check correlated so the runner/id index can drive the page query.
+      joins("CROSS JOIN LATERAL (#{allowed.select('1').offset(0).limit(1).to_sql}) allowed_project")
+    end
+
     scope :in_merge_request, ->(merge_request_id) do
       joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request_id))
     end

@@ -61,15 +61,5 @@ RSpec.describe Banzai::Filter::ImageLazyLoadFilter, feature_category: :markdown 
     end
   end
 
-  it 'skips images with the js-render-iframe class' do
-    doc = filter(image_with_class('https://www.youtube.com/embed/foo', 'js-render-iframe'))
-    img = doc.at_css('img')
-
-    expect(img['src']).to eq 'https://www.youtube.com/embed/foo'
-    expect(img['data-src']).to be_nil
-    expect(img['class']).to eq 'js-render-iframe'
-    expect(img['decoding']).to be_nil
-  end
-
   it_behaves_like 'pipeline timing check'
 end

@@ -63,9 +63,6 @@
 - message: "Error: The emoji map is uninitialized or initialization has not completed"
   specs:
   - spec/features/profiles/user_edit_profile_spec.rb
-- message: "TypeError: Cannot read properties of null (reading 'hide')"
-  specs:
-  - spec/features/admin/runners/admin_manages_runners_spec.rb
 - message: "TypeError: Cannot read properties of null (reading 'close')"
   specs:
   - spec/features/projects/ci/editor_spec.rb
@@ -102,21 +99,6 @@
   - spec/features/incidents/incident_timeline_events_spec.rb
   - spec/features/incidents/user_views_alert_details_spec.rb
   - spec/features/incidents/user_views_incident_spec.rb
-- message: "[Vue warn]: Invalid prop: type check failed for prop text"
-  specs:
-  - ee/spec/features/admin/custom_role_admin_background_migrations_spec.rb
-  - spec/features/admin/broadcast_messages_spec.rb
-  - spec/features/groups/container_registry_spec.rb
-  - spec/features/groups/packages_spec.rb
-  - spec/features/projects/container_registry_spec.rb
-  - spec/features/projects/import_export/import_file_spec.rb
-  - spec/features/projects/packages_spec.rb
-- message: "[Vue warn]: Invalid prop: type check failed for prop placeholder"
-  specs:
-  - spec/features/projects/integrations/user_activates_irker_spec.rb
-- message: "[Vue warn]: Invalid prop: type check failed for prop noteId"
-  specs:
-  - spec/features/merge_request/batch_comments_spec.rb
 - messages:
   - "GraphQL execution errors for query 'runners'"
   - Object

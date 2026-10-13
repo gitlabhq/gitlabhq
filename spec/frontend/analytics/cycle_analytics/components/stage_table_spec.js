@@ -366,6 +366,16 @@ describe('StageTable', () => {
       ]);
     });
 
+    it('passes the new sort field and direction back to the table', async () => {
+      triggerTableSort(false);
+      await nextTick();
+
+      expect(findTable().props()).toMatchObject({
+        sortBy: PAGINATION_SORT_FIELD_DURATION,
+        sortDesc: false,
+      });
+    });
+
     describe('with sortable=false', () => {
       beforeEach(() => {
         wrapper = createComponent({ sortable: false });

@@ -20,7 +20,7 @@
       = f.text_field :recaptcha_site_key, class: 'form-control gl-form-input'
       .form-text.gl-text-subtle
         = _("Generate site and private keys at")
-        %a{ href: 'http://www.google.com/recaptcha', target: 'blank', rel: 'noopener noreferrer' } http://www.google.com/recaptcha
+        %a{ href: 'http://www.google.com/recaptcha', target: '_blank', rel: 'noopener noreferrer' } http://www.google.com/recaptcha
 
     .form-group
       = f.label :recaptcha_private_key, _('reCAPTCHA private key'), class: 'label-bold'
@@ -54,7 +54,7 @@
       = f.label :akismet_api_key, _('Akismet API Key'), class: 'label-bold'
       = f.text_field :akismet_api_key, class: 'form-control gl-form-input'
       .form-text.gl-text-subtle
-        = _("Generate API key at %{site}").html_safe % { site: link_to('http://www.akismet.com', 'http://www.akismet.com', target: 'blank', ref: 'noopener noreferrer') }
+        = _("Generate API key at %{site}").html_safe % { site: link_to('http://www.akismet.com', 'http://www.akismet.com', target: '_blank', rel: 'noopener noreferrer') }
 
     %h5
       = _('IP address restrictions')

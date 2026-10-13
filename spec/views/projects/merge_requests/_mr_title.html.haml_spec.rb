@@ -27,5 +27,23 @@ RSpec.describe 'projects/merge_requests/_mr_title.html.haml', feature_category: 
 
       expect(dropdown_data['url']).to eq("/#{project.full_path}/-/merge_requests/#{merge_request.iid}")
     end
+
+    context 'when Ona is enabled for the instance and the user' do
+      before do
+        stub_application_setting(gitpod_enabled: true, gitpod_url: 'https://ona.example.com')
+        allow(user).to receive(:gitpod_enabled).and_return(true)
+      end
+
+      it 'builds the Ona path from the configured host, not the request host' do
+        view.request.host = 'attacker.example.com'
+
+        render
+
+        node = Nokogiri::HTML.fragment(rendered).at_css('.js-mr-title-actions')
+        dropdown_data = Gitlab::Json::SafeParser.parse(node['data-code-dropdown'])
+
+        expect(dropdown_data['gitpod_path']).to eq("https://ona.example.com##{Gitlab::UrlBuilder.build(merge_request)}")
+      end
+    end
   end
 end

@@ -22,7 +22,9 @@ module Gitlab
 
               current_file = file_from_gitaly_header(gitaly_file.header)
             else
-              current_file.raw_content = "#{current_file.raw_content}#{gitaly_file.content}"
+              # Append in place: building a new string for every chunk copies the
+              # content received so far each time, which is quadratic in the file size.
+              current_file.raw_content << gitaly_file.content
             end
           end
         end
@@ -37,7 +39,7 @@ module Gitlab
           Gitlab::GitalyClient::Util.git_repository(gitaly_repo),
           header.commit_oid,
           conflict_from_gitaly_file_header(header),
-          ''
+          +''
         )
       end
 

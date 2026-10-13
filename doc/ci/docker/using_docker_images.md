@@ -140,6 +140,9 @@ When a CI job runs in a Docker container, the `before_script`, `script`, and `af
 
 ### Override the entrypoint of an image
 
+These instructions apply to the Docker executor.
+For the Kubernetes executor, see [container entrypoint behavior](https://docs.gitlab.com/runner/executors/kubernetes/#container-entrypoint-known-issues).
+
 Before explaining the available entrypoint override methods, let's describe
 how the runner starts. It uses a Docker image for the containers used in the
 CI/CD jobs:
@@ -157,7 +160,7 @@ CI/CD jobs:
 To override the [entrypoint](https://docs.gitlab.com/runner/executors/docker/#configure-a-docker-entrypoint) of a Docker image,
 in the `.gitlab-ci.yml` file:
 
-- For Docker 17.06 and later, set `entrypoint` to an empty value.
+- For Docker 17.06 and later, set `entrypoint` to `[""]`, an array containing an empty string.
 - For Docker 17.03 and earlier, set `entrypoint` to
   `/bin/sh -c`, `/bin/bash -c`, or an equivalent shell available in the image.
 

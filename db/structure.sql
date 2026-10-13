@@ -47300,7 +47300,7 @@ CREATE INDEX index_ai_catalog_item_consumers_on_organization_id ON ai_catalog_it
 
 CREATE INDEX index_ai_catalog_item_consumers_on_parent_item_consumer_id ON ai_catalog_item_consumers USING btree (parent_item_consumer_id);
 
-CREATE INDEX index_ai_catalog_item_consumers_on_project_id ON ai_catalog_item_consumers USING btree (project_id);
+CREATE INDEX index_ai_catalog_item_consumers_on_project_id_and_item_id ON ai_catalog_item_consumers USING btree (project_id, ai_catalog_item_id) INCLUDE (enabled);
 
 CREATE UNIQUE INDEX index_ai_catalog_item_consumers_on_service_account_id_unique ON ai_catalog_item_consumers USING btree (service_account_id);
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::NamespaceVisitsController, type: :request, feature_category: :navigation do
+RSpec.describe Users::NamespaceVisitsController, feature_category: :navigation do
   describe "POST /" do
     let_it_be(:path) { track_namespace_visits_path }
     let_it_be(:request_params) { nil }

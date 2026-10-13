@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'HTTP Router Version Route', type: :request, feature_category: :api do
+RSpec.describe 'HTTP Router Version Route', feature_category: :api do
   shared_examples 'a successful empty response' do |http_method|
     it "responds with 204 status code for #{http_method.to_s.upcase}" do
       send(http_method, '/-/http_router/version') # Use send to make the request dynamically

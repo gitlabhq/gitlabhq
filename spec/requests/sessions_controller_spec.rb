@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SessionsController, type: :request, feature_category: :system_access do
+RSpec.describe SessionsController, feature_category: :system_access do
   include Authn::WebauthnSpecHelpers
   include SessionHelpers
 

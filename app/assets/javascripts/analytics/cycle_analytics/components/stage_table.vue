@@ -216,9 +216,9 @@ export default {
       v-else
       stacked="lg"
       show-empty
-      :sort-by.sync="sort"
-      :sort-direction.sync="direction"
-      :sort-desc.sync="sortDesc"
+      :sort-by="sort"
+      :sort-direction="direction"
+      :sort-desc="sortDesc"
       :fields="fields"
       :items="stageEvents"
       :empty-text="emptyStateMessage"

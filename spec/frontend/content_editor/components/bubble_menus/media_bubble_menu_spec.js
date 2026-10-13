@@ -4,6 +4,7 @@ import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { iframeProviders } from 'helpers/iframe_providers';
+import { buildParagraphWithIframeEmbed } from 'helpers/iframe_embeds';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import waitForPromises from 'helpers/wait_for_promises';
 import Audio from '~/content_editor/extensions/audio';
@@ -27,7 +28,13 @@ const TIPTAP_IMAGE_HTML = `<p dir="auto"><img src="https://gitlab.com/favicon.pn
 
 const TIPTAP_VIDEO_HTML = `<p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></video><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span></p>`;
 
-const TIPTAP_IFRAME_HTML = `<p dir="auto"><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" data-iframe-provider-id="youtube" data-title="test-video" width="560" height="315"></span></p>`;
+const TIPTAP_IFRAME_HTML = buildParagraphWithIframeEmbed({
+  src: 'https://www.youtube.com/embed/abc',
+  canonicalSrc: 'https://www.youtube.com/watch?v=abc',
+  title: 'test-video',
+  width: '560',
+  height: '315',
+}).outerHTML;
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 

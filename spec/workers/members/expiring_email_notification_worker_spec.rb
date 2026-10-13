@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::ExpiringEmailNotificationWorker, type: :worker, feature_category: :system_access do
+RSpec.describe Members::ExpiringEmailNotificationWorker, feature_category: :system_access do
   subject(:worker) { described_class.new }
 
   # expiry_notified_at can leak across specs for this member

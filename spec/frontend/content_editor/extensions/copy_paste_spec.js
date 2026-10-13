@@ -2,6 +2,7 @@ import { builders } from 'prosemirror-test-builder';
 import { CellSelection } from '@tiptap/pm/tables';
 import { GapCursor } from '@tiptap/pm/gapcursor';
 import { iframeProviders } from 'helpers/iframe_providers';
+import { buildIframeEmbed, buildParagraphWithIframeEmbed } from 'helpers/iframe_embeds';
 import CopyPaste from '~/content_editor/extensions/copy_paste';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Loading, { findAllLoaders } from '~/content_editor/extensions/loading';
@@ -1382,30 +1383,10 @@ describe('content_editor/extensions/copy_paste', () => {
   });
 
   describe('when pasting an iframe embed', () => {
-    const buildEmbed = () => {
-      const container = document.createElement('span');
-      container.classList.add('media-container', 'img-container');
-
-      const img = document.createElement('img');
-      img.classList.add('js-render-iframe');
-      img.setAttribute('src', 'https://www.youtube.com/embed/abc123');
-      img.dataset.iframeCanonicalSrc = 'https://www.youtube.com/watch?v=abc123';
-      img.dataset.iframeProviderId = 'youtube';
-      container.appendChild(img);
-
-      return container;
-    };
-
-    const buildParagraphWithEmbed = () => {
-      const paragraph = document.createElement('p');
-      paragraph.appendChild(buildEmbed());
-      return paragraph;
-    };
-
     const buildTableWithEmbed = () => {
       const table = document.createElement('table');
       const row = table.insertRow();
-      row.insertCell().appendChild(buildEmbed());
+      row.insertCell().appendChild(buildIframeEmbed());
       row.insertCell().textContent = 'Y';
       return table;
     };
@@ -1432,32 +1413,32 @@ describe('content_editor/extensions/copy_paste', () => {
             types: ['text/plain', 'text/html', 'text/x-gfm'],
             data: {
               'text/plain': 'https://www.youtube.com/watch?v=abc123',
-              'text/html': buildParagraphWithEmbed().outerHTML,
+              'text/html': buildParagraphWithIframeEmbed().outerHTML,
               'text/x-gfm': '![](https://www.youtube.com/watch?v=abc123)',
             },
           }),
         );
-        await resolveRenderMarkdownPromiseAndWait(buildParagraphWithEmbed().outerHTML);
+        await resolveRenderMarkdownPromiseAndWait(buildParagraphWithIframeEmbed().outerHTML);
 
         expect(findNodeTypes()).toContain('iframe');
       });
     });
 
     describe('when the clipboard carries only HTML', () => {
-      it('pastes an image node rather than an iframe node', async () => {
+      it('pastes the fallback link rather than an iframe node', async () => {
         await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['text/plain', 'text/html'],
             data: {
               'text/plain': 'https://www.youtube.com/embed/abc123',
-              'text/html': buildParagraphWithEmbed().outerHTML,
+              'text/html': buildParagraphWithIframeEmbed().outerHTML,
             },
           }),
         );
         await waitForPromises();
 
-        expect(findNodeTypes()).toContain('image');
         expect(findNodeTypes()).not.toContain('iframe');
+        expect(tiptapEditor.getText()).toBe('YouTube embed');
       });
     });
 
@@ -1469,7 +1450,7 @@ describe('content_editor/extensions/copy_paste', () => {
         tiptapEditor.commands.setTextSelection(4);
       });
 
-      it('pastes an image node rather than an iframe node', async () => {
+      it('pastes the fallback link rather than an iframe node', async () => {
         const result = await triggerPasteEventHandler(
           buildClipboardEvent({
             types: ['text/plain', 'text/html'],
@@ -1481,23 +1462,22 @@ describe('content_editor/extensions/copy_paste', () => {
         );
 
         expect(result).toBe(true);
-        expect(findNodeTypes()).toContain('image');
         expect(findNodeTypes()).not.toContain('iframe');
+        expect(tiptapEditor.getText()).toContain('YouTube embed');
       });
     });
 
     describe('when ProseMirror parses the clipboard itself', () => {
-      it('parses an image node rather than an iframe node', () => {
+      it('parses the fallback link rather than an iframe node', () => {
         const parser = tiptapEditor.view.someProp('clipboardParser');
-        const slice = parser.parseSlice(buildParagraphWithEmbed());
+        const slice = parser.parseSlice(buildParagraphWithIframeEmbed());
 
         const types = [];
         slice.content.descendants((node) => {
           types.push(node.type.name);
         });
 
-        expect(types).toContain('image');
-        expect(types).not.toContain('iframe');
+        expect(types).toEqual(['text']);
       });
     });
   });

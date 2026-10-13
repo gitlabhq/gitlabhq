@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, type: :worker, feature_category: :virtual_registry do
+RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker, feature_category: :virtual_registry do
   let(:worker) { described_class.new }
 
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky

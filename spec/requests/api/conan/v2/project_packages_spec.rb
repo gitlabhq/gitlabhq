@@ -414,15 +414,20 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           'time' => package.created_at.iso8601(3)
         )
       end
+    end
 
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'conan structured error response', status: :not_found,
-          message: '404 Revision Not Found'
+    context 'when the only v1 file is not installable' do
+      let_it_be(:package) do
+        create(:conan_package, project: project, without_package_files: true, without_revisions: true,
+          without_package_references: true)
       end
+
+      let_it_be(:pending_destruction_v1_file) do
+        create(:conan_package_file, :conan_recipe_file, :pending_destruction, package: package)
+      end
+
+      it_behaves_like 'conan structured error response', status: :not_found,
+        message: '404 Revision Not Found'
     end
 
     it_behaves_like 'enforcing read_packages job token policy'
@@ -729,14 +734,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         )
       end
 
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'returns 404 when resource does not exist'
-      end
-
       context 'when package reference is fabricated' do
         let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
 
@@ -900,15 +897,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to include(reference.reference => reference.info)
-      end
-
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'returning response status with message', status: :not_found,
-          message: '404 Revision Not Found'
       end
 
       context 'when recipe_revision is fabricated' do

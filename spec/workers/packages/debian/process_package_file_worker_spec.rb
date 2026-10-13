@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Debian::ProcessPackageFileWorker, feature_category: :package_registry do
   shared_examples 'returns early without error' do
     it 'returns early without error' do
       expect(Gitlab::ErrorTracking).not_to receive(:log_exception)

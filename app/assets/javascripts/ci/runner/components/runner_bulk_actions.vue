@@ -212,7 +212,8 @@ export default {
         this.onError({ error, message });
       } finally {
         this.isDeleting = false;
-        this.$refs.modal.hide();
+        // The list unmounts this component when the deleted runners were the last ones.
+        this.$refs.modal?.hide();
       }
     },
     async onPause() {

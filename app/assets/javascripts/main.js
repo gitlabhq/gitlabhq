@@ -61,16 +61,6 @@ if (process.env.NODE_ENV !== 'production' && gon?.test_env) {
   import(/* webpackMode: "eager" */ './test_utils');
 }
 
-document.addEventListener('beforeunload', () => {
-  // Unbind scroll events
-  // eslint-disable-next-line @gitlab/no-global-event-off
-  $(document).off('scroll');
-  // Close any open tooltips
-  tooltips.dispose(document.querySelectorAll('.has-tooltip, [data-toggle="tooltip"]'));
-  // Close any open popover
-  popovers.dispose();
-});
-
 window.addEventListener('hashchange', handleLocationHash);
 window.addEventListener(
   'load',
@@ -206,9 +196,7 @@ initTimeagoPrintHandler();
 $body.on('ajax:complete ajax:beforeSend submit', 'form', function ajaxCompleteCallback(e) {
   // An `aria-disabled` button (GlButton, Pajamas::ButtonComponent) owns its disabled state,
   // and the native `disabled` toggled below is invisible to it.
-  const $buttons = $('[type="submit"], .js-disable-on-submit', this).not(
-    '.js-no-auto-disable, [aria-disabled="true"]',
-  );
+  const $buttons = $('[type="submit"]', this).not('.js-no-auto-disable, [aria-disabled="true"]');
   switch (e.type) {
     case 'ajax:beforeSend':
     case 'submit':
@@ -246,14 +234,9 @@ $body.on('click', '.js-toggle-diff-comments', function toggleDiffCommentsCallbac
   } else {
     notesHolders.hide().find('.content').hide();
   }
-
-  $(document).trigger('toggle.comments');
 });
 
 $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
-  const link = document.createElement('a');
-  link.href = this.action;
-
   const action = mergeUrlParams(Object.fromEntries(new FormData(this)), this.action);
 
   event.preventDefault();

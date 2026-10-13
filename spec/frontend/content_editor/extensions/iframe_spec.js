@@ -1,5 +1,6 @@
 import { builders } from 'prosemirror-test-builder';
 import { iframeProviders } from 'helpers/iframe_providers';
+import { buildIframeEmbed, YOUTUBE_URL, YOUTUBE_EMBED_URL } from 'helpers/iframe_embeds';
 import Iframe from '~/content_editor/extensions/iframe';
 import Image from '~/content_editor/extensions/image';
 import { createTestEditor } from '../test_utils';
@@ -10,11 +11,10 @@ describe('content_editor/extensions/iframe', () => {
   let p;
   let iframe;
 
-  const mediaContainer = (src, providerId = 'youtube') =>
-    `<span class="media-container img-container"><img class="js-render-iframe" src="${src}" data-iframe-provider-id="${providerId}"></span>`;
+  const setContent = (element) => tiptapEditor.commands.setContent(element.outerHTML);
 
-  const parsedNodeTypes = (html) => {
-    tiptapEditor.commands.setContent(html);
+  const parsedNodeTypes = (element) => {
+    setContent(element);
 
     return tiptapEditor.getJSON().content[0].content.map((node) => node.type);
   };
@@ -35,21 +35,14 @@ describe('content_editor/extensions/iframe', () => {
   });
 
   describe('parsing HTML', () => {
-    it('parses an img with js-render-iframe class inside a media-container as an iframe node', () => {
-      tiptapEditor.commands.setContent(
-        '<span class="media-container img-container">' +
-          '<img class="js-render-iframe" src="https://www.youtube.com/embed/abc123" ' +
-          'data-iframe-canonical-src="https://www.youtube.com/watch?v=abc123" ' +
-          'data-iframe-provider-id="youtube" ' +
-          'data-title="YouTube video" width="560" height="315">' +
-          '</span>',
-      );
+    it('parses an embed container as an iframe node', () => {
+      setContent(buildIframeEmbed({ title: 'YouTube video', width: '560', height: '315' }));
 
       const expected = doc(
         p(
           iframe({
-            src: 'https://www.youtube.com/embed/abc123',
-            canonicalSrc: 'https://www.youtube.com/watch?v=abc123',
+            src: YOUTUBE_EMBED_URL,
+            canonicalSrc: YOUTUBE_URL,
             providerId: 'youtube',
             alt: 'YouTube video',
             width: '560',
@@ -61,26 +54,8 @@ describe('content_editor/extensions/iframe', () => {
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expected.toJSON());
     });
 
-    it('does not provide a canonical source when it is absent', () => {
-      tiptapEditor.commands.setContent(
-        mediaContainer('https://embed.figma.com/design/abc?embed-host=gitlab', 'figma'),
-      );
-
-      const expected = doc(
-        p(
-          iframe({
-            src: 'https://embed.figma.com/design/abc?embed-host=gitlab',
-            canonicalSrc: null,
-            providerId: 'figma',
-          }),
-        ),
-      );
-
-      expect(tiptapEditor.state.doc.toJSON()).toEqual(expected.toJSON());
-    });
-
     it('keeps the provider when re-parsing its own rendered HTML', () => {
-      tiptapEditor.commands.setContent(mediaContainer('https://www.youtube.com/embed/abc123'));
+      setContent(buildIframeEmbed());
       tiptapEditor.commands.setContent(tiptapEditor.getHTML());
 
       expect(tiptapEditor.getJSON().content[0].content[0]).toMatchObject({
@@ -90,26 +65,18 @@ describe('content_editor/extensions/iframe', () => {
     });
 
     it('does not parse a regular img as an iframe node', () => {
-      tiptapEditor.commands.setContent('<img src="https://example.com/image.png" alt="image">');
+      const img = document.createElement('img');
+      img.setAttribute('src', 'https://example.com/image.png');
+      img.setAttribute('alt', 'image');
 
-      const json = tiptapEditor.getJSON();
-      const nodeTypes = json.content[0].content.map((n) => n.type);
-
-      expect(nodeTypes).not.toContain('iframe');
-      expect(nodeTypes).toContain('image');
+      expect(parsedNodeTypes(img)).toEqual(['image']);
     });
 
-    it('does not parse an img without js-render-iframe class in a media-container', () => {
-      tiptapEditor.commands.setContent(
-        '<span class="media-container img-container">' +
-          '<img src="https://example.com/image.png" alt="image">' +
-          '</span>',
-      );
+    it('does not parse a media container without the embed marker as an iframe node', () => {
+      const embed = buildIframeEmbed();
+      embed.classList.remove('js-render-iframe');
 
-      const json = tiptapEditor.getJSON();
-      const nodeTypes = json.content[0].content.map((n) => n.type);
-
-      expect(nodeTypes).not.toContain('iframe');
+      expect(parsedNodeTypes(embed)).toEqual(['text']);
     });
   });
 
@@ -126,11 +93,8 @@ describe('content_editor/extensions/iframe', () => {
       ${"the provider's domain in the query string"}  | ${'https://evil.example.com/embed?u=www.youtube.com'}
       ${"the provider's domain in the userinfo"}      | ${'https://www.youtube.com@evil.example.com/embed'}
       ${"another provider's origin"}                  | ${'https://embed.figma.com/design/abc?embed-host=gitlab'}
-    `('parses $description as an image node rather than an iframe node', ({ src }) => {
-      const nodeTypes = parsedNodeTypes(mediaContainer(src));
-
-      expect(nodeTypes).not.toContain('iframe');
-      expect(nodeTypes).toContain('image');
+    `('parses $description as the fallback link rather than an iframe node', ({ src }) => {
+      expect(parsedNodeTypes(buildIframeEmbed({ src }))).toEqual(['text']);
     });
     /* eslint-enable no-script-url */
 
@@ -140,46 +104,22 @@ describe('content_editor/extensions/iframe', () => {
       ${'no provider'}                  | ${''}
       ${'an Object.prototype property'} | ${'constructor'}
     `(
-      'parses an allowed src attributed to $description as an image node rather than an iframe node',
+      'parses an allowed src attributed to $description as the fallback link rather than an iframe node',
       ({ providerId }) => {
-        const nodeTypes = parsedNodeTypes(
-          mediaContainer('https://www.youtube.com/embed/abc123', providerId),
-        );
-
-        expect(nodeTypes).not.toContain('iframe');
-        expect(nodeTypes).toContain('image');
+        expect(parsedNodeTypes(buildIframeEmbed({ providerId }))).toEqual(['text']);
       },
     );
-
-    it("parses a disallowed src with the provider's canonical src as an image node", () => {
-      const nodeTypes = parsedNodeTypes(
-        '<span class="media-container img-container">' +
-          '<img class="js-render-iframe" src="javascript:alert(document.domain)" ' +
-          'data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" ' +
-          'data-iframe-provider-id="youtube">' +
-          '</span>',
-      );
-
-      expect(nodeTypes).not.toContain('iframe');
-      expect(nodeTypes).toContain('image');
-    });
 
     it('does not parse an iframe node when iframe rendering is disabled', () => {
       window.gon.iframe_rendering_providers = null;
 
-      const nodeTypes = parsedNodeTypes(mediaContainer('https://www.youtube.com/embed/abc123'));
-
-      expect(nodeTypes).not.toContain('iframe');
-      expect(nodeTypes).toContain('image');
+      expect(parsedNodeTypes(buildIframeEmbed())).toEqual(['text']);
     });
 
     it('does not parse an iframe node when the feature flag is disabled', () => {
       window.gon.features.allowIframesInMarkdown = false;
 
-      const nodeTypes = parsedNodeTypes(mediaContainer('https://www.youtube.com/embed/abc123'));
-
-      expect(nodeTypes).not.toContain('iframe');
-      expect(nodeTypes).toContain('image');
+      expect(parsedNodeTypes(buildIframeEmbed())).toEqual(['text']);
     });
   });
 });

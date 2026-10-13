@@ -2060,6 +2060,10 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'GET /runners/:id/jobs' do
+    before do
+      stub_feature_flags(lateral_runner_jobs_api_pagination: false)
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_runner do
       let(:boundary_object) { :instance }
       let(:user) { admin }
@@ -2122,6 +2126,61 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
               a_hash_including('id' => jobs[1].id),
               a_hash_including('id' => jobs[2].id)
             ])
+          end
+
+          context 'with lateral runner jobs API pagination' do
+            context 'when the feature flag is disabled' do
+              before do
+                stub_feature_flags(lateral_runner_jobs_api_pagination: false)
+              end
+
+              it 'uses the legacy query and includes total headers' do
+                expect_next_instance_of(::Ci::RunnerJobsFinder) do |finder|
+                  expect(finder).to receive(:execute).and_call_original
+                end
+
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers['X-Total']).to eq('2')
+                expect(response.headers['X-Total-Pages']).to eq('1')
+              end
+            end
+
+            context 'when the feature flag is enabled' do
+              before do
+                stub_feature_flags(lateral_runner_jobs_api_pagination: true)
+              end
+
+              it 'uses the lateral query and includes total headers' do
+                expect_next_instance_of(::Ci::RunnerJobsFinder) do |finder|
+                  expect(finder).to receive(:execute).and_call_original
+                end
+
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers['X-Total']).to eq('2')
+                expect(response.headers['X-Total-Pages']).to eq('1')
+                expect(json_response.pluck('id')).to match_array([jobs[1].id, jobs[2].id])
+              end
+
+              it 'returns the requested page in the effective order' do
+                additional_jobs = create_list(
+                  :ci_build,
+                  3,
+                  runner_manager: shared_runner_manager1,
+                  pipeline: create(:ci_pipeline, project: project)
+                )
+                expected_ids = (jobs[1, 2] + additional_jobs).sort_by(&:id).reverse.slice(2, 2).map(&:id)
+
+                get api(path, current_user), params: { page: 2, per_page: 2, order_by: 'id', sort: 'desc' }
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers['X-Total']).to eq('5')
+                expect(json_response.pluck('id')).to eq(expected_ids)
+              end
+            end
           end
 
           it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil, invalid_sort: nil do
@@ -2219,6 +2278,39 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to match([a_hash_including('id' => jobs[6].id)])
+            end
+
+            context 'with lateral authorization enabled' do
+              before do
+                stub_feature_flags(lateral_runner_jobs_api_pagination: true)
+              end
+
+              it 'returns only authorized jobs with keyset pagination' do
+                get api(path, current_user), params: { pagination: 'keyset', per_page: 1, order_by: 'id', sort: 'asc' }
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(json_response.pluck('id')).to eq([jobs[6].id])
+              end
+
+              it 'keeps project isolation and exact totals' do
+                expect_next_instance_of(::Ci::RunnerJobsFinder) do |finder|
+                  expect(finder).to receive(:execute).and_call_original
+                end
+
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers['X-Total']).to eq('1')
+                expect(json_response.pluck('id')).to eq([jobs[6].id])
+              end
+
+              it 'filters by status before paginating' do
+                get api(path, current_user), params: { status: 'failed' }
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers['X-Total']).to eq('0')
+                expect(json_response).to be_empty
+              end
             end
 
             context 'with request authorized with access token' do
@@ -2471,7 +2563,15 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       context 'with project runner' do
         let(:runner) { project_runner }
 
+        before do
+          stub_feature_flags(lateral_runner_jobs_api_pagination: true)
+        end
+
         it 'returns jobs from the runner manager' do
+          expect_next_instance_of(::Ci::RunnerJobsFinder) do |finder|
+            expect(finder).to receive(:execute).and_call_original
+          end
+
           perform_request
 
           expect(response).to have_gitlab_http_status(:ok)

@@ -130,9 +130,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
           wait_for_requests
         end
 
-        it 'allows editing the comment from the Overview tab',
-          skip: 'Rapid Diffs: discussions store not reactive (gitlab#602723); ' \
-            'https://gitlab.com/gitlab-org/gitlab/-/issues/628497' do
+        it 'allows editing the comment from the Overview tab' do
           visit(merge_request_path(merge_request))
           click_button('Edit comment')
           fill_in(:note_note, with: 'edit whitespace comment')

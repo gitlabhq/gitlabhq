@@ -155,6 +155,7 @@ group:
   - duo_workflow
   - read_advanced_dependency_management
   - read_ai_catalog_flow
+  - read_ai_catalog_item
   - read_ai_catalog_third_party_flow
   - read_ai_foundational_flow
   - read_audit_event

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_category: :system_access do
+RSpec.describe PersonalAccessTokens::ExpiringWorker, feature_category: :system_access do
   subject(:worker) { described_class.new }
 
   shared_examples 'sends notification about expiry of bot user tokens' do

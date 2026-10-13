@@ -478,7 +478,6 @@ methods:
   - update_wiki_size
   ee/app/models/ee/project.rb:
   - mirror_last_update_failed?
-  - search_by_visibility
   - group_ldap_synced?
   - upstream_projects_count
   ee/app/models/ee/user.rb:

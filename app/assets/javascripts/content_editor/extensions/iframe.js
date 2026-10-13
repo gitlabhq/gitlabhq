@@ -14,45 +14,27 @@ export default Node.create({
     return {
       src: {
         default: null,
-        parseHTML: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          return img.getAttribute('src');
-        },
+        parseHTML: (element) => element.dataset.iframeSrc,
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          return img.dataset.iframeCanonicalSrc;
-        },
+        parseHTML: (element) => element.dataset.iframeCanonicalSrc,
       },
       providerId: {
         default: null,
-        parseHTML: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          return img.dataset.iframeProviderId;
-        },
+        parseHTML: (element) => element.dataset.iframeProviderId,
       },
       alt: {
         default: null,
-        parseHTML: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          return img.dataset.title || img.getAttribute('alt');
-        },
+        parseHTML: (element) => element.dataset.title,
       },
       width: {
         default: null,
-        parseHTML: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          return img.getAttribute('width');
-        },
+        parseHTML: (element) => element.dataset.width,
       },
       height: {
         default: null,
-        parseHTML: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          return img.getAttribute('height');
-        },
+        parseHTML: (element) => element.dataset.height,
       },
     };
   },
@@ -61,34 +43,30 @@ export default Node.create({
     return [
       {
         priority: PARSE_HTML_PRIORITY_HIGHEST,
-        tag: 'span.media-container.img-container',
-        getAttrs: (element) => {
-          const img = element.querySelector('img.js-render-iframe');
-          if (!img) return false;
-          if (!isIframeSrcAllowed(img.getAttribute('src'), img.dataset.iframeProviderId))
-            return false;
-          return null;
-        },
+        tag: 'span.js-render-iframe',
+        getAttrs: (element) =>
+          isIframeSrcAllowed(element.dataset.iframeSrc, element.dataset.iframeProviderId)
+            ? null
+            : false,
       },
     ];
   },
 
   renderHTML({ node }) {
+    const { src, canonicalSrc, providerId, alt, width, height } = node.attrs;
+
     return [
       'span',
-      { class: 'media-container img-container' },
-      [
-        'img',
-        {
-          class: 'js-render-iframe',
-          src: node.attrs.src,
-          'data-iframe-canonical-src': node.attrs.canonicalSrc,
-          'data-iframe-provider-id': node.attrs.providerId,
-          'data-title': node.attrs.alt,
-          width: node.attrs.width,
-          height: node.attrs.height,
-        },
-      ],
+      {
+        class: 'media-container iframe-container js-render-iframe',
+        'data-iframe-src': src,
+        'data-iframe-canonical-src': canonicalSrc,
+        'data-iframe-provider-id': providerId,
+        'data-title': alt,
+        'data-width': width,
+        'data-height': height,
+      },
+      ['a', { href: canonicalSrc }, alt || canonicalSrc],
     ];
   },
 

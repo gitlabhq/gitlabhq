@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::CleanupStaleSymbolsWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Nuget::CleanupStaleSymbolsWorker, feature_category: :package_registry do
   let(:worker) { described_class.new }
 
   it_behaves_like 'an idempotent worker'

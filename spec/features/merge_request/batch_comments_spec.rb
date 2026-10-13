@@ -157,9 +157,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
         visit_overview
       end
 
-      it 'can add comment to review',
-        skip: 'Rapid Diffs: thread resolution counter/timeline not reactive under useMergeRequestDiscussions store (gitlab#602723); ' \
-          'https://gitlab.com/gitlab-org/gitlab/-/issues/628497' do
+      it 'can add comment to review' do
         write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a draft comment', button_text: 'Add to review')
 
         expect(page).to have_selector('.draft-note', text: 'Its a draft comment')

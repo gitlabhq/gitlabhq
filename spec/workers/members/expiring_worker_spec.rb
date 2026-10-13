@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::ExpiringWorker, type: :worker, feature_category: :system_access do
+RSpec.describe Members::ExpiringWorker, feature_category: :system_access do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

@@ -27,6 +27,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_c
 
   context 'when pipelines exist', :aggregate_failures do
     let(:sha_in_predicate) { /"p_ci_pipelines"\."sha" IN \(([^)]+)\)/ }
+    let(:ref_in_predicate) { /"p_ci_pipelines"\."ref" IN \(([^)]+)\)/ }
 
     let_it_be(:heads_wip_pipeline) do
       ref = branches.find { |branch| branch.name == 'wip' }
@@ -136,15 +137,15 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_c
         expect(pipeline_for_v1_0_0_status).to eq(tags_v1_0_0_pipeline_2)
       end
 
-      it 'filters the tag pipeline lookup by tag shas' do
+      it 'filters the tag pipeline lookup by tag names' do
         recorder = ActiveRecord::QueryRecorder.new { execute }
         lookup_query = pipeline_lookup_query(recorder)
-        expected_shas = refs.filter_map { |ref| ref.dereferenced_target&.sha }.uniq
-        tag_object_sha = tags.find { |tag| tag.name == 'v1.1.0' }.target
+        expected_names = refs.filter_map { |ref| Ci::Pipeline.connection.quote(ref.name) if ref.dereferenced_target }
+          .uniq
 
-        expect(lookup_query).to match(sha_in_predicate)
-        expect(lookup_query[sha_in_predicate, 1].scan(/\h{40}/)).to match_array(expected_shas)
-        expect(lookup_query[sha_in_predicate, 1]).not_to include(tag_object_sha)
+        expect(lookup_query).to match(ref_in_predicate)
+        expect(lookup_query[ref_in_predicate, 1].scan(/'(?:''|[^'])*'/)).to match_array(expected_names)
+        expect(lookup_query).not_to match(sha_in_predicate)
       end
 
       context 'when the sha lookup flag is disabled' do
@@ -158,6 +159,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute', feature_category: :source_c
 
           expect(lookup_query).to be_present
           expect(lookup_query).not_to match(sha_in_predicate)
+          expect(lookup_query).not_to match(ref_in_predicate)
           expect(pipeline_for_v1_0_0_status).to eq(tags_v1_0_0_pipeline_2)
         end
       end

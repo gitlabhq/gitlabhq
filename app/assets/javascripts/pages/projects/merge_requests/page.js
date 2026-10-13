@@ -14,6 +14,7 @@ import { observable } from '~/lib/utils/observable';
 import { initRapidDiffsToggle } from '~/rapid_diffs/app/init_rapid_diffs_toggle';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
+import { observeStickyHeaderStuckState } from '~/merge_requests/sticky_header_stuck_state';
 import initShow from './init_merge_request_show';
 import getStateQuery from './queries/get_state.query.graphql';
 
@@ -25,8 +26,9 @@ const tabData = observable('mr_page_tab_data', {
 
 const initMrStickyHeader = (store) => {
   const el = document.getElementById('js-merge-sticky-header');
+  const supportsScrollState = CSS.supports('container-type: scroll-state');
 
-  if (el && !CSS.supports('container-type: scroll-state')) {
+  if (el && !supportsScrollState) {
     const { data } = el.dataset;
 
     let parsedData;
@@ -86,6 +88,18 @@ const initMrStickyHeader = (store) => {
         });
       },
     });
+  } else if (el) {
+    const flashContainer = document.querySelector('.flash-container.sticky');
+    const stickyWrapper = document.querySelector('.js-merge-request-sticky-header-wrapper');
+
+    if (flashContainer && stickyWrapper) {
+      // The wrapper pins at the application header height; reuse its resolved offset as the
+      // observer trigger line so we don't duplicate that value in JS.
+      const stickyTop = parseInt(window.getComputedStyle(stickyWrapper).top, 10) || 0;
+      const observer = observeStickyHeaderStuckState(el, flashContainer, stickyTop);
+
+      window.addEventListener('beforeunload', () => observer?.disconnect());
+    }
   }
 };
 

@@ -469,6 +469,7 @@ globally or for individual jobs:
 - [`GIT_CLONE_EXTRA_FLAGS`](#git-clone-extra-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
+- [`GIT_LFS_SKIP_SMUDGE`](#skip-git-lfs-objects)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_SUBMODULE_DEPTH`](#git-submodule-depth)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
@@ -797,6 +798,21 @@ variables:
 
 When enabled, GitLab Runner uses a [CI/CD job token](../jobs/ci_job_token.md) to clone the submodules.
 The token uses the permissions of the user executing the job and does not require SSH credentials.
+
+### Skip Git LFS objects
+
+Use the `GIT_LFS_SKIP_SMUDGE` variable to skip downloading [Git LFS](../../topics/git/lfs/_index.md)
+objects when the runner checks out the repository. When set to `true`, the runner does not
+run `git lfs pull`, and files tracked by Git LFS are checked out as pointer files instead of
+their content.
+
+```yaml
+variables:
+  GIT_LFS_SKIP_SMUDGE: "true"
+```
+
+Any tool in the job that reads files tracked by Git LFS reads the pointer files, not the file content.
+For example, a security scanner does not analyze the content of those files, and the job still succeeds.
 
 ### Shallow cloning
 

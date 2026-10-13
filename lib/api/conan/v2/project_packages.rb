@@ -65,10 +65,6 @@ module API
           end
           strong_memoize_attr :package_revision
 
-          def v1_revisions_backward_compatibility_enabled?
-            Feature.enabled?(:packages_conan_v1_revisions_backward_compatibility, project)
-          end
-
           def default_recipe_revision?
             params[:recipe_revision] == ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
           end
@@ -77,13 +73,11 @@ module API
           # to the default "0" revision when installable v1 files exist, so files that are
           # pending destruction or errored cannot advertise a phantom revision.
           def v1_recipe_revision_fallback?
-            v1_revisions_backward_compatibility_enabled? &&
-              package.installable_package_files.without_conan_recipe_revision.exists?
+            package.installable_package_files.without_conan_recipe_revision.exists?
           end
 
           def v1_package_revision_fallback?
-            v1_revisions_backward_compatibility_enabled? &&
-              default_recipe_revision? &&
+            default_recipe_revision? &&
               package.installable_package_files
                 .with_conan_package_reference(params[:conan_package_reference])
                 .without_conan_recipe_revision

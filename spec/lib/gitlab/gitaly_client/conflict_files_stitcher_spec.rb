@@ -113,5 +113,58 @@ RSpec.describe Gitlab::GitalyClient::ConflictFilesStitcher do
       expect(conflict_files[0].their_path).not_to eq(their_path_1)
       expect(conflict_files[0].our_path).not_to eq(our_path_1)
     end
+
+    it 'reassembles multi-byte characters split across binary chunks' do
+      content = "<<<<<<< ours\nテスト\n=======\nтест\n>>>>>>> theirs\n"
+      bytes = content.b
+      header = double(
+        repository: target_gitaly_repository,
+        commit_oid: 'f00',
+        ancestor_path: 'utf8.txt',
+        our_path: 'utf8.txt',
+        their_path: 'utf8.txt',
+        our_mode: 0644
+      )
+
+      messages = [double(files: [double(header: header)])] +
+        bytes.bytes.each_slice(5).map { |slice| double(files: [double(header: nil, content: slice.pack('C*'))]) }
+
+      conflict_files = described_class.new(messages, target_repository.gitaly_repository).to_a
+
+      expect(conflict_files.first.content).to eq(content)
+      expect(conflict_files.first.content.encoding).to eq(Encoding::UTF_8)
+    end
+
+    it 'allocates memory linearly in the size of the file content' do
+      require 'memory_profiler'
+
+      chunk = 'x' * 16.kilobytes
+      chunk_count = 64
+      header = double(
+        repository: target_gitaly_repository,
+        commit_oid: 'f00',
+        ancestor_path: 'large.json',
+        our_path: 'large.json',
+        their_path: 'large.json',
+        our_mode: 0644
+      )
+
+      messages = [double(files: [double(header: header)])] +
+        Array.new(chunk_count) { double(files: [double(header: nil, content: chunk)]) }
+
+      conflict_files = nil
+      report = MemoryProfiler.report do
+        conflict_files = described_class.new(messages, target_repository.gitaly_repository).to_a
+      end
+
+      file_size = chunk.bytesize * chunk_count
+
+      expect(conflict_files.first.raw_content.bytesize).to eq(file_size)
+      expect(conflict_files.first.content).to eq(chunk * chunk_count)
+      # Rebuilding the content with a new string per chunk allocates
+      # O(chunk_count^2) bytes (about 33 MB here) instead of O(file_size).
+      # The linear approach allocates a few multiples of file_size, so leave headroom.
+      expect(report.total_allocated_memsize).to be < (10 * file_size)
+    end
   end
 end

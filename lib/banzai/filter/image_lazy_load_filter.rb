@@ -22,8 +22,6 @@ module Banzai
 
       class << self
         def apply_lazy_load(img)
-          return if img.classes.include?('js-render-iframe')
-
           img['decoding'] = 'async'
           img.add_class('lazy')
           img['data-src'] = img['src']

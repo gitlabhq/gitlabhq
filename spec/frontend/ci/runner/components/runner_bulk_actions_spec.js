@@ -317,6 +317,21 @@ describe('RunnerBulkActions', () => {
         });
       });
 
+      describe('when the component is destroyed before deletion completes', () => {
+        it('does not hide the modal', async () => {
+          bulkRunnerDeleteHandler.mockResolvedValue({
+            data: {
+              bulkRunnerDelete: { deletedIds: mockCheckedRunnerIds(), errors: [] },
+            },
+          });
+          confirmDeletion();
+          wrapper.destroy();
+          await waitForPromises();
+
+          expect(mockHideModal).not.toHaveBeenCalled();
+        });
+      });
+
       describe('when deletion is successful', () => {
         let deletedIds;
 

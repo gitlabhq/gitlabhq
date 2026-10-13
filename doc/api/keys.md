@@ -255,11 +255,13 @@ following response attributes:
 | `deploy_keys_projects[].project_id`       | integer | ID of the project. |
 | `deploy_keys_projects[].updated_at`       | string  | Last update date and time in ISO 8601 format. |
 | `expires_at`                              | string  | Expiration date and time of the deploy key in ISO 8601 format. |
+| `fingerprint`                             | string  | MD5 fingerprint of the deploy key. Not available on FIPS-enabled systems. |
+| `fingerprint_sha256`                      | string  | SHA256 fingerprint of the deploy key, without the `SHA256:` prefix. |
 | `id`                                      | integer | ID of the deploy key. |
 | `key`                                     | string  | Deploy key content. |
 | `last_used_at`                            | string  | Last usage date and time of the deploy key in ISO 8601 format. |
 | `title`                                   | string  | Title of the deploy key. |
-| `usage_type`                              | string  | Usage type of the deploy key (for example, `auth` or `auth_and_signing`). |
+| `usage_type`                              | string  | Usage type of the deploy key. Always `auth_and_signing`. |
 | `user`                                    | object  | User associated with the deploy key. |
 | `user.avatar_url`                         | string  | URL of the user's avatar. |
 | `user.bio`                                | string  | Biography of the user. |
@@ -318,7 +320,9 @@ Example response:
   "created_at": "2019-11-14T15:11:13.222Z",
   "expires_at": "2020-05-05T00:00:00.000Z",
   "last_used_at": "2020-04-07T00:00:00.000Z",
-  "usage_type": "auth",
+  "usage_type": "auth_and_signing",
+  "fingerprint": "ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1",
+  "fingerprint_sha256": "nUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo/lCg",
   "user": {
     "id": 1,
     "name": "Administrator",

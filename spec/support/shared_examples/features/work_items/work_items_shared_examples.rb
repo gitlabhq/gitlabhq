@@ -927,44 +927,14 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   end
 end
 
+# Toggling the widget body and the add form is covered by
+# ee/spec/frontend/integration/work_items/details/linked_items_spec.js
 RSpec.shared_examples 'work items linked items' do |is_group = false|
   before_all do
     # Ensure support bot user is created so creation doesn't count towards query limit
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
     create(:support_bot)
-  end
-
-  it 'toggles widget body and form', :aggregate_failures do
-    within_testid('work-item-relationships') do
-      expect(page).to have_selector('[data-testid="link-item-add-button"]')
-      expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
-      expect(page).not_to have_selector('[data-testid="work-item-linked-items-list"]')
-
-      expect(page).not_to have_selector('[data-testid="crud-empty"]')
-
-      click_button 'Expand'
-
-      expect(page).to have_selector('[data-testid="crud-empty"]')
-
-      click_button 'Collapse'
-
-      expect(page).not_to have_selector('[data-testid="crud-empty"]')
-
-      click_button 'Expand'
-
-      expect(page).to have_selector('[data-testid="crud-empty"]')
-
-      expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
-
-      find('[data-testid="link-item-add-button"]').click
-
-      expect(page).to have_selector('[data-testid="link-work-item-form"]')
-
-      click_button 'Cancel'
-
-      expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
-    end
   end
 
   it 'links and unlinks a new item by text, iid, wildcard iid, and url', :aggregate_failures do

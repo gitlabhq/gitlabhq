@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Npm::CreateMetadataCacheWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Npm::CreateMetadataCacheWorker, feature_category: :package_registry do
   describe '#perform', :aggregate_failures do
     let_it_be(:package) { create(:npm_package) }
 

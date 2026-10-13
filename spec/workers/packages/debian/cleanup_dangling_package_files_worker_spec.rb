@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::CleanupDanglingPackageFilesWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Debian::CleanupDanglingPackageFilesWorker, feature_category: :package_registry do
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
 
   it 'has :until_executed deduplicate strategy' do

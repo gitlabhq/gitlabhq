@@ -1,6 +1,6 @@
 ---
-source_checksum: 16011c5a8ddff0f8
-distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
+source_checksum: 030490f3d250fc6f
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -115,6 +115,7 @@ distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 - Use lowercase names for all database objects (tables, indexes, views)
 - Follow [constraint naming convention guidelines](https://docs.gitlab.com/development/database/constraint_naming_convention/) for custom index and constraint names
 - Keep migration timestamps within three weeks of the anticipated merge date; use `scripts/refresh-migrations-timestamps` when rebasing old branches
+- Use the current UTC timestamp from `date -u +%Y%m%d%H%M%S` as the migration version; DO NOT hand-type one (the `Migration/RoundTimestamp` cop rejects versions ending in `0000`)
 - DO NOT set a migration timestamp earlier than the previous required upgrade stop
 
 ### Schema Files and Checksums

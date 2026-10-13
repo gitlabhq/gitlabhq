@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::GenerateDistributionWorker, type: :worker, feature_category: :package_registry do
+RSpec.describe Packages::Debian::GenerateDistributionWorker, feature_category: :package_registry do
   describe '#perform' do
     subject { described_class.new.perform(container_type_as_string, distribution_id) }
 

@@ -22,10 +22,10 @@ export default class AssetResolver {
     if (!html) return { src: canonicalSrc, providerId: null };
 
     const { body } = parser.parseFromString(html, 'text/html');
-    const img = body.querySelector('img.js-render-iframe');
-    if (!img) return { src: canonicalSrc, providerId: null };
+    const embed = body.querySelector('.js-render-iframe');
+    if (!embed) return { src: canonicalSrc, providerId: null };
 
-    return { src: img.getAttribute('src'), providerId: img.dataset.iframeProviderId ?? null };
+    return { src: embed.dataset.iframeSrc, providerId: embed.dataset.iframeProviderId };
   });
 
   resolveReference = memoize(async (originalText) => {

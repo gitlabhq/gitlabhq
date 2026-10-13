@@ -66,10 +66,6 @@ module MergeRequests
     end
 
     def patch_id_sha_for(merge_request)
-      unless Feature.enabled?(:patch_id_sha_fallback_when_diff_missing, merge_request.target_project)
-        return merge_request.current_patch_id_sha
-      end
-
       sha = params[:sha]
 
       # The API checked `sha` against the diff head before calling us, but a push can land in
