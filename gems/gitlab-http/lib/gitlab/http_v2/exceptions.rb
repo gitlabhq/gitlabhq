@@ -21,6 +21,7 @@ module Gitlab
     HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
       EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH,
+      Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT, Errno::ETIMEDOUT,
       Gitlab::HTTP_V2::BlockedUrlError, Gitlab::HTTP_V2::RedirectionTooDeep,
       Net::HTTPBadResponse, Gitlab::HTTP_V2::ResponseSizeTooLarge, Gitlab::HTTP_V2::MaxDecompressionSizeError,
       Gitlab::HTTP_V2::InvalidResponseError, Gitlab::HTTP_V2::HeaderInjectionError
