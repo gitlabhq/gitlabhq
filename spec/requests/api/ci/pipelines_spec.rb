@@ -69,7 +69,9 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         it 'includes pipeline source' do
           get api("/projects/#{project.id}/pipelines", user)
 
-          expect(json_response.first.keys).to contain_exactly(*%w[id iid project_id sha ref status web_url created_at updated_at source name])
+          expect(json_response.first.keys).to match_array(
+            %w[id iid project_id sha ref status web_url created_at updated_at source name]
+          )
         end
       end
 
@@ -1114,10 +1116,12 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       it 'has all the required keys in the response' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
-        expect(json_response.keys).to contain_exactly(*%w[
-          id iid project_id sha ref status web_url created_at updated_at source name before_sha tag yaml_errors user
-          started_at finished_at committed_at duration queued_duration coverage detailed_status archived
-        ])
+        expect(json_response.keys).to match_array(
+          %w[
+            id iid project_id sha ref status web_url created_at updated_at source name before_sha tag yaml_errors user
+            started_at finished_at committed_at duration queued_duration coverage detailed_status archived
+          ]
+        )
       end
 
       it 'returns project pipeline', :aggregate_failures do

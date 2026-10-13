@@ -60,6 +60,18 @@ describe('EmailOtpActionConfirm', () => {
         expect(findCheckbox().props('checked')).toBe(false);
       });
     });
+
+    describe('help text', () => {
+      it('renders the help text', () => {
+        expect(wrapper.find('.help-text').text()).toBe('my help text');
+      });
+
+      it('renders no help text when none is given', () => {
+        createComponent({ helpText: undefined });
+
+        expect(wrapper.find('.help-text').exists()).toBe(false);
+      });
+    });
   });
 
   describe('Modal', () => {

@@ -15,8 +15,6 @@ constants:
   - ACTIVE_SINCE_KEY
   app/controllers/projects/ml/models_controller.rb:
   - MAX_MODELS_PER_PAGE
-  app/helpers/users/callouts_helper.rb:
-  - PAGES_MOVED_CALLOUT
   app/models/concerns/integrations/base/chat_notification.rb:
   - EVENT_ACTIONS
   app/models/concerns/namespaces/stateful.rb:
@@ -516,7 +514,6 @@ methods:
   - set_validity_checks!
   ee/app/models/search/zoekt.rb:
   - index_in
-  - delete_in
   ee/app/models/secrets_management/base_secrets_manager.rb:
   - self.internal_server_url
   ee/app/models/security/category.rb:

@@ -120,6 +120,5 @@ A skipped merge train pipeline removes the merge request from the train because 
 successful.
 
 The title directive skips each merge request pipeline until you remove it.
-With merged results pipelines, pipelines can remain skipped after you remove the directive until the
-next push regenerates the virtual commit.
+To then run a pipeline, on the **Pipelines** tab of the merge request, select **Run pipeline**.
 A directive in a commit message applies only to the pipeline for that commit.

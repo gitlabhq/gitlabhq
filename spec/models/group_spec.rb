@@ -897,9 +897,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           let(:filter) { described_class.id_in(top_level_groups) }
 
           it "returns all traversal_ids" do
-            is_expected.to contain_exactly(
-              *top_level_groups.map { |group| [group.id] }
-            )
+            is_expected.to match_array(top_level_groups.map { |group| [group.id] })
           end
         end
 

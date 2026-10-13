@@ -21,6 +21,10 @@ module Mutations
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
         required: false,
         description: 'Status of the Web IDE Extension Marketplace opt-in for the user.'
+      argument :first_day_of_week, Types::Users::FirstDayOfWeekEnum,
+        required: false,
+        description: 'First day of the week in calendars and date pickers. ' \
+          'Set to `null` to use the instance default.'
       argument :issues_sort, Types::IssueSortEnum,
         required: false,
         description: 'Sort order for issue lists.'

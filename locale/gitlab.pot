@@ -766,6 +766,11 @@ msgid_plural "%{count} Contributions for %{label}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} Contribution in the last 12 months"
+msgid_plural "%{count} Contributions in the last 12 months"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} LOC/commit"
 msgstr ""
 
@@ -46480,6 +46485,9 @@ msgstr ""
 msgid "Integrations|Default settings are inherited from the instance level."
 msgstr ""
 
+msgid "Integrations|Default settings are inherited from the organization level."
+msgstr ""
+
 msgid "Integrations|Drag your file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
@@ -74876,10 +74884,10 @@ msgstr ""
 msgid "SecretsManagerPermissions|To use GitLab Secrets Manager, %{linkStart}start a trial or enable it with GitLab Credits%{linkEnd}."
 msgstr ""
 
-msgid "SecretsManagerPermissions|User permissions"
+msgid "SecretsManagerPermissions|Update"
 msgstr ""
 
-msgid "SecretsManagerPermissions|Write"
+msgid "SecretsManagerPermissions|User permissions"
 msgstr ""
 
 msgid "SecretsManagerTrial|%{percent}%% of GitLab Secrets Manager trial credits left."
@@ -88782,6 +88790,9 @@ msgstr ""
 msgid "Track what your team is working on and stay informed of changes"
 msgstr ""
 
+msgid "Tracked context is being updated. Please try again."
+msgstr ""
+
 msgid "Tracking"
 msgstr ""
 
@@ -95923,22 +95934,19 @@ msgstr ""
 msgid "Work items with this label were imported with a work item type name that could not be resolved in this namespace. They were assigned the default issue type instead."
 msgstr ""
 
+msgid "WorkItemBoard|All groups are hidden"
+msgstr ""
+
 msgid "WorkItemBoard|An error occurred while fetching more work items."
 msgstr ""
 
 msgid "WorkItemBoard|An error occurred while fetching work items for this column."
 msgstr ""
 
-msgid "WorkItemBoard|Boards show up to %{maxGroups} groups at a time, choose groups to build your board."
+msgid "WorkItemBoard|Boards show up to %{maxGroups} groups at a time. Choose groups using the %{boldStart}Display%{boldEnd} options."
 msgstr ""
 
 msgid "WorkItemBoard|Card actions"
-msgstr ""
-
-msgid "WorkItemBoard|Choose groups"
-msgstr ""
-
-msgid "WorkItemBoard|Choose which groups to show"
 msgstr ""
 
 msgid "WorkItemBoard|Column actions"
@@ -95975,6 +95983,9 @@ msgid "WorkItemBoard|Moved %{reference} to %{targetGroup}"
 msgstr ""
 
 msgid "WorkItemBoard|No items"
+msgstr ""
+
+msgid "WorkItemBoard|Show groups using the %{boldStart}Display%{boldEnd} options."
 msgstr ""
 
 msgid "WorkItemBoard|Something went wrong when fetching the board columns. Please try again."

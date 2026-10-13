@@ -112,6 +112,23 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.to define_enum_for(:organization_groups_projects_display).with_values(projects: 0, groups: 1) }
     end
 
+    describe 'first_day_of_week' do
+      it { is_expected.to allow_value(nil, *described_class::FIRST_DAYS_OF_WEEK.values).for(:first_day_of_week) }
+      it { is_expected.not_to allow_value(2).for(:first_day_of_week) }
+
+      context 'when updating a record with an invalid first day of week but not changing it' do
+        it 'remains valid when other attributes change' do
+          user_preference.first_day_of_week = 2
+          user_preference.save!(validate: false)
+          user_preference.reload
+
+          user_preference.roadmaps_sort = 'created_desc'
+
+          expect(user_preference).to be_valid
+        end
+      end
+    end
+
     describe 'timezone_valid' do
       context 'when timezone is nil' do
         it { is_expected.to be_valid }

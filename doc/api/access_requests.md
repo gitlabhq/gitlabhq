@@ -116,7 +116,7 @@ PUT /projects/:id/access_requests/:user_id/approve
 |----------------|----------------|----------|-------------|
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `user_id`      | integer        | yes      | The user ID of the access requester |
-| `access_level` | integer        | no       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), `50` (Owner). Default: `30`. |
+| `access_level` | integer        | no       | A valid [access level](../user/permissions.md#default-roles). Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). On Premium and Ultimate, `5` (Minimal access) is also valid when `id` is a top-level group. Default: `30`. |
 
 Example request:
 

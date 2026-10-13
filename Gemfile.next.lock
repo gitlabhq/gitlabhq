@@ -877,7 +877,7 @@ GEM
     gitlab-crystalball (1.1.3)
       git (< 4)
       ostruct (< 1)
-    gitlab-dangerfiles (4.12.0)
+    gitlab-dangerfiles (4.13.0)
       danger (>= 9.3.0)
       danger-gitlab (>= 8.0.0)
       rake (~> 13.0)
@@ -2557,7 +2557,7 @@ DEPENDENCIES
   gitlab-cloud-connector (~> 1.54)
   gitlab-configs!
   gitlab-crystalball (~> 1.1.3)
-  gitlab-dangerfiles (~> 4.12.0)
+  gitlab-dangerfiles (~> 4.13.0)
   gitlab-database-data_isolation!
   gitlab-deploy-driver-argo-rollouts!
   gitlab-duo-workflow-service-client (~> 0.15)!
@@ -3073,7 +3073,7 @@ CHECKSUMS
   gitlab-cloud-connector (1.54.0) sha256=46c93e3ce7d26ba8df37d31ea068770e0c8b23cf0fd9375b48d27d301ec7571e
   gitlab-configs (0.1.0)
   gitlab-crystalball (1.1.3) sha256=ea9a90d659704a042d763ce6d343a9f664cd650e0787a19adec7036ea4390861
-  gitlab-dangerfiles (4.12.0) sha256=0b8b7b00bf1ab155c3ab37cfc7c9815b5b82f403f85ddaf62aea137129403072
+  gitlab-dangerfiles (4.13.0) sha256=944ed1796fb9c5a3eb4a5348f938c9ed4f72a194d8e5783a14c7725fc942c230
   gitlab-database-data_isolation (0.1.0)
   gitlab-deploy-driver-argo-rollouts (0.7.0)
   gitlab-duo-workflow-service-client (0.15)

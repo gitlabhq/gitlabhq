@@ -158,6 +158,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         where(:state, :status, :result_count, :result) do
           'inactive' | :ok          | 2 | lazy { [inactive_token1.id, inactive_token2.id] }
           'active'   | :ok          | 2 | lazy { [active_token.id, current_users_token.id] }
+          'all'      | :ok          | 4 | lazy { PersonalAccessToken.ids }
           'asdf'     | :bad_request | 1 | { "error" => "state does not have a valid value" }
         end
 
@@ -441,6 +442,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         where(:state, :status, :result_count, :result) do
           'inactive' | :ok          | 1 | lazy { [users_inactive_token.id] }
           'active'   | :ok          | 1 | lazy { [current_users_token.id] }
+          'all'      | :ok          | 2 | lazy { [users_inactive_token.id, current_users_token.id] }
         end
 
         with_them do

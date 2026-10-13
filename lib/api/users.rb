@@ -1211,7 +1211,7 @@ module API
           end
           params do
             use :pagination
-            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filter tokens by state.'
+            use :access_token_params
           end
           route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance,
             assignable_when: [:admin]

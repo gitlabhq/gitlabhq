@@ -80,10 +80,12 @@ module PreferencesHelper
   end
 
   def first_day_of_week_choices
+    days = UserPreference::FIRST_DAYS_OF_WEEK
+
     [
-      [_('Sunday'), 0],
-      [_('Monday'), 1],
-      [_('Saturday'), 6]
+      [_('Sunday'), days[:sunday]],
+      [_('Monday'), days[:monday]],
+      [_('Saturday'), days[:saturday]]
     ]
   end
 

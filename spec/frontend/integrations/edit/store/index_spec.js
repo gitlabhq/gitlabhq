@@ -88,10 +88,11 @@ describe('Integration form store', () => {
 
     describe('isProjectLevel', () => {
       it.each`
-        integrationLevel              | expected
-        ${integrationLevels.PROJECT}  | ${true}
-        ${integrationLevels.GROUP}    | ${false}
-        ${integrationLevels.INSTANCE} | ${false}
+        integrationLevel                  | expected
+        ${integrationLevels.PROJECT}      | ${true}
+        ${integrationLevels.GROUP}        | ${false}
+        ${integrationLevels.ORGANIZATION} | ${false}
+        ${integrationLevels.INSTANCE}     | ${false}
       `('when integrationLevel is `$integrationLevel`', ({ integrationLevel, expected }) => {
         store.customState = { ...customState, integrationLevel };
         expect(store.isProjectLevel).toBe(expected);

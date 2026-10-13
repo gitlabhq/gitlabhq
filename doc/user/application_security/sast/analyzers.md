@@ -12,12 +12,6 @@ title: SAST analyzers
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
-
-{{< /history >}}
-
 Static application security testing (SAST) uses analyzers
 to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/_index.md#scanner), a third-party code analysis tool.
 

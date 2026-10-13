@@ -58,6 +58,7 @@ title: Database development guidelines
 ## Database growth control
 
 - [Overview](database_growth_control/_index.md)
+- [Datastore guidance](datastore_guidance.md)
 - [Data retention policy](database_growth_control/data_retention_policy.md)
 
 ## Debugging
@@ -79,6 +80,7 @@ title: Database development guidelines
 - [Client-side connection-pool](client_side_connection_pool.md)
 - [Constraints naming conventions](constraint_naming_convention.md)
 - [Creating enums](creating_enums.md)
+- [Datastore guidance](datastore_guidance.md)
 - [Data layout and access patterns](layout_and_access_patterns.md)
 - [Efficient `IN` operator queries](efficient_in_operator_queries.md)
 - [Fixed items models](../fixed_items_model.md)

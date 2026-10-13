@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Instrumentation::Redis, feature_category: :redis do
       expected_detail_stores = Gitlab::Redis::ALL_CLASSES.map(&:store_name)
                                  .map { |store_name| details_row.merge(storage: store_name) }
       expected_detail_stores << details_row.merge(storage: 'ActionCable')
-      expect(described_class.detail_store).to contain_exactly(*expected_detail_stores)
+      expect(described_class.detail_store).to match_array(expected_detail_stores)
     end
   end
 end

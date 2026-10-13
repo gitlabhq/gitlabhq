@@ -46,7 +46,7 @@ describe('sidebar reviewers', () => {
   let pinia;
   let queryHandler;
 
-  const mockReviewersResponse = ({ canUpdate = false } = {}) => ({
+  const mockReviewersResponse = ({ canUpdate = false, canRerequest = canUpdate } = {}) => ({
     data: {
       namespace: {
         __typename: 'Project',
@@ -61,6 +61,7 @@ describe('sidebar reviewers', () => {
           userPermissions: {
             __typename: 'MergeRequestPermissions',
             adminMergeRequest: canUpdate,
+            updateMergeRequest: canRerequest,
           },
         },
       },
@@ -136,6 +137,15 @@ describe('sidebar reviewers', () => {
     await waitForPromises();
 
     expect(findAssignButton().exists()).toBe(expected);
+  });
+
+  it('allows re-requesting a review without allowing reviewer edits for users who can only update', async () => {
+    createComponent({
+      queryResponse: mockReviewersResponse({ canUpdate: false, canRerequest: true }),
+    });
+    await waitForPromises();
+
+    expect(findReviewers().props()).toMatchObject({ editable: false, canRerequest: true });
   });
 
   it('calls the mediator when it saves the reviewers', () => {
@@ -225,6 +235,7 @@ describe('sidebar reviewers approval tracking', () => {
           userPermissions: {
             __typename: 'MergeRequestPermissions',
             adminMergeRequest: true,
+            updateMergeRequest: true,
           },
         },
       },

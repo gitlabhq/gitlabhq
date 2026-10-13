@@ -55,7 +55,7 @@ RSpec.describe Members::MembersWithParents, feature_category: :groups_and_projec
 
     with_them do
       it 'returns expected members' do
-        expect(members).to contain_exactly(*expected_members)
+        expect(members).to match_array(expected_members)
         expect(members).not_to include(*(group.members - expected_members))
       end
     end

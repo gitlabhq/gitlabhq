@@ -133,14 +133,6 @@ $work-item-overview-gap-width: 2rem;
    .work-item-attributes-wrapper {
     padding-inline: $gl-spacing-scale-3;
   }
-
-  .work-item-overview .work-item-overview-right-sidebar {
-    margin-top: 0;
-    grid-row-start: 1;
-    grid-column-start: 2;
-    grid-row-end: 50;
-    @apply gl-pb-10;
-  }
 }
 
 // There is no props to set the font weight class in GlToggle
@@ -670,4 +662,9 @@ pre[data-lang-params='duo-question'] {
 // same. Tailwind has no utility for the shared timeline token, so the rule lives here.
 .decision-log-item.is-target {
   background-color: var(--timeline-entry-target-background-color);
+}
+
+// Tailwind has no utility for the illustration base fill token, so the rule lives here.
+.board-empty-state-icon {
+  background-color: var(--gl-illustration-base-fill-color);
 }

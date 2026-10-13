@@ -1,0 +1,196 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# A second CNG GitLab, the "consumer", that signs in through the primary over OIDC and
+# the gitlab OAuth provider. It replaces the omnibus Docker consumer that
+# login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb used to boot itself.
+#
+# The consumer is a second release in the gitlab namespace. It shares the primary's
+# CNPG cluster (its own gitlabhq_consumer database, declared in values/gitlab-dev-stack.yaml)
+# and Valkey (database index 1, so the two Sidekiqs never see each other's queues),
+# needs no object storage, and gets its own Gitaly because repository storage cannot
+# be partitioned the same way.
+#
+# Opt-in, not part of the base rig. A job enables it from caproni.local.yaml with
+# QA_OIDC_CLIENT_ID, QA_OIDC_CLIENT_SECRET, QA_OIDC_IDP_URL and QA_OIDC_CONSUMER_URL
+# exported:
+#
+#   extends:
+#     - caproni.oidc-consumer.yaml
+#
+# After `caproni up`, scripts/seed_oidc_application.rb registers the same client ID
+# and secret on the primary as a Doorkeeper application.
+
+variables:
+  # Fail the config load, not the Helm install, when the handshake values are missing
+  QA_OIDC_CLIENT_ID: ${QA_OIDC_CLIENT_ID:?export QA_OIDC_CLIENT_ID}
+  QA_OIDC_CLIENT_SECRET: ${QA_OIDC_CLIENT_SECRET:?export QA_OIDC_CLIENT_SECRET}
+  QA_OIDC_IDP_URL: ${QA_OIDC_IDP_URL:?export QA_OIDC_IDP_URL}
+  QA_OIDC_CONSUMER_URL: ${QA_OIDC_CONSUMER_URL:?export QA_OIDC_CONSUMER_URL}
+  # The consumer's server-to-server calls go to the primary's Service, so pods never
+  # have to resolve the public hostname (cng.test locally lives only in /etc/hosts)
+  OIDC_IDP_INTERNAL_URL: http://gitlab-webservice-default.gitlab.svc:8181
+
+cluster:
+  network:
+    # Appended to the base list, so update-etc-hosts also writes the consumer's hostname
+    additional_hostnames:
+      - consumer.${BASE_DOMAIN}
+
+deployers:
+  oidc-consumer-secret:
+    type: kustomize
+    # kustomize apply does not create the namespace
+    needs: [prerequisites]
+    kustomize:
+      path: ./manifests/oidc-consumer
+      namespace: gitlab
+      # Written into a temporary copy of the kustomization at build time: the two
+      # provider hashes the spec used to write into the omnibus consumer's gitlab.rb
+      files:
+        openid_connect.yaml: |
+          name: 'openid_connect'
+          label: 'GitLab OIDC'
+          args:
+            name: 'openid_connect'
+            scope: ['openid', 'profile', 'email']
+            response_type: 'code'
+            issuer: '${QA_OIDC_IDP_URL}'
+            discovery: false
+            uid_field: 'preferred_username'
+            send_scope_to_token_endpoint: 'false'
+            client_options:
+              identifier: '${QA_OIDC_CLIENT_ID}'
+              secret: '${QA_OIDC_CLIENT_SECRET}'
+              redirect_uri: '${QA_OIDC_CONSUMER_URL}/users/auth/openid_connect/callback'
+              # Only the browser follows authorization_endpoint; issuer must match the id_token's iss
+              authorization_endpoint: '${QA_OIDC_IDP_URL}/oauth/authorize'
+              jwks_uri: '${OIDC_IDP_INTERNAL_URL}/oauth/discovery/keys'
+              userinfo_endpoint: '${OIDC_IDP_INTERNAL_URL}/oauth/userinfo'
+              token_endpoint: '${OIDC_IDP_INTERNAL_URL}/oauth/token'
+        gitlab.yaml: |
+          name: 'gitlab'
+          label: 'GitLab OAuth'
+          app_id: '${QA_OIDC_CLIENT_ID}'
+          app_secret: '${QA_OIDC_CLIENT_SECRET}'
+          args:
+            scope: 'read_user'
+            client_options:
+              # Token exchange and api/v4/user from the pod; the absolute authorize_url wins over site
+              site: '${OIDC_IDP_INTERNAL_URL}'
+              authorize_url: '${QA_OIDC_IDP_URL}/oauth/authorize'
+
+  gitlab:
+    # needs is deliberately not redeclared: nothing new is required, and a list here
+    # would replace the one caproni.github-oauth.yaml sets when both are extended
+    helm:
+      # Appended to the base overrides
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            # One Envoy for every Gateway of the class, so the consumer's Gateway shares
+            # the primary's proxy and port 80 instead of needing a second load balancer.
+            # Costs the primary's ClientTrafficPolicy: Envoy Gateway rejects it on a shared port
+            gatewayApiResources.envoy.proxySpec.mergeGateways: true
+
+  gitlab-consumer:
+    type: helm
+    # gitlab: the GatewayClass and the merged Envoy proxy come from the primary release
+    needs: [prerequisites, gitlab-dev-stack, oidc-consumer-secret, gitlab]
+    helm:
+      namespace: gitlab
+      # Reused as-is; everything consumer-specific is overridden below
+      values_file: ./values/gitlab.yaml
+      wait: true
+      timeout: 10m
+      release:
+        name: gitlab-consumer
+        chart: ${CHART}
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            global.hosts.domain: ${BASE_DOMAIN}
+            # Not the default gitlab.<domain>: that is the primary's hostname
+            global.hosts.gitlab.name: consumer.${BASE_DOMAIN}
+
+            # Its own chart-managed Gateway, bound to the primary's GatewayClass, and no
+            # Envoy of its own. The chart pins each listener to allowedRoutes: Same, so
+            # attaching to the primary's Gateway from another release is not an option.
+            global.gatewayApi.enabled: true
+            global.ingress.enabled: false
+            global.gatewayApi.installEnvoy: false
+            global.gatewayApi.configureEnvoy: false
+            global.gatewayApi.configureCertmanager: false
+            gatewayApiResources.gateway.protocol: HTTP
+            gatewayApiResources.class.name: gitlab-gw
+            # Dropped: the policy targets a Gateway by local name, and without
+            # configureEnvoy the chart renders none, so the base value cannot apply here
+            gatewayApiResources.envoy.clientTrafficPolicySpec: null
+
+            # Same CNPG cluster and Valkey as the primary; the dev-stack renders one
+            # *-conn secret per database, and the owner is shared, so the password is too
+            global.psql.database: gitlabhq_consumer
+            global.psql.password.secret: gitlab-dev-stack-gitlab-gitlabhq-consumer-conn
+            global.redis.database: 1
+
+            # No object storage: a login target uploads nothing. The connection is dropped
+            # too, or the chart still projects the base Garage secret into every pod
+            global.appConfig.object_store.enabled: false
+            global.appConfig.object_store.connection: null
+            global.appConfig.artifacts.enabled: false
+            global.appConfig.lfs.enabled: false
+            global.appConfig.uploads.enabled: false
+            global.appConfig.packages.enabled: false
+            global.appConfig.externalDiffs.enabled: false
+            global.appConfig.terraformState.enabled: false
+            global.appConfig.ciSecureFiles.enabled: false
+            global.appConfig.dependencyProxy.enabled: false
+
+            # A login target needs only migrations, webservice, sidekiq and gitaly
+            registry.enabled: false
+            global.kas.enabled: false
+            gitlab.gitlab-shell.enabled: false
+            gitlab.toolbox.enabled: false
+            global.pages.enabled: false
+
+            gitlab.webservice.minReplicas: 1
+            gitlab.webservice.maxReplicas: 1
+            gitlab.webservice.workerProcesses: 2
+            gitlab.webservice.resources.requests.cpu: 1
+            gitlab.webservice.resources.requests.memory: 2.5Gi
+            gitlab.webservice.resources.limits.cpu: 2
+            gitlab.webservice.resources.limits.memory: 4Gi
+            gitlab.sidekiq.minReplicas: 1
+            gitlab.sidekiq.maxReplicas: 1
+            gitlab.sidekiq.concurrency: 10
+            gitlab.sidekiq.resources.requests.cpu: 500m
+            gitlab.sidekiq.resources.requests.memory: 1.5Gi
+            gitlab.sidekiq.resources.limits.cpu: 500m
+            gitlab.sidekiq.resources.limits.memory: 1.5Gi
+            gitlab.gitaly.resources.requests.cpu: 200m
+            gitlab.gitaly.resources.requests.memory: 256Mi
+            gitlab.gitaly.resources.limits.cpu: 200m
+            gitlab.gitaly.resources.limits.memory: 256Mi
+
+            # Both providers from the one secret the oidc-consumer-secret deployer builds
+            global.appConfig.omniauth.enabled: true
+            global.appConfig.omniauth.allowSingleSignOn: [openid_connect, gitlab]
+            global.appConfig.omniauth.blockAutoCreatedUsers: false
+            global.appConfig.omniauth.providers:
+              - secret: gitlab-omniauth-consumer
+                key: openid_connect
+              - secret: gitlab-omniauth-consumer
+                key: gitlab
+
+            # Debt: repeats the base deployer's pins for the components that run here,
+            # because a value_map cannot reference another deployer's values
+            gitlab.gitaly.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly
+            gitlab.gitaly.image.tag: ${CNG_GITALY_TAG}
+            gitlab.migrations.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
+            gitlab.migrations.image.tag: ${CNG_TOOLBOX_TAG}
+            gitlab.sidekiq.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee
+            gitlab.sidekiq.image.tag: ${CNG_SIDEKIQ_TAG}
+            gitlab.sidekiq.annotations.commit: ${CI_COMMIT_SHORT_SHA}
+            gitlab.webservice.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-webservice-ee
+            gitlab.webservice.image.tag: ${CNG_WEBSERVICE_TAG}
+            gitlab.webservice.annotations.commit: ${CI_COMMIT_SHORT_SHA}
+            gitlab.webservice.workhorse.image: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee
+            gitlab.webservice.workhorse.tag: ${CNG_WORKHORSE_TAG}

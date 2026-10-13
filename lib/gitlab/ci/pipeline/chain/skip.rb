@@ -35,6 +35,8 @@ module Gitlab
 
           def commit_message_skips_ci?
             return false unless @pipeline.git_commit_message
+            # The merge ref message copies the MR title, which can be stale. The title check covers it.
+            return false if merge_ref_pipeline? && Feature.enabled?(:ci_skip_pipeline_from_mr_title, project)
 
             strong_memoize(:commit_message_skips_ci) do
               !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
@@ -48,6 +50,10 @@ module Gitlab
             !!(@command.merge_request.title =~ SKIP_PATTERN)
           end
           strong_memoize_attr :merge_request_title_skips_ci?
+
+          def merge_ref_pipeline?
+            @command.merge_request.present? && @pipeline.ref == @command.merge_request.merge_ref_path
+          end
 
           def config_exists?
             pipeline_config = ::Gitlab::Ci::ProjectConfig.new(

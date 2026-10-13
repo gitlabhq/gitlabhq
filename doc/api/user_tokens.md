@@ -147,6 +147,7 @@ Example response:
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
 - `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
 - `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632315) in GitLab 19.5.
+- `created_after`, `created_before`, `expires_after`, `expires_before`, `last_used_after`, `last_used_before`, `revoked`, `search`, and `sort` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260698) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -164,10 +165,19 @@ GET /users/:user_id/impersonation_tokens
 
 Supported attributes:
 
-| Attribute | Type    | Required | Description |
-|:----------|:--------|:---------|:------------|
-| `user_id` | integer | yes      | ID of user account |
-| `state`   | string  | no       | Filter tokens based on state. Possible values: `all`, `active`, or `inactive`. |
+| Attribute          | Type                | Required | Description |
+|:-------------------|:--------------------|:---------|:------------|
+| `user_id`          | integer             | yes      | ID of user account |
+| `created_after`    | datetime (ISO 8601) | no       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | no       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | no       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | no       | If defined, returns tokens that expire before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | no       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | no       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | no       | If `true`, only returns revoked tokens. |
+| `search`           | string              | no       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | no       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+| `state`            | string              | no       | If defined, returns tokens with the specified state. Possible values: `active`, `inactive`, or `all`. `all` returns tokens in any state. |
 
 Example request:
 

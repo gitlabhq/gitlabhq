@@ -12,6 +12,7 @@ class UserPreference < ApplicationRecord
   # extra methods that aren't really needed here.
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
   TIME_DISPLAY_FORMATS = { system: 0, non_iso_format: 1, iso_format: 2 }.freeze
+  FIRST_DAYS_OF_WEEK = { sunday: 0, monday: 1, saturday: 6 }.freeze
 
   belongs_to :user
 
@@ -38,6 +39,8 @@ class UserPreference < ApplicationRecord
     format: { with: ColorsHelper::HEX_COLOR_PATTERN },
     allow_blank: true
   validate :timezone_valid, if: -> { timezone_changed? }
+  validates :first_day_of_week, inclusion: { in: FIRST_DAYS_OF_WEEK.values }, allow_nil: true,
+    if: -> { first_day_of_week_changed? }
 
   validates :time_display_relative, allow_nil: false, inclusion: { in: [true, false] }
   validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }

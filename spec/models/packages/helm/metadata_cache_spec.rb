@@ -63,6 +63,7 @@ RSpec.describe Packages::Helm::MetadataCache, feature_category: :package_registr
   describe '#object_storage_key' do
     it_behaves_like 'object_storage_key callbacks' do
       let(:model) { build(:helm_metadata_cache, project: project, channel: channel) }
+      let(:key_source_attributes) { { channel: 'stable' } }
       let(:expected_object_storage_key) do
         Gitlab::HashedPath.new(
           'packages', 'helm', 'metadata_caches', OpenSSL::Digest::SHA256.hexdigest(channel),

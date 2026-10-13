@@ -491,7 +491,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
 
         described_class.initialize_slis!
 
-        expect(described_class.http_requests_total.values.keys).to contain_exactly(*expected_labels)
+        expect(described_class.http_requests_total.values.keys).to match_array(expected_labels)
       end
 
       it 'sets labels for http_request_duration_seconds' do

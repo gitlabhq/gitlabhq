@@ -445,7 +445,6 @@ PUT --form "paused=true" /runners/:runner_id
 
 # --or--
 
-# Deprecated: removal planned in 16.0
 PUT --form "active=false" /runners/:runner_id
 ```
 
@@ -461,7 +460,6 @@ curl --request PUT \
 
 # --or--
 
-# Deprecated: removal planned in 16.0
 curl --request PUT \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "active=false"  \

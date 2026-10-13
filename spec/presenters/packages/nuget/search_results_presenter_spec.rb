@@ -78,7 +78,7 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :packa
       end
 
       if tags.any?
-        expect(package_json[:tags].split(::Packages::Tag::NUGET_TAGS_SEPARATOR)).to contain_exactly(*tags)
+        expect(package_json[:tags].split(::Packages::Tag::NUGET_TAGS_SEPARATOR)).to match_array(tags)
       else
         expect(package_json[:tags]).to be_blank
       end

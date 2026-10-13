@@ -45,6 +45,13 @@ export default {
       required: false,
       default: false,
     },
+    // Skips the page heading entirely, for example when a surrounding modal
+    // already provides the heading. Prefer `pageHeadingSrOnly` otherwise.
+    hidePageHeading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     loading: {
       type: Boolean,
       required: false,
@@ -155,6 +162,7 @@ export default {
     <slot name="before"></slot>
 
     <page-heading
+      v-if="!hidePageHeading"
       :heading="heading"
       :heading-tag="headingTag"
       :class="{ 'gl-sr-only': pageHeadingSrOnly }"

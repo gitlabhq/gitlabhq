@@ -6303,6 +6303,80 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response.size).to eq(1)
       expect(json_response).to all(include('active' => false))
     end
+
+    it 'returns all impersonation tokens if state all' do
+      get api("#{path}?state=all", admin, admin_mode: true)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.pluck('id')).to contain_exactly(impersonation_token.id, revoked_impersonation_token.id)
+    end
+
+    context 'with filter and sort params' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:filter_user) { create(:user) }
+      let_it_be(:old_token) do
+        create(:personal_access_token, :impersonation, user: filter_user, name: 'Old token',
+          created_at: 1.month.ago, expires_at: 1.week.from_now, last_used_at: 1.month.ago)
+      end
+
+      let_it_be(:new_token) do
+        create(:personal_access_token, :impersonation, user: filter_user, name: 'New token',
+          created_at: 1.day.ago, expires_at: 1.month.from_now, last_used_at: 1.day.ago)
+      end
+
+      let_it_be(:revoked_token) do
+        create(:personal_access_token, :impersonation, :revoked, user: filter_user, name: 'Revoked',
+          created_at: 2.months.ago, expires_at: 2.months.from_now, last_used_at: 2.months.ago)
+      end
+
+      let(:path) { "/users/#{filter_user.id}/impersonation_tokens" }
+
+      context 'when filtering' do
+        where(:filter, :value, :expected_tokens) do
+          :revoked          | true                     | [ref(:revoked_token)]
+          :revoked          | false                    | [ref(:old_token), ref(:new_token)]
+          :search           | 'old'                    | [ref(:old_token)]
+          :created_before   | 1.week.ago.iso8601       | [ref(:old_token), ref(:revoked_token)]
+          :created_after    | 1.week.ago.iso8601       | [ref(:new_token)]
+          :expires_before   | 2.weeks.from_now.to_date | [ref(:old_token)]
+          :expires_after    | 2.weeks.from_now.to_date | [ref(:new_token), ref(:revoked_token)]
+          :last_used_before | 1.week.ago.iso8601       | [ref(:old_token), ref(:revoked_token)]
+          :last_used_after  | 1.week.ago.iso8601       | [ref(:new_token)]
+        end
+
+        with_them do
+          it 'returns the filtered tokens' do
+            get api(path, admin, admin_mode: true), params: { filter => value }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to match_array(expected_tokens.map(&:id))
+          end
+        end
+      end
+
+      context 'when sorting' do
+        where(:sort, :expected_tokens) do
+          'created_asc'    | [ref(:revoked_token), ref(:old_token), ref(:new_token)]
+          'created_desc'   | [ref(:new_token), ref(:old_token), ref(:revoked_token)]
+          'expires_asc'    | [ref(:old_token), ref(:new_token), ref(:revoked_token)]
+          'expires_desc'   | [ref(:revoked_token), ref(:new_token), ref(:old_token)]
+          'last_used_asc'  | [ref(:revoked_token), ref(:old_token), ref(:new_token)]
+          'last_used_desc' | [ref(:new_token), ref(:old_token), ref(:revoked_token)]
+          'name_asc'       | [ref(:new_token), ref(:old_token), ref(:revoked_token)]
+          'name_desc'      | [ref(:revoked_token), ref(:old_token), ref(:new_token)]
+        end
+
+        with_them do
+          it 'returns the sorted tokens' do
+            get api(path, admin, admin_mode: true), params: { sort: sort }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.pluck('id')).to eq(expected_tokens.map(&:id))
+          end
+        end
+      end
+    end
   end
 
   describe 'POST /users/:user_id/impersonation_tokens', :with_current_organization do

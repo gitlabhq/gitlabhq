@@ -877,19 +877,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
           { deployments: true, downstream_projects: true })
       end
 
-      context 'when batch_pipeline_job_policy_checks is disabled' do
-        before do
-          stub_feature_flags(batch_pipeline_job_policy_checks: false)
-        end
-
-        it 'preloads nothing' do
-          expect_preloaded_with('canPlayJob detailedStatus { label }', nil)
-        end
-      end
-
-      # The flag has a project actor but the groups are recorded on the query
-      # context, which spans every connection in the query.
-      context 'when a second project in the same query has the flag off' do
+      context 'when a second project in the same query selects no policy fields' do
         let_it_be(:other_project) { create(:project, :repository, maintainers: maintainer) }
         let_it_be(:other_pipeline) do
           create(:ci_pipeline, project: other_project, user: maintainer, sha: other_project.commit.sha)
@@ -903,31 +891,27 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         let(:multi_project_query) do
           %(
             query {
-              enabled: project(fullPath: "#{project.full_path}") {
+              selected: project(fullPath: "#{project.full_path}") {
                 pipeline(iid: "#{pipeline.iid}") { jobs { nodes { canPlayJob } } }
               }
-              disabled: project(fullPath: "#{other_project.full_path}") {
-                pipeline(iid: "#{other_pipeline.iid}") { jobs { nodes { canPlayJob } } }
+              unselected: project(fullPath: "#{other_project.full_path}") {
+                pipeline(iid: "#{other_pipeline.iid}") { jobs { nodes { name } } }
               }
             }
           )
         end
 
-        before do
-          stub_feature_flags(batch_pipeline_job_policy_checks: project)
-        end
-
-        it 'preloads only for the project the flag is enabled for' do
-          only_enabled_project = an_object_satisfying { |jobs| jobs.map(&:project_id).uniq == [project.id] }
+        it 'preloads only for the project whose selection needs it' do
+          only_selected_project = an_object_satisfying { |jobs| jobs.map(&:project_id).uniq == [project.id] }
 
           expect(::Ci::Preloaders::JobPolicyPreloader).to receive(:new)
-            .with(only_enabled_project, maintainer, deployments: true, downstream_projects: true)
+            .with(only_selected_project, maintainer, deployments: true, downstream_projects: true)
             .once.and_call_original
 
           post_graphql(multi_project_query, current_user: maintainer)
 
-          expect(graphql_data_at(:enabled, :pipeline, :jobs, :nodes)).to be_present
-          expect(graphql_data_at(:disabled, :pipeline, :jobs, :nodes)).to be_present
+          expect(graphql_data_at(:selected, :pipeline, :jobs, :nodes)).to be_present
+          expect(graphql_data_at(:unselected, :pipeline, :jobs, :nodes)).to be_present
         end
       end
     end
@@ -1105,14 +1089,6 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
       end
 
       it_behaves_like 'the policy-backed fields of the page'
-
-      context 'when batch_pipeline_job_policy_checks is disabled' do
-        before do
-          stub_feature_flags(batch_pipeline_job_policy_checks: false)
-        end
-
-        it_behaves_like 'the policy-backed fields of the page'
-      end
     end
   end
 

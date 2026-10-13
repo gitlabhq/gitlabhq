@@ -244,6 +244,14 @@ describe('DetailLayout', () => {
     });
   });
 
+  describe('hidePageHeading', () => {
+    it('passes hidePageHeading to BaseLayout', () => {
+      createComponent({ heading: 'Test Heading', hidePageHeading: true });
+      expect(wrapper.findComponent(BaseLayout).props('hidePageHeading')).toBe(true);
+      expect(wrapper.find('[data-testid="page-heading"]').exists()).toBe(false);
+    });
+  });
+
   describe('showSidebar', () => {
     it('applies the has-sidebar class by default when sidebar slot is provided', () => {
       createComponent({}, { sidebar: '<div>Sidebar</div>' });

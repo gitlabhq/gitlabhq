@@ -224894,6 +224894,35 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "UserFirstDayOfWeek",
+          "description": "First day of the week in calendars and date pickers.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SUNDAY",
+              "description": "Sunday.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MONDAY",
+              "description": "Monday.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SATURDAY",
+              "description": "Saturday.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "UserGroupCallout",
           "description": null,
@@ -225561,6 +225590,18 @@
               "deprecationReason": null
             },
             {
+              "name": "firstDayOfWeek",
+              "description": "First day of the week in calendars and date pickers. Null when the user has not chosen one and the instance default applies.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "UserFirstDayOfWeek",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "issuesSort",
               "description": "Sort order for issue lists.",
               "args": [],
@@ -225676,6 +225717,16 @@
               "type": {
                 "kind": "ENUM",
                 "name": "ExtensionsMarketplaceOptInStatus",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "firstDayOfWeek",
+              "description": "First day of the week in calendars and date pickers. Set to `null` to use the instance default.",
+              "type": {
+                "kind": "ENUM",
+                "name": "UserFirstDayOfWeek",
                 "ofType": null
               },
               "defaultValue": null

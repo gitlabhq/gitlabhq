@@ -17,6 +17,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'organizationGroupsProjectsDisplay' => 'GROUPS',
       'organizationGroupsProjectsSort' => 'NAME_DESC',
       'visibilityPipelineIdType' => 'IID',
+      'firstDayOfWeek' => 'MONDAY',
       'mergeRequestDashboardListType' => 'ROLE_BASED',
       'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false },
       'mergeRequestDashboardShowDrafts' => true
@@ -51,6 +52,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['organizationGroupsProjectsDisplay']).to eq('GROUPS')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
+      expect(mutation_response['userPreferences']['firstDayOfWeek']).to eq('MONDAY')
       expect(mutation_response['userPreferences']['mergeRequestDashboardListType']).to eq('ROLE_BASED')
       expect(mutation_response['userPreferences']['mergeRequestDashboardShowDrafts']).to be(true)
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
@@ -64,6 +66,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to be(true)
+      expect(current_user.user_preference.first_day_of_week).to eq(1)
       expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
     end
 
@@ -85,6 +88,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         organization_groups_projects_sort: 'NAME_DESC',
         visibility_pipeline_id_type: 'id',
         merge_request_dashboard_list_type: 'action_based',
+        first_day_of_week: 6,
         work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true },
         merge_request_dashboard_show_drafts: false
       }
@@ -105,6 +109,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['organizationGroupsProjectsDisplay']).to eq('GROUPS')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
+      expect(mutation_response['userPreferences']['firstDayOfWeek']).to eq('MONDAY')
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
@@ -113,6 +118,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to be(true)
+      expect(current_user.user_preference.first_day_of_week).to eq(1)
       expect(current_user.user_preference.work_items_display_settings).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
@@ -126,7 +132,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           'projectsSort' => nil,
           'organizationGroupsProjectsDisplay' => nil,
           'organizationGroupsProjectsSort' => nil,
-          'visibilityPipelineIdType' => nil
+          'visibilityPipelineIdType' => nil,
+          'firstDayOfWeek' => nil
         }
       end
 
@@ -142,6 +149,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           issues_sort: nil,
           projects_sort: nil,
           organization_groups_projects_sort: nil,
+          first_day_of_week: nil,
           # These should not have changed
           organization_groups_projects_display: init_user_preference[:organization_groups_projects_display],
           extensions_marketplace_opt_in_status: init_user_preference[:extensions_marketplace_opt_in_status],

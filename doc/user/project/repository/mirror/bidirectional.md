@@ -13,12 +13,6 @@ title: Bidirectional mirroring
 
 {{< /details >}}
 
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 > [!warning]
 > Bidirectional mirroring might cause conflicts.
 

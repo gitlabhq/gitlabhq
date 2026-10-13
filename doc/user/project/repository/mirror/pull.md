@@ -13,12 +13,6 @@ title: Pull from a remote repository
 
 {{< /details >}}
 
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 You can use the GitLab interface to browse the content and activity of a repository,
 even if it isn't hosted on GitLab. Create a pull [mirror](_index.md) to copy the
 branches, tags, and commits from an upstream repository to yours.
@@ -97,12 +91,6 @@ Prerequisites:
 
 ### Overwrite diverged branches
 
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 To always update your local branches with remote versions, even if they have
 diverged from the remote, select **Overwrite diverged branches** when you
 create a mirror.
@@ -111,12 +99,6 @@ create a mirror.
 > For mirrored branches, enabling this option results in the loss of local changes.
 
 ### Trigger pipelines for mirror updates
-
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
 
 You can configure your mirror to automatically trigger pipelines when
 the remote repository updates branches or tags. Before you enable this feature:
@@ -140,12 +122,6 @@ or [personal access token](../../../profile/personal_access_tokens.md) for servi
 
 ## Trigger an update by using the API
 
-{{< history >}}
-
-- moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 Pull mirroring uses polling to detect new branches and commits added upstream,
 often minutes afterwards. You can notify GitLab using an
 [API call](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
@@ -155,12 +131,6 @@ For more information, see
 [start the pull mirroring process for a project](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project).
 
 ## Fix hard failures when mirroring
-
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
 
 After 14 consecutive unsuccessful retries, the mirroring process is marked as a hard failure
 and mirroring attempts stop. This failure is visible in either the:

@@ -22,9 +22,9 @@ RSpec.describe WriteLocalConfig do
         .to include('extends' => ['caproni.relative-url.yaml'])
     end
 
-    it 'extends the OAuth fragment only for the OAuth scenario' do
+    it 'extends the OAuth fragments only for the OAuth scenario' do
       expect(described_class.build(domain: domain, qa_scenario: 'Test::Integration::OAuth'))
-        .to include('extends' => ['caproni.github-oauth.yaml'])
+        .to include('extends' => ['caproni.github-oauth.yaml', 'caproni.oidc-consumer.yaml'])
       expect(described_class.build(domain: domain, qa_scenario: 'Test::Instance::All'))
         .not_to have_key('extends')
     end
@@ -35,7 +35,7 @@ RSpec.describe WriteLocalConfig do
       )
 
       expect(config['extends']).to contain_exactly(
-        'caproni.github-oauth.yaml', 'caproni.relative-url.yaml'
+        'caproni.github-oauth.yaml', 'caproni.oidc-consumer.yaml', 'caproni.relative-url.yaml'
       )
     end
   end

@@ -25,6 +25,7 @@ const mockReviewersResponse = (nodes = []) => ({
         userPermissions: {
           __typename: 'MergeRequestPermissions',
           adminMergeRequest: false,
+          updateMergeRequest: false,
         },
       },
     },

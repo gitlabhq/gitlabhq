@@ -20,9 +20,9 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   as an [experiment](../../../policy/development_stages_support.md#experiment)
   [with a feature flag](../../../administration/feature_flags/_index.md) named
   `dependency_management_auto_remediation`. Disabled by default.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/604588) to
-  [beta](../../../policy/development_stages_support.md#beta) in GitLab 19.2. The
-  `dependency_management_auto_remediation` feature flag is enabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/604588) from experiment to
+  [beta](../../../policy/development_stages_support.md#beta) in GitLab 19.2. Feature flag
+  `dependency_management_auto_remediation` enabled by default.
 - Agentic breaking-change resolution
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603392) in GitLab 19.2
   [with a feature flag](../../../administration/feature_flags/_index.md) named

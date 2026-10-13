@@ -13,12 +13,6 @@ title: External authorization control
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) from GitLab Premium to GitLab Free in 11.10.
-
-{{< /history >}}
-
 In highly controlled environments, it may be necessary for access policy to be
 controlled by an external service that permits access based on project
 classification and user access. GitLab provides a way to check project

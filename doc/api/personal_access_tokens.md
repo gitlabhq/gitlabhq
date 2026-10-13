@@ -19,6 +19,7 @@ Use this API to interact with [personal access tokens](../user/profile/personal_
 {{< history >}}
 
 - `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/589500) in GitLab 19.2.
+- `all` value for the `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260698) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -51,7 +52,7 @@ Supported attributes:
 | `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
 | `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
 | `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
-| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active`, `inactive`, or `all`. `all` returns tokens in any state. |
 | `user_id`          | integer or string   | No       | If defined, returns tokens owned by the specified user. Non-administrators can only filter their own tokens. |
 
 Example request:
@@ -331,7 +332,7 @@ Supported attributes:
 
 | Attribute           | Type     | Required | Description                                                              |
 |---------------------|----------|----------|--------------------------------------------------------------------------|
-| `min_access_level`  | integer  | No       | Limit to groups and projects where the token has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`  | integer  | No       | Limit to groups and projects where the token has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `page`              | integer  | No       | Page to retrieve. Defaults to `1`.                                       |
 | `per_page`          | integer  | No       | Number of records to return per page. Defaults to `20`.                  |
 

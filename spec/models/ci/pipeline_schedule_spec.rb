@@ -312,7 +312,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
       pipeline_schedule.reload
     end
 
-    it { is_expected.to contain_exactly(*pipeline_schedule_variables.map(&:to_hash_variable)) }
+    it { is_expected.to match_array(pipeline_schedule_variables.map(&:to_hash_variable)) }
   end
 
   describe '#daily_limit' do

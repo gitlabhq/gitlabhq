@@ -14,9 +14,7 @@ title: 'Tutorial: Navigate the GitLab interface'
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/9044) in GitLab 16.0.
-- In 16.0 through 16.5, you can turn the sidebar off by selecting your avatar and turning off the **New navigation** toggle.
-- Interface [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208474) to a panel-based layout in GitLab 18.6.
+- GitLab interface [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208474) to a panel-based layout in GitLab 18.6.
 
 {{< /history >}}
 

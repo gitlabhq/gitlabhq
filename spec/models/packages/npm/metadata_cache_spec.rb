@@ -94,6 +94,7 @@ RSpec.describe Packages::Npm::MetadataCache, feature_category: :package_registry
   describe '#object_storage_key' do
     it_behaves_like 'object_storage_key callbacks' do
       let(:model) { build(:npm_metadata_cache, project: project, package_name: package_name) }
+      let(:key_source_attributes) { { package_name: '@root/other' } }
       let(:expected_object_storage_key) do
         Gitlab::HashedPath.new(
           'packages', 'metadata_caches', 'npm', OpenSSL::Digest::SHA256.hexdigest(package_name),

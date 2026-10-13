@@ -233,15 +233,15 @@ Supported attributes:
 
 ```json
 {
-  "approvers": [], // Deprecated in GitLab 12.3, always returns empty
-  "approver_groups": [], // Deprecated in GitLab 12.3, always returns empty
-  "approvals_before_merge": 2, // Deprecated in GitLab 12.3, use Approval Rules instead
+  "approvers": [], // Always returns empty
+  "approver_groups": [], // Always returns empty
+  "approvals_before_merge": 2, // Use `approval_rules` instead
   "reset_approvals_on_push": true,
   "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,
   "merge_requests_author_approval": true,
   "merge_requests_disable_committers_approval": false,
-  "require_password_to_approve": true, // Deprecated in 16.9, use require_reauthentication_to_approve instead
+  "require_password_to_approve": true, // Use `require_reauthentication_to_approve` instead
   "require_reauthentication_to_approve": true
 }
 ```
@@ -271,7 +271,7 @@ Supported attributes:
 
 ```json
 {
-  "approvals_before_merge": 2, // Use Approval Rules instead
+  "approvals_before_merge": 2, // Use `approval_rules` instead
   "reset_approvals_on_push": true,
   "selective_code_owner_removals": false,
   "disable_overriding_approvers_per_merge_request": false,

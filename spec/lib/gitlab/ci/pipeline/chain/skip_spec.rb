@@ -135,6 +135,58 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
         expect(step.break?).to be false
       end
     end
+
+    context 'when the commit message has a skip directive the title no longer has' do
+      let(:title) { 'Merge request title' }
+      let(:ref) { merge_request.merge_ref_path }
+
+      before do
+        allow(pipeline).to receive_messages(
+          ref: ref,
+          git_commit_message: "Merge branch 'feature' into 'master'\n\nMerge request title [skip ci]"
+        )
+      end
+
+      context 'when the pipeline runs on the merge ref' do
+        it 'does not break the chain' do
+          step.perform!
+
+          expect(step.break?).to be false
+        end
+
+        context 'when the ci_skip_pipeline_from_mr_title feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_skip_pipeline_from_mr_title: false)
+          end
+
+          it 'breaks the chain' do
+            step.perform!
+
+            expect(step.break?).to be true
+          end
+        end
+      end
+
+      context 'when the pipeline does not run on the merge ref' do
+        let(:ref) { merge_request.ref_path }
+
+        it 'breaks the chain' do
+          step.perform!
+
+          expect(step.break?).to be true
+        end
+      end
+
+      context 'when the pipeline runs on the merge train ref' do
+        let(:ref) { merge_request.train_ref_path }
+
+        it 'breaks the chain' do
+          step.perform!
+
+          expect(step.break?).to be true
+        end
+      end
+    end
   end
 
   context 'when there is no merge request' do

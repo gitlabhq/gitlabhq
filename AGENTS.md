@@ -25,7 +25,7 @@ These apply to every task without needing a trigger:
 - **Security fixes** — treat an issue as requiring a special security fix when the issue is confidential, has the `~security` label, and does NOT have the `~security-fix-in-public` label. When all three hold, DO NOT push to `gitlab-org/gitlab` (or any canonical repo); follow .ai/security-fixes.md
 - **Comment discipline** — cap comments at 1-3 lines and only add one when the why is non-obvious, like an invariant, a gotcha, or a tradeoff; delete comments that just restate the code, by default, not only when asked to trim
 - **Prose clarity** — write human-facing prose (comments, MR/issue text, docs) directly in the current session. Use concise, plain language and check facts before presenting it.
-- **Skip CI when agent pushes draft commits** — open Draft MRs with `[skip ci]` in the MR title to skip unnecessary MR pipelines. A full MR pipeline costs roughly 600 jobs across 6 pipelines. When ready for CI, remove `[skip ci]` from the title and push a commit. Editing the title alone starts no pipeline, and a manually triggered one can still be skipped: the merge ref keeps the old title until it is regenerated, which a push guarantees.
+- **Skip CI when agent pushes draft commits** — open Draft MRs with `[skip ci]` in the MR title to skip unnecessary MR pipelines. A full MR pipeline costs roughly 600 jobs across 6 pipelines. When ready for CI, remove `[skip ci]` from the title, then start a pipeline. Editing the title alone starts no pipeline.
 
 ## AI-authored GitLab comments
 

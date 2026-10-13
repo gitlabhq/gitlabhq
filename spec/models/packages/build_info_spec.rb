@@ -23,7 +23,7 @@ RSpec.describe Packages::BuildInfo, feature_category: :package_registry do
     describe '.without_empty_pipelines' do
       subject { package.build_infos.without_empty_pipelines }
 
-      it { is_expected.to contain_exactly(*build_infos) }
+      it { is_expected.to match_array(build_infos) }
     end
 
     describe '.order_by_pipeline_id asc' do

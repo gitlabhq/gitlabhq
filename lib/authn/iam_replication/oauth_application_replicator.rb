@@ -77,7 +77,8 @@ module Authn
           updated_at: timestamp(application.updated_at),
           dynamic: application.dynamic?,
           organization_id: application.organization.uuid,
-          owning_cell_id: Gitlab.config.cell.id.to_i
+          owning_cell_id: Gitlab.config.cell.id.to_i,
+          source_id: application.id
         }
       end
 

@@ -12,13 +12,6 @@ title: Feature flag user lists API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
-
-{{< /history >}}
-
 Use this API to interact with GitLab feature flags for [user lists](../operations/feature_flags.md#user-list).
 
 Prerequisites:

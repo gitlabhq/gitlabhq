@@ -98,6 +98,7 @@ export default {
     :heading-tag="headingTag"
     :description="description"
     :page-heading-sr-only="pageHeadingSrOnly"
+    :hide-page-heading="hidePageHeading"
     :loading="loading"
     :animate-sticky-header="animateStickyHeader"
     @sticky-change="onStickyChange"

@@ -20,11 +20,11 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
   end
 
   describe '.named_like' do
-    it { expect(described_class.named_like('awes')).to contain_exactly(*tags[0..1]) }
+    it { expect(described_class.named_like('awes')).to match_array(tags[0..1]) }
   end
 
   describe '.named_any' do
-    it { expect(described_class.named_any(%w[awesome epic])).to contain_exactly(*tags[1..]) }
+    it { expect(described_class.named_any(%w[awesome epic])).to match_array(tags[1..]) }
   end
 
   describe '.find_or_create_all_with_like_by_name' do

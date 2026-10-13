@@ -331,14 +331,15 @@ RSpec.describe Compare, feature_category: :source_code_management do
       end
 
       it 'returns affected file paths, without duplication' do
-        expect(subject.modified_paths).to contain_exactly(
-          *%w[
+        expect(subject.modified_paths).to match_array(
+          %w[
             foo/for_move.txt
             foo/bar/for_move.txt
             foo/for_create.txt
             foo/for_delete.txt
             foo/for_edit.txt
-          ])
+          ]
+        )
       end
     end
 

@@ -134,6 +134,9 @@ export default {
     canUpdate() {
       return this.issuable?.userPermissions?.adminMergeRequest || false;
     },
+    canRerequest() {
+      return this.issuable?.userPermissions?.updateMergeRequest || false;
+    },
     isReviewer() {
       const { username } = this.store?.currentUser || {};
       return this.reviewers.some((reviewer) => reviewer.username === username) || false;
@@ -264,6 +267,7 @@ export default {
       v-if="!initialLoading"
       :users="reviewers"
       :editable="canUpdate"
+      :can-rerequest="canRerequest"
       :issuable-type="issuableType"
       class="gl-pt-2"
       @request-review="requestReview"

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::RackAttack::UserAllowlist, feature_category: :rate_limiti
 
   with_them do
     it 'has the expected elements' do
-      expect(subject).to contain_exactly(*elements)
+      expect(subject).to match_array(elements)
     end
 
     it 'implements empty?' do

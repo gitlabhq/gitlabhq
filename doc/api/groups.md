@@ -359,7 +359,7 @@ Parameters:
 | `visibility`             | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `top_level_only`         | boolean           | no       | Limit to top-level groups, excluding all subgroups. |
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group (administrators only). Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
@@ -585,7 +585,7 @@ Parameters:
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false`. |
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true`. |
 | `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`. |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_security_reports`       | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
@@ -665,7 +665,7 @@ Parameters:
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user. |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false`. |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false`. |
-| `min_access_level`            | integer        | no       | Limit to projects where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
 Example response:
@@ -1007,7 +1007,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only). |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
@@ -1086,7 +1086,7 @@ Parameters:
 | `statistics`             | boolean           | no       | Include group statistics (administrators only). |
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user. |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`       | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
@@ -1199,7 +1199,7 @@ Parameters:
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name`. |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc`. |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
-| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
 ```plaintext
@@ -1274,7 +1274,7 @@ Parameters:
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | integer or string    | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria. |
-| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified access level. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
 | `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited). |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 
@@ -1861,7 +1861,7 @@ Parameters:
 |------------------|-------------------|----------|-------------|
 | `id`             | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `group_id`       | integer           | yes      | The ID of the group to invite. |
-| `group_access`   | integer           | yes      | The default `access_level` to assign to the invited group. Possible values: `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). |
+| `group_access`   | integer           | yes      | The default `access_level` to assign to the invited group. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). On Premium and Ultimate, `5` (Minimal access) is also valid when `id` is a top-level group. |
 | `expires_at`     | date (ISO 8601)   | no       | The date the group invitation expires. |
 | `member_role_id` | integer           | no       | The ID of a [custom role](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group. If defined, `group_access` must match the base role used to create the custom role. |
 
@@ -2210,6 +2210,7 @@ Prerequisites:
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `all` value for the `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260698) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -2228,7 +2229,7 @@ GET /groups/:id/manage/personal_access_tokens
 | `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
 | `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
 | `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
-| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active`, `inactive`, or `all`. `all` returns tokens in any state. |
 | `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
 
 Example request:
@@ -2263,6 +2264,12 @@ Example response:
 
 ### List all group and project access tokens for a group
 
+{{< history >}}
+
+- `all` value for the `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260698) in GitLab 19.6.
+
+{{< /history >}}
+
 Lists all group and project access tokens associated with a top-level group.
 
 ```plaintext
@@ -2278,7 +2285,7 @@ GET /groups/:id/manage/resource_access_tokens
 | `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
 | `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
 | `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
-| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active`, `inactive`, or `all`. `all` returns tokens in any state. |
 | `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
 
 Example request:

@@ -481,7 +481,7 @@ RSpec.describe Organizations::Organization, feature_category: :organization do
     let_it_be(:organization_users) { create_list(:organization_user, 3, :owner, organization: organization) }
 
     it 'returns the owner user ids' do
-      expect(organization.owner_user_ids).to contain_exactly(*organization_users.map(&:user_id))
+      expect(organization.owner_user_ids).to match_array(organization_users.map(&:user_id))
     end
 
     it 'memoize results' do
@@ -735,7 +735,7 @@ RSpec.describe Organizations::Organization, feature_category: :organization do
       end
 
       with_them do
-        it { is_expected.to contain_exactly(*expected_organizations) }
+        it { is_expected.to match_array(expected_organizations) }
       end
     end
 
@@ -746,7 +746,7 @@ RSpec.describe Organizations::Organization, feature_category: :organization do
       end
 
       with_them do
-        it { is_expected.to contain_exactly(*expected_organizations) }
+        it { is_expected.to match_array(expected_organizations) }
       end
     end
   end

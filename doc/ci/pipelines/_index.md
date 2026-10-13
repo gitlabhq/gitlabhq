@@ -317,9 +317,12 @@ train pipelines. The directive also applies when the merge request has conflicts
 If you add the directive while a merge request is on a merge train, GitLab removes the merge
 request from the train because the skipped pipeline is not successful.
 
-Merge request pipelines remain skipped until you remove the directive from the title. With merged
-results pipelines, pipelines can remain skipped after you remove the directive until the next push
-regenerates the virtual commit.
+Merge request pipelines remain skipped until you remove the directive from the title. To then run a
+pipeline, on the **Pipelines** tab of the merge request, select **Run pipeline**.
+
+For merged results pipelines, GitLab checks only the title. A directive that a
+[merge commit template](../../user/project/merge_requests/commit_templates.md) adds to the commit
+message does not skip the pipeline.
 
 ### Delete a pipeline
 

@@ -314,7 +314,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         context 'for a project' do
           subject { described_class.in_hierarchy(project) }
 
-          it { is_expected.to contain_exactly(*hierarchy_members) }
+          it { is_expected.to match_array(hierarchy_members) }
 
           context 'with scope prefix' do
             subject { described_class.where.not(source: project).in_hierarchy(subgroup) }
@@ -332,7 +332,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         context 'for a group' do
           subject(:group_related_members) { described_class.in_hierarchy(subgroup) }
 
-          it { is_expected.to contain_exactly(*hierarchy_members) }
+          it { is_expected.to match_array(hierarchy_members) }
         end
       end
 
@@ -346,7 +346,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         subject(:self_and_descendant_members) { described_class.for_self_and_descendants(subgroup) }
 
-        it { is_expected.to contain_exactly(*expected_members) }
+        it { is_expected.to match_array(expected_members) }
       end
     end
 

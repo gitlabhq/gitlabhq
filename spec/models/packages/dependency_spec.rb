@@ -212,7 +212,7 @@ RSpec.describe Packages::Dependency, feature_category: :package_registry do
     end
 
     it 'returns orphaned dependency records' do
-      expect(described_class.orphaned).to contain_exactly(*orphaned_dependencies)
+      expect(described_class.orphaned).to match_array(orphaned_dependencies)
     end
   end
 

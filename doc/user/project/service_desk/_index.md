@@ -103,37 +103,3 @@ Meanwhile:
   The exact wording of the failure message might vary depending on the specific email system or tools in use.
   Also see [this article on DKIM failures](https://automatedemailwarmup.com/blog/dkim-fail/) for more
   information and potential solutions.
-
-### Email ingestion doesn't work in 16.6.0
-
-GitLab Self-Managed `16.6.0` introduced a regression that prevents `mail_room` (email ingestion) from starting.
-Service Desk and other reply-by-email features don't work.
-[Issue 432257](https://gitlab.com/gitlab-org/gitlab/-/issues/432257) tracks fixing this problem.
-
-The workaround is to run the following commands in your GitLab installation
-to patch the affected files:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-```shell
-curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
-patch -p1 -d /opt/gitlab/embedded/service/gitlab-rails < /tmp/mailroom.patch
-gitlab-ctl restart mailroom
-```
-
-{{< /tab >}}
-
-{{< tab title="Docker" >}}
-
-```shell
-curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
-cd /opt/gitlab/embedded/service/gitlab-rails
-patch -p1 < /tmp/mailroom.patch
-gitlab-ctl restart mailroom
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}

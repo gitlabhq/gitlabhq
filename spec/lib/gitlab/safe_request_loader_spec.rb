@@ -18,7 +18,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
     subject(:execute_instance) { described_class.execute(**args, &block) }
 
     it 'gets data from the store and returns it' do
-      expect(execute_instance.keys).to contain_exactly(*resource_data.keys)
+      expect(execute_instance.keys).to match_array(resource_data.keys)
       expect(execute_instance).to match(a_hash_including(resource_data))
       expect_store_to_be_updated
     end
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
 
       context 'when request store is active', :request_store do
         it 'gets data from the store' do
-          expect(execute_instance.keys).to contain_exactly(*resource_data.keys)
+          expect(execute_instance.keys).to match_array(resource_data.keys)
           expect(execute_instance).to match(a_hash_including(resource_data))
           expect_store_to_be_updated
         end
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
           end
 
           it 'does not re-fetch data if resource_id already exists' do
-            expect(execute_instance.keys).to contain_exactly(*resource_ids)
+            expect(execute_instance.keys).to match_array(resource_ids)
             expect(execute_instance).to match(a_hash_including(existing_resource_data))
             expect_store_to_be_updated
           end
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
               let(:block) { proc { { 'foo' => 'zoo', 'bar' => 'foo' } } }
 
               it 'overwrites existing keyed data with results from the block' do
-                expect(execute_instance.keys).to contain_exactly(*resource_ids)
+                expect(execute_instance.keys).to match_array(resource_ids)
                 expect(execute_instance).to match(a_hash_including(block.call))
                 expect_store_to_be_updated
               end
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
               let(:block) { proc { |rids| { 'foo' => 'zoo', 'bar' => 'foo' }.select { |k, _v| rids.include?(k) } } }
 
               it 'only updates resource_data with keyed items that did not exist' do
-                expect(execute_instance.keys).to contain_exactly(*resource_ids)
+                expect(execute_instance.keys).to match_array(resource_ids)
                 expect(execute_instance).to match(a_hash_including({ 'foo' => 'bar', 'bar' => 'foo' }))
                 expect_store_to_be_updated
               end
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
                 let(:args) { { resource_key: resource_key, resource_ids: resource_ids, default_value: '_value_' } }
 
                 it 'populates a default value' do
-                  expect(execute_instance.keys).to contain_exactly(*resource_ids)
+                  expect(execute_instance.keys).to match_array(resource_ids)
                   expect(execute_instance).to match(a_hash_including({ 'foo' => 'bar', 'bar' => '_value_' }))
                   expect_store_to_be_updated
                 end
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
 
               context 'when default_value is not provided' do
                 it 'populates a default_value of nil' do
-                  expect(execute_instance.keys).to contain_exactly(*resource_ids)
+                  expect(execute_instance.keys).to match_array(resource_ids)
                   expect(execute_instance).to match(a_hash_including({ 'foo' => 'bar', 'bar' => nil }))
                   expect_store_to_be_updated
                 end
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
             let(:block) { proc { { 'foo' => 'zoo', 'bar' => 'foo' } } }
 
             it 'overwrites existing keyed data with results from the block' do
-              expect(execute_instance.keys).to contain_exactly(*resource_ids)
+              expect(execute_instance.keys).to match_array(resource_ids)
               expect(execute_instance).to match(a_hash_including(block.call))
             end
           end
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
             let(:block) { proc { |rids| { 'foo' => 'zoo', 'bar' => 'foo' }.select { |k, _v| rids.include?(k) } } }
 
             it 'only updates resource_data with keyed items that did not exist' do
-              expect(execute_instance.keys).to contain_exactly(*resource_ids)
+              expect(execute_instance.keys).to match_array(resource_ids)
               expect(execute_instance).to match(a_hash_including({ 'foo' => 'zoo', 'bar' => 'foo' }))
             end
           end
@@ -156,14 +156,14 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
               let(:args) { { resource_key: resource_key, resource_ids: resource_ids, default_value: '_value_' } }
 
               it 'populates a default value' do
-                expect(execute_instance.keys).to contain_exactly(*resource_ids)
+                expect(execute_instance.keys).to match_array(resource_ids)
                 expect(execute_instance).to match(a_hash_including({ 'foo' => 'bar', 'bar' => '_value_' }))
               end
             end
 
             context 'when default_value is not provided' do
               it 'populates a default_value of nil' do
-                expect(execute_instance.keys).to contain_exactly(*resource_ids)
+                expect(execute_instance.keys).to match_array(resource_ids)
                 expect(execute_instance).to match(a_hash_including({ 'foo' => 'bar', 'bar' => nil }))
               end
             end
@@ -175,6 +175,6 @@ RSpec.describe Gitlab::SafeRequestLoader, :aggregate_failures do
 
   def expect_store_to_be_updated
     expect(execute_instance).to match(a_hash_including(Gitlab::SafeRequestStore[resource_key]))
-    expect(execute_instance.keys).to contain_exactly(*Gitlab::SafeRequestStore[resource_key].keys)
+    expect(execute_instance.keys).to match_array(Gitlab::SafeRequestStore[resource_key].keys)
   end
 end

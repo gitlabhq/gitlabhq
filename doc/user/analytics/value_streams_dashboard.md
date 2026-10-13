@@ -15,7 +15,7 @@ title: Value Streams Dashboard
 
 {{< history >}}
 
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195086) from GitLab Ultimate to GitLab Premium in 18.2.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195086) from GitLab Ultimate to GitLab Premium in GitLab 18.2.
 
 {{< /history >}}
 

@@ -600,6 +600,8 @@ RSpec.describe Gitlab::Database::Migrations::Conversions::BigintConverter, featu
             it 'removes the swapped columns' do
               expect(migration.column_for(table_name, column_names.first).sql_type).to eq('integer')
               migration.extend(Gitlab::Database::MigrationHelpers::Swapping)
+              # The shared stub reports no open transaction, which `swap_columns` requires.
+              allow(migration).to receive(:transaction_open?).and_return(true)
               migration.swap_columns(table_name, :partition_id, :partition_id_convert_to_bigint)
               expect(migration.column_for(table_name, column_names.first).sql_type).to eq('bigint')
 
@@ -699,6 +701,8 @@ RSpec.describe Gitlab::Database::Migrations::Conversions::BigintConverter, featu
             it 'removes the swapped columns' do
               expect(migration.column_for(table_name, column_names.first).sql_type).to eq('integer')
               migration.extend(Gitlab::Database::MigrationHelpers::Swapping)
+              # The shared stub reports no open transaction, which `swap_columns` requires.
+              allow(migration).to receive(:transaction_open?).and_return(true)
               migration.swap_columns(table_name, :partition_id, :partition_id_convert_to_bigint)
               expect(migration.column_for(table_name, column_names.first).sql_type).to eq('bigint')
 

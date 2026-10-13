@@ -20,6 +20,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    canRerequest: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     issuableType: {
       type: String,
       required: false,
@@ -76,7 +81,7 @@ export default {
 
       <uncollapsed-reviewer-list
         v-else
-        :can-rerequest="editable"
+        :can-rerequest="canRerequest"
         :users="sortedReviewers"
         :issuable-type="issuableType"
         @request-review="requestReview"

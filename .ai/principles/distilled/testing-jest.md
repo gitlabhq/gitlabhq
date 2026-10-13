@@ -1,6 +1,6 @@
 ---
-source_checksum: 6286e83ce0104551
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: c13eacb208236ea5
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -19,7 +19,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - DO NOT test that mocks work; use mocks to support tests, not as the target of assertions.
 - DO NOT use imported constants in assertions; use explicit literal values instead.
 - Prefer testing components as close to the user's flow as possible (trigger DOM events, validate markup changes).
-- DO NOT assert against `wrapper.vm` properties; assert against component behaviour through side effects: rendered HTML/components, API calls, etc.
+- DO NOT assert against `wrapper.vm` properties; assert against component behavior through side effects: rendered HTML/components, API calls, etc.
 
 ### DOM Querying
 
@@ -105,10 +105,15 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Default to frontend integration tests (`ee/spec/frontend/integration/`, EE-only) over Capybara feature tests, including for rendering recorded unlicensed payloads; use Capybara when real backend state, navigation across server-rendered pages, server-side validations, multi-Vue-app behavior on the same page, or backend license enforcement are required. DO NOT place integration test files under `spec/frontend/integration/` — ESLint enforces EE-only placement and fails CI on violations.
 - Use `fullMount` from `test_helpers.js` (wraps `mount` and attaches to `document.body`) to mount the root component with the real `apolloProvider`.
 - Use native DOM APIs for all interactions and assertions in integration tests; DO NOT use VTU wrapper methods (`wrapper.find()`, `wrapper.trigger()`, `wrapper.text()`, etc.).
+- Use `screen.queryByTestId` / `screen.queryAllByTestId` (re-exported by `test_helpers.js`) instead of `document.querySelector` for `data-testid` lookups; reserve raw `querySelector` for scoping inside an already-found element or selectors Testing Library cannot express.
+- Scope polled queries (`waitFor`/`waitForElement` finders) with `within` on a container found by test ID, and null-guard the container; DO NOT poll unscoped `ByRole` queries in a `fullMount`. Use role queries for one-shot assertions, and query portaled content (`GlModal`, dropdowns, tooltips) from `screen`.
+- DO NOT key finders off an accessible name that changes with state; address the element once (for example by test ID) and read state from ARIA attributes.
 - DO NOT mock child components in frontend integration tests.
 - Reset the Apollo cache in `beforeEach` to prevent state leakage between tests.
-- DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown in integration test files; `test_setup.js` handles this globally.
+- DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown in integration test files; `test_setup.js` handles this globally. Exception: add your own `afterEach` for state the harness cannot reach (e.g. websocket, workflow stream, and panel storage teardown, such as `teardownDuoChatTest` in the `ai_duo_panel` specs).
+- Pass apps booted by a real page bootstrap function (not mounted with `fullMount`) to `registerBootstrappedApp` from `test_helpers.js` so the harness unmounts them and clears their Apollo cache.
 - DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` in individual integration test files; these are handled globally by `test_setup.js`.
+- Use `setFeatureFlags` and `setLicensedFeatures` from `setup_utils` before mounting to enable feature flags and licensed features; DO NOT pass `glFeatures`/`glLicensedFeatures` through `provide` or assign `window.gon.licensed_features` directly.
 - Add a handler for every GraphQL operation that fires during an integration test; unhandled operations return 400.
 - Place feature handler files in `<feature>/handlers.js` and register them in the top-level `handlers.js`.
 - Use `assignRouter` from `test_helpers.js` to create a router; DO NOT call router factory functions directly or push routes manually.
@@ -120,11 +125,14 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use `snapshotRequests` and `expectGraphQLCalls` from `operation_helpers.js` to assert Apollo cache integrity and verify that mutations do not trigger unwanted network calls.
 - Run all frontend integration tests with `yarn jest:integration`; in CI these run in the `jest-integration` job.
 - Declare fixture variants using `defineFixtureVariants({ query, variants })` in a file at `ee/spec/frontend/integration/<feature>/fixture_variants/<query>.js`; always include a `BASE` key. Build variants with `setFixtureData`, `setFixtureErrors`, or `setFixtureItemsCount` from `fixture_utils.js` — each helper deep-clones its input, so DO NOT clone or mutate the imported fixture directly.
+- Use `defineRestFixtureVariants({ query, variants })` for REST endpoint variants (raw JSON bodies; `query` is only a registry key); set the variant file's default export as the endpoint descriptor's `variants` property instead of `response`, and activate it in the spec with `setQueryVariant`. DO NOT derive a REST response from which GraphQL variant is active.
+- Use `createFixturePaginator` from `fixture_utils.js` (created once per connection at module level, called on every request) with an item-count variant (for example, `setFixtureItemsCount` with `itemCount: 51`) to test pagination without recording each page; prefer recorded page fixtures when the test depends on what Rails returns for a specific page.
 - Activate a fixture variant in a test with `setQueryVariant(queryConstant).<variantKey>()` (for example, `.empty()` for `EMPTY`); the active variant resets to `BASE` automatically in `afterEach`.
 - Generate a manifest of registered queries and variant keys with `yarn integration:variants` (writes to `tmp/tests/frontend/integration_variants.manifest.json`); use it to discover which variants exist for which queries.
 - Import variant files as side-effect imports in the feature handler (not in the spec) so that `defineFixtureVariants` registers the query at module load time.
 - Use `getActiveVariant('operationName') ?? defaultFixture` in handlers so the handler's own default fixture is served when no variant is active.
 - To test a license-gated feature's unlicensed state, record a real fixture with the feature stubbed off (`stub_licensed_features(licensed_features.merge(feature: false))`), register it as a named variant, and activate it in the spec; pair the negative assertion with a positive one confirming the expected state was reached.
+- Record a combined fixture as a single variant when a scenario needs several features unlicensed at once (only one variant is active per operation); activate variants for every response feeding the component (including REST payloads and alternate operation keys a handler branches to) so another response does not reintroduce the data.
 
 ### Capybara Feature Tests
 
@@ -134,6 +142,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Stub feature flags explicitly in a `before do` block when testing the disabled state: `stub_feature_flags(my_feature_flag: false)`.
 - DO NOT stub feature flags to `true`; they are enabled by default in the test environment.
 - Use `expect_page_to_have_no_console_errors` in an `after` block to assert no unexpected browser console errors.
+- Fix browser console errors that fail `:js` specs with `BrowserConsoleError`; when it cannot be fixed in the same MR, add an entry (with `message`, `specs`, and the tracking `issue` URL) to `spec/support/browser_console_allowlist.yml` and remove the entry when the error is fixed.
 - Prefer `data-testid` selectors over CSS class selectors; use `.js-*` or CSS class selectors only as a last resort.
 - Group back-to-back expectations using `:aggregate_failures`.
 
@@ -177,6 +186,7 @@ describe('when X', () => {
 });
 ```
 
+- Perform the setup a `describe` block's name promises (including mounting the component and context such as a signed-in user) in that block's `beforeEach`, not in each `it`.
 - When "when X" appears inside an `it` block description, extract the condition into its own `describe` block with a `beforeEach` that performs the setup; DO NOT re-create the component inside an `it` block when an outer `beforeEach` already does so — move it into its own `describe` with dedicated setup instead.
 
 ## Authoritative sources
@@ -184,3 +194,4 @@ describe('when X', () => {
 For the full picture, see:
 
 - doc/development/testing_guide/frontend_testing.md
+

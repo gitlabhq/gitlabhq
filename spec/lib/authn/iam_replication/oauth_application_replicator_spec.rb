@@ -56,7 +56,8 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
           updated_at: Google::Protobuf::Timestamp.new(seconds: application.updated_at.to_i),
           dynamic: false,
           organization_id: application.organization.uuid,
-          owning_cell_id: Gitlab.config.cell.id.to_i
+          owning_cell_id: Gitlab.config.cell.id.to_i,
+          source_id: application.id
         )
       end
 

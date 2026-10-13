@@ -126,12 +126,6 @@ shared using URL parameters.
 
 ## Timeline duration
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
-
-{{< /history >}}
-
 ### Date range presets
 
 Roadmap provides these date range options, each with a predetermined timeline duration:

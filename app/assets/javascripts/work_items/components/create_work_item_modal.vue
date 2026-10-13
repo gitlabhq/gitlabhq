@@ -393,45 +393,47 @@ export default {
           />
         </div>
       </template>
-      <div
-        v-if="showMergeRequestRelationshipNote"
-        class="gl-mb-5 gl-inline-block gl-rounded-base gl-bg-blue-50 gl-px-4 gl-py-3"
-        data-testid="merge-request-relationship-note"
-      >
-        <span class="gl-text-sm gl-text-subtle">{{ mergeRequestRelationshipIntro }}</span>
-        <div class="gl-flex gl-items-start gl-gap-2">
-          <gl-icon name="merge-request" class="gl-icon-subtle" />
-          <span class="gl-text-sm gl-font-bold">{{ mergeRequestTitle }}</span>
-          <span v-if="mergeRequestReference" class="gl-text-sm gl-text-subtle">{{
-            mergeRequestReference
-          }}</span>
+      <div class="gl-@container/panel" data-testid="create-work-item-modal-body">
+        <div
+          v-if="showMergeRequestRelationshipNote"
+          class="gl-mb-5 gl-inline-block gl-rounded-base gl-bg-blue-50 gl-px-4 gl-py-3"
+          data-testid="merge-request-relationship-note"
+        >
+          <span class="gl-text-sm gl-text-subtle">{{ mergeRequestRelationshipIntro }}</span>
+          <div class="gl-flex gl-items-start gl-gap-2">
+            <gl-icon name="merge-request" class="gl-icon-subtle" />
+            <span class="gl-text-sm gl-font-bold">{{ mergeRequestTitle }}</span>
+            <span v-if="mergeRequestReference" class="gl-text-sm gl-text-subtle">{{
+              mergeRequestReference
+            }}</span>
+          </div>
         </div>
+        <create-work-item
+          :creation-context="creationContext"
+          :confidential="confidential"
+          :description="description"
+          :full-path="fullPath"
+          hide-form-title
+          :hide-namespace-selector="hideNamespaceSelector"
+          :hide-type-selector="hideTypeSelector"
+          modal-button-alignment
+          :is-group="isGroup"
+          :parent-id="parentId"
+          :title="title"
+          :preselected-work-item-type="selectedWorkItemTypeName"
+          :related-item="relatedItem"
+          :merge-request-id="mergeRequestId"
+          :merge-request-link-type="mergeRequestLinkType"
+          :should-discard-draft="shouldDiscardDraft"
+          :is-modal="true"
+          :allow-projects-only="allowProjectsOnly"
+          :create-source="createSource"
+          @change-type="selectedWorkItemTypeName = $event"
+          @confirm-cancel="handleConfirmCancellation"
+          @discard-draft="handleDiscardDraft('createModal')"
+          @work-item-created="handleCreated"
+        />
       </div>
-      <create-work-item
-        :creation-context="creationContext"
-        :confidential="confidential"
-        :description="description"
-        :full-path="fullPath"
-        hide-form-title
-        :hide-namespace-selector="hideNamespaceSelector"
-        :hide-type-selector="hideTypeSelector"
-        modal-button-alignment
-        :is-group="isGroup"
-        :parent-id="parentId"
-        :title="title"
-        :preselected-work-item-type="selectedWorkItemTypeName"
-        :related-item="relatedItem"
-        :merge-request-id="mergeRequestId"
-        :merge-request-link-type="mergeRequestLinkType"
-        :should-discard-draft="shouldDiscardDraft"
-        :is-modal="true"
-        :allow-projects-only="allowProjectsOnly"
-        :create-source="createSource"
-        @change-type="selectedWorkItemTypeName = $event"
-        @confirm-cancel="handleConfirmCancellation"
-        @discard-draft="handleDiscardDraft('createModal')"
-        @work-item-created="handleCreated"
-      />
     </gl-modal>
     <create-work-item-cancel-confirmation-modal
       :is-visible="isConfirmationModalVisible"

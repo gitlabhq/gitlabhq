@@ -237,17 +237,29 @@ export default {
     selectedDayContributions() {
       return this.selectedDate ? this.timestamps[this.selectedDate] || 0 : 0;
     },
+    totalContributions() {
+      return Object.values(this.timestamps).reduce((total, count) => total + count, 0);
+    },
+    activityHeadingCount() {
+      // For a day, use that day's count; otherwise the rolling 12 months' total.
+      return this.selectedDate ? this.selectedDayContributions : this.totalContributions;
+    },
     activityHeadingMessage() {
       // Substitute the count here (named placeholders can't mix with %d) and
       // leave %{label} for GlSprintf to render the bold label.
-      return sprintf(
-        n__(
-          '%{count} Contribution for %{label}',
-          '%{count} Contributions for %{label}',
-          this.selectedDayContributions,
-        ),
-        { count: this.selectedDayContributions },
-      );
+      const message = this.selectedDate
+        ? n__(
+            '%{count} Contribution for %{label}',
+            '%{count} Contributions for %{label}',
+            this.activityHeadingCount,
+          )
+        : n__(
+            '%{count} Contribution in the last 12 months',
+            '%{count} Contributions in the last 12 months',
+            this.activityHeadingCount,
+          );
+
+      return sprintf(message, { count: this.activityHeadingCount });
     },
     emptyStateTitle() {
       return this.isCurrentUserProfile
@@ -733,7 +745,7 @@ export default {
       class="gl-my-5"
       data-testid="calendar-activities"
     >
-      <h3 v-if="selectedDate" class="gl-heading-4">
+      <h3 class="gl-heading-4">
         <gl-sprintf :message="activityHeadingMessage">
           <template #label>
             <strong>{{ activityHeadingLabel }}</strong>

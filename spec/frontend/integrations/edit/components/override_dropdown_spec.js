@@ -81,6 +81,21 @@ describe('OverrideDropdown', () => {
       });
     });
 
+    describe('integrationLevel is "organization"', () => {
+      it('renders copy mentioning organization', () => {
+        createComponent(
+          {},
+          {
+            integrationLevel: 'organization',
+          },
+        );
+
+        expect(wrapper.text()).toContain(
+          'Default settings are inherited from the organization level.',
+        );
+      });
+    });
+
     describe('integrationLevel is "instance"', () => {
       it('renders copy mentioning instance', () => {
         createComponent(

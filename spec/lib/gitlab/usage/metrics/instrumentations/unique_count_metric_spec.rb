@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::UniqueCountMetric, :cle
   describe '#value' do
     it 'returns the unique count of all keys from Redis' do
       all_keys = %w[key_2024-19 key_2024-20 key_2024-21]
-      expect(Gitlab::Redis::HLL).to receive(:count).with(keys: contain_exactly(*all_keys)).and_return(42)
+      expect(Gitlab::Redis::HLL).to receive(:count).with(keys: match_array(all_keys)).and_return(42)
 
       expect(described_class.new(metric_definition: metric_definition, time_frame: time_frame).value).to eq(42)
     end

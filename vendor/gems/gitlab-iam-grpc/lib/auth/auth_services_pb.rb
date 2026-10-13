@@ -91,6 +91,26 @@ module Gitlab
 
           Stub = Service.rpc_stub_class
         end
+        module InternalOAuthDoorkeeperRefreshTokensService
+          # All RPCs require a valid service-to-service token. Upserts refresh tokens
+          # replicated from gitlab-rails/Doorkeeper. A later event may change only
+          # owning_cell_id, source_id and (once) revoked_at; other fields keep their first
+          # value and the event is still accepted, except another client_id, which is rejected.
+          class Service
+
+            include ::GRPC::GenericService
+
+            self.marshal_class_method = :encode
+            self.unmarshal_class_method = :decode
+            self.service_name = 'gitlab.iam.auth.v1.InternalOAuthDoorkeeperRefreshTokensService'
+
+            # A revoke may arrive before its create. Returns INVALID_ARGUMENT,
+            # FAILED_PRECONDITION (client not replicated) or ABORTED (retry).
+            rpc :Upsert, ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensServiceUpsertRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensServiceUpsertResponse
+          end
+
+          Stub = Service.rpc_stub_class
+        end
         module InternalOAuthSessionsService
           # All RPCs require a valid service-to-service token.
           class Service
@@ -104,6 +124,31 @@ module Gitlab
             rpc :Create, ::Gitlab::Iam::Auth::V1::InternalOAuthSessionsServiceCreateRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthSessionsServiceCreateResponse
             rpc :Get, ::Gitlab::Iam::Auth::V1::InternalOAuthSessionsServiceGetRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthSessionsServiceGetResponse
             rpc :Delete, ::Gitlab::Iam::Auth::V1::InternalOAuthSessionsServiceDeleteRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthSessionsServiceDeleteResponse
+          end
+
+          Stub = Service.rpc_stub_class
+        end
+        module InternalOAuthTokensService
+          # All RPCs require a valid service-to-service token.
+          class Service
+
+            include ::GRPC::GenericService
+
+            self.marshal_class_method = :encode
+            self.unmarshal_class_method = :decode
+            self.service_name = 'gitlab.iam.auth.v1.InternalOAuthTokensService'
+
+            # Revokes the codes and tokens the client holds for the subject, on app
+            # de-authorization. Idempotent; a refresh in flight can outlive it (iam#110).
+            # ABORTED means nothing was revoked and the call should be repeated.
+            rpc :RevokeUserClientTokens, ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensResponse
+            # Reports whether the access token identified by jti is on the revocation
+            # denylist. The caller verifies the token's signature and expiry first. A
+            # denylisted jti stays revoked after its token expires, and a jti IAM never
+            # issued is not revoked. A token revoked after its exp is not denylisted, so
+            # a caller that accepts expired tokens within a clock-skew leeway cannot
+            # treat revoked=false as final there.
+            rpc :IsRevoked, ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceIsRevokedRequest, ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceIsRevokedResponse
           end
 
           Stub = Service.rpc_stub_class

@@ -49,6 +49,13 @@ module Gitlab
         Rails.env.development? || micro_verification_enabled?
       end
 
+      def frontend_tracker_needed?
+        return true if snowplow_micro_enabled?
+        return true unless Tracking::EventEligibilityChecker.only_send_duo_events?
+
+        Tracking::EventEligibilityChecker.internal_duo_events.any?
+      end
+
       def tracker
         @tracker ||= if snowplow_micro_enabled?
                        Gitlab::Tracking::Destinations::SnowplowMicro.new

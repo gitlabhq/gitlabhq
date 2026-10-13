@@ -62,6 +62,12 @@ module Types
       description: 'Timezone of the user.',
       experiment: { milestone: '17.7' }
 
+    field :first_day_of_week,
+      Types::Users::FirstDayOfWeekEnum,
+      null: true,
+      description: 'First day of the week in calendars and date pickers. ' \
+        'Null when the user has not chosen one and the instance default applies.'
+
     field :work_items_display_settings,
       type: GraphQL::Types::JSON,
       null: false,
@@ -86,6 +92,13 @@ module Types
 
     def projects_sort
       user_preference.projects_sort&.to_sym
+    end
+
+    def first_day_of_week
+      day = user_preference.first_day_of_week
+
+      # Rows written before the inclusion validation can hold any integer.
+      day if ::UserPreference::FIRST_DAYS_OF_WEEK.value?(day)
     end
 
     def organization_groups_projects_sort

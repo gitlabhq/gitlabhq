@@ -12,4 +12,5 @@ lifecycle defined, which resulted in increasing database size by holding data wh
 Multiple efforts are being done as part [Data Growth Control](https://gitlab.com/groups/gitlab-org/-/work_items/22105)
 epic to ensure the database stays under control and tools are built to facilitate moving data out of PgSQL when necessary.
 
+- [Datastore guidance](../datastore_guidance.md)
 - [Data retention policy](data_retention_policy.md)

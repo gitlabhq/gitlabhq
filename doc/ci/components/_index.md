@@ -15,11 +15,7 @@ description: Reusable, versioned CI/CD components for pipelines.
 
 {{< history >}}
 
-- Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a feature flag](../../administration/feature_flags/_index.md) named `ci_namespace_catalog_experimental`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
-- [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
-- [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.6.
-- [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+- [Generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
 
 {{< /history >}}
 
@@ -628,9 +624,7 @@ In other cases, CI/CD variables might still be preferred. For example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.1.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.7.
-- [Made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
 
 {{< /history >}}
 

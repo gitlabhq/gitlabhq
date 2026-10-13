@@ -24,6 +24,14 @@ postgres:
             - btree_gist
             - amcheck
             - pg_stat_statements
+        # For the OIDC consumer (caproni.oidc-consumer.yaml); an empty database costs nothing
+        - name: gitlabhq_consumer
+          owner: gitlab-dev-stack
+          extensions:
+            - pg_trgm
+            - btree_gist
+            - amcheck
+            - pg_stat_statements
 
 valkey:
   enabled: true

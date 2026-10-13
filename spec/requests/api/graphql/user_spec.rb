@@ -114,6 +114,35 @@ RSpec.describe 'User', feature_category: :user_profile do
     end
   end
 
+  describe 'userPreferences field' do
+    let(:query) do
+      graphql_query_for(:user, { username: current_user.username }, 'userPreferences { firstDayOfWeek }')
+    end
+
+    before do
+      current_user.user_preference.update!(first_day_of_week: UserPreference::FIRST_DAYS_OF_WEEK[:monday])
+    end
+
+    it 'returns the first day of the week' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data.dig('user', 'userPreferences', 'firstDayOfWeek')).to eq('MONDAY')
+    end
+
+    context 'when the stored value is not one the preferences page offers' do
+      before do
+        current_user.user_preference.first_day_of_week = 2
+        current_user.user_preference.save!(validate: false)
+      end
+
+      it 'returns null' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data.dig('user', 'userPreferences', 'firstDayOfWeek')).to be_nil
+      end
+    end
+  end
+
   describe 'granular PAT authorization' do
     let(:query) { graphql_query_for(:user, { username: current_user.username }, '__typename') }
 

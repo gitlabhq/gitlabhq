@@ -315,6 +315,11 @@ module QA
         ENV['QA_GITHUB_PASSWORD']
       end
 
+      # The second CNG GitLab that qa/caproni/caproni.oidc-consumer.yaml deploys
+      def oidc_consumer_url
+        ENV['QA_OIDC_CONSUMER_URL']
+      end
+
       def jira_admin_username
         ENV['QA_JIRA_ADMIN_USERNAME']
       end

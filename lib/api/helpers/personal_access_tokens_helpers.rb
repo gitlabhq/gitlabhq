@@ -14,7 +14,7 @@ module API
                                             'only returns tokens that are not revoked.',
           documentation: { example: false }
         optional :state, type: String, desc: 'Return tokens with the specified state.',
-          values: %w[active inactive], documentation: { example: 'active' }
+          values: %w[all active inactive], documentation: { example: 'active' }
         optional :created_before, type: DateTime, desc: 'Return tokens created on or before the specified time.',
           documentation: { example: '2022-01-01T00:00:00Z' }
         optional :created_after, type: DateTime, desc: 'Return tokens created on or after the specified time.',

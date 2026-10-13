@@ -430,7 +430,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     it 'returns unique statuses' do
-      is_expected.to contain_exactly(*statuses.values_at(0, 1, 2))
+      is_expected.to match_array(statuses.values_at(0, 1, 2))
     end
   end
 
@@ -462,7 +462,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     it 'returns statuses that are running or pending' do
-      is_expected.to contain_exactly(*statuses.values_at(0, 1))
+      is_expected.to match_array(statuses.values_at(0, 1))
     end
   end
 

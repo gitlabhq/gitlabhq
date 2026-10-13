@@ -80,11 +80,9 @@ module Resolvers
 
       private
 
-      # Keyed by project because the flag has a project actor, so a query spanning
-      # two projects doesn't preload for the one the flag is off for.
+      # Keyed by project so a query spanning two projects only preloads what each
+      # project's selection needs.
       def record_policy_preloads
-        return if ::Feature.disabled?(:batch_pipeline_job_policy_checks, ::Project.actor_from_id(pipeline.project_id))
-
         groups = policy_preload_groups
         return if groups.empty?
 

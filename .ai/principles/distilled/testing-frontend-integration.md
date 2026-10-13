@@ -1,6 +1,6 @@
 ---
-source_checksum: 9d2e32547b3784c0
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 52e7c32e4021869b
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -145,7 +145,8 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use `waitFor` from `@testing-library/dom` after actions that trigger API calls.
 - Reset the Apollo cache in `beforeEach` with `apolloProvider.defaultClient.cache.reset()` to prevent state leaking between tests; `test_setup.js` calls `clearMountedApolloStores()` in `beforeEach` to cancel in-flight fetches before each test, so spec files do not need to do anything extra beyond the usual `cache.reset()`.
 - Set feature flags before mounting with `setFeatureFlags({ flagName: true })` imported from `ee_jest/integration/helpers/setup_utils`; DO NOT pass `glFeatures` through `provide` — nested components do not receive it. The harness resets `window.gon` before each test, so no cleanup is needed.
-- DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown — the global `test_setup.js` handles router resets, wrapper destroy, and metadata cleanup.
+- Set licensed features before mounting with `setLicensedFeatures({ featureName: true })` imported from `ee_jest/integration/helpers/setup_utils`; DO NOT pass `glLicensedFeatures` through `provide` and DO NOT assign `window.gon.licensed_features` directly. The harness resets `window.gon` before each test, so no cleanup is needed. This only controls what the frontend reads from `gon`; use a recorded fixture variant for responses that drop fields for an unlicensed namespace (see Test Unlicensed Feature States).
+- DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown — the global `test_setup.js` handles router resets, wrapper destroy, and metadata cleanup. Exception: add your own `afterEach` for state the harness cannot reach (e.g. websocket, workflow stream, and panel storage teardown, such as `teardownDuoChatTest` in the `ai_duo_panel` specs).
 - DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` calls in individual test files — server lifecycle is handled globally by `test_setup.js`.
 - DO NOT mock child components in frontend integration tests; the goal is to test how components work together.
 

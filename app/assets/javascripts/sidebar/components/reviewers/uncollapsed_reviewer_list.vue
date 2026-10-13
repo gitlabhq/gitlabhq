@@ -71,8 +71,7 @@ export default {
     },
     canRerequest: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
   },
   emits: ['remove-reviewer', 'request-review'],

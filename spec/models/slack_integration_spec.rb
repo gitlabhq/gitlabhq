@@ -237,7 +237,7 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
     subject(:slack_integration) { integration }
 
     it 'includes the correct attributes' do
-      expect(slack_integration.to_database_hash.keys).to contain_exactly(*described_class::DATABASE_ATTRIBUTES)
+      expect(slack_integration.to_database_hash.keys).to match_array(described_class::DATABASE_ATTRIBUTES)
     end
   end
 

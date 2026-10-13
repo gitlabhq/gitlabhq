@@ -878,6 +878,9 @@ table being converted, but in general it's done in the following steps:
    1. Lock the tables involved. To reduce the chance of hitting a deadlock, we recommended to do this in parent to child order ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L47)).
    1. Rename the columns to swap names ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L49-54))
    1. Reset the trigger function ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L56-57)).
+      This only clears cached function plans. It does not change which columns a trigger
+      fires on, which is handled by `swap_columns` as described in
+      [Triggers that reference a swapped column](#triggers-that-reference-a-swapped-column).
    1. Swap the defaults ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L59-62)).
    1. Swap the PK constraint (if any) ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L64-68)).
    1. Remove old indexes and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L70-72)).
@@ -896,10 +899,59 @@ table being converted, but in general it's done in the following steps:
 
 See example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66088), and [migration](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb).
 
+#### Triggers that reference a swapped column
+
+A trigger can reference specific columns in two ways: an `UPDATE OF column_name` list, which
+limits when it fires, and a `WHEN` condition. PostgreSQL stores both as attribute numbers
+rather than column names, so renaming the columns would leave the trigger pointing at the old
+column.
+
+A trigger with a stale `UPDATE OF` list stops firing for application writes, and because
+[changes made by `BEFORE` triggers are not considered](https://www.postgresql.org/docs/17/sql-createtrigger.html),
+the conversion's own sync trigger does not compensate. A stale `WHEN` condition keeps firing
+but evaluates the wrong column.
+
+`swap_columns` handles both: it captures the definition of any trigger that depends on the
+columns being swapped, and recreates it afterwards so the trigger refers to the same column
+names as before. No extra step is needed in the migration.
+
+Four cases are worth knowing about:
+
+- On a partitioned table, replacing the trigger on the parent recurses into the clones on the
+  partitions, so they are updated along with it.
+- Constraint triggers cannot be replaced by PostgreSQL. If one depends on a column being
+  swapped, `swap_columns` raises before renaming anything, and the trigger has to be dropped
+  and recreated around the swap.
+- Recreating a trigger resets its firing mode, and the mode is not part of the definition that
+  gets replayed. `swap_columns` therefore captures the mode before the swap and reapplies it
+  afterwards, including a mode set on an individual partition.
+- `swap_columns` must run inside a transaction, so that the renames, the recreated triggers and
+  the restored firing modes all become visible at once. Transactional migrations and
+  `with_lock_retries` both satisfy this, and `swap_columns` raises when neither applies.
+
+To list the triggers that depend on a given table's columns before writing the migration:
+
+```sql
+SELECT t.tgname, a.attname
+FROM pg_trigger t
+JOIN pg_depend d ON d.classid = 'pg_trigger'::regclass AND d.objid = t.oid
+JOIN pg_attribute a ON a.attrelid = d.refobjid AND a.attnum = d.refobjsubid
+WHERE t.tgrelid = 'your_table'::regclass
+  AND NOT t.tgisinternal
+  AND d.refobjsubid > 0;
+```
+
 ### Remove the trigger and old `integer` columns (release N + 2)
 
 Using post-deployment migration and the provided `cleanup_conversion_of_integer_to_bigint` helper,
 drop the database trigger and the old `integer` columns ([see an example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70351)).
+
+If a column-specific trigger is still attached to a `*_convert_to_bigint` column, this step fails
+with `cannot drop column ... because other objects depend on it`, because PostgreSQL records the
+dependency as a normal one rather than an automatic one. Do not resolve this with `CASCADE`, which
+drops the whole trigger instead of only its reference to the column. Recreate the trigger so it
+refers to the current column names, as described in
+[Triggers that reference a swapped column](#triggers-that-reference-a-swapped-column).
 
 ### Remove ignore rules (release N + 3)
 

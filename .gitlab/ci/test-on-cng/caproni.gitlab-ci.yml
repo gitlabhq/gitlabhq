@@ -12,10 +12,20 @@
     - export GITLAB_DOMAIN
     - $CI_PROJECT_DIR/qa/caproni/scripts/write_local_config.rb
     - |
+      if [ "${QA_SCENARIO}" = "Test::Integration::OAuth" ]; then
+        # Opaque strings on both sides: the consumer's provider secret gets them in
+        # `caproni up`, the primary's Doorkeeper application after it. Never echo them.
+        export QA_OIDC_CLIENT_ID="$(openssl rand -hex 32)"
+        export QA_OIDC_CLIENT_SECRET="$(openssl rand -hex 32)"
+        export QA_OIDC_IDP_URL="http://gitlab.${GITLAB_DOMAIN}"
+        export QA_OIDC_CONSUMER_URL="http://consumer.${GITLAB_DOMAIN}"
+      fi
+    - |
       section_start "caproni_up" "Deploying CNG with Caproni"
       # --debug not LOG_LEVEL: the env var corrupts k3d JSON output
       # https://gitlab.com/gitlab-org/caproni/-/issues/184
       caproni -c "${CAPRONI_CONFIG}" --debug up
+      # Also covers the OIDC consumer's webservice: it is a second release in the same namespace
       caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} wait --for=condition=Ready \
         --selector="app=webservice" pods --timeout=600s
       section_end "caproni_up"
@@ -34,6 +44,10 @@
       done
       section_end "gitlab_ready"
     - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
+    - |
+      if [ "${QA_SCENARIO}" = "Test::Integration::OAuth" ]; then
+        $CI_PROJECT_DIR/qa/caproni/scripts/seed_oidc_application.rb
+      fi
     # Read back, not pre-created: Caproni has no pre-install hook
     - |
       export GITLAB_ADMIN_PASSWORD="$(caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} \
@@ -140,9 +154,8 @@ cng-registry-caproni:
     QA_SCENARIO: Test::Integration::Registry
     QA_RUN_IN_PARALLEL: "false"
 
-# This job is a placeholder: the only :oauth spec (login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb) is
-# quarantined, so it won't run until the quarantine is removed
-# https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015
+# Runs login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb against the CNG consumer that
+# caproni.oidc-consumer.yaml deploys next to the instance under test
 cng-oauth-caproni:
   extends: .caproni-test
   variables:

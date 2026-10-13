@@ -1585,6 +1585,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         db_migration = migration_class.new.extend(Gitlab::Database::MigrationHelpers::Swapping)
         db_migration.add_index(table_name, :id_convert_to_bigint, name: :idx, unique: true)
         db_migration.swap_primary_key(table_name, :_test_table_pkey, :idx)
+        # The shared stub reports no open transaction, which `swap_columns` requires. Stubbed
+        # after `swap_primary_key`, since `with_lock_retries` refuses to run inside one.
+        allow(db_migration).to receive(:transaction_open?).and_return(true)
         db_migration.swap_columns(table_name, :id, :id_convert_to_bigint)
         db_migration.swap_columns_default(table_name, :id, :id_convert_to_bigint)
         db_migration.swap_columns(table_name, :namespace_id, :namespace_id_convert_to_bigint)
@@ -1822,6 +1825,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
           # Swap columns
           db_migration = migration_class.new.extend(Gitlab::Database::MigrationHelpers::Swapping)
+          # The shared stub reports no open transaction, which `swap_columns` requires.
+          allow(db_migration).to receive(:transaction_open?).and_return(true)
           db_migration.swap_columns(table_name, :namespace_id, :namespace_id_convert_to_bigint)
           db_migration.swap_columns_default(table_name, :namespace_id, :namespace_id_convert_to_bigint)
           db_migration.swap_columns(table_name, :traversal_ids, :traversal_ids_convert_to_bigint)
@@ -1984,6 +1989,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             )
 
           db_migration = migration_class.new.extend(Gitlab::Database::MigrationHelpers::Swapping)
+          # The shared stub reports no open transaction, which `swap_columns` requires.
+          allow(db_migration).to receive(:transaction_open?).and_return(true)
           # Change the integer columns to bigint for self-managed
           db_migration.change_column(table_name, :namespace_id, :bigint, null: false)
           db_migration.change_column(table_name, :traversal_ids, :bigint, null: false, array: true, default: [])

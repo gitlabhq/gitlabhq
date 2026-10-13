@@ -12,13 +12,6 @@ title: Feature flag API
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in GitLab Premium 12.5.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
-
-{{< /history >}}
-
 Use this API to interact with GitLab [feature flags](../operations/feature_flags.md).
 
 Prerequisites:

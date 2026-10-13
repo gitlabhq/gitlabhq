@@ -189,7 +189,7 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
       ]
 
       expect(described_class::TOP_LEVEL_ROUTES + test_only_top_level_routes)
-        .to contain_exactly(*top_level_words), failure_block
+        .to match_array(top_level_words), failure_block
     end
 
     # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362
@@ -208,7 +208,7 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
       end
 
       expect(described_class::GROUP_ROUTES)
-        .to contain_exactly(*paths_after_group_id), failure_block
+        .to match_array(paths_after_group_id), failure_block
     end
 
     # We ban new items in this list, see https://gitlab.com/gitlab-org/gitlab/-/issues/215362

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlIcon, GlLoadingIcon, GlSprintf, GlToastMixin } from '@gitlab/ui';
 import { omit } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -72,7 +72,9 @@ export default {
   components: {
     GlButton,
     GlEmptyState,
+    GlIcon,
     GlLoadingIcon,
+    GlSprintf,
     BoardColumn,
     BoardColumnCount,
     DraggableCompat,
@@ -91,10 +93,12 @@ export default {
   },
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
   i18n: {
-    groupSelectionTitle: s__('WorkItemBoard|Choose which groups to show'),
-    chooseGroups: s__('WorkItemBoard|Choose groups'),
-    groupSelectionPromptDescription: s__(
-      'WorkItemBoard|Boards show up to %{maxGroups} groups at a time, choose groups to build your board.',
+    allGroupsHiddenTitle: s__('WorkItemBoard|All groups are hidden'),
+    allGroupsHiddenDescription: s__(
+      'WorkItemBoard|Show groups using the %{boldStart}Display%{boldEnd} options.',
+    ),
+    tooManyGroupsDescription: s__(
+      'WorkItemBoard|Boards show up to %{maxGroups} groups at a time. Choose groups using the %{boldStart}Display%{boldEnd} options.',
     ),
   },
   props: {
@@ -195,6 +199,7 @@ export default {
     'hide-group',
     'work-item-created',
     'open-group-by-settings',
+    'open-display-settings',
   ],
   data() {
     return {
@@ -234,7 +239,7 @@ export default {
     },
     // Returning undefined (not null) skips the ids variable, since Apollo treats null as a
     // real filter. Skip it the same way when nothing's selected, so the fetch stays unfiltered
-    // and groupValues still reports the true group count (see groupSelectionPromptDescription).
+    // and groupValues still reports the true group count (see allGroupsHiddenDescription).
     idsToFetch() {
       if (this.visibleGroups === SHOW_ALL_GROUPS || this.noGroupsSelected) {
         return undefined;
@@ -249,8 +254,11 @@ export default {
     needsGroupSelection() {
       return this.tooManyGroups || this.noGroupsSelected;
     },
-    groupSelectionPromptDescription() {
-      return sprintf(this.$options.i18n.groupSelectionPromptDescription, {
+    allGroupsHiddenDescription() {
+      if (!this.tooManyGroups) {
+        return this.$options.i18n.allGroupsHiddenDescription;
+      }
+      return sprintf(this.$options.i18n.tooManyGroupsDescription, {
         maxGroups: MAX_VISIBLE_GROUPS,
       });
     },
@@ -298,6 +306,9 @@ export default {
         return this.orderedGroupValues;
       }
       return this.orderedGroupValues.filter((value) => this.groupCounts[value.id] !== 0);
+    },
+    allGroupsHidden() {
+      return this.orderedGroupValues.length > 0 && this.displayedGroupValues.length === 0;
     },
     canReorderColumns() {
       return this.canManageColumns && this.orderedGroupValues.length > 1;
@@ -1102,15 +1113,33 @@ export default {
       <slot name="empty-state"></slot>
     </div>
     <gl-empty-state
-      v-else-if="needsGroupSelection"
-      class="gl-m-auto"
-      :title="$options.i18n.groupSelectionTitle"
-      :description="groupSelectionPromptDescription"
-      data-testid="group-selection-prompt"
+      v-else-if="needsGroupSelection || allGroupsHidden"
+      class="gl-mx-auto gl-mt-5"
+      data-testid="all-groups-hidden-prompt"
     >
+      <template #title>
+        <div
+          class="board-empty-state-icon gl-mx-auto gl-mb-5 gl-flex gl-h-11 gl-w-11 gl-items-center gl-justify-center gl-rounded-full"
+        >
+          <gl-icon name="eye-slash" :size="24" />
+        </div>
+        <h2 class="h4 gl-my-0 gl-text-size-h-display gl-leading-36">
+          {{ $options.i18n.allGroupsHiddenTitle }}
+        </h2>
+      </template>
+      <template #description>
+        <gl-sprintf :message="allGroupsHiddenDescription">
+          <template #bold="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </template>
       <template #actions>
-        <gl-button variant="confirm" @click="$emit('open-group-by-settings')">
-          {{ $options.i18n.chooseGroups }}
+        <gl-button
+          icon="preferences"
+          @click="$emit(tooManyGroups ? 'open-group-by-settings' : 'open-display-settings')"
+        >
+          {{ __('Display') }}
         </gl-button>
       </template>
     </gl-empty-state>

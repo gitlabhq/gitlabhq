@@ -32,6 +32,25 @@ describe('Reviewer component', () => {
     });
   };
 
+  describe('re-request review', () => {
+    const findRequestReviewButton = () => wrapper.find('[data-testid="re-request-button"]');
+
+    it.each`
+      editable | canRerequest | shown
+      ${false} | ${true}      | ${true}
+      ${true}  | ${false}     | ${false}
+    `(
+      'shows button is $shown when editable=$editable and canRerequest=$canRerequest',
+      ({ editable, canRerequest, shown }) => {
+        const user = usersMock();
+        user.mergeRequestInteraction.reviewState = 'REQUESTED_CHANGES';
+        createWrapper({ ...getDefaultProps(), users: [user], editable, canRerequest });
+
+        expect(findRequestReviewButton().exists()).toBe(shown);
+      },
+    );
+  });
+
   describe('Two or more reviewers/users', () => {
     it('Shows two reviewers', () => {
       const users = [usersMock(), usersMock(2)];

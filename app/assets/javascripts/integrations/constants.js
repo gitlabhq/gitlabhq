@@ -3,6 +3,7 @@ import { s__, __ } from '~/locale';
 export const integrationLevels = {
   PROJECT: 'project',
   GROUP: 'group',
+  ORGANIZATION: 'organization',
   INSTANCE: 'instance',
 };
 
@@ -11,6 +12,9 @@ export const defaultIntegrationLevel = integrationLevels.INSTANCE;
 export const overrideDropdownDescriptions = {
   [integrationLevels.GROUP]: s__(
     'Integrations|Default settings are inherited from the group level.',
+  ),
+  [integrationLevels.ORGANIZATION]: s__(
+    'Integrations|Default settings are inherited from the organization level.',
   ),
   [integrationLevels.INSTANCE]: s__(
     'Integrations|Default settings are inherited from the instance level.',

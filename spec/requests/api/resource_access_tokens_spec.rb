@@ -236,6 +236,19 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
               expect(token_ids).to match_array(active_access_tokens.pluck(:id))
             end
           end
+
+          context 'when state param is set to all' do
+            let(:params) { { state: 'all' } }
+
+            it 'returns all tokens' do
+              get api("/#{source_type}s/#{resource_id}/access_tokens", user), params: params
+
+              token_ids = json_response.map { |token| token['id'] }
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(token_ids).to match_array(all_access_tokens.pluck(:id))
+            end
+          end
         end
 
         context 'when filtering by created dates' do

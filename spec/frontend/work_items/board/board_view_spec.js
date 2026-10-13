@@ -50,7 +50,7 @@ describe('BoardView', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBoardColumns = () => wrapper.findAllComponents(BoardColumn);
-  const findGroupSelectionPrompt = () => wrapper.findComponentByTestId('group-selection-prompt');
+  const findAllGroupsHiddenPrompt = () => wrapper.findComponentByTestId('all-groups-hidden-prompt');
 
   let apolloProvider;
 
@@ -431,10 +431,8 @@ describe('BoardView', () => {
         });
       });
 
-      it('asks the user to choose groups', () => {
-        expect(findGroupSelectionPrompt().props('description')).toBe(
-          'Boards show up to 25 groups at a time, choose groups to build your board.',
-        );
+      it('tells the user all groups are hidden', () => {
+        expect(findAllGroupsHiddenPrompt().exists()).toBe(true);
       });
     });
   });

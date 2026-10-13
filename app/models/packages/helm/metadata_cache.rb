@@ -20,7 +20,7 @@ module Packages
 
       mount_file_store_uploader MetadataCacheUploader
 
-      before_validation :set_object_storage_key
+      before_validation :set_object_storage_key, on: :create
       attr_readonly :object_storage_key
 
       def self.find_or_build(project_id:, channel:)

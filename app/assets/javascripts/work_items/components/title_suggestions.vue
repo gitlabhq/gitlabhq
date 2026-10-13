@@ -93,7 +93,7 @@ export default {
     anchor-id="work-item-similar-items"
     :title="suggestionsTitle"
     :count="issues.length"
-    class="!-gl-mt-4 gl-mb-5"
+    class="gl-mb-5"
   >
     <div class="gl-px-3 gl-pt-3">
       <div

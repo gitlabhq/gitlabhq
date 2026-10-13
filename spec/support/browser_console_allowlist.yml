@@ -215,9 +215,6 @@
 - message: "TypeError: Cannot read properties of null (reading 'group')"
   specs:
   - ee/spec/features/boards/swimlanes/epics_swimlanes_sidebar_labels_spec.rb
-- message: "[Vue warn]: Invalid prop: type check failed for prop helpText"
-  specs:
-  - spec/features/profiles/two_factor_auths_spec.rb
 # Every source editor: the Rspack build defines window.IS_VITE, and enableMonacoYamlWorkerForVite
 # in app/assets/javascripts/editor/utils.js has no worker for this label.
 - message: 'Uncaught Error: Unknown Monaco worker label: "editorWorkerService"'

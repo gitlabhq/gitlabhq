@@ -610,12 +610,6 @@ The following example response includes:
 
 {{< /details >}}
 
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 Example request:
 
 ```shell

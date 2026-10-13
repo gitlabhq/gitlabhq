@@ -755,6 +755,47 @@ describe('ActivityCalendar', () => {
       });
     });
 
+    describe('heading', () => {
+      const findHeadingMessage = () =>
+        findActivities().findComponent(GlSprintf).attributes('message');
+
+      beforeEach(() => {
+        // The heading section only renders once the general feed has events.
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+      });
+
+      it('shows the rolling 12 months total when no day is selected', async () => {
+        AjaxCache.retrieve.mockResolvedValue({ '2026-07-15': 4, '2026-08-01': 3 });
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findHeadingMessage()).toBe('7 Contributions in the last 12 months');
+      });
+
+      it('uses the singular form for a single contribution', async () => {
+        AjaxCache.retrieve.mockResolvedValue({ '2026-08-01': 1 });
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findHeadingMessage()).toBe('1 Contribution in the last 12 months');
+      });
+
+      it('switches to the selected day count when a day is clicked', async () => {
+        AjaxCache.retrieve.mockResolvedValue({ '2026-07-15': 4, '2026-08-01': 3 });
+        mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
+
+        createComponent();
+        await waitForPromises();
+
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        expect(findHeadingMessage()).toBe('0 Contributions for %{label}');
+      });
+    });
+
     describe('day selection', () => {
       beforeEach(async () => {
         mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);

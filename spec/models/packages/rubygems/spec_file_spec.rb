@@ -91,6 +91,7 @@ RSpec.describe Packages::Rubygems::SpecFile, feature_category: :package_registry
   describe '#object_storage_key' do
     it_behaves_like 'object_storage_key callbacks' do
       let(:model) { build(:rubygems_spec_file, project: project) }
+      let(:key_source_attributes) { { file_name: 'latest_specs.4.8.gz' } }
       let(:expected_object_storage_key) do
         Gitlab::HashedPath.new(
           'packages', 'rubygems', 'spec_files', OpenSSL::Digest::SHA256.hexdigest(model.file_name),

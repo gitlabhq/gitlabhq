@@ -29,7 +29,8 @@ export default {
   props: {
     helpText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     path: {
       type: String,

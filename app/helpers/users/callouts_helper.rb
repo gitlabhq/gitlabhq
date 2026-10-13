@@ -6,7 +6,6 @@ module Users
     SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
     OPENSSL_CALLOUT = 'openssl_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
-    PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     SINGLE_ORIGIN_FALLBACK_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     SINGLE_ORIGIN_FALLBACK_CALLOUT = 'single_origin_fallback_callout'

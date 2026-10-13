@@ -20028,6 +20028,7 @@ Arguments:
 | <a id="mutation-userpreferencesupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-userpreferencesupdate-duodefaultnamespaceid"></a>`duoDefaultNamespaceId` | [`Int`](#int) | Default namespace context for Duo features when namespace can not be inferred. |
 | <a id="mutation-userpreferencesupdate-extensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
+| <a id="mutation-userpreferencesupdate-firstdayofweek"></a>`firstDayOfWeek` | [`UserFirstDayOfWeek`](#userfirstdayofweek) | First day of the week in calendars and date pickers. Set to `null` to use the instance default. |
 | <a id="mutation-userpreferencesupdate-issuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="mutation-userpreferencesupdate-knowledgegraphgoverningnamespaceid"></a>`knowledgeGraphGoverningNamespaceId` | [`Int`](#int) | Governing and billing namespace for Orbit. |
 | <a id="mutation-userpreferencesupdate-mergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
@@ -66213,6 +66214,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="userpreferences-duodefaultnamespace"></a>`duoDefaultNamespace` | [`Namespace`](#namespace) | Default namespace context for Duo features when namespace cannot be inferred. |
 | <a id="userpreferences-extensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
+| <a id="userpreferences-firstdayofweek"></a>`firstDayOfWeek` | [`UserFirstDayOfWeek`](#userfirstdayofweek) | First day of the week in calendars and date pickers. Null when the user has not chosen one and the instance default applies. |
 | <a id="userpreferences-issuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="userpreferences-knowledgegraphgoverningnamespace"></a>`knowledgeGraphGoverningNamespace` | [`Namespace`](#namespace) | Governing and billing namespace for Orbit. |
 | <a id="userpreferences-mergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
@@ -75423,6 +75425,16 @@ Filter for user activity events.
 | <a id="usereventfilter-push"></a>`PUSH` | Push events. |
 | <a id="usereventfilter-team"></a>`TEAM` | Team events. |
 | <a id="usereventfilter-wiki"></a>`WIKI` | Wiki page events. |
+
+### `UserFirstDayOfWeek`
+
+First day of the week in calendars and date pickers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="userfirstdayofweek-monday"></a>`MONDAY` | Monday. |
+| <a id="userfirstdayofweek-saturday"></a>`SATURDAY` | Saturday. |
+| <a id="userfirstdayofweek-sunday"></a>`SUNDAY` | Sunday. |
 
 ### `UserGroupCalloutFeatureName`
 

@@ -3288,6 +3288,22 @@ describe('planning-view', () => {
         });
       });
 
+      describe('when the board asks for the display settings', () => {
+        beforeEach(async () => {
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+
+          findDisplaySettingsDrawer().vm.$emit('page-change', 'groupBy');
+          findBoardView().vm.$emit('open-display-settings');
+          await nextTick();
+        });
+
+        it('opens the drawer on the root page', () => {
+          expect(findDisplaySettingsDrawer().props('open')).toBe(true);
+          expect(findDisplaySettingsDrawer().props('page')).toBe('root');
+        });
+      });
+
       describe('when board card is selected', () => {
         it('opens the detail panel and marks the card active', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };

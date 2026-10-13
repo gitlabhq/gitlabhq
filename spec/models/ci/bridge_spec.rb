@@ -636,7 +636,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
           { key: 'TEST_FILE_VAR', value: 'test-file-value', variable_type: :file }
         ]
 
-        expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
+        expect(bridge.downstream_variables).to match_array(expected_vars)
       end
     end
 
@@ -683,7 +683,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
 
         it 'returns variables according to the forward value' do
-          expect(bridge.downstream_variables.map { |v| v[:key] }).to contain_exactly(*variables)
+          expect(bridge.downstream_variables.map { |v| v[:key] }).to match_array(variables)
         end
       end
 
@@ -738,7 +738,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
             { key: 'PROJECT_FILE_VAR', value: 'project file', variable_type: :file }
           ]
 
-          expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
+          expect(bridge.downstream_variables).to match_array(expected_vars)
         end
       end
 
@@ -760,7 +760,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
             { key: 'schedule_var_key', value: 'schedule var value' }
           ]
 
-          expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
+          expect(bridge.downstream_variables).to match_array(expected_vars)
         end
       end
     end
@@ -805,7 +805,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
           { key: 'PROJECT_FILE_VAR', value: 'project file', variable_type: :file }
         ]
 
-        expect(bridge.downstream_variables).to contain_exactly(*expected_vars)
+        expect(bridge.downstream_variables).to match_array(expected_vars)
       end
     end
 

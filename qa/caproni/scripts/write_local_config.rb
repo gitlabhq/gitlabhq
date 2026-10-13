@@ -12,7 +12,13 @@ module WriteLocalConfig
   # Deployment variation lives in the fragments, so this only has to pick them
   def build(domain:, relative_url_root: nil, qa_scenario: nil)
     fragments = []
-    fragments << 'caproni.github-oauth.yaml' if qa_scenario == 'Test::Integration::OAuth'
+
+    if qa_scenario == 'Test::Integration::OAuth'
+      fragments << 'caproni.github-oauth.yaml'
+      # The GitLab-as-IdP spec signs in from a second GitLab
+      fragments << 'caproni.oidc-consumer.yaml'
+    end
+
     fragments << 'caproni.relative-url.yaml' unless relative_url_root.to_s.empty?
 
     config = { 'variables' => { 'BASE_DOMAIN' => domain } }

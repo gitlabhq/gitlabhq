@@ -252,7 +252,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       all_types = described_class.file_types.keys
       erasable_types = all_types - Enums::Ci::JobArtifact.non_erasable_file_types
 
-      expect(subject).to contain_exactly(*erasable_types)
+      expect(subject).to match_array(erasable_types)
     end
   end
 

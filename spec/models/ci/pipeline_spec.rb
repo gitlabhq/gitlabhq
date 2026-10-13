@@ -1157,9 +1157,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'filters on expected sources' do
-      expect(::Enums::Ci::Pipeline.ci_sources.keys).to contain_exactly(
-        *%i[unknown push web trigger schedule api external pipeline chat
-          merge_request_event external_pull_request_event])
+      expect(::Enums::Ci::Pipeline.ci_sources.keys).to match_array(
+        %i[unknown push web trigger schedule api external pipeline chat
+          merge_request_event external_pull_request_event]
+      )
     end
   end
 
@@ -1178,9 +1179,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'filters on expected sources' do
-      expect(::Enums::Ci::Pipeline.ci_branch_sources.keys).to contain_exactly(
-        *%i[unknown push web trigger schedule api external pipeline chat
-          external_pull_request_event])
+      expect(::Enums::Ci::Pipeline.ci_branch_sources.keys).to match_array(
+        %i[unknown push web trigger schedule api external pipeline chat
+          external_pull_request_event]
+      )
     end
   end
 
@@ -1200,9 +1202,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'filters on expected sources' do
-      expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to contain_exactly(
-        *%i[unknown push web trigger schedule api external pipeline chat merge_request_event
-          external_pull_request_event security_orchestration_policy pipeline_execution_policy_schedule])
+      expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to match_array(
+        %i[unknown push web trigger schedule api external pipeline chat merge_request_event
+          external_pull_request_event security_orchestration_policy pipeline_execution_policy_schedule]
+      )
     end
   end
 

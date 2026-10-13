@@ -9,23 +9,27 @@ title: Configure LLM platforms
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated for Government
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12972) in GitLab 17.1 [with a feature flag](../feature_flags/_index.md) named `ai_custom_model`. Disabled by default.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/work_items/15176) in GitLab 17.6.
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Feature flag `ai_custom_model` removed in GitLab 17.8.
-- Generally available in GitLab 17.9.
-- Changed to include Premium in GitLab 18.0.
-- [Enabled on GitLab Dedicated for Government](https://gitlab.com/gitlab-org/gitlab/-/issues/569874) in GitLab 18.5.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168171) in GitLab 17.5.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171692) to require GitLab Duo Enterprise add-on in GitLab 17.6.
+- Feature flag `ai_custom_model` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/498194) in GitLab 17.8.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/15176) in GitLab 17.9.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188263) to include GitLab Premium in GitLab 18.0.
 
 {{< /history >}}
 
-The AI Gateway supports multiple LLM providers through [LiteLLM](https://docs.litellm.ai/docs/providers). Each platform has unique features and benefits that can cater to different needs. The following documentation summarizes the providers we have validated and tested. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
+The AI Gateway supports multiple LLM providers through [LiteLLM](https://docs.litellm.ai/docs/providers).
+GitLab has validated and tested the following platforms.
+
+If the platform you want to use is not listed,
+share your feedback in [issue 526144](https://gitlab.com/gitlab-org/gitlab/-/work_items/526144).
 
 ## Use multiple models and platforms
 

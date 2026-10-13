@@ -1386,6 +1386,10 @@ export default {
       this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_GROUP_BY;
       this.isDisplayDrawerOpen = true;
     },
+    openDisplaySettings() {
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
+      this.isDisplayDrawerOpen = true;
+    },
     closeDisplayDrawer() {
       this.isDisplayDrawerOpen = false;
       this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
@@ -2599,6 +2603,7 @@ export default {
       @hide-group="handleHideGroup"
       @work-item-created="handleBoardWorkItemCreated"
       @open-group-by-settings="openGroupByDisplaySettings"
+      @open-display-settings="openDisplaySettings"
     >
       <template #empty-state>
         <empty-state-with-any-issues v-if="hasWorkItems || hasWorkItemsFailed">

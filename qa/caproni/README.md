@@ -11,7 +11,7 @@ GitLab instance:
 - `cng-relative-url-caproni` (non-blocking) runs `Test::Instance::Smoke` against an instance
   served under a `/relative` subpath
 - `cng-registry-caproni` (non-blocking) runs `Test::Integration::Registry`
-- `cng-oauth-caproni` (non-blocking) runs `Test::Integration::OAuth` (see [GitHub OAuth](#github-oauth-opt-in) for why it executes nothing yet)
+- `cng-oauth-caproni` (non-blocking) runs `Test::Integration::OAuth` against a second GitLab (see [OIDC consumer](#oidc-consumer-opt-in))
 - `cng-instance-ff-inverse` (blocking) runs `Test::Instance::All` with `QA_FEATURE_FLAGS`
   inverted, and only when a feature flag definition file changes
 
@@ -39,14 +39,17 @@ names the upstream issue that would retire it. They are not the intended pattern
 |---|---|
 | `caproni.yaml` | The whole rig: cluster, deployers, edge and CNG image pinning |
 | `caproni.github-oauth.yaml` | Opt-in fragment: the `gitlab-oauth-github` secret and `global.appConfig.omniauth` values |
+| `caproni.oidc-consumer.yaml` | Opt-in fragment: a second GitLab release, `gitlab-consumer`, that signs in through the first |
 | `caproni.relative-url.yaml` | Opt-in fragment: serves the instance under `QA_RELATIVE_URL_ROOT` |
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
 | `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled |
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
 | `manifests/github-oauth/` | Kustomization the fragment applies between namespace creation and the Helm install; its `provider.yaml` is generated from the fragment's `files:` |
+| `manifests/oidc-consumer/` | Kustomization for the consumer's `gitlab-omniauth-consumer` provider secret |
 | `scripts/install-caproni.sh` | Fetches and checksum-verifies the Caproni binary at `CAPRONI_VERSION` |
 | `scripts/write_local_config.rb` | Generates `caproni.local.yaml`: the CI domain, plus the fragments a job opts into |
 | `scripts/seed_admin_token.rb` | Seeds the admin PAT the E2E suite authenticates with |
+| `scripts/seed_oidc_application.rb` | Registers the consumer's client ID and secret on the primary as a Doorkeeper application |
 | `scripts/save-cluster-logs.sh` | Pod and event log bundle for failure diagnosis |
 
 The CI jobs live in
@@ -75,7 +78,7 @@ Gateway API, using the chart's integrated Envoy Gateway
 The rendered edge is entirely chart-supplied:
 
 ```plaintext
-Gateway gitlab-gw (class gitlab-cng)
+Gateway gitlab-gw (class gitlab-gw)
   gitlab-web    HTTP 80  gitlab.<domain>
   registry-web  HTTP 80  registry.<domain>
   kas-web       HTTP 80  kas.<domain>
@@ -156,9 +159,8 @@ To opt in:
 
 `cng-oauth-caproni` does this automatically in CI.
 
-**Note:** this doesn't test anything yet. The only `:oauth` spec is quarantined
-([issue 24015](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015)),
-so the job deploys but runs zero examples.
+No spec exercises the GitHub provider yet; the job's examples come from the
+[OIDC consumer](#oidc-consumer-opt-in), which the same job also extends.
 
 ## Relative URL root (opt-in)
 
@@ -195,10 +197,132 @@ consumed: the orchestrator names it at `gitlab.license.secret`, while the chart 
 secret, which could follow the same kustomize pattern as `github-oauth-secret`, and
 `global.gitlab.license.secret` naming it.
 
+## OIDC consumer (opt-in)
+
+The OIDC consumer is a second GitLab instance, deployed next to the instance under test.
+Its login page shows the **GitLab OIDC** and **GitLab OAuth** buttons.
+Both buttons sign in through the instance under test, which acts as the identity provider.
+
+`login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb` needs both instances.
+It runs only in the `cng-oauth-caproni` job.
+
+The spec used to boot the consumer itself as an omnibus Docker container.
+That does not work in this pipeline: there is no `$RELEASE`, `.test` names do not resolve with `QA_DOCKER_NETWORK=host`, and k3d takes port 80.
+The spec was quarantined under [test-failure-issues#24015](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015) since January 2025.
+The design is in [issue 628634](https://gitlab.com/gitlab-org/gitlab/-/work_items/628634).
+
+```plaintext
+Consumer (consumer.<domain>)                Instance under test (gitlab.<domain>)
+  login page                                  identity provider
+  [GitLab OIDC] [GitLab OAuth]  -- click -->  signs the user in
+  user is signed in            <-- token ---  Doorkeeper application
+```
+
+### Prerequisites
+
+- Caproni 4.15.0 or later. Earlier versions reject the kustomize `files:` key the fragment uses. CI pins the version in `CAPRONI_VERSION`.
+- A base rig that already deploys. See [Running it locally](#running-it-locally).
+
+### Deploy the consumer
+
+Run the commands from `qa/caproni`.
+
+1. In `caproni.local.yaml`, extend the fragment:
+
+   ```yaml
+   extends:
+     - caproni.oidc-consumer.yaml
+   ```
+
+1. Export the four values the fragment needs.
+   The client ID and secret can be any opaque strings, as long as both sides use the same pair.
+   If one variable is unset, the config fails to load.
+
+   ```shell
+   export QA_OIDC_CLIENT_ID="$(openssl rand -hex 32)"
+   export QA_OIDC_CLIENT_SECRET="$(openssl rand -hex 32)"
+   export QA_OIDC_IDP_URL="http://gitlab.<domain>"
+   export QA_OIDC_CONSUMER_URL="http://consumer.<domain>"
+   ```
+
+   Locally, `<domain>` is `cng.test`, unless `caproni.local.yaml` sets another `BASE_DOMAIN`.
+
+1. Deploy, then add `consumer.<domain>` to `/etc/hosts` next to the base hostnames:
+
+   ```shell
+   caproni up
+   caproni update-etc-hosts
+   ```
+
+1. Register the same client ID and secret on the instance under test:
+
+   ```shell
+   scripts/seed_oidc_application.rb
+   ```
+
+   The script creates a trusted, confidential Doorkeeper application with both callback URLs.
+   It reads the values from the environment, so they do not appear in the process list or the log.
+   If an application with that client ID exists, the script skips it.
+
+1. Run the spec with `QA_OIDC_CONSUMER_URL` still exported.
+
+`cng-oauth-caproni` runs all of these steps in CI.
+The job exports `QA_OIDC_CLIENT_ID` and `QA_OIDC_CLIENT_SECRET` with fresh random values on every run.
+`write_local_config.rb` adds the fragment for the `Test::Integration::OAuth` scenario.
+
+### What gets deployed
+
+The consumer is a second Helm release, `gitlab-consumer`, in the `gitlab` namespace.
+It uses the same chart and the same CNG images as the instance under test, so it also runs the commit under test.
+Every chart resource carries the release name, so the two releases do not collide.
+It runs migrations, one webservice, one Sidekiq, and one Gitaly.
+The registry, KAS, GitLab Shell, toolbox, exporter, and Pages are off.
+It reuses `values/gitlab.yaml` and overrides the rest inline, including a second copy of the CNG image pins,
+because a `value_map` cannot reference another deployer's values.
+
+| Resource | How the consumer gets it |
+|---|---|
+| PostgreSQL | The same CloudNativePG cluster, in its own database `gitlabhq_consumer`. The database owner and password are the same. `values/gitlab-dev-stack.yaml` declares it. The dev-stack renders one `*-conn` secret per database (`gitlab-dev-stack-gitlab-gitlabhq-consumer-conn`). |
+| Valkey | The same server, Redis database index 1 (`global.redis.database: 1`). The two Sidekiq processes do not share queues. |
+| Object storage | None. All object storage types are off. |
+| Gitaly | One per release. Repository storage cannot be split by database or index. |
+| Gateway | Its own chart-managed Gateway, `gitlab-consumer-gw`, with one HTTP listener for `consumer.<domain>`. |
+| Calls to the instance under test | The browser signs in through the public `QA_OIDC_IDP_URL`. The consumer pod sends the token, user info, and key requests to the primary's Workhorse Service, `gitlab-webservice-default.gitlab.svc:8181`. The pod never has to resolve the public hostname. |
+| OIDC settings | The Secret `gitlab-omniauth-consumer`, with one key for each provider (`openid_connect` and `gitlab`). The `oidc-consumer-secret` deployer builds it from the four `QA_OIDC_*` variables. |
+
+### How the two Gateways share port 80
+
+The chart sets every listener to `allowedRoutes.namespaces.from: Same` with a fixed hostname.
+The consumer cannot attach its routes to the Gateway of the instance under test.
+The consumer uses its own Gateway on the same GatewayClass, `gitlab-gw`.
+The fragment sets `gatewayApiResources.envoy.proxySpec.mergeGateways: true` on the `EnvoyProxy`.
+Envoy Gateway then serves both Gateways from one proxy on port 80 and routes by hostname.
+In CI, `nip.io` resolves `consumer.<domain>` with no DNS entry.
+Locally, `caproni update-etc-hosts` adds it to `/etc/hosts`.
+This costs the primary's `ClientTrafficPolicy`. See [Known gaps](#known-gaps).
+
+### Verify
+
+- Both webservice pods are ready:
+
+  ```shell
+  caproni kubectl -n gitlab get pods --selector=app=webservice
+  ```
+
+- The seed script prints `OAuth application seeded`.
+- The spec reports `2 examples, 0 failures`.
+
 ## Known gaps
 
 - Admin token seeding and reading back the root password are CI script steps rather than
   deploy hooks. [caproni#192](https://gitlab.com/gitlab-org/caproni/-/issues/192)
+- With the consumer extended, the primary's `ClientTrafficPolicy`
+  (`escapedSlashesAction: KeepUnchanged`) is rejected: Envoy Gateway refuses a policy on
+  HTTP listeners that share a port with another Gateway's listeners under
+  `mergeGateways`, whichever Gateways it targets. Encoded slashes are then unescaped and
+  redirected, so `/api/v4/projects/<group>%2F<project>` returns 404. The OAuth spec sends
+  none. Moving the consumer to another port would fix it, but the chart hardcodes HTTP
+  listeners to port 80.
 - `save-cluster-logs.sh` only reads the `gitlab` namespace, so CloudNativePG, Valkey and
   Garage logs are not captured; they live in `gitlab-dev-stack` and `cnpg-system`.
 - Nothing validates the rendered charts ahead of a deploy, so a Helm template error is

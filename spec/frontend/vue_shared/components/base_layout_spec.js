@@ -99,6 +99,19 @@ describe('BaseLayout', () => {
     });
   });
 
+  describe('hidePageHeading', () => {
+    it('renders PageHeading by default', () => {
+      createComponent({ heading: 'Test Heading' });
+      expect(findPageHeading().exists()).toBe(true);
+    });
+
+    it('does not render PageHeading when hidePageHeading is true', () => {
+      createComponent({ heading: 'Test Heading', hidePageHeading: true });
+      expect(findPageHeading().exists()).toBe(false);
+      expect(findHeading().exists()).toBe(false);
+    });
+  });
+
   describe('loading', () => {
     it('does not render loading icon by default', () => {
       createComponent({ heading: 'Test Heading' });

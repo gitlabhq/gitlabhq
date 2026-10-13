@@ -36,15 +36,16 @@ export default {
   emits: ['reset', 'save', 'test'],
   computed: {
     ...mapState(useIntegrationForm, ['propsSource', 'customState']),
-    isInstanceOrGroupLevel() {
+    isInstanceGroupOrOrganizationLevel() {
       return (
         this.customState.integrationLevel === integrationLevels.INSTANCE ||
-        this.customState.integrationLevel === integrationLevels.GROUP
+        this.customState.integrationLevel === integrationLevels.GROUP ||
+        this.customState.integrationLevel === integrationLevels.ORGANIZATION
       );
     },
     showResetButton() {
       return (
-        this.isInstanceOrGroupLevel &&
+        this.isInstanceGroupOrOrganizationLevel &&
         this.propsSource.resetPath &&
         this.propsSource.manualActivation
       );
@@ -72,7 +73,7 @@ export default {
 <template>
   <section class="gl-flex gl-flex-wrap gl-justify-between gl-gap-3">
     <div class="gl-flex gl-flex-wrap gl-gap-3">
-      <template v-if="isInstanceOrGroupLevel">
+      <template v-if="isInstanceGroupOrOrganizationLevel">
         <gl-button
           v-gl-modal.confirmSaveIntegration
           category="primary"

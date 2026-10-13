@@ -163,12 +163,6 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
-
-{{< /history >}}
-
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
 static analysis and other code checks on the current code. After creating the
@@ -177,13 +171,6 @@ out. The merge request widget also displays any
 [differences between the source and target branches](../../ci/testing/code_quality.md).
 
 ## Auto SAST
-
-{{< history >}}
-
-- Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
-- Select functionality made available in all tiers beginning in 13.1
-
-{{< /history >}}
 
 Static application security testing (SAST) runs static
 analysis on the current code, and checks for potential security issues. The

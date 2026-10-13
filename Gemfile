@@ -601,7 +601,7 @@ group :development, :test do
   gem 'yard', '~> 0.9', require: false, feature_category: :tooling
 
   # Gems required for Dangerfile
-  gem 'gitlab-dangerfiles', '~> 4.12.0', require: false, feature_category: :tooling
+  gem 'gitlab-dangerfiles', '~> 4.13.0', require: false, feature_category: :tooling
   gem 'danger', '~> 9.6', require: false, feature_category: :tooling
   gem 'danger-gitlab', '~> 10.0', require: false, feature_category: :tooling
 

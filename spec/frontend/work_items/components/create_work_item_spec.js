@@ -38,6 +38,8 @@ import {
   WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { updateDraftWorkItemType } from '~/work_items/utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -177,6 +179,8 @@ describe('Create work item component', () => {
         ...provide,
       },
       stubs: {
+        BaseLayout,
+        DetailLayout,
         PageHeading,
         GlSprintf,
       },
@@ -685,11 +689,20 @@ describe('Create work item component', () => {
       });
     });
 
-    it('hides title if set', async () => {
+    it('does not render the page heading if hideFormTitle is set', async () => {
       createComponent({ props: { hideFormTitle: true } });
       await resolveAll();
 
-      expect(findFormTitle().exists()).toBe(false);
+      expect(wrapper.findComponent(DetailLayout).props('hidePageHeading')).toBe(true);
+      expect(wrapper.findByTestId('page-heading').exists()).toBe(false);
+    });
+
+    it('renders the form inside the detail layout', async () => {
+      createComponent();
+      await resolveAll();
+
+      expect(wrapper.findComponent(DetailLayout).props('heading')).toBe('New epic');
+      expect(wrapper.findByTestId('detail-layout-sidebar').exists()).toBe(true);
     });
 
     it('renders the title based on the preselected work item type route parameter', async () => {

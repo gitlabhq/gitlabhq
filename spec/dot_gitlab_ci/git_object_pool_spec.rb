@@ -77,6 +77,13 @@ RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
         "(job-level hooks replace them): #{offenders.join(', ')}"
   end
 
+  # The hook skips jobs without a fetch, so no placeholder exists at the pool path.
+  it 'does not borrow from the pool in jobs that take the repository from artifacts' do
+    repo_from_artifacts = jobs.to_h.fetch('.gitlab/ci/global.gitlab-ci.yml: .repo-from-artifacts')
+
+    expect(repo_from_artifacts.dig('variables', 'GIT_ALTERNATE_OBJECT_DIRECTORIES')).to eq('')
+  end
+
   it 'never uploads a .git that borrows objects from the object pool' do
     global_strategy = gitlab_ci.dig('variables', 'GIT_STRATEGY')
     repo_root_paths = %w[* . ./ .git]

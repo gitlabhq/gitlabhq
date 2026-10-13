@@ -348,6 +348,7 @@ to add the raw SQL query and query plan to the merge request description, and re
 
 - Review relational modeling and design choices
   - Consider [access patterns and data layout](database/layout_and_access_patterns.md) if new tables or columns are added
+  - Check [Datastore guidance](database/datastore_guidance.md) is followed
 - Are the stated access patterns and volume reasonable? Do the assumptions they're based on seem sound? Do these patterns pose risks to stability?
 - Are the columns [ordered to conserve space](database/ordering_table_columns.md)?
 - Are there foreign keys for references to other tables?

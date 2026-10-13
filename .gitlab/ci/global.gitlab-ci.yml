@@ -33,6 +33,8 @@
 .repo-from-artifacts:
   variables:
     GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
+    # The git object pool hook skips jobs that don't fetch, so the pool path doesn't exist.
+    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
     # If the job extending this also defines `needs`, make sure to update
     # its `needs` to include `clone-gitlab-repo` because it'll be overridden.
   needs:

@@ -49,7 +49,7 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
   shared_examples 'extract value from selected members only' do |column|
     it 'extracted value from selected members' do
       expected_values = selected.map { |user| user.public_send(column) }
-      expect(values).to contain_exactly(*expected_values)
+      expect(values).to match_array(expected_values)
     end
 
     it 'skips members with access request' do
@@ -72,7 +72,7 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
       end
 
       it 'iterates over selected members' do
-        expect(users).to contain_exactly(*selected)
+        expect(users).to match_array(selected)
       end
 
       it 'skips members with access request' do
@@ -110,7 +110,7 @@ RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
 
         it 'extract multiple values from selected members' do
           expected_values = selected.map { |user| [user.name, user.email] }
-          expect(values).to contain_exactly(*expected_values)
+          expect(values).to match_array(expected_values)
         end
 
         it 'skips members with access request' do

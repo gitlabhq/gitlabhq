@@ -7393,6 +7393,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
@@ -7594,6 +7595,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
@@ -18350,17 +18352,99 @@ paths:
           default: 20
         in: query
         example: 20
+      - name: revoked
+        required: false
+        description: If `true`, only returns revoked tokens. If `false`, only returns
+          tokens that are not revoked.
+        schema:
+          type: boolean
+          nullable: true
+        in: query
+        example: false
       - name: state
         required: false
-        description: Filter tokens by state.
+        description: Return tokens with the specified state.
         schema:
           type: string
           enum:
           - all
           - active
           - inactive
-          default: all
+          nullable: true
         in: query
+        example: active
+      - name: created_before
+        required: false
+        description: Return tokens created on or before the specified time.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2022-01-01T00:00:00Z'
+      - name: created_after
+        required: false
+        description: Return tokens created on or after the specified time.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2021-01-01T00:00:00Z'
+      - name: last_used_before
+        required: false
+        description: Return tokens last used on or before the specified time.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2021-01-01T00:00:00Z'
+      - name: last_used_after
+        required: false
+        description: Return tokens last used on or after the specified time.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2022-01-01T00:00:00Z'
+      - name: expires_before
+        required: false
+        description: Return tokens that expire before the specified date.
+        schema:
+          type: string
+          format: date
+          nullable: true
+        in: query
+        example: '2022-01-01'
+      - name: expires_after
+        required: false
+        description: Return tokens that expire on or after the specified date.
+        schema:
+          type: string
+          format: date
+          nullable: true
+        in: query
+        example: '2021-01-01'
+      - name: search
+        required: false
+        description: Return tokens that include the specified value in their name.
+        schema:
+          type: string
+          nullable: true
+        in: query
+        example: token
+      - name: sort
+        required: false
+        description: Sort results by the specified field and direction. Possible values
+          are `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`,
+          `last_used_desc`, `name_asc`, and `name_desc`.
+        schema:
+          type: string
+          nullable: true
+        in: query
+        example: created_desc
     post:
       operationId: postApiV4UsersUserIdImpersonationTokens
       summary: Create an impersonation token
@@ -21183,6 +21267,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
@@ -24090,6 +24175,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
@@ -32196,6 +32282,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
@@ -32453,6 +32540,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
@@ -41665,6 +41753,7 @@ paths:
         schema:
           type: string
           enum:
+          - all
           - active
           - inactive
           nullable: true
