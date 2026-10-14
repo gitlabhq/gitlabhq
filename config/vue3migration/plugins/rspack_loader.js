@@ -10,9 +10,8 @@ const {
   loadScannerData,
   runInfectionScanner,
   createIsInfectable,
+  isLoaderInjected,
 } = require('../infection');
-
-const SCANNER_BYPASS_PACKAGES = ['core-js', 'webpack', 'css-loader', 'vue-hot-reload-api'];
 
 const contextAliasKeys = Object.keys(CONTEXT_ALIASES);
 
@@ -41,10 +40,7 @@ function ensureScanner() {
   if (scannerLoaded) return;
   runInfectionScanner();
   scannerGraph = loadScannerData();
-  isInfectable = createIsInfectable(scannerGraph, {
-    shouldBypass: (clean) =>
-      SCANNER_BYPASS_PACKAGES.some((pkg) => clean.includes(`/node_modules/${pkg}/`)),
-  });
+  isInfectable = createIsInfectable(scannerGraph, { shouldExclude: isLoaderInjected });
   scannerLoaded = true;
 }
 

@@ -1,6 +1,6 @@
 ---
-source_checksum: 381723803682f0be
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 8ff63056c02d82e6
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -67,7 +67,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Prefer a targeted fix on the sync branch for localized findings; re-run distillation only when the output is broadly wrong (re-running is slow and non-deterministic and can regress unrelated rules).
 - When reviewing a fence-reconcile MR (which changes only `.gitlab/duo/mr-review-instructions.yaml`), confirm the fence directives match the front matter of the distilled files on `master`; the reconcile job runs no distillation, so the fence body must never diverge from the committed distilled content.
 - Treat a malformed or orphaned fence as always-blocking; the `ai-duo-review-instructions` guard fails on its own ref regardless of the reconcile state.
-- Treat fence staleness as blocking only on the reconcile MR and on MRs that touch the fences' owned files. DO NOT treat staleness as blocking on a team's distilled MR or on unrelated `doc/**/*.md` edits — it is expected transient state until the daily reconcile catches up.
+- Treat fence staleness as blocking only on the reconcile MR and on MRs that touch the fences' owned files. DO NOT treat staleness as blocking on a team's distilled MR or on unrelated `doc/**/*.md` edits — it is expected transient state until the reconcile MR catches the fences up.
 
 ## Authoritative sources
 

@@ -108,6 +108,28 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
     end
 
+    # The empty session holds no _csrf_token, so the CSRF check fails and the request is not frontend.
+    describe 'a signed-in session without a valid CSRF token', :allow_forgery_protection do
+      let(:user) { build_stubbed(:user) }
+      let(:warden) { instance_double(Warden::Proxy) }
+
+      before do
+        allow(warden).to receive(:user).with(:user).and_return(user)
+      end
+
+      it 'identifies the session user on GraphQL, not an unauthenticated requester' do
+        facts = facts_for('/api/graphql', 'REQUEST_METHOD' => 'POST', 'warden' => warden, 'rack.session' => {})
+
+        expect(facts).to include(requester_id: user.id.to_s, requester_type: 'user', frontend: false)
+      end
+
+      it 'resolves no requester on other paths, which serve the request anonymously' do
+        facts = facts_for('/api/v4/projects', 'REQUEST_METHOD' => 'POST', 'warden' => warden, 'rack.session' => {})
+
+        expect(facts).to include(requester_id: nil, requester_type: nil, frontend: false)
+      end
+    end
+
     # A runner-authenticated request has no requester but a runner_id, so the
     # unauthenticated rules' `runner_id: nil` guard keeps it out of the IP throttles.
     describe 'a runner-authenticated request' do

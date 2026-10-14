@@ -5,7 +5,6 @@ const {
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
 } = require('../webpack.constants');
-const monaco = require('./monaco');
 
 const define = {
   'process.env.IS_EE': JSON.stringify(IS_EE),
@@ -14,7 +13,7 @@ const define = {
   IS_JH: IS_JH ? 'window.gon && window.gon.jh' : JSON.stringify(false),
   'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
   'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
-  ...monaco.defineIsVite,
+  'window.IS_VITE': JSON.stringify(false),
   'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
   'process.env.PDF_JS_CMAPS_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
   // Defined unconditionally: the vue3-infection mechanism loads @vue/compat (the

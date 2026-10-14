@@ -233,7 +233,7 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
   end
 
   describe '#real_source_type' do
-    subject { create(:group_member).real_source_type }
+    subject { build_stubbed(:group_member).real_source_type }
 
     it { is_expected.to eq 'Group' }
   end

@@ -17,6 +17,7 @@ module Gitlab
       HEALTH_CHECK_PATH_REGEX = %r{^/-/(health|liveness|readiness|metrics)}
       CONTAINER_REGISTRY_EVENT_PATH_REGEX = %r{^/api/v\d+/container_registry_event/}
       OAUTH_TOKEN_CHECK_PATH_REGEX = %r{\A(?:/o/[^/]+)?/oauth/(?:token/info|userinfo)(?:\.json)?\z}
+      GRAPHQL_PATH_REGEX = %r{^/api/graphql/?$}
 
       # The widest list, so one resolution covers every caller.
       REQUESTER_FORMATS = [:api, :rss, :ics].freeze
@@ -80,8 +81,17 @@ module Gitlab
         request_formats += [:oauth_token_check] if oauth_token_check_path?
 
         strong_memoize_with(:authenticated_requester, request_formats) do
-          request_authenticator.find_authenticated_requester(request_formats)
+          request_authenticator.find_authenticated_requester(request_formats) || session_user
         end
+      end
+
+      # The authenticator skips the session without a valid CSRF token, but GraphqlController still serves
+      # read-only queries from it. Other paths serve such requests anonymously, so only GraphQL falls back.
+      # #user never runs the warden strategies, so a password POST without a token cannot sign anyone in.
+      def session_user
+        return unless matches?(GRAPHQL_PATH_REGEX)
+
+        env['warden']&.user(:user)
       end
 
       def request_authenticator

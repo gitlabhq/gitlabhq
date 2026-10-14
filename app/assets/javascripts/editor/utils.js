@@ -1,6 +1,9 @@
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import YamlWorker from './monaco_yaml_worker?worker';
 
@@ -40,8 +43,10 @@ export const setupCodeSnippet = (el) => {
 };
 
 /**
- * Sets up Monaco web workers for builds that define window.IS_VITE (Vite and Rspack).
- * Webpack builds get them from MonacoWebpackPlugin instead.
+ * TEMPORARY, Vite only: remove this function and its `?worker` imports when GitLab drops Vite.
+ *
+ * Webpack and Rspack builds get Monaco web workers from MonacoWebpackPlugin. Vite has no such
+ * plugin, so this copies the plugin's label-to-worker list.
  * See https://gitlab.com/gitlab-org/gitlab/-/issues/461252 for details
  */
 export const enableMonacoWorkers = () => {
@@ -55,11 +60,22 @@ export const enableMonacoWorkers = () => {
           case 'yaml': {
             return new YamlWorker();
           }
-          case 'editorWorkerService': {
-            return new EditorWorker();
+          case 'css':
+          case 'scss':
+          case 'less': {
+            return new CssWorker();
+          }
+          case 'html':
+          case 'handlebars':
+          case 'razor': {
+            return new HtmlWorker();
+          }
+          case 'typescript':
+          case 'javascript': {
+            return new TsWorker();
           }
           default:
-            throw new Error(`Unknown Monaco worker label: "${label}"`);
+            return new EditorWorker();
         }
       },
     };

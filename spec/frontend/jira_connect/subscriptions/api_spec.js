@@ -9,6 +9,7 @@ import {
 } from '~/jira_connect/subscriptions/api';
 import { getJwt } from '~/jira_connect/subscriptions/utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { defaultOrganization } from 'jest/organizations/mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
   getJwt: jest.fn().mockResolvedValue('jwt'),
@@ -194,5 +195,36 @@ describe('JiraConnect API', () => {
         expect(response.data).toEqual(mockResponse);
       },
     );
+  });
+
+  describe('fetchOAuthToken', () => {
+    let api;
+    let mock;
+
+    beforeEach(async () => {
+      jest.resetModules();
+      window.gon = { api_version: 'v4', current_organization: defaultOrganization };
+      api = await import('~/jira_connect/subscriptions/api');
+      mock = new MockAdapter(api.axiosInstance);
+      mock.onPost('/oauth/token').replyOnce(HTTP_STATUS_OK, mockResponse);
+    });
+
+    afterEach(() => {
+      api.setApiBaseURL();
+    });
+
+    it('sends X-GitLab-Organization-ID to the same instance', async () => {
+      await api.fetchOAuthToken('/oauth/token');
+
+      expect(mock.history.post[0].headers['X-GitLab-Organization-ID']).toBe(defaultOrganization.id);
+    });
+
+    it('does not send X-GitLab-Organization-ID to another instance', async () => {
+      api.setApiBaseURL('https://gitlab.example.com');
+
+      await api.fetchOAuthToken('/oauth/token');
+
+      expect(mock.history.post[0].headers['X-GitLab-Organization-ID']).toBe(undefined);
+    });
   });
 });

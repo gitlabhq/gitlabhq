@@ -29,6 +29,7 @@ module WorkItems
                 participants
                 requester
                 start_and_due_date
+                status
                 time_tracking
                 weight
               ]

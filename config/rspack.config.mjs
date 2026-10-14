@@ -50,6 +50,7 @@ import {
 
 const configPath = fileURLToPath(import.meta.url);
 const require = createRequire(import.meta.url);
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 logVueVersion('[Rspack]');
 
@@ -89,6 +90,19 @@ const plugins = [
     }
   }),
   new rspack.DefinePlugin(define),
+  new MonacoWebpackPlugin({
+    filename: '[name].[contenthash:8].worker.js',
+    customLanguages: [
+      {
+        label: 'yaml',
+        entry: 'monaco-yaml',
+        worker: {
+          id: 'monaco-yaml/yamlWorker',
+          entry: 'monaco-yaml/yaml.worker',
+        },
+      },
+    ],
+  }),
   new rspack.IgnorePlugin({ resourceRegExp: /moment/, contextRegExp: /pikaday/ }),
   IS_PRODUCTION && COMPRESSION !== false && new GzipAssetsPlugin(),
   RSDOCTOR &&

@@ -6,7 +6,6 @@ export default {
     'app/assets/javascripts/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue',
     'app/assets/javascripts/incidents/components/incidents_list.vue',
     'ee/app/assets/javascripts/analytics/dashboards/dora_projects_comparison/components/comparison_table.vue',
-    'ee/app/assets/javascripts/compliance_dashboard/components/standards_adherence_report/standards_adherence_table_v2.vue',
     'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/create_form.vue',
     'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/edit_form.vue',
     'ee/app/assets/javascripts/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql.vue',

@@ -83,20 +83,42 @@ Example response:
 
 ```json
 {
-  "id": "id",
-  "model": {
-    "engine": "vertex-ai",
-    "name": "code-gecko"
-  },
-  "object": "text_completion",
-  "created": 1688557841,
   "choices": [
     {
       "text": "\n        if self.is_running:\n            self.speed += increment\n            print(\"The car's speed is now",
       "index": 0,
       "finish_reason": "length"
     }
-  ]
+  ],
+  "metadata": {
+    "model": {
+      "engine": "fireworks_ai",
+      "name": "codestral-2508",
+      "lang": "python",
+      "tokens_consumption_metadata": {
+        "input_tokens": 64,
+        "output_tokens": 24,
+        "max_output_tokens_used": false,
+        "context_tokens_sent": 0,
+        "context_tokens_used": 0
+      }
+    },
+    "timestamp": 1759680000,
+    "enabled_feature_flags": [],
+    "region": "us-central1"
+  },
+  "model": {
+    "engine": "fireworks_ai",
+    "name": "codestral-2508",
+    "lang": "python",
+    "tokens_consumption_metadata": {
+      "input_tokens": 64,
+      "output_tokens": 24,
+      "max_output_tokens_used": false,
+      "context_tokens_sent": 0,
+      "context_tokens_used": 0
+    }
+  }
 }
 ```
 

@@ -146,9 +146,6 @@ function runInfectionScanner() {
  * @param {function(string): boolean} [options.shouldExclude] - Optional callback that returns
  *   true for clean paths that should always be considered NOT infectable, regardless of the
  *   scanner graph (e.g. Vite pre-bundled deps in `/tmp/cache/vite/`).
- * @param {function(string): boolean} [options.shouldBypass] - Optional callback that returns
- *   true for clean paths that should bypass the scanner graph lookup and be considered
- *   infectable (e.g. loader-injected packages in Webpack like core-js).
  * @returns {function(string): boolean}
  */
 /**
@@ -175,14 +172,20 @@ const applyAliasList = (specifier, aliasEntries) => {
   return specifier;
 };
 
-const createIsInfectable = (scannerGraph, { shouldExclude, shouldBypass } = {}) => {
+// Loaders inject these packages, for example Babel adds core-js, so the scanner never sees them.
+// None of them reaches Vue, so every lane shares the clean copy.
+const LOADER_INJECTED_PACKAGES = ['core-js', 'webpack', 'css-loader', 'vue-hot-reload-api'];
+
+const isLoaderInjected = (clean) =>
+  LOADER_INJECTED_PACKAGES.some((pkg) => clean.includes(`/node_modules/${pkg}/`));
+
+const createIsInfectable = (scannerGraph, { shouldExclude } = {}) => {
   return (id) => {
     const clean = stripQuery(id);
     if (!INFECTABLE_RE.test(clean)) return false;
     if (INFECTION_BLOCKLIST.some((blocked) => clean.includes(blocked))) return false;
     if (!scannerGraph) return true;
     if (shouldExclude && shouldExclude(clean)) return false;
-    if (shouldBypass && shouldBypass(clean)) return true;
     const entry = scannerGraph.get(clean);
     if (!entry) {
       throw new Error(
@@ -222,6 +225,7 @@ module.exports = {
   loadScannerData,
   runInfectionScanner,
   createIsInfectable,
+  isLoaderInjected,
   logInfectionStats,
   applyAliasList,
 };

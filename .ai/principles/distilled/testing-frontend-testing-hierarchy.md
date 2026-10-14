@@ -1,6 +1,6 @@
 ---
-source_checksum: 1b0e7ed2acec4a60
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 90353b027728930b
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 

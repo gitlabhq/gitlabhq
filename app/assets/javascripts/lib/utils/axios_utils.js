@@ -11,10 +11,6 @@ axios.defaults.headers.common[csrf.headerKey] = csrf.token;
 // Used by Rails to check if it is a valid XHR request
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-if (gon.current_organization?.id) {
-  axios.defaults.headers.common['X-GitLab-Organization-ID'] = gon.current_organization.id;
-}
-
 // Maintain a global counter for active requests
 // see: spec/support/wait_for_requests.rb
 axios.interceptors.request.use((config) => {
@@ -25,13 +21,13 @@ axios.interceptors.request.use((config) => {
 
 // Kept local instead of importing url_utility: many specs replace that module
 // with a partial factory mock, which would turn every request into a TypeError.
-const isSameOrigin = (url) => {
+const isSameOrigin = (url, baseURL) => {
   if (typeof url !== 'string') return false;
 
   const { origin } = window.location;
 
   try {
-    return new URL(url, origin).origin === origin;
+    return new URL(url, baseURL ? new URL(baseURL, origin) : origin).origin === origin;
   } catch {
     return false;
   }
@@ -39,18 +35,24 @@ const isSameOrigin = (url) => {
 
 // Attributes the request, and any job it enqueues, to the browser client for
 // analytics; Rails reads the browser family from the User-Agent. Same origin
-// only: a third party would have to allow this header in its CORS preflight.
-axios.interceptors.request.use((config) => {
-  if (!isSameOrigin(config.url)) return config;
+// only: a third party would have to allow these headers in its CORS preflight.
+// Exported for axios.create() instances, which do not inherit interceptors.
+export const addSameOriginHeaders = (config) => {
+  if (!isSameOrigin(config.url, config.baseURL)) return config;
 
   return {
     ...config,
     headers: {
       ...config.headers,
       'X-GitLab-Client-Type': 'browser',
+      ...(gon.current_organization?.id && {
+        'X-GitLab-Organization-ID': gon.current_organization.id,
+      }),
     },
   };
-});
+};
+
+axios.interceptors.request.use(addSameOriginHeaders);
 
 setupAxiosStartupCalls(axios);
 

@@ -1,0 +1,10 @@
+---
+name: ai_catalog_skills
+description: Publish a project's SKILL.md files into the AI Catalog as skill items, and browse them in the catalog.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/22961
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260297
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630885
+milestone: '19.5'
+type: wip
+group: group::ai catalog
+default_enabled: false

@@ -1,6 +1,9 @@
 import { editor as monacoEditor } from 'monaco-editor';
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import CssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import YamlWorker from '~/editor/monaco_yaml_worker?worker';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as utils from '~/editor/utils';
@@ -9,7 +12,10 @@ import { registerLanguages } from '~/ide/utils';
 import { DEFAULT_THEME } from '~/ide/lib/themes';
 
 jest.mock('monaco-editor/esm/vs/editor/editor.worker?worker', () => jest.fn());
+jest.mock('monaco-editor/esm/vs/language/css/css.worker?worker', () => jest.fn());
+jest.mock('monaco-editor/esm/vs/language/html/html.worker?worker', () => jest.fn());
 jest.mock('monaco-editor/esm/vs/language/json/json.worker?worker', () => jest.fn());
+jest.mock('monaco-editor/esm/vs/language/typescript/ts.worker?worker', () => jest.fn());
 jest.mock('~/editor/monaco_yaml_worker?worker', () => jest.fn());
 
 describe('Source Editor utils', () => {
@@ -130,17 +136,20 @@ describe('Source Editor utils', () => {
         label                    | Worker
         ${'json'}                | ${JsonWorker}
         ${'yaml'}                | ${YamlWorker}
+        ${'css'}                 | ${CssWorker}
+        ${'scss'}                | ${CssWorker}
+        ${'less'}                | ${CssWorker}
+        ${'html'}                | ${HtmlWorker}
+        ${'handlebars'}          | ${HtmlWorker}
+        ${'razor'}               | ${HtmlWorker}
+        ${'typescript'}          | ${TsWorker}
+        ${'javascript'}          | ${TsWorker}
         ${'editorWorkerService'} | ${EditorWorker}
-      `('returns the $label worker', async ({ label, Worker }) => {
+        ${'unknown'}             | ${EditorWorker}
+      `('returns the matching worker for the $label label', async ({ label, Worker }) => {
         const worker = await window.MonacoEnvironment.getWorker('workerMain.js', label);
 
         expect(worker).toBeInstanceOf(Worker);
-      });
-
-      it('throws for an unknown label', async () => {
-        await expect(window.MonacoEnvironment.getWorker('workerMain.js', 'foo')).rejects.toThrow(
-          'Unknown Monaco worker label: "foo"',
-        );
       });
     });
   });

@@ -1,5 +1,6 @@
 ---
 name: incident_fail_over_completion_provider
+description: Forces indirect access for code completions during a provider incident. It does not change the completion model. The AI Gateway selects the model.
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498549
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171210
 rollout_issue_url:

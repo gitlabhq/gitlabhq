@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 // eslint-disable-next-line no-restricted-syntax
 import { setImmediate } from 'timers';
 
-const axios = jest.requireActual('~/lib/utils/axios_utils').default;
+const { default: axios, addSameOriginHeaders } = jest.requireActual('~/lib/utils/axios_utils');
 
 axios.isMock = true;
 
@@ -79,4 +79,5 @@ axios.interceptors.response.use(
   },
 );
 
+export { addSameOriginHeaders };
 export default axios;

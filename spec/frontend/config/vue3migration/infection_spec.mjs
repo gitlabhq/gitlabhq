@@ -9,6 +9,7 @@ const {
   hasSpecialQuery,
   appendVue3Query,
   createIsInfectable,
+  isLoaderInjected,
   applyAliasList,
 } = vue3InfectionShared;
 
@@ -217,23 +218,24 @@ describe('config/vue3migration/infection', () => {
       expect(isInfectable(INFECTABLE_PATH)).toBe(false);
     });
 
-    it('uses shouldBypass to short-circuit to true without a graph lookup', () => {
+    it('keeps loader-injected packages clean without a graph lookup', () => {
       const graph = new Map(); // intentionally empty: a graph lookup would throw
-      const isInfectable = createIsInfectable(graph, {
-        shouldBypass: (clean) => clean === INFECTABLE_PATH,
-      });
+      const isInfectable = createIsInfectable(graph, { shouldExclude: isLoaderInjected });
 
-      expect(isInfectable(INFECTABLE_PATH)).toBe(true);
+      expect(isInfectable('/app/node_modules/core-js/modules/es.array.at.js')).toBe(false);
     });
+  });
 
-    it('prefers shouldExclude over shouldBypass when both match', () => {
-      const graph = new Map([[INFECTABLE_PATH, { exposedToVue: true, appRoot: false }]]);
-      const isInfectable = createIsInfectable(graph, {
-        shouldExclude: () => true,
-        shouldBypass: () => true,
-      });
-
-      expect(isInfectable(INFECTABLE_PATH)).toBe(false);
+  describe('isLoaderInjected', () => {
+    it.each([
+      ['/app/node_modules/core-js/modules/es.array.at.js', true],
+      ['/app/node_modules/webpack/buildin/global.js', true],
+      ['/app/node_modules/css-loader/dist/runtime/api.js', true],
+      ['/app/node_modules/vue-hot-reload-api/dist/index.js', true],
+      ['/app/node_modules/core-js-pure/modules/es.array.at.js', false],
+      ['/app/node_modules/lodash/lodash.js', false],
+    ])('%s returns %s', (path, expected) => {
+      expect(isLoaderInjected(path)).toBe(expected);
     });
   });
 });

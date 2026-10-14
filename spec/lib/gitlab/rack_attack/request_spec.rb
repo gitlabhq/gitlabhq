@@ -19,6 +19,68 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     )
   end
 
+  describe '#unauthenticated?', :allow_forgery_protection do
+    let(:user) { build_stubbed(:user) }
+    let(:warden) { instance_double(Warden::Proxy) }
+    let(:path) { '/api/graphql' }
+    let(:env) { { 'REQUEST_METHOD' => 'POST', 'warden' => warden } }
+
+    subject { request.unauthenticated? }
+
+    context 'with a session user and no valid CSRF token' do
+      before do
+        allow(warden).to receive(:user).with(:user).and_return(user)
+      end
+
+      it { is_expected.to be(false) }
+
+      it 'reads the session user without running the warden strategies' do
+        expect(warden).not_to receive(:authenticate)
+
+        request.unauthenticated?
+      end
+
+      it 'throttles the request as the session user' do
+        expect(request.throttled_identifer([:api])).to eq("user:#{user.id}")
+      end
+    end
+
+    context 'without a session user' do
+      before do
+        allow(warden).to receive(:user).with(:user).and_return(nil)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with a session user and no valid CSRF token on a non-GraphQL path' do
+      let(:path) { '/api/v4/projects' }
+
+      it 'stays unauthenticated without reading the session, as the API serves it' do
+        expect(warden).not_to receive(:user)
+
+        is_expected.to be(true)
+      end
+    end
+
+    context 'with a token user and a different session user' do
+      let(:token) { create(:personal_access_token) }
+      let(:env) { { 'REQUEST_METHOD' => 'POST', 'warden' => warden, 'HTTP_PRIVATE_TOKEN' => token.token } }
+
+      it 'throttles the request as the token user without reading the session' do
+        expect(warden).not_to receive(:user)
+
+        expect(request.throttled_identifer([:api])).to eq("user:#{token.user_id}")
+      end
+    end
+
+    context 'without warden in the env' do
+      let(:env) { { 'REQUEST_METHOD' => 'POST' } }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '#should_be_skipped?' do
     where(
       api_internal_request: [true, false],

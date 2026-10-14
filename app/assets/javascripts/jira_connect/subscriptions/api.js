@@ -1,4 +1,4 @@
-import axios from '~/lib/utils/axios_utils';
+import axios, { addSameOriginHeaders } from '~/lib/utils/axios_utils';
 import { buildApiUrl } from '~/api/api_utils';
 import {
   jiraConnectInstallationsPath,
@@ -15,6 +15,7 @@ const JIRA_CONNECT_OAUTH_APPLICATION_ID_PATH = jiraConnectOauthApplicationIdPath
 
 // This export is only used for testing purposes
 export const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(addSameOriginHeaders);
 
 export const setApiBaseURL = (baseURL = null) => {
   axiosInstance.defaults.baseURL = baseURL;

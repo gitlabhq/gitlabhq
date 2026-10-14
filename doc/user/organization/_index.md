@@ -14,9 +14,14 @@ description: Namespace hierarchy.
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a feature flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
+
+{{< /history >}}
+
 > [!flag]
 > The availability of this feature is controlled by feature flags.
-> This feature is not ready for production use.
 
 An organization is the top-level entity in the GitLab hierarchy. Each organization
 contains one or more [top-level groups](../namespace/_index.md),

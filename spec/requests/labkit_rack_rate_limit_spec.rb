@@ -221,6 +221,82 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     with_them { include_examples 'a labkit-enforced throttle toggle' }
   end
 
+  describe 'a signed-in GraphQL query without a valid CSRF token', :allow_forgery_protection do
+    before do
+      enable_cohort!(2)
+      stub_application_setting(
+        throttle_unauthenticated_api_enabled: true,
+        throttle_authenticated_api_enabled: true
+      )
+      login_as(user)
+    end
+
+    it 'counts the query against the session user, as the controller serves it', :aggregate_failures do
+      post '/api/graphql', params: { query: '{ currentUser { id } }' }, as: :json
+
+      expect(json_response.dig('data', 'currentUser', 'id')).to eq(user.to_global_id.to_s)
+      expect(labkit_count_for('authenticated_api')).to eq(1)
+      expect(labkit_count_for('unauthenticated_api')).to eq(0)
+    end
+
+    # login_as sets the user without a session fetch, so a first request stores the session and the
+    # query then reads it back, running the real warden :fetch callbacks inside the rate limiter.
+    context 'when warden rejects the session user' do
+      let(:session_user) { create(:user) }
+
+      before do
+        login_as(session_user)
+        get '/api/graphql', params: { query: '{ currentUser { id } }' }
+      end
+
+      def post_query
+        post '/api/graphql', params: { query: '{ currentUser { id } }' }, as: :json
+      end
+
+      it 'answers a blocked user as the controller would, before any throttle counts it', :aggregate_failures do
+        session_user.block!
+
+        expect { post_query }.not_to change { labkit_count_for('authenticated_api') }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(json_response['error']).to include('Your account has been blocked')
+        expect(labkit_count_for('unauthenticated_api')).to eq(0)
+      end
+
+      it 'answers an expired session as the controller would, before any throttle counts it', :aggregate_failures do
+        stub_application_setting(session_expire_from_init: true, session_expire_delay: 10)
+        get '/api/graphql', params: { query: '{ currentUser { id } }' }
+
+        travel_to(1.hour.from_now) do
+          expect { post_query }.not_to change { labkit_count_for('authenticated_api') }
+        end
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(json_response['error']).to include('Your session expired')
+        expect(labkit_count_for('unauthenticated_api')).to eq(0)
+      end
+    end
+  end
+
+  describe 'a signed-in REST API call without a valid CSRF token', :allow_forgery_protection do
+    before do
+      enable_cohort!(2)
+      stub_application_setting(
+        throttle_unauthenticated_api_enabled: true,
+        throttle_authenticated_api_enabled: true
+      )
+      login_as(user)
+    end
+
+    it 'counts the call as unauthenticated, as the API serves it', :aggregate_failures do
+      post '/api/v4/projects', params: { name: 'csrf-less' }, as: :json
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+      expect(labkit_count_for('unauthenticated_api')).to eq(1)
+      expect(labkit_count_for('authenticated_api')).to eq(0)
+    end
+  end
+
   # Table-based coverage for the specialized-path throttles (packages, files,
   # deprecated), cohort 1.
   describe 'specialized API throttles' do

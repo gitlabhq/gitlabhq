@@ -9,11 +9,9 @@ const {
   loadScannerData,
   runInfectionScanner,
   createIsInfectable,
+  isLoaderInjected,
   logInfectionStats,
 } = require('../infection');
-
-// Packages injected by loaders (not statically imported) that the scanner cannot discover.
-const SCANNER_BYPASS_PACKAGES = ['core-js', 'webpack', 'css-loader', 'vue-hot-reload-api'];
 
 const PLUGIN_NAME = 'WebpackVue3InfectionPlugin';
 const contextAliasKeys = Object.keys(CONTEXT_ALIASES);
@@ -150,13 +148,7 @@ class WebpackVue3InfectionPlugin {
     runInfectionScanner();
     const scannerGraph = loadScannerData();
 
-    const isInfectable = createIsInfectable(scannerGraph, {
-      // Some node_modules are injected by loaders (e.g. core-js via Babel) rather
-      // than statically imported in source code, so they never appear in the
-      // scanner's import graph.  Bypass the scanner check for these packages.
-      shouldBypass: (clean) =>
-        SCANNER_BYPASS_PACKAGES.some((pkg) => clean.includes(`/node_modules/${pkg}/`)),
-    });
+    const isInfectable = createIsInfectable(scannerGraph, { shouldExclude: isLoaderInjected });
     const infectedDeps = new WeakSet();
     const resolvedTargets = resolveAliasTargets();
     // Tag every dependency of an infected module so that beforeResolve can

@@ -38,12 +38,28 @@ describe('axios_utils', () => {
         await setup();
       });
 
-      it('adds X-GitLab-Organization-ID header', async () => {
+      it('adds X-GitLab-Organization-ID header to same-origin requests', async () => {
         await axios.get('/ok');
 
         expect(mock.history.get[0].headers['X-GitLab-Organization-ID']).toBe(
           currentOrganization.id,
         );
+      });
+
+      it('does not add X-GitLab-Organization-ID header to cross-origin requests', async () => {
+        mock.onAny('https://other.example.com/ok').reply(HTTP_STATUS_OK);
+
+        await axios.get('https://other.example.com/ok');
+
+        expect(mock.history.get[0].headers['X-GitLab-Organization-ID']).toBe(undefined);
+      });
+
+      it('does not add X-GitLab-Organization-ID header when baseURL is cross-origin', async () => {
+        mock.onAny('https://other.example.com/ok').reply(HTTP_STATUS_OK);
+
+        await axios.get('/ok', { baseURL: 'https://other.example.com' });
+
+        expect(mock.history.get[0].headers['X-GitLab-Organization-ID']).toBe(undefined);
       });
     });
 
