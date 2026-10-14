@@ -6,7 +6,8 @@ module Groups
     urgency :low
 
     before_action :authorize_read_achievement!
-    before_action :authorize_admin_achievement!, only: [:new, :edit]
+    before_action :authorize_create_achievement!, only: [:new]
+    before_action :authorize_update_achievement!, only: [:edit]
 
     def new
       render action: "index"
@@ -22,8 +23,12 @@ module Groups
       render_404 unless can?(current_user, :read_achievement, group)
     end
 
-    def authorize_admin_achievement!
-      render_404 unless can?(current_user, :admin_achievement, group)
+    def authorize_create_achievement!
+      render_404 unless can?(current_user, :create_achievement, group)
+    end
+
+    def authorize_update_achievement!
+      render_404 unless can?(current_user, :update_achievement, group)
     end
   end
 end

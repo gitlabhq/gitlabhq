@@ -248,15 +248,17 @@ class ProjectTeam
   def max_member_access_for_user(user, only_concrete_membership: false)
     return ProjectMember::NO_ACCESS unless user
 
-    # This check does not require any additional queries
-    return ProjectMember::OWNER if !only_concrete_membership && user.can_admin_all_resources?
+    Gitlab::Instrumentation::Authz.measure do
+      # This check does not require any additional queries
+      next ProjectMember::OWNER if !only_concrete_membership && user.can_admin_all_resources?
 
-    # This check is next since it is more efficient than the organization ownership check
-    return ProjectMember::OWNER if personal_namespace_owner?(user)
+      # This check is next since it is more efficient than the organization ownership check
+      next ProjectMember::OWNER if personal_namespace_owner?(user)
 
-    return ProjectMember::OWNER if !only_concrete_membership && user.can_update_organization?(project.organization)
+      next ProjectMember::OWNER if !only_concrete_membership && user.can_update_organization?(project.organization)
 
-    max_member_access(user.id)
+      max_member_access(user.id)
+    end
   end
 
   def contribution_check_for_user_ids(user_ids)

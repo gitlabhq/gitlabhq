@@ -88,8 +88,9 @@ The retry without file contents reduces prompt size, but also reduces the contex
 reviewing your changes. Comments might be less specific than a review that includes the original
 file contents.
 
-The AI Gateway request timeout for GitLab Duo Code Review is 120 seconds. Reviews that do not complete
-in this window also surface as generic errors.
+GitLab Duo Code Review uses the instance
+[AI Gateway request timeout](../../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-timeout-for-the-ai-gateway).
+Reviews that do not complete in this window also surface as generic errors.
 
 To reduce the risk of failed reviews on large merge requests:
 

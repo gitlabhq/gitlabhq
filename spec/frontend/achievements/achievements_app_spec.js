@@ -48,7 +48,9 @@ describe('Achievements app', () => {
   });
 
   const mountComponent = ({
-    canAdminAchievement = true,
+    canCreateAchievement = true,
+    canUpdateAchievement = true,
+    canDeleteAchievement = true,
     canAwardAchievement = true,
     crudStub = false,
     mountFunction = shallowMountExtended,
@@ -75,7 +77,9 @@ describe('Achievements app', () => {
     fakeApollo = createMockApollo(handlers);
     wrapper = mountFunction(AchievementsApp, {
       provide: {
-        canAdminAchievement,
+        canCreateAchievement,
+        canUpdateAchievement,
+        canDeleteAchievement,
         canAwardAchievement,
         groupFullPath: 'flightjs',
         gitlabLogoPath: '/assets/gitlab_logo.png',
@@ -224,7 +228,7 @@ describe('Achievements app', () => {
     });
 
     describe('new achievement button', () => {
-      describe('when user can admin_achievement', () => {
+      describe('when user can create_achievement', () => {
         it('should render', async () => {
           await mountComponent();
 
@@ -232,9 +236,9 @@ describe('Achievements app', () => {
         });
       });
 
-      describe('when user can not admin_achievement', () => {
+      describe('when user can not create_achievement', () => {
         it('should not render', async () => {
-          await mountComponent({ canAdminAchievement: false });
+          await mountComponent({ canCreateAchievement: false });
 
           expect(findNewAchievementButton().exists()).toBe(false);
         });
@@ -263,7 +267,7 @@ describe('Achievements app', () => {
     });
 
     describe('achievement actions dropdown', () => {
-      describe('when user can admin_achievement', () => {
+      describe('when user can update_achievement and delete_achievement', () => {
         it('renders a dropdown for each achievement', async () => {
           await mountComponent({ crudStub: { template: '<div><slot name="actions" /></div>' } });
 
@@ -303,10 +307,37 @@ describe('Achievements app', () => {
         });
       });
 
-      describe('when user cannot admin_achievement', () => {
+      describe('when user can only update_achievement', () => {
+        it('dropdown items include only edit', async () => {
+          await mountComponent({
+            canDeleteAchievement: false,
+            crudStub: { template: '<div><slot name="actions" /></div>' },
+          });
+
+          const items = findActionsDropdowns().at(0).props('items');
+          expect(items).toEqual([{ text: 'Edit achievement', action: expect.any(Function) }]);
+        });
+      });
+
+      describe('when user can only delete_achievement', () => {
+        it('dropdown items include only delete', async () => {
+          await mountComponent({
+            canUpdateAchievement: false,
+            crudStub: { template: '<div><slot name="actions" /></div>' },
+          });
+
+          const items = findActionsDropdowns().at(0).props('items');
+          expect(items).toEqual([
+            { text: 'Delete achievement', action: expect.any(Function), variant: 'danger' },
+          ]);
+        });
+      });
+
+      describe('when user cannot update_achievement or delete_achievement', () => {
         it('does not render the dropdown', async () => {
           await mountComponent({
-            canAdminAchievement: false,
+            canUpdateAchievement: false,
+            canDeleteAchievement: false,
             crudStub: { template: '<div><slot name="actions" /></div>' },
           });
 

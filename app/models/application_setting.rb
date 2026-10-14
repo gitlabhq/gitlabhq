@@ -10,7 +10,7 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumns
   include SafelyChangeColumnDefault
 
-  columns_changing_default :tool_approval_for_session_enabled
+  columns_changing_default :tool_approval_for_session_enabled, :ai_gateway_timeout_seconds
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
@@ -424,7 +424,7 @@ class ApplicationSetting < ApplicationRecord
     instance_token_prefix: [:string, { default: '' }]
 
   validates :instance_token_prefix,
-    format: { with: %r{\A[a-zA-Z0-9]+\z} },
+    format: { with: /\A#{Authn::TokenField::PrefixHelper::INSTANCE_PREFIX_PATTERN.source}\z/ },
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 

@@ -82,13 +82,15 @@ For more information, see [Change the visibility of individual features in a pro
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
-| `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
+| `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md) [^pages-access-level]. |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
+
+[^pages-access-level]: If [Pages access control](../administration/pages/_index.md#access-control) is turned on, private projects accept `disabled`, `private`, and `public`, internal projects accept all four values, and public projects accept `disabled`, `private`, and `enabled`. `public` is also rejected when public access to Pages is turned off for the [instance](../administration/pages/_index.md#disable-public-access-to-all-pages-sites) or [group](../user/project/pages/pages_access_control.md#remove-public-access-for-group-pages).
 
 ## Deprecated attributes
 

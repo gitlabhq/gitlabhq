@@ -40,7 +40,7 @@
   @apply @xl/content-panels:gl-rounded-l-none;
   @apply @xl/content-panels:gl-shadow-none;
 
-  // Fixes a Firefox 115.40.0esr issue. Keep this seperate from the below selector
+  // Fixes a Firefox 115.40.0esr issue. Keep this separate from the below selector.
   // as otherwise it won't be interpret by Firefox as it will drop this
   // style rule as the other selector is unknown
   &:empty {

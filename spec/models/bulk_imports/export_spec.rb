@@ -35,7 +35,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
 
     context 'when associated with a group' do
       it 'is valid' do
-        export = build(:bulk_import_export, group: build(:group), project: nil)
+        export = build(:bulk_import_export, group: build_stubbed(:group), project: nil)
 
         expect(export).to be_valid
       end
@@ -66,7 +66,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
       end
 
       it 'allows group members for offline transfer' do
-        export = build(:bulk_import_export, offline_export: create(:offline_export), relation: 'members')
+        export = build(:bulk_import_export, offline_export: build_stubbed(:offline_export), relation: 'members')
 
         expect(export).to be_valid
       end
@@ -87,7 +87,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
           :bulk_import_export,
           group: nil,
           project: build(:project),
-          offline_export: create(:offline_export),
+          offline_export: build_stubbed(:offline_export),
           relation: 'project_members'
         )
 
@@ -339,7 +339,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
   describe '#portable' do
     context 'when associated with project' do
       it 'returns project' do
-        export = create(:bulk_import_export, project: create(:project), group: nil)
+        export = build_stubbed(:bulk_import_export, project: build_stubbed(:project), group: nil)
 
         expect(export.portable).to be_instance_of(Project)
       end
@@ -347,7 +347,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
 
     context 'when associated with group' do
       it 'returns group' do
-        export = create(:bulk_import_export)
+        export = build_stubbed(:bulk_import_export)
 
         expect(export.portable).to be_instance_of(Group)
       end
@@ -357,7 +357,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
   describe '#config' do
     context 'when associated with project' do
       it 'returns project config' do
-        export = create(:bulk_import_export, project: create(:project), group: nil)
+        export = build_stubbed(:bulk_import_export, project: build_stubbed(:project), group: nil)
 
         expect(export.config).to be_instance_of(BulkImports::FileTransfer::ProjectConfig)
       end
@@ -365,7 +365,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
 
     context 'when associated with group' do
       it 'returns group config' do
-        export = create(:bulk_import_export)
+        export = build_stubbed(:bulk_import_export)
 
         expect(export.config).to be_instance_of(BulkImports::FileTransfer::GroupConfig)
       end
@@ -417,13 +417,13 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
 
   describe '#offline?' do
     context 'when associated to an offline export' do
-      subject(:export) { create(:bulk_import_export, :offline) }
+      subject(:export) { build_stubbed(:bulk_import_export, :offline) }
 
       it { is_expected.to be_offline }
     end
 
     context 'when not associated to an offline export' do
-      subject(:export) { create(:bulk_import_export) }
+      subject(:export) { build_stubbed(:bulk_import_export) }
 
       it { is_expected.not_to be_offline }
     end
@@ -431,13 +431,13 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
 
   describe '#import_source' do
     context 'when associated to an offline export' do
-      subject(:export) { create(:bulk_import_export, :offline) }
+      subject(:export) { build_stubbed(:bulk_import_export, :offline) }
 
       it { expect(export.import_source).to eq(Import::SOURCE_OFFLINE_TRANSFER) }
     end
 
     context 'when not associated to an offline export' do
-      subject(:export) { create(:bulk_import_export) }
+      subject(:export) { build_stubbed(:bulk_import_export) }
 
       it { expect(export.import_source).to eq(Import::SOURCE_DIRECT_TRANSFER) }
     end
@@ -452,7 +452,7 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
     end
 
     with_them do
-      subject(:export) { build(:bulk_import_export, status) }
+      subject(:export) { build_stubbed(:bulk_import_export, status) }
 
       it 'returns the expected result' do
         expect(export.completed?).to eq(expected_result)

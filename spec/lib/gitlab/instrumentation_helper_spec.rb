@@ -380,6 +380,34 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       end
     end
 
+    context 'when permission checks were measured' do
+      before do
+        Gitlab::Instrumentation::Authz.measure { nil }
+      end
+
+      it 'adds permission check data' do
+        subject
+
+        expect(payload).to include(
+          authz_call_count: 1,
+          authz_duration_s: be_a(Float),
+          authz_db_count: 0,
+          authz_db_cached_count: 0,
+          authz_db_duration_s: 0.0
+        )
+      end
+    end
+
+    context 'when no permission checks were measured' do
+      it 'does not add permission check data' do
+        subject
+
+        expect(payload.keys).not_to include(
+          :authz_call_count, :authz_duration_s, :authz_db_count, :authz_db_cached_count, :authz_db_duration_s
+        )
+      end
+    end
+
     context 'for middleware path traversal check' do
       let(:duration) { 0.123456789 }
       let(:expected_logged_duration) { 0.123457 }

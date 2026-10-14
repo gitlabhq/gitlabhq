@@ -497,6 +497,24 @@ RSpec.describe Ability, feature_category: :system_access do
 
     let(:request_store_key) { format(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_KEY_FORMAT, primary_user.id) }
 
+    context 'with a scope' do
+      before_all do
+        group.add_developer(scoped_user)
+      end
+
+      it 'checks the ability in the user scope' do
+        expect(DeclarativePolicy).to receive(:user_scope).and_call_original
+
+        expect(described_class.allowed?(scoped_user, :read_group, group, scope: :user)).to be(true)
+      end
+
+      it 'checks the ability in the subject scope' do
+        expect(DeclarativePolicy).to receive(:subject_scope).and_call_original
+
+        expect(described_class.allowed?(scoped_user, :read_group, group, scope: :subject)).to be(true)
+      end
+    end
+
     context 'with composite identity', :request_store do
       before do
         primary_user.update!(composite_identity_enforced: true)

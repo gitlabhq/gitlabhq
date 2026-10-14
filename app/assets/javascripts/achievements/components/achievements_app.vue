@@ -43,7 +43,15 @@ export default {
   },
   mixins: [GlToastMixin],
   inject: {
-    canAdminAchievement: {
+    canCreateAchievement: {
+      type: Boolean,
+      required: true,
+    },
+    canUpdateAchievement: {
+      type: Boolean,
+      required: true,
+    },
+    canDeleteAchievement: {
       type: Boolean,
       required: true,
     },
@@ -185,8 +193,10 @@ export default {
       };
     },
     achievementActions(achievement) {
-      return [
-        {
+      const actions = [];
+
+      if (this.canUpdateAchievement) {
+        actions.push({
           text: s__('Achievements|Edit achievement'),
           action: () => {
             this.$refs[`dropdown-${achievement.id}`]?.[0]?.close();
@@ -195,16 +205,21 @@ export default {
               params: { id: getIdFromGraphQLId(achievement.id) },
             });
           },
-        },
-        {
+        });
+      }
+
+      if (this.canDeleteAchievement) {
+        actions.push({
           text: s__('Achievements|Delete achievement'),
           variant: 'danger',
           action: () => {
             this.achievementToDelete = achievement;
             this.showDeleteModal = true;
           },
-        },
-      ];
+        });
+      }
+
+      return actions;
     },
     async confirmDelete() {
       const achievement = this.achievementToDelete;
@@ -282,7 +297,7 @@ export default {
       illustration-name="empty-search-md"
     >
       <template #description>
-        <router-link v-if="canAdminAchievement" :to="{ name: $options.NEW_ROUTE_NAME }">
+        <router-link v-if="canCreateAchievement" :to="{ name: $options.NEW_ROUTE_NAME }">
           <gl-button variant="confirm" data-testid="new-achievement-button" class="gl-my-3">
             {{ $options.i18n.newAchievement }}
           </gl-button>
@@ -291,7 +306,7 @@ export default {
     </gl-empty-state>
     <page-heading v-else :heading="$options.i18n.title">
       <template #actions>
-        <router-link v-if="canAdminAchievement" :to="{ name: $options.NEW_ROUTE_NAME }">
+        <router-link v-if="canCreateAchievement" :to="{ name: $options.NEW_ROUTE_NAME }">
           <gl-button variant="confirm" data-testid="new-achievement-button" class="gl-my-3">
             {{ $options.i18n.newAchievement }}
           </gl-button>
@@ -321,7 +336,7 @@ export default {
             :achievement-name="achievement.name"
           />
           <gl-disclosure-dropdown
-            v-if="canAdminAchievement"
+            v-if="canUpdateAchievement || canDeleteAchievement"
             :ref="`dropdown-${achievement.id}`"
             icon="ellipsis_v"
             category="tertiary"

@@ -87,4 +87,32 @@ RSpec.describe Authn::TokenField::PrefixHelper, feature_category: :system_access
       end
     end
   end
+
+  describe '.optional_instance_prefix_pattern' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:pattern) { described_class.optional_instance_prefix_pattern('glrt-') }
+
+    where(:token, :match) do
+      'glrt-abc'          | 'glrt-'
+      'acme-glrt-abc'     | 'acme-glrt-'
+      'Acme1-glrt-abc'    | 'Acme1-glrt-'
+      'ac_me-glrt-abc'    | nil
+      'abc-glrt-acme-xyz' | 'abc-glrt-'
+      'glrtr-abc'         | nil
+    end
+
+    with_them do
+      it { expect(token[pattern]).to eq(match) }
+    end
+
+    context 'when the prefix contains regex metacharacters' do
+      subject(:pattern) { described_class.optional_instance_prefix_pattern('gl.t+') }
+
+      it 'matches them literally', :aggregate_failures do
+        expect('acme-gl.t+abc'[pattern]).to eq('acme-gl.t+')
+        expect('acme-glxtabc'[pattern]).to be_nil
+      end
+    end
+  end
 end

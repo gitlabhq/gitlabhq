@@ -18,7 +18,7 @@ GitLabの以下の機能は非推奨となっており、使用は推奨され�
 
 [REST APIの非推奨化](../api/rest/deprecations.md)については、別途ドキュメントに記載されています。
 
-{{< icon name="rss" >}}**今後の破壊的変更の通知を受け取るには**、このURL（`https://docs.gitlab.com/releases/breaking-changes.xml`）をRSSフィードリーダーに追加してください。
+{{< icon name="rss" >}} **今後の破壊的変更について通知を受け取るには**、RSSフィードリーダーに次のURLを追加してください: `https://docs.gitlab.com/releases/breaking-changes.xml`
 
 <!-- vale off -->
 <!--
@@ -42,6 +42,26 @@ For deprecation reviewers (Technical Writers only):
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
   <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 -->
+
+## GitLab 21.0 {#gitlab-210}
+
+### Code Suggestions v2およびv3 AIゲートウェイエンドポイント {#code-suggestions-v2-and-v3-ai-gateway-endpoints}
+
+- GitLab 19.5で発表
+- GitLab 21.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/605661)を参照してください。
+
+AIゲートウェイのエンドポイント`/v2/completions`、`/v2/code/completions`、`/v2/code/generations`、`/v3/code/completions`はGitLab 19.5で非推奨となり、GitLab 21.0で削除されます。Code Suggestionsのリクエストには、代わりに`/v4/code/suggestions`を使用する必要があります。
+
+GitLab.comでは、GitLab 19.1以降`/v4/code/suggestions`が使用されています。GitLab.comについては、対応は不要です。
+
+GitLab Self-Managed、GitLab Dedicated、およびGitLabエディタ拡張機能は、今後のリリースでv4エンドポイントに切り替わります。この変更が含まれるバージョンを追跡するには、[issue 605661](https://gitlab.com/gitlab-org/gitlab/-/issues/605661)を参照してください。セルフホストのAIゲートウェイを運用している場合、GitLab 21.0用のAIゲートウェイイメージでもこれらのエンドポイントが削除されます。
+
+支障が生じないようにするため、GitLab 21.0がリリースされる前に、次のことを行ってください:
+
+- インスタンスを最新バージョンのGitLabにアップグレードします。
+- エディタ拡張機能を最新バージョンに更新します。
+- AIゲートウェイを直接呼び出すカスタムクライアントを更新して、`/v4/code/suggestions`を使用するようにします。
 
 ## GitLab 20.0 {#gitlab-200}
 
@@ -99,6 +119,18 @@ GitLab 20.0で、GitLabは設計管理の非推奨化を開始します。設計
 
 インスタンス、グループ、プロジェクトの監査イベントAPIは現在、オプションのキーセットページネーションをサポートしています。GitLab 20.0では、これらのAPIにキーセットページネーションを適用します。
 
+### GitLab Helmチャートの値`gitlab.kas.ingress.grpc.enabled` {#gitlab-helm-chart-value-gitlabkasingressgrpcenabled}
+
+- GitLab 19.5で発表
+- GitLab 20.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/charts/gitlab/-/work_items/6663)を参照してください。
+
+GitLab Helmチャートでは、KASのgRPC Ingressは`global.kas.ingress.grpc.enabled`によって制御されるようになりました。これにより、Kubernetes向けエージェントにアドバタイズされるアドレスがネイティブgRPC（`grpcs://`）とWebSocket（`wss://`）のどちらを使用するかも決まります。
+
+`kas`チャートのローカル値`gitlab.kas.ingress.grpc.enabled`は非推奨となり、チャート11.0（GitLab 20.0）で削除されます。この値は引き続きgRPC Ingressをレンダリングするかどうかを制御しますが、他のチャートは通知アドレスを導出する際にこの値を参照できないため、Ingressとアドレスが一致しない場合があります。
+
+`gitlab.kas.ingress.grpc.enabled`を設定している場合は、チャート11.0にアップグレードする前に、その値を`global.kas.ingress.grpc.enabled`に移動してください。両方とも未設定のままにすると、デフォルトが維持されます。gRPC IngressはNGINX Ingressプロバイダー用にレンダリングされ、チャートがgRPCをKASにルーティングする場合、エージェントは`grpcs://`を参照するようになります。
+
 ### Goモジュールプロキシ（実験的）は非推奨です {#go-module-proxy-experimental-is-deprecated}
 
 - GitLab 19.1で発表されました
@@ -110,6 +142,14 @@ GitLabパッケージレジストリ内の実験的なGoモジュールプロキ
 これは、GitLabを介してGoモジュールを解決するための、より完全で信頼性の高いエクスペリエンスを提供する**Go virtual registry**に置き換えられます。
 
 **必要なアクション:** GitLabをGoモジュールプロキシとして使用している場合は、Go仮想レジストリが利用可能になったらそちらに移行する計画を立ててください。それまでの間、`proxy.golang.org`やセルフホスト型ソリューションなどの代替プロキシを、`GOPROXY`環境変数を更新することで設定できます。
+
+### GraphQLの`useWorkItemsView`ユーザー設定 {#graphql-useworkitemsview-user-preference}
+
+- GitLab 19.5で発表
+- GitLab 20.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/work_items/550770)を参照してください。
+
+`UserPreferences`型の`useWorkItemsView`フィールドと`userPreferencesUpdate`ミューテーションの`useWorkItemsView`引数は、GitLab 19.5で非推奨となり、GitLab 20.0で削除されます。issueからwork itemへの移行が完了し、work itemビューが常に使用されるようになったため、この設定は不要になりました。GitLab 19.5時点で、この引数は受け付けられますが無視され、フィールドは常に`true`を返します。ミューテーションから引数を、クエリからフィールドを削除してください。代替手段はありません。
 
 ### 従来の`retry:when`の失敗理由`stuck_or_timeout_failure`と`job_execution_timeout`は非推奨になりました {#legacy-retrywhen-failure-reasons-stuck_or_timeout_failure-and-job_execution_timeout-are-deprecated}
 
@@ -138,28 +178,28 @@ GitLab 19.0では、汎用的な`stuck_or_timeout_failure`および`job_executio
 
 非推奨のミューテーション:
 
-- `externalAuditEventDestinationCreate` — 代わりに`groupAuditEventStreamingDestinationsCreate`を使用してください。
-- `externalAuditEventDestinationDestroy` — 代わりに`groupAuditEventStreamingDestinationsDelete`を使用してください。
-- `externalAuditEventDestinationUpdate` — 代わりに`groupAuditEventStreamingDestinationsUpdate`を使用してください。
-- `googleCloudLoggingConfigurationCreate` — 代わりに`gcpLogging`カテゴリで`groupAuditEventStreamingDestinationsCreate`を使用してください。
-- `googleCloudLoggingConfigurationDestroy` — 代わりに`groupAuditEventStreamingDestinationsDelete`を使用してください。
-- `googleCloudLoggingConfigurationUpdate` — 代わりに`groupAuditEventStreamingDestinationsUpdate`を使用してください。
-- `auditEventsAmazonS3ConfigurationCreate` — 代わりに`amazonS3`カテゴリで`groupAuditEventStreamingDestinationsCreate`を使用してください。
-- `auditEventsAmazonS3ConfigurationDelete` — 代わりに`groupAuditEventStreamingDestinationsDelete`を使用してください。
-- `auditEventsAmazonS3ConfigurationUpdate` — 代わりに`groupAuditEventStreamingDestinationsUpdate`を使用してください。
-- `auditEventsStreamingHeadersCreate` — `groupAuditEventStreamingDestinationsUpdate`を使用してストリーミング先設定でヘッダーを設定してください。
-- `auditEventsStreamingHeadersDestroy` — `groupAuditEventStreamingDestinationsUpdate`を使用してストリーミング先設定でヘッダーを設定してください。
-- `auditEventsStreamingHeadersUpdate` — `groupAuditEventStreamingDestinationsUpdate`を使用してストリーミング先設定でヘッダーを設定してください。
-- `auditEventsStreamingDestinationEventsAdd` — 代わりに`auditEventsGroupDestinationEventsAdd`を使用してください。
-- `auditEventsStreamingDestinationEventsRemove` — 代わりに`auditEventsGroupDestinationEventsRemove`を使用してください。
-- `auditEventsStreamingHttpNamespaceFiltersAdd` — 代わりに`auditEventsGroupDestinationNamespaceFilterCreate`を使用してください。
-- `auditEventsStreamingHttpNamespaceFiltersDelete` — 代わりに`auditEventsGroupDestinationNamespaceFilterDelete`を使用してください。
+- `externalAuditEventDestinationCreate` - 代わりに`groupAuditEventStreamingDestinationsCreate`を使用してください。
+- `externalAuditEventDestinationDestroy` - 代わりに`groupAuditEventStreamingDestinationsDelete`を使用してください。
+- `externalAuditEventDestinationUpdate` - 代わりに`groupAuditEventStreamingDestinationsUpdate`を使用してください。
+- `googleCloudLoggingConfigurationCreate` - 代わりに`gcpLogging`カテゴリを指定した`groupAuditEventStreamingDestinationsCreate`を使用してください。
+- `googleCloudLoggingConfigurationDestroy` - 代わりに`groupAuditEventStreamingDestinationsDelete`を使用してください。
+- `googleCloudLoggingConfigurationUpdate` - 代わりに`groupAuditEventStreamingDestinationsUpdate`を使用してください。
+- `auditEventsAmazonS3ConfigurationCreate` - 代わりに`amazonS3`カテゴリを指定した`groupAuditEventStreamingDestinationsCreate`を使用してください。
+- `auditEventsAmazonS3ConfigurationDelete` - 代わりに`groupAuditEventStreamingDestinationsDelete`を使用してください。
+- `auditEventsAmazonS3ConfigurationUpdate` - 代わりに`groupAuditEventStreamingDestinationsUpdate`を使用してください。
+- `auditEventsStreamingHeadersCreate` - `groupAuditEventStreamingDestinationsUpdate`を使用して、ストリーミング先の設定でヘッダーを構成してください。
+- `auditEventsStreamingHeadersDestroy` - `groupAuditEventStreamingDestinationsUpdate`を使用して、ストリーミング先の設定でヘッダーを構成してください。
+- `auditEventsStreamingHeadersUpdate` - `groupAuditEventStreamingDestinationsUpdate`を使用して、ストリーミング先の設定でヘッダーを構成してください。
+- `auditEventsStreamingDestinationEventsAdd` - 代わりに`auditEventsGroupDestinationEventsAdd`を使用してください。
+- `auditEventsStreamingDestinationEventsRemove` - 代わりに`auditEventsGroupDestinationEventsRemove`を使用してください。
+- `auditEventsStreamingHttpNamespaceFiltersAdd` - 代わりに`auditEventsGroupDestinationNamespaceFilterCreate`を使用してください。
+- `auditEventsStreamingHttpNamespaceFiltersDelete` - 代わりに`auditEventsGroupDestinationNamespaceFilterDelete`を使用してください。
 
 非推奨のグループフィールド:
 
-- `Group.externalAuditEventDestinations` — 代わりに`Group.externalAuditEventStreamingDestinations`を使用してください。
-- `Group.googleCloudLoggingConfigurations` — 代わりに`gcpLogging`カテゴリで`Group.externalAuditEventStreamingDestinations`を使用してください。
-- `Group.amazonS3Configurations` — 代わりに`amazonS3`カテゴリで`Group.externalAuditEventStreamingDestinations`を使用してください。
+- `Group.externalAuditEventDestinations` - 代わりに`Group.externalAuditEventStreamingDestinations`を使用してください。
+- `Group.googleCloudLoggingConfigurations` - 代わりに`gcpLogging`カテゴリを指定した`Group.externalAuditEventStreamingDestinations`を使用してください。
+- `Group.amazonS3Configurations` - 代わりに`amazonS3`カテゴリを指定した`Group.externalAuditEventStreamingDestinations`を使用してください。
 
 新しい統合されたストリーミング先APIは、`category`パラメータを持つ単一のエンドポイントセットを通じて、すべてのストリーミング先カテゴリ（HTTP、Google Cloud Logging、Amazon S3）をサポートしています。
 
@@ -173,26 +213,26 @@ GitLab 19.0では、汎用的な`stuck_or_timeout_failure`および`job_executio
 
 非推奨のミューテーション:
 
-- `instanceExternalAuditEventDestinationCreate` — 代わりに`instanceAuditEventStreamingDestinationsCreate`を使用してください。
-- `instanceExternalAuditEventDestinationDestroy` — 代わりに`instanceAuditEventStreamingDestinationsDelete`を使用してください。
-- `instanceExternalAuditEventDestinationUpdate` — 代わりに`instanceAuditEventStreamingDestinationsUpdate`を使用してください。
-- `instanceGoogleCloudLoggingConfigurationCreate` — 代わりに`gcpLogging`カテゴリで`instanceAuditEventStreamingDestinationsCreate`を使用してください。
-- `instanceGoogleCloudLoggingConfigurationDestroy` — 代わりに`instanceAuditEventStreamingDestinationsDelete`を使用してください。
-- `instanceGoogleCloudLoggingConfigurationUpdate` — 代わりに`instanceAuditEventStreamingDestinationsUpdate`を使用してください。
-- `auditEventsInstanceAmazonS3ConfigurationCreate` — 代わりに`amazonS3`カテゴリで`instanceAuditEventStreamingDestinationsCreate`を使用してください。
-- `auditEventsInstanceAmazonS3ConfigurationDelete` — 代わりに`instanceAuditEventStreamingDestinationsDelete`を使用してください。
-- `auditEventsInstanceAmazonS3ConfigurationUpdate` — 代わりに`instanceAuditEventStreamingDestinationsUpdate`を使用してください。
-- `auditEventsStreamingInstanceHeadersCreate` — `instanceAuditEventStreamingDestinationsUpdate`を使用してストリーミング先設定でヘッダーを設定してください。
-- `auditEventsStreamingInstanceHeadersDestroy` — `instanceAuditEventStreamingDestinationsUpdate`を使用してストリーミング先設定でヘッダーを設定してください。
-- `auditEventsStreamingInstanceHeadersUpdate` — `instanceAuditEventStreamingDestinationsUpdate`を使用してストリーミング先設定でヘッダーを設定してください。
-- `auditEventsStreamingDestinationInstanceEventsAdd` — 代わりに`auditEventsInstanceDestinationEventsAdd`を使用してください。
-- `auditEventsStreamingDestinationInstanceEventsRemove` — 代わりに`auditEventsInstanceDestinationEventsRemove`を使用してください。
+- `instanceExternalAuditEventDestinationCreate` - 代わりに`instanceAuditEventStreamingDestinationsCreate`を使用してください。
+- `instanceExternalAuditEventDestinationDestroy` - 代わりに`instanceAuditEventStreamingDestinationsDelete`を使用してください。
+- `instanceExternalAuditEventDestinationUpdate` - 代わりに`instanceAuditEventStreamingDestinationsUpdate`を使用してください。
+- `instanceGoogleCloudLoggingConfigurationCreate` - 代わりに`gcpLogging`カテゴリを指定した`instanceAuditEventStreamingDestinationsCreate`を使用してください。
+- `instanceGoogleCloudLoggingConfigurationDestroy` - 代わりに`instanceAuditEventStreamingDestinationsDelete`を使用してください。
+- `instanceGoogleCloudLoggingConfigurationUpdate` - 代わりに`instanceAuditEventStreamingDestinationsUpdate`を使用してください。
+- `auditEventsInstanceAmazonS3ConfigurationCreate` - 代わりに`amazonS3`カテゴリを指定した`instanceAuditEventStreamingDestinationsCreate`を使用してください。
+- `auditEventsInstanceAmazonS3ConfigurationDelete` - 代わりに`instanceAuditEventStreamingDestinationsDelete`を使用してください。
+- `auditEventsInstanceAmazonS3ConfigurationUpdate` - 代わりに`instanceAuditEventStreamingDestinationsUpdate`を使用してください。
+- `auditEventsStreamingInstanceHeadersCreate` - `instanceAuditEventStreamingDestinationsUpdate`を使用して、ストリーミング先の設定でヘッダーを構成してください。
+- `auditEventsStreamingInstanceHeadersDestroy` - `instanceAuditEventStreamingDestinationsUpdate`を使用して、ストリーミング先の設定でヘッダーを構成してください。
+- `auditEventsStreamingInstanceHeadersUpdate` - `instanceAuditEventStreamingDestinationsUpdate`を使用して、ストリーミング先の設定でヘッダーを構成してください。
+- `auditEventsStreamingDestinationInstanceEventsAdd` - 代わりに`auditEventsInstanceDestinationEventsAdd`を使用してください。
+- `auditEventsStreamingDestinationInstanceEventsRemove` - 代わりに`auditEventsInstanceDestinationEventsRemove`を使用してください。
 
 非推奨のクエリフィールド:
 
-- `instanceExternalAuditEventDestinations` — 代わりに`auditEventsInstanceStreamingDestinations`を使用してください。
-- `instanceGoogleCloudLoggingConfigurations` — 代わりに`gcpLogging`カテゴリで`auditEventsInstanceStreamingDestinations`を使用してください。
-- `auditEventsInstanceAmazonS3Configurations` — 代わりに`amazonS3`カテゴリで`auditEventsInstanceStreamingDestinations`を使用してください。
+- `instanceExternalAuditEventDestinations` - 代わりに`auditEventsInstanceStreamingDestinations`を使用してください。
+- `instanceGoogleCloudLoggingConfigurations` - 代わりに`gcpLogging`カテゴリを指定した`auditEventsInstanceStreamingDestinations`を使用してください。
+- `auditEventsInstanceAmazonS3Configurations` - 代わりに`amazonS3`カテゴリを指定した`auditEventsInstanceStreamingDestinations`を使用してください。
 
 新しい統合されたストリーミング先APIは、`category`パラメータを持つ単一のエンドポイントセットを通じて、すべてのストリーミング先カテゴリ（HTTP、Google Cloud Logging、Amazon S3）をサポートしています。
 
@@ -208,6 +248,30 @@ GitLab Helmチャートは、Kubernetes Gateway APIを使用するデフォル�
 
 バンドルされているEnvoy GatewayとGateway APIへの移行することをお勧めします。または、[外部のIngressコントローラーとクラス](https://docs.gitlab.com/charts/charts/globals/#configure-ingress-settings)をデプロイし、設定することができます。
 
+### `gitlab-ctl patroni failover`および`switchover`の`--master`オプション {#--master-option-for-gitlab-ctl-patroni-failover-and-switchover}
+
+- GitLab 19.4で発表
+- GitLab 20.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9467)を参照してください。
+
+`gitlab-ctl patroni failover`コマンドおよび`gitlab-ctl patroni switchover`コマンドの`--master`オプションは非推奨となり、GitLab 20.0で削除されます。両方のコマンドは、GitLab 19.4時点で`--leader`を受け付けます。これは`patronictl`が使用しているオプション名と一致します。
+
+移行するには、これらのコマンドを呼び出すスクリプトや手順書内の`--master`を`--leader`に置き換えてください。このオプションは同じ値、つまり現在のリーダーノードの名前を受け付けます。削除されるまで、`--master`は従来の動作を維持し、非推奨の警告を表示します。
+
+### `kpt`ベースの`agentk`は非推奨 {#kpt-based-agentk-is-deprecated}
+
+- GitLab 17.9で発表
+- GitLab 20.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656)を参照してください。
+
+Kubernetesエージェントの`kpt`ベースのインストールに対するサポートを削除します。`kpt`パッケージは壊れており、古くなっています。これは2022年以降メンテナンスされておらず、それ以降Helmチャートに追加された機能が含まれておらず、既知の利用者もいません。代わりに、サポートされているいずれかのインストール方法でエージェントをインストールする必要があります。
+
+- Helm（推奨）
+- GitLab CLI
+- Flux
+
+`kpt`からHelmに移行するには、[エージェントのインストールに関するドキュメント](https://docs.gitlab.com/user/clusters/agent/install/)に従って、`kpt`でデプロイされた`agentk`インスタンスを上書きしてください。
+
 ## GitLab 19.5 {#gitlab-195}
 
 ### Bitbucket CloudイシューとWikiのインポート {#bitbucket-cloud-issue-and-wiki-import}
@@ -221,6 +285,27 @@ Atlassianは2026年8月20日に[Bitbucket Cloud Issues and Wikis](https://commun
 GitLab 19.3では、Bitbucket CloudインポーターがAPIの削除を適切に処理し、イシューとWikiをスキップする予定です。GitLab 19.5では、イシューとWikiのインポートコードが削除される予定です。
 
 Bitbucketのイシューデータが必要なユーザーは、2026年8月20日の期日までにインポートを完了するか、Bitbucketからエクスポートする後に[CSV import](https://docs.gitlab.com/user/project/issues/csv_import/)を使用する必要があります。Wikiの場合は、期日前にBitbucket Wikiリポジトリをローカルにクローンしてください。
+
+### GraphQLの`secretPermissionUpdate`および`secretPermissionDelete`ミューテーション {#graphql-secretpermissionupdate-and-secretpermissiondelete-mutations}
+
+- GitLab 19.5で発表
+- GitLab 19.5での削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
+- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/work_items/630579)を参照してください。
+
+GitLab Secrets ManagerをBetaから一般提供（GA）に移行する一環として、GitLabはGitLab 19.5で`secretPermissionUpdate`および`secretPermissionDelete`のGraphQLミューテーションを削除します。代わりに`projectSecretsPermissionUpdate`および`projectSecretsPermissionDelete`を使用してください。置き換え後のミューテーションは、以前のミューテーションと同じサービスを呼び出します。
+
+新しいミューテーションでは、以前の小文字の文字列値を取る`permissions`引数の代わりに、`actions`引数を使用します。新しい`actions`引数は`SecretsManagementAction`のenumを取ります。このenumの各値は大文字です。以前の各値を新しい値にマッピングしてください:
+
+- `"read"`は`READ`にマッピングされます。
+- 単独の`"create"`は`CREATE`にマッピングされます。
+- `"create"`の有無にかかわらず、`"update"`は`WRITE`にマッピングされます。
+- `"delete"`は`DELETE`にマッピングされます。
+
+レスポンスの形式も変更されます。これらの変更に合わせてコードを更新してください:
+
+- ペイロードのフィールド名が`secretPermission`から`secretsPermission`に変更されます。
+- ペイロードの型名が`SecretPermission`から`ProjectSecretsPermission`に変更されます。
+- 新しい型には`permissions`フィールドがありません。代わりに`actions`フィールドを参照してください。
 
 ## GitLab 19.3 {#gitlab-193}
 
@@ -391,7 +476,7 @@ GitLabは、セキュリティ上の理由から、2025年4月8日以降、[GitL
 ### コンテナレジストリのS3ストレージドライバー（AWS SDK v1） {#s3-storage-driver-aws-sdk-v1-for-the-container-registry}
 
 - GitLab 17.10で発表
-- GitLab 19.0で削除
+- GitLab 19.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/523095)を参照してください。
 
 AWS SDK v1を使用するコンテナレジストリのS3ストレージドライバーは非推奨となり、GitLab 19.0で削除されます。S3オブジェクトストレージをコンテナレジストリに使用しており、新しいドライバーをより早く使用したい場合は、設定を更新して新しい`s3_v2`ドライバーを使用する必要があります。GitLab 19.0では、非推奨のs3ドライバーは`s3_v2`ドライバーのエイリアスとなり、手動での操作は不要になります。
@@ -403,6 +488,8 @@ AWS SDK v1を使用するコンテナレジストリのS3ストレージドラ�
 1. `s3`の代わりに、`s3_v2`設定を使用するようにレジストリ設定ファイルを更新します。
 1. AWS SDK v2は署名バージョン4のみをサポートしているため、移行がまだの場合は、認証のために署名バージョン2から署名バージョン4に移行します。
 1. 本番環境にデプロイする前に、非本番環境で設定をテストします。
+
+AWS S3では、ドライバーの変更により、クライアントがレジストリのblobをダウンロードする際に使用する署名付きURLのホスト名も変わる場合があります。AWS SDK v2は、設定されたリージョンのS3エンドポイントを解決するため、署名付きURLはグローバルな`s3.amazonaws.com`ホスト名ではなく、`s3.us-east-1.amazonaws.com`のようなリージョンのホスト名を使用する場合があります。ネットワークで送信トラフィックが制限されている場合は、アップグレードする前に、プロキシまたはファイアウォールの許可リストにリージョンのホスト名を追加してください。追加しない場合、イメージのプルは`403 Forbidden`レスポンスで失敗します。
 
 ストレージドライバー設定の更新の詳細については、[オブジェクトストレージを使用する](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage)を参照してください。
 
@@ -529,7 +616,7 @@ GitLab 19.0以降も`heroku/builder:22`を引き続き使用するには、`AUTO
 - GitLab 19.0で削除（[破壊的変更](https://docs.gitlab.com/update/terminology/#breaking-change)）
 - この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/groups/gitlab-org/-/work_items/18493)を参照してください。
 
-**トレンド**タブ（**検索** > **プロジェクト**）とそれに関連するGraphQL引数は、GitLab 18.8で非推奨となり、GitLab 19.0で削除されます。GitLab 19.0のリリース前の月に、\***トレンド**タブはGitLab.comで星の数が多い順にソートされた**アクティブ**タブにリダイレクトされます。
+**トレンド**タブ（**検索** > **プロジェクト**）とそれに関連するGraphQL引数は、GitLab 18.8で非推奨となり、GitLab 19.0で削除されます。GitLab 19.0リリースの前月に、GitLab.comでは**トレンド**タブが、スター数の降順でソートされた**アクティブ**タブにリダイレクトされます。
 
 **What's being removed**
 
@@ -685,8 +772,8 @@ GitLab 18.3（GitLabチャート9.3）では、非推奨の値を削除し、バ
 
 cert-managerのリリースノートも確認してください。
 
-- [リリースノート1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12)
-- [リリースノート1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17)
+- [リリースノート1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12/)
+- [リリースノート1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17/)
 
 ## GitLab 18.1 {#gitlab-181}
 
@@ -771,7 +858,7 @@ GitLab 18.0では、このインスタンス設定はGitLab.com、GitLab Self-Ma
 
 この変更に備えて、クロスプロジェクト認証にジョブトークンを使用するプロジェクトメンテナーは、プロジェクトの**認証されたグループとプロジェクト**許可リストを入力する必要があります。次に、設定を**このプロジェクトと許可リスト内のグループとプロジェクトのみ**に変更する必要があります。
 
-CI/CDジョブトークンで認証してプロジェクトにアクセスする必要があるプロジェクトを特定するために、GitLab 17.6では、プロジェクトへの[ジョブトークン認証を追跡](https://about.gitlab.com/releases/2024/11/21/gitlab-17-6-released/#track-cicd-job-token-authentications)する方法も導入しました。そのデータを使用して、CI/CDジョブトークン許可リストを設定できます。
+CI/CDジョブトークンで認証してプロジェクトにアクセスする必要があるプロジェクトを特定するために、GitLab 17.6では、プロジェクトへの[ジョブトークン認証を追跡](https://docs.gitlab.com/releases/17/gitlab-17-6-released/#track-cicd-job-token-authentications)する方法も導入しました。そのデータを使用して、CI/CDジョブトークン許可リストを設定できます。
 
 GitLab 17.10から18.6まで、[移行ツール](https://archives.docs.gitlab.com/18.6/ci/jobs/ci_job_token/#auto-populate-a-projects-allowlist)を使用して、ジョブトークン認証ログからCI/CDジョブトークン許可リストを自動的に入力できます。[GitLab 18.0で許可リストが一般的に適用](https://docs.gitlab.com/update/deprecations/?removal_milestone=18.0#cicd-job-token-authorized-groups-and-projects-allowlist-enforcement)される前に、この移行ツールを使用して許可リストを設定し、使用することをおすすめします。GitLab 18.0では、以前に発表されたように、GitLab.comで許可リストの自動設定と適用が行われます。
 
@@ -4299,16 +4386,16 @@ Task Runnerポッドは、GitLabアプリケーション内で定期的なハウ
 > [!note]
 > この変更は元のマイルストーンから削除され、再評価されています。
 
-GitLab 19.0では、CodeClimateベースのCode Qualityスキャンを削除します。この変更は以前、GitLab 18.0で予定されていましたが、延期されました。
+今後のリリースで、CodeClimateベースのCode Qualityスキャンを削除する予定です。この変更は以前、GitLab 18.0で予定されていましたが、延期されました。
 
 その代わりに、CI/CDパイプラインで品質ツールを直接使用し、[ツールのレポートをアーティファクトとして提供](https://docs.gitlab.com/ci/testing/code_quality/#import-code-quality-results-from-a-cicd-job)する必要があります。多くのツールを直接統合する方法はすでにドキュメント化されており、[ドキュメント](https://docs.gitlab.com/ci/testing/code_quality/#integrate-common-tools-with-code-quality)に従ってツールを統合できます。
 
 この変更は、次の方法で実装する予定です。
 
-1. [`Code-Quality.gitlab-ci.yml` CI/CDテンプレート](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml)を変更してスキャンを実行しないようにします。現在、このテンプレートはCodeClimateベースのスキャンを実行しています。（19.0以降もテンプレートを`include`（包含）するパイプラインへの影響を軽減するために、テンプレートを削除するのではなく、テンプレートを変更する予定です。）
+1. [`Code-Quality.gitlab-ci.yml` CI/CDテンプレート](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml)を変更してスキャンを実行しないようにします。現在、このテンプレートはCodeClimateベースのスキャンを実行しています。（削除後もこのテンプレートを`include`しているパイプラインへの影響を軽減するため、テンプレートを削除するのではなく変更する予定です。）
 1. Auto DevOpsの一部として、CodeClimateベースのスキャンを実行しなくなります。
 
-CodeClimateベースのスキャンは、ただちに[限定的な更新](https://docs.gitlab.com/update/terminology/#deprecation)のみを受け取ります。GitLab 19.0でサポートが終了した後、それ以上の更新は提供しません。ただし、以前に公開されたコンテナイメージを削除したり、カスタムCI/CDパイプラインジョブ定義を使用してそれらを実行する機能を削除したりすることはありません。
+CodeClimateベースのスキャンは、ただちに[限定的な更新](https://docs.gitlab.com/update/terminology/#deprecation)のみを受け取ります。サポート終了後は、それ以上の更新を提供しません。ただし、以前に公開されたコンテナイメージを削除したり、カスタムCI/CDパイプラインジョブ定義を使用してそれらを実行する機能を削除したりすることはありません。
 
 詳細については、[品質違反のコードをスキャンする](https://docs.gitlab.com/ci/testing/code_quality/#scan-code-for-quality-violations)を参照してください。
 
@@ -4633,22 +4720,6 @@ GitLab 19.0では、CI/CDジョブトークンが文字列トークン形式か�
 Gitalyで`bin_path`および`use_bundled_binaries`設定オプションを使用するためのサポートは非推奨となり、GitLab 19.0で削除されます。
 
 Gitalyが提供するGitバイナリが、Gitを実行する際にサポートされる唯一の方法になります。
-
-### `kpt`ベースの`agentk`は非推奨 {#kpt-based-agentk-is-deprecated}
-
-- GitLab 17.9で発表
-- この変更について議論したり、詳細を確認したりするには、[非推奨に関するイシュー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656)を参照してください。
-
-> [!note]
-> この変更は元のマイルストーンから削除され、再評価されています。
-
-Kubernetesエージェントの`kpt`ベースのインストールに対するサポートを削除します。代わりに、サポートされているいずれかのインストール方法でエージェントをインストールする必要があります。
-
-- Helm（推奨）
-- GitLab CLI
-- Flux
-
-`kpt`からHelmに移行するには、[エージェントのインストールに関するドキュメント](https://docs.gitlab.com/user/clusters/agent/install/)に従って、`kpt`でデプロイされた`agentk`インスタンスを上書きしてください。
 
 ### `mergeTrainIndex`および`mergeTrainsCount` GraphQLフィールドは非推奨 {#mergetrainindex-and-mergetrainscount-graphql-fields-deprecated}
 

@@ -158,6 +158,7 @@ class Environment < ApplicationRecord
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, ->(name) { where(name: name) }
   scope :preload_project, -> { preload(:project) }
+  scope :preload_project_and_organization, -> { preload(project: :organization) }
   scope :auto_stoppable, ->(limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :long_stopping,  -> { with_state(:stopping).where('updated_at < ?', LONG_STOP.ago) }
 

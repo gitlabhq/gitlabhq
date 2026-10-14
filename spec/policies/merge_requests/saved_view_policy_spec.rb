@@ -49,20 +49,8 @@ RSpec.describe MergeRequests::SavedViewPolicy, feature_category: :code_review_wo
   end
 
   describe ':create_saved_view' do
-    it 'is not granted by this policy, since create is authorized against the User in UserPolicy' do
-      expect_disallowed(:create_saved_view)
-    end
-
-    context 'when the current user is not the owner' do
-      let(:current_user) { other_user }
-
-      it { expect_disallowed(:create_saved_view) }
-    end
-
-    context 'when the current user is anonymous' do
-      let(:current_user) { nil }
-
-      it { expect_disallowed(:create_saved_view) }
+    it 'is not defined by this policy, since create is authorized against the User in UserPolicy' do
+      expect(described_class.ability_map.key?(:create_saved_view)).to be(false)
     end
   end
 

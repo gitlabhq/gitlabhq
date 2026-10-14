@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GraphQL APIの詳細なパーミッション
+title: GraphQL APIの詳細権限
 ---
 
 <!--
@@ -30,11 +30,29 @@ title: GraphQL APIの詳細なパーミッション
 
 詳細権限パーソナルアクセストークンは、付与したリソースとパーミッションのみにアクセスできます。GraphQL APIで使用するには、トークンを作成し、そのスコープを定義します。詳細については、[詳細権限パーソナルアクセストークン](fine_grained_access_tokens.md)を参照してください。
 
-## 利用可能なきめ細かい権限 {#available-fine-grained-permissions}
+## 利用可能な詳細権限 {#available-fine-grained-permissions}
 
 詳細権限パーソナルアクセストークンは、以下のGraphQLの型、ミューテーション、およびフィールドにアクセスできます:
 
 ### アプリケーションセキュリティリソース {#application-security-resources}
+
+#### Ascp {#ascp}
+
+ascpを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AscpComponentCreate` |
+| 作成 | プロジェクト | ミューテーション | `AscpScanCreate` |
+| 作成 | プロジェクト | ミューテーション | `AscpSecurityContextCreate` |
+
+#### カバレッジファジングコーパス {#coverage-fuzzing-corpus}
+
+カバレッジファジングコーパスを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `CorpusCreate` |
 
 #### 依存 {#dependency}
 
@@ -42,8 +60,38 @@ title: GraphQL APIの詳細なパーミッション
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `DependencyLocation` |
-| 読み取り | プロジェクト | タイプ | `DependencyTrackedRef` |
+| 読み取り | プロジェクト | 型 | `DependencyLocation` |
+| 読み取り | プロジェクト | 型 | `DependencyTrackedRef` |
+
+#### トークンステータスの確認 {#finding-token-status}
+
+トークンのステータスを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `RefreshFindingTokenStatus` |
+| 更新 | プロジェクト | ミューテーション | `RefreshVulnerabilityFindingTokenStatus` |
+
+#### オンデマンドDASTスキャン {#on-demand-dast-scan}
+
+サイトプロファイル、スキャナープロファイル、サイトトークン、サイト検証を含む、オンデマンドDASTスキャンの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `DastOnDemandScanCreate` |
+| 作成 | プロジェクト | ミューテーション | `DastProfileCreate` |
+| 作成 | プロジェクト | ミューテーション | `DastProfileRun` |
+| 作成 | プロジェクト | ミューテーション | `DastScannerProfileCreate` |
+| 作成 | プロジェクト | ミューテーション | `DastSiteProfileCreate` |
+| 作成 | プロジェクト | ミューテーション | `DastSiteTokenCreate` |
+| 作成 | プロジェクト | ミューテーション | `DastSiteValidationCreate` |
+| 削除 | プロジェクト | ミューテーション | `DastProfileDelete` |
+| 削除 | プロジェクト | ミューテーション | `DastScannerProfileDelete` |
+| 削除 | プロジェクト | ミューテーション | `DastSiteProfileDelete` |
+| 削除 | プロジェクト | ミューテーション | `DastSiteValidationRevoke` |
+| 更新 | プロジェクト | ミューテーション | `DastProfileUpdate` |
+| 更新 | プロジェクト | ミューテーション | `DastScannerProfileUpdate` |
+| 更新 | プロジェクト | ミューテーション | `DastSiteProfileUpdate` |
 
 #### パイプライン実行プロジェクトスケジュール {#pipeline-execution-project-schedule}
 
@@ -51,37 +99,224 @@ title: GraphQL APIの詳細なパーミッション
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `PipelineExecutionProjectSchedule` |
+| 読み取り | プロジェクト | 型 | `PipelineExecutionProjectSchedule` |
 
-#### シークレットマネージャー {#secrets-manager}
+#### ポリシーストアポリシー {#policy-store-policy}
 
-シークレットマネージャーを読み取る能力を付与します。
+ポリシーストア内のポリシーの作成、削除、読み取り、更新を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `ProjectSecretsManager` |
-| 読み取り | グループ | タイプ | `GroupSecretsManager` |
-| 読み取り | グループ | タイプ | `SecretsManagerEntitlement` |
-| 読み取り | グループ | ミューテーション | `SecretsManagerStartTrial` |
+| 作成<sup>1</sup> | グループ | ミューテーション | `GovernPolicyCreate` |
+| 作成<sup>1</sup> | インスタンス | ミューテーション | `GovernPolicyCreate` |
+| 削除 | グループ | ミューテーション | `GovernPolicyDelete` |
+| 削除 | インスタンス | ミューテーション | `GovernPolicyDelete` |
+| 読み取り | グループ | フィールド | `PolicyStore.policies` |
+| 読み取り | グループ | フィールド | `PolicyStore.policyEvaluations` |
+| 読み取り | インスタンス | フィールド | `PolicyStore.policies` |
+| 読み取り | インスタンス | フィールド | `PolicyStore.policyEvaluations` |
+| 更新<sup>1</sup> | グループ | ミューテーション | `GovernPolicyUpdate` |
+| 更新<sup>1</sup> | インスタンス | ミューテーション | `GovernPolicyUpdate` |
+
+<sup>1</sup> `Read Policy Store Policy`権限も必要です。
+
+#### シークレット {#secret}
+
+シークレットの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `ProjectSecretCreate` |
+| 作成 | グループ | ミューテーション | `GroupSecretCreate` |
+| 削除 | プロジェクト | ミューテーション | `ProjectSecretDelete` |
+| 削除 | グループ | ミューテーション | `GroupSecretDelete` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSecretUpdate` |
+| 更新 | グループ | ミューテーション | `GroupSecretUpdate` |
+
+#### Secrets Manager {#secrets-manager}
+
+シークレットマネージャーのプロビジョニング解除、プロビジョニング、読み取りを行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| プロビジョニング解除 | プロジェクト | ミューテーション | `ProjectSecretsManagerDeprovision` |
+| プロビジョニング解除 | グループ | ミューテーション | `GroupSecretsManagerDeprovision` |
+| プロビジョニング解除 | グループ | ミューテーション | `NamespaceSecretsManagerUnenroll` |
+| プロビジョニング解除 | インスタンス | ミューテーション | `InstanceSecretsManagerUnenroll` |
+| プロビジョニング | プロジェクト | ミューテーション | `ProjectSecretsManagerInitialize` |
+| プロビジョニング | グループ | ミューテーション | `GroupSecretsManagerInitialize` |
+| プロビジョニング | グループ | ミューテーション | `NamespaceSecretsManagerEnroll` |
+| プロビジョニング | インスタンス | ミューテーション | `InstanceSecretsManagerEnroll` |
+| 読み取り | プロジェクト | 型 | `ProjectSecretsManager` |
+| 読み取り | グループ | 型 | `GroupSecretsManager` |
+| 読み取り | グループ | 型 | `SecretsManagerEntitlement` |
+| 読み取り | インスタンス | 型 | `SecretsManagerEntitlement` |
+
+#### シークレット権限 {#secrets-permission}
+
+シークレット権限の削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 削除 | プロジェクト | ミューテーション | `ProjectSecretsPermissionDelete` |
+| 削除 | グループ | ミューテーション | `GroupSecretsPermissionDelete` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSecretsPermissionUpdate` |
+| 更新 | グループ | ミューテーション | `GroupSecretsPermissionUpdate` |
+
+#### セキュリティ属性 {#security-attribute}
+
+セキュリティ属性の作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `SecurityAttributeCreate` |
+| 作成 | グループ | ミューテーション | `SecurityCategoryCreate` |
+| 削除 | グループ | ミューテーション | `SecurityAttributeDestroy` |
+| 削除 | グループ | ミューテーション | `SecurityCategoryDestroy` |
+| 更新 | プロジェクト | ミューテーション | `SecurityAttributeProjectUpdate` |
+| 更新 | グループ | ミューテーション | `SecurityAttributeUpdate` |
+| 更新 | グループ | ミューテーション | `SecurityCategoryUpdate` |
+
+#### セキュリティダッシュボード {#security-dashboard}
+
+セキュリティダッシュボードを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `AddProjectToSecurityDashboard` |
+| 更新 | プロジェクト | ミューテーション | `RemoveProjectFromSecurityDashboard` |
+
+#### セキュリティポリシー {#security-policy}
+
+セキュリティポリシーを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `PipelineExecutionSchedulePolicyTestRun` |
+| 更新 | プロジェクト | ミューテーション | `ResyncSecurityPolicies` |
+| 更新 | プロジェクト | ミューテーション | `ScanExecutionPolicyCommit` |
+| 更新 | プロジェクト | ミューテーション | `SecurityPolicyProjectAssign` |
+| 更新 | プロジェクト | ミューテーション | `SecurityPolicyProjectCreate` |
+| 更新 | プロジェクト | ミューテーション | `SecurityPolicyProjectCreateAsync` |
+| 更新 | プロジェクト | ミューテーション | `SecurityPolicyProjectUnassign` |
+| 更新 | グループ | ミューテーション | `ResyncSecurityPolicies` |
+| 更新 | グループ | ミューテーション | `ScanExecutionPolicyCommit` |
+| 更新 | グループ | ミューテーション | `SecurityPolicyProjectAssign` |
+| 更新 | グループ | ミューテーション | `SecurityPolicyProjectCreate` |
+| 更新 | グループ | ミューテーション | `SecurityPolicyProjectCreateAsync` |
+| 更新 | グループ | ミューテーション | `SecurityPolicyProjectUnassign` |
+
+#### セキュリティプロジェクトのTracked Ref {#security-project-tracked-ref}
+
+セキュリティプロジェクトの追跡対象refを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `SecurityRefsTrack` |
+
+#### セキュリティスキャンプロファイル {#security-scan-profiles}
+
+セキュリティスキャンプロファイルの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `SecurityScanProfileCreate` |
+| 削除 | グループ | ミューテーション | `SecurityScanProfileDelete` |
+| 読み取り | プロジェクト | 型 | `TriageAndRemediationCoverage` |
+| 読み取り | グループ | 型 | `TriageAndRemediationCoverageCounters` |
+| 更新 | グループ | ミューテーション | `SecurityScanProfileUpdate` |
+
+#### セキュリティ設定 {#security-setting}
+
+セキュリティ設定の読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `ProjectSecurityExclusionCreate` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSecurityExclusionDelete` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSecurityExclusionUpdate` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSetContinuousVulnerabilityScanning` |
+| 更新 | プロジェクト | ミューテーション | `SecurityTrainingUpdate` |
+| 更新 | プロジェクト | ミューテーション | `SetContainerScanningForRegistry` |
+| 更新 | プロジェクト | ミューテーション | `SetCvsForContainerScanning` |
+| 更新 | プロジェクト | ミューテーション | `SetCvsForDependencyScanning` |
+| 更新 | プロジェクト | ミューテーション | `SetLicenseConfigurationSource` |
+| 更新 | プロジェクト | ミューテーション | `SetLicenseScanningForCyclonedx` |
+| 更新 | プロジェクト | ミューテーション | `SetPreReceiveSecretDetection` |
+| 更新 | プロジェクト | ミューテーション | `SetSecretPushProtection` |
+| 更新 | プロジェクト | ミューテーション | `SetValidityChecks` |
+| 更新 | グループ | ミューテーション | `SetGroupSecretPushProtection` |
+| 更新 | グループ | ミューテーション | `SetGroupValidityChecks` |
 
 #### 脆弱性 {#vulnerability}
 
-脆弱性を作成、読み取り、および更新する機能が付与されます。
+脆弱性のアーカイブ、作成、読み取り、更新を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
+| アーカイブ | プロジェクト | ミューテーション | `VulnerabilitiesArchive` |
 | 作成 | プロジェクト | ミューテーション | `VulnerabilityCreate` |
-| 読み取り | プロジェクト | タイプ | `CountableVulnerability` |
-| 読み取り | プロジェクト | タイプ | `Vulnerability` |
-| 読み取り | プロジェクト | タイプ | `VulnerabilityScanner` |
+| 読み取り | プロジェクト | 型 | `CountableVulnerability` |
+| 読み取り | プロジェクト | 型 | `Vulnerability` |
+| 読み取り | プロジェクト | 型 | `VulnerabilityScanner` |
 | 読み取り | プロジェクト | フィールド | `MergeRequest.findingReportsComparer` |
+| 読み取り | プロジェクト | フィールド | `Project.vulnerabilityWorkflowExecution` |
+| 更新 | プロジェクト | ミューテーション | `BulkSetVulnerabilityFindingsDueDates` |
 | 更新 | プロジェクト | ミューテーション | `VulnerabilityAutoRemediation` |
 | 更新 | プロジェクト | ミューテーション | `VulnerabilityConfirm` |
 | 更新 | プロジェクト | ミューテーション | `VulnerabilityDismiss` |
 | 更新 | プロジェクト | ミューテーション | `VulnerabilityResolve` |
 | 更新 | プロジェクト | ミューテーション | `VulnerabilityRevertToDetected` |
 
+#### 脆弱性Duoワークフロー {#vulnerability-duo-workflow}
+
+脆弱性Duoワークフローを実行する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 実行 | プロジェクト | ミューテーション | `CancelVulnerabilityWorkflow` |
+| 実行 | プロジェクト | ミューテーション | `StartVulnerabilityWorkflow` |
+
+#### 脆弱性フラグ {#vulnerability-flag}
+
+脆弱性フラグを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `VulnerabilityDismissFalsePositiveFlag` |
+
+#### 脆弱性イシューリンク {#vulnerability-issue-link}
+
+脆弱性とイシューのリンクの作成、削除、読み取りを行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `SecurityFindingCreateIssue` |
+| 作成 | プロジェクト | ミューテーション | `SecurityFindingExternalIssueLinkCreate` |
+| 作成 | プロジェクト | ミューテーション | `SecurityFindingJiraIssueFormUrlCreate` |
+| 作成 | プロジェクト | ミューテーション | `VulnerabilitiesCreateIssue` |
+| 作成 | プロジェクト | ミューテーション | `VulnerabilityExternalIssueLinkCreate` |
+| 作成 | プロジェクト | ミューテーション | `VulnerabilityIssueLinkCreate` |
+| 削除 | プロジェクト | ミューテーション | `VulnerabilityExternalIssueLinkDestroy` |
+
+#### 脆弱性マージリクエストリンク {#vulnerability-merge-request-link}
+
+脆弱性とマージリクエストのリンクの作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `VulnerabilityLinkMergeRequest` |
+| 削除 | プロジェクト | ミューテーション | `VulnerabilityUnlinkMergeRequest` |
+
 ### CI/CDリソース {#cicd-resources}
+
+#### バンドルされたカタログリソース {#catalog-bundled-resource}
+
+バンドルされたCIカタログリソースを読み取る機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | インスタンス | 型 | `CiCatalogBundledResource` |
 
 #### カタログリソース {#catalog-resource}
 
@@ -99,7 +334,7 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdApplicationCreate` |
-| 読み取り | インスタンス | タイプ | `CdApplication` |
+| 読み取り | インスタンス | 型 | `CdApplication` |
 | 更新 | インスタンス | ミューテーション | `CdApplicationUpdate` |
 
 #### CDアプリケーションフロー定義 {#cd-application-flow-definition}
@@ -109,16 +344,19 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdApplicationFlowDefinitionCreate` |
-| 読み取り | インスタンス | タイプ | `CdApplicationFlowDefinition` |
+| 読み取り | インスタンス | 型 | `CdApplicationFlowDefinition` |
+| 読み取り | インスタンス | 型 | `CdDefinitionStep` |
 
 #### CDアプリケーションリンク {#cd-application-link}
 
-継続的デプロイアプリケーションリンクを作成および読み取る能力を付与します。
+継続的デプロイアプリケーションリンクの作成、削除、読み取り、更新を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdApplicationLinkCreate` |
-| 読み取り | インスタンス | タイプ | `CdApplicationLink` |
+| 削除 | インスタンス | ミューテーション | `CdApplicationLinkDelete` |
+| 読み取り | インスタンス | 型 | `CdApplicationLink` |
+| 更新 | インスタンス | ミューテーション | `CdApplicationLinkUpdate` |
 
 #### CDアーティファクトソース {#cd-artifact-source}
 
@@ -127,8 +365,9 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdArtifactSourceCreate` |
-| 読み取り | インスタンス | タイプ | `CdArtifactSource` |
-| 読み取り | インスタンス | タイプ | `CdVersion` |
+| 作成 | インスタンス | ミューテーション | `CdVersionCreate` |
+| 読み取り | インスタンス | 型 | `CdArtifactSource` |
+| 読み取り | インスタンス | 型 | `CdVersion` |
 
 #### CD環境 {#cd-environment}
 
@@ -137,9 +376,9 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdEnvironmentCreate` |
-| 読み取り | インスタンス | タイプ | `CdEnvironment` |
-| 読み取り | インスタンス | タイプ | `CdEnvironmentApplication` |
-| 読み取り | インスタンス | タイプ | `CdEnvironmentDriverBinding` |
+| 読み取り | インスタンス | 型 | `CdEnvironment` |
+| 読み取り | インスタンス | 型 | `CdEnvironmentApplication` |
+| 読み取り | インスタンス | 型 | `CdEnvironmentDriverBinding` |
 | 更新 | インスタンス | ミューテーション | `CdEnvironmentDriverBindingCreate` |
 | 更新 | インスタンス | ミューテーション | `CdEnvironmentUpdate` |
 
@@ -150,11 +389,13 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdRolloutCreate` |
-| 読み取り | インスタンス | タイプ | `CdDeployment` |
-| 読み取り | インスタンス | タイプ | `CdDeploymentTransition` |
-| 読み取り | インスタンス | タイプ | `CdRollout` |
-| 読み取り | インスタンス | タイプ | `CdRolloutEnvironment` |
-| 読み取り | インスタンス | タイプ | `CdRolloutTransition` |
+| 読み取り | インスタンス | 型 | `CdDeployment` |
+| 読み取り | インスタンス | 型 | `CdDeploymentTransition` |
+| 読み取り | インスタンス | 型 | `CdRollout` |
+| 読み取り | インスタンス | 型 | `CdRolloutEnvironment` |
+| 読み取り | インスタンス | 型 | `CdRolloutGate` |
+| 読み取り | インスタンス | 型 | `CdRolloutStep` |
+| 読み取り | インスタンス | 型 | `CdRolloutTransition` |
 
 #### CDロールアウトゲート {#cd-rollout-gate}
 
@@ -171,8 +412,8 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdServiceCreate` |
-| 読み取り | インスタンス | タイプ | `CdService` |
-| 読み取り | インスタンス | タイプ | `CdServiceEnvironmentHealth` |
+| 読み取り | インスタンス | 型 | `CdService` |
+| 読み取り | インスタンス | 型 | `CdServiceEnvironmentHealth` |
 | 更新 | インスタンス | ミューテーション | `CdServiceUpdate` |
 
 #### CDバージョンセット {#cd-version-set}
@@ -182,8 +423,8 @@ CIカタログリソースを作成および削除する機能が付与されま
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `CdVersionSetCreate` |
-| 読み取り | インスタンス | タイプ | `CdVersionSet` |
-| 読み取り | インスタンス | タイプ | `CdVersionSetEntry` |
+| 読み取り | インスタンス | 型 | `CdVersionSet` |
+| 読み取り | インスタンス | 型 | `CdVersionSetEntry` |
 
 #### CI設定 {#ci-config}
 
@@ -192,6 +433,15 @@ CI/CD設定を読み取りおよび検証する機能が付与されます。
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 検証 | プロジェクト | ミューテーション | `CiLint` |
+
+#### CIネームスペース設定 {#ci-namespace-settings}
+
+CIネームスペース設定を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | グループ | ミューテーション | `NamespaceCiCdSettingsUpdate` |
+| 更新 | グループ | ミューテーション | `NamespaceSettingsUpdate` |
 
 #### CI/CD設定 {#cicd-setting}
 
@@ -210,7 +460,7 @@ CI/CDの設定を更新する機能が付与されます。
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `CreateClusterAgent` |
 | 削除 | プロジェクト | ミューテーション | `ClusterAgentDelete` |
-| 読み取り | プロジェクト | タイプ | `ClusterAgent` |
+| 読み取り | プロジェクト | 型 | `ClusterAgent` |
 
 #### クラスターエージェントトークン {#cluster-agent-token}
 
@@ -245,9 +495,10 @@ CI/CDの設定を更新する機能が付与されます。
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `EnvironmentCreate` |
 | 削除 | プロジェクト | ミューテーション | `EnvironmentDelete` |
-| 読み取り | プロジェクト | タイプ | `Environment` |
+| 読み取り | プロジェクト | 型 | `Environment` |
 | 停止 | プロジェクト | ミューテーション | `EnvironmentStop` |
 | 更新 | プロジェクト | ミューテーション | `EnvironmentUpdate` |
+| 更新 | プロジェクト | ミューテーション | `EnvironmentsCanaryIngressUpdate` |
 
 #### フリーズ期間 {#freeze-period}
 
@@ -255,7 +506,7 @@ CI/CDの設定を更新する機能が付与されます。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `CiFreezePeriod` |
+| 読み取り | プロジェクト | 型 | `CiFreezePeriod` |
 
 #### ジョブ {#job}
 
@@ -263,7 +514,7 @@ CI/CDの設定を更新する機能が付与されます。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `CiJob` |
+| 読み取り | プロジェクト | 型 | `CiJob` |
 | 実行 | プロジェクト | ミューテーション | `JobPlay` |
 | 実行 | プロジェクト | ミューテーション | `JobRetry` |
 | 更新 | プロジェクト | ミューテーション | `JobCancel` |
@@ -278,7 +529,15 @@ CI/CDの設定を更新する機能が付与されます。
 | 削除 | プロジェクト | ミューテーション | `ArtifactDestroy` |
 | 削除 | プロジェクト | ミューテーション | `BulkDestroyJobArtifacts` |
 | 削除 | プロジェクト | ミューテーション | `JobArtifactsDestroy` |
-| 読み取り | プロジェクト | タイプ | `CiJobArtifact` |
+| 読み取り | プロジェクト | 型 | `CiJobArtifact` |
+
+#### マージトレインの車両 {#merge-train-car}
+
+マージトレインカーを削除する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 削除 | プロジェクト | ミューテーション | `MergeTrainsDeleteCar` |
 
 #### パイプライン {#pipeline}
 
@@ -288,8 +547,8 @@ CI/CDの設定を更新する機能が付与されます。
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `PipelineCreate` |
 | 削除 | プロジェクト | ミューテーション | `PipelineDestroy` |
-| 読み取り | プロジェクト | タイプ | `CiStage` |
-| 読み取り | プロジェクト | タイプ | `Pipeline` |
+| 読み取り | プロジェクト | 型 | `CiStage` |
+| 読み取り | プロジェクト | 型 | `Pipeline` |
 | 更新 | プロジェクト | ミューテーション | `PipelineCancel` |
 | 更新 | プロジェクト | ミューテーション | `PipelineRetry` |
 
@@ -301,10 +560,19 @@ CI/CDの設定を更新する機能が付与されます。
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `PipelineScheduleCreate` |
 | 削除 | プロジェクト | ミューテーション | `PipelineScheduleDelete` |
-| 読み取り | プロジェクト | タイプ | `PipelineSchedule` |
+| 読み取り | プロジェクト | 型 | `PipelineSchedule` |
 | 更新 | プロジェクト | ミューテーション | `PipelineSchedulePlay` |
 | 更新 | プロジェクト | ミューテーション | `PipelineScheduleTakeOwnership` |
 | 更新 | プロジェクト | ミューテーション | `PipelineScheduleUpdate` |
+
+#### パイプラインサブスクリプション {#pipeline-subscription}
+
+パイプラインサブスクリプションの作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `ProjectSubscriptionCreate` |
+| 削除 | プロジェクト | ミューテーション | `ProjectSubscriptionDelete` |
 
 #### Runner {#runner}
 
@@ -320,36 +588,46 @@ Runnerを割り当て、作成、削除、読み取り、および更新する�
 | 削除 | プロジェクト | ミューテーション | `RunnerDelete` |
 | 削除 | グループ | ミューテーション | `RunnerDelete` |
 | 削除 | インスタンス | ミューテーション | `RunnerDelete` |
-| 読み取り | プロジェクト | タイプ | `CiRunner` |
-| 読み取り | グループ | タイプ | `CiRunner` |
-| 読み取り | インスタンス | タイプ | `CiRunner` |
+| 読み取り | プロジェクト | 型 | `CiRunner` |
+| 読み取り | グループ | 型 | `CiRunner` |
+| 読み取り | インスタンス | 型 | `CiRunner` |
 | 更新 | プロジェクト | ミューテーション | `RunnerCacheClear` |
 | 更新 | プロジェクト | ミューテーション | `RunnerUpdate` |
 | 更新 | グループ | ミューテーション | `RunnerUpdate` |
 | 更新 | インスタンス | ミューテーション | `RunnerUpdate` |
 
-#### Terraform状態 {#terraform-state}
+#### Runner使用状況 {#runner-usage}
 
-Terraform状態を作成、削除、ロック、読み取り、および更新する機能が付与されます。
+Runnerの使用状況データを読み取る機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | プロジェクト | ミューテーション | `RunnersExportUsage` |
+| 読み取り | グループ | ミューテーション | `RunnersExportUsage` |
+| 読み取り | インスタンス | ミューテーション | `RunnersExportUsage` |
+
+#### Terraform State {#terraform-state}
+
+Terraform Stateの作成、削除、ロック、読み取りを行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 削除 | プロジェクト | ミューテーション | `TerraformStateDelete` |
 | ロック | プロジェクト | ミューテーション | `TerraformStateLock` |
 | ロック | プロジェクト | ミューテーション | `TerraformStateUnlock` |
-| 読み取り | プロジェクト | タイプ | `TerraformState` |
-| 読み取り | プロジェクト | タイプ | `TerraformStateProtectionRule` |
-| 読み取り | プロジェクト | タイプ | `TerraformStateVersion` |
-| 更新 | プロジェクト | ミューテーション | `UpdateTerraformStateProtectionRule` |
+| 読み取り | プロジェクト | 型 | `TerraformState` |
+| 読み取り | プロジェクト | 型 | `TerraformStateProtectionRule` |
+| 読み取り | プロジェクト | 型 | `TerraformStateVersion` |
 
-#### Terraform状態保護ルール {#terraform-state-protection-rule}
+#### Terraform State保護ルール {#terraform-state-protection-rule}
 
-Terraform状態保護ルールを作成、削除、および更新する権限を付与します。
+Terraform State保護ルールを作成、削除、および更新する権限を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `CreateTerraformStateProtectionRule` |
 | 削除 | プロジェクト | ミューテーション | `DeleteTerraformStateProtectionRule` |
+| 更新 | プロジェクト | ミューテーション | `UpdateTerraformStateProtectionRule` |
 
 #### トリガー {#trigger}
 
@@ -359,18 +637,212 @@ Terraform状態保護ルールを作成、削除、および更新する権限�
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `PipelineTriggerCreate` |
 | 削除 | プロジェクト | ミューテーション | `PipelineTriggerDelete` |
-| 読み取り | プロジェクト | タイプ | `PipelineTrigger` |
+| 読み取り | プロジェクト | 型 | `PipelineTrigger` |
 | 更新 | プロジェクト | ミューテーション | `PipelineTriggerUpdate` |
 
-### Duoリソース {#duo-resources}
+#### 検証済みネームスペース {#verified-namespace}
 
-#### AIカタログアイテム {#ai-catalog-item}
-
-AIカタログアイテムを復元する能力を付与します。
+検証済みネームスペースを作成する機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
+| 作成 | インスタンス | ミューテーション | `VerifiedNamespaceCreate` |
+
+### コンプライアンスリソース {#compliance-resources}
+
+#### 監査イベントストリーミング先 {#audit-event-streaming-destination}
+
+監査イベントストリーミングの宛先の作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `AuditEventsAmazonS3ConfigurationCreate` |
+| 作成 | グループ | ミューテーション | `ExternalAuditEventDestinationCreate` |
+| 作成 | グループ | ミューテーション | `GoogleCloudLoggingConfigurationCreate` |
+| 作成 | グループ | ミューテーション | `GroupAuditEventStreamingDestinationsCreate` |
+| 作成 | インスタンス | ミューテーション | `AuditEventsInstanceAmazonS3ConfigurationCreate` |
+| 作成 | インスタンス | ミューテーション | `InstanceAuditEventStreamingDestinationsCreate` |
+| 作成 | インスタンス | ミューテーション | `InstanceExternalAuditEventDestinationCreate` |
+| 作成 | インスタンス | ミューテーション | `InstanceGoogleCloudLoggingConfigurationCreate` |
+| 削除 | グループ | ミューテーション | `AuditEventsAmazonS3ConfigurationDelete` |
+| 削除 | グループ | ミューテーション | `ExternalAuditEventDestinationDestroy` |
+| 削除 | グループ | ミューテーション | `GoogleCloudLoggingConfigurationDestroy` |
+| 削除 | グループ | ミューテーション | `GroupAuditEventStreamingDestinationsDelete` |
+| 削除 | インスタンス | ミューテーション | `AuditEventsInstanceAmazonS3ConfigurationDelete` |
+| 削除 | インスタンス | ミューテーション | `InstanceAuditEventStreamingDestinationsDelete` |
+| 削除 | インスタンス | ミューテーション | `InstanceExternalAuditEventDestinationDestroy` |
+| 削除 | インスタンス | ミューテーション | `InstanceGoogleCloudLoggingConfigurationDestroy` |
+| 更新 | グループ | ミューテーション | `AuditEventsAmazonS3ConfigurationUpdate` |
+| 更新 | グループ | ミューテーション | `AuditEventsGroupDestinationDenylistEventsAdd` |
+| 更新 | グループ | ミューテーション | `AuditEventsGroupDestinationDenylistEventsDelete` |
+| 更新 | グループ | ミューテーション | `AuditEventsGroupDestinationEventsAdd` |
+| 更新 | グループ | ミューテーション | `AuditEventsGroupDestinationEventsDelete` |
+| 更新 | グループ | ミューテーション | `AuditEventsGroupDestinationNamespaceFilterCreate` |
+| 更新 | グループ | ミューテーション | `AuditEventsGroupDestinationNamespaceFilterDelete` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingDestinationEventsAdd` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingDestinationEventsRemove` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingHTTPNamespaceFiltersAdd` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingHTTPNamespaceFiltersDelete` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingHeadersCreate` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingHeadersDestroy` |
+| 更新 | グループ | ミューテーション | `AuditEventsStreamingHeadersUpdate` |
+| 更新 | グループ | ミューテーション | `ExternalAuditEventDestinationUpdate` |
+| 更新 | グループ | ミューテーション | `GoogleCloudLoggingConfigurationUpdate` |
+| 更新 | グループ | ミューテーション | `GroupAuditEventStreamingDestinationsUpdate` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsInstanceAmazonS3ConfigurationUpdate` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsInstanceDestinationEventsAdd` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsInstanceDestinationEventsDelete` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsInstanceDestinationNamespaceFilterCreate` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsInstanceDestinationNamespaceFilterDelete` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsStreamingDestinationInstanceEventsAdd` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsStreamingDestinationInstanceEventsRemove` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsStreamingInstanceHeadersCreate` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsStreamingInstanceHeadersDestroy` |
+| 更新 | インスタンス | ミューテーション | `AuditEventsStreamingInstanceHeadersUpdate` |
+| 更新 | インスタンス | ミューテーション | `InstanceAuditEventStreamingDestinationsUpdate` |
+| 更新 | インスタンス | ミューテーション | `InstanceExternalAuditEventDestinationUpdate` |
+| 更新 | インスタンス | ミューテーション | `InstanceGoogleCloudLoggingConfigurationUpdate` |
+
+#### コンプライアンスダッシュボード {#compliance-dashboard}
+
+コンプライアンスダッシュボードを読み取る機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | グループ | ミューテーション | `RefreshStandardsAdherenceChecks` |
+
+#### コンプライアンスフレームワーク {#compliance-framework}
+
+コンプライアンスフレームワークの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `CreateComplianceFramework` |
+| 作成 | グループ | ミューテーション | `CreateComplianceFrameworkFromTemplate` |
+| 作成 | グループ | ミューテーション | `CreateComplianceRequirement` |
+| 作成 | グループ | ミューテーション | `CreateComplianceRequirementsControl` |
+| 削除 | グループ | ミューテーション | `DestroyComplianceFramework` |
+| 削除 | グループ | ミューテーション | `DestroyComplianceRequirement` |
+| 削除 | グループ | ミューテーション | `DestroyComplianceRequirementsControl` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSetComplianceFramework` |
+| 更新 | プロジェクト | ミューテーション | `ProjectUpdateComplianceFrameworks` |
+| 更新 | グループ | ミューテーション | `UpdateComplianceFramework` |
+| 更新 | グループ | ミューテーション | `UpdateComplianceRequirement` |
+| 更新 | グループ | ミューテーション | `UpdateComplianceRequirementsControl` |
+
+#### コンプライアンス違反レポート {#compliance-violations-report}
+
+コンプライアンス違反レポートを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `LinkProjectComplianceViolationIssue` |
+| 更新 | プロジェクト | ミューテーション | `UnlinkProjectComplianceViolationIssue` |
+| 更新 | プロジェクト | ミューテーション | `UpdateProjectComplianceViolation` |
+
+#### 外部ステータスチェック {#external-status-check}
+
+外部ステータスチェックの作成、削除、読み取り、再試行、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `BranchRuleExternalStatusCheckCreate` |
+| 削除 | プロジェクト | ミューテーション | `BranchRuleExternalStatusCheckDestroy` |
+| 更新 | プロジェクト | ミューテーション | `BranchRuleExternalStatusCheckUpdate` |
+
+### Duoリソース {#duo-resources}
+
+#### AIカタログ外部エージェント {#ai-catalog-external-agent}
+
+AIカタログの外部エージェントの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AiCatalogThirdPartyFlowCreate` |
+| 削除 | プロジェクト | ミューテーション | `AiCatalogThirdPartyFlowDelete` |
+| 更新 | プロジェクト | ミューテーション | `AiCatalogThirdPartyFlowUpdate` |
+
+#### AIカタログアイテム {#ai-catalog-item}
+
+AIカタログアイテムの作成、削除、読み取り、報告、復元、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AiCatalogAgentCreate` |
+| 作成 | プロジェクト | ミューテーション | `AiCatalogFlowCreate` |
+| 削除 | プロジェクト | ミューテーション | `AiCatalogAgentDelete` |
+| 削除 | プロジェクト | ミューテーション | `AiCatalogFlowDelete` |
+| 読み取り | プロジェクト | 型 | `AiCatalogSkill` |
+| 読み取り | プロジェクト | 型 | `AiCatalogSkillVersion` |
+| 読み取り | プロジェクト | ミューテーション | `AiCatalogItemStar` |
+| 読み取り | ユーザー | ミューテーション | `AiCatalogItemStar` |
+| 読み取り | ユーザー | フィールド | `Query.aiCatalogBuiltInTools` |
+| 報告 | プロジェクト | ミューテーション | `AiCatalogItemReport` |
 | 復元 | プロジェクト | ミューテーション | `AiCatalogItemVersionRestore` |
+| 更新 | プロジェクト | ミューテーション | `AiCatalogAgentUpdate` |
+| 更新 | プロジェクト | ミューテーション | `AiCatalogFlowUpdate` |
+
+#### AIカタログアイテムコンシューマー {#ai-catalog-item-consumer}
+
+AIカタログアイテムコンシューマーの削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 削除 | プロジェクト | ミューテーション | `AiCatalogItemConsumerDelete` |
+| 削除 | グループ | ミューテーション | `AiCatalogItemConsumerDelete` |
+| 更新 | プロジェクト | ミューテーション | `AiCatalogItemConsumerUpdate` |
+| 更新 | グループ | ミューテーション | `AiCatalogItemConsumerUpdate` |
+
+#### AIカタログMCPサーバー {#ai-catalog-mcp-server}
+
+AIカタログMCPサーバーのブロック、作成、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| ブロック | プロジェクト | ミューテーション | `AiCatalogMcpServerSetBlock` |
+| ブロック | グループ | ミューテーション | `AiCatalogMcpServerSetBlock` |
+| 作成 | インスタンス | ミューテーション | `AiCatalogMcpServerCreate` |
+| 更新 | インスタンス | ミューテーション | `AiCatalogMcpServerUpdate` |
+
+#### AIドメイン設定 {#ai-domain-settings}
+
+AIドメイン設定を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | グループ | ミューテーション | `AiDomainSettingsNamespaceUpdate` |
+| 更新 | インスタンス | ミューテーション | `AiDomainSettingsInstanceUpdate` |
+
+#### AIフロースケジュール {#ai-flow-schedule}
+
+AIフロースケジュールの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AiFlowScheduleCreate` |
+| 削除 | プロジェクト | ミューテーション | `AiFlowScheduleDelete` |
+| 更新 | プロジェクト | ミューテーション | `AiFlowScheduleUpdate` |
+
+#### AIフロートリガー {#ai-flow-trigger}
+
+AIフロートリガーの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AiFlowTriggerCreate` |
+| 削除 | プロジェクト | ミューテーション | `AiFlowTriggerDelete` |
+| 更新 | プロジェクト | ミューテーション | `AiFlowTriggerUpdate` |
+
+#### AIセルフホストモデル {#ai-self-hosted-model}
+
+AIセルフホストモデルの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | インスタンス | ミューテーション | `AiSelfHostedModelCreate` |
+| 削除 | インスタンス | ミューテーション | `AiSelfHostedModelDelete` |
+| 更新 | インスタンス | ミューテーション | `AiSelfHostedModelConnectionCheck` |
+| 更新 | インスタンス | ミューテーション | `AiSelfHostedModelUpdate` |
 
 #### AIツールルール {#ai-tool-rule}
 
@@ -379,6 +851,8 @@ AIツールルール（Duo Agent Platformのツールごとの承認（許可、
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 読み取り | グループ | フィールド | `Query.aiToolRules` |
+| 更新 | プロジェクト | ミューテーション | `BulkUpdateAiToolRules` |
+| 更新 | プロジェクト | ミューテーション | `UpdateAiToolRule` |
 | 更新 | グループ | ミューテーション | `BulkUpdateAiToolRules` |
 | 更新 | グループ | ミューテーション | `UpdateAiToolRule` |
 
@@ -391,14 +865,54 @@ AIツールルール（Duo Agent Platformのツールごとの承認（許可、
 | 読み取り | プロジェクト | フィールド | `Project.aiUserMetrics` |
 | 読み取り | グループ | フィールド | `Group.aiUserMetrics` |
 
-#### Duoワークフロー {#duo-workflow}
+#### 会話スレッド {#conversation-thread}
 
-Duoワークフローを作成、読み取り、再開、および更新する権限を付与します。
+会話スレッドを削除する機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | ユーザー | タイプ | `DuoWorkflowWorkItemLink` |
+| 削除 | ユーザー | ミューテーション | `DeleteConversationThread` |
+
+#### Duo設定 {#duo-setting}
+
+Duo設定を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | グループ | ミューテーション | `AiModelSelectionNamespaceUpdate` |
+| 更新 | インスタンス | ミューテーション | `AiFeatureSettingUpdate` |
+| 更新 | インスタンス | ミューテーション | `DuoSettingsUpdate` |
+
+#### Duoユーザーフィードバック {#duo-user-feedback}
+
+Duo AIメッセージに対するユーザーフィードバックを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | ユーザー | ミューテーション | `DuoUserFeedback` |
+
+#### Duoワークフロー {#duo-workflow}
+
+Duoワークフローの作成、削除、読み取り、再起動、再開、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AiDuoWorkflowCreate` |
+| 作成 | グループ | ミューテーション | `AiDuoWorkflowCreate` |
+| 作成 | ユーザー | ミューテーション | `AiDuoWorkflowCreate` |
+| 削除 | ユーザー | ミューテーション | `DeleteDuoWorkflowsWorkflow` |
+| 読み取り | ユーザー | 型 | `DuoWorkflow` |
+| 読み取り | ユーザー | 型 | `DuoWorkflowMergeRequestLink` |
+| 読み取り | ユーザー | 型 | `DuoWorkflowNoteLink` |
+| 読み取り | ユーザー | 型 | `DuoWorkflowPipelineLink` |
+| 読み取り | ユーザー | 型 | `DuoWorkflowWorkItemLink` |
+| 読み取り | ユーザー | 型 | `DuoWorkflowWorkflowLink` |
+| 読み取り | ユーザー | フィールド | `Note.duoCreatedSession` |
+| 読み取り | ユーザー | フィールド | `Note.duoTriggeredSession` |
+| 読み取り | ユーザー | フィールド | `Query.duoWorkflowBranches` |
 | 更新 | ユーザー | ミューテーション | `UpdateDuoWorkflowAgentPrivileges` |
+| 更新 | ユーザー | ミューテーション | `UpdateDuoWorkflowToolCallApprovals` |
+| 更新 | ユーザー | ミューテーション | `UpdateDuoWorkflowWebSearch` |
 
 #### フローメタデータ {#flows-metadata}
 
@@ -406,9 +920,25 @@ Duoワークフローを作成、読み取り、再開、および更新する�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `AiFlowsMetadata` |
-| 読み取り | グループ | タイプ | `AiFlowsMetadata` |
-| 読み取り | インスタンス | タイプ | `AiFlowsMetadata` |
+| 読み取り | プロジェクト | 型 | `AiFlowsMetadata` |
+| 読み取り | グループ | 型 | `AiFlowsMetadata` |
+| 読み取り | インスタンス | 型 | `AiFlowsMetadata` |
+
+#### 機能検証チェック {#functional-verification-check}
+
+機能検証チェックを読み取る機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | インスタンス | 型 | `FunctionalVerificationStatus` |
+
+#### 機能検証ワークフロー {#functional-verification-workflow}
+
+機能検証ワークフローを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | インスタンス | ミューテーション | `CreateFunctionalVerificationWorkflow` |
 
 #### モデル選択許可リスト {#model-selection-allowlist}
 
@@ -416,14 +946,78 @@ Duoワークフローを作成、読み取り、再開、および更新する�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | グループ | タイプ | `AiModelSelectionAllowList` |
-| 読み取り | グループ | タイプ | `AiModelSelectionAllowListModel` |
-| 読み取り | インスタンス | タイプ | `AiModelSelectionAllowList` |
-| 読み取り | インスタンス | タイプ | `AiModelSelectionAllowListModel` |
+| 読み取り | グループ | 型 | `AiModelSelectionAllowList` |
+| 読み取り | グループ | 型 | `AiModelSelectionAllowListModel` |
+| 読み取り | インスタンス | 型 | `AiModelSelectionAllowList` |
+| 読み取り | インスタンス | 型 | `AiModelSelectionAllowListModel` |
 | 更新 | グループ | ミューテーション | `AiModelSelectionNamespaceModelAllowlistUpdate` |
 | 更新 | インスタンス | ミューテーション | `AiFeatureSettingModelAllowlistUpdate` |
 
+#### ネームスペースのDuo機能 {#namespace-duo-feature}
+
+ネームスペースのDuo機能をロックする機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| ロック | グループ | ミューテーション | `AdminClearDuoAvailability` |
+| ロック | グループ | ミューテーション | `AdminSetDuoAvailability` |
+
+### Geoリソース {#geo-resources}
+
+#### Geoレジストリ {#geo-registry}
+
+Geoレジストリを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | インスタンス | ミューテーション | `GeoRegistriesBulkUpdate` |
+| 更新 | インスタンス | ミューテーション | `GeoRegistriesUpdate` |
+
+### GitLab Orbitリソース {#gitlab-orbit-resources}
+
+#### Orbit {#orbit}
+
+トークン所有者がGitLabでアクセスできるOrbitデータを読み取る機能を付与します。グループおよびプロジェクトの選択によって制限されることはありません。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | ユーザー | フィールド | `Group.orbit` |
+| 読み取り | ユーザー | フィールド | `Project.orbit` |
+
+#### Orbit設定 {#orbit-setting}
+
+Orbit設定を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | グループ | ミューテーション | `OrbitUpdate` |
+| 更新 | インスタンス | ミューテーション | `KnowledgeGraphExcludedNamespaceCreate` |
+| 更新 | インスタンス | ミューテーション | `KnowledgeGraphExcludedNamespaceDestroy` |
+
+#### Orbitトライアル {#orbit-trial}
+
+トップレベルグループのOrbitトライアルを開始する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 開始 | グループ | ミューテーション | `OrbitStartTrial` |
+
 ### グループリソース {#groups-resources}
+
+#### アチーブメント {#achievement}
+
+アチーブメントの付与、作成、削除、失効、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 付与 | グループ | ミューテーション | `AchievementsAward` |
+| 作成 | グループ | ミューテーション | `AchievementsCreate` |
+| 削除 | グループ | ミューテーション | `AchievementsDelete` |
+| 削除 | グループ | ミューテーション | `UserAchievementsDelete` |
+| 失効 | グループ | ミューテーション | `AchievementsRevoke` |
+| 更新 | グループ | ミューテーション | `AchievementsUpdate` |
+| 更新 | ユーザー | ミューテーション | `UserAchievementPrioritiesUpdate` |
+| 更新 | ユーザー | ミューテーション | `UserAchievementsUpdate` |
 
 #### 管理者メンバーロール {#admin-member-role}
 
@@ -433,8 +1027,26 @@ Duoワークフローを作成、読み取り、再開、および更新する�
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `MemberRoleAdminCreate` |
 | 削除 | インスタンス | ミューテーション | `MemberRoleAdminDelete` |
-| 読み取り | インスタンス | タイプ | `AdminMemberRole` |
+| 読み取り | インスタンス | 型 | `AdminMemberRole` |
 | 更新 | インスタンス | ミューテーション | `MemberRoleAdminUpdate` |
+
+#### Commitメール {#commit-email}
+
+コミットメールを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | ユーザー | ミューテーション | `UserSetNamespaceCommitEmail` |
+
+#### カスタム絵文字 {#custom-emoji}
+
+カスタム絵文字の作成、削除、読み取りを行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `CreateCustomEmoji` |
+| 削除 | グループ | ミューテーション | `DestroyCustomEmoji` |
+| 読み取り | グループ | 型 | `CustomEmoji` |
 
 #### グループ {#group}
 
@@ -442,7 +1054,8 @@ Duoワークフローを作成、読み取り、再開、および更新する�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | グループ | タイプ | `Group` |
+| 読み取り | グループ | 型 | `Group` |
+| 転送 | グループ | ミューテーション | `GroupTransfer` |
 | 更新 | グループ | ミューテーション | `GroupUpdate` |
 
 #### LDAP/AD管理者ロールリンク {#ldap-admin-role-link}
@@ -454,16 +1067,37 @@ LDAP/AD管理者ロールリンクを作成、削除、および読み取る機�
 | 作成 | インスタンス | ミューテーション | `AdminRolesLdapSync` |
 | 作成 | インスタンス | ミューテーション | `LdapAdminRoleLinkCreate` |
 | 削除 | インスタンス | ミューテーション | `LdapAdminRoleLinkDestroy` |
-| 読み取り | インスタンス | タイプ | `LdapAdminRoleLink` |
+| 読み取り | インスタンス | 型 | `LdapAdminRoleLink` |
 
 #### メンバーロール {#member-role}
 
-メンバーロールを作成、削除、および読み取る機能が付与されます。
+メンバーロールの割り当て、作成、削除、読み取り、更新を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
+| 割り当て | インスタンス | ミューテーション | `MemberRoleToUserAssign` |
 | 作成 | グループ | ミューテーション | `MemberRoleCreate` |
 | 作成 | インスタンス | ミューテーション | `MemberRoleCreate` |
+| 削除 | グループ | ミューテーション | `MemberRoleDelete` |
+| 削除 | インスタンス | ミューテーション | `MemberRoleDelete` |
+| 更新 | グループ | ミューテーション | `MemberRoleUpdate` |
+| 更新 | インスタンス | ミューテーション | `MemberRoleUpdate` |
+
+#### ネームスペース {#namespace}
+
+ネームスペースの読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | プロジェクト | ミューテーション | `NamespacesRegenerateNewWorkItemEmailAddress` |
+
+#### ネームスペースのBAN {#namespace-ban}
+
+ネームスペースの利用停止を削除する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 削除 | グループ | ミューテーション | `NamespaceBanDestroy` |
 
 #### 設定 {#preference}
 
@@ -471,7 +1105,7 @@ LDAP/AD管理者ロールリンクを作成、削除、および読み取る機�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | ユーザー | タイプ | `UserPreferences` |
+| 読み取り | ユーザー | 型 | `UserPreferences` |
 | 更新 | ユーザー | ミューテーション | `UserPreferencesUpdate` |
 
 #### トピック {#topic}
@@ -480,17 +1114,132 @@ LDAP/AD管理者ロールリンクを作成、削除、および読み取る機�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | インスタンス | タイプ | `Topic` |
+| 読み取り | インスタンス | 型 | `Topic` |
 
-### モニタリングリソース {#monitoring-resources}
+#### UI通知 {#ui-notification}
 
-#### エスカレーションポリシー {#escalation-policy}
-
-エスカレーションポリシーを読み取る能力を付与します。
+UI通知を非表示にする機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `EscalationPolicyType` |
+| 非表示 | グループ | ミューテーション | `UserGroupCalloutCreate` |
+| 非表示 | ユーザー | ミューテーション | `UserCalloutCreate` |
+
+### インテグレーションリソース {#integrations-resources}
+
+#### インテグレーション除外 {#integration-exclusion}
+
+インテグレーション除外の作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | インスタンス | ミューテーション | `IntegrationExclusionCreate` |
+| 削除 | インスタンス | ミューテーション | `IntegrationExclusionDelete` |
+
+#### Jiraインポート {#jira-import}
+
+Jiraインポートを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `JiraImportStart` |
+| 作成 | プロジェクト | ミューテーション | `JiraImportUsers` |
+
+### モニタリングリソース {#monitoring-resources}
+
+#### アラート {#alert}
+
+アラートを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `AlertSetAssignees` |
+| 更新 | プロジェクト | ミューテーション | `UpdateAlertStatus` |
+
+#### エスカレーションポリシー {#escalation-policy}
+
+エスカレーションポリシーの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `EscalationPolicyCreate` |
+| 削除 | プロジェクト | ミューテーション | `EscalationPolicyDestroy` |
+| 読み取り | プロジェクト | 型 | `EscalationPolicyType` |
+| 更新 | プロジェクト | ミューテーション | `EscalationPolicyUpdate` |
+
+#### HTTPインテグレーション {#http-integration}
+
+HTTPインテグレーションの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `HttpIntegrationCreate` |
+| 作成 | プロジェクト | ミューテーション | `PrometheusIntegrationCreate` |
+| 削除 | プロジェクト | ミューテーション | `HttpIntegrationDestroy` |
+| 更新 | プロジェクト | ミューテーション | `HttpIntegrationResetToken` |
+| 更新 | プロジェクト | ミューテーション | `HttpIntegrationUpdate` |
+| 更新 | プロジェクト | ミューテーション | `PrometheusIntegrationResetToken` |
+| 更新 | プロジェクト | ミューテーション | `PrometheusIntegrationUpdate` |
+
+#### イシュー可能リソースリンク {#issuable-resource-link}
+
+イシュー可能リソースリンクの作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `IssuableResourceLinkCreate` |
+| 削除 | プロジェクト | ミューテーション | `IssuableResourceLinkDestroy` |
+
+#### オンコールスケジュール {#on-call-schedule}
+
+オンコールスケジュールの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `OncallRotationCreate` |
+| 作成 | プロジェクト | ミューテーション | `OncallScheduleCreate` |
+| 削除 | プロジェクト | ミューテーション | `OncallRotationDestroy` |
+| 削除 | プロジェクト | ミューテーション | `OncallScheduleDestroy` |
+| 更新 | プロジェクト | ミューテーション | `OncallRotationUpdate` |
+| 更新 | プロジェクト | ミューテーション | `OncallScheduleUpdate` |
+
+#### Sidekiqジョブ {#sidekiq-job}
+
+Sidekiqジョブを破棄する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 破棄 | インスタンス | ミューテーション | `AdminSidekiqQueuesDeleteJobs` |
+
+#### タイムラインイベント {#timeline-event}
+
+タイムラインイベントの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `TimelineEventCreate` |
+| 作成 | プロジェクト | ミューテーション | `TimelineEventPromoteFromNote` |
+| 作成 | プロジェクト | ミューテーション | `TimelineEventTagCreate` |
+| 削除 | プロジェクト | ミューテーション | `TimelineEventDestroy` |
+| 更新 | プロジェクト | ミューテーション | `TimelineEventUpdate` |
+
+### ノートリソース {#note-resources}
+
+#### 保存済みの返信 {#saved-reply}
+
+保存済みの返信の作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `ProjectSavedReplyCreate` |
+| 作成 | グループ | ミューテーション | `GroupSavedReplyCreate` |
+| 作成 | ユーザー | ミューテーション | `SavedReplyCreate` |
+| 削除 | プロジェクト | ミューテーション | `ProjectSavedReplyDestroy` |
+| 削除 | グループ | ミューテーション | `GroupSavedReplyDestroy` |
+| 削除 | ユーザー | ミューテーション | `SavedReplyDestroy` |
+| 更新 | プロジェクト | ミューテーション | `ProjectSavedReplyUpdate` |
+| 更新 | グループ | ミューテーション | `GroupSavedReplyUpdate` |
+| 更新 | ユーザー | ミューテーション | `SavedReplyUpdate` |
 
 ### 通知リソース {#notifications-resources}
 
@@ -500,11 +1249,12 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AlertTodoCreate` |
 | 作成 | プロジェクト | ミューテーション | `TodoCreate` |
 | 作成 | グループ | ミューテーション | `TodoCreate` |
 | 削除 | ユーザー | ミューテーション | `TodoDeleteAllDone` |
 | 削除 | ユーザー | ミューテーション | `TodoDeleteMany` |
-| 読み取り | ユーザー | タイプ | `Todo` |
+| 読み取り | ユーザー | 型 | `Todo` |
 | 更新 | ユーザー | ミューテーション | `TodoMarkDone` |
 | 更新 | ユーザー | ミューテーション | `TodoResolveMany` |
 | 更新 | ユーザー | ミューテーション | `TodoRestore` |
@@ -519,19 +1269,37 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 
 #### 組織 {#organization}
 
-組織を作成、削除、読み取り、および更新する権限を付与します。
+組織の作成、削除、読み取り、復元、更新を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | インスタンス | ミューテーション | `OrganizationCreate` |
 | 削除 | インスタンス | ミューテーション | `OrganizationDelete` |
-| 読み取り | インスタンス | タイプ | `Organization` |
-| 読み取り | インスタンス | タイプ | `OrganizationUser` |
+| 読み取り | インスタンス | 型 | `Organization` |
+| 読み取り | インスタンス | 型 | `OrganizationUser` |
+| 復元 | インスタンス | ミューテーション | `OrganizationRestore` |
 | 更新 | インスタンス | ミューテーション | `OrganizationConfirm` |
 | 更新 | インスタンス | ミューテーション | `OrganizationUpdate` |
+
+#### 組織ユーザー {#organization-user}
+
+組織ユーザーの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | インスタンス | ミューテーション | `OrganizationUserCreate` |
+| 削除 | インスタンス | ミューテーション | `OrganizationUserDelete` |
 | 更新 | インスタンス | ミューテーション | `OrganizationUserUpdate` |
 
 ### パッケージおよびレジストリリソース {#packages-and-registry-resources}
+
+#### コンテナの有効期限ポリシー {#container-expiration-policy}
+
+コンテナの有効期限ポリシーを更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `UpdateContainerExpirationPolicy` |
 
 #### コンテナレジストリ保護タグルール {#container-registry-protection-tag-rule}
 
@@ -571,6 +1339,14 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | 更新 | グループ | ミューテーション | `UpdateDependencyProxyImageTtlGroupPolicy` |
 | 更新 | グループ | ミューテーション | `UpdateDependencyProxySettings` |
 
+#### 依存プロキシパッケージ設定 {#dependency-proxy-packages-setting}
+
+依存プロキシパッケージ設定を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `UpdateDependencyProxyPackagesSettings` |
+
 #### パッケージ {#package}
 
 パッケージを作成、削除、読み取り、および更新する機能が付与されます。
@@ -585,6 +1361,74 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | 更新 | プロジェクト | ミューテーション | `UpdatePackagesCleanupPolicy` |
 | 更新 | プロジェクト | ミューテーション | `UpdatePackagesProtectionRule` |
 
+#### パッケージ設定 {#package-setting}
+
+パッケージ設定を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | プロジェクト | ミューテーション | `UpdateNamespacePackageSettings` |
+| 更新 | グループ | ミューテーション | `UpdateNamespacePackageSettings` |
+| 更新 | ユーザー | ミューテーション | `UpdateNamespacePackageSettings` |
+
+#### 仮想レジストリ {#virtual-registry}
+
+仮想レジストリの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `ContainerUpstreamCreate` |
+| 作成 | グループ | ミューテーション | `ContainerVirtualRegistryCreate` |
+| 作成 | グループ | ミューテーション | `ContainerVirtualRegistryUpstreamCreate` |
+| 作成 | グループ | ミューテーション | `MavenUpstreamCreate` |
+| 作成 | グループ | ミューテーション | `MavenVirtualRegistryCreate` |
+| 削除 | グループ | ミューテーション | `ContainerUpstreamCacheDelete` |
+| 削除 | グループ | ミューテーション | `ContainerUpstreamDelete` |
+| 削除 | グループ | ミューテーション | `ContainerVirtualRegistryCacheDelete` |
+| 削除 | グループ | ミューテーション | `ContainerVirtualRegistryDelete` |
+| 削除 | グループ | ミューテーション | `ContainerVirtualRegistryUpstreamDelete` |
+| 削除 | グループ | ミューテーション | `MavenUpstreamCacheDelete` |
+| 削除 | グループ | ミューテーション | `MavenUpstreamDelete` |
+| 削除 | グループ | ミューテーション | `MavenVirtualRegistryCacheDelete` |
+| 削除 | グループ | ミューテーション | `MavenVirtualRegistryDelete` |
+| 削除 | グループ | ミューテーション | `MavenVirtualRegistryUpstreamDelete` |
+| 更新 | グループ | ミューテーション | `ContainerUpstreamTest` |
+| 更新 | グループ | ミューテーション | `ContainerUpstreamUpdate` |
+| 更新 | グループ | ミューテーション | `ContainerVirtualRegistryUpdate` |
+| 更新 | グループ | ミューテーション | `ContainerVirtualRegistryUpstreamUpdate` |
+| 更新 | グループ | ミューテーション | `MavenUpstreamUpdate` |
+| 更新 | グループ | ミューテーション | `MavenVirtualRegistryUpdate` |
+| 更新 | グループ | ミューテーション | `MavenVirtualRegistryUpstreamUpdate` |
+| 更新 | グループ | ミューテーション | `UpdateVirtualRegistriesSetting` |
+
+#### 仮想レジストリのクリーンアップポリシー {#virtual-registry-cleanup-policy}
+
+仮想レジストリのクリーンアップポリシーの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | グループ | ミューテーション | `VirtualRegistriesCleanupPolicyUpsert` |
+
+### プロダクト分析リソース {#product-analytics-resources}
+
+#### カスタムダッシュボード {#custom-dashboard}
+
+カスタムダッシュボードの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | インスタンス | ミューテーション | `CreateCustomDashboard` |
+| 削除 | インスタンス | ミューテーション | `DeleteCustomDashboard` |
+| 更新 | インスタンス | ミューテーション | `UpdateCustomDashboard` |
+
+#### DevOps導入 {#devops-adoption}
+
+ネームスペースのDevOps導入を有効にする機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 有効化 | グループ | ミューテーション | `EnableDevopsAdoptionNamespace` |
+
 ### プロジェクト機能リソース {#project-features-resources}
 
 #### バッジ {#badge}
@@ -593,7 +1437,7 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | インスタンス | タイプ | `OrganizationUserBadge` |
+| 読み取り | インスタンス | 型 | `OrganizationUserBadge` |
 
 #### サイクル分析 {#cycle-analytics}
 
@@ -615,6 +1459,15 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | 削除 | プロジェクト | ミューテーション | `ReleaseDelete` |
 | 更新 | プロジェクト | ミューテーション | `ReleaseUpdate` |
 
+#### リリースリンク {#release-link}
+
+リリースリンクの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 削除 | プロジェクト | ミューテーション | `ReleaseAssetLinkDelete` |
+| 更新 | プロジェクト | ミューテーション | `ReleaseAssetLinkUpdate` |
+
 #### スニペット {#snippet}
 
 スニペットを作成、削除、読み取り、および更新する機能が付与されます。
@@ -630,6 +1483,34 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 
 ### プロジェクトモデルレジストリおよび実験リソース {#project-model-registry-and-experiments-resources}
 
+#### ML実験 {#ml-experiment}
+
+ML実験の作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | プロジェクト | 型 | `MlExperiment` |
+
+#### MLモデル {#ml-model}
+
+MLモデルの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `MlModelCreate` |
+| 削除 | プロジェクト | ミューテーション | `MlModelDelete` |
+| 削除 | プロジェクト | ミューテーション | `MlModelDestroy` |
+| 読み取り | プロジェクト | 型 | `MlModel` |
+| 更新 | プロジェクト | ミューテーション | `MlModelEdit` |
+
+#### MLflowラン {#mlflow-run}
+
+MLflowランの作成、削除、ログ記録、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | プロジェクト | 型 | `MlCandidate` |
+
 #### モデルバージョン {#model-version}
 
 モデルバージョンを作成、削除、読み取り、および更新する権限を付与します。
@@ -638,9 +1519,43 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `MlModelVersionCreate` |
 | 削除 | プロジェクト | ミューテーション | `MlModelVersionDelete` |
+| 読み取り | プロジェクト | 型 | `MlModelVersion` |
 | 更新 | プロジェクト | ミューテーション | `MlModelVersionEdit` |
 
 ### プロジェクト計画リソース {#project-planning-resources}
+
+#### 絵文字 {#award-emoji}
+
+絵文字の作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `AwardEmojiAdd` |
+| 作成<sup>1</sup> | プロジェクト | ミューテーション | `AwardEmojiToggle` |
+| 作成 | グループ | ミューテーション | `AwardEmojiAdd` |
+| 作成<sup>1</sup> | グループ | ミューテーション | `AwardEmojiToggle` |
+| 削除 | プロジェクト | ミューテーション | `AwardEmojiRemove` |
+| 削除 | グループ | ミューテーション | `AwardEmojiRemove` |
+
+<sup>1</sup> `Delete Award Emoji`権限も必要です。
+
+#### CRM連絡先 {#crm-contact}
+
+CRM連絡先の作成、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `CustomerRelationsContactCreate` |
+| 更新 | グループ | ミューテーション | `CustomerRelationsContactUpdate` |
+
+#### CRM組織 {#crm-organization}
+
+CRM組織の作成、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `CustomerRelationsOrganizationCreate` |
+| 更新 | グループ | ミューテーション | `CustomerRelationsOrganizationUpdate` |
 
 #### カスタム属性 {#custom-attribute}
 
@@ -650,8 +1565,38 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | ------ | ------ | ---- | ---- |
 | 削除 | プロジェクト | ミューテーション | `DeleteProjectCustomAttribute` |
 | 削除 | グループ | ミューテーション | `DeleteGroupCustomAttribute` |
+| 削除 | インスタンス | ミューテーション | `DeleteUserCustomAttribute` |
 | 更新 | プロジェクト | ミューテーション | `ProjectCustomAttributeSet` |
 | 更新 | グループ | ミューテーション | `SetGroupCustomAttribute` |
+| 更新 | インスタンス | ミューテーション | `UserCustomAttributeSet` |
+
+#### カスタムフィールド {#custom-field}
+
+カスタムフィールドをアーカイブする機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| アーカイブ | グループ | ミューテーション | `CustomFieldArchive` |
+| アーカイブ | グループ | ミューテーション | `CustomFieldUnarchive` |
+
+#### デザイン {#design}
+
+デザインの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `DesignManagementUpload` |
+| 削除 | プロジェクト | ミューテーション | `DesignManagementDelete` |
+| 更新 | プロジェクト | ミューテーション | `DesignManagementMove` |
+| 更新 | プロジェクト | ミューテーション | `DesignManagementUpdate` |
+
+#### イシュー {#issue}
+
+イシューの購読を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| サブスクライブ | プロジェクト | ミューテーション | `IssueSetSubscription` |
 
 #### ラベル {#label}
 
@@ -661,54 +1606,97 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `LabelCreate` |
 | 作成 | グループ | ミューテーション | `LabelCreate` |
-| 読み取り | プロジェクト | タイプ | `Label` |
-| 読み取り | グループ | タイプ | `Label` |
+| 読み取り | プロジェクト | 型 | `Label` |
+| 読み取り | グループ | 型 | `Label` |
 | 更新 | プロジェクト | ミューテーション | `LabelUpdate` |
 | 更新 | グループ | ミューテーション | `LabelUpdate` |
 
-#### 作業アイテム {#work-item}
+#### タイムログ {#timelog}
 
-エピックやイシューなどの作業アイテムを作成、削除、読み取り、更新する機能が付与されます。
+タイムログの作成、削除を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `TimelogCreate` |
+| 作成 | グループ | ミューテーション | `TimelogCreate` |
+| 削除 | プロジェクト | ミューテーション | `TimelogDelete` |
+| 削除 | グループ | ミューテーション | `TimelogDelete` |
+
+#### 作業アイテム {#work-item}
+
+エピックやイシューなどの作業アイテムの作成、削除、読み取り、購読、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `BoardListCreate` |
+| 作成<sup>1</sup> | プロジェクト | ミューテーション | `CreateAlertIssue` |
+| 作成 | プロジェクト | ミューテーション | `CreateBoard` |
 | 作成 | プロジェクト | ミューテーション | `CreateDiffNote` |
 | 作成 | プロジェクト | ミューテーション | `CreateDiscussion` |
 | 作成 | プロジェクト | ミューテーション | `CreateImageDiffNote` |
 | 作成 | プロジェクト | ミューテーション | `CreateIssue` |
 | 作成 | プロジェクト | ミューテーション | `CreateLatestDiffNote` |
 | 作成 | プロジェクト | ミューテーション | `CreateNote` |
+| 作成 | プロジェクト | ミューテーション | `CreateRequirement` |
+| 作成 | プロジェクト | ミューテーション | `CreateTestCase` |
 | 作成 | プロジェクト | ミューテーション | `WorkItemCreate` |
+| 作成 | プロジェクト | ミューテーション | `WorkItemsCsvImport` |
 | 作成 | プロジェクト | フィールド | `EpicIssue.createNoteEmail` |
 | 作成 | プロジェクト | フィールド | `Issue.createNoteEmail` |
 | 作成 | プロジェクト | フィールド | `WorkItem.createNoteEmail` |
+| 作成 | グループ | ミューテーション | `BoardEpicCreate` |
+| 作成 | グループ | ミューテーション | `BoardListCreate` |
+| 作成 | グループ | ミューテーション | `CreateBoard` |
 | 作成 | グループ | ミューテーション | `CreateDiffNote` |
 | 作成 | グループ | ミューテーション | `CreateDiscussion` |
+| 作成 | グループ | ミューテーション | `CreateEpic` |
 | 作成 | グループ | ミューテーション | `CreateImageDiffNote` |
+| 作成 | グループ | ミューテーション | `CreateIteration` |
 | 作成 | グループ | ミューテーション | `CreateLatestDiffNote` |
 | 作成 | グループ | ミューテーション | `CreateNote` |
+| 作成 | グループ | ミューテーション | `CustomFieldCreate` |
+| 作成 | グループ | ミューテーション | `EpicAddIssue` |
+| 作成 | グループ | ミューテーション | `EpicBoardCreate` |
+| 作成 | グループ | ミューテーション | `EpicBoardListCreate` |
 | 作成 | グループ | ミューテーション | `IterationCadenceCreate` |
+| 作成 | グループ | ミューテーション | `LifecycleCreate` |
 | 作成 | グループ | ミューテーション | `WorkItemCreate` |
+| 作成 | グループ | ミューテーション | `WorkItemTypeCreate` |
+| 作成 | グループ | ミューテーション | `iterationCreate` |
+| 削除 | プロジェクト | ミューテーション | `DestroyBoard` |
 | 削除 | プロジェクト | ミューテーション | `DestroyNote` |
 | 削除 | プロジェクト | ミューテーション | `WorkItemDelete` |
+| 削除 | グループ | ミューテーション | `DestroyBoard` |
+| 削除 | グループ | ミューテーション | `DestroyEpicBoard` |
 | 削除 | グループ | ミューテーション | `DestroyNote` |
 | 削除 | グループ | ミューテーション | `IterationCadenceDestroy` |
 | 削除 | グループ | ミューテーション | `IterationDelete` |
+| 削除 | グループ | ミューテーション | `LifecycleDelete` |
 | 削除 | グループ | ミューテーション | `WorkItemDelete` |
-| 読み取り | プロジェクト | タイプ | `Board` |
-| 読み取り | プロジェクト | タイプ | `EpicIssue` |
-| 読み取り | プロジェクト | タイプ | `Issue` |
-| 読み取り | プロジェクト | タイプ | `Milestone` |
-| 読み取り | プロジェクト | タイプ | `Note` |
-| 読み取り | プロジェクト | タイプ | `WorkItem` |
-| 読み取り | グループ | タイプ | `Board` |
-| 読み取り | グループ | タイプ | `BoardEpic` |
-| 読み取り | グループ | タイプ | `Epic` |
-| 読み取り | グループ | タイプ | `Iteration` |
-| 読み取り | グループ | タイプ | `IterationCadence` |
-| 読み取り | グループ | タイプ | `Milestone` |
-| 読み取り | グループ | タイプ | `Note` |
-| 読み取り | グループ | タイプ | `WorkItemMoveTarget` |
+| 読み取り | プロジェクト | 型 | `Board` |
+| 読み取り | プロジェクト | 型 | `EpicIssue` |
+| 読み取り | プロジェクト | 型 | `Issue` |
+| 読み取り | プロジェクト | 型 | `Milestone` |
+| 読み取り | プロジェクト | 型 | `Note` |
+| 読み取り | プロジェクト | 型 | `WorkItem` |
+| 読み取り | プロジェクト | ミューテーション | `ExportRequirements` |
+| 読み取り | プロジェクト | ミューテーション | `UpdateBoardEpicUserPreferences` |
+| 読み取り | プロジェクト | ミューテーション | `WorkItemExport` |
+| 読み取り | プロジェクト | ミューテーション | `WorkItemsCsvExport` |
+| 読み取り | グループ | 型 | `Board` |
+| 読み取り | グループ | 型 | `BoardEpic` |
+| 読み取り | グループ | 型 | `Epic` |
+| 読み取り | グループ | 型 | `Iteration` |
+| 読み取り | グループ | 型 | `IterationCadence` |
+| 読み取り | グループ | 型 | `Milestone` |
+| 読み取り | グループ | 型 | `Note` |
+| 読み取り | グループ | 型 | `WorkItemMoveTarget` |
+| 読み取り | グループ | ミューテーション | `UpdateBoardEpicUserPreferences` |
+| サブスクライブ | プロジェクト | ミューテーション | `WorkItemSubscribe` |
+| サブスクライブ | グループ | ミューテーション | `EpicSetSubscription` |
+| サブスクライブ | グループ | ミューテーション | `WorkItemSubscribe` |
+| 更新 | プロジェクト | ミューテーション | `BoardListUpdateLimitMetrics` |
+| 更新 | プロジェクト | ミューテーション | `DiscussionToggleResolve` |
 | 更新 | プロジェクト | ミューテーション | `IssueLinkAlerts` |
 | 更新 | プロジェクト | ミューテーション | `IssueMove` |
 | 更新 | プロジェクト | ミューテーション | `IssueSetAssignees` |
@@ -723,22 +1711,88 @@ To-Doを作成、削除、読み取り、および更新する権限を付与し
 | 更新 | プロジェクト | ミューテーション | `IssueSetSeverity` |
 | 更新 | プロジェクト | ミューテーション | `IssueSetWeight` |
 | 更新 | プロジェクト | ミューテーション | `IssueUnlinkAlert` |
+| 更新 | プロジェクト | ミューテーション | `NoteConvertToThread` |
+| 更新 | プロジェクト | ミューテーション | `PromoteToEpic` |
+| 更新 | プロジェクト | ミューテーション | `RepositionImageDiffNote` |
+| 更新 | プロジェクト | ミューテーション | `UpdateBoard` |
 | 更新 | プロジェクト | ミューテーション | `UpdateImageDiffNote` |
 | 更新 | プロジェクト | ミューテーション | `UpdateIssue` |
 | 更新 | プロジェクト | ミューテーション | `UpdateNote` |
+| 更新 | プロジェクト | ミューテーション | `UpdateRequirement` |
 | 更新 | プロジェクト | ミューテーション | `WorkItemAddClosingMergeRequest` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemAddLinkedItems` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemAvailabilityToggle` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemBulkMove` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemBulkUpdate` |
 | 更新 | プロジェクト | ミューテーション | `WorkItemConvert` |
 | 更新 | プロジェクト | ミューテーション | `WorkItemCreateFromTask` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemDecisionArchive` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemDecisionCreate` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemDecisionDelete` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemDecisionResolve` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemDecisionUpdate` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemEnableAiPlanning` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemGenerateReadinessScore` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemGenerateWorkplan` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemRemoveLinkedItems` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemResumeWorkplan` |
 | 更新 | プロジェクト | ミューテーション | `WorkItemUpdate` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemUserPreferenceUpdate` |
+| 更新 | プロジェクト | ミューテーション | `workItemsHierarchyReorder` |
 | 更新 | プロジェクト | ミューテーション | `workItemsReorder` |
+| 更新 | グループ | ミューテーション | `BoardListUpdateLimitMetrics` |
+| 更新 | グループ | ミューテーション | `CustomFieldUpdate` |
+| 更新 | グループ | ミューテーション | `EpicBoardUpdate` |
+| 更新 | グループ | ミューテーション | `EpicMoveList` |
+| 更新 | グループ | ミューテーション | `EpicTreeReorder` |
 | 更新 | グループ | ミューテーション | `IterationCadenceUpdate` |
+| 更新 | グループ | ミューテーション | `LifecycleAttachWorkItemType` |
+| 更新 | グループ | ミューテーション | `LifecycleUpdate` |
+| 更新 | グループ | ミューテーション | `UpdateBoard` |
+| 更新 | グループ | ミューテーション | `UpdateEpic` |
 | 更新 | グループ | ミューテーション | `UpdateImageDiffNote` |
 | 更新 | グループ | ミューテーション | `UpdateIteration` |
 | 更新 | グループ | ミューテーション | `UpdateNote` |
 | 更新 | グループ | ミューテーション | `WorkItemAddClosingMergeRequest` |
+| 更新 | グループ | ミューテーション | `WorkItemAddLinkedItems` |
+| 更新 | グループ | ミューテーション | `WorkItemAvailabilityToggle` |
+| 更新 | グループ | ミューテーション | `WorkItemBulkMove` |
+| 更新 | グループ | ミューテーション | `WorkItemBulkUpdate` |
 | 更新 | グループ | ミューテーション | `WorkItemConvert` |
+| 更新 | グループ | ミューテーション | `WorkItemDecisionArchive` |
+| 更新 | グループ | ミューテーション | `WorkItemDecisionCreate` |
+| 更新 | グループ | ミューテーション | `WorkItemDecisionDelete` |
+| 更新 | グループ | ミューテーション | `WorkItemDecisionResolve` |
+| 更新 | グループ | ミューテーション | `WorkItemDecisionUpdate` |
+| 更新 | グループ | ミューテーション | `WorkItemEnableAiPlanning` |
+| 更新 | グループ | ミューテーション | `WorkItemRemoveLinkedItems` |
+| 更新 | グループ | ミューテーション | `WorkItemSettingsUpdate` |
+| 更新 | グループ | ミューテーション | `WorkItemTypeUpdate` |
 | 更新 | グループ | ミューテーション | `WorkItemUpdate` |
+| 更新 | グループ | ミューテーション | `WorkItemUserPreferenceUpdate` |
+| 更新 | グループ | ミューテーション | `workItemsHierarchyReorder` |
 | 更新 | グループ | ミューテーション | `workItemsReorder` |
+
+<sup>1</sup> `Update Alert`権限も必要です。
+
+#### 保存済みの作業アイテムビュー {#work-item-saved-view}
+
+保存済みの作業アイテムビューの作成、削除、購読、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `WorkItemSavedViewCreate` |
+| 作成 | グループ | ミューテーション | `WorkItemSavedViewCreate` |
+| 削除 | プロジェクト | ミューテーション | `WorkItemSavedViewDelete` |
+| 削除 | グループ | ミューテーション | `WorkItemSavedViewDelete` |
+| サブスクライブ | プロジェクト | ミューテーション | `WorkItemSavedViewReorder` |
+| サブスクライブ | プロジェクト | ミューテーション | `WorkItemSavedViewSubscribe` |
+| サブスクライブ | プロジェクト | ミューテーション | `WorkItemSavedViewUnsubscribe` |
+| サブスクライブ | グループ | ミューテーション | `WorkItemSavedViewReorder` |
+| サブスクライブ | グループ | ミューテーション | `WorkItemSavedViewSubscribe` |
+| サブスクライブ | グループ | ミューテーション | `WorkItemSavedViewUnsubscribe` |
+| 更新 | プロジェクト | ミューテーション | `WorkItemSavedViewUpdate` |
+| 更新 | グループ | ミューテーション | `WorkItemSavedViewUpdate` |
 
 ### プロジェクトリソース {#projects-resources}
 
@@ -761,7 +1815,7 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 | ------ | ------ | ---- | ---- |
 | 削除 | プロジェクト | ミューテーション | `DeletePagesDeployment` |
 | 削除 | プロジェクト | ミューテーション | `RestorePagesDeployment` |
-| 読み取り | プロジェクト | タイプ | `PagesDeployment` |
+| 読み取り | プロジェクト | 型 | `PagesDeployment` |
 | 更新 | プロジェクト | ミューテーション | `PagesMarkOnboardingComplete` |
 | 更新 | プロジェクト | ミューテーション | `SetPagesForceHttps` |
 | 更新 | プロジェクト | ミューテーション | `SetPagesUseUniqueDomain` |
@@ -772,8 +1826,9 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `Project` |
-| 読み取り | プロジェクト | タイプ | `RepositoryLanguage` |
+| 読み取り | プロジェクト | 型 | `Project` |
+| 読み取り | プロジェクト | 型 | `RepositoryLanguage` |
+| 転送 | プロジェクト | ミューテーション | `ProjectTransfer` |
 | 更新 | プロジェクト | ミューテーション | `ProjectSettingsUpdate` |
 | 更新 | プロジェクト | ミューテーション | `StarProject` |
 
@@ -787,8 +1842,8 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `branchRuleApprovalProjectRuleCreate` |
 | 削除 | プロジェクト | ミューテーション | `approvalProjectRuleDelete` |
-| 読み取り | プロジェクト | タイプ | `ApprovalProjectRule` |
-| 読み取り | プロジェクト | タイプ | `ApprovalRule` |
+| 読み取り | プロジェクト | 型 | `ApprovalProjectRule` |
+| 読み取り | プロジェクト | 型 | `ApprovalRule` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestUpdateApprovalRule` |
 | 更新 | プロジェクト | ミューテーション | `approvalProjectRuleUpdate` |
 
@@ -800,27 +1855,37 @@ Markdownアップロードを作成、削除、読み取る機能が付与され
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `CreateBranch` |
 | 削除 | プロジェクト | ミューテーション | `BranchDelete` |
-| 読み取り | プロジェクト | タイプ | `Branch` |
+| 読み取り | プロジェクト | 型 | `Branch` |
 
 #### ブランチルール {#branch-rule}
 
-ブランチルールを作成および更新する機能が付与されます。
+ブランチルールの作成、削除、更新を行う機能を付与します。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `BranchRuleCreate` |
+| 削除 | プロジェクト | ミューテーション | `BranchRuleDelete` |
+| 削除 | プロジェクト | ミューテーション | `BranchRuleSquashOptionDelete` |
+| 更新 | プロジェクト | ミューテーション | `BranchRuleSquashOptionUpdate` |
 | 更新 | プロジェクト | ミューテーション | `BranchRuleUpdate` |
 
 #### コード {#code}
 
-Gitを介してcodeコードをダウンロード、プッシュ、および読み取る機能が付与されます。
+Gitを介してコードをダウンロード、プッシュ、および読み取る機能が付与されます。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
 | プッシュ | プロジェクト | ミューテーション | `CommitCreate` |
+| プッシュ<sup>1</sup> | プロジェクト | ミューテーション | `ConfigureContainerScanning` |
+| プッシュ<sup>1</sup> | プロジェクト | ミューテーション | `ConfigureDependencyScanning` |
+| プッシュ<sup>1</sup> | プロジェクト | ミューテーション | `ConfigureSast` |
+| プッシュ<sup>1</sup> | プロジェクト | ミューテーション | `ConfigureSastIac` |
+| プッシュ<sup>1</sup> | プロジェクト | ミューテーション | `ConfigureSecretDetection` |
 | プッシュ | プロジェクト | ミューテーション | `ProjectSyncFork` |
-| 読み取り | プロジェクト | タイプ | `Commit` |
-| 読み取り | プロジェクト | タイプ | `Repository` |
+| 読み取り | プロジェクト | 型 | `Commit` |
+| 読み取り | プロジェクト | 型 | `Repository` |
+
+<sup>1</sup> `Create Branch`権限も必要です。
 
 #### マージリクエスト {#merge-request}
 
@@ -830,9 +1895,13 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `MergeRequestCreate` |
 | マージ | プロジェクト | ミューテーション | `MergeRequestAccept` |
-| 読み取り | プロジェクト | タイプ | `MergeRequest` |
-| 読み取り | プロジェクト | タイプ | `MergeRequestApprovalState` |
-| 読み取り | プロジェクト | タイプ | `MergeRequestWorkItemRelation` |
+| 読み取り | プロジェクト | 型 | `AiSuggestedReviewer` |
+| 読み取り | プロジェクト | 型 | `MergeRequest` |
+| 読み取り | プロジェクト | 型 | `MergeRequestApprovalState` |
+| 読み取り | プロジェクト | 型 | `MergeRequestResourceLabelEvent` |
+| 読み取り | プロジェクト | 型 | `MergeRequestWorkItemRelation` |
+| 読み取り | プロジェクト | 型 | `UserMergeRequestInteraction` |
+| サブスクライブ | プロジェクト | ミューテーション | `MergeRequestSetSubscription` |
 | 更新 | プロジェクト | ミューテーション | `DismissPolicyViolations` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestBypassSecurityPolicy` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestCreateWorkItemRelations` |
@@ -840,6 +1909,7 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | 更新 | プロジェクト | ミューテーション | `MergeRequestDestroyWorkItemRelations` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestRequestChanges` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestResyncSecurityPolicies` |
+| 更新 | プロジェクト | ミューテーション | `MergeRequestReviewerRereview` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestSetAssignees` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestSetBlockingMergeRequests` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestSetDraft` |
@@ -849,13 +1919,32 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | 更新 | プロジェクト | ミューテーション | `MergeRequestSetReviewers` |
 | 更新 | プロジェクト | ミューテーション | `MergeRequestUpdate` |
 
+#### 保存済みのマージリクエストビュー {#merge-request-saved-view}
+
+保存済みのマージリクエストビューの作成、削除、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | ユーザー | ミューテーション | `MergeRequestSavedViewCreate` |
+| 削除 | ユーザー | ミューテーション | `MergeRequestSavedViewDelete` |
+| 読み取り | ユーザー | 型 | `MergeRequestSavedView` |
+| 更新 | ユーザー | ミューテーション | `MergeRequestSavedViewUpdate` |
+
+#### パスロック {#path-lock}
+
+パスロックを作成する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `ProjectSetLocked` |
+
 #### プッシュルール {#push-rule}
 
 プッシュルールを作成、削除、読み取り、更新する機能が付与されます。
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `PushRules` |
+| 読み取り | プロジェクト | 型 | `PushRules` |
 
 #### リポジトリ {#repository}
 
@@ -863,9 +1952,18 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `Blob` |
-| 読み取り | プロジェクト | タイプ | `RepositoryBlob` |
-| 読み取り | プロジェクト | タイプ | `Tree` |
+| 読み取り | プロジェクト | 型 | `Blob` |
+| 読み取り | プロジェクト | 型 | `RepositoryBlob` |
+| 読み取り | プロジェクト | 型 | `Tree` |
+
+#### リポジトリの履歴 {#repository-history}
+
+リポジトリの履歴を書き換える機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 書き換え | プロジェクト | ミューテーション | `projectBlobsRemove` |
+| 書き換え | プロジェクト | ミューテーション | `projectTextReplace` |
 
 #### リポジトリタグ {#repository-tag}
 
@@ -875,7 +1973,94 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 | ------ | ------ | ---- | ---- |
 | 作成 | プロジェクト | ミューテーション | `TagCreate` |
 | 削除 | プロジェクト | ミューテーション | `TagDelete` |
-| 読み取り | プロジェクト | タイプ | `Tag` |
+| 読み取り | プロジェクト | 型 | `Tag` |
+
+#### ターゲットブランチルール {#target-branch-rule}
+
+ターゲットブランチルールの作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `ProjectTargetBranchRuleCreate` |
+| 削除 | プロジェクト | ミューテーション | `ProjectTargetBranchRuleDestroy` |
+
+### シークレット管理リソース {#secrets-management-resources}
+
+#### Secrets Managerアドオン {#secrets-manager-add-on}
+
+トップレベルグループに対して有料のSecrets Managerアドオンを有効にする機能を付与します。これにより、GitLab.com上でそのグループのシークレットマネージャーもプロビジョニングされます。インスタンス全体に対しても同様です。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 有効化<sup>1</sup> | グループ | ミューテーション | `SecretsManagerEnableAddOn` |
+| 有効化<sup>1</sup> | グループ | ミューテーション | `SecretsManagerRefreshEntitlement` |
+| 有効化<sup>1</sup> | インスタンス | ミューテーション | `SecretsManagerInstanceEnableAddOn` |
+| 有効化<sup>1</sup> | インスタンス | ミューテーション | `SecretsManagerInstanceRefreshEntitlement` |
+
+<sup>1</sup> `Read Secrets Manager`権限も必要です。
+
+#### Secrets Managerの登録 {#secrets-manager-enrollment}
+
+シークレットマネージャーの登録を読み取る機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | インスタンス | 型 | `SecretsManagerInstanceEnrollment` |
+
+#### Secrets Managerトライアル {#secrets-manager-trial}
+
+トップレベルグループに対してSecrets Managerトライアルを開始する機能を付与します。これにより、GitLab.com上でそのグループのシークレットマネージャーもプロビジョニングされます。インスタンス全体に対しても同様です。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 開始<sup>1</sup> | グループ | ミューテーション | `SecretsManagerStartTrial` |
+| 開始<sup>1</sup> | インスタンス | ミューテーション | `SecretsManagerInstanceStartTrial` |
+
+<sup>1</sup> `Read Secrets Manager`権限も必要です。
+
+### サブスクリプションおよびライセンスリソース {#subscription-and-licensing-resources}
+
+#### アドオン割り当て {#add-on-assignment}
+
+アドオン割り当ての作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `UserAddOnAssignmentBulkCreate` |
+| 作成 | グループ | ミューテーション | `UserAddOnAssignmentCreate` |
+| 作成 | インスタンス | ミューテーション | `UserAddOnAssignmentBulkCreate` |
+| 作成 | インスタンス | ミューテーション | `UserAddOnAssignmentCreate` |
+| 削除 | グループ | ミューテーション | `UserAddOnAssignmentBulkRemove` |
+| 削除 | グループ | ミューテーション | `UserAddOnAssignmentRemove` |
+| 削除 | インスタンス | ミューテーション | `UserAddOnAssignmentBulkRemove` |
+| 削除 | インスタンス | ミューテーション | `UserAddOnAssignmentRemove` |
+
+#### GitLabサブスクリプション {#gitlab-subscription}
+
+GitLabサブスクリプションの作成、読み取り、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | インスタンス | ミューテーション | `GitlabSubscriptionActivate` |
+
+#### メンバー承認 {#member-approval}
+
+メンバー承認を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | インスタンス | ミューテーション | `ProcessUserBillablePromotionRequest` |
+
+#### サブスクリプション使用量の上限 {#subscription-usage-cap}
+
+サブスクリプション使用量の上限を更新する機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 更新 | グループ | ミューテーション | `UpsertFlatUserCap` |
+| 更新 | グループ | ミューテーション | `UpsertUserBudgetCapOverrides` |
+| 更新 | インスタンス | ミューテーション | `UpsertFlatUserCap` |
+| 更新 | インスタンス | ミューテーション | `UpsertUserBudgetCapOverrides` |
 
 ### システムアクセスリソース {#system-access-resources}
 
@@ -885,7 +2070,7 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | ユーザー | タイプ | `Email` |
+| 読み取り | ユーザー | 型 | `Email` |
 
 #### ジョブトークンスコープ {#job-token-scope}
 
@@ -912,8 +2097,9 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | プロジェクト | タイプ | `ProjectMember` |
-| 読み取り | グループ | タイプ | `GroupMember` |
+| 読み取り | プロジェクト | 型 | `ProjectMember` |
+| 読み取り | グループ | 型 | `GroupMember` |
+| 読み取り | グループ | ミューテーション | `GroupMembersExport` |
 | 更新 | プロジェクト | ミューテーション | `ProjectMemberBulkUpdate` |
 | 更新 | グループ | ミューテーション | `GroupMemberBulkUpdate` |
 
@@ -923,9 +2109,10 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | インスタンス | タイプ | `GitlabInstanceFeatureFlag` |
-| 読み取り | インスタンス | タイプ | `Kas` |
-| 読み取り | インスタンス | タイプ | `Metadata` |
+| 読み取り | インスタンス | 型 | `GitlabInstanceFeatureFlag` |
+| 読み取り | インスタンス | 型 | `Kas` |
+| 読み取り | インスタンス | 型 | `Metadata` |
+| 読み取り | インスタンス | 型 | `SecurityScanProfileVariable` |
 
 #### パーソナルアクセストークン {#personal-access-token}
 
@@ -943,11 +2130,82 @@ Gitを介してcodeコードをダウンロード、プッシュ、および読�
 
 | アクション | アクセス | 種類 | 名前 |
 | ------ | ------ | ---- | ---- |
-| 読み取り | ユーザー | タイプ | `AddOnUser` |
-| 読み取り | ユーザー | タイプ | `AutocompletedUser` |
-| 読み取り | ユーザー | タイプ | `CurrentUser` |
-| 読み取り | ユーザー | タイプ | `MergeRequestAssignee` |
-| 読み取り | ユーザー | タイプ | `MergeRequestAuthor` |
-| 読み取り | ユーザー | タイプ | `MergeRequestParticipant` |
-| 読み取り | ユーザー | タイプ | `MergeRequestReviewer` |
-| 読み取り | ユーザー | タイプ | `UserCore` |
+| 読み取り | ユーザー | 型 | `AddOnUser` |
+| 読み取り | ユーザー | 型 | `AutocompletedUser` |
+| 読み取り | ユーザー | 型 | `CurrentUser` |
+| 読み取り | ユーザー | 型 | `MergeRequestAssignee` |
+| 読み取り | ユーザー | 型 | `MergeRequestAuthor` |
+| 読み取り | ユーザー | 型 | `MergeRequestParticipant` |
+| 読み取り | ユーザー | 型 | `MergeRequestReviewer` |
+| 読み取り | ユーザー | 型 | `UserCore` |
+
+### システム移行リソース {#system-migration-resources}
+
+#### インポート元ユーザー {#import-source-user}
+
+インポート元ユーザーを読み取る機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 読み取り | ユーザー | 型 | `ImportSourceUser` |
+
+#### プレースホルダーの再割り当て {#placeholder-reassignment}
+
+プレースホルダーの再割り当ての作成、読み取り、失効、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 失効 | ユーザー | ミューテーション | `ImportSourceUserRevoke` |
+| 更新 | グループ | ミューテーション | `ImportSourceUserCancelReassignment` |
+| 更新 | グループ | ミューテーション | `ImportSourceUserKeepAllAsPlaceholder` |
+| 更新 | グループ | ミューテーション | `ImportSourceUserKeepAsPlaceholder` |
+| 更新 | グループ | ミューテーション | `ImportSourceUserResendNotification` |
+| 更新 | グループ | ミューテーション | `ImportSourceUserRetryFailedReassignment` |
+| 更新 | グループ | ミューテーション | `ImportSourceUserUndoKeepAsPlaceholder` |
+
+### バリューストリームリソース {#value-stream-resources}
+
+#### バリューストリーム {#value-stream}
+
+バリューストリームの作成、削除、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `ValueStreamCreate` |
+| 作成 | グループ | ミューテーション | `ValueStreamCreate` |
+| 削除 | プロジェクト | ミューテーション | `ValueStreamDestroy` |
+| 削除 | グループ | ミューテーション | `ValueStreamDestroy` |
+| 更新 | プロジェクト | ミューテーション | `ValueStreamUpdate` |
+| 更新 | グループ | ミューテーション | `ValueStreamUpdate` |
+
+### Wikiリソース {#wiki-resources}
+
+#### Wiki {#wiki}
+
+Wikiの作成、削除、読み取り、購読、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| サブスクライブ | プロジェクト | ミューテーション | `WikiPageSubscribe` |
+
+### ワークスペースリソース {#workspace-resources}
+
+#### クラスターエージェントマッピング {#cluster-agent-mapping}
+
+クラスターエージェントマッピングの作成、削除を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | グループ | ミューテーション | `NamespaceCreateRemoteDevelopmentClusterAgentMapping` |
+| 作成 | インスタンス | ミューテーション | `OrganizationCreateClusterAgentMapping` |
+| 削除 | グループ | ミューテーション | `NamespaceDeleteRemoteDevelopmentClusterAgentMapping` |
+| 削除 | インスタンス | ミューテーション | `OrganizationDeleteClusterAgentMapping` |
+
+#### ワークスペース {#workspace}
+
+ワークスペースの作成、更新を行う機能を付与します。
+
+| アクション | アクセス | 種類 | 名前 |
+| ------ | ------ | ---- | ---- |
+| 作成 | プロジェクト | ミューテーション | `WorkspaceCreate` |
+| 更新 | プロジェクト | ミューテーション | `WorkspaceUpdate` |

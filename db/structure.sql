@@ -14632,7 +14632,7 @@ CREATE TABLE application_settings (
     ai_audit_events_storage_enabled boolean DEFAULT false NOT NULL,
     lock_ai_audit_events_storage_enabled boolean DEFAULT false NOT NULL,
     ai_gateway_url text,
-    ai_gateway_timeout_seconds integer DEFAULT 60,
+    ai_gateway_timeout_seconds integer DEFAULT 120,
     enabled_instance_verbose_ai_logs boolean DEFAULT false NOT NULL,
     duo_agent_platform_service_url text,
     self_hosted_duo_agent_platform_service_secure boolean DEFAULT true NOT NULL,

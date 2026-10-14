@@ -48,6 +48,34 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, 
       subject
     end
 
+    context 'with environments in projects of different organizations' do
+      let_it_be(:other_project) { create(:project, organization: create(:organization)) }
+
+      before do
+        create(:environment, :auto_stoppable, project: other_project)
+        # Faked jobs never stop the environments, so the loop would re-enqueue the same batch.
+        stub_const("#{described_class}::LOOP_LIMIT", 1)
+      end
+
+      it 'schedules stop jobs within the organization context of each project' do
+        Sidekiq::Testing.fake! { service.execute }
+
+        contexts = Environments::AutoStopWorker.jobs.map { |job| job.values_at('meta.project', 'meta.organization_id') }
+
+        expect(contexts).to contain_exactly(
+          [project.full_path, project.organization_id],
+          [project.full_path, project.organization_id],
+          [other_project.full_path, other_project.organization_id]
+        )
+      end
+
+      it 'loads the organizations of the batch in a single query' do
+        recorder = ActiveRecord::QueryRecorder.new { Sidekiq::Testing.fake! { service.execute } }
+
+        expect(recorder.log.grep(/FROM "organizations"/).count).to eq(1)
+      end
+    end
+
     context 'when the other sidekiq worker has already been running' do
       before do
         stub_exclusive_lease_taken(described_class::EXCLUSIVE_LOCK_KEY)

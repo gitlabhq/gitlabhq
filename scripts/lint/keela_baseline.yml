@@ -351,7 +351,6 @@ methods:
   - load_schema!
   app/models/concerns/timebox.rb:
   - self.declarative_policy_class
-  - safe_title
   app/models/concerns/transactions.rb:
   - set_open_transactions_baseline
   app/models/concerns/use_sql_function_for_primary_key_lookups.rb:

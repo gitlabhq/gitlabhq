@@ -108,6 +108,8 @@ Validity checks support the following secret types:
 - Datadog API keys
 - EasyPost API tokens
 - EasyPost test API tokens
+- Fastly API tokens
+- GC Notify API keys
 - GitHub App installation tokens
 - GitHub fine-grained personal access tokens
 - GitHub OAuth access tokens
@@ -116,6 +118,7 @@ Validity checks support the following secret types:
 - Google Cloud API keys
 - HashiCorp Terraform user and organization API tokens
 - Heroku API keys
+- Hugging Face user access tokens
 - npm access tokens
 - OpenAI admin API keys
 - OpenAI project API keys
@@ -151,17 +154,20 @@ The supported URLs are:
 - `https://api.anthropic.com/v1/models`
 - `https://api.datadoghq.com/api/v1/validate`
 - `https://api.easypost.com/v2/addresses`
+- `https://api.fastly.com/tokens/self`
 - `https://api.getpostman.com/me`
 - `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`
 - `https://api.gocardless.com/creditors`
 - `https://api.heroku.com/account`
+- `https://api.notification.canada.ca/v2/notifications`
 - `https://api.openai.com/v1/models`
 - `https://api.openai.com/v1/organization/admin_api_keys`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
 - `https://app.asana.com/api/1.0/users/me`
 - `https://app.terraform.io/api/v2/account/details`
+- `https://huggingface.co/api/whoami-v2`
 - `https://io.adafruit.com/api/v2/user`
 - `https://registry.npmjs.org/-/whoami`
 - `https://sts.amazonaws.com/`

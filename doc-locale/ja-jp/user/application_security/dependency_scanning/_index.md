@@ -19,13 +19,29 @@ description: 脆弱性、修正、設定、アナライザー、レポート
 
 ### 依存関係スキャンにSBOMを使用 {#dependency-scanning-using-sbom}
 
-パイプラインで依存関係スキャンアナライザーによって生成されたCycloneDX SBOMアーティファクトを、GitLab Advisory Databaseと照合してスキャンします。これは、新規プロジェクトに推奨される手法であり、GitLabにおける依存関係スキャンの長期的な方向性でもあります。
+{{< history >}}
+
+- GitLab 19.4で、`sbom_scan_malware_findings`という名前の[フラグ](../../../administration/feature_flags/_index.md)を使用してマルウェアアドバイザリとの照合が[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249853)。デフォルトでは有効になっています。
+- マルウェアアドバイザリとの照合は、GitLab 19.5で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/629305)になりました。機能フラグ`sbom_scan_malware_findings`は削除されました。
+
+{{< /history >}}
+
+パイプラインで依存関係スキャンアナライザーによって生成されたCycloneDX SBOMアーティファクトを、[GitLab Advisory Database](../gitlab_advisory_database/_index.md)および[GitLabマルウェアアドバイザリ](../gitlab_advisory_database/_index.md#gitlab-malware-advisories)と照合してスキャンします。これは、新規プロジェクトに推奨される手法であり、GitLabにおける依存関係スキャンの長期的な方向性でもあります。
 
 詳細については、[SBOMを使用した依存関係スキャン](dependency_scanning_sbom/_index.md)を参照してください。
 
 ### 継続的な依存関係スキャン {#continuous-dependency-scanning}
 
-GitLab Advisory Databaseが更新されるたびに、デフォルトブランチの最新の成功したパイプラインからのSBOMコンポーネントを継続的に再スキャンするため、パイプラインを再実行することなく、新たに開示された脆弱性が明らかになります。
+{{< history >}}
+
+- GitLab 19.4で、`cvs_malware_advisories`という名前の[フラグ](../../../administration/feature_flags/_index.md)を使用してマルウェアアドバイザリとの照合が[導入されました](https://gitlab.com/groups/gitlab-org/-/epics/21156)。デフォルトでは有効になっています。
+
+{{< /history >}}
+
+> [!flag]
+> マルウェアアドバイザリ照合の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+[GitLab Advisory Database](../gitlab_advisory_database/_index.md)または[GitLabマルウェアアドバイザリ](../gitlab_advisory_database/_index.md#gitlab-malware-advisories)が更新されるたびに、デフォルトブランチの最新の成功したパイプラインからSBOMコンポーネントを継続的に再スキャンするため、パイプラインを再実行しなくても新たに公開された脆弱性が検出されます。
 
 詳細については、[Continuous依存関係スキャン](continuous_dependency_scanning/_index.md)を参照してください。
 

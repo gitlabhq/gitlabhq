@@ -142,6 +142,8 @@ default:
 .default-merge-request-variables: &default-merge-request-variables
   NO_SOURCEMAPS: "true"
   FE_SOURCEMAPS: "false"
+  NO_COMPRESSION: "true"
+  FE_COMPRESSION: "false"
   GLCI_ASSETS_TARGET: "ci"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync

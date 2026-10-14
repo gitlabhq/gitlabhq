@@ -116,9 +116,8 @@ goals.
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
-- The trigger must use a flow that accepts a goal. Custom flows and external agents accept a
-  goal, and so does a trigger that uses a configuration path. Foundational flows, such as
-  Code Review, do not accept a goal.
+- The trigger must use a flow that accepts a goal. If the flow does not accept one, the
+  **Goal** field does not appear.
 
 To add a goal to a condition in an existing trigger:
 

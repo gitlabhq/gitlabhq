@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GeoノードAPI（非推奨）
@@ -37,7 +37,7 @@ curl --request POST \
   -d "url=https://another-node.example.com/"
 ```
 
-| 属性                   | タイプ    | 必須 | 説明                                                      |
+| 属性                   | 型    | 必須 | 説明                                                      |
 | ----------------------------| ------- | -------- | -----------------------------------------------------------------|
 | `primary`                   | ブール値 | いいえ       | このノードがプライマリであるべきかどうかを指定します。デフォルトはfalseです。 |
 | `enabled`                   | ブール値 | いいえ       | Geoノードが有効になっているかどうかを示すフラグ。デフォルトはtrueです。    |
@@ -96,7 +96,7 @@ GET /geo_nodes
 ```
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes"
 ```
@@ -165,7 +165,7 @@ curl \
 指定されたGeoノードを取得します。
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes/1"
 ```
@@ -208,7 +208,7 @@ curl \
 PUT /geo_nodes/:id
 ```
 
-| 属性                   | タイプ    | 必須 | 説明                                                               |
+| 属性                   | 型    | 必須 | 説明                                                               |
 |-----------------------------|---------|---------|---------------------------------------------------------------------------|
 | `id`                        | 整数 | はい     | GeoノードのID。                                                   |
 | `enabled`                   | ブール値 | いいえ      | Geoノードが有効になっているかどうかを示すフラグ。                               |
@@ -266,7 +266,7 @@ Geoノードを削除します。
 DELETE /geo_nodes/:id
 ```
 
-| 属性 | タイプ    | 必須 | 説明             |
+| 属性 | 型    | 必須 | 説明             |
 |-----------|---------|----------|-------------------------|
 | `id`      | 整数 | はい      | GeoノードのID。 |
 
@@ -315,7 +315,7 @@ GET /geo_nodes/status
 ```
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes/status"
 ```
@@ -1421,7 +1421,7 @@ curl \
 指定されたGeoノードステータスを取得します。
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes/2/status"
 ```

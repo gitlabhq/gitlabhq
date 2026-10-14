@@ -76616,6 +76616,9 @@ msgstr ""
 msgid "SecurityInventory|SD"
 msgstr ""
 
+msgid "SecurityInventory|Scanners configuration"
+msgstr ""
+
 msgid "SecurityInventory|Search subgroups (3 char min)"
 msgstr ""
 
@@ -76674,9 +76677,6 @@ msgid "SecurityInventory|Tool coverage: %{coverage}"
 msgstr ""
 
 msgid "SecurityInventory|Unprotected"
-msgstr ""
-
-msgid "SecurityInventory|View configuration"
 msgstr ""
 
 msgid "SecurityInventory|View project"

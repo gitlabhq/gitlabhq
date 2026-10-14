@@ -19,6 +19,12 @@ module Preloaders
     def execute
       return unless @user
 
+      Gitlab::Instrumentation::Authz.measure { preload_from_project_authorizations }
+    end
+
+    private
+
+    def preload_from_project_authorizations
       project_authorizations = ProjectAuthorization.arel_table
 
       auths = @projects
@@ -34,8 +40,6 @@ module Preloaders
         ProjectTeam.new(project).write_member_access_for_user_id(@user.id, access_level)
       end
     end
-
-    private
 
     def project_auth_join
       project_authorizations = ProjectAuthorization.arel_table

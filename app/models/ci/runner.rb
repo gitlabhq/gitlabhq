@@ -58,7 +58,8 @@ module Ci
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
-    CREATED_RUNNER_TOKEN_PREFIX_PATTERN = /\A(?:[a-zA-Z0-9]+-)?#{Regexp.escape(CREATED_RUNNER_TOKEN_PREFIX)}/
+    CREATED_RUNNER_TOKEN_PREFIX_PATTERN =
+      ::Authn::TokenField::PrefixHelper.optional_instance_prefix_pattern(CREATED_RUNNER_TOKEN_PREFIX)
     REGISTRATION_RUNNER_TOKEN_PREFIX = 'glrtr-'
 
     RUNNER_SHORT_SHA_LENGTH = 8

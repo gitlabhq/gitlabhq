@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GeoサイトAPI
@@ -33,14 +33,14 @@ POST /geo_sites
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites" \
-     --request POST \
-     -d "name=himynameissomething" \
-     -d "url=https://another-node.example.com/"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites" \
+  --data "name=himynameissomething" \
+  --data-urlencode "url=https://another-node.example.com/"
 ```
 
-| 属性                             | タイプ    | 必須 | 説明                                                                                                                                            |
+| 属性                             | 型    | 必須 | 説明                                                                                                                                            |
 |---------------------------------------|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `primary`                             | ブール値 | いいえ       | このサイトがプライマリであるかどうかを指定します。デフォルトはfalseです。                                                                                     |
 | `enabled`                             | ブール値 | いいえ       | Geoサイトが有効になっているかどうかを示すフラグ。デフォルトはtrueです。                                                                                          |
@@ -98,8 +98,9 @@ GET /geo_sites
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites"
 ```
 
 レスポンス例:
@@ -168,8 +169,9 @@ GET /geo_sites/:id
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites/1"
 ```
 
 レスポンス例:
@@ -215,7 +217,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 PUT /geo_sites/:id
 ```
 
-| 属性                             | タイプ    | 必須 | 説明                                                                                                                                            |
+| 属性                             | 型    | 必須 | 説明                                                                                                                                            |
 |---------------------------------------|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                                  | 整数 | はい      | GeoサイトのID。                                                                                                                                |
 | `enabled`                             | ブール値 | いいえ       | Geoサイトが有効になっているかどうかを示すフラグ。                                                                                                            |
@@ -270,7 +272,7 @@ Geoサイトを削除します。
 DELETE /geo_sites/:id
 ```
 
-| 属性 | タイプ    | 必須 | 説明             |
+| 属性 | 型    | 必須 | 説明             |
 |-----------|---------|----------|-------------------------|
 | `id`      | 整数 | はい      | GeoサイトのID。 |
 
@@ -320,8 +322,9 @@ GET /geo_sites/status
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites/status"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites/status"
 ```
 
 レスポンス例:
@@ -1422,8 +1425,9 @@ GET /geo_sites/:id/status
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites/2/status"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites/2/status"
 ```
 
 レスポンス例:

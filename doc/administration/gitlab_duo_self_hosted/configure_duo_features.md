@@ -63,7 +63,7 @@ To configure access between your GitLab instance and your local AI Gateway:
 To conserve resources and prevent long-running queries, configure the timeout for GitLab requests to the AI Gateway when waiting for model responses.
 Use longer timeouts for self-hosted models with large context windows or complex queries.
 
-You can configure a timeout between 60 and 600 seconds (10 minutes). If you don't set the timeout, GitLab uses the default timeout of 60 seconds.
+You can configure a timeout between 60 and 600 seconds (10 minutes). If you don't set the timeout, GitLab uses the default timeout of 120 seconds.
 
 To configure the AI Gateway timeout:
 
@@ -79,7 +79,7 @@ The timeout value depends on your specific deployment and use case.
 
 To determine the timeout value:
 
-- Start with the default timeout of 60 seconds and monitor for timeout errors.
+- Start with the default timeout of 120 seconds and monitor for timeout errors.
 - Monitor your logs for `A1000` timeout errors in your logs. If these errors occur frequently, consider increasing the timeout.
 - Consider your use case. Larger prompts, complex code generation tasks, or processing large design documents might require longer timeouts.
 - Consider your infrastructure. Model performance depends on available GPU resources, network latency between the AI Gateway and model endpoint, and the model's processing capabilities.

@@ -34,6 +34,7 @@ module Gitlab
       instrument_ldap(payload)
       instrument_exclusive_lock(payload)
       instrument_gvl(payload)
+      instrument_authz(payload)
     end
 
     def instrument_gitaly(payload)
@@ -173,6 +174,10 @@ module Gitlab
       return if requested_count == 0
 
       payload.merge!(Gitlab::Instrumentation::ExclusiveLock.payload)
+    end
+
+    def instrument_authz(payload)
+      payload.merge!(::Gitlab::Instrumentation::Authz.payload)
     end
 
     def instrument_middleware_path_traversal_check(payload)

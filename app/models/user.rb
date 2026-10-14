@@ -2748,14 +2748,16 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_project_ids(project_ids)
-    Gitlab::SafeRequestLoader.execute(
-      resource_key: max_member_access_for_resource_key(Project),
-      resource_ids: project_ids,
-      default_value: Gitlab::Access::NO_ACCESS
-    ) do |project_ids|
-      project_authorizations.where(project: project_ids)
-                            .group(:project_id)
-                            .maximum(:access_level)
+    Gitlab::Instrumentation::Authz.measure do
+      Gitlab::SafeRequestLoader.execute(
+        resource_key: max_member_access_for_resource_key(Project),
+        resource_ids: project_ids,
+        default_value: Gitlab::Access::NO_ACCESS
+      ) do |project_ids|
+        project_authorizations.where(project: project_ids)
+                              .group(:project_id)
+                              .maximum(:access_level)
+      end
     end
   end
 

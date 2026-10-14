@@ -613,20 +613,6 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
         it 'does not create an application' do
           expect { create_registration }.not_to change { Authn::OauthApplication.count }
         end
-
-        context 'when oauth_dynamic_registration_json_rate_limit_error is disabled' do
-          before do
-            stub_feature_flags(oauth_dynamic_registration_json_rate_limit_error: false)
-          end
-
-          it 'returns 429 with the plain-text throttled response', :aggregate_failures do
-            create_registration
-
-            expect(response).to have_gitlab_http_status(:too_many_requests)
-            expect(response.content_type).to include('text/plain')
-            expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
-          end
-        end
       end
 
       context 'with database validation failures' do

@@ -8,6 +8,14 @@ module Authn
       # never prepend "gl-", even before ResetLegacyInstanceTokenPrefix runs.
       LEGACY_DEFAULT_PREFIX = 'gl'
 
+      INSTANCE_PREFIX_PATTERN = /[a-zA-Z0-9]+/
+
+      # Matches `prefix` with an optional instance prefix in front. It matches the instance prefix by its shape
+      # (validated as alphanumeric) rather than its current value, so tokens stay readable after it changes.
+      def self.optional_instance_prefix_pattern(prefix)
+        /\A(?:#{INSTANCE_PREFIX_PATTERN.source}-)?#{Regexp.escape(prefix)}/
+      end
+
       def self.prepend_instance_prefix(prefix)
         configured_prefix = instance_prefix
         return prefix if configured_prefix.blank?

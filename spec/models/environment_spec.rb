@@ -453,6 +453,15 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
     end
   end
 
+  describe '.preload_project_and_organization' do
+    it 'preloads the project and its organization', :aggregate_failures do
+      environment = described_class.preload_project_and_organization.find(create(:environment).id)
+
+      expect(environment.association(:project)).to be_loaded
+      expect(environment.project.association(:organization)).to be_loaded
+    end
+  end
+
   describe '.auto_stoppable' do
     subject { described_class.auto_stoppable(limit) }
 

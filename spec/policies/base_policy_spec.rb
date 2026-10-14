@@ -192,27 +192,19 @@ RSpec.describe BasePolicy, feature_category: :shared do
     it_behaves_like 'admin only access', :change_repository_storage
   end
 
-  describe 'placeholder_user' do
-    let(:current_user) { build_stubbed(:user, user_type: :placeholder) }
+  describe 'placeholder_user', :enable_admin_mode do
+    let(:current_user) { build_stubbed(:user, :admin, user_type: :placeholder) }
 
     subject { described_class.new(current_user, nil) }
 
-    it { expect_disallowed(:access_git) }
-    it { expect_disallowed(:log_in) }
-    it { expect_disallowed(:access_api) }
-    it { expect_disallowed(:receive_notifications) }
-    it { expect_disallowed(:use_slash_commands) }
+    it_behaves_like 'prevent all'
   end
 
-  describe 'import_user' do
-    let(:current_user) { build_stubbed(:user, user_type: :import_user) }
+  describe 'import_user', :enable_admin_mode do
+    let(:current_user) { build_stubbed(:user, :admin, user_type: :import_user) }
 
     subject { described_class.new(current_user, nil) }
 
-    it { expect_disallowed(:access_git) }
-    it { expect_disallowed(:log_in) }
-    it { expect_disallowed(:access_api) }
-    it { expect_disallowed(:receive_notifications) }
-    it { expect_disallowed(:use_slash_commands) }
+    it_behaves_like 'prevent all'
   end
 end

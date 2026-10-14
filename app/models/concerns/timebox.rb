@@ -134,10 +134,6 @@ module Timebox
     model_name.singular
   end
 
-  def safe_title
-    title.to_slug.normalize.to_s
-  end
-
   def resource_parent
     raise NotImplementedError
   end

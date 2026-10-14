@@ -1809,7 +1809,11 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
       end
 
       it 'keeps the short SHA after the feature flag is disabled' do
-        expect { stub_feature_flags(custom_prefix_for_all_token_types: false) }.not_to change { runner.short_sha }
+        generated_prefix = "#{instance_prefix}-#{described_class::CREATED_RUNNER_TOKEN_PREFIX}"
+        short_sha = runner.token.delete_prefix(generated_prefix)[0...described_class::RUNNER_SHORT_SHA_LENGTH]
+
+        expect { stub_feature_flags(custom_prefix_for_all_token_types: false) }
+          .not_to change { runner.short_sha }.from(short_sha)
       end
     end
 

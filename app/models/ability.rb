@@ -93,31 +93,7 @@ class Ability
     end
 
     def allowed?(user, ability, subject = :global, **opts)
-      if subject.is_a?(Hash)
-        opts = subject
-        subject = :global
-      end
-
-      policy = policy_for(user, subject, **opts.slice(:cache))
-
-      before_check(policy, ability.to_sym, user, subject, opts)
-
-      result = case opts[:scope]
-               when :user
-                 DeclarativePolicy.user_scope { policy.allowed?(ability) }
-               when :subject
-                 DeclarativePolicy.subject_scope { policy.allowed?(ability) }
-               else
-                 policy.allowed?(ability)
-               end
-
-      if opts[:composite_identity_check] == false ||
-          !user.respond_to?(:composite_identity_enforced?) ||
-          !user&.composite_identity_enforced?
-        return result
-      end
-
-      result && with_composite_identity_check(user, ability, subject, **opts)
+      ::Gitlab::Instrumentation::Authz.measure { check_allowed?(user, ability, subject, **opts) }
     end
 
     # Hook call right before ability check.
@@ -156,6 +132,34 @@ class Ability
     end
 
     private
+
+    def check_allowed?(user, ability, subject = :global, **opts)
+      if subject.is_a?(Hash)
+        opts = subject
+        subject = :global
+      end
+
+      policy = policy_for(user, subject, **opts.slice(:cache))
+
+      before_check(policy, ability.to_sym, user, subject, opts)
+
+      result = case opts[:scope]
+               when :user
+                 DeclarativePolicy.user_scope { policy.allowed?(ability) }
+               when :subject
+                 DeclarativePolicy.subject_scope { policy.allowed?(ability) }
+               else
+                 policy.allowed?(ability)
+               end
+
+      if opts[:composite_identity_check] == false ||
+          !user.respond_to?(:composite_identity_enforced?) ||
+          !user.composite_identity_enforced?
+        return result
+      end
+
+      result && with_composite_identity_check(user, ability, subject, **opts)
+    end
 
     # Project abilities resolve membership through ProjectTeam#max_member_access_for_user, which
     # reads from a request-scoped store. Filling that store up front collapses the per-user lookups

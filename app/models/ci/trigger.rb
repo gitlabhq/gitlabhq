@@ -9,6 +9,7 @@ module Ci
     include TokenAuthenticatable
 
     TRIGGER_TOKEN_PREFIX = 'glptt-'
+    TRIGGER_TOKEN_PREFIX_PATTERN = ::Authn::TokenField::PrefixHelper.optional_instance_prefix_pattern(TRIGGER_TOKEN_PREFIX)
 
     EXPIRED_TOKEN_RETENTION = 30.days
     MAX_DESCRIPTION_LENGTH = 2048
@@ -73,9 +74,7 @@ module Ci
     def short_token
       return unless token.present?
 
-      # Strips an optional instance wide token prefix, which is validated as alphanumeric. Matching its shape
-      # rather than its current value keeps tokens readable after the prefix changes or is disabled.
-      token.sub(/\A(?:[a-zA-Z0-9]+-)?#{Regexp.escape(TRIGGER_TOKEN_PREFIX)}/o, '')[0...4]
+      token.sub(TRIGGER_TOKEN_PREFIX_PATTERN, '')[0...4]
     end
     alias_method :trigger_short_token, :short_token
 

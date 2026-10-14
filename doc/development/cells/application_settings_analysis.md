@@ -30,7 +30,7 @@ title: Application Settings analysis
 | `after_sign_out_path` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `after_sign_up_text` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `ai_action_api_rate_limit` | `false` | `integer` | `` | `true` | `160` | `false` | `false`| `false` |
-| `ai_gateway_timeout_seconds` | `false` | `integer` | `` | `false` | `60` | `false` | `false`| `false` |
+| `ai_gateway_timeout_seconds` | `false` | `integer` | `` | `false` | `120` | `false` | `false`| `false` |
 | `ai_gateway_url` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `akismet_api_key` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `akismet_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |

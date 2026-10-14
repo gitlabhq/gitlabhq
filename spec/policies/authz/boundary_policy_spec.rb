@@ -123,7 +123,7 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
   end
 
   context 'when a permission is not allowed' do
-    it { expect_disallowed(:not_allowed_permission) }
+    it { expect_disallowed(:delete_wiki) }
   end
 
   context 'when the user is not a member of the boundary' do

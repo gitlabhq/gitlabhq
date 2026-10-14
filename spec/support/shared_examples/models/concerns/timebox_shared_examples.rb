@@ -53,14 +53,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     end
   end
 
-  describe '#safe_title' do
-    let(:timebox) { create(timebox_type, *timebox_args, title: "<b>foo & bar -> 2.2</b>") }
-
-    it 'normalizes the title for use as a slug' do
-      expect(timebox.safe_title).to eq('bfoo-bar-22b')
-    end
-  end
-
   describe '#title' do
     subject { create(timebox_type, *timebox_args, title: input_title) }
 
