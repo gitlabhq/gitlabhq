@@ -102,10 +102,6 @@ RSpec.shared_examples 'deploy token does not get confused with user' do
 end
 
 RSpec.shared_examples 'project policies as guest' do
-  let(:reporter_public_build_permissions) do
-    reporter_permissions - [:read_build, :read_pipeline, :export_work_items]
-  end
-
   context 'as a direct project member' do
     context 'abilities for public projects' do
       let(:project) { public_project }
@@ -123,15 +119,6 @@ RSpec.shared_examples 'project policies as guest' do
     context 'abilities for non-public projects' do
       let(:project) { private_project }
       let(:current_user) { guest }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_disallowed(*reporter_public_build_permissions)
-        expect_disallowed(*team_member_reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
 
       it_behaves_like 'deploy token does not get confused with user' do
         let(:user_id) { guest.id }
@@ -171,22 +158,6 @@ RSpec.shared_examples 'project policies as guest' do
       end
     end
   end
-
-  context 'as an inherited member from the group' do
-    context 'abilities for private projects' do
-      let(:project) { private_project_in_group }
-      let(:current_user) { inherited_guest }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_disallowed(*reporter_public_build_permissions)
-        expect_disallowed(*team_member_reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'project policies as planner' do
@@ -195,14 +166,6 @@ RSpec.shared_examples 'project policies as planner' do
       create_snippet create_incident daily_statistics metrics_dashboard read_harbor_registry
       read_prometheus read_sentry_issue read_external_emails
     ]
-  end
-
-  let(:disallowed_reporter_permissions) do
-    disallowed_reporter_public_permissions +
-      %i[
-        fork_project read_commit_status read_container_image read_deployment
-        read_environment create_merge_request_in
-      ]
   end
 
   context 'as a direct project member' do
@@ -225,18 +188,6 @@ RSpec.shared_examples 'project policies as planner' do
     context 'abilities for non-public projects' do
       let(:project) { private_project }
       let(:current_user) { planner }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
-        expect_allowed(:read_code, :download_code)
-        expect_allowed(*(base_reporter_permissions - disallowed_reporter_permissions))
-        expect_disallowed(:create_merge_request_in)
-        expect_disallowed(*disallowed_reporter_permissions)
-        expect_disallowed(*(developer_permissions - [:create_wiki]))
-        expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
-      end
 
       it_behaves_like 'deploy token does not get confused with user' do
         let(:user_id) { planner.id }
@@ -278,40 +229,12 @@ RSpec.shared_examples 'project policies as planner' do
       end
     end
   end
-
-  context 'as an inherited member from the group' do
-    context 'abilities for private projects' do
-      let(:project) { private_project_in_group }
-      let(:current_user) { inherited_planner }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
-        expect_allowed(:read_code, :download_code)
-        expect_allowed(*(base_reporter_permissions - disallowed_reporter_permissions))
-        expect_disallowed(:create_merge_request_in)
-        expect_disallowed(*disallowed_reporter_permissions)
-        expect_disallowed(*(developer_permissions - [:create_wiki]))
-        expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'project policies as reporter' do
   context 'abilities for non-public projects' do
     let(:project) { private_project }
     let(:current_user) { reporter }
-
-    specify do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*team_member_reporter_permissions)
-      expect_disallowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { reporter.id }
@@ -321,38 +244,12 @@ RSpec.shared_examples 'project policies as reporter' do
       let(:regular_abilities) { reporter_permissions }
     end
   end
-
-  context 'as an inherited member from the group' do
-    context 'abilities for private projects' do
-      let(:project) { private_project_in_group }
-      let(:current_user) { inherited_reporter }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*team_member_reporter_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'project policies as security_manager' do
   context 'abilities for non-public projects' do
     let(:project) { private_project }
     let(:current_user) { security_manager }
-
-    specify do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*team_member_reporter_permissions)
-      expect_allowed(*security_manager_permissions)
-      expect_disallowed(*(developer_permissions - security_manager_permissions))
-      expect_disallowed(*(maintainer_permissions - security_manager_permissions))
-      expect_disallowed(*(owner_permissions - security_manager_permissions))
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { security_manager.id }
@@ -362,38 +259,12 @@ RSpec.shared_examples 'project policies as security_manager' do
       let(:regular_abilities) { security_manager_permissions }
     end
   end
-
-  context 'as an inherited member from the group' do
-    context 'abilities for private projects' do
-      let(:project) { private_project_in_group }
-      let(:current_user) { inherited_security_manager }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_allowed(*security_manager_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*team_member_reporter_permissions)
-        expect_disallowed(*(developer_permissions - security_manager_permissions))
-        expect_disallowed(*(maintainer_permissions - security_manager_permissions))
-        expect_disallowed(*(owner_permissions - security_manager_permissions))
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'project policies as developer' do
   context 'abilities for non-public projects' do
     let(:project) { private_project }
     let(:current_user) { developer }
-
-    specify do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*team_member_reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_disallowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { developer.id }
@@ -403,37 +274,12 @@ RSpec.shared_examples 'project policies as developer' do
       let(:regular_abilities) { developer_permissions }
     end
   end
-
-  context 'as an inherited member from the group' do
-    context 'abilities for private projects' do
-      let(:project) { private_project_in_group }
-      let(:current_user) { inherited_developer }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_allowed(*reporter_permissions)
-        expect_allowed(*team_member_reporter_permissions)
-        expect_allowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
-    end
-  end
 end
 
 RSpec.shared_examples 'project policies as maintainer' do
   context 'abilities for non-public projects' do
     let(:project) { private_project }
     let(:current_user) { maintainer }
-
-    it do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*team_member_reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { maintainer.id }
@@ -449,16 +295,6 @@ RSpec.shared_examples 'project policies as owner' do
   context 'abilities for non-public projects' do
     let(:project) { private_project }
     let(:current_user) { owner }
-
-    it do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*team_member_reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_allowed(*owner_permissions)
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { owner.id }
@@ -506,17 +342,6 @@ RSpec.shared_examples 'project policies as admin with admin mode' do
   context 'abilities for non-public projects', :enable_admin_mode do
     let(:project) { private_project }
     let(:current_user) { admin }
-
-    it do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*planner_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*team_member_reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_allowed(*admin_permissions)
-      expect_allowed(*owner_permissions)
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { admin.id }

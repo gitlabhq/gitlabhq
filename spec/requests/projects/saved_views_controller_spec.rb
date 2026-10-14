@@ -12,28 +12,13 @@ RSpec.describe 'Projects::SavedViews', feature_category: :planning_views do
 
   describe 'GET /projects/:project/-/views/:id' do
     context 'when feature is enabled' do
-      context 'when saved view exists' do
-        let(:saved_view) { create(:saved_view, namespace: project.project_namespace) }
+      subject(:show_saved_view) { get project_saved_view_path(project, non_existing_record_id) }
 
-        subject(:show_saved_view) { get project_saved_view_path(project, saved_view.id) }
+      it 'renders the work items index' do
+        show_saved_view
 
-        it 'renders the work items index' do
-          show_saved_view
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to include('id="js-work-items"')
-        end
-      end
-
-      context 'when saved view does not exist' do
-        subject(:show_saved_view) { get project_saved_view_path(project, 'non-existent-id') }
-
-        it 'renders the work items index' do
-          show_saved_view
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to include('id="js-work-items"')
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('id="js-work-items"')
       end
     end
 
@@ -41,9 +26,8 @@ RSpec.describe 'Projects::SavedViews', feature_category: :planning_views do
       let_it_be(:root_group) { create(:group) }
       let_it_be(:subgroup) { create(:group, parent: root_group) }
       let_it_be(:nested_project) { create(:project, group: subgroup, developers: user) }
-      let(:saved_view) { create(:saved_view, namespace: nested_project.project_namespace) }
 
-      subject(:show_saved_view) { get project_saved_view_path(nested_project, saved_view.id) }
+      subject(:show_saved_view) { get project_saved_view_path(nested_project, non_existing_record_id) }
 
       before do
         stub_feature_flags(planning_view_boards: false, planning_view_boards_group: false)
@@ -89,9 +73,7 @@ RSpec.describe 'Projects::SavedViews', feature_category: :planning_views do
     end
 
     context 'when user is not authenticated' do
-      let(:saved_view) { create(:saved_view, namespace: project.project_namespace) }
-
-      subject(:show_saved_view) { get project_saved_view_path(project, saved_view.id) }
+      subject(:show_saved_view) { get project_saved_view_path(project, non_existing_record_id) }
 
       before do
         sign_out(user)

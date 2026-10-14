@@ -158,7 +158,7 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:job_definition) }
-    scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
+    scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state, :pipeline) }
     scope :eager_load_for_api, -> do
       preload(
         :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :runner_manager,

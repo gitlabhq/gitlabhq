@@ -208,6 +208,10 @@ possible (for example, because of network restrictions), you can disable direct 
 code completion requests are sent indirectly through the GitLab Self-Managed instance, which in turn sends the requests
 to the AI Gateway. This might result in your requests having higher latency.
 
+Direct connections are not available when code completion uses a self-hosted model.
+In that case, code completion requests are always sent through the GitLab Self-Managed instance,
+and you cannot select a connection method.
+
 Editor extensions use the GitLab Language Server to communicate with the AI Gateway for code suggestions.
 
 The Language Server sends direct connection requests to the AI Gateway `/v4/code/suggestions` endpoint.

@@ -49,6 +49,32 @@ RSpec.describe Gitlab::ImportExport::Project::ExportedRelationsMerger do
       end
     end
 
+    context 'when the export job has no relation export for an excluded relation' do
+      before do
+        uploads_relation_export = export_job.relation_exports.find_by!(relation: 'uploads')
+        uploads_relation_export.upload.destroy!
+        uploads_relation_export.destroy!
+      end
+
+      it 'merges the remaining relations and does not register errors' do
+        Dir.mktmpdir do |dirpath|
+          allow(shared).to receive(:export_path).and_return(dirpath)
+
+          result = service.save
+
+          expect(result).to be(true)
+          expect(shared.errors).to be_empty
+          expect(Dir.glob("#{dirpath}/**/*")).to match_array(
+            [
+              "#{dirpath}/project",
+              "#{dirpath}/project/project.json",
+              "#{dirpath}/project/labels.ndjson"
+            ]
+          )
+        end
+      end
+    end
+
     context 'when exception occurs' do
       before do
         create(:project_relation_export, relation: 'releases', project_export_job: export_job)

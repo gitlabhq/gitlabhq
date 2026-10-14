@@ -88,8 +88,9 @@ Prerequisites:
 To use the Data Analyst Agent in VS Code:
 
 1. In VS Code, in the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** tab.
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Data Analyst**.
+1. Under the message box, from the agent dropdown list, select **Data Analyst**.
+   In the [classic layout](../../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide), select the **Chat** tab, then from the
+   **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Data Analyst**.
 1. Enter your analytics question or request. To get the best results from your request:
 
    - Specify the scope (project or group) when asking about data.
@@ -114,8 +115,9 @@ First, enable the GitLab Duo Agent Platform:
 Then, to use the Data Analyst Agent:
 
 1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** tab.
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Data Analyst**.
+1. Under the message box, from the agent dropdown list, select **Data Analyst**.
+   In the [classic layout](../../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide), select the **Chat** tab, then from the
+   **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Data Analyst**.
 1. Enter your analytics question or request. To get the best results from your request:
 
    - Specify the scope (project or group) when asking about data.

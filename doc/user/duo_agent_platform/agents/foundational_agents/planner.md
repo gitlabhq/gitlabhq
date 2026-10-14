@@ -107,8 +107,9 @@ Prerequisites:
 To use the Planner Agent in VS Code:
 
 1. In VS Code, in the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** tab.
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
+1. Under the message box, from the agent dropdown list, select **Planner**.
+   In the [classic layout](../../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide), select the **Chat** tab, then from the
+   **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
 1. Enter your planning-related question or request.
 
 ### In JetBrains IDEs
@@ -131,8 +132,9 @@ First, enable the GitLab Duo Agent Platform:
 Then, to use the Planner Agent:
 
 1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** tab.
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
+1. Under the message box, from the agent dropdown list, select **Planner**.
+   In the [classic layout](../../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide), select the **Chat** tab, then from the
+   **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select **Planner**.
 1. Enter your planning-related question or request.
 
 ## Example prompts

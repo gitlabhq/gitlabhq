@@ -101,6 +101,72 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
     end
   end
 
+  context 'with excluded_relations' do
+    let(:excluded_relations) { %w[uploads lfs_objects] }
+    let(:params) { { 'excluded_relations' => excluded_relations } }
+    let(:all_relation_names) { Projects::ImportExport::RelationExport.relation_names_list }
+
+    let(:export_job) { project.export_jobs.last }
+
+    it_behaves_like 'an idempotent worker'
+
+    it 'does not create relation exports for the excluded relations' do
+      perform
+
+      expect(export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+    end
+
+    it 'creates a relation export for every other relation' do
+      perform
+
+      expect(export_job.relation_exports.pluck(:relation)).to match_array(all_relation_names - excluded_relations)
+    end
+
+    it 'enqueues a RelationExportWorker for every other relation and none for the excluded ones' do
+      perform
+
+      enqueued_relation_export_ids = Projects::ImportExport::RelationExportWorker.jobs.map { |job| job['args'].first }
+
+      expect(enqueued_relation_export_ids).to match_array(export_job.relation_exports.ids)
+      expect(enqueued_relation_export_ids.size).to eq(all_relation_names.size - excluded_relations.size)
+    end
+
+    it 'passes the params on as native JSON types' do
+      perform
+
+      enqueued_params = Projects::ImportExport::RelationExportWorker.jobs.map { |job| job['args'].last }
+
+      expect(enqueued_params).to param_containing_valid_native_json_types
+      expect(enqueued_params).to all(eq(params))
+    end
+
+    it 'starts the export and enqueues a WaitRelationExportsWorker' do
+      expect { perform }.to change { Projects::ImportExport::WaitRelationExportsWorker.jobs.size }.by(1)
+
+      expect(export_job.started?).to be(true)
+    end
+
+    context 'when the params have symbol keys' do
+      let(:params) { { excluded_relations: excluded_relations } }
+
+      it 'does not create relation exports for the excluded relations' do
+        perform
+
+        expect(export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+      end
+    end
+
+    context 'when the excluded relations include relations that must not be excluded' do
+      let(:excluded_relations) { %w[project repository uploads] }
+
+      it 'only skips the relations that can be excluded' do
+        perform
+
+        expect(export_job.relation_exports.pluck(:relation)).to match_array(all_relation_names - %w[uploads])
+      end
+    end
+  end
+
   describe 'sidekiq deduplication configuration' do
     it 'reschedules deduplicated jobs so a self re-enqueue is not dropped' do
       expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
@@ -175,6 +241,31 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
         end.not_to change { ProjectExportJob.count }
 
         expect(export_job.reload.queued?).to be(true)
+      end
+
+      context 'with excluded_relations' do
+        let(:excluded_relations) { %w[uploads lfs_objects] }
+        let(:params) { { 'excluded_relations' => excluded_relations } }
+
+        it 're-enqueues itself with the excluded relations' do
+          perform
+
+          expect(described_class.jobs.last['args']).to eq([user.id, project.id, after_export_strategy, params])
+        end
+
+        it 'skips the excluded relations when the re-enqueued job starts the export' do
+          perform
+          other_started_job.finish!
+
+          described_class.new.perform(*described_class.jobs.last['args'])
+
+          relation_names = project.export_jobs.last.relation_exports.pluck(:relation)
+
+          expect(relation_names).not_to include(*excluded_relations)
+          expect(relation_names).to match_array(
+            Projects::ImportExport::RelationExport.relation_names_list - excluded_relations
+          )
+        end
       end
 
       context 'and the started job has timed out' do

@@ -12,36 +12,20 @@ RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
 
   describe 'GET /groups/:group/-/views/:id' do
     context 'when feature is enabled' do
-      context 'when saved view exists' do
-        let(:saved_view) { create(:saved_view, namespace: group) }
+      subject(:show_saved_view) { get group_saved_view_path(group_id: group.full_path, id: non_existing_record_id) }
 
-        subject(:show_saved_view) { get group_saved_view_path(group_id: group.full_path, id: saved_view.id) }
+      it 'renders the work items index' do
+        show_saved_view
 
-        it 'renders the work items index' do
-          show_saved_view
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to include('id="js-work-items"')
-        end
-      end
-
-      context 'when saved view does not exist' do
-        subject(:show_saved_view) { get group_saved_view_path(group_id: group.full_path, id: 'non-existent-id') }
-
-        it 'renders the work items index' do
-          show_saved_view
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to include('id="js-work-items"')
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('id="js-work-items"')
       end
     end
 
     context 'for planning_view_boards feature flags' do
       let_it_be(:subgroup) { create(:group, parent: group) }
-      let(:saved_view) { create(:saved_view, namespace: subgroup) }
 
-      subject(:show_saved_view) { get group_saved_view_path(group_id: subgroup.full_path, id: saved_view.id) }
+      subject(:show_saved_view) { get group_saved_view_path(group_id: subgroup.full_path, id: non_existing_record_id) }
 
       before do
         stub_feature_flags(planning_view_boards: false, planning_view_boards_group: false)
@@ -87,9 +71,7 @@ RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
     end
 
     context 'when user is not authenticated' do
-      let(:saved_view) { create(:saved_view, namespace: group) }
-
-      subject(:show_saved_view) { get group_saved_view_path(group_id: group.full_path, id: saved_view.id) }
+      subject(:show_saved_view) { get group_saved_view_path(group_id: group.full_path, id: non_existing_record_id) }
 
       before do
         sign_out(user)

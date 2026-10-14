@@ -93,8 +93,11 @@ class ProjectExportJob < ApplicationRecord
     self.class.queued_and_not_timed_out(timeout).order(:id).limit(available_capacity).pluck(:id).include?(id)
   end
 
-  def find_or_create_relation_exports!
-    Projects::ImportExport::RelationExport.relation_names_list.map do |relation_name|
+  def find_or_create_relation_exports!(excluded_relations: [])
+    skipped_relations = Array.wrap(excluded_relations).map(&:to_s) &
+      Projects::ImportExport::RelationExport.excludable_relation_names
+
+    (Projects::ImportExport::RelationExport.relation_names_list - skipped_relations).map do |relation_name|
       relation_exports.find_or_create_by!(relation: relation_name)
     end
   end

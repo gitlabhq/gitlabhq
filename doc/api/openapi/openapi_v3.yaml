@@ -2174,6 +2174,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4OrbitQueryRequest"
+      x-gitlab-tier: premium
       x-gitlab-lifecycle: beta
   "/api/v4/orbit/query/{name}":
     post:
@@ -2204,6 +2205,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4OrbitQueryNameRequest"
+      x-gitlab-tier: premium
       x-gitlab-lifecycle: beta
   "/api/v4/orbit/query/templates":
     get:
@@ -2218,6 +2220,7 @@ paths:
           description: OK
         '400':
           description: Bad Request
+      x-gitlab-tier: premium
       x-gitlab-lifecycle: beta
   "/api/v4/orbit/schema":
     get:
@@ -2249,6 +2252,7 @@ paths:
           - llm
           default: raw
         in: query
+      x-gitlab-tier: premium
       x-gitlab-lifecycle: beta
   "/api/v4/orbit/status":
     get:
@@ -2377,6 +2381,7 @@ paths:
           description: OK
         '400':
           description: Bad Request
+      x-gitlab-tier: premium
       x-gitlab-lifecycle: beta
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
@@ -2920,6 +2925,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdAiAgentSessionsRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
     get:
       operationId: getApiV4ProjectsIdAiAgentSessions
       summary: List external agent sessions for a project.
@@ -3010,6 +3016,7 @@ paths:
         in: path
         example: 1
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/ai_agent/sessions/{session_id}":
     patch:
       operationId: patchApiV4ProjectsIdAiAgentSessionsSessionId
@@ -3057,6 +3064,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/patchApiV4ProjectsIdAiAgentSessionsSessionIdRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/ai_agent/identities":
     post:
       operationId: postApiV4ProjectsIdAiAgentIdentities
@@ -3099,6 +3107,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdAiAgentIdentitiesRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/ai_agent/audit_events":
     post:
       operationId: postApiV4ProjectsIdAiAgentAuditEvents
@@ -3139,6 +3148,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdAiAgentAuditEventsRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/ai/duo_workflows/workflows/{id}/audit_events":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdAuditEvents
@@ -5763,6 +5773,7 @@ paths:
           - daily
           nullable: true
         in: query
+      x-gitlab-tier: ultimate
   "/api/v4/analytics/group_activity/issues_count":
     get:
       operationId: getApiV4AnalyticsGroupActivityIssuesCount
@@ -5788,6 +5799,7 @@ paths:
           type: string
           nullable: true
         in: query
+      x-gitlab-tier: premium
   "/api/v4/analytics/group_activity/merge_requests_count":
     get:
       operationId: getApiV4AnalyticsGroupActivityMergeRequestsCount
@@ -5813,6 +5825,7 @@ paths:
           type: string
           nullable: true
         in: query
+      x-gitlab-tier: premium
   "/api/v4/analytics/group_activity/new_members_count":
     get:
       operationId: getApiV4AnalyticsGroupActivityNewMembersCount
@@ -5837,6 +5850,7 @@ paths:
           type: string
           nullable: true
         in: query
+      x-gitlab-tier: premium
   "/api/v4/analytics/code_review":
     get:
       operationId: getApiV4AnalyticsCodeReview
@@ -5926,6 +5940,7 @@ paths:
           nullable: true
         in: query
         example: '1.6'
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/dependencies":
     get:
       operationId: getApiV4ProjectsIdDependencies
@@ -12718,6 +12733,7 @@ paths:
           default:
           - production
         in: query
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/dora/metrics":
     get:
       operationId: getApiV4GroupsIdDoraMetrics
@@ -12796,6 +12812,7 @@ paths:
           default:
           - production
         in: query
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/approval_settings":
     get:
       operationId: getApiV4ProjectsIdApprovalSettings
@@ -14649,6 +14666,7 @@ paths:
           description: 401 Unauthorized
         '403':
           description: 403 Forbidden
+      x-gitlab-tier: premium
   "/api/v4/admin/knowledge_graph/namespaces/{id}":
     put:
       operationId: putApiV4AdminKnowledgeGraphNamespacesId
@@ -14682,6 +14700,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4AdminKnowledgeGraphNamespacesId
       summary: Disable a namespace for Knowledge Graph
@@ -14708,6 +14727,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/admin/search/migrations":
     get:
       operationId: getApiV4AdminSearchMigrations
@@ -14724,6 +14744,7 @@ paths:
           description: 403 Forbidden
         '404':
           description: 404 Not found
+      x-gitlab-tier: premium
   "/api/v4/admin/search/migrations/{migration_id}":
     get:
       operationId: getApiV4AdminSearchMigrationsMigrationId
@@ -14756,6 +14777,7 @@ paths:
           - type: integer
           - type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/admin/zoekt/projects/{project_id}/index":
     put:
       operationId: putApiV4AdminZoektProjectsProjectIdIndex
@@ -120989,7 +121011,7 @@ components:
           items:
             type: string
           description: Project relation names to exclude from the export, for example
-            `merge_requests` and `issues`.
+            `merge_requests`, `issues`, `ci_pipelines`, `uploads`, and `lfs_objects`.
           nullable: true
     postApiV4ProjectsIdExportRelationsRequest:
       type: object

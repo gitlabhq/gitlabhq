@@ -87,16 +87,69 @@ export function closeTag(tagName) {
   return `</${tagName}>`;
 }
 
-const reSpace = /\s$/;
-const reBrackets = /[[\](){}]$/;
-const rePunctuation = /[.,;:'"`]$/;
-const reMarks = /(^|\s)(\*|\*\*|_|__|`|~~)$/;
+// A letter, digit or literal underscore before a reference reads as a project path
+// (`abc#1`, `snake\_#1`), and so does a word ending in a hyphen or dot (`foo-#1`, `v1.#1`);
+// punctuation and mark delimiters are boundaries (`#1/#2`, `_#1_`), including punctuation
+// written directly after another reference (`#1-#2`).
+const reProjectPathCharacter = /([a-zA-Z0-9]|\\_)$/;
+const reProjectPathTail = /[a-zA-Z0-9_][a-zA-Z0-9_.-]*[.-]$/;
 
-const regexes = [reSpace, reBrackets, rePunctuation, reMarks];
+// Text written directly after a reference that the parser reads as part of it, following the
+// reference patterns in `app/models/label.rb`, `milestone.rb` and `user.rb` (`#1abc`, `~bug:x`,
+// `%17.5/#2`, `@root/x`), but not sentence punctuation (`@root. Next`, `~bug?`); a quoted name
+// ends at its closing quote.
+const reContinuesNumericReference = /^[a-zA-Z0-9_]/;
+const reContinuesNamedReference = {
+  label: /^:{0,2}[a-zA-Z0-9_?.&-]*[a-zA-Z0-9_&-]/,
+  milestone: /^[^"\s<]*[a-zA-Z0-9_]/,
+  user: /^(?:[a-zA-Z0-9_.-]*[a-zA-Z0-9_-]|\/(?:[a-zA-Z0-9_]|\.[a-zA-Z0-9_.-]*[a-zA-Z0-9_-]))/,
+};
+const REFERENCE_NODE_TYPES = ['reference', 'referenceLabel'];
 
-function ensureSpace(state) {
+function endsWithProjectPath(state, { parent, index }) {
+  const match = reProjectPathTail.exec(state.out);
+  if (!match) return false;
+
+  // A tail that starts inside the previous reference (`#1-#2`) is read from the document, not
+  // from an offset into `state.out`, which serializers such as multiline blockquote rewrite.
+  const previous = parent?.maybeChild(index - 1);
+  const followsReference =
+    previous?.isText &&
+    match[0].length > previous.text.length &&
+    REFERENCE_NODE_TYPES.includes(parent.maybeChild(index - 2)?.type.name);
+  return !followsReference;
+}
+
+function ensureSpace(state, position) {
   state.flushClose();
-  if (!state.atBlank() && !regexes.some((regex) => regex.test(state.out))) state.write(' ');
+  if (state.atBlank()) return;
+  if (reProjectPathCharacter.test(state.out) || endsWithProjectPath(state, position)) {
+    state.write(' ');
+  }
+}
+
+// The unmarked inline text after a node, reading references as written: the parser sees
+// `%17.5/#2` as one run of text.
+function textAfter(parent, index) {
+  let text = '';
+  for (let i = index + 1; i < parent.childCount; i += 1) {
+    const child = parent.child(i);
+    if (child.marks.length) break;
+    if (child.isText) text += child.text;
+    else if (REFERENCE_NODE_TYPES.includes(child.type.name)) {
+      text += child.attrs.originalText || child.attrs.text;
+    } else break;
+  }
+  return text;
+}
+
+function ensureSpaceAfterReference(state, text, { node, parent, index }) {
+  const next = parent?.maybeChild(index + 1);
+  if (!next?.isText || next.marks.length || text.endsWith('"')) return;
+
+  const continues =
+    reContinuesNamedReference[node.attrs.referenceType] || reContinuesNumericReference;
+  if (continues.test(textAfter(parent, index))) state.write(' ');
 }
 
 export function renderTagOpen(state, tagName, attrs) {
@@ -134,8 +187,8 @@ export function renderContent(state, node, forceRenderInline) {
   }
 }
 
-export function renderTextInline(text, state, node) {
-  ensureSpace(state);
+export function renderTextInline(text, state, { node, parent, index }) {
+  ensureSpace(state, { parent, index });
 
   const { schema } = node.type;
   const marks = node.marks.filter((mark) => mark.type.spec.code);
@@ -143,8 +196,10 @@ export function renderTextInline(text, state, node) {
     // ensure text in a code block is properly wrapped in backticks
     state.renderInline(schema.node('paragraph', {}, [schema.text(text, marks)]));
   } else {
-    state.write(text);
+    state.write(text.replace(/[<>]/g, '\\$&'));
   }
+
+  ensureSpaceAfterReference(state, text, { node, parent, index });
 }
 
 export const findChildWithMark = (mark, parent) => {

@@ -193,21 +193,8 @@ describe('etagQueryHeaders', () => {
     'X-Requested-With': 'XMLHttpRequest',
   };
 
-  it('returns headers necessary for etag caching with a GET request', () => {
-    expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({
-      fetchOptions: { method: 'GET' },
-      headers,
-    });
-  });
-
-  describe('when etagCachingPostRequests is enabled', () => {
-    beforeEach(() => {
-      window.gon = { features: { etagCachingPostRequests: true } };
-    });
-
-    it('returns headers without forcing a GET request', () => {
-      expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({ headers });
-    });
+  it('returns headers necessary for etag caching', () => {
+    expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({ headers });
   });
 });
 

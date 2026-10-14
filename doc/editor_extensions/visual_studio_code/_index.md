@@ -39,10 +39,10 @@ The extension includes the following features:
   requests, run CI/CD commands, view pipeline status, and perform security scanning.
   You can also extend your view with [custom queries](custom_queries.md).
 - In the left sidebar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
-  - The chat tab: Interact with GitLab Duo Agentic Chat, or use the **New chat** ({{< icon name="duo-chat-new" >}})
-    dropdown list to select a foundational or custom agent to work with.
-  - The flows tab: Use the Software Development Flow. Learn more about the
-    [difference between Chat and the flow](../software_development.md#flow-and-chat-comparison).
+  Interact with GitLab Duo Agentic Chat, and select a foundational or custom agent to work with.
+  To use the Software Development Flow, [switch to the classic layout](../../user/gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide),
+  which has separate chat and flows tabs. Learn more about the
+  [difference between Chat and the flow](../software_development.md#flow-and-chat-comparison).
 - In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
   GitLab Duo Code Suggestions and review suggestions in
   your file as you author code.

@@ -19,7 +19,7 @@ RSpec.describe Mentionable, feature_category: :shared do
   end
 
   describe 'references' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
     let(:mentionable) { Example.new }
 
     it 'excludes Jira references' do
@@ -217,7 +217,7 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
     end
 
     it 'is true if issue referenced by url' do
-      issue = create(:issue, project: project)
+      issue = build_stubbed(:issue, project: project)
 
       allow(commit.raw).to receive(:message).and_return Gitlab::UrlBuilder.build(issue)
 

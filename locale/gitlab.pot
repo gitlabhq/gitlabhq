@@ -9613,6 +9613,9 @@ msgstr ""
 msgid "AiPowered|Direct connections"
 msgstr ""
 
+msgid "AiPowered|Direct connections are not available because code completion uses a self-hosted model. Requests are sent through the GitLab instance."
+msgstr ""
+
 msgid "AiPowered|Disabled"
 msgstr ""
 
@@ -33442,10 +33445,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Automate tasks with AI agents, from searching projects to creating commits. Two ways to start."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Automation created successfully."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Automation deleted successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automation details"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automation not found."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automation turned off"
@@ -33454,10 +33463,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Automation turned on"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Automation updated successfully."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Automations"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automations connect flows or external agents to events or schedules in this project. Create an automation to determine when your flows or external agents run."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automations might run a few minutes after the scheduled time to distribute load across the system."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Available"
@@ -33485,6 +33500,9 @@ msgid "DuoAgentsPlatform|Cancel session?"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Canceled"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Change the target or events for this automation."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Change the target or events for this trigger."
@@ -33527,6 +33545,12 @@ msgid "DuoAgentsPlatform|Could not load statuses. Refresh the page to try again.
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create a trigger to run a flow or external agent based on project events."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Create an automation to run a flow or external agent on project events or a schedule."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Create automation"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create commit"
@@ -33583,7 +33607,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Edit trigger"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Ensure the service account has a role equal to or less than the users in the project. The account can be used for automations only."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Ensure the service account has a role equal to or less than the users in the project. The account can be used for triggers only."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Enter a description for this automation"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Enter a description for this trigger"
@@ -33832,6 +33862,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Save changes"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Scheduled automations do not use composite identity. They run with only the service account's permissions."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Scheduled automations do not use composite identity. They run with the service account's %{linkStart}%{role} role%{linkEnd} on this project."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Scheduled triggers do not use composite identity. They run with only the service account's permissions."
 msgstr ""
 
@@ -33955,6 +33991,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Thank you for your interest in this feature, we've recorded your request. If you need access to GitLab Credits sooner, ask your group Owner."
 msgstr ""
 
+msgid "DuoAgentsPlatform|The automation could not be created. Try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|The automation could not be updated. Try again."
+msgstr ""
+
 msgid "DuoAgentsPlatform|The service account has the %{linkStart}%{role} role%{linkEnd} on this project."
 msgstr ""
 
@@ -34055,6 +34097,9 @@ msgid "DuoAgentsPlatform|Weekly on %{dayOfWeek} at %{time}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Weekly on %{dayOfWeek} at %{time} %{timezone}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|What this automation runs."
 msgstr ""
 
 msgid "DuoAgentsPlatform|What this trigger runs."
@@ -35185,6 +35230,18 @@ msgstr ""
 msgid "DuoSlack|GitLab Duo wants to run this tool."
 msgstr ""
 
+msgid "DuoSlack|GitLab Duo wants to start a custom flow. Open to approve or deny."
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo wants to start a custom flow: \"%{goal}\". Open to approve or deny."
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo wants to start the %{flow_name} flow. Open to approve or deny."
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo wants to start the %{flow_name} flow: \"%{goal}\". Open to approve or deny."
+msgstr ""
+
 msgid "DuoSlack|Helpful"
 msgstr ""
 
@@ -35230,6 +35287,9 @@ msgstr ""
 msgid "DuoSlack|Run %{tool_names}"
 msgstr ""
 
+msgid "DuoSlack|Running"
+msgstr ""
+
 msgid "DuoSlack|Set your default Duo namespace in your GitLab preferences (%{preferences_url}) to use Duo from Slack."
 msgstr ""
 
@@ -35240,6 +35300,12 @@ msgid "DuoSlack|Something went wrong while running the task. Try again."
 msgstr ""
 
 msgid "DuoSlack|Something went wrong. Try again."
+msgstr ""
+
+msgid "DuoSlack|Start a custom flow"
+msgstr ""
+
+msgid "DuoSlack|Start the %{flow_name} flow"
 msgstr ""
 
 msgid "DuoSlack|Started"
@@ -51137,6 +51203,9 @@ msgstr ""
 msgid "Manage AI agents and flows"
 msgstr ""
 
+msgid "Manage AI flow automations"
+msgstr ""
+
 msgid "Manage AI flow triggers"
 msgstr ""
 
@@ -59442,6 +59511,11 @@ msgstr[1] ""
 msgid "Orbit|%{count} in your graph"
 msgstr ""
 
+msgid "Orbit|%{count} project"
+msgid_plural "Orbit|%{count} projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%{count} row · %{ms} ms"
 msgid_plural "Orbit|%{count} rows · %{ms} ms"
 msgstr[0] ""
@@ -59916,6 +59990,11 @@ msgstr ""
 msgid "Orbit|Indexing"
 msgstr ""
 
+msgid "Orbit|Indexing %{count} project"
+msgid_plural "Orbit|Indexing %{count} projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|Indexing %{indexing} of %{total} groups"
 msgstr ""
 
@@ -59926,6 +60005,9 @@ msgid "Orbit|Indexing failed"
 msgstr ""
 
 msgid "Orbit|Indexing in progress. The map fills in as data finishes indexing."
+msgstr ""
+
+msgid "Orbit|Indexing projects"
 msgstr ""
 
 msgid "Orbit|Indexing starts in a few minutes and can take minutes to hours. You can leave this page and check back later."
@@ -60237,6 +60319,9 @@ msgstr ""
 msgid "Orbit|Property"
 msgstr ""
 
+msgid "Orbit|Purchase GitLab Orbit to turn it on for this group."
+msgstr ""
+
 msgid "Orbit|Queries are paused for groups whose trial ended. Talk to your GitLab seller to keep using Orbit."
 msgstr ""
 
@@ -60444,6 +60529,9 @@ msgid "Orbit|The schema is not available. Try again later."
 msgstr ""
 
 msgid "Orbit|Their indexed data is deleted 30 or more days after you turn Orbit off."
+msgstr ""
+
+msgid "Orbit|They appear on the map when indexing finishes. Everything else is ready to query."
 msgstr ""
 
 msgid "Orbit|This group cannot be indexed."
@@ -102982,3 +103070,4 @@ msgstr ""
 
 msgid "✔"
 msgstr ""
+

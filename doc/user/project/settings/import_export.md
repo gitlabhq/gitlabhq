@@ -179,6 +179,10 @@ To export a project and its data, follow these steps:
    - Follow a link contained in an email that you should receive.
    - Refresh the project settings page and in the **Export project** area, select **Download export**.
 
+To leave out data such as issues, merge requests, or uploads, use `excluded_relations` in the
+[project export API](../../../api/project_import_export.md#exclude-relations-from-a-project-export).
+You cannot exclude relations when you export from the UI.
+
 The export is generated in your configured `shared_path`, a temporary shared directory
 (by default, `<shared_path>/tmp/gitlab_exports`), and then either:
 

@@ -29,6 +29,13 @@ Prerequisites:
 
 ## Export a project
 
+{{< history >}}
+
+- `excluded_relations` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226480) in GitLab 18.11.
+- `avatar`, `lfs_objects`, `uploads`, and `wiki_repository` values for `excluded_relations` [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/633580) in GitLab 19.6.
+
+{{< /history >}}
+
 Exports the specified project.
 
 Use the `upload` hash parameter to upload the exported project to a web server or any S3-compatible
@@ -61,6 +68,7 @@ POST /projects/:id/export
 | `id`                  | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `upload[url]`         | string            | Yes      | The URL to upload the project. |
 | `description`         | string            | No       | Overrides the project description. |
+| `excluded_relations`  | array of strings  | No       | Names of the relations to exclude from the export. Excluded relations are not added to the archive and not available to import. For valid names, see [exclude relations from a project export](#exclude-relations-from-a-project-export). |
 | `upload`              | hash              | No       | Hash that contains the information to upload the exported project to a web server. |
 | `upload[http_method]` | string            | No       | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT`. |
 
@@ -76,6 +84,36 @@ curl --request POST \
 {
   "message": "202 Accepted"
 }
+```
+
+### Exclude relations from a project export
+
+To reduce the size of an export or avoid timeouts, use `excluded_relations` to leave out data.
+The archive does not contain excluded relations and so excluded relations can't be imported.
+
+Valid names for `excluded_relations` include `issues`, `merge_requests`, `ci_pipelines`, `uploads`,
+`lfs_objects`, `avatar`, and `wiki_repository`. For other project data, use the relation names under
+`tree.project` or `ee.tree.project` (GitLab Enterprise Edition) in
+[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml).
+
+You cannot exclude:
+
+- `project`, because the import of the archive will fail.
+- `repository`, `snippets_repository`, and `design_repository`, because the archive will restore a
+  broken project. The `snippets` relation and the design records in the `issues` relation point to content
+  that is stored in the snippet and design repositories.
+
+If the request contains a name that is unknown or cannot be excluded, the API returns `400 Bad request`
+and a message that lists those names, for example `Invalid excluded_relations: repository`.
+
+The following example excludes the `uploads` and `lfs_objects` relations:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/export" \
+  --data "excluded_relations[]=uploads" \
+  --data "excluded_relations[]=lfs_objects"
 ```
 
 ## Retrieve the status of a project export

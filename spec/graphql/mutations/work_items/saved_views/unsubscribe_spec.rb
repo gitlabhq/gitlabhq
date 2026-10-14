@@ -32,11 +32,12 @@ RSpec.describe Mutations::WorkItems::SavedViews::Unsubscribe, feature_category: 
       let_it_be(:guest_user) { create(:user, guest_of: [project]) }
       let(:current_ctx) { { current_user: guest_user } }
 
-      it 'allows unsubscription from the saved view' do
-        create(:user_saved_view, user: guest_user, saved_view: saved_view)
+      it 'allows unsubscription from the saved view', :aggregate_failures do
+        create(:user_saved_view, user: guest_user, saved_view: saved_view, namespace: project.project_namespace)
 
-        result = resolve_mutation(id: saved_view.to_global_id)
-
+        result = nil
+        expect { result = resolve_mutation(id: saved_view.to_global_id) }
+          .to change { WorkItems::SavedViews::UserSavedView.count }.by(-1)
         expect(result[:saved_view]).to eq(saved_view)
       end
     end

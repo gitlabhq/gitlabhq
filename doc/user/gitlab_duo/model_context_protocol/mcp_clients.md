@@ -423,13 +423,17 @@ you must review that tool unless you've approved it for the entire session:
 
 1. Open VS Code.
 1. In the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** or **Flows** tab.
+1. If you use the [classic layout](../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide),
+   select the **Chat** or **Flows** tab.
 1. In the text box, enter a question or specify a code task.
 1. Submit the question or code task.
-1. The **Tool Approval Required** dialog appears in these cases:
+1. A tool approval request appears in these cases:
 
    - GitLab Duo is calling that tool for the first time in your session.
    - You have not approved that tool for the entire session.
+
+   In the new layout, the request appears in the conversation, marked **Pending**.
+   In the classic layout, the **Tool Approval Required** dialog appears.
 
 1. Approve or deny the tool:
 
@@ -440,8 +444,10 @@ you must review that tool unless you've approved it for the entire session:
        You can approve only MCP server-provided tools for the session. You cannot
        approve terminal or CLI commands.
 
-   - For Chat, if you deny the tool, the **Provide Rejection Reason** dialog appears.
-     Enter a rejection reason, then select **Submit Rejection**.
+   - For Chat, to deny the tool:
+     - In the new layout, select **Deny**. Optional. Enter a reason, then select **Deny** again.
+     - In the classic layout, select **Deny**. In the **Provide Rejection Reason** dialog,
+       enter a rejection reason, then select **Submit Rejection**.
 
      Chat might take action based on the reason you provide, such as
      suggesting a new approach, or creating an issue.

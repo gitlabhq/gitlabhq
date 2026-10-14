@@ -13,12 +13,18 @@ module Atlassian
 
         ALGORITHM = 'RS256'
         DEFAULT_PUBLIC_KEY_CDN_URL = 'https://connect-install-keys.atlassian.com'
+        GOV_CLOUD_PUBLIC_KEY_CDN_URL = 'https://connect-install-keys.atlassian-us-gov-mod.com'
         PROXY_PUBLIC_KEY_PATH = '/-/jira_connect/public_keys'
         KEY_ID_REGEX = %r{\A[A-Za-z0-9_\-\/]+\z}
 
-        def initialize(token, verification_claims)
+        # @param token [String] the lifecycle event JWT
+        # @param verification_claims [Hash] the expected aud, iss, and qsh claims
+        # @param base_url [String, nil] the Jira site base URL from the unverified payload. It only selects
+        #   one of the fixed Atlassian key servers, so the signature check still decides validity.
+        def initialize(token, verification_claims, base_url: nil)
           @token = token
           @verification_claims = verification_claims
+          @base_url = base_url
         end
 
         def valid?
@@ -79,7 +85,11 @@ module Atlassian
         end
 
         def public_key_cdn_url
-          public_key_cdn_url_setting.presence || DEFAULT_PUBLIC_KEY_CDN_URL
+          public_key_cdn_url_setting.presence || atlassian_public_key_cdn_url
+        end
+
+        def atlassian_public_key_cdn_url
+          Atlassian::JiraConnect.gov_cloud?(@base_url) ? GOV_CLOUD_PUBLIC_KEY_CDN_URL : DEFAULT_PUBLIC_KEY_CDN_URL
         end
 
         def public_key_cdn_url_setting

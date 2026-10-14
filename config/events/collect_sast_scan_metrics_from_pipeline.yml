@@ -58,3 +58,5 @@ additional_properties:
     description: "pipeline context: merge_request_event, push, schedule, etc."
   perf_breakdown:
     description: "engine-specific performance breakdown as a JSON-encoded string (must not be a nested object — the event validator rejects Hash/Array values); keys carry unit suffixes (_s, _bytes, _count)"
+  dedup_dropped:
+    description: "number of findings the analyzer dropped as duplicates"

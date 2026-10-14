@@ -504,6 +504,8 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         it_behaves_like 'post project export start'
 
         context 'with excluded_relations param' do
+          using RSpec::Parameterized::TableSyntax
+
           around do |example|
             Grape::Endpoint.before_each do |endpoint|
               allow(endpoint).to receive(:user_project).and_return(project)
@@ -542,6 +544,82 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
             post api(path, user), params: {}
 
             expect(response).to have_gitlab_http_status(:accepted)
+          end
+
+          it 'accepts uploads and lfs_objects and passes them to add_export_job' do
+            expect(project).to receive(:add_export_job).with(
+              current_user: user,
+              after_export_strategy: nil,
+              params: hash_including(excluded_relations: %w[uploads lfs_objects])
+            )
+
+            post api(path, user), params: { excluded_relations: %w[uploads lfs_objects] }
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end
+
+          it 'enqueues the relation exports with the excluded relations' do
+            expect(Projects::ImportExport::CreateRelationExportsWorker).to receive(:perform_async).with(
+              user.id,
+              project.id,
+              nil,
+              hash_including('excluded_relations' => %w[uploads lfs_objects])
+            )
+
+            post api(path, user), params: { excluded_relations: %w[uploads lfs_objects] }
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end
+
+          context 'with a relation that can be excluded' do
+            where(:relation) do
+              [['uploads'], ['lfs_objects'], ['avatar'], ['wiki_repository'], ['merge_requests'], ['commit_notes']]
+            end
+
+            with_them do
+              it 'returns the same status as an export without excluded relations' do
+                expect(project).to receive(:add_export_job)
+
+                post api(path, user), params: { excluded_relations: [relation] }
+
+                expect(response).to have_gitlab_http_status(:accepted)
+              end
+            end
+          end
+
+          context 'with a relation that must not be excluded' do
+            where(:relation) do
+              [['project'], ['repository'], ['snippets_repository'], ['design_repository']]
+            end
+
+            with_them do
+              it 'returns 400 and does not start an export' do
+                expect(project).not_to receive(:add_export_job)
+
+                post api(path, user), params: { excluded_relations: [relation] }
+
+                expect(response).to have_gitlab_http_status(:bad_request)
+                expect(json_response['message']).to eq("Invalid excluded_relations: #{relation}")
+              end
+            end
+          end
+
+          it 'returns 400 with the unknown relation name' do
+            expect(project).not_to receive(:add_export_job)
+
+            post api(path, user), params: { excluded_relations: %w[totally_invalid_relation] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('Invalid excluded_relations: totally_invalid_relation')
+          end
+
+          it 'returns 400 listing only the invalid names when valid extra relations are sent along' do
+            expect(project).not_to receive(:add_export_job)
+
+            post api(path, user), params: { excluded_relations: %w[uploads totally_invalid_relation lfs_objects project] }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('Invalid excluded_relations: totally_invalid_relation, project')
           end
         end
 

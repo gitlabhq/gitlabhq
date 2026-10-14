@@ -334,6 +334,50 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    If you're using a different Ingress class, modify the `ingress.className` parameter.
 
+### Trust a custom certificate authority
+
+If your GitLab instance uses a certificate from a private certificate authority (CA),
+the workspaces proxy must trust that CA to connect to GitLab. Otherwise, requests from
+the proxy to GitLab fail with a certificate error.
+
+The proxy reads trusted CA certificates from `/etc/ssl/certs/ca-certificates.crt` in its container.
+To replace that file with a bundle that includes your CA:
+
+1. Create a bundle that contains the public CA certificates and your CA certificate.
+   For example, on a host that has the CA bundle at `/etc/ssl/certs/ca-certificates.crt` and
+   your CA certificate in `my-ca.crt`:
+
+   ```shell
+   cat /etc/ssl/certs/ca-certificates.crt my-ca.crt > ca-certificates.crt
+   ```
+
+1. Store the bundle in a ConfigMap:
+
+   ```shell
+   kubectl -n gitlab-workspaces create configmap custom-ca-bundle \
+     --from-file=ca-certificates.crt
+   ```
+
+1. Create a file named `custom-ca-values.yaml` that mounts the ConfigMap over the CA file:
+
+   ```yaml
+   volumes:
+     - name: custom-ca
+       configMap:
+         name: custom-ca-bundle
+   volumeMounts:
+     - name: custom-ca
+       mountPath: /etc/ssl/certs/ca-certificates.crt
+       subPath: ca-certificates.crt
+       readOnly: true
+   ```
+
+1. Run the `helm upgrade --install` command from the previous section again,
+   and add `--values="custom-ca-values.yaml"`.
+
+Kubernetes does not update a ConfigMap mounted with `subPath` in running pods.
+After you change the bundle, restart the proxy pods.
+
 ## Verify your setup
 
 1. Verify the Ingress configuration for the `gitlab-workspaces` namespace:

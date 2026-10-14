@@ -16,12 +16,13 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
     let(:public_key) { private_key.public_key }
     let(:stub_asymmetric_jwt_cdn) { 'https://connect-install-keys.atlassian.com' }
     let(:jira_connect_proxy_url_setting) { nil }
+    let(:base_url) { 'https://example.atlassian.net' }
     let(:install_keys_url) { "#{stub_asymmetric_jwt_cdn}/#{public_key_id}" }
     let(:qsh) do
       Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/installed', 'POST', 'https://gitlab.test')
     end
 
-    subject(:asymmetric_jwt) { described_class.new(jwt, verification_claims) }
+    subject(:asymmetric_jwt) { described_class.new(jwt, verification_claims, base_url: base_url) }
 
     before do
       stub_request(:get, install_keys_url)
@@ -36,6 +37,27 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
       expect(asymmetric_jwt).to be_valid
 
       expect(WebMock).to have_requested(:get, install_keys_url)
+    end
+
+    context 'when base URL is an Atlassian Government Cloud site' do
+      let(:base_url) { 'https://example.atlassian-us-gov-mod.net' }
+      let(:stub_asymmetric_jwt_cdn) { 'https://connect-install-keys.atlassian-us-gov-mod.com' }
+
+      it 'returns true when verified with public key from the AGC CDN', :aggregate_failures do
+        expect(asymmetric_jwt).to be_valid
+
+        expect(WebMock).to have_requested(:get, install_keys_url)
+      end
+    end
+
+    context 'when base URL is nil' do
+      let(:base_url) { nil }
+
+      it 'requests the default CDN', :aggregate_failures do
+        expect(asymmetric_jwt).to be_valid
+
+        expect(WebMock).to have_requested(:get, install_keys_url)
+      end
     end
 
     context 'JWT does not contain a key ID' do
@@ -115,6 +137,16 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
         expect(asymmetric_jwt).to be_valid
 
         expect(WebMock).to have_requested(:get, "https://example.com/-/jira_connect/public_keys/#{public_key_id}")
+      end
+
+      context 'when base URL is an Atlassian Government Cloud site' do
+        let(:base_url) { 'https://example.atlassian-us-gov-mod.net' }
+
+        it 'requests the settings CDN', :aggregate_failures do
+          expect(asymmetric_jwt).to be_valid
+
+          expect(WebMock).to have_requested(:get, "https://example.com/-/jira_connect/public_keys/#{public_key_id}")
+        end
       end
 
       context 'when the setting is an empty string', :aggregate_failures do

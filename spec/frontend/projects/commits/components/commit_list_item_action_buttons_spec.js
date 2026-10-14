@@ -57,6 +57,14 @@ describe('CommitListItemActionButtons', () => {
       expect(browseButton.attributes('aria-label')).toBe('Browse commit files');
     });
 
+    it('links to the blob at the commit SHA when a file path is set', () => {
+      createComponent({ currentPath: 'app/models/user.rb' });
+
+      expect(findBrowseFilesButton().attributes('href')).toBe(
+        `${mockProjectRootPath}/-/blob/${mockCommit.sha}/app/models/user.rb`,
+      );
+    });
+
     it('has a tooltip', () => {
       expect(findBrowseFilesButton().attributes('title')).toBe('Browse commit files');
     });

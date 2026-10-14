@@ -341,4 +341,37 @@ describe('content_editor/extensions/reference', () => {
       expect(tiptapEditor.getJSON()).toEqual(expectedDoc().toJSON());
     });
   });
+
+  describe('when parsing a rendered reference', () => {
+    const renderedLabel = (original, name) =>
+      `<p><span class="gl-label"><a href="/gitlab-org/gitlab/-/issues?label_name=${name}" class="gfm gfm-label has-tooltip gl-link gl-label-link" data-original="${original}" data-link="false" data-link-reference="false" data-reference-type="label"><span class="gl-label-text gl-label-text-light" style="background-color: #cc338b">${name}</span></a></span></p>`;
+    const renderedReference = (type, original, content) =>
+      `<p><a href="/path" class="gfm gfm-${type}" data-original="${original}" data-link="false" data-link-reference="false" data-reference-type="${type}">${content}</a></p>`;
+
+    const parsedAttrs = (html) => {
+      tiptapEditor.commands.setContent(html);
+
+      return tiptapEditor.getJSON().content[0].content[0].attrs;
+    };
+
+    it.each`
+      description                      | html                                                                                | originalText
+      ${'a label with spaces'}         | ${renderedLabel('~&amp;quot;UX Paper Cuts&amp;quot;', 'UX Paper Cuts')}             | ${'~"UX Paper Cuts"'}
+      ${'a label with an ampersand'}   | ${renderedLabel('~&amp;quot;Docs &amp;amp; Guides&amp;quot;', 'Docs &amp; Guides')} | ${'~"Docs & Guides"'}
+      ${'a label with angle brackets'} | ${renderedLabel('~&amp;quot;a &amp;lt;b&amp;gt; c&amp;quot;', 'a &lt;b&gt; c')}     | ${'~"a <b> c"'}
+      ${'a label without quotes'}      | ${renderedLabel('~bug', 'bug')}                                                     | ${'~bug'}
+      ${'a milestone with spaces'}     | ${renderedReference('milestone', '%&amp;quot;Sprint 1&amp;quot;', '%Sprint 1')}     | ${'%"Sprint 1"'}
+      ${'an issue'}                    | ${renderedReference('issue', '#1', '#1')}                                           | ${'#1'}
+    `('decodes the HTML-escaped original text of $description', ({ html, originalText }) => {
+      expect(parsedAttrs(html)).toMatchObject({ originalText });
+    });
+
+    it('keeps the original text empty when the anchor has no data-original attribute', () => {
+      expect(
+        parsedAttrs(
+          '<p><a href="/root" class="gfm gfm-project_member" data-reference-type="user">@root</a></p>',
+        ),
+      ).toMatchObject({ originalText: null });
+    });
+  });
 });

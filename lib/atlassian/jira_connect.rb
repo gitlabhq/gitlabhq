@@ -2,6 +2,8 @@
 
 module Atlassian
   module JiraConnect
+    GOV_CLOUD_HOST_SUFFIXES = %w[.atlassian-us-gov-mod.net .atlassian-us-gov-mod.com].freeze
+
     class << self
       def app_name
         "GitLab for Jira (#{gitlab_host})"
@@ -16,6 +18,17 @@ module Atlassian
 
       def display_name
         gitlab_host == 'gitlab.com' ? 'GitLab' : "GitLab (#{gitlab_host})"
+      end
+
+      # Whether the URL belongs to an Atlassian Government Cloud (AGC) site.
+      #
+      # @param url [String, nil] a Jira site URL, such as an installation base URL
+      # @return [Boolean]
+      def gov_cloud?(url)
+        host = Gitlab::Utils.parse_url(url)&.host&.downcase
+        return false if host.blank?
+
+        GOV_CLOUD_HOST_SUFFIXES.any? { |suffix| host.end_with?(suffix) }
       end
 
       private

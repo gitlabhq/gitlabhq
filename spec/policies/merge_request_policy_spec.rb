@@ -462,7 +462,10 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
 
   context 'when user is an inherited member from a shared group' do
     let_it_be(:project) { create(:project, :public, guests: author) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
+    let(:merge_request) do
+      build_stubbed(:merge_request, source_project: project, target_project: project, author: user)
+    end
+
     let(:user) { author }
 
     context 'and group is given developer access' do

@@ -592,6 +592,36 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
             .find_by(stage_event_hash_id: old_hash.id, issue_id: other_issue.id)).to be_present
         end
 
+        it 'keeps an existing target event and removes the source event' do
+          old_hash = stage.stage_event_hash
+          target_hash = Analytics::CycleAnalytics::StageEventHash.create!(
+            organization: new_organization,
+            hash_sha256: old_hash.hash_sha256
+          )
+          merge_request = create(:merge_request, source_project: project)
+          create(:cycle_analytics_merge_request_stage_event,
+            stage_event_hash_id: old_hash.id,
+            merge_request_id: merge_request.id,
+            group_id: group.id,
+            project_id: project.id
+          )
+          target_event = create(:cycle_analytics_merge_request_stage_event,
+            stage_event_hash_id: target_hash.id,
+            merge_request_id: merge_request.id,
+            group_id: group.id,
+            project_id: project.id,
+            duration_in_milliseconds: 1
+          )
+
+          expect(service.execute).to be_success
+
+          expect(Analytics::CycleAnalytics::MergeRequestStageEvent
+            .find_by(stage_event_hash_id: old_hash.id, merge_request_id: merge_request.id)).to be_nil
+          expect(Analytics::CycleAnalytics::MergeRequestStageEvent
+            .find_by(stage_event_hash_id: target_hash.id, merge_request_id: merge_request.id)
+            .duration_in_milliseconds).to eq(target_event.duration_in_milliseconds)
+        end
+
         it 'covers all StageEventModel implementors' do
           Rails.autoloaders.main.eager_load_namespace(Analytics::CycleAnalytics)
 
@@ -666,6 +696,25 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
             expect(Analytics::CycleAnalytics::IssueStageEvent.where(stage_event_hash_id: new_hash.id).pluck(:issue_id))
               .to match_array(issues.map(&:id))
             expect(Analytics::CycleAnalytics::IssueStageEvent.where(stage_event_hash_id: old_hash.id)).to be_empty
+          end
+
+          it 'moves events of subgroups in a different batch from the stage' do
+            old_hash = stage.stage_event_hash
+            issue = create(:issue, project: nested_project)
+            create(:cycle_analytics_issue_stage_event,
+              stage_event_hash_id: old_hash.id,
+              issue_id: issue.id,
+              group_id: nested_subgroup.id,
+              project_id: nested_project.id
+            )
+
+            service.execute
+
+            new_hash = stage.reload.stage_event_hash
+            expect(Analytics::CycleAnalytics::IssueStageEvent
+              .find_by(stage_event_hash_id: new_hash.id, issue_id: issue.id)).to be_present
+            expect(Analytics::CycleAnalytics::IssueStageEvent
+              .find_by(stage_event_hash_id: old_hash.id, issue_id: issue.id)).to be_nil
           end
         end
 

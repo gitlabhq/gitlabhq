@@ -228,6 +228,76 @@ RSpec.describe ProjectExportJob, feature_category: :importers do
     end
   end
 
+  describe '#find_or_create_relation_exports!' do
+    let_it_be(:export_job) { create(:project_export_job) }
+
+    let(:all_relation_names) { Projects::ImportExport::RelationExport.relation_names_list }
+
+    it 'creates a relation export for every relation' do
+      relation_exports = export_job.find_or_create_relation_exports!
+
+      expect(relation_exports.map(&:relation)).to match_array(all_relation_names)
+    end
+
+    it 'does not create duplicates when called again' do
+      export_job.find_or_create_relation_exports!
+
+      expect { export_job.find_or_create_relation_exports! }.not_to change { export_job.relation_exports.count }
+    end
+
+    context 'with excluded relations' do
+      let(:excluded_relations) { %w[uploads lfs_objects] }
+
+      it 'does not create relation exports for them', :aggregate_failures do
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: excluded_relations)
+
+        expect(relation_exports.map(&:relation)).not_to include(*excluded_relations)
+        expect(export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+      end
+
+      it 'creates a relation export for every other relation' do
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: excluded_relations)
+
+        expect(relation_exports.map(&:relation)).to match_array(all_relation_names - excluded_relations)
+        expect(export_job.relation_exports.pluck(:relation)).to match_array(all_relation_names - excluded_relations)
+      end
+
+      it 'skips tree relations as well' do
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: %w[issues merge_requests])
+
+        expect(relation_exports.map(&:relation)).to match_array(all_relation_names - %w[issues merge_requests])
+      end
+
+      it 'accepts symbols' do
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: [:uploads])
+
+        expect(relation_exports.map(&:relation)).to match_array(all_relation_names - %w[uploads])
+      end
+
+      it 'ignores names that are not relations' do
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: %w[uploads unknown])
+
+        expect(relation_exports.map(&:relation)).to match_array(all_relation_names - %w[uploads])
+      end
+
+      it 'still creates relation exports for relations that must not be excluded' do
+        excluded_relations = %w[project repository snippets_repository design_repository]
+
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: excluded_relations)
+
+        expect(relation_exports.map(&:relation)).to match_array(all_relation_names)
+      end
+    end
+
+    context 'when excluded relations is nil' do
+      it 'creates a relation export for every relation' do
+        relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: nil)
+
+        expect(relation_exports.map(&:relation)).to match_array(all_relation_names)
+      end
+    end
+  end
+
   describe '#finish' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }

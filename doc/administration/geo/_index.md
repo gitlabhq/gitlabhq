@@ -52,6 +52,12 @@ Benefits:
 
 Establish Geo secondary sites geographically closer to your remote teams to provide local caches that accelerate read operations. You can have multiple Geo secondary sites, each tailored to synchronize only the projects your remote teams need. [Transparent proxying](secondary_proxy/_index.md) and geographic routing with [unified URL](replication/location_aware_git_url.md) ensures a consistent and seamless developer experience.
 
+Geo serves Git read requests and LFS objects over Git from a secondary site when the data is up to date.
+Secondary sites also serve static assets, such as JavaScript, CSS, and images, locally.
+Most other requests, including project content in the web UI, user uploads, and advanced search,
+are transparently proxied to the primary site and are not accelerated.
+For more information, see [features accelerated by secondary Geo sites](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites).
+
 Benefits:
 
 - Improve the GitLab experience for geographically distributed teams. Geo offers a complete GitLab experience on secondary sites: maintain one primary GitLab site while enabling secondary sites with read-write access and a complete UI experience for each of your distributed teams.
@@ -165,12 +171,12 @@ In this diagram:
 From the perspective of a user performing Git operations:
 
 - The primary site behaves as a full read-write GitLab instance.
-- Secondary sites behave as full read-write GitLab instances. Secondary sites transparently proxy all operations to the primary site, with [some notable exceptions](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites). In particular, Git fetches are served by the secondary site when it is up-to-date.
+- Secondary sites behave as full read-write GitLab instances. They transparently proxy most requests to the primary site, but serve Git fetches locally when the data is up to date.
 
 From the perspective of a user browsing the GitLab UI, or using the API:
 
 - The primary site behaves as a full read-write GitLab instance.
-- Secondary sites behave as full read-write GitLab instances. Secondary sites transparently proxy all operations to the primary site, with [some notable exceptions](secondary_proxy/_index.md#features-accelerated-by-secondary-geo-sites). In particular, web UI assets are served by the secondary site.
+- Secondary sites behave as full read-write GitLab instances. They transparently proxy most requests to the primary site, but serve static web UI assets locally.
 
 To simplify the diagram, some necessary components are omitted.
 

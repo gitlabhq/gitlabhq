@@ -522,8 +522,6 @@ methods:
   - experiment_configuration
   ee/app/models/security/orchestration_policy_rule_schedule.rb:
   - for_agent?
-  ee/app/models/security/policy.rb:
-  - self.delete_by_ids
   ee/app/models/virtual_registries/cleanup/policy.rb:
   - self.declarative_policy_class
   ee/app/models/virtual_registries/container/cache/remote/entry.rb:

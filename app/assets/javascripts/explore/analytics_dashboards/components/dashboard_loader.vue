@@ -5,7 +5,6 @@ import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { RESOURCE_ACCESS_ERROR } from '~/graphql_shared/constants';
 import {
   FULL_DASHBOARD_WIDTH,
-  GRID_HEIGHT_COMPACT,
   GRID_HEIGHT_COMPACT_CELL_HEIGHT,
   GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT,
 } from '../constants';
@@ -34,6 +33,9 @@ export default {
     notFoundDescription: s__('Analytics|No dashboard matches the specified URL path.'),
     notFoundActionBtn: s__('Analytics|View available dashboards'),
   },
+  // Explore dashboards always use the compact grid; the `gridHeight` config value is ignored.
+  cellHeight: GRID_HEIGHT_COMPACT_CELL_HEIGHT,
+  minCellHeight: GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT,
   data() {
     return {
       dashboard: null,
@@ -67,16 +69,6 @@ export default {
           ? { views: views.map((view) => ({ ...view, panels: this.assignPanelIds(view.panels) })) }
           : {}),
       };
-    },
-    // The raw schema value is `compact` (lowercased)
-    isCompactGrid() {
-      return this.config.gridHeight?.toUpperCase() === GRID_HEIGHT_COMPACT;
-    },
-    cellHeight() {
-      return this.isCompactGrid ? GRID_HEIGHT_COMPACT_CELL_HEIGHT : undefined;
-    },
-    minCellHeight() {
-      return this.isCompactGrid ? GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT : undefined;
     },
   },
   watch: {
@@ -166,8 +158,8 @@ export default {
       name="dashboard"
       :dashboard-id="dashboardId"
       :config="config"
-      :cell-height="cellHeight"
-      :min-cell-height="minCellHeight"
+      :cell-height="$options.cellHeight"
+      :min-cell-height="$options.minCellHeight"
       :is-system-dashboard="isSystemDashboard"
     ></slot>
   </div>

@@ -56,6 +56,26 @@ RSpec.describe Projects::ImportExport::RelationExport, feature_category: :import
     end
   end
 
+  describe '.excludable_relation_names' do
+    subject(:excludable_relation_names) { described_class.excludable_relation_names }
+
+    it 'includes tree relations and the extra relations that can be missing from the archive', :aggregate_failures do
+      expect(excludable_relation_names).to include(
+        'issues', 'merge_requests', 'milestones', 'commit_notes', 'avatar', 'lfs_objects', 'uploads', 'wiki_repository'
+      )
+    end
+
+    it 'does not include relations the importer needs to restore a usable project', :aggregate_failures do
+      expect(excludable_relation_names).not_to include(
+        'project', 'repository', 'snippets_repository', 'design_repository'
+      )
+    end
+
+    it 'only contains relations that get a relation export' do
+      expect(described_class.relation_names_list).to include(*excludable_relation_names)
+    end
+  end
+
   describe '#mark_as_failed' do
     it 'sets status to failed and sets the export error', :aggregate_failures do
       relation_export = create(:project_relation_export)

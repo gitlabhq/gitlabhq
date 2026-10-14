@@ -5,8 +5,8 @@ import {
   GlTooltipDirective,
   GlToastMixin,
 } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { getBrowseFilesPath } from '../utils/browse_files_path';
 
 export default {
   name: 'CommitListItemOverflowMenu',
@@ -24,10 +24,19 @@ export default {
       type: Object,
       required: true,
     },
+    currentPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     browseFilesPath() {
-      return joinPaths(this.projectRootPath, '-', 'tree', this.commit.sha);
+      return getBrowseFilesPath({
+        projectRootPath: this.projectRootPath,
+        commitSha: this.commit.sha,
+        currentPath: this.currentPath,
+      });
     },
     dropdownItems() {
       return [

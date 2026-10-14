@@ -37,7 +37,11 @@ module Projects
           return re_enqueue_job(user_id, project_id, after_export_strategy, params, project_export_job)
         end
 
-        project_export_job.find_or_create_relation_exports!.each do |relation_export|
+        relation_exports = project_export_job.find_or_create_relation_exports!(
+          excluded_relations: params['excluded_relations']
+        )
+
+        relation_exports.each do |relation_export|
           RelationExportWorker.with_status.perform_async(relation_export.id, user_id, params)
         end
 

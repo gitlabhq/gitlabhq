@@ -966,12 +966,63 @@ Grants the ability to lock namespace duo features.
 
 ### Geo resources
 
-#### Geo Registry
+#### Geo Node
 
-Grants the ability to update Geo registries.
+Grants the ability to create, delete, read, repair, and update Geo nodes.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `GeoNode` |
+
+#### Geo Registry
+
+Grants the ability to read and update Geo registries.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `AbuseReportUploadRegistry` |
+| Read | Instance | Type | `AchievementUploadRegistry` |
+| Read | Instance | Type | `AiVectorizableFileUploadRegistry` |
+| Read | Instance | Type | `AlertManagementMetricImageUploadRegistry` |
+| Read | Instance | Type | `AppearanceUploadRegistry` |
+| Read | Instance | Type | `BulkImportExportUploadUploadRegistry` |
+| Read | Instance | Type | `CiSecureFileRegistry` |
+| Read | Instance | Type | `ContainerRepositoryRegistry` |
+| Read | Instance | Type | `DependencyListExportPartUploadRegistry` |
+| Read | Instance | Type | `DependencyListExportUploadRegistry` |
+| Read | Instance | Type | `DependencyProxyBlobRegistry` |
+| Read | Instance | Type | `DependencyProxyManifestRegistry` |
+| Read | Instance | Type | `DesignManagementActionUploadRegistry` |
+| Read | Instance | Type | `DesignManagementRepositoryRegistry` |
+| Read | Instance | Type | `GroupUploadRegistry` |
+| Read | Instance | Type | `GroupWikiRepositoryRegistry` |
+| Read | Instance | Type | `ImportExportUploadUploadRegistry` |
+| Read | Instance | Type | `IssuableMetricImageUploadRegistry` |
+| Read | Instance | Type | `JobArtifactRegistry` |
+| Read | Instance | Type | `LfsObjectRegistry` |
+| Read | Instance | Type | `MergeRequestDiffRegistry` |
+| Read | Instance | Type | `OrganizationDetailUploadRegistry` |
+| Read | Instance | Type | `PackageFileRegistry` |
+| Read | Instance | Type | `PackagesDebianProjectComponentFileRegistry` |
+| Read | Instance | Type | `PackagesHelmMetadataCacheRegistry` |
+| Read | Instance | Type | `PackagesNugetSymbolRegistry` |
+| Read | Instance | Type | `PagesDeploymentRegistry` |
+| Read | Instance | Type | `PersonalSnippetUploadRegistry` |
+| Read | Instance | Type | `PipelineArtifactRegistry` |
+| Read | Instance | Type | `ProjectImportExportRelationExportUploadUploadRegistry` |
+| Read | Instance | Type | `ProjectRepositoryRegistry` |
+| Read | Instance | Type | `ProjectTopicUploadRegistry` |
+| Read | Instance | Type | `ProjectUploadRegistry` |
+| Read | Instance | Type | `ProjectWikiRepositoryRegistry` |
+| Read | Instance | Type | `SnippetRepositoryRegistry` |
+| Read | Instance | Type | `TerraformStateVersionRegistry` |
+| Read | Instance | Type | `UploadRegistry` |
+| Read | Instance | Type | `UserPermissionExportUploadUploadRegistry` |
+| Read | Instance | Type | `UserUploadRegistry` |
+| Read | Instance | Type | `VulnerabilityArchiveExportUploadRegistry` |
+| Read | Instance | Type | `VulnerabilityExportPartUploadRegistry` |
+| Read | Instance | Type | `VulnerabilityExportUploadRegistry` |
+| Read | Instance | Type | `VulnerabilityRemediationUploadRegistry` |
 | Update | Instance | Mutation | `GeoRegistriesBulkUpdate` |
 | Update | Instance | Mutation | `GeoRegistriesUpdate` |
 

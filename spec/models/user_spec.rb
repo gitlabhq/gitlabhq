@@ -2086,12 +2086,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
 
-    describe 'order_random' do
-      it 'returns a relation with a random order applied' do
-        expect(described_class.order_random.to_sql).to include('random()')
-      end
-    end
-
     context 'blocked users' do
       let_it_be(:active_user) { create(:user) }
       let_it_be(:blocked_user) { create(:user, :blocked) }

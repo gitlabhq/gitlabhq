@@ -54919,6 +54919,7 @@ Fields:
 | <a id="mergerequestriskassessment-confidence"></a>`confidence` | [`Int`](#int) | Confidence in the score, from 0 to 100. Derived from how much of the change could be measured and whether the signals agreed. |
 | <a id="mergerequestriskassessment-confidencetier"></a>`confidenceTier` | [`MergeRequestRiskConfidenceTier`](#mergerequestriskconfidencetier) | Tier derived from the confidence score. |
 | <a id="mergerequestriskassessment-contributingsignals"></a>`contributingSignals` | [`[MergeRequestRiskContributingSignal!]!`](#mergerequestriskcontributingsignal) | What each signal contributed to the score. |
+| <a id="mergerequestriskassessment-contributions"></a>`contributions` | [`[MergeRequestRiskContribution!]!`](#mergerequestriskcontribution) | What each signal and risk domain contributed to the score. |
 | <a id="mergerequestriskassessment-domaintags"></a>`domainTags` | [`[String!]!`](#string) | Risk domains the change touches, used to route specialist review. |
 | <a id="mergerequestriskassessment-duoworkflowid"></a>`duoWorkflowId` | [`Int`](#int) | ID of the Duo workflow session that produced the assessment. |
 | <a id="mergerequestriskassessment-missingsignals"></a>`missingSignals` | [`[MergeRequestRiskMissingSignal!]!`](#mergerequestriskmissingsignal) | Signals that could not be measured, which is why confidence may be low. |
@@ -54940,6 +54941,20 @@ Fields:
 | <a id="mergerequestriskcontributingsignal-detail"></a>`detail` | [`String`](#string) | Human-readable explanation of the contribution. |
 | <a id="mergerequestriskcontributingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain. |
 | <a id="mergerequestriskcontributingsignal-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim. |
+
+### `MergeRequestRiskContribution`
+
+Contribution a signal or a risk domain made to a merge request risk score.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestriskcontribution-contribution"></a>`contribution` | [`Float!`](#float) | Points the signal or risk domain added to the overall score. |
+| <a id="mergerequestriskcontribution-description"></a>`description` | [`String`](#string) | Human-readable name of the signal or risk domain. |
+| <a id="mergerequestriskcontribution-evidence"></a>`evidence` | [`String`](#string) | Human-readable explanation of the contribution. |
+| <a id="mergerequestriskcontribution-identifier"></a>`identifier` | [`String!`](#string) | Name of the signal or risk domain. |
+| <a id="mergerequestriskcontribution-kind"></a>`kind` | [`MergeRequestRiskContributionKind!`](#mergerequestriskcontributionkind) | Whether the contribution came from a signal or a risk domain. |
 
 ### `MergeRequestRiskMissingSignal`
 
@@ -56743,7 +56758,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="orbittrial-credits"></a>`credits` {{< icon name="warning-solid" >}} | [`OrbitTrialCredits`](#orbittrialcredits) | Introduced in GitLab 19.5. Status: Experiment. Credits of the trial. |
 | <a id="orbittrial-expireson"></a>`expiresOn` {{< icon name="warning-solid" >}} | [`Date`](#date) | Introduced in GitLab 19.5. Status: Experiment. Last day of the trial, in UTC. Null before a trial starts. |
-| <a id="orbittrial-offer"></a>`offer` {{< icon name="warning-solid" >}} | [`OrbitTrialOffer`](#orbittrialoffer) | Introduced in GitLab 19.6. Status: Experiment. Terms of a new trial. Null unless the group can start one and CustomersDot sends valid terms. |
+| <a id="orbittrial-offer"></a>`offer` {{< icon name="warning-solid" >}} | [`OrbitTrialOffer`](#orbittrialoffer) | Introduced in GitLab 19.6. Status: Experiment. Terms of a new trial. Null unless the current user can start the trial and CustomersDot sends valid terms. |
 | <a id="orbittrial-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitTrialState!`](#orbittrialstate) | Introduced in GitLab 19.5. Status: Experiment. State of the trial. |
 
 ### `OrbitTrialCredits`
@@ -72067,6 +72082,7 @@ Type of a dependency firewall policy rule.
 | ----- | ----------- |
 | <a id="dependencyfirewallruletype-license"></a>`LICENSE` | Rule matching on package licenses. |
 | <a id="dependencyfirewallruletype-malicious"></a>`MALICIOUS` | Rule matching on packages flagged as malicious. |
+| <a id="dependencyfirewallruletype-package_version"></a>`PACKAGE_VERSION` | Rule matching on an exact package name and version. |
 | <a id="dependencyfirewallruletype-risk_severity"></a>`RISK_SEVERITY` | Rule matching on vulnerability counts per severity level. |
 | <a id="dependencyfirewallruletype-vulnerability"></a>`VULNERABILITY` | Rule matching on package vulnerabilities. |
 
@@ -73685,6 +73701,15 @@ Confidence tier derived from a merge request risk confidence score.
 | <a id="mergerequestriskconfidencetier-medium"></a>`MEDIUM` | Medium confidence. |
 | <a id="mergerequestriskconfidencetier-very_high"></a>`VERY_HIGH` | Very high confidence. |
 
+### `MergeRequestRiskContributionKind`
+
+What made a contribution to a merge request risk score.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergerequestriskcontributionkind-domain"></a>`DOMAIN` | Risk domain the classification flagged as touched. |
+| <a id="mergerequestriskcontributionkind-signal"></a>`SIGNAL` | Signal measured from the merge request. |
+
 ### `MergeRequestRiskTier`
 
 Risk tier derived from a merge request risk score.
@@ -74070,6 +74095,7 @@ Reason the current user cannot turn Orbit on for a group.
 | Value | Description |
 | ----- | ----------- |
 | <a id="orbitturnondenialreason-forbidden"></a>`FORBIDDEN` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. User lacks permission to turn Orbit on for the group. |
+| <a id="orbitturnondenialreason-purchase_required"></a>`PURCHASE_REQUIRED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.6. Status: Experiment. Group must purchase Orbit before it can be turned on, because no trial can start. |
 | <a id="orbitturnondenialreason-trial_ended"></a>`TRIAL_ENDED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Trial has ended, so Orbit can no longer be turned on. |
 | <a id="orbitturnondenialreason-trial_required"></a>`TRIAL_REQUIRED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Group must start a trial before Orbit can be turned on. |
 | <a id="orbitturnondenialreason-unavailable"></a>`UNAVAILABLE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Trial status could not be read from CustomersDot. |

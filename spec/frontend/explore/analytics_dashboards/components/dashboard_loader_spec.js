@@ -5,7 +5,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
-import { GRID_HEIGHT_COMPACT } from '~/explore/analytics_dashboards/constants';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
 import getSystemDashboardQuery from '~/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
@@ -124,14 +123,6 @@ describe('DashboardLoader', () => {
       );
     });
 
-    it('passes cellHeight to the slot for a non-compact grid', () => {
-      expect(getSlotProp('cellHeight')).toBe('');
-    });
-
-    it('passes minCellHeight to the slot for a non-compact grid', () => {
-      expect(getSlotProp('minCellHeight')).toBe('');
-    });
-
     it('passes isSystemDashboard as false to the slot for a custom dashboard', () => {
       expect(getSlotProp('isSystemDashboard')).toBe('false');
     });
@@ -247,10 +238,9 @@ describe('DashboardLoader', () => {
     });
   });
 
-  // The schema spells the value in lower case, which is what this route receives; the
-  // enum name is matched too, so it is accepted whichever way it reaches us.
-  describe.each([GRID_HEIGHT_COMPACT.toLowerCase(), GRID_HEIGHT_COMPACT])(
-    'with a compact grid height of %s',
+  // The compact grid is the only one supported, whatever the config says.
+  describe.each([undefined, null, 'default', 'compact'])(
+    'with a grid height of %s',
     (gridHeight) => {
       beforeEach(async () => {
         createComponent({

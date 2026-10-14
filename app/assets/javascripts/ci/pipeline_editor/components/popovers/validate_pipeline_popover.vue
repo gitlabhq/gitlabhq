@@ -26,11 +26,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showPopover: false,
-    };
-  },
   i18n,
   VALIDATE_TAB_FEEDBACK_URL,
 };
@@ -38,7 +33,6 @@ export default {
 
 <template>
   <gl-popover
-    :show.sync="showPopover"
     :container="containerId"
     target="validate-pipeline-help"
     triggers="hover focus"

@@ -1,0 +1,11 @@
+---
+name: read_geo_registry
+description: Grants the ability to read a Geo registry.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_geo_registry
+assignable_when:
+  - condition: admin

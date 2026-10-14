@@ -84,7 +84,7 @@ To turn GitLab Duo features on or off:
 1. Restart your IDE, if prompted.
 
 When Code Suggestions is on, you can also
-[add support for more languages](../../user/project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages).
+[turn it off for specific languages](../../user/project/repository/code_suggestions/supported_extensions.md#jetbrains-ides).
 
 To approve Agentic Chat tools once per session instead of individually,
 see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).

@@ -91,6 +91,7 @@ module Organizations
       def transfer_namespaces_and_projects
         # `skope: Namespace` ensures we get both Group and ProjectNamespace types
         descendant_ids = group.self_and_descendant_ids(skope: Namespace)
+        target_hash_ids_by_source_id = transfer_stage_event_hashes(descendant_ids)
 
         descendant_ids.in_groups_of(BATCH_SIZE, false) do |batch_ids|
           Namespace.id_in(batch_ids).update_all(
@@ -111,7 +112,15 @@ module Organizations
 
           transfer_oauth_application_granular_scopes(batch_ids)
           transfer_oauth_applications(batch_ids)
-          transfer_stage_event_hashes(batch_ids)
+          target_hash_ids_by_source_id.each do |source_hash_id, target_hash_id|
+            repoint_stage_events(source_hash_id, target_hash_id, batch_ids)
+          end
+        end
+
+        # Last, so an interrupted run leaves stages on the source hashes and a re-run finds them again.
+        stages = stages_with_event_hashes(descendant_ids)
+        target_hash_ids_by_source_id.each do |source_hash_id, target_hash_id|
+          repoint_stages(stages, source_hash_id, target_hash_id)
         end
       end
 
@@ -202,9 +211,11 @@ module Organizations
       end
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      # Runs once for the whole hierarchy: event group_id is the issuable's parent group, which need not
+      # share a namespace batch with the stage that produced the event.
       def transfer_stage_event_hashes(namespace_ids)
         stages = stages_with_event_hashes(namespace_ids)
-        group_ids = namespace_ids
+        target_hash_ids_by_source_id = {}
 
         Analytics::CycleAnalytics::StageEventHash
           .where(organization_id: old_organization.id)
@@ -215,12 +226,11 @@ module Organizations
             target_ids_by_sha256 = ensure_target_stage_event_hashes(source_hashes)
 
             source_hashes.each do |source_hash|
-              target_hash_id = target_ids_by_sha256.fetch(source_hash.hash_sha256)
-
-              repoint_stages(stages, source_hash.id, target_hash_id)
-              repoint_stage_events(source_hash.id, target_hash_id, group_ids)
+              target_hash_ids_by_source_id[source_hash.id] = target_ids_by_sha256.fetch(source_hash.hash_sha256)
             end
           end
+
+        target_hash_ids_by_source_id
       end
 
       def stages_with_event_hashes(namespace_ids)
@@ -266,11 +276,16 @@ module Organizations
         stage_event_models.each do |model|
           source_events = model.where(stage_event_hash_id: source_hash_id, group_id: group_ids)
 
-          # Ordering by the issuable id has no supporting index and times out. Updated rows leave
+          # Ordering by the issuable id has no supporting index and times out. Moved rows leave
           # the scope, so an unordered limit loop terminates.
           loop do
-            updated_count = source_events.limit(BATCH_SIZE).update_all(stage_event_hash_id: target_hash_id)
-            break if updated_count == 0
+            events = source_events.limit(BATCH_SIZE).to_a
+            break if events.empty?
+
+            # Aggregation may already have written a target row for the same issuable; keep it.
+            model.insert_all(events.map { |event| event.attributes.merge('stage_event_hash_id' => target_hash_id) })
+            source_events.where(model.issuable_id_column => events.map { |event| event[model.issuable_id_column] })
+              .delete_all
           end
         end
       end

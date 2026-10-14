@@ -546,21 +546,21 @@ RSpec.shared_examples 'a policy repository' do
       expect { repository.create(valid_attributes) }.not_to raise_error
     end
 
-    it 'rejects a name the organization already uses' do
+    it 'rejects a duplicate name within the same organization and namespace' do
       repository.create(attributes)
 
       expect { repository.create(attributes) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
     end
 
-    it 'rejects a name another policy in the organization uses, whoever owns it' do
+    it 'accepts the same name in a different namespace within the same organization' do
       repository.create(attributes)
 
-      expect { repository.create(attributes.merge(namespace_id: nil)) }
-        .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
+      expect(repository.create(attributes.merge(namespace_id: nil)))
+        .to have_attributes(name: attributes[:name], namespace_id: nil)
     end
 
-    it 'accepts a name another organization already uses, because the name is scoped to one' do
+    it 'accepts a name another organization already uses, because the name is scoped to organization and namespace' do
       repository.create(attributes)
 
       expect(repository.create(attributes.merge(organization_id: other_organization_id, namespace_id: nil)))

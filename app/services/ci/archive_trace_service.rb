@@ -14,7 +14,8 @@ module Ci
     def batch_execute(worker_name:)
       start_time = Time.current
       in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
-        Ci::Build.with_stale_live_trace.find_each(batch_size: BATCH_SIZE).with_index do |build, index|
+        Ci::Build.with_stale_live_trace.eager_load_for_archiving_trace
+          .find_each(batch_size: BATCH_SIZE).with_index do |build, index|
           break if Time.current - start_time > LOOP_TIMEOUT
 
           if index > LOOP_LIMIT
@@ -33,6 +34,8 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     def execute(job, worker_name:)
+      return if job.pipeline.archived?
+
       unless job.trace.archival_attempts_available?
         Sidekiq.logger.warn(class: worker_name, message: 'The job is out of archival attempts.', job_id: job.id)
 

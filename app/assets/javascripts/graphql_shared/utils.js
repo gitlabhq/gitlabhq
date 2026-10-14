@@ -163,19 +163,12 @@ export const setupQueryPollingByVisibility = (queryRef, interval = 10000) => {
 };
 
 export const etagQueryHeaders = (featureCorrelation, etagResource = '') => {
-  const headers = {
-    'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': featureCorrelation,
-    'X-GITLAB-GRAPHQL-RESOURCE-ETAG': etagResource,
-    'X-Requested-With': 'XMLHttpRequest',
-  };
-
-  if (gon.features?.etagCachingPostRequests) {
-    return { headers };
-  }
-
   return {
-    fetchOptions: { method: 'GET' },
-    headers,
+    headers: {
+      'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': featureCorrelation,
+      'X-GITLAB-GRAPHQL-RESOURCE-ETAG': etagResource,
+      'X-Requested-With': 'XMLHttpRequest',
+    },
   };
 };
 

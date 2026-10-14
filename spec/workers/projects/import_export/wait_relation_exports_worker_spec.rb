@@ -103,6 +103,40 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
     it_behaves_like 'an idempotent worker'
   end
 
+  context 'when the export job has no relation exports for the excluded relations', :clean_gitlab_redis_queues do
+    let(:excluded_relations) { %w[uploads lfs_objects] }
+    let(:finished_status) { Projects::ImportExport::RelationExport::STATUS[:finished] }
+
+    before do
+      project_export_job.find_or_create_relation_exports!(excluded_relations: excluded_relations)
+      project_export_job.relation_exports.update_all(status: finished_status)
+    end
+
+    it 'enqueues ParallelProjectExportWorker once all existing relation exports are finished' do
+      expect(project_export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+
+      expect { described_class.new.perform(*job_args) }
+        .to change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }.by(1)
+        .and not_change { described_class.jobs.size }
+    end
+
+    it 'does not fail the export job' do
+      described_class.new.perform(*job_args)
+
+      expect(project_export_job.reload.started?).to be(true)
+    end
+
+    it 'keeps waiting while an existing relation export is not finished' do
+      project_export_job.relation_exports.by_relation('issues').update_all(
+        status: Projects::ImportExport::RelationExport::STATUS[:queued]
+      )
+
+      expect { described_class.new.perform(*job_args) }
+        .to not_change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }
+        .and change { described_class.jobs.size }.by(1)
+    end
+  end
+
   context 'when at least one relation export has status `failed` and the rest have status `finished` or `failed`' do
     before do
       create_relation_export(:finished, 'labels')

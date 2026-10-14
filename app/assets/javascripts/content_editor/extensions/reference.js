@@ -1,3 +1,4 @@
+import { unescape } from 'lodash-es';
 import { Node, InputRule } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import ReferenceWrapper from '../components/wrappers/reference.vue';
@@ -51,7 +52,11 @@ export default Node.create({
       },
       originalText: {
         default: null,
-        parseHTML: (element) => getAnchor(element).dataset.original,
+        // `data-original` carries the reference as HTML-escaped text (Banzai ReferenceFilter#data_attributes_for)
+        parseHTML: (element) => {
+          const { original } = getAnchor(element).dataset;
+          return original === undefined ? null : unescape(original);
+        },
       },
       href: {
         default: null,

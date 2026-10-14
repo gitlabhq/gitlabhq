@@ -19,12 +19,23 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   let(:alert_bot) { Users::Internal.in_organization(issue.project.organization).alert_bot }
   let(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
 
+  subject(:policy) { described_class.new(user, issue) }
+
   def permissions(user, issue)
     described_class.new(user, issue)
   end
 
   shared_examples 'support bot' do
+    let(:user) { support_bot }
+
     context 'with service desk enabled' do
+      let(:support_bot_permissions) do
+        [
+          :read_issue, :read_note, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :set_issue_metadata,
+          :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
+        ]
+      end
+
       before do
         allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
         allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
@@ -32,46 +43,67 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
         project.update!(service_desk_enabled: true)
       end
 
-      it 'allows support_bot to read issues, create and set metadata on new issues' do
-        expect(permissions(support_bot, issue)).to be_allowed(
-          :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-          :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-        )
-        expect(permissions(support_bot, issue_no_assignee)).to be_allowed(
-          :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-          :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-        )
-        expect(permissions(support_bot, new_issue)).to be_allowed(
-          :create_issue, :set_issue_metadata, :set_confidentiality, :admin_issue_relation
-        )
+      context 'on an issue' do
+        it { expect_allowed(*support_bot_permissions) }
+      end
+
+      context 'on an issue without assignee' do
+        let(:issue) { issue_no_assignee }
+
+        it { expect_allowed(*support_bot_permissions) }
+      end
+
+      context 'on a new issue' do
+        let(:issue) { new_issue }
+
+        it { expect_allowed(*support_bot_permissions) }
       end
     end
 
     context 'with service desk disabled' do
       let(:all_permissions) { described_class.ability_map.map.keys }
 
-      it 'prevents all permissions' do
-        expect(permissions(support_bot, issue)).not_to be_allowed(*all_permissions)
-        expect(permissions(support_bot, issue_no_assignee)).not_to be_allowed(*all_permissions)
-        expect(permissions(support_bot, new_issue)).not_to be_allowed(*all_permissions)
+      context 'on an issue' do
+        it { expect_disallowed(*all_permissions) }
+      end
+
+      context 'on an issue without assignee' do
+        let(:issue) { issue_no_assignee }
+
+        it { expect_disallowed(*all_permissions) }
+      end
+
+      context 'on a new issue' do
+        let(:issue) { new_issue }
+
+        it { expect_disallowed(*all_permissions) }
       end
     end
   end
 
   shared_examples 'alert bot' do
-    it 'allows alert_bot to read and set metadata on issues' do
-      expect(permissions(alert_bot, issue)).to be_allowed(
+    let(:user) { alert_bot }
+    let(:alert_bot_permissions) do
+      [
         :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
         :set_confidentiality, :move_issue, :clone_issue
-      )
-      expect(permissions(alert_bot, issue_no_assignee)).to be_allowed(
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :move_issue, :clone_issue
-      )
-      expect(permissions(alert_bot, new_issue)).to be_allowed(
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :move_issue, :clone_issue
-      )
+      ]
+    end
+
+    context 'on an issue' do
+      it { expect_allowed(*alert_bot_permissions) }
+    end
+
+    context 'on an issue without assignee' do
+      let(:issue) { issue_no_assignee }
+
+      it { expect_allowed(*alert_bot_permissions) }
+    end
+
+    context 'on a new issue' do
+      let(:issue) { new_issue }
+
+      it { expect_allowed(*alert_bot_permissions) }
     end
   end
 

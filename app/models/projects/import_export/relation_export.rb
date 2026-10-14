@@ -19,6 +19,13 @@ module Projects
       ].freeze
       private_constant :EXTRA_RELATION_LIST
 
+      # The import fails without the root relation. Without the others it succeeds but leaves a broken project:
+      # no Git repository, or snippet and design records whose Git content is missing.
+      NON_EXCLUDABLE_RELATION_LIST = [
+        ROOT_RELATION, REPOSITORY_RELATION, SNIPPETS_REPOSITORY_RELATION, DESIGN_REPOSITORY_RELATION
+      ].freeze
+      private_constant :NON_EXCLUDABLE_RELATION_LIST
+
       self.table_name = 'project_relation_exports'
 
       belongs_to :project_export_job
@@ -70,6 +77,10 @@ module Projects
         project_tree_relation_names = ::Gitlab::ImportExport::Reader.new(shared: nil).project_relation_names.map(&:to_s)
 
         project_tree_relation_names + EXTRA_RELATION_LIST
+      end
+
+      def self.excludable_relation_names
+        relation_names_list - NON_EXCLUDABLE_RELATION_LIST
       end
 
       def mark_as_failed(export_error)

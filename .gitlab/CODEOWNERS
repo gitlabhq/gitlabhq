@@ -971,6 +971,7 @@ lib/gitlab/checks/
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/code-dropdown-custom-clients.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
+/doc/administration/settings/editor_extensions.md @lyspin
 /doc/administration/settings/email.md @brendan777
 /doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/gitaly_timeouts.md @eread
@@ -1009,6 +1010,7 @@ lib/gitlab/checks/
 /doc/api/boards.md @brendan777
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @eread
+/doc/api/chat.md @lyspin
 /doc/api/cluster_agents.md @rsarangadharan
 /doc/api/cluster_discovery.md @rsarangadharan
 /doc/api/code_suggestions.md @uchandran
@@ -1275,7 +1277,10 @@ lib/gitlab/checks/
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/testing_guide/ @abdwdd @alexpooley
+/doc/editor_extensions/ @lyspin
+/doc/editor_extensions/software_development.md @fneill
 /doc/install/ @eread
+/doc/install/ai_gateway_troubleshooting.md @ashrafkhamis
 /doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
 /doc/integration/datadog.md @rsarangadharan
@@ -1327,6 +1332,7 @@ lib/gitlab/checks/
 /doc/tutorials/convert_personal_namespace_to_group/ @z_painter
 /doc/tutorials/create_issue_in_existing_project/ @brendan777
 /doc/tutorials/create_register_first_runner/ @rsarangadharan
+/doc/tutorials/duo_chat_issues/ @lyspin
 /doc/tutorials/fuzz_testing/ @rsarangadharan
 /doc/tutorials/hugo/ @brendan777
 /doc/tutorials/idea_management/ @brendan777
@@ -1357,7 +1363,6 @@ lib/gitlab/checks/
 /doc/user/duo_agent_platform/code_suggestions/ @uchandran
 /doc/user/duo_agent_platform/customize/review_instructions.md @uchandran
 /doc/user/duo_agent_platform/flows/foundational_flows/code_review/ @uchandran
-/doc/user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md @lyspin
 /doc/user/duo_agent_platform/model_selection.md @ashrafkhamis
 /doc/user/duo_amazon_q/ @ashrafkhamis
 /doc/user/emoji_reactions.md @brendan777
@@ -1374,7 +1379,11 @@ lib/gitlab/checks/
 /doc/user/gitlab_duo/customize_duo/ @uchandran
 /doc/user/gitlab_duo/feature_summary.md @uchandran
 /doc/user/gitlab_duo/model_context_protocol/ @fneill
+/doc/user/gitlab_duo/prompt_examples/ @lyspin
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
+/doc/user/gitlab_duo/use_cases.md @lyspin
+/doc/user/gitlab_duo_chat/ @lyspin
+/doc/user/gitlab_duo_cli/ @lyspin
 /doc/user/group/ @z_painter
 /doc/user/group/clusters/ @rsarangadharan
 /doc/user/group/contribution_analytics/ @lciutacu

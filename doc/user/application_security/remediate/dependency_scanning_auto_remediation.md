@@ -104,8 +104,8 @@ eligible vulnerability:
 
 1. GitLab determines the nearest non-breaking upgrade path.
 1. A service account opens a merge request that updates the relevant manifest file.
-1. GitLab assigns an active Maintainer of the project as a reviewer. If no active Maintainer
-   exists, the merge request stays open without a reviewer.
+1. GitLab does not assign a reviewer. To have the Code Owners of the updated files
+   requested as reviewers, turn on [automatic reviewer assignment](../../project/merge_requests/reviews/automatic_reviewer_assignment.md).
 1. The merge request goes through your project's standard approval workflow.
 
 During beta, GitLab processes three vulnerabilities at a time, starting

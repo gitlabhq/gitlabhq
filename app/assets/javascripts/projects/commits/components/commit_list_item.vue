@@ -38,6 +38,11 @@ export default {
       type: Object,
       required: true,
     },
+    currentPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -182,6 +187,7 @@ export default {
             :is-collapsed="isCollapsed"
             :is-loading="isLoadingDescription"
             :commit="commit"
+            :current-path="currentPath"
             :anchor-id="anchorId"
             @click="onClick"
           />
@@ -205,6 +211,7 @@ export default {
       </div>
       <overflow-menu
         :commit="commit"
+        :current-path="currentPath"
         class="gl-block @md/panel:gl-hidden"
         data-testid="overflow-menu"
       />

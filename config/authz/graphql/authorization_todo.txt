@@ -46,7 +46,6 @@ mutation:VulnerabilitiesRemoveAllFromProject
 mutation:WorkItemHierarchyAddChildrenItems
 mutation:vulnerabilitiesSeverityOverride
 type:AbuseReport
-type:AbuseReportUploadRegistry
 type:AccessLevel
 type:AccessLevelDeployKey
 type:AccessLevelGroup
@@ -55,7 +54,6 @@ type:AccessTokenGranularScope
 type:AccessTokenLegacyScope
 type:AccessTokenPermission
 type:Achievement
-type:AchievementUploadRegistry
 type:ActiveTrial
 type:AddOnPurchase
 type:AdminDuoAvailabilityLockedAncestor
@@ -101,12 +99,10 @@ type:AiNamespaceSettings
 type:AiSelfHostedModel
 type:AiUsageData
 type:AiUsageEvent
-type:AiVectorizableFileUploadRegistry
 type:AiXrayReport
 type:AlertManagementAlert
 type:AlertManagementAlertStatusCountsType
 type:AlertManagementHttpIntegration
-type:AlertManagementMetricImageUploadRegistry
 type:AlertManagementPayloadAlertField
 type:AlertManagementPayloadAlertMappingField
 type:AlertManagementPrometheusIntegration
@@ -117,7 +113,6 @@ type:AnalyzerProjectStatusType
 type:AncestorType
 type:ApiFuzzingCiConfiguration
 type:ApiFuzzingScanProfile
-type:AppearanceUploadRegistry
 type:ApprovalPolicy
 type:ApprovalPolicyAttributesType
 type:ApprovalScanResultPolicy
@@ -144,7 +139,6 @@ type:BoardList
 type:BooleanExpression
 type:BranchProtection
 type:BranchRule
-type:BulkImportExportUploadUploadRegistry
 type:BurnupChartDailyTotals
 type:CarPermissions
 type:CiApplicationSettings
@@ -206,7 +200,6 @@ type:CiRunnerGoogleCloudProvisioning
 type:CiRunnerManager
 type:CiRunnerUsage
 type:CiRunnerUsageByProject
-type:CiSecureFileRegistry
 type:CiSubscriptionsProject
 type:CiSubscriptionsProjectDetails
 type:CiSubscriptionsProjectNamespaceDetails
@@ -268,7 +261,6 @@ type:ContainerRepositoryImageManifest
 type:ContainerRepositoryImagePlatform
 type:ContainerRepositoryPermissions
 type:ContainerRepositoryReferrer
-type:ContainerRepositoryRegistry
 type:ContainerRepositoryTag
 type:ContainerRepositoryTagDetails
 type:ContainerRepositoryTagPermissions
@@ -317,17 +309,13 @@ type:DependencyFirewallActivitySummary
 type:DependencyFirewallPolicyAttributesType
 type:DependencyFirewallRuleActivity
 type:DependencyFirewallRuleLastModified
-type:DependencyListExportPartUploadRegistry
-type:DependencyListExportUploadRegistry
 type:DependencyPath
 type:DependencyPathPage
 type:DependencyPathPageInfo
 type:DependencyPathPartial
 type:DependencyProxyBlob
-type:DependencyProxyBlobRegistry
 type:DependencyProxyImageTtlGroupPolicy
 type:DependencyProxyManifest
-type:DependencyProxyManifestRegistry
 type:DependencyProxyPackagesSetting
 type:DependencyProxySetting
 type:Deployment
@@ -344,8 +332,6 @@ type:Design
 type:DesignAtVersion
 type:DesignCollection
 type:DesignManagement
-type:DesignManagementActionUploadRegistry
-type:DesignManagementRepositoryRegistry
 type:DesignVersion
 type:DetailedImportStatus
 type:DetailedStatus
@@ -404,7 +390,6 @@ type:FeatureFlag
 type:FileUpload
 type:FindingDueDatesSetError
 type:ForkDetails
-type:GeoNode
 type:GitlabSubscriptionBudgetCapUserOverride
 type:GitlabSubscriptionBudgetCaps
 type:GitlabSubscriptionDailyUsage
@@ -449,14 +434,11 @@ type:GroupSecretsManagerPermissions
 type:GroupSecretsPermission
 type:GroupSecurityPolicySource
 type:GroupStats
-type:GroupUploadRegistry
 type:GroupValueStreamAnalyticsFlowMetrics
-type:GroupWikiRepositoryRegistry
 type:Groups
 type:HelmFileMetadata
 type:Ide
 type:ImagePullSecrets
-type:ImportExportUploadUploadRegistry
 type:IncidentManagementOncallRotation
 type:IncidentManagementOncallSchedule
 type:IncidentManagementOncallShift
@@ -469,7 +451,6 @@ type:InstanceGoogleCloudLoggingConfigurationType
 type:InstanceSecurityDashboard
 type:IntegerExpression
 type:IntegrationExclusion
-type:IssuableMetricImageUploadRegistry
 type:IssuableResourceLink
 type:IssuePermissions
 type:IssueStatusCountsType
@@ -477,13 +458,11 @@ type:JiraImport
 type:JiraProject
 type:JiraService
 type:JiraUser
-type:JobArtifactRegistry
 type:JobPermissions
 type:Key
 type:KubernetesAnnotation
 type:KubernetesLabel
 type:LdapProvider
-type:LfsObjectRegistry
 type:License
 type:LicenseHistoryEntry
 type:LicensedFeatureAvailability
@@ -502,7 +481,6 @@ type:MemberApproval
 type:MemberRole
 type:MergeAccessLevel
 type:MergeRequestDiff
-type:MergeRequestDiffRegistry
 type:MergeRequestExternalIssue
 type:MergeRequestLinkedWorkItem
 type:MergeRequestMergeabilityCheck
@@ -533,7 +511,6 @@ type:ObservabilityMetric
 type:ObservabilityTrace
 type:OncallParticipantType
 type:OncallRotationActivePeriodType
-type:OrganizationDetailUploadRegistry
 type:OrganizationStateCounts
 type:OrganizationUserAccess
 type:OrganizationUserPermissions
@@ -544,7 +521,6 @@ type:PackageDependency
 type:PackageDependencyLink
 type:PackageDetailsType
 type:PackageFile
-type:PackageFileRegistry
 type:PackageHelmDependencyType
 type:PackageHelmMaintainerType
 type:PackageHelmMetadataType
@@ -555,21 +531,15 @@ type:PackagePermissions
 type:PackageSettings
 type:PackageTag
 type:PackagesCleanupPolicy
-type:PackagesDebianProjectComponentFileRegistry
-type:PackagesHelmMetadataCacheRegistry
-type:PackagesNugetSymbolRegistry
 type:PackagesProtectionRule
 type:PageInfo
-type:PagesDeploymentRegistry
 type:PathLock
 type:PathLockPermissions
 type:PendingGroupMember
 type:PendingProjectMember
 type:PersonalAccessToken
-type:PersonalSnippetUploadRegistry
 type:PipelineAnalytics
 type:PipelineAnalyticsPeriod
-type:PipelineArtifactRegistry
 type:PipelineCounts
 type:PipelineExecutionPolicy
 type:PipelineExecutionPolicyAttributesType
@@ -612,14 +582,12 @@ type:ProjectComplianceViolation
 type:ProjectDataTransfer
 type:ProjectFeatureAccess
 type:ProjectHook
-type:ProjectImportExportRelationExportUploadUploadRegistry
 type:ProjectMinimalAccess
 type:ProjectNamespaceLinks
 type:ProjectNamespaceMarkdownPaths
 type:ProjectNamespaceMetadata
 type:ProjectPermissions
 type:ProjectPlanLimits
-type:ProjectRepositoryRegistry
 type:ProjectSavedReply
 type:ProjectSecret
 type:ProjectSecretsManagerPermissions
@@ -631,10 +599,7 @@ type:ProjectSetting
 type:ProjectStatistics
 type:ProjectStatisticsRedirect
 type:ProjectTargetBranchRule
-type:ProjectTopicUploadRegistry
-type:ProjectUploadRegistry
 type:ProjectValueStreamAnalyticsFlowMetrics
-type:ProjectWikiRepositoryRegistry
 type:PrometheusAlert
 type:ProtectedEnvironment
 type:ProtectedEnvironmentApprovalRule
@@ -722,7 +687,6 @@ type:Snippet
 type:SnippetBlob
 type:SnippetBlobViewer
 type:SnippetPermissions
-type:SnippetRepositoryRegistry
 type:SpdxLicense
 type:SquashOption
 type:SshSignature
@@ -746,7 +710,6 @@ type:TerraformModuleMetadataInput
 type:TerraformModuleMetadataOutput
 type:TerraformModuleMetadataRoot
 type:TerraformModuleMetadataSubmodule
-type:TerraformStateVersionRegistry
 type:TestCase
 type:TestReport
 type:TestReportSummary
@@ -765,7 +728,6 @@ type:TimelogPermissions
 type:TreeEntry
 type:TrialUsage
 type:UnprotectAccessLevel
-type:UploadRegistry
 type:UsageTrendsMeasurement
 type:UserAchievement
 type:UserAddOnAssignment
@@ -776,10 +738,8 @@ type:UserMemberRole
 type:UserNamespaceLinks
 type:UserNamespaceMarkdownPaths
 type:UserNamespaceMetadata
-type:UserPermissionExportUploadUploadRegistry
 type:UserPermissions
 type:UserStatus
-type:UserUploadRegistry
 type:UsersQueuedForRolePromotion
 type:ValueStream
 type:ValueStreamAnalytics
@@ -800,7 +760,6 @@ type:VulnerabilitiesOverTime
 type:VulnerabilitiesPerSeverity
 type:VulnerabilityArchivalInformation
 type:VulnerabilityArchive
-type:VulnerabilityArchiveExportUploadRegistry
 type:VulnerabilityAverageScoreFactor
 type:VulnerabilityContainerImage
 type:VulnerabilityDetailBase
@@ -824,8 +783,6 @@ type:VulnerabilityDetailUrl
 type:VulnerabilityEvidence
 type:VulnerabilityEvidenceSource
 type:VulnerabilityEvidenceSupportingMessage
-type:VulnerabilityExportPartUploadRegistry
-type:VulnerabilityExportUploadRegistry
 type:VulnerabilityExternalIssueLink
 type:VulnerabilityFindingTokenStatus
 type:VulnerabilityFlag
@@ -836,7 +793,6 @@ type:VulnerabilityManagementPolicyAttributesType
 type:VulnerabilityNamespaceStatisticType
 type:VulnerabilityPermissions
 type:VulnerabilityRemediationType
-type:VulnerabilityRemediationUploadRegistry
 type:VulnerabilityReportTypeCount
 type:VulnerabilityRepresentationInformation
 type:VulnerabilityRequest

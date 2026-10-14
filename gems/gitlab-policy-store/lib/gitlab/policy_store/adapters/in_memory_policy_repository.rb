@@ -93,6 +93,7 @@ module Gitlab
           taken = @policies.any? do |id, policy|
             id != excluding_id &&
               policy.organization_id == attributes[:organization_id] &&
+              policy.namespace_id == attributes[:namespace_id] &&
               policy.name == attributes[:name]
           end
 

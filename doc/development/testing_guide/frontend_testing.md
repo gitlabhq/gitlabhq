@@ -1394,10 +1394,9 @@ polyfills MSW needs come from the `@gitlab/frontend-tests` package.
 so they load before `msw/node` evaluates. The `core/` files re-export the
 package so existing import paths keep working.
 
-All helper utilities exported from `helpers/test_helpers.js` are auto-imported globally
-through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new
-helper, export it from `helpers/test_helpers.js` and it becomes available globally in
-all frontend integration tests.
+Shared helper utilities live in `helpers/test_helpers.js`. Specs import the
+helpers they use, for example
+`import { waitForElement } from 'ee_jest/integration/helpers/test_helpers';`.
 
 ### Why frontend integration tests are EE-only
 

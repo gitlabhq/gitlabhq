@@ -899,30 +899,6 @@ export default [
   // Frontend integration tests (EE-only)
   {
     files: ['ee/spec/frontend/integration/**/*_spec.js'],
-    languageOptions: {
-      globals: {
-        waitForElement: 'readonly',
-        getText: 'readonly',
-        findInDrawer: 'readonly',
-        findButtonByText: 'readonly',
-        findByGraphQLId: 'readonly',
-        setInputValue: 'readonly',
-        waitAndSetValue: 'readonly',
-        waitAndClick: 'readonly',
-        waitForModalConfirm: 'readonly',
-        waitForElementToBeNull: 'readonly',
-        waitForAssertion: 'readonly',
-        createPortalElement: 'readonly',
-        assignRouter: 'readonly',
-        fullMount: 'readonly',
-        capturedRequests: 'readonly',
-        resetCapturedRequests: 'readonly',
-        captureRequest: 'readonly',
-        screen: 'readonly',
-        within: 'readonly',
-      },
-    },
-
     rules: {
       'jest/no-standalone-expect': 'off',
       'no-restricted-imports': [

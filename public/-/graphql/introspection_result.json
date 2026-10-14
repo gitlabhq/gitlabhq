@@ -137557,6 +137557,12 @@
               "description": "Rule matching on vulnerability counts per severity level.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "PACKAGE_VERSION",
+              "description": "Rule matching on an exact package name and version.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -261797,6 +261803,30 @@
               "deprecationReason": null
             },
             {
+              "name": "contributions",
+              "description": "What each signal and risk domain contributed to the score.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "MergeRequestRiskContribution",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "domainTags",
               "description": "Risk domains the change touches, used to route specialist review.",
               "args": [],
@@ -262071,6 +262101,112 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestRiskContribution",
+          "description": "Contribution a signal or a risk domain made to a merge request risk score.",
+          "fields": [
+            {
+              "name": "contribution",
+              "description": "Points the signal or risk domain added to the overall score.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Human-readable name of the signal or risk domain.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "evidence",
+              "description": "Human-readable explanation of the contribution.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "identifier",
+              "description": "Name of the signal or risk domain.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "kind",
+              "description": "Whether the contribution came from a signal or a risk domain.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MergeRequestRiskContributionKind",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MergeRequestRiskContributionKind",
+          "description": "What made a contribution to a merge request risk score.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SIGNAL",
+              "description": "Signal measured from the merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DOMAIN",
+              "description": "Risk domain the classification flagged as touched.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -305718,7 +305854,7 @@
             },
             {
               "name": "offer",
-              "description": "Terms of a new trial. Null unless the group can start one and CustomersDot sends valid terms. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Terms of a new trial. Null unless the current user can start the trial and CustomersDot sends valid terms. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -305874,6 +306010,12 @@
               "description": "Group must start a trial before Orbit can be turned on. Introduced in GitLab 19.5: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "PURCHASE_REQUIRED",
+              "description": "Group must purchase Orbit before it can be turned on, because no trial can start. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "TRIAL_ENDED",

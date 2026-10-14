@@ -68,6 +68,22 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
       end
     end
 
+    context 'when the pipeline of the job is archived' do
+      let(:pipeline) { create(:ci_pipeline, created_at: 2.hours.ago) }
+      let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
+
+      before do
+        stub_application_setting(archive_builds_in_seconds: 1.hour.to_i)
+      end
+
+      it 'skips archiving without touching the trace metadata' do
+        expect(job).not_to receive(:ensure_trace_metadata!)
+        expect(job.trace).not_to receive(:archive!)
+
+        subject
+      end
+    end
+
     context 'when the job is out of archival attempts' do
       before do
         create(:ci_build_trace_metadata,

@@ -4,6 +4,14 @@ require 'spec_helper'
 
 RSpec.describe JiraConnect::EventsController, :with_current_organization, feature_category: :integrations do
   shared_examples 'verifies asymmetric JWT token' do
+    it 'verifies the token against the base URL from the payload' do
+      expect(Atlassian::JiraConnect::Jwt::Asymmetric).to receive(:new)
+        .with(anything, anything, base_url: params[:baseUrl])
+        .and_return(instance_double(Atlassian::JiraConnect::Jwt::Asymmetric, valid?: false))
+
+      send_request
+    end
+
     context 'when token is valid' do
       include_context 'valid JWT token'
 
@@ -231,7 +239,7 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
 
     shared_examples 'generates JWT validation claims' do
       specify do
-        expect_next_instance_of(Atlassian::JiraConnect::Jwt::Asymmetric, anything, expected_claims) do |asymmetric_jwt|
+        expect_next_instance_of(Atlassian::JiraConnect::Jwt::Asymmetric, anything, expected_claims, anything) do |asymmetric_jwt|
           allow(asymmetric_jwt).to receive(:valid?).and_return(true)
         end
 

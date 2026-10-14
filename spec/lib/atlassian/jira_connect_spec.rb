@@ -34,4 +34,25 @@ RSpec.describe Atlassian::JiraConnect, feature_category: :integrations do
       it { is_expected.to eq('gitlab-jira-connect-example.com') }
     end
   end
+
+  describe '.gov_cloud?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:url, :result) do
+      'https://example.atlassian-us-gov-mod.net'    | true
+      'https://EXAMPLE.atlassian-us-gov-mod.net'    | true
+      'https://example.atlassian-us-gov-mod.com'    | true
+      'https://example.atlassian.net'               | false
+      'https://atlassian-us-gov-mod.net.example.com' | false
+      'https://example.com/atlassian-us-gov-mod.net' | false
+      'https://evilatlassian-us-gov-mod.net'        | false
+      'not a url'                                   | false
+      ''                                            | false
+      nil                                           | false
+    end
+
+    with_them do
+      it { expect(described_class.gov_cloud?(url)).to be(result) }
+    end
+  end
 end
