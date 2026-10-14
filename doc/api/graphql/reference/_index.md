@@ -35961,9 +35961,10 @@ Fields:
 | <a id="aiflowtriggertype-filter"></a>`filter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Filter conditions for the AI flow trigger. |
 | <a id="aiflowtriggertype-flowschedules"></a>`flowSchedules` {{< icon name="warning-solid" >}} | [`AiFlowScheduleTypeConnection`](#aiflowscheduletypeconnection) | Introduced in GitLab 19.4. Status: Experiment. Cron-based schedules associated with the flow trigger. |
 | <a id="aiflowtriggertype-goals"></a>`goals` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the AI flow trigger, keyed by event type. |
+| <a id="aiflowtriggertype-group"></a>`group` {{< icon name="warning-solid" >}} | [`Group`](#group) | Introduced in GitLab 19.6. Status: Experiment. Group of the flow trigger. Null for project flow triggers. |
 | <a id="aiflowtriggertype-id"></a>`id` | [`ID!`](#id) | ID of the flow trigger. |
 | <a id="aiflowtriggertype-precondition"></a>`precondition` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Enforced filter conditions from the foundational flow definition. |
-| <a id="aiflowtriggertype-project"></a>`project` | [`Project!`](#project) | Project of the flow trigger. |
+| <a id="aiflowtriggertype-project"></a>`project` | [`Project`](#project) | Project of the flow trigger. Null for group flow triggers. |
 | <a id="aiflowtriggertype-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow trigger was last updated. |
 | <a id="aiflowtriggertype-user"></a>`user` | [`UserCore`](#usercore) | Service account of the flow trigger. |
 

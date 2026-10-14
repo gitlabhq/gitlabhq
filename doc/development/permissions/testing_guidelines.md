@@ -21,7 +21,8 @@ permission a failing test relates to.
 ```ruby
 # bad - multiple permissions in one block
 describe 'read and update issue' do
-  it { is_expected.to be_allowed(:read_issue, :update_issue) }
+  it { expect_allowed(:read_issue) }
+  it { expect_allowed(:update_issue) }
 end
 
 # good - one block per permission
@@ -31,6 +32,20 @@ end
 
 describe 'update_issue' do
   # ...
+end
+```
+
+### Use the policy helpers
+
+Use `expect_allowed` and `expect_disallowed`, not `be_allowed` and `be_disallowed`.
+The helpers check each permission separately and report every one that fails.
+`be_allowed(:a, :b)` reports only that the whole set failed.
+
+If one example checks several permissions, pass them to one call:
+
+```ruby
+it 'disallows all permissions' do
+  expect_disallowed(:read_issue, :update_issue, :delete_issue)
 end
 ```
 

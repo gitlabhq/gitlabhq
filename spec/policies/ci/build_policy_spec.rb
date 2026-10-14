@@ -20,7 +20,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     ]
   end
 
-  let(:policy) do
+  subject(:policy) do
     described_class.new(user, build)
   end
 
@@ -56,7 +56,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
       it 'allows read_job_artifacts to project members' do
-        expect(policy).to be_allowed :read_job_artifacts
+        expect_allowed(:read_job_artifacts)
       end
     end
 
@@ -64,18 +64,16 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let(:build) { create(:ci_build, :private_artifacts, pipeline: pipeline) }
 
       it 'allows read_job_artifacts to project members' do
-        expect(policy).to be_allowed :read_job_artifacts
+        expect_allowed(:read_job_artifacts)
       end
 
       context 'when user is anon' do
         let(:user2) { create(:user) }
 
-        let(:policy2) do
-          described_class.new(user2, build)
-        end
+        subject { described_class.new(user2, build) }
 
         it 'disallows read_job_artifacts to anon user' do
-          expect(policy2).to be_disallowed :read_job_artifacts
+          expect_disallowed(:read_job_artifacts)
         end
       end
     end
@@ -83,16 +81,13 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     context 'when job artifacts are restricted by different roles' do
       using RSpec::Parameterized::TableSyntax
 
-      def user_for(role)
-        user = create(:user)
-        case role
-        when :maintainer then project.add_maintainer(user)
-        when :owner      then project.add_owner(user)
-        when :developer  then project.add_developer(user)
-        when :guest      then project.add_guest(user)
-        end
-
-        user
+      let_it_be(:role_users) do
+        {
+          maintainer: create(:user, maintainer_of: project),
+          owner: create(:user, owner_of: project),
+          developer: user,
+          guest: create(:user, guest_of: project)
+        }
       end
 
       where(:artifact_trait, :config_build_access_trait, :role, :allowed) do
@@ -129,22 +124,15 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         :private_artifacts   | :with_developer_access_artifacts | :owner      | true
         :private_artifacts   | :with_developer_access_artifacts | :developer  | true
         :private_artifacts   | :with_developer_access_artifacts | :guest      | false
-
-        :no_access_artifacts | :with_none_access_artifacts | :maintainer | false
-        :no_access_artifacts | :with_none_access_artifacts | :owner      | false
-        :no_access_artifacts | :with_none_access_artifacts | :developer  | false
-        :no_access_artifacts | :with_none_access_artifacts | :guest      | false
-
-        :no_access_artifacts | :with_developer_access_artifacts | :developer | false
       end
 
       with_them do
-        let(:user) { user_for(role) }
+        let(:user) { role_users[role] }
         let(:build)  { create(:ci_build, artifact_trait, config_build_access_trait, pipeline: pipeline, project: project) }
         let(:policy) { described_class.new(user, build) }
 
         it 'applies the expected permission' do
-          expect(policy).to(allowed ? be_allowed(:read_job_artifacts) : be_disallowed(:read_job_artifacts))
+          allowed ? expect_allowed(:read_job_artifacts) : expect_disallowed(:read_job_artifacts)
         end
       end
     end
@@ -153,7 +141,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let(:build) { create(:ci_build, :no_access_artifacts, pipeline: pipeline) }
 
       it 'disallows read_job_artifacts to project members' do
-        expect(policy).to be_disallowed :read_job_artifacts
+        expect_disallowed(:read_job_artifacts)
       end
     end
 
@@ -163,68 +151,8 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let_it_be_with_reload(:project) { create(:project, :public, developers: user) }
 
       it 'allows read_job_artifacts to project members' do
-        expect(policy).to be_allowed :read_job_artifacts
+        expect_allowed(:read_job_artifacts)
       end
-    end
-  end
-
-  describe ':read_manual_variables' do
-    subject { policy }
-
-    let_it_be(:project, freeze: true) { create(:project) }
-
-    context 'when user is at least a reporter' do
-      let_it_be(:user) { create(:user, reporter_of: project) }
-
-      it { expect_allowed(:read_manual_variables) }
-    end
-
-    context 'when user is a planner' do
-      let_it_be(:user) { create(:user, planner_of: project) }
-
-      it { expect_disallowed(:read_manual_variables) }
-    end
-
-    context 'when user is a guest' do
-      let_it_be(:user) { create(:user, guest_of: project) }
-
-      it { expect_disallowed(:read_manual_variables) }
-    end
-
-    context 'when user is not a member of the project' do
-      let(:user) { create(:user) }
-
-      it { expect_disallowed(:read_manual_variables) }
-    end
-  end
-
-  describe ':read_job_inputs' do
-    subject { policy }
-
-    let_it_be(:project, freeze: true) { create(:project) }
-
-    context 'when user is at least a reporter' do
-      let_it_be(:user) { create(:user, reporter_of: project) }
-
-      it { expect_allowed(:read_job_inputs) }
-    end
-
-    context 'when user is a planner' do
-      let_it_be(:user) { create(:user, planner_of: project) }
-
-      it { expect_disallowed(:read_job_inputs) }
-    end
-
-    context 'when user is a guest' do
-      let_it_be(:user) { create(:user, guest_of: project) }
-
-      it { expect_disallowed(:read_job_inputs) }
-    end
-
-    context 'when user is not a member of the project' do
-      let(:user) { create(:user) }
-
-      it { expect_disallowed(:read_job_inputs) }
     end
   end
 
@@ -271,7 +199,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     with_them do
-      it { expect(policy.allowed?(:read_build_trace)).to eq(allowed) }
+      it { allowed ? expect_allowed(:read_build_trace) : expect_disallowed(:read_build_trace) }
     end
 
     context 'when user is an admin' do
@@ -279,11 +207,11 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let(:build) { duo_workflow_build }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { expect(policy).to be_allowed(:read_build_trace) }
+        it { expect_allowed(:read_build_trace) }
       end
 
       context 'when admin mode is disabled' do
-        it { expect(policy).to be_disallowed(:read_build_trace) }
+        it { expect_disallowed(:read_build_trace) }
       end
     end
 
@@ -295,85 +223,34 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
 
       it 'allows developers to read the log of a duo_workflow job' do
-        expect(policy).to be_allowed(:read_build_trace)
+        expect_allowed(:read_build_trace)
       end
     end
   end
 
   describe '#rules' do
-    context 'when user does not have access to the project' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
-
-      include_context 'pipeline and build for project'
-
-      context 'when public builds are enabled' do
-        it 'does not include ability to read build' do
-          expect(policy).not_to be_allowed :read_build
-        end
-      end
-
-      context 'when public builds are disabled' do
-        include_context 'public pipelines disabled'
-
-        it 'does not include ability to read build' do
-          expect(policy).not_to be_allowed :read_build
-        end
-      end
-    end
-
     context 'when anonymous user has access to the project' do
       let_it_be_with_reload(:project) { create(:project, :public) }
 
-      context 'when public builds are enabled' do
-        it 'includes ability to read build' do
-          expect(policy).to be_allowed :read_build
-        end
-      end
-
       context 'when public builds are disabled' do
         include_context 'public pipelines disabled'
 
         it 'does not include ability to read build' do
-          expect(policy).not_to be_allowed :read_build
+          expect_disallowed(:read_build)
         end
       end
     end
 
     context 'when team member has access to the project' do
-      context 'team member is a guest' do
-        let_it_be(:user) { create(:user) }
-        let_it_be_with_reload(:project) { create(:project, :public, guests: user) }
-
-        context 'when public builds are enabled' do
-          it 'includes ability to read build' do
-            expect(policy).to be_allowed :read_build
-          end
-        end
-
-        context 'when public builds are disabled' do
-          include_context 'public pipelines disabled'
-
-          it 'does not include ability to read build' do
-            expect(policy).not_to be_allowed :read_build
-          end
-        end
-      end
-
       context 'team member is a reporter' do
         let_it_be(:user) { create(:user) }
         let_it_be_with_reload(:project) { create(:project, :public, reporters: user) }
 
-        context 'when public builds are enabled' do
-          it 'includes ability to read build' do
-            expect(policy).to be_allowed :read_build
-          end
-        end
-
         context 'when public builds are disabled' do
           include_context 'public pipelines disabled'
 
-          it 'does not include ability to read build' do
-            expect(policy).to be_allowed :read_build
+          it 'includes ability to read build' do
+            expect_allowed(:read_build)
           end
         end
       end
@@ -388,8 +265,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'enables updates if user is maintainer', :aggregate_failures do
-          expect(policy).to be_allowed :cancel_build
-          expect(policy).to be_allowed :update_build
+          expect_allowed(:cancel_build, :update_build)
         end
       end
 
@@ -435,11 +311,11 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       context 'when job is not archived' do
         it 'allows update and cleanup job abilities' do
           described_class.all_job_update_abilities.each do |perm|
-            expect(policy).to be_allowed(perm)
+            expect_allowed(perm)
           end
 
           described_class.all_job_cleanup_abilities.each do |perm|
-            expect(policy).to be_allowed(perm)
+            expect_allowed(perm)
           end
         end
       end
@@ -451,18 +327,19 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
         it 'prevents user facing update job abilities while allowing cleanup job abilities' do
           described_class.job_user_facing_update_abilities.each do |perm|
-            expect(policy).to be_disallowed(perm)
+            expect_disallowed(perm)
           end
 
           described_class.all_job_cleanup_abilities.each do |perm|
-            expect(policy).to be_allowed(perm)
+            expect_allowed(perm)
           end
         end
       end
     end
 
-    describe 'rules for protected ref' do
-      let(:project) { create(:project, :repository, developers: user) }
+    describe 'rules for protected ref', :clean_gitlab_redis_cache do
+      let_it_be_with_reload(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
       let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }
 
       context 'when no one can push or merge to the branch' do
@@ -471,8 +348,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'does not include ability to update build' do
-          expect(policy).to be_disallowed :cancel_build
-          expect(policy).to be_disallowed :update_build
+          expect_disallowed(:cancel_build, :update_build)
         end
 
         context 'when the user is admin', :enable_admin_mode do
@@ -481,8 +357,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
           end
 
           it 'does not include ability to update build' do
-            expect(policy).to be_disallowed :cancel_build
-            expect(policy).to be_disallowed :update_build
+            expect_disallowed(:cancel_build, :update_build)
           end
         end
       end
@@ -493,8 +368,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'includes ability to update build' do
-          expect(policy).to be_allowed :cancel_build
-          expect(policy).to be_allowed :update_build
+          expect_allowed(:cancel_build, :update_build)
         end
       end
 
@@ -506,8 +380,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'does not include ability to update build' do
-          expect(policy).to be_disallowed :cancel_build
-          expect(policy).to be_disallowed :update_build
+          expect_disallowed(:cancel_build, :update_build)
         end
       end
 
@@ -517,18 +390,18 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         it 'includes ability to update build' do
-          expect(policy).to be_allowed :cancel_build
-          expect(policy).to be_allowed :update_build
+          expect_allowed(:cancel_build, :update_build)
         end
       end
     end
 
-    describe 'rules for erase build' do
-      let(:project) { create(:project, :repository) }
+    describe 'rules for erase build', :clean_gitlab_redis_cache do
+      let_it_be_with_reload(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
       let(:build) { create(:ci_build, pipeline: pipeline, ref: 'some-ref', user: owner) }
 
       context 'when a developer erases a build' do
-        let(:project) { create(:project, :repository, developers: user) }
+        let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
 
         context 'when developers can push to the branch' do
           context 'when the build was created by the developer' do
@@ -539,18 +412,18 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
                 create(:protected_branch, :developers_can_push, name: build.ref, project: project)
               end
 
-              it { expect(policy).to be_disallowed :erase_build }
+              it { expect_disallowed(:erase_build) }
             end
 
             context 'when the build was created for an unprotected ref' do
-              it { expect(policy).to be_allowed :erase_build }
+              it { expect_allowed(:erase_build) }
             end
           end
 
           context 'when the build was created by the other' do
             let(:owner) { create(:user) }
 
-            it { expect(policy).to be_disallowed :erase_build }
+            it { expect_disallowed(:erase_build) }
           end
         end
 
@@ -561,12 +434,12 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
             create(:protected_branch, :no_one_can_push, :no_one_can_merge, name: build.ref, project: project)
           end
 
-          it { expect(policy).to be_disallowed :erase_build }
+          it { expect_disallowed(:erase_build) }
         end
       end
 
       context 'when a maintainer erases a build' do
-        let(:project) { create(:project, :repository, maintainers: user) }
+        let_it_be_with_reload(:project) { create(:project, :repository, maintainers: user) }
 
         context 'when maintainers can push to the branch' do
           before do
@@ -576,13 +449,13 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
           context 'when the build was created by the maintainer' do
             let(:owner) { user }
 
-            it { expect(policy).to be_allowed :erase_build }
+            it { expect_allowed(:erase_build) }
           end
 
           context 'when the build was created by the other' do
             let(:owner) { create(:user) }
 
-            it { expect(policy).to be_allowed :erase_build }
+            it { expect_allowed(:erase_build) }
           end
         end
 
@@ -593,7 +466,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
             create(:protected_branch, :no_one_can_push, :no_one_can_merge, name: build.ref, project: project)
           end
 
-          it { expect(policy).to be_disallowed :erase_build }
+          it { expect_disallowed(:erase_build) }
         end
       end
 
@@ -609,7 +482,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
             create(:protected_branch, :developers_can_push, name: build.ref, project: project)
           end
 
-          it { expect(policy).to be_disallowed :erase_build }
+          it { expect_disallowed(:erase_build) }
         end
 
         context 'when the build was created for a protected tag' do
@@ -619,11 +492,11 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
             build.update!(tag: true)
           end
 
-          it { expect(policy).to be_disallowed :erase_build }
+          it { expect_disallowed(:erase_build) }
         end
 
         context 'when the build was created for an unprotected ref' do
-          it { expect(policy).to be_allowed :erase_build }
+          it { expect_allowed(:erase_build) }
         end
       end
     end

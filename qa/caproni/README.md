@@ -4,7 +4,7 @@ This deploys a CNG build of the GitLab commit under test onto a job-local
 [k3d](https://k3d.io) cluster inside `docker:dind`, using
 [Caproni](https://gitlab-org.gitlab.io/caproni/) and runs the E2E suite against it.
 
-Five jobs in the existing `test-on-cng` child pipeline run against a Caproni-deployed
+Six jobs in the existing `test-on-cng` child pipeline run against a Caproni-deployed
 GitLab instance:
 
 - `cng-instance-caproni` (non-blocking) runs `Test::Instance::All` over 10 parallel shards
@@ -12,10 +12,11 @@ GitLab instance:
   served under a `/relative` subpath
 - `cng-registry-caproni` (non-blocking) runs `Test::Integration::Registry`
 - `cng-oauth-caproni` (non-blocking) runs `Test::Integration::OAuth` against a second GitLab (see [OIDC consumer](#oidc-consumer-opt-in))
+- `cng-secrets-manager-caproni` (non-blocking) runs `Test::Integration::SecretsManager` (see [OpenBao](#openbao))
 - `cng-instance-ff-inverse` (blocking) runs `Test::Instance::All` with `QA_FEATURE_FLAGS`
   inverted, and only when a feature flag definition file changes
 
-The four non-blocking jobs shadow an orchestrator-deployed counterpart and run whenever
+The five non-blocking jobs shadow an orchestrator-deployed counterpart and run whenever
 those run.
 
 The `-caproni` suffix is transitional. It marks a job that shadows an orchestrator-deployed
@@ -41,8 +42,9 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `caproni.github-oauth.yaml` | Opt-in fragment: the `gitlab-oauth-github` secret and `global.appConfig.omniauth` values |
 | `caproni.oidc-consumer.yaml` | Opt-in fragment: a second GitLab release, `gitlab-consumer`, that signs in through the first |
 | `caproni.relative-url.yaml` | Opt-in fragment: serves the instance under `QA_RELATIVE_URL_ROOT` |
+| `caproni.openbao.yaml` | Opt-in fragment: OpenBao for `Test::Integration::SecretsManager` |
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
-| `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled |
+| `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled; also declares the `openbao` database |
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
 | `manifests/github-oauth/` | Kustomization the fragment applies between namespace creation and the Helm install; its `provider.yaml` is generated from the fragment's `files:` |
 | `manifests/oidc-consumer/` | Kustomization for the consumer's `gitlab-omniauth-consumer` provider secret |
@@ -58,8 +60,9 @@ and `CAPRONI_VERSION` and `K3D_VERSION` in
 [`.gitlab/ci/qa-common/variables.gitlab-ci.yml`](../../.gitlab/ci/qa-common/variables.gitlab-ci.yml).
 
 The Ruby scripts are covered by specs in `qa/spec/caproni/`, which `qa:rspec-internal`
-runs. Locally they need the internal options file, because `qa/.rspec` points the default
-path at the E2E suite:
+runs. `openbao_fragment_spec.rb` in the same directory checks the OpenBao fragment against
+`values/gitlab-dev-stack.yaml` and `caproni.yaml`. Locally they need the internal options
+file, because `qa/.rspec` points the default path at the E2E suite:
 
 ```shell
 cd qa && bundle exec rspec -O .rspec_internal spec/caproni/
@@ -122,6 +125,45 @@ in `Configurations::Kind`. The `pre-receive-hook` kustomize deployer applies it 
 `tag_revision_trigger_prereceive_hook_spec.rb` pushes to a project path matching
 `reject-prereceive` and expects the hook's error message. The chart mounts the ConfigMap by
 name, so the name `pre-receive-hook` has to stay stable.
+
+## OpenBao
+
+OpenBao is opt-in. When `QA_SCENARIO` is `Test::Integration::SecretsManager`,
+`scripts/write_local_config.rb` adds an `extends:` entry for `caproni.openbao.yaml` to
+`caproni.local.yaml`, the same way it composes the GitHub OAuth fragment. Other jobs don't deploy OpenBao, so they
+don't pay for an extra subchart.
+
+The fragment sets `openbao.install: true` and `global.openbao.enabled: true`, the external
+URL `http://openbao.<domain>`, the in-cluster `internal_url`, and the PostgreSQL connection
+under `global.openbao.psql.*`. The external URL has no port because it's the Gateway's
+`openbao-web` listener on port 80; Rails hands this URL to the runner for CI secret
+resolution, so it has to be reachable from outside the cluster. The fragment also raises the
+`gitlab` Helm timeout to 15m, to match the orchestrator job's `DEPLOY_TIMEOUT`.
+
+`values/gitlab-dev-stack.yaml` declares an `openbao` database with owner `openbao` under the
+existing PostgreSQL cluster. Declaring it makes gitlab-dev-stack create the database, the
+owner role, and a `gitlab-dev-stack-gitlab-openbao-conn` secret in the `gitlab` namespace,
+which the fragment reads for the password (key `PGPASSWORD`). The database exists on every
+run; only OpenBao itself is opt-in.
+
+This deployment requires the openbao subchart to be at least 0.18.0. Before that version, the
+subchart's HTTPRoute named its Gateway literally `gateway`, so the route never attached and
+Envoy answered every request to `openbao.<domain>` with 404, which the runner reports as
+"secret not found". The fix landed in
+[openbao!75](https://gitlab.com/gitlab-org/cloud-native/charts/openbao/-/merge_requests/75),
+and the GitLab chart has vendored openbao 0.18.1 since
+[gitlab!5299](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/5299). The pinned
+`GITLAB_HELM_CHART_REF` is past that point, so no workaround is needed today. If the pin ever
+moves back before 0.18.0, setting `openbao.gatewayRoute.gatewayName: gitlab-gw` in the
+fragment would restore the route.
+
+After the deploy, the secrets-manager job requests `/v1/sys/health` at the external URL
+with `curl --fail`, so a route that never attached fails the job with a 404.
+`qa/spec/caproni/openbao_fragment_spec.rb` checks the fragment statically: that the database,
+owner, conn secret name and PostgreSQL host match `values/gitlab-dev-stack.yaml` and
+`caproni.yaml`. Both exist because the two `*_ci_access_failure` specs pass whether or not
+OpenBao is reachable: they assert that resolving a nonexistent secret fails, so a green run
+of only those proves nothing.
 
 ## The chart
 

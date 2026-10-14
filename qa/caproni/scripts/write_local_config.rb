@@ -19,6 +19,7 @@ module WriteLocalConfig
       fragments << 'caproni.oidc-consumer.yaml'
     end
 
+    fragments << 'caproni.openbao.yaml' if qa_scenario == 'Test::Integration::SecretsManager'
     fragments << 'caproni.relative-url.yaml' unless relative_url_root.to_s.empty?
 
     config = { 'variables' => { 'BASE_DOMAIN' => domain } }

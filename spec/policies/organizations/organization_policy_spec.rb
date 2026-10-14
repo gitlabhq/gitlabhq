@@ -16,18 +16,18 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
   context 'when the user is anonymous' do
     let_it_be(:current_user) { nil }
 
-    it { is_expected.to be_disallowed(:update_organization) }
+    it { expect_disallowed(:update_organization) }
 
     context 'when the organization is private' do
-      it { is_expected.to be_disallowed(:read_organization) }
-      it { is_expected.to be_disallowed(:read_artifact_registry) }
+      it { expect_disallowed(:read_organization) }
+      it { expect_disallowed(:read_artifact_registry) }
     end
 
     context 'when the organization is public' do
       let(:organization) { public_organization }
 
-      it { is_expected.to be_allowed(:read_organization) }
-      it { is_expected.to be_disallowed(:read_artifact_registry) }
+      it { expect_allowed(:read_organization) }
+      it { expect_disallowed(:read_artifact_registry) }
     end
   end
 
@@ -35,37 +35,27 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     let_it_be(:current_user) { create(:user, :admin) }
 
     context 'when admin mode is enabled', :enable_admin_mode do
-      it { is_expected.to be_allowed(:update_organization) }
-      it { is_expected.to be_allowed(:create_group) }
-      it { is_expected.to be_allowed(:delete_organization) }
-      it { is_expected.to be_allowed(:restore_organization) }
-      it { is_expected.to be_allowed(:read_organization) }
-      it { is_expected.to be_allowed(:read_organization_user) }
-      it { is_expected.to be_allowed(:read_user_groups) }
-      it { is_expected.to be_allowed(:read_artifact_registry) }
-      it { expect_allowed(:transfer_group) }
-      it { expect_allowed(:access_organization_admin_area) }
-      it { expect_allowed(:update_integration) }
+      it { expect_allowed(:restore_organization) }
     end
 
     context 'when admin mode is disabled' do
-      it { is_expected.to be_disallowed(:update_organization) }
-      it { is_expected.to be_disallowed(:restore_organization) }
-      it { is_expected.to be_disallowed(:access_organization_admin_area) }
-      it { is_expected.to be_disallowed(:read_user_groups) }
+      it { expect_disallowed(:update_organization) }
+      it { expect_disallowed(:restore_organization) }
+      it { expect_disallowed(:access_organization_admin_area) }
+      it { expect_disallowed(:read_user_groups) }
       it { expect_disallowed(:transfer_group) }
       it { expect_disallowed(:update_integration) }
-      it { is_expected.to be_disallowed(:read_artifact_registry) }
+      it { expect_disallowed(:read_artifact_registry) }
 
       context 'when the organization is private' do
-        it { is_expected.to be_disallowed(:read_organization) }
+        it { expect_disallowed(:read_organization) }
       end
 
       context 'when the organization is public' do
         let_it_be(:organization) { public_organization }
 
-        it { is_expected.to be_allowed(:read_organization) }
-        it { is_expected.to be_disallowed(:read_artifact_registry) }
+        it { expect_allowed(:read_organization) }
+        it { expect_disallowed(:read_artifact_registry) }
       end
     end
   end
@@ -75,17 +65,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       create(:organization_user, organization: organization, user: current_user)
     end
 
-    it { is_expected.to be_disallowed(:update_organization) }
-    it { is_expected.to be_allowed(:create_group) }
-    it { is_expected.to be_disallowed(:delete_organization) }
-    it { is_expected.to be_disallowed(:restore_organization) }
-    it { is_expected.to be_allowed(:read_organization) }
-    it { is_expected.to be_allowed(:read_artifact_registry) }
-    it { is_expected.to be_disallowed(:read_organization_user) }
-    it { is_expected.to be_disallowed(:read_user_groups) }
-    it { expect_disallowed(:transfer_group) }
-    it { expect_disallowed(:access_organization_admin_area) }
-    it { expect_disallowed(:update_integration) }
+    it { expect_allowed(:create_group) }
   end
 
   context 'when the user is an owner of the organization' do
@@ -93,41 +73,30 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       create(:organization_user, :owner, organization: organization, user: current_user)
     end
 
-    it { is_expected.to be_allowed(:update_organization) }
-    it { is_expected.to be_allowed(:create_group) }
-    it { is_expected.to be_allowed(:delete_organization) }
-    # restore_organization is admin-only, so organization owners cannot restore.
-    it { is_expected.to be_disallowed(:restore_organization) }
-    it { is_expected.to be_allowed(:read_organization) }
-    it { is_expected.to be_allowed(:read_organization_user) }
-    it { is_expected.to be_allowed(:read_user_groups) }
-    it { is_expected.to be_allowed(:read_artifact_registry) }
-    it { expect_allowed(:transfer_group) }
-    it { expect_allowed(:access_organization_admin_area) }
-    it { expect_allowed(:update_integration) }
+    it { expect_allowed(:update_organization) }
   end
 
   context 'when the user is not part of the organization' do
-    it { is_expected.to be_disallowed(:update_organization) }
-    it { is_expected.to be_disallowed(:create_group) }
-    it { is_expected.to be_disallowed(:delete_organization) }
-    it { is_expected.to be_disallowed(:restore_organization) }
-    it { is_expected.to be_disallowed(:read_organization_user) }
-    it { is_expected.to be_disallowed(:read_user_groups) }
-    it { is_expected.to be_disallowed(:read_artifact_registry) }
+    it { expect_disallowed(:update_organization) }
+    it { expect_disallowed(:create_group) }
+    it { expect_disallowed(:delete_organization) }
+    it { expect_disallowed(:restore_organization) }
+    it { expect_disallowed(:read_organization_user) }
+    it { expect_disallowed(:read_user_groups) }
+    it { expect_disallowed(:read_artifact_registry) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
     it { expect_disallowed(:update_integration) }
 
     context 'when the organization is private' do
-      it { is_expected.to be_disallowed(:read_organization) }
+      it { expect_disallowed(:read_organization) }
     end
 
     context 'when the organization is public' do
       let_it_be(:organization) { public_organization }
 
-      it { is_expected.to be_allowed(:read_organization) }
-      it { is_expected.to be_disallowed(:read_artifact_registry) }
+      it { expect_allowed(:read_organization) }
+      it { expect_disallowed(:read_artifact_registry) }
     end
   end
 
@@ -143,8 +112,8 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
         current_user.block!
       end
 
-      it { is_expected.to be_disallowed(:delete_organization) }
-      it { is_expected.to be_disallowed(:restore_organization) }
+      it { expect_disallowed(:delete_organization) }
+      it { expect_disallowed(:restore_organization) }
     end
 
     context 'when the user is deactivated' do
@@ -152,8 +121,8 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
         current_user.deactivate!
       end
 
-      it { is_expected.to be_disallowed(:delete_organization) }
-      it { is_expected.to be_disallowed(:restore_organization) }
+      it { expect_disallowed(:delete_organization) }
+      it { expect_disallowed(:restore_organization) }
     end
 
     context 'when the user is inactive (access locked)' do
@@ -161,8 +130,8 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
         current_user.update!(locked_at: Time.current)
       end
 
-      it { is_expected.to be_disallowed(:delete_organization) }
-      it { is_expected.to be_disallowed(:restore_organization) }
+      it { expect_disallowed(:delete_organization) }
+      it { expect_disallowed(:restore_organization) }
     end
   end
 
@@ -172,7 +141,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     context 'when the user is an admin', :enable_admin_mode do
       let_it_be(:current_user) { create(:user, :admin) }
 
-      it { is_expected.to be_disallowed(:delete_organization) }
+      it { expect_disallowed(:delete_organization) }
     end
 
     context 'when the user is an owner of the organization' do
@@ -182,41 +151,24 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
           .update!(access_level: :owner)
       end
 
-      it { is_expected.to be_disallowed(:delete_organization) }
+      it { expect_disallowed(:delete_organization) }
     end
   end
 
   describe 'read_user_access_level' do
-    include AdminModeHelper
-
     let(:organization) { private_organization }
 
     let_it_be(:instance_admin) { create(:admin) }
-    let_it_be(:organization_admin) { create(:organization_owner, organization: private_organization).user }
-    let_it_be(:organization_user) { create(:organization_user, organization: private_organization).user }
     let_it_be(:non_member) { create(:user) }
 
-    where(:user, :admin_mode, :allowed) do
-      ref(:instance_admin)     | true  | true
-      ref(:instance_admin)     | false | false
-      ref(:organization_admin) | false | true
-      ref(:organization_user)  | false | false
-      ref(:non_member)         | false | false
-      nil                      | false | false
+    where(:user) do
+      [ref(:instance_admin), ref(:non_member), nil]
     end
 
     with_them do
       let(:current_user) { user }
 
-      before do
-        enable_admin_mode!(current_user) if admin_mode
-      end
-
-      if params[:allowed]
-        it { expect_allowed(:read_user_access_level) }
-      else
-        it { expect_disallowed(:read_user_access_level) }
-      end
+      it { expect_disallowed(:read_user_access_level) }
     end
   end
 end

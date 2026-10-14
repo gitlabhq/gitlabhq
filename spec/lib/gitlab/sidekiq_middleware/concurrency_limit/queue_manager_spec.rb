@@ -256,36 +256,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       service.add_to_queue!(job, worker_context)
     end
 
-    shared_examples 'stores the deferred job on the ConcurrencyLimit instance' do
-      it 'writes the job to the ConcurrencyLimit store' do
-        service.add_to_queue!(job, worker_context)
+    it 'writes the job to the ConcurrencyLimit store' do
+      service.add_to_queue!(job, worker_context)
 
-        stored = Gitlab::Redis::ConcurrencyLimit.with { |r| r.lrange(service.redis_key, 0, -1) }
+      stored = Gitlab::Redis::ConcurrencyLimit.with { |r| r.lrange(service.redis_key, 0, -1) }
 
-        expect(stored.size).to eq(1)
-      end
-    end
-
-    context 'when both MultiStore flags are disabled' do
-      before do
-        stub_feature_flags(
-          use_primary_and_secondary_stores_for_concurrency_limit: false,
-          use_primary_store_as_default_for_concurrency_limit: false
-        )
-      end
-
-      it_behaves_like 'stores the deferred job on the ConcurrencyLimit instance'
-    end
-
-    context 'when the primary store is the default' do
-      before do
-        stub_feature_flags(
-          use_primary_and_secondary_stores_for_concurrency_limit: true,
-          use_primary_store_as_default_for_concurrency_limit: true
-        )
-      end
-
-      it_behaves_like 'stores the deferred job on the ConcurrencyLimit instance'
+      expect(stored.size).to eq(1)
     end
   end
 

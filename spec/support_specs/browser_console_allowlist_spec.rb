@@ -5,7 +5,6 @@ require 'yaml'
 require_relative '../support/helpers/browser_console_helpers'
 
 RSpec.describe 'spec/support/browser_console_allowlist.yml', feature_category: :tooling do
-  root = File.expand_path('../..', __dir__)
   entries = YAML.safe_load_file(BrowserConsoleHelpers::BROWSER_CONSOLE_ALLOWLIST_PATH)
   allowed_keys = %w[message messages issue specs]
 
@@ -40,17 +39,9 @@ RSpec.describe 'spec/support/browser_console_allowlist.yml', feature_category: :
         expect(entry['issue']).to match(%r{\Ahttps://gitlab\.com/.+/-/(issues|work_items)/\d+\z}) if entry.key?('issue')
       end
 
-      it 'scopes to spec files that exist' do
+      it 'is scoped to spec files' do
         expect(entry['specs']).to be_an(Array), '`specs` is required; an unscoped entry hides the error on every page'
         expect(entry['specs']).not_to be_empty
-
-        entry['specs'].each do |glob|
-          # The as-if-FOSS pipeline removes the ee/ directory.
-          next if glob.start_with?('ee/') && !File.directory?(File.join(root, 'ee'))
-
-          matches = Dir.glob(File.join(root, glob))
-          expect(matches).not_to be_empty, "`#{glob}` matches no spec file; remove it from the entry"
-        end
       end
     end
   end

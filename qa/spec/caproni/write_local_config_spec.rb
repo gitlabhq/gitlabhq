@@ -29,6 +29,11 @@ RSpec.describe WriteLocalConfig do
         .not_to have_key('extends')
     end
 
+    it 'extends the OpenBao fragment only for the SecretsManager scenario' do
+      expect(described_class.build(domain: domain, qa_scenario: 'Test::Integration::SecretsManager'))
+        .to include('extends' => ['caproni.openbao.yaml'])
+    end
+
     it 'extends every fragment a job opted into' do
       config = described_class.build(
         domain: domain, relative_url_root: '/relative', qa_scenario: 'Test::Integration::OAuth'

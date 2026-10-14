@@ -13109,6 +13109,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact registry"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact registry is already enabled"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact registry is unavailable"
 msgstr ""
 
@@ -14164,6 +14167,9 @@ msgid "ArtifactRegistry|You must be signed in to read role assignments."
 msgstr ""
 
 msgid "ArtifactRegistry|You must be signed in to revoke a role."
+msgstr ""
+
+msgid "ArtifactRegistry|Your organization is using the handle %{handle}. The handle you entered was not claimed."
 msgstr ""
 
 msgid "ArtifactRegistry|glab reads your GitLab token from %{codeStart}GITLAB_TOKEN%{codeEnd}. If that is not set, run %{codeStart}glab auth login%{codeEnd} first."
@@ -85879,6 +85885,9 @@ msgid "The merge request must not be a draft."
 msgstr ""
 
 msgid "The merge request must not have conflicts."
+msgstr ""
+
+msgid "The mergeability of this merge request is still being checked. Please try again in a moment."
 msgstr ""
 
 msgid "The metric must be one of %{metrics}."

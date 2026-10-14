@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# OpenBao for Test::Integration::SecretsManager. Opt-in via caproni.local.yaml -- see README
+
+cluster:
+  network:
+    # Lists replace rather than merge: repeat the base hostnames so update-etc-hosts keeps them
+    additional_hostnames:
+      - registry.${BASE_DOMAIN}
+      - kas.${BASE_DOMAIN}
+      - openbao.${BASE_DOMAIN}
+
+deployers:
+  gitlab:
+    helm:
+      # Matches the orchestrator job's DEPLOY_TIMEOUT for this scenario
+      timeout: 15m
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            openbao.install: true
+            global.openbao.enabled: true
+
+            # External: what Rails hands the runner. The Gateway's openbao-web listener, port 80
+            global.openbao.url: http://openbao.${BASE_DOMAIN}
+            # Internal: Rails' own server-to-server path
+            global.openbao.internal_url: http://gitlab-openbao-active.gitlab.svc.cluster.local:8200
+
+            # Database, owner role and conn secret come from values/gitlab-dev-stack.yaml
+            global.openbao.psql.host: gitlab-dev-stack-gitlab-rw.gitlab-dev-stack.svc
+            global.openbao.psql.database: openbao
+            global.openbao.psql.username: openbao
+            global.openbao.psql.password.secret: gitlab-dev-stack-gitlab-openbao-conn
+            global.openbao.psql.password.key: PGPASSWORD

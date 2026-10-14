@@ -1,4 +1,5 @@
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
 import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import YamlWorker from './monaco_yaml_worker?worker';
@@ -39,10 +40,11 @@ export const setupCodeSnippet = (el) => {
 };
 
 /**
- * This is required for monaco-yaml to work with Vite.
+ * Sets up Monaco web workers for builds that define window.IS_VITE (Vite and Rspack).
+ * Webpack builds get them from MonacoWebpackPlugin instead.
  * See https://gitlab.com/gitlab-org/gitlab/-/issues/461252 for details
  */
-export const enableMonacoYamlWorkerForVite = () => {
+export const enableMonacoWorkers = () => {
   if (window.IS_VITE) {
     window.MonacoEnvironment = {
       async getWorker(moduleId, label) {
@@ -52,6 +54,9 @@ export const enableMonacoYamlWorkerForVite = () => {
           }
           case 'yaml': {
             return new YamlWorker();
+          }
+          case 'editorWorkerService': {
+            return new EditorWorker();
           }
           default:
             throw new Error(`Unknown Monaco worker label: "${label}"`);

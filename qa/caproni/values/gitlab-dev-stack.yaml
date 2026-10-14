@@ -32,6 +32,10 @@ postgres:
             - btree_gist
             - amcheck
             - pg_stat_statements
+        # Declaring it creates the database, its owner role and the *-openbao-conn secret;
+        # OpenBao itself only deploys when caproni.openbao.yaml is composed
+        - name: openbao
+          owner: openbao
 
 valkey:
   enabled: true

@@ -707,6 +707,8 @@ module Trigger
         'get'
       when 'gitlab-org/ops/artifact-registry'
         'artifact_registry'
+      when 'gitlab-org/release/patch-release-blogs'
+        'patches'
       end
     end
 

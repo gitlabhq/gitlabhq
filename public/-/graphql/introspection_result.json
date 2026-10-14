@@ -24036,6 +24036,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "group",
+              "description": "Group of the flow trigger. Null for project flow triggers. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Group",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "id",
               "description": "ID of the flow trigger.",
               "args": [],
@@ -24065,16 +24077,12 @@
             },
             {
               "name": "project",
-              "description": "Project of the flow trigger.",
+              "description": "Project of the flow trigger. Null for group flow triggers.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Project",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

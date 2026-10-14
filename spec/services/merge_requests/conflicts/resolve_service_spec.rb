@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
+  using RSpec::Parameterized::TableSyntax
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository, developers: user) }
 
@@ -331,48 +333,57 @@ RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code
       it_behaves_like 'a refusal before resolving'
     end
 
-    context 'when the conflicts cannot be resolved in the UI' do
+    context 'when the conflicts cannot be parsed' do
       let(:reason) { described_class::REASON_NOT_RESOLVABLE_IN_UI }
       let(:message) do
         'The merge conflicts for this merge request cannot be resolved through GitLab. ' \
           'Please try to resolve them locally.'
       end
 
-      context 'when the merge request can be merged' do
-        before do
-          merge_request.update_column(:merge_status, :can_be_merged)
-        end
-
-        it_behaves_like 'a refusal before resolving'
+      before do
+        allow(Gitlab::Git::Conflict::Parser).to receive(:parse)
+          .and_raise(Gitlab::Git::Conflict::Parser::UnmergeableFile)
       end
 
-      context 'when the conflicts cannot be parsed' do
-        before do
-          allow(Gitlab::Git::Conflict::Parser).to receive(:parse)
-            .and_raise(Gitlab::Git::Conflict::Parser::UnmergeableFile)
-        end
-
-        it_behaves_like 'a refusal before resolving'
-      end
+      it_behaves_like 'a refusal before resolving'
     end
 
-    context 'when the conflicts are resolvable in the UI but the merge request can be merged' do
-      before do
-        allow_next_instance_of(MergeRequests::Conflicts::ListService) do |list_service|
-          allow(list_service).to receive(:can_be_resolved_in_ui?).and_return(true)
-        end
+    context 'when the merge request can be merged' do
+      let(:reason) { described_class::REASON_ALREADY_RESOLVED }
+      let(:message) { 'The merge conflicts for this merge request have already been resolved.' }
 
+      before do
         merge_request.update_column(:merge_status, :can_be_merged)
       end
 
-      it 'returns an already resolved error after tracking the attempt', :aggregate_failures do
-        result = service.execute(user, params)
+      it_behaves_like 'a refusal before resolving'
+    end
 
-        expect(result).to be_error
-        expect(result.reason).to eq(described_class::REASON_ALREADY_RESOLVED)
-        expect(result.message).to eq('The merge conflicts for this merge request have already been resolved.')
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .to have_received(:track_resolve_conflict_action).with(user: user)
+    context 'when the mergeability is still being checked' do
+      let(:reason) { described_class::REASON_MERGEABILITY_UNCHECKED }
+      let(:message) do
+        'The mergeability of this merge request is still being checked. Please try again in a moment.'
+      end
+
+      where(:merge_status, :queued_checks) do
+        :preparing                   | 0
+        :unchecked                   | 1
+        :checking                    | 1
+        :cannot_be_merged_recheck    | 1
+        :cannot_be_merged_rechecking | 1
+      end
+
+      with_them do
+        before do
+          merge_request.update_column(:merge_status, merge_status)
+        end
+
+        it_behaves_like 'a refusal before resolving'
+
+        it 'queues a mergeability check unless the merge request is still preparing' do
+          expect { service.execute(user, params) }
+            .to change { MergeRequestMergeabilityCheckWorker.jobs.size }.by(queued_checks)
+        end
       end
     end
 

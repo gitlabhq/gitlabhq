@@ -56,8 +56,7 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
               user_id: user.id,
               namespace_id: group.id,
               destroyed_count: 1,
-              destroy_duration_s: an_instance_of(Float),
-              single_authorized_projects_refresh: true
+              destroy_duration_s: an_instance_of(Float)
             )
 
             perform_work
@@ -106,12 +105,9 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
           project.add_owner(user)
         end
 
-        # The user has two group memberships and one project membership.
-        # Flag enabled: the worker asks for one batch refresh, UserProjectAccessChangedService.new(user.id).execute at
-        # MEDIUM_PRIORITY, which schedules UserRefreshWithLowUrgencyWorker a minute out.
-        # Flag disabled: every destroyed membership refreshes on its own. StubbedMember runs those inline, so they
-        # appear as AuthorizedProjectsWorker.new per group membership, ProjectRecalculatePerUserWorker.new per project
-        # membership, plus one low priority safety-net request through UserProjectAccessChangedService.
+        # The user has two group memberships and one project membership. Without the batch refresh, StubbedMember
+        # would run a refresh inline for each destroyed membership (AuthorizedProjectsWorker per group membership,
+        # ProjectRecalculatePerUserWorker per project membership).
         it 'refreshes once for the whole batch instead of once per destroyed membership' do
           expect_next_instances_of(UserProjectAccessChangedService, 1, false, user.id) do |service|
             expect(service).to receive(:execute)
@@ -122,14 +118,6 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
           expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
 
           expect { perform_work }.to change { Member.with_user(user).count }.from(3).to(0)
-        end
-
-        it 'reads the feature flag once per schedule so a flip mid-batch cannot skip the refresh' do
-          allow(Feature).to receive(:enabled?).and_call_original
-          expect(Feature).to receive(:enabled?)
-            .with(:member_prune_deletion_per_batch_authorized_projects_refresh, group).once.and_call_original
-
-          perform_work
         end
 
         it 'removes the authorizations of the pruned memberships', :sidekiq_inline do
@@ -191,28 +179,12 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
           end
         end
 
-        context 'when the member_prune_deletion_per_batch_authorized_projects_refresh flag is disabled' do
-          before do
-            stub_feature_flags(member_prune_deletion_per_batch_authorized_projects_refresh: false)
-          end
+        context 'when the membership lookup raises' do
+          it 'raises the original error and does not refresh' do
+            allow(::Member).to receive(:in_hierarchy).and_raise(ActiveRecord::QueryCanceled)
+            expect(UserProjectAccessChangedService).not_to receive(:new)
 
-          it 'refreshes after each destroyed membership instead' do
-            expect(AuthorizedProjectsWorker).to receive(:new).twice.and_call_original
-            expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:new).once.and_call_original
-            # the project membership's safety net is the only refresh request; there is no batch refresh
-            expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
-              expect(service).to receive(:execute)
-                .with(priority: UserProjectAccessChangedService::LOW_PRIORITY).and_call_original
-            end
-
-            perform_work
-          end
-
-          it 'logs that the batch refresh was not used' do
-            allow(Gitlab::AppLogger).to receive(:info)
-            expect(Gitlab::AppLogger).to receive(:info).with(hash_including(single_authorized_projects_refresh: false))
-
-            perform_work
+            expect { perform_work }.to raise_error(ActiveRecord::QueryCanceled)
           end
         end
       end

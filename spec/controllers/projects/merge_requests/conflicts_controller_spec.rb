@@ -317,6 +317,38 @@ RSpec.describe Projects::MergeRequests::ConflictsController, feature_category: :
       end
     end
 
+    context 'when the conflicts have already been resolved' do
+      before do
+        merge_request_with_conflicts.update_column(:merge_status, :can_be_merged)
+
+        resolve_conflicts([])
+      end
+
+      it 'returns a 400 with the already resolved message', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message'])
+          .to eq('The merge conflicts for this merge request have already been resolved.')
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to have_received(:track_resolve_conflict_action)
+      end
+    end
+
+    context 'when the mergeability is still being checked' do
+      before do
+        merge_request_with_conflicts.update_column(:merge_status, :cannot_be_merged_recheck)
+
+        resolve_conflicts([])
+      end
+
+      it 'returns a 400 with the still being checked message', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message'])
+          .to eq('The mergeability of this merge request is still being checked. Please try again in a moment.')
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to have_received(:track_resolve_conflict_action)
+      end
+    end
+
     context 'when a file is not in conflict' do
       before do
         resolve_conflicts([

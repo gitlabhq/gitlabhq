@@ -214,12 +214,6 @@
 - message: "TypeError: Cannot read properties of null (reading 'group')"
   specs:
   - ee/spec/features/boards/swimlanes/epics_swimlanes_sidebar_labels_spec.rb
-# Every source editor: the Rspack build defines window.IS_VITE, and enableMonacoYamlWorkerForVite
-# in app/assets/javascripts/editor/utils.js has no worker for this label.
-- message: 'Uncaught Error: Unknown Monaco worker label: "editorWorkerService"'
-  specs:
-  - ee/spec/features/**/*_spec.rb
-  - spec/features/**/*_spec.rb
 - message: "TypeError: Cannot read properties of undefined (reading 'queries')"
   specs:
   - ee/spec/features/admin/geo/admin_geo_replication_nav_spec.rb

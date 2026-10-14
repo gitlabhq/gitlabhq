@@ -1,9 +1,16 @@
 import { editor as monacoEditor } from 'monaco-editor';
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+import YamlWorker from '~/editor/monaco_yaml_worker?worker';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as utils from '~/editor/utils';
 import languages from '~/ide/lib/languages';
 import { registerLanguages } from '~/ide/utils';
 import { DEFAULT_THEME } from '~/ide/lib/themes';
+
+jest.mock('monaco-editor/esm/vs/editor/editor.worker?worker', () => jest.fn());
+jest.mock('monaco-editor/esm/vs/language/json/json.worker?worker', () => jest.fn());
+jest.mock('~/editor/monaco_yaml_worker?worker', () => jest.fn());
 
 describe('Source Editor utils', () => {
   let el;
@@ -98,16 +105,43 @@ describe('Source Editor utils', () => {
     });
   });
 
-  describe('enableMonacoYamlWorkerForVite', () => {
+  describe('enableMonacoWorkers', () => {
     it('does not set up the worker for non-Vite environments', () => {
-      utils.enableMonacoYamlWorkerForVite();
+      utils.enableMonacoWorkers();
       expect(window.MonacoEnvironment).toBeUndefined();
     });
 
-    it('does set up the worker for Vite environments', () => {
-      window.IS_VITE = true;
-      utils.enableMonacoYamlWorkerForVite();
-      expect(window.MonacoEnvironment).toBeDefined();
+    describe('when IS_VITE is true', () => {
+      beforeEach(() => {
+        window.IS_VITE = true;
+        utils.enableMonacoWorkers();
+      });
+
+      afterEach(() => {
+        delete window.IS_VITE;
+        delete window.MonacoEnvironment;
+      });
+
+      it('sets up the worker', () => {
+        expect(window.MonacoEnvironment).toBeDefined();
+      });
+
+      it.each`
+        label                    | Worker
+        ${'json'}                | ${JsonWorker}
+        ${'yaml'}                | ${YamlWorker}
+        ${'editorWorkerService'} | ${EditorWorker}
+      `('returns the $label worker', async ({ label, Worker }) => {
+        const worker = await window.MonacoEnvironment.getWorker('workerMain.js', label);
+
+        expect(worker).toBeInstanceOf(Worker);
+      });
+
+      it('throws for an unknown label', async () => {
+        await expect(window.MonacoEnvironment.getWorker('workerMain.js', 'foo')).rejects.toThrow(
+          'Unknown Monaco worker label: "foo"',
+        );
+      });
     });
   });
 });

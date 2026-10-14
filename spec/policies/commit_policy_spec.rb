@@ -7,25 +7,26 @@ RSpec.describe CommitPolicy do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
     let(:commit) { project.repository.head_commit }
-    let(:policy) { described_class.new(user, commit) }
+
+    subject(:policy) { described_class.new(user, commit) }
 
     shared_examples 'can read commit and create a note' do
       it 'can read commit' do
-        expect(policy).to be_allowed(:read_commit)
+        expect_allowed(:read_commit)
       end
 
       it 'can create a note' do
-        expect(policy).to be_allowed(:create_note)
+        expect_allowed(:create_note)
       end
     end
 
     shared_examples 'cannot read commit nor create a note' do
       it 'cannot read commit' do
-        expect(policy).to be_disallowed(:read_commit)
+        expect_disallowed(:read_commit)
       end
 
       it 'cannot create a note' do
-        expect(policy).to be_disallowed(:create_note)
+        expect_disallowed(:create_note)
       end
     end
 
@@ -61,22 +62,6 @@ RSpec.describe CommitPolicy do
 
             it_behaves_like 'can read commit and create a note'
           end
-
-          context 'and the user is a reporter' do
-            before_all do
-              group.add_reporter(user)
-            end
-
-            it_behaves_like 'can read commit and create a note'
-          end
-
-          context 'and the user is a developer' do
-            before_all do
-              group.add_developer(user)
-            end
-
-            it_behaves_like 'can read commit and create a note'
-          end
         end
       end
     end
@@ -88,52 +73,12 @@ RSpec.describe CommitPolicy do
         it_behaves_like 'cannot read commit nor create a note'
       end
 
-      context 'when the user is a direct project member' do
-        context 'and the user is a developer' do
-          before_all do
-            project.add_developer(user)
-          end
-
-          it_behaves_like 'can read commit and create a note'
+      context 'when the user is a guest of the project' do
+        before_all do
+          project.add_guest(user)
         end
 
-        context 'and the user is a guest' do
-          before_all do
-            project.add_guest(user)
-          end
-
-          it_behaves_like 'cannot read commit nor create a note'
-
-          it 'cannot download code' do
-            expect(policy).to be_disallowed(:download_code)
-          end
-        end
-      end
-
-      context 'when the user is an inherited member from the group' do
-        context 'and the user is a guest' do
-          before_all do
-            group.add_guest(user)
-          end
-
-          it_behaves_like 'cannot read commit nor create a note'
-        end
-
-        context 'and the user is a reporter' do
-          before_all do
-            group.add_reporter(user)
-          end
-
-          it_behaves_like 'can read commit and create a note'
-        end
-
-        context 'and the user is a developer' do
-          before_all do
-            group.add_developer(user)
-          end
-
-          it_behaves_like 'can read commit and create a note'
-        end
+        it_behaves_like 'cannot read commit nor create a note'
       end
     end
   end

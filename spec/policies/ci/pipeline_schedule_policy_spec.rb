@@ -11,7 +11,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
   let_it_be_with_refind(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
   let_it_be(:tag_ref_name) { "v1.0.0" }
 
-  let(:policy) do
+  subject(:policy) do
     described_class.new(user, pipeline_schedule)
   end
 
@@ -28,60 +28,36 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
             end
 
             shared_examples_for 'allowed by those who can update the branch' do
-              where(:push_access_level, :merge_access_level, :project_role, :accessible) do
-                :no_one_can_push | :no_one_can_merge | :owner      | :be_disallowed
-                :no_one_can_push | :no_one_can_merge | :maintainer | :be_disallowed
-                :no_one_can_push | :no_one_can_merge | :developer  | :be_disallowed
-                :no_one_can_push | :no_one_can_merge | :reporter   | :be_disallowed
-                :no_one_can_push | :no_one_can_merge | :guest      | :be_disallowed
+              where(:push_access_level, :merge_access_level, :project_role, :allowed) do
+                :no_one_can_push | :no_one_can_merge | :owner      | false
+                :no_one_can_push | :no_one_can_merge | :maintainer | false
+                :no_one_can_push | :no_one_can_merge | :developer  | false
+                :no_one_can_push | :no_one_can_merge | :reporter   | false
+                :no_one_can_push | :no_one_can_merge | :guest      | false
 
-                :maintainers_can_push | :no_one_can_merge | :owner      | :be_allowed
-                :maintainers_can_push | :no_one_can_merge | :maintainer | :be_allowed
-                :maintainers_can_push | :no_one_can_merge | :developer  | :be_disallowed
-                :maintainers_can_push | :no_one_can_merge | :reporter   | :be_disallowed
-                :maintainers_can_push | :no_one_can_merge | :guest      | :be_disallowed
+                :maintainers_can_push | :no_one_can_merge | :owner      | true
+                :maintainers_can_push | :no_one_can_merge | :maintainer | true
+                :maintainers_can_push | :no_one_can_merge | :developer  | false
+                :maintainers_can_push | :no_one_can_merge | :reporter   | false
+                :maintainers_can_push | :no_one_can_merge | :guest      | false
 
-                :developers_can_push | :no_one_can_merge |  :owner      | :be_allowed
-                :developers_can_push | :no_one_can_merge |  :maintainer | :be_allowed
-                :developers_can_push | :no_one_can_merge |  :developer  | :be_allowed
-                :developers_can_push | :no_one_can_merge |  :reporter   | :be_disallowed
-                :developers_can_push | :no_one_can_merge |  :guest      | :be_disallowed
+                :developers_can_push | :no_one_can_merge |  :owner      | true
+                :developers_can_push | :no_one_can_merge |  :maintainer | true
+                :developers_can_push | :no_one_can_merge |  :developer  | true
+                :developers_can_push | :no_one_can_merge |  :reporter   | false
+                :developers_can_push | :no_one_can_merge |  :guest      | false
 
-                :no_one_can_push | :maintainers_can_merge | :owner      | :be_allowed
-                :no_one_can_push | :maintainers_can_merge | :maintainer | :be_allowed
-                :no_one_can_push | :maintainers_can_merge | :developer  | :be_disallowed
-                :no_one_can_push | :maintainers_can_merge | :reporter   | :be_disallowed
-                :no_one_can_push | :maintainers_can_merge | :guest      | :be_disallowed
+                :no_one_can_push | :maintainers_can_merge | :owner      | true
+                :no_one_can_push | :maintainers_can_merge | :maintainer | true
+                :no_one_can_push | :maintainers_can_merge | :developer  | false
+                :no_one_can_push | :maintainers_can_merge | :reporter   | false
+                :no_one_can_push | :maintainers_can_merge | :guest      | false
 
-                :maintainers_can_push | :maintainers_can_merge | :owner      | :be_allowed
-                :maintainers_can_push | :maintainers_can_merge | :maintainer | :be_allowed
-                :maintainers_can_push | :maintainers_can_merge | :developer  | :be_disallowed
-                :maintainers_can_push | :maintainers_can_merge | :reporter   | :be_disallowed
-                :maintainers_can_push | :maintainers_can_merge | :guest      | :be_disallowed
-
-                :developers_can_push | :maintainers_can_merge |  :owner      | :be_allowed
-                :developers_can_push | :maintainers_can_merge |  :maintainer | :be_allowed
-                :developers_can_push | :maintainers_can_merge |  :developer  | :be_allowed
-                :developers_can_push | :maintainers_can_merge |  :reporter   | :be_disallowed
-                :developers_can_push | :maintainers_can_merge |  :guest      | :be_disallowed
-
-                :no_one_can_push | :developers_can_merge | :owner      | :be_allowed
-                :no_one_can_push | :developers_can_merge | :maintainer | :be_allowed
-                :no_one_can_push | :developers_can_merge | :developer  | :be_allowed
-                :no_one_can_push | :developers_can_merge | :reporter   | :be_disallowed
-                :no_one_can_push | :developers_can_merge | :guest      | :be_disallowed
-
-                :maintainers_can_push | :developers_can_merge | :owner      | :be_allowed
-                :maintainers_can_push | :developers_can_merge | :maintainer | :be_allowed
-                :maintainers_can_push | :developers_can_merge | :developer  | :be_allowed
-                :maintainers_can_push | :developers_can_merge | :reporter   | :be_disallowed
-                :maintainers_can_push | :developers_can_merge | :guest      | :be_disallowed
-
-                :developers_can_push | :developers_can_merge |  :owner      | :be_allowed
-                :developers_can_push | :developers_can_merge |  :maintainer | :be_allowed
-                :developers_can_push | :developers_can_merge |  :developer  | :be_allowed
-                :developers_can_push | :developers_can_merge |  :reporter   | :be_disallowed
-                :developers_can_push | :developers_can_merge |  :guest      | :be_disallowed
+                :no_one_can_push | :developers_can_merge | :owner      | true
+                :no_one_can_push | :developers_can_merge | :maintainer | true
+                :no_one_can_push | :developers_can_merge | :developer  | true
+                :no_one_can_push | :developers_can_merge | :reporter   | false
+                :no_one_can_push | :developers_can_merge | :guest      | false
               end
 
               with_them do
@@ -91,74 +67,46 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
                   project.add_role(user, project_role)
                 end
 
-                it { expect(policy).to try(accessible, :create_pipeline_schedule) }
+                it { allowed ? expect_allowed(ability_name) : expect_disallowed(ability_name) }
               end
             end
 
             shared_examples_for 'only allowed by schedule owners who can update the branch' do
-              where(:push_access_level, :merge_access_level, :schedule_owner, :project_role, :accessible) do
-                :no_one_can_push | :no_one_can_merge  | :other_user | :owner      | :be_disallowed
-                :no_one_can_push | :no_one_can_merge  | :user       | :owner      | :be_disallowed
-                :no_one_can_push | :no_one_can_merge  | :user       | :maintainer | :be_disallowed
-                :no_one_can_push | :no_one_can_merge  | :user       | :developer  | :be_disallowed
-                :no_one_can_push | :no_one_can_merge  | :user       | :reporter   | :be_disallowed
-                :no_one_can_push | :no_one_can_merge  | :user       | :guest      | :be_disallowed
+              where(:push_access_level, :merge_access_level, :schedule_owner, :project_role, :allowed) do
+                :no_one_can_push | :no_one_can_merge  | :other_user | :owner      | false
+                :no_one_can_push | :no_one_can_merge  | :user       | :owner      | false
+                :no_one_can_push | :no_one_can_merge  | :user       | :maintainer | false
+                :no_one_can_push | :no_one_can_merge  | :user       | :developer  | false
+                :no_one_can_push | :no_one_can_merge  | :user       | :reporter   | false
+                :no_one_can_push | :no_one_can_merge  | :user       | :guest      | false
 
-                :maintainers_can_push | :no_one_can_merge | :other_user | :owner      | :be_disallowed
-                :maintainers_can_push | :no_one_can_merge | :user       | :owner      | :be_allowed
-                :maintainers_can_push | :no_one_can_merge | :user       | :maintainer | :be_allowed
-                :maintainers_can_push | :no_one_can_merge | :user       | :developer  | :be_disallowed
-                :maintainers_can_push | :no_one_can_merge | :user       | :reporter   | :be_disallowed
-                :maintainers_can_push | :no_one_can_merge | :user       | :guest      | :be_disallowed
+                :maintainers_can_push | :no_one_can_merge | :other_user | :owner      | false
+                :maintainers_can_push | :no_one_can_merge | :user       | :owner      | true
+                :maintainers_can_push | :no_one_can_merge | :user       | :maintainer | true
+                :maintainers_can_push | :no_one_can_merge | :user       | :developer  | false
+                :maintainers_can_push | :no_one_can_merge | :user       | :reporter   | false
+                :maintainers_can_push | :no_one_can_merge | :user       | :guest      | false
 
-                :developers_can_push | :no_one_can_merge | :other_user | :owner      | :be_disallowed
-                :developers_can_push | :no_one_can_merge | :user       | :owner      | :be_allowed
-                :developers_can_push | :no_one_can_merge | :user       | :maintainer | :be_allowed
-                :developers_can_push | :no_one_can_merge | :user       | :developer  | :be_allowed
-                :developers_can_push | :no_one_can_merge | :user       | :reporter   | :be_disallowed
-                :developers_can_push | :no_one_can_merge | :user       | :guest      | :be_disallowed
+                :developers_can_push | :no_one_can_merge | :other_user | :owner      | false
+                :developers_can_push | :no_one_can_merge | :user       | :owner      | true
+                :developers_can_push | :no_one_can_merge | :user       | :maintainer | true
+                :developers_can_push | :no_one_can_merge | :user       | :developer  | true
+                :developers_can_push | :no_one_can_merge | :user       | :reporter   | false
+                :developers_can_push | :no_one_can_merge | :user       | :guest      | false
 
-                :no_one_can_push | :maintainers_can_merge | :other_user | :owner      | :be_disallowed
-                :no_one_can_push | :maintainers_can_merge | :user       | :owner      | :be_allowed
-                :no_one_can_push | :maintainers_can_merge | :user       | :maintainer | :be_allowed
-                :no_one_can_push | :maintainers_can_merge | :user       | :developer  | :be_disallowed
-                :no_one_can_push | :maintainers_can_merge | :user       | :reporter   | :be_disallowed
-                :no_one_can_push | :maintainers_can_merge | :user       | :guest      | :be_disallowed
+                :no_one_can_push | :maintainers_can_merge | :other_user | :owner      | false
+                :no_one_can_push | :maintainers_can_merge | :user       | :owner      | true
+                :no_one_can_push | :maintainers_can_merge | :user       | :maintainer | true
+                :no_one_can_push | :maintainers_can_merge | :user       | :developer  | false
+                :no_one_can_push | :maintainers_can_merge | :user       | :reporter   | false
+                :no_one_can_push | :maintainers_can_merge | :user       | :guest      | false
 
-                :maintainers_can_push | :maintainers_can_merge | :other_user | :owner      | :be_disallowed
-                :maintainers_can_push | :maintainers_can_merge | :user       | :owner      | :be_allowed
-                :maintainers_can_push | :maintainers_can_merge | :user       | :maintainer | :be_allowed
-                :maintainers_can_push | :maintainers_can_merge | :user       | :developer  | :be_disallowed
-                :maintainers_can_push | :maintainers_can_merge | :user       | :reporter   | :be_disallowed
-                :maintainers_can_push | :maintainers_can_merge | :user       | :guest      | :be_disallowed
-
-                :developers_can_push | :maintainers_can_merge | :other_user | :owner      | :be_disallowed
-                :developers_can_push | :maintainers_can_merge | :user       | :owner      | :be_allowed
-                :developers_can_push | :maintainers_can_merge | :user       | :maintainer | :be_allowed
-                :developers_can_push | :maintainers_can_merge | :user       | :developer  | :be_allowed
-                :developers_can_push | :maintainers_can_merge | :user       | :reporter   | :be_disallowed
-                :developers_can_push | :maintainers_can_merge | :user       | :guest      | :be_disallowed
-
-                :no_one_can_push | :developers_can_merge | :other_user | :owner      | :be_disallowed
-                :no_one_can_push | :developers_can_merge | :user       | :owner      | :be_allowed
-                :no_one_can_push | :developers_can_merge | :user       | :maintainer | :be_allowed
-                :no_one_can_push | :developers_can_merge | :user       | :developer  | :be_allowed
-                :no_one_can_push | :developers_can_merge | :user       | :reporter   | :be_disallowed
-                :no_one_can_push | :developers_can_merge | :user       | :guest      | :be_disallowed
-
-                :maintainers_can_push | :developers_can_merge | :other_user | :owner      | :be_disallowed
-                :maintainers_can_push | :developers_can_merge | :user       | :owner      | :be_allowed
-                :maintainers_can_push | :developers_can_merge | :user       | :maintainer | :be_allowed
-                :maintainers_can_push | :developers_can_merge | :user       | :developer  | :be_allowed
-                :maintainers_can_push | :developers_can_merge | :user       | :reporter   | :be_disallowed
-                :maintainers_can_push | :developers_can_merge | :user       | :guest      | :be_disallowed
-
-                :developers_can_push | :developers_can_merge | :other_user | :owner      | :be_disallowed
-                :developers_can_push | :developers_can_merge | :user       | :owner      | :be_allowed
-                :developers_can_push | :developers_can_merge | :user       | :maintainer | :be_allowed
-                :developers_can_push | :developers_can_merge | :user       | :developer  | :be_allowed
-                :developers_can_push | :developers_can_merge | :user       | :reporter   | :be_disallowed
-                :developers_can_push | :developers_can_merge | :user       | :guest      | :be_disallowed
+                :no_one_can_push | :developers_can_merge | :other_user | :owner      | false
+                :no_one_can_push | :developers_can_merge | :user       | :owner      | true
+                :no_one_can_push | :developers_can_merge | :user       | :maintainer | true
+                :no_one_can_push | :developers_can_merge | :user       | :developer  | true
+                :no_one_can_push | :developers_can_merge | :user       | :reporter   | false
+                :no_one_can_push | :developers_can_merge | :user       | :guest      | false
               end
 
               with_them do
@@ -171,7 +119,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
                   pipeline_schedule.owner = schedule_owner == :user ? user : other_user
                 end
 
-                it { expect(policy).to try(accessible, ability_name) }
+                it { allowed ? expect_allowed(ability_name) : expect_disallowed(ability_name) }
               end
             end
 
@@ -207,24 +155,24 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
             subject(:policy) { described_class.new(user, pipeline_schedule) }
 
             shared_examples_for 'allowed by those who can update the tag' do
-              where(:access_level, :project_role, :accessible) do
-                :no_one_can_create | :owner      | :be_disallowed
-                :no_one_can_create | :maintainer | :be_disallowed
-                :no_one_can_create | :developer  | :be_disallowed
-                :no_one_can_create | :reporter   | :be_disallowed
-                :no_one_can_create | :guest      | :be_disallowed
+              where(:access_level, :project_role, :allowed) do
+                :no_one_can_create | :owner      | false
+                :no_one_can_create | :maintainer | false
+                :no_one_can_create | :developer  | false
+                :no_one_can_create | :reporter   | false
+                :no_one_can_create | :guest      | false
 
-                :maintainers_can_create | :owner      | :be_allowed
-                :maintainers_can_create | :maintainer | :be_allowed
-                :maintainers_can_create | :developer  | :be_disallowed
-                :maintainers_can_create | :reporter   | :be_disallowed
-                :maintainers_can_create | :guest      | :be_disallowed
+                :maintainers_can_create | :owner      | true
+                :maintainers_can_create | :maintainer | true
+                :maintainers_can_create | :developer  | false
+                :maintainers_can_create | :reporter   | false
+                :maintainers_can_create | :guest      | false
 
-                :developers_can_create | :owner      | :be_allowed
-                :developers_can_create | :maintainer | :be_allowed
-                :developers_can_create | :developer  | :be_allowed
-                :developers_can_create | :reporter   | :be_disallowed
-                :developers_can_create | :guest      | :be_disallowed
+                :developers_can_create | :owner      | true
+                :developers_can_create | :maintainer | true
+                :developers_can_create | :developer  | true
+                :developers_can_create | :reporter   | false
+                :developers_can_create | :guest      | false
               end
 
               with_them do
@@ -233,32 +181,32 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
                   project.add_role(user, project_role)
                 end
 
-                it { expect(policy).to try(accessible, ability_name) }
+                it { allowed ? expect_allowed(ability_name) : expect_disallowed(ability_name) }
               end
             end
 
             shared_examples_for 'only allowed by schedule owners who can update the tag' do
-              where(:access_level, :schedule_owner, :project_role, :accessible) do
-                :no_one_can_create | :other_user | :owner      | :be_disallowed
-                :no_one_can_create | :user       | :owner      | :be_disallowed
-                :no_one_can_create | :user       | :maintainer | :be_disallowed
-                :no_one_can_create | :user       | :developer  | :be_disallowed
-                :no_one_can_create | :user       | :reporter   | :be_disallowed
-                :no_one_can_create | :user       | :guest      | :be_disallowed
+              where(:access_level, :schedule_owner, :project_role, :allowed) do
+                :no_one_can_create | :other_user | :owner      | false
+                :no_one_can_create | :user       | :owner      | false
+                :no_one_can_create | :user       | :maintainer | false
+                :no_one_can_create | :user       | :developer  | false
+                :no_one_can_create | :user       | :reporter   | false
+                :no_one_can_create | :user       | :guest      | false
 
-                :maintainers_can_create | :other_user | :owner      | :be_disallowed
-                :maintainers_can_create | :user       | :owner      | :be_allowed
-                :maintainers_can_create | :user       | :maintainer | :be_allowed
-                :maintainers_can_create | :user       | :developer  | :be_disallowed
-                :maintainers_can_create | :user       | :reporter   | :be_disallowed
-                :maintainers_can_create | :user       | :guest      | :be_disallowed
+                :maintainers_can_create | :other_user | :owner      | false
+                :maintainers_can_create | :user       | :owner      | true
+                :maintainers_can_create | :user       | :maintainer | true
+                :maintainers_can_create | :user       | :developer  | false
+                :maintainers_can_create | :user       | :reporter   | false
+                :maintainers_can_create | :user       | :guest      | false
 
-                :developers_can_create | :other_user | :owner      | :be_disallowed
-                :developers_can_create | :user       | :owner      | :be_allowed
-                :developers_can_create | :user       | :maintainer | :be_allowed
-                :developers_can_create | :user       | :developer  | :be_allowed
-                :developers_can_create | :user       | :reporter   | :be_disallowed
-                :developers_can_create | :user       | :guest      | :be_disallowed
+                :developers_can_create | :other_user | :owner      | false
+                :developers_can_create | :user       | :owner      | true
+                :developers_can_create | :user       | :maintainer | true
+                :developers_can_create | :user       | :developer  | true
+                :developers_can_create | :user       | :reporter   | false
+                :developers_can_create | :user       | :guest      | false
               end
 
               with_them do
@@ -270,7 +218,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
                   pipeline_schedule.owner = schedule_owner == :user ? user : other_user
                 end
 
-                it { expect(policy).to try(accessible, ability_name) }
+                it { allowed ? expect_allowed(ability_name) : expect_disallowed(ability_name) }
               end
             end
 
@@ -304,14 +252,11 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       end
 
       it 'includes abilities to do all operations on pipeline schedule' do
-        expect(policy).to be_allowed :play_pipeline_schedule
-        expect(policy).to be_allowed :update_pipeline_schedule
-        expect(policy).to be_allowed :admin_pipeline_schedule
+        expect_allowed(:play_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule)
       end
 
       it 'allows reading schedule variables and inputs' do
-        expect(policy).to be_allowed :read_pipeline_schedule_variables
-        expect(policy).to be_allowed :read_pipeline_schedule_inputs
+        expect_allowed(:read_pipeline_schedule_variables, :read_pipeline_schedule_inputs)
       end
     end
 
@@ -321,17 +266,15 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       end
 
       it 'allows for playing and destroying a pipeline schedule' do
-        expect(policy).to be_allowed :play_pipeline_schedule
-        expect(policy).to be_allowed :admin_pipeline_schedule
+        expect_allowed(:play_pipeline_schedule, :admin_pipeline_schedule)
       end
 
       it 'does not allow for updating of an existing schedule' do
-        expect(policy).not_to be_allowed :update_pipeline_schedule
+        expect_disallowed(:update_pipeline_schedule)
       end
 
       it 'allows reading schedule variables and inputs' do
-        expect(policy).to be_allowed :read_pipeline_schedule_variables
-        expect(policy).to be_allowed :read_pipeline_schedule_inputs
+        expect_allowed(:read_pipeline_schedule_variables, :read_pipeline_schedule_inputs)
       end
     end
 
@@ -345,7 +288,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       end
 
       it 'includes abilities to take ownership' do
-        expect(policy).to be_allowed :admin_pipeline_schedule
+        expect_allowed(:admin_pipeline_schedule)
       end
     end
 
@@ -355,8 +298,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       end
 
       it 'does not allow reading schedule variables or inputs' do
-        expect(policy).not_to be_allowed :read_pipeline_schedule_variables
-        expect(policy).not_to be_allowed :read_pipeline_schedule_inputs
+        expect_disallowed(:read_pipeline_schedule_variables, :read_pipeline_schedule_inputs)
       end
     end
 
@@ -364,8 +306,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       let(:user) { nil }
 
       it 'does not allow reading schedule variables or inputs' do
-        expect(policy).not_to be_allowed :read_pipeline_schedule_variables
-        expect(policy).not_to be_allowed :read_pipeline_schedule_inputs
+        expect_disallowed(:read_pipeline_schedule_variables, :read_pipeline_schedule_inputs)
       end
     end
   end

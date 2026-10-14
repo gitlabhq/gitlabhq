@@ -326,7 +326,6 @@ move_work_item
 override_group_member
 pages_multiple_versions
 project_bot_access
-promote_to_epic
 provide_status_check_response
 provision_cloud_runner
 provision_gke_runner

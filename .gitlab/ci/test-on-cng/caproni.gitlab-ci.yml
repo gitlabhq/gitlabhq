@@ -164,3 +164,16 @@ cng-oauth-caproni:
     QA_RUN_IN_PARALLEL: "false"
     QA_GITHUB_OAUTH_APP_ID: $QA_GITHUB_OAUTH_APP_ID
     QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET
+
+cng-secrets-manager-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Integration::SecretsManager
+    QA_RSPEC_TAGS: --tag secrets_manager
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
+    QA_FEATURE_FLAGS: "secrets_manager_api_access=enabled"
+  before_script:
+    - !reference [.caproni-test, before_script]
+    # The *_ci_access_failure specs pass with OpenBao unreachable, so the route is asserted here
+    - curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 5 "http://openbao.${GITLAB_DOMAIN}/v1/sys/health"

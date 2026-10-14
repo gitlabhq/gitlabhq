@@ -162,8 +162,8 @@ For Gitaly on Kubernetes specific requirements and limitations, see [Gitaly on K
 | Service | Configuration | GCP Equivalent | AWS Equivalent |
 |---------|---------------|----------------|----------------|
 | PostgreSQL | 8 vCPU, 32 GB | n2-standard-8 | m6i.2xlarge |
-| Redis - Cache | 2 vCPU, 8 GB | n2-standard-2 | m6i.large |
-| Redis - Persistent | 2 vCPU, 8 GB | n2-standard-2 | m6i.large |
+| Redis - Cache | 2 vCPU, 8 GB | n2-standard-2 | m6g.large |
+| Redis - Persistent | 2 vCPU, 8 GB | n2-standard-2 | m6g.large |
 | Object Storage | Cloud provider service | Google Cloud Storage | Amazon S3 |
 
 ## Medium (M)
@@ -203,8 +203,8 @@ For Gitaly on Kubernetes specific requirements and limitations, see [Gitaly on K
 | Service | Configuration | GCP Equivalent | AWS Equivalent |
 |---------|---------------|----------------|----------------|
 | PostgreSQL | 16 vCPU, 64 GB | n2-standard-16 | m6i.4xlarge |
-| Redis - Cache | 2 vCPU, 8 GB | n2-standard-2 | m6i.large |
-| Redis - Persistent | 2 vCPU, 8 GB | n2-standard-2 | m6i.large |
+| Redis - Cache | 2 vCPU, 8 GB | n2-standard-2 | m6g.large |
+| Redis - Persistent | 2 vCPU, 8 GB | n2-standard-2 | m6g.large |
 | Object Storage | Cloud provider service | Google Cloud Storage | Amazon S3 |
 
 ## Large (L)
@@ -244,8 +244,8 @@ For Gitaly on Kubernetes specific requirements and limitations, see [Gitaly on K
 | Service | Configuration | GCP Equivalent | AWS Equivalent |
 |---------|---------------|----------------|----------------|
 | PostgreSQL | 32 vCPU, 128 GB | n2-standard-32 | m6i.8xlarge |
-| Redis - Cache | 2 vCPU, 16 GB | n2-highmem-2 | r6i.large |
-| Redis - Persistent | 2 vCPU, 16 GB | n2-highmem-2 | r6i.large |
+| Redis - Cache | 2 vCPU, 16 GB | n2-highmem-2 | r6g.large |
+| Redis - Persistent | 2 vCPU, 16 GB | n2-highmem-2 | r6g.large |
 | Object Storage | Cloud provider service | Google Cloud Storage | Amazon S3 |
 
 ## Extra Large (XL)
@@ -285,8 +285,8 @@ For Gitaly on Kubernetes specific requirements and limitations, see [Gitaly on K
 | Service | Configuration | GCP Equivalent | AWS Equivalent |
 |---------|---------------|----------------|----------------|
 | PostgreSQL | 64 vCPU, 256 GB | n2-standard-64 | m6i.16xlarge |
-| Redis - Cache | 2 vCPU, 16 GB | n2-highmem-2 | r6i.large |
-| Redis - Persistent | 2 vCPU, 16 GB | n2-highmem-2 | r6i.large |
+| Redis - Cache | 2 vCPU, 16 GB | n2-highmem-2 | r6g.large |
+| Redis - Persistent | 2 vCPU, 16 GB | n2-highmem-2 | r6g.large |
 | Object Storage | Cloud provider service | Google Cloud Storage | Amazon S3 |
 
 ## Additional information
