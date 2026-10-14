@@ -310,6 +310,10 @@ func (r *runner) handleWebSocketMessage(response *pb.ClientEvent) error {
 
 		r.mcpManager.SetWorkflowID(startReq.WorkflowID)
 
+		for _, tool := range startReq.McpTools {
+			tool.Trusted = nil
+		}
+
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
 		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)
 		startReq.ClientCapabilities = append(
