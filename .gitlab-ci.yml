@@ -484,6 +484,14 @@ include:
     rules:
       - if: '$CI_SERVER_HOST == "gitlab.com"'
       - if: '$CI_SERVER_HOST == "jihulab.com"'
+  # Uses `secrets`, which dev.gitlab.org rejects and fork MR pipelines can't use.
+  - local: .gitlab/ci/includes/review-docs.gitlab-ci.yml
+    rules:
+      - if: '$CI_SERVER_URL != "https://gitlab.com" || $CI_PROJECT_PATH != "gitlab-org/gitlab"'
+        when: never
+      - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_PROJECT_PATH != "gitlab-org/gitlab"'
+        when: never
+      - when: always
   - local: .gitlab/ci/includes/as-if-jh.gitlab-ci.yml
     rules:
       # Only run as-if-jh triggerred pipelines for gitlab.com/gitlab-org/gitlab MRs that don't target stable branches

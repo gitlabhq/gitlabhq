@@ -195,7 +195,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     describe 'with_secure_reports_from_config_options' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let_it_be(:pipeline) { create(:ci_pipeline) }
       let!(:build) { create(:ci_build, pipeline: pipeline, options: {}) }
       let(:job_types) { %w[sast secret_detection] }
 
@@ -2206,8 +2206,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#runner_manager' do
     let_it_be(:runner) { create(:ci_runner) }
     let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
-    let_it_be(:ci_stage) { create(:ci_stage) }
-    let_it_be(:build) { create(:ci_build, runner_manager: runner_manager, ci_stage: ci_stage) }
+    let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }
 
     subject(:build_runner_manager) { described_class.find(build.id).runner_manager }
 
@@ -4194,12 +4193,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     shared_examples 'calculates scoped_variables' do
       context 'when build has not been persisted yet' do
-        let(:ci_stage) { create(:ci_stage) }
         let(:build) do
           FactoryBot.build(
             :ci_build,
             name: 'rspec',
-            ci_stage: ci_stage,
             ref: 'feature',
             project: project,
             pipeline: pipeline,

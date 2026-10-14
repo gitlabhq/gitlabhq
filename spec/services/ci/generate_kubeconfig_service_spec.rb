@@ -6,7 +6,7 @@ RSpec.describe Ci::GenerateKubeconfigService, feature_category: :deployment_mana
   describe '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:build) { create(:ci_build, project: project, pipeline: pipeline) }
 
     let_it_be(:agent_project) { create(:project, group: group, name: 'project-containing-agent-config') }

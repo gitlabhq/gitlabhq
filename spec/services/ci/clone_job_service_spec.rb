@@ -32,7 +32,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
   end
 
   shared_context 'when job is a build' do
-    let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:another_pipeline) { create(:ci_pipeline, project: project) }
 
     let_it_be_with_refind(:job) do
       create(

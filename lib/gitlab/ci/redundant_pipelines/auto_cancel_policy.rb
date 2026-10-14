@@ -17,11 +17,13 @@ module Gitlab
         # Whether auto-cancel applies to this pipeline on its own. We exclude child
         # pipelines because they can only be canceled together with their parent.
         def applies?
-          enabled? && !pipeline.parent_pipeline? && affects_ref_status?
+          enabled? && !pipeline.parent_pipeline?
         end
 
+        # Only pipelines that affect the ref status are canceled, but any
+        # pipeline may cancel them.
         def cancelable_by_newer_pipeline?
-          applies? && cancelable?
+          applies? && affects_ref_status? && cancelable?
         end
 
         #   :all             cancel every cancelable job

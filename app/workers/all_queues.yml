@@ -1136,6 +1136,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:namespaces_state_propagation_cron
+  :worker_name: Namespaces::StatePropagationCronWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:namespaces_stuck_transfers_cancel_cron
   :worker_name: Namespaces::StuckTransfersCancelCronWorker
   :feature_category: :groups_and_projects
@@ -5600,16 +5610,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
-  :queue_namespace:
-- :name: system_hook_push
-  :worker_name: SystemHookPushWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
   :tags: []
   :queue_namespace:
 - :name: todos_push_notification

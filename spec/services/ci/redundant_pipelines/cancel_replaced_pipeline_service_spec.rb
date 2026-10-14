@@ -87,6 +87,25 @@ RSpec.describe Ci::RedundantPipelines::CancelReplacedPipelineService, :clean_git
       end
     end
 
+    context 'when the older pipeline is protected from being canceled' do
+      before do
+        older_pipeline.create_pipeline_processing_data!(project_id: project.id, interruptible_protected: true)
+      end
+
+      it 'cancels nothing and reports that it is protected' do
+        expect(execute).to be_error
+        expect(execute.reason).to eq(:pipeline_protected)
+
+        expect(job.reload).to be_running
+      end
+
+      it 'does not put it back in the cache' do
+        execute
+
+        expect(cache.size).to eq(0)
+      end
+    end
+
     context 'when the older pipeline is gone' do
       let(:key) do
         Gitlab::Ci::RedundantPipelines::PipelineKey.new(non_existing_record_id, older_pipeline.partition_id)

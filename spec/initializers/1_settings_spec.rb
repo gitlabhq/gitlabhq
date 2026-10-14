@@ -554,6 +554,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         mobile_push_prune_stale_subscriptions_worker
         namespaces_process_outdated_namespace_descendants_cron_worker
         namespaces_prune_aggregation_schedules_worker
+        namespaces_state_propagation_cron_worker
         namespaces_stuck_transfers_cancel_cron_worker
         object_storage_delete_stale_direct_uploads_worker
         packages_cleanup_delete_orphaned_dependencies_worker

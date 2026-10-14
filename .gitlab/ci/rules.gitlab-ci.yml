@@ -383,6 +383,7 @@
 
 .docs-patterns: &docs-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/includes/review-docs.gitlab-ci.yml"
   - ".gitlab/ci/rules.gitlab-ci.yml"
   - ".gitlab/route-map.yml"
   - ".markdownlint-cli2.yaml"
@@ -393,6 +394,14 @@
   - "rubocop/cop/gitlab/documentation_links/**/*"
   - "scripts/frontend/lint_docs_links.mjs"
   - "tooling/eslint-config/eslint-local-rules/**/*"
+
+.ui-text-patterns: &ui-text-patterns
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - "doc/**/*.md"
+  - "locale/gitlab.pot"
+  - "scripts/lint/check_ui_text.rb"
+  - "spec/scripts/lint/check_ui_text_spec.rb"
 
 .ai-principles-manifest-patterns: &ai-principles-manifest-patterns
   # See the `ai-principles-manifest` job in docs.gitlab-ci.yml for why this
@@ -1682,6 +1691,11 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-patterns
+
+.docs:rules:ui-text-check:
+  rules:
+    - <<: *if-default-refs
+      changes: *ui-text-patterns
 
 .docs:rules:ai-principles-manifest:
   rules:

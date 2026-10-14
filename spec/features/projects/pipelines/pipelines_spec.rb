@@ -25,7 +25,7 @@ RSpec.describe 'Pipelines', :js, :clean_gitlab_redis_cache, feature_category: :c
 
       let!(:pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           ref: 'master',
           status: 'running',
@@ -35,10 +35,10 @@ RSpec.describe 'Pipelines', :js, :clean_gitlab_redis_cache, feature_category: :c
 
       context 'scope' do
         before do
-          create(:ci_empty_pipeline, status: 'pending', project: project, sha: project.commit.id, ref: 'master')
-          create(:ci_empty_pipeline, status: 'running', project: project, sha: project.commit.id, ref: 'master')
-          create(:ci_empty_pipeline, status: 'created', project: project, sha: project.commit.id, ref: 'master')
-          create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_pipeline, status: 'pending', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_pipeline, status: 'running', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_pipeline, status: 'created', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
         end
 
         [:all, :running, :pending, :finished, :branches].each do |scope|
@@ -405,7 +405,7 @@ RSpec.describe 'Pipelines', :js, :clean_gitlab_redis_cache, feature_category: :c
       context 'for generic statuses' do
         context 'when preparing' do
           let!(:pipeline) do
-            create(:ci_empty_pipeline,
+            create(:ci_pipeline,
               status: 'preparing', project: project)
           end
 
@@ -732,7 +732,7 @@ RSpec.describe 'Pipelines', :js, :clean_gitlab_redis_cache, feature_category: :c
       let_it_be_with_reload(:project) { create(:project, :repository) }
 
       before do
-        create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
+        create(:ci_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
         project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let from outer context, so before_all cannot access it
         visit_project_pipelines
       end

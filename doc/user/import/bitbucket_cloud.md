@@ -16,6 +16,7 @@ description: "Migrate from Bitbucket Cloud to GitLab."
 {{< history >}}
 
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461210) in GitLab 17.2.
+- Wiki import [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/601061) in GitLab 19.1 and [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/601065) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -30,7 +31,6 @@ The Bitbucket Cloud importer imports a subset of items from Bitbucket Cloud.
 | Issues, including comments        | {{< yes >}} |
 | Pull requests, including comments | {{< yes >}} |
 | Milestones                        | {{< yes >}} |
-| Wiki                              | {{< yes >}} |
 | Labels                            | {{< yes >}} |
 | Milestones                        | {{< yes >}} |
 | LFS objects                       | {{< yes >}} |
@@ -109,7 +109,6 @@ To generate a Bitbucket Cloud API token:
    - `read:repository:bitbucket`
    - `read:pullrequest:bitbucket`
    - `read:issue:bitbucket`
-   - `read:wiki:bitbucket`
 
 1. Select **Create token** and copy the token.
 

@@ -119,7 +119,7 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
     end
 
     context "for pipeline keep-arounds" do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,

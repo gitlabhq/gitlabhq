@@ -45,6 +45,10 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::PipelineFamily, feature_category:
 
     subject(:cancel) { family.cancel(auto_canceled_by: superseded_by) }
 
+    it 'returns the number of pipelines it canceled' do
+      expect(cancel).to eq(1)
+    end
+
     it 'cancels the pipeline' do
       cancel
 
@@ -93,6 +97,10 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::PipelineFamily, feature_category:
         expect(child_job.reload).to be_canceled
       end
 
+      it 'counts the child' do
+        expect(cancel).to eq(2)
+      end
+
       context 'when the parent has already finished' do
         before do
           pipeline.update!(status: 'success')
@@ -135,6 +143,10 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::PipelineFamily, feature_category:
           cancel
 
           expect(job.reload).to be_canceled
+        end
+
+        it 'does not count the child' do
+          expect(cancel).to eq(1)
         end
       end
 
@@ -181,6 +193,10 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::PipelineFamily, feature_category:
         cancel
 
         expect(job.reload).to be_running
+      end
+
+      it 'counts nothing' do
+        expect(cancel).to eq(0)
       end
     end
   end

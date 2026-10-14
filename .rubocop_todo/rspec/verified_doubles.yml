@@ -846,4 +846,3 @@ RSpec/VerifiedDoubles:
     - 'spec/workers/propagate_integration_inherit_worker_spec.rb'
     - 'spec/workers/propagate_integration_project_worker_spec.rb'
     - 'spec/workers/purge_dependency_proxy_cache_worker_spec.rb'
-    - 'spec/workers/system_hook_push_worker_spec.rb'

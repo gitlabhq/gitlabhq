@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
     context 'when the pipeline source does not affect the ref' do
       let(:pipeline) { build_stubbed(:ci_pipeline, :webide, project: project) }
 
-      it { expect(policy.applies?).to be(false) }
+      it { expect(policy.applies?).to be(true) }
     end
   end
 
@@ -150,6 +150,12 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
 
     context 'when auto-cancel does not apply to it on its own' do
       let(:pipeline) { stub_pipeline(source: :parent_pipeline) }
+
+      it { is_expected.not_to be_cancelable_by_newer_pipeline }
+    end
+
+    context 'when the pipeline source does not affect the ref' do
+      let(:pipeline) { stub_pipeline(source: :webide) }
 
       it { is_expected.not_to be_cancelable_by_newer_pipeline }
     end

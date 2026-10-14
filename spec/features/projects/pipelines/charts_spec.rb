@@ -13,7 +13,7 @@ RSpec.describe 'Project CI/CD analytics', :js, feature_category: :continuous_int
   before do
     sign_in(user)
 
-    create(:ci_empty_pipeline, project: project, ref: 'master', status: 'success', sha: project.commit.id)
+    create(:ci_pipeline, project: project, ref: 'master', status: 'success', sha: project.commit.id)
 
     visit charts_project_pipelines_path(project)
   end

@@ -56,25 +56,25 @@ To configure a Jenkins integration with GitLab:
    - [Create a group access token](../user/group/settings/group_access_tokens.md#create-a-group-access-token)
      to use the token for all Jenkins integrations in all projects of that group.
 
-1. Set the access token scope to **API**.
+1. Set the access token scope to {{< ui text="API" >}}.
 1. Copy the access token value to configure the Jenkins server.
 
 ## Configure the Jenkins server
 
 Install and configure the Jenkins plugin to authorize the connection to GitLab.
 
-1. On the Jenkins server, select **Manage Jenkins** > **Manage Plugins**.
-1. Select the **Available** tab. Search for `gitlab-plugin` and select it to install.
+1. On the Jenkins server, select {{< external-ui text="Manage Jenkins" >}} > {{< external-ui text="Manage Plugins" >}}.
+1. Select the {{< external-ui text="Available" >}} tab. Search for `gitlab-plugin` and select it to install.
    See the [Jenkins GitLab documentation](https://plugins.jenkins.io/gitlab-plugin/)
    for other ways to install the plugin.
-1. Select **Manage Jenkins** > **Configure System**.
-1. In the **GitLab** section, select **Enable authentication for '/project' end-point**.
-1. Select **Add**, then choose **Jenkins Credential Provider**.
-1. Select **GitLab API token** as the token type.
-1. In **API Token**, [paste the access token value you copied from GitLab](#grant-jenkins-access-to-the-gitlab-project)
-   and select **Add**.
-1. Enter the GitLab server's URL in **GitLab host URL**.
-1. To test the connection, select **Test Connection**.
+1. Select {{< external-ui text="Manage Jenkins" >}} > {{< external-ui text="Configure System" >}}.
+1. In the {{< external-ui text="GitLab" >}} section, select {{< external-ui text="Enable authentication for '/project' end-point" >}}.
+1. Select {{< external-ui text="Add" >}}, then choose {{< external-ui text="Jenkins Credential Provider" >}}.
+1. Select {{< external-ui text="GitLab API token" >}} as the token type.
+1. In {{< external-ui text="API Token" >}}, [paste the access token value you copied from GitLab](#grant-jenkins-access-to-the-gitlab-project)
+   and select {{< external-ui text="Add" >}}.
+1. Enter the GitLab server's URL in {{< external-ui text="GitLab host URL" >}}.
+1. To test the connection, select {{< external-ui text="Test Connection" >}}.
 
 For more information, see
 [Jenkins-to-GitLab authentication](https://github.com/jenkinsci/gitlab-plugin#jenkins-to-gitlab-authentication).
@@ -83,19 +83,19 @@ For more information, see
 
 Set up the Jenkins project you intend to run your build on.
 
-1. On your Jenkins instance, select **New Item**.
+1. On your Jenkins instance, select {{< external-ui text="New Item" >}}.
 1. Enter the project's name.
-1. Select **Freestyle** or **Pipeline** and select **OK**.
+1. Select {{< external-ui text="Freestyle" >}} or {{< external-ui text="Pipeline" >}} and select {{< external-ui text="OK" >}}.
    You should select a freestyle project, because the Jenkins plugin updates the build status on
    GitLab. In a pipeline project, you must configure a script to update the status on GitLab.
 1. Choose your GitLab connection from the dropdown list.
-1. Select **Build when a change is pushed to GitLab**.
+1. Select {{< external-ui text="Build when a change is pushed to GitLab" >}}.
 1. Select the following checkboxes:
-   - **Accepted Merge Request Events**
-   - **Closed Merge Request Events**
+   - {{< external-ui text="Accepted Merge Request Events" >}}
+   - {{< external-ui text="Closed Merge Request Events" >}}
 1. Specify how the build status is reported to GitLab:
-   - If you created a freestyle project, in the **Post-build Actions** section,
-     choose **Publish build status to GitLab**.
+   - If you created a freestyle project, in the {{< external-ui text="Post-build Actions" >}} section,
+     choose {{< external-ui text="Publish build status to GitLab" >}}.
    - If you created a pipeline project, you must use a Jenkins Pipeline script to
      update the status on GitLab.
 
@@ -129,36 +129,36 @@ Configure the GitLab integration with Jenkins in one of the following ways.
 You should use this approach for Jenkins integrations if you can provide GitLab
 with your Jenkins server URL and authentication information.
 
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **Integrations**.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. In the left sidebar, select {{< ui text="Settings" >}} > {{< ui text="Integrations" >}}.
 1. Select **Jenkins**.
-1. Select the **Active** checkbox.
+1. Select the {{< ui text="Active" >}} checkbox.
 1. Select the events you want GitLab to trigger a Jenkins build for:
    - Push
    - Merge request
    - Tag push
-1. Enter the **Jenkins server URL**.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
-1. Enter the **Project name**.
+1. Enter the {{< ui text="ProjectService|Jenkins server URL" >}}.
+1. Optional. Clear the {{< ui text="Enable SSL verification" >}} checkbox to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
+1. Enter the {{< ui text="Project name" >}}.
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
    the project name is valid, copy it from your browser's address bar while viewing the Jenkins
    project.
-1. If your Jenkins server requires authentication, enter the **Username** and **Password**.
-1. Optional. Select **Test settings**.
-1. Select **Save changes**.
+1. If your Jenkins server requires authentication, enter the {{< ui text="Username" >}} and {{< ui text="Password" >}}.
+1. Optional. Select {{< ui text="Test settings" >}}.
+1. Select {{< ui text="Save changes" >}}.
 
 ### With a webhook
 
 If you cannot [provide GitLab with your Jenkins server URL and authentication information](#with-a-jenkins-server-url), you can configure a webhook to integrate GitLab and Jenkins.
 
-1. In the configuration of your Jenkins job, in the GitLab configuration section, select **Advanced**.
-1. Under **Secret Token**, select **Generate**.
+1. In the configuration of your Jenkins job, in the GitLab configuration section, select {{< external-ui text="Advanced" >}}.
+1. Under {{< external-ui text="Secret Token" >}}, select {{< external-ui text="Generate" >}}.
 1. Copy the token, and save the job configuration.
 1. In GitLab:
    - [Create a webhook for your project](../user/project/integrations/webhooks.md#configure-webhooks).
    - Enter the trigger URL (such as `https://JENKINS_URL/project/YOUR_JOB`).
-   - Paste the token in **Secret Token**.
-1. To test the webhook, select **Test**.
+   - Paste the token in {{< ui text="Webhooks|Secret token (not recommended)" >}}.
+1. To test the webhook, select {{< ui text="Test" >}}.
 
 ## Related topics
 
@@ -179,7 +179,7 @@ This issue has multiple possible causes and solutions:
 | GitLab is unable to reach your Jenkins instance at the address.  | For GitLab Self-Managed, ping the Jenkins instance at the domain provided on the GitLab instance. |
 | The Jenkins instance is at a local address and is not included in the [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains). | Add the instance to the GitLab installation's allowlist. |
 | The credentials for the Jenkins instance do not have sufficient access or are invalid. | Grant the credentials sufficient access or create valid credentials. |
-| The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server) | Select the checkbox. |
+| The {{< external-ui text="Enable authentication for '/project' end-point" >}} checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server) | Select the checkbox. |
 
 ### Error: `Could not connect to the CI server`
 
@@ -226,14 +226,14 @@ more details about your builds.
 
 To enable job logs in Jenkins:
 
-1. Go to **Dashboard** > **Manage Jenkins** > **System Log**.
-1. Select **Add new log recorder**.
+1. Go to {{< external-ui text="Dashboard" >}} > {{< external-ui text="Manage Jenkins" >}} > {{< external-ui text="System Log" >}}.
+1. Select {{< external-ui text="Add new log recorder" >}}.
 1. Enter a name for the log recorder.
-1. On the next screen, select **Add** and enter `com.dabsquared.gitlabjenkins`.
-1. Make sure that the Log Level is **All** and select **Save**.
+1. On the next screen, select {{< external-ui text="Add" >}} and enter `com.dabsquared.gitlabjenkins`.
+1. Make sure that the Log Level is {{< external-ui text="All" >}} and select {{< external-ui text="Save" >}}.
 
 To view your logs:
 
 1. Run a build.
-1. Go to **Dashboard** > **Manage Jenkins** > **System Log**.
+1. Go to {{< external-ui text="Dashboard" >}} > {{< external-ui text="Manage Jenkins" >}} > {{< external-ui text="System Log" >}}.
 1. Select your logger and check the logs.

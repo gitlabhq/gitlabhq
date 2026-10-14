@@ -1015,7 +1015,6 @@ module.exports = {
   devtool: NO_SOURCEMAPS ? false : devtool,
 
   node: {
-    fs: 'empty', // editorconfig requires 'fs'
     setImmediate: false,
   },
 };

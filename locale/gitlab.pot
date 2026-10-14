@@ -13073,6 +13073,9 @@ msgstr ""
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
 msgstr ""
 
+msgid "ArtifactRegistry|Another role change is in progress. Try again."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact Registry is already activated for this organization with the handle '%{handle}'."
 msgstr ""
 
@@ -13262,6 +13265,9 @@ msgid "ArtifactRegistry|Copy upstream URL"
 msgstr ""
 
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
+msgstr ""
+
+msgid "ArtifactRegistry|Could not check the Artifact Admins. Try again."
 msgstr ""
 
 msgid "ArtifactRegistry|Create repository"
@@ -14155,6 +14161,9 @@ msgid "ArtifactRegistry|You cannot grant roles in another organization."
 msgstr ""
 
 msgid "ArtifactRegistry|You cannot refresh this token. Run the command again before it expires."
+msgstr ""
+
+msgid "ArtifactRegistry|You cannot remove or demote the last Artifact Admin."
 msgstr ""
 
 msgid "ArtifactRegistry|You cannot revoke roles in another organization."
@@ -38981,6 +38990,9 @@ msgstr ""
 msgid "FindingsDrawer|View code flow"
 msgstr ""
 
+msgid "Fine-grained OAuth tokens are disabled."
+msgstr ""
+
 msgid "Fingerprint (MD5)"
 msgstr ""
 
@@ -57078,6 +57090,30 @@ msgstr ""
 msgid "OAuth state mismatch. Please try again."
 msgstr ""
 
+msgid "OAuthApplication|A selected group or project cannot be a boundary for this application."
+msgstr ""
+
+msgid "OAuthApplication|Dynamically registered applications cannot declare granular scopes."
+msgstr ""
+
+msgid "OAuthApplication|One or more access levels are not allowed for this type of application."
+msgstr ""
+
+msgid "OAuthApplication|Selected memberships access requires at least one group or project."
+msgstr ""
+
+msgid "OAuthApplication|The application cannot have multiple granular scopes for the same namespace"
+msgstr ""
+
+msgid "OAuthApplication|The application cannot have multiple granular scopes with the same access level"
+msgstr ""
+
+msgid "OAuthApplication|Tokens cannot use the MCP server without a user-level scope granting execute_mcp_tool."
+msgstr ""
+
+msgid "OAuthApplication|You are not allowed to declare granular scopes for this application."
+msgstr ""
+
 msgid "OK"
 msgstr ""
 
@@ -74947,7 +74983,7 @@ msgstr ""
 msgid "SecretsManagerPermissions|Can authenticate with the secrets manager and related API endpoints."
 msgstr ""
 
-msgid "SecretsManagerPermissions|Can create and update secrets."
+msgid "SecretsManagerPermissions|Can create new secrets."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Can fetch secret values with direct API requests."
@@ -74957,6 +74993,9 @@ msgid "SecretsManagerPermissions|Can permanently delete secrets."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Can read the metadata of secrets but not the secret values."
+msgstr ""
+
+msgid "SecretsManagerPermissions|Can update secrets. When unselected, users cannot update any secrets, including secrets they have created."
 msgstr ""
 
 msgid "SecretsManagerPermissions|Create"

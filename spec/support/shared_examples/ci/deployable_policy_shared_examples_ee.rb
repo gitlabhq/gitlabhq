@@ -7,7 +7,7 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
   let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
 
   let(:user) { create(:user) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:environment) { create(:environment, project: project, name: 'production') }
 
   let(:job) do

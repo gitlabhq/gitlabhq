@@ -46530,6 +46530,8 @@ CREATE INDEX idx_namespace_state_propagations_on_namespace_id ON namespace_state
 
 CREATE INDEX idx_namespace_state_propagations_on_status_created_at ON namespace_state_propagations USING btree (status, created_at);
 
+CREATE INDEX idx_namespace_state_propagations_on_status_id ON namespace_state_propagations USING btree (status, id);
+
 CREATE UNIQUE INDEX idx_namespace_state_propagations_unique_pending_processing ON namespace_state_propagations USING btree (namespace_id, target_state) WHERE (status = ANY (ARRAY[0, 1]));
 
 CREATE UNIQUE INDEX idx_note_duo_metadata_note_and_workflow ON note_duo_metadata USING btree (note_id, workflow_id);

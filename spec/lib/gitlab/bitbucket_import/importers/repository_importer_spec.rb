@@ -10,12 +10,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_c
   subject(:importer) { described_class.new(project) }
 
   before do
-    # Resolves both the repository and the wiki URL, which share the same host.
     stub_dns(project.import_url, ip_address: '8.8.8.9')
-
-    # Skip the wiki by default so the repository examples don't attempt a real clone.
-    # The wiki contexts below opt back in.
-    allow(project.wiki).to receive(:repository_exists?).and_return(true)
 
     allow_next_instance_of(Bitbucket::Client) do |client|
       allow(client).to receive(:repo).and_return(Bitbucket::Representation::Repo.new(
@@ -70,46 +65,6 @@ RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_c
         expect(project.repository).to receive(:expire_content_cache)
 
         expect { importer.execute }.to raise_error(::Gitlab::Git::CommandError)
-      end
-    end
-
-    context 'when wiki import raises a Git CommandError' do
-      let(:exception) { ::Gitlab::Git::CommandError.new('remote: Repository not found') }
-
-      before do
-        allow(project).to receive(:empty_repo?).and_return(false)
-        allow(project.wiki).to receive(:repository_exists?).and_return(false)
-        allow(project.wiki.repository).to receive(:import_repository).and_raise(exception)
-      end
-
-      it 'logs a warning and completes the import', :aggregate_failures do
-        expect(importer).to receive(:log_warn).with(
-          hash_including(
-            import_stage: 'import_wiki',
-            message: 'Wiki import skipped. The Bitbucket Cloud wiki repository is no longer accessible.'
-          )
-        )
-
-        expect(importer.execute).to be(true)
-      end
-    end
-
-    context 'when wiki import raises a StandardError' do
-      let(:exception) { StandardError.new('unexpected failure') }
-
-      before do
-        allow(project).to receive(:empty_repo?).and_return(false)
-        allow(project.wiki).to receive(:repository_exists?).and_return(false)
-        allow(project.wiki.repository).to receive(:import_repository).and_raise(exception)
-      end
-
-      it 'logs the exception and continues the import' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-          exception,
-          hash_including(import_stage: 'import_repository', message: 'failed to import wiki')
-        )
-
-        expect(importer.execute).to be(true)
       end
     end
   end

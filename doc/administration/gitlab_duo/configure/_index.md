@@ -205,6 +205,50 @@ These tests are performed:
 For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check,
 see the [troubleshooting page](../../../user/gitlab_duo/troubleshooting.md).
 
+## Run a functional verification check for Agentic Chat
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253398) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_agentic_chat_verification_check`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Run a functional verification check to send an Agentic Chat request
+through your self-hosted model and confirm that a full response is returned.
+
+This check is available only for GitLab Duo Self-Hosted deployments
+and does not consume GitLab Credits.
+
+Prerequisites:
+
+- Administrator access.
+- A [self-hosted model selected for the feature](../../gitlab_duo_self_hosted/configure_duo_features.md#select-a-self-hosted-model-for-a-feature).
+
+To run a functional verification check:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. By **Functional verification checks**, select a group.
+1. Next to **Agentic Chat**, select **Run**.
+
+The check reports one of these states:
+
+- Passed: The Agentic Chat request returned a full response from the configured model.
+- Failed: The Agentic Chat request did not complete successfully.
+
+If the check fails, select it to view the reported message. For more information, see
+[errors when running a functional verification check for Agentic Chat](#errors-when-running-a-functional-verification-check-for-agentic-chat).
+
 ## Other hosting options
 
 By default, GitLab Duo uses supported AI vendor language models and sends data through a cloud-based AI Gateway that's hosted by GitLab.
@@ -230,3 +274,23 @@ For more information, see
 - [Summary of GitLab Duo features](../../../user/gitlab_duo/feature_summary.md)
 - [Control GitLab Duo availability](../../../user/gitlab_duo/turn_on_off.md)
 - [Troubleshooting GitLab Duo](../../../user/gitlab_duo/troubleshooting.md)
+
+## Troubleshooting
+
+When you configure GitLab Duo, you might encounter the following issues.
+
+### Errors when running a functional verification check for Agentic Chat
+
+When you [run a functional verification check for Agentic Chat](#run-a-functional-verification-check-for-agentic-chat),
+the check might fail with one of these messages:
+
+- `Verification check timed out`: The check did not complete before its time limit.
+  To resolve this issue, select **Run** again.
+- A message that starts with `Reason: handshake_failed`: Your browser could not open the
+  WebSocket connection used to stream the response. If you use a reverse proxy,
+  verify that it supports WebSocket upgrades. For more information, see
+  [allow inbound connections from clients to the GitLab instance](#allow-inbound-connections-from-clients-to-the-gitlab-instance).
+- A message that starts with `Reason: timeout` or `Reason: abnormal_close`:
+  The WebSocket connection timed out or closed before the model finished responding.
+- `Duo not enabled for namespace`: The selected group does not have GitLab Duo turned on.
+  To resolve this issue, [turn on GitLab Duo Agent Platform](../../../user/duo_agent_platform/turn_on_off.md) for the group.

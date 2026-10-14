@@ -14,15 +14,16 @@ module Gitlab
           members.cancelable.exists?
         end
 
+        # Returns the number of pipelines it canceled.
         def cancel(auto_canceled_by:)
-          cancelable_members.each do |member, cancel_mode|
+          cancelable_members.count do |member, cancel_mode|
             ::Ci::CancelPipelineService.new(
               pipeline: member,
               current_user: nil,
               auto_canceled_by_pipeline: auto_canceled_by,
               cascade_to_children: false,
               safe_cancellation: cancel_mode == :interruptible
-            ).force_execute
+            ).force_execute.success?
           end
         end
 

@@ -339,6 +339,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
 /.gitlab-ci.yml
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
+/.gitlab/ci/includes/review-docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
 /.gitlab/ci/frontend/ @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
 /.gitlab/ci/test-on-omnibus/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
@@ -2418,7 +2419,6 @@ frontend/**/geo_* @zcuddy
 /app/workers/flush_counter_increments_worker.rb
 /app/workers/post_receive.rb
 /app/workers/project_cache_worker.rb
-/app/workers/system_hook_push_worker.rb
 /app/workers/update_project_statistics_worker.rb
 /app/workers/detect_repository_languages_worker.rb
 /app/workers/repository_fork_worker.rb

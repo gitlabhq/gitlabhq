@@ -34,6 +34,22 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
       expect(leaf_group.reload.state).to eq('archived')
     end
 
+    it 'refreshes started_at after each propagated batch' do
+      stub_const("#{described_class}::STATE_PROPAGATION_ITERATOR_BATCH_SIZE", 1)
+      heartbeats = []
+
+      allow(Namespace).to receive(:overwrite_state_in_batch).and_wrap_original do |method, *args, **kwargs|
+        heartbeats << propagation.reload.started_at
+        travel 1.minute
+        method.call(*args, **kwargs)
+      end
+
+      service.execute
+
+      expect(heartbeats.size).to be > 1
+      expect(heartbeats).to eq(heartbeats.sort.uniq)
+    end
+
     it 'deletes the outbox record on completion' do
       service.execute
 
@@ -96,6 +112,21 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
 
         expect(subgroup.reload.state).to eq('ancestor_inherited')
         expect(propagation.reload).to be_status_processing
+      end
+    end
+
+    context 'when another job claims the record first' do
+      before do
+        stale_propagation = Namespaces::StatePropagation.find(propagation.id)
+        propagation.claim
+
+        allow(Namespaces::StatePropagation).to receive(:next_pending_for).and_return(stale_propagation)
+      end
+
+      it 'leaves descendants untouched' do
+        service.execute
+
+        expect(subgroup.reload.state).to eq('ancestor_inherited')
       end
     end
 

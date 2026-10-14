@@ -1126,7 +1126,6 @@ principles:
       # Workers
       - 'app/workers/web_hooks/**/*.rb'
       - 'app/workers/web_hook_worker.rb'
-      - 'app/workers/system_hook_push_worker.rb'
       - 'app/workers/merge_requests/refresh/web_hooks_worker.rb'
       # Services
       - 'app/services/web_hooks/**/*.rb'
@@ -1207,7 +1206,6 @@ principles:
       - 'spec/policies/web_hook_log_policy_spec.rb'
       - 'spec/workers/web_hooks/**/*_spec.rb'
       - 'spec/workers/web_hook_worker_spec.rb'
-      - 'spec/workers/system_hook_push_worker_spec.rb'
       - 'spec/workers/merge_requests/refresh/web_hooks_worker_spec.rb'
       - 'spec/services/web_hooks/**/*_spec.rb'
       - 'spec/services/web_hook_service_spec.rb'

@@ -65,6 +65,7 @@ the following sections and tables provide an alternative.
 | `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped.                                                                                                                                             |
 | `no_pipeline` | `object` of [`no_pipeline`](#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be prevented from being created.                                                                                                                                 |
 | `variables_override` | `object` of [`variables_override`](#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them.                                                                                                               |
+| `enforce_on_child_pipelines` | `boolean` | false | When `true`, the policy is also enforced in child pipelines. Default is `false`. See [enforce the policy in child pipelines](#enforce-the-policy-in-child-pipelines). |
 
 Note the following:
 
@@ -378,6 +379,59 @@ This configuration allows all user-defined variables except those that could dis
 > While this configuration can provide flexibility, it is discouraged due to the security implications.
 > Any variable that is not explicitly listed in the `exceptions` can be injected by the users. As a result,
 > the policy configuration is not as well protected as when using the `allowlist` approach.
+
+### Enforce the policy in child pipelines
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/632446) in GitLab 19.5.
+
+{{< /history >}}
+
+By default, pipeline execution policies are not enforced in child pipelines.
+Child pipelines are created with `trigger:include` and have `CI_PIPELINE_SOURCE` set to `parent_pipeline`.
+Multi-project downstream pipelines are not affected by this setting because
+they run the policies that apply to the downstream project.
+
+To enforce a policy in the child pipelines of the projects it applies to,
+set `enforce_on_child_pipelines: true` on the policy.
+The setting applies per policy, so other policies in the same file are unaffected.
+For example:
+
+```yaml
+pipeline_execution_policy:
+- name: Compliance jobs
+  description: Run compliance jobs in all pipelines, including child pipelines
+  enabled: true
+  pipeline_config_strategy: inject_policy
+  enforce_on_child_pipelines: true
+  content:
+    include:
+    - project: my-group/compliance-project
+      file: compliance-pipeline.yml
+```
+
+When you enable this setting:
+
+- Policy jobs run in every child pipeline, in addition to the parent pipeline.
+  To run a job in only one of them, use `rules` with `$CI_PIPELINE_SOURCE`.
+  For example, `if: $CI_PIPELINE_SOURCE == "parent_pipeline"` runs the job only in child pipelines,
+  and `if: $CI_PIPELINE_SOURCE != "parent_pipeline"` runs the job only in the parent pipeline.
+- With the [`override_project_ci`](#override_project_ci) strategy, the policy also replaces the child pipeline's
+  configuration, so jobs from the `trigger:include` file do not run.
+  To keep them, use `inject_policy`.
+- Policy jobs do not run in child pipelines that a policy's trigger job creates,
+  including a scheduled policy's trigger job. This prevents recursion.
+- A trigger job defined in a policy can create a child pipeline one level beyond the
+  [parent-child pipeline nesting limit](../../../ci/pipelines/downstream_pipelines.md#nested-child-pipelines),
+  so policy jobs can still run in the deepest pipeline of an existing hierarchy.
+
+> [!note]
+> The `enforce_on_child_pipelines` attribute replaces the `enforce_pipeline_policy_on_child_pipelines` experiment,
+> which you set in the `experiments` section of `.gitlab/security-policies/policy.yml`.
+> To migrate, set `enforce_on_child_pipelines: true` on each policy that should apply to child pipelines,
+> and remove the experiment.
+> Removal of the experiment is proposed in [issue 632456](https://gitlab.com/gitlab-org/gitlab/-/work_items/632456).
 
 ### `policy scope` schema
 

@@ -94,7 +94,7 @@ Also, keep the following guidance in mind:
 - Format [dates and times](#dates-and-times)
   consistently and for an international audience.
 - Use [illustrations](#illustrations), including screenshots, sparingly.
-- For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
+- For [UI text](ui_text.md), allow for up to 30% expansion and contraction in translation.
   To see how much a string expands or contracts in another language, paste the string
   into [Google Translate](https://translate.google.com/) and review the results.
   Ask a colleague who speaks the language to verify if the translation is clear.
@@ -200,6 +200,7 @@ GitLab documentation uses the following shortcodes:
   - Yes
   - No
 - [Glossary tooltip](#glossary-tooltip)
+- [UI elements and navigation paths](ui_text.md)
 
 ## Language
 
@@ -284,17 +285,6 @@ Use sentence case for topic titles. For example:
 
 - `# Use variables to configure pipelines`
 - `## Use the To-Do List`
-
-#### UI text
-
-When referring to specific user interface text, like a button label, page, tab,
-or menu item, use the same capitalization that's displayed in the user interface.
-
-The only exception is text that's all uppercase (for example, `RECENT FLOWS`).
-In this case, use sentence case.
-
-If you think the user interface text contains style mistakes,
-create an issue or an MR to propose a change to the user interface text.
 
 #### Feature names
 
@@ -576,52 +566,26 @@ Try to avoid quotation marks for user input and instead, use backticks.
 
 When formatting text, use:
 
-- [Bold](#bold) for UI elements and pages.
 - [Inline code style](#inline-code) for inputs, outputs, code, and similar.
 - [Code blocks](#code-blocks) for command line examples, and multi-line inputs, outputs, code, and similar.
 - [`<kbd>`](#keyboard-commands) for keyboard commands.
 
 ### Bold
 
-Use bold for:
-
-- UI elements with a visible label. Match the text and capitalization of the label.
-- Navigation paths.
-
 Do not use bold for keywords or emphasis.
 
-UI elements include:
+Before GitLab 19.5, we tried to only use bold for:
 
-- Buttons
-- Checkboxes
-- Settings
-- Menus
-- Pages
-- Tabs
+- UI elements with a visible label.
+- Navigation paths.
 
-For example:
+Now, we use [shortcodes for UI elements and navigation paths](ui_text.md).
 
-- Select **Cancel**.
-- On the **Issues** page...
-- On the **Pipelines** tab...
+You might still see bold in documentation that has not been updated to use shortcodes yet,
+or for hardcoded strings. For example:
 
-To make text bold, wrap it with double asterisks (`**`). For example:
-
-```markdown
-1. Select **Cancel**.
-```
-
-When you use bold format for UI elements, place any punctuation outside the bold tag.
-This rule includes periods, commas, colons, and right-angle brackets (`>`).
-
-The punctuation is part of the sentence structure rather than the UI element that you're emphasizing.
-
-Include punctuation in the bold tag when it's part of the UI element itself.
-
-For example:
-
-- `**Start a review**: This is a description of the button that starts a review.`
-- `Select **Overview** > **Users**.`
+- On the **Issues** page... (not updated yet)
+- Select **Jenkins**. (hardcoded)
 
 ### Inline code
 
@@ -1311,189 +1275,6 @@ provides a link to the most recent commit of that file.
 If that linked expression has changed line numbers due to additional
 commits, you can still search the file for that query. In this case, update the
 document to ensure it links to the most recent version of the file.
-
-## Navigation
-
-When documenting how to navigate the GitLab UI:
-
-- Always use location, then action.
-  - From the **Visibility** dropdown list (location), select **Public** (action).
-- Be brief and specific. For example:
-  - Do: Select **Save**.
-  - Do not: Select **Save** for the changes to take effect.
-- If a step must include a reason, start the step with it. This helps the user scan more quickly.
-  - Do: To view the changes, in the merge request, select the link.
-  - Do not: Select the link in the merge request to view the changes.
-
-### Names for UI elements
-
-In the GitLab UI, use the following names:
-
-![Wireframe of a typical GitLab application page composition.](img/layout_external_names_v18_6.svg)
-
-1. **Top bar**
-1. **Left sidebar**: The navigation sidebar on the left of the user interface.
-   - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
-1. **... panel**: Based on the primary context. For example, if the context is a merge request, refer to it as the **merge request panel**.
-1. **Details panel**: Supports the primary context. Specific to the selected issue or epic.
-1. **GitLab Duo panel**
-1. **GitLab Duo sidebar**
-
-The **right sidebar** is the navigation sidebar on the right of the user interface,
-specific to an open issue, merge request, or epic.
-
-With the exception of **GitLab Duo**, use lowercase for all above terms.
-
-All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
-
-Additional guidance for individual UI elements is in [the word list](word_list.md).
-
-### How to write navigation task steps
-
-To be consistent, use these examples to write navigation steps in a task topic.
-Although alternative steps might exist, including items pinned by default,
-use these steps instead.
-
-To open project settings:
-
-```markdown
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-```
-
-To open group settings:
-
-```markdown
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-```
-
-To open settings for a top-level group:
-
-```markdown
-1. In the top bar, select **Search or go to** and find your group.
-   This group must be at the top level.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-```
-
-To open either project or group settings:
-
-```markdown
-1. In the top bar, select **Search or go to** and find your project or group.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-```
-
-To create a project:
-
-```markdown
-1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
-```
-
-To create a group:
-
-```markdown
-1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**.
-```
-
-To open the **Admin** area:
-
-```markdown
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-```
-
-To open the **Your work** menu item:
-
-```markdown
-1. In the top bar, select **Search or go to**.
-1. Select **Your work**.
-```
-
-To select your avatar:
-
-```markdown
-1. In the upper-right corner, select your avatar.
-```
-
-To save the selection in some dropdown lists:
-
-```markdown
-1. Go to your issue.
-1. In the right sidebar, in the **Iteration** section, select **Edit**.
-1. From the dropdown list, select the iteration to associate this issue with.
-1. Select any area outside the dropdown list.
-```
-
-To view all your projects:
-
-```markdown
-1. In the top bar, select **Search or go to**.
-1. Select **View all my projects**.
-```
-
-To view all your groups:
-
-```markdown
-1. In the top bar, select **Search or go to**.
-1. Select **View all my groups**.
-```
-
-### Optional steps
-
-If a step is optional, start the step with the word `Optional` followed by a period.
-
-For example:
-
-```markdown
-1. Optional. Enter a description for the job.
-```
-
-### Recommended steps
-
-If a step is recommended, start the step with the word `Recommended` followed by a period.
-
-For example:
-
-```markdown
-1. Recommended. Enter a description for the job.
-```
-
-### Documenting keyboard shortcuts and commands
-
-Write UI instructions instead of keyboard commands when both options exist.
-This guideline applies to GitLab and third-party applications, like VS Code.
-
-Keyboard commands for GitLab are documented in [GitLab keyboard shortcuts](../../../user/shortcuts.md).
-
-### Documenting multiple fields at once
-
-If the UI text sufficiently explains the fields in a section, do not include a task step for every field.
-Instead, summarize multiple fields in a single task step.
-
-Use the phrase **Complete the fields**.
-
-For example:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **Repository**.
-1. Expand **Push rules**.
-1. Complete the fields.
-
-If you are documenting multiple fields and only one field needs explanation, do it in the same step:
-
-1. Expand **Push rules**.
-1. Complete the fields. **Branch name** must be a regular expression.
-
-To describe multiple fields, use unordered list items:
-
-1. Expand **General pipelines**.
-1. Complete the fields.
-   - **Branch name** must be a regular expression.
-   - **User** must be a user with at least the **Maintainer** role.
 
 ## Illustrations
 

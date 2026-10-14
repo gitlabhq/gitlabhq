@@ -138,7 +138,7 @@ export default {
         'node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js',
       ),
     },
-    fallback: { fs: false, path: false, 'graphql-ws': false },
+    fallback: { path: false, 'graphql-ws': false },
   },
   module: {
     rules: [

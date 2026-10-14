@@ -17,8 +17,8 @@ RSpec.shared_context 'Analytics fixtures shared context' do
   let(:mr_1) { create(:merge_request, source_project: project, allow_broken: true, created_at: 20.days.ago) }
   let(:mr_2) { create(:merge_request, source_project: project, allow_broken: true, created_at: 19.days.ago) }
 
-  let(:pipeline_1) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr_1.source_branch, sha: mr_1.source_branch_sha, head_pipeline_of: mr_1) }
-  let(:pipeline_2) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr_2.source_branch, sha: mr_2.source_branch_sha, head_pipeline_of: mr_2) }
+  let(:pipeline_1) { create(:ci_pipeline, status: 'created', project: project, ref: mr_1.source_branch, sha: mr_1.source_branch_sha, head_pipeline_of: mr_1) }
+  let(:pipeline_2) { create(:ci_pipeline, status: 'created', project: project, ref: mr_2.source_branch, sha: mr_2.source_branch_sha, head_pipeline_of: mr_2) }
 
   let(:build_1) { create(:ci_build, :success, pipeline: pipeline_1, author: user) }
   let(:build_2) { create(:ci_build, :success, pipeline: pipeline_2, author: user) }

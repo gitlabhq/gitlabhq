@@ -24,6 +24,10 @@ export default function initBlobShow() {
   const webIdeLinkEl = document.getElementById('js-blob-web-ide-link');
   const codeNavEl = document.getElementById('js-code-navigation');
 
+  // The expanded view renders code owners without the Vue blob app, so there is
+  // no router on that path and callers get null.
+  let router = null;
+
   initPerformancePlugin(performancePluginComponents);
   initAmbiguousRefModal();
   showAlertFromLocalStorage();
@@ -68,7 +72,7 @@ export default function initBlobShow() {
       highlightWorker: new HighlightWorker(),
     };
 
-    const router = createRouter(projectPath, originalBranch, fullName);
+    router = createRouter(projectPath, originalBranch, fullName);
 
     initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType });
     initLastCommitApp(router);
@@ -97,4 +101,6 @@ export default function initBlobShow() {
   }
 
   initTableOfContentsApp();
+
+  return { router, apolloProvider };
 }

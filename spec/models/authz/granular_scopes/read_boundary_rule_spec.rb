@@ -12,6 +12,23 @@ RSpec.describe Authz::GranularScopes::ReadBoundaryRule, feature_category: :permi
 
   let(:rule) { described_class.new(user) }
 
+  describe '#allowed_access?' do
+    where(:access, :allowed) do
+      :personal_projects    | true
+      :all_memberships      | true
+      :selected_memberships | true
+      :user                 | true
+      :instance             | true
+      'user'                | true
+      :unknown              | false
+      nil                   | false
+    end
+
+    with_them do
+      it { expect(rule.allowed_access?(access)).to be(allowed) }
+    end
+  end
+
   describe '#allowed_resource?' do
     where(:resource, :allowed) do
       ref(:member_project) | true

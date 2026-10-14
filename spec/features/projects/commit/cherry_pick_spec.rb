@@ -15,7 +15,7 @@ RSpec.describe 'Cherry-pick Commits', :js, feature_category: :source_code_manage
 
   context 'when clicking cherry-pick from the dropdown for a commit on pipelines tab' do
     it 'launches the modal form' do
-      create(:ci_empty_pipeline, sha: sha)
+      create(:ci_pipeline, sha: sha)
       visit project_commit_path(project, master_pickable_commit.id)
       within('.commit-ci-menu') { click_link 'Pipelines' }
 

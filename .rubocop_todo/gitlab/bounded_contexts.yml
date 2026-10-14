@@ -2032,7 +2032,6 @@ Gitlab/BoundedContexts:
     - 'app/workers/stuck_ci_jobs_worker.rb'
     - 'app/workers/stuck_export_jobs_worker.rb'
     - 'app/workers/stuck_merge_jobs_worker.rb'
-    - 'app/workers/system_hook_push_worker.rb'
     - 'app/workers/todos_destroyer/confidential_issue_worker.rb'
     - 'app/workers/todos_destroyer/destroyed_designs_worker.rb'
     - 'app/workers/todos_destroyer/destroyed_issuable_worker.rb'

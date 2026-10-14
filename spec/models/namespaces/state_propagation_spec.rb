@@ -101,6 +101,29 @@ RSpec.describe Namespaces::StatePropagation, feature_category: :groups_and_proje
       end
     end
 
+    describe '.stuck_processing' do
+      let_it_be(:stale_processing) do
+        create(:namespace_state_propagation, :processing, namespace: create(:namespace), started_at: 2.hours.ago)
+      end
+
+      let_it_be(:stale_pending) do
+        create(:namespace_state_propagation, namespace: create(:namespace), started_at: 2.hours.ago)
+      end
+
+      it 'returns only processing records started at or before the threshold' do
+        expect(described_class.stuck_processing(1.hour.ago)).to contain_exactly(stale_processing)
+      end
+    end
+
+    describe '.with_namespace_route' do
+      it 'preloads the namespace route' do
+        record = described_class.where(id: pending_propagation.id).with_namespace_route.first
+
+        expect(record.association(:namespace)).to be_loaded
+        expect(record.namespace.association(:route)).to be_loaded
+      end
+    end
+
     describe '.next_pending_for' do
       it 'returns the pending record matching the namespace and target_state' do
         expect(described_class.next_pending_for(namespace.id, :archived)).to eq(pending_propagation)
@@ -113,6 +136,24 @@ RSpec.describe Namespaces::StatePropagation, feature_category: :groups_and_proje
       it 'returns nil when no pending record matches the namespace' do
         expect(described_class.next_pending_for(create(:namespace).id, :archived)).to be_nil
       end
+    end
+  end
+
+  describe '#claim' do
+    let!(:propagation) { create(:namespace_state_propagation, :pending, namespace: namespace) }
+
+    it 'marks a pending record as processing and returns true', :freeze_time, :aggregate_failures do
+      expect(propagation.claim).to be(true)
+
+      propagation.reload
+      expect(propagation).to be_status_processing
+      expect(propagation.started_at).to eq(Time.current)
+    end
+
+    it 'returns false when the record was already claimed' do
+      described_class.find(propagation.id).claim
+
+      expect(propagation.claim).to be(false)
     end
   end
 

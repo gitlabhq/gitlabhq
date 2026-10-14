@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User triggers manual job with variables', :js, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let!(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
   before do

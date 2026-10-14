@@ -9,6 +9,12 @@ module Authz
         @user = user
       end
 
+      # @param access [Symbol, String, nil]
+      # @return [Boolean] every access level, as for personal access tokens
+      def allowed_access?(access)
+        GranularScope::Access::LEVELS.key?(access&.to_sym)
+      end
+
       # @param resource [Group, Project]
       # @return [Boolean]
       def allowed_resource?(resource)

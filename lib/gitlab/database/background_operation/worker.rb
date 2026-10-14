@@ -15,12 +15,12 @@ module Gitlab
         has_many :jobs,
           class_name: 'Gitlab::Database::BackgroundOperation::Job',
           inverse_of: :worker,
-          partition_foreign_key: :worker_partition
+          foreign_key: [:worker_id, :worker_partition]
 
         has_one :last_job, -> { order(max_cursor: :desc, created_at: :desc) },
           class_name: 'Gitlab::Database::BackgroundOperation::Job',
           inverse_of: :worker,
-          partition_foreign_key: :worker_partition
+          foreign_key: [:worker_id, :worker_partition]
 
         belongs_to :organization, class_name: '::Organizations::Organization'
         belongs_to :user, class_name: '::User'

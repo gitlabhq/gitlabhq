@@ -116,7 +116,7 @@ place, some non-secret values can show up as findings. For example:
 - A secret with no recognizable keyword nearby, such as a hardcoded value with no label like `key`, `secret`, `token`, or `password` next to it.
 - A secret in a file or path that generic detection excludes, such as a vendored dependency, a generated file, or documentation.
 - A value that's shorter than the minimum length generic detection expects for that type of secret.
-- A secret reported at medium or low confidence. GitLab Secret Scanning for Source Code shows only high-confidence findings in the vulnerability report.
+- A secret reported at medium or low confidence. By default, GitLab Secret Scanning for Source Code shows only high-confidence findings in the vulnerability report. To change this, see [confidence level](gitlab_secret_scanner/_index.md#confidence-level).
 
 ## Supported rules for rule-based detection
 

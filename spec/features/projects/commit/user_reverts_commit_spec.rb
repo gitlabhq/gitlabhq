@@ -16,7 +16,7 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
   context 'when clicking revert from the dropdown for a commit on pipelines tab' do
     it 'launches the modal and is able to submit the revert' do
       sha = '7d3b0f7cff5f37573aea97cebfd5692ea1689924'
-      create(:ci_empty_pipeline, sha: sha)
+      create(:ci_pipeline, sha: sha)
       visit project_commit_path(project, project.commit(sha).id)
       within('.commit-ci-menu') { click_link 'Pipelines' }
 

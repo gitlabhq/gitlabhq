@@ -49,11 +49,19 @@ You can reference issues in a custom issue tracker using:
 
 - `#<ID>`, where `<ID>` is a number (for example, `#143`).
 - `<PROJECT>-<ID>` (for example, `API_32-143`) where:
-  - `<PROJECT>` starts with a capital letter, followed by capital letters, numbers, or underscores.
+  - `<PROJECT>` is a prefix you choose, like the project key in your custom issue tracker.
+    Use a prefix to make it clear that the reference is to an issue in a custom issue tracker
+    and not a GitLab issue.
+    The prefix must start with a capital letter, followed by capital letters, numbers, or underscores.
+    You don't configure `<PROJECT>` in GitLab.
   - `<ID>` is a number.
 
-The `<PROJECT>` part is ignored in links, which always point to the address specified in **Issue URL**.
+GitLab ignores `<PROJECT>` when it creates the link.
+The link uses the **Issue URL**, with `:id` replaced by `<ID>`.
+For example, `API_32-143` (`<PROJECT>` of `API_32`) and `WEB-143` (`<PROJECT>` of `WEB`)
+both link to `https://customissuetracker.com/project-name/143`.
 
 Use the longer format (`<PROJECT>-<ID>`) if you have both internal and external issue
-trackers turned on. If you use the shorter format, and an issue with the same ID exists in the
-internal issue tracker, the internal issue is linked.
+trackers turned on.
+If you use the shorter format, and an issue with the same ID exists in the internal issue tracker,
+the internal issue is linked.

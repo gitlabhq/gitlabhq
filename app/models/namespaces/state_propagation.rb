@@ -20,9 +20,18 @@ module Namespaces
     scope :for_namespace_and_target, ->(namespace_id, target_state) do
       where(namespace_id: namespace_id, target_state: target_state)
     end
+    scope :stuck_processing, ->(threshold) { processing.where(started_at: ..threshold) }
+    scope :with_namespace_route, -> { preload(namespace: :route) }
 
     def self.next_pending_for(namespace_id, target_state)
       pending.for_namespace_and_target(namespace_id, target_state).first
+    end
+
+    def claim
+      now = Time.current
+
+      self.class.pending.where(id: id)
+        .update_all(status: self.class.statuses[:processing], started_at: now, updated_at: now) == 1
     end
   end
 end

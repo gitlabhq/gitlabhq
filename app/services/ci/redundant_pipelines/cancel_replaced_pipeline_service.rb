@@ -16,6 +16,11 @@ module Ci
         reason: :pipeline_dropped
       }.freeze
 
+      PROTECTED = {
+        message: 'The older pipeline is protected from being canceled, so it stays out of the cache',
+        reason: :pipeline_protected
+      }.freeze
+
       def self.for(key, superseded_by:, ref_head_sha: nil)
         new(
           key,
@@ -38,7 +43,8 @@ module Ci
         return ServiceResponse.error(**DROPPED) unless older_pipeline.present? && family.active?
         return requeue unless superseded?
 
-        family.cancel(auto_canceled_by: superseded_by)
+        canceled_count = family.cancel(auto_canceled_by: superseded_by)
+        return ServiceResponse.error(**PROTECTED) if canceled_count == 0
 
         ServiceResponse.success
       end

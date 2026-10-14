@@ -100,7 +100,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do
         merge_request.recent_diff_head_shas.map do |sha|
-          create(:ci_empty_pipeline,
+          create(:ci_pipeline,
             project: project, sha: sha, ref: merge_request.source_branch)
         end
       end
@@ -128,7 +128,7 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
 
       let!(:pipeline) do
         create(
-          :ci_empty_pipeline, project: project,
+          :ci_pipeline, project: project,
           sha: merge_request.diff_head_sha, ref: merge_request.source_branch
         )
       end

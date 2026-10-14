@@ -9,19 +9,19 @@ RSpec.describe Ci::PipelinesForUserFinder, feature_category: :continuous_integra
   let_it_be(:other_project) { create(:project) }
 
   let_it_be(:older_pipeline) do
-    create(:ci_empty_pipeline, project: project, user: user, status: 'success', created_at: 3.days.ago)
+    create(:ci_pipeline, project: project, user: user, status: 'success', created_at: 3.days.ago)
   end
 
   let_it_be(:newer_pipeline) do
-    create(:ci_empty_pipeline, project: other_project, user: user, source: :web, created_at: 1.day.ago)
+    create(:ci_pipeline, project: other_project, user: user, source: :web, created_at: 1.day.ago)
   end
 
   let_it_be(:child_pipeline) do
-    create(:ci_empty_pipeline, project: project, user: user, source: :parent_pipeline)
+    create(:ci_pipeline, project: project, user: user, source: :parent_pipeline)
   end
 
   let_it_be(:other_user_pipeline) do
-    create(:ci_empty_pipeline, project: project, user: other_user)
+    create(:ci_pipeline, project: project, user: other_user)
   end
 
   describe '#execute' do
@@ -40,7 +40,7 @@ RSpec.describe Ci::PipelinesForUserFinder, feature_category: :continuous_integra
     end
 
     it 'excludes pipelines without a created_at, which cannot be cursor-paginated' do
-      pipeline = create(:ci_empty_pipeline, project: project, user: user)
+      pipeline = create(:ci_pipeline, project: project, user: user)
       pipeline.update_column(:created_at, nil)
 
       expect(execute).not_to include(pipeline)
@@ -81,7 +81,7 @@ RSpec.describe Ci::PipelinesForUserFinder, feature_category: :continuous_integra
 
   describe '.visible_to' do
     let_it_be(:member_project) { create(:project, maintainers: user) }
-    let_it_be(:readable_pipeline) { create(:ci_empty_pipeline, project: member_project, user: user) }
+    let_it_be(:readable_pipeline) { create(:ci_pipeline, project: member_project, user: user) }
 
     it 'returns only pipelines from projects the user can read' do
       visible = described_class.visible_to([readable_pipeline, older_pipeline], user)

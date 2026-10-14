@@ -539,7 +539,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'when pipeline ref does not exist in repository anymore' do
       let(:pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           ref: 'non-existent',
           sha: project.commit.id,

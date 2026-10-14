@@ -88,7 +88,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
   end
 
   describe 'project features visibility pages' do
-    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:job) { create(:ci_build, pipeline: pipeline) }
 
     let(:tools) do

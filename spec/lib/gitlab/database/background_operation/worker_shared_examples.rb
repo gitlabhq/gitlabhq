@@ -7,6 +7,46 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
   describe 'associations' do
     it { is_expected.to have_many(:jobs).inverse_of(:worker) }
+
+    context 'when there are jobs from multiple partitions', :freeze_time do
+      let(:job_class) { FactoryBot.factories.find(job_factory).build_class }
+      let(:worker) { create(worker_factory, partition: 1) }
+      let(:job_1) { create(job_factory, partition: 1, worker: worker, worker_partition: worker.partition) }
+      let(:job_2) { create(job_factory, partition: 2, worker: worker, worker_partition: worker.partition) }
+      let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(job_class) }
+
+      before do
+        job_1
+
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          travel(job_class::PARTITION_DURATION + 1.second)
+          partition_manager.sync_partitions
+        end
+
+        job_2
+      end
+
+      it 'fetches jobs across partitions' do
+        expect(worker.jobs).to match_array([job_1, job_2])
+      end
+
+      context 'when joining the relations' do
+        it 'does not raise an error' do
+          expect(worker.class.joins(:jobs).first).to eq(worker)
+        end
+      end
+
+      context 'with partition pruning' do
+        let(:worker_table) { worker.class.table_name }
+        let(:job_table) { job_class.table_name }
+
+        it 'constrains Worker.joins(:jobs) by worker_partition = partition' do
+          expect { worker.class.joins(:jobs).to_a }.to prune_partition_by(
+            job_table, 'worker_partition', worker_table, 'partition'
+          )
+        end
+      end
+    end
   end
 
   describe 'validations' do

@@ -10,7 +10,7 @@ module Gitlab
 
         belongs_to :worker,
           class_name: 'Gitlab::Database::BackgroundOperation::WorkerCellLocal',
-          partition_foreign_key: :worker_partition,
+          foreign_key: [:worker_id, :worker_partition],
           inverse_of: :jobs
       end
     end

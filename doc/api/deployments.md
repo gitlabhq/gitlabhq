@@ -25,14 +25,14 @@ GET /projects/:id/deployments
 | Attribute         | Type           | Required | Description                                                                                                     |
 |-------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
 | `id`              | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `order_by`        | string         | no       | Return deployments ordered by either one of `id`, `iid`, `created_at`, `updated_at`, `finished_at` or `ref` fields. Default is `id`.    |
+| `order_by`        | string         | no       | Return deployments ordered by one of the `id`, `iid`, `created_at`, `updated_at`, or `finished_at` fields. Default is `id`. |
 | `sort`            | string         | no       | Return deployments sorted in `asc` or `desc` order. Default is `asc`.                                            |
 | `updated_after`   | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before`  | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `finished_after`  | datetime       | no       | Return deployments finished after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `finished_before` | datetime       | no       | Return deployments finished before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`     | string         | no       | The [name of the environment](../ci/environments/_index.md) to filter deployments by.       |
-| `status`          | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`. |
+| `status`          | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, `skipped`, or `blocked`. |
 
 ```shell
 curl --request "GET" \
@@ -40,8 +40,12 @@ curl --request "GET" \
   --url "https://gitlab.example.com/api/v4/projects/1/deployments"
 ```
 
-> [!note]
-> When using `finished_before` or `finished_after`, you should specify the `order_by` to be `finished_at` and `status` should be `success`.
+Some filters, sort orders, and statuses work only in certain combinations. The API returns a `400 Bad Request` error when a request:
+
+- Filters by `updated_after` or `updated_before` and does not set `order_by=updated_at`.
+- Filters by `finished_after` or `finished_before` and does not set `order_by=finished_at`, `status=success`, or both.
+- Sets `order_by=finished_at` and does not filter by `finished_after`, `finished_before`, or a `status` of `success`, `failed`, or `canceled`.
+- Combines `updated_after` or `updated_before` with `finished_after` or `finished_before`.
 
 Example response:
 

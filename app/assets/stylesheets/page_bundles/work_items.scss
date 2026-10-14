@@ -350,6 +350,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   border: 2px solid var(--gl-focus-ring-outer-color);
   border-radius: var(--gl-border-radius-lg);
   color: var(--gl-text-color-default);
+  padding-block-start: 4rem;
 
   > * {
     display: none;
@@ -357,6 +358,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   &::after {
     content: attr(data-drop-text);
+    margin-block-end: auto;
   }
 }
 

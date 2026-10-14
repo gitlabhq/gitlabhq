@@ -7,7 +7,7 @@ RSpec.describe 'Project Jobs Permissions', feature_category: :continuous_integra
 
   let_it_be_with_reload(:group) { create(:group, name: 'some group') }
   let_it_be_with_reload(:project) { create(:project, :repository, namespace: group) }
-  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let_it_be(:user) { create(:user) }
   let_it_be(:job) { create(:ci_build, :running, :coverage, :trace_artifact, pipeline: pipeline) }
 

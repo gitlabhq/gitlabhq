@@ -360,6 +360,10 @@ namespaces_prune_aggregation_schedules_worker:
   class: Namespaces::PruneAggregationSchedulesWorker
   cron: "5 1 * * *"
 
+namespaces_state_propagation_cron_worker:
+  class: Namespaces::StatePropagationCronWorker
+  cron: "*/5 * * * *"
+
 namespaces_stuck_transfers_cancel_cron_worker:
   class: Namespaces::StuckTransfersCancelCronWorker
   cron: "*/30 * * * *"

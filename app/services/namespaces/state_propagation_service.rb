@@ -32,13 +32,13 @@ module Namespaces
         return
       end
 
-      propagation.update!(status: :processing, started_at: Time.current)
+      return unless propagation.claim
 
       # These steps are intentionally not wrapped in a single transaction: propagation
       # can update very large descendant subtrees in batches, and one transaction would
       # hold locks for too long. If it fails mid-run the record stays `processing` and
       # StatePropagationCronWorker reclaims and re-enqueues it.
-      propagate(propagation.target_state, overwritable_states)
+      propagate(propagation, overwritable_states)
 
       propagation.destroy!
     end
@@ -47,7 +47,8 @@ module Namespaces
 
     attr_reader :namespace_id, :target_state
 
-    def propagate(target_state, overwritable_states)
+    def propagate(propagation, overwritable_states)
+      target_state = propagation.target_state
       cursor = { current_id: namespace_id, depth: [namespace_id] }
 
       # The traversal must keep descending through the origin namespace (already in
@@ -64,6 +65,9 @@ module Namespaces
 
       iterator.each_batch(of: STATE_PROPAGATION_ITERATOR_BATCH_SIZE) do |ids|
         Namespace.overwrite_state_in_batch(ids, from: overwritable_states, to: target_state)
+        # Heartbeat: keeps a long-running propagation from being treated as stuck by
+        # StatePropagationCronWorker and re-run concurrently.
+        propagation.touch(:started_at)
       end
     end
   end

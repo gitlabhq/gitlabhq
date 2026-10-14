@@ -3,6 +3,17 @@
 module API
   # External applications API
   class Applications < ::API::Base
+    helpers ::API::Helpers::Authz::GranularScopesHelpers
+
+    # DeclareService reasons that are not plain input errors. Every other reason
+    # (:access_not_allowed, :duplicate, :invalid, :no_resources, :dynamic_application)
+    # is a 400, matching how this endpoint already reports model validation errors.
+    DECLARE_GRANULAR_SCOPES_ERROR_STATUS = {
+      feature_disabled: :not_found,
+      resource_not_allowed: :not_found,
+      forbidden: :forbidden
+    }.freeze
+
     before do
       authenticated_as_admin!
     end
@@ -11,12 +22,14 @@ module API
 
     resource :applications do
       desc 'Create a new application' do
-        detail 'This feature was introduced in GitLab 10.5'
+        detail 'This feature was introduced in GitLab 10.5. The granular_scopes parameter requires the ' \
+          'granular_oauth_tokens feature flag.'
         success code: 200, model: Entities::ApplicationWithSecret
         failure [
           { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
-          { code: 403, message: 'Forbidden' }
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
         ]
         tags ['applications']
       end
@@ -33,18 +46,33 @@ module API
           default: true,
           desc: 'The application is used where the client secret can be kept confidential. Native mobile apps \
                         and Single Page Apps are considered non-confidential. Defaults to true if not supplied'
+        use :granular_scope_params
       end
       route_setting :authorization, permissions: :create_oauth_application, boundary_type: :instance,
         assignable_when: [:admin]
       post do
-        application = ::Authn::OauthApplication.new(declared_params)
-        application.organization = Current.organization
+        # granular_scopes is nil when not sent and [] when sent empty, which declares an empty set
+        service = ::Applications::CreateService.new(current_user, request,
+          declared_params(include_missing: false).merge(organization: Current.organization),
+          access_token: access_token)
+        application = service.execute
+        declaration = service.declaration
 
-        if application.save
-          present application, with: Entities::ApplicationWithSecret
-        else
-          render_validation_error! application
+        if declaration&.error?
+          render_api_error!(declaration.message,
+            DECLARE_GRANULAR_SCOPES_ERROR_STATUS.fetch(declaration.reason, :bad_request))
         end
+
+        render_validation_error!(application) unless application.persisted?
+
+        ActiveRecord::Associations::Preloader.new(
+          records: [application], associations: { granular_scopes: :namespace }
+        ).call
+
+        present application, with: Entities::ApplicationWithSecret,
+          with_granular_scopes: Feature.enabled?(:granular_oauth_tokens, current_user),
+          project_ids_by_namespace_id: project_ids_by_namespace_id_for([application]),
+          warnings: declaration&.payload&.dig(:warnings)
       end
 
       desc 'Get applications' do

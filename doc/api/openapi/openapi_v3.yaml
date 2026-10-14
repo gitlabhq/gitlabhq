@@ -4816,6 +4816,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/iterations":
     get:
       operationId: getApiV4GroupsIdIterations
@@ -4940,6 +4941,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/occurrences/vulnerabilities":
     get:
       operationId: getApiV4OccurrencesVulnerabilities
@@ -5167,6 +5169,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_iteration_events/{event_id}":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceIterationEventsEventId
@@ -5208,6 +5211,7 @@ paths:
           - type: integer
           - type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_weight_events":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceWeightEvents
@@ -5261,6 +5265,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_weight_events/{event_id}":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceWeightEventsEventId
@@ -5302,6 +5307,7 @@ paths:
           - type: integer
           - type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/protected_environments":
     get:
       operationId: getApiV4ProjectsIdProtectedEnvironments
@@ -11029,6 +11035,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epics/{epic_iid}/related_epics":
     get:
       operationId: getApiV4GroupsIdEpicsEpicIidRelatedEpics
@@ -11068,6 +11075,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdEpicsEpicIidRelatedEpics
       summary: Create a related epic link
@@ -11114,6 +11122,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdEpicsEpicIidRelatedEpicsRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epics/{epic_iid}/related_epics/{related_epic_link_id}":
     delete:
       operationId: deleteApiV4GroupsIdEpicsEpicIidRelatedEpicsRelatedEpicLinkId
@@ -11160,6 +11169,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/dependency_proxy/packages/npm/{package_name}/-/{file_name}":
     get:
       operationId: getApiV4ProjectsIdDependencyProxyPackagesNpmPackageNameDashFileName
@@ -11293,6 +11303,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epic_boards/{board_id}":
     get:
       operationId: getApiV4GroupsIdEpicBoardsBoardId
@@ -11331,6 +11342,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epic_boards/{board_id}/lists":
     get:
       operationId: getApiV4GroupsIdEpicBoardsBoardIdLists
@@ -11387,6 +11399,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epic_boards/{board_id}/lists/{list_id}":
     get:
       operationId: getApiV4GroupsIdEpicBoardsBoardIdListsListId
@@ -11432,6 +11445,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epics":
     get:
       operationId: getApiV4GroupsIdEpics
@@ -11938,6 +11952,7 @@ paths:
           type: integer
         in: path
         example: 5
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/-/epics/{epic_iid}":
     get:
       operationId: getApiV4GroupsIdDashEpicsEpicIid
@@ -11972,6 +11987,7 @@ paths:
           type: integer
         in: path
         example: 5
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/(-/)epics":
     post:
       operationId: postApiV4GroupsIdDashEpics
@@ -12007,6 +12023,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdDashEpicsRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/(-/)epics/{epic_iid}":
     put:
       operationId: putApiV4GroupsIdDashEpicsEpicIid
@@ -12047,6 +12064,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdDashEpicsEpicIidRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GroupsIdDashEpicsEpicIid
       summary: Destroy an epic
@@ -12076,6 +12094,7 @@ paths:
           type: integer
         in: path
         example: 5
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/(-/)epics/{epic_iid}/epics":
     get:
       operationId: getApiV4GroupsIdDashEpicsEpicIidEpics
@@ -12115,6 +12134,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: ultimate
     post:
       operationId: postApiV4GroupsIdDashEpicsEpicIidEpics
       summary: Create and relate epic to a parent
@@ -12159,6 +12179,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdDashEpicsEpicIidEpicsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/(-/)epics/{epic_iid}/epics/{child_epic_id}":
     post:
       operationId: postApiV4GroupsIdDashEpicsEpicIidEpicsChildEpicId
@@ -12207,6 +12228,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4GroupsIdDashEpicsEpicIidEpicsChildEpicId
       summary: Remove epics relation
@@ -12249,6 +12271,7 @@ paths:
           type: integer
         in: path
         example: 1
+      x-gitlab-tier: ultimate
     put:
       operationId: putApiV4GroupsIdDashEpicsEpicIidEpicsChildEpicId
       summary: Reorder child epics
@@ -12297,6 +12320,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdDashEpicsEpicIidEpicsChildEpicIdRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/(-/)epics/{epic_iid}/issues/{epic_issue_id}":
     put:
       operationId: putApiV4GroupsIdDashEpicsEpicIidIssuesEpicIssueId
@@ -12355,6 +12379,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdDashEpicsEpicIidIssuesEpicIssueIdRequest"
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdDashEpicsEpicIidIssuesIssueId
       summary: Add an issue to an epic
@@ -12407,6 +12432,7 @@ paths:
           - type: string
         in: path
         example: 55
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GroupsIdDashEpicsEpicIidIssuesEpicIssueId
       summary: Remove an issue from the epic
@@ -12456,6 +12482,7 @@ paths:
           - type: string
         in: path
         example: 11
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epics/{epic_iid}/issues":
     get:
       operationId: getApiV4GroupsIdEpicsEpicIidIssues
@@ -12517,6 +12544,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/-/epics/{epic_iid}/issues":
     get:
       operationId: getApiV4GroupsIdDashEpicsEpicIidIssues
@@ -12578,6 +12606,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/dora/metrics":
     get:
       operationId: getApiV4ProjectsIdDoraMetrics
@@ -15154,6 +15183,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdBoardsRequest"
+      x-gitlab-tier: premium
     get:
       operationId: getApiV4GroupsIdBoards
       summary: List all group issue boards in a group
@@ -15225,6 +15255,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
     get:
       operationId: getApiV4GroupsIdBoardsBoardId
       summary: Retrieve a group issue board
@@ -19557,6 +19588,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/templates/licenses":
     get:
       operationId: getApiV4TemplatesLicenses
@@ -22090,6 +22122,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/notification_settings":
     get:
       operationId: getApiV4NotificationSettings
@@ -24769,6 +24802,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/labels":
     get:
       operationId: getApiV4ProjectsIdLabels
@@ -82262,7 +82296,8 @@ paths:
     post:
       operationId: postApiV4Applications
       summary: Create a new application
-      description: This feature was introduced in GitLab 10.5
+      description: This feature was introduced in GitLab 10.5. The granular_scopes
+        parameter requires the granular_oauth_tokens feature flag.
       tags:
       - Applications
       responses:
@@ -82278,6 +82313,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+        '404':
+          description: Not found
       requestBody:
         required: true
         content:
@@ -91952,9 +91989,19 @@ components:
           example:
           - api
           - read_user
+        granular_scopes:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         secret:
           type: string
           example: ee1dd64b6adc89cf7e2c23099301ccc2c61b441064e9324d963c46902a85ec34
+        warnings:
+          type: array
+          example:
+          - Tokens cannot use the MCP server without a user-level scope granting execute_mcp_tool.
+          items:
+            type: string
     APIEntitiesApplication:
       type: object
       properties:
@@ -91979,6 +92026,10 @@ components:
           example:
           - api
           - read_user
+        granular_scopes:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
     APIEntitiesTodo:
       type: object
       properties:
@@ -135199,6 +135250,46 @@ components:
             The application is used where the client secret can be kept confidential. Native mobile apps \
                                     and Single Page Apps are considered non-confidential. Defaults to true if not supplied
           default: true
+        granular_scopes:
+          type: array
+          description: List of granular scopes to assign.
+          items:
+            type: object
+            properties:
+              access:
+                type: string
+                enum:
+                - personal_projects
+                - all_memberships
+                - selected_memberships
+                - user
+                - instance
+                description: Access to configure for the granular scope.
+                minLength: 1
+              permissions:
+                type: array
+                items:
+                  type: string
+                description: List of permissions for the granular scope.
+                nullable: true
+              project_ids:
+                type: array
+                items:
+                  type: integer
+                description: IDs of projects to associate with the granular scope,
+                  when access is `selected_memberships`.
+                nullable: true
+              group_ids:
+                type: array
+                items:
+                  type: integer
+                description: IDs of groups to associate with the granular scope, when
+                  access is `selected_memberships`.
+                nullable: true
+            required:
+            - access
+            - permissions
+          nullable: true
       required:
       - name
       - redirect_uri

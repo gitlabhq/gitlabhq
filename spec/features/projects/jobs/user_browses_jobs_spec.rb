@@ -55,7 +55,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
     end
 
     describe 'Job actions' do
-      let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: 'master') }
+      let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: 'master') }
 
       context 'when a job can be canceled' do
         let!(:job) do
@@ -193,7 +193,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
     end
 
     describe 'Jobs table' do
-      let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: 'master') }
+      let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: 'master') }
 
       context 'column links' do
         let!(:job) do

@@ -313,11 +313,17 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
       end
 
       it 'still tracks the internal event' do
-        expect(Gitlab::InternalEvents).to receive(:track_event).with(
-          'usage_billing_event', hash_including(category: category)
-        )
+        allow(SecureRandom).to receive(:uuid).and_return('correlated-uuid')
 
-        track
+        expect { track }
+          .to trigger_internal_events('usage_billing_event')
+          .with(
+            category: category,
+            user: nil,
+            namespace: namespace,
+            project: nil,
+            additional_properties: { label: 'correlated-uuid', property: event_type }
+          )
       end
     end
 

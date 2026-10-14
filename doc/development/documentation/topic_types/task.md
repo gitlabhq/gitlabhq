@@ -199,5 +199,5 @@ Try to avoid phrases like `Ensure that` or `You must have`.
 
 ## Related topics
 
-- [How to write task steps](../styleguide/_index.md#navigation)
+- [How to write task steps](../styleguide/ui_text.md#navigation)
 - [Before and after example](concept.md#example)

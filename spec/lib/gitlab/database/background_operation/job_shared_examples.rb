@@ -25,6 +25,18 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
       expect(worker.jobs).to match_array([job])
       expect(job.worker).to eq(worker)
     end
+
+    context 'with partition pruning' do
+      let(:worker_class) { FactoryBot.factories.find(worker_factory).build_class }
+      let(:worker_table) { worker_class.table_name }
+      let(:job_table) { described_class.table_name }
+
+      it 'constrains Job.joins(:worker) by worker_partition = partition' do
+        expect { described_class.joins(:worker).to_a }.to prune_partition_by(
+          job_table, 'worker_partition', worker_table, 'partition'
+        )
+      end
+    end
   end
 
   describe 'validations' do

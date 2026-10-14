@@ -147,6 +147,195 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
         expect(json_response['callback_url']).to eq('http://application.url')
         expect(json_response['confidential']).to be true
       end
+
+      context 'with granular_scopes' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
+
+        let(:base_params) { { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes } }
+        let(:granular_scopes) do
+          [
+            { access: 'user', permissions: ['execute_mcp_tool'] },
+            { access: 'selected_memberships', permissions: ['read_job'],
+              group_ids: [group.id], project_ids: [project.id] }
+          ]
+        end
+
+        let(:params) { base_params.merge(granular_scopes: granular_scopes) }
+
+        subject(:create_application) { post api(path, admin, admin_mode: true), params: params }
+
+        shared_examples 'rejects the declaration' do |status, message|
+          it "returns #{status} and creates nothing" do
+            expect { create_application }
+              .to not_change { Authn::OauthApplication.count }
+              .and not_change { Authz::GranularScope.count }
+
+            expect(response).to have_gitlab_http_status(status)
+            expect(json_response['message']).to eq(message)
+          end
+        end
+
+        it 'creates the application and declares its granular scopes' do
+          expect { create_application }
+            .to change { Authn::OauthApplication.count }.by(1)
+            .and change { Authz::GranularScope.count }.by(3)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response).not_to have_key('warnings')
+          expect(json_response['scopes']).to contain_exactly('api', 'granular')
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => 'user', 'permissions' => ['execute_mcp_tool'],
+              'group_id' => nil, 'project_id' => nil),
+            a_hash_including('access' => 'selected_memberships', 'permissions' => ['read_job'],
+              'group_id' => group.id, 'project_id' => nil),
+            a_hash_including('access' => 'selected_memberships', 'permissions' => ['read_job'],
+              'group_id' => nil, 'project_id' => project.id)
+          )
+
+          application = Authn::OauthApplication.find(json_response['id'])
+          expect(application.granular_scopes.map(&:namespace_id))
+            .to contain_exactly(nil, group.id, project.project_namespace_id)
+        end
+
+        context 'when no user-level scope grants execute_mcp_tool' do
+          let(:granular_scopes) { [{ access: 'instance', permissions: ['read_member_role'] }] }
+
+          it 'creates the application with a warning' do
+            create_application
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['warnings']).to contain_exactly(
+              'Tokens cannot use the MCP server without a user-level scope granting execute_mcp_tool.'
+            )
+          end
+        end
+
+        context 'when granular_scopes is an empty array' do
+          let(:granular_scopes) { [] }
+
+          it 'creates the application without granular scopes' do
+            post api(path, admin, admin_mode: true), params: params, as: :json
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['granular_scopes']).to eq([])
+            expect(json_response['scopes']).to eq(['api'])
+            expect(json_response).not_to have_key('warnings')
+          end
+        end
+
+        context 'when the granular_oauth_tokens feature flag is disabled' do
+          before do
+            stub_feature_flags(granular_oauth_tokens: false)
+          end
+
+          it_behaves_like 'rejects the declaration', :not_found, 'Fine-grained OAuth tokens are disabled.'
+
+          it 'still creates an application when granular_scopes is not sent' do
+            expect { post api(path, admin, admin_mode: true), params: base_params }
+              .to change { Authn::OauthApplication.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).not_to have_key('granular_scopes')
+          end
+        end
+
+        context 'with personal_projects access' do
+          let(:granular_scopes) { [{ access: 'personal_projects', permissions: ['read_job'] }] }
+
+          it_behaves_like 'rejects the declaration', :bad_request,
+            'One or more access levels are not allowed for this type of application.'
+        end
+
+        context 'with two scopes for the same group' do
+          let(:granular_scopes) do
+            [
+              { access: 'selected_memberships', permissions: ['read_job'], group_ids: [group.id] },
+              { access: 'selected_memberships', permissions: ['read_job'], group_ids: [group.id] }
+            ]
+          end
+
+          it_behaves_like 'rejects the declaration', :bad_request,
+            'The application cannot have multiple granular scopes for the same namespace'
+        end
+
+        context 'with selected_memberships access naming only unknown groups' do
+          let(:granular_scopes) do
+            [{ access: 'selected_memberships', permissions: ['read_job'], group_ids: [non_existing_record_id] }]
+          end
+
+          it_behaves_like 'rejects the declaration', :bad_request,
+            'Selected memberships access requires at least one group or project.'
+        end
+
+        context 'with a group from another organization' do
+          let_it_be(:other_organization_group) { create(:group, organization: create(:organization)) }
+
+          let(:granular_scopes) do
+            [{ access: 'selected_memberships', permissions: ['read_job'], group_ids: [other_organization_group.id] }]
+          end
+
+          it 'returns 400 with the organization mismatch and creates nothing' do
+            expect { create_application }
+              .to not_change { Authn::OauthApplication.count }
+              .and not_change { Authz::GranularScope.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include('organization must match')
+          end
+        end
+
+        context 'with an invalid access value' do
+          let(:granular_scopes) { [{ access: 'everything', permissions: ['read_job'] }] }
+
+          it 'returns a parameter validation error' do
+            expect { create_application }.not_to change { Authn::OauthApplication.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to include('does not have a valid value')
+          end
+        end
+
+        context 'when the application itself is invalid' do
+          let(:params) { base_params.merge(redirect_uri: 'http://', granular_scopes: granular_scopes) }
+
+          it 'returns the model validation error and declares nothing' do
+            expect { create_application }.not_to change { Authz::GranularScope.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']['redirect_uri'][0]).to eq('must be a valid URI.')
+          end
+        end
+
+        context 'when authenticating with a granular token' do
+          let_it_be(:calling_token) do
+            create(:granular_pat, user: admin, boundary: ::Authz::Boundary.for(:instance),
+              permissions: [:create_oauth_application])
+          end
+
+          subject(:create_application) { post api(path, personal_access_token: calling_token), params: params }
+
+          context 'when the requested scopes exceed the token' do
+            let(:granular_scopes) { [{ access: 'instance', permissions: ['read_member_role'] }] }
+
+            it_behaves_like 'rejects the declaration', :forbidden,
+              'A granular token can only create tokens with equal or lesser permissions.'
+          end
+
+          context 'when the requested scopes fit within the token' do
+            let(:granular_scopes) { [{ access: 'instance', permissions: ['create_oauth_application'] }] }
+
+            it 'creates the application' do
+              expect { create_application }.to change { Authn::OauthApplication.count }.by(1)
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['granular_scopes']).to contain_exactly(
+                a_hash_including('access' => 'instance', 'permissions' => ['create_oauth_application'])
+              )
+            end
+          end
+        end
+      end
     end
 
     context 'authorized user without authorization' do
@@ -195,6 +384,12 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
       get api(path, admin, admin_mode: true)
 
       expect(json_response.first['scopes']).to eq(%w[api read_user])
+    end
+
+    it 'does not expose granular_scopes' do
+      get api(path, admin, admin_mode: true)
+
+      expect(json_response.first).not_to have_key('granular_scopes')
     end
 
     context 'non-authenticated user' do

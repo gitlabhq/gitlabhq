@@ -7,7 +7,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before_all do

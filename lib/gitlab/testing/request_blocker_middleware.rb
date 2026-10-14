@@ -40,15 +40,20 @@ module Gitlab
       def call(env)
         increment_active_requests
 
-        if block_requests?
-          block_request(env)
-        else
-          sleep 1 if slow_requests?
-          @app.call(env)
-        end
+        status, headers, body =
+          if block_requests?
+            block_request(env)
+          else
+            sleep 1 if slow_requests?
+            @app.call(env)
+          end
 
-      ensure
+        # The request still holds its database connection until the body is
+        # closed, so it must count as active until then.
+        [status, headers, ::Rack::BodyProxy.new(body) { decrement_active_requests }]
+      rescue Exception # rubocop:disable Lint/RescueException -- non-StandardErrors such as Puma's ForceShutdown must not leak the counter
         decrement_active_requests
+        raise
       end
 
       private

@@ -8,7 +8,7 @@ RSpec.describe 'Pipeline Badge', feature_category: :continuous_integration do
   let(:ref) { project.default_branch }
 
   context 'when the project has a pipeline' do
-    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: ref, sha: project.commit(ref).sha) }
+    let!(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: project.commit(ref).sha) }
     let!(:job) { create(:ci_build, pipeline: pipeline) }
 
     context 'when the pipeline was successful' do

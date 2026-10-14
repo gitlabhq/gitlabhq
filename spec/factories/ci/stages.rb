@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :ci_stage, class: 'Ci::Stage' do
     project { pipeline.project }
-    pipeline { association(:ci_empty_pipeline, **@overrides.slice(:project).compact) }
+    pipeline { association(:ci_pipeline, **@overrides.slice(:project).compact) }
 
     name { 'test' }
     position { 1 }

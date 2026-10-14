@@ -29,16 +29,11 @@ module Gitlab
           import_type: 'bitbucket',
           import_source: repo.full_name,
           import_url: url,
-          import_data: { credentials: credentials },
-          skip_wiki: skip_wiki
+          import_data: { credentials: credentials }
         ).execute
       end
 
       private
-
-      def skip_wiki
-        repo.has_wiki?
-      end
 
       def clone_url
         if credentials[:email].present? && credentials[:api_token].present?

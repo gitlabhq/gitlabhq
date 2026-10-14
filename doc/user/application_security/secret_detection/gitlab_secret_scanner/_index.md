@@ -62,12 +62,11 @@ secret_detection:
 ```
 
 > [!note]
-> The analyzer reports only high-confidence findings. Medium- and low-confidence findings
-> are intentionally filtered out to minimize noise in the vulnerability report. If an
+> By default, the analyzer reports only high-confidence findings. Medium- and low-confidence findings
+> are filtered out to minimize noise in the vulnerability report. If an
 > expected secret doesn't appear in the results, it was likely flagged at medium or low confidence.
-> This behavior remains until the analyzer supports configuring the confidence level for scans
-> and the vulnerability report UI supports filtering findings by confidence level. To review the
-> suppressed findings in the meantime, see [view findings suppressed by confidence threshold](#view-findings-suppressed-by-confidence-threshold).
+> To report these findings, see [confidence level](#confidence-level). To review the
+> suppressed findings, see [view findings suppressed by confidence threshold](#view-findings-suppressed-by-confidence-threshold).
 
 ### Run the analyzer for the first time
 
@@ -97,6 +96,7 @@ When you turn on the analyzer, it runs with the following configuration:
 |---------|---------|---------------|
 | Generic secret detection | On | Set `SECRET_DETECTION_GSS_ENABLE_GENERIC_SECRETS` to `false`. See [generic secrets](#generic-secrets). |
 | False positive reduction | On | Not configurable. |
+| Minimum confidence | High | Set `SECRET_DETECTION_GSS_MIN_CONFIDENCE`. See [confidence level](#confidence-level). |
 | Rules | The default GitLab Secret Detection ruleset | See [customize rules](#customize-rules). |
 
 ## Generic secrets
@@ -115,6 +115,26 @@ secret_detection:
     SECRET_DETECTION_ENABLE_GSS: "true"
     SECRET_DETECTION_GSS_ENABLE_GENERIC_SECRETS: "false"
 ```
+
+## Confidence level
+
+The analyzer assigns each finding a confidence level of `low`, `medium`, or `high`. It reports
+only findings at or above the minimum confidence level. The default is `high`.
+
+To report more findings, set the `SECRET_DETECTION_GSS_MIN_CONFIDENCE` CI/CD variable to `medium`
+or `low`:
+
+```yaml
+include:
+  - template: Jobs/Secret-Detection.latest.gitlab-ci.yml
+
+secret_detection:
+  variables:
+    SECRET_DETECTION_ENABLE_GSS: "true"
+    SECRET_DETECTION_GSS_MIN_CONFIDENCE: "medium"
+```
+
+Lower confidence levels report more secrets, but also more false positives.
 
 ## Customize rules
 
@@ -203,8 +223,8 @@ For common issues in pipeline secret detection, see the [troubleshooting](../pip
 
 ### View findings suppressed by confidence threshold
 
-The analyzer suppresses findings that fall below a configurable confidence threshold.
-The threshold is fixed at high, so the analyzer suppresses medium- and low-confidence findings.
+The analyzer suppresses findings that fall below the [minimum confidence level](#confidence-level).
+With the default of `high`, the analyzer suppresses medium- and low-confidence findings.
 
 To review the suppressed findings, set the `SECRET_DETECTION_GSS_DEBUG_REPORT`
 CI/CD variable to `true` in the `secret_detection` job. This variable produces
@@ -212,7 +232,8 @@ a second job artifact named `gl-secret-detection-report.debug.json`, which you
 can download from the job artifacts.
 The debug report contains only the findings suppressed because of confidence.
 It does not include findings suppressed by exclusions (allowlists).
-The vulnerability report is unchanged and still shows only high-confidence findings.
+The vulnerability report is unchanged and still shows only findings at or above
+the minimum confidence level.
 If the variable is not set or is `false`, no debug report is produced. The scanner logs a warning
 that does not affect the job status.
 

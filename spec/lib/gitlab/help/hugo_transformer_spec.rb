@@ -450,6 +450,94 @@ RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
       end
     end
 
+    context 'when content contains escaped Hugo shortcodes' do
+      it 'unescapes a shortcode in single backticks' do
+        content = <<~MARKDOWN
+          Do not put a footnote inside a shortcode, like tabs (`{{</* tabs */>}}`).
+        MARKDOWN
+        expected_content = <<~MARKDOWN
+          Do not put a footnote inside a shortcode, like tabs (`{{< tabs >}}`).
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'unescapes a shortcode in double backticks' do
+        content = <<~MARKDOWN
+          Use ``{{</* icon name="tanuki" */>}}`` to add an icon.
+        MARKDOWN
+        expected_content = <<~MARKDOWN
+          Use ``{{< icon name="tanuki" >}}`` to add an icon.
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'does not treat two escaped shortcodes on one line as a pair' do
+        content = <<~MARKDOWN
+          Wrap tabs in `{{</* tabs */>}}` and `{{</* /tabs */>}}`.
+        MARKDOWN
+        expected_content = <<~MARKDOWN
+          Wrap tabs in `{{< tabs >}}` and `{{< /tabs >}}`.
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'unescapes a shortcode next to a live shortcode in a table row' do
+        content = <<~MARKDOWN
+          | Value | Shortcode         | Rendered    |
+          |-------|-------------------|-------------|
+          | Yes   | `{{</* yes */>}}` | {{< yes >}} |
+        MARKDOWN
+        expected_content = <<~MARKDOWN
+          | Value | Shortcode         | Rendered    |
+          |-------|-------------------|-------------|
+          | Yes   | `{{< yes >}}` | yes |
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'unescapes a shortcode inside a code block' do
+        content = <<~MARKDOWN
+          ```markdown
+          {{</* tabs */>}}
+          {{</* tab title="Tab one" */>}}
+          Content
+          {{</* /tab */>}}
+          {{</* /tabs */>}}
+          ```
+        MARKDOWN
+        expected_content = <<~MARKDOWN
+          ```markdown
+          {{< tabs >}}
+          {{< tab title="Tab one" >}}
+          Content
+          {{< /tab >}}
+          {{< /tabs >}}
+          ```
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'still removes live generic shortcodes' do
+        content = <<~MARKDOWN
+          {{< unknown-paired >}}Kept content{{< /unknown-paired >}}
+
+          Before{{< unknown-inline >}} after.
+        MARKDOWN
+        expected_content = <<~MARKDOWN
+          Kept content
+
+          Before after.
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+    end
+
     it 'converts maintained-versions shortcodes to maintenance policy message' do
       content = <<~MARKDOWN
         # Documentation
@@ -551,6 +639,55 @@ RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
         # Documentation
 
         API is a set of rules that allows different software applications to communicate with each other.
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'converts ui shortcodes to bold' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        1. On the left sidebar, select {{< ui text="Search or go to" >}} and find your project.
+        1. Select {{< ui text="Settings" >}} > {{< ui text="CI/CD" >}}.
+        1. Select {{< ui text="Save changes" >}}.
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        1. On the left sidebar, select **Search or go to** and find your project.
+        1. Select **Settings** > **CI/CD**.
+        1. Select **Save changes**.
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'converts external-ui shortcodes to bold' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        1. In the AWS console, select {{< external-ui text="Deploy" >}}.
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        1. In the AWS console, select **Deploy**.
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'converts namespaced ui shortcodes to bold without the namespace' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        1. Paste the token in {{< ui text="Webhooks|Secret token (not recommended)" >}}.
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        1. Paste the token in **Secret token (not recommended)**.
       MARKDOWN
 
       expect(transformer.transform(content).strip).to eq(expected_content.strip)

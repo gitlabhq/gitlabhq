@@ -10,6 +10,13 @@ module API
       } do |application, _options|
         application.plaintext_secret
       end
+      expose :warnings, if: ->(_, options) { options[:warnings].present? },
+        documentation: {
+          type: 'String', is_array: true,
+          example: ['Tokens cannot use the MCP server without a user-level scope granting execute_mcp_tool.']
+        } do |_, options|
+        options[:warnings]
+      end
     end
   end
 end

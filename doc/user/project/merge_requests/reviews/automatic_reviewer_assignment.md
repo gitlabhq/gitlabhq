@@ -94,6 +94,9 @@ Prerequisites:
 - **Allow flow execution**, **Allow foundational flows**, and **Recommend Reviewers** on
   [for the top-level group](../../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
+For a click-through demo, see [Recommend Reviewers Flow](https://click-through-demo-generator-v-2-d63870.gitlab.io/demos/recommended-reviewer-flow/).
+<!-- Demo published on 2026-10-14 -->
+
 ### Use the flow
 
 When you turn on the Recommend Reviewers Flow for the top-level group, GitLab creates a flow

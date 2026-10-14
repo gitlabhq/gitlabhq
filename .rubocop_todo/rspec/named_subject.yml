@@ -2873,7 +2873,6 @@ RSpec/NamedSubject:
     - 'spec/workers/repository_update_remote_mirror_worker_spec.rb'
     - 'spec/workers/schedule_merge_request_cleanup_refs_worker_spec.rb'
     - 'spec/workers/stuck_ci_jobs_worker_spec.rb'
-    - 'spec/workers/system_hook_push_worker_spec.rb'
     - 'spec/workers/terraform/states/destroy_worker_spec.rb'
     - 'spec/workers/update_container_registry_info_worker_spec.rb'
     - 'spec/workers/update_external_pull_requests_worker_spec.rb'

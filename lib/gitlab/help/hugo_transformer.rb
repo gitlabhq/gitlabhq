@@ -18,8 +18,11 @@ module Gitlab
 
       # Patterns for Hugo shortcodes
       CODE_BLOCK_PATTERN = /^(`{3,4}).*?\n.*?\1$/m
-      PAIRED_SHORTCODE_PATTERN = %r{\{\{<\s*[^>]+\s*>\}\}(.*?)\{\{<\s*/[^>]+\s*>\}\}}m
-      INLINE_SHORTCODE_PATTERN = /\{\{<\s*[^>]+\s*>\}\}/
+      # The (?!/\*) guards skip Hugo's escaped form, {{</* name */>}}, which
+      # ESCAPED_SHORTCODE_PATTERN unescapes after everything else has run.
+      PAIRED_SHORTCODE_PATTERN = %r{\{\{<\s*(?!/\*)[^>]+\s*>\}\}(.*?)\{\{<\s*/(?!\*)[^>]+\s*>\}\}}m
+      INLINE_SHORTCODE_PATTERN = %r{\{\{<\s*(?!/\*)[^>]+\s*>\}\}}
+      ESCAPED_SHORTCODE_PATTERN = %r{\{\{</\*\s*(.*?)\s*\*/>\}\}}
       DISCLAIMER_ALERT_PATTERN = %r{\{\{<\s*alert\s+type="disclaimer"\s*/>\}\}}
       ICON_SHORTCODE_PATTERN = /\{\{<\s*icon\s+name="([^"]+)"\s*>\}\}/
       TAB_CONTENT_PATTERN = %r{\{\{<\s*tab\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/tab\s*>\}\}}m
@@ -29,6 +32,12 @@ module Gitlab
       COLLAPSIBLE_PATTERN = %r{\{\{<\s*collapsible\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/collapsible\s*>\}\}}m
       YES_NO_PATTERN = /\{\{<\s*(yes|no)\s*>\}\}/
       GLOSSARY_TOOLTIP_PATTERN = %r{\{\{<\s*glossary-tooltip\s+text="([^"]*)"\s*>\}\}}
+      UI_SHORTCODE_PATTERN = %r{\{\{<\s*(?:external-)?ui\s+text="([^"]*)"\s*>\}\}}
+      # Kept identical to Gitlab::I18n::TranslationEntry::NAMESPACE_REGEX, which
+      # is the source of truth. The same value is also duplicated in
+      # scripts/lint/check_ui_text.rb, and in `layouts/_shortcodes/ui.html` in
+      # the docs-gitlab-com project. Change all three together.
+      UI_TEXT_NAMESPACE_PATTERN = /^((?u)\w+|\s)*\|/
       MARKDOWN_ATTRIBUTE_PATTERN = %r{
         \{
           (?:
@@ -62,6 +71,7 @@ module Gitlab
         handle_maintained_versions_shortcodes(processed_content)
         handle_collapsible_shortcodes(processed_content)
         handle_glossary_tooltip_shortcodes(processed_content)
+        handle_ui_shortcodes(processed_content)
         handle_yes_no_shortcodes(processed_content)
         remove_generic_shortcodes(processed_content)
         remove_markdown_attributes(processed_content)
@@ -71,6 +81,10 @@ module Gitlab
         code_blocks.each do |placeholder, block|
           processed_content.sub!(placeholder) { block } # Use block form for literal replacement
         end
+
+        # Unescape last, including inside restored code blocks, so the result
+        # is never processed as a live shortcode.
+        processed_content.gsub!(ESCAPED_SHORTCODE_PATTERN, '{{< \1 >}}')
         processed_content.strip
       end
 
@@ -165,6 +179,17 @@ module Gitlab
       def handle_yes_no_shortcodes(content)
         content.gsub!(YES_NO_PATTERN) do
           ::Regexp.last_match(1)
+        end
+        content
+      end
+
+      # UI text renders as bold on the docs site, so bold is also the fallback here.
+      # Covers both `ui` and `external-ui`, which render the same. The value can
+      # carry a namespace such as `Webhooks|`, which is never displayed.
+      def handle_ui_shortcodes(content)
+        content.gsub!(UI_SHORTCODE_PATTERN) do
+          label = ::Regexp.last_match(1).sub(UI_TEXT_NAMESPACE_PATTERN, '')
+          "**#{label}**"
         end
         content
       end

@@ -7,7 +7,7 @@ RSpec.describe Releases::EvidencePipelineFinder, '#execute' do
   let_it_be(:project) { create(:project, :repository) }
   let(:tag_name) { project.repository.tag_names.first }
   let(:sha) { project.repository.find_tag(tag_name).dereferenced_target.sha }
-  let!(:pipeline) { create(:ci_empty_pipeline, sha: sha, project: project) }
+  let!(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
 
   subject { described_class.new(project, params).execute }
 

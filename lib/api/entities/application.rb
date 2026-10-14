@@ -13,6 +13,9 @@ module API
       expose :scopes, documentation: { type: 'Array', example: %w[api read_user] } do |application|
         application.scopes.to_a
       end
+      expose :granular_scopes, using: ::API::Entities::GranularScope,
+        if: ->(_, options) { options[:with_granular_scopes] },
+        documentation: { is_array: true }
     end
   end
 end

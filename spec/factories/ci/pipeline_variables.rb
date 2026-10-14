@@ -6,7 +6,7 @@ FactoryBot.define do
     value { 'VARIABLE_VALUE' }
     variable_type { :env_var }
 
-    pipeline factory: :ci_empty_pipeline
+    pipeline factory: :ci_pipeline
 
     trait(:file) do
       variable_type { :file }

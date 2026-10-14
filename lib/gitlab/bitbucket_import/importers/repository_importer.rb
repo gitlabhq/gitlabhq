@@ -31,7 +31,6 @@ module Gitlab
             update_clone_time
           end
 
-          import_wiki
           create_labels
 
           log_info(import_stage: 'import_repository', message: 'finished import')
@@ -59,29 +58,10 @@ module Gitlab
           ['+refs/pull-requests/*/to:refs/merge-requests/*/head']
         end
 
-        def import_wiki
-          return if project.wiki.repository_exists?
-
-          wiki_resolved_address = get_resolved_address(wiki.import_url)
-          project.wiki.repository.import_repository(wiki.import_url, resolved_address: wiki_resolved_address)
-        rescue ::Gitlab::Git::CommandError => e
-          log_warn(import_stage: 'import_wiki',
-            message: 'Wiki import skipped. The Bitbucket Cloud wiki repository is no longer accessible.',
-            error: e.message)
-        rescue StandardError => e
-          Gitlab::ErrorTracking.log_exception(
-            e, import_stage: 'import_repository', message: 'failed to import wiki', error: e.message
-          )
-        end
-
         def create_labels
           LABELS.each do |label_params|
             ::Labels::FindOrCreateService.new(nil, project, label_params).execute(skip_authorization: true)
           end
-        end
-
-        def wiki
-          WikiFormatter.new(project)
         end
 
         def update_clone_time
