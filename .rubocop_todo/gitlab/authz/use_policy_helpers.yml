@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Gitlab/Authz/UsePolicyHelpers:
   Exclude:
-    - 'ee/spec/policies/ai/catalog/item_policy_spec.rb'
     - 'ee/spec/policies/ai/conversation/thread_policy_spec.rb'
     - 'ee/spec/policies/ai/duo_workflows/checkpoint_policy_spec.rb'
     - 'ee/spec/policies/ai/duo_workflows/workflow_policy_spec.rb'
@@ -26,7 +25,6 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'ee/spec/policies/dependencies/dependency_list_export_policy_spec.rb'
     - 'ee/spec/policies/ee/ci/pipeline_policy_spec.rb'
     - 'ee/spec/policies/ee/namespaces/user_namespace_policy_spec.rb'
-    - 'ee/spec/policies/ee/personal_access_token_policy_spec.rb'
     - 'ee/spec/policies/ee/project_member_policy_spec.rb'
     - 'ee/spec/policies/epic_policy_spec.rb'
     - 'ee/spec/policies/geo/registry_policy_spec.rb'
@@ -41,9 +39,7 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'ee/spec/policies/issuable_policy_spec.rb'
     - 'ee/spec/policies/issuables/custom_field_policy_spec.rb'
     - 'ee/spec/policies/issue_policy_spec.rb'
-    - 'ee/spec/policies/members/member_role_policy_spec.rb'
     - 'ee/spec/policies/merge_request_diff_policy_spec.rb'
-    - 'ee/spec/policies/merge_requests/approval_rule_policy_spec.rb'
     - 'ee/spec/policies/merge_requests/external_status_check_policy_spec.rb'
     - 'ee/spec/policies/merge_trains/car_policy_spec.rb'
     - 'ee/spec/policies/merge_trains/train_policy_spec.rb'
@@ -68,10 +64,7 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'ee/spec/policies/security/scan_profile_policy_spec.rb'
     - 'ee/spec/policies/user_policy_spec.rb'
     - 'ee/spec/policies/vulnerabilities/advanced_vulnerability_management_policy_spec.rb'
-    - 'ee/spec/policies/vulnerabilities/archive_export_policy_spec.rb'
-    - 'ee/spec/policies/vulnerabilities/export_policy_spec.rb'
     - 'ee/spec/policies/vulnerabilities/external_issue_link_policy_spec.rb'
-    - 'ee/spec/policies/vulnerabilities/feedback_policy_spec.rb'
     - 'ee/spec/policies/vulnerabilities/issue_link_policy_spec.rb'
     - 'ee/spec/policies/vulnerabilities/merge_request_link_policy_spec.rb'
     - 'ee/spec/policies/vulnerabilities/namespace_statistic_policy_spec.rb'

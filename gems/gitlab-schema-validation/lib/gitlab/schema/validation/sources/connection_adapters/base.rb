@@ -22,6 +22,10 @@ module Gitlab
               raise NotImplementedError, "#{self.class} does not implement #{__method__}"
             end
 
+            def transaction
+              raise NotImplementedError, "#{self.class} does not implement #{__method__}"
+            end
+
             private
 
             attr_reader :connection

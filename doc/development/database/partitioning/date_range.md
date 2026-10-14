@@ -185,6 +185,13 @@ After the partition manager detaches a partition, it keeps the detached table ar
 grace period before dropping it, in case the data is still needed. `PartitionManager` defaults
 this grace period to `RETAIN_DETACHED_PARTITIONS_FOR` (one week) for every partitioned table.
 
+Raising `retain_for`, or setting it to `:ever`, does not restore partitions that are already
+detached. They are still dropped when their grace period ends. Until a detached table is
+dropped, the partition manager does not create a partition with its name, such as the one that
+starts at `MINVALUE`. Writes in that range fail until the partition manager creates the
+partition, empty, on its first run after the drop. To keep the detached data, re-attach the
+detached tables with their original bounds before the grace period ends.
+
 To use a shorter or longer grace period for a specific table, pass `retain_detached_partitions_for`:
 
 ```ruby

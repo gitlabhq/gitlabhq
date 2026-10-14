@@ -7,8 +7,6 @@ export default {
     'app/assets/javascripts/incidents/components/incidents_list.vue',
     'ee/app/assets/javascripts/analytics/contribution_analytics/components/group_members_table.vue',
     'ee/app/assets/javascripts/analytics/dashboards/dora_projects_comparison/components/comparison_table.vue',
-    'ee/app/assets/javascripts/analytics/devops_reports/devops_adoption/components/devops_adoption_overview_table.vue',
-    'ee/app/assets/javascripts/analytics/devops_reports/devops_adoption/components/devops_adoption_table.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/standards_adherence_report/standards_adherence_table_v2.vue',
     'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/create_form.vue',
     'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/edit_form.vue',

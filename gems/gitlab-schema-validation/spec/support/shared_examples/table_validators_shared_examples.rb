@@ -14,6 +14,10 @@ RSpec.shared_examples "table validators" do |validator, expected_result|
   end
   # rubocop:enable RSpec/VerifiedDoubleReference
 
+  before do
+    allow(connection).to receive(:transaction).and_yield
+  end
+
   let(:schema) { 'public' }
   let(:database) { Gitlab::Schema::Validation::Sources::Database.new(connection) }
   let(:structure_file) { Gitlab::Schema::Validation::Sources::StructureSql.new(structure_file_path, schema) }

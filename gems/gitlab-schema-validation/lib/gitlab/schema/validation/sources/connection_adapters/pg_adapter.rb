@@ -22,6 +22,10 @@ module Gitlab
             def select_rows(sql, schemas)
               exec_query(sql, schemas).values
             end
+
+            def transaction(&)
+              connection.transaction(&)
+            end
           end
         end
       end

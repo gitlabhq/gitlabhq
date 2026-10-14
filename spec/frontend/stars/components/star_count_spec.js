@@ -150,6 +150,16 @@ describe('StarCount', () => {
 
       expect(findStarButton().attributes('href')).toBe('sign/in/path');
     });
+
+    it('does not call the mutation on click', async () => {
+      const setStarStatusHandler = jest.fn();
+      createComponent({ isLoggedIn: false, setStarStatusHandler });
+
+      findStarButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(setStarStatusHandler).not.toHaveBeenCalled();
+    });
   });
 
   describe('star button state', () => {

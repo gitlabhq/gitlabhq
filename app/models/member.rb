@@ -25,6 +25,9 @@ class Member < ApplicationRecord
   STATE_ACTIVE = 0
   STATE_AWAITING = 1
 
+  # Columns read by Member.authorizable and Gitlab::ProjectAuthorizations. Keep in sync with those.
+  AUTHORIZATION_COLUMNS = %w[access_level user_id source_id source_type requested_at state].freeze
+
   attr_accessor :raw_invite_token
 
   # Transient flag: do not run the authorized projects refresh for the save this
@@ -387,12 +390,15 @@ class Member < ApplicationRecord
   after_destroy :post_destroy_access_request_hook, if: [:request?, :hook_prerequisites_met?]
   after_destroy :update_two_factor_requirement, unless: :invite?
   after_save :log_invitation_token_cleanup
+  after_save :set_authorization_attributes_changed
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
   after_commit :log_previous_state_on_update, unless: :importing?, on: [:update]
   after_commit on: [:create, :update, :destroy] do
     refresh_member_authorized_projects if authorized_projects_refresh_required?
+
     self.skip_authorized_projects_refresh = false
+    @authorization_attributes_changed = nil
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
@@ -805,7 +811,15 @@ class Member < ApplicationRecord
   # Imports suppress member side effects like the other importing? guards above,
   # and callers can opt out of a single save via the flag.
   def authorized_projects_refresh_required?
-    !importing? && !skip_authorized_projects_refresh
+    return false if importing? || skip_authorized_projects_refresh
+    return true if previously_new_record? || destroyed?
+    return true unless Feature.enabled?(:refresh_member_authorizations_only_on_access_changes, user)
+
+    @authorization_attributes_changed
+  end
+
+  def set_authorization_attributes_changed
+    @authorization_attributes_changed ||= saved_changes.keys.intersect?(AUTHORIZATION_COLUMNS)
   end
 
   def after_accept_invite

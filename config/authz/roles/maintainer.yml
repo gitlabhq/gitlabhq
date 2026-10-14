@@ -207,7 +207,6 @@ group:
   raw_permissions:
   - access_security_and_compliance
   - add_cluster
-  - admin_achievement
   - admin_ai_catalog_item_consumer
   - admin_build
   - admin_cluster

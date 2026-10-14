@@ -88,9 +88,16 @@ RSpec.shared_examples 'index validators' do |validator, expected_result|
 
   # rubocop:disable RSpec/VerifiedDoubleReference
   let(:connection) do
-    instance_double('connection', class: connection_class, select_rows: database_indexes, current_schema: 'public')
+    instance_double('connection', class: connection_class, current_schema: 'public')
   end
   # rubocop:enable RSpec/VerifiedDoubleReference
+
+  before do
+    allow(connection).to receive(:transaction).and_yield
+    allow(connection).to receive(:exec_query)
+    allow(connection).to receive(:exec_query).with(/pg_indexes/, nil, anything)
+      .and_return(Struct.new(:rows).new(database_indexes))
+  end
 
   let(:schema) { 'public' }
 

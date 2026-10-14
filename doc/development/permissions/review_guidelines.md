@@ -82,9 +82,15 @@ Follow the [permission naming conventions](conventions.md#naming-permissions), a
 
 ### Match the permission to the action
 
+Check the permission for the action the code performs, on the resource it changes.
+The name of the service, mutation, or endpoint usually names that action, so the permission should match it.
+Do not check a different permission because the same roles happen to hold it.
+
 Read actions use a read permission, and mutating actions use a mutating permission.
 Do not check a permission whose action implies a state change, such as `start_` or `update_`, on a field or endpoint that only reads data.
 Do not guard a write with a read permission.
+
+The user check and the granular token check on the same endpoint or mutation should name the same permission.
 
 ### Do not encode how or where access happens
 

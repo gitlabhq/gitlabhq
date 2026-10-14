@@ -100,6 +100,19 @@ module Gitlab
             @schemas ||= [STATIC_PARTITIONS_SCHEMA, connection.current_schema]
           end
 
+          # pg_get_* deparse output depends on these session settings. structure.sql is
+          # dumped with the defaults, so the same defaults are forced for the comparison.
+          def with_default_deparse_settings
+            connection.transaction do
+              connection.exec_query("SET LOCAL timezone TO 'UTC'")
+              connection.exec_query('SET LOCAL standard_conforming_strings TO on')
+              connection.exec_query("SET LOCAL DateStyle TO 'ISO'")
+              connection.exec_query("SET LOCAL IntervalStyle TO 'postgres'")
+
+              yield
+            end
+          end
+
           def trigger_map
             @trigger_map ||=
               fetch_triggers.transform_values! do |trigger_stmt|
@@ -119,7 +132,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.select_rows(sql, schemas).to_h
+            with_default_deparse_settings { connection.select_rows(sql, schemas).to_h }
           end
 
           def table_map
@@ -159,7 +172,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.exec_query(sql, schemas).group_by { |row| row['table_name'] }
+            with_default_deparse_settings { connection.exec_query(sql, schemas).group_by { |row| row['table_name'] } }
           end
 
           def fetch_indexes
@@ -179,7 +192,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.select_rows(sql, schemas)
+            with_default_deparse_settings { connection.select_rows(sql, schemas) }
           end
 
           def index_map

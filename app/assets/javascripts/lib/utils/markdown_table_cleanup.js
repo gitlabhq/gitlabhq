@@ -3,7 +3,7 @@
 // Empty string is returned if there is a problem formatting a table.
 
 // For detecting/extracting a table row
-const ROW_REGEXP = /^(\s*)(\|(.+?\|)+)\s*$/;
+const ROW_REGEXP = /^(\s*)(\|.*\|)\s*$/;
 
 // For detecting/extracting a table header separator row
 const HEADER_SEPARATOR_REGEXP = /^:?-+:?$/;

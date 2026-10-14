@@ -3,16 +3,12 @@
 module Gitlab
   module DatabaseImporters
     module DefaultOrganizationImporter
-      # Mirrors LegacyCellId in the Topology Service, which reserves the IDs below 10^12,
-      # including DEFAULT_ORGANIZATION_ID, for the legacy cell.
-      LEGACY_CELL_ID = 1
-
       def self.create_default_organization
         return if ::Organizations::Organization.default_organization
 
         unless owns_default_organization?
           ::Gitlab::AppLogger.info(
-            message: 'Skipping default organization creation, it belongs to the legacy cell',
+            message: 'Skipping default organization creation, its ID is outside the cell sequence ranges',
             Labkit::Fields::CLASS_NAME => name,
             cell_id: ::Gitlab.config.cell.id
           )
@@ -34,8 +30,13 @@ module Gitlab
         )
       end
 
+      # The Topology Service gives only one cell a sequence range that covers DEFAULT_ORGANIZATION_ID.
       def self.owns_default_organization?
-        !::Gitlab.config.cell.enabled || ::Gitlab.config.cell.id.to_i == LEGACY_CELL_ID
+        return true unless ::Current.cells_claims_leases?
+
+        ::Gitlab::TopologyServiceClient::CellService.new.cell_sequence_ranges.to_a.any? do |range|
+          (range.minval..range.maxval).cover?(::Organizations::Organization::DEFAULT_ORGANIZATION_ID)
+        end
       end
 
       private_class_method :owns_default_organization?

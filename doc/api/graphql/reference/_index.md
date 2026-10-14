@@ -2212,6 +2212,19 @@ Check if OpenBao instance is healthy and reachable.
 
 Returns [`Boolean!`](#boolean).
 
+### `Query.orbit`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Orbit data of the instance and of the groups of the current user. Returns null when the user is not signed in.
+
+Returns [`Orbit`](#orbit).
+
 ### `Query.organization`
 
 {{< details >}}
@@ -14867,6 +14880,58 @@ Fields:
 | <a id="mutation-oncallscheduleupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-oncallscheduleupdate-oncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
+### `Mutation.orbitExcludedGroupCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `OrbitExcludedGroupCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitexcludedgroupcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitexcludedgroupcreate-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the top-level group to exclude. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitexcludedgroupcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitexcludedgroupcreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-orbitexcludedgroupcreate-group"></a>`group` | [`Group`](#group) | Excluded group. |
+
+### `Mutation.orbitExcludedGroupDestroy`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `OrbitExcludedGroupDestroyInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitexcludedgroupdestroy-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitexcludedgroupdestroy-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the top-level group to remove from exclusions. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitexcludedgroupdestroy-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitexcludedgroupdestroy-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-orbitexcludedgroupdestroy-group"></a>`group` | [`Group`](#group) | Group removed from exclusions. |
+
 ### `Mutation.orbitStartTrial`
 
 {{< details >}}
@@ -14891,7 +14956,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mutation-orbitstarttrial-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-orbitstarttrial-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutation-orbitstarttrial-group"></a>`group` | [`Group`](#group) | Group the trial was requested for, also returned on error. Read `knowledgeGraphEnabled` and `orbitTrial` from it. |
+| <a id="mutation-orbitstarttrial-group"></a>`group` | [`Group`](#group) | Group the trial was requested for, also returned on error. Read `orbit { enabled access { trial } }` from it. |
 
 ### `Mutation.orbitUpdate`
 
@@ -48089,7 +48154,7 @@ Fields:
 | <a id="group-metadata"></a>`metadata` {{< icon name="warning-solid" >}} | [`NamespaceMetadata`](#namespacemetadata) | Introduced in GitLab 18.6. Status: Experiment. Metadata information for the namespace. |
 | <a id="group-name"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="group-namespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
-| <a id="group-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the group. Returns null when Orbit is not available to the current user. |
+| <a id="group-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the group. |
 | <a id="group-orbitaccess"></a>`orbitAccess` {{< icon name="warning-solid" >}} | [`OrbitAccess`](#orbitaccess) | Introduced in GitLab 19.5. Status: Experiment. Orbit access state of the top-level group. Returns null when the user cannot read the Orbit setting of the group. This field can be resolved for at most 10 groups in any single request. |
 | <a id="group-orbittrial"></a>`orbitTrial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
 | <a id="group-organizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.1. Status: Experiment. Path for editing group at the organization level. |
@@ -50831,6 +50896,7 @@ Fields:
 | <a id="grouppermissions-readsecurityscanprofiles"></a>`readSecurityScanProfiles` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. If `true`, the user can perform `read_security_scan_profiles` on the top-level namespace of this resource. Security scan profiles belong to the top-level namespace, so this ability is evaluated on the root ancestor rather than on this resource. |
 | <a id="grouppermissions-removegroup"></a>`removeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_group` on this resource. |
 | <a id="grouppermissions-startorbittrial"></a>`startOrbitTrial` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `start_orbit_trial` on this resource. |
+| <a id="grouppermissions-updateknowledgegraphsetting"></a>`updateKnowledgeGraphSetting` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. If `true`, the user can perform `update_knowledge_graph_setting` on this resource. |
 | <a id="grouppermissions-updatesecurityscanprofiles"></a>`updateSecurityScanProfiles` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. If `true`, the user can perform `update_security_scan_profiles` on the top-level namespace of this resource. Security scan profiles belong to the top-level namespace, so this ability is evaluated on the root ancestor rather than on this resource. |
 | <a id="grouppermissions-vieweditpage"></a>`viewEditPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `view_edit_page` on this resource. |
 
@@ -56481,6 +56547,47 @@ Fields:
 | <a id="oncallrotationactiveperiodtype-endtime"></a>`endTime` | [`String`](#string) | End of the rotation active period. |
 | <a id="oncallrotationactiveperiodtype-starttime"></a>`startTime` | [`String`](#string) | Start of the rotation active period. |
 
+### `Orbit`
+
+Orbit data of the instance and of the groups of the current user.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbit-excludedgroups"></a>`excludedGroups` | [`GroupConnection`](#groupconnection) | Top-level groups excluded from automatic Orbit indexing. Administrators only. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `Orbit.groups`
+
+Groups visible to the current user. Same arguments as `Query.groups`, plus `enabled`.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbit-groups-active"></a>`active` | [`Boolean`](#boolean) | When `nil` (default value), returns all groups. When `true`, returns only groups that are not pending deletion. When `false`, only returns groups that are pending deletion. |
+| <a id="orbit-groups-aimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Filter groups that are marked for deletion. |
+| <a id="orbit-groups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
+| <a id="orbit-groups-enabled"></a>`enabled` | [`Boolean`](#boolean) | Return only groups with Orbit turned on. |
+| <a id="orbit-groups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="orbit-groups-includesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided. |
+| <a id="orbit-groups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="orbit-groups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="orbit-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
+| <a id="orbit-groups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
+| <a id="orbit-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+| <a id="orbit-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply. |
+| <a id="orbit-groups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
+| <a id="orbit-groups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
+
 ### `OrbitAccess`
 
 Orbit access state of a group.
@@ -56493,6 +56600,29 @@ Fields:
 | <a id="orbitaccess-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitAccessState!`](#orbitaccessstate) | Introduced in GitLab 19.5. Status: Experiment. Access state of the group for Orbit. |
 | <a id="orbitaccess-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial of the group. Null when the group is not in the trial flow. |
 | <a id="orbitaccess-turnondenialreason"></a>`turnOnDenialReason` {{< icon name="warning-solid" >}} | [`OrbitTurnOnDenialReason`](#orbitturnondenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the user cannot turn Orbit on. Null when turning on is allowed or Orbit is already on. |
+
+### `OrbitIndexing`
+
+Indexing state of a group or project in Orbit.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitindexing-areas"></a>`areas` | [`[OrbitIndexingArea!]`](#orbitindexingarea) | Indexing state of each area. |
+| <a id="orbitindexing-projects"></a>`projects` | [`OrbitIndexingProjects`](#orbitindexingprojects) | Indexing progress of the projects in the group or project. |
+| <a id="orbitindexing-state"></a>`state` | [`OrbitIndexingState`](#orbitindexingstate) | Indexing state of the group or project. |
+
+### `OrbitIndexingArea`
+
+Indexing state of one Orbit area.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitindexingarea-name"></a>`name` | [`String!`](#string) | Name of the area. |
+| <a id="orbitindexingarea-state"></a>`state` | [`OrbitIndexingState`](#orbitindexingstate) | Indexing state of the area. |
 
 ### `OrbitIndexingDomain`
 
@@ -56515,6 +56645,8 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="orbitindexingprojects-gaps"></a>`gaps` | [`Int`](#int) | Number of projects that are not indexed. |
 | <a id="orbitindexingprojects-indexed"></a>`indexed` | [`Int`](#int) | Number of indexed projects. |
+| <a id="orbitindexingprojects-notindexed"></a>`notIndexed` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.6. Status: Experiment. Number of projects that are not indexed. |
+| <a id="orbitindexingprojects-total"></a>`total` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.6. Status: Experiment. Number of projects known to Orbit. |
 | <a id="orbitindexingprojects-totalknown"></a>`totalKnown` | [`Int`](#int) | Number of projects known to Orbit. |
 
 ### `OrbitIndexingStatus`
@@ -56528,6 +56660,17 @@ Fields:
 | <a id="orbitindexingstatus-domains"></a>`domains` | [`[OrbitIndexingDomain!]`](#orbitindexingdomain) | Indexing status of each domain. |
 | <a id="orbitindexingstatus-phase"></a>`phase` | [`OrbitIndexingPhase`](#orbitindexingphase) | Indexing phase of the group or project. |
 | <a id="orbitindexingstatus-projects"></a>`projects` | [`OrbitIndexingProjects`](#orbitindexingprojects) | Indexing progress of the projects in the group or project. |
+
+### `OrbitItemCountArea`
+
+Number of indexed items in one Orbit area.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbititemcountarea-itemtypes"></a>`itemTypes` | [`[OrbitItemTypeCount!]`](#orbititemtypecount) | Number of indexed items of each item type in the area. |
+| <a id="orbititemcountarea-name"></a>`name` | [`String!`](#string) | Name of the area. |
 
 ### `OrbitItemCountDomain`
 
@@ -56559,7 +56702,19 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="orbititemcounts-areas"></a>`areas` {{< icon name="warning-solid" >}} | [`[OrbitItemCountArea!]`](#orbititemcountarea) | Introduced in GitLab 19.6. Status: Experiment. Number of indexed items in each area. |
 | <a id="orbititemcounts-domains"></a>`domains` | [`[OrbitItemCountDomain!]`](#orbititemcountdomain) | Number of indexed items in each domain. |
+
+### `OrbitItemTypeCount`
+
+Number of indexed items of one Orbit item type.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbititemtypecount-count"></a>`count` | [`BigInt`](#bigint) | Number of indexed items of the item type. |
+| <a id="orbititemtypecount-name"></a>`name` | [`String!`](#string) | Name of the item type. |
 
 ### `OrbitNamespace`
 
@@ -56569,9 +56724,13 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="orbitnamespace-enabledat"></a>`enabledAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. When Orbit was turned on for the top-level group. Null for subgroups, projects, and when Orbit is off. |
-| <a id="orbitnamespace-indexingstatus"></a>`indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. |
-| <a id="orbitnamespace-itemcounts"></a>`itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. This field can be resolved for only one group or project in any single request. |
+| <a id="orbitnamespace-access"></a>`access` {{< icon name="warning-solid" >}} | [`OrbitAccess`](#orbitaccess) | Introduced in GitLab 19.6. Status: Experiment. Orbit access state of the top-level group. Null for subgroups, projects, and when the user cannot read the Orbit setting of the group. This field can be resolved for at most 10 groups in any single request. |
+| <a id="orbitnamespace-enabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. Indicates whether Orbit is turned on for the group. False for subgroups. Null for projects. |
+| <a id="orbitnamespace-enabledat"></a>`enabledAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. Timestamp when Orbit was turned on for the top-level group. Null for subgroups, projects, when Orbit is off, and when Orbit is not available to the current user. |
+| <a id="orbitnamespace-indexing"></a>`indexing` {{< icon name="warning-solid" >}} | [`OrbitIndexing`](#orbitindexing) | Introduced in GitLab 19.6. Status: Experiment. Indexing state of the group or project. Null when Orbit is not available to the current user. |
+| <a id="orbitnamespace-indexingstatus"></a>`indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. Null when Orbit is not available to the current user. |
+| <a id="orbitnamespace-itemcounts"></a>`itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. Null when Orbit is not available to the current user. This field can be resolved for only one group or project in any single request. |
+| <a id="orbitnamespace-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.6. Status: Experiment. Orbit trial of the top-level group. Null for subgroups, projects, when the user cannot read the trial, and when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
 
 ### `OrbitTrial`
 
@@ -58904,7 +59063,7 @@ Fields:
 | <a id="project-onlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="project-openissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
 | <a id="project-openmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
-| <a id="project-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the project. Returns null when Orbit is not available to the current user. |
+| <a id="project-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the project. |
 | <a id="project-organizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.11. Status: Experiment. Path for editing project at the organization level. |
 | <a id="project-packagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="project-packagesprotectionrules"></a>`packagesProtectionRules` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Introduced in GitLab 16.6. Status: Experiment. Packages protection rules for the project. |
@@ -73880,6 +74039,18 @@ Indexing phase of Orbit data.
 | <a id="orbitindexingphase-ready"></a>`READY` | Indexing is complete. |
 | <a id="orbitindexingphase-syncing"></a>`SYNCING` | Indexing is in progress. |
 | <a id="orbitindexingphase-unknown"></a>`UNKNOWN` | Indexing phase is unknown. |
+
+### `OrbitIndexingState`
+
+Indexing state of Orbit data.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="orbitindexingstate-failed"></a>`FAILED` | Indexing failed. |
+| <a id="orbitindexingstate-indexing"></a>`INDEXING` | Indexing is in progress. |
+| <a id="orbitindexingstate-not_started"></a>`NOT_STARTED` | Indexing has not started. |
+| <a id="orbitindexingstate-ready"></a>`READY` | Indexing is complete. |
+| <a id="orbitindexingstate-unknown"></a>`UNKNOWN` | Indexing state is unknown. |
 
 ### `OrbitTrialState`
 

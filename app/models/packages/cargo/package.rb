@@ -38,7 +38,7 @@ module Packages
         )
       end
 
-      def self.cargo_package_already_taken?(project_id, package_name, package_version)
+      def self.cargo_package_already_taken?(project_id, package_name, package_version, exclude_id: nil)
         normalized_name = Packages::Cargo.normalize_name(package_name)
         normalized_version = Packages::Cargo.normalize_version(package_version) if package_version
 
@@ -52,6 +52,7 @@ module Packages
             }
           )
           .not_pending_destruction
+          .id_not_in(exclude_id)
           .exists?
       end
 
@@ -63,7 +64,7 @@ module Packages
 
       def cargo_package_version_already_taken
         return unless project && name && version
-        return unless self.class.cargo_package_already_taken?(project_id, name, version)
+        return unless self.class.cargo_package_already_taken?(project_id, name, version, exclude_id: id)
 
         errors.add(:base, _('Package already exists'))
       end

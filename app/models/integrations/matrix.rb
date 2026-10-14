@@ -8,7 +8,10 @@ module Integrations
 
     field :hostname,
       section: SECTION_TYPE_CONNECTION,
-      help: 'Custom hostname of the Matrix server. The default value is `https://matrix-client.matrix.org`.',
+      help: -> {
+        s_('MatrixIntegration|URL of the Matrix server, including `http://` or `https://`. ' \
+          'The default value is `https://matrix-client.matrix.org`.')
+      },
       placeholder: 'https://matrix-client.matrix.org',
       exposes_secrets: true,
       required: false
@@ -87,7 +90,7 @@ module Integrations
     private
 
     def set_webhook
-      hostname = self.hostname.presence || 'https://matrix-client.matrix.org'
+      hostname = (self.hostname.presence || 'https://matrix-client.matrix.org').delete_suffix('/')
 
       return unless token.present? && room.present?
 

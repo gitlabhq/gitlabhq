@@ -16,6 +16,7 @@ module Gitlab
       API_INTERNAL_PATH_REGEX = %r{^/api/v\d+/internal/}
       HEALTH_CHECK_PATH_REGEX = %r{^/-/(health|liveness|readiness|metrics)}
       CONTAINER_REGISTRY_EVENT_PATH_REGEX = %r{^/api/v\d+/container_registry_event/}
+      OAUTH_TOKEN_CHECK_PATH_REGEX = %r{\A(?:/o/[^/]+)?/oauth/(?:token/info|userinfo)(?:\.json)?\z}
 
       # The widest list, so one resolution covers every caller.
       REQUESTER_FORMATS = [:api, :rss, :ics].freeze
@@ -75,6 +76,9 @@ module Gitlab
       # Memoized per format list: the callers above and EE's plan facts both need
       # the record, and a second call would re-run token and session auth.
       def authenticated_requester(request_formats = REQUESTER_FORMATS)
+        # Not in REQUESTER_FORMATS: this format accepts any token on any path, so only these paths may add it.
+        request_formats += [:oauth_token_check] if oauth_token_check_path?
+
         strong_memoize_with(:authenticated_requester, request_formats) do
           request_authenticator.find_authenticated_requester(request_formats)
         end
@@ -126,6 +130,10 @@ module Gitlab
 
       def dependency_proxy_path?
         matches?(::Gitlab::PathRegex.dependency_proxy_route_regex)
+      end
+
+      def oauth_token_check_path?
+        matches?(OAUTH_TOKEN_CHECK_PATH_REGEX)
       end
 
       def files_api_path?

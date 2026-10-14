@@ -1,6 +1,6 @@
 ---
-source_checksum: 1d05b5c70ae44ff1
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 95b7345be7837bb6
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -14,9 +14,9 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use active voice instead of passive voice; use passive only when the subject is awkward (e.g., "The report is exported").
 - Write from the customer perspective; DO NOT use "allows you to" or "enables you to" — address the user directly with "you".
 - DO NOT use marketing phrases like "save you time and money", or words like "easily" or "simply".
-- DO NOT write about the document itself (e.g., "This page shows..."); get straight to the point.
 - Use contractions for a friendly tone, but DO NOT use contractions to emphasize a negative, with proper nouns as the subject, in reference documentation, or in error messages.
 - DO NOT use possessives (`'s`) for product or organization names (e.g., use "the Docker CLI", not "Docker's CLI").
+- DO NOT copy and paste content from other sources unless it is a limited quotation with the source cited; rephrase or link to the source instead.
 
 ### Language and Grammar
 
@@ -26,13 +26,16 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use `month day, year` format for dates and `AM`/`PM` for times.
 - DO NOT use semicolons (`;`), en dashes (`–`), or em dashes (`—`); use separate sentences or commas instead.
 - DO NOT use typographer's ("curly") quotation marks; use straight quotes.
+- DO NOT use non-breaking spaces or tabs for indentation; use standard spaces (enforced by `lint-doc.sh`).
 - Use serial (Oxford) commas before the final "and" or "or" in lists of three or more items.
 - DO NOT use Latin abbreviations like `e.g.` or `i.e.`.
 - Avoid ellipses; where unavoidable (for example, in a code block or CLI response) use three periods with no space (`...`).
 - DO NOT use the `&hellip;` HTML entity or the `&#8230;` HTML code; they break how code blocks render.
 - DO NOT include ellipses when documenting UI text (use `Search or go to`, not `Search or go to...`).
 - DO NOT use `-ing` words, ambiguous pronouns like "it", or phrases that hide the subject like "there is"/"there are".
+- DO NOT use culture-specific references (e.g., "kill two birds with one stone") or confusable words such as `since` where `because` is meant.
 - Break up noun strings (e.g., use "custom settings for project integrations", not "project integration custom settings").
+- DO NOT split a feature or product name that contains spaces across a line break.
 
 ### Capitalization
 
@@ -55,6 +58,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - DO NOT skip heading levels (e.g., `##` directly to `####`).
 - DO NOT use heading levels greater than `H5`; move content to a new page instead.
 - DO NOT use bold text in topic titles.
+- DO NOT use step numbers or words likely to change in topic titles (they change anchor links).
 - Leave one blank line before and after headings, paragraphs, lists, and code blocks.
 - Use dashes (`-`) for unordered lists, not asterisks (`*`).
 - Start every ordered list item with `1.`.
@@ -72,6 +76,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use inline code (backticks) for user input, filenames, configuration parameters, keywords, API/HTTP methods, HTTP status codes, and short error messages.
 - Use code blocks for CLI/cURL commands and multi-line inputs/outputs; add a syntax name for highlighting.
 - Use `<kbd>` tags for keyboard commands; spell out full key names (except `Alt`); DO NOT use spaces between `<kbd>` tags in combinations.
+- Write UI instructions instead of keyboard commands when both options exist (applies to GitLab and third-party applications).
 - DO NOT use italics for emphasis in product documentation.
 - Use `<` and `>` to denote placeholder text in code blocks.
 
@@ -107,15 +112,15 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use descriptive link text; DO NOT use "here", "this page", or "this documentation" as link text.
 - Use the pattern `For more information, see [link text](link.md)` or `To [DO THIS], see [link text](link.md)`.
 - DO NOT use "Learn more about...", "To read more...", or append "page" or "documentation" after the link text.
-- When linking to an issue, include the issue number in the link text (e.g., `[issue 12345](link)`); DO NOT use the pound sign (`issue #12345`).
+- DO NOT use the pound sign in issue link text (use `issue 12345`, not `issue #12345`).
 - DO NOT link to confidential issues, internal handbook pages, or permission-restricted features directly; put such links in backticks and note the access requirement.
 - Limit links to external documentation and handbook pages; weigh customer benefit against maintenance cost.
 - DO NOT link to the `/development` directory from any other directory within the GitLab repository.
+- DO NOT link directly to a single tab in a tab set.
 
 ### Images and Screenshots
 
-- Resize wide or tall screenshots (width ≤ 1000 px, height ≤ 500 px); compress all PNG images to 100 KB or less on disk.
-- Use descriptive lowercase filenames; append the GitLab version in the format `_vX_Y` (e.g., `pipelines_v11_1.png`).
+- Keep screenshots at width ≤ 1000 px and height ≤ 500 px; compress all PNG images on disk (CI-checked with `bin/pngquant lint`; fix with `bin/pngquant compress`).
 - Place images in an `img/` subdirectory alongside the `.md` file.
 - Use PNG format; DO NOT use JPEG for screenshots.
 - DO NOT delete image files when removing references from English docs (localized docs may still use them).
@@ -138,7 +143,8 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 
 - Use alert boxes sparingly; DO NOT place two alert boxes consecutively.
 - Use `> [!note]`, `> [!warning]`, `> [!flag]`, and `> [!disclaimer]` for alert types.
-- DO NOT use blockquotes in product documentation; use code blocks, alert boxes, or plain text instead.
+- Use a warning alert to indicate deprecated features or procedures with potential for data loss.
+- Use the `> [!disclaimer]` alert (with no other text) near content about undelivered features: once at the top when the whole page is unavailable, or in the topic when only that topic is not ready.
 - Use the guide shortcode for tutorials only; DO NOT use a guide inside a guide.
 - Build tab sets with the `{{< tabs >}}` and `{{< tab title="..." >}}` shortcodes, and put only paragraphs, lists, alert boxes, and code blocks inside a tab; DO NOT nest version history bullets, topic headings, HTML, or other tabs inside one. Keep tab titles brief, parallel, and capitalized.
 - Use collapsible panels only on GitLab Duo pages in the availability details section; DO NOT use them for other content.
@@ -162,9 +168,14 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use **left sidebar** instead of "the Explore menu" or "the Your work sidebar".
 - Bold all UI element names; DO NOT bold the `>` separator in navigation paths.
 - Place punctuation outside bold tags unless the punctuation is part of the UI element itself.
-- Start optional steps with "Optional." followed by a period.
 - Start recommended steps with "Recommended." followed by a period.
 - Use "Complete the fields" to summarize multiple self-explanatory fields in a single task step rather than documenting each field individually.
+
+### GitLab Self-Managed Procedures
+
+- Use the official installation method names (Linux package, Helm chart, GitLab Operator, Docker, Self-compiled) in sentences and titles; add explanatory parentheses (Omnibus, Kubernetes, source) only in tab titles.
+- Use tabs to differentiate installation methods in configuration procedures; always include parent settings in YAML examples and use the appropriate syntax highlighting (`ruby`, `shell`, or `yaml`).
+- Link to `doc/administration/restart_gitlab.md` when a restart or reconfigure is required instead of repeating the steps (use the full `https://docs.gitlab.com/administration/restart_gitlab` URL outside `doc/`).
 
 ### Metadata
 
@@ -185,6 +196,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Place history notes (`{{< history >}}` shortcode) after the details block and immediately after the heading; start each entry with `-` and link to the related issue, MR, or epic when possible.
 - Add a history entry only to the page for the feature that changed; DO NOT duplicate the entry on other pages.
 - When a feature changes from seat-based billing to usage-based billing with GitLab Credits, add a `Changed to usage-based billing` entry only to the feature's history; DO NOT add an entry to the GitLab Credits history.
+- For a feature introduced as an experiment or beta, state the status in the `Introduced` history item and link it to the matching policy anchor (for example, `- [Introduced](https://work-item-link) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.7.`); record a later experiment-to-beta move as a separate `Changed` item.
 - Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
 - For tools released on their own schedule (e.g., editor extensions, CLI tools), include both the GitLab version and the tool version in history entries with a link to the tool's release page; nest tool version entries under the related instance history item when both change together, or use `during the GitLab X.Y release` phrasing when the change is tool-only.
 - For GitLab Duo AI Gateway model changes that reach all versions immediately (not gated by a GitLab release), use a date instead of a milestone in the history entry and link the AI Gateway MR that made the change, not the GitLab issue or MR (e.g., `Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model on August 3, 2026`).
@@ -193,20 +205,20 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 
 ### Deprecations and Removals
 
-- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, and wrap the content in `<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and `<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release).
+- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, add "This change is a breaking change." if the deprecation is a breaking change, and wrap the content in `<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and `<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release).
 - When removing a feature, change `(deprecated)` to `(removed)` in the title, remove all content except the deprecation/removal statement, set `remove_date` in metadata to three months after the removal release, and set `redirect_to` to a relevant replacement page.
 - When removing a topic (subsection) rather than a full page, leave the title and deprecation/removal details, add `(removed)` after the title, and wrap the remaining content in HTML comments with `remove_date` set to three months after the removal release.
 - After removing a page, edit `navigation.yaml` in `docs-gitlab-com` to remove the page's entry from the global navigation, update any links in the [Deprecations and Removals](https://docs.gitlab.com/update/deprecations/) YAML files, and run `bin/rake gitlab:docs:compile_deprecations`.
 - DO NOT follow the standard deprecation process for features that are not generally available; delete the content outright instead.
 - For features no longer actively developed but not deprecated, add a note under the topic title stating the feature is not under active development but community contributions are welcome.
+- DO NOT remove version-specific upgrade pages in `doc/update/versions/` immediately for a major milestone; add a note with a date three months in the future (do not add `Removed` to the title) so the page is removed during the monthly maintenance task.
 
 ### Documentation Workflow
 
-- Include documentation in the same MR as the feature code whenever possible; DO NOT merge a feature that exposes UI, API endpoints, or user-facing behaviour without accompanying documentation.
+- Include documentation in the same MR as the feature code whenever possible; DO NOT merge a feature that exposes UI, API endpoints, or user-facing behavior without accompanying documentation.
 - Ensure AI-generated documentation is reviewed by a Technical Writer and passes a Vale lint check before submission.
 - Delete documentation added prematurely rather than hiding it with HTML comments; add a link to the original MR in the removal MR.
 - When moving content to a new location and editing it in the same MR, use separate commits (first commit moves only, subsequent commits edit).
-- DO NOT promise to deliver features in a future release; instead reference the proposing issue (e.g., "Support for improvements is proposed in [issue 12345](link)").
 - Assign the technical writer as a reviewer directly on the MR (not just pinged) before the code maintainer review; documentation reviews must not block merging.
 - When a post-merge technical writer review is required, create an issue using the [Doc Review description template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Doc%20Review) and link it to the merged MR.
 - Name documentation-only branches in `omnibus-gitlab`, `charts/gitlab`, or `gitlab-operator` starting with `docs/`, `docs-`, or ending with `-docs` to trigger shorter pipelines.

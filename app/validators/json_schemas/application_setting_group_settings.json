@@ -19,6 +19,13 @@
     "project_deletion_jobs_concurrency_limit": {
       "type": "integer",
       "description": "Maximum number of concurrent ProjectDestroyWorker jobs. 0 disables the limit"
+    },
+    "transitive_sharing_cutoff_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project and group shares created before this time still give access through groups shared into the invited group. Set by a migration, not exposed"
     }
   }
 }

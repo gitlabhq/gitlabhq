@@ -93,6 +93,19 @@ RSpec.describe Gitlab::Database::SchemaChecker, feature_category: :database do
   end
 
   describe '#execute', :freeze_time do
+    it 'runs the validators with replica fallback for ambiguous queries' do
+      Gitlab::Database::LoadBalancing::SessionMap.clear_session
+      session = Gitlab::Database::LoadBalancing::SessionMap.current(ApplicationRecord.load_balancer)
+
+      expect(missing_tables_validator).to receive(:execute) do
+        expect(session.fallback_to_replicas_for_ambiguous_queries?).to be(true)
+
+        missing_tables
+      end
+
+      checker.execute
+    end
+
     it 'returns the expected schema check results structure' do
       result = checker.execute
 

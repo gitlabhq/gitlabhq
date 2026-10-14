@@ -62,12 +62,18 @@ RSpec.describe Gitlab::DatabaseImporters::DefaultOrganizationImporter, feature_c
       let(:claim_service) { Gitlab::TopologyServiceClient::ClaimService.instance }
 
       before do
-        stub_config_cell(enabled: true, id: cell_id)
+        stub_config_cell(enabled: true, id: 2)
         allow(Current).to receive(:cells_claims_leases?).and_return(true)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+          allow(instance).to receive(:cell_sequence_ranges)
+            .and_return([Gitlab::Cells::TopologyService::SequenceRange.new(minval: minval, maxval: maxval)])
+        end
       end
 
-      context 'on the legacy cell' do
-        let(:cell_id) { 1 }
+      context 'when the cell sequence ranges cover the default organization ID' do
+        let(:minval) { 1 }
+        let(:maxval) { 999_999_999_999 }
 
         before do
           allow(claim_service).to receive(:commit_update)
@@ -84,15 +90,16 @@ RSpec.describe Gitlab::DatabaseImporters::DefaultOrganizationImporter, feature_c
         end
       end
 
-      context 'on another cell' do
-        let(:cell_id) { 2 }
+      context 'when the cell sequence ranges do not cover the default organization ID' do
+        let(:minval) { 1_000_000_000_000 }
+        let(:maxval) { 1_099_999_999_999 }
 
-        it 'does not create the default organization or contact the Topology Service', :aggregate_failures do
+        it 'does not create or claim the default organization', :aggregate_failures do
           expect(Gitlab::TopologyServiceClient::ClaimService).not_to receive(:instance)
           expect(Gitlab::AppLogger).to receive(:info).with(
             hash_including(
-              message: 'Skipping default organization creation, it belongs to the legacy cell',
-              cell_id: cell_id
+              message: 'Skipping default organization creation, its ID is outside the cell sequence ranges',
+              cell_id: 2
             )
           )
 

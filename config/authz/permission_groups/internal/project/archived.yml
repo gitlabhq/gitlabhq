@@ -105,6 +105,7 @@ permissions:
   - destroy_wiki
   - manage_trigger
   - modify_security_policy
+  - move_design
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

@@ -18,6 +18,7 @@ RSpec.shared_examples 'connection adapter' do
 
   before do
     allow(connection).to receive(:connection_adapter).and_return(adapter)
+    allow(adapter).to receive(:transaction).and_yield
   end
 
   context 'when using a valid connection adapter' do
@@ -31,6 +32,10 @@ RSpec.shared_examples 'connection adapter' do
 
     describe '#exec_query' do
       it { expect(connection.exec_query(sql, schemas)).to eq(query_result) }
+    end
+
+    describe '#transaction' do
+      it { expect { |block| connection.transaction(&block) }.to yield_control }
     end
   end
 end

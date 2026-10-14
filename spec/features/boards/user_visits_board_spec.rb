@@ -51,8 +51,7 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :planning_view
         page.assert_selector('[data-testid="board-card"]', count: expected_issues.length)
         expected_issues.each { |issue_title| expect(page).to have_link issue_title }
 
-        # we need unescape due to differences how Vue.js 2 & 3 render URL
-        expect(CGI.unescape(page.current_url)).to include(CGI.unescape(board_path))
+        expect(page).to have_current_path_with_normalized_query(board_path)
       end
     end
   end

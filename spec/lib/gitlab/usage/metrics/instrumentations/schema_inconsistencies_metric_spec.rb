@@ -40,4 +40,17 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::SchemaInconsistenciesMe
       end
     end
   end
+
+  it 'runs the validation with replica fallback for ambiguous queries' do
+    Gitlab::Database::LoadBalancing::SessionMap.clear_session
+    session = Gitlab::Database::LoadBalancing::SessionMap.current(ApplicationRecord.load_balancer)
+
+    expect(runner).to receive(:execute) do
+      expect(session.fallback_to_replicas_for_ambiguous_queries?).to be(true)
+
+      inconsistencies
+    end
+
+    described_class.new(time_frame: 'all').value
+  end
 end

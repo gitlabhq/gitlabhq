@@ -45,13 +45,20 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
     end
 
     context 'with custom hostname' do
-      before do
-        integration.hostname = 'https://gitlab.example.com'
+      where(:hostname) do
+        ['https://gitlab.example.com', 'https://gitlab.example.com/']
       end
 
-      it 'sets webhook value with custom hostname' do
-        expect(integration).to be_valid
-        expect(integration.webhook).to start_with("https://gitlab.example.com/_matrix/client/v3/rooms/")
+      with_them do
+        before do
+          integration.hostname = hostname
+        end
+
+        it 'sets webhook value with custom hostname', :aggregate_failures do
+          expect(integration).to be_valid
+          expect(integration.webhook)
+            .to eq("https://gitlab.example.com/_matrix/client/v3/rooms/#{integration.room}/send/m.room.message/")
+        end
       end
     end
   end

@@ -41,6 +41,10 @@ module Gitlab
             connection_adapter.exec_query(sql, schemas)
           end
 
+          def transaction(&)
+            connection_adapter.transaction(&)
+          end
+
           private
 
           attr_reader :connection_adapter

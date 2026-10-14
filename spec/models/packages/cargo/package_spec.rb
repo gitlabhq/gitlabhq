@@ -75,6 +75,12 @@ RSpec.describe Packages::Cargo::Package, feature_category: :package_registry do
       let_it_be(:existing_package) { create(:cargo_package, version: '1.0.0') }
       let_it_be(:existing_metadatum) { create(:cargo_metadatum, package: existing_package) }
 
+      context 'when updating the existing package' do
+        it 'is valid' do
+          expect(existing_package.reload).to be_valid
+        end
+      end
+
       context 'when name and version are the same' do
         let(:new_package) do
           build(:cargo_package, project: existing_package.project, name: existing_package.name,
@@ -255,6 +261,22 @@ RSpec.describe Packages::Cargo::Package, feature_category: :package_registry do
 
       it 'returns false' do
         expect(described_class.cargo_package_already_taken?(project.id, package_name, package_version)).to be false
+      end
+    end
+
+    context 'when the matching package is excluded' do
+      let!(:existing_package) do
+        create(:cargo_package, project: project, name: 'test_package', version: '1.0.0+build456')
+      end
+
+      let!(:existing_metadatum) { create(:cargo_metadatum, package: existing_package) }
+
+      it 'returns false' do
+        expect(
+          described_class.cargo_package_already_taken?(
+            project.id, package_name, package_version, exclude_id: existing_package.id
+          )
+        ).to be false
       end
     end
   end

@@ -126,7 +126,6 @@ RSpec.shared_context 'GroupPolicy context' do
     (
       developer_permissions + %i[
         add_cluster
-        admin_achievement
         admin_cluster
         admin_push_rules
         admin_upload

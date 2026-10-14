@@ -680,6 +680,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
 
     context 'for validating the group_settings jsonb_column`s atrributes' do
       it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }
+
+      it 'accepts a transitive_sharing_cutoff_at time' do
+        setting.transitive_sharing_cutoff_at = Time.current
+
+        expect(setting).to be_valid
+      end
     end
 
     context 'for non-null integer attributes starting from 0' do

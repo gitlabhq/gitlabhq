@@ -235,6 +235,56 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
     end
 
+    describe 'an OAuth token check' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:openid_token) { create(:oauth_access_token, resource_owner: user, scopes: [:openid]) }
+      let_it_be(:expired_token) do
+        create(:oauth_access_token, resource_owner: user, expires_in: 1, created_at: 1.day.ago)
+      end
+
+      let_it_be(:revoked_token) { create(:oauth_access_token, resource_owner: user, revoked_at: 1.hour.ago) }
+
+      where(:path) do
+        %w[
+          /oauth/token/info
+          /oauth/token/info.json
+          /oauth/userinfo
+          /o/my-org/oauth/token/info
+          /o/my-org/oauth/userinfo
+        ]
+      end
+
+      with_them do
+        it 'counts a valid token of any scope against its user' do
+          expect(facts_for(path, 'HTTP_AUTHORIZATION' => "Bearer #{openid_token.plaintext_token}"))
+            .to include(requester_id: user.id.to_s, requester_type: 'user')
+        end
+
+        it 'resolves no requester for an expired token' do
+          expect(facts_for(path, 'HTTP_AUTHORIZATION' => "Bearer #{expired_token.plaintext_token}"))
+            .to include(requester_id: nil)
+        end
+
+        it 'resolves no requester for a revoked token' do
+          expect(facts_for(path, 'HTTP_AUTHORIZATION' => "Bearer #{revoked_token.plaintext_token}"))
+            .to include(requester_id: nil)
+        end
+
+        it 'resolves no requester for an unknown token' do
+          expect(facts_for(path, 'HTTP_AUTHORIZATION' => 'Bearer unknown')).to include(requester_id: nil)
+        end
+
+        it 'resolves no requester without a token' do
+          expect(facts_for(path)).to include(requester_id: nil)
+        end
+      end
+
+      it 'ignores a token of any scope on other OAuth paths' do
+        expect(facts_for('/oauth/token/info/extra', 'HTTP_AUTHORIZATION' => "Bearer #{openid_token.plaintext_token}"))
+          .to include(requester_id: nil)
+      end
+    end
+
     describe 'authenticated request' do
       let(:request) { described_class.new(Rack::MockRequest.env_for('/api/v4/projects')) }
 

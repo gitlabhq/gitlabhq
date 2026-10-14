@@ -5,10 +5,12 @@ module Gitlab
     module Metrics
       module Instrumentations
         class IndexInconsistenciesMetric < GenericMetric
+          include Gitlab::Database::ReplicaFallback
+
           value do
             runner = Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators)
 
-            inconsistencies = runner.execute
+            inconsistencies = with_replica_fallback(database_model) { runner.execute }
 
             inconsistencies.map do |inconsistency|
               {
@@ -21,8 +23,11 @@ module Gitlab
           private
 
           def database
-            database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
             Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
+          end
+
+          def database_model
+            Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
           end
 
           def structure_sql

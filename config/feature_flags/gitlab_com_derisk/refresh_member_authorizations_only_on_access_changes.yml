@@ -1,0 +1,10 @@
+---
+name: refresh_member_authorizations_only_on_access_changes
+description: Skips the project authorizations refresh on member updates that do not change access-relevant attributes.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627276
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258638
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631426
+milestone: '19.5'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

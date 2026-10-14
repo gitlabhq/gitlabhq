@@ -39,7 +39,9 @@ After you join a Matrix room, you can configure GitLab to send notifications:
      1. Select **Settings** > **Integrations**.
 1. Select **Matrix**.
 1. Under **Enable integration**, select the **Active** checkbox.
-1. Optional. In **Hostname**, enter the hostname of your server.
+1. Optional. In **Hostname**, enter the URL of your server, including `http://` or `https://`.
+   For example, `https://matrix.example.com`.
+   If you leave this field blank, GitLab uses `https://matrix-client.matrix.org`.
 1. In **Token**, paste the token value from the Matrix user.
 1. In the **Trigger** section, select the checkboxes for the GitLab events you want to receive in Matrix.
 1. In the **Notification settings** section:

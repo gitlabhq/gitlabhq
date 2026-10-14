@@ -484,6 +484,23 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       end
     end
 
+    context 'with :oauth_token_check format' do
+      let_it_be(:oauth_user) { create(:user) }
+      let_it_be(:openid_token) { create(:oauth_access_token, resource_owner: oauth_user, scopes: [:openid]) }
+
+      it 'returns user from an OAuth token without api scopes' do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{openid_token.plaintext_token}"
+
+        expect(request_authenticator.find_sessionless_user(:oauth_token_check)).to eq oauth_user
+      end
+
+      it 'returns nil for an unknown token' do
+        env['HTTP_AUTHORIZATION'] = 'Bearer unknown'
+
+        expect(request_authenticator.find_sessionless_user(:oauth_token_check)).to be_nil
+      end
+    end
+
     context 'with :design format' do
       let_it_be(:design_user) { create(:user) }
       # `freeze: false`: authenticating updates the token's last_used_at.

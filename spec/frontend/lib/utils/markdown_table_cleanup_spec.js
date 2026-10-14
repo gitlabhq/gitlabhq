@@ -440,6 +440,25 @@ describe('MarkdownTableCleanup', () => {
       expect(formatMarkdownTable(input)).toBe(output);
     });
 
+    it('treats a row of only `||` as a single empty cell', () => {
+      const input = ['||', '|---|', '| a |'].join('\n');
+      const output = ['|   |', '|---|', '| a |'].join('\n');
+      expect(formatMarkdownTable(input)).toBe(output);
+    });
+
+    it('formats a near-miss row without catastrophic backtracking #security', () => {
+      // n=30 already took seconds with the old nested-quantifier regex
+      const nearMissRow = `${'|a'.repeat(30)}b`;
+      const input = ['Some text', nearMissRow, 'More text'].join('\n');
+
+      const start = performance.now();
+      const result = formatMarkdownTable(input);
+      const duration = performance.now() - start;
+
+      expect(result).toBe(input);
+      expect(duration).toBeLessThan(100);
+    });
+
     it('handles table with complex alignment combinations', () => {
       const input = [
         '| Left | Center | Right | Default |',

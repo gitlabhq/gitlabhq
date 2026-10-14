@@ -1566,7 +1566,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `hostname`   | string | no | Custom hostname of the Matrix server. The default value is `https://matrix.org`. |
+| `hostname`   | string | no | URL of the Matrix server, including `http://` or `https://`. The default value is `https://matrix-client.matrix.org`. |
 | `token`   | string | yes | The Matrix access token (for example, `syt-zyx57W2v1u123ew11`). |
 | `room` | string | yes | Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`). |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |

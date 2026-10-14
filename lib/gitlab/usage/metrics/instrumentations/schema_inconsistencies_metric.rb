@@ -5,12 +5,14 @@ module Gitlab
     module Metrics
       module Instrumentations
         class SchemaInconsistenciesMetric < GenericMetric
+          include Gitlab::Database::ReplicaFallback
+
           MAX_INCONSISTENCIES = 150 # Limit the number of inconsistencies reported to avoid large payloads
 
           value do
             runner = Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators)
 
-            inconsistencies = runner.execute
+            inconsistencies = with_replica_fallback(database_model) { runner.execute }
 
             inconsistencies.take(MAX_INCONSISTENCIES).map do |inconsistency|
               {
@@ -28,8 +30,11 @@ module Gitlab
           end
 
           def database
-            database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
             Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
+          end
+
+          def database_model
+            Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
           end
 
           def structure_sql

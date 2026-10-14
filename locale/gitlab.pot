@@ -51389,6 +51389,9 @@ msgstr ""
 msgid "MatrixIntegration|Send notifications about project events to Matrix."
 msgstr ""
 
+msgid "MatrixIntegration|URL of the Matrix server, including `http://` or `https://`. The default value is `https://matrix-client.matrix.org`."
+msgstr ""
+
 msgid "MatrixIntegration|Unique authentication token."
 msgstr ""
 

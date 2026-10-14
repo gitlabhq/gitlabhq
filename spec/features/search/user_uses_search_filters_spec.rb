@@ -55,9 +55,7 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
 
             wait_for_requests
 
-            expect(page).to have_current_path(search_path, ignore_query: true) do |uri|
-              uri.normalized_query(:sorted) == "scope=blobs&search=test"
-            end
+            expect(page).to have_current_path_with_normalized_query(search_path(scope: 'blobs', search: 'test'))
           end
         end
       end
@@ -94,9 +92,7 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
 
             wait_for_requests
 
-            expect(page).to have_current_path(search_path, ignore_query: true) do |uri|
-              uri.normalized_query(:sorted) == "scope=blobs&search=test"
-            end
+            expect(page).to have_current_path_with_normalized_query(search_path(scope: 'blobs', search: 'test'))
           end
         end
       end

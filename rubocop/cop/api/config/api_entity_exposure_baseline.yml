@@ -416,6 +416,13 @@ lib/api/entities/discussion.rb:
   - notes
   - resolvable?
   - resolved?
+lib/api/entities/granular_scope.rb:
+  usage_radius: 25
+  fields:
+  - access
+  - group_id
+  - permissions
+  - project_id
 lib/api/entities/group.rb:
   usage_radius: 33
   fields:
@@ -760,13 +767,6 @@ lib/api/entities/personal_access_token.rb:
   - revoked
   - scopes
   - user_id
-lib/api/entities/personal_access_token_granular_scope.rb:
-  usage_radius: 25
-  fields:
-  - access
-  - group_id
-  - permissions
-  - project_id
 lib/api/entities/platform/kubernetes.rb:
   usage_radius: 15
   fields:

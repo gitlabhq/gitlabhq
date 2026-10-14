@@ -15,7 +15,8 @@ module SimpleCovEnvCore
 
   def configure_profile
     SimpleCov.configure do
-      enable_coverage :branch
+      # Per-test coverage only keeps line hits; branch tracking makes every per-example read very slow.
+      enable_coverage :branch unless ENV['GLCI_PER_TEST_COVERAGE'] == 'true'
 
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194688#note_2595596467
       skip %r{^(ee/|jh/)?spec/}

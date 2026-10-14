@@ -1733,6 +1733,66 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       refresh
     end
+
+    context 'on update' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:other_user) { create(:user) }
+      let_it_be(:other_group) { create(:group) }
+      let_it_be_with_reload(:member) { create(:group_member, :developer, group: group) }
+
+      subject(:update_member) { member.update!(attributes) }
+
+      where(:attribute, :value) do
+        :access_level | Gitlab::Access::MAINTAINER
+        :user         | ref(:other_user)
+        :source       | ref(:other_group)
+        :requested_at | Time.current
+        :state        | Member::STATE_AWAITING
+      end
+
+      with_them do
+        let(:attributes) { { attribute => value } }
+
+        it 'refreshes authorized projects' do
+          expect(member).to receive(:refresh_member_authorized_projects)
+
+          update_member
+        end
+      end
+
+      context 'when no authorization column changes' do
+        let(:attributes) { { expires_at: 1.week.from_now.to_date } }
+
+        it 'does not refresh authorized projects' do
+          expect(member).not_to receive(:refresh_member_authorized_projects)
+
+          update_member
+        end
+
+        context 'when `refresh_member_authorizations_only_on_access_changes` feature-flag is disabled' do
+          before do
+            stub_feature_flags(refresh_member_authorizations_only_on_access_changes: false)
+          end
+
+          it 'refreshes authorized projects' do
+            expect(member).to receive(:refresh_member_authorized_projects)
+
+            update_member
+          end
+        end
+      end
+
+      context 'when the member is updated more than once in a transaction' do
+        it 'refreshes authorized projects if any update changed an authorization column' do
+          expect(member).to receive(:refresh_member_authorized_projects)
+
+          Member.transaction do
+            member.update!(access_level: Gitlab::Access::MAINTAINER)
+            member.update!(expires_at: 1.week.from_now.to_date)
+          end
+        end
+      end
+    end
   end
 
   describe 'destroying a record', :delete, :sidekiq_inline do

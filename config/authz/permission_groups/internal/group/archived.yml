@@ -3,7 +3,6 @@ permissions:
   - _delete_authored_timelog
   - activate_group_member
   - add_cluster
-  - admin_achievement
   - admin_build
   - admin_cicd_variables
   - admin_cluster

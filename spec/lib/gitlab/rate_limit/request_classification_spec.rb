@@ -65,6 +65,57 @@ RSpec.describe Gitlab::RateLimit::RequestClassification, feature_category: :rate
     end
   end
 
+  describe 'OAUTH_TOKEN_CHECK_PATH_REGEX' do
+    subject { described_class::OAUTH_TOKEN_CHECK_PATH_REGEX }
+
+    it { is_expected.to match('/oauth/token/info') }
+    it { is_expected.to match('/oauth/token/info.json') }
+    it { is_expected.not_to match('/oauth/token/info.xml') }
+    it { is_expected.to match('/oauth/userinfo') }
+    it { is_expected.to match('/o/my-org/oauth/token/info') }
+    it { is_expected.to match('/o/my-org/oauth/userinfo') }
+    it { is_expected.not_to match('/oauth/token') }
+    it { is_expected.not_to match('/oauth/token/info/extra') }
+    it { is_expected.not_to match('/group/project/oauth/userinfo') }
+    it { is_expected.not_to match('/api/v4/oauth/userinfo') }
+  end
+
+  describe '#authenticated_requester' do
+    subject { request.send(:authenticated_requester) }
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:token) { create(:oauth_access_token, resource_owner: user, scopes: [:openid]) }
+
+    let(:env) { { 'HTTP_AUTHORIZATION' => "Bearer #{token.plaintext_token}" } }
+    let(:request) { request_class.new(Rack::MockRequest.env_for(path).merge(env)) }
+
+    where(:path) do
+      %w[/oauth/token/info /oauth/userinfo /o/my-org/oauth/token/info /o/my-org/oauth/userinfo]
+    end
+
+    with_them do
+      it { is_expected.to eq(user) }
+
+      context 'with an unknown token' do
+        let(:env) { { 'HTTP_AUTHORIZATION' => 'Bearer unknown' } }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'without a token' do
+        let(:env) { {} }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'on another OAuth path' do
+      let(:path) { '/oauth/token/info/extra' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe 'MCP_PATH_REGEX' do
     subject { described_class::MCP_PATH_REGEX }
 

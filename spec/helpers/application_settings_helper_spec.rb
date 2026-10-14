@@ -84,6 +84,10 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       expect(helper.visible_attributes).to include(:require_sha_for_merge)
     end
 
+    it 'does not contain :transitive_sharing_cutoff_at' do
+      expect(helper.visible_attributes).not_to include(:transitive_sharing_cutoff_at)
+    end
+
     describe ':mcp_server_enabled' do
       context 'when self-managed' do
         it 'is included' do

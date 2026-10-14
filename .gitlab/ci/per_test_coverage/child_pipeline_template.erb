@@ -71,10 +71,6 @@ workflow:
     - !reference [.default-before_script, before_script]
   variables:
     GLCI_PER_TEST_COVERAGE: "true"
-    # Skip SimpleCov so its Coverage.start does not run during spec_helper.
-    # The per-test formatter starts Coverage itself in before(:suite), which
-    # limits instrumentation to files autoloaded during examples.
-    SIMPLECOV: "false"
     # scripts/rspec_helpers.sh:rspec_parallelized_job only passes
     # --filter $RSPEC_TESTS_FILTER_FILE to parallel_rspec when this flag is set.
     # Without it, the filter file is loaded but ignored and each shard runs the

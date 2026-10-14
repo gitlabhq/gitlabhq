@@ -1879,10 +1879,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   describe 'achievements' do
     let(:current_user) { owner }
 
-    it { is_expected.to be_allowed(:read_achievement) }
-    it { is_expected.to be_allowed(:admin_achievement) }
-    it { is_expected.to be_allowed(:award_achievement) }
-    it { is_expected.to be_allowed(:destroy_user_achievement) }
+    it 'allows all achievement permissions' do
+      expect_allowed(
+        :read_achievement, :create_achievement, :update_achievement, :delete_achievement,
+        :award_achievement, :destroy_user_achievement
+      )
+    end
 
     context 'when current user is not a group member' do
       let(:current_user) { non_group_member }

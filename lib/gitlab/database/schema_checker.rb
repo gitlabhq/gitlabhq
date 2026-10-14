@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     class SchemaChecker
+      include ReplicaFallback
+
       def initialize(database_name:)
         @structure_sql_path = Rails.root.join('db/structure.sql')
         @database_name = database_name
@@ -24,7 +26,7 @@ module Gitlab
       end
 
       def execute
-        check_inconsistencies
+        with_replica_fallback(database_model) { check_inconsistencies }
       end
 
       private

@@ -95,7 +95,22 @@ module Gitlab
           return [] unless connection.table_exists?(model.table_name)
           return model.partitioning_strategy.missing_partitions_for_replica if logical_replication_subscriber?
 
-          model.partitioning_strategy.missing_partitions
+          model.partitioning_strategy.missing_partitions.reject { |partition| cleanup_scheduled?(partition) }
+        end
+
+        def cleanup_scheduled?(partition)
+          detached_partition = Gitlab::Database::SharedModel.using_connection(connection) do
+            Postgresql::DetachedPartition.find_by(table_name: partition.partition_name)
+          end
+
+          return false unless detached_partition && connection.table_exists?(identifier(partition))
+
+          Gitlab::AppLogger.warn(log_payload(
+            message: 'Deferred creating partition until its detached table is dropped',
+            partition_name: partition.partition_name,
+            drop_after: detached_partition.drop_after
+          ))
+          true
         end
 
         def extra_partitions

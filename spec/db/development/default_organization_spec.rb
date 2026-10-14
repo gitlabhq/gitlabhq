@@ -23,6 +23,12 @@ RSpec.describe 'seed development fixtures without the default organization', :si
     stub_config_cell(enabled: true, id: 2)
     allow(Current).to receive(:cells_claims_leases?).and_return(true)
 
+    allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+      allow(instance).to receive(:cell_sequence_ranges).and_return(
+        [Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1_000_000_000_000, maxval: 1_099_999_999_999)]
+      )
+    end
+
     allow(claim_service).to receive(:commit_update)
     allow(claim_service).to receive(:begin_update) do |create_records:, **|
       if create_records.any? { |record| record[:claim] == { organization_path: 'default' } }

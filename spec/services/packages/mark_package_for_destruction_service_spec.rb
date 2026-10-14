@@ -145,6 +145,16 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
         it_behaves_like 'an instrumented service'
       end
+
+      context 'with cargo package' do
+        let_it_be_with_reload(:package) { create(:cargo_package, :with_metadatum) }
+
+        it 'returns a success ServiceResponse' do
+          expect(execute).to be_success
+        end
+
+        it_behaves_like 'marks the package for destruction'
+      end
     end
 
     context 'with package deletion protection' do

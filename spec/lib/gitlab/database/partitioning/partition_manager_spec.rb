@@ -989,6 +989,107 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         subject
       end
     end
+
+    context 'when retain_for is raised before the detached partitions are dropped' do
+      let(:dynamic_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
+      let(:catch_all) { "#{partitioned_table_name}_000000" }
+      let(:dropper) { Gitlab::Database::Partitioning::DetachedPartitionDropper.new }
+      let(:raised_model) do
+        Class.new(ApplicationRecord) do
+          include PartitionedTable
+
+          partitioned_by :created_at, strategy: :monthly, retain_for: :ever
+        end
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE #{dynamic_schema}.#{catch_all}
+          PARTITION OF #{partitioned_table_name}
+          FOR VALUES FROM (MINVALUE) TO ('2021-04-01');
+
+          INSERT INTO #{partitioned_table_name} (created_at) VALUES ('2021-03-15'), ('2021-04-15');
+        SQL
+
+        raised_model.table_name = partitioned_table_name
+        allow(dropper).to receive(:sleep)
+
+        subject
+      end
+
+      def raised_sync
+        described_class.new(raised_model).sync_partitions
+      end
+
+      def old_rows
+        connection.select_value("SELECT COUNT(*) FROM #{partitioned_table_name} WHERE created_at < '2021-05-01'")
+      end
+
+      def catch_all_bounds
+        find_partition_definition(catch_all, schema: dynamic_schema)&.fetch('condition')
+      end
+
+      it 'leaves the catch-all to the dropper and creates the other missing partitions', :aggregate_failures do
+        connection.execute("DROP TABLE #{dynamic_schema}.#{partitioned_table_name}_202112")
+        allow(Gitlab::AppLogger).to receive(:warn).and_call_original
+
+        raised_sync
+
+        expect(find_partition_definition(catch_all, schema: dynamic_schema)).to be_nil
+        expect(old_rows).to eq(0)
+        expect(find_partition_definition("#{partitioned_table_name}_202112", schema: dynamic_schema)).to be_present
+        expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
+          'message' => 'Deferred creating partition until its detached table is dropped',
+          'partition_name' => catch_all
+        ))
+      end
+
+      it 'creates the catch-all empty once the dropper has dropped the detached tables', :aggregate_failures do
+        allow(Gitlab::AppLogger).to receive(:error).and_call_original
+
+        raised_sync
+        travel 8.days
+        dropper.perform
+        raised_sync
+
+        expect(catch_all_bounds).to start_with("FOR VALUES FROM (MINVALUE) TO ('2021-05-01")
+        expect(old_rows).to eq(0)
+        expect(Postgresql::DetachedPartition.count).to eq(0)
+        expect(connection.table_exists?("#{dynamic_schema}.#{partitioned_table_name}_202104")).to be(false)
+        expect(Gitlab::AppLogger).not_to have_received(:error)
+          .with(hash_including('message' => 'Prevented an attempt to drop an attached database partition'))
+      end
+
+      it 'keeps every row when the detached tables are re-attached by hand before the drop', :aggregate_failures do
+        raised_sync
+
+        connection.execute(<<~SQL)
+          ALTER TABLE #{partitioned_table_name}
+          ATTACH PARTITION #{dynamic_schema}.#{partitioned_table_name}_202104
+          FOR VALUES FROM ('2021-04-01') TO ('2021-05-01');
+
+          ALTER TABLE #{partitioned_table_name}
+          ATTACH PARTITION #{dynamic_schema}.#{catch_all}
+          FOR VALUES FROM (MINVALUE) TO ('2021-04-01');
+        SQL
+
+        raised_sync
+        travel 8.days
+        dropper.perform
+
+        expect(old_rows).to eq(2)
+        expect(Postgresql::DetachedPartition.count).to eq(0)
+      end
+
+      it 'creates the catch-all empty when its detached table is already gone', :aggregate_failures do
+        connection.execute("DROP TABLE #{dynamic_schema}.#{catch_all}")
+
+        raised_sync
+
+        expect(catch_all_bounds).to start_with("FOR VALUES FROM (MINVALUE) TO ('2021-05-01")
+        expect(old_rows).to eq(0)
+      end
+    end
   end
 
   describe 'analyze partitioned table' do

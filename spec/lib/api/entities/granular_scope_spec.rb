@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::PersonalAccessTokenGranularScope, feature_category: :system_access do
+RSpec.describe API::Entities::GranularScope, feature_category: :system_access do
   describe '#as_json' do
     let_it_be(:project) { create(:project) }
     let_it_be(:group) { create(:group) }

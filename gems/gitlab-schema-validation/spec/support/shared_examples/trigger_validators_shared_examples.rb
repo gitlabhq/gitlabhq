@@ -15,9 +15,16 @@ RSpec.shared_examples 'trigger validators' do |validator, expected_result|
 
   # rubocop:disable RSpec/VerifiedDoubleReference
   let(:connection) do
-    instance_double('connection', class: connection_class, select_rows: database_triggers, current_schema: 'public')
+    instance_double('connection', class: connection_class, current_schema: 'public')
   end
   # rubocop:enable RSpec/VerifiedDoubleReference
+
+  before do
+    allow(connection).to receive(:transaction).and_yield
+    allow(connection).to receive(:exec_query)
+    allow(connection).to receive(:exec_query).with(/pg_trigger/, nil, anything)
+      .and_return(Struct.new(:rows).new(database_triggers))
+  end
 
   let(:database_triggers) do
     [

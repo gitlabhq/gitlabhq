@@ -20,7 +20,6 @@ activate_group_member
 add_catalog_resource
 add_cluster
 add_project_to_instance_security_dashboard
-admin_achievement
 admin_add_on_purchase
 admin_ai_catalog_item
 admin_ai_catalog_item_consumer

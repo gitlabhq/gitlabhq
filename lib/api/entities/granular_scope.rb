@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class PersonalAccessTokenGranularScope < Grape::Entity
+    class GranularScope < Grape::Entity
       expose :access, documentation: { type: 'String', example: 'personal_projects' }
       expose :permissions, documentation: { type: 'Array', example: ['read_job'] }
 

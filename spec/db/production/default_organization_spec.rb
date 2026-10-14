@@ -23,10 +23,18 @@ RSpec.describe 'seed production default organization', :silence_stdout, feature_
       allow(Current).to receive(:cells_claims_leases?).and_return(true)
 
       allow(claim_service).to receive(:commit_update)
+
+      allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+        allow(instance).to receive(:cell_sequence_ranges).and_return(
+          [Gitlab::Cells::TopologyService::SequenceRange.new(minval: minval, maxval: maxval)]
+        )
+      end
     end
 
     context 'on the legacy cell' do
       let(:cell_id) { 1 }
+      let(:minval) { 1 }
+      let(:maxval) { 999_999_999_999 }
 
       before do
         allow(claim_service).to receive(:begin_update).and_return(lease_response)
@@ -47,8 +55,10 @@ RSpec.describe 'seed production default organization', :silence_stdout, feature_
       end
     end
 
-    context 'on another cell, when the legacy cell holds the default organization claims' do
+    context 'on a new cell, when the legacy cell holds the default organization claims' do
       let(:cell_id) { 2 }
+      let(:minval) { 1_000_000_000_000 }
+      let(:maxval) { 1_099_999_999_999 }
 
       # rubocop:disable Gitlab/AvoidConstDefaultOrganizationId -- mirrors the id claim of the default organization
       let(:default_claims) do

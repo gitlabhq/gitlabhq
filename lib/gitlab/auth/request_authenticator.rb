@@ -63,7 +63,7 @@ module Gitlab
           # header, because extract_personal_access_token prefers the query
           # parameter over the header.
           find_user_from_web_access_token(:design, scopes: [:api, :read_api]) unless token_in_query_string?
-        when :editor_extension
+        when :editor_extension, :oauth_token_check
           find_user_from_access_token
         else
           raise ArgumentError, "Unknown request format"

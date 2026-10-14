@@ -22,7 +22,7 @@ module API
         } do |personal_access_token| # rubocop:disable Style/SymbolProc -- block form keeps the documentation type visible to API/EntityFieldType
         personal_access_token.recent_used_ips
       end
-      expose :granular_scopes, using: ::API::Entities::PersonalAccessTokenGranularScope,
+      expose :granular_scopes, using: ::API::Entities::GranularScope,
         if: ->(token, options) { token.granular? && options[:with_granular_scopes] },
         documentation: { is_array: true }
       expose :active?, as: :active, documentation: { type: 'Boolean' }

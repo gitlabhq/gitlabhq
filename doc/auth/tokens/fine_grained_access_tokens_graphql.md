@@ -985,6 +985,7 @@ Grants the ability to read Orbit data the token owner can access in GitLab. Grou
 | ------ | ------ | ---- | ---- |
 | Read | User | Field | `Group.orbit` |
 | Read | User | Field | `Project.orbit` |
+| Read | User | Field | `Query.orbit` |
 
 #### Orbit Setting
 
@@ -995,6 +996,8 @@ Grants the ability to update Orbit settings.
 | Update | Group | Mutation | `OrbitUpdate` |
 | Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceCreate` |
 | Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceDestroy` |
+| Update | Instance | Mutation | `OrbitExcludedGroupCreate` |
+| Update | Instance | Mutation | `OrbitExcludedGroupDestroy` |
 
 #### Orbit Trial
 

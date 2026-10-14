@@ -85865,7 +85865,7 @@ components:
           type: string
         approval_status:
           type: string
-    APIEntitiesPersonalAccessTokenGranularScope:
+    APIEntitiesGranularScope:
       type: object
       properties:
         access:
@@ -85927,7 +85927,7 @@ components:
         granular_scopes:
           type: array
           items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         active:
           type: boolean
         granular:
@@ -91824,7 +91824,7 @@ components:
         granular_scopes:
           type: array
           items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         active:
           type: boolean
         granular:
@@ -91879,7 +91879,7 @@ components:
         granular_scopes:
           type: array
           items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         active:
           type: boolean
         granular:
@@ -93887,7 +93887,7 @@ components:
         granular_scopes:
           type: array
           items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         active:
           type: boolean
         granular:
@@ -94757,7 +94757,7 @@ components:
         granular_scopes:
           type: array
           items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         active:
           type: boolean
         granular:
@@ -94830,7 +94830,7 @@ components:
         granular_scopes:
           type: array
           items:
-            "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenGranularScope"
+            "$ref": "#/components/schemas/APIEntitiesGranularScope"
         active:
           type: boolean
         granular:
@@ -124342,8 +124342,8 @@ components:
       properties:
         hostname:
           type: string
-          description: Custom hostname of the Matrix server. The default value is
-            `https://matrix-client.matrix.org`.
+          description: URL of the Matrix server, including `http://` or `https://`.
+            The default value is `https://matrix-client.matrix.org`.
           nullable: true
         token:
           type: string
@@ -126732,8 +126732,8 @@ components:
       properties:
         hostname:
           type: string
-          description: Custom hostname of the Matrix server. The default value is
-            `https://matrix-client.matrix.org`.
+          description: URL of the Matrix server, including `http://` or `https://`.
+            The default value is `https://matrix-client.matrix.org`.
           nullable: true
         token:
           type: string
@@ -129122,8 +129122,8 @@ components:
       properties:
         hostname:
           type: string
-          description: Custom hostname of the Matrix server. The default value is
-            `https://matrix-client.matrix.org`.
+          description: URL of the Matrix server, including `http://` or `https://`.
+            The default value is `https://matrix-client.matrix.org`.
           nullable: true
         token:
           type: string

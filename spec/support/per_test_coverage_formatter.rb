@@ -6,10 +6,10 @@
 #
 # Activation lives in spec/support/rspec.rb and requires both `ENV['CI']`
 # and `ENV['GLCI_PER_TEST_COVERAGE'] == 'true'`. With either unset, the
-# formatter does not attach and `Coverage.start` is not deferred.
+# formatter does not attach.
 #
-# Capture strategy: defer `Coverage.start` to `before(:suite)` so only
-# files autoloaded during examples get instrumented, then call
+# Capture strategy: SimpleCov starts `Coverage` (lines only) in `spec_helper`,
+# so the `before(:suite)` start in spec/support/rspec.rb is skipped. Call
 # `Coverage.result(stop: false, clear: true)` after each example to read
 # (and reset) the delta for that example. Each example's data is streamed
 # to disk as a single NDJSON line, which bounds memory to one example's

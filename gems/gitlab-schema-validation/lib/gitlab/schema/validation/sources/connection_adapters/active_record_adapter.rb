@@ -8,14 +8,15 @@ module Gitlab
           class ActiveRecordAdapter < Base
             extend Forwardable
 
-            def_delegators :@connection, :current_schema
+            def_delegators :@connection, :current_schema, :transaction
 
             def exec_query(sql, schemas)
               connection.exec_query(sql, nil, schemas)
             end
 
+            # Routed like transaction, so SET LOCAL and the read share one connection.
             def select_rows(sql, schemas)
-              connection.select_rows(sql, nil, schemas)
+              connection.exec_query(sql, nil, schemas).rows
             end
           end
         end

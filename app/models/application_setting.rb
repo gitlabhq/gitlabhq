@@ -932,7 +932,8 @@ class ApplicationSetting < ApplicationRecord
     top_level_group_creation_enabled: [:boolean, { default: true }],
     disable_invite_members: [:boolean, { default: false }],
     group_deletion_jobs_concurrency_limit: [:integer, { default: 0 }],
-    project_deletion_jobs_concurrency_limit: [:integer, { default: 0 }]
+    project_deletion_jobs_concurrency_limit: [:integer, { default: 0 }],
+    transitive_sharing_cutoff_at: :datetime
 
   validates :group_settings,
     json_schema: { filename: "application_setting_group_settings" }
