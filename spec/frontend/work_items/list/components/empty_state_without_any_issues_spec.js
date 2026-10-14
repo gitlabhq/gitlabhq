@@ -63,6 +63,21 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         );
       });
 
+      describe('when the group has epics and no projects', () => {
+        beforeEach(() => {
+          mountComponent({
+            props: { hasProjects: false, hasEpicsFeature: true },
+            provide: { canCreateProjects: true },
+          });
+        });
+
+        it('renders a description about epics', () => {
+          expect(findGlEmptyState().props('description')).toBe(
+            'Use epics to collaborate on ideas, solve problems, and plan work across this group. To track other work items, create a project.',
+          );
+        });
+      });
+
       describe('actions', () => {
         describe('"New project" link', () => {
           describe('when can create projects, not in project context and has no projects', () => {
@@ -75,6 +90,28 @@ describe('EmptyStateWithoutAnyIssues component', () => {
               expect(findNewProjectLink().attributes('href')).toBe(defaultProvide.newProjectPath);
             });
 
+            describe('when the group has epics', () => {
+              it('renders as a secondary button', () => {
+                mountComponent({
+                  props: { hasProjects: false, hasEpicsFeature: true },
+                  provide: { canCreateProjects: true },
+                });
+
+                expect(findNewProjectLink().classes()).toContain('btn-default');
+              });
+            });
+
+            describe('when the group does not have epics', () => {
+              it('renders as a confirm button', () => {
+                mountComponent({
+                  props: { hasProjects: false, hasEpicsFeature: false },
+                  provide: { canCreateProjects: true },
+                });
+
+                expect(findNewProjectLink().classes()).toContain('btn-confirm');
+              });
+            });
+
             describe('when the new-issue-button slot is filled', () => {
               it('renders slot content and the new project link', () => {
                 mountComponent({
@@ -84,7 +121,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
                 });
 
                 expect(findNewProjectLink().exists()).toBe(true);
-                expect(wrapper.findByRole('button', { name: 'New item' }).exists()).toBe(false);
+                expect(wrapper.findByRole('button', { name: 'New item' }).exists()).toBe(true);
               });
             });
           });

@@ -414,7 +414,7 @@
       url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/files/scripts%2Futils.sh/raw?ref=${CI_COMMIT_SHA}"
       curl -f --retry 2 --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${url}" --create-dirs --output scripts/utils.sh
     - source scripts/utils.sh
-    - download_files ${FILES_TO_DOWNLOAD}
+    - download_files Gemfile.lock ${FILES_TO_DOWNLOAD}
 
 .with_secret:
   id_tokens:

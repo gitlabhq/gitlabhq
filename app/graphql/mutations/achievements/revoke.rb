@@ -16,7 +16,7 @@ module Mutations
         required: true,
         description: 'Global ID of the user achievement being revoked.'
 
-      authorize :award_achievement
+      authorize :revoke_achievement
 
       authorize_granular_token permissions: :revoke_achievement,
         boundary_argument: :user_achievement_id,

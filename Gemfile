@@ -612,6 +612,8 @@ group :development, :test do
   gem 'undercover', '~> 0.8.0', require: false, feature_category: :tooling
 
   # Gems required in various pipelines
+  gem 'gitlab', '~> 6.1', require: false, feature_category: :tooling
+  gem 'junit_merge', '~> 0.1.2', require: false, feature_category: :tooling
   gem 'gitlab-rspec', path: 'gems/gitlab-rspec', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'gitlab-rspec_flaky', path: 'gems/gitlab-rspec_flaky', feature_category: :tooling
 end

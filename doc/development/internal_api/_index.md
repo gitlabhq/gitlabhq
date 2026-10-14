@@ -16,6 +16,8 @@ For information on the GitLab Subscriptions internal API, see [the dedicated pag
 
 For information on the Orbit internal API, see [the dedicated page](orbit.md).
 
+For information on the Org Mover internal API, see [the dedicated page](org_mover.md).
+
 ## Add new endpoints
 
 API endpoints should be externally accessible by default, with proper authentication and authorization.

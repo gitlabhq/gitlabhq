@@ -691,6 +691,9 @@
         },
         "function_runtime": {
           "type": "string"
+        },
+        "is_mcp_enabled": {
+          "type": "boolean"
         }
       },
       "description": "A group of settings corresponding to the Settings section of the app config pages.",

@@ -375,6 +375,10 @@ vulnerability has been resolved and if so,
 use a [vulnerability management policy](../policies/vulnerability_management_policy.md) to
 automatically change the status of vulnerabilities matching specific criteria to **Resolved**.
 
+For secret detection vulnerabilities, GitLab also hides the secret's location and file contents
+when a full scan no longer detects the secret. For more information, see
+[secrets removed from the code](../secret_detection/pipeline/_index.md#secrets-removed-from-the-code).
+
 You can find a link to the commit that resolved the vulnerability in the **Activity** section of the
 vulnerability page.
 

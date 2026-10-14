@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_security_discover
+description: Enables Vue 3 in compatibility mode for the group security discover page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633354
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261720
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633355
+milestone: '19.6'
+group: group::vulnerability management
+type: beta
+default_enabled: false

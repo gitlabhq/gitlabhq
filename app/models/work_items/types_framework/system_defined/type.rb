@@ -228,11 +228,6 @@ module WorkItems
           configuration_class.try(:can_promote_to_objective?) || false
         end
 
-        def show_project_selector?
-          value = configuration_class.try(:show_project_selector?)
-          value.nil? || value
-        end
-
         def supports_move_action?
           configuration_class.try(:supports_move_action?) || false
         end

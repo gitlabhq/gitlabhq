@@ -68376,7 +68376,6 @@ Fields:
 | <a id="workitemtype-isincidentmanagement"></a>`isIncidentManagement` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. Indicates whether the work item type is for incident management. |
 | <a id="workitemtype-isservicedesk"></a>`isServiceDesk` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. Indicates whether the work item type is for service desk. |
 | <a id="workitemtype-name"></a>`name` | [`String!`](#string) | Name of the work item type. |
-| <a id="workitemtype-showprojectselector"></a>`showProjectSelector` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. Indicates whether the work item type should show the project selector. |
 | <a id="workitemtype-supportedconversiontypes"></a>`supportedConversionTypes` {{< icon name="warning-solid" >}} | [`[WorkItemType!]`](#workitemtype) | Introduced in GitLab 17.8. Status: Experiment. Supported conversion types for the work item type. |
 | <a id="workitemtype-supportsmoveaction"></a>`supportsMoveAction` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. Indicates whether the work item type can be moved or not. |
 | <a id="workitemtype-supportsroadmapview"></a>`supportsRoadmapView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. Indicates whether the work item type supports roadmap view. |

@@ -863,32 +863,6 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       end
     end
 
-    describe '#show_project_selector?' do
-      context 'when configuration_class shows project selector' do
-        it 'returns true' do
-          allow(configuration_class).to receive(:show_project_selector?).and_return(true)
-
-          expect(type.show_project_selector?).to be true
-        end
-      end
-
-      context 'when configuration_class does not show project selector' do
-        it 'returns false' do
-          allow(configuration_class).to receive(:show_project_selector?).and_return(false)
-
-          expect(type.show_project_selector?).to be false
-        end
-      end
-
-      context 'when configuration_class does not respond to show_project_selector?' do
-        it 'returns true as default' do
-          allow(configuration_class).to receive(:show_project_selector?).and_return(nil)
-
-          expect(type.show_project_selector?).to be true
-        end
-      end
-    end
-
     describe '#supports_move_action?' do
       context 'when configuration_class supports move action' do
         it 'returns true' do
@@ -1106,13 +1080,6 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
     }
 
     it_behaves_like 'work item type configuration', :visible_in_settings?, {
-      issue: true,
-      task: true,
-      incident: true,
-      ticket: true
-    }
-
-    it_behaves_like 'work item type configuration', :show_project_selector?, {
       issue: true,
       task: true,
       incident: true,

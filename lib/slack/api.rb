@@ -42,20 +42,6 @@ module Slack
       handle_http_error(e, 'Slack API error when adding reaction', channel)
     end
 
-    def remove_reaction(channel:, name:, timestamp:)
-      Gitlab::IntegrationsLogger.info(
-        message: 'Slack API: removing reaction',
-        reaction: name,
-        channel_id: channel,
-        timestamp: timestamp
-      )
-      response = post('reactions.remove', channel: channel, name: name, timestamp: timestamp)
-      log_error('Slack API error when removing reaction', response, channel) unless response['ok']
-      response
-    rescue *Gitlab::HTTP::HTTP_ERRORS => e
-      handle_http_error(e, 'Slack API error when removing reaction', channel)
-    end
-
     def post_ephemeral(channel:, user:, text:, thread_ts: nil, blocks: nil)
       Gitlab::IntegrationsLogger.info(
         message: 'Slack API: posting ephemeral',

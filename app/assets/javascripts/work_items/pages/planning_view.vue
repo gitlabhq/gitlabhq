@@ -6,7 +6,7 @@ import {
   GlIntersectionObserver,
   GlToastMixin,
 } from '@gitlab/ui';
-import { debounce, isEmpty, isEqual } from 'lodash-es';
+import { debounce, isEmpty, isEqual, omit } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, n__, formatNumber, sprintf } from '~/locale';
@@ -358,7 +358,15 @@ export default {
         return getWorkItemsCountOnlyQuery;
       },
       variables() {
-        return this.queryVariables;
+        // Pagination doesn't change the count. On root groups most sorts force a much slower
+        // query, but the sort also picks which search matching the backend uses, so keep it then.
+        return omit(this.queryVariables, [
+          ...(this.queryVariables.search ? [] : ['sort']),
+          'afterCursor',
+          'beforeCursor',
+          'firstPageSize',
+          'lastPageSize',
+        ]);
       },
       update(data) {
         return data?.namespace?.workItems.count || 0;
@@ -2554,6 +2562,7 @@ export default {
           v-else
           :show-new-issue-dropdown="showGroupNewWorkItem"
           :has-projects="hasProjects"
+          :has-epics-feature="hasEpicsFeature"
         >
           <template #new-issue-button>
             <create-work-item-modal
@@ -2630,6 +2639,7 @@ export default {
           v-else
           :show-new-issue-dropdown="showGroupNewWorkItem"
           :has-projects="hasProjects"
+          :has-epics-feature="hasEpicsFeature"
         >
           <template #new-issue-button>
             <create-work-item-modal

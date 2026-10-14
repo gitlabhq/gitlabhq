@@ -58,12 +58,6 @@ module Types
         method: :can_promote_to_objective?,
         experiment: { milestone: '18.8' }
 
-      field :show_project_selector, GraphQL::Types::Boolean,
-        null: true,
-        description: 'Indicates whether the work item type should show the project selector.',
-        method: :show_project_selector?,
-        experiment: { milestone: '18.8' }
-
       field :supports_move_action, GraphQL::Types::Boolean, # rubocop:disable GraphQL/ExtractType -- no need for extraction
         null: true,
         description: 'Indicates whether the work item type can be moved or not.',

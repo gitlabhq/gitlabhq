@@ -16,6 +16,9 @@ export default {
     description: s__(
       'WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
     ),
+    descriptionWithoutProjects: s__(
+      'WorkItem|Use epics to collaborate on ideas, solve problems, and plan work across this group. To track other work items, create a project.',
+    ),
   },
   emptyStateSvg,
   issuesHelpPagePath: helpPagePath('user/project/issues/_index'),
@@ -50,6 +53,11 @@ export default {
       required: false,
       default: false,
     },
+    hasEpicsFeature: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -64,6 +72,15 @@ export default {
     },
     showNewProjectButton() {
       return this.canCreateProjects && this.isGroup && !this.hasProjects;
+    },
+    description() {
+      return this.showNewProjectButton && this.hasEpicsFeature
+        ? this.$options.i18n.descriptionWithoutProjects
+        : this.$options.i18n.description;
+    },
+    newProjectButtonVariant() {
+      // Without epics there is no "New item" button, so "New project" is the only action
+      return this.hasEpicsFeature ? 'default' : 'confirm';
     },
   },
   methods: {
@@ -86,7 +103,7 @@ export default {
     <div>
       <gl-empty-state
         :title="$options.i18n.title"
-        :description="$options.i18n.description"
+        :description="description"
         :svg-path="$options.emptyStateSvg"
         data-testid="issuable-empty-state"
       >
@@ -101,13 +118,6 @@ export default {
               :extract-projects="extractProjects"
               :group-id="groupId"
             />
-            <gl-button
-              v-else-if="showNewProjectButton"
-              :href="newProjectPath"
-              :variant="showNewIssueDropdown ? 'default' : 'confirm'"
-            >
-              {{ __('New project') }}
-            </gl-button>
             <slot v-else name="new-issue-button">
               <gl-button
                 v-if="showNewIssueLink"
@@ -119,6 +129,13 @@ export default {
                 {{ __('Create issue') }}
               </gl-button>
             </slot>
+            <gl-button
+              v-if="showNewProjectButton"
+              :href="newProjectPath"
+              :variant="newProjectButtonVariant"
+            >
+              {{ __('New project') }}
+            </gl-button>
           </div>
         </template>
       </gl-empty-state>

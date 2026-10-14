@@ -29,7 +29,6 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
     end
 
     let(:reactions_add_url) { "#{Slack::API::BASE_URL}/reactions.add" }
-    let(:reactions_remove_url) { "#{Slack::API::BASE_URL}/reactions.remove" }
     let(:post_message_url) { "#{Slack::API::BASE_URL}/chat.postMessage" }
     let(:post_ephemeral_url) { "#{Slack::API::BASE_URL}/chat.postEphemeral" }
     let(:conversations_replies_url) { "#{Slack::API::BASE_URL}/conversations.replies" }
@@ -312,8 +311,6 @@ RSpec.describe Integrations::SlackEvents::AppMentionedService, feature_category:
           allow(user).to receive(:allowed_to_use?).with(:duo_agent_platform).and_return(true)
 
           stub_request(:post, reactions_add_url).to_return(status: 200, body: { ok: true }.to_json,
-            headers: { 'Content-Type' => 'application/json' })
-          stub_request(:post, reactions_remove_url).to_return(status: 200, body: { ok: true }.to_json,
             headers: { 'Content-Type' => 'application/json' })
           stub_request(:post, post_message_url).to_return(status: 200, body: { ok: true }.to_json,
             headers: { 'Content-Type' => 'application/json' })

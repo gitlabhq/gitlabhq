@@ -611,7 +611,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     subject(:download_manifest) { get :slack_app_manifest_download }
 
     it 'downloads the GitLab for Slack app manifest' do
-      allow(Slack::Manifest).to receive(:to_h).with(duo_enabled: false).and_return({ foo: 'bar' })
+      allow(Slack::Manifest).to receive(:to_h).with(duo_enabled: false, mcp_enabled: false).and_return({ foo: 'bar' })
 
       download_manifest
 
@@ -621,8 +621,8 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       )
     end
 
-    it 'passes duo_enabled: false' do
-      expect(Slack::Manifest).to receive(:to_json).with(duo_enabled: false).and_return('{}')
+    it 'passes duo_enabled: false and mcp_enabled: false' do
+      expect(Slack::Manifest).to receive(:to_json).with(duo_enabled: false, mcp_enabled: false).and_return('{}')
 
       download_manifest
     end
@@ -636,7 +636,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     subject(:share_manifest) { get :slack_app_manifest_share }
 
     it 'redirects the user to the Slack Manifest share URL' do
-      allow(Slack::Manifest).to receive(:to_h).with(duo_enabled: false).and_return({ foo: 'bar' })
+      allow(Slack::Manifest).to receive(:to_h).with(duo_enabled: false, mcp_enabled: false).and_return({ foo: 'bar' })
 
       share_manifest
 
@@ -645,8 +645,9 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       )
     end
 
-    it 'passes duo_enabled: false' do
-      expect(Slack::Manifest).to receive(:share_url).with(duo_enabled: false).and_return('https://api.slack.com/apps')
+    it 'passes duo_enabled: false and mcp_enabled: false' do
+      expect(Slack::Manifest).to receive(:share_url)
+        .with(duo_enabled: false, mcp_enabled: false).and_return('https://api.slack.com/apps')
 
       share_manifest
     end

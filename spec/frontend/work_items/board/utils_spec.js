@@ -59,7 +59,7 @@ describe('work item board utils', () => {
   });
 
   describe('boardColumnCountVariables', () => {
-    it('drops firstPageSize along with the List view pagination state', () => {
+    it('drops firstPageSize and sort along with the List view pagination state', () => {
       expect(
         boardColumnCountVariables({
           rootPageFullPath: 'full/path',
@@ -74,7 +74,22 @@ describe('work item board utils', () => {
       ).toEqual({
         fullPath: 'full/path',
         state: 'opened',
-        sort: 'CREATED_DESC',
+        status: { name: 'To do' },
+      });
+    });
+
+    it('keeps sort when searching, since it changes the search matches', () => {
+      expect(
+        boardColumnCountVariables({
+          rootPageFullPath: 'full/path',
+          baseQueryVariables: { state: 'opened', search: 'bug', sort: 'RELATIVE_POSITION_ASC' },
+          groupFilter: { status: { name: 'To do' } },
+        }),
+      ).toEqual({
+        fullPath: 'full/path',
+        state: 'opened',
+        search: 'bug',
+        sort: 'RELATIVE_POSITION_ASC',
         status: { name: 'To do' },
       });
     });

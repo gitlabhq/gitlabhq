@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application settings for project defaults",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {}
+}

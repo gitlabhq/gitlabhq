@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 export STABLE_BRANCH_PATTERN="^[0-9-]+-stable(-ee)?$"
 export VERSION_TAG_PATTERN="^v([0-9]+)\.([0-9]+)\.([0-9]+).+(ee)$"
+# Assumes the scripts/ directory is under CI_PROJECT_DIR, which is an absolute path in CI.
+GLCI_OTEL_SPAN_EXPORTER="${GLCI_OTEL_SPAN_EXPORTER:-${CI_PROJECT_DIR:-.}/scripts/ci/otel_span_exporter.rb}"
 
 function retry() {
   retry_times_sleep 2 3 "$@"
@@ -86,6 +88,139 @@ function rspec_section() {
   section_start "rspec" "RSpec" "false"
   "$@"
   section_end "rspec"
+}
+
+# Wrap the command in the current shell and export CI_TRACEPARENT for child executables to use the wrapper span
+# as their parent, then restore the caller's context. Without GLCI_OTEL_ENDPOINT, Ruby, or valid trace context,
+# run the command unchanged. Shell functions retain their current-shell behavior, including `set -e`.
+#
+# Known limitations:
+# - If the job already has an EXIT trap, a command that exits the shell produces no span.
+# - A failing nested call exports only the innermost span.
+# - A cancelled job exports an error span with exit status 1, like any other failure.
+#
+# Usage: otel_span [NAME] -- COMMAND [ARGS...]
+# See https://gitlab.com/gitlab-org/gitlab/-/work_items/632111
+function otel_span() {
+  local _otel_span_new_name
+  if [[ "${1:-}" == "--" ]]; then
+    shift
+    _otel_span_new_name="${1:-}"
+    _otel_span_new_name="${_otel_span_new_name##*/}"
+  elif [[ "$#" -ge 3 ]] && [[ -n "${1:-}" ]] && [[ "${2:-}" == "--" ]]; then
+    _otel_span_new_name="${1}"
+    shift 2
+  else
+    echo "Usage: otel_span [NAME] -- COMMAND [ARGS...]" >&2
+    return 2
+  fi
+
+  if [[ -z "${1:-}" ]] || [[ -z "${_otel_span_new_name}" ]]; then
+    echo "Usage: otel_span [NAME] -- COMMAND [ARGS...]" >&2
+    return 2
+  fi
+
+  if [[ -z "${GLCI_OTEL_ENDPOINT:-}" ]]; then
+    "$@"
+    return
+  fi
+
+  if ! command -v ruby > /dev/null 2>&1 || [[ ! -f "${GLCI_OTEL_SPAN_EXPORTER}" ]]; then
+    echo "WARNING: otel_span: Ruby or the span exporter is unavailable, running ${_otel_span_new_name} without a span" >&2
+    "$@"
+    return
+  fi
+
+  # A nested call overwrites the state of the enclosing call, so restore it afterwards.
+  local _otel_span_outer_name="${_otel_span_name:-}"
+  local _otel_span_outer_command="${_otel_span_command:-}"
+  local _otel_span_outer_start_time_ns="${_otel_span_start_time_ns:-}"
+  local _otel_span_outer_id="${_otel_span_id:-}"
+  local _otel_span_outer_parent="${_otel_span_parent_traceparent:-}"
+  local _otel_span_outer_tracestate="${_otel_span_tracestate:-}"
+  local _otel_span_owns_exit_trap="false"
+  local _otel_span_context
+  _otel_span_context="$(CI_TRACEPARENT="${CI_TRACEPARENT:-}" ruby "${GLCI_OTEL_SPAN_EXPORTER}" --prepare-context)" || _otel_span_context=""
+  if [[ -z "${_otel_span_context}" ]]; then
+    "$@"
+    return
+  fi
+
+  _otel_span_parent_traceparent="${CI_TRACEPARENT}"
+  _otel_span_tracestate="${CI_TRACESTATE:-}"
+  _otel_span_id="${_otel_span_context:36:16}"
+  local CI_TRACEPARENT="${_otel_span_context}"
+  local CI_TRACESTATE="${_otel_span_tracestate}"
+  export CI_TRACEPARENT CI_TRACESTATE
+
+  _otel_span_name="${_otel_span_new_name}"
+  _otel_span_command="${1}"
+  _otel_span_start_time_ns="$(_otel_span_time_ns)" || _otel_span_start_time_ns=""
+
+  # Under `set -e` a failing command exits the shell, so the EXIT trap exports the failed span.
+  if ! _otel_span_exit_trap_matches "."; then
+    trap '_otel_span_export "$?"' EXIT
+    _otel_span_owns_exit_trap="true"
+  fi
+
+  "$@"
+  local _otel_span_exit_code=$?
+
+  # Keep any EXIT trap that the command set for the job.
+  if [[ "${_otel_span_owns_exit_trap}" == "true" ]] && _otel_span_exit_trap_matches "_otel_span_export"; then
+    trap - EXIT
+  fi
+
+  _otel_span_export "${_otel_span_exit_code}"
+
+  _otel_span_name="${_otel_span_outer_name}"
+  _otel_span_command="${_otel_span_outer_command}"
+  _otel_span_start_time_ns="${_otel_span_outer_start_time_ns}"
+  _otel_span_id="${_otel_span_outer_id}"
+  _otel_span_parent_traceparent="${_otel_span_outer_parent}"
+  _otel_span_tracestate="${_otel_span_outer_tracestate}"
+
+  return "${_otel_span_exit_code}"
+}
+
+# Without Bash's EPOCHREALTIME, the exporter records the end time itself, which saves starting Ruby once more.
+function _otel_span_export() {
+  if [[ -n "${EPOCHREALTIME:-}" ]]; then
+    ruby "${GLCI_OTEL_SPAN_EXPORTER}" \
+      --name "${_otel_span_name}" \
+      --span-id "${_otel_span_id}" \
+      --parent-traceparent "${_otel_span_parent_traceparent}" \
+      --tracestate "${_otel_span_tracestate}" \
+      --command "${_otel_span_command}" \
+      --start-time-ns "${_otel_span_start_time_ns}" \
+      --end-time-ns "$(_otel_span_time_ns)" \
+      --exit-code "${1}" || true
+  else
+    ruby "${GLCI_OTEL_SPAN_EXPORTER}" \
+      --name "${_otel_span_name}" \
+      --span-id "${_otel_span_id}" \
+      --parent-traceparent "${_otel_span_parent_traceparent}" \
+      --tracestate "${_otel_span_tracestate}" \
+      --command "${_otel_span_command}" \
+      --start-time-ns "${_otel_span_start_time_ns}" \
+      --exit-code "${1}" || true
+  fi
+}
+
+# BusyBox `date` ignores `%N`, so use Bash's EPOCHREALTIME (microseconds) when available, and Ruby otherwise.
+function _otel_span_time_ns() {
+  if [[ -n "${EPOCHREALTIME:-}" ]]; then
+    echo "${EPOCHREALTIME//[!0-9]/}000"
+  else
+    ruby -e 'print Process.clock_gettime(Process::CLOCK_REALTIME, :nanosecond)'
+  fi
+}
+
+# `trap` must be the only command in the substitution: BusyBox lists no traps for `$(trap | ...)` or `( trap )`.
+function _otel_span_exit_trap_matches() {
+  local _otel_span_traps
+  _otel_span_traps="$(trap)"
+  printf '%s\n' "${_otel_span_traps}" | grep " EXIT\$" | grep -q -- "${1}"
 }
 
 function bundle_install_script() {
@@ -209,21 +344,27 @@ function setup_db() {
   section_end "setup-db"
 }
 
+function install_locked_gem() {
+  local version
+  version=$(grep -E "^    ${1} \(" Gemfile.lock | sed 's/.*(\(.*\))/\1/')
+  gem install "$1" --no-document --version "${version:?$1 not found in Gemfile.lock}"
+}
+
 function install_gitlab_gem() {
-  gem install httparty --no-document --version 0.20.0
-  gem install gitlab --no-document --version 4.19.0
+  install_locked_gem httparty
+  install_locked_gem gitlab
 }
 
 function install_tff_gem() {
-  gem install test_file_finder --no-document --version 0.3.1
+  install_locked_gem test_file_finder
 }
 
 function install_activesupport_gem() {
-  gem install activesupport --no-document --version 7.0.8.4
+  install_locked_gem activesupport
 }
 
 function install_junit_merge_gem() {
-  gem install junit_merge --no-document --version 0.1.2
+  install_locked_gem junit_merge
 }
 
 function select_existing_files() {

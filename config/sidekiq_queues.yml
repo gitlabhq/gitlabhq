@@ -103,6 +103,8 @@
   - 1
 - - ai_messaging_callback
   - 1
+- - ai_messaging_child_session_card
+  - 1
 - - ai_messaging_progress_delivery
   - 1
 - - ai_messaging_server_side_turn

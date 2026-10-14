@@ -471253,18 +471253,6 @@
               "deprecationReason": null
             },
             {
-              "name": "showProjectSelector",
-              "description": "Indicates whether the work item type should show the project selector. Introduced in GitLab 18.8: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.8."
-            },
-            {
               "name": "supportedConversionTypes",
               "description": "Supported conversion types for the work item type. Introduced in GitLab 17.8: Status: Experiment.",
               "args": [],

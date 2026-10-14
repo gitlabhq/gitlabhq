@@ -134,6 +134,7 @@ Validity checks support the following secret types:
 - Stripe test restricted keys
 - Stripe test secret keys
 - Stripe test short secret keys
+- Tailscale API access tokens
 
 Validity checks for AWS IAM access key IDs, Google Cloud API keys, and Postman API tokens
 work with any secret detection analyzer.
@@ -165,6 +166,7 @@ The supported URLs are:
 - `https://api.openai.com/v1/organization/admin_api_keys`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
+- `https://api.tailscale.com/api/v2/tailnet/-/devices`
 - `https://app.asana.com/api/1.0/users/me`
 - `https://app.terraform.io/api/v2/account/details`
 - `https://huggingface.co/api/whoami-v2`

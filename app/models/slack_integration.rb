@@ -12,6 +12,7 @@ class SlackIntegration < ApplicationRecord
   SCOPE_APP_MENTIONS_READ = 'app_mentions:read'
   SCOPE_CHANNELS_HISTORY = 'channels:history'
   SCOPE_GROUPS_HISTORY = 'groups:history'
+  SCOPE_SEARCH_READ_PUBLIC = 'search:read.public'
   SCOPE_REACTIONS_WRITE = 'reactions:write'
   SCOPE_IM_HISTORY = 'im:history'
   SCOPE_MPIM_HISTORY = 'mpim:history'
@@ -39,6 +40,10 @@ class SlackIntegration < ApplicationRecord
   # `slack_duo_agent_app` release flag is on, which must not happen before the
   # updated marketplace app is published, or new installs fail with invalid_scope.
   AGENT_APP_SCOPES = [SCOPE_IM_HISTORY, SCOPE_MPIM_HISTORY, SCOPE_ASSISTANT_WRITE].freeze
+
+  MCP_URL = 'https://mcp.slack.com/mcp'
+  MCP_USER_SCOPES = [SCOPE_CHANNELS_HISTORY, SCOPE_SEARCH_READ_PUBLIC].freeze
+
   DATABASE_ATTRIBUTES = %w[
     team_id team_name user_id bot_user_id encrypted_bot_access_token encrypted_bot_access_token_iv
   ].freeze

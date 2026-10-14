@@ -1259,7 +1259,7 @@ GEM
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.1)
-    icalendar (2.12.4)
+    icalendar (2.12.5)
       base64
       ice_cube (~> 0.16)
       logger
@@ -1314,6 +1314,8 @@ GEM
       pg (>= 0.18.1)
     jsonpath (1.1.2)
       multi_json
+    junit_merge (0.1.2)
+      nokogiri (>= 1.5, < 2.0)
     jwt (2.10.3)
       base64
     kaminari (1.2.2)
@@ -2549,6 +2551,7 @@ DEPENDENCIES
   gettext_i18n_rails (~> 1.13.0)
   git (~> 1.8)
   gitaly (~> 19.4.0)
+  gitlab (~> 6.1)
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-banzai!
@@ -2652,6 +2655,7 @@ DEPENDENCIES
   json (~> 2.21.0)
   json_schemer (~> 2.4.0)
   jsonb_accessor (~> 1.4)
+  junit_merge (~> 0.1.2)
   jwt (~> 2.10.3)
   kaminari (~> 1.2.2)
   keela (~> 0.5.0)
@@ -3210,7 +3214,7 @@ CHECKSUMS
   httpclient (2.9.0) sha256=4b645958e494b2f86c2f8a2f304c959baa273a310e77a2931ddb986d83e498c8
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   i18n_data (0.13.1) sha256=e5aa99b09a69b463bb0443fc1f9540351a49f3d1541c5e91316bafa035c63f66
-  icalendar (2.12.4) sha256=acf9b8b166dad4679b8be2cc3202260896c199ab7302f748c760c97e9d32e3a2
+  icalendar (2.12.5) sha256=bda963d46bb08d9de1366eff05308c1e60a178532422fcc11d60360f84f58156
   ice_cube (0.16.4) sha256=da117e5de24bdc33931be629f9b55048641924442c7e9b72fedc05e5592531b7
   imagen (0.2.0) sha256=369fe912078877dba92615ebfc6f35a7d833e31f24f47bdd3ad5371a4139e24b
   invisible_captcha (2.3.0) sha256=309ee5a5e891ecfb732c85b12f1aa9252a648df6f2761b3b41205e824e30ff15
@@ -3230,6 +3234,7 @@ CHECKSUMS
   json_schemer (2.4.0) sha256=56cb6117bb5748d925b33ad3f415b513d41d25d0bbf57fe63c0a78ff05597c24
   jsonb_accessor (1.4.2) sha256=e0197ce6f13b2ef489a67aa1c63c634e8efe49553191b5e61e9e2628dd554013
   jsonpath (1.1.2) sha256=6804124c244d04418218acb85b15c7caa79c592d7d6970195300428458946d3a
+  junit_merge (0.1.2) sha256=51c67779c5d76c625b8bd13b6b8a1bcc1ae0f77e8ea964af5b2adc3c245929f2
   jwt (2.10.3) sha256=e4d9352fbc7309b1a7448c7dd713dfe4d8c47077af80759cdbed8f878ea0b484
   kaminari (1.2.2) sha256=c4076ff9adccc6109408333f87b5c4abbda5e39dc464bd4c66d06d9f73442a3e
   kaminari-actionview (1.2.2) sha256=1330f6fc8b59a4a4ef6a549ff8a224797289ebf7a3a503e8c1652535287cc909

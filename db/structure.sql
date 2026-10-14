@@ -14651,6 +14651,7 @@ CREATE TABLE application_settings (
     lock_duo_code_review_decisions_enabled boolean DEFAULT false NOT NULL,
     duo_code_review_approval_counts_enabled boolean DEFAULT false NOT NULL,
     lock_duo_code_review_approval_counts_enabled boolean DEFAULT false NOT NULL,
+    project_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -14727,6 +14728,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_orbit_settings_is_hash CHECK ((jsonb_typeof(orbit_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_package_registry_is_hash CHECK ((jsonb_typeof(package_registry) = 'object'::text)),
     CONSTRAINT check_application_settings_pat_settings_is_hash CHECK ((jsonb_typeof(personal_access_token_settings) = 'object'::text)),
+    CONSTRAINT check_application_settings_project_defaults_is_hash CHECK ((jsonb_typeof(project_defaults) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_is_hash CHECK ((jsonb_typeof(rate_limits) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_unauth_git_http_is_hash CHECK ((jsonb_typeof(rate_limits_unauthenticated_git_http) = 'object'::text)),
     CONSTRAINT check_application_settings_secrets_manager_settings_is_hash CHECK ((jsonb_typeof(secrets_manager_settings) = 'object'::text)),
@@ -15611,6 +15613,7 @@ CREATE TABLE audit_events_instance_streaming_event_type_filters (
     updated_at timestamp with time zone NOT NULL,
     external_streaming_destination_id bigint NOT NULL,
     audit_event_type text NOT NULL,
+    kind smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_4a5e8e01b5 CHECK ((char_length(audit_event_type) <= 255))
 );
 

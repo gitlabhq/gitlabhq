@@ -53,5 +53,5 @@ RSpec.describe Mutations::Achievements::Revoke, feature_category: :user_profile 
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:award_achievement) }
+  specify { expect(described_class).to require_graphql_authorizations(:revoke_achievement) }
 end

@@ -138,6 +138,7 @@ RSpec.shared_context 'GroupPolicy context' do
         destroy_upload
         read_group_all_available_runners
         read_runners
+        revoke_achievement
         update_achievement
         update_cluster
       ]

@@ -29,9 +29,11 @@ export const boardColumnQueryVariables = ({
 // The count query is a separate query document, so it lives in its own cache
 // entry (card moves don't touch it). It doesn't accept `firstPageSize`, so we
 // strip that out. board_view uses these same variables to key its count updates.
+// `sort` is dropped too unless searching: on root groups the board's relative position sort
+// forces a much slower count query, but it also picks which search matching the backend uses.
 export const boardColumnCountVariables = (params) => {
-  const { firstPageSize, ...countVariables } = boardColumnQueryVariables(params);
-  return countVariables;
+  const { firstPageSize, sort, ...countVariables } = boardColumnQueryVariables(params);
+  return countVariables.search ? { ...countVariables, sort } : countVariables;
 };
 
 // Works out the moveBeforeId/moveAfterId for a card move, based on the target

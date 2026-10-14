@@ -54,17 +54,18 @@ describe('BoardColumnCount', () => {
     expect(wrapper.html()).toBe('');
   });
 
-  it('queries the count with the column query variables', async () => {
+  it('queries the count with the column query variables, without the sort', async () => {
     createComponent();
     await waitForPromises();
 
     expect(countQueryHandler).toHaveBeenCalledWith(
       expect.objectContaining({
         fullPath: 'full/path',
-        ...baseQueryVariables,
+        state: 'opened',
         status: { name: mockStatus.name },
       }),
     );
+    expect(countQueryHandler.mock.calls[0][0]).not.toHaveProperty('sort');
   });
 
   it('emits the count once the query resolves', async () => {
@@ -79,7 +80,7 @@ describe('BoardColumnCount', () => {
     await waitForPromises();
 
     countQueryHandler.mockResolvedValue(buildBoardWorkItemsCountResponse(9));
-    await wrapper.setProps({ baseQueryVariables: { ...baseQueryVariables, sort: 'CREATED_ASC' } });
+    await wrapper.setProps({ baseQueryVariables: { ...baseQueryVariables, state: 'closed' } });
     await waitForPromises();
 
     expect(countQueryHandler).toHaveBeenCalledTimes(2);

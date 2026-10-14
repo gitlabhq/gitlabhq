@@ -128,21 +128,6 @@ RSpec.describe Slack::API, feature_category: :integrations do
     end
   end
 
-  describe '#remove_reaction' do
-    it_behaves_like 'a Slack API method' do
-      let(:action) { 'reactions.remove' }
-      let(:response_body) { { ok: true } }
-      let(:payload) { { channel: 'C123', name: 'eyes', timestamp: '123.456' } }
-      let(:expected_log_payload) do
-        { message: 'Slack API: removing reaction', reaction: 'eyes', timestamp: '123.456' }
-      end
-
-      let(:expected_error_message) { 'Slack API error when removing reaction' }
-
-      subject { api.remove_reaction(**payload) }
-    end
-  end
-
   describe '#post_ephemeral' do
     it_behaves_like 'a Slack API method' do
       let(:action) { 'chat.postEphemeral' }

@@ -122,8 +122,19 @@ verify-tests-yml:
   needs: []
   script:
     - source scripts/utils.sh
-    - install_tff_gem
-    - scripts/verify-tff-mapping
+    - otel_span -- install_tff_gem
+    - otel_span -- scripts/verify-tff-mapping
+
+otel-span-smoke:
+  extends:
+    - .setup:rules:otel-span-smoke
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.23
+  stage: preflight
+  variables:
+    GIT_DEPTH: "1"
+  needs: []
+  script:
+    - ruby scripts/ci/otel_span_smoke_test.rb
 
 verify-approvals:
   extends:

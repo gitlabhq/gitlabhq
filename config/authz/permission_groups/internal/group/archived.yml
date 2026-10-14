@@ -90,6 +90,7 @@ permissions:
   - reopen_issue
   - request_access
   - resolve_note
+  - revoke_achievement
   - rollover_issues
   - set_epic_created_at
   - set_epic_updated_at

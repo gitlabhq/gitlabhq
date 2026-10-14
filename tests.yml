@@ -43,6 +43,14 @@ mapping:
       - 'spec/tooling/lib/tooling/find_tests_spec.rb'
       - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
 
+  # CI command span helper and exporter
+  - source:
+      - 'scripts/utils\.sh'
+      - 'scripts/ci/otel_span_exporter\.rb'
+    test:
+      - 'spec/scripts/ci/otel_span_shell_function_spec.rb'
+      - 'spec/scripts/ci/otel_span_exporter_spec.rb'
+
   # RuboCop related specs
   - source: 'rubocop/(?<rest>.+)\.rb'
     test: 'spec/rubocop/%{rest}_spec.rb'

@@ -123,11 +123,11 @@ module Admin
     end
 
     def slack_app_manifest_share
-      redirect_to Slack::Manifest.share_url(duo_enabled: duo_enabled_for_manifest?)
+      redirect_to Slack::Manifest.share_url(**slack_manifest_options)
     end
 
     def slack_app_manifest_download
-      send_data Slack::Manifest.to_json(duo_enabled: duo_enabled_for_manifest?),
+      send_data Slack::Manifest.to_json(**slack_manifest_options),
         type: :json, disposition: 'attachment', filename: 'slack_manifest.json'
     end
 
@@ -138,8 +138,17 @@ module Admin
       @plans = ::GitlabSubscriptions::SystemDefined::Plan.instance_plans
     end
 
+    def slack_manifest_options
+      { duo_enabled: duo_enabled_for_manifest?, mcp_enabled: mcp_enabled_for_manifest? }
+    end
+
     # Overridden in EE. GitLab Duo in Slack is an EE-only feature.
     def duo_enabled_for_manifest?
+      false
+    end
+
+    # Overridden in EE. Slack's MCP server is only used by GitLab Duo in Slack.
+    def mcp_enabled_for_manifest?
       false
     end
 

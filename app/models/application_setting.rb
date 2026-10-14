@@ -1189,6 +1189,9 @@ class ApplicationSetting < ApplicationRecord
 
   validates :cluster_agents, json_schema: { filename: 'application_setting_cluster_agents' }
 
+  validates :project_defaults, json_schema: { filename: 'application_setting_project_defaults' },
+    if: -> { has_attribute?(:project_defaults) }
+
   jsonb_accessor :database_reindexing,
     reindexing_minimum_index_size: [::Gitlab::Database::Type::JsonbInteger.new, { default: 1.gigabyte }],
     reindexing_minimum_relative_bloat_size: [:float, { default: 0.2 }]

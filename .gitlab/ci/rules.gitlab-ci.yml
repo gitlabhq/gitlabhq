@@ -3747,6 +3747,17 @@
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
+.setup:rules:otel-span-smoke:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes:
+        - scripts/utils.sh
+        - scripts/ci/otel_span*
+        - .gitlab/ci/setup.gitlab-ci.yml
+        - .gitlab/ci/rules.gitlab-ci.yml
+
 .setup:rules:jh-contribution:
   rules:
     - <<: *if-jh

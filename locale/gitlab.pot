@@ -33487,6 +33487,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create trigger"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Daily at %{time}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Daily at %{time} %{timezone}"
 msgstr ""
 
@@ -33628,6 +33631,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Hourly"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Hourly at %{minute} minutes past the hour"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Hourly at %{minute} minutes past the hour %{timezone}"
 msgstr ""
 
@@ -33662,6 +33668,9 @@ msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Modify plan"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Monthly on day %{dayOfMonth} at %{time}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Monthly on day %{dayOfMonth} at %{time} %{timezone}"
@@ -33979,7 +33988,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Weekdays"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Weekdays at %{time}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Weekdays at %{time} %{timezone}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Weekly on %{dayOfWeek} at %{time}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Weekly on %{dayOfWeek} at %{time} %{timezone}"
@@ -35035,6 +35050,18 @@ msgid_plural "DuoSlack|%{count} more actions are not shown here."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoSlack|**%{name}** failed. [Open the session](%{url}) for details."
+msgstr ""
+
+msgid "DuoSlack|**%{name}** finished without a response. [Open the session](%{url}) for details."
+msgstr ""
+
+msgid "DuoSlack|**%{name}** finished:"
+msgstr ""
+
+msgid "DuoSlack|**%{name}** was stopped before it finished."
+msgstr ""
+
 msgid "DuoSlack|*Feedback submitted.* Thanks for helping us improve GitLab Duo."
 msgstr ""
 
@@ -35083,7 +35110,13 @@ msgstr ""
 msgid "DuoSlack|Done"
 msgstr ""
 
+msgid "DuoSlack|Failed"
+msgstr ""
+
 msgid "DuoSlack|Failed to start the GitLab Duo session. Try again."
+msgstr ""
+
+msgid "DuoSlack|Finished"
 msgstr ""
 
 msgid "DuoSlack|Full request"
@@ -35122,6 +35155,9 @@ msgstr ""
 msgid "DuoSlack|Only the person who started this session can view this request."
 msgstr ""
 
+msgid "DuoSlack|Open session in GitLab"
+msgstr ""
+
 msgid "DuoSlack|Open the session in GitLab"
 msgstr ""
 
@@ -35147,6 +35183,12 @@ msgid "DuoSlack|Something went wrong while running the task. Try again."
 msgstr ""
 
 msgid "DuoSlack|Something went wrong. Try again."
+msgstr ""
+
+msgid "DuoSlack|Started"
+msgstr ""
+
+msgid "DuoSlack|Stopped"
 msgstr ""
 
 msgid "DuoSlack|Submit"
@@ -86072,6 +86114,9 @@ msgstr ""
 msgid "The repository must be accessible over %{code_open}http://%{code_close}, %{code_open}https://%{code_close}, %{code_open}ssh://%{code_close} or %{code_open}git://%{code_close}."
 msgstr ""
 
+msgid "The request that exceeded the rate limit came from IP address %{ip_address}."
+msgstr ""
+
 msgid "The requested `version` attribute format is not correct. Use formats such as `1.0.0` or `v1.0.0`."
 msgstr ""
 
@@ -98036,6 +98081,9 @@ msgid "WorkItem|Usage:"
 msgstr ""
 
 msgid "WorkItem|Usage: %{workItemTypes}."
+msgstr ""
+
+msgid "WorkItem|Use epics to collaborate on ideas, solve problems, and plan work across this group. To track other work items, create a project."
 msgstr ""
 
 msgid "WorkItem|Use for items that are actively being worked on."

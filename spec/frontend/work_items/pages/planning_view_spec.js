@@ -2426,6 +2426,39 @@ describe('planning-view', () => {
     expect(wrapper.text()).toContain('3 items');
   });
 
+  it('requests the count without the sort or pagination of the list', async () => {
+    const countsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
+    await mountComponent({ countsOnlyHandler });
+
+    findFilteredSearchBar().vm.$emit('on-sort', TITLE_ASC);
+    await waitForPromises();
+
+    expect(findListView().props('queryVariables')).toMatchObject({ sort: TITLE_ASC });
+    countsOnlyHandler.mock.calls.forEach(([variables]) => {
+      expect(variables).not.toHaveProperty('sort');
+      expect(variables).not.toHaveProperty('firstPageSize');
+      expect(variables).not.toHaveProperty('afterCursor');
+      expect(variables).not.toHaveProperty('beforeCursor');
+      expect(variables).not.toHaveProperty('lastPageSize');
+    });
+    expect(countsOnlyHandler).toHaveBeenCalled();
+  });
+
+  it('keeps the sort in the count request when searching, since it changes the search matches', async () => {
+    const countsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
+    await mountComponent({ countsOnlyHandler });
+
+    findFilteredSearchBar().vm.$emit('on-sort', TITLE_ASC);
+    findFilteredSearchBar().vm.$emit('on-filter', [
+      { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
+    ]);
+    await waitForPromises();
+
+    expect(countsOnlyHandler).toHaveBeenLastCalledWith(
+      expect.objectContaining({ search: 'find issues', sort: TITLE_ASC }),
+    );
+  });
+
   describe('showWorkItemByEmail computed property', () => {
     describe.each`
       canCreateWorkItem | isGroup  | newWorkItemEmailAddress | expected

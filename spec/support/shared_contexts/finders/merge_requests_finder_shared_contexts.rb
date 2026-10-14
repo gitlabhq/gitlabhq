@@ -13,6 +13,14 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     end
   end
 
+  # fork_project stubs RepositoryForkWorker, and stubs are only allowed outside
+  # an example inside a temporary mock scope.
+  def shared_fork_project(source_project, user)
+    RSpec::Mocks.with_temporary_scope do
+      allow_gitaly_n_plus_1 { fork_project(source_project, user) }
+    end
+  end
+
   let_it_be(:user, freeze: false)  { create(:user) }
   let_it_be(:user2, freeze: false) { create(:user) }
   let_it_be(:group, freeze: false) { create(:group) }
@@ -20,21 +28,12 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   let_it_be_with_reload(:project1) do
     allow_gitaly_n_plus_1 { create(:project, :public, group: group, maintainers: user) }
   end
-  # We cannot use `let_it_be` here otherwise we get:
-  #   Failure/Error: allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-  #   The use of doubles or partial doubles from rspec-mocks outside of the per-test lifecycle is not supported.
 
-  let!(:project2) do
-    allow_gitaly_n_plus_1 do
-      fork_project(project1, user)
-    end
-  end
+  let_it_be_with_refind(:project2) { shared_fork_project(project1, user) }
 
-  let!(:project3) do
-    allow_gitaly_n_plus_1 do
-      fork_project(project1, user).tap do |project|
-        project.update!(archived: true)
-      end
+  let_it_be_with_refind(:project3) do
+    shared_fork_project(project1, user).tap do |project|
+      project.update!(archived: true)
     end
   end
 
@@ -42,7 +41,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     allow_gitaly_n_plus_1 { create(:project, :repository, group: subgroup, developers: user) }
   end
 
-  let!(:merge_request1) do
+  let_it_be_with_refind(:merge_request1) do
     create(
       :merge_request, assignees: [user], author: user, reviewers: [user2],
       source_project: project2, target_project: project1,
@@ -50,7 +49,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     )
   end
 
-  let!(:merge_request2) do
+  let_it_be_with_refind(:merge_request2) do
     create(
       :merge_request, :conflict, assignees: [user], author: user, reviewers: [user2],
       source_project: project2, target_project: project1,
@@ -58,7 +57,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     )
   end
 
-  let!(:merge_request3) do
+  let_it_be_with_refind(:merge_request3) do
     create(
       :merge_request, :simple, author: user, assignees: [user2], reviewers: [user],
       source_project: project2, target_project: project2,
@@ -67,7 +66,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     )
   end
 
-  let!(:merge_request4) do
+  let_it_be_with_refind(:merge_request4) do
     create(
       :merge_request, :simple, author: user,
       source_project: project3, target_project: project3,
@@ -83,7 +82,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     )
   end
 
-  before do
+  before_all do
     project2.add_developer(user)
     project3.add_developer(user)
 

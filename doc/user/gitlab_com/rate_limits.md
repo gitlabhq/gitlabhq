@@ -30,8 +30,9 @@ of the instance controls. If you do not use GitLab.com, see
 > the new limit affects your workloads.
 
 Rate limits are becoming tier-aware. Instead of a single number for everyone, limits reflect your
-plan and apply for each user. Authenticated requests receive your plan's full allowance. Anonymous
-requests receive a much lower allowance, in line with similar platforms.
+plan and apply for each user and for each top-level group. Authenticated requests receive your
+plan's full allowance. Anonymous requests receive a much lower allowance, in line with similar
+platforms.
 
 Each plan has two limits for authenticated traffic, and the sustained limit takes precedence:
 
@@ -81,13 +82,15 @@ minute.
 | Rate limit                                 | Free            | Premium          | Ultimate         |
 | ------------------------------------------ | --------------- | ---------------- | ---------------- |
 | Authenticated traffic for a user           | 5,000 each hour | 15,000 each hour | 25,000 each hour |
+| Traffic for a top-level group              | 5,000 each hour | Not yet confirmed | Not yet confirmed |
 | Unauthenticated traffic from an IP address | 60 each hour    | 60 each hour     | 60 each hour     |
 
 ### Burst limits
 
-| Rate limit                       | Free            | Premium           | Ultimate          |
-| -------------------------------- | --------------- | ----------------- | ----------------- |
-| Authenticated traffic for a user | 100 each minute | 1,250 each minute | 2,000 each minute |
+| Rate limit                       | Free            | Premium           | Ultimate           |
+| -------------------------------- | --------------- | ----------------- | ------------------ |
+| Authenticated traffic for a user | 100 each minute | 1,250 each minute | 2,000 each minute  |
+| Traffic for a top-level group    | 400 each minute | 5,000 each minute | 10,000 each minute |
 
 ## When you exceed a limit
 

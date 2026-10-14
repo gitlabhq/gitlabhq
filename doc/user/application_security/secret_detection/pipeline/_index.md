@@ -191,6 +191,39 @@ To run a historic scan:
    1. In the **Input variable value** box, enter `true`.
 1. Select **New pipeline**.
 
+### Secrets removed from the code
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240112) in GitLab 19.2.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258552) to mark secrets as removed from the code only after full scans in GitLab 19.5.
+
+{{< /history >}}
+
+When a full scan no longer detects a secret, GitLab hides the secret's location and file
+contents in:
+
+- The [vulnerability details page](../../vulnerabilities/_index.md).
+- The [REST API](../../../../api/vulnerabilities.md).
+- The [GraphQL API](../../../../api/graphql/reference/_index.md).
+- [CSV exports](../../vulnerability_report/_index.md#exporting).
+
+A full scan is either a [historic scan](#run-a-historic-scan) or a scan of the default branch's
+Git working tree, which runs in scheduled pipelines, manually run pipelines, and the pipeline for
+the first commit.
+
+A scan that covers only some commits, like a default branch pipeline that scans only new
+commits, does not hide secrets, because the secret might still be in the code. To show a secret
+that is still in the code, [run a pipeline manually](../../../../ci/pipelines/_index.md#run-a-pipeline-manually)
+on the default branch, or wait for a [scheduled pipeline](../../../../ci/pipelines/schedules.md).
+
 ### Duplicate vulnerability tracking
 
 {{< details >}}

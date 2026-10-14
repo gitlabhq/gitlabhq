@@ -139,6 +139,27 @@ RSpec.describe Slack::Manifest, feature_category: :integrations do
           expect(manifest.dig(:features, :app_home)).to eq(base_manifest.dig(:features, :app_home))
         end
       end
+
+      it 'does not add the MCP user scopes or setting', :aggregate_failures do
+        expect(manifest.dig(:oauth_config, :scopes)).not_to have_key(:user)
+        expect(manifest[:settings]).not_to have_key(:is_mcp_enabled)
+      end
+    end
+
+    context 'when mcp_enabled is true' do
+      subject(:manifest) { described_class.to_h(duo_enabled: true, mcp_enabled: true) }
+
+      it 'adds the MCP user scopes' do
+        expect(manifest.dig(:oauth_config, :scopes, :user)).to eq(SlackIntegration::MCP_USER_SCOPES)
+      end
+
+      it 'turns on the MCP setting' do
+        expect(manifest.dig(:settings, :is_mcp_enabled)).to be(true)
+      end
+
+      it 'keeps the Duo bot scopes' do
+        expect(manifest.dig(:oauth_config, :scopes, :bot)).to eq(SlackIntegration.scopes_for(duo_enabled: true))
+      end
     end
   end
 
@@ -172,6 +193,12 @@ RSpec.describe Slack::Manifest, feature_category: :integrations do
       it_behaves_like 'a manifest that matches the JSON schema'
     end
 
+    context 'when mcp_enabled is true' do
+      subject(:to_json) { described_class.to_json(duo_enabled: true, mcp_enabled: true) }
+
+      it_behaves_like 'a manifest that matches the JSON schema'
+    end
+
     context 'when the host name is very long' do
       subject(:to_json) { described_class.to_json }
 
@@ -185,15 +212,21 @@ RSpec.describe Slack::Manifest, feature_category: :integrations do
 
   describe '.share_url' do
     it 'URI encodes the manifest with default arguments' do
-      allow(described_class).to receive(:to_h).with(duo_enabled: false).and_return({ foo: 'bar' })
+      allow(described_class).to receive(:to_h).with(duo_enabled: false, mcp_enabled: false).and_return({ foo: 'bar' })
 
       expect(described_class.share_url).to eq('https://api.slack.com/apps?new_app=1&manifest_json=%7B%22foo%22%3A%22bar%22%7D')
     end
 
     it 'URI encodes the Duo manifest when duo_enabled is true' do
-      allow(described_class).to receive(:to_h).with(duo_enabled: true).and_return({ foo: 'baz' })
+      allow(described_class).to receive(:to_h).with(duo_enabled: true, mcp_enabled: false).and_return({ foo: 'baz' })
 
       expect(described_class.share_url(duo_enabled: true)).to eq('https://api.slack.com/apps?new_app=1&manifest_json=%7B%22foo%22%3A%22baz%22%7D')
+    end
+
+    it 'URI encodes the MCP manifest when mcp_enabled is true' do
+      allow(described_class).to receive(:to_h).with(duo_enabled: true, mcp_enabled: true).and_return({ foo: 'qux' })
+
+      expect(described_class.share_url(duo_enabled: true, mcp_enabled: true)).to eq('https://api.slack.com/apps?new_app=1&manifest_json=%7B%22foo%22%3A%22qux%22%7D')
     end
   end
 end

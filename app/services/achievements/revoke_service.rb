@@ -25,7 +25,7 @@ module Achievements
     private
 
     def allowed?(achievement)
-      current_user&.can?(:award_achievement, achievement)
+      current_user&.can?(:revoke_achievement, achievement)
     end
 
     def error_no_permissions

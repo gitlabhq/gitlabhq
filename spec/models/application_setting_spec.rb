@@ -2548,6 +2548,15 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
     end
   end
 
+  describe '#project_defaults' do
+    context 'for json schema validation' do
+      it 'allows only an empty hash', :aggregate_failures do
+        is_expected.to allow_value({}).for(:project_defaults)
+        is_expected.not_to allow_value({ 'foo' => 'bar' }).for(:project_defaults)
+      end
+    end
+  end
+
   context 'with diff limit settings' do
     describe '#diff_max_patch_bytes' do
       context 'for validations' do

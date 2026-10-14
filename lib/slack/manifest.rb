@@ -7,22 +7,24 @@ module Slack
     AGENT_APP_BOT_EVENTS = %w[message.im message.mpim].freeze
 
     class << self
-      def share_url(duo_enabled: false)
-        "https://api.slack.com/apps?new_app=1&manifest_json=#{ERB::Util.url_encode(to_json(duo_enabled: duo_enabled))}"
+      def share_url(duo_enabled: false, mcp_enabled: false)
+        manifest_json = to_json(duo_enabled: duo_enabled, mcp_enabled: mcp_enabled)
+
+        "https://api.slack.com/apps?new_app=1&manifest_json=#{ERB::Util.url_encode(manifest_json)}"
       end
 
-      def to_json(duo_enabled: false)
-        to_h(duo_enabled: duo_enabled).to_json
+      def to_json(duo_enabled: false, mcp_enabled: false)
+        to_h(duo_enabled: duo_enabled, mcp_enabled: mcp_enabled).to_json
       end
 
-      def to_h(duo_enabled: false)
+      def to_h(duo_enabled: false, mcp_enabled: false)
         agent_app = duo_enabled && SlackIntegration.agent_app_enabled?
 
         {
           display_information: display_information,
           features: features(agent_app: agent_app),
-          oauth_config: oauth_config(duo_enabled: duo_enabled),
-          settings: settings(duo_enabled: duo_enabled, agent_app: agent_app)
+          oauth_config: oauth_config(duo_enabled: duo_enabled, mcp_enabled: mcp_enabled),
+          settings: settings(duo_enabled: duo_enabled, agent_app: agent_app, mcp_enabled: mcp_enabled)
         }
       end
 
@@ -95,23 +97,24 @@ module Slack
         }
       end
 
-      def oauth_config(duo_enabled:)
+      def oauth_config(duo_enabled:, mcp_enabled:)
+        scopes = { bot: SlackIntegration.scopes_for(duo_enabled: duo_enabled) }
+        scopes[:user] = SlackIntegration::MCP_USER_SCOPES if mcp_enabled
+
         {
           redirect_urls: [
             Gitlab.config.gitlab.url
           ],
-          scopes: {
-            bot: SlackIntegration.scopes_for(duo_enabled: duo_enabled)
-          }
+          scopes: scopes
         }
       end
 
-      def settings(duo_enabled:, agent_app:)
+      def settings(duo_enabled:, agent_app:, mcp_enabled:)
         bot_events = BASE_BOT_EVENTS.dup
         bot_events += DUO_BOT_EVENTS if duo_enabled
         bot_events += AGENT_APP_BOT_EVENTS if agent_app
 
-        {
+        settings = {
           event_subscriptions: {
             request_url: api_v4('integrations/slack/events'),
             bot_events: bot_events
@@ -125,6 +128,9 @@ module Slack
           socket_mode_enabled: false,
           token_rotation_enabled: false
         }
+        settings[:is_mcp_enabled] = true if mcp_enabled
+
+        settings
       end
 
       def api_v4(path)
