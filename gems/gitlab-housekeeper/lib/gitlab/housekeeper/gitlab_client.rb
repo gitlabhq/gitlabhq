@@ -84,7 +84,7 @@ module Gitlab
         if existing_merge_request
           update_existing_merge_request(
             change: change,
-            existing_iid: existing_merge_request['iid'],
+            existing_merge_request: existing_merge_request,
             target_project_id: target_project_id
           )
         else
@@ -180,18 +180,20 @@ module Gitlab
         })
       end
 
-      def update_existing_merge_request(change:, existing_iid:, target_project_id:)
+      def update_existing_merge_request(change:, existing_merge_request:, target_project_id:)
         body = {}
+        # Keeps pick reviewers from whoever is available on each run, so replacing existing reviewers would rotate them.
+        update_reviewers = change.update_required?(:reviewers) && existing_merge_request['reviewers'].blank?
 
         body[:title] = change.title if change.update_required?(:title)
         body[:description] = change.mr_description if change.update_required?(:description)
         body[:add_labels] = Array(change.labels).join(',') if change.update_required?(:labels)
         body[:assignee_ids] = usernames_to_ids(change.assignees) if change.update_required?(:assignees)
-        body[:reviewer_ids] = usernames_to_ids(change.reviewers) if change.update_required?(:reviewers)
+        body[:reviewer_ids] = usernames_to_ids(change.reviewers) if update_reviewers
 
         return if body.empty?
 
-        request(:put, "/projects/#{target_project_id}/merge_requests/#{existing_iid}", body: body)
+        request(:put, "/projects/#{target_project_id}/merge_requests/#{existing_merge_request['iid']}", body: body)
       end
 
       def usernames_to_ids(usernames)

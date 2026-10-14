@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/ClassVars
+# rubocop:disable Style/ClassVars -- state is shared by every middleware instance and the spec helpers
 module Gitlab
   module Testing
     class RobotsBlockerMiddleware
@@ -25,7 +25,7 @@ module Gitlab
         request = Rack::Request.new(env)
 
         if block_requests? && Gitlab::RobotsTxt.disallowed?(request.path_info)
-          block_request(env)
+          block_request
         else
           @app.call(env)
         end
@@ -37,9 +37,10 @@ module Gitlab
         @@block_requests.true?
       end
 
-      def block_request(env)
+      def block_request
         [503, {}, []]
       end
     end
   end
 end
+# rubocop:enable Style/ClassVars

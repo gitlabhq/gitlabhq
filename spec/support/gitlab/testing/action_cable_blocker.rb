@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/ClassVars
+# rubocop:disable Style/ClassVars -- state is shared by the ActionCable worker callback and the spec helpers
 
 # This is inspired by http://www.salsify.com/blog/engineering/tearing-capybara-ajax-tests
 # Rack middleware that keeps track of the number of active requests and can block new requests.

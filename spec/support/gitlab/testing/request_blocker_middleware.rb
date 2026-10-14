@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/ClassVars
+# rubocop:disable Style/ClassVars -- state is shared by every middleware instance and the spec helpers
 
 # This is inspired by http://www.salsify.com/blog/engineering/tearing-capybara-ajax-tests
 # Rack middleware that keeps track of the number of active requests and can block new requests.
@@ -42,7 +42,7 @@ module Gitlab
 
         status, headers, body =
           if block_requests?
-            block_request(env)
+            block_request
           else
             sleep 1 if slow_requests?
             @app.call(env)
@@ -66,7 +66,7 @@ module Gitlab
         @@slow_requests.true?
       end
 
-      def block_request(env)
+      def block_request
         [503, {}, []]
       end
 
@@ -80,3 +80,4 @@ module Gitlab
     end
   end
 end
+# rubocop:enable Style/ClassVars

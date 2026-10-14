@@ -141,7 +141,7 @@ module Gitlab
 
         def emitter_class
           # Use test emitter in test environment to prevent HTTP requests
-          return SnowplowTestEmitter if Rails.env.test?
+          return ::Gitlab::Testing::SnowplowTestEmitter if Rails.env.test?
 
           return ::Gitlab::Tracking::BillingAuthEmitter if billing_auth?
 

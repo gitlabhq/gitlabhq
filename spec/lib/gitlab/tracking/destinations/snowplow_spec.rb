@@ -252,7 +252,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     let(:payload) { { "event" => "page_view", "user_id" => "123" } }
 
     before do
-      allow(Gitlab::Tracking::SnowplowTestEmitter).to receive(:new).and_return(emitter)
+      allow(Gitlab::Testing::SnowplowTestEmitter).to receive(:new).and_return(emitter)
     end
 
     it "forwards the payload to the emitter" do
@@ -507,7 +507,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     let(:snowplow_emitter_thread_count) { true }
 
     it 'initializes emitter with thread_count' do
-      expect(Gitlab::Tracking::SnowplowTestEmitter)
+      expect(Gitlab::Testing::SnowplowTestEmitter)
         .to receive(:new).with(endpoint: anything, options: hash_including(thread_count: 15))
 
       subject.send(:emitter)
@@ -516,7 +516,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
   context 'when snowplow_emitter_thread_count flag is disabled' do
     it 'initializes emitter without thread_count' do
-      expect(Gitlab::Tracking::SnowplowTestEmitter)
+      expect(Gitlab::Testing::SnowplowTestEmitter)
         .to receive(:new).with(endpoint: anything, options: hash_not_including(:thread_count))
 
       subject.send(:emitter)
@@ -603,7 +603,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     context 'in test environment' do
       it 'uses SnowplowTestEmitter to prevent HTTP requests' do
         # In test environment, we expect SnowplowTestEmitter to prevent HTTP requests
-        expect(Gitlab::Tracking::SnowplowTestEmitter).to receive(:new)
+        expect(Gitlab::Testing::SnowplowTestEmitter).to receive(:new)
         expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
         expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
         subject.send(:emitter)

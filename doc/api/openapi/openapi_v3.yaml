@@ -2410,6 +2410,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4JobsIdSbomScansAuthorizeRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/jobs/{id}/sbom_scans":
     post:
       operationId: postApiV4JobsIdSbomScans
@@ -2445,6 +2446,7 @@ paths:
           multipart/form-data:
             schema:
               "$ref": "#/components/schemas/postApiV4JobsIdSbomScansRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/jobs/{id}/sbom_scans/{sbom_digest}":
     post:
       operationId: postApiV4JobsIdSbomScansSbomDigest
@@ -2487,6 +2489,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4JobsIdSbomScansSbomDigestRequest"
+      x-gitlab-tier: ultimate
     get:
       operationId: getApiV4JobsIdSbomScansSbomScanId
       summary: Download an SBOM scan result
@@ -2525,6 +2528,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/compliance_external_controls/{control_id}/status":
     patch:
       operationId: patchApiV4ProjectsIdComplianceExternalControlsControlIdStatus
@@ -2601,6 +2605,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdSecurityScansSastSastEndpointRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/duo_code_review/evaluations":
     post:
       operationId: postApiV4DuoCodeReviewEvaluations
@@ -4196,6 +4201,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdDependencyListExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/dependency_list_exports":
     post:
       operationId: postApiV4GroupsIdDependencyListExports
@@ -4227,6 +4233,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdDependencyListExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/pipelines/{id}/dependency_list_exports":
     post:
       operationId: postApiV4PipelinesIdDependencyListExports
@@ -4258,6 +4265,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4PipelinesIdDependencyListExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/dependency_list_exports/{export_id}":
     get:
       operationId: getApiV4DependencyListExportsExportId
@@ -4281,6 +4289,7 @@ paths:
           - type: integer
           - type: string
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/dependency_list_exports/{export_id}/download":
     get:
       operationId: getApiV4DependencyListExportsExportIdDownload
@@ -4307,6 +4316,7 @@ paths:
           - type: integer
           - type: string
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/protected_branches":
     get:
       operationId: getApiV4GroupsIdProtectedBranches
@@ -4962,6 +4972,7 @@ paths:
           type: string
           nullable: true
         in: query
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/saml_group_links":
     get:
       operationId: getApiV4GroupsIdSamlGroupLinks
@@ -5998,6 +6009,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: ultimate
   "/api/v4/project_aliases":
     get:
       operationId: getApiV4ProjectAliases
@@ -6356,6 +6368,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4SecurityProjectsIdVulnerabilityExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/security/groups/{id}/vulnerability_exports":
     post:
       operationId: postApiV4SecurityGroupsIdVulnerabilityExports
@@ -6388,6 +6401,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4SecurityGroupsIdVulnerabilityExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/security/vulnerability_exports":
     post:
       operationId: postApiV4SecurityVulnerabilityExports
@@ -6412,6 +6426,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4SecurityVulnerabilityExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/security/vulnerability_exports/{id}":
     get:
       operationId: getApiV4SecurityVulnerabilityExportsId
@@ -6437,6 +6452,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/security/vulnerability_exports/{id}/download":
     get:
       operationId: getApiV4SecurityVulnerabilityExportsIdDownload
@@ -6463,6 +6479,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/security/projects/{id}/vulnerability_archive_exports":
     post:
       operationId: postApiV4SecurityProjectsIdVulnerabilityArchiveExports
@@ -6498,6 +6515,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4SecurityProjectsIdVulnerabilityArchiveExportsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/security/vulnerability_archive_exports/{id}":
     get:
       operationId: getApiV4SecurityVulnerabilityArchiveExportsId
@@ -6527,6 +6545,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/security/vulnerability_archive_exports/{id}/download":
     get:
       operationId: getApiV4SecurityVulnerabilityArchiveExportsIdDownload
@@ -6553,6 +6572,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}/issue_links":
     get:
       operationId: getApiV4VulnerabilitiesIdIssueLinks
@@ -6580,6 +6600,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
     post:
       operationId: postApiV4VulnerabilitiesIdIssueLinks
       summary: Relate an issue to a vulnerability
@@ -6610,6 +6631,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4VulnerabilitiesIdIssueLinksRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}/issue_links/{issue_link_id}":
     delete:
       operationId: deleteApiV4VulnerabilitiesIdIssueLinksIssueLinkId
@@ -6641,6 +6663,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/vulnerability_findings":
     get:
       operationId: getApiV4ProjectsIdVulnerabilityFindings
@@ -6764,6 +6787,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{vulnerability_id}/flags/ai_detection":
     post:
       operationId: postApiV4VulnerabilitiesVulnerabilityIdFlagsAiDetection
@@ -6797,6 +6821,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4VulnerabilitiesVulnerabilityIdFlagsAiDetectionRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}":
     get:
       operationId: getApiV4VulnerabilitiesId
@@ -6856,6 +6881,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4VulnerabilitiesIdResolveRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}/dismiss":
     post:
       operationId: postApiV4VulnerabilitiesIdDismiss
@@ -6883,6 +6909,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}/confirm":
     post:
       operationId: postApiV4VulnerabilitiesIdConfirm
@@ -6917,6 +6944,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4VulnerabilitiesIdConfirmRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}/revert":
     post:
       operationId: postApiV4VulnerabilitiesIdRevert
@@ -6951,6 +6979,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4VulnerabilitiesIdRevertRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/vulnerabilities":
     get:
       operationId: getApiV4ProjectsIdVulnerabilities
@@ -6994,6 +7023,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: ultimate
     post:
       operationId: postApiV4ProjectsIdVulnerabilities
       summary: Create a new vulnerability
@@ -7026,6 +7056,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdVulnerabilitiesRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/google_cloud/setup/integrations.sh":
     get:
       operationId: getApiV4ProjectsIdGoogleCloudSetupIntegrationsSh
@@ -12932,6 +12963,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdExternalStatusChecksRequest"
+      x-gitlab-tier: ultimate
     get:
       operationId: getApiV4ProjectsIdExternalStatusChecks
       summary: Retrieve project external status check services
@@ -12976,6 +13008,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/external_status_checks/{check_id}":
     put:
       operationId: putApiV4ProjectsIdExternalStatusChecksCheckId
@@ -13016,6 +13049,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdExternalStatusChecksCheckIdRequest"
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4ProjectsIdExternalStatusChecksCheckId
       summary: Delete external status check service
@@ -13044,6 +13078,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/status_check_responses":
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidStatusCheckResponses
@@ -13088,6 +13123,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdMergeRequestsMergeRequestIidStatusCheckResponsesRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/status_checks":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidStatusChecks
@@ -13124,6 +13160,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/status_checks/{external_status_check_id}/retry":
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidStatusChecksExternalStatusCheckIdRetry
@@ -13161,6 +13198,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/groups/{id}/approval_rules":
     get:
       operationId: getApiV4GroupsIdApprovalRules
@@ -13304,6 +13342,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdSecuritySettingsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/security_settings":
     get:
       operationId: getApiV4ProjectsIdSecuritySettings
@@ -13328,6 +13367,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: ultimate
     put:
       operationId: putApiV4ProjectsIdSecuritySettings
       summary: Update project security settings
@@ -13357,6 +13397,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdSecuritySettingsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/approval_rules":
     get:
       operationId: getApiV4ProjectsIdApprovalRules
@@ -14238,6 +14279,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/audit_events/{id}":
     get:
       operationId: getApiV4AuditEventsId
@@ -14263,6 +14305,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/suggested_reviewers":
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidSuggestedReviewers
@@ -14556,6 +14599,7 @@ paths:
           description: 403 Forbidden
         '400':
           description: 400 Bad Request
+      x-gitlab-tier: ultimate
     put:
       operationId: putApiV4AdminSecurityCompliancePolicySettings
       summary: Update security policy settings
@@ -14583,6 +14627,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4AdminSecurityCompliancePolicySettingsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/admin/knowledge_graph/namespaces":
     get:
       operationId: getApiV4AdminKnowledgeGraphNamespaces
@@ -37959,6 +38004,7 @@ paths:
           - type: integer
         in: path
         example: 1
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/audit_events/{audit_event_id}":
     get:
       operationId: getApiV4ProjectsIdAuditEventsAuditEventId
@@ -37994,6 +38040,7 @@ paths:
           - type: integer
         in: path
         example: 1
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/templates/{type}":
     get:
       operationId: getApiV4ProjectsIdTemplatesType

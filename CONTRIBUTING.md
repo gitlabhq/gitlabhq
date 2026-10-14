@@ -16,7 +16,16 @@ _This notice should stay as the first item in the `CONTRIBUTING.md` file._
 
 ## Contribute to GitLab
 
-[View the documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
+For everything about contributing to GitLab development, including how to choose
+an issue, set up a development environment, open a merge request, and the issue
+and merge request workflows, see
+[Contribute to GitLab development](doc/development/contributing/_index.md).
+
+For an overview of the ways to contribute, see
+[Contribute to GitLab](https://about.gitlab.com/community/contribute/).
+
+To implement design and UI elements, see
+[Design and user interface changes](doc/development/contributing/design.md).
 
 ## Security vulnerability disclosure
 
@@ -26,68 +35,8 @@ _This notice should stay as the first item in the `CONTRIBUTING.md` file._
 
 [View the documentation](https://about.gitlab.com/community/contribute/code-of-conduct/) to find the latest information.
 
-## Closing policy for issues and merge requests
-
-[View the documentation](doc/development/contributing/index.md#closing-policy-for-issues-and-merge-requests) to find the latest information.
-
-## Helping others
-
-[View the documentation](doc/development/contributing/index.md#helping-others) to find the latest information.
-
-## I want to contribute!
-
-[View the documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
-
-## Contribution Flow
-
-[View the documentation](doc/development/contributing/index.md) to find the latest information.
-
-## Workflow labels
-
-View the [issue workflow](doc/development/contributing/issue_workflow.md) documentation for these subjects:
-
-- Type labels
-- Subject labels
-- Team labels
-- Release Scoping labels
-- Priority labels
-- Severity labels
-  - Severity impact guidance
-- Labels for community contributors
-
-## Implement design & UI elements
-
-[View the documentation](doc/development/contributing/design.md) to find the latest information.
-
-## Issue tracker
-
-View the [issue workflow](doc/development/contributing/issue_workflow.md) documentation for the following subjects.
-
-- Issue triaging
-- Feature proposals
-- Issue tracker guidelines
-- Issue weight
-- Regression issues
-- Technical and UX debt
-- Stewardship
-
-## Merge requests
-
-View the [merge request workflow](doc/development/contributing/merge_request_workflow.md) documentation for the following subjects.
-
-- Merge request guidelines
-- Contribution acceptance criteria
-
 ## Community forks
 
 We recommend using the [community fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab) to create merge requests.
 
-The [@gitlab-community README.md](https://gitlab.com/gitlab-community#gitlab-community-forks) provides more detail of what, why, and how to use the community fork. 
-
-## Definition of done
-
-[View the documentation](doc/development/contributing/merge_request_workflow.md) to find the latest information.
-
-## Style guides
-
-[View the documentation](doc/development/contributing/style_guides.md) to find the latest information.
+The [@gitlab-community README.md](https://gitlab.com/gitlab-community#gitlab-community-forks) provides more detail of what, why, and how to use the community fork.

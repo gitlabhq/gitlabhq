@@ -32232,6 +32232,9 @@ msgid_plural "DuoAgentPlatform|%{count} Duo agent sessions. Activate to view."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentPlatform|%{count} of %{total} available to projects in this group."
+msgstr ""
+
 msgid "DuoAgentPlatform|%{count} session"
 msgid_plural "DuoAgentPlatform|%{count} sessions"
 msgstr[0] ""
@@ -32297,6 +32300,9 @@ msgid "DuoAgentPlatform|AI-native features are off for every project in this gro
 msgstr ""
 
 msgid "DuoAgentPlatform|AI-native features are off for projects in this group. Subgroups and projects can opt in individually."
+msgstr ""
+
+msgid "DuoAgentPlatform|Accomplish specific tasks and answer complex questions."
 msgstr ""
 
 msgid "DuoAgentPlatform|Action"
@@ -32416,6 +32422,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Checking connected MCP servers."
 msgstr ""
 
+msgid "DuoAgentPlatform|Checking for a runner this group can use."
+msgstr ""
+
 msgid "DuoAgentPlatform|Checking for a usable runner."
 msgstr ""
 
@@ -32446,6 +32455,12 @@ msgstr ""
 msgid "DuoAgentPlatform|Creating session"
 msgstr ""
 
+msgid "DuoAgentPlatform|Custom agents"
+msgstr ""
+
+msgid "DuoAgentPlatform|Custom flows"
+msgstr ""
+
 msgid "DuoAgentPlatform|Default model"
 msgstr ""
 
@@ -32465,6 +32480,9 @@ msgid "DuoAgentPlatform|Error occurred when starting the flow."
 msgstr ""
 
 msgid "DuoAgentPlatform|Experiment. Agents can connect to tools your team already uses, such as Jira or Linear."
+msgstr ""
+
+msgid "DuoAgentPlatform|External agents"
 msgstr ""
 
 msgid "DuoAgentPlatform|Failed"
@@ -32499,6 +32517,9 @@ msgstr[1] ""
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
 msgstr ""
 
+msgid "DuoAgentPlatform|Foundational flows"
+msgstr ""
+
 msgid "DuoAgentPlatform|Generate"
 msgstr ""
 
@@ -32530,6 +32551,9 @@ msgid "DuoAgentPlatform|GitLab Duo is off for this group, so nothing here is ava
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab Orbit"
+msgstr ""
+
+msgid "DuoAgentPlatform|Group runner"
 msgstr ""
 
 msgid "DuoAgentPlatform|Group settings"
@@ -32580,6 +32604,9 @@ msgstr ""
 msgid "DuoAgentPlatform|MCP servers"
 msgstr ""
 
+msgid "DuoAgentPlatform|Manage agents"
+msgstr ""
+
 msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run GitLab Orbit Local from the terminal."
 msgstr ""
 
@@ -32590,6 +32617,9 @@ msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{link
 msgstr ""
 
 msgid "DuoAgentPlatform|No agent sessions"
+msgstr ""
+
+msgid "DuoAgentPlatform|None of the %{total} are available to projects in this group."
 msgstr ""
 
 msgid "DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo."
@@ -32606,10 +32636,16 @@ msgstr[1] ""
 msgid "DuoAgentPlatform|Off for %{group}. Only a top-level Group Owner can turn it on."
 msgstr ""
 
+msgid "DuoAgentPlatform|Off for every project in this group, and projects can't opt in on their own. Flows combine one or more agents to solve a complex problem."
+msgstr ""
+
 msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
 msgstr ""
 
 msgid "DuoAgentPlatform|Off for this instance. Only an administrator can turn it on."
+msgstr ""
+
+msgid "DuoAgentPlatform|Off, and locked for every project in this group."
 msgstr ""
 
 msgid "DuoAgentPlatform|On for %{group}. Only a top-level Group Owner can change it."
@@ -32630,10 +32666,22 @@ msgstr ""
 msgid "DuoAgentPlatform|Paused"
 msgstr ""
 
+msgid "DuoAgentPlatform|Production-ready agents built and maintained by GitLab."
+msgstr ""
+
 msgid "DuoAgentPlatform|Production-ready flows built and maintained by GitLab."
 msgstr ""
 
+msgid "DuoAgentPlatform|Projects can opt out individually."
+msgstr ""
+
+msgid "DuoAgentPlatform|Projects can use third-party agents."
+msgstr ""
+
 msgid "DuoAgentPlatform|Projects in this group can run agents and flows."
+msgstr ""
+
+msgid "DuoAgentPlatform|Projects in this group can run flows, and can opt out individually. Flows combine one or more agents to solve a complex problem."
 msgstr ""
 
 msgid "DuoAgentPlatform|Query graph"
@@ -32768,6 +32816,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Turning this off disables everything below until it's back on."
 msgstr ""
 
+msgid "DuoAgentPlatform|Turning this off disables the flow settings below until it's back on."
+msgstr ""
+
 msgid "DuoAgentPlatform|Unable to find a runner configured for flows, so flows can't run."
 msgstr ""
 
@@ -32775,6 +32826,9 @@ msgid "DuoAgentPlatform|Usage billing is not available for this account. To cont
 msgstr ""
 
 msgid "DuoAgentPlatform|User messaged agent"
+msgstr ""
+
+msgid "DuoAgentPlatform|Users with the Maintainer or Owner role for a project can create new agents."
 msgstr ""
 
 msgid "DuoAgentPlatform|Users without a Duo Pro or Enterprise seat can use Agent Platform features."
@@ -32811,6 +32865,9 @@ msgid "DuoAgentPlatform|View session"
 msgstr ""
 
 msgid "DuoAgentPlatform|View session for this change"
+msgstr ""
+
+msgid "DuoAgentPlatform|What are flows?"
 msgstr ""
 
 msgid "DuoAgentPlatform|Whether users can approve tools for a whole session in the IDE and CLI."

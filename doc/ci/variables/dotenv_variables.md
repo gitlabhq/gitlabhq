@@ -45,7 +45,10 @@ If the same variable name appears multiple times in a `dotenv` report, the last 
 
 ## Pass variables to later jobs
 
-By default, dotenv variables are available to all jobs in later stages.
+By default, a job receives the dotenv variables from all jobs in earlier stages.
+If a job uses [`needs`](../yaml/_index.md#needs), the job receives dotenv variables
+only from the jobs listed in `needs`.
+
 To pass variables between jobs:
 
 1. In a job, create a file (for example, `build.env`) with variables in the format `VARIABLE_NAME=value`,

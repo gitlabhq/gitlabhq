@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 require 'gitlab/middleware/strip_cookies'
-require 'gitlab/testing/request_blocker_middleware'
-require 'gitlab/testing/robots_blocker_middleware'
-require 'gitlab/testing/request_inspector_middleware'
-require 'gitlab/testing/clear_process_memory_cache_middleware'
-require 'gitlab/testing/action_cable_blocker'
-require 'gitlab/testing/snowplow_collector_middleware'
 require 'gitlab/utils/all'
+
+Dir[File.expand_path('../../spec/support/gitlab/testing/*.rb', __dir__)].each { |f| require f }
 
 Rails.application.configure do
   # Make sure the middleware is inserted first in middleware chain

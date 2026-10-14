@@ -626,7 +626,6 @@ EE::Project:
   - self.cascading_with_parent_namespace
   - self.dormant
   - self.project_features_defaults
-  - self.search_by_visibility
   - self.selective_sync_scope
   - self.use_separate_indices?
   - self.verification_state_model_key

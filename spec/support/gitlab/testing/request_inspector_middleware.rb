@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/ClassVars
+# rubocop:disable Style/ClassVars -- state is shared by every middleware instance and the spec helpers
 
 module Gitlab
   module Testing
@@ -57,7 +57,7 @@ module Gitlab
       private
 
       def env_http_headers(env)
-        Hash[*env.select { |k, v| k.start_with? 'HTTP_' }
+        Hash[*env.select { |k, _| k.start_with? 'HTTP_' }
           .collect { |k, v| [k.sub(/^HTTP_/, ''), v] }
           .collect { |k, v| [k.split('_').collect(&:capitalize).join('-'), v] }
           .sort
@@ -76,3 +76,4 @@ module Gitlab
     end
   end
 end
+# rubocop:enable Style/ClassVars

@@ -375,8 +375,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/template/issue_template.rb'
     - 'lib/gitlab/template/merge_request_template.rb'
     - 'lib/gitlab/template_parser/ast.rb'
-    - 'lib/gitlab/testing/request_blocker_middleware.rb'
-    - 'lib/gitlab/testing/robots_blocker_middleware.rb'
     - 'lib/gitlab/untrusted_regexp/ruby_syntax.rb'
     - 'lib/gitlab/usage_data.rb'
     - 'lib/gitlab/usage_data_non_sql_metrics.rb'

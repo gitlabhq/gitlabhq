@@ -191,10 +191,6 @@ deploy_keys_projects:
 - project_id
 deploy_tokens:
 - id
-deployment_merge_requests:
-- deployment_id
-- environment_id
-- merge_request_id
 description_versions:
 - epic_id
 - issue_id

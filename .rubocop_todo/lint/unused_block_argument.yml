@@ -164,7 +164,6 @@ Lint/UnusedBlockArgument:
     - 'lib/gitlab/sidekiq_config.rb'
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
     - 'lib/gitlab/suggestions/commit_message.rb'
-    - 'lib/gitlab/testing/request_inspector_middleware.rb'
     - 'lib/gitlab/throttle.rb'
     - 'lib/google_api/cloud_platform/client.rb'
     - 'lib/peek/views/gitaly.rb'

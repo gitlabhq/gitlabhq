@@ -472,6 +472,31 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         expect(result['web_url']).to eq('https://example.com/api/v4/merge_requests/abc123/1234')
       end
 
+      context 'when the merge request already has reviewers' do
+        let(:existing_mrs) do
+          [{ iid: 1234, reviewers: [{ username: 'theoriginalreviewer' }] }]
+        end
+
+        it 'does not replace the reviewers' do
+          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+            .with(
+              body: {
+                title: "The change title",
+                description: change.mr_description,
+                add_labels: "some-label-1,some-label-2",
+                assignee_ids: [assignee_id]
+              }.to_json,
+              headers: {
+                'Content-Type' => 'application/json',
+                'Private-Token' => 'the-api-token'
+              }
+            ).to_return(status: 200, body: '{}')
+
+          client.create_or_update_merge_request(**params)
+          expect(stub).to have_been_requested
+        end
+      end
+
       context 'when multiple merge requests exist' do
         let(:existing_mrs) do
           [{ iid: 1234 }, { iid: 5678 }]
