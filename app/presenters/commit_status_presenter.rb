@@ -55,9 +55,9 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     reached_downstream_pipeline_trigger_rate_limit: N_('Job|Too many downstream pipelines triggered in the last minute. Try again later.'),
     job_router_failure: N_('Job|The Job Router failed to run this job.'),
     job_token_expired: N_('Job|The CI job token has expired. The job may have exceeded the maximum time limit.'),
-    id_token_burned_project_path: N_('Job|ID token issuance is disabled in CI because this project\'s path was previously used by a different project. ' \
-      'To restore ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` ' \
-      '(for example, `["project_id", "ref_type", "ref"]`) and update your cloud trust policy to match.')
+    id_token_burned_project_path: N_('Job|ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project. ' \
+      'To restore ID tokens, set `ci_id_token_sub_claim_components` to start with the ID component that matches the path component ' \
+      '(`project_id`, `job_project_id`, or `source_project_id`) and update your cloud trust policy to match.')
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

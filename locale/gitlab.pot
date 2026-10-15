@@ -46702,7 +46702,7 @@ msgstr ""
 msgid "Job|How this is calculated?"
 msgstr ""
 
-msgid "Job|ID token issuance is disabled in CI because this project's path was previously used by a different project. To restore ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` (for example, `[\"project_id\", \"ref_type\", \"ref\"]`) and update your cloud trust policy to match."
+msgid "Job|ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project. To restore ID tokens, set `ci_id_token_sub_claim_components` to start with the ID component that matches the path component (`project_id`, `job_project_id`, or `source_project_id`) and update your cloud trust policy to match."
 msgstr ""
 
 msgid "Job|Job artifacts"
@@ -98510,9 +98510,6 @@ msgstr ""
 msgid "project's path"
 msgstr ""
 
-msgid "project_path or project_id must be the first element of the sub claim"
-msgstr ""
-
 msgid "projects"
 msgstr ""
 
@@ -98844,6 +98841,9 @@ msgid "the correct format."
 msgstr ""
 
 msgid "the custom role's base access level does not match the current access level"
+msgstr ""
+
+msgid "the first element of the sub claim must be one of: %{components}"
 msgstr ""
 
 msgid "the following epics"

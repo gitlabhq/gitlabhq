@@ -119,6 +119,37 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
     end
 
+    describe 'when job_project_path is in sub_components' do
+      let(:sub_components) { [:job_project_path, :ref_type, :ref] }
+
+      it 'has job_project_path in sub section' do
+        expect(payload[:sub])
+          .to eq("job_project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+      end
+    end
+
+    describe 'when source_project_path is in sub_components' do
+      let(:sub_components) { [:source_project_path, :ref_type, :ref] }
+
+      it 'has source_project_path in sub section' do
+        expect(payload[:sub])
+          .to eq("source_project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+      end
+    end
+
+    describe 'when job_project_id or source_project_id is in sub_components' do
+      where(:id_component) { [:job_project_id, :source_project_id] }
+
+      with_them do
+        let(:sub_components) { [id_component, :ref_type, :ref] }
+
+        it 'has the project ID in sub section' do
+          expect(payload[:sub])
+            .to eq("#{id_component}:#{project.id}:ref_type:branch:ref:#{pipeline.source_ref}")
+        end
+      end
+    end
+
     describe 'when project_path and ref_protected provided' do
       let(:sub_components) { [:project_path, :ref_protected] }
 
@@ -443,6 +474,125 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         .not_to eq("project_path:#{target_project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
       end
 
+      context 'when job_project_path is in sub_components' do
+        let(:sub_components) { [:job_project_path, :ref_type, :ref] }
+
+        it 'sets the job project path component based on the target project of the merge request' do
+          expect(payload[:sub])
+            .to eq("job_project_path:#{target_project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+        end
+
+        context 'when a tombstone exists for the source project path owned by a different project' do
+          before do
+            create(:burned_project_route,
+              organization: forked_project.organization, path: forked_project.full_path,
+              project_id: non_existing_record_id)
+          end
+
+          it 'mints the token successfully' do
+            expect { payload }.not_to raise_error
+          end
+        end
+
+        context 'when a tombstone exists for the target project path owned by a different project' do
+          before do
+            create(:burned_project_route,
+              organization: target_project.organization, path: target_project.full_path,
+              project_id: non_existing_record_id)
+          end
+
+          it 'raises OidcBurnedPathError' do
+            expect { payload }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
+          end
+        end
+      end
+
+      context 'when both project_path and job_project_path are in sub_components' do
+        let(:sub_components) { [:project_path, :job_project_path, :ref] }
+
+        where(:burned_project) { [:forked_project, :target_project] }
+
+        with_them do
+          before do
+            burned = public_send(burned_project)
+            create(:burned_project_route,
+              organization: burned.organization, path: burned.full_path, project_id: non_existing_record_id)
+          end
+
+          it 'raises OidcBurnedPathError' do
+            expect { payload }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
+          end
+        end
+      end
+
+      context 'when source_project_path is in sub_components' do
+        let(:sub_components) { [:source_project_path, :ref_type, :ref] }
+
+        it 'sets the source project path component based on the source project of the merge request' do
+          expect(payload[:sub])
+            .to eq("source_project_path:#{forked_project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+        end
+
+        context 'when a tombstone exists for the source project path owned by a different project' do
+          before do
+            create(:burned_project_route,
+              organization: forked_project.organization, path: forked_project.full_path,
+              project_id: non_existing_record_id)
+          end
+
+          it 'raises OidcBurnedPathError' do
+            expect { payload }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
+          end
+        end
+
+        context 'when a tombstone exists for the target project path owned by a different project' do
+          before do
+            create(:burned_project_route,
+              organization: target_project.organization, path: target_project.full_path,
+              project_id: non_existing_record_id)
+          end
+
+          it 'mints the token successfully' do
+            expect { payload }.not_to raise_error
+          end
+        end
+
+        context 'when a tombstone exists for the source project path owned by the source project' do
+          before do
+            create(:burned_project_route,
+              organization: forked_project.organization, path: forked_project.full_path,
+              project_id: forked_project.id)
+          end
+
+          it 'mints the token successfully' do
+            expect { payload }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when job_project_id and source_project_id are in sub_components' do
+        let(:sub_components) { [:job_project_id, :source_project_id, :ref] }
+
+        it 'sets the ID components based on the target and source projects of the merge request' do
+          expect(payload[:sub]).to eq(
+            "job_project_id:#{target_project.id}:source_project_id:#{forked_project.id}:ref:#{pipeline.source_ref}"
+          )
+        end
+
+        context 'when tombstones exist for both project paths' do
+          before do
+            [target_project, forked_project].each do |burned|
+              create(:burned_project_route,
+                organization: burned.organization, path: burned.full_path, project_id: non_existing_record_id)
+            end
+          end
+
+          it 'mints the token successfully' do
+            expect { payload }.not_to raise_error
+          end
+        end
+      end
+
       describe 'claims delegated to mapper' do
         where(:source) do
           [
@@ -524,11 +674,31 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         end
       end
 
-      context 'when sub_components excludes project_path (smart escape)' do
-        let(:sub_components) { [:project_id, :ref_type, :ref] }
+      context 'when sub_components includes job_project_path' do
+        let(:sub_components) { [:job_project_path, :ref_type, :ref] }
 
-        it 'mints the token successfully' do
-          expect { mint }.not_to raise_error
+        it 'raises OidcBurnedPathError' do
+          expect { mint }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
+        end
+      end
+
+      context 'when sub_components includes source_project_path' do
+        let(:sub_components) { [:source_project_path, :ref_type, :ref] }
+
+        it 'raises OidcBurnedPathError' do
+          expect { mint }.to raise_error(Gitlab::Ci::OidcBurnedPathError)
+        end
+      end
+
+      context 'when sub_components only has ID components (smart escape)' do
+        where(:id_component) { [:project_id, :job_project_id, :source_project_id] }
+
+        with_them do
+          let(:sub_components) { [id_component, :ref_type, :ref] }
+
+          it 'mints the token successfully' do
+            expect { mint }.not_to raise_error
+          end
         end
       end
     end

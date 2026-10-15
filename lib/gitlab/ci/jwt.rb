@@ -10,6 +10,13 @@ module Gitlab
         self.new(build, ttl: build.timeout_value).encoded
       end
 
+      # Source project of a merge request pipeline,
+      # or else project where the pipeline is running.
+      def self.source_project_for(build)
+        pipeline = build.pipeline
+        pipeline.merge_request_from_forked_project? ? pipeline.merge_request.source_project : build.project
+      end
+
       def initialize(build, ttl:)
         super()
 
@@ -38,7 +45,7 @@ module Gitlab
       end
 
       def predefined_claims
-        project_claims.merge(job_project_claims).merge(ci_claims)
+        project_claims.merge(job_project_claims).merge(source_project_claims).merge(ci_claims)
       end
 
       # Claims for the source project of a merge request pipeline,
@@ -56,6 +63,14 @@ module Gitlab
         ::JSONWebToken::UserProjectTokenClaims
          .new(project: project, user: user)
          .project_claims(key_prefix: 'job_')
+      end
+
+      # Claims related to the source project of a merge request pipeline,
+      # or else the project where the pipeline is running.
+      def source_project_claims
+        ::JSONWebToken::UserProjectTokenClaims
+         .new(project: source_project, user: user)
+         .project_claims(key_prefix: 'source_')
       end
 
       def ci_claims
@@ -99,10 +114,8 @@ module Gitlab
         false # Overridden in EE
       end
 
-      # Source project of a merge request pipeline,
-      # or else project where the pipeline is running.
       def source_project
-        pipeline.merge_request_from_forked_project? ? pipeline.merge_request.source_project : project
+        self.class.source_project_for(build)
       end
     end
   end
