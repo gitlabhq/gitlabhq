@@ -1160,7 +1160,7 @@ of the fields at once. For example:
 1. Expand **General pipelines**.
 1. Complete the fields.
 
-Learn more about [documenting multiple fields at once](_index.md#documenting-multiple-fields-at-once).
+Learn more about [documenting multiple fields at once](ui_text.md#documenting-multiple-fields-in-one-step).
 
 ## filename
 
@@ -2168,7 +2168,7 @@ For example:
 - `value`: Optional. Use it to do something.
 ```
 
-Follow the same guidance for [optional task steps](_index.md#optional-steps).
+Follow the same guidance for [optional task steps](ui_text.md#optional-steps).
 
 ## organizations
 
@@ -2236,7 +2236,7 @@ The docs should match the case in the UI, and the page name should be bold. For 
 Use **panel** to refer to a main area of the GitLab UI
 that is not fixed on the side of the screen. The content of a panel changes depending on the context.
 
-See also: [names for UI elements](_index.md#names-for-ui-elements), [**top bar**, and **sidebar**](#sidebar-top-bar).
+See also: [names for UI elements](ui_text.md#names-for-ui-elements), [**top bar**, and **sidebar**](#sidebar-top-bar).
 
 ## parent
 
@@ -2394,7 +2394,7 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 - Set the variable. (It's required.)
 - You can set the variable. (It's optional.)
 
-See also [recommended steps](_index.md#recommended-steps).
+See also [recommended steps](ui_text.md#recommended-steps).
 
 ## register
 
@@ -2725,7 +2725,7 @@ Use **top bar** to refer to the top fixed area that contains the search box and 
 
 For the main areas that change depending on the context, use [**panel**](#panel).
 
-See also: [names for UI elements](_index.md#names-for-ui-elements).
+See also: [names for UI elements](ui_text.md#names-for-ui-elements).
 
 ## sign in, sign-in
 

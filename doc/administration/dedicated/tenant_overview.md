@@ -31,6 +31,9 @@ The page displays:
 - Tenant AWS account ID
 - Hosted runners (if configured)
 
+You can also use the [Switchboard customer API](customer_api.md) to get your instance
+status and maintenance windows, or update the configuration you set in Switchboard.
+
 ## Maintenance
 
 Switchboard displays a maintenance indicator when your instance is undergoing maintenance.
@@ -135,39 +138,6 @@ To view your notifications:
 
 Select a notification title to view its details.
 To filter notifications by title, enter text in the search box above the notification list.
-
-## Switchboard customer API
-
-You can retrieve your instance's SLA status programmatically with the Switchboard API.
-The API is available to Switchboard users with tenant administrator access,
-and returns data only for the instances you have access to.
-
-The API has a single endpoint that returns the same instance health data the Switchboard
-**Health** page displays:
-
-- The overall status of your instance.
-- The availability status of each covered experience.
-- A `data_as_of` timestamp that indicates when the data was last refreshed.
-
-You authenticate through Switchboard using an interactive browser sign-in.
-You can refresh the access token programmatically for up to 30 days without signing in again,
-after which you must sign in through the browser again.
-
-> [!note]
-> API responses are point-in-time snapshots. The API does not return historical or aggregated
-> availability data, and is not intended for alerting. The API does not determine compliance
-> with the SLA or your eligibility for service credits.
-
-### Access the API reference
-
-The API reference, including an authentication walkthrough and a glossary of status values, is
-available only to authenticated Switchboard users.
-
-To access the API reference:
-
-1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. In the sidebar, select **Help**.
-1. Select **API documentation**.
 
 ## Related topics
 

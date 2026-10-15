@@ -26,6 +26,7 @@ such as Claude Code and Cursor that connect through the GitLab MCP server.
 | [AI Governance Dashboard](governance-dashboard.md) | Monitor AI agent sessions, audit logs, and developer exposure across a group. |
 | [AI audit events](ai-audit-events.md) | Browse and filter a unified record of agent activity for compliance and governance purposes. |
 | [Tool governance](tool-governance.md) | Configure Allow, Ask, and Deny policies for agent tools, enforced at execution time for all connecting clients. |
+| [Connect Externally Connected Agents (ECAs)](externally-connected-agents.md) | Record Claude Code, Cursor, and Codex sessions with the GitLab CLI so they appear on the dashboard as ECAs. |
 
 Each feature has different tier and availability requirements. Check the individual feature page for details.
 
