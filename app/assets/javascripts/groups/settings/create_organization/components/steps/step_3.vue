@@ -29,7 +29,12 @@ export default {
       type: Object,
       required: true,
     },
+    nextButtonLoading: {
+      type: Boolean,
+      required: true,
+    },
   },
+  emits: ['prev', 'confirm'],
   computed: {
     adminNames() {
       const ownersFromAllGroups = this.organization.groups.nodes.map(
@@ -78,7 +83,13 @@ export default {
 </script>
 
 <template>
-  <base-step :title="s__('Organization|Confirm your organization')">
+  <base-step
+    :title="s__('Organization|Confirm your organization')"
+    :next-button-text="__('Confirm')"
+    :next-button-loading="nextButtonLoading"
+    @prev="$emit('prev')"
+    @next="$emit('confirm')"
+  >
     <template #description>
       <p>
         {{

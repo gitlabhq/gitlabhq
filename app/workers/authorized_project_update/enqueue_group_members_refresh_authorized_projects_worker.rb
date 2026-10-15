@@ -7,7 +7,7 @@ module AuthorizedProjectUpdate # rubocop:disable Gitlab/BoundedContexts -- keepi
     sidekiq_options retry: 3
     feature_category :permissions
     urgency :low
-    data_consistency :delayed
+    data_consistency :sticky
     queue_namespace :authorized_project_update
 
     idempotent!

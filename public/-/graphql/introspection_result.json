@@ -11573,6 +11573,35 @@
               "deprecationReason": null
             },
             {
+              "name": "hasDirectProjectConfigurationsInGroup",
+              "description": "Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "GroupID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "id",
               "description": "ID of the item.",
               "args": [],
@@ -13392,6 +13421,35 @@
               "deprecationReason": null
             },
             {
+              "name": "hasDirectProjectConfigurationsInGroup",
+              "description": "Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "GroupID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "id",
               "description": "ID of the item.",
               "args": [],
@@ -14394,6 +14452,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiCatalogGroupItemEnabledBy",
+          "description": "Ways an AI Catalog item can be enabled in a group.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "INHERITANCE",
+              "description": "Enabled for all projects in the group through group inheritance. Only top-level groups can enable items this way. Matches no items unless the `ai_catalog_group_inherited_consumers` feature flag is enabled.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PROJECT_DIRECT",
+              "description": "Enabled directly in any descendant project in the group.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "INTERFACE",
           "name": "AiCatalogItem",
           "description": "An AI catalog item",
@@ -14564,6 +14645,35 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "hasDirectProjectConfigurationsInGroup",
+              "description": "Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "GroupID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "id",
@@ -18494,6 +18604,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "hasDirectProjectConfigurationsInGroup",
+              "description": "Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "GroupID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "id",
               "description": "ID of the item.",
               "args": [],
@@ -19251,6 +19390,35 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "hasDirectProjectConfigurationsInGroup",
+              "description": "Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [
+                {
+                  "name": "groupId",
+                  "description": "Global ID of the group.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "GroupID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "id",
@@ -184425,6 +184593,135 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "aiCatalogItems",
+              "description": "AI Catalog items that the group can enable. This field can be resolved for only one group in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [
+                {
+                  "name": "itemTypes",
+                  "description": "Types of items to retrieve.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "AiCatalogItemType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "enabledBy",
+                  "description": "Return only items enabled in any of these ways. Returns all items the group can enable when omitted or empty.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "AiCatalogGroupItemEnabledBy",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "search",
+                  "description": "Search items by name and description.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort order of items.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiCatalogItemsSort",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AiCatalogItemConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "aiDomainSettings",

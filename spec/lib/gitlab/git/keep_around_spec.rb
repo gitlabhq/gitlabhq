@@ -66,11 +66,11 @@ RSpec.describe Gitlab::Git::KeepAround, feature_category: :gitaly do
   # Rescued so it cannot raise out of an inline caller such as
   # `Ci::Pipeline#keep_around_commits`, but not reported: no retry can write a ref into
   # a repository that no longer exists.
-  it "tracks a missing repository without reporting the SHAs or raising" do
+  it "logs a missing repository without reporting the SHAs or raising" do
     allow(repository).to receive(:commit_by).and_return(nil)
     allow(repository).to receive(:ref_exists?).and_raise(Gitlab::Git::Repository::NoRepository)
 
-    expect(Gitlab::ErrorTracking).to receive(:track_exception)
+    expect(Gitlab::ErrorTracking).to receive(:log_exception)
       .with(an_instance_of(Gitlab::Git::Repository::NoRepository), object_id: sample_commit.id)
 
     expect(service.execute([sample_commit.id], source: 'keeparound_spec')).to be_empty

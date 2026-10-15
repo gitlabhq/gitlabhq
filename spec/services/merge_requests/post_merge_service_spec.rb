@@ -366,6 +366,36 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
     end
   end
 
+  context 'when another process already ran the post merge steps for a stale copy of the merge request' do
+    let(:stale_merge_request) { MergeRequest.find(merge_request.id) }
+
+    before do
+      stale_merge_request
+      described_class.new(project: project, current_user: user).execute(merge_request)
+    end
+
+    it 'does not run them again' do
+      expect { described_class.new(project: project, current_user: user).execute(stale_merge_request) }
+        .not_to change { Event.count }
+    end
+  end
+
+  context 'when another process locked the merge request after it was loaded' do
+    let(:stale_merge_request) { MergeRequest.find(merge_request.id) }
+
+    before do
+      stale_merge_request
+      merge_request.lock_mr!
+    end
+
+    it 'does not mark it as merged or run the post merge steps' do
+      expect { described_class.new(project: project, current_user: user).execute(stale_merge_request) }
+        .not_to change { Event.count }
+
+      expect(merge_request.reload).to be_locked
+    end
+  end
+
   context 'when mark_as_merged fails' do
     before do
       merge_request.close!

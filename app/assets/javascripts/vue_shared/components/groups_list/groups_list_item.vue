@@ -1,6 +1,6 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -35,6 +35,9 @@ export default {
       () =>
         import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
     ),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glSlotsMixin],
   provide() {
@@ -188,7 +191,20 @@ export default {
 
     <template #stats>
       <list-item-inactive-badge :resource="group" />
-      <gl-badge v-if="hasStorageSize" data-testid="storage-size">{{ storageSize }}</gl-badge>
+      <button
+        v-if="hasStorageSize"
+        v-gl-tooltip.viewport
+        type="button"
+        :title="
+          s__(
+            'AdminGroups|Storage includes projects in this group only. Projects in subgroups aren’t included.',
+          )
+        "
+        class="!gl-cursor-default gl-rounded-pill gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 focus-visible:gl-focus"
+        data-testid="storage-size-tooltip-trigger"
+      >
+        <gl-badge data-testid="storage-size">{{ storageSize }}</gl-badge>
+      </button>
       <groups-list-item-plan-badge :group="group" />
       <list-item-stat
         v-if="showDescendantGroupsCount"

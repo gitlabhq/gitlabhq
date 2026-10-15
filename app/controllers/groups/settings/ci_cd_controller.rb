@@ -22,7 +22,7 @@ module Groups
 
       def show
         @entity = :group
-        @variable_limit = ::Plan.default.actual_limits.group_ci_variables
+        @variable_limit = ::GitlabSubscriptions::SystemDefined::Plan.default.actual_limits.group_ci_variables
 
         audit_group_cicd_settings_access
       end

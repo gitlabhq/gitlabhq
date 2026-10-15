@@ -11,6 +11,36 @@ RSpec.describe Ci::InitialPipelineProcessWorker, feature_category: :continuous_i
       builds: [job])
   end
 
+  describe '.get_data_consistency_per_database' do
+    before do
+      skip_if_shared_database(:ci)
+    end
+
+    it 'reads the ci database from the primary and keeps main sticky' do
+      expect(described_class.get_data_consistency_per_database).to include({ main: :sticky, ci: :always })
+    end
+
+    context 'when the initial_pipeline_process_worker_ci_primary_reads feature flag is disabled' do
+      before do
+        stub_feature_flags(initial_pipeline_process_worker_ci_primary_reads: false)
+      end
+
+      it 'keeps the ci database sticky' do
+        expect(described_class.get_data_consistency_per_database).to include({ main: :sticky, ci: :sticky })
+      end
+    end
+
+    context 'when the application does not run in multiple-database mode' do
+      before do
+        allow(Gitlab::Database).to receive(:database_mode).and_return(Gitlab::Database::MODE_SINGLE_DATABASE)
+      end
+
+      it 'leaves the declared data consistency unchanged' do
+        expect(described_class.get_data_consistency_per_database).to include({ main: :sticky, ci: :sticky })
+      end
+    end
+  end
+
   describe '#perform' do
     include_examples 'an idempotent worker' do
       let(:job_args) { pipeline.id }

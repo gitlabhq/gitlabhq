@@ -22,6 +22,19 @@ RSpec.describe Gitlab::Version::VersionCheckCronWorker, feature_category: :servi
   end
 
   describe '#perform' do
+    context 'when version check is disabled' do
+      before do
+        stub_application_setting(version_check_enabled: false)
+      end
+
+      it 'does not request the Versions Application or write the cache' do
+        expect(Gitlab::HTTP).not_to receive(:try_get)
+        expect(Rails.cache).not_to receive(:write)
+
+        worker.perform
+      end
+    end
+
     describe 'destination host' do
       before do
         allow(response).to receive_messages(body: version_info.to_json, code: 200)

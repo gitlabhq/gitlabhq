@@ -1,6 +1,13 @@
 <script>
+import { GlButton } from '@gitlab/ui';
+import { Portal } from 'portal-vue';
+import { __ } from '~/locale';
+import { MODAL_FOOTER_PORTAL_NAME } from '../../constants';
+
 export default {
   name: 'ReconciliationBaseStep',
+  components: { GlButton, Portal },
+  MODAL_FOOTER_PORTAL_NAME,
   props: {
     illustration: {
       type: String,
@@ -12,7 +19,23 @@ export default {
       required: false,
       default: '',
     },
+    prevButtonText: {
+      type: String,
+      required: false,
+      default: () => __('Back'),
+    },
+    nextButtonText: {
+      type: String,
+      required: false,
+      default: () => __('Continue'),
+    },
+    nextButtonLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
+  emits: ['next', 'prev'],
 };
 </script>
 
@@ -26,5 +49,11 @@ export default {
       </div>
     </div>
     <slot></slot>
+    <portal :to="$options.MODAL_FOOTER_PORTAL_NAME">
+      <gl-button @click="$emit('prev')">{{ prevButtonText }}</gl-button>
+      <gl-button variant="confirm" :loading="nextButtonLoading" @click="$emit('next')">{{
+        nextButtonText
+      }}</gl-button>
+    </portal>
   </div>
 </template>

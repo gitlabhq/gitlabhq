@@ -113,6 +113,8 @@ Validity checks support the following secret types:
 - EasyPost API tokens
 - EasyPost test API tokens
 - Fastly API tokens
+- Flutterwave live secret keys
+- Flutterwave test secret keys
 - GC Notify API keys
 - GitHub App installation tokens
 - GitHub fine-grained personal access tokens
@@ -163,6 +165,7 @@ The supported URLs are:
 - `https://api.doppler.com/v3/me`
 - `https://api.easypost.com/v2/addresses`
 - `https://api.fastly.com/tokens/self`
+- `https://api.flutterwave.com/v3/balances`
 - `https://api.getpostman.com/me`
 - `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`

@@ -4286,7 +4286,7 @@
     - <<: *if-missing-clickhouse-coverage-credentials
       when: never
     - <<: *if-merge-request-tier-3
-      changes: *backend-patterns
+      changes: *backend-spec-patterns
     - <<: *if-merge-request-tier-3
       changes: *backstage-patterns
 

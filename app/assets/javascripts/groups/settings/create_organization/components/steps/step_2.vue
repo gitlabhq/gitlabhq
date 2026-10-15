@@ -36,7 +36,7 @@ export default {
       required: true,
     },
   },
-  emits: ['update', 'update-organization'],
+  emits: ['update', 'update-organization', 'prev', 'next'],
   data() {
     return {
       pendingChanges: {},
@@ -120,7 +120,11 @@ export default {
 </script>
 
 <template>
-  <base-step :title="s__('Organization|Assign top-level groups')">
+  <base-step
+    :title="s__('Organization|Assign top-level groups')"
+    @prev="$emit('prev')"
+    @next="$emit('next')"
+  >
     <template #description>
       <p>
         <gl-sprintf :message="stepTitle">

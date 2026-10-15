@@ -57,7 +57,7 @@ module API
       end
 
       def track_high_page_offset
-        return if params[:page] * params[:per_page] <= Plan.default.actual_limits.offset_pagination_limit
+        return if params[:page] * params[:per_page] <= ::GitlabSubscriptions::SystemDefined::Plan.default.actual_limits.offset_pagination_limit
 
         track_event(
           'request_projects_api_high_offset',

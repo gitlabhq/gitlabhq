@@ -4,6 +4,7 @@ import { stubComponent } from 'helpers/stub_component';
 import GroupsListItemPlanBadge from 'ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue';
 import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
@@ -33,6 +34,7 @@ describe('GroupsListItem', () => {
         children: '<div data-testid="children"></div>',
       },
       stubs: { GlTooltip: stubComponent(GlTooltip) },
+      directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
   };
 
@@ -46,6 +48,7 @@ describe('GroupsListItem', () => {
   const findProjectsCount = () => wrapper.findComponentByTestId('projects-count');
   const findMembersCount = () => wrapper.findComponentByTestId('members-count');
   const findStorageSize = () => wrapper.findByTestId('storage-size');
+  const findStorageSizeTooltipTrigger = () => wrapper.findByTestId('storage-size-tooltip-trigger');
 
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
   const findTooltipByTarget = (target) =>
@@ -281,6 +284,7 @@ describe('GroupsListItem', () => {
 
     it('does not render storage size', () => {
       expect(findStorageSize().exists()).toBe(false);
+      expect(findStorageSizeTooltipTrigger().exists()).toBe(false);
     });
   });
 
@@ -289,6 +293,27 @@ describe('GroupsListItem', () => {
       createComponent();
 
       expect(findStorageSize().text()).toBe('100.00 MiB');
+    });
+
+    it('renders storage size in a button named by the size', () => {
+      createComponent();
+
+      expect(wrapper.findByRole('button', { name: '100.00 MiB' }).attributes('data-testid')).toBe(
+        'storage-size-tooltip-trigger',
+      );
+    });
+
+    it('explains that subgroup projects are excluded in a tooltip on the storage size', () => {
+      createComponent();
+
+      const trigger = findStorageSizeTooltipTrigger();
+
+      expect(getBinding(trigger.element, 'gl-tooltip')).toMatchObject({
+        modifiers: { viewport: true },
+      });
+      expect(trigger.attributes('title')).toBe(
+        'Storage includes projects in this group only. Projects in subgroups aren’t included.',
+      );
     });
 
     describe('when storage size is null', () => {

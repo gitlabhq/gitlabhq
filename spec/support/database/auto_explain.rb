@@ -141,9 +141,23 @@ module AutoExplain
           raise ActiveRecord::Rollback
         end
       end
+
+      empty_log
     end
 
     private
+
+    # pglog.csv is shared by every database and by every RSpec process in the job, so it can only be
+    # emptied once all databases are recorded. A later process, such as the retry of failed examples,
+    # then only records its own queries.
+    def empty_log
+      Gitlab::Database::EachDatabase.each_connection do |connection|
+        next unless record_auto_explain?(connection)
+
+        log_path = File.join(connection.select_value('SHOW data_directory'), 'log/pglog.csv')
+        connection.execute("COPY (SELECT 1 WHERE false) TO #{connection.quote(log_path)}")
+      end
+    end
 
     def record_auto_explain?(connection)
       return false unless ENV['CI']

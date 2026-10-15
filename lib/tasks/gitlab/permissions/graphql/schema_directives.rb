@@ -70,7 +70,25 @@ module Tasks
             return false if name.start_with?('__')
             return false if %w[Mutation Query Subscription].include?(name)
 
-            type.kind.object? && !name.end_with?('Payload', 'Connection', 'Edge')
+            type.kind.object? && !generated_type?(name, type)
+          end
+
+          # Connection and edge types, and the payload type GraphQL Ruby builds
+          # for a mutation, do not inherit from Types::BaseObject and so never
+          # run the granular token check. They are told apart by class rather
+          # than by name alone, so that a type written by hand whose name ends in
+          # `Connection`, `Edge` or `Payload` is still checked.
+          def generated_type?(name, type)
+            # Every object type in GitlabSchema.types is a class. The task specs
+            # also pass plain objects, which are treated as written by hand.
+            return false unless type.is_a?(Class)
+
+            type < GraphQL::Types::Relay::ConnectionBehaviors ||
+              type < GraphQL::Types::Relay::EdgeBehaviors ||
+              # The payload type GraphQL Ruby generates for a mutation. It is the
+              # only object type GraphQL Ruby sets `mutation` on, and it is always
+              # named after the mutation with `Payload` appended.
+              (name.end_with?('Payload') && type.mutation.present?)
           end
 
           def mutation_name_for(field_name, resolver)

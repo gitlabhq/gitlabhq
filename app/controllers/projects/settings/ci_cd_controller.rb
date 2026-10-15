@@ -28,7 +28,7 @@ module Projects
 
       def show
         @entity = :project
-        @variable_limit = ::Plan.default.actual_limits.project_ci_variables
+        @variable_limit = ::GitlabSubscriptions::SystemDefined::Plan.default.actual_limits.project_ci_variables
 
         triggers = ::Ci::TriggerSerializer.new.represent(
           @project.triggers.with_last_used, current_user: current_user, project: @project

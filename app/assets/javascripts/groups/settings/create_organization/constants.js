@@ -5,3 +5,5 @@ import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 // key it by in the reconciliation UI until it is created.
 export const NEW_ORGANIZATION_ID = 1001;
 export const NEW_ORGANIZATION_GID = convertToGraphQLId(TYPE_ORGANIZATION, NEW_ORGANIZATION_ID);
+
+export const MODAL_FOOTER_PORTAL_NAME = 'create-organization-modal-footer';

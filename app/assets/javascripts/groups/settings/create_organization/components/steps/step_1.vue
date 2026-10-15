@@ -25,7 +25,7 @@ export default {
       required: true,
     },
   },
-  emits: ['update-organization'],
+  emits: ['update-organization', 'cancel', 'next'],
   computed: {
     group() {
       return this.organization.groups.nodes[0];
@@ -38,6 +38,9 @@ export default {
   <base-step
     :title="s__('Organization|Create your Organizations')"
     :illustration="$options.illustrationUrl"
+    :prev-button-text="__('Cancel')"
+    @prev="$emit('cancel')"
+    @next="$emit('next')"
   >
     <template #description>
       <p>

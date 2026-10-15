@@ -13,8 +13,24 @@ module MergeRequests
     BATCH_SIZE = 100
 
     def execute(merge_request, source = nil)
-      return if merge_request.merged?
+      return if skip_post_merge?(merge_request)
 
+      run_post_merge_steps(merge_request, source)
+    end
+
+    def create_note(merge_request, source)
+      SystemNoteService.change_status(
+        merge_request,
+        merge_request.target_project,
+        current_user,
+        merge_request.state,
+        source
+      )
+    end
+
+    private
+
+    def run_post_merge_steps(merge_request, source)
       # Mark the merge request as merged, everything that happens afterwards is
       # executed once
       unless merge_request.mark_as_merged
@@ -61,17 +77,25 @@ module MergeRequests
       )
     end
 
-    def create_note(merge_request, source)
-      SystemNoteService.change_status(
-        merge_request,
-        merge_request.target_project,
-        current_user,
-        merge_request.state,
-        source
-      )
-    end
+    # A replica read can hand us a merge request that another run already merged or is
+    # merging. State transitions are not guarded in the database, so check the primary first.
+    def skip_post_merge?(merge_request)
+      return true if merge_request.merged?
 
-    private
+      if merge_request.state_changed_since_load?
+        Gitlab::AppLogger.info(
+          class_name: self.class.name,
+          message: 'Skipping post merge, merge request state changed since it was loaded',
+          merge_request_id: merge_request.id,
+          project_id: merge_request.project_id,
+          loaded_state: merge_request.state
+        )
+
+        return true
+      end
+
+      false
+    end
 
     def close_issues(merge_request)
       return unless merge_request.target_branch == project.default_branch

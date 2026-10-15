@@ -41,6 +41,26 @@ describe('ReconciliationStep1', () => {
       expect(findBaseStep().props('illustration')).toBe(illustrationUrl);
     });
 
+    it('renders BaseStep with cancel text for prev button', () => {
+      expect(findBaseStep().props('prevButtonText')).toBe('Cancel');
+    });
+
+    it('renders BaseStep with default text for next button', () => {
+      expect(findBaseStep().props('nextButtonText')).toBe('Continue');
+    });
+
+    it('emits cancel event when BaseStep emits prev', () => {
+      findBaseStep().vm.$emit('prev');
+
+      expect(wrapper.emitted('cancel')).toEqual([[]]);
+    });
+
+    it('emits next event when BaseStep emits next', () => {
+      findBaseStep().vm.$emit('next');
+
+      expect(wrapper.emitted('next')).toEqual([[]]);
+    });
+
     it('renders description text', () => {
       expect(wrapper.text()).toContain(
         'Create an organization to manage your top-level groups. You can set up your organization structure in the next step.',

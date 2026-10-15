@@ -35311,6 +35311,25 @@ Arguments:
 | <a id="aicatalogagent-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
 | <a id="aicatalogagent-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
 
+##### `AiCatalogAgent.hasDirectProjectConfigurationsInGroup`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request.
+
+Returns [`Boolean`](#boolean).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogagent-hasdirectprojectconfigurationsingroup-groupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
+
 ##### `AiCatalogAgent.latestVersion`
 
 Latest version of the item.
@@ -35451,6 +35470,25 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="aicatalogflow-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
 | <a id="aicatalogflow-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
+
+##### `AiCatalogFlow.hasDirectProjectConfigurationsInGroup`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request.
+
+Returns [`Boolean`](#boolean).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogflow-hasdirectprojectconfigurationsingroup-groupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
 
 ##### `AiCatalogFlow.latestVersion`
 
@@ -35691,6 +35729,25 @@ Arguments:
 | <a id="aicatalogskill-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
 | <a id="aicatalogskill-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
 
+##### `AiCatalogSkill.hasDirectProjectConfigurationsInGroup`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request.
+
+Returns [`Boolean`](#boolean).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskill-hasdirectprojectconfigurationsingroup-groupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
+
 ##### `AiCatalogSkill.latestVersion`
 
 Latest version of the item.
@@ -35818,6 +35875,25 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="aicatalogthirdpartyflow-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
 | <a id="aicatalogthirdpartyflow-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
+
+##### `AiCatalogThirdPartyFlow.hasDirectProjectConfigurationsInGroup`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request.
+
+Returns [`Boolean`](#boolean).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogthirdpartyflow-hasdirectprojectconfigurationsingroup-groupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
 
 ##### `AiCatalogThirdPartyFlow.latestVersion`
 
@@ -48255,6 +48331,32 @@ Arguments:
 | <a id="group-addoneligibleusers-filterbyassignedseat"></a>`filterByAssignedSeat` | [`String`](#string) | Filter users list by assigned seat. |
 | <a id="group-addoneligibleusers-search"></a>`search` | [`String`](#string) | Search the user list. |
 | <a id="group-addoneligibleusers-sort"></a>`sort` | [`GitlabSubscriptionsUserSort`](#gitlabsubscriptionsusersort) | Sort the user list. |
+
+##### `Group.aiCatalogItems`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+AI Catalog items that the group can enable. This field can be resolved for only one group in any single request.
+
+Returns [`AiCatalogItemConnection!`](#aicatalogitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="group-aicatalogitems-enabledby"></a>`enabledBy` | [`[AiCatalogGroupItemEnabledBy!]`](#aicataloggroupitemenabledby) | Return only items enabled in any of these ways. Returns all items the group can enable when omitted or empty. |
+| <a id="group-aicatalogitems-itemtypes"></a>`itemTypes` | [`[AiCatalogItemType!]`](#aicatalogitemtype) | Types of items to retrieve. |
+| <a id="group-aicatalogitems-search"></a>`search` | [`String`](#string) | Search items by name and description. |
+| <a id="group-aicatalogitems-sort"></a>`sort` | [`AiCatalogItemsSort`](#aicatalogitemssort) | Sort order of items. |
 
 ##### `Group.aiDomainSettings`
 
@@ -69853,6 +69955,15 @@ Possible flow configuration types for AI Catalog agents.
 | ----- | ----------- |
 | <a id="aicatalogflowconfigtype-chat"></a>`CHAT` | Chat flow configuration. |
 
+### `AiCatalogGroupItemEnabledBy`
+
+Ways an AI Catalog item can be enabled in a group.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicataloggroupitemenabledby-inheritance"></a>`INHERITANCE` | Enabled for all projects in the group through group inheritance. Only top-level groups can enable items this way. Matches no items unless the `ai_catalog_group_inherited_consumers` feature flag is enabled. |
+| <a id="aicataloggroupitemenabledby-project_direct"></a>`PROJECT_DIRECT` | Enabled directly in any descendant project in the group. |
+
 ### `AiCatalogItemConsumerKind`
 
 The type of configured AI catalog item.
@@ -78677,6 +78788,25 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="aicatalogitem-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
 | <a id="aicatalogitem-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
+
+###### `AiCatalogItem.hasDirectProjectConfigurationsInGroup`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request.
+
+Returns [`Boolean`](#boolean).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitem-hasdirectprojectconfigurationsingroup-groupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group. |
 
 ###### `AiCatalogItem.latestVersion`
 

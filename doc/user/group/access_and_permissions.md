@@ -411,17 +411,12 @@ can change the project setting to another value if needed.
   top-level groups with GitLab Duo features and experiment and beta features turned on.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256761) for top-level groups
   created in GitLab 19.5 and later.
+- [Enabled for existing top-level groups](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257102) in GitLab 19.6, unless an Owner
+  turned it off.
 
 {{< /history >}}
 
-Whether this setting is on for your group depends on when the group was created:
-
-- Groups that existed when the setting was added: on only if the group had both GitLab Duo
-  features and experiment and beta features turned on at that time.
-- Groups created after that, up to GitLab 19.5: off by default.
-- Groups created in GitLab 19.5 and later: on by default.
-
-An Owner can turn the setting on or off for any top-level group.
+Access to the MCP server is on by default for all top-level groups, unless an Owner turned it off.
 
 Prerequisites:
 

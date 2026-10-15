@@ -35,8 +35,8 @@ To turn on a custom issue tracker in a project:
    - **Project URL**: The URL to view all the issues in the custom issue tracker.
    - **Issue URL**: The URL to view an issue in the custom issue tracker. The URL must contain `:id`.
      GitLab replaces `:id` with the issue number (for example,
-     `https://customissuetracker.com/project-name/:id`, which becomes
-     `https://customissuetracker.com/project-name/123`).
+     `https://customissuetracker.test/project-name/:id`, which becomes
+     `https://customissuetracker.test/project-name/123`).
    - **New issue URL**: Enter any URL.
      This URL is not used and an [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/327503)
      to remove it.
@@ -59,7 +59,7 @@ You can reference issues in a custom issue tracker using:
 GitLab ignores `<PROJECT>` when it creates the link.
 The link uses the **Issue URL**, with `:id` replaced by `<ID>`.
 For example, `API_32-143` (`<PROJECT>` of `API_32`) and `WEB-143` (`<PROJECT>` of `WEB`)
-both link to `https://customissuetracker.com/project-name/143`.
+both link to `https://customissuetracker.test/project-name/143`.
 
 Use the longer format (`<PROJECT>-<ID>`) if you have both internal and external issue
 trackers turned on.

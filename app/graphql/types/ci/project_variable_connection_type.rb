@@ -9,7 +9,7 @@ module Types
         description: 'Maximum amount of project CI/CD variables.'
 
       def limit
-        ::Plan.default.actual_limits.project_ci_variables
+        ::GitlabSubscriptions::SystemDefined::Plan.default.actual_limits.project_ci_variables
       end
     end
     # rubocop: enable Graphql/AuthorizeTypes

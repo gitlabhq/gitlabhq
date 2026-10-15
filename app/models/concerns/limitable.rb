@@ -53,7 +53,7 @@ module Limitable
 
   def global_plan_limits
     relation = self.class.all
-    limits = Plan.default.actual_limits
+    limits = ::GitlabSubscriptions::SystemDefined::Plan.default.actual_limits
 
     [limits, relation]
   end

@@ -215,3 +215,68 @@ The `custom_message` object includes key information for Git operations authenti
 - `gl_key_id`: ID of the key used for authentication.
 
 These fields are omitted when the operation is not authenticated with a key, for example HTTP(S) with a username and password, or a deploy token.
+
+### Example: Git over SSH with an SSH certificate
+
+{{< history >}}
+
+- `ca_fingerprint`, `certificate_identity`, and `certificate_trust_source` fields in `custom_message` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259751) in GitLab 19.6.
+
+{{< /history >}}
+
+When a user authenticates a Git operation with an SSH certificate through `gitlab-sshd`,
+the `custom_message` object identifies the certificate authority (CA) that signed the certificate.
+
+Fetch:
+
+```json
+{
+  "id": "1",
+  "author_id": 1,
+  "entity_id": 29,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "Sidney Jones",
+    "author_class": "User",
+    "target_id": 29,
+    "target_type": "Project",
+    "target_details": "example-project",
+    "custom_message": {
+      "protocol": "ssh",
+      "action": "git-upload-pack",
+      "written_bytes": 1048576,
+      "received_bytes": 2048,
+      "ca_fingerprint": "SHA256:2bXp0Hk2X0yL8wN1aRk6vY0oZ3cQ4mT5sU7eF9gH1jI",
+      "certificate_identity": "sidney_jones@example.com",
+      "certificate_trust_source": "group"
+    },
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "Sidney Jones",
+  "entity_path": "example-group/example-project",
+  "target_details": "example-project",
+  "created_at": "2022-07-26T05:43:53.662Z",
+  "target_type": "Project",
+  "target_id": 29,
+  "event_type": "repository_git_operation"
+}
+```
+
+The `custom_message` object includes these certificate fields:
+
+- `ca_fingerprint`: SHA256 fingerprint of the CA that signed the certificate, including the `SHA256:` prefix.
+- `certificate_identity`: The certificate `KeyId`.
+  Values longer than 1024 characters are truncated to 1024 characters, ending in `...`.
+  For `file` and `instance` trust, this value is the GitLab username.
+  For `group` trust, it can be the username or the user's primary email address.
+  Several certificates can share the same `KeyId`, so this value does not identify a single certificate.
+- `certificate_trust_source`: Where the CA is trusted. Possible values:
+  - `file`: A CA key file in the [`gitlab-sshd` configuration](../../administration/operations/gitlab_sshd_ssh_certificates.md#configure-trusted-ca-keys).
+  - `group`: A CA added to a [top-level group](../group/ssh_certificates.md).
+  - `instance`: A CA added in the [**Admin** area](../../administration/operations/gitlab_sshd_ssh_certificates.md#manage-trusted-ca-keys-in-the-admin-area)
+    or with the [instance SSH certificates API](../../api/instance_ssh_certificates.md).
+
+These fields are omitted when the operation is not authenticated with an SSH certificate through `gitlab-sshd`.
+For example, they are omitted for an SSH key, or for an SSH certificate through [OpenSSH](../../administration/operations/ssh_certificates.md).

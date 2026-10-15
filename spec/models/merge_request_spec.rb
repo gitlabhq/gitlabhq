@@ -6707,6 +6707,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#state_changed_since_load?' do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'is false when the loaded state matches the primary' do
+      expect(merge_request.state_changed_since_load?).to be(false)
+    end
+
+    it 'is true when another instance changed the state after this one was loaded' do
+      described_class.find(merge_request.id).mark_as_merged!
+
+      expect(merge_request.state_changed_since_load?).to be(true)
+    end
+  end
+
   describe "#reload_diff" do
     it 'calls MergeRequests::ReloadDiffsService#execute with correct params' do
       user = create(:user)

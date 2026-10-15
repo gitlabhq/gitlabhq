@@ -380,7 +380,7 @@ function auto_retry_if_known_flaky_test() {
 
 # Exit with an allowed_failure exit code if the flaky test was part of the MR that triggered this pipeline
 function warn_on_successfully_retried_test {
-  local changed_files=$(git diff --name-only $CI_MERGE_REQUEST_TARGET_BRANCH_SHA | grep spec)
+  local changed_files=$(git diff --name-only "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-HEAD}" HEAD | grep spec)
   echoinfo "A test was flaky and succeeded after being retried. Checking to see if flaky test is part of this MR..."
 
   if [[ "$changed_files" == "" ]]; then

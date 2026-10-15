@@ -1579,6 +1579,20 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Returns true when the in-memory state_id no longer matches what the primary
+  # database holds. This can happen because the instance was loaded from a
+  # replica that lagged behind primary, or because another process transitioned
+  # the MR (e.g. lock_mr, mark_as_merged) after this instance was loaded. Callers
+  # use this to skip work that would act on a stale copy, such as reload_diff and
+  # MergeRequests::PostMergeService.
+  def state_changed_since_load?
+    primary_state_id = ::Gitlab::Database::LoadBalancing::SessionMap
+      .current(self.class.load_balancer)
+      .use_primary { self.class.where(id: id).pick(:state_id) }
+
+    primary_state_id != state_id
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def reload_diff(current_user = nil)
     return unless open?
@@ -3167,20 +3181,6 @@ class MergeRequest < ApplicationRecord
     yield
   ensure
     self.allow_broken = previous_allow_broken
-  end
-
-  # Returns true when the in-memory state_id no longer matches what the primary
-  # database holds. This can happen because the instance was loaded from a
-  # replica that lagged behind primary, or because another process transitioned
-  # the MR (e.g. lock_mr, mark_as_merged) after this instance was loaded. The
-  # caller uses this to skip reload_diff and avoid writing an empty diff on top
-  # of a valid merged diff.
-  def state_changed_since_load?
-    primary_state_id = ::Gitlab::Database::LoadBalancing::SessionMap
-      .current(self.class.load_balancer)
-      .use_primary { self.class.where(id: id).pick(:state_id) }
-
-    primary_state_id != state_id
   end
 
   def publish_code_conflict_event

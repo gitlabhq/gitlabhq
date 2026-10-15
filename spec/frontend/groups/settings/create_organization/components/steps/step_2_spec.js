@@ -44,6 +44,31 @@ describe('ReconciliationStep2', () => {
     expect(findBaseStep().props('title')).toBe('Assign top-level groups');
   });
 
+  it('renders BaseStep with default button text', () => {
+    createComponent();
+
+    expect(findBaseStep().props()).toMatchObject({
+      prevButtonText: 'Back',
+      nextButtonText: 'Continue',
+    });
+  });
+
+  it('emits prev event when BaseStep emits prev', () => {
+    createComponent();
+
+    findBaseStep().vm.$emit('prev');
+
+    expect(wrapper.emitted('prev')).toEqual([[]]);
+  });
+
+  it('emits next event when BaseStep emits next', () => {
+    createComponent();
+
+    findBaseStep().vm.$emit('next');
+
+    expect(wrapper.emitted('next')).toEqual([[]]);
+  });
+
   describe('step description', () => {
     it('renders the singular description when the default organization initially had one group', () => {
       createComponent({ props: { initialDefaultOrgGroupIds: defaultOrgGroupIds } });

@@ -28,6 +28,7 @@ describe('ReconciliationStep3', () => {
     wrapper = shallowMountExtended(Step3, {
       propsData: {
         organization: mockNewOrganization,
+        nextButtonLoading: false,
         ...props,
       },
       stubs: {
@@ -62,6 +63,30 @@ describe('ReconciliationStep3', () => {
 
     it('renders step title', () => {
       expect(findBaseStep().props('title')).toBe('Confirm your organization');
+    });
+
+    it('renders BaseStep with default text for prev button', () => {
+      expect(findBaseStep().props('prevButtonText')).toBe('Back');
+    });
+
+    it('renders BaseStep with confirm text for next button', () => {
+      expect(findBaseStep().props('nextButtonText')).toBe('Confirm');
+    });
+
+    it('passes nextButtonLoading to BaseStep', () => {
+      expect(findBaseStep().props('nextButtonLoading')).toBe(false);
+    });
+
+    it('emits prev event when BaseStep emits prev', () => {
+      findBaseStep().vm.$emit('prev');
+
+      expect(wrapper.emitted('prev')).toEqual([[]]);
+    });
+
+    it('emits confirm event when BaseStep emits next', () => {
+      findBaseStep().vm.$emit('next');
+
+      expect(wrapper.emitted('confirm')).toEqual([[]]);
     });
 
     it('renders step description', () => {
@@ -102,6 +127,14 @@ describe('ReconciliationStep3', () => {
           )
           .exists(),
       ).toBe(true);
+    });
+  });
+
+  describe('when nextButtonLoading is true', () => {
+    it('passes nextButtonLoading to BaseStep', () => {
+      createComponent({ props: { nextButtonLoading: true } });
+
+      expect(findBaseStep().props('nextButtonLoading')).toBe(true);
     });
   });
 

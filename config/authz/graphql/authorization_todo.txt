@@ -310,6 +310,7 @@ type:DependencyFirewallPolicyAttributesType
 type:DependencyFirewallRuleActivity
 type:DependencyFirewallRuleLastModified
 type:DependencyPath
+type:DependencyPathEdge
 type:DependencyPathPage
 type:DependencyPathPageInfo
 type:DependencyPathPartial
@@ -501,6 +502,7 @@ type:NamespacePlan
 type:NamespaceProjectStatistics
 type:NamespaceSettings
 type:NamespaceSidebar
+type:NamespaceWorkItemChangesPayload
 type:NestedEnvironment
 type:NetworkPolicyEgress
 type:NotePermissions
@@ -607,6 +609,7 @@ type:ProtectedEnvironmentApprovalRuleForSummary
 type:ProtectedEnvironmentDeployAccessLevel
 type:PushAccessLevel
 type:PushEventCommit
+type:PushEventPayload
 type:PushEventRef
 type:PypiMetadata
 type:QueryComplexity

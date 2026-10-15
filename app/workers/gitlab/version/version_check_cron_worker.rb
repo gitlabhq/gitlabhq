@@ -25,6 +25,8 @@ module Gitlab
       end
 
       def perform
+        return unless Gitlab::CurrentSettings.version_check_enabled
+
         # A redirected destination is typically local, and .try_get would swallow the
         # resulting BlockedUrlError as a nil response. ServicePing::SubmitService
         # allows local requests for the same reason.

@@ -44,6 +44,15 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
     type
   end
 
+  # Helper to create an object type declared by hand, as opposed to one graphql-ruby generates
+  def hand_written_type(type_name)
+    Class.new(Types::BaseObject) do
+      graphql_name type_name
+
+      field :action, GraphQL::Types::String, null: false, description: 'Action.'
+    end
+  end
+
   # Helper to create a mock field with optional directive
   def mock_field(directive: nil)
     directives = directive ? [directive] : []
@@ -323,6 +332,39 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
         expect(task.send(:current_todo_entries)).not_to include('type:AuthorizedType')
       end
     end
+
+    context 'when graphql-ruby generates a connection, an edge and a mutation payload type' do
+      let(:node_type) { Class.new(Types::BaseObject) { graphql_name 'FramingNode' } }
+      let(:payload_type) { Class.new(Mutations::BaseMutation) { graphql_name 'CreateFraming' }.payload_type }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(
+          'FramingNodeConnection' => node_type.connection_type,
+          'FramingNodeEdge' => node_type.edge_type,
+          'CreateFramingPayload' => payload_type,
+          'Mutation' => empty_mutation_type
+        )
+      end
+
+      it 'includes none of them' do
+        expect(task.send(:current_todo_entries)).to be_empty
+      end
+    end
+
+    context 'when a hand-written type is named like a connection, an edge or a payload' do
+      let(:types) do
+        %w[HandWrittenConnection HandWrittenEdge HandWrittenPayload].index_with { |name| hand_written_type(name) }
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(types.merge('Mutation' => empty_mutation_type))
+      end
+
+      it 'includes each type entry' do
+        expect(task.send(:current_todo_entries))
+          .to contain_exactly('type:HandWrittenConnection', 'type:HandWrittenEdge', 'type:HandWrittenPayload')
+      end
+    end
   end
 
   describe '#sync_todo' do
@@ -422,7 +464,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       end
     end
 
-    context 'when types include introspection and non-object types' do
+    context 'when types include introspection types and types graphql-ruby generates' do
       let(:introspection_type) do
         type = Object.new
         type.define_singleton_method(:kind) { type }
@@ -431,24 +473,63 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
         type
       end
 
-      let(:payload_type) do
-        type = Object.new
-        type.define_singleton_method(:kind) { type }
-        type.define_singleton_method(:object?) { true }
-        type.define_singleton_method(:directives) { [] }
-        type
-      end
+      let(:node_type) { Class.new(Types::BaseObject) { graphql_name 'Issue' } }
+      let(:payload_type) { Class.new(Mutations::BaseMutation) { graphql_name 'CreateIssue' }.payload_type }
 
       before do
         allow(GitlabSchema).to receive(:types).and_return(
           '__Schema' => introspection_type,
+          'IssueConnection' => node_type.connection_type,
+          'IssueEdge' => node_type.edge_type,
           'CreateIssuePayload' => payload_type,
           'Mutation' => empty_mutation_type
         )
       end
 
-      it 'skips introspection and payload types' do
+      it 'skips introspection, connection, edge and mutation payload types' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a hand-written type is named like a connection, an edge or a payload' do
+      let(:types) do
+        %w[DependencyPathEdge NamespaceWorkItemChangesPayload PushEventPayload].index_with do |name|
+          hand_written_type(name)
+        end
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(types.merge('Mutation' => empty_mutation_type))
+      end
+
+      it 'reports a missing_authorization violation for each type' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following GraphQL mutations and/or types are missing granular token authorization.
+          #  Add `authorize_granular_token` with permissions and boundary_type to the mutation or type.
+          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/graphql_implementation_guide
+          #
+          #    - [type] DependencyPathEdge (app/graphql/types/test_type.rb)
+          #    - [type] NamespaceWorkItemChangesPayload (app/graphql/types/test_type.rb)
+          #    - [type] PushEventPayload (app/graphql/types/test_type.rb)
+          #
+          #######################################################################
+        OUTPUT
+      end
+
+      context 'when the types are listed in the todo file' do
+        before do
+          allow(task).to receive(:load_todo_entries)
+            .and_return(Set['type:DependencyPathEdge', 'type:NamespaceWorkItemChangesPayload', 'type:PushEventPayload'])
+          # If these types stop being checked, their entries are stale and the task
+          # rewrites the todo file. The stub keeps the real file intact in that case.
+          allow(described_class::TODO_FILE).to receive(:write)
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+        end
       end
     end
 

@@ -6382,6 +6382,9 @@ msgstr ""
 msgid "AdminGroups|%{planTitle} Plan"
 msgstr ""
 
+msgid "AdminGroups|Storage includes projects in this group only. Projects in subgroups aren’t included."
+msgstr ""
+
 msgid "AdminLabels|Define your default set of project labels"
 msgstr ""
 

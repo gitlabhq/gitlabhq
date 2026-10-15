@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { GlModal, GlSprintf } from '@gitlab/ui';
+import { PortalTarget } from 'portal-vue';
+import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
@@ -13,7 +14,7 @@ import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import { InternalEvents } from '~/tracking';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import transferGroupsAndConfirmOrganizationMutation from '../graphql/mutations/transfer_groups_and_confirm_organization.mutation.graphql';
-import { NEW_ORGANIZATION_GID } from '../constants';
+import { NEW_ORGANIZATION_GID, MODAL_FOOTER_PORTAL_NAME } from '../constants';
 import SkeletonLoader from './skeleton_loader.vue';
 import Step1 from './steps/step_1.vue';
 import Step2 from './steps/step_2.vue';
@@ -29,11 +30,12 @@ export default {
     errorMessage: s__('Organization|An error occurred fetching organizations. Please try again.'),
   },
   alertContainerSelector: 'js-organization-reconciliation-modal-alert-container',
+  MODAL_FOOTER_PORTAL_NAME,
   components: {
-    GlButton,
     GlModal,
     GlSprintf,
     SkeletonLoader,
+    PortalTarget,
   },
   mixins: [trackingMixin],
   model: {
@@ -144,18 +146,6 @@ export default {
     totalSteps() {
       return this.stepComponents.length;
     },
-    isFirstStep() {
-      return this.currentStep === 1;
-    },
-    isLastStep() {
-      return this.currentStep === this.totalSteps;
-    },
-    prevButtonText() {
-      return this.isFirstStep ? __('Cancel') : __('Back');
-    },
-    nextButtonText() {
-      return this.isLastStep ? __('Confirm') : __('Continue');
-    },
     stepComponents() {
       if (!this.initialDefaultOrgGroupIds.length) {
         return [Step1, Step3];
@@ -238,13 +228,13 @@ export default {
         return false;
       }
     },
-    async onNext() {
-      if (!this.isLastStep) {
-        this.currentStep += 1;
-
-        return;
-      }
-
+    onNext() {
+      this.currentStep += 1;
+    },
+    onPrev() {
+      this.currentStep -= 1;
+    },
+    async onConfirm() {
       this.trackEvent('click_confirm_organization_from_group_settings');
 
       this.nextButtonLoading = true;
@@ -273,12 +263,8 @@ export default {
         },
       ]);
     },
-    onPrev() {
-      if (this.isFirstStep) {
-        this.updateModalVisibility(false);
-      } else {
-        this.currentStep -= 1;
-      }
+    onCancel() {
+      this.updateModalVisibility(false);
     },
     onUpdate(updatedOrganizations) {
       this.organizations = updatedOrganizations;
@@ -295,7 +281,7 @@ export default {
     modal-id="organization-reconciliation-modal"
     scrollable
     :visible="visible"
-    :hide-footer="loading"
+    :hide-footer="loading || !organization"
     @change="updateModalVisibility($event)"
   >
     <div class="gl-mb-5 empty:gl-mb-0" :class="$options.alertContainerSelector"></div>
@@ -313,17 +299,20 @@ export default {
         :organization="organization"
         :initial-default-org-group-ids="initialDefaultOrgGroupIds"
         :should-create-new-organization="shouldCreateNewOrganization"
+        :next-button-loading="nextButtonLoading"
         @update="onUpdate"
         @update-organization="onUpdateOrganization"
+        @prev="onPrev"
+        @next="onNext"
+        @confirm="onConfirm"
+        @cancel="onCancel"
       />
     </template>
     <template #modal-footer>
-      <div class="gl-flex gl-w-full gl-justify-center gl-gap-3">
-        <gl-button @click="onPrev">{{ prevButtonText }}</gl-button>
-        <gl-button variant="confirm" :loading="nextButtonLoading" @click="onNext">{{
-          nextButtonText
-        }}</gl-button>
-      </div>
+      <portal-target
+        :name="$options.MODAL_FOOTER_PORTAL_NAME"
+        class="gl-flex gl-w-full gl-justify-center gl-gap-3"
+      />
     </template>
   </gl-modal>
 </template>

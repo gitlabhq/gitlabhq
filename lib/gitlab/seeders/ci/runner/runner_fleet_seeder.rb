@@ -91,7 +91,7 @@ module Gitlab
           private
 
           def within_plan_limits?
-            plan_limits = Plan.default.actual_limits
+            plan_limits = ::GitlabSubscriptions::SystemDefined::Plan.default.actual_limits
 
             if plan_limits.ci_registered_group_runners < @runner_count
               warn 'The plan limits for group runners is set to ' \

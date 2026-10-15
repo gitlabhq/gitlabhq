@@ -65,7 +65,7 @@ module Gitlab
           # Not reported: the repository is gone, so no retry can write the ref. Still
           # rescued, because `Ci::Pipeline#keep_around_commits` calls this inline from
           # an `after_commit` and must not be interrupted.
-          Gitlab::ErrorTracking.track_exception(ex, object_id: sha)
+          Gitlab::ErrorTracking.log_exception(ex, object_id: sha)
         rescue Gitlab::Git::CommandError,
           Gitlab::Git::Repository::GitError,
           Gitlab::Git::ReferencesLockedError,
