@@ -23,6 +23,7 @@ import {
   mockPipelineInputsWithRules,
   mockPipelineInputsWithComplexRules,
   mockPipelineInputsWithChainedRules,
+  mockPipelineInputsWithArrayRules,
 } from './mock_data';
 
 Vue.use(VueApollo);
@@ -903,6 +904,66 @@ describe('PipelineInputsForm', () => {
       expect(getInputByName('instance_type').isSelected).toBe(false);
       expect(getInputByName('instance_type').options).toEqual([]);
       expect(getInputByName('instance_type').value).toBe('');
+    });
+  });
+
+  describe('dynamic rules with array inputs', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithArrayRules);
+      await createComponent();
+      await selectInputs(['environment']);
+    });
+
+    it.each([
+      [[], []],
+      [['medium'], ['medium']],
+      [
+        ['small', 'medium'],
+        ['small', 'medium'],
+      ],
+      [['medium', 'unknown'], ['small']],
+    ])('resolves selection %j to %j', async (value, expected) => {
+      findInputsTable().vm.$emit('update', {
+        ...getInputByName('instance_type'),
+        value,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').value).toEqual(expected);
+    });
+
+    describe('when the selection is invalid under the next rule', () => {
+      it('uses the new rule default', async () => {
+        findInputsTable().vm.$emit('update', {
+          ...getInputByName('instance_type'),
+          value: ['medium'],
+        });
+        await nextTick();
+
+        findInputsTable().vm.$emit('update', {
+          ...getInputByName('environment'),
+          value: 'production',
+        });
+        await nextTick();
+
+        expect(getInputByName('instance_type').value).toEqual(['large']);
+        expect(getInputByName('instance_type').options).toEqual(['large', 'xlarge']);
+      });
+    });
+
+    describe('when the array input has not been edited', () => {
+      it('uses the new rule default', async () => {
+        expect(getInputByName('instance_type').value).toEqual(['small']);
+
+        findInputsTable().vm.$emit('update', {
+          ...getInputByName('environment'),
+          value: 'production',
+        });
+        await nextTick();
+
+        expect(getInputByName('instance_type').value).toEqual(['large']);
+        expect(getInputByName('instance_type').options).toEqual(['large', 'xlarge']);
+      });
     });
   });
 

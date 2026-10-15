@@ -265,6 +265,25 @@ export const mockPipelineInputsWithChainedRules = {
   },
 };
 
+const [environment, instanceType] =
+  mockPipelineInputsWithChainedRules.data.project.ciPipelineCreationInputs;
+
+export const mockPipelineInputsWithArrayRules = {
+  data: {
+    project: {
+      ...mockPipelineInputsWithChainedRules.data.project,
+      ciPipelineCreationInputs: [
+        environment,
+        {
+          ...instanceType,
+          type: 'ARRAY',
+          rules: instanceType.rules.map((rule) => ({ ...rule, default: [rule.default] })),
+        },
+      ],
+    },
+  },
+};
+
 export const mockPipelineInputsErrorResponse = {
   errors: [
     {

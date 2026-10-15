@@ -1,0 +1,10 @@
+---
+name: limit_repository_file_size_for_ai_workflows
+description: Rejects repository file reads over 3 MB for tokens with the ai_workflows scope.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633917
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262372
+rollout_issue_url:
+milestone: '19.5'
+group: group::agent foundations
+type: gitlab_com_derisk
+default_enabled: false

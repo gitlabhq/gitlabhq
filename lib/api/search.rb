@@ -119,7 +119,16 @@ module API
           search_scope: search_service.scope
         )
 
-        Gitlab::InternalEvents.track_event('perform_search', category: 'API::Search', user: current_user)
+        Gitlab::InternalEvents.track_event(
+          'perform_search',
+          category: 'API::Search',
+          user: current_user,
+          additional_properties: {
+            label: search_service.scope,
+            search_type: search_type(additional_params),
+            search_level: search_service.level
+          }
+        )
 
         preload_search_associations
 

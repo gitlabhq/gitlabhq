@@ -409,7 +409,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/graphql/mutations/dependency_proxy/packages/settings/update.rb'
     - 'ee/app/graphql/mutations/epic_tree/reorder.rb'
     - 'ee/app/graphql/mutations/epics/add_issue.rb'
-    - 'ee/app/graphql/mutations/epics/update.rb'
     - 'ee/app/graphql/mutations/gitlab_subscriptions/user_add_on_assignments/bulk_create.rb'
     - 'ee/app/graphql/mutations/gitlab_subscriptions/user_add_on_assignments/bulk_remove.rb'
     - 'ee/app/graphql/mutations/gitlab_subscriptions/user_add_on_assignments/create.rb'

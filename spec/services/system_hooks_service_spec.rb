@@ -53,87 +53,25 @@ RSpec.describe SystemHooksService, feature_category: :webhooks do
 
   describe '#execute_hooks_for with hooks in multiple organizations' do
     let_it_be(:organization) { create(:organization) }
-    let_it_be(:other_organization) { create(:organization) }
-    let_it_be(:hook) { create(:system_hook, organization: organization) }
-    let_it_be(:other_hook) { create(:system_hook, organization: other_organization) }
-
     let_it_be(:user) { create(:user, organization: organization) }
     let_it_be(:group) { create(:group, organization: organization) }
     let_it_be(:project) { create(:project, group: group, organization: organization) }
 
-    before do
-      allow(Gitlab::FileHook).to receive(:execute_all_async)
-      allow(WebHookWorker).to receive(:perform_async)
+    let_it_be_with_refind(:group_member) { create(:group_member, source: group, user: user) }
+    let_it_be_with_refind(:project_member) do
+      create(:project_member, source: project, user: create(:user, organization: organization))
     end
 
-    shared_examples 'only queues hooks of the event organization' do
-      it 'queues the hook of the event organization and not the hook of another organization' do
-        described_class.new.execute_hooks_for(model, event)
+    let_it_be_with_refind(:key) { create(:key, user: user) }
+    let_it_be_with_refind(:deploy_key) { create(:deploy_key, organization: organization) }
 
-        # Creating the model can itself queue hooks, hence `at_least(:once)`.
-        expect(WebHookWorker).to have_received(:perform_async)
-          .with(hook.id, anything, anything, anything).at_least(:once)
-        expect(WebHookWorker).not_to have_received(:perform_async).with(other_hook.id, anything, anything, anything)
-      end
-    end
+    where(model_name: %i[project group user group_member project_member key deploy_key])
 
-    context 'for a project event' do
-      let(:model) { project }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'for a group event' do
-      let(:model) { group }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'for a user event' do
-      let(:model) { user }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'for a group member event' do
-      let(:model) { create(:group_member, source: group, user: user) }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'for a project member event' do
-      let(:model) { create(:project_member, source: project, user: user) }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'for a key event' do
-      let(:model) { create(:key, user: user) }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'for a deploy key event' do
-      let(:model) { create(:deploy_key, organization: organization) }
-      let(:event) { :create }
-
-      it_behaves_like 'only queues hooks of the event organization'
-    end
-
-    context 'when the event organization has no system hooks' do
-      let_it_be(:empty_organization) { create(:organization) }
-      let_it_be(:group_without_hooks) { create(:group, organization: empty_organization) }
-
-      it 'does not queue hooks of other organizations' do
-        described_class.new.execute_hooks_for(group_without_hooks, :create)
-
-        expect(WebHookWorker).not_to have_received(:perform_async)
+    with_them do
+      it_behaves_like 'system hook delivery scoped to the organization' do
+        def execute_system_hooks
+          described_class.new.execute_hooks_for(public_send(model_name), :create)
+        end
       end
     end
   end
@@ -160,12 +98,10 @@ RSpec.describe SystemHooksService, feature_category: :webhooks do
       subject
     end
 
-    it 'does not execute hooks of other organizations' do
-      other_hook = create(:system_hook, organization: create(:organization))
-
-      expect(other_hook).not_to receive(:async_execute)
-
-      subject
+    it_behaves_like 'system hook delivery scoped to the organization' do
+      def execute_system_hooks
+        described_class.new.execute_hooks(data, organization: organization)
+      end
     end
 
     it 'requires an organization' do

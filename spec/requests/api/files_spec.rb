@@ -157,6 +157,44 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
   end
 
+  shared_examples 'ai_workflows file size limit' do
+    subject(:file_action) { nil }
+
+    let(:other_file_action) { nil }
+    let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+    before do
+      stub_const('API::Files::MAX_AI_WORKFLOW_BLOB_SIZE', 5)
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).with(user, :duo_workflow, project).and_return(true)
+    end
+
+    it 'rejects a file over the limit', :aggregate_failures do
+      file_action
+
+      expect(response).to have_gitlab_http_status(:payload_too_large)
+      expect(json_response['message']).to match(/File is too large to read: \d+ bytes exceeds the limit of 5 bytes/)
+    end
+
+    it 'does not limit tokens without the ai_workflows scope' do
+      other_file_action
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when limit_repository_file_size_for_ai_workflows is disabled' do
+      before do
+        stub_feature_flags(limit_repository_file_size_for_ai_workflows: false)
+      end
+
+      it 'returns the file' do
+        file_action
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   shared_examples 'validates file params' do
     let(:current_user) { user }
 
@@ -629,6 +667,12 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         subject(:file_action) { get api(route(file_path), oauth_access_token: oauth_token), params: params }
 
         let(:expected_status) { :ok }
+      end
+
+      it_behaves_like 'ai_workflows file size limit' do
+        subject(:file_action) { get api(route(file_path), oauth_access_token: oauth_token), params: params }
+
+        let(:other_file_action) { get api(route(file_path), user), params: params }
       end
     end
 
@@ -1201,6 +1245,16 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         end
 
         let(:expected_status) { :ok }
+      end
+
+      it_behaves_like 'ai_workflows file size limit' do
+        subject(:file_action) do
+          get api(route(file_path) + '/raw', oauth_access_token: oauth_token), params: params, headers: workhorse_headers
+        end
+
+        let(:other_file_action) do
+          get api(route(file_path) + '/raw', user), params: params, headers: workhorse_headers
+        end
       end
     end
 

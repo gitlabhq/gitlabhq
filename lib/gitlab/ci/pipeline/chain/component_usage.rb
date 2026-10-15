@@ -20,13 +20,17 @@ module Gitlab
           private
 
           def enqueue_tracking_job
-            serialized_components = included_components.map do |component_hash|
+            serialized_components = included_components.filter_map do |component_hash|
+              next unless component_hash[:project]
+
               {
                 'project_id' => component_hash[:project].id,
                 'sha' => component_hash[:sha],
                 'name' => component_hash[:name]
               }
             end
+
+            return if serialized_components.empty?
 
             ::Ci::Catalog::Resources::TrackComponentUsageWorker.perform_async(
               project.id,

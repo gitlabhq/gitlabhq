@@ -45,8 +45,12 @@ module Gitlab
                     errors.add(:base, "rule must define 'options' with at least one value and a 'default'")
                   end
 
-                  if has_default && has_options && options.exclude?(config[:default])
-                    errors.add(:base, "default '#{config[:default]}' must be one of the options")
+                  if has_default && has_options
+                    defaults = config[:default].is_a?(Array) ? config[:default] : [config[:default]]
+
+                    (defaults - options).each do |value|
+                      errors.add(:base, "default '#{value}' must be one of the options")
+                    end
                   end
                 end
               end

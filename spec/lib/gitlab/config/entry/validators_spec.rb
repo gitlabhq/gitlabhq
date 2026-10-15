@@ -284,6 +284,71 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
     end
   end
 
+  describe described_class::BooleanValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      true   | true
+      false  | true
+      nil    | false
+      'true' | false
+      0      | false
+      {}     | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, boolean: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config))
+            .to contain_exactly('should be a boolean value')
+        end
+      end
+    end
+  end
+
+  describe described_class::HashOrBooleanValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      true     | true
+      false    | true
+      {}       | true
+      { a: 1 } | true
+      nil      | false
+      'true'   | false
+      []       | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, hash_or_boolean: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config))
+            .to contain_exactly('should be a hash or a boolean value')
+        end
+      end
+    end
+  end
+
   describe described_class::DurationValidator do
     using RSpec::Parameterized::TableSyntax
 

@@ -2,7 +2,8 @@
 name: decision_log
 description: Enable the decision log widget on work items
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249268
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633878
 milestone: '19.3'
 group: group::spec-driven development
-type: wip
+type: beta
 default_enabled: false

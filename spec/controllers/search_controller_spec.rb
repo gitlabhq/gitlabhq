@@ -107,27 +107,90 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
 
       it_behaves_like 'internal event tracking' do
+        before do
+          stub_feature_flags(search_relevancy_join_key: false)
+        end
+
         let(:params) { { search: 'foobar' } }
         let(:event) { 'perform_search' }
         let(:category) { described_class.to_s }
         let(:namespace) { nil }
         let(:project) { nil }
+        let(:label) { 'projects' }
+        let(:additional_properties) { { search_type: 'basic', search_level: 'global' } }
 
         subject(:tracked_event) { get :show, params: params }
+      end
+
+      describe 'perform_search additional properties' do
+        let_it_be(:search_group) { create(:group) }
+
+        before_all do
+          search_group.add_developer(user)
+        end
+
+        # Flag off, so these exact hashes prove a rollback keeps the segmentation.
+        before do
+          stub_feature_flags(search_relevancy_join_key: false)
+        end
+
+        it 'segments the event by scope, search type and search level' do
+          expect { get :show, params: { search: 'foobar', scope: 'merge_requests' } }
+            .to trigger_internal_events('perform_search').with(
+              user: user,
+              category: described_class.to_s,
+              additional_properties: {
+                label: 'merge_requests',
+                search_type: 'basic',
+                search_level: 'global'
+              }
+            )
+        end
+
+        # `issues` is legacy-converted to `work_items`, and the event reports the
+        # resolved scope, not the requested one.
+        it 'records the resolved scope for a legacy scope name' do
+          expect { get :show, params: { search: 'foobar', scope: 'issues' } }
+            .to trigger_internal_events('perform_search').with(
+              user: user,
+              category: described_class.to_s,
+              additional_properties: {
+                label: 'work_items',
+                search_type: 'basic',
+                search_level: 'global'
+              }
+            )
+        end
+
+        it 'records the group search level for a group-scoped search' do
+          expect { get :show, params: { search: 'foobar', scope: 'merge_requests', group_id: search_group.id } }
+            .to trigger_internal_events('perform_search').with(
+              user: user,
+              category: described_class.to_s,
+              additional_properties: {
+                label: 'merge_requests',
+                search_type: 'basic',
+                search_level: 'group'
+              }
+            )
+        end
       end
 
       describe 'search relevancy join key' do
         let(:params) { { search: 'foobar' } }
         let(:uuid_regex) { /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/ }
+        # Unflagged, so these ride along in both flag states and every
+        # exact-hash expectation here carries them.
+        let(:segmentation) { { label: 'projects', search_type: 'basic', search_level: 'global' } }
 
         context 'when search_relevancy_join_key is enabled' do
           it 'attaches a search request ID to perform_search' do
             expect { get :show, params: params }.to trigger_internal_events('perform_search').with(
               user: user,
               category: described_class.to_s,
-              additional_properties: {
+              additional_properties: segmentation.merge(
                 property: a_string_matching(uuid_regex)
-              }
+              )
             )
           end
 
@@ -211,14 +274,15 @@ RSpec.describe SearchController, feature_category: :global_search do
             stub_feature_flags(search_relevancy_join_key: false)
           end
 
-          it 'fires perform_search with no additional_properties key at all' do
-            allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
-
-            expect(Gitlab::InternalEvents).to receive(:track_event)
-              .with('perform_search', hash_excluding(:additional_properties))
-              .and_call_original
-
-            get :show, params: params
+          # The segmentation is unflagged, so the rollback removes the join key
+          # only -- what must be absent is the `property` slot, not the whole
+          # additional_properties hash.
+          it 'fires perform_search with the segmentation but no join key' do
+            expect { get :show, params: params }.to trigger_internal_events('perform_search').with(
+              user: user,
+              category: described_class.to_s,
+              additional_properties: segmentation
+            )
           end
 
           it 'does not log a search request ID' do

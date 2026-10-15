@@ -36,20 +36,6 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
   describe 'GET #index' do
     subject(:get_index) { get :index }
 
-    let_it_be(:hook) do
-      create(:system_hook, url: 'http://example.com/current', organization: current_organization)
-    end
-
-    let_it_be(:other_hook) do
-      create(:system_hook, url: 'http://example.com/other', organization: create(:organization))
-    end
-
-    it 'lists system hooks for the current organization', :aggregate_failures do
-      expect(controller).to receive(:hooks=).with(contain_exactly(hook))
-
-      get_index
-    end
-
     it_behaves_like 'disabled on GitLab.com'
   end
 
@@ -135,22 +121,6 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
       end
     end
 
-    context 'when the hook belongs to another organization' do
-      let_it_be(:other_hook) { create(:system_hook, organization: create(:organization)) }
-
-      let(:hook_params) do
-        {
-          url: 'http://example.com/updated'
-        }
-      end
-
-      it 'returns a 404 response' do
-        put :update, params: { id: other_hook.id, hook: hook_params }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'with signing_token', :aggregate_failures do
       let(:valid_signing_token) { "whsec_#{Base64.strict_encode64('a' * 32)}" }
 
@@ -213,31 +183,8 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
 
     it_behaves_like 'Web hook destroyer'
 
-    context 'when the hook belongs to another organization' do
-      let_it_be(:other_hook) { create(:system_hook, organization: create(:organization)) }
-      let(:params) { { id: other_hook } }
-
-      it 'returns a 404 response' do
-        delete :destroy, params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     it_behaves_like 'disabled on GitLab.com' do
       subject { delete :destroy, params: params }
-    end
-  end
-
-  describe 'POST #test' do
-    context 'when the hook belongs to another organization' do
-      let_it_be(:other_hook) { create(:system_hook, organization: create(:organization)) }
-
-      it 'returns a 404 response' do
-        post :test, params: { id: other_hook }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
   end
 end

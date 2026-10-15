@@ -110,6 +110,11 @@ module EncryptedUserPassword
 
     return true if migrated_password?
 
+    # The UPDATE below raises on a read-only database, such as a Geo
+    # secondary's, and would fail the sign-in. The hash is migrated the
+    # next time the user signs in where the database is writable.
+    return true if Gitlab::Database.read_only?
+
     skip_password_change_notification!
     # We get some password_change emails even when
     # skip_password_change_notification! is set and update_attribute is used.

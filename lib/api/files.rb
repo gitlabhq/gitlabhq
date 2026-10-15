@@ -6,6 +6,10 @@ module API
 
     FILE_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(file_path: ::API::NO_SLASH_URL_PART_REGEX)
 
+    # Workhorse and the Duo Workflow Service cap each agent message at 4 MiB, which the
+    # Base64-encoded content of a larger file does not fit into.
+    MAX_AI_WORKFLOW_BLOB_SIZE = 3_000_000
+
     # Prevents returning plain/text responses for files with .txt extension
     after_validation { content_type "application/json" }
 
@@ -97,6 +101,17 @@ module API
         return if can?(current_user, :duo_workflow, user_project) || can?(current_user, :access_duo_agentic_chat, user_project)
 
         forbidden!('Insufficient permissions for Duo Agent Platform')
+      end
+
+      def check_ai_workflow_blob_size!
+        return unless ai_workflow_scope?
+        return unless @blob.size > MAX_AI_WORKFLOW_BLOB_SIZE
+        return unless Feature.enabled?(:limit_repository_file_size_for_ai_workflows, user_project)
+
+        file_too_large!(
+          "413 File is too large to read: #{@blob.size} bytes exceeds the limit of " \
+            "#{MAX_AI_WORKFLOW_BLOB_SIZE} bytes. Search the repository for the code you need instead."
+        )
       end
 
       def user_access
@@ -281,6 +296,7 @@ module API
         job_token_policies: :read_repositories, allow_public_access_for_enabled_project_features: :repository
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
+        check_ai_workflow_blob_size!
 
         if params[:lfs] && @blob.stored_externally?
           lfs_object = LfsObject.find_by_oid(@blob.lfs_oid)
@@ -330,6 +346,7 @@ module API
         # Loads metadata for @blob as a side effect, but not not the actual data
         #
         assign_file_vars!
+        check_ai_workflow_blob_size!
         check_rate_limit_for_blob(@blob, :repository_files)
 
         # If #check_rate_limit_for_blob hasn't stopped the request, allow data

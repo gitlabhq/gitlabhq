@@ -1303,6 +1303,21 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
       end
 
+      context 'when the pipeline variables file is missing from storage' do
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
+        before_all do
+          create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline).file.remove!
+        end
+
+        it 'returns not found', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Pipeline variables file Not Found')
+        end
+      end
+
       it_behaves_like 'authorizing granular token permissions', :read_pipeline_variable do
         let(:boundary_object) { project }
         let(:request) do

@@ -19854,6 +19854,36 @@ CREATE SEQUENCE dependency_firewall_activity_stats_id_seq
 
 ALTER SEQUENCE dependency_firewall_activity_stats_id_seq OWNED BY dependency_firewall_activity_stats.id;
 
+CREATE TABLE dependency_firewall_namespace_prevented_stats (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    window_start date NOT NULL,
+    vulnerabilities_prevented integer DEFAULT 0 NOT NULL,
+    malicious_packages_prevented integer DEFAULT 0 NOT NULL,
+    malicious_packages_warned_only integer DEFAULT 0 NOT NULL,
+    license_risks_prevented integer DEFAULT 0 NOT NULL,
+    license_risks_warned_only integer DEFAULT 0 NOT NULL,
+    severity_critical integer DEFAULT 0 NOT NULL,
+    severity_high integer DEFAULT 0 NOT NULL,
+    severity_medium integer DEFAULT 0 NOT NULL,
+    severity_low integer DEFAULT 0 NOT NULL,
+    severity_info integer DEFAULT 0 NOT NULL,
+    severity_unknown integer DEFAULT 0 NOT NULL,
+    window_days smallint NOT NULL,
+    CONSTRAINT check_dep_fw_ns_prevented_stats_window_days CHECK ((window_days = ANY (ARRAY[7, 30])))
+);
+
+CREATE SEQUENCE dependency_firewall_namespace_prevented_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dependency_firewall_namespace_prevented_stats_id_seq OWNED BY dependency_firewall_namespace_prevented_stats.id;
+
 CREATE TABLE dependency_firewall_policy_rules (
     id bigint NOT NULL,
     security_policy_id bigint NOT NULL,
@@ -37673,6 +37703,8 @@ ALTER TABLE ONLY dast_sites ALTER COLUMN id SET DEFAULT nextval('dast_sites_id_s
 
 ALTER TABLE ONLY dependency_firewall_activity_stats ALTER COLUMN id SET DEFAULT nextval('dependency_firewall_activity_stats_id_seq'::regclass);
 
+ALTER TABLE ONLY dependency_firewall_namespace_prevented_stats ALTER COLUMN id SET DEFAULT nextval('dependency_firewall_namespace_prevented_stats_id_seq'::regclass);
+
 ALTER TABLE ONLY dependency_firewall_policy_rules ALTER COLUMN id SET DEFAULT nextval('dependency_firewall_policy_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY dependency_firewall_prevented_packages ALTER COLUMN id SET DEFAULT nextval('dependency_firewall_prevented_packages_id_seq'::regclass);
@@ -41117,6 +41149,9 @@ ALTER TABLE namespace_settings
 
 ALTER TABLE ONLY dependency_firewall_activity_stats
     ADD CONSTRAINT dependency_firewall_activity_stats_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dependency_firewall_namespace_prevented_stats
+    ADD CONSTRAINT dependency_firewall_namespace_prevented_stats_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dependency_firewall_policy_rules
     ADD CONSTRAINT dependency_firewall_policy_rules_pkey PRIMARY KEY (id);
@@ -45920,6 +45955,8 @@ CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags U
 CREATE INDEX i_dep_fw_activity_stats_project_time ON dependency_firewall_activity_stats USING btree (project_id, stat_time);
 
 CREATE UNIQUE INDEX i_dep_fw_activity_stats_unique ON dependency_firewall_activity_stats USING btree (dependency_firewall_policy_rule_id, project_id, stat_time, outcome) NULLS NOT DISTINCT;
+
+CREATE UNIQUE INDEX i_dep_fw_ns_prevented_stats_on_namespace_and_window ON dependency_firewall_namespace_prevented_stats USING btree (namespace_id, window_days);
 
 CREATE INDEX i_dep_fw_prevented_packages_blocked ON dependency_firewall_prevented_packages USING btree (project_id, rule_type, last_blocked_at);
 
@@ -62575,6 +62612,9 @@ ALTER TABLE ONLY personal_access_token_last_used_ips
 
 ALTER TABLE ONLY packages_rubygems_metadata
     ADD CONSTRAINT fk_rails_95a3f5ce78 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_firewall_namespace_prevented_stats
+    ADD CONSTRAINT fk_rails_95b888f15d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT fk_rails_9698717cdd FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

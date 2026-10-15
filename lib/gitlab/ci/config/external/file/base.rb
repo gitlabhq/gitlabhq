@@ -73,6 +73,8 @@ module Gitlab
             end
 
             def hash
+              return [params, context.bundle.identity].hash if context.bundle
+
               [params, context.project&.full_path, context.sha].hash
             end
 

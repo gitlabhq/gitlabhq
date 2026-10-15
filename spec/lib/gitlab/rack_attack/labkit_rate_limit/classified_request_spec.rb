@@ -301,9 +301,9 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         end
       end
 
-      it 'ignores a token of any scope on other OAuth paths' do
-        expect(facts_for('/oauth/token/info/extra', 'HTTP_AUTHORIZATION' => "Bearer #{openid_token.plaintext_token}"))
-          .to include(requester_id: nil)
+      it 'ignores a token of any scope on the token endpoint' do
+        expect(facts_for('/oauth/token', 'REQUEST_METHOD' => 'POST',
+          'HTTP_AUTHORIZATION' => "Bearer #{openid_token.plaintext_token}")).to include(requester_id: nil)
       end
     end
 

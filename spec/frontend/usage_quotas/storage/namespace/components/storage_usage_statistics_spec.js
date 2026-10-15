@@ -13,11 +13,10 @@ describe('StorageUsageStatistics', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(StorageUsageStatistics, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
     });
   };

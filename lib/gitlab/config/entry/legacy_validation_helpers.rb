@@ -13,10 +13,6 @@ module Gitlab
         def validate_string(value)
           value.is_a?(String) || value.is_a?(Symbol)
         end
-
-        def validate_boolean(value)
-          value.in?([true, false])
-        end
       end
     end
   end

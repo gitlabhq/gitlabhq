@@ -21,6 +21,27 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
   end
 
   describe 'rules configurations' do
+    context 'with array input defaults in conditional and fallback rules' do
+      let(:config) do
+        {
+          type: 'array',
+          rules: [
+            {
+              if: '$[[ inputs.environment ]] == "production"',
+              options: %w[option_a option_b],
+              default: %w[option_a option_b]
+            },
+            { options: %w[option_a option_b], default: [] }
+          ]
+        }
+      end
+
+      it 'is valid', :aggregate_failures do
+        expect(entry).to be_valid
+        expect(entry.errors).to be_empty
+      end
+    end
+
     context 'when rules are valid' do
       let(:config) do
         {

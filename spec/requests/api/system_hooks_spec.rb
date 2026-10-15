@@ -77,41 +77,33 @@ RSpec.describe API::SystemHooks, :with_current_organization, feature_category: :
     it_behaves_like 'PUT webhook API endpoints with a branch filter', ''
   end
 
-  describe 'organization scoping', :aggregate_failures do
-    let_it_be(:other_organization) { create(:organization) }
-    let_it_be_with_refind(:other_hook) do
-      create(:system_hook,
-        url: 'http://other.example.com',
-        url_variables: { 'abc' => 'other secret' },
-        custom_headers: { 'X-Other' => 'other value' },
-        organization: other_organization)
-    end
-
-    let(:other_hook_uri) { "/hooks/#{other_hook.id}" }
+  describe 'organization scoping' do
+    let(:organization) { current_organization }
 
     def admin_api(path)
       api(path, admin, admin_mode: true)
     end
 
     describe 'GET /hooks' do
-      it 'returns only hooks of the current organization' do
-        get admin_api('/hooks')
+      it_behaves_like 'system hook listing scoped to the organization' do
+        def listed_system_hook_ids
+          get admin_api('/hooks')
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.pluck('id')).to contain_exactly(hook.id)
+          json_response.pluck('id')
+        end
       end
     end
 
     describe 'GET /hooks/:hook_id' do
-      it 'returns 404 for a hook in another organization' do
-        get admin_api(other_hook_uri)
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization' do
+        def request_system_hook(hook)
+          get admin_api("/hooks/#{hook.id}")
+        end
       end
     end
 
     describe 'POST /hooks' do
-      it 'creates the hook in the current organization' do
+      it 'creates the hook in the current organization', :aggregate_failures do
         post admin_api('/hooks'), params: { url: 'http://example.com/new' }
 
         expect(response).to have_gitlab_http_status(:created)
@@ -120,72 +112,62 @@ RSpec.describe API::SystemHooks, :with_current_organization, feature_category: :
     end
 
     describe 'PUT /hooks/:hook_id' do
-      it 'returns 404 and does not update a hook in another organization' do
-        expect do
-          put admin_api(other_hook_uri), params: { url: 'http://changed.example.com' }
-        end.not_to change { other_hook.reload.attributes }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization' do
+        def request_system_hook(hook)
+          put admin_api("/hooks/#{hook.id}"), params: { url: 'http://changed.example.com' }
+        end
       end
     end
 
     describe 'DELETE /hooks/:hook_id' do
-      it 'returns 404 and does not delete a hook in another organization' do
-        expect do
-          delete admin_api(other_hook_uri)
-        end.not_to change { SystemHook.count }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization' do
+        def request_system_hook(hook)
+          delete admin_api("/hooks/#{hook.id}")
+        end
       end
     end
 
     describe 'POST /hooks/:hook_id' do
-      it 'returns 404 and does not execute a hook in another organization' do
-        expect(WebHookService).not_to receive(:new)
-
-        post admin_api(other_hook_uri)
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization' do
+        def request_system_hook(hook)
+          post admin_api("/hooks/#{hook.id}")
+        end
       end
     end
 
     describe 'PUT /hooks/:hook_id/url_variables/:key' do
-      it 'returns 404 and does not change a hook in another organization' do
-        expect do
-          put admin_api("#{other_hook_uri}/url_variables/abc"), params: { value: 'changed' }
-        end.not_to change { other_hook.reload.url_variables }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization',
+        hook_attributes: { url_variables: { 'abc' => 'secret' } } do
+        def request_system_hook(hook)
+          put admin_api("/hooks/#{hook.id}/url_variables/abc"), params: { value: 'changed' }
+        end
       end
     end
 
     describe 'DELETE /hooks/:hook_id/url_variables/:key' do
-      it 'returns 404 and does not change a hook in another organization' do
-        expect do
-          delete admin_api("#{other_hook_uri}/url_variables/abc")
-        end.not_to change { other_hook.reload.url_variables }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization',
+        hook_attributes: { url_variables: { 'abc' => 'secret' } } do
+        def request_system_hook(hook)
+          delete admin_api("/hooks/#{hook.id}/url_variables/abc")
+        end
       end
     end
 
     describe 'PUT /hooks/:hook_id/custom_headers/:key' do
-      it 'returns 404 and does not change a hook in another organization' do
-        expect do
-          put admin_api("#{other_hook_uri}/custom_headers/X-Other"), params: { value: 'changed' }
-        end.not_to change { other_hook.reload.custom_headers }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization',
+        hook_attributes: { custom_headers: { 'X-Custom' => 'value' } } do
+        def request_system_hook(hook)
+          put admin_api("/hooks/#{hook.id}/custom_headers/X-Custom"), params: { value: 'changed' }
+        end
       end
     end
 
     describe 'DELETE /hooks/:hook_id/custom_headers/:key' do
-      it 'returns 404 and does not change a hook in another organization' do
-        expect do
-          delete admin_api("#{other_hook_uri}/custom_headers/X-Other")
-        end.not_to change { other_hook.reload.custom_headers }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'system hook lookup scoped to the organization',
+        hook_attributes: { custom_headers: { 'X-Custom' => 'value' } } do
+        def request_system_hook(hook)
+          delete admin_api("/hooks/#{hook.id}/custom_headers/X-Custom")
+        end
       end
     end
   end

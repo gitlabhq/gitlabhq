@@ -66,12 +66,12 @@ describe('AnalyticsDashboardsBreadcrumbs', () => {
     },
   };
 
-  const createWrapper = ({ props = {}, mocks = {} } = {}) => {
+  const createWrapper = ({ mocks = {} } = {}) => {
     router = new VueRouter(mockRouter);
 
     wrapper = shallowMount(AnalyticsDashboardsBreadcrumbs, {
       router,
-      propsData: { staticBreadcrumbs: [], ...props },
+      propsData: { staticBreadcrumbs: [] },
       global: {
         mocks: {
           $route: mockRoute,

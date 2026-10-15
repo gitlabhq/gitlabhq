@@ -314,16 +314,12 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
           perform
         end
 
-        it 'only queues repository update system hooks of the project organization' do
-          hook = create(:system_hook, organization: project.organization)
-          other_hook = create(:system_hook, organization: create(:organization))
-          allow(WebHookWorker).to receive(:perform_async)
-          allow(Gitlab::FileHook).to receive(:execute_all_async)
+        it_behaves_like 'system hook delivery scoped to the organization' do
+          let(:organization) { project.organization }
 
-          perform
-
-          expect(WebHookWorker).to have_received(:perform_async).with(hook.id, anything, anything, anything)
-          expect(WebHookWorker).not_to have_received(:perform_async).with(other_hook.id, anything, anything, anything)
+          def execute_system_hooks
+            perform
+          end
         end
 
         it_behaves_like 'internal event tracking' do

@@ -36,6 +36,17 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
   end
 
+  shared_examples 'perform_search event recorded' do |scope:, level:, search: ''|
+    it 'records scope, search type and search level on the event' do
+      expect { get api(endpoint, user), params: { scope: scope, search: search } }
+        .to trigger_internal_events('perform_search').with(
+          user: user,
+          category: described_class.to_s,
+          additional_properties: { label: scope.to_s, search_type: 'basic', search_level: level }
+        )
+    end
+  end
+
   shared_examples 'orderable by created_at' do |scope:|
     it 'allows ordering results by created_at asc' do
       get api(endpoint, user), params: { scope: scope, search: 'sortable', order_by: 'created_at', sort: 'asc' }
@@ -305,6 +316,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
             let(:category) { described_class.to_s }
             let(:project) { nil }
             let(:namespace) { nil }
+            let(:label) { scope.to_s }
+            let(:additional_properties) { { search_type: 'basic', search_level: 'global' } }
 
             subject(:tracked_event) do
               get api(endpoint, user), params: { scope: scope, search: 'foobar' }
@@ -336,6 +349,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           it_behaves_like 'response is correct', schema: 'public_api/v4/issues'
 
           it_behaves_like 'apdex recorded', scope: 'issues', level: 'global'
+
+          it_behaves_like 'perform_search event recorded', scope: 'issues', level: 'global'
 
           it_behaves_like 'issues orderable by created_at'
 
@@ -894,6 +909,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         it_behaves_like 'apdex recorded', scope: 'issues', level: 'group'
 
+        it_behaves_like 'perform_search event recorded', scope: 'issues', level: 'group'
+
         it_behaves_like 'issues orderable by created_at'
 
         describe 'pagination' do
@@ -1102,6 +1119,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         it_behaves_like 'issues orderable by created_at'
 
         it_behaves_like 'apdex recorded', scope: 'issues', level: 'project'
+
+        it_behaves_like 'perform_search event recorded', scope: 'issues', level: 'project'
 
         describe 'pagination' do
           before do

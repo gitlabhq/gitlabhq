@@ -128,6 +128,53 @@ RSpec.describe User, feature_category: :system_access do
         end
       end
     end
+
+    context 'when the database is read-only' do
+      before do
+        user # created while the database is still writable
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
+
+      shared_examples 'accepts the password without migrating its hash' do
+        it 'returns true and does not write a new hash' do
+          expect(user).not_to receive(:update_column)
+
+          expect { validate_password }.not_to change { user.reload.encrypted_password }
+          expect(validate_password).to be(true)
+        end
+      end
+
+      context 'when the user password is BCrypt with work factor 4' do
+        let(:encrypted_password) { "$2a$04$ThzqXSFnlW3uH86uQ79puOU7vARSFuuNzb1nUGfsBeYtCLkdymAQW" }
+        let(:password) { 'security' }
+
+        it_behaves_like 'accepts the password without migrating its hash'
+      end
+
+      context 'when the user password is PBKDF2+SHA512 and the default encryption method is BCrypt' do
+        let(:encrypted_password) do
+          Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
+            password, 20_000, Devise.friendly_token[0, 16])
+        end
+
+        it_behaves_like 'accepts the password without migrating its hash'
+      end
+
+      context 'when in FIPS mode and the user password is BCrypt', :fips_mode do
+        let(:encrypted_password) { Devise::Encryptor.digest(described_class, password) }
+
+        it_behaves_like 'accepts the password without migrating its hash'
+      end
+
+      context 'when in FIPS mode and the user password is PBKDF2+SHA512 with salt length 16', :fips_mode do
+        let(:encrypted_password) do
+          Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
+            password, 20_000, Devise.friendly_token[0, 16])
+        end
+
+        it_behaves_like 'accepts the password without migrating its hash'
+      end
+    end
   end
 
   describe '#password=' do

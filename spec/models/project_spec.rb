@@ -7949,31 +7949,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'with system hooks in multiple organizations' do
-      let_it_be(:other_organization) { create(:organization) }
+      let(:organization) { project.organization }
 
-      let!(:system_hook) do
-        create(:system_hook, organization: project.organization,
-          push_events: true, tag_push_events: true, merge_requests_events: true)
-      end
+      where(scope: %i[push_hooks tag_push_hooks merge_request_hooks])
 
-      let!(:other_system_hook) do
-        create(:system_hook, organization: other_organization,
-          push_events: true, tag_push_events: true, merge_requests_events: true)
-      end
-
-      before do
-        allow(WebHookWorker).to receive(:perform_async)
-        allow(Gitlab::FileHook).to receive(:execute_all_async)
-      end
-
-      %i[push_hooks tag_push_hooks merge_request_hooks].each do |scope|
-        it "only queues system hooks of the project organization for #{scope}" do
-          project.execute_hooks(data, scope)
-
-          expect(WebHookWorker).to have_received(:perform_async)
-            .with(system_hook.id, anything, anything, anything)
-          expect(WebHookWorker).not_to have_received(:perform_async)
-            .with(other_system_hook.id, anything, anything, anything)
+      with_them do
+        it_behaves_like 'system hook delivery scoped to the organization',
+          hook_attributes: { push_events: true, tag_push_events: true, merge_requests_events: true } do
+          def execute_system_hooks
+            project.execute_hooks(data, scope)
+          end
         end
       end
     end
@@ -8192,10 +8177,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.has_active_hooks?).to be(true)
     end
 
-    it 'returns false when a matching system hook only exists in another organization' do
-      create(:system_hook, push_events: true, organization: create(:organization))
+    it_behaves_like 'system hook presence check scoped to the organization', hook_attributes: { push_events: true } do
+      let(:organization) { project.organization }
 
-      expect(project.has_active_hooks?).to be(false)
+      def system_hooks_active?
+        project.has_active_hooks?(:push_hooks)
+      end
     end
 
     it 'returns true when a plugin exists' do

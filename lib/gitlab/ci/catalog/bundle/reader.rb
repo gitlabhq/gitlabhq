@@ -24,6 +24,13 @@ module Gitlab
             component.file.read
           end
 
+          def bundle
+            return unless available?
+
+            Format.load(content)
+          end
+          strong_memoize_attr :bundle
+
           private
 
           attr_reader :server_fqdn, :full_path, :semver, :component_name

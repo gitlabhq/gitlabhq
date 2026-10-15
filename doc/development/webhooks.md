@@ -160,6 +160,31 @@ If you call `SystemHooksService#execute_hooks` directly, pass the `organization:
 SystemHooksService.new.execute_hooks(payload, :member_approval_hooks, organization: project.organization)
 ```
 
+Data isolation does not scope the `web_hooks` table, because the table has more than one sharding key.
+Any code that finds, lists, checks for, or delivers system hooks must filter by organization.
+To test the filter, use the shared examples in
+`spec/support/shared_examples/web_hooks/system_hook_organization_isolation_shared_examples.rb`.
+Each example needs an `organization` and one method that runs the code path:
+
+| Shared example | Method to define |
+| -------------- | ---------------- |
+| `system hook delivery scoped to the organization` | `execute_system_hooks` |
+| `system hook presence check scoped to the organization` | `system_hooks_active?` |
+| `system hook listing scoped to the organization` | `listed_system_hook_ids` |
+| `system hook lookup scoped to the organization` | `request_system_hook(hook)` |
+
+For example, in a request spec with the `:with_current_organization` metadata:
+
+```ruby
+it_behaves_like 'system hook lookup scoped to the organization' do
+  let(:organization) { current_organization }
+
+  def request_system_hook(hook)
+    get api("/hooks/#{hook.id}", admin, admin_mode: true)
+  end
+end
+```
+
 ### Trigger with accurate payloads
 
 Webhook payloads must accurately represent the state of data at the time of the event.

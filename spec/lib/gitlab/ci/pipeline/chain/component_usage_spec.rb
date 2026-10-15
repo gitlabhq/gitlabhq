@@ -99,6 +99,43 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
       end
     end
 
+    context 'when a component resolved from a bundle' do
+      let(:bundled_component_hash) { { project: nil, sha: 'bundle_sha', name: 'bundled_component' } }
+
+      before do
+        allow(command).to receive(:yaml_processor_result)
+          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result,
+            included_components: included_components
+          ))
+      end
+
+      context 'with source components too' do
+        let(:included_components) { [component_hash, bundled_component_hash] }
+
+        it 'tracks only the source components' do
+          expect(::Ci::Catalog::Resources::TrackComponentUsageWorker).to receive(:perform_async)
+            .with(project.id, user.id, [{
+              'project_id' => component.project.id,
+              'sha' => version.sha,
+              'name' => component.name
+            }])
+
+          perform
+        end
+      end
+
+      context 'with only bundled components' do
+        let(:included_components) { [bundled_component_hash] }
+
+        it 'does not enqueue the worker' do
+          expect(::Ci::Catalog::Resources::TrackComponentUsageWorker).not_to receive(:perform_async)
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          perform
+        end
+      end
+    end
+
     context 'when current_user is nil' do
       let(:command) do
         Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: nil, dry_run: dry_run,

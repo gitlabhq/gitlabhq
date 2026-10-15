@@ -52714,7 +52714,7 @@ Fields:
 | <a id="mergerequest-downvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes for the merge request. |
 | <a id="mergerequest-draft"></a>`draft` | [`Boolean!`](#boolean) | Indicates if the merge request is a draft. |
 | <a id="mergerequest-duodependencybumpbreakingchangesavailable"></a>`duoDependencyBumpBreakingChangesAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.2. Status: Experiment. Indicates whether the GitLab Duo resolve dependency bump breaking changes flow can be triggered for the merge request. |
-| <a id="mergerequest-duoworkflows"></a>`duoWorkflows` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 18.10. Status: Experiment. Duo Workflow sessions associated with the merge request. |
+| <a id="mergerequest-duoworkflows"></a>`duoWorkflows` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 18.10. Status: Experiment. GitLab Duo Agent Platform flow sessions associated with the merge request. Chat sessions are excluded. |
 | <a id="mergerequest-forceremovesourcebranch"></a>`forceRemoveSourceBranch` | [`Boolean`](#boolean) | Indicates if the project settings will lead to source branch deletion after merge. |
 | <a id="mergerequest-groupedapprovalsleft"></a>`groupedApprovalsLeft` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Number of approvals left, counting Code Owner rules that share a section and approvers as a single rule. |
 | <a id="mergerequest-groupedapprovalsrequired"></a>`groupedApprovalsRequired` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. Number of approvals required, counting Code Owner rules that share a section and approvers as a single rule. |
@@ -59417,7 +59417,12 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="project-aiflowtriggers-active"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. Filter AI flow triggers by whether they are active. |
+| <a id="project-aiflowtriggers-eventtype"></a>`eventType` {{< icon name="warning-solid" >}} | [`AiFlowTriggerEventType`](#aiflowtriggereventtype) | Introduced in GitLab 19.6. Status: Experiment. Filter AI flow triggers by event type. `MERGE_REQUEST` also matches `MERGE_REQUEST_READY` and `MERGE_REQUEST_CODE_CONFLICT`. |
 | <a id="project-aiflowtriggers-ids"></a>`ids` | [`[AiFlowTriggerID!]`](#aiflowtriggerid) | Filter AI flow triggers by IDs. |
+| <a id="project-aiflowtriggers-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`AiFlowTriggerKind`](#aiflowtriggerkind) | Introduced in GitLab 19.6. Status: Experiment. Filter AI flow triggers by kind. |
+| <a id="project-aiflowtriggers-search"></a>`search` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.6. Status: Experiment. Search AI flow triggers by name, config path, or catalog item name. Maximum 255 characters. |
+| <a id="project-aiflowtriggers-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`AiFlowTriggerSort`](#aiflowtriggersort) | Introduced in GitLab 19.6. Status: Experiment. Sort AI flow triggers by the criteria. |
 
 ##### `Project.aiGovernanceMetrics`
 
@@ -68658,7 +68663,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetaisession-duoworkflows"></a>`duoWorkflows` | [`DuoWorkflowConnection`](#duoworkflowconnection) | Duo Workflow sessions associated with the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetaisession-duoworkflows"></a>`duoWorkflows` | [`DuoWorkflowConnection`](#duoworkflowconnection) | GitLab Duo Agent Platform flow sessions associated with the work item. Chat sessions are excluded. (see [Connections](#connections)) |
 | <a id="workitemwidgetaisession-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetAssignees`
@@ -70264,6 +70269,15 @@ Possible event types for flow triggers.
 | <a id="aiflowtriggereventtype-scheduled"></a>`SCHEDULED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Flow trigger scheduled event. |
 | <a id="aiflowtriggereventtype-work_item"></a>`WORK_ITEM` | Flow trigger work_item event. |
 
+### `AiFlowTriggerKind`
+
+Kinds of flow triggers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiflowtriggerkind-event"></a>`EVENT` | Flow trigger that runs when an event occurs. |
+| <a id="aiflowtriggerkind-scheduled"></a>`SCHEDULED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.6. Status: Experiment. Flow trigger that runs on a schedule. |
+
 ### `AiFlowTriggerRunStatus`
 
 Status of a flow trigger run.
@@ -70276,6 +70290,19 @@ Status of a flow trigger run.
 | <a id="aiflowtriggerrunstatus-pending"></a>`PENDING` | Run has been created and has not started. |
 | <a id="aiflowtriggerrunstatus-running"></a>`RUNNING` | Run is in progress. |
 | <a id="aiflowtriggerrunstatus-succeeded"></a>`SUCCEEDED` | Run finished successfully. |
+
+### `AiFlowTriggerSort`
+
+Values for sorting AI flow triggers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiflowtriggersort-created_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="aiflowtriggersort-created_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="aiflowtriggersort-name_asc"></a>`NAME_ASC` | Name by ascending order. |
+| <a id="aiflowtriggersort-name_desc"></a>`NAME_DESC` | Name by descending order. |
+| <a id="aiflowtriggersort-updated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="aiflowtriggersort-updated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 
 ### `AiFlowsMetadataClientType`
 

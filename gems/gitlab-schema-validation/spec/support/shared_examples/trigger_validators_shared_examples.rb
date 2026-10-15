@@ -30,7 +30,15 @@ RSpec.shared_examples 'trigger validators' do |validator, expected_result|
     [
       ['trigger', 'CREATE TRIGGER trigger AFTER INSERT ON public.t1 FOR EACH ROW EXECUTE FUNCTION t1()'],
       ['wrong_trigger', 'CREATE TRIGGER wrong_trigger BEFORE UPDATE ON public.t2 FOR EACH ROW EXECUTE FUNCTION t2()'],
-      ['extra_trigger', 'CREATE TRIGGER extra_trigger BEFORE INSERT ON public.t4 FOR EACH ROW EXECUTE FUNCTION t4()']
+      ['extra_trigger', 'CREATE TRIGGER extra_trigger BEFORE INSERT ON public.t4 FOR EACH ROW EXECUTE FUNCTION t4()'],
+      ['trigger_0123456789ab',
+        'CREATE TRIGGER trigger_0123456789ab BEFORE INSERT OR UPDATE ON public.events FOR EACH ROW ' \
+          'EXECUTE FUNCTION trigger_0123456789ab()',
+        "BEGIN\n  NEW.\"author_id_convert_to_bigint\" := NEW.\"author_id\";\n  RETURN NEW;\nEND;"],
+      ['trigger_ba9876543210',
+        'CREATE TRIGGER trigger_ba9876543210 BEFORE INSERT OR UPDATE ON public.events FOR EACH ROW ' \
+          'EXECUTE FUNCTION trigger_ba9876543210()',
+        "BEGIN\n  IF NEW.\"project_id\" IS NULL THEN\n    NEW.\"project_id\" := 1;\n  END IF;\n  RETURN NEW;\nEND;"]
     ]
   end
 

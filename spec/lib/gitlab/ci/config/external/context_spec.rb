@@ -214,6 +214,19 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
       it_behaves_like 'a mutated context'
     end
+
+    context 'with a bundle' do
+      let(:bundle) { instance_double(Gitlab::Ci::Catalog::Bundle::Contents) }
+      let(:attributes) { { project: project, sha: sha, bundle: bundle } }
+
+      it 'passes the bundle down' do
+        expect(subject.mutate({ sha: nil }).bundle).to eq(bundle)
+      end
+
+      it 'replaces the bundle when one is given' do
+        expect(subject.mutate({ project: project, sha: sha, bundle: nil }).bundle).to be_nil
+      end
+    end
   end
 
   describe '#sentry_payload' do

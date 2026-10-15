@@ -381,6 +381,8 @@ GET /projects/:id/pipelines/:pipeline_id/variables
 | `id`          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
+If the pipeline variables file is missing from storage, returns [`404`](rest/troubleshooting.md#status-codes).
+
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \

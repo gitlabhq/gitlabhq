@@ -241,10 +241,13 @@ export default {
             const ruleIndex = input.rules.indexOf(matchingRule);
             const ruleChanged = input.lastMatchedRuleIndex !== ruleIndex;
             const hasOptions = options.length > 0;
+            const valueInOptions = Array.isArray(input.value)
+              ? input.value.every((value) => options.includes(value))
+              : options.includes(input.value);
 
             let value = matchingRule.default ?? '';
 
-            if (hasOptions && options.includes(input.value)) {
+            if (hasOptions && valueInOptions) {
               value = input.value;
             } else if (!hasOptions && !ruleChanged) {
               value = input.value;

@@ -407,4 +407,53 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       end
     end
   end
+
+  context 'when the context has a bundle' do
+    let(:bundle) do
+      Gitlab::Ci::Catalog::Bundle::Contents.new(
+        name: 'my_component',
+        version: '1.0.0',
+        sha: 'bundle_sha',
+        entry_path: 'templates/my_component.yml',
+        files: { 'templates/job.yml' => "job:\n  script: echo\n" }
+      )
+    end
+
+    let(:context_params) { { user: user, variables: variables, bundle: bundle } }
+
+    subject(:valid?) do
+      Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([local_file])
+      local_file.valid?
+    end
+
+    context 'when the file is in the bundle' do
+      let(:location) { '/templates/job.yml' }
+
+      it 'reads the file from the bundle without a project' do
+        expect(valid?).to be(true)
+        expect(local_file.content).to eq("job:\n  script: echo\n")
+      end
+
+      it 'returns no blob or raw URL' do
+        valid?
+
+        expect(local_file.metadata).to include(location: 'templates/job.yml', blob: nil, raw: nil)
+      end
+    end
+
+    context 'when the file is not in the bundle' do
+      let(:location) { 'templates/missing.yml' }
+
+      before do
+        stub_feature_flags(ci_config_local_file_verbose_logging: true)
+      end
+
+      it 'returns an error without logging the missing file' do
+        expect(Gitlab::AppLogger).not_to receive(:warn)
+
+        expect(valid?).to be(false)
+        expect(local_file.error_message).to eq('Local file `templates/missing.yml` does not exist!')
+      end
+    end
+  end
 end

@@ -284,18 +284,25 @@ class SearchController < ApplicationController
       @search_request_id = SecureRandom.uuid
 
       track_internal_event('perform_search', user: current_user,
-        additional_properties: { property: @search_request_id })
+        additional_properties: search_event_properties.merge(property: @search_request_id))
     else
-      # No additional_properties: the flag-off payload must stay byte-identical to what
-      # this event emitted before the join key existed, so turning the flag off is a
-      # true rollback. `property` is optional in the event definition. Only the join key
-      # is flag-gated: any unflagged property added here later belongs in both branches.
-      track_internal_event('perform_search', user: current_user)
+      # Only the join key is flag-gated, so a rollback keeps the segmentation.
+      # `property` is optional in the event definition.
+      track_internal_event('perform_search', user: current_user,
+        additional_properties: search_event_properties)
     end
 
     return if search_params[:nav_source] != 'navbar'
 
     track_internal_event('perform_navbar_search', user: current_user)
+  end
+
+  def search_event_properties
+    {
+      label: @scope,
+      search_type: @search_type,
+      search_level: @search_level
+    }
   end
 
   # The actor is the request, not current_user: anonymous search is supported, and a nil

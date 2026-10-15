@@ -31,7 +31,7 @@ module Gitlab
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config, :parallel_requests,
             :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
-            :pipeline_policy_context, :component_data, :parent_file, :allowed_include_types
+            :pipeline_policy_context, :component_data, :parent_file, :allowed_include_types, :bundle
 
           attr_accessor :total_file_size_in_bytes
 
@@ -44,7 +44,7 @@ module Gitlab
           def initialize(
             project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
             pipeline_config: nil, logger: nil, pipeline_policy_context: nil, component_data: nil, parent_file: nil,
-            allowed_include_types: nil
+            allowed_include_types: nil, bundle: nil
           )
             @project = project
             @pipeline = pipeline
@@ -57,6 +57,7 @@ module Gitlab
             @component_data = component_data || {}
             @parent_file = parent_file
             @allowed_include_types = allowed_include_types
+            @bundle = bundle
             @expandset = []
             @parallel_requests = []
             # Shared mutable holder so state set while processing a nested include
@@ -112,6 +113,7 @@ module Gitlab
               ctx.max_total_yaml_size_bytes = max_total_yaml_size_bytes
               ctx.parallel_requests = parallel_requests
               ctx.allowed_include_types = allowed_include_types
+              ctx.bundle = bundle unless attrs.key?(:bundle)
               ctx.filter_state = filter_state
             end
           end
@@ -178,7 +180,7 @@ module Gitlab
           attr_accessor :filter_state
 
           attr_writer :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
-            :parallel_requests, :component_data, :allowed_include_types
+            :parallel_requests, :component_data, :allowed_include_types, :bundle
 
           private
 

@@ -238257,7 +238257,7 @@
           "fields": [
             {
               "name": "duoWorkflows",
-              "description": "Duo Workflow sessions associated with the work item.",
+              "description": "GitLab Duo Agent Platform flow sessions associated with the work item. Chat sessions are excluded.",
               "args": [
                 {
                   "name": "after",

@@ -1667,40 +1667,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           expect(diff.merge_request_diff_files.size).to eq(20)
           expect(diff.merge_request_diff_files.pluck(:external_diff_size).sum).to be > 0
         end
-
-        context 'when the external_diff_upload_before_save flag is disabled' do
-          before do
-            stub_feature_flags(external_diff_upload_before_save: false)
-          end
-
-          it 'uploads the external diff inside the save transaction, named after the id' do
-            merge_request
-            upload_transaction_depths = []
-            baseline = described_class.connection.open_transactions
-
-            allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
-              allow(storage).to receive(:store!).and_wrap_original do |original, *args|
-                upload_transaction_depths << (described_class.connection.open_transactions - baseline)
-                original.call(*args)
-              end
-            end
-
-            diff.preload_gitaly_data
-
-            expect(upload_transaction_depths).to be_empty
-            expect(diff).not_to be_stored_externally
-
-            diff.save!
-
-            expect(upload_transaction_depths.size).to eq(1)
-            expect(upload_transaction_depths.first).to be >= 1
-            expect(diff.reload).to be_stored_externally
-            expect(diff.state).to eq('collected')
-            expect(diff.external_diff_store).to eq(remote_store)
-            expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/diff-#{diff.id}")
-            expect(diff.merge_request_diff_files.size).to eq(20)
-          end
-        end
       end
 
       context 'when the gitaly data is not preloaded' do

@@ -1,0 +1,15 @@
+---
+table_name: dependency_firewall_namespace_prevented_stats
+classes:
+- Security::DependencyFirewallNamespacePreventedStat
+feature_categories:
+- dependency_firewall
+description: Precomputed prevented-package counts per group and time window (7 and
+  30 days), refreshed from the per-project prevented packages ledger to power the
+  group dependency firewall dashboard.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261477
+milestone: '19.6'
+gitlab_schema: gitlab_main_org
+table_size: small
+sharding_key:
+  namespace_id: namespaces

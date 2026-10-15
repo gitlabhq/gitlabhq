@@ -33,4 +33,29 @@ RSpec.describe Gitlab::Ci::Catalog::Bundle::Format, feature_category: :pipeline_
       expect(bundle['files']).to eq(files)
     end
   end
+
+  describe '.load' do
+    let(:files) { { 'templates/plan.yml' => "plan:\n  script: tofu plan  \n" } }
+    let(:document) do
+      described_class.dump(
+        name: 'plan', version: 'v1.2.0', sha: 'abc123', entry_path: 'templates/plan.yml', files: files
+      )
+    end
+
+    subject(:bundle) { described_class.load(document) }
+
+    it 'returns the metadata and the files' do
+      expect(bundle).to have_attributes(
+        name: 'plan', version: 'v1.2.0', sha: 'abc123', entry_path: 'templates/plan.yml', files: files
+      )
+    end
+
+    context 'when the format version is unknown' do
+      let(:document) { Gitlab::Json.dump(format_version: 2, files: {}) }
+
+      it 'raises an error naming the version' do
+        expect { bundle }.to raise_error(described_class::UnsupportedVersionError, /format version `2`/)
+      end
+    end
+  end
 end

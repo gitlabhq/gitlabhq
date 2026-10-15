@@ -24002,6 +24002,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiFlowTriggerKind",
+          "description": "Kinds of flow triggers.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "SCHEDULED",
+              "description": "Flow trigger that runs on a schedule. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
+              "name": "EVENT",
+              "description": "Flow trigger that runs when an event occurs.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AiFlowTriggerLastRun",
           "description": "Details of the most recent run of a flow trigger.",
@@ -24109,6 +24132,53 @@
             {
               "name": "CANCELED",
               "description": "Run was stopped before it finished.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiFlowTriggerSort",
+          "description": "Values for sorting AI flow triggers.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NAME_ASC",
+              "description": "Name by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NAME_DESC",
+              "description": "Name by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_ASC",
+              "description": "Created at ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATED_DESC",
+              "description": "Created at descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_ASC",
+              "description": "Updated at ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATED_DESC",
+              "description": "Updated at descending order.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -239264,7 +239334,7 @@
             },
             {
               "name": "duoWorkflows",
-              "description": "Duo Workflow sessions associated with the merge request. Introduced in GitLab 18.10: Status: Experiment.",
+              "description": "GitLab Duo Agent Platform flow sessions associated with the merge request. Chat sessions are excluded. Introduced in GitLab 18.10: Status: Experiment.",
               "args": [
                 {
                   "name": "after",
@@ -332996,6 +333066,66 @@
                   "defaultValue": "null",
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "kind",
+                  "description": "Filter AI flow triggers by kind. Introduced in GitLab 19.6: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiFlowTriggerKind",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+                },
+                {
+                  "name": "active",
+                  "description": "Filter AI flow triggers by whether they are active. Introduced in GitLab 19.6: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+                },
+                {
+                  "name": "eventType",
+                  "description": "Filter AI flow triggers by event type. `MERGE_REQUEST` also matches `MERGE_REQUEST_READY` and `MERGE_REQUEST_CODE_CONFLICT`. Introduced in GitLab 19.6: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiFlowTriggerEventType",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+                },
+                {
+                  "name": "search",
+                  "description": "Search AI flow triggers by name, config path, or catalog item name. Maximum 255 characters. Introduced in GitLab 19.6: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+                },
+                {
+                  "name": "sort",
+                  "description": "Sort AI flow triggers by the criteria. Introduced in GitLab 19.6: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiFlowTriggerSort",
+                    "ofType": null
+                  },
+                  "defaultValue": "CREATED_DESC",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
                 },
                 {
                   "name": "after",
@@ -473928,7 +474058,7 @@
           "fields": [
             {
               "name": "duoWorkflows",
-              "description": "Duo Workflow sessions associated with the work item.",
+              "description": "GitLab Duo Agent Platform flow sessions associated with the work item. Chat sessions are excluded.",
               "args": [
                 {
                   "name": "after",

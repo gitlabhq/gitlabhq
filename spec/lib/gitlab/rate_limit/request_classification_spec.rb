@@ -96,6 +96,14 @@ RSpec.describe Gitlab::RateLimit::RequestClassification, feature_category: :rate
     with_them do
       it { is_expected.to eq(user) }
 
+      context 'with a personal access token' do
+        let_it_be(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:read_user]) }
+
+        let(:env) { { 'HTTP_AUTHORIZATION' => "Bearer #{personal_access_token.token}" } }
+
+        it { is_expected.to eq(user) }
+      end
+
       context 'with an unknown token' do
         let(:env) { { 'HTTP_AUTHORIZATION' => 'Bearer unknown' } }
 
@@ -109,8 +117,8 @@ RSpec.describe Gitlab::RateLimit::RequestClassification, feature_category: :rate
       end
     end
 
-    context 'on another OAuth path' do
-      let(:path) { '/oauth/token/info/extra' }
+    context 'on the token endpoint' do
+      let(:request) { request_class.new(Rack::MockRequest.env_for('/oauth/token', method: 'POST').merge(env)) }
 
       it { is_expected.to be_nil }
     end

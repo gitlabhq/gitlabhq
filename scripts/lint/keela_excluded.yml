@@ -100,6 +100,8 @@ methods:
     - lagging?: Will be called by the reconciliation worker in a follow-up MR
   ee/app/models/package_metadata/sync_configuration.rb:
     - self.advisories_pds_endpoint: Will be called from Location.for_advisories once advisories move to PDS in a follow-up MR (#631389)
+  ee/app/models/security/dependency_firewall_namespace_prevented_stat.rb:
+    - to_counts: "Read by Security::DependencyFirewall::PreventedStats::DataCollector in the group read path MR (part 5 of 7 for gitlab-org/gitlab#631890); remove this entry there"
 constants:
   app/services/mcp/tools/toolsets.rb:
     - ALWAYS_ON: Used by Manager#tools_in_toolsets to always include meta tools

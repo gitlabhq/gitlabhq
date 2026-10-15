@@ -13,31 +13,26 @@ RSpec.describe Admin::HookLogsController, :enable_admin_mode, :with_current_orga
     let(:edit_hook_path) { edit_admin_hook_path(web_hook) }
   end
 
-  context 'when the hook belongs to another organization' do
-    let_it_be(:other_organization) { create(:organization) }
-    let_it_be_with_refind(:other_hook) { create(:system_hook, organization: other_organization) }
-    let_it_be_with_refind(:other_hook_log) { create(:web_hook_log, web_hook: other_hook) }
+  describe 'organization scoping' do
+    let(:organization) { current_organization }
 
     before do
       sign_in(user)
     end
 
-    describe 'GET #show' do
-      it 'renders a 404' do
-        get admin_hook_hook_log_path(other_hook, other_hook_log)
-
-        expect(response).to have_gitlab_http_status(:not_found)
+    describe 'GET /admin/hooks/:hook_id/hook_logs/:id' do
+      it_behaves_like 'system hook lookup scoped to the organization' do
+        def request_system_hook(hook)
+          get admin_hook_hook_log_path(hook, create(:web_hook_log, web_hook_id: hook.id))
+        end
       end
     end
 
-    describe 'POST #retry' do
-      it 'renders a 404 and does not resend the hook' do
-        stub_request(:post, other_hook.interpolated_url)
-
-        post retry_admin_hook_hook_log_path(other_hook, other_hook_log)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(WebMock).not_to have_requested(:post, other_hook.interpolated_url)
+    describe 'POST /admin/hooks/:hook_id/hook_logs/:id/retry' do
+      it_behaves_like 'system hook lookup scoped to the organization' do
+        def request_system_hook(hook)
+          post retry_admin_hook_hook_log_path(hook, create(:web_hook_log, web_hook_id: hook.id))
+        end
       end
     end
   end

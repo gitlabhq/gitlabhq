@@ -33,6 +33,15 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
       end
 
+      it 'filters by subscription status given as a string' do
+        create(:subscription, subscribable: merge_request1, user: user, subscribed: true)
+        params = { scope: 'authored', state: 'opened', subscribed: 'explicitly_subscribed' }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(merge_request1)
+      end
+
       it 'filters by project_id' do
         params = { project_id: project1.id, scope: 'authored', state: 'opened' }
 

@@ -922,7 +922,6 @@ class MergeRequestDiff < ApplicationRecord
   # transaction.
   def store_external_diff_before_save
     ensure_project_id
-    return unless Feature.enabled?(:external_diff_upload_before_save, Project.actor_from_id(project_id))
     return unless new_record? && use_external_diff?
     return if compare.commits.empty? || compare_diffs_preloaded.empty?
 

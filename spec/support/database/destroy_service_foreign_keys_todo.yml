@@ -406,6 +406,9 @@ namespaces:
 - custom_fields.namespace_id
 - customer_relations_contacts.group_id
 - customer_relations_organizations.group_id
+# Cascade-only by design: derived per-group summary rows with nothing beyond
+# the row to clean up.
+- dependency_firewall_namespace_prevented_stats.namespace_id
 - dependency_list_export_upload_states.namespace_id
 - dependency_proxy_blobs.group_id
 - dependency_proxy_group_settings.group_id

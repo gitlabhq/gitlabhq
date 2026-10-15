@@ -251,6 +251,9 @@ How the cap value is applied then depends on the cap type:
 > To limit this usage, set a subscription-level cap
 > or remove the user's GitLab Duo seat.
 
+To control who can use GitLab Duo Agent Platform, [restrict access to GitLab Duo](../administration/gitlab_duo/configure/access_control.md#restrict-access-to-gitlab-duo) based on group membership.
+Access controls change feature access, not credit usage, and do not set a group-level credit cap.
+
 ### Examples
 
 For a subscription-level cap, consider a subscription that has 10 users, each with 100 included GitLab Credits. The billing account manager sets the subscription-level on-demand cap to `0`.

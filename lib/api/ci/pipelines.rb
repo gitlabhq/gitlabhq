@@ -289,6 +289,8 @@ module API
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable
+        rescue ::Ci::Pipeline::VariablesFileMissingError
+          not_found!('Pipeline variables file')
         end
 
         desc 'Retrieve a test report for a pipeline' do

@@ -140,10 +140,12 @@ module Gitlab
         end
 
         class BooleanValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
+          def self.validate(value)
+            value.in?([true, false])
+          end
 
           def validate_each(record, attribute, value)
-            unless validate_boolean(value)
+            unless self.class.validate(value)
               record.errors.add(attribute, 'should be a boolean value')
             end
           end
@@ -213,10 +215,8 @@ module Gitlab
         end
 
         class HashOrBooleanValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
-            unless value.is_a?(Hash) || validate_boolean(value)
+            unless value.is_a?(Hash) || BooleanValidator.validate(value)
               record.errors.add(attribute, 'should be a hash or a boolean value')
             end
           end

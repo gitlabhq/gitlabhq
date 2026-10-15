@@ -18,7 +18,9 @@ module Gitlab
             end
 
             def content
-              strong_memoize(:content) { fetch_local_content }
+              strong_memoize(:content) do
+                context.bundle ? context.bundle.file(location) : fetch_local_content
+              end
             end
 
             def include_type
@@ -35,14 +37,14 @@ module Gitlab
             end
 
             def validate_context!
-              return if context.project&.repository
+              return if context.bundle || context.project&.repository
 
               errors.push("Local file `#{masked_location}` does not have project!")
             end
 
             def validate_content_presence!
               if content.nil?
-                log_missing_local_file if verbose_logging_enabled?(context.project)
+                log_missing_local_file if !context.bundle && verbose_logging_enabled?(context.project)
                 errors.push("Local file `#{masked_location}` does not exist!")
               elsif content.blank?
                 errors.push("Local file `#{masked_location}` is empty!")
@@ -94,6 +96,7 @@ module Gitlab
             end
 
             def masked_blob
+              return if context.bundle
               return unless valid?
 
               strong_memoize(:masked_blob) do
@@ -104,6 +107,7 @@ module Gitlab
             end
 
             def masked_raw
+              return if context.bundle
               return unless valid?
 
               strong_memoize(:masked_raw) do

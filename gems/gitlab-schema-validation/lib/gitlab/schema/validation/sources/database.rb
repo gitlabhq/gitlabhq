@@ -114,25 +114,27 @@ module Gitlab
           end
 
           def trigger_map
-            @trigger_map ||=
-              fetch_triggers.transform_values! do |trigger_stmt|
-                SchemaObjects::Trigger.new(PgQuery.parse(trigger_stmt).tree.stmts.first.stmt.create_trig_stmt)
-              end
+            @trigger_map ||= fetch_triggers.each_with_object({}) do |(name, trigger_stmt, function_body), map|
+              parsed_stmt = PgQuery.parse(trigger_stmt).tree.stmts.first.stmt.create_trig_stmt
+
+              map[name] = SchemaObjects::Trigger.new(parsed_stmt, function_body: function_body)
+            end
           end
 
           def fetch_triggers
             # rubocop:disable Rails/SquishedSQLHeredocs
             sql = <<~SQL
-              SELECT triggers.tgname, pg_get_triggerdef(triggers.oid)
+              SELECT triggers.tgname, pg_get_triggerdef(triggers.oid), functions.prosrc
               FROM pg_catalog.pg_trigger triggers
               INNER JOIN pg_catalog.pg_class rel ON triggers.tgrelid = rel.oid
               INNER JOIN pg_catalog.pg_namespace nsp ON nsp.oid = rel.relnamespace
+              LEFT JOIN pg_catalog.pg_proc functions ON functions.oid = triggers.tgfoid
               WHERE triggers.tgisinternal IS FALSE
               AND nsp.nspname IN ($1, $2)
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            with_default_deparse_settings { connection.select_rows(sql, schemas).to_h }
+            with_default_deparse_settings { connection.select_rows(sql, schemas) }
           end
 
           def table_map

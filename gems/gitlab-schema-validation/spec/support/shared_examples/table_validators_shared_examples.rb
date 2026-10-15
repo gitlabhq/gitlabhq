@@ -38,6 +38,13 @@ RSpec.shared_examples "table validators" do |validator, expected_result|
         'column_default' => nil
       },
       {
+        'table_name' => 'wrong_table',
+        'column_name' => 'id_convert_to_bigint',
+        'not_null' => true,
+        'data_type' => 'bigint',
+        'column_default' => '0'
+      },
+      {
         'table_name' => 'extra_table',
         'column_name' => 'id',
         'not_null' => true,

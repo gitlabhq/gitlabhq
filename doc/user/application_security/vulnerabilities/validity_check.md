@@ -133,6 +133,7 @@ Validity checks support the following secret types:
 - OpenAI service account keys
 - OpenAI user API keys
 - Postman API tokens
+- Pulumi access tokens
 - SendGrid API tokens
 - Stripe live publishable keys
 - Stripe live restricted keys
@@ -181,6 +182,7 @@ The supported URLs are:
 - `https://api.notification.canada.ca/v2/notifications`
 - `https://api.openai.com/v1/models`
 - `https://api.openai.com/v1/organization/admin_api_keys`
+- `https://api.pulumi.com/api/user`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
 - `https://api.tailscale.com/api/v2/tailnet/-/devices`

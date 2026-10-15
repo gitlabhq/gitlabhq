@@ -83,6 +83,152 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       end
     end
 
+    context 'with pagination parameters' do
+      let(:token) { create(:personal_access_token, user: user) }
+      let(:headers) { { 'PRIVATE-TOKEN' => token.token } }
+
+      context 'when only the page size is supplied' do
+        it 'returns the first tags and an offset next link', :aggregate_failures do
+          get api(route), params: { per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+
+          next_link = response.headers.fetch('Link').split(',').find { |link| link.include?('rel="next"') }
+          expected_query = { id: project.id, order_by: 'updated', page: 2, per_page: 2, sort: 'desc' }.to_query
+
+          expect(next_link.strip).to eq(
+            %(<#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/repository/tags?#{expected_query}>; rel="next")
+          )
+        end
+      end
+
+      context 'when a cursor is supplied without a pagination mode' do
+        it 'returns tags after the cursor and an offset next link', :aggregate_failures do
+          get api(route), params: { page_token: 'v1.1.1', per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(%w[v1.1.0 v1.0.0])
+
+          next_link = response.headers.fetch('Link').split(',').find { |link| link.include?('rel="next"') }
+          expected_query = {
+            id: project.id, order_by: 'updated', page: 2, page_token: 'v1.1.1', per_page: 2, sort: 'desc'
+          }.to_query
+
+          expect(next_link.strip).to eq(
+            %(<#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/repository/tags?#{expected_query}>; rel="next")
+          )
+        end
+      end
+
+      context 'when a cursor and page number are supplied without a pagination mode' do
+        it 'ignores the cursor and returns the second page without a next link', :aggregate_failures do
+          get api(route), params: { page_token: 'v1.1.1', page: 2, per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(['v1.0.0'])
+          expect(response.headers.fetch('Link')).not_to include('rel="next"')
+        end
+      end
+
+      context 'when keyset pagination is requested without a cursor' do
+        it 'returns the first tags and a next link with the last returned tag as the cursor', :aggregate_failures do
+          get api(route), params: { pagination: 'keyset', per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+
+          next_link = response.headers.fetch('Link').split(',').find { |link| link.include?('rel="next"') }
+          expected_query = {
+            id: project.id, order_by: 'updated', page: 1, page_token: 'v1.1.0',
+            pagination: 'keyset', per_page: 2, sort: 'desc'
+          }.to_query
+
+          expect(next_link.strip).to eq(
+            %(<#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/repository/tags?#{expected_query}>; rel="next")
+          )
+        end
+      end
+
+      context 'when keyset pagination includes a page number but no cursor' do
+        it 'returns the first tags and retains the page number in the next link', :aggregate_failures do
+          get api(route), params: { pagination: 'keyset', page: 2, per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(%w[v1.1.1 v1.1.0])
+
+          next_link = response.headers.fetch('Link').split(',').find { |link| link.include?('rel="next"') }
+          expected_query = {
+            id: project.id, order_by: 'updated', page: 2, page_token: 'v1.1.0',
+            pagination: 'keyset', per_page: 2, sort: 'desc'
+          }.to_query
+
+          expect(next_link.strip).to eq(
+            %(<#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/repository/tags?#{expected_query}>; rel="next")
+          )
+        end
+      end
+
+      context 'when keyset pagination includes a cursor' do
+        it 'returns tags after the cursor and updates the cursor in the next link', :aggregate_failures do
+          get api(route), params: { pagination: 'keyset', page_token: 'v1.1.1', per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(%w[v1.1.0 v1.0.0])
+
+          next_link = response.headers.fetch('Link').split(',').find { |link| link.include?('rel="next"') }
+          expected_query = {
+            id: project.id, order_by: 'updated', page: 1, page_token: 'v1.0.0',
+            pagination: 'keyset', per_page: 2, sort: 'desc'
+          }.to_query
+
+          expect(next_link.strip).to eq(
+            %(<#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/repository/tags?#{expected_query}>; rel="next")
+          )
+        end
+      end
+
+      context 'when keyset pagination includes both a cursor and a page number' do
+        it 'uses the cursor and retains the page number while updating the next cursor', :aggregate_failures do
+          get api(route), params: { pagination: 'keyset', page_token: 'v1.1.1', page: 2, per_page: 2 }, headers: headers
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(%w[v1.1.0 v1.0.0])
+
+          next_link = response.headers.fetch('Link').split(',').find { |link| link.include?('rel="next"') }
+          expected_query = {
+            id: project.id, order_by: 'updated', page: 2, page_token: 'v1.0.0',
+            pagination: 'keyset', per_page: 2, sort: 'desc'
+          }.to_query
+
+          expect(next_link.strip).to eq(
+            %(<#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/repository/tags?#{expected_query}>; rel="next")
+          )
+        end
+      end
+    end
+
+    # The repository fixture has 3 tags.
+    context 'when the request is at or beyond the end of the tag list' do
+      context 'when the last page has fewer tags than the requested page size' do
+        it 'returns only the remaining tag', :aggregate_failures do
+          get api(route, user), params: { page: 2, per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('name')).to eq(['v1.0.0'])
+        end
+      end
+
+      context 'when the requested page is beyond the last page' do
+        it 'returns an empty array', :aggregate_failures do
+          get api(route, user), params: { page: 3, per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq([])
+        end
+      end
+    end
+
     context 'searching' do
       it 'only returns searched tags' do
         get api(route.to_s, user), params: { search: 'v1.1.0' }

@@ -32539,6 +32539,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Failed to load agent sessions for this work item."
 msgstr ""
 
+msgid "DuoAgentPlatform|Failed to retry session. Please try again."
+msgstr ""
+
 msgid "DuoAgentPlatform|Features that let projects run agents and flows."
 msgstr ""
 
@@ -32750,6 +32753,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Retry"
 msgstr ""
 
+msgid "DuoAgentPlatform|Retry session"
+msgstr ""
+
 msgid "DuoAgentPlatform|Returned to agent"
 msgstr ""
 
@@ -32784,6 +32790,12 @@ msgid "DuoAgentPlatform|Session failed"
 msgstr ""
 
 msgid "DuoAgentPlatform|Session failed to start"
+msgstr ""
+
+msgid "DuoAgentPlatform|Session has been restarted successfully."
+msgstr ""
+
+msgid "DuoAgentPlatform|Session restarted, but the new session could not be opened."
 msgstr ""
 
 msgid "DuoAgentPlatform|Sessions"
@@ -33694,6 +33706,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Failed to load recent runs."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Failed to submit approval. Please try again."
 msgstr ""
 
@@ -33829,6 +33844,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|No conditions yet. Add a schedule or an event."
 msgstr ""
 
+msgid "DuoAgentsPlatform|No runs yet."
+msgstr ""
+
 msgid "DuoAgentsPlatform|No triggers yet"
 msgstr ""
 
@@ -33857,6 +33875,9 @@ msgid "DuoAgentsPlatform|Raw runner output"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Read file"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Recent runs"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Remove event"
@@ -65044,9 +65065,6 @@ msgstr ""
 msgid "PolicyStore|Other"
 msgstr ""
 
-msgid "PolicyStore|Override groups"
-msgstr ""
-
 msgid "PolicyStore|Owner"
 msgstr ""
 
@@ -65321,9 +65339,6 @@ msgid "PolicyStore|all projects in the group"
 msgstr ""
 
 msgid "PolicyStore|e.g. production, staging"
-msgstr ""
-
-msgid "PolicyStore|e.g. security-leads, engineering-leads"
 msgstr ""
 
 msgid "PolicyStore|end-of-year freeze"

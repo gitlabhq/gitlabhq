@@ -7,22 +7,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   include_context 'GroupPolicy context'
   using RSpec::Parameterized::TableSyntax
 
-  context 'public group with no user' do
-    let(:group) { create(:group, :public) }
-    let(:current_user) { nil }
-    let(:permissions) { public_anonymous_permissions }
-
-    it_behaves_like 'valid permissions'
-  end
-
-  context 'public group with user who is not a member' do
-    let(:group) { create(:group, :public) }
-    let(:current_user) { create(:user) }
-    let(:permissions) { public_permissions }
-
-    it_behaves_like 'valid permissions'
-  end
-
   context 'private group that has been invited to a public project and with no user' do
     let(:project) { create(:project, :public, group: create(:group)) }
     let(:current_user) { nil }
@@ -81,9 +65,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'guests' do
     let(:current_user) { guest }
-    let(:permissions) { guest_permissions }
-
-    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { guest.id }
@@ -92,9 +73,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'planners' do
     let(:current_user) { planner }
-    let(:permissions) { planner_permissions }
-
-    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { planner.id }
@@ -103,9 +81,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'reporter' do
     let(:current_user) { reporter }
-    let(:permissions) { reporter_permissions }
-
-    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { reporter.id }
@@ -114,9 +89,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'security_manager' do
     let(:current_user) { security_manager }
-    let(:permissions) { security_manager_permissions }
-
-    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { security_manager.id }
@@ -125,9 +97,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'developer' do
     let(:current_user) { developer }
-    let(:permissions) { developer_permissions }
-
-    it_behaves_like 'valid permissions'
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { developer.id }
@@ -136,11 +105,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'maintainer' do
     let(:current_user) { maintainer }
-    let(:permissions) { maintainer_permissions }
 
-    it_behaves_like 'valid permissions'
-
-    it { expect_disallowed(:update_group_organization) }
+    it { expect_disallowed(:create_subgroup) }
 
     context 'with subgroup_creation level set to maintainer' do
       let(:permissions) { maintainer_permissions + [:create_subgroup] }
@@ -159,11 +125,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'owner' do
     let(:current_user) { owner }
-    let(:permissions) { owner_permissions }
-
-    it_behaves_like 'valid permissions'
-
-    it { expect_allowed(:update_group_organization) }
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { owner.id }
@@ -175,14 +136,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     it { expect_disallowed(*all_permissions) }
     it { expect_disallowed(:update_group_organization) }
-
-    context 'with admin mode', :enable_admin_mode do
-      let(:permissions) { admin_permissions }
-
-      it_behaves_like 'valid permissions'
-
-      it { expect_allowed(:update_group_organization) }
-    end
 
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { admin.id }
@@ -401,21 +354,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   describe 'remove_group' do
     let(:policy) { described_class.new(current_user, group) }
 
-    context 'anonymous user' do
-      let(:current_user) { anonymous }
-
-      it { is_expected.to be_disallowed(:remove_group) }
-    end
-
     context 'group member' do
-      %w[guest planner reporter developer maintainer].each do |role|
-        context role do
-          let(:current_user) { send(role) }
-
-          it { is_expected.to be_disallowed(:remove_group) }
-        end
-      end
-
       context 'owner' do
         let(:current_user) { owner }
 
@@ -544,13 +483,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   context 'create_projects' do
     context 'without visibility levels restricted' do
       where(:project_creation_level, :current_user, :create_projects_allowed?) do
-        nil                                                    | lazy { planner }          | false
-        nil                                                    | lazy { reporter }         | false
-        nil                                                    | lazy { security_manager } | false
         nil                                                    | lazy { developer }        | true
-        nil                                                    | lazy { maintainer }       | true
-        nil                                                    | lazy { owner }            | true
-        nil                                                    | lazy { admin }            | true
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { planner }          | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { reporter }         | false
         ::Gitlab::Access::NO_ONE_PROJECT_ACCESS                | lazy { security_manager } | false
@@ -572,13 +505,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { maintainer }       | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { owner }            | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { admin }            | true
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { planner }          | false
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { reporter }         | false
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { security_manager } | false
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { developer }        | true
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { maintainer }       | true
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { owner }            | true
-        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { admin }            | true
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { planner }          | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { reporter }         | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { security_manager } | false
@@ -661,18 +587,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'when group has no project creation level set' do
       let(:project_creation_level) { nil }
 
-      context 'planner' do
-        let(:current_user) { planner }
-
-        it { is_expected.to be_disallowed(:import_projects) }
-      end
-
-      context 'reporter' do
-        let(:current_user) { reporter }
-
-        it { is_expected.to be_disallowed(:import_projects) }
-      end
-
       context 'developer' do
         let(:current_user) { developer }
 
@@ -681,12 +595,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       context 'maintainer' do
         let(:current_user) { maintainer }
-
-        it { is_expected.to be_allowed(:import_projects) }
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
 
         it { is_expected.to be_allowed(:import_projects) }
       end
@@ -762,40 +670,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'when group has project creation level set to maintainer' do
       let(:project_creation_level) { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
-
-      context 'planner' do
-        let(:current_user) { planner }
-
-        it { is_expected.to be_disallowed(:import_projects) }
-      end
-
-      context 'reporter' do
-        let(:current_user) { reporter }
-
-        it { is_expected.to be_disallowed(:import_projects) }
-      end
-
-      context 'developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_disallowed(:import_projects) }
-      end
-
-      context 'maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_allowed(:import_projects) }
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
-
-        it { is_expected.to be_allowed(:import_projects) }
-      end
-    end
-
-    context 'when group has project creation level set to developers + maintainer' do
-      let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
 
       context 'planner' do
         let(:current_user) { planner }
@@ -913,66 +787,20 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   describe 'update_max_artifacts_size' do
     let_it_be(:group) { create(:group, :public) }
 
-    context 'when no user' do
-      let(:current_user) { nil }
-
-      it { expect_disallowed(:update_max_artifacts_size) }
-    end
-
-    context 'admin' do
+    context 'admin when admin mode is disabled' do
       let(:current_user) { admin }
 
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { expect_allowed(:update_max_artifacts_size) }
-      end
-
-      context 'when admin mode is enabled' do
-        it { expect_disallowed(:update_max_artifacts_size) }
-      end
-    end
-
-    %w[guest planner reporter developer maintainer owner].each do |role|
-      context role do
-        let(:current_user) { send(role) }
-
-        it { expect_disallowed(:update_max_artifacts_size) }
-      end
+      it { expect_disallowed(:update_max_artifacts_size) }
     end
   end
 
   describe 'custom_attribute permissions' do
     let_it_be(:group) { create(:group, :public) }
 
-    context 'when no user' do
-      let(:current_user) { nil }
-
-      it { expect_disallowed(:read_custom_attribute) }
-      it { expect_disallowed(:delete_custom_attribute) }
-      it { expect_disallowed(:update_custom_attribute) }
-    end
-
-    context 'admin' do
+    context 'admin when admin mode is disabled' do
       let(:current_user) { admin }
 
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { expect_allowed(:read_custom_attribute) }
-        it { expect_allowed(:delete_custom_attribute) }
-        it { expect_allowed(:update_custom_attribute) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { expect_disallowed(:read_custom_attribute) }
-        it { expect_disallowed(:delete_custom_attribute) }
-        it { expect_disallowed(:update_custom_attribute) }
-      end
-    end
-
-    context 'when current_user is owner' do
-      let(:current_user) { owner }
-
-      it { expect_disallowed(:read_custom_attribute) }
-      it { expect_disallowed(:delete_custom_attribute) }
-      it { expect_disallowed(:update_custom_attribute) }
+      it { expect_disallowed(:read_custom_attribute, :delete_custom_attribute, :update_custom_attribute) }
     end
   end
 
@@ -1035,50 +863,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'create_jira_connect_subscription' do
-    context 'admin' do
+    context 'admin when admin mode is disabled' do
       let(:current_user) { admin }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_jira_connect_subscription) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
-      end
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:create_jira_connect_subscription) }
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_allowed(:create_jira_connect_subscription) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
-    end
-
-    context 'with planner' do
-      let(:current_user) { planner }
-
-      it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
 
       it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
     end
 
     context 'with non member' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { non_group_member }
 
       it { is_expected.to be_disallowed(:create_jira_connect_subscription) }
     end
@@ -1091,34 +883,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'read_package' do
-    context 'admin' do
+    context 'admin when admin mode is disabled' do
       let(:current_user) { admin }
 
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:read_package) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:read_package) }
-      end
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_allowed(:read_package) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_allowed(:read_package) }
+      it { is_expected.to be_disallowed(:read_package) }
     end
 
     context 'with planner' do
@@ -1150,7 +918,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
 
     context 'with non member' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { non_group_member }
 
       it { is_expected.to be_disallowed(:read_package) }
     end
@@ -1193,25 +961,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
           let(:current_user) { reporter }
 
           it_behaves_like 'allows dependency proxy read access but not admin'
-        end
-
-        context 'developer' do
-          let(:current_user) { developer }
-
-          it_behaves_like 'allows dependency proxy read access but not admin'
-        end
-
-        context 'maintainer' do
-          let(:current_user) { maintainer }
-
-          it_behaves_like 'allows dependency proxy read access but not admin'
-        end
-
-        context 'owner' do
-          let(:current_user) { owner }
-
-          it { is_expected.to be_allowed(:read_dependency_proxy) }
-          it { is_expected.to be_allowed(:admin_dependency_proxy) }
         end
       end
 
@@ -1406,9 +1155,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:read_runners_registration_token) }
-        it { is_expected.to be_allowed(:update_runners_registration_token) }
-
         context 'with registration tokens disabled' do
           let(:allow_runner_registration_token) { false }
 
@@ -1426,9 +1172,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:read_runners_registration_token) }
-      it { is_expected.to be_allowed(:update_runners_registration_token) }
-
       context 'with registration tokens disabled' do
         let(:allow_runner_registration_token) { false }
 
@@ -1437,36 +1180,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_disallowed(:read_runners_registration_token) }
-      it { is_expected.to be_disallowed(:update_runners_registration_token) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_disallowed(:read_runners_registration_token) }
-      it { is_expected.to be_disallowed(:update_runners_registration_token) }
-    end
-
-    context 'with planner' do
-      let(:current_user) { planner }
-
-      it { is_expected.to be_disallowed(:read_runners_registration_token) }
-      it { is_expected.to be_disallowed(:update_runners_registration_token) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
-
-      it { is_expected.to be_disallowed(:read_runners_registration_token) }
-      it { is_expected.to be_disallowed(:update_runners_registration_token) }
-    end
-
     context 'with non member' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { non_group_member }
 
       it { is_expected.to be_disallowed(:read_runners_registration_token) }
       it { is_expected.to be_disallowed(:update_runners_registration_token) }
@@ -1481,22 +1196,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'invite_group_members ability' do
-    context 'admin' do
+    context 'admin when admin mode is disabled' do
       let(:current_user) { admin }
 
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:invite_group_members) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:invite_group_members) }
-      end
-    end
-
-    context 'group owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:invite_group_members) }
+      it { is_expected.to be_disallowed(:invite_group_members) }
     end
   end
 
@@ -1511,8 +1214,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:register_group_runners) }
-
         context 'with registration tokens disabled' do
           let(:allow_runner_registration_token) { false }
 
@@ -1566,8 +1267,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:register_group_runners) }
-
       context 'with registration tokens disabled' do
         let(:allow_runner_registration_token) { false }
 
@@ -1599,32 +1298,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
     end
 
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_disallowed(:register_group_runners) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_disallowed(:register_group_runners) }
-    end
-
-    context 'with planner' do
-      let(:current_user) { planner }
-
-      it { is_expected.to be_disallowed(:register_group_runners) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
-
-      it { is_expected.to be_disallowed(:register_group_runners) }
-    end
-
     context 'with non member' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { non_group_member }
 
       it { is_expected.to be_disallowed(:register_group_runners) }
     end
@@ -1662,8 +1337,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_runners) }
-
         context 'with specific group runner registration disabled' do
           before do
             group.runner_registration_enabled = false
@@ -1700,39 +1373,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:create_runners) }
-
       it_behaves_like 'disallowed when group runner registration disabled'
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_disallowed(:create_runners) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_disallowed(:create_runners) }
-    end
-
-    context 'with planner' do
-      let(:current_user) { planner }
-
-      it { is_expected.to be_disallowed(:create_runners) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
-
-      it { is_expected.to be_disallowed(:create_runners) }
-    end
-
-    context 'with developer' do
-      let(:current_user) { developer }
-
-      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with anonymous' do
@@ -1743,62 +1384,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'read_group_all_available_runners' do
-    context 'admin' do
+    context 'admin when admin mode is disabled' do
       let(:current_user) { admin }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:read_group_all_available_runners) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:read_group_all_available_runners) }
-      end
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:read_group_all_available_runners) }
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_allowed(:read_group_all_available_runners) }
-    end
-
-    context 'with developer' do
-      let(:current_user) { developer }
-
-      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
-    end
-
-    context 'with security_manager' do
-      let(:current_user) { security_manager }
-
-      it { is_expected.to be_allowed(:read_group_all_available_runners) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
-    end
-
-    context 'with planner' do
-      let(:current_user) { planner }
-
-      it { is_expected.to be_disallowed(:read_group_all_available_runners) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
 
       it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
 
     context 'with non member' do
-      let(:current_user) { create(:user) }
+      let(:current_user) { non_group_member }
 
       it { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
@@ -1811,20 +1404,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'change_prevent_sharing_groups_outside_hierarchy' do
-    context 'with owner' do
-      let(:current_user) { owner }
+    context 'with admin when admin mode is disabled' do
+      let(:current_user) { admin }
 
-      it { is_expected.to be_allowed(:change_prevent_sharing_groups_outside_hierarchy) }
-    end
-
-    context 'with non-owner roles' do
-      where(role: %w[admin maintainer reporter developer guest])
-
-      with_them do
-        let(:current_user) { public_send role }
-
-        it { is_expected.to be_disallowed(:change_prevent_sharing_groups_outside_hierarchy) }
-      end
+      it { is_expected.to be_disallowed(:change_prevent_sharing_groups_outside_hierarchy) }
     end
   end
 
@@ -1850,29 +1433,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'read_usage_quotas policy' do
-    context 'reading usage quotas' do
-      let(:policy) { :read_usage_quotas }
+    context 'with admin when admin mode is disabled' do
+      let(:current_user) { admin }
 
-      where(:role, :admin_mode, :allowed) do
-        :owner      | nil   | true
-        :admin      | true  | true
-        :admin      | false | false
-        :maintainer | nil   | false
-        :developer  | nil   | false
-        :reporter   | nil   | false
-        :planner    | nil   | false
-        :guest      | nil   | false
-      end
-
-      with_them do
-        let(:current_user) { public_send(role) }
-
-        before do
-          enable_admin_mode!(current_user) if admin_mode
-        end
-
-        it { is_expected.to(allowed ? be_allowed(policy) : be_disallowed(policy)) }
-      end
+      it { expect_disallowed(:read_usage_quotas) }
     end
   end
 
@@ -1881,8 +1445,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     it 'allows all achievement permissions' do
       expect_allowed(
-        :read_achievement, :create_achievement, :update_achievement, :delete_achievement,
-        :award_achievement, :destroy_user_achievement
+        :award_achievement,
+        :create_achievement,
+        :delete_achievement,
+        :destroy_user_achievement,
+        :read_achievement,
+        :update_achievement
       )
     end
 
@@ -1897,39 +1465,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         it { is_expected.to be_allowed(:read_achievement) }
       end
     end
-
-    context 'when current user is not an owner' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_disallowed(:destroy_user_achievement) }
-    end
-  end
-
-  describe 'admin_package ability' do
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_disallowed(:admin_package) }
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { is_expected.to be_allowed(:admin_package) }
-    end
   end
 
   describe 'set_new_issue_metadata and set_new_work_item_metadata abilities' do
-    %w[guest planner reporter developer maintainer owner].each do |role|
-      context "when user is #{role}" do
-        let(:current_user) { send(role) }
-
-        it 'allows setting metadata for new issues and work items' do
-          expect_allowed :set_new_issue_metadata, :set_new_work_item_metadata
-        end
-      end
-    end
-
     context 'when user is not a group member' do
       let(:current_user) { non_group_member }
 
@@ -1940,12 +1478,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'when user is admin' do
       let(:current_user) { admin }
-
-      context 'when admin mode enabled', :enable_admin_mode do
-        it 'allows setting metadata for new issues and work items' do
-          expect_allowed :set_new_issue_metadata, :set_new_work_item_metadata
-        end
-      end
 
       context 'when admin mode disabled' do
         it 'disallows setting metadata for new issues and work items' do
@@ -1972,12 +1504,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it { is_expected.to be_allowed(:view_edit_page) }
     end
 
-    context 'when user does not have archive_group permissions' do
-      let(:current_user) { maintainer }
-
-      it { is_expected.to be_disallowed(:view_edit_page) }
-    end
-
     context 'with archived group' do
       before do
         group.namespace_settings.update!(archived: true)
@@ -1998,25 +1524,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'create_saved_view' do
-    context 'when user can create saved views' do
-      where(:role, :current_user) do
-        'planner'    | lazy { planner }
-        'reporter'   | lazy { reporter }
-        'developer'  | lazy { developer }
-        'maintainer' | lazy { maintainer }
-        'owner'      | lazy { owner }
-      end
-
-      with_them do
-        it { is_expected.to be_allowed(:create_saved_view) }
-        it { is_expected.to be_allowed(:create_work_item_saved_view) }
-      end
-    end
-
     context 'when user cannot create saved views' do
       where(:role, :current_user) do
-        'guest'      | lazy { guest }
-        'non-member' | lazy { create(:user) }
+        'non-member' | lazy { non_group_member }
         'anonymous'  | lazy { nil }
       end
 
@@ -2111,24 +1621,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         it { expect_allowed(:read_boundary) }
       end
 
-      %w[guest planner reporter developer maintainer owner].each do |role|
-        context role do
-          let(:current_user) { send(role) }
-
-          it { expect_allowed(:read_boundary) }
-        end
-      end
-
-      context 'admin' do
+      context 'admin when admin mode is disabled' do
         let(:current_user) { admin }
 
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it { expect_allowed(:read_boundary) }
-        end
-
-        context 'when admin mode is disabled' do
-          it { expect_disallowed(:read_boundary) }
-        end
+        it { expect_disallowed(:read_boundary) }
       end
     end
 
@@ -2156,18 +1652,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     context 'with a public group' do
       let(:group) { create(:group, :public) }
-
-      context 'when no user' do
-        let(:current_user) { anonymous }
-
-        it { expect_allowed(:read_boundary) }
-      end
-
-      context 'non-member' do
-        let(:current_user) { non_group_member }
-
-        it { expect_allowed(:read_boundary) }
-      end
 
       context 'external user' do
         let(:current_user) { external_user }

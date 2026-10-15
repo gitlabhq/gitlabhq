@@ -111,4 +111,33 @@ RSpec.describe Gitlab::Ci::Catalog::Bundle::Reader, feature_category: :pipeline_
       it_behaves_like 'a readable bundle'
     end
   end
+
+  describe '#bundle' do
+    let(:component_name) { 'bundled' }
+
+    before do
+      create(:ci_catalog_bundled_resource_component, :remote_store, version: bundled_version, name: 'bundled',
+        file: ::CarrierWaveStringFile.new_file(
+          file_content: Gitlab::Ci::Catalog::Bundle::Format.dump(
+            name: 'bundled', version: '5.2.0', sha: 'abc123', entry_path: 'templates/bundled.yml',
+            files: { 'templates/bundled.yml' => "job:\n  script: echo\n" }
+          ),
+          filename: 'bundled', content_type: 'application/json'
+        ))
+    end
+
+    it 'returns the parsed bundle' do
+      expect(reader.bundle).to have_attributes(
+        name: 'bundled', sha: 'abc123', files: { 'templates/bundled.yml' => "job:\n  script: echo\n" }
+      )
+    end
+
+    context 'when the component is not bundled' do
+      let(:component_name) { 'missing' }
+
+      it 'returns nil' do
+        expect(reader.bundle).to be_nil
+      end
+    end
+  end
 end

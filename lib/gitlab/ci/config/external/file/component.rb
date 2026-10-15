@@ -106,8 +106,9 @@ module Gitlab
             override :expand_context_attrs
             def expand_context_attrs
               super.merge(
-                project: component_payload.fetch(:project),
-                sha: component_payload.fetch(:sha),
+                project: component_payload[:project],
+                sha: component_payload[:sha],
+                bundle: component_bundle,
                 user: context.user,
                 variables: context.variables,
                 component_data: component_yaml_context
@@ -121,6 +122,7 @@ module Gitlab
 
             def masked_blob
               return unless component_payload
+              return if component_bundle
 
               context.mask_variables_from(
                 Gitlab::Routing.url_helpers.project_blob_url(
@@ -137,8 +139,13 @@ module Gitlab
             end
             strong_memoize_attr :component_payload
 
+            def component_bundle
+              component_payload[:bundle]
+            end
+
             def component_attrs
               return {} unless component_payload
+              return bundle_component_attrs if component_bundle
 
               {
                 project: component_payload.fetch(:project),
@@ -146,6 +153,16 @@ module Gitlab
                 name: component_payload.fetch(:name),
                 version: component_payload.fetch(:version),
                 reference: component_payload.fetch(:reference)
+              }
+            end
+
+            def bundle_component_attrs
+              {
+                project: nil,
+                sha: component_bundle.sha,
+                name: component_bundle.name,
+                version: component_bundle.version,
+                reference: component_payload[:reference]
               }
             end
 

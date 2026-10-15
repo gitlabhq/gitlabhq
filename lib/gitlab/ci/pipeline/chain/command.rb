@@ -32,6 +32,10 @@ module Gitlab
             linting
           end
 
+          def allocate_pipeline_iid?
+            !readonly?
+          end
+
           def branch?
             ref_resolver.branch?
           end

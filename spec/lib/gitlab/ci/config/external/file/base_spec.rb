@@ -293,6 +293,21 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
 
       it { is_expected.to eq([{ location: location, content: content }, nil, 'HEAD'].hash) }
     end
+
+    context 'with a bundle' do
+      let(:bundle) do
+        Gitlab::Ci::Catalog::Bundle::Contents.new(
+          name: 'my_component', version: '1.0.0', sha: 'bundle_sha', entry_path: 'templates/my_component.yml', files: {}
+        )
+      end
+
+      let(:context_params) { { variables: variables, bundle: bundle } }
+
+      it 'is built from the bundle identity' do
+        expect(filehash)
+          .to eq([{ location: location, content: content }, %w[bundle_sha templates/my_component.yml]].hash)
+      end
+    end
   end
 
   describe '#load_and_validate_expanded_hash!' do

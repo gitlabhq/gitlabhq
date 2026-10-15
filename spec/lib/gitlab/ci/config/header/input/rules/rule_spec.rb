@@ -3,6 +3,8 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category: :pipeline_composition do
+  using RSpec::Parameterized::TableSyntax
+
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
       .value(config)
@@ -11,6 +13,35 @@ RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category:
   subject(:entry) { factory.create! }
 
   describe 'validations' do
+    context 'with an array default' do
+      invalid_c = "rule default 'c' must be one of the options"
+      invalid_d = "rule default 'd' must be one of the options"
+
+      where(:condition, :default_value, :expected_errors) do
+        '$[[ inputs.env ]] == "prod"' | []        | []
+        '$[[ inputs.env ]] == "prod"' | %w[a]     | []
+        '$[[ inputs.env ]] == "prod"' | %w[a b]   | []
+        '$[[ inputs.env ]] == "prod"' | %w[a c]   | [invalid_c]
+        '$[[ inputs.env ]] == "prod"' | %w[a c d] | [invalid_c, invalid_d]
+        nil                          | []        | []
+        nil                          | %w[a]     | []
+        nil                          | %w[a b]   | []
+        nil                          | %w[a c]   | [invalid_c]
+      end
+
+      with_them do
+        let(:config) do
+          { if: condition, options: %w[a b], default: default_value }.compact
+        end
+
+        it 'validates each selected value against the options' do
+          entry.compose!
+
+          expect(entry.errors).to eq(expected_errors)
+        end
+      end
+    end
+
     context 'with if and options' do
       let(:config) { { if: '$[[ inputs.env ]] == "prod"', options: %w[a b] } }
 

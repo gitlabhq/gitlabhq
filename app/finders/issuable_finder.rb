@@ -594,7 +594,7 @@ class IssuableFinder
   def by_subscribed(items)
     return items unless current_user
 
-    case params[:subscribed]
+    case params[:subscribed]&.to_sym
     when :explicitly_subscribed
       items.explicitly_subscribed(current_user)
     when :explicitly_unsubscribed

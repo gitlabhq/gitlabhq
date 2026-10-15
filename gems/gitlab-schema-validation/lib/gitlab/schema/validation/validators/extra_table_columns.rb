@@ -7,6 +7,9 @@ module Gitlab
         class ExtraTableColumns < Base
           ERROR_MESSAGE = "The table %s has columns present in the database, but not in the structure.sql file"
 
+          # Temporary column of an integer-to-bigint conversion, dropped by its cleanup migration.
+          BIGINT_CONVERSION_COLUMN = /_convert_to_bigint\z/
+
           def execute
             database.tables.filter_map do |database_table|
               table_name = database_table.name
@@ -15,7 +18,8 @@ module Gitlab
               next unless structure_sql_table
 
               inconsistencies = database_table.columns.reject do |database_table_column|
-                structure_sql_table.column_exists?(database_table_column.name)
+                structure_sql_table.column_exists?(database_table_column.name) ||
+                  database_table_column.name.match?(BIGINT_CONVERSION_COLUMN)
               end
 
               if inconsistencies.any?

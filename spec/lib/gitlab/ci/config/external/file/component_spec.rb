@@ -321,4 +321,72 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       end
     end
   end
+
+  context 'when the component resolved from a bundle' do
+    let(:bundle) do
+      Gitlab::Ci::Catalog::Bundle::Contents.new(
+        name: 'my_component',
+        version: '1.0.0',
+        sha: 'bundle_sha',
+        entry_path: 'templates/my_component.yml',
+        files: { 'templates/my_component.yml' => content }
+      )
+    end
+
+    let(:response) do
+      ServiceResponse.success(payload: {
+        content: content,
+        path: 'templates/my_component.yml',
+        bundle: bundle,
+        reference: '1.0.0'
+      })
+    end
+
+    describe '#metadata' do
+      subject(:metadata) { external_resource.metadata }
+
+      it 'builds the component data from the bundle and returns no blob' do
+        is_expected.to include(
+          type: :component,
+          blob: nil,
+          raw: nil,
+          component: {
+            project: nil,
+            sha: 'bundle_sha',
+            name: 'my_component',
+            version: '1.0.0',
+            reference: '1.0.0'
+          }
+        )
+      end
+    end
+
+    describe '#expand_context' do
+      subject { external_resource.send(:expand_context_attrs) }
+
+      it 'passes the bundle in place of the project and sha' do
+        is_expected.to include(
+          project: nil,
+          sha: nil,
+          bundle: bundle,
+          user: context.user,
+          variables: context.variables,
+          component_data: {
+            name: 'my_component',
+            sha: 'bundle_sha',
+            version: '1.0.0',
+            reference: '1.0.0'
+          }
+        )
+      end
+    end
+
+    describe '#valid?' do
+      it 'is valid' do
+        Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([external_resource])
+
+        expect(external_resource).to be_valid
+      end
+    end
+  end
 end

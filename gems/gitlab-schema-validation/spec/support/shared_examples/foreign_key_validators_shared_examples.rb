@@ -38,6 +38,12 @@ RSpec.shared_examples 'foreign key validators' do |validator, expected_result|
         'table_name' => 'projects',
         'foreign_key_name' => 'extra_fk',
         'foreign_key_definition' => 'FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE'
+      },
+      {
+        'schema' => schema,
+        'table_name' => 'issues',
+        'foreign_key_name' => 'fk_0123456789_tmp',
+        'foreign_key_definition' => 'FOREIGN KEY (author_id_convert_to_bigint) REFERENCES users(id) ON DELETE SET NULL'
       }
     ]
   end
