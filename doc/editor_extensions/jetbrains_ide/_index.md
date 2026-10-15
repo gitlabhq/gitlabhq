@@ -12,10 +12,10 @@ with JetBrains IDEs like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 The plugin includes the following features:
 
 - On the right tool window bar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
-  - The chat tab: Interact with GitLab Duo Agentic Chat, or use the **New chat** ({{< icon name="duo-chat-new" >}})
-    dropdown list to select a foundational or custom agent to work with.
-  - The flows tab: Use the Software Development Flow. Learn more about the
-    [difference between Chat and the flow](../software_development.md#flow-and-chat-comparison).
+  Interact with GitLab Duo Agentic Chat, and select a foundational or custom agent to work with.
+  To use the Software Development Flow, [switch to the classic layout](../../user/gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide),
+  which has separate chat and flows tabs. Learn more about the
+  [difference between Chat and the flow](../software_development.md#flow-and-chat-comparison).
 - In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
   GitLab Duo Code Suggestions and review suggestions in
   your file as you author code.
@@ -39,14 +39,10 @@ For information about installing plugins in remote development environments, see
 
 ## Enable experimental or beta features
 
-Some features in the plugin are in experiment or beta status. To use them, you must opt in:
-
-1. Go to your IDE's top menu bar and select **Settings**, or:
-   - MacOS: press <kbd>Command</kbd>+<kbd>,</kbd>
-   - Windows or Linux: press <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd>
-1. In the left sidebar, expand **Tools**, then select **GitLab Duo**.
-1. Select **Enable Experiment or BETA features**.
-1. To apply the changes, restart your IDE.
+Some features in the plugin are in experiment or beta status. The plugin turns them on when
+[experiment and beta features are turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)
+for the top-level group of your
+[default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Update the extension
 

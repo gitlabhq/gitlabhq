@@ -10,7 +10,7 @@ title: Business logic scanning
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -25,9 +25,10 @@ title: Business logic scanning
 > The availability of this feature is controlled by a feature flag. For more information, see the
 > history.
 
-Business logic scanning uses an AI agent to find vulnerabilities in how your application enforces
-its own rules. Pattern-based analyzers like [SAST](../sast/_index.md) often miss these
-vulnerabilities, because the code is valid and only the intent is wrong.
+Business logic scanning uses an AI agent, the Business Logic Security Analyzer (BLSA), to find
+vulnerabilities in how your application enforces its own rules. Pattern-based analyzers like
+[SAST](../sast/_index.md) often miss these vulnerabilities, because the code is valid and only the
+intent is wrong.
 
 ## What business logic scanning finds
 
@@ -57,6 +58,9 @@ A scan starts in one of these ways:
 | [On a schedule](#scheduled-default-branch-scans) | Not available yet. | Not available yet. |
 
 ## Turn on business logic scanning
+
+Business logic scanning is in a closed beta. On GitLab.com, GitLab enables the feature flags for
+participating top-level groups. To request access, contact your account team.
 
 Prerequisites:
 

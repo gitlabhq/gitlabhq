@@ -48,10 +48,13 @@ This flow is available in VS Code, Visual Studio, and JetBrains.
   - GitLab for VS Code 6.85.0 and later
   - GitLab Duo plugin for JetBrains IDEs 3.40.0 and later
   - GitLab for Visual Studio 0.79.0 and later
+- In VS Code and JetBrains IDEs, use the [classic layout](../user/gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide).
+  The new layout does not include the flow.
 
 ## Flow and Chat comparison
 
-Both the Software Development Flow and GitLab Duo Chat are available in your IDE in different tabs.
+Both the Software Development Flow and GitLab Duo Chat are available in your IDE.
+In the classic layout, they are on separate tabs.
 
 Use the Software Development Flow for complex development tasks.
 

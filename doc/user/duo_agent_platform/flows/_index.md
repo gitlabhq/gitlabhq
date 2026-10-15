@@ -72,6 +72,11 @@ To view flows that are running for your project:
 
 ## View flow history in the IDEs
 
+Prerequisites:
+
+- In VS Code and JetBrains IDEs, use the
+  [classic layout](../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide).
+
 To view a history of flows you've run in your project:
 
 - On the **Flows** tab, scroll down and view **Recent agent sessions**.

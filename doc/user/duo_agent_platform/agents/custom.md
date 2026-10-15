@@ -274,8 +274,9 @@ Prerequisites:
 To use a custom agent in VS Code:
 
 1. In VS Code, in the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** tab.
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Under the message box, from the agent dropdown list, select the custom agent.
+   In the [classic layout](../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide), select the **Chat** tab, then from the
+   **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
 1. Enter your question or request.
 
 ### In JetBrains IDEs
@@ -296,8 +297,9 @@ First, enable the GitLab Duo Agent Platform:
 Then, to use a custom agent:
 
 1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
-1. Select the **Chat** tab.
-1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Under the message box, from the agent dropdown list, select the custom agent.
+   In the [classic layout](../../gitlab_duo_chat/agentic_chat.md#change-the-layout-in-your-ide), select the **Chat** tab, then from the
+   **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
 1. Enter your question or request.
 
 ## Disable an agent

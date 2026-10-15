@@ -7,7 +7,7 @@ documentation_link: "../../../user/model_context_protocol/mcp_server"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/19117
 categories: [ Agent Tools ]
 level: primary
-weight: 50
+weight: 10
 ---
 
 In previous versions of GitLab, MCP clients could reach only a limited set of GitLab tools. Now the GitLab MCP server is generally available.
