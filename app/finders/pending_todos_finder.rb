@@ -31,6 +31,7 @@ class PendingTodosFinder
     todos = by_author_id(todos)
     todos = by_discussion(todos)
     todos = by_commit_id(todos)
+    todos = by_created_before(todos)
 
     todos = todos.with_preloaded_user if @preload_user_association
 
@@ -79,6 +80,12 @@ class PendingTodosFinder
     else
       todos
     end
+  end
+
+  def by_created_before(todos)
+    return todos unless params[:created_before]
+
+    todos.created_before(params[:created_before])
   end
 
   def by_discussion(todos)

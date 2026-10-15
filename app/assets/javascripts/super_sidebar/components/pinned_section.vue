@@ -7,7 +7,7 @@ import {
   SIDEBAR_PINS_EXPANDED_COOKIE,
   SIDEBAR_COOKIE_EXPIRATION,
 } from '../constants';
-import { isPinnedGroupExpanded, setPinnedGroupExpanded } from '../utils';
+import { isPinnedGroupExpanded, pinnedGroupCollapseKey, setPinnedGroupExpanded } from '../utils';
 import MenuSection from './menu_section.vue';
 import NavItem from './nav_item.vue';
 
@@ -149,10 +149,9 @@ export default {
     },
   },
   methods: {
-    // Scoped by panel so the same category id stays independent across the
-    // project and group sidebars. A method, not a computed, so data() can reuse it.
+    // A method, not a computed, so data() can reuse it.
     pinnedGroupCollapseKey() {
-      return this.groupItem ? `${this.panelType}-${this.groupItem.id}` : null;
+      return this.groupItem ? pinnedGroupCollapseKey(this.panelType, this.groupItem.id) : null;
     },
     updateDraggableItems(items) {
       this.draggableItems = items;

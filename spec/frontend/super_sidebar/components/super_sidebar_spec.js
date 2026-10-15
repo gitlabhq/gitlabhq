@@ -13,9 +13,8 @@ import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import SidebarPreferences from '~/super_sidebar/components/sidebar_preferences.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import {
-  SIDEBAR_NAV_MODE_PINNED_ONLY,
-  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
-  SIDEBAR_NAV_MODE_GROUPED_PINS,
+  SIDEBAR_NAV_MODE_COMPACT,
+  SIDEBAR_NAV_MODE_FULL,
   SIDEBAR_NAV_MODE_STORAGE_KEY,
 } from '~/super_sidebar/constants';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
@@ -298,57 +297,50 @@ describe('SuperSidebar component', () => {
       });
 
       it('seeds the mode from localStorage', () => {
-        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, 'all_categories');
         createPinnablePanel();
 
-        expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+        expect(findPreferences().props('mode')).toBe('all_categories');
+        expect(findSidebarMenu().props('showOldCategories')).toBe(true);
       });
 
-      it('defaults to pinned-only when localStorage holds an unknown value', () => {
-        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, 'nonsense');
+      it('defaults to compact when nothing is stored', () => {
         createPinnablePanel();
 
-        expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_PINNED_ONLY);
+        expect(findPreferences().props('mode')).toBe('compact');
+        expect(findSidebarMenu().props('showOldCategories')).toBe(false);
       });
+
+      // pinned_only and grouped_pins are retired modes from before compact existed.
+      it.each(['nonsense', 'pinned_only', 'grouped_pins'])(
+        'defaults to compact when localStorage holds %s',
+        (stored) => {
+          localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, stored);
+          createPinnablePanel();
+
+          expect(findPreferences().props('mode')).toBe('compact');
+        },
+      );
 
       describe('when a mode is selected', () => {
-        it('persists the all-categories mode and forwards booleans to the menu', async () => {
+        it('persists the full mode and shows the old categories in the menu', async () => {
           createPinnablePanel();
-          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_FULL);
           await nextTick();
 
-          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe(
-            SIDEBAR_NAV_MODE_ALL_CATEGORIES,
-          );
-          expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe('all_categories');
+          expect(findPreferences().props('mode')).toBe('all_categories');
           expect(findSidebarMenu().props('showOldCategories')).toBe(true);
-          expect(findSidebarMenu().props('groupPinned')).toBe(false);
         });
 
-        it('persists the grouped-pins mode and forwards booleans to the menu', async () => {
+        it('persists the compact mode and hides the old categories in the menu', async () => {
+          localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, 'all_categories');
           createPinnablePanel();
-          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_GROUPED_PINS);
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_COMPACT);
           await nextTick();
 
-          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe(
-            SIDEBAR_NAV_MODE_GROUPED_PINS,
-          );
-          expect(findSidebarMenu().props('groupPinned')).toBe(true);
+          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe('compact');
           expect(findSidebarMenu().props('showOldCategories')).toBe(false);
-        });
-
-        // A single mode makes the two views mutually exclusive by construction:
-        // switching directly from one to the other cannot leave both enabled.
-        it('switches cleanly between modes without leaving both views enabled', async () => {
-          createPinnablePanel();
-          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_GROUPED_PINS);
-          await nextTick();
-
-          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_ALL_CATEGORIES);
-          await nextTick();
-
-          expect(findSidebarMenu().props('showOldCategories')).toBe(true);
-          expect(findSidebarMenu().props('groupPinned')).toBe(false);
         });
       });
     });

@@ -382,14 +382,6 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
     context 'without error' do
       let(:expected_user_ids) { [members.first.user_id, members.second.user_id] }
 
-      it 'publishes a members updated event' do
-        expect { subject }.to publish_event(Members::UpdatedEvent).with({
-          source_id: group.id,
-          source_type: "Group",
-          user_ids: expected_user_ids
-        })
-      end
-
       it 'publishes a members updated cloud event' do
         expect { subject }.to publish_event(Members::UpdatedCloudEvent).with({
           'source_id' => group.id,
@@ -404,8 +396,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
       it 'does not trigger a members updated event' do
         expect { subject }
-          .to not_publish_event(Members::UpdatedEvent)
-          .and not_publish_event(Members::UpdatedCloudEvent)
+          .to not_publish_event(Members::UpdatedCloudEvent)
       end
     end
 
@@ -416,8 +407,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
       it 'does not trigger a members updated event' do
         expect { subject }
-          .to not_publish_event(Members::UpdatedEvent)
-          .and not_publish_event(Members::UpdatedCloudEvent)
+          .to not_publish_event(Members::UpdatedCloudEvent)
       end
     end
 
@@ -426,8 +416,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
       it 'does not trigger a members updated event' do
         expect { subject }
-          .to not_publish_event(Members::UpdatedEvent)
-          .and not_publish_event(Members::UpdatedCloudEvent)
+          .to not_publish_event(Members::UpdatedCloudEvent)
       end
     end
   end

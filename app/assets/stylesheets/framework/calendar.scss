@@ -62,6 +62,10 @@
   cursor: help;
 }
 
+.user-contribution-graph-cell {
+  @apply gl-rounded-sm;
+}
+
 .user-contribution-graph-cell-0 {
   background-color: var(--user-contribution-graph-cell-level-0);
 }

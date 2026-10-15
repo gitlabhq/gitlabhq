@@ -72,16 +72,20 @@ To turn off the virtual registry:
 
 The virtual registry endpoint can be used by any of following tokens:
 
-- A [personal access token](../../profile/personal_access_tokens.md).
+- A [legacy personal access token](../../profile/personal_access_tokens.md).
 - A [group deploy token](../../project/deploy_tokens/_index.md) for the top-level group hosting the considered virtual registry.
 - A [group access token](../../group/settings/group_access_tokens.md) for the top-level group hosting the considered virtual registry.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - An [OAuth 2.0 token](../../../api/oauth2.md), sent as a Bearer header or query parameter.
 
-Tokens need one of the following scopes:
+The required token scopes depend on the package format:
 
-- `api`
-- `read_virtual_registry`
+| Token type | Maven packages | Container images |
+|------------|----------------|------------------|
+| Legacy personal access token, group access token, or OAuth 2.0 token | `api` or `read_virtual_registry` | `api` or both `read_virtual_registry` and `write_virtual_registry` |
+| Group deploy token | `read_virtual_registry` | Both `read_virtual_registry` and `write_virtual_registry` |
+
+CI/CD job tokens have predefined permissions. You cannot configure these scopes for a job token.
 
 Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
 

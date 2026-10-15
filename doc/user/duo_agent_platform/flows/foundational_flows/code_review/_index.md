@@ -137,11 +137,17 @@ Interactions are a separate feature from Code Review Flow.
 
 For more information, see [interact with GitLab Duo](../../../../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo).
 
-## Approve and request changes
+## Approvals and change requests
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254981) in GitLab 19.5 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `duo_code_review_decisions`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254981) as a [beta](../../../../../policy/development_stages_support.md#beta) in GitLab 19.5 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `duo_code_review_decisions`. Disabled by default.
 
 {{< /history >}}
 

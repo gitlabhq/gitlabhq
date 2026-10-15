@@ -211,6 +211,15 @@ module Gitlab
         ::Gitlab::Audit::CompositeIdentityAuthor.new(actor, human_author: author)
       end
 
+      def apply_composite_identity(event)
+        return event unless @human_author && event.author_id == @human_author.id
+
+        event.assign_author(@author)
+        event.details = event.details.merge(human_author_details)
+
+        event
+      end
+
       def human_author_details
         {
           human_author_id: @human_author.id,

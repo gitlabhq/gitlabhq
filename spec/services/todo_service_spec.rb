@@ -1387,6 +1387,57 @@ RSpec.describe TodoService, feature_category: :notifications do
           should_create_todo(user: assigned_mr.author, author: john_doe, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
         end
       end
+
+      context 'when a review by the same reviewer already raised a pending todo' do
+        def pending_review_todo(reviewer, created_at:, user: author)
+          create(
+            :todo, :pending, :review_submitted,
+            user: user, project: project, target: assigned_mr, author: reviewer, created_at: created_at
+          )
+        end
+
+        it 'supersedes it: the earlier todo is done by the system and a fresh one is pending' do
+          earlier = pending_review_todo(member, created_at: 11.minutes.ago)
+
+          service.new_review(assigned_mr, member)
+
+          expect(earlier.reload).to be_done
+          expect(earlier.resolved_by_action).to eq('system_done')
+          should_create_todo(user: author, author: member, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+          expect(Todo.pending.where(user: author, author: member, target: assigned_mr).first).not_to eq(earlier)
+        end
+
+        it 'folds a review within the same-review window into the pending todo (a batched publish)' do
+          # Both recipients, the author and the assignee, already have the
+          # first batch's to-do.
+          earlier = pending_review_todo(member, created_at: 1.minute.ago)
+          pending_review_todo(member, created_at: 1.minute.ago, user: john_doe)
+
+          should_not_create_any_todo { service.new_review(assigned_mr, member) }
+
+          expect(earlier.reload).to be_pending
+        end
+
+        it 'refreshes the pending count cache of a recipient whose younger todo deduplicates the new one' do
+          pending_review_todo(member, created_at: 11.minutes.ago)
+          pending_review_todo(member, created_at: 1.minute.ago)
+          pending_review_todo(member, created_at: 1.minute.ago, user: john_doe)
+
+          allow(Users::UpdateTodoCountCacheService).to receive(:new).and_call_original
+          expect(Users::UpdateTodoCountCacheService).to receive(:new).with([author.id]).and_call_original
+
+          should_not_create_any_todo { service.new_review(assigned_mr, member) }
+        end
+
+        it 'raises a todo of its own for another reviewer and leaves the first one pending' do
+          other = pending_review_todo(skipped, created_at: 11.minutes.ago)
+
+          service.new_review(assigned_mr, member)
+
+          expect(other.reload).to be_pending
+          should_create_todo(user: author, author: member, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+        end
+      end
     end
   end
 

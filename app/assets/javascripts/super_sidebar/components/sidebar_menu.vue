@@ -11,7 +11,11 @@ import { pinsPath } from '~/lib/utils/path_helpers/user';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, OPEN_FEATURE_LIBRARY } from '~/behaviors/shortcuts/keybindings';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
-import { formatAsyncCount } from '~/super_sidebar/utils';
+import {
+  formatAsyncCount,
+  pinnedGroupCollapseKey,
+  setPinnedGroupExpanded,
+} from '~/super_sidebar/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import {
@@ -19,6 +23,7 @@ import {
   PANEL_TYPES,
   PANELS_WITH_PINS,
   PANELS_WITH_HIDEABLE_UNPINNED_ITEMS,
+  PINNED_CATEGORY_AUTO_GROUP_THRESHOLD,
   PINNED_NAV_STORAGE_KEY,
   MAX_OPEN_WORK_ITEMS_COUNT,
   SETTINGS_DISCLOSURE_PORTAL_NAME,
@@ -91,13 +96,6 @@ export default {
     // User opt-in (persisted by SuperSidebar) to fall back to the full nav
     // categories while hide_unpinned_sidebar_items is enabled.
     showOldCategories: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    // User opt-in (persisted by SuperSidebar) to group pinned items under
-    // their parent category.
-    groupPinned: {
       type: Boolean,
       required: false,
       default: false,
@@ -233,6 +231,19 @@ export default {
         }))
         .filter((section) => section.items.length > 0);
     },
+    autoGroupedPins() {
+      return this.pinnedGroups.filter(
+        (group) => group.items.length >= PINNED_CATEGORY_AUTO_GROUP_THRESHOLD,
+      );
+    },
+    // Pins not in an auto group, in the user's pin order so reordering still works.
+    loosePinnedItems() {
+      const groupedIds = new Set(
+        this.autoGroupedPins.flatMap((group) => group.items.map(({ id }) => id)),
+      );
+
+      return this.pinnedItems.filter(({ id }) => !groupedIds.has(id));
+    },
     isPinnablePanel() {
       return PANELS_WITH_PINS.includes(this.panelType);
     },
@@ -257,15 +268,10 @@ export default {
     showFullNav() {
       return !this.showUnpinnedItems && this.showOldCategories;
     },
-    // Group pins by category only while pins are the primary nav (unpinned
-    // items hidden), the user opted in, and the full category fallback is off.
+    // Compact mode only (Full keeps one flat pinned list). Without any auto
+    // group, the plain flat pinned section renders the same thing.
     showGroupedPins() {
-      return (
-        !this.showUnpinnedItems &&
-        !this.showOldCategories &&
-        this.groupPinned &&
-        this.pinnedGroups.length > 0
-      );
+      return !this.showUnpinnedItems && !this.showOldCategories && this.autoGroupedPins.length > 0;
     },
     showEmptyPinsHint() {
       return !this.showUnpinnedItems && this.pinnedItems.length === 0 && !this.isIconOnly;
@@ -352,12 +358,28 @@ export default {
     },
     createPin(itemId, itemTitle) {
       this.changedPinnedItemIds.ids.push(itemId);
+      this.expandGroupFormedBy(itemId);
       this.$toast.show(
         sprintf(this.$options.i18n.pinAdded, {
           title: itemTitle,
         }),
       );
       this.updatePins();
+    },
+    // A group that forms from a pin mounts fresh and reads a possibly stale
+    // collapsed state, which would hide pins that were visible a moment ago.
+    expandGroupFormedBy(itemId) {
+      if (!this.showGroupedPins) return;
+
+      const formedGroup = this.autoGroupedPins.find(
+        (group) =>
+          group.items.length === PINNED_CATEGORY_AUTO_GROUP_THRESHOLD &&
+          group.items.some(({ id }) => id === itemId),
+      );
+
+      if (formedGroup) {
+        setPinnedGroupExpanded(pinnedGroupCollapseKey(this.panelType, formedGroup.id), true);
+      }
     },
     destroyPin(itemId, itemTitle, source = {}) {
       this.changedPinnedItemIds.ids = this.changedPinnedItemIds.ids.filter((id) => id !== itemId);
@@ -432,7 +454,7 @@ export default {
     // Derive from showUnpinnedItems (not the raw flag) so the organization
     // panel, which is exempt from unpinned-hiding, keeps its in-place section.
     // Settings moves to the top disclosure in every mode the flag applies to,
-    // including the full-category (Everything) fallback.
+    // including the Full mode fallback.
     settingsAsDisclosure(navItem) {
       return !this.showUnpinnedItems && this.isSettingsSection(navItem);
     },
@@ -483,7 +505,24 @@ export default {
       id="super-sidebar-pinned-section"
       class="gl-contents"
     >
-      <template v-for="(group, index) in pinnedGroups">
+      <pinned-section
+        v-if="loosePinnedItems.length > 0"
+        :supports-pins="supportsPins"
+        :items="loosePinnedItems"
+        :has-flyout="showFlyoutMenus"
+        :was-pinned-nav="wasPinnedNav"
+        headerless
+        :async-count="asyncCount"
+        @pin-remove="destroyPin"
+        @pin-reorder="movePin"
+      />
+      <hr
+        v-if="isIconOnly && loosePinnedItems.length > 0"
+        aria-hidden="true"
+        class="gl-border-t gl-mx-3 gl-my-2 gl-border-strong"
+        data-testid="loose-pins-separator"
+      />
+      <template v-for="(group, index) in autoGroupedPins">
         <!-- Collapsed sidebar has no category icon to show, so drop the headers
              and separate each category's flattened icons with a divider. -->
         <hr
@@ -504,7 +543,7 @@ export default {
           :class="{
             'gl-mt-3': !isIconOnly && index > 0,
             'gl-mt-2': !isIconOnly && index === 0,
-            'gl-mb-2': !isIconOnly && index === pinnedGroups.length - 1,
+            'gl-mb-2': !isIconOnly && index === autoGroupedPins.length - 1,
           }"
           @pin-remove="destroyPin"
           @pin-reorder="movePin"

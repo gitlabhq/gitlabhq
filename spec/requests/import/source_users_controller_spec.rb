@@ -142,6 +142,31 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
         expect(response).to have_gitlab_http_status(:success)
       end
 
+      it 'states that the reassignment can be revoked later' do
+        show_invite
+
+        expect(response.body).to include(
+          s_('UserMapping|Approve reassignments only from users you trust. After you approve, contributions ' \
+            'are assigned to you. You can revoke the reassignment later in your account settings, but ' \
+            'contributions that were already reassigned to you are not removed.')
+        )
+      end
+
+      context 'when revoke_import_source_user_reassignment feature flag is disabled' do
+        before do
+          stub_feature_flags(revoke_import_source_user_reassignment: false)
+        end
+
+        it 'states that contributions are assigned permanently' do
+          show_invite
+
+          expect(response.body).to include(
+            s_('UserMapping|Approve reassignments only from users you trust. After you approve, contributions ' \
+              'are assigned to you permanently.')
+          )
+        end
+      end
+
       it_behaves_like 'it notifies about unavailable reassignments'
       it_behaves_like 'it requires the user is the reassign to user'
     end

@@ -1,0 +1,10 @@
+# @feature_category: importers
+mutation revokeSourceUserReassignment($id: ImportSourceUserID!) {
+  importSourceUserRevoke(input: { id: $id }) {
+    errors
+    importSourceUser {
+      id
+      status
+    }
+  }
+}

@@ -56,23 +56,11 @@ RSpec.describe Members::AcceptInviteService, feature_category: :user_management 
     end
 
     context 'with successful acceptation' do
-      let(:event) { Members::AcceptedInviteEvent.new(data: data) }
-      let(:data) do
-        {
-          member_id: member.id,
-          source_id: member.source_id,
-          source_type: member.source_type,
-          user_id: user.id
-        }
-      end
-
       it { expect(service.execute).to be_success }
 
       it 'connects the member and the user' do
         expect { service.execute }.to change { member.user }.from(nil).to(user)
       end
-
-      it { expect { service.execute }.to publish_event(Members::AcceptedInviteEvent).with(data) }
 
       it 'publishes the cloud event' do
         expect { service.execute }.to publish_event(Members::AcceptedInviteCloudEvent).with(

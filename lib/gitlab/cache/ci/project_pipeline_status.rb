@@ -14,9 +14,7 @@ module Gitlab
         attr_accessor :sha, :status, :ref, :project, :loaded
 
         def self.load_for_project(project)
-          new(project).tap do |status|
-            status.load_status
-          end
+          new(project).tap(&:load_status)
         end
 
         def self.load_in_batch_for_projects(projects)

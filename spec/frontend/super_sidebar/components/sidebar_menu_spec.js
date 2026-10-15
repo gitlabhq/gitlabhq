@@ -27,6 +27,7 @@ import {
 } from '~/super_sidebar/constants';
 import { sidebarData, sidebarDataCountResponse } from 'ee_else_ce_jest/super_sidebar/mock_data';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
+import { isPinnedGroupExpanded, setPinnedGroupExpanded } from '~/super_sidebar/utils';
 
 const menuItems = [
   { id: 1, title: 'No subitems' },
@@ -1335,7 +1336,9 @@ describe('Sidebar Menu', () => {
       });
     });
 
-    describe('categorize pinned preference', () => {
+    describe('compact pinned layout', () => {
+      let axiosMock;
+
       const pinnedMenuItems = [
         {
           id: 'code',
@@ -1343,61 +1346,275 @@ describe('Sidebar Menu', () => {
           items: [
             { id: 'files', title: 'Files' },
             { id: 'commits', title: 'Commits' },
+            { id: 'branches', title: 'Branches' },
+            { id: 'tags', title: 'Tags' },
           ],
         },
         {
           id: 'operate',
           title: 'Operate',
-          items: [{ id: 'environments', title: 'Environments' }],
+          items: [
+            { id: 'environments', title: 'Environments' },
+            { id: 'releases', title: 'Releases' },
+          ],
         },
       ];
 
-      const createGroupedWrapper = (props = {}) =>
+      const createCompactWrapper = ({ provide = {}, ...props } = {}) =>
         createWrapper({
           items: pinnedMenuItems,
-          pinnedItemIds: ['files', 'environments'],
+          pinnedItemIds: ['environments', 'files', 'releases', 'commits', 'branches'],
           panelType: 'project',
-          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
-          groupPinned: true,
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true }, ...provide },
           ...props,
         });
 
-      describe('when groupPinned is true', () => {
+      const sectionItemIds = (section) => section.props('items').map(({ id }) => id);
+
+      beforeEach(() => {
+        axiosMock = new MockAdapter(axios);
+      });
+
+      afterEach(() => {
+        axiosMock.restore();
+      });
+
+      describe('when a category has 3 or more pins', () => {
         beforeEach(() => {
-          createGroupedWrapper();
+          createCompactWrapper();
         });
 
-        it('renders one pinned section per category that has a pinned item', () => {
+        it('renders the remaining pins in a headerless list above the category groups', () => {
           const sections = findPinnedSections();
 
           expect(sections).toHaveLength(2);
-          expect(sections.wrappers.map((w) => w.props('groupItem').title)).toEqual([
-            'Code',
-            'Operate',
+          expect(sections.at(0).props('groupItem')).toBe(null);
+          expect(sections.at(0).props('headerless')).toBe(true);
+          expect(sections.at(1).props('groupItem').title).toBe('Code');
+        });
+
+        it('keeps the user pin order in the loose list', () => {
+          expect(sectionItemIds(findPinnedSections().at(0))).toEqual(['environments', 'releases']);
+        });
+
+        it('keeps the user pin order within the group', () => {
+          expect(sectionItemIds(findPinnedSections().at(1))).toEqual([
+            'files',
+            'commits',
+            'branches',
           ]);
         });
 
-        it('passes only the pinned items belonging to each category', () => {
-          const sections = findPinnedSections();
+        it('does not render the icon-only separator', () => {
+          expect(wrapper.findByTestId('loose-pins-separator').exists()).toBe(false);
+        });
+      });
 
-          expect(
-            sections
-              .at(0)
-              .props('items')
-              .map((i) => i.id),
-          ).toEqual(['files']);
-          expect(
-            sections
-              .at(1)
-              .props('items')
-              .map((i) => i.id),
-          ).toEqual(['environments']);
+      describe('when no category has 3 or more pins', () => {
+        beforeEach(() => {
+          createCompactWrapper({ pinnedItemIds: ['files', 'commits', 'environments'] });
         });
 
-        it('preserves nonStaticItems order for the groups', () => {
-          expect(findPinnedSections().wrappers.map((w) => w.props('groupItem').id)).toEqual([
-            'code',
-            'operate',
+        it('renders a single flat pinned section', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(1);
+          expect(sections.at(0).props('groupItem')).toBe(null);
+          expect(sectionItemIds(sections.at(0))).toEqual(['files', 'commits', 'environments']);
+        });
+      });
+
+      describe('when every pin belongs to an auto-grouped category', () => {
+        beforeEach(() => {
+          createCompactWrapper({ pinnedItemIds: ['files', 'commits', 'branches'] });
+        });
+
+        it('renders only the category group', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(1);
+          expect(sections.at(0).props('groupItem').title).toBe('Code');
+        });
+      });
+
+      describe('when unpinning drops a category below 3 pins', () => {
+        beforeEach(async () => {
+          axiosMock.onPut().reply(HTTP_STATUS_OK, ['environments', 'files', 'releases', 'commits']);
+          createCompactWrapper();
+
+          findPinnedSections().at(1).vm.$emit('pin-remove', 'branches', 'Branches');
+          await waitForPromises();
+        });
+
+        it('moves the remaining pins back into the flat list', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(1);
+          expect(sectionItemIds(sections.at(0))).toEqual([
+            'environments',
+            'files',
+            'releases',
+            'commits',
+          ]);
+        });
+      });
+
+      describe('when pinning forms a category group', () => {
+        // Pins branches and replies with the resulting pin list, as the server does.
+        const pinBranches = (pinnedItemIds) => {
+          axiosMock.onPut().reply(HTTP_STATUS_OK, [...pinnedItemIds, 'branches']);
+          wrapper
+            .findComponent({ name: 'FeatureLibraryModal' })
+            .vm.$emit('pin-toggle', 'branches', true, 'Branches');
+        };
+
+        beforeEach(() => {
+          setPinnedGroupExpanded('project-code', false);
+        });
+
+        afterEach(() => {
+          localStorage.clear();
+        });
+
+        describe('in compact mode', () => {
+          const pinnedItemIds = ['files', 'commits', 'environments'];
+
+          beforeEach(() => {
+            // Copy: the component pushes into the prop array it receives.
+            createCompactWrapper({ pinnedItemIds: [...pinnedItemIds] });
+          });
+
+          it('moves the category pins out of the flat list into a group', async () => {
+            pinBranches(pinnedItemIds);
+            await waitForPromises();
+
+            const sections = findPinnedSections();
+
+            expect(sections).toHaveLength(2);
+            expect(sectionItemIds(sections.at(0))).toEqual(['environments']);
+            expect(sections.at(1).props('groupItem').title).toBe('Code');
+            expect(sectionItemIds(sections.at(1))).toEqual(['files', 'commits', 'branches']);
+          });
+
+          // Checked synchronously: the group mounts on the next render and reads
+          // the stored state then, before the pins request resolves.
+          it('stores the new group as expanded before it renders', () => {
+            pinBranches(pinnedItemIds);
+
+            expect(isPinnedGroupExpanded('project-code')).toBe(true);
+          });
+        });
+
+        describe('when the category is already grouped', () => {
+          beforeEach(async () => {
+            const pinnedItemIds = ['files', 'commits', 'tags'];
+            createCompactWrapper({ pinnedItemIds });
+            pinBranches(pinnedItemIds);
+            await waitForPromises();
+          });
+
+          it('keeps the stored collapse state', () => {
+            expect(isPinnedGroupExpanded('project-code')).toBe(false);
+          });
+        });
+
+        describe('in full mode', () => {
+          beforeEach(async () => {
+            const pinnedItemIds = ['files', 'commits', 'environments'];
+            createCompactWrapper({ pinnedItemIds, showOldCategories: true });
+            pinBranches(pinnedItemIds);
+            await waitForPromises();
+          });
+
+          it('keeps the stored collapse state', () => {
+            expect(isPinnedGroupExpanded('project-code')).toBe(false);
+          });
+        });
+      });
+
+      describe('when hideUnpinnedSidebarItems is disabled', () => {
+        beforeEach(() => {
+          createCompactWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: false } } });
+        });
+
+        it('renders a single flat pinned section even with 3 or more pins in a category', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(1);
+          expect(sections.at(0).props('groupItem')).toBe(null);
+          expect(sectionItemIds(sections.at(0))).toEqual([
+            'environments',
+            'files',
+            'releases',
+            'commits',
+            'branches',
+          ]);
+        });
+      });
+
+      describe('when reordering pins in the loose list', () => {
+        beforeEach(async () => {
+          axiosMock.onPut().reply(HTTP_STATUS_OK, []);
+          createCompactWrapper();
+
+          findPinnedSections().at(0).vm.$emit('pin-reorder', 'releases', 'environments', false);
+          await waitForPromises();
+        });
+
+        it('persists the new order without disturbing the grouped pins', () => {
+          expect(JSON.parse(axiosMock.history.put[0].data).menu_item_ids).toEqual([
+            'releases',
+            'environments',
+            'files',
+            'commits',
+            'branches',
+          ]);
+        });
+      });
+
+      describe('when the sidebar is collapsed to icons only and every pin is grouped', () => {
+        beforeEach(() => {
+          createCompactWrapper({
+            pinnedItemIds: ['files', 'commits', 'branches'],
+            provide: { isIconOnly: true },
+          });
+        });
+
+        it('does not render the loose pins separator', () => {
+          expect(wrapper.findByTestId('loose-pins-separator').exists()).toBe(false);
+        });
+      });
+
+      describe('when the sidebar is collapsed to icons only', () => {
+        beforeEach(() => {
+          createCompactWrapper({ provide: { isIconOnly: true } });
+        });
+
+        it('separates the loose pins from the category groups', () => {
+          expect(wrapper.findByTestId('loose-pins-separator').exists()).toBe(true);
+        });
+
+        it('renders the category groups headerless', () => {
+          expect(findPinnedSections().at(1).props('headerless')).toBe(true);
+        });
+      });
+
+      describe('when showOldCategories is true', () => {
+        beforeEach(() => {
+          createCompactWrapper({ showOldCategories: true });
+        });
+
+        it('renders a single flat pinned section even with 3 or more pins in a category', () => {
+          const sections = findPinnedSections();
+
+          expect(sections).toHaveLength(1);
+          expect(sections.at(0).props('groupItem')).toBe(null);
+          expect(sectionItemIds(sections.at(0))).toEqual([
+            'environments',
+            'files',
+            'releases',
+            'commits',
+            'branches',
           ]);
         });
       });
@@ -1407,56 +1624,49 @@ describe('Sidebar Menu', () => {
           {
             id: 'code',
             title: 'Code',
-            items: [{ id: 'files', title: 'Files', is_active: true }],
+            items: [
+              { id: 'files', title: 'Files', is_active: true },
+              { id: 'commits', title: 'Commits' },
+              { id: 'branches', title: 'Branches' },
+            ],
           },
           {
             id: 'operate',
             title: 'Operate',
-            items: [{ id: 'environments', title: 'Environments' }],
+            items: [
+              { id: 'environments', title: 'Environments' },
+              { id: 'releases', title: 'Releases' },
+              { id: 'deployments', title: 'Deployments' },
+            ],
           },
         ];
+        const allPins = ['files', 'commits', 'branches', 'environments', 'releases', 'deployments'];
 
-        it('only force-expands the group that holds the active pin on pinned-nav', () => {
-          window.sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, 'true');
-          createGroupedWrapper({ items: activePinnedMenuItems });
+        describe('when the nav was a pinned-nav click', () => {
+          beforeEach(() => {
+            window.sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, 'true');
+            createCompactWrapper({ items: activePinnedMenuItems, pinnedItemIds: allPins });
+          });
 
-          const sections = findPinnedSections();
+          it('only force-expands the group that holds the active pin', () => {
+            const sections = findPinnedSections();
 
-          expect(sections.at(0).props('wasPinnedNav')).toBe(true);
-          expect(sections.at(1).props('wasPinnedNav')).toBe(false);
+            expect(sections.at(0).props('wasPinnedNav')).toBe(true);
+            expect(sections.at(1).props('wasPinnedNav')).toBe(false);
+          });
         });
 
-        it('does not force-expand any group when the nav was not a pinned-nav click', () => {
-          createGroupedWrapper({ items: activePinnedMenuItems });
+        describe('when the nav was not a pinned-nav click', () => {
+          beforeEach(() => {
+            createCompactWrapper({ items: activePinnedMenuItems, pinnedItemIds: allPins });
+          });
 
-          const sections = findPinnedSections();
+          it('does not force-expand any group', () => {
+            const sections = findPinnedSections();
 
-          expect(sections.at(0).props('wasPinnedNav')).toBe(false);
-          expect(sections.at(1).props('wasPinnedNav')).toBe(false);
-        });
-      });
-
-      describe('when groupPinned is false', () => {
-        beforeEach(() => {
-          createGroupedWrapper({ groupPinned: false });
-        });
-
-        it('renders a single flat pinned section', () => {
-          const sections = findPinnedSections();
-
-          expect(sections).toHaveLength(1);
-          expect(sections.at(0).props('groupItem')).toBe(null);
-        });
-      });
-
-      describe('when no pinned item maps to a category', () => {
-        beforeEach(() => {
-          createGroupedWrapper({ pinnedItemIds: [] });
-        });
-
-        it('falls back to the single flat pinned section', () => {
-          expect(findPinnedSections()).toHaveLength(1);
-          expect(findPinnedSection().props('groupItem')).toBe(null);
+            expect(sections.at(0).props('wasPinnedNav')).toBe(false);
+            expect(sections.at(1).props('wasPinnedNav')).toBe(false);
+          });
         });
       });
     });

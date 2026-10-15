@@ -7,7 +7,7 @@ module Atlassian
         include Gitlab::Routing
         include GitlabRoutingHelper
 
-        format_with(:string) { |value| value.to_s }
+        format_with(:string, &:to_s)
 
         expose :update_sequence_id, as: :updateSequenceId
 

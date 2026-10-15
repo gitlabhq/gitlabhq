@@ -64,7 +64,7 @@ module BulkImports
         end
 
         def all_other_trackers_failed?
-          trackers.where.not(relation: self.class.name).all? { |tracker| tracker.failed? } # rubocop: disable CodeReuse/ActiveRecord
+          trackers.where.not(relation: self.class.name).all?(&:failed?) # rubocop: disable CodeReuse/ActiveRecord
         end
 
         def schedule_group_work_item_placement

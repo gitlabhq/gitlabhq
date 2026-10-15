@@ -35,7 +35,7 @@ to reduce bandwidth usage and improve build performance.
 Before you can use the container virtual registry:
 
 - Review the [prerequisites](../_index.md#prerequisites) to use the virtual registry.
-- Configure authentication to the virtual registry. For more information, see [Authenticate to the virtual registry](../_index.md#authenticate-to-the-virtual-registry).
+- Configure authentication to the virtual registry. For more information, see [Authenticate with the container virtual registry](#authenticate-with-the-container-virtual-registry).
 
 When using the container virtual registry, remember the following restrictions:
 
@@ -127,13 +127,15 @@ with your top-level group.
 To access container images, you must authenticate
 with your group's container virtual registry.
 
+Prerequisites:
+
+- Your token must have the [required scopes for container images](../_index.md#authenticate-to-the-virtual-registry).
+
 To authenticate manually, run the following command:
 
 ```shell
 echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com/virtual_registries/container/1 --username <your_username> --password-stdin
 ```
-
-Or, configure authentication with any of the methods described in [Authenticate to the virtual registry](../_index.md#authenticate-to-the-virtual-registry).
 
 The container virtual registry follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/):
 

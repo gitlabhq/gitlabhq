@@ -7,6 +7,7 @@ module API
         def execute_work_item_update(work_item)
           check_work_item_rest_api_feature_flag!
           authorize! :update_work_item, work_item
+          validate_requested_keys!(available_features: declared_features)
 
           validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
           update_params = build_update_work_item_params.merge(scope_validator: validator)

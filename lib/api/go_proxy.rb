@@ -87,7 +87,7 @@ module API
 
           content_type 'text/plain'
           env['api.format'] = :txt
-          mod.versions.map { |t| t.name }.join("\n")
+          mod.versions.map(&:name).join("\n")
         end
 
         desc 'Version metadata' do

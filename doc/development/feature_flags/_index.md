@@ -670,6 +670,9 @@ GitLab supports the following feature flag actors:
 - `User` model
 - `Project` model
 - `Group` model
+- `Namespace` model, including user namespaces
+- `Organizations::Organization` model
+- `Authn::OauthApplication` model
 - `Ci::Runner` model
 - Current request
 
@@ -708,6 +711,18 @@ This group can be found by calling `#root_ancestor` on any group or project.
 ```ruby
 Feature.enabled?(:feature_flag, group.root_ancestor)
 ```
+
+#### Namespace actor
+
+Use a `Namespace` actor when the feature applies to any kind of namespace, for example both groups
+and user namespaces. `Group` is a subclass of `Namespace`, so a group is also a valid namespace actor.
+
+```ruby
+Feature.enabled?(:feature_flag, namespace)
+```
+
+To enable the flag for a namespace with ChatOps, use the `--namespace` option.
+See [Process](controls.md#process).
 
 #### Mixing actor types
 

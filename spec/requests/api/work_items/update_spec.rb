@@ -16,6 +16,29 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
   end
 
   shared_examples 'work item update endpoint' do
+    context 'with an unknown fields value' do
+      it 'returns 400 without updating the work item', :aggregate_failures do
+        patch api(api_request_path, user), params: { title: 'Updated title', fields: 'bogus' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('fields does not have a valid value: bogus')
+        expect(work_item.reload.title).not_to eq('Updated title')
+      end
+    end
+
+    context 'with an unknown features value' do
+      it 'returns 400 without updating the work item', :aggregate_failures do
+        patch api(api_request_path, user), params: {
+          title: 'Updated title',
+          features: { bogus_feature: { anything: 1 } }
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('features does not have a valid value: bogus_feature')
+        expect(work_item.reload.title).not_to eq('Updated title')
+      end
+    end
+
     context 'with title update' do
       it 'updates the title and returns 200' do
         patch api(api_request_path, user), params: { title: 'Updated title' }

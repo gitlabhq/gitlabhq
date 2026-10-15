@@ -74,9 +74,7 @@ module Gitlab
           return message if message
         end
 
-        has_line_conflict = suggestions_per_file.any? do |file_suggestion|
-          file_suggestion.line_conflict?
-        end
+        has_line_conflict = suggestions_per_file.any?(&:line_conflict?)
 
         if has_line_conflict
           return _('Suggestions are not applicable as their lines cannot overlap.')

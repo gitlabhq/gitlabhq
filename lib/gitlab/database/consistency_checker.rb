@@ -70,9 +70,9 @@ module Gitlab
       def append_mismatches_details(source_data, target_data)
         # Mapping difference the sort key to the item values
         # source - target
-        source_diff_hash = (source_data - target_data).index_by { |item| item.shift }
+        source_diff_hash = (source_data - target_data).index_by(&:shift)
         # target - source
-        target_diff_hash = (target_data - source_data).index_by { |item| item.shift }
+        target_diff_hash = (target_data - source_data).index_by(&:shift)
 
         matches = source_data.length - source_diff_hash.length
 

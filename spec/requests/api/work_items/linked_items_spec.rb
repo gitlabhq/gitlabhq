@@ -89,6 +89,14 @@ RSpec.describe API::WorkItems::LinkedItems, feature_category: :portfolio_managem
     end
 
     context 'with field and feature selection' do
+      it 'returns 400 for unknown fields or features values', :aggregate_failures do
+        get api(api_request_path, user), params: { fields: 'bogus', features: 'description,bogus' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error'])
+          .to eq('fields does not have a valid value: bogus, features does not have a valid value: bogus')
+      end
+
       it 'returns the requested base fields and feature payloads alongside link metadata', :aggregate_failures do
         get api(api_request_path, user), params: { fields: 'reference,namespace', features: 'description' }
 

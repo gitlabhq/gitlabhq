@@ -8,6 +8,7 @@ module API
       module Rendering
         def render_work_items_collection_for(resource_parent)
           check_pagination_param!(params)
+          validate_requested_keys!
 
           authorize! :read_work_item, resource_parent
           authorize_job_token_policies!(resource_parent) if resource_parent.is_a?(::Project)
@@ -103,6 +104,7 @@ module API
         def render_paginated_work_items_for(parent_work_item, entity:)
           authorize_work_item_feature!(parent_work_item)
           check_pagination_param!(params)
+          validate_requested_keys!
 
           resource_parent = parent_work_item.resource_parent
           field_keys = requested_field_keys(params[:fields])
@@ -135,6 +137,7 @@ module API
 
         def render_work_item_for(resource_parent, work_item_iid)
           check_work_item_rest_api_feature_flag!
+          validate_requested_keys!
 
           authorize! :read_work_item, resource_parent
           authorize_job_token_policies!(resource_parent) if resource_parent.is_a?(::Project)
@@ -200,15 +203,38 @@ module API
           )
         end
 
-        def filter_requested_keys(requested_param, available_keys)
-          return [] if requested_param.nil?
+        def validate_requested_keys!(available_features: ::API::WorkItems::FEATURE_NAME_LOOKUP)
+          unknown = {
+            fields: unknown_requested_keys(params[:fields], ::API::WorkItems::FIELD_NAME_LOOKUP),
+            features: unknown_requested_keys(params[:features], available_features)
+          }.reject { |_, values| values.empty? }
+          return if unknown.empty?
 
-          requested_param
-            .split(',')
-            .map { |value| value.strip.downcase }
-            .reject(&:blank?)
-            .filter_map { |value| available_keys[value] }
-            .uniq
+          message = unknown
+            .map { |param, values| "#{param} does not have a valid value: #{values.join(', ')}" }
+            .join(', ')
+
+          render_structured_api_error!({ error: message }, :bad_request)
+        end
+
+        def unknown_requested_keys(requested_param, available_keys)
+          split_requested_values(requested_param).reject { |value| available_keys.key?(value) }
+        end
+
+        def filter_requested_keys(requested_param, available_keys)
+          split_requested_values(requested_param).filter_map { |value| available_keys[value] }.uniq
+        end
+
+        # Write endpoints send `features` as a Hash; its valid names are the declared params, not the read entity.
+        def declared_features
+          declared_params(include_missing: false)[:features].to_h.stringify_keys
+        end
+
+        def split_requested_values(requested_param)
+          return [] if requested_param.nil?
+          return requested_param.keys.map(&:to_s) if requested_param.is_a?(Hash)
+
+          requested_param.split(',').map { |value| value.strip.downcase }.reject(&:blank?)
         end
 
         def render_api_error_from_response(response)

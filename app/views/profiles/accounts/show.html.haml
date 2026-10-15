@@ -59,6 +59,13 @@
         %p
           = s_('Profiles|You do not own any active scheduled pipelines.')
 
+- if Feature.enabled?(:revoke_import_source_user_reassignment, current_user)
+  = render ::Layouts::SettingsSectionComponent.new(s_('UserMapping|Reassigned import contributions')) do |c|
+    - c.with_description do
+      = s_('UserMapping|Contributions from these users on an import source instance have been reassigned to you. If you revoke a reassignment, future imports no longer automatically assign contributions from that user to you.')
+    - c.with_body do
+      #js-reassigned-source-users
+
 - if prevent_delete_account?
   = render ::Layouts::SettingsSectionComponent.new('') do |c|
     - c.with_heading do

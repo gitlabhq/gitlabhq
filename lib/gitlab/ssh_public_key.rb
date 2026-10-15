@@ -43,7 +43,7 @@ module Gitlab
     end
 
     def self.supported_algorithms
-      technologies.flat_map { |tech| tech.supported_algorithms }
+      technologies.flat_map(&:supported_algorithms)
     end
 
     def self.supported_algorithms_for_name(name)

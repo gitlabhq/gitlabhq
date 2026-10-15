@@ -14932,6 +14932,31 @@ Fields:
 | <a id="mutation-orbitexcludedgroupdestroy-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-orbitexcludedgroupdestroy-group"></a>`group` | [`Group`](#group) | Group removed from exclusions. |
 
+### `Mutation.orbitInstanceStartTrial`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `OrbitInstanceStartTrialInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitinstancestarttrial-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitinstancestarttrial-access"></a>`access` | [`OrbitAccess`](#orbitaccess) | Instance Orbit access state after starting the trial. |
+| <a id="mutation-orbitinstancestarttrial-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitinstancestarttrial-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.orbitStartTrial`
 
 {{< details >}}
@@ -56719,6 +56744,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="orbit-access"></a>`access` {{< icon name="warning-solid" >}} | [`OrbitAccess`](#orbitaccess) | Introduced in GitLab 19.6. Status: Experiment. Orbit access state of the instance on GitLab Self-Managed and GitLab Dedicated. Null on GitLab.com, where access is per top-level group, and for users who are not administrators. |
 | <a id="orbit-excludedgroups"></a>`excludedGroups` | [`GroupConnection`](#groupconnection) | Top-level groups excluded from automatic Orbit indexing. Administrators only. (see [Connections](#connections)) |
 
 #### Fields with arguments
@@ -56754,15 +56780,15 @@ Arguments:
 
 ### `OrbitAccess`
 
-Orbit access state of a group.
+Orbit access state of a group, or of the instance on GitLab Self-Managed and GitLab Dedicated.
 
 Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="orbitaccess-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`OrbitAccessReason`](#orbitaccessreason) | Introduced in GitLab 19.5. Status: Experiment. Cause of the access state when it has more than one cause. Null when the state has a single cause. |
-| <a id="orbitaccess-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitAccessState!`](#orbitaccessstate) | Introduced in GitLab 19.5. Status: Experiment. Access state of the group for Orbit. |
-| <a id="orbitaccess-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial of the group. Null when the group is not in the trial flow. |
+| <a id="orbitaccess-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitAccessState!`](#orbitaccessstate) | Introduced in GitLab 19.5. Status: Experiment. Access state of the group or the instance for Orbit. |
+| <a id="orbitaccess-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial of the group or the instance. Null outside the trial flow. |
 | <a id="orbitaccess-turnondenialreason"></a>`turnOnDenialReason` {{< icon name="warning-solid" >}} | [`OrbitTurnOnDenialReason`](#orbitturnondenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the user cannot turn Orbit on. Null when turning on is allowed or Orbit is already on. |
 
 ### `OrbitIndexing`
@@ -56898,7 +56924,7 @@ Fields:
 
 ### `OrbitTrial`
 
-Orbit trial of a top-level group, as reported by CustomersDot.
+Orbit trial of a top-level group or of the instance, as reported by CustomersDot.
 
 Fields:
 
@@ -76321,8 +76347,9 @@ Status of the asynchronous workplan generation flow for a work item.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="workitemagentplangenerationstatus-canceled"></a>`CANCELED` | Indicates the flow was canceled by a user. |
 | <a id="workitemagentplangenerationstatus-completed"></a>`COMPLETED` | Indicates the flow finished successfully. |
-| <a id="workitemagentplangenerationstatus-failed"></a>`FAILED` | Indicates the flow ended without completing. Includes flows canceled by a user. |
+| <a id="workitemagentplangenerationstatus-failed"></a>`FAILED` | Indicates the flow ended without completing. |
 | <a id="workitemagentplangenerationstatus-generating"></a>`GENERATING` | Indicates a workplan generation flow is in progress. |
 | <a id="workitemagentplangenerationstatus-needs_input"></a>`NEEDS_INPUT` | Indicates the flow is waiting for user input. |
 | <a id="workitemagentplangenerationstatus-not_started"></a>`NOT_STARTED` | No workplan generation flow has run for the work item. |

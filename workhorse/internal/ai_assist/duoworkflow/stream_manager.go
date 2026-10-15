@@ -154,6 +154,7 @@ func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action 
 	log.WithContextFields(ctx, log.Fields{
 		"request_id":  action.GetRequestID(),
 		"workflow_id": trackAction.WorkflowID,
+		"source_type": trackAction.SourceType,
 	}).Info("Sending TrackLlmCallForSelfHosted to cloud service")
 
 	clientEvent := &pb.TrackSelfHostedClientEvent{
@@ -161,6 +162,7 @@ func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action 
 		WorkflowID:           trackAction.WorkflowID,
 		FeatureQualifiedName: trackAction.FeatureQualifiedName,
 		FeatureAiCatalogItem: trackAction.FeatureAiCatalogItem,
+		SourceType:           trackAction.SourceType,
 	}
 
 	if err := sm.cloudServiceStream.Send(clientEvent); err != nil {

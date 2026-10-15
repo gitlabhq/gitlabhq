@@ -114,16 +114,6 @@ module Members
       user_ids = members.filter_map(&:user_id)
 
       Gitlab::EventStore.publish(
-        Members::UpdatedEvent.new(
-          data: {
-            source_id: source.id,
-            source_type: source.class.name,
-            user_ids: user_ids
-          }
-        )
-      )
-
-      Gitlab::EventStore.publish(
         Members::UpdatedCloudEvent.build(
           source: source,
           current_user: current_user,

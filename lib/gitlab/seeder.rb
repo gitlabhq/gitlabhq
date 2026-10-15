@@ -161,9 +161,7 @@ module Gitlab
     end
 
     def self.without_database_logging
-      old_loggers = Gitlab::Database.database_base_models.transform_values do |model|
-        model.logger
-      end
+      old_loggers = Gitlab::Database.database_base_models.transform_values(&:logger)
 
       Gitlab::Database.database_base_models.each do |_, model|
         model.logger = nil

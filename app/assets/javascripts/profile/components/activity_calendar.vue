@@ -626,7 +626,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4">
+  <div class="contrib-calendar-root gl-mt-4">
     <div class="gl-mb-2 gl-flex gl-items-baseline gl-justify-between">
       <h2 class="gl-heading-3 !gl-mb-3 !gl-mt-2">{{ $options.i18n.activityHeading }}</h2>
       <gl-link
@@ -722,7 +722,7 @@ export default {
             :key="legend.level"
             v-gl-tooltip="legend.title"
             :class="`user-contribution-graph-cell-${legend.level}`"
-            class="contrib-legend-cell gl-inline-block gl-h-4 gl-w-4"
+            class="contrib-legend-cell user-contribution-graph-cell gl-inline-block gl-h-4 gl-w-4"
             role="img"
             :aria-label="legend.title"
             data-testid="legend-cell"

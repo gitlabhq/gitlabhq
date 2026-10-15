@@ -19,7 +19,7 @@ module Mail
 
       if multipart?
         self.sort_parts!
-        encoded_parts = parts.map { |p| p.encoded }
+        encoded_parts = parts.map(&:encoded)
         ([preamble] + encoded_parts).join(crlf_boundary) + end_boundary + epilogue.to_s
       else
         dec = Mail::Encodings.get_encoding(encoding)

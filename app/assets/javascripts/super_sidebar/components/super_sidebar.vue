@@ -13,9 +13,8 @@ import {
   PANEL_TYPES,
   PANELS_WITH_HIDEABLE_UNPINNED_ITEMS,
   SETTINGS_DISCLOSURE_PORTAL_NAME,
-  SIDEBAR_NAV_MODE_PINNED_ONLY,
-  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
-  SIDEBAR_NAV_MODE_GROUPED_PINS,
+  SIDEBAR_NAV_MODE_COMPACT,
+  SIDEBAR_NAV_MODE_FULL,
   SIDEBAR_NAV_MODES,
   SIDEBAR_NAV_MODE_STORAGE_KEY,
 } from '../constants';
@@ -72,7 +71,6 @@ export default {
       isAnimatable: false,
       wasToggledManually: false,
       // User's chosen navigation mode (persisted), one of SIDEBAR_NAV_MODE_*.
-      // The three modes are mutually exclusive by construction.
       navMode: this.readNavMode(),
     };
   },
@@ -111,13 +109,8 @@ export default {
         PANELS_WITH_HIDEABLE_UNPINNED_ITEMS.includes(this.panelType)
       );
     },
-    // SidebarMenu still consumes two independent booleans; derive them from the
-    // single navMode so the mutual exclusivity is guaranteed by construction.
     showOldCategories() {
-      return this.navMode === SIDEBAR_NAV_MODE_ALL_CATEGORIES;
-    },
-    groupPinned() {
-      return this.navMode === SIDEBAR_NAV_MODE_GROUPED_PINS;
+      return this.navMode === SIDEBAR_NAV_MODE_FULL;
     },
     // Settings portals into the context header when it renders, else the footer.
     showHeaderSettingsDisclosure() {
@@ -228,11 +221,12 @@ export default {
       this.wasToggledManually = false;
     },
     readNavMode() {
-      if (!AccessorUtilities.canUseLocalStorage()) return SIDEBAR_NAV_MODE_PINNED_ONLY;
+      if (!AccessorUtilities.canUseLocalStorage()) return SIDEBAR_NAV_MODE_COMPACT;
 
       const stored = localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY);
 
-      return SIDEBAR_NAV_MODES.includes(stored) ? stored : SIDEBAR_NAV_MODE_PINNED_ONLY;
+      // Retired modes (pinned_only, grouped_pins) fall back to compact here.
+      return SIDEBAR_NAV_MODES.includes(stored) ? stored : SIDEBAR_NAV_MODE_COMPACT;
     },
     setNavMode(mode) {
       this.navMode = mode;
@@ -288,7 +282,6 @@ export default {
             :pinned-item-ids="sidebarData.pinned_items"
             :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
             :show-old-categories="showOldCategories"
-            :group-pinned="groupPinned"
             :settings-in-header="showHeaderSettingsDisclosure"
           />
         </scroll-scrim>

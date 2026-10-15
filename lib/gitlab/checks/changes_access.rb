@@ -123,9 +123,7 @@ module Gitlab
 
       def single_access_checks!
         # Iterate over all changes to find if user allowed all of them to be applied
-        single_change_accesses.each do |single_change_access|
-          single_change_access.validate!
-        end
+        single_change_accesses.each(&:validate!)
       end
 
       def bulk_access_checks!

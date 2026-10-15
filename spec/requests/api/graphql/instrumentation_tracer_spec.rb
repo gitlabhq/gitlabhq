@@ -191,10 +191,13 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
 
     it "tracks errors for failed queries" do
       queries = [
-        { query: graphql_query_for('brokenQuery', {}, []),
-          variables: { test: "hello world" } },
+        { query: graphql_query_for('echo', { 'text' => 'test' }, []) },
         { query: graphql_query_for('currentUser', {}, ["username"]) }
       ]
+
+      expect_next_instance_of(Resolvers::EchoResolver) do |resolver|
+        expect(resolver).to receive(:resolve).and_raise(GraphQL::ExecutionError, 'a real error')
+      end
 
       expect(Gitlab::Metrics::RailsSlis.graphql_query_error_rate).to receive(:increment).with({
         labels: unknown_query_labels,
@@ -209,6 +212,37 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
       post_multiplex(queries, current_user: user)
 
       expect(json_response.size).to eq(2)
+    end
+
+    context 'when the query is rejected before execution' do
+      shared_examples 'a request rejected before execution' do
+        it 'does not mark the request as having an error' do
+          expect(Gitlab::Metrics::RailsSlis.graphql_query_apdex).not_to receive(:increment)
+
+          expect(Gitlab::Metrics::RailsSlis.graphql_query_error_rate).to receive(:increment).with({
+            labels: unknown_query_labels,
+            error: false
+          })
+
+          post_graphql(query, current_user: user, variables: variables)
+
+          expect(graphql_errors).to be_present
+        end
+      end
+
+      context 'with an unknown field' do
+        let(:query) { graphql_query_for('brokenQuery', {}, []) }
+        let(:variables) { nil }
+
+        it_behaves_like 'a request rejected before execution'
+      end
+
+      context 'with a missing required variable' do
+        let(:query) { 'query($text: String!) { echo(text: $text) }' }
+        let(:variables) { {} }
+
+        it_behaves_like 'a request rejected before execution'
+      end
     end
 
     context 'with IGNORED_ERRORS' do

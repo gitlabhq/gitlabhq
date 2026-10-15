@@ -138,6 +138,10 @@ const readPinnedGroupCollapseStates = () => {
   }
 };
 
+// Scoped by panel so the same category id stays independent across the
+// project and group sidebars.
+export const pinnedGroupCollapseKey = (panelType, groupId) => `${panelType}-${groupId}`;
+
 // Expanded unless explicitly collapsed, matching the sidebar's default.
 export const isPinnedGroupExpanded = (key) => readPinnedGroupCollapseStates()[key] !== false;
 

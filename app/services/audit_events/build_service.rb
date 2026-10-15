@@ -51,7 +51,7 @@ module AuditEvents
     # @return [AuditEvents::ProjectAuditEvent, AuditEvents::GroupAuditEvent,
     #   AuditEvents::UserAuditEvent, AuditEvents::InstanceAuditEvent]
     def execute
-      ENTITY_TYPE_TO_MODEL.fetch(entity_type).new(payload)
+      ENTITY_TYPE_TO_MODEL.fetch(entity_type).new(payload).tap { |event| event.assign_author(@author) }
     end
 
     private
@@ -64,12 +64,10 @@ module AuditEvents
       base_payload.merge(details: base_details_payload)
     end
 
-    # target_*, entity_path and author_name columns are filled in from `details`
+    # target_* and entity_path columns are filled in from `details`
     # by AuditEvents::CommonModel#parallel_persist when the event is validated.
     def base_payload
       {
-        author_id: @author.id,
-        author_name: @author.name,
         event_name: @additional_details[:event_name],
         created_at: @created_at
       }.merge(scope_payload)
@@ -84,8 +82,6 @@ module AuditEvents
 
     def base_details_payload
       @additional_details.merge({
-        author_name: @author.name,
-        author_class: @author.class.name,
         target_id: @target.id,
         target_type: @target.type,
         target_details: @target_details || @target.details,

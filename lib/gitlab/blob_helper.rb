@@ -61,7 +61,7 @@ module Gitlab
         guesses = ::MIME::Types.type_for(extname.to_s)
 
         # Prefer text mime types over binary
-        @_mime_type = guesses.detect { |type| type.ascii? } || guesses.first
+        @_mime_type = guesses.detect(&:ascii?) || guesses.first
       end
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables

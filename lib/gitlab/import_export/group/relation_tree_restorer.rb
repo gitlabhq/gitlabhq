@@ -245,7 +245,7 @@ module Gitlab
         def build_relations(relation_key, relation_definition, relation_index, data_hashes)
           data_hashes
             .map { |data_hash| build_relation(relation_key, relation_definition, relation_index, data_hash) }
-            .tap { |entries| entries.compact! }
+            .tap(&:compact!)
         end
 
         def build_relation(relation_key, relation_definition, relation_index, data_hash)

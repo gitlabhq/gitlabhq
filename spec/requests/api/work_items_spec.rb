@@ -351,6 +351,18 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     it_behaves_like 'work item listing filters'
     it_behaves_like 'work item listing sorting'
 
+    context 'when the list spans work item types' do
+      let_it_be(:task_work_item, freeze: false) { create(:work_item, :task, project: project) }
+
+      it 'omits a valid feature only from the items whose type lacks it', :aggregate_failures do
+        get api(api_request_path, user), params: { fields: 'features', features: 'designs' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(features_json_for(primary_work_item)).to have_key('designs')
+        expect(features_json_for(task_work_item)).not_to have_key('designs')
+      end
+    end
+
     it 'supports unescaped project full paths' do
       get api("/projects/#{project.full_path}/-/work_items", user)
 
@@ -396,6 +408,15 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     let(:label) { project_label }
 
     it_behaves_like 'work item show endpoint'
+
+    unless Gitlab.ee?
+      it 'returns 400 for a feature that only exists on EE', :aggregate_failures do
+        get api("#{api_request_path}/#{primary_work_item.iid}", user), params: { features: 'weight' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('features does not have a valid value: weight')
+      end
+    end
 
     context 'when authenticated with a token that has the ai_workflows scope' do
       let_it_be(:oauth_token, freeze: false) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }

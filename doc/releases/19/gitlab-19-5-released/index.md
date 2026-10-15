@@ -1,14 +1,12 @@
 ---
-title: "GitLab 19.5 (Upcoming release)"
-description: "Summary of features included in 19.5"
+title: "GitLab 19.5 release notes"
+description: "GitLab 19.5 released with the GitLab MCP server generally available"
 group: Monthly Release
+date: 2026-10-15
 stage: Release Notes
 ---
 
-The following features are being delivered for GitLab 19.5.
-These features are now available on GitLab.com.
-
-## Notable contributor
+On October 15, 2026, GitLab 19.5 was released with the following features.
 
 We are excited to recognize [Dhairya](https://gitlab.com/DhairyaMajmudar), a Level 3 contributor,
 as this month's [Notable Contributor](https://contributors.gitlab.com/notable-contributors)!

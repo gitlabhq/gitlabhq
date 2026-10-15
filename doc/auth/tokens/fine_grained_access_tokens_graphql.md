@@ -1053,11 +1053,12 @@ Grants the ability to update Orbit settings.
 
 #### Orbit Trial
 
-Grants the ability to start an Orbit trial for a top-level group.
+Grants the ability to start an Orbit trial for a top-level group or the instance.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Start | Group | Mutation | `OrbitStartTrial` |
+| Start | Instance | Mutation | `OrbitInstanceStartTrial` |
 
 ### Groups resources
 

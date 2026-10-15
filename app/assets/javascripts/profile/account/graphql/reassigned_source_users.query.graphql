@@ -1,0 +1,31 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+# @feature_category: importers
+
+query reassignedSourceUsers($before: String, $after: String, $first: Int, $last: Int) {
+  currentUser {
+    id
+    importSourceUsers(before: $before, after: $after, first: $first, last: $last) {
+      nodes {
+        id
+        createdAt
+        status
+        sourceUsername
+        sourceName
+        sourceHostname
+        sourceUserIdentifier
+        placeholderUser {
+          ...User
+        }
+        namespace {
+          id
+          fullPath
+          webPath
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

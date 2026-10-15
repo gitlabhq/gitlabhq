@@ -2,31 +2,20 @@
 import { GlButton, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import {
-  SIDEBAR_NAV_MODE_PINNED_ONLY,
-  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
-  SIDEBAR_NAV_MODE_GROUPED_PINS,
-} from '../constants';
+import { SIDEBAR_NAV_MODE_COMPACT, SIDEBAR_NAV_MODE_FULL } from '../constants';
 import { EVENT_SELECT_SIDEBAR_NAVIGATION_MODE_IN_SIDEBAR_PREFERENCES } from '../tracking_constants';
 
-// Ordered least to most expansive; "category" is the sole noun (the concept the
-// rest of this feature uses), so "group" stays out of the visible copy even
-// though the mode is internally SIDEBAR_NAV_MODE_GROUPED_PINS.
+// Ordered least to most expansive.
 const ITEMS = [
   {
-    value: SIDEBAR_NAV_MODE_PINNED_ONLY,
-    text: s__('Navigation|Flat'),
+    value: SIDEBAR_NAV_MODE_COMPACT,
+    text: s__('Navigation|Compact'),
     description: s__('Navigation|Pinned only'),
   },
   {
-    value: SIDEBAR_NAV_MODE_GROUPED_PINS,
-    text: s__('Navigation|Organized'),
-    description: s__('Navigation|Pinned in categories'),
-  },
-  {
-    value: SIDEBAR_NAV_MODE_ALL_CATEGORIES,
-    text: s__('Navigation|Everything'),
-    description: s__('Navigation|All categories'),
+    value: SIDEBAR_NAV_MODE_FULL,
+    text: s__('Navigation|Full'),
+    description: s__('Navigation|Pinned and all categories'),
   },
 ];
 
@@ -47,7 +36,7 @@ export default {
     mode: {
       type: String,
       required: false,
-      default: SIDEBAR_NAV_MODE_PINNED_ONLY,
+      default: SIDEBAR_NAV_MODE_COMPACT,
     },
   },
   emits: ['select'],

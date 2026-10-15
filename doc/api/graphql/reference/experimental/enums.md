@@ -6428,8 +6428,9 @@ Status of the asynchronous workplan generation flow for a work item.
 
 | Value | Description |
 | ----- | ----------- |
+| `CANCELED` | Indicates the flow was canceled by a user. |
 | `COMPLETED` | Indicates the flow finished successfully. |
-| `FAILED` | Indicates the flow ended without completing. Includes flows canceled by a user. |
+| `FAILED` | Indicates the flow ended without completing. |
 | `GENERATING` | Indicates a workplan generation flow is in progress. |
 | `NEEDS_INPUT` | Indicates the flow is waiting for user input. |
 | `NOT_STARTED` | No workplan generation flow has run for the work item. |

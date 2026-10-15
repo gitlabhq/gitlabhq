@@ -111,14 +111,79 @@ RSpec.describe Gitlab::Graphql::Tracers::InstrumentationTracer, :aggregate_failu
     end
   end
 
-  context 'when the query fails validation' do
-    it 'logs the validation errors and records an error' do
-      result = schema.execute('{ noSuchField }')
-
-      expect(result['errors']).to contain_exactly(a_hash_including('message' => a_string_matching(/noSuchField/)))
+  # Queries rejected before execution are client errors: they are logged but do not
+  # count against the error SLI. https://gitlab.com/gitlab-org/gitlab/-/work_items/631498
+  shared_examples 'a client error' do |message_pattern|
+    it 'logs the errors, records no error, and skips apdex' do
+      expect(result['errors']).to contain_exactly(a_hash_including('message' => a_string_matching(message_pattern)))
       expect(Gitlab::GraphqlLogger).to have_received(:info).once.with(a_hash_including(
-        graphql_errors: [a_hash_including('message' => a_string_matching(/noSuchField/))]
+        graphql_errors: [a_hash_including('message' => a_string_matching(message_pattern))]
       ))
+      expect(error_rate).to have_received(:increment).once.with(a_hash_including(error: false))
+      expect(apdex).not_to have_received(:increment)
+    end
+  end
+
+  context 'when the query cannot be parsed' do
+    let(:result) { schema.execute('{ helloWorld') }
+
+    it_behaves_like 'a client error', /not end of file/
+  end
+
+  context 'when the query fails static validation' do
+    let(:result) { schema.execute('{ noSuchField }') }
+
+    it_behaves_like 'a client error', /noSuchField/
+  end
+
+  context 'when a required variable is missing' do
+    let(:result) { schema.execute('query($message: String!) { helloWorld(message: $message) }', variables: {}) }
+
+    it_behaves_like 'a client error', /\AVariable \$message of type String! was provided invalid value\z/
+  end
+
+  context 'when the query exceeds the max complexity' do
+    let(:result) { schema.execute('{ helloWorld }', max_complexity: 0) }
+
+    it_behaves_like 'a client error', /exceeds max complexity/
+  end
+
+  context 'when validation times out' do
+    before do
+      allow_next_instance_of(analyzer_class) do |analyzer|
+        allow(analyzer).to receive(:result).and_return(GraphQL::Analysis::TimeoutError.new)
+      end
+    end
+
+    it 'logs the error and records an error' do
+      result = schema.execute('{ helloWorld }')
+
+      expect(result['errors'].pluck('message')).to eq([described_class::VALIDATION_TIMEOUT_MESSAGE])
+      expect(Gitlab::GraphqlLogger).to have_received(:info).once.with(a_hash_including(
+        graphql_errors: [a_hash_including('message' => described_class::VALIDATION_TIMEOUT_MESSAGE)]
+      ))
+      expect(error_rate).to have_received(:increment).once.with(a_hash_including(error: true))
+      expect(apdex).not_to have_received(:increment)
+    end
+  end
+
+  context 'when a resolver returns an execution error' do
+    let(:query_type) do
+      Class.new(Graphql::FakeQueryType) do
+        graphql_name 'FakeQuery'
+
+        field :failing_field, String, null: true
+
+        def failing_field
+          raise GraphQL::ExecutionError, 'Something went wrong'
+        end
+      end
+    end
+
+    it 'records an error' do
+      result = schema.execute('{ failingField }')
+
+      expect(result['errors'].pluck('message')).to eq(['Something went wrong'])
       expect(error_rate).to have_received(:increment).once.with(a_hash_including(error: true))
       expect(apdex).not_to have_received(:increment)
     end

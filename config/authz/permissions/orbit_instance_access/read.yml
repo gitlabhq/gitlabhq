@@ -1,0 +1,3 @@
+---
+name: read_orbit_instance_access
+description: Grants the ability to read the instance-wide Orbit access state on GitLab Self-Managed and GitLab Dedicated.

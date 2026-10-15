@@ -62,7 +62,7 @@ module Gitlab
 
         # This mutates `diff_files` lines.
         def unfold_diff_files(positions)
-          positions_grouped_by_path = positions.group_by { |position| position.file_path }
+          positions_grouped_by_path = positions.group_by(&:file_path)
 
           diff_files.each do |diff_file|
             positions = positions_grouped_by_path.fetch(diff_file.file_path, [])

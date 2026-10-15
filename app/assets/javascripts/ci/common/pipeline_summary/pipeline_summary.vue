@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      hasGraphQLError: false,
       pipeline: {},
       pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
     };
@@ -60,6 +61,11 @@ export default {
         return getQueryHeaders(this.pipelineEtag);
       },
       query: getPipelineSummaryQuery,
+      // Pipelines without an iid (e.g. some imported ones) cannot be queried,
+      // and the server would reject the request for the missing required variable.
+      skip() {
+        return !this.iid;
+      },
       notifyOnNetworkStatusChange: true,
       pollInterval() {
         return this.pollInterval;
@@ -81,6 +87,13 @@ export default {
         return project?.pipeline || {};
       },
       error(error) {
+        // GraphQL errors will not resolve on their own, so polling would only
+        // repeat the same failing request. Network errors may be transient.
+        if (error.graphQLErrors?.length) {
+          this.hasGraphQLError = true;
+          this.pollInterval = 0;
+        }
+
         createAlert({ message: this.$options.i18n.pipelineSummaryFetchError });
         reportToSentry(this.$options.name, error);
       },
@@ -142,6 +155,8 @@ export default {
       this.resetPollInterval();
     },
     resetPollInterval() {
+      if (this.hasGraphQLError) return;
+
       this.pollInterval = PIPELINE_POLL_INTERVAL_DEFAULT;
     },
   },
@@ -154,7 +169,7 @@ export default {
       <gl-loading-icon class="gl-mr-4" />
       {{ $options.i18n.loadingText }}
     </div>
-    <div v-else class="gl-flex !gl-w-full !gl-items-center">
+    <div v-else-if="pipeline.id" class="gl-flex !gl-w-full !gl-items-center">
       <div
         class="justify-space-between gl-flex !gl-grow gl-flex-wrap gl-gap-3"
         :class="{ '!gl-items-center': !finishedAt }"

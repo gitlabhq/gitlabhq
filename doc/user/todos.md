@@ -54,6 +54,7 @@ To sort the To-Do List:
 {{< history >}}
 
 - Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
+- Review to-do items [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260625) to one per reviewer in GitLab 19.5.
 
 {{< /history >}}
 
@@ -82,6 +83,9 @@ In GitLab 17.8 and later, you receive a new to-do notification every time someon
 
 For other actions that create to-do items like assignments or review requests,
 you receive only one notification per action type, even if that action occurs multiple times in the same issue or merge request.
+
+When someone reviews your merge request, you receive one to-do item per reviewer.
+When the same reviewer reviews it again, their earlier to-do item is marked as done and a new one is created.
 
 To-do items aren't affected by [GitLab notification email settings](profile/notifications.md).
 The only exception: If your notification setting is set to **Custom** and **Merge request you're eligible to approve is created** is

@@ -137,7 +137,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       it 'triggers a members added event' do
-        expect { execute_service }.to publish_event(Members::MembersAddedEvent).with(
+        expect { execute_service }.to publish_event(Members::AddedCloudEvent).with(
           source_id: source.id,
           source_type: 'Group',
           invited_user_ids: match_array(be_an(Integer))
@@ -167,7 +167,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       it 'triggers the members added event' do
-        expect { execute_service }.to publish_event(Members::MembersAddedEvent).with(
+        expect { execute_service }.to publish_event(Members::AddedCloudEvent).with(
           source_id: source.id,
           source_type: 'Project',
           invited_user_ids: match_array(be_an(Integer))
@@ -194,7 +194,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       it 'does not trigger the members added event' do
         expect(Gitlab::EventStore)
           .not_to receive(:publish)
-          .with(an_instance_of(Members::MembersAddedEvent))
+          .with(an_instance_of(Members::AddedCloudEvent))
 
         expect(execute_service[:status]).to eq(:error)
         expect(execute_service[:message])
@@ -213,7 +213,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
               .with(an_instance_of(described_class::BlankInvitesError), class: described_class.to_s, user_id: user.id)
       expect(Gitlab::EventStore)
         .not_to receive(:publish)
-        .with(an_instance_of(Members::MembersAddedEvent))
+        .with(an_instance_of(Members::AddedCloudEvent))
 
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to eq(s_('AddMember|No users specified.'))

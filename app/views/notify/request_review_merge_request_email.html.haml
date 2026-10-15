@@ -7,5 +7,5 @@
   = html_escape(s_('Notify|You were added as a reviewer on %{long_mr} by %{name}.')) % {name: sanitize_name(@updated_by.name), long_mr: long_mr}
   = render_if_exists 'notify/diff_summary'
 %p
-  %a{ href: mr_url, target: "_blank", rel: "noopener noreferrer nofollow", style: "-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-size: 14px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 4px; -webkit-border-radius: 4px; background-color: #1f75cb; display: inline-block; padding: 8px 12px; box-shadow: inset 0 0 0 1px #1068bf" }
+  %a{ href: mr_url, target: "_blank", rel: "noopener noreferrer nofollow", style: "-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-size: 14px; color: #ffffff; text-decoration: none; border-radius: 8px; -webkit-border-radius: 8px; background-color: #3a383d; display: inline-block; padding: 8px 12px" }
     = s_('Notify|Review changes')

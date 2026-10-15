@@ -21,7 +21,7 @@ module Gitlab
 
           observers = observer_classes.map { |c| c.new(observation, per_migration_result_dir, connection) }
 
-          on_each_observer(observers) { |observer| observer.before }
+          on_each_observer(observers, &:before)
 
           start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -37,8 +37,8 @@ module Gitlab
         ensure
           observation.walltime = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
 
-          on_each_observer(observers) { |observer| observer.after }
-          on_each_observer(observers) { |observer| observer.record }
+          on_each_observer(observers, &:after)
+          on_each_observer(observers, &:record)
 
           record_observation(observation, destination_dir: per_migration_result_dir)
         end

@@ -52,9 +52,7 @@ module Gitlab
       end
 
       def extract_sections
-        read do |stream|
-          stream.extract_sections
-        end
+        read(&:extract_sections)
       end
 
       def set(data)

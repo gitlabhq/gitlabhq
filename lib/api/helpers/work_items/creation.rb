@@ -7,6 +7,7 @@ module API
         def execute_work_item_creation(resource_parent)
           check_work_item_rest_api_feature_flag!
           authorize! :create_work_item, resource_parent
+          validate_requested_keys!(available_features: declared_features)
 
           work_item_type = resolve_work_item_type(resource_parent)
           not_found!('Work item type') unless work_item_type

@@ -169,6 +169,31 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
     )
   end
 
+  describe '#assign_author' do
+    let(:event) { build(audit_event_symbol, details: { custom_message: 'kept' }) }
+    let(:author) { build_stubbed(:user) }
+
+    it 'sets the author columns and details from the given author', :aggregate_failures do
+      event.assign_author(author)
+
+      expect(event.author_id).to eq(author.id)
+      expect(event[:author_name]).to eq(author.name)
+      expect(event.details).to include(custom_message: 'kept', author_name: author.name, author_class: 'User')
+    end
+
+    context 'when the author is not a User' do
+      let(:author) { ::Gitlab::Audit::UnauthenticatedAuthor.new }
+
+      it 'takes id, name and class from the author object', :aggregate_failures do
+        event.assign_author(author)
+
+        expect(event.author_id).to eq(::Gitlab::Audit::NullAuthor::UNAUTHENTICATED_AUTHOR_ID)
+        expect(event[:author_name]).to eq(author.name)
+        expect(event.details).to include(author_class: 'Gitlab::Audit::UnauthenticatedAuthor')
+      end
+    end
+  end
+
   describe '#as_json' do
     context 'for ip_address' do
       subject { build(audit_event_symbol, ip_address: '192.168.1.1').as_json }

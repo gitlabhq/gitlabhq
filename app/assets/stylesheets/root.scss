@@ -85,6 +85,50 @@
   --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-600);
   --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-900);
 
+  // Keep in sync with FF :vue_profile_activity_calendar, rollout: https://gitlab.com/gitlab-org/gitlab/-/work_items/602950
+  .contrib-calendar-root {
+    --user-contribution-graph-cell-level-0: var(--gl-color-neutral-50);
+    --user-contribution-graph-cell-level-1: var(--gl-color-orange-200);
+    --user-contribution-graph-cell-level-2: var(--gl-color-orange-400);
+    --user-contribution-graph-cell-level-3: var(--gl-color-orange-600);
+    --user-contribution-graph-cell-level-4: var(--gl-color-orange-800);
+  }
+
+  &.ui-indigo .contrib-calendar-root {
+    --user-contribution-graph-cell-level-1: var(--gl-color-purple-200);
+    --user-contribution-graph-cell-level-2: var(--gl-color-purple-400);
+    --user-contribution-graph-cell-level-3: var(--gl-color-purple-600);
+    --user-contribution-graph-cell-level-4: var(--gl-color-purple-800);
+  }
+
+  &.ui-blue .contrib-calendar-root {
+    --user-contribution-graph-cell-level-1: var(--gl-color-blue-200);
+    --user-contribution-graph-cell-level-2: var(--gl-color-blue-400);
+    --user-contribution-graph-cell-level-3: var(--gl-color-blue-600);
+    --user-contribution-graph-cell-level-4: var(--gl-color-blue-800);
+  }
+
+  &.ui-green .contrib-calendar-root {
+    --user-contribution-graph-cell-level-1: var(--gl-color-green-200);
+    --user-contribution-graph-cell-level-2: var(--gl-color-green-400);
+    --user-contribution-graph-cell-level-3: var(--gl-color-green-600);
+    --user-contribution-graph-cell-level-4: var(--gl-color-green-800);
+  }
+
+  &.ui-red .contrib-calendar-root {
+    --user-contribution-graph-cell-level-1: var(--gl-color-red-200);
+    --user-contribution-graph-cell-level-2: var(--gl-color-red-400);
+    --user-contribution-graph-cell-level-3: var(--gl-color-red-600);
+    --user-contribution-graph-cell-level-4: var(--gl-color-red-800);
+  }
+
+  &.ui-gray .contrib-calendar-root {
+    --user-contribution-graph-cell-level-1: var(--gl-color-neutral-200);
+    --user-contribution-graph-cell-level-2: var(--gl-color-neutral-400);
+    --user-contribution-graph-cell-level-3: var(--gl-color-neutral-600);
+    --user-contribution-graph-cell-level-4: var(--gl-color-neutral-800);
+  }
+
   /**
    * Severity colors
    * Discussion: https://gitlab.com/gitlab-org/gitlab/-/issues/581121
@@ -146,6 +190,49 @@
     --user-contribution-graph-cell-level-2: var(--gl-color-data-blue-600);
     --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-400);
     --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-100);
+
+    .contrib-calendar-root {
+      --user-contribution-graph-cell-level-0: var(--gl-color-neutral-900);
+      --user-contribution-graph-cell-level-1: var(--gl-color-orange-800);
+      --user-contribution-graph-cell-level-2: var(--gl-color-orange-600);
+      --user-contribution-graph-cell-level-3: var(--gl-color-orange-400);
+      --user-contribution-graph-cell-level-4: var(--gl-color-orange-200);
+    }
+
+    &.ui-indigo .contrib-calendar-root {
+      --user-contribution-graph-cell-level-1: var(--gl-color-purple-800);
+      --user-contribution-graph-cell-level-2: var(--gl-color-purple-600);
+      --user-contribution-graph-cell-level-3: var(--gl-color-purple-400);
+      --user-contribution-graph-cell-level-4: var(--gl-color-purple-200);
+    }
+
+    &.ui-blue .contrib-calendar-root {
+      --user-contribution-graph-cell-level-1: var(--gl-color-blue-800);
+      --user-contribution-graph-cell-level-2: var(--gl-color-blue-600);
+      --user-contribution-graph-cell-level-3: var(--gl-color-blue-400);
+      --user-contribution-graph-cell-level-4: var(--gl-color-blue-200);
+    }
+
+    &.ui-green .contrib-calendar-root {
+      --user-contribution-graph-cell-level-1: var(--gl-color-green-800);
+      --user-contribution-graph-cell-level-2: var(--gl-color-green-600);
+      --user-contribution-graph-cell-level-3: var(--gl-color-green-400);
+      --user-contribution-graph-cell-level-4: var(--gl-color-green-200);
+    }
+
+    &.ui-red .contrib-calendar-root {
+      --user-contribution-graph-cell-level-1: var(--gl-color-red-800);
+      --user-contribution-graph-cell-level-2: var(--gl-color-red-600);
+      --user-contribution-graph-cell-level-3: var(--gl-color-red-400);
+      --user-contribution-graph-cell-level-4: var(--gl-color-red-200);
+    }
+
+    &.ui-gray .contrib-calendar-root {
+      --user-contribution-graph-cell-level-1: var(--gl-color-neutral-800);
+      --user-contribution-graph-cell-level-2: var(--gl-color-neutral-600);
+      --user-contribution-graph-cell-level-3: var(--gl-color-neutral-400);
+      --user-contribution-graph-cell-level-4: var(--gl-color-neutral-200);
+    }
 
     --severity-color-critical: var(--gl-color-red-500);
     --severity-color-high: var(--gl-color-red-300);

@@ -1,17 +1,20 @@
 # frozen_string_literal: true
 
-# Requires a context containing:
-#   wiki
-#   user
+require 'spec_helper'
 
-RSpec.shared_examples 'User views wiki sidebar' do
+RSpec.describe 'Project wiki > User views wiki sidebar', :js, feature_category: :wiki do
   include WikiHelpers
+
+  let_it_be(:user) { create(:user) }
+
+  let(:wiki) { create(:project_wiki, user: user, project: project) }
+  let(:project) { create(:project, namespace: user.namespace, creator: user) }
 
   before do
     sign_in(user)
   end
 
-  context 'when there are some existing pages', :js do
+  context 'when there are some existing pages' do
     before do
       create(:wiki_page, wiki: wiki, title: 'home', content: 'home')
       create(:wiki_page, wiki: wiki, title: 'another', content: 'another')
@@ -20,7 +23,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
     context 'when there is no custom sidebar' do
       before do
         visit wiki_path(wiki)
-        click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+        open_wiki_sidebar
       end
 
       it 'renders a default sidebar' do
@@ -44,12 +47,12 @@ RSpec.shared_examples 'User views wiki sidebar' do
       end
     end
 
-    context 'when there is a custom sidebar', :js do
+    context 'when there is a custom sidebar' do
       before do
         create(:wiki_page, wiki: wiki, title: '_sidebar', content: 'My custom sidebar')
 
         visit wiki_path(wiki)
-        click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+        open_wiki_sidebar
       end
 
       it 'renders both the custom sidebar and the default one' do
@@ -60,7 +63,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       end
 
       it 'can expand list of pages in sidebar' do
-        find("[data-testid='expand-pages-list']").click
+        find_by_testid('expand-pages-list').click
 
         within('.wiki-sidebar') do
           expect(page).to have_content('another')
@@ -93,7 +96,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows all pages in the sidebar' do
       visit wiki_path(wiki)
-      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+      open_wiki_sidebar
 
       (1..15).each { |i| expect(page).to have_content("my page #{i}") }
       expect(page).to have_link('View all pages')
@@ -101,16 +104,16 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
     it 'shows all collapse buttons in the sidebar' do
       visit wiki_path(wiki)
-      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+      open_wiki_sidebar
 
       within('.wiki-sidebar') do
         expect(page).to have_css("[data-testid='wiki-sidebar-entry-collapser']", count: 3)
       end
     end
 
-    it 'collapses/expands children when click collapse/expand button in the sidebar', :js do
+    it 'collapses/expands children when click collapse/expand button in the sidebar' do
       visit wiki_path(wiki)
-      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+      open_wiki_sidebar
 
       within('.wiki-sidebar') do
         first("[data-testid='wiki-sidebar-entry-collapser']").click
@@ -125,9 +128,9 @@ RSpec.shared_examples 'User views wiki sidebar' do
       end
     end
 
-    it 'shows create child page button when hover to the page title in the sidebar', :js do
+    it 'shows create child page button when hover to the page title in the sidebar' do
       visit wiki_path(wiki)
-      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+      open_wiki_sidebar
 
       within('.wiki-sidebar') do
         first_wiki_list = first("[data-testid='wiki-list']")

@@ -47,7 +47,10 @@
         = safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username)
       %p.gl-mb-0
         %strong
-          = s_('UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you permanently.')
+          - if Feature.enabled?(:revoke_import_source_user_reassignment, current_user)
+            = s_('UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you. You can revoke the reassignment later in your account settings, but contributions that were already reassigned to you are not removed.')
+          - else
+            = s_('UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you permanently.')
 
     - c.with_footer do
       .gl-flex.gl-gap-3

@@ -17,7 +17,7 @@ module Gitlab
       def self.preload_blobs(blobs)
         to_fetch = blobs.select { |blob| blob.is_a?(self) && blob.blob_path }
 
-        to_fetch.each { |blob| blob.fetch_blob }
+        to_fetch.each(&:fetch_blob)
       end
 
       def initialize(opts = {})

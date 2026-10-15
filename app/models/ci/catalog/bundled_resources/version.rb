@@ -9,8 +9,6 @@ module Ci
 
         self.table_name = 'catalog_bundled_resource_versions'
 
-        ignore_columns %i[readme readme_html], remove_with: '19.6', remove_after: '2026-10-15'
-
         belongs_to :bundled_resource, class_name: 'Ci::Catalog::BundledResource',
           foreign_key: :catalog_bundled_resource_id, inverse_of: :versions, optional: false
         has_many :components, class_name: 'Ci::Catalog::BundledResources::Component',

@@ -38,10 +38,10 @@ module Gitlab
           # FKs held by an attached partition live on the partition, not the
           # partitioned parent, and the partition is not listed in @tables (its
           # rows are cleared by TRUNCATE cascading from the parent). Attribute
-          # those FKs to the parent so a table the partition references is
-          # ordered before the parent's batch--otherwise PostgreSQL raises a
-          # feature-not-supported error when the parent's TRUNCATE cascade hits
-          # the still-referenced partition.
+          # those FKs to the parent so the parent is truncated before, or
+          # together with, the table the partition references. Otherwise that
+          # referenced table sorts into an earlier batch and PostgreSQL refuses
+          # to truncate it while the partition still holds an FK to it.
           attached_partition_foreign_keys_for(table).each { |fk| record_dependency(hash, fk, table) }
         end
       end

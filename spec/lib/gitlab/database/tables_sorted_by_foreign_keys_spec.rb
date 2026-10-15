@@ -129,7 +129,8 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
       # Mirrors the sec-database failure: `web_hook_logs_daily` attached
       # partitions hold an FK to `projects`, which is not on the parent.
       # `target` sorts alphabetically before the parent, so without the fix it
-      # lands in an earlier SCC and its TRUNCATE cascade trips the FK check.
+      # lands in an earlier SCC and its TRUNCATE fails the FK check while the
+      # parent's partition still holds an FK to it.
       let(:tables) do
         %w[_test_held_aaa_target _test_held_zzz_parent]
       end
@@ -155,7 +156,7 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :c
         SQL
       end
 
-      it 'sorts the partition parent before the referenced target so TRUNCATE cascade is safe' do
+      it 'sorts the partition parent before the referenced target so its TRUNCATE is FK-safe' do
         flat = sorted_tables.flatten
 
         expect(flat.index('_test_held_zzz_parent'))

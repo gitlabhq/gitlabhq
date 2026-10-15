@@ -519,7 +519,7 @@ RSpec.describe Noteable, feature_category: :code_review_workflow do
     let_it_be(:user) { create(:user) }
     let_it_be(:source_branch) { 'compare-with-merge-head-source' }
 
-    let(:issue) { create(:issue, project: project) }
+    let(:issue) { build_stubbed(:issue, project: project) }
     let(:snippet) { build(:personal_snippet) }
 
     context 'incoming email enabled' do

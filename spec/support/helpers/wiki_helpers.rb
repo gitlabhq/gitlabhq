@@ -31,6 +31,11 @@ module WikiHelpers
     submit_form("Create sidebar", commit_message)
   end
 
+  # The sidebar is already expanded on wide viewports, so the toggle may be absent
+  def open_wiki_sidebar
+    click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+  end
+
   def submit_form(save_button_text, commit_message = nil)
     click_on save_button_text
 

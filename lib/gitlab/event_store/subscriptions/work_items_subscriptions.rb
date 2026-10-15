@@ -5,7 +5,6 @@ module Gitlab
     module Subscriptions
       class WorkItemsSubscriptions < BaseSubscriptions
         def register
-          store.subscribe ::WorkItems::UserPreferences::DestroyWorker, to: ::Members::DestroyedEvent
           store.subscribe ::WorkItems::UserPreferences::DestroyWorker, to: ::Members::DestroyedCloudEvent
           store.subscribe ::WorkItems::ProcessProjectTransferEventsWorker,
             to: ::Projects::ProjectTransferedEvent,

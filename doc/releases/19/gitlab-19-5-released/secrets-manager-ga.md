@@ -8,7 +8,7 @@ documentation_link: "../../../ci/secrets/secrets_manager/"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/10723
 categories: [ Secrets Management ]
 level: primary
-weight: 50
+weight: 20
 ---
 
 Without a centralized secrets store, credentials can become scattered across over-scoped CI/CD variables, local config files, and standalone vaults. This makes them harder to manage, protect, and audit.

@@ -174,9 +174,7 @@ module Gitlab
             (current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target) ||
               quick_action_target.new_record?)
         end
-        parse_params do |target_branch_param|
-          target_branch_param.strip
-        end
+        parse_params(&:strip)
         command :target_branch do |branch_name|
           @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
         end

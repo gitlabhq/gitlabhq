@@ -51,6 +51,12 @@ class Todo < ApplicationRecord
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
 
+  # Actions whose pending to-do is one per author rather than one per target:
+  # a review is one reviewer's, so another reviewer's review raises a to-do of
+  # its own, and a reviewer's next review supersedes their earlier one (see
+  # TodoService#create_review_submitted_todo).
+  ACTIONS_UNIQUE_PER_AUTHOR = [Todo::REVIEW_SUBMITTED].freeze
+
   # EE parentless action types should be defined in EE_PARENTLESS_ACTION_TYPES in ee/app/models/ee/todo.rb
   PARENTLESS_ACTION_TYPES = [
     SSH_KEY_EXPIRED,
@@ -105,6 +111,7 @@ class Todo < ApplicationRecord
   scope :for_type, ->(type) { where(target_type: type) }
   scope :for_target, ->(id) { where(target_id: id) }
   scope :for_commit, ->(id) { where(commit_id: id) }
+  scope :created_before, ->(time) { where(arel_table[:created_at].lt(time)) }
   scope :not_in_users, ->(user_ids) { where.not('todos.user_id' => user_ids) }
   scope :with_entity_associations, -> do
     preload(:target, :author, :note, group: :route, project: [:route, :group, { namespace: [:route, :owner] }, :project_setting])

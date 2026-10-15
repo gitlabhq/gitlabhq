@@ -9,6 +9,10 @@ module Gitlab
           ::Subscriptions::BaseSubscription::UNAUTHORIZED_ERROR_MESSAGE
         ].freeze
 
+        # graphql-ruby returns this when validation or analysis exceeds `validate_timeout`.
+        # The query never executed, but the timeout reflects server load, so it still counts.
+        VALIDATION_TIMEOUT_MESSAGE = 'Timeout on validation of query'
+
         # All queries pass through a multiplex, even if only one query is executed
         # https://github.com/rmosolgo/graphql-ruby/blob/43e377b5b743a9102381d6ad3adaaed13ff5b6dd/lib/graphql/schema.rb#L1303
         #
@@ -66,12 +70,21 @@ module Gitlab
           errors = result_errors(query)&.pluck('message')
 
           return if errors.blank?
+          return :ignored if client_error?(query, errors)
 
           if (errors - IGNORED_ERRORS).present?
             :error
           else
             :ignored
           end
+        end
+
+        # A query that fails parsing, static validation, variable coercion, or analysis
+        # (complexity, depth) is rejected before any resolver runs. Like a 4xx in the REST
+        # SLI, the client sent a request the server cannot execute, so it does not count
+        # as a server error. https://gitlab.com/gitlab-org/gitlab/-/work_items/631498
+        def client_error?(query, errors)
+          !query.valid? && errors.exclude?(VALIDATION_TIMEOUT_MESSAGE)
         end
 
         def log_execute_query(query: nil, duration_s: 0, exception: nil)

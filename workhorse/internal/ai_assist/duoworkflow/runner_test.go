@@ -2560,6 +2560,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 					WorkflowID:           "wf-456",
 					FeatureQualifiedName: "duo_workflow",
 					FeatureAiCatalogItem: true,
+					SourceType:           "merge_request_code_conflict",
 				},
 			},
 		}
@@ -2576,6 +2577,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		require.Equal(t, "wf-456", sentEvents[0].WorkflowID)
 		require.Equal(t, "duo_workflow", sentEvents[0].FeatureQualifiedName)
 		require.True(t, sentEvents[0].FeatureAiCatalogItem)
+		require.Equal(t, "merge_request_code_conflict", sentEvents[0].SourceType)
 
 		// Verify workflow stream received the acknowledgment
 		wfEvents := mockWf.getSendEvents()

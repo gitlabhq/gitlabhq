@@ -51,11 +51,6 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       described_class.new(member, current_user: current_user, **opts).execute
     end
 
-    it 'triggers members destroyed event' do
-      expect { described_class.new(member, current_user: current_user, **opts).execute }
-        .to publish_event(Members::DestroyedEvent)
-    end
-
     it 'triggers members destroyed cloud event' do
       expect { described_class.new(member, current_user: current_user, **opts).execute }
         .to publish_event(Members::DestroyedCloudEvent)

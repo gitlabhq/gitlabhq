@@ -32,7 +32,7 @@ module Members
       }
     end
 
-    # `root_namespace_id` stays optional, mirroring the legacy Members::DestroyedEvent
+    # `root_namespace_id` stays optional, preserving the original member-destroyed
     # schema, while `user_id` must be present even though it may be null.
     def additional_required
       %w[user_id]

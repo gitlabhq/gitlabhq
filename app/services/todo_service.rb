@@ -12,6 +12,11 @@ class TodoService
 
   BATCH_SIZE = 100
 
+  # A reviewer's review within this long of the pending to-do their previous
+  # one raised is the same review: Web publishes a large review in batches of
+  # 20 drafts, each a request of its own that ends up in #new_review.
+  SAME_REVIEW_WINDOW = 10.minutes
+
   RESOLVE_ON_MR_FINALIZED_ACTIONS = [
     Todo::ASSIGNED, Todo::APPROVAL_REQUIRED, Todo::REVIEW_REQUESTED, Todo::ADDED_APPROVER, Todo::BUILD_FAILED
   ].freeze
@@ -321,6 +326,13 @@ class TodoService
     project = target.project
     attributes = attributes_for_todo(project, target, review_author, Todo::REVIEW_SUBMITTED)
 
+    # The reviewer's next review supersedes the to-do their previous one raised,
+    # unless that to-do is younger than SAME_REVIEW_WINDOW: then it stands for
+    # this review too and deduplicates the new one in #excluded_user_ids.
+    resolve_todos_with_attributes_for_target(
+      target,
+      attributes.slice(:project_id, :author_id, :action).merge(users: users, created_before: SAME_REVIEW_WINDOW.ago)
+    )
     create_todos(users, attributes, project.namespace, project)
   end
 
@@ -399,12 +411,14 @@ class TodoService
 
   def excluded_user_ids(users, attributes)
     return [] unless users.present?
-    return [] if Todo::ACTIONS_MULTIPLE_ALLOWED.include?(attributes.fetch(:action))
 
-    pending_todos(
-      users,
-      attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
-    ).for_note(attributes[:note]).distinct_user_ids
+    action = attributes.fetch(:action)
+    return [] if Todo::ACTIONS_MULTIPLE_ALLOWED.include?(action)
+
+    keys = %i[project_id target_id target_type commit_id discussion action]
+    keys << :author_id if Todo::ACTIONS_UNIQUE_PER_AUTHOR.include?(action)
+
+    pending_todos(users, attributes.slice(*keys)).for_note(attributes[:note]).distinct_user_ids
   end
 
   def bulk_insert_todos(users, attributes, &attribute_merger)

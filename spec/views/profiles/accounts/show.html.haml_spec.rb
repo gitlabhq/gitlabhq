@@ -10,6 +10,27 @@ RSpec.describe 'profiles/accounts/show', feature_category: :user_profile do
     allow(view).to receive(:current_user).and_return(user)
   end
 
+  context 'for reassigned import contributions' do
+    it 'renders the section' do
+      render
+
+      expect(rendered).to have_text(s_('UserMapping|Reassigned import contributions'))
+      expect(rendered).to have_css('#js-reassigned-source-users')
+    end
+
+    context 'when revoke_import_source_user_reassignment feature flag is disabled' do
+      before do
+        stub_feature_flags(revoke_import_source_user_reassignment: false)
+      end
+
+      it 'does not render the section' do
+        render
+
+        expect(rendered).not_to have_css('#js-reassigned-source-users')
+      end
+    end
+  end
+
   context 'for account deletion' do
     context 'when user can delete profile' do
       before do

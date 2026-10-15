@@ -77,7 +77,7 @@ module Gitlab
               value.specified? && value.relevant?
             end
 
-            meaningful.transform_values { |entry| entry.value }
+            meaningful.transform_values(&:value)
           end
         end
 

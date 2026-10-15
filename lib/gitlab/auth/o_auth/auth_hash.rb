@@ -112,7 +112,7 @@ module Gitlab
 
         def get_username
           username_claims.map { |claim| get_from_auth_hash_or_info(claim) }
-            .find { |name| name.presence }
+            .find(&:presence)
             &.split("@")
             &.first
         end

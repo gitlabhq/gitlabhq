@@ -219,7 +219,7 @@ module Gitlab
       end
 
       def substitution_names
-        substitution_definitions.flat_map { |command| command.all_names }
+        substitution_definitions.flat_map(&:all_names)
           .compact
       end
 

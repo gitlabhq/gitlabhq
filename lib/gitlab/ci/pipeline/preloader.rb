@@ -53,14 +53,14 @@ module Gitlab
         # that Ci::Stage#has_warnings? doesn't execute any additional
         # queries.
         def preload_stages_warnings
-          @pipeline.stages.each { |stage| stage.number_of_warnings }
+          @pipeline.stages.each(&:number_of_warnings)
         end
 
         # This batch loads the associated environments of multiple actions (builds)
         # that can't use `preload` due to the indirect relationship.
         def preload_persisted_environments
-          @pipeline.scheduled_actions.each { |action| action.persisted_environment }
-          @pipeline.manual_actions.each { |action| action.persisted_environment }
+          @pipeline.scheduled_actions.each(&:persisted_environment)
+          @pipeline.manual_actions.each(&:persisted_environment)
         end
       end
     end

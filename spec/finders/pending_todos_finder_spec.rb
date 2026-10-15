@@ -104,5 +104,14 @@ RSpec.describe PendingTodosFinder, feature_category: :notifications do
 
       expect(todos).to contain_exactly(todo)
     end
+
+    it 'supports retrieving of todos created before a point in time' do
+      older = create(:todo, :pending, user: user3, target: issue2, created_at: 11.minutes.ago)
+      create(:todo, :pending, user: user3, target: issue2, created_at: 1.minute.ago)
+
+      todos = described_class.new(users: user3, target_id: issue2.id, created_before: 10.minutes.ago).execute
+
+      expect(todos).to contain_exactly(older)
+    end
   end
 end

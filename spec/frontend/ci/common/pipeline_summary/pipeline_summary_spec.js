@@ -6,6 +6,7 @@ import mockPipelineSummaryQueryResponse from 'test_fixtures/graphql/pipelines/ge
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -61,6 +62,13 @@ describe('PipelineSummary', () => {
   const findCommitPath = () => wrapper.findByTestId('commit-path');
 
   const getPollInterval = () => wrapper.vm.$apollo.queries.pipeline.pollInterval;
+
+  const triggerVisibilityChange = async (hidden) => {
+    Visibility.hidden.mockReturnValue(hidden);
+    const [onVisibilityChange] = Visibility.change.mock.calls.at(-1);
+    onVisibilityChange();
+    await nextTick();
+  };
 
   describe('mounted', () => {
     beforeEach(() => {
@@ -171,6 +179,73 @@ describe('PipelineSummary', () => {
       await nextTick();
 
       expect(getPollInterval()).toBe(PIPELINE_POLL_INTERVAL_DEFAULT);
+    });
+  });
+
+  describe('when there is no iid', () => {
+    beforeEach(async () => {
+      pipelineSummaryHandler.mockClear();
+      await createComponent({ props: { iid: '' } });
+    });
+
+    it('does not query the pipeline summary', () => {
+      expect(pipelineSummaryHandler).not.toHaveBeenCalled();
+    });
+
+    it('renders nothing', () => {
+      expect(wrapper.text()).toBe('');
+    });
+  });
+
+  describe('when the query fails', () => {
+    beforeEach(() => {
+      Visibility.hidden.mockReturnValue(false);
+    });
+
+    describe('with a GraphQL error', () => {
+      beforeEach(async () => {
+        pipelineSummaryHandler.mockResolvedValueOnce({
+          errors: [{ message: 'Variable $iid of type ID! was provided invalid value' }],
+        });
+        await createComponent();
+      });
+
+      it('shows an alert', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'There was a problem fetching the pipeline summary.',
+        });
+      });
+
+      it('does not render the pipeline summary', () => {
+        expect(findPipelineText().exists()).toBe(false);
+        expect(findPipelineMiniGraph().exists()).toBe(false);
+      });
+
+      it('stops polling', () => {
+        expect(getPollInterval()).toBe(0);
+      });
+
+      it('does not resume polling when the page becomes visible again', async () => {
+        await triggerVisibilityChange(true);
+        await triggerVisibilityChange(false);
+
+        expect(getPollInterval()).toBe(0);
+      });
+    });
+
+    describe('with a network error', () => {
+      beforeEach(async () => {
+        pipelineSummaryHandler.mockRejectedValueOnce(new Error('Network error'));
+        await createComponent();
+      });
+
+      it('shows an alert', () => {
+        expect(createAlert).toHaveBeenCalled();
+      });
+
+      it('keeps polling', () => {
+        expect(getPollInterval()).toBe(PIPELINE_POLL_INTERVAL_DEFAULT);
+      });
     });
   });
 });

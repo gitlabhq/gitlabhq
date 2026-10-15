@@ -8427,6 +8427,9 @@ msgstr ""
 msgid "AgentPlan|Generating workplan..."
 msgstr ""
 
+msgid "AgentPlan|Generation canceled"
+msgstr ""
+
 msgid "AgentPlan|Generation failed"
 msgstr ""
 
@@ -32963,6 +32966,9 @@ msgstr ""
 msgid "DuoAgenticChat|AGENTS.md was not found in this page"
 msgstr ""
 
+msgid "DuoAgenticChat|Add or enable"
+msgstr ""
+
 msgid "DuoAgenticChat|An Owner or administrator can turn on GitLab Duo for this group."
 msgstr ""
 
@@ -33144,9 +33150,6 @@ msgid "DuoAgenticChat|Loading your conversation..."
 msgstr ""
 
 msgid "DuoAgenticChat|Merge requests"
-msgstr ""
-
-msgid "DuoAgenticChat|More actions"
 msgstr ""
 
 msgid "DuoAgenticChat|More active sessions"
@@ -55433,9 +55436,6 @@ msgstr ""
 msgid "Navigation|Admin"
 msgstr ""
 
-msgid "Navigation|All categories"
-msgstr ""
-
 msgid "Navigation|Analyze"
 msgstr ""
 
@@ -55451,6 +55451,9 @@ msgstr ""
 msgid "Navigation|Collapse sidebar"
 msgstr ""
 
+msgid "Navigation|Compact"
+msgstr ""
+
 msgid "Navigation|Current page"
 msgstr ""
 
@@ -55460,19 +55463,16 @@ msgstr ""
 msgid "Navigation|Deploy"
 msgstr ""
 
-msgid "Navigation|Everything"
-msgstr ""
-
 msgid "Navigation|Expand sidebar"
-msgstr ""
-
-msgid "Navigation|Flat"
 msgstr ""
 
 msgid "Navigation|Frequently visited groups"
 msgstr ""
 
 msgid "Navigation|Frequently visited projects"
+msgstr ""
+
+msgid "Navigation|Full"
 msgstr ""
 
 msgid "Navigation|Groups you visit often will appear here."
@@ -55496,9 +55496,6 @@ msgstr ""
 msgid "Navigation|Operate"
 msgstr ""
 
-msgid "Navigation|Organized"
-msgstr ""
-
 msgid "Navigation|Pin %{title}"
 msgstr ""
 
@@ -55511,7 +55508,7 @@ msgstr ""
 msgid "Navigation|Pinned"
 msgstr ""
 
-msgid "Navigation|Pinned in categories"
+msgid "Navigation|Pinned and all categories"
 msgstr ""
 
 msgid "Navigation|Pinned only"
@@ -59656,6 +59653,9 @@ msgstr ""
 msgid "Orbit|All entities"
 msgstr ""
 
+msgid "Orbit|An administrator can start a free trial to turn on Orbit for this instance."
+msgstr ""
+
 msgid "Orbit|And %d more group"
 msgid_plural "Orbit|And %d more groups"
 msgstr[0] ""
@@ -60378,6 +60378,9 @@ msgstr ""
 msgid "Orbit|Purchase GitLab Orbit to turn it on for this group."
 msgstr ""
 
+msgid "Orbit|Purchase GitLab Orbit to turn it on for this instance."
+msgstr ""
+
 msgid "Orbit|Queries are paused for groups whose trial ended. Talk to your GitLab seller to keep using Orbit."
 msgstr ""
 
@@ -60534,6 +60537,9 @@ msgstr ""
 msgid "Orbit|The Orbit trial for this group has ended. Add GitLab credits to turn Orbit on again."
 msgstr ""
 
+msgid "Orbit|The Orbit trial for this instance has ended. Add GitLab credits to turn Orbit on again."
+msgstr ""
+
 msgid "Orbit|The examples are not available. Try again later."
 msgstr ""
 
@@ -60580,6 +60586,9 @@ msgid "Orbit|This group is excluded, so Orbit turns off for it within an hour."
 msgstr ""
 
 msgid "Orbit|This group is not eligible for a GitLab Orbit trial."
+msgstr ""
+
+msgid "Orbit|This instance is not eligible for a GitLab Orbit trial."
 msgstr ""
 
 msgid "Orbit|This list shows your first %{count} top-level group. To turn on Orbit for another group you own, go to the Orbit settings of that group."
@@ -60802,6 +60811,9 @@ msgid "Orbit|You do not have access to this. Sign in again, then reload the page
 msgstr ""
 
 msgid "Orbit|You don't have permission to start an Orbit trial for this group."
+msgstr ""
+
+msgid "Orbit|You don't have permission to start an Orbit trial for this instance."
 msgstr ""
 
 msgid "Orbit|You don't have permission to update Orbit for this namespace."
@@ -77145,9 +77157,6 @@ msgstr ""
 msgid "SecurityOrchestration|%{strongStart}Run customized GitLab security templates%{strongEnd} across my projects."
 msgstr ""
 
-msgid "SecurityOrchestration|%{thresholdStart}%{thresholdEnd} or more %{severityStart}%{severityEnd} %{suffixStart}vulnerabilities%{suffixEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|%{type}: %{boldStart}%{value}%{boldEnd}"
 msgstr ""
 
@@ -79287,6 +79296,9 @@ msgid "SecurityOrchestration|license scan"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"
+msgstr ""
+
+msgid "SecurityOrchestration|more than %{thresholdStart}%{thresholdEnd} %{severityStart}%{severityEnd} %{suffixStart}vulnerabilities%{suffixEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|no exceptions"
@@ -92171,6 +92183,9 @@ msgstr ""
 msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
 msgstr ""
 
+msgid "UserMapping|A group owner can propose the same reassignment again, and contributions are only reassigned if you approve it."
+msgstr ""
+
 msgid "UserMapping|After you select \"Reassign\", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue."
 msgstr ""
 
@@ -92183,6 +92198,9 @@ msgstr ""
 msgid "UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you permanently."
 msgstr ""
 
+msgid "UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you. You can revoke the reassignment later in your account settings, but contributions that were already reassigned to you are not removed."
+msgstr ""
+
 msgid "UserMapping|Awaiting reassignment"
 msgstr ""
 
@@ -92193,6 +92211,12 @@ msgid "UserMapping|Confirm reassignment"
 msgstr ""
 
 msgid "UserMapping|Contribution and membership reassignment cannot be undone. Incorrect reassignment %{linkStart}poses a security risk%{linkEnd}, so check carefully before you reassign."
+msgstr ""
+
+msgid "UserMapping|Contributions from these users on an import source instance have been reassigned to you. If you revoke a reassignment, future imports no longer automatically assign contributions from that user to you."
+msgstr ""
+
+msgid "UserMapping|Contributions that were already reassigned to you are not removed."
 msgstr ""
 
 msgid "UserMapping|Could not upload the file. Check that the file follows the CSV template and try again."
@@ -92225,6 +92249,9 @@ msgstr ""
 msgid "UserMapping|Full user details missing"
 msgstr ""
 
+msgid "UserMapping|Future imports no longer automatically assign contributions from this user to you."
+msgstr ""
+
 msgid "UserMapping|Group or project bot does not belong to top level group."
 msgstr ""
 
@@ -92234,10 +92261,16 @@ msgstr ""
 msgid "UserMapping|If you keep all as placeholders, you cannot reassign their contributions to users at a later time. Ensure all required reassignments are completed before you keep all as placeholders."
 msgstr ""
 
+msgid "UserMapping|If you revoke the reassignment of contributions from %{sourceUserName}:"
+msgstr ""
+
 msgid "UserMapping|Import details:"
 msgstr ""
 
 msgid "UserMapping|Imported from: %{source_hostname}"
+msgstr ""
+
+msgid "UserMapping|Imported to"
 msgstr ""
 
 msgid "UserMapping|Imported to: %{destination_group}"
@@ -92339,7 +92372,13 @@ msgstr ""
 msgid "UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})"
 msgstr ""
 
+msgid "UserMapping|Reassigned contributions could not be fetched."
+msgstr ""
+
 msgid "UserMapping|Reassigned from: %{source_name} (%{source_username})"
+msgstr ""
+
+msgid "UserMapping|Reassigned import contributions"
 msgstr ""
 
 msgid "UserMapping|Reassigned to"
@@ -92361,6 +92400,9 @@ msgid "UserMapping|Reassignment approval revoked by user."
 msgstr ""
 
 msgid "UserMapping|Reassignment approved"
+msgstr ""
+
+msgid "UserMapping|Reassignment could not be revoked."
 msgstr ""
 
 msgid "UserMapping|Reassignment details:"
@@ -92421,6 +92463,15 @@ msgid "UserMapping|Review and complete the CSV file."
 msgstr ""
 
 msgid "UserMapping|Review reassignment details"
+msgstr ""
+
+msgid "UserMapping|Revoke"
+msgstr ""
+
+msgid "UserMapping|Revoke contribution reassignment?"
+msgstr ""
+
+msgid "UserMapping|Revoke reassignment"
 msgstr ""
 
 msgid "UserMapping|Revoked"
@@ -92523,6 +92574,9 @@ msgid "UserMapping|You cannot reassign user contributions of imports to a person
 msgstr ""
 
 msgid "UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself in %{strong_open}%{destination_group}%{strong_close}. The reassignment is in progress."
+msgstr ""
+
+msgid "UserMapping|You have no reassigned contributions."
 msgstr ""
 
 msgid "UserMapping|You have rejected the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself in %{strong_open}%{destination_group}%{strong_close}."

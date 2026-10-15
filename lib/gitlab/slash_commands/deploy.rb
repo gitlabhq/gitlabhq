@@ -58,9 +58,7 @@ module Gitlab
         environment = project.environments.find_by(name: from)
         return unless environment
 
-        actions = environment.actions_for(to).select do |action|
-          action.deployment_job?
-        end
+        actions = environment.actions_for(to).select(&:deployment_job?)
 
         if actions.many?
           actions.find { |action| action.name == to.to_s }

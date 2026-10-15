@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_custom_emoji
+description: Enables Vue 3 in compatibility mode for the group custom emoji page
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23167
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259906
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/611454
+milestone: '19.5'
+group: group::code review
+type: beta
+default_enabled: false

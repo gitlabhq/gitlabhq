@@ -18,6 +18,32 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
   end
 
   shared_examples 'work item create endpoint' do
+    context 'with an unknown fields value' do
+      it 'returns 400 without creating a work item', :aggregate_failures do
+        expect do
+          post api(api_request_path, user), params: { title: 'New task', work_item_type_name: 'task', fields: 'bogus' }
+        end.not_to change { WorkItem.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('fields does not have a valid value: bogus')
+      end
+    end
+
+    context 'with an unknown features value' do
+      it 'returns 400 without creating a work item', :aggregate_failures do
+        expect do
+          post api(api_request_path, user), params: {
+            title: 'New task',
+            work_item_type_name: 'task',
+            features: { bogus_feature: { anything: 1 } }
+          }
+        end.not_to change { WorkItem.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('features does not have a valid value: bogus_feature')
+      end
+    end
+
     context 'with minimum required params' do
       it 'creates a work item and returns 201' do
         post api(api_request_path, user), params: {

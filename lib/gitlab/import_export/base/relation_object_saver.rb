@@ -92,7 +92,7 @@ module Gitlab
         def save_batch_with_retry(relation_name, batch, retry_count = 0)
           prepare_records_for_association(relation_name, batch) if relation_name == 'notes'
 
-          valid_records, invalid_records = batch.partition { |record| record.valid? }
+          valid_records, invalid_records = batch.partition(&:valid?)
 
           invalid_records.map! { |record| ::Import::ImportRecordPreparer.recover_invalid_record(record) }
 

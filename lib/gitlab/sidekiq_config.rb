@@ -105,14 +105,14 @@ module Gitlab
       def queues_for_sidekiq_queues_yml
         namespaces_with_equal_weights =
           workers
-            .reject { |worker| worker.jh? }
+            .reject(&:jh?)
             .group_by(&:queue_namespace)
             .map(&:last)
             .select { |workers| workers.map(&:get_weight).uniq.count == 1 }
             .map(&:first)
 
         namespaces = namespaces_with_equal_weights.map(&:queue_namespace).to_set
-        remaining_queues = workers.reject { |worker| worker.jh? }.reject { |worker| namespaces.include?(worker.queue_namespace) }
+        remaining_queues = workers.reject(&:jh?).reject { |worker| namespaces.include?(worker.queue_namespace) }
 
         (namespaces_with_equal_weights.map(&:namespace_and_weight) +
          remaining_queues.map(&:queue_and_weight)).sort

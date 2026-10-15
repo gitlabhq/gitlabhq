@@ -29,7 +29,6 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_reload(:non_member) { create(:user) }
 
   let_it_be_with_reload(:inherited_guest) { create(:user, guest_of: group) }
-  let_it_be_with_reload(:inherited_planner) { create(:user, planner_of: group) }
   let_it_be_with_reload(:inherited_reporter) { create(:user, reporter_of: group) }
   let_it_be_with_reload(:inherited_security_manager) { create(:user, security_manager_of: group) }
   let_it_be_with_reload(:inherited_developer) { create(:user, developer_of: group) }

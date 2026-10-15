@@ -363,6 +363,14 @@ Audit event types belong to the following product categories.
 | [`runner_controller_token_rotated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller token is rotated | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
 | [`runner_controller_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223435) | A runner controller is updated | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582008) | Instance |
 
+### Dap triggers
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`flow_trigger_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was created for a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
+| [`flow_trigger_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was deleted from a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
+| [`flow_trigger_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was updated for a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
+
 ### Delivery
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -433,9 +441,6 @@ Audit event types belong to the following product categories.
 | [`duo_tool_call_approved`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233230) | A tool call was approved in a Duo workflow session, either for one call (approval_scope once) or for the rest of the session (approval_scope session) | {{< no >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593028) | Group, Project |
 | [`duo_tool_call_denied`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255538) | A single tool call was denied in a Duo workflow session (approval_scope once) | {{< no >}} | GitLab [19.5](https://gitlab.com/gitlab-org/gitlab/-/work_items/628438) | Group, Project |
 | [`duo_workflow_mcp_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232180) | Duo Workflow MCP enabled setting on group changed | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593025) | Group |
-| [`flow_trigger_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was created for a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
-| [`flow_trigger_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was deleted from a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
-| [`flow_trigger_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230069) | A flow trigger was updated for a project | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/issues/593020) | Project |
 | [`foundational_agent_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235225) | A foundational agent status was updated for a namespace or organization | {{< yes >}} | GitLab [19.1](https://gitlab.com/gitlab-org/gitlab/-/work_items/593030) | Group, Instance |
 | [`mcp_server_oauth_token_stored`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234028) | A user connected to an MCP server and an OAuth token was stored | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593029) | User |
 | [`prompt_injection_protection_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/232180) | Prompt injection protection level setting on group changed | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/593025) | Group |
@@ -570,6 +575,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`orbit_cloud_connector_token_issued`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253400) | Orbit fetches the instance Cloud Connector token to authenticate billing-event emission | {{< yes >}} | GitLab [19.5](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1229) | Instance |
+| [`orbit_instance_trial_start`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261678) | Triggered when the instance-wide Orbit trial is started on a GitLab Self-Managed or GitLab Dedicated instance | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1385) | Instance |
 
 ### Mcp server
 

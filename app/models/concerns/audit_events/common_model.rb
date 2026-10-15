@@ -140,6 +140,12 @@ module AuditEvents
       super&.to_s || details[:ip_address]
     end
 
+    def assign_author(author)
+      self.author_id = author.id
+      self.author_name = author.name
+      self.details = details.merge(author_name: author.name, author_class: author.class.name)
+    end
+
     private
 
     def sanitize_message

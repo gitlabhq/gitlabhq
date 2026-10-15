@@ -64,7 +64,8 @@ module FastSpecHelper
 
       # Mock out the GettextI18nRails `_` method to just pass through the key as the text
       config.before do
-        allow(described_class).to(receive(:_)) { |key| key }
+        # `described_class` is a Symbol inside rspec-parameterized `where` hash cases, which can't be stubbed.
+        allow(described_class).to(receive(:_)) { |key| key } if described_class.is_a?(Module)
       end
     end
 

@@ -59,17 +59,17 @@ export const SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY = 'super-sidebar-pinned-
 
 export const PINNED_NAV_STORAGE_KEY = 'super-sidebar-pinned-nav-item-clicked';
 
-// The three mutually-exclusive ways the pinnable sidebar can present its
-// navigation while hide_unpinned_sidebar_items is enabled.
-export const SIDEBAR_NAV_MODE_PINNED_ONLY = 'pinned_only';
-export const SIDEBAR_NAV_MODE_ALL_CATEGORIES = 'all_categories';
-export const SIDEBAR_NAV_MODE_GROUPED_PINS = 'grouped_pins';
+// The mutually-exclusive ways the pinnable sidebar can present its navigation
+// while hide_unpinned_sidebar_items is enabled. FULL keeps the legacy
+// 'all_categories' value so existing "Everything" choices carry over.
+export const SIDEBAR_NAV_MODE_COMPACT = 'compact';
+export const SIDEBAR_NAV_MODE_FULL = 'all_categories';
 
-export const SIDEBAR_NAV_MODES = [
-  SIDEBAR_NAV_MODE_PINNED_ONLY,
-  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
-  SIDEBAR_NAV_MODE_GROUPED_PINS,
-];
+export const SIDEBAR_NAV_MODES = [SIDEBAR_NAV_MODE_COMPACT, SIDEBAR_NAV_MODE_FULL];
+
+// In compact mode, a category with at least this many pins gets its own group;
+// pins from smaller categories stay in the flat list above the groups.
+export const PINNED_CATEGORY_AUTO_GROUP_THRESHOLD = 3;
 
 // Remembers the user's chosen navigation mode (one of SIDEBAR_NAV_MODE_*).
 export const SIDEBAR_NAV_MODE_STORAGE_KEY = 'super-sidebar-nav-mode';

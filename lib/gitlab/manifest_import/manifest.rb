@@ -19,7 +19,7 @@ module Gitlab
       attr_reader :parsed_xml, :errors
 
       def initialize(file)
-        @parsed_xml = Nokogiri::XML(file) { |config| config.strict }
+        @parsed_xml = Nokogiri::XML(file, &:strict)
         @errors = []
       rescue Nokogiri::XML::SyntaxError
         @errors = ['The uploaded file is not a valid XML file.']

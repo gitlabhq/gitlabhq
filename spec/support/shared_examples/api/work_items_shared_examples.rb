@@ -117,7 +117,7 @@ RSpec.shared_examples 'work item field and feature selection' do
 
     context 'with a features parameter' do
       it 'returns only the requested features' do
-        get api(api_request_path, user), params: { fields: 'features', features: 'labels,unknown' }
+        get api(api_request_path, user), params: { fields: 'features', features: 'labels' }
 
         primary_features = features_json_for(primary_work_item)
 
@@ -126,6 +126,36 @@ RSpec.shared_examples 'work item field and feature selection' do
           'labels' => a_hash_including('labels' => contain_exactly(a_hash_including('title' => label.title)))
         )
       end
+
+      it 'ignores empty segments, whitespace and case' do
+        get api(api_request_path, user), params: { fields: 'features', features: ',labels, Labels ,' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(features_json_for(primary_work_item).keys).to contain_exactly('labels')
+      end
+    end
+  end
+
+  describe 'unknown values' do
+    it 'returns 400 listing the unknown fields', :aggregate_failures do
+      get api(api_request_path, user), params: { fields: 'reference,bogus,Also_Bogus' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response).to eq('error' => 'fields does not have a valid value: bogus, also_bogus')
+    end
+
+    it 'returns 400 listing the unknown features', :aggregate_failures do
+      get api(api_request_path, user), params: { features: 'labels,bogus' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response).to eq('error' => 'features does not have a valid value: bogus')
+    end
+
+    it 'reports unknown fields and features together' do
+      get api(api_request_path, user), params: { fields: 'bogus', features: 'bogus' }
+
+      expect(json_response['error'])
+        .to eq('fields does not have a valid value: bogus, features does not have a valid value: bogus')
     end
   end
 end
@@ -335,6 +365,20 @@ RSpec.shared_examples 'work item show endpoint' do
       'reference' => primary_work_item.to_reference(full: true)
     )
     expect(json_response.keys).to contain_exactly('id', 'iid', 'global_id', 'title', 'reference')
+  end
+
+  it 'returns 400 for an unknown fields value', :aggregate_failures do
+    get api(show_request_path, user), params: { fields: 'reference,bogus' }
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+    expect(json_response['error']).to eq('fields does not have a valid value: bogus')
+  end
+
+  it 'returns 400 for an unknown features value', :aggregate_failures do
+    get api(show_request_path, user), params: { features: 'labels,bogus' }
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+    expect(json_response['error']).to eq('features does not have a valid value: bogus')
   end
 
   it 'returns only the requested features when provided' do

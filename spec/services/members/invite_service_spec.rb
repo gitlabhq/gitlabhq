@@ -580,7 +580,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       it 'publishes event with user IDs only from members with existing users' do
-        expect { expect_to_create_members(count: 4) }.to publish_event(Members::MembersAddedEvent).with(
+        expect { expect_to_create_members(count: 4) }.to publish_event(Members::AddedCloudEvent).with(
           source_id: project.id,
           source_type: "Project",
           invited_user_ids: match_array([be_an(Integer), be_an(Integer)])
@@ -599,7 +599,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       it 'publishes event with user IDs from valid members and from members with existing users' do
-        expect { expect_to_create_members(count: 2) }.to publish_event(Members::MembersAddedEvent).with(
+        expect { expect_to_create_members(count: 2) }.to publish_event(Members::AddedCloudEvent).with(
           source_id: project.id,
           source_type: "Project",
           invited_user_ids: match_array(be_an(Integer))

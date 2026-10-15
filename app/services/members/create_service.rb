@@ -196,11 +196,11 @@ module Members
       return unless at_least_one_member_created?
 
       Gitlab::EventStore.publish(
-        Members::MembersAddedEvent.new(data: {
-          source_id: source.id,
-          source_type: source.class.name,
+        Members::AddedCloudEvent.build(
+          source: source,
+          current_user: current_user,
           invited_user_ids: @members.select { |m| m.errors.none? }.filter_map(&:user_id)
-        })
+        )
       )
     end
   end

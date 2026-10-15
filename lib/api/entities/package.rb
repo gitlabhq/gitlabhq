@@ -19,9 +19,7 @@ module API
         end
       end
 
-      expose :conan_package_name, if: ->(package) { package.conan? } do |package|
-        package.name
-      end
+      expose :conan_package_name, if: ->(package) { package.conan? }, &:name
 
       expose :version, documentation: { type: 'String', example: '1.0.3' }
       expose :package_type, documentation: { type: 'String', example: 'npm' }
