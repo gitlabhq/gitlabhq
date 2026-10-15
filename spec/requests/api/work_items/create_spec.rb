@@ -57,6 +57,31 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
         expect(json_response.dig('features', 'description', 'description')).to eq('Some description text')
         expect(WorkItem.find(json_response['id']).description).to eq('Some description text')
       end
+
+      it 'ignores undeclared attributes nested in the feature #security' do
+        incident_type = ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:incident)
+
+        post api(api_request_path, user), as: :json, params: {
+          title: 'Described task',
+          work_item_type_name: 'task',
+          features: {
+            description: {
+              description: 'Some description text',
+              work_item_type_id: incident_type.id,
+              description_html: '<img src=x onerror="alert(1)">',
+              cached_markdown_version: 999_999_999,
+              skip_markdown_cache_validation: true
+            }
+          }
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+
+        work_item = WorkItem.find(json_response['id'])
+        expect(work_item.work_item_type).to eq(task_type)
+        expect(work_item.description_html).not_to include('onerror')
+        expect(work_item.cached_markdown_version).not_to eq(999_999_999)
+      end
     end
 
     context 'with assignees feature' do

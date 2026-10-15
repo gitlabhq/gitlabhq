@@ -121,6 +121,92 @@ class CreateIssues < ClickHouse::Migration
 end
 ```
 
+### Order `ALTER` statements around background mutations
+
+Some `ALTER TABLE` statements start a mutation, a background job that rewrites table data parts.
+In GitLab migrations, the common ones are `MATERIALIZE PROJECTION` and `DROP PROJECTION`, sent with
+`SETTINGS mutations_sync = 0`.
+The statement returns before the mutation finishes, and the migration moves on.
+
+On GitLab.com, which uses ClickHouse Cloud, ClickHouse can reject a later `ALTER` on the same table
+while an earlier mutation on that table is unfinished:
+
+```plaintext
+Code: 517. DB::Exception: Previous 3 mutation queries are not finished yet. ... (CANNOT_ASSIGN_ALTER)
+```
+
+The ClickHouse migrator runs a failed migration up to three times in total, about five seconds and
+then about 10 seconds apart.
+Each retry reruns the whole `up` method, and the migrator does not wait for mutations.
+A mutation on a large table can outlast the retries, so every attempt fails and the deployment is
+blocked.
+CI/CD and the GDK run a single ClickHouse server, not ClickHouse Cloud.
+That server does not reliably reject these `ALTER` statements, so a migration can pass CI/CD and
+still fail on GitLab.com.
+
+Do not set `mutations_sync` to `1` or `2` to wait for a mutation on a large table.
+Outside the test environment, the ClickHouse HTTP client has a 20-second read timeout, so a long
+wait fails the migration.
+A migration also cannot check `system.mutations`.
+The documented grants for the `gitlab` user do not include `system` tables, so the query fails with
+`ACCESS_DENIED`.
+For more information, see [Database users in CI/CD](#database-users-in-cicd).
+
+Instead, follow these rules:
+
+- When you can, make the statement that starts a background mutation the last one on that table in
+  the migration.
+  Add every column and projection first, then run `MATERIALIZE PROJECTION` at the end.
+- When an `ALTER` must follow a background mutation on the same table, run that `ALTER` with
+  `execute_when_idle` instead of `execute`.
+  A common case is a migration that must drop a projection before it adds a column.
+  If the migration starts a background mutation, use `execute_when_idle` for its first `ALTER` on
+  that table too.
+  A retry can start while the mutation from the failed attempt is still running.
+  The method waits five seconds and tries again, for up to two minutes by default.
+  If the mutation is still running after that, the method raises
+  `ClickHouse::MigrationSupport::Errors::TableBusyError`.
+  The migrator retries this error like any other failure, so the total wait is up to about three
+  times the timeout.
+  ClickHouse Sidekiq workers stay paused for the whole wait, so keep the default `timeout:`.
+  If the mutation outlasts every attempt, wait for it to finish, then rerun the migration.
+  The method also retries the `affected by mutation ... which is not finished yet` error that a
+  single ClickHouse server returns, so it behaves the same in the GDK and in CI/CD.
+- Apply the same rules across migrations.
+  A later migration can fail if it alters a table while a background mutation from an earlier
+  migration is still running.
+  This can happen when both migrations ship in the same deployment.
+  Use `execute_when_idle` in the later migration.
+- Use `IF EXISTS` and `IF NOT EXISTS` on every `ADD` and `DROP` statement, because each retry
+  reruns the earlier statements.
+
+This migration drops a projection, adds a column and a new projection, and materializes the new
+projection last:
+
+```ruby
+class ReplaceIdProjectionOnMyTable < ClickHouse::Migration
+  def up
+    execute_when_idle <<~SQL
+      ALTER TABLE my_table DROP PROJECTION IF EXISTS by_id SETTINGS mutations_sync = 0
+    SQL
+
+    execute_when_idle <<~SQL
+      ALTER TABLE my_table ADD COLUMN IF NOT EXISTS new_id UInt64 DEFAULT 0
+    SQL
+
+    execute_when_idle <<~SQL
+      ALTER TABLE my_table
+      ADD PROJECTION IF NOT EXISTS by_new_id (SELECT id, new_id ORDER BY new_id, id)
+    SQL
+
+    # Keep this statement last. The mutation runs in the background.
+    execute_when_idle <<~SQL
+      ALTER TABLE my_table MATERIALIZE PROJECTION by_new_id SETTINGS mutations_sync = 0
+    SQL
+  end
+end
+```
+
 ### Creating dictionaries
 
 ClickHouse [dictionaries](https://clickhouse.com/docs/sql-reference/dictionaries) drastically improve query speed by allowing you to enrich data with lookups from external sources without performing expensive JOIN operations. By caching reference data in memory or via optimized layouts, they enable near-instant access for real-time data analysis.

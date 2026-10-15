@@ -12,7 +12,7 @@ module QA
           include Bootable
           include SharedAttributes
 
-          pipeline_mappings test_on_cng: %w[cng-instance cng-instance-ff-inverse],
+          pipeline_mappings test_on_cng: %w[cng-instance cng-instance-ff-inverse cng-instance-caproni],
             test_on_omnibus: %w[git-sha256-repositories]
         end
       end

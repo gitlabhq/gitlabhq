@@ -10,7 +10,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import searchProjectsQuery from '../graphql/search_projects.query.graphql';
 
 export default {
-  name: 'EmptyStateWithoutAnyIssues',
+  name: 'EmptyState',
   i18n: {
     title: s__('WorkItem|Track bugs, plan features, and organize your efforts with work items'),
     description: s__(

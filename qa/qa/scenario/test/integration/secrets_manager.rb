@@ -6,7 +6,7 @@ module QA
       module Integration
         class SecretsManager < Test::Instance::All
           tags :secrets_manager
-          pipeline_mappings test_on_cng: %w[cng-secrets-manager]
+          pipeline_mappings test_on_cng: %w[cng-secrets-manager cng-secrets-manager-caproni]
         end
       end
     end

@@ -89,7 +89,8 @@ module Gitlab
             next if authorized_part?(dimension)
 
             add_authorization_error(
-              s_("AggregationEngine|access to dimension '%{identifier}' is not authorized"), dimension.definition)
+              s_("AggregationEngine|access to dimension '%{identifier}' is not authorized"),
+              identifier: dimension.definition.identifier)
           end
         end
 
@@ -98,7 +99,8 @@ module Gitlab
             next if authorized_part?(filter) && authorized_definition?(referenced_metric_definition(filter))
 
             add_authorization_error(
-              s_("AggregationEngine|access to filter '%{identifier}' is not authorized"), filter.definition)
+              s_("AggregationEngine|access to filter '%{identifier}' is not authorized"),
+              identifier: filter.definition.identifier)
           end
         end
 
@@ -111,7 +113,8 @@ module Gitlab
             next if authorized_definition?(definition)
 
             add_authorization_error(
-              s_("AggregationEngine|ordering by '%{identifier}' is not authorized"), definition)
+              s_("AggregationEngine|ordering by '%{identifier}' is not authorized"),
+              identifier: definition.identifier)
           end
         end
 
@@ -127,9 +130,7 @@ module Gitlab
 
         # Typed :unauthorized so callers (for example, the GraphQL resolver) can
         # distinguish authorization failures from other validation errors.
-        def add_authorization_error(message, definition = nil, identifier: nil)
-          identifier ||= definition.identifier
-
+        def add_authorization_error(message, identifier:)
           errors.add(:base, :unauthorized, message: format(message, identifier: identifier))
         end
 

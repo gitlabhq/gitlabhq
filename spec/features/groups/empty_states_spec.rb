@@ -49,7 +49,6 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             within_testid('issuable-empty-state') do
               if issuable == :issue
                 expect(page).to have_content('No results found')
-                expect(page).to have_link('New item')
               else
                 expect(page).to have_content("There are no open #{issuable.to_s.humanize.downcase}")
                 expect(find('a')['href']).to have_content(project_new_merge_request_path(project))

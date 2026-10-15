@@ -293,6 +293,7 @@ class TodoService
 
   def create_request_review_todo(target, author, reviewers)
     project = target.project
+    reviewers = reject_acting_user(Array(reviewers), author)
     attributes = attributes_for_todo(project, target, author, Todo::REVIEW_REQUESTED)
     create_todos(reviewers, attributes, project.namespace, project)
   end
@@ -459,7 +460,7 @@ class TodoService
     return unless target.assignees.any?
 
     project = target.project
-    assignees = target.assignees - old_assignees
+    assignees = reject_acting_user(target.assignees - old_assignees, author)
     attributes = attributes_for_todo(project, target, author, ::Todo::ASSIGNED)
 
     create_todos(assignees, attributes, target_namespace(target), project)
@@ -470,6 +471,15 @@ class TodoService
 
     reviewers = target.reviewers - old_reviewers
     create_request_review_todo(target, author, reviewers)
+  end
+
+  # Compares against the composite identity actor so that a Duo agent acting on
+  # behalf of a user still creates a to-do when it assigns that user.
+  def reject_acting_user(users, author)
+    return users unless Feature.enabled?(:skip_todos_for_self_assignment, author)
+
+    actor = Gitlab::Auth::Identity.resolve_composite_identity_actor(author)
+    users.reject { |user| user.id == actor.id }
   end
 
   def create_mention_todos(parent, target, author, note = nil, skip_users = [])

@@ -44,7 +44,6 @@ class User < ApplicationRecord
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
-  ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
   ignore_column :static_object_token, remove_with: '19.6', remove_after: '2026-10-18'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating

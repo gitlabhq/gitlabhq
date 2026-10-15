@@ -3,6 +3,57 @@
 require 'spec_helper'
 
 RSpec.describe ClickHouse::Migration, :click_house, feature_category: :database do
+  describe '#execute_when_idle', :aggregate_failures do
+    let(:connection) { instance_double(ClickHouse::Connection, replicated_engine?: false, version: '25.3') }
+    let(:migration) { described_class.new(connection) }
+    let(:sql) { 'ALTER TABLE some_table ADD COLUMN IF NOT EXISTS new_id UInt64 DEFAULT 0' }
+
+    before do
+      allow(migration).to receive(:sleep)
+    end
+
+    where(:message) do
+      [
+        'Code: 517. DB::Exception: Previous 2 mutation queries are not finished yet. (CANNOT_ASSIGN_ALTER)',
+        "Code: 36. DB::Exception: Cannot drop projection by_id because it's affected by mutation " \
+          "with ID 'mutation_1.txt' which is not finished yet. (BAD_ARGUMENTS)"
+      ]
+    end
+
+    with_them do
+      let(:running_mutation_error) { ClickHouse::Client::DatabaseError.new(message) }
+
+      it 'retries until the mutation finishes' do
+        attempts = 0
+        allow(connection).to receive(:execute) do
+          attempts += 1
+          raise running_mutation_error if attempts < 3
+        end
+
+        migration.execute_when_idle(sql, interval: 1.second)
+
+        expect(connection).to have_received(:execute).with(sql).exactly(3).times
+        expect(migration).to have_received(:sleep).with(1.0).twice
+      end
+
+      it 'raises TableBusyError when the mutation is still running after the timeout' do
+        allow(connection).to receive(:execute).and_raise(running_mutation_error)
+
+        expect { migration.execute_when_idle(sql, timeout: 0.seconds) }
+          .to raise_error(ClickHouse::MigrationSupport::Errors::TableBusyError, /still running after 0 seconds/)
+        expect(migration).not_to have_received(:sleep)
+      end
+    end
+
+    it 're-raises other database errors without retrying' do
+      error = ClickHouse::Client::DatabaseError.new('Code: 62. DB::Exception: Syntax error. (SYNTAX_ERROR)')
+      allow(connection).to receive(:execute).and_raise(error)
+
+      expect { migration.execute_when_idle(sql) }.to raise_error(error)
+      expect(connection).to have_received(:execute).once
+    end
+  end
+
   describe '#create_dictionary' do
     let(:connection) { ClickHouse::Connection.new(:main) }
     let(:migration) { described_class.new(connection) }

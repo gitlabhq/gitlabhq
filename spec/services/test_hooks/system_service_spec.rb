@@ -79,6 +79,55 @@ RSpec.describe TestHooks::SystemService, feature_category: :code_testing do
         expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
+
+      context 'with merge requests in different organizations' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:hook_organization) { create(:organization) }
+        let_it_be(:other_organization) { create(:organization) }
+
+        let(:hook) { create(:system_hook, organization: hook_organization) }
+        let(:service) { described_class.new(hook, user, trigger) }
+
+        context 'when only a project in another organization has a merge request' do
+          let_it_be(:other_project) { create(:project, organization: other_organization) }
+          let_it_be(:other_merge_request) { create(:merge_request, source_project: other_project) }
+
+          before_all do
+            other_project.add_maintainer(user)
+          end
+
+          it 'returns an error and does not execute the hook' do
+            expect(hook).not_to receive(:execute)
+            expect(service.execute).to have_attributes(
+              status: :error, message: 'Ensure one of your projects has merge requests.')
+          end
+        end
+
+        context 'when projects in both organizations have merge requests' do
+          let_it_be(:project_in_org) { create(:project, organization: hook_organization) }
+          let_it_be(:merge_request_in_org) { create(:merge_request, source_project: project_in_org) }
+          # Created last so it would be picked by `MergeRequest#last` if projects were not scoped.
+          let_it_be(:other_project) { create(:project, organization: other_organization) }
+          let_it_be(:other_merge_request) { create(:merge_request, source_project: other_project) }
+
+          before_all do
+            other_project.add_maintainer(user)
+            project_in_org.add_maintainer(user)
+          end
+
+          it 'builds the payload from the merge request in the hook organization' do
+            expect(hook).to receive(:execute) do |data, hook_trigger, force:|
+              expect(data.dig(:object_attributes, :id)).to eq(merge_request_in_org.id)
+              expect(hook_trigger).to eq(trigger_key)
+              expect(force).to be(true)
+
+              success_result
+            end
+
+            expect(service.execute).to include(success_result)
+          end
+        end
+      end
     end
   end
 end

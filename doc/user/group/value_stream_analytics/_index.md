@@ -15,6 +15,8 @@ title: Value stream analytics
 Value stream analytics calculates the duration of every stage of your software development process.
 You can measure how much time it takes to go from an idea to production by tracking merge request or issue events.
 
+You can configure value stream analytics for groups and projects in a group namespace.
+
 Use value stream analytics to identify:
 
 - The amount of time it takes to go from an idea to production.

@@ -108,6 +108,21 @@ RSpec.shared_examples 'every metric definition' do
     expect(files_with_wrong_extensions).to be_empty, msg
   end
 
+  it 'uses data_source: database only for metrics whose class generates SQL' do
+    base_metric = Gitlab::Usage::Metrics::Instrumentations::BaseMetric
+
+    key_paths_without_sql = Gitlab::Usage::MetricDefinition.definitions.values.filter_map do |definition|
+      next if definition.status == 'removed' || definition.data_source != 'database'
+      next unless definition.instrumentation_class
+
+      metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{definition.instrumentation_class}".constantize
+      definition.key_path if metric_class.instance_method(:instrumentation).owner == base_metric
+    end
+
+    expect(key_paths_without_sql).to be_empty,
+      "These metrics use data_source: database, but their class does not generate SQL: #{key_paths_without_sql}"
+  end
+
   describe 'metrics classes' do
     let(:parent_metric_classes) do
       [

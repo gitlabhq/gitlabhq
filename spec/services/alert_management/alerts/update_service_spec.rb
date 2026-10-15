@@ -105,7 +105,6 @@ RSpec.describe AlertManagement::Alerts::UpdateService, feature_category: :incide
 
       shared_examples 'successful assignment' do
         it_behaves_like 'adds a system note'
-        it_behaves_like 'adds a todo'
 
         after do
           alert.assignees = []
@@ -123,12 +122,22 @@ RSpec.describe AlertManagement::Alerts::UpdateService, feature_category: :incide
         let(:params) { { assignees: [current_user] } }
 
         it_behaves_like 'successful assignment'
+        it_behaves_like 'does not add a todo'
+
+        context 'when skip_todos_for_self_assignment is disabled' do
+          before do
+            stub_feature_flags(skip_todos_for_self_assignment: false)
+          end
+
+          it_behaves_like 'adds a todo'
+        end
       end
 
       context 'when the assignee has read permissions' do
         let(:params) { { assignees: [other_user_with_permissions] } }
 
         it_behaves_like 'successful assignment'
+        it_behaves_like 'adds a todo'
       end
 
       context 'when the assignee does not have read permissions' do
@@ -149,10 +158,11 @@ RSpec.describe AlertManagement::Alerts::UpdateService, feature_category: :incide
       end
 
       context 'with multiple users included' do
-        let(:params) { { assignees: [user_with_permissions, user_without_permissions] } }
-        let(:expected_assignees) { [user_with_permissions] }
+        let(:params) { { assignees: [other_user_with_permissions, user_without_permissions] } }
+        let(:expected_assignees) { [other_user_with_permissions] }
 
         it_behaves_like 'successful assignment'
+        it_behaves_like 'adds a todo'
       end
     end
 

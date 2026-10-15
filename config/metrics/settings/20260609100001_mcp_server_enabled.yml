@@ -9,7 +9,7 @@ status: active
 milestone: "19.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239759
 time_frame: none
-data_source: database
+data_source: system
 instrumentation_class: McpServerEnabledMetric
 data_category: optional
 performance_indicator_type: []

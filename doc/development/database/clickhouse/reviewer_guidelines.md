@@ -43,6 +43,22 @@ To resolve legitimate schema differences, the author may try to ensure that all 
 bundle exec rake gitlab:clickhouse:migrate; bundle exec rake gitlab:clickhouse:schema:dump
 ```
 
+### Order of `ALTER` statements in migrations
+
+Verify that each migration follows the rules in
+[Order `ALTER` statements around background mutations](clickhouse_within_gitlab.md#order-alter-statements-around-background-mutations):
+
+- Statements that start a background mutation, such as `MATERIALIZE PROJECTION` or
+  `DROP PROJECTION` with `mutations_sync = 0`, are the last statements on their table where
+  possible.
+- Every `ALTER` that runs after a background mutation on the same table uses `execute_when_idle`.
+  This includes later migrations in the same merge request.
+  It also includes migrations on a table that a recent migration left with a background mutation.
+- Every `ADD` and `DROP` statement uses `IF EXISTS` or `IF NOT EXISTS`, because a failed migration
+  reruns from the start.
+- A passing pipeline does not prove the order is safe.
+  CI/CD runs a single ClickHouse server, not ClickHouse Cloud, so read the statement order yourself.
+
 ## Database Query Review
 
 ClickHouse queries in GitLab can be written in two ways:

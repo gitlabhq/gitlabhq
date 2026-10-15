@@ -67,6 +67,29 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
         expect(json_response.dig('features', 'description', 'description')).to eq('Updated description')
         expect(work_item.reload.description).to eq('Updated description')
       end
+
+      it 'ignores undeclared attributes nested in the feature #security', :aggregate_failures do
+        incident_type = ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:incident)
+
+        patch api(api_request_path, user), as: :json, params: {
+          features: {
+            description: {
+              description: 'Updated description',
+              work_item_type_id: incident_type.id,
+              description_html: '<img src=x onerror="alert(1)">',
+              cached_markdown_version: 999_999_999,
+              skip_markdown_cache_validation: true
+            }
+          }
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        work_item.reload
+        expect(work_item.work_item_type.base_type).to eq('task')
+        expect(work_item.description_html).not_to include('onerror')
+        expect(work_item.cached_markdown_version).not_to eq(999_999_999)
+      end
     end
 
     context 'with assignees feature' do

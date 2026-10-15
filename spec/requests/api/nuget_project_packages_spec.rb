@@ -110,8 +110,8 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
       end
 
       with_them do
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+        before_all do
+          update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
         end
 
         it_behaves_like 'process nuget v2 $metadata service request', params[:user_role], params[:expected_status],
@@ -207,8 +207,8 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
 
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+        before_all do
+          update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
@@ -281,8 +281,8 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
         let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
 
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+        before_all do
+          update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
@@ -498,8 +498,8 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
           end
         end
 
-        before do
-          update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility.to_s.upcase, false))
+        before_all do
+          update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility].to_s.upcase, false))
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:auth]
@@ -714,7 +714,9 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     end
   end
 
+  # a `before_all` rollback leaves `project` holding the previous row's visibility,
+  # so `update!` would see no change and skip the write.
   def update_visibility_to(visibility)
-    project.update!(visibility_level: visibility)
+    project.reload.update!(visibility_level: visibility)
   end
 end

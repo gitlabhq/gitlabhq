@@ -799,7 +799,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
     let(:test_resolver_class) do
       Class.new(Resolvers::MergeRequestsResolver) do
         # Make private methods public
-        public :prepare_finder_params, :prepare_assignee_username_params, :rewrite_param_name
+        public :prepare_finder_params, :rewrite_param_name
       end
     end
 
@@ -811,7 +811,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
 
     describe '#prepare_finder_params' do
       it 'converts :not to a hash' do
-        args = { not: { assignee_usernames: [current_user.username] } }
+        args = { not: { assignee_username: [current_user.username] } }
         result = resolver.prepare_finder_params(args)
 
         expect(result[:not]).to eq({ assignee_username: [current_user.username] })
@@ -835,38 +835,12 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       it 'handles nested conditions' do
         args = {
           or: { assignee_usernames: ['user1'] },
-          not: { assignee_usernames: ['user2'] }
+          not: { assignee_username: ['user2'] }
         }
         result = resolver.prepare_finder_params(args)
 
         expect(result[:or]).to include(assignee_username: ['user1'])
         expect(result[:not]).to include(assignee_username: ['user2'])
-      end
-    end
-
-    describe '#prepare_assignee_username_params' do
-      it 'rewrites assignee_usernames to assignee_username in the main args' do
-        args = { assignee_usernames: %w[user1 user2] }
-        resolver.prepare_assignee_username_params(args)
-
-        expect(args[:assignee_username]).to eq(%w[user1 user2])
-        expect(args[:assignee_usernames]).to be_nil
-      end
-
-      it 'rewrites assignee_usernames in :or conditions' do
-        args = { or: { assignee_usernames: %w[user1 user2] } }
-        resolver.prepare_assignee_username_params(args)
-
-        expect(args[:or][:assignee_username]).to eq(%w[user1 user2])
-        expect(args[:or][:assignee_usernames]).to be_nil
-      end
-
-      it 'rewrites assignee_usernames in :not conditions' do
-        args = { not: { assignee_usernames: %w[user1 user2] } }
-        resolver.prepare_assignee_username_params(args)
-
-        expect(args[:not][:assignee_username]).to eq(%w[user1 user2])
-        expect(args[:not][:assignee_usernames]).to be_nil
       end
     end
 

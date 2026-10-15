@@ -1,0 +1,10 @@
+---
+name: skip_todos_for_self_assignment
+description: Skip assignment and review request to-dos when users assign themselves
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/340655
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260740
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633084
+milestone: '19.6'
+group: group::work items
+type: gitlab_com_derisk
+default_enabled: false

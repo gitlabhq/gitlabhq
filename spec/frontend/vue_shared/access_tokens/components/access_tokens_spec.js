@@ -1,5 +1,6 @@
 import { GlFilteredSearch, GlPagination, GlSorting } from '@gitlab/ui';
 import { createTestingPinia } from '@pinia/testing';
+import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import AccessTokens from '~/vue_shared/access_tokens/components/access_tokens.vue';
@@ -10,6 +11,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_FILTER, DEFAULT_SORT } from '~/access_tokens/constants';
 import TokenAccessTable from '~/vue_shared/access_tokens/components/access_token_table.vue';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+
+jest.mock('~/lib/utils/scroll_utils');
 
 Vue.use(PiniaVuePlugin);
 
@@ -19,10 +24,7 @@ describe('AccessTokens', () => {
   const pinia = createTestingPinia();
   const store = useAccessTokens();
   const tokens = [{ name: 'A' }, { name: 'B' }];
-  const $router = {
-    push: jest.fn(),
-    replace: jest.fn(),
-  };
+  let $router;
 
   const accessTokenCreate =
     'http://localhost/api/v4/groups/1/service_accounts/:id/personal_access_tokens/';
@@ -39,9 +41,16 @@ describe('AccessTokens', () => {
     tokenDescription,
     tokenScopes,
     showAvatar = false,
+    query = {},
+    piniaInstance = pinia,
   } = {}) => {
+    $router = {
+      currentRoute: { query },
+      push: jest.fn(),
+      replace: jest.fn(),
+    };
     wrapper = shallowMountExtended(AccessTokens, {
-      pinia,
+      pinia: piniaInstance,
       provide: {
         accessTokenCreate,
         accessTokenRevoke,
@@ -57,6 +66,8 @@ describe('AccessTokens', () => {
 
   beforeEach(() => {
     store.showCreateForm = false;
+    store.filters = [];
+    store.page = 1;
   });
 
   const findCreateTokenButton = () => wrapper.findComponentByTestId('add-new-token-button');
@@ -153,6 +164,15 @@ describe('AccessTokens', () => {
     expect(store.fetchTokens).toHaveBeenCalledTimes(2);
   });
 
+  it('does not navigate when the URL already has the same query', () => {
+    createComponent({ query: { page: '1', sort: 'expires_asc' } });
+    findFilteredSearch().vm.$emit('submit', ['my token']);
+
+    expect($router.replace).not.toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
+    expect(store.fetchTokens).toHaveBeenCalledTimes(2);
+  });
+
   it('sets the url params correctly and fetches tokens when window `popstate` event is triggered', () => {
     createComponent();
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
@@ -162,6 +182,80 @@ describe('AccessTokens', () => {
     expect(store.setPage).toHaveBeenCalledWith(1);
     expect(store.setSorting).toHaveBeenCalledTimes(1);
     expect(store.fetchTokens).toHaveBeenCalledTimes(2);
+  });
+
+  describe('when a store action changes the filters or page', () => {
+    let onAction;
+    let unsubscribe;
+
+    beforeEach(() => {
+      unsubscribe = jest.fn();
+      jest.spyOn(store, '$onAction').mockReturnValue(unsubscribe);
+      createComponent();
+      [[onAction]] = store.$onAction.mock.calls;
+    });
+
+    const triggerAfter = (name) => {
+      const after = jest.fn();
+      onAction({ name, after });
+      return after;
+    };
+
+    it.each(['createToken', 'revokeToken', 'rotateToken'])(
+      'pushes the store params to the URL after `%s`',
+      (name) => {
+        store.filters = DEFAULT_FILTER;
+
+        const after = triggerAfter(name);
+        after.mock.calls[0][0]();
+
+        expect($router.push).toHaveBeenCalledWith({
+          query: { page: 1, sort: 'expires_asc', state: 'active' },
+        });
+      },
+    );
+
+    it('ignores other actions', () => {
+      const after = triggerAfter('setFilters');
+
+      expect(after).not.toHaveBeenCalled();
+    });
+
+    it('unsubscribes when destroyed', () => {
+      wrapper.destroy();
+
+      expect(unsubscribe).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when a token is created from a filtered list', () => {
+    let mockAxios;
+    let realStore;
+
+    beforeEach(async () => {
+      mockAxios = new MockAdapter(axios);
+      mockAxios.onPost().replyOnce(HTTP_STATUS_OK, { token: 'new-token' });
+      mockAxios.onGet().reply(HTTP_STATUS_OK, [], { 'X-Page': 1, 'X-Per-Page': 20, 'X-Total': 0 });
+
+      const realPinia = createTestingPinia({ stubActions: false });
+      realStore = useAccessTokens();
+      createComponent({ piniaInstance: realPinia });
+      await waitForPromises();
+      realStore.filters = [{ type: 'state', value: { data: 'inactive', operator: '=' } }];
+      realStore.page = 2;
+    });
+
+    afterEach(() => {
+      mockAxios.restore();
+    });
+
+    it('pushes the default filters and first page to the URL', async () => {
+      await realStore.createToken({ name: 'Token', expiresAt: '2026-11-01', scopes: ['api'] });
+
+      expect($router.push).toHaveBeenCalledWith({
+        query: { page: 1, sort: 'expires_asc', state: 'active' },
+      });
+    });
   });
 
   it('fetches tokens when the page is changed', () => {

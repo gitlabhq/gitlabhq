@@ -6,14 +6,15 @@ RSpec.shared_examples 'rejects nuget packages access' do |user_type, status, add
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
     if status == :unauthorized
-      it 'has the correct response header' do
+      it 'returns unauthorized with the correct response header', :aggregate_failures do
         subject
 
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(response.headers['WWW-Authenticate']).to eq 'Basic realm="GitLab Packages Registry"'
       end
+    else
+      it_behaves_like 'returning response status', status
     end
   end
 end
@@ -48,12 +49,12 @@ RSpec.shared_examples 'process nuget service index request' do |user_type, statu
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
     it_behaves_like 'a package tracking event', 'API::NugetPackages', 'cli_metadata'
 
-    it 'returns a valid json or xml response' do
+    it 'returns a valid json or xml response', :aggregate_failures do
       subject
+
+      expect(response).to have_gitlab_http_status(status)
 
       if v2
         expect(response.media_type).to eq('application/xml')
@@ -81,13 +82,12 @@ RSpec.shared_examples 'process nuget v2 $metadata service request' do |user_type
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
-    it 'returns a valid xml response' do
+    it 'returns a valid xml response', :aggregate_failures do
       api_request
 
       doc = Nokogiri::XML(body)
 
+      expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('application/xml')
       expect(doc.at_xpath('//edmx:Edmx')).to be_present
       expect(doc.at_xpath('//edmx:Edmx/edmx:DataServices')).to be_present
@@ -103,10 +103,11 @@ RSpec.shared_examples 'process nuget v2 $metadata service request' do |user_type
   end
 end
 
-RSpec.shared_examples 'returning nuget metadata json response with json schema' do |json_schema|
-  it 'returns a valid json response' do
+RSpec.shared_examples 'returning nuget metadata json response with json schema' do |status, json_schema|
+  it 'returns a valid json response', :aggregate_failures do
     subject
 
+    expect(response).to have_gitlab_http_status(status)
     expect(response.media_type).to eq('application/json')
     expect(json_response).to match_schema(json_schema)
     expect(json_response).to be_a(Hash)
@@ -119,9 +120,7 @@ RSpec.shared_examples 'process nuget metadata request at package name level' do 
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
-    it_behaves_like 'returning nuget metadata json response with json schema',
+    it_behaves_like 'returning nuget metadata json response with json schema', status,
       'public_api/v4/packages/nuget/packages_metadata'
 
     context 'with invalid format' do
@@ -133,9 +132,7 @@ RSpec.shared_examples 'process nuget metadata request at package name level' do 
     context 'with lower case package name' do
       let_it_be(:package_name, freeze: false) { 'dummy.package' }
 
-      it_behaves_like 'returning response status', status
-
-      it_behaves_like 'returning nuget metadata json response with json schema',
+      it_behaves_like 'returning nuget metadata json response with json schema', status,
         'public_api/v4/packages/nuget/packages_metadata'
     end
   end
@@ -149,9 +146,7 @@ RSpec.shared_examples \
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
-    it_behaves_like 'returning nuget metadata json response with json schema',
+    it_behaves_like 'returning nuget metadata json response with json schema', status,
       'public_api/v4/packages/nuget/package_metadata'
 
     context 'with invalid format' do
@@ -163,9 +158,7 @@ RSpec.shared_examples \
     context 'with lower case package name' do
       let_it_be(:package_name, freeze: false) { 'dummy.package' }
 
-      it_behaves_like 'returning response status', status
-
-      it_behaves_like 'returning nuget metadata json response with json schema',
+      it_behaves_like 'returning nuget metadata json response with json schema', status,
         'public_api/v4/packages/nuget/package_metadata'
     end
   end
@@ -177,11 +170,10 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
-    it 'has the proper content type' do
+    it 'has the proper status and content type', :aggregate_failures do
       subject
 
+      expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
     end
 
@@ -385,10 +377,11 @@ RSpec.shared_examples 'accepts nuget upload' do |user_type, status, add_member =
 end
 
 RSpec.shared_examples 'process nuget download versions request' do |user_type, status, add_member = true|
-  RSpec.shared_examples 'returns a valid nuget download versions json response' do
-    it 'returns a valid json response' do
+  RSpec.shared_examples 'returns a valid nuget download versions json response' do |status|
+    it 'returns a valid json response', :aggregate_failures do
       subject
 
+      expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('application/json')
       expect(json_response).to match_schema('public_api/v4/packages/nuget/download_versions')
       expect(json_response).to be_a(Hash)
@@ -401,9 +394,7 @@ RSpec.shared_examples 'process nuget download versions request' do |user_type, s
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
-    it_behaves_like 'returns a valid nuget download versions json response'
+    it_behaves_like 'returns a valid nuget download versions json response', status
 
     context 'with invalid format' do
       let(:url) { "/#{target_type}/#{target.id}/packages/nuget/download/#{package_name}/index.xls" }
@@ -414,30 +405,30 @@ RSpec.shared_examples 'process nuget download versions request' do |user_type, s
     context 'with lower case package name' do
       let_it_be(:package_name, freeze: false) { 'dummy.package' }
 
-      it_behaves_like 'returning response status', status
-
-      it_behaves_like 'returns a valid nuget download versions json response'
+      it_behaves_like 'returns a valid nuget download versions json response', status
     end
   end
 end
 
 RSpec.shared_examples 'process nuget download content request' do |user_type, status, add_member = true|
+  shared_examples 'returning a valid nuget package archive' do
+    it 'returns a valid package archive', :aggregate_failures do
+      expect { subject }
+        .to change { package.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
+
+      expect(response).to have_gitlab_http_status(status)
+      expect(response.media_type).to eq('application/octet-stream')
+    end
+  end
+
   context "for user type #{user_type}" do
     before do
       target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
-    it_behaves_like 'returning response status', status
-
     it_behaves_like 'a package tracking event', 'API::NugetPackages', 'pull_package'
 
-    it_behaves_like 'bumping the package last downloaded at field'
-
-    it 'returns a valid package archive' do
-      subject
-
-      expect(response.media_type).to eq('application/octet-stream')
-    end
+    it_behaves_like 'returning a valid nuget package archive'
 
     context 'with invalid format' do
       let(:url) do
@@ -451,52 +442,31 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
     context 'with symbol package' do
       let(:format) { 'snupkg' }
 
-      it 'returns a valid package archive' do
-        subject
-
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
       it_behaves_like 'a package tracking event', 'API::NugetPackages', 'pull_symbol_package'
 
-      it_behaves_like 'bumping the package last downloaded at field'
+      it_behaves_like 'returning a valid nuget package archive'
     end
 
     context 'with lower case package name' do
       let_it_be(:package_name, freeze: false) { 'dummy.package' }
 
-      it_behaves_like 'returning response status', status
-
-      it 'returns a valid package archive' do
-        subject
-
-        expect(response.media_type).to eq('application/octet-stream')
-      end
+      it_behaves_like 'returning a valid nuget package archive'
     end
 
     context 'with normalized package version' do
       let(:package_version) { '0.1.0' }
 
-      it_behaves_like 'returning response status', status
-
-      it 'returns a valid package archive' do
-        subject
-
-        expect(response.media_type).to eq('application/octet-stream')
-      end
-
-      it_behaves_like 'bumping the package last downloaded at field'
+      it_behaves_like 'returning a valid nuget package archive'
     end
   end
 end
 
 RSpec.shared_examples 'process nuget search request' do |user_type, status, add_member = true|
   RSpec.shared_examples 'returns a valid json search response' do |status, total_hits, versions|
-    it_behaves_like 'returning response status', status
-
-    it 'returns a valid json response' do
+    it 'returns a valid json response', :aggregate_failures do
       subject
 
+      expect(response).to have_gitlab_http_status(status)
       expect(response.media_type).to eq('application/json')
       expect(json_response).to be_a(Hash)
       expect(json_response).to match_schema('public_api/v4/packages/nuget/search')
@@ -544,26 +514,6 @@ RSpec.shared_examples 'process nuget search request' do |user_type, status, add_
       it_behaves_like 'returns a valid json search response', status, 5, [1, 5, 5, 1, 1]
     end
   end
-end
-
-RSpec.shared_examples 'process empty nuget search request' do |user_type, status, add_member = true|
-  before do
-    target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
-  end
-
-  it_behaves_like 'returning response status', status
-
-  it 'returns a valid json response' do
-    subject
-
-    expect(response.media_type).to eq('application/json')
-    expect(json_response).to be_a(Hash)
-    expect(json_response).to match_schema('public_api/v4/packages/nuget/search')
-    expect(json_response['totalHits']).to eq(0)
-    expect(json_response['data'].map { |e| e['versions'].size }).to be_empty
-  end
-
-  it_behaves_like 'a package tracking event', 'API::NugetPackages', 'search_package'
 end
 
 RSpec.shared_examples 'rejects nuget access with invalid target id' do |not_found_response: :unauthorized|
@@ -731,8 +681,8 @@ RSpec.shared_examples 'nuget authorize upload endpoint' do
 
       let(:headers) { user_headers.merge(workhorse_headers) }
 
-      before do
-        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      before_all do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
       end
 
       it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
@@ -842,8 +792,8 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
         end
       end
 
-      before do
-        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      before_all do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
       end
 
       it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member],
@@ -892,7 +842,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   context 'when package duplicates are not allowed', unless: symbol_package do
     let(:params) { { package: fixture_file_upload('spec/fixtures/packages/nuget/package.nupkg') } }
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
-    let!(:existing_package) do
+    let_it_be(:existing_package) do
       create(:nuget_package, project: project, name: 'DummyProject.DummyPackage', version: '1.0.0')
     end
 
@@ -939,11 +889,10 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     end
 
     shared_examples 'protected package' do
-      it_behaves_like 'returning response status', :forbidden
-
-      it 'returns error message' do
+      it 'returns forbidden with the error message', :aggregate_failures do
         subject
 
+        expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
       end
     end
@@ -1005,8 +954,6 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth
       target.send(:"add_#{user_type}", user) if user_type
     end
 
-    it_behaves_like 'returning response status', status
-
     it 'triggers an internal event' do
       args = { project: project, label: 'nuget', category: 'InternalEventTracking' }
 
@@ -1025,8 +972,9 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth
           .with(**args)
     end
 
-    it 'marks package for deletion' do
+    it 'marks package for deletion', :aggregate_failures do
       expect { subject }.to change { package.reset.status }.from('default').to('pending_destruction')
+      expect(response).to have_gitlab_http_status(status)
     end
   end
 end

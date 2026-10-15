@@ -46295,6 +46295,8 @@ CREATE UNIQUE INDEX idx_duo_wf_checkpoint_blobs_dedup ON ONLY p_duo_workflows_ch
 
 CREATE INDEX idx_duo_wf_checkpoint_blobs_on_workflow_channel_id ON ONLY p_duo_workflows_checkpoint_blobs USING btree (workflow_id, channel, id);
 
+CREATE INDEX idx_duo_workflows_on_service_account_trigger_and_id ON duo_workflows_workflows USING btree (service_account_id, trigger_flow_trigger_id, id) WHERE (service_account_id IS NOT NULL);
+
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
 CREATE UNIQUE INDEX idx_enabled_flows_on_namespace_catalog_item ON enabled_foundational_flows USING btree (namespace_id, catalog_item_id) WHERE (namespace_id IS NOT NULL);
@@ -48896,8 +48898,6 @@ CREATE INDEX index_duo_workflows_workflows_on_parent_workflow_id ON duo_workflow
 CREATE INDEX index_duo_workflows_workflows_on_project_created_at ON duo_workflows_workflows USING btree (project_id, created_at DESC) WHERE (project_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_key ON duo_workflows_workflows USING btree (project_id, user_id, idempotency_key) WHERE ((idempotency_key IS NOT NULL) AND (project_id IS NOT NULL));
-
-CREATE INDEX index_duo_workflows_workflows_on_service_account_id ON duo_workflows_workflows USING btree (service_account_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_user_id_and_created_at ON duo_workflows_workflows USING btree (user_id, created_at DESC);
 

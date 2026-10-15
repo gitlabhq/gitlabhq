@@ -83,7 +83,6 @@
 - Repositories::ChangelogTagFinder
 - Repositories::CommitsFinder
 - Repositories::TreeFinder
-- Security::PipelineVulnerabilitiesFinder
 - Security::ScanExecutionPoliciesFinder
 - Security::ScanResultPoliciesFinder
 - Security::PipelineExecutionPoliciesFinder

@@ -101,9 +101,10 @@ export default {
     showEmptyState() {
       return this.resolverResult?.data?.nodes?.length === 0;
     },
-    // Stat tiles are too small for the centered state block. A parse failure produces
-    // no config and falls back to the full-size state; only the compiler may read the
-    // query text, so the display type is not recovered from it here.
+    // Stat tiles are too small for the centered state block, so they ask for the compact
+    // layout up front; any tile still too short for its state shrinks it through the
+    // dashboard-panel-body container queries. Only the compiler may read the query text,
+    // so the display type is not recovered from it here.
     compactState() {
       return this.resolverResult?.config?.display === 'stat';
     },

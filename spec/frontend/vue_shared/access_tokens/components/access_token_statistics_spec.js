@@ -13,11 +13,10 @@ describe('AccessTokenStatistics', () => {
 
   const pinia = createTestingPinia();
   const store = useAccessTokens();
-  const $router = {
-    push: jest.fn(),
-  };
+  let $router;
 
-  const createComponent = () => {
+  const createComponent = ({ query = {} } = {}) => {
+    $router = { currentRoute: { query }, push: jest.fn() };
     wrapper = mountExtended(AccessTokenStatistics, {
       pinia,
       mocks: {
@@ -28,23 +27,25 @@ describe('AccessTokenStatistics', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  it('fetches tokens with respective filters when `Filter list` is clicked', () => {
-    store.statistics = [
-      {
-        title: 'Active tokens',
-        tooltipTitle: 'Filter tokens for active tokens',
-        value: 1,
-        filters: [
-          {
-            type: 'state',
-            value: {
-              data: 'active',
-              operator: '=',
-            },
+  const statistics = [
+    {
+      title: 'Active tokens',
+      tooltipTitle: 'Filter tokens for active tokens',
+      value: 1,
+      filters: [
+        {
+          type: 'state',
+          value: {
+            data: 'active',
+            operator: '=',
           },
-        ],
-      },
-    ];
+        },
+      ],
+    },
+  ];
+
+  it('fetches tokens with respective filters when `Filter list` is clicked', () => {
+    store.statistics = statistics;
     createComponent();
 
     findButton().trigger('click');
@@ -54,6 +55,16 @@ describe('AccessTokenStatistics', () => {
     ]);
     expect(store.setPage).toHaveBeenCalledWith(1);
     expect($router.push).toHaveBeenCalledWith({ query: { page: 1, sort: 'expires_asc' } });
+    expect(store.fetchTokens).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not navigate when `Filter list` is clicked for the current query', () => {
+    store.statistics = statistics;
+    createComponent({ query: { page: '1', sort: 'expires_asc' } });
+
+    findButton().trigger('click');
+
+    expect($router.push).not.toHaveBeenCalled();
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
   });
 });

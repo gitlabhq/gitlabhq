@@ -42584,6 +42584,37 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+  "/api/v4/organizations/{id}/restore":
+    post:
+      operationId: postApiV4OrganizationsIdRestore
+      summary: Restore a soft-deleted organization
+      description: Restores a soft-deleted organization. This feature was introduced
+        in GitLab 19.6.
+      tags:
+      - Organizations
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesOrganizationsOrganization"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID of the organization.
+        schema:
+          type: integer
+        in: path
+      x-gitlab-lifecycle: experiment
   "/api/v4/offline_exports":
     post:
       operationId: postApiV4OfflineExports

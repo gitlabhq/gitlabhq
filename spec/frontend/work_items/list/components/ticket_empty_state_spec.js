@@ -1,9 +1,9 @@
 import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-service-desk-md.svg';
 import { GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import EmptyStateWithoutAnyTickets from '~/work_items/list/components/empty_state_without_any_tickets.vue';
+import TicketEmptyState from '~/work_items/list/components/ticket_empty_state.vue';
 
-describe('EmptyStateWithoutAnyTickets component', () => {
+describe('TicketEmptyState component', () => {
   let wrapper;
 
   const defaultProvide = {
@@ -20,7 +20,7 @@ describe('EmptyStateWithoutAnyTickets component', () => {
     wrapper.findByRole('link', { name: 'Learn more about Service Desk' });
 
   const mountComponent = ({ provide = {} } = {}) => {
-    wrapper = mountExtended(EmptyStateWithoutAnyTickets, {
+    wrapper = mountExtended(TicketEmptyState, {
       provide: {
         ...defaultProvide,
         ...provide,

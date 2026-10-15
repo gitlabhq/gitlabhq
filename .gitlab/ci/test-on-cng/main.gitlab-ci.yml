@@ -261,6 +261,58 @@ cng-oauth:
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}${QA_RELATIVE_URL_ROOT}"
     - bundle exec orchestrator metrics start --interval 1
 
+# Caproni shadows of the jobs above. Defined here, not in caproni.gitlab-ci.yml,
+# so PipelineCreator can apply E2E test selection to them.
+
+# No QA_SCENARIO: run_e2e_specs defaults to Test::Instance::All
+cng-instance-caproni:
+  extends: .caproni-test
+  parallel: 10
+  variables:
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
+
+cng-relative-url-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Instance::Smoke
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
+    QA_RELATIVE_URL_ROOT: "/relative"
+
+cng-registry-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Integration::Registry
+    QA_RUN_IN_PARALLEL: "false"
+
+# Runs login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb against the CNG consumer that
+# caproni.oidc-consumer.yaml deploys next to the instance under test
+# Not in pipeline_mappings: the selection dry run reports its only spec, which is
+# `only: { job: /cng-oauth-caproni/ }`, as pending, so it would always be set to never
+cng-oauth-caproni:
+  extends: .caproni-test
+  variables:
+    QA_TESTS: ""
+    QA_SCENARIO: Test::Integration::OAuth
+    QA_RSPEC_TAGS: --tag oauth
+    QA_RUN_IN_PARALLEL: "false"
+    QA_GITHUB_OAUTH_APP_ID: $QA_GITHUB_OAUTH_APP_ID
+    QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET
+
+cng-secrets-manager-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Integration::SecretsManager
+    QA_RSPEC_TAGS: --tag secrets_manager
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
+    QA_FEATURE_FLAGS: "secrets_manager_api_access=enabled"
+  before_script:
+    - !reference [.caproni-test, before_script]
+    # The *_ci_access_failure specs pass with OpenBao unreachable, so the route is asserted here
+    - curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 5 "http://openbao.${GITLAB_DOMAIN}/v1/sys/health"
+
 # ==========================================
 # Post test stage
 # ==========================================

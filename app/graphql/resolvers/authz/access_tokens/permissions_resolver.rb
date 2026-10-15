@@ -33,7 +33,8 @@ module Resolvers
         end
 
         def resource_available?
-          Feature.enabled?(:granular_personal_access_tokens, current_user)
+          Feature.enabled?(:granular_personal_access_tokens, current_user) ||
+            Feature.enabled?(:granular_oauth_tokens, current_user)
         end
       end
     end

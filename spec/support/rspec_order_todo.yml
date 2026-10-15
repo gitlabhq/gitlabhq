@@ -296,7 +296,6 @@
 - './ee/spec/finders/projects/integrations/jira/issues_finder_spec.rb'
 - './ee/spec/finders/scim_finder_spec.rb'
 - './ee/spec/finders/security/findings_finder_spec.rb'
-- './ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
 - './ee/spec/finders/security/scan_execution_policies_finder_spec.rb'
 - './ee/spec/finders/security/vulnerability_feedbacks_finder_spec.rb'
 - './ee/spec/finders/ee/snippets_finder_spec.rb'

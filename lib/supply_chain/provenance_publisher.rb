@@ -5,11 +5,14 @@ module SupplyChain
     include Gitlab::Utils::StrongMemoize
 
     HASH_READ_CHUNK_SIZE = 1.megabyte
+    COSIGN_KEY_PREFIX = 'cosign'
+    COSIGN_PASSWORD_BYTES = 32
 
     Error = Class.new(StandardError)
     JwtGenerationError = Class.new(Error)
     AttestationFailure = Class.new(Error)
     InvalidInput = Class.new(Error)
+    KeyImportFailure = Class.new(Error)
 
     def initialize(build)
       @build = build
@@ -104,6 +107,22 @@ module SupplyChain
       raise AttestationFailure, "Attestation for #{hash} failed after #{result.duration}s: #{error}"
     end
 
+    def cosign_import_key_pair(key:, dir:)
+      validate_key_dir!(dir)
+
+      password = SecureRandom.hex(COSIGN_PASSWORD_BYTES)
+      key_prefix = File.join(dir, COSIGN_KEY_PREFIX)
+      command = ['cosign', 'import-key-pair', '--yes', '--key', '/dev/stdin', '--output-key-prefix', key_prefix]
+
+      result = Gitlab::Popen.popen_with_detail(command, nil, { 'COSIGN_PASSWORD' => password }) do |stdin|
+        stdin.write(key.private_to_pem)
+      end
+
+      return { key_path: "#{key_prefix}.key", password: password } if result.status.success?
+
+      raise KeyImportFailure, "Key import failed after #{result.duration}s: #{result.stderr}"
+    end
+
     def persist_attestation!(status:, subject_digest:, bundle_file: nil)
       attestation = SupplyChain::Attestation.new do |att|
         att.subject_digest = subject_digest
@@ -147,6 +166,14 @@ module SupplyChain
       Gitlab::PathTraversal.check_path_traversal!(blob_name)
 
       raise InvalidInput unless /\A[a-zA-Z0-9\.\-\_]+\z/.match?(blob_name)
+    end
+
+    def validate_key_dir!(dir)
+      raise InvalidInput unless dir.is_a?(String)
+
+      Gitlab::PathTraversal.check_path_traversal!(dir)
+
+      raise InvalidInput unless Pathname.new(dir).absolute? && File.directory?(dir)
     end
 
     def optional_arguments

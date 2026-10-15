@@ -81,7 +81,7 @@ To set the access and authentication, follow these steps:
 
 1. Create a group token: In the group `Secret Detection`, create a group access token `Secret Detection Group Token` under `Settings` menu option, give the token `reporter` role with `read_repository` access
 
-![Group access token settings for secret detection.](img/secret_detection_group_token_v17_9.png)
+![Creating the group access token for the custom ruleset, with the Reporter role and the read_repository scope.](img/secret_detection_group_token_v17_9.png)
 
 1. Create a group variable: Copy the token value and store safely. Add a group variable under `Settings` menu option called `SECRET_DETECTION_GROUP_TOKEN` as the key with the token value.
 1. Obtain the group token bot user: In the same group, navigate to `manage` menu option to select `member` and look up corresponding bot user for the group access token `Secret Detection Group Token`, copy the value representing the bot user for the group in the format of `@group_[group_id]_bot_[random_number]`

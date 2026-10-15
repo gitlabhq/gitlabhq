@@ -43,17 +43,43 @@ RSpec.describe TodoService, feature_category: :notifications do
       should_not_create_any_todo { service.send(described_method, target_assigned, author) }
     end
 
-    it 'creates a todo if new assignee is the current user' do
+    it 'does not create a todo if new assignee is the current user' do
       target_assigned.assignees = [john_doe]
-      service.send(described_method, target_assigned, john_doe)
+
+      should_not_create_any_todo { service.send(described_method, target_assigned, john_doe) }
+    end
+
+    it 'creates a todo only for other new assignees when the current user also assigns themselves' do
+      target_unassigned.assignees = [john_doe, assignee]
+      service.send(described_method, target_unassigned, john_doe)
 
       should_create_todo(
-        user: john_doe,
-        target: target_assigned,
+        user: assignee,
+        target: target_unassigned,
         author: john_doe,
         action: Todo::ASSIGNED,
         **additional_todo_attributes
       )
+      should_not_create_todo(user: john_doe, target: target_unassigned, action: Todo::ASSIGNED)
+    end
+
+    context 'when skip_todos_for_self_assignment is disabled' do
+      before do
+        stub_feature_flags(skip_todos_for_self_assignment: false)
+      end
+
+      it 'creates a todo if new assignee is the current user' do
+        target_assigned.assignees = [john_doe]
+        service.send(described_method, target_assigned, john_doe)
+
+        should_create_todo(
+          user: john_doe,
+          target: target_assigned,
+          author: john_doe,
+          action: Todo::ASSIGNED,
+          **additional_todo_attributes
+        )
+      end
     end
 
     it 'does not create a todo for guests' do
@@ -93,11 +119,23 @@ RSpec.describe TodoService, feature_category: :notifications do
         should_not_create_any_todo { service.send(described_method, target, author) }
       end
 
-      it 'creates a todo if new reviewer is the current user' do
+      it 'does not create a todo if new reviewer is the current user' do
         target.reviewers = [john_doe]
-        service.send(described_method, target, john_doe)
 
-        should_create_todo(user: john_doe, target: target, author: john_doe, action: Todo::REVIEW_REQUESTED)
+        should_not_create_any_todo { service.send(described_method, target, john_doe) }
+      end
+
+      context 'when skip_todos_for_self_assignment is disabled' do
+        before do
+          stub_feature_flags(skip_todos_for_self_assignment: false)
+        end
+
+        it 'creates a todo if new reviewer is the current user' do
+          target.reviewers = [john_doe]
+          service.send(described_method, target, john_doe)
+
+          should_create_todo(user: john_doe, target: target, author: john_doe, action: Todo::REVIEW_REQUESTED)
+        end
       end
 
       it 'does not create a todo if already assigned' do
@@ -125,11 +163,23 @@ RSpec.describe TodoService, feature_category: :notifications do
         should_not_create_any_todo { service.new_issue(unassigned_issue, author) }
       end
 
-      it 'creates a todo if assignee is the current user' do
+      it 'does not create a todo if assignee is the current user' do
         unassigned_issue.assignees = [john_doe]
-        service.new_issue(unassigned_issue, john_doe)
 
-        should_create_todo(user: john_doe, target: unassigned_issue, author: john_doe, action: Todo::ASSIGNED)
+        should_not_create_any_todo { service.new_issue(unassigned_issue, john_doe) }
+      end
+
+      context 'when skip_todos_for_self_assignment is disabled' do
+        before do
+          stub_feature_flags(skip_todos_for_self_assignment: false)
+        end
+
+        it 'creates a todo if assignee is the current user' do
+          unassigned_issue.assignees = [john_doe]
+          service.new_issue(unassigned_issue, john_doe)
+
+          should_create_todo(user: john_doe, target: unassigned_issue, author: john_doe, action: Todo::ASSIGNED)
+        end
       end
 
       it 'creates a todo for each valid mentioned user' do
@@ -869,10 +919,26 @@ RSpec.describe TodoService, feature_category: :notifications do
         should_not_create_any_todo { service.new_merge_request(unassigned_mr, author) }
       end
 
-      it 'creates a todo if assignee is the current user' do
-        service.new_merge_request(assigned_mr, john_doe)
+      it 'does not create a todo if assignee is the current user' do
+        should_not_create_any_todo { service.new_merge_request(assigned_mr, john_doe) }
+      end
 
-        should_create_todo(user: john_doe, target: assigned_mr, author: john_doe, action: Todo::ASSIGNED)
+      it 'does not create a todo if reviewer is the current user' do
+        unassigned_mr.reviewers = [john_doe]
+
+        should_not_create_any_todo { service.new_merge_request(unassigned_mr, john_doe) }
+      end
+
+      context 'when skip_todos_for_self_assignment is disabled' do
+        before do
+          stub_feature_flags(skip_todos_for_self_assignment: false)
+        end
+
+        it 'creates a todo if assignee is the current user' do
+          service.new_merge_request(assigned_mr, john_doe)
+
+          should_create_todo(user: john_doe, target: assigned_mr, author: john_doe, action: Todo::ASSIGNED)
+        end
       end
 
       it 'creates a todo for each valid mentioned user' do
@@ -1617,6 +1683,22 @@ RSpec.describe TodoService, feature_category: :notifications do
 
       should_create_todo(user: reviewer, target: target, action: Todo::REVIEW_REQUESTED)
     end
+
+    it 'does not create a todo if reviewer is the current user' do
+      should_not_create_any_todo { service.create_request_review_todo(target, reviewer, reviewer) }
+    end
+
+    context 'when skip_todos_for_self_assignment is disabled' do
+      before do
+        stub_feature_flags(skip_todos_for_self_assignment: false)
+      end
+
+      it 'creates a todo if reviewer is the current user' do
+        service.create_request_review_todo(target, reviewer, reviewer)
+
+        should_create_todo(user: reviewer, target: target, author: reviewer, action: Todo::REVIEW_REQUESTED)
+      end
+    end
   end
 
   describe '#create_member_access_request_todos' do
@@ -1755,6 +1837,14 @@ RSpec.describe TodoService, feature_category: :notifications do
         expect(todo.author).to eq(service_account)
       end
 
+      it 'creates an assignment todo when the service account assigns the human it acts for' do
+        issue.assignees = [human]
+        service.reassigned_assignable(issue, human)
+
+        todo = Todo.find_by(user: human, target: issue, action: Todo::ASSIGNED)
+        expect(todo.author).to eq(service_account)
+      end
+
       it 'attributes mention todo to the service account' do
         note = create(:note, project: project, noteable: issue, author: service_account,
           note: "FYI #{assignee_user.to_reference}")
@@ -1776,6 +1866,12 @@ RSpec.describe TodoService, feature_category: :notifications do
 
         todo = Todo.find_by(user: service_account, target: issue, action: Todo::ASSIGNED)
         expect(todo.author).to eq(human)
+      end
+
+      it 'does not create an assignment todo when the human assigns themselves' do
+        issue.assignees = [human]
+
+        should_not_create_any_todo { service.reassigned_assignable(issue, human) }
       end
     end
   end

@@ -1066,6 +1066,10 @@ rspec:predictive:trigger:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
     GIT_STRATEGY: $GIT_STRATEGY
     PIPELINE_NAME: 'rspec:predictive'
+    # Expanded here without CI_PROJECT_DIR, so child jobs would get "/.git/objects".
+    # Child pipelines therefore don't borrow the git object pool. Revisit this before
+    # setting GLCI_GIT_OBJECT_POOL to "true" (see pre_get_sources_script in .gitlab-ci.yml).
+    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
   trigger:
     strategy: depend
     forward:
@@ -1153,6 +1157,7 @@ rspec:predictive:system-full:trigger:
     GIT_STRATEGY: $GIT_STRATEGY
     GLCI_MEDIUM_RUNNER_REQUIRED: $GLCI_MEDIUM_RUNNER_REQUIRED
     PIPELINE_NAME: 'rspec:predictive system (full)'
+    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
   trigger:
     strategy: depend
     forward:

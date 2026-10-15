@@ -20,7 +20,8 @@ module TestHooks
     end
 
     def merge_requests_events_data
-      merge_request = MergeRequest.of_projects(current_user.projects.select(:id)).last
+      projects = current_user.projects.in_organization(hook.organization_id)
+      merge_request = MergeRequest.of_projects(projects.select(:id)).last
 
       return { error: s_('TestHooks|Ensure one of your projects has merge requests.') } unless merge_request.present?
 

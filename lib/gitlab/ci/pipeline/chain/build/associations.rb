@@ -24,7 +24,8 @@ module Gitlab
 
             def assign_pipeline_variables
               Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(@pipeline, variables_attributes).run
-            rescue ActiveModel::ValidationError => e
+            rescue ActiveModel::ValidationError,
+              Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder::SizeLimitExceededError => e
               error("Failed to build pipeline variables: #{e}", failure_reason: :config_error)
             end
 
@@ -37,6 +38,9 @@ module Gitlab
 
               max_value_bytesize = variables.map { |var| var[:value].to_s.bytesize }.max.to_i
               logger.observe(:pipeline_variables_max_value_bytesize, max_value_bytesize, once: true)
+
+              total_bytesize = variables.sum { |var| var[:key].to_s.bytesize + var[:value].to_s.bytesize }
+              logger.observe(:pipeline_variables_total_bytesize, total_bytesize, once: true)
             end
 
             def assign_source_pipeline

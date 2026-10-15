@@ -166,10 +166,9 @@ import SavedViewsLimitWarningModal from '../list/components/work_items_saved_vie
 import SavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
 import ListActions from '../list/components/work_item_list_actions.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
-import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
-import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
-import EmptyStateWithAnyTickets from '../list/components/empty_state_with_any_tickets.vue';
-import EmptyStateWithoutAnyTickets from '../list/components/empty_state_without_any_tickets.vue';
+import FilterEmptyState from '../list/components/filter_empty_state.vue';
+import EmptyState from '../list/components/empty_state.vue';
+import TicketEmptyState from '../list/components/ticket_empty_state.vue';
 import InfoBanner from '../list/components/info_banner.vue';
 import NewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
 import WorkItemDetailPanel from '../components/work_item_detail_panel.vue';
@@ -248,10 +247,9 @@ export default {
     WorkItemDisplaySettingsDrawer,
     WorkItemViewModeToggle,
     WorkItemDisplaySettingsButton,
-    EmptyStateWithAnyIssues,
-    EmptyStateWithoutAnyIssues,
-    EmptyStateWithAnyTickets,
-    EmptyStateWithoutAnyTickets,
+    FilterEmptyState,
+    EmptyState,
+    TicketEmptyState,
     NewResourceDropdown,
     NewSavedViewModal,
     ListView,
@@ -604,9 +602,6 @@ export default {
           ? this.activeItem?.workItemType?.name
           : this.activeItem?.workItemType;
       return this.workItemType || activeWorkItemTypeName;
-    },
-    hasSearch() {
-      return Boolean(this.searchQuery);
     },
     namespace() {
       return this.isGroup ? NAMESPACE_GROUP : NAMESPACE_PROJECT;
@@ -2530,35 +2525,12 @@ export default {
     >
       <template #list-empty-state>
         <template v-if="isServiceDeskList">
-          <empty-state-with-any-tickets
-            v-if="hasWorkItems"
-            :has-search="hasSearch"
-            :is-open-tab="false"
-          />
-          <empty-state-without-any-tickets v-else />
+          <filter-empty-state v-if="hasWorkItems" />
+          <ticket-empty-state v-else />
         </template>
 
-        <empty-state-with-any-issues v-else-if="hasWorkItems">
-          <template #new-issue-button>
-            <create-work-item-modal
-              v-if="showProjectNewWorkItem"
-              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-              :full-path="rootPageFullPath"
-              :hide-namespace-selector="!isGroup"
-              :is-group="isGroup"
-              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-              @work-item-created="handleWorkItemCreated"
-            />
-            <new-resource-dropdown
-              v-if="showGroupNewWorkItem"
-              :query="$options.searchProjectsQuery"
-              :query-variables="newIssueDropdownQueryVariables"
-              :extract-projects="extractProjects"
-              :group-id="groupId"
-            />
-          </template>
-        </empty-state-with-any-issues>
-        <empty-state-without-any-issues
+        <filter-empty-state v-else-if="hasWorkItems" />
+        <empty-state
           v-else
           :show-new-issue-dropdown="showGroupNewWorkItem"
           :has-projects="hasProjects"
@@ -2582,7 +2554,7 @@ export default {
               :group-id="groupId"
             />
           </template>
-        </empty-state-without-any-issues>
+        </empty-state>
       </template>
     </component>
     <board-view
@@ -2615,27 +2587,8 @@ export default {
       @open-display-settings="openDisplaySettings"
     >
       <template #empty-state>
-        <empty-state-with-any-issues v-if="hasWorkItems || hasWorkItemsFailed">
-          <template #new-issue-button>
-            <create-work-item-modal
-              v-if="showProjectNewWorkItem"
-              always-show-work-item-type-select
-              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-              :full-path="rootPageFullPath"
-              :is-group="isGroup"
-              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
-              @work-item-created="handleWorkItemCreated"
-            />
-            <new-resource-dropdown
-              v-if="showGroupNewWorkItem"
-              :query="$options.searchProjectsQuery"
-              :query-variables="newIssueDropdownQueryVariables"
-              :extract-projects="extractProjects"
-              :group-id="groupId"
-            />
-          </template>
-        </empty-state-with-any-issues>
-        <empty-state-without-any-issues
+        <filter-empty-state v-if="hasWorkItems || hasWorkItemsFailed" />
+        <empty-state
           v-else
           :show-new-issue-dropdown="showGroupNewWorkItem"
           :has-projects="hasProjects"
@@ -2659,7 +2612,7 @@ export default {
               :group-id="groupId"
             />
           </template>
-        </empty-state-without-any-issues>
+        </empty-state>
       </template>
     </board-view>
     <work-item-display-settings-drawer

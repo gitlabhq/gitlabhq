@@ -1,5 +1,6 @@
 import {
   defaultDate,
+  navigateToQuery,
   serializeParams,
   update15DaysFromNow,
   resetCreatedTime,
@@ -60,6 +61,49 @@ describe('serializeParams', () => {
       search: 'my token',
       state: 'inactive',
     });
+  });
+});
+
+describe('navigateToQuery', () => {
+  const query = { page: 1, sort: 'expires_asc' };
+  let router;
+
+  const createRouter = (currentQuery = {}) => ({
+    currentRoute: { query: currentQuery },
+    push: jest.fn(),
+    replace: jest.fn(),
+  });
+
+  beforeEach(() => {
+    router = createRouter();
+  });
+
+  it('pushes the query by default', () => {
+    navigateToQuery(router, query);
+
+    expect(router.push).toHaveBeenCalledWith({ query });
+    expect(router.replace).not.toHaveBeenCalled();
+  });
+
+  it('replaces the query when `replace` is set', () => {
+    navigateToQuery(router, query, { replace: true });
+
+    expect(router.replace).toHaveBeenCalledWith({ query });
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
+  it('does not navigate when the current route already has the same query', () => {
+    router = createRouter({ sort: 'expires_asc', page: '1' });
+    navigateToQuery(router, query);
+
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
+  it('navigates when a query value differs', () => {
+    router = createRouter({ page: '2', sort: 'expires_asc' });
+    navigateToQuery(router, query);
+
+    expect(router.push).toHaveBeenCalledWith({ query });
   });
 });
 

@@ -290,4 +290,86 @@ RSpec.describe API::Organizations, feature_category: :organization do
       end
     end
   end
+
+  describe 'POST /organizations/:id/restore' do
+    let_it_be(:admin) { create(:admin) }
+    let_it_be_with_refind(:organization) { create(:organization) }
+
+    let(:path) { "/organizations/#{organization.id}/restore" }
+
+    it_behaves_like 'authorizing granular token permissions', :restore_organization do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { post api(path, personal_access_token: pat) }
+
+      before do
+        organization.soft_delete(transition_user: admin)
+      end
+    end
+
+    context 'when user is not authenticated' do
+      it 'returns unauthorized' do
+        post api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when the organization is soft-deleted' do
+      before do
+        organization.soft_delete(transition_user: admin)
+      end
+
+      context 'when user is an organization owner but not an administrator' do
+        before_all do
+          create(:organization_user, :owner, organization: organization, user: user)
+        end
+
+        it 'returns forbidden and does not restore the organization' do
+          expect { post api(path, user) }.not_to change { organization.reload.state }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when user is an administrator without admin mode' do
+        it 'returns forbidden and does not restore the organization' do
+          expect { post api(path, admin, admin_mode: false) }.not_to change { organization.reload.state }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when user is an administrator' do
+        it 'restores the organization and returns it', :aggregate_failures do
+          expect { post api(path, admin, admin_mode: true) }
+            .to change { organization.reload.state }.from('soft_deleted').to('active')
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['id']).to eq(organization.id)
+          expect(json_response['path']).to eq(organization.path)
+        end
+      end
+    end
+
+    context 'when user is an administrator and the organization cannot be restored' do
+      context 'when organization does not exist' do
+        it 'returns not found' do
+          post api("/organizations/#{non_existing_record_id}/restore", admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when organization is not soft-deleted' do
+        it 'returns bad request with an error message', :aggregate_failures do
+          post api(path, admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Organization is not soft-deleted')
+          expect(organization.reload.state).to eq('active')
+        end
+      end
+    end
+  end
 end

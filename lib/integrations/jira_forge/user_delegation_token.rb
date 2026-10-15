@@ -19,7 +19,7 @@ module Integrations
     # presents it. That turns a leaked token from an ambient bearer credential
     # into a delegation usable only from that user's own Jira account and site.
     #
-    # Signing modelled on Gitlab::ConanToken.
+    # Signing modelled on Gitlab::JWTToken.
     class UserDelegationToken
       HMAC_KEY = 'gitlab-jira-forge-user-delegation'
       EXPIRE_TIME = 2.hours
@@ -34,7 +34,7 @@ module Integrations
         # nil on a tampered or expired token (JWT::ExpiredSignature is a
         # JWT::DecodeError).
         def decode(jwt)
-          payload = JSONWebToken::HMACToken.decode(jwt, secret).first
+          payload = JSONWebToken::HMACToken.decode(jwt, secrets).first
 
           new(
             user_id: payload['user_id'],
@@ -46,11 +46,19 @@ module Integrations
         end
 
         def secret
-          OpenSSL::HMAC.hexdigest(
-            OpenSSL::Digest.new('SHA256'),
-            ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
-            HMAC_KEY
-          )
+          derive_secret(::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret)
+        end
+
+        # Current key first, so tokens signed before a db_key_base rotation still verify
+        def secrets
+          ::Gitlab::Encryption::KeyProvider[:db_key_base].decryption_keys_current_first
+            .map { |key| derive_secret(key.secret) }
+        end
+
+        private
+
+        def derive_secret(db_key_base)
+          OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), db_key_base, HMAC_KEY)
         end
       end
 

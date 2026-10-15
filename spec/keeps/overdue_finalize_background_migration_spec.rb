@@ -299,68 +299,6 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     end
   end
 
-  describe 'the finalize migration generated from an archived record' do
-    let(:tmp_dir) { Pathname(Dir.mktmpdir) }
-    let(:migration_file) { tmp_dir.join('finalize_migration.rb').to_s }
-    let(:postgres_ai) { instance_double(Keeps::Helpers::PostgresAi) }
-    let(:job_arguments) { '[]' }
-
-    # A raw PG row, where jsonb arrives as a String.
-    let(:record_data) do
-      {
-        'id' => 1, 'status' => 3, 'gitlab_schema' => 'gitlab_main',
-        'table_name' => 'users', 'column_name' => 'id', 'job_arguments' => job_arguments
-      }
-    end
-
-    after do
-      FileUtils.rm_rf(tmp_dir)
-    end
-
-    before do
-      result = [record_data]
-      allow(result).to receive(:count).and_return(1)
-      allow(keep).to receive(:postgres_ai).and_return(postgres_ai)
-      allow(postgres_ai).to receive(:fetch_background_migration_status).and_return(result)
-
-      File.write(migration_file, <<~RUBY)
-        # frozen_string_literal: true
-        class FinalizeHKTestMigration < Gitlab::Database::Migration[2.2]
-          def up
-            # placeholder
-          end
-
-          def down; end
-        end
-      RUBY
-
-      record = keep.send(:fetch_migration_status, 'TestMigration')
-      Keeps::OverdueFinalizeBackgroundMigrations::MigrationRewriter.new
-        .add_ensure_call_to_migration(migration_file, nil, 'TestMigration', record)
-    end
-
-    it 'writes an empty array rather than ["[]"]' do
-      expect(File.read(migration_file)).to include('job_arguments: []')
-      expect(File.read(migration_file)).not_to include('job_arguments: ["[]"]')
-    end
-
-    context 'when the queued arguments had values' do
-      let(:job_arguments) { '[4, 5]' }
-
-      it 'writes the parsed values' do
-        expect(File.read(migration_file)).to include('job_arguments: [4, 5]')
-      end
-    end
-
-    context 'when job_arguments is already an array' do
-      let(:job_arguments) { [] }
-
-      it 'writes it unchanged' do
-        expect(File.read(migration_file)).to include('job_arguments: []')
-      end
-    end
-  end
-
   describe '#fetch_migration_status' do
     let(:postgres_ai) { instance_double(Keeps::Helpers::PostgresAi) }
     let(:job_name) { 'TestBackgroundMigration' }
@@ -383,6 +321,27 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
         expect(migration_model).to be_a(::Gitlab::Database::BackgroundMigration::BatchedMigration)
         expect(migration_model).to be_finished
+      end
+    end
+
+    context 'when job_arguments is a JSON string' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:job_arguments, :expected) do
+        '[]'     | []
+        '[4, 5]' | [4, 5]
+      end
+
+      with_them do
+        before do
+          result = [{ 'id' => 1, 'status' => 3, 'gitlab_schema' => 'gitlab_main', 'job_arguments' => job_arguments }]
+          allow(result).to receive(:count).and_return(1)
+          allow(postgres_ai).to receive(:fetch_background_migration_status).with(job_name).and_return(result)
+        end
+
+        it 'parses it into an array' do
+          expect(keep.send(:fetch_migration_status, job_name).job_arguments).to eq(expected)
+        end
       end
     end
 

@@ -40,6 +40,9 @@ module Gitlab
           Labkit::Correlation::GRPC::ClientInterceptor.instance,
           Gitlab::Cells::TopologyService::MetadataClient.new(
             Gitlab.config.cell.topology_service_client.metadata),
+          # Listed before ConcurrencyLimitInterceptor so it runs inside it. The time then excludes
+          # limiter Redis calls, and calls that the limiter rejects are not counted.
+          InstrumentationInterceptor.new,
           ConcurrencyLimitInterceptor.new
         ]
 

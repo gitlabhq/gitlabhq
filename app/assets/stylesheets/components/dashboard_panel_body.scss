@@ -1,0 +1,6 @@
+// Size containment needs a definite height, which only grid tiles give the body; elsewhere
+// it would collapse. It also makes the body the containing block for fixed descendants.
+.grid-stack-item .dashboard-panel-body {
+  container-name: dashboard-panel-body;
+  container-type: size;
+}

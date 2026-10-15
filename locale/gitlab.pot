@@ -13619,6 +13619,9 @@ msgstr ""
 msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
 msgstr ""
 
+msgid "ArtifactRegistry|Namespace mapping was removed during a concurrent request."
+msgstr ""
+
 msgid "ArtifactRegistry|New hosted repository"
 msgstr ""
 
@@ -13686,6 +13689,12 @@ msgid "ArtifactRegistry|Order"
 msgstr ""
 
 msgid "ArtifactRegistry|Organization could not be determined."
+msgstr ""
+
+msgid "ArtifactRegistry|Organization has more than one top-level group."
+msgstr ""
+
+msgid "ArtifactRegistry|Organization has no top-level groups."
 msgstr ""
 
 msgid "ArtifactRegistry|Our internal packages are hosted at %{url}"
@@ -34628,6 +34637,9 @@ msgstr ""
 msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the foundational flow in the top-level group."
 msgstr ""
 
+msgid "DuoCodeReview|:warning: Code Review Flow was not started because the flow that requested this review is not allowed to start it. To get a review, request it yourself."
+msgstr ""
+
 msgid "DuoCodeReview|:warning: No GitLab Credits remain for this billing period. To continue using Code Review Flow, contact your administrator."
 msgstr ""
 
@@ -35179,6 +35191,9 @@ msgid_plural "DuoSlack|%{count} more actions are not shown here."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoSlack|%{namespace} has run out of GitLab Duo credits. Ask a group owner to check the usage and billing settings."
+msgstr ""
+
 msgid "DuoSlack|**%{name}** failed. [Open the session](%{url}) for details."
 msgstr ""
 
@@ -35252,6 +35267,12 @@ msgid "DuoSlack|Full request"
 msgstr ""
 
 msgid "DuoSlack|GitLab Duo needs your approval to run: %{tool_names}"
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo usage billing is not available for %{namespace}. Ask a group owner to check the GitLab Duo settings."
+msgstr ""
+
+msgid "DuoSlack|GitLab Duo usage billing is not available for your default GitLab Duo namespace. Ask a group owner to check the GitLab Duo settings."
 msgstr ""
 
 msgid "DuoSlack|GitLab Duo wants to run this tool."
@@ -35374,6 +35395,12 @@ msgstr ""
 msgid "DuoSlack|This feedback helps us improve Duo. We'll share your feedback and the related session with GitLab."
 msgstr ""
 
+msgid "DuoSlack|This flow is not available for %{namespace} yet."
+msgstr ""
+
+msgid "DuoSlack|This flow is not available for your default GitLab Duo namespace yet."
+msgstr ""
+
 msgid "DuoSlack|This request can no longer be answered."
 msgstr ""
 
@@ -35410,10 +35437,19 @@ msgstr ""
 msgid "DuoSlack|You don't have access to Duo in this namespace, or it has run out of GitLab Duo credits. Ask a group owner to check the Duo Agent Platform settings."
 msgstr ""
 
+msgid "DuoSlack|You need at least the Developer role in %{namespace} to use Duo from Slack. Ask an Owner of that group, or change your default GitLab Duo namespace in your preferences (%{preferences_url})."
+msgstr ""
+
+msgid "DuoSlack|You need at least the Developer role in your default GitLab Duo namespace to use Duo from Slack. Ask an Owner of that group, or change your default GitLab Duo namespace in your preferences (%{preferences_url})."
+msgstr ""
+
 msgid "DuoSlack|Your Slack account is not connected to a GitLab account, so you cannot respond to this request."
 msgstr ""
 
 msgid "DuoSlack|Your Slack account is not connected to a GitLab account, so you cannot view this request."
+msgstr ""
+
+msgid "DuoSlack|Your default GitLab Duo namespace has run out of GitLab Duo credits. Ask a group owner to check the usage and billing settings."
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
@@ -90689,6 +90725,16 @@ msgid_plural "UsageBilling|%d selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "UsageBilling|%{count} credit"
+msgid_plural "UsageBilling|%{count} credits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "UsageBilling|%{count} credit on %{date}"
+msgid_plural "UsageBilling|%{count} credits on %{date}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "UsageBilling|%{percentage}%{percentSymbol} of credits used"
 msgstr ""
 
@@ -90812,7 +90858,7 @@ msgstr ""
 msgid "UsageBilling|Daily GitLab Credits usage chart"
 msgstr ""
 
-msgid "UsageBilling|Daily average"
+msgid "UsageBilling|Daily average usage"
 msgstr ""
 
 msgid "UsageBilling|Date"
@@ -91105,7 +91151,7 @@ msgstr ""
 msgid "UsageBilling|To add per-user overrides you need to save Flat cap value first. You can leave Enforce cap turned off until you're ready."
 msgstr ""
 
-msgid "UsageBilling|Total credit consumption"
+msgid "UsageBilling|Total credit usage"
 msgstr ""
 
 msgid "UsageBilling|Total credits used"
@@ -91117,7 +91163,7 @@ msgstr ""
 msgid "UsageBilling|Track monthly credit consumption and the main drivers of credit usage."
 msgstr ""
 
-msgid "UsageBilling|Track your GitLab Credits consumption for %{groupName} group."
+msgid "UsageBilling|Track your GitLab Credits usage for %{groupName} group."
 msgstr ""
 
 msgid "UsageBilling|Trial"

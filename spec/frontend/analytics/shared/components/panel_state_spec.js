@@ -75,11 +75,46 @@ describe('AnalyticsPanelState', () => {
     expect(text).not.toContain('No data yet');
   });
 
-  it('centers the full state and not the compact one', () => {
-    createWrapper({ variant: PANEL_STATE_NO_DATA });
-    expect(wrapper.find('div').classes()).toContain('gl-justify-center');
+  describe('layout hooks for the container queries', () => {
+    it('exposes the hooks next to the full layout classes by default', () => {
+      createWrapper();
 
-    createWrapper({ variant: PANEL_STATE_NO_DATA, compact: true });
-    expect(wrapper.find('div').classes()).not.toContain('gl-justify-center');
+      const root = wrapper.findByTestId(`panel-state-${PANEL_STATE_NO_DATA}`);
+      expect(root.classes()).toEqual(
+        expect.arrayContaining(['analytics-panel-state', 'gl-items-center', 'gl-text-center']),
+      );
+      expect(root.classes()).not.toContain('analytics-panel-state-with-action');
+      expect(wrapper.findByTestId('panel-state-description').classes()).toContain(
+        'analytics-panel-state-description',
+      );
+    });
+
+    it.each([PANEL_STATE_ERROR, PANEL_STATE_UNAVAILABLE])(
+      'marks the %s state as carrying an action',
+      (variant) => {
+        createWrapper({ variant });
+
+        expect(wrapper.findByTestId(`panel-state-${variant}`).classes()).toContain(
+          'analytics-panel-state-with-action',
+        );
+      },
+    );
+
+    it('keeps the icon inside the title so the compact layout can run it inline', () => {
+      createWrapper({ variant: PANEL_STATE_ERROR });
+
+      const title = wrapper.findByTestId('panel-state-title');
+      expect(title.findComponent(GlIcon).exists()).toBe(true);
+      expect(title.findComponent(GlIcon).classes()).toContain('analytics-panel-state-icon');
+    });
+
+    it('renders the compact layout from the compact prop without the container', () => {
+      createWrapper({ compact: true });
+
+      const root = wrapper.findByTestId(`panel-state-${PANEL_STATE_NO_DATA}`);
+      expect(root.classes()).toContain('analytics-panel-state');
+      expect(root.classes()).not.toContain('gl-items-center');
+      expect(wrapper.findByTestId('panel-state-title').classes()).toContain('gl-text-lg');
+    });
   });
 });

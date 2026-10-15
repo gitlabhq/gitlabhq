@@ -89,6 +89,11 @@ export default {
     };
   },
   computed: {
+    // The clipping body is a CSS size container, so panel content can adapt to the tile
+    // with container queries instead of measuring itself.
+    bodyContentClass() {
+      return ['dashboard-panel-body', this.bodyContentClasses].filter(Boolean).join(' ');
+    },
     borderColor() {
       return this.showAlertState ? this.$options.alertBorderColorMap[this.alertVariant] : '';
     },
@@ -146,7 +151,7 @@ export default {
     :actions="actions"
     :actions-toggle-text="__('Actions')"
     :border-color-class="borderColor"
-    :body-content-class="bodyContentClasses"
+    :body-content-class="bodyContentClass"
     @dropdown-open="dropdownOpen = true"
     @dropdown-closed="dropdownOpen = false"
   >
@@ -160,7 +165,7 @@ export default {
         <div
           ref="bodyContent"
           v-gl-resize-observer="updateBodyOverflows"
-          class="gl-min-h-0 gl-grow gl-overflow-y-auto"
+          class="dashboard-panel-body gl-min-h-0 gl-grow gl-overflow-y-auto"
           :tabindex="bodyOverflows ? 0 : null"
           data-testid="panel-body-content"
         >

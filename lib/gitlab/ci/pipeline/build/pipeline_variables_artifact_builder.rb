@@ -9,6 +9,8 @@ module Gitlab
 
           FILE_TYPE = :pipeline_variables
 
+          SizeLimitExceededError = Class.new(StandardError)
+
           def initialize(pipeline, variables_attributes)
             @pipeline = pipeline
             @variables_attributes = variables_attributes
@@ -18,6 +20,8 @@ module Gitlab
             return if variables.empty?
 
             variables.each(&:validate!)
+
+            validate_size!
 
             pipeline.build_pipeline_artifacts_pipeline_variables(
               partition_id: pipeline.partition_id,
@@ -33,6 +37,17 @@ module Gitlab
           private
 
           attr_reader :pipeline, :variables_attributes
+
+          # The has_one association does not validate on save, so an oversized artifact would be silently dropped.
+          def validate_size!
+            return unless Feature.enabled?(:ci_enforce_pipeline_variables_total_size_limit, pipeline.project)
+
+            limit = ::Ci::PipelineArtifact::FILE_SIZE_LIMIT
+            return if variables_json.bytesize <= limit
+
+            raise SizeLimitExceededError,
+              "total size exceeds the limit of #{ActiveSupport::NumberHelper.number_to_human_size(limit)}"
+          end
 
           def carrierwave_file
             CarrierWaveStringFile.new_file(

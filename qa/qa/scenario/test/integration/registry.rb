@@ -7,7 +7,7 @@ module QA
         class Registry < Test::Instance::All
           tags :registry
 
-          pipeline_mappings test_on_cng: %w[cng-registry]
+          pipeline_mappings test_on_cng: %w[cng-registry cng-registry-caproni]
         end
       end
     end

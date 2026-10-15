@@ -28,8 +28,8 @@ RSpec.shared_examples 'handling nuget service requests' do |v2: false|
         end
       end
 
-      before do
-        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      before_all do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
       end
 
       it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member], v2
@@ -88,8 +88,8 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |e
 
       subject { get api(url), headers: headers }
 
-      before do
-        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      before_all do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
       end
 
       it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
@@ -154,8 +154,8 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
 
       subject { get api(url), headers: headers }
 
-      before do
-        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      before_all do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
       end
 
       it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
@@ -223,8 +223,8 @@ RSpec.shared_examples 'handling nuget search requests' do |example_names_with_st
 
       subject { get api(url), headers: headers }
 
-      before do
-        update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
+      before_all do
+        update_visibility_to(Gitlab::VisibilityLevel.const_get(self.class.params[:visibility_level], false))
       end
 
       it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]

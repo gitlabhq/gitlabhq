@@ -68,7 +68,22 @@ RSpec.describe 'Topology Service Metrics Integration', feature_category: :cell d
 
         expect(interceptors).to include(instance_of(Labkit::Correlation::GRPC::ClientInterceptor))
         expect(interceptors).to include(instance_of(Gitlab::Cells::TopologyService::MetadataClient))
+        expect(interceptors).to include(instance_of(Gitlab::TopologyServiceClient::InstrumentationInterceptor))
       end
+    end
+
+    it 'places InstrumentationInterceptor before ConcurrencyLimitInterceptor so it runs inside the limiter' do
+      allow(::Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
+      interceptors = base_service.send(:build_interceptors)
+
+      instrumentation_index = interceptors.index do |interceptor|
+        interceptor.instance_of?(Gitlab::TopologyServiceClient::InstrumentationInterceptor)
+      end
+      limiter_index = interceptors.index do |interceptor|
+        interceptor.instance_of?(Gitlab::TopologyServiceClient::ConcurrencyLimitInterceptor)
+      end
+
+      expect(instrumentation_index).to be < limiter_index
     end
 
     it 'maintains backward compatibility with existing interceptor order' do

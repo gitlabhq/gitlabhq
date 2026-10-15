@@ -608,6 +608,23 @@ working as expected.
    gdk tail gitlab-topology-service
    ```
 
+### Claims are slow or time out
+
+When cells are enabled, request logs (`production_json.log` and `api_json.log`) and Sidekiq logs
+include fields for Topology Service gRPC calls:
+
+- `topology_service_calls`: Total number of calls to the Topology Service
+- `topology_service_duration_s`: Total time taken by calls to the Topology Service
+- `topology_service_begin_update_calls`: Total number of `BeginUpdate` calls
+- `topology_service_begin_update_duration_s`: Total time taken by `BeginUpdate` calls
+- `topology_service_begin_update_create_records`: Total number of claim records to create sent in `BeginUpdate` calls
+- `topology_service_begin_update_destroy_records`: Total number of claim records to destroy sent in `BeginUpdate` calls
+
+GitLab logs the `topology_service_begin_update_*` fields only when the request made at least one `BeginUpdate` call.
+Calls that fail, for example with `GRPC::DeadlineExceeded`, are also counted.
+To find claims that are close to the request deadline, compare `topology_service_begin_update_duration_s`
+with `Cells::TransactionRecord::TIMEOUT_IN_SECONDS`.
+
 ### Backfill not progressing
 
 1. **Check whether verification is enabled for the model:**

@@ -98,7 +98,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/factories/vulnerabilities/findings.rb'
     - 'ee/spec/features/billings/qrtly_reconciliation_alert_spec.rb'
     - 'ee/spec/features/merge_request/user_sees_security_widget_spec.rb'
-    - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
     - 'ee/spec/finders/status_page/incident_comments_finder_spec.rb'
     - 'ee/spec/graphql/api/vulnerabilities_spec.rb'
     - 'ee/spec/graphql/mutations/security/finding/create_merge_request_spec.rb'

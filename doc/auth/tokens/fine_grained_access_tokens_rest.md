@@ -1596,6 +1596,7 @@ Grants the ability to create, delete, read, restore, and update organizations.
 | ------ | ------ | ------ | ---- |
 | Create | Instance | `POST` | `/organizations` |
 | Delete | Instance | `DELETE` | `/organizations/:id` |
+| Restore | Instance | `POST` | `/organizations/:id/restore` |
 
 ### Packages and Registry resources
 

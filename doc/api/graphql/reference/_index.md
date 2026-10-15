@@ -21033,9 +21033,10 @@ Arguments:
 | <a id="mutation-workitemdecisioncreate-description"></a>`description` | [`String`](#string) | Context of the decision. |
 | <a id="mutation-workitemdecisioncreate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
 | <a id="mutation-workitemdecisioncreate-options"></a>`options` | [`[WorkItemDecisionOptionInput!]`](#workitemdecisionoptioninput) | Candidate options of the decision. Maximum of 5 options. Incompatible with resolution. |
+| <a id="mutation-workitemdecisioncreate-question"></a>`question` | [`String`](#string) | Question being decided. Required unless resolution is provided. |
 | <a id="mutation-workitemdecisioncreate-resolution"></a>`resolution` | [`WorkItemDecisionResolutionInput`](#workitemdecisionresolutioninput) | When present, records the decision as resolved at creation. Incompatible with options. |
 | <a id="mutation-workitemdecisioncreate-sourcelink"></a>`sourceLink` | [`String`](#string) | URL of the comment, discussion, or external resource that prompted the decision. |
-| <a id="mutation-workitemdecisioncreate-title"></a>`title` | [`String`](#string) | Question being decided. Required unless resolution is provided. |
+| <a id="mutation-workitemdecisioncreate-title"></a>`title` {{< icon name="warning-solid" >}} | [`String`](#string) | Deprecated in GitLab 19.6. Use `question`. |
 | <a id="mutation-workitemdecisioncreate-workitemid"></a>`workItemId` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 
 Fields:
@@ -21128,12 +21129,13 @@ Arguments:
 | <a id="mutation-workitemdecisionupdate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
 | <a id="mutation-workitemdecisionupdate-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
 | <a id="mutation-workitemdecisionupdate-options"></a>`options` | [`[WorkItemDecisionOptionUpdateInput!]`](#workitemdecisionoptionupdateinput) | Existing options of the decision to update. Maximum of 6 options. |
+| <a id="mutation-workitemdecisionupdate-question"></a>`question` | [`String`](#string) | Question being decided. |
 | <a id="mutation-workitemdecisionupdate-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-resolvedbyid"></a>`resolvedById` | [`UserID`](#userid) | Global ID of the user who resolved the decision. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-resolvingnoteid"></a>`resolvingNoteId` | [`NoteID`](#noteid) | Global ID of the comment that resolved the decision. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-selectedoptioncontent"></a>`selectedOptionContent` | [`String`](#string) | Content of the selected option. Unless exactly one option is selected, a new selected option with this content is added and any selected options are deselected. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-sourcelink"></a>`sourceLink` | [`String`](#string) | URL of the comment, discussion, or external resource that prompted the decision. |
-| <a id="mutation-workitemdecisionupdate-title"></a>`title` | [`String`](#string) | Question being decided. |
+| <a id="mutation-workitemdecisionupdate-title"></a>`title` {{< icon name="warning-solid" >}} | [`String`](#string) | Deprecated in GitLab 19.6. Use `question`. |
 
 Fields:
 
@@ -36019,6 +36021,19 @@ Fields:
 | <a id="aiflowscheduletype-project"></a>`project` | [`Project!`](#project) | Project of the flow schedule. |
 | <a id="aiflowscheduletype-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow schedule was last updated. |
 
+### `AiFlowTriggerLastRun`
+
+Details of the most recent run of a flow trigger.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggerlastrun-error"></a>`error` | [`String`](#string) | Error message of a scheduled run that failed before a session started. |
+| <a id="aiflowtriggerlastrun-finishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of when the run finished, or null if the run is not finished. |
+| <a id="aiflowtriggerlastrun-startedat"></a>`startedAt` | [`Time!`](#time) | Timestamp of when the run started. |
+| <a id="aiflowtriggerlastrun-status"></a>`status` | [`AiFlowTriggerRunStatus!`](#aiflowtriggerrunstatus) | Status of the run. |
+
 ### `AiFlowTriggerType`
 
 Represents an AI flow trigger.
@@ -36039,8 +36054,11 @@ Fields:
 | <a id="aiflowtriggertype-goals"></a>`goals` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the AI flow trigger, keyed by event type. |
 | <a id="aiflowtriggertype-group"></a>`group` {{< icon name="warning-solid" >}} | [`Group`](#group) | Introduced in GitLab 19.6. Status: Experiment. Group of the flow trigger. Null for project flow triggers. |
 | <a id="aiflowtriggertype-id"></a>`id` | [`ID!`](#id) | ID of the flow trigger. |
+| <a id="aiflowtriggertype-lastrun"></a>`lastRun` {{< icon name="warning-solid" >}} | [`AiFlowTriggerLastRun`](#aiflowtriggerlastrun) | Introduced in GitLab 19.6. Status: Experiment. Details of the most recent run, or null if the flow trigger has never run. |
 | <a id="aiflowtriggertype-precondition"></a>`precondition` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Enforced filter conditions from the foundational flow definition. |
 | <a id="aiflowtriggertype-project"></a>`project` | [`Project`](#project) | Project of the flow trigger. Null for group flow triggers. |
+| <a id="aiflowtriggertype-runningcount"></a>`runningCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.6. Status: Experiment. Number of sessions of the flow trigger that are created or running. |
+| <a id="aiflowtriggertype-sessions"></a>`sessions` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 19.6. Status: Experiment. Sessions started by the flow trigger, newest first. Returns sessions for only one flow trigger per request. |
 | <a id="aiflowtriggertype-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow trigger was last updated. |
 | <a id="aiflowtriggertype-user"></a>`user` | [`UserCore`](#usercore) | Service account of the flow trigger. |
 
@@ -68203,13 +68221,14 @@ Fields:
 | <a id="workitemdecision-id"></a>`id` {{< icon name="warning-solid" >}} | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the decision. |
 | <a id="workitemdecision-noteurl"></a>`noteUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL of the comment that resolved the decision. |
 | <a id="workitemdecision-options"></a>`options` {{< icon name="warning-solid" >}} | [`WorkItemDecisionOptionConnection`](#workitemdecisionoptionconnection) | Introduced in GitLab 19.4. Status: Experiment. Candidate options of the decision. |
+| <a id="workitemdecision-question"></a>`question` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.6. Status: Experiment. Question being decided. May be absent for decisions recorded as already resolved at creation. |
 | <a id="workitemdecision-resolutionrationale"></a>`resolutionRationale` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Reasoning given when the decision was resolved. |
 | <a id="workitemdecision-resolvedat"></a>`resolvedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp when the decision was resolved. |
 | <a id="workitemdecision-resolvedby"></a>`resolvedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who resolved the decision. |
 | <a id="workitemdecision-resolvingnoteid"></a>`resolvingNoteId` {{< icon name="warning-solid" >}} | [`NoteID`](#noteid) | Introduced in GitLab 19.4. Status: Experiment. Global ID of the comment that resolved the decision. |
 | <a id="workitemdecision-sourcelink"></a>`sourceLink` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL of the comment, discussion, or external resource that prompted the decision. Present only on manually created decisions. |
 | <a id="workitemdecision-state"></a>`state` {{< icon name="warning-solid" >}} | [`WorkItemDecisionState!`](#workitemdecisionstate) | Introduced in GitLab 19.5. Status: Experiment. State of the decision. |
-| <a id="workitemdecision-title"></a>`title` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Question being decided. May be absent for decisions recorded as already resolved at creation. |
+| <a id="workitemdecision-title"></a>`title` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Question being decided. Deprecated, use question instead. May be absent for decisions recorded as already resolved at creation. |
 
 ### `WorkItemDecisionOption`
 
@@ -70190,6 +70209,19 @@ Possible event types for flow triggers.
 | <a id="aiflowtriggereventtype-pipeline_hooks"></a>`PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
 | <a id="aiflowtriggereventtype-scheduled"></a>`SCHEDULED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Flow trigger scheduled event. |
 | <a id="aiflowtriggereventtype-work_item"></a>`WORK_ITEM` | Flow trigger work_item event. |
+
+### `AiFlowTriggerRunStatus`
+
+Status of a flow trigger run.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiflowtriggerrunstatus-awaiting_input"></a>`AWAITING_INPUT` | Run is paused or waiting for input or approval. |
+| <a id="aiflowtriggerrunstatus-canceled"></a>`CANCELED` | Run was stopped before it finished. |
+| <a id="aiflowtriggerrunstatus-failed"></a>`FAILED` | Run failed. |
+| <a id="aiflowtriggerrunstatus-pending"></a>`PENDING` | Run has been created and has not started. |
+| <a id="aiflowtriggerrunstatus-running"></a>`RUNNING` | Run is in progress. |
+| <a id="aiflowtriggerrunstatus-succeeded"></a>`SUCCEEDED` | Run finished successfully. |
 
 ### `AiFlowsMetadataClientType`
 

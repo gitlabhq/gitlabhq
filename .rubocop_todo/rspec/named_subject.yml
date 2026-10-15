@@ -39,7 +39,6 @@ RSpec/NamedSubject:
     - 'ee/spec/finders/iterations_finder_spec.rb'
     - 'ee/spec/finders/notes_finder_spec.rb'
     - 'ee/spec/finders/productivity_analytics_finder_spec.rb'
-    - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_feedbacks_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
     - 'ee/spec/graphql/ee/mutations/boards/issues/issue_move_list_spec.rb'

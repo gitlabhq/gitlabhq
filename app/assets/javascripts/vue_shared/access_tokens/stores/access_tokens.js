@@ -9,7 +9,7 @@ import {
 } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-import { SORT_OPTIONS, DEFAULT_SORT } from '~/access_tokens/constants';
+import { DEFAULT_FILTER, DEFAULT_SORT, SORT_OPTIONS } from '~/access_tokens/constants';
 import { serializeParams, update15DaysFromNow } from '../utils';
 
 /**
@@ -85,7 +85,9 @@ export const useAccessTokens = defineStore('accessTokens', {
 
         // The parent component will refetch tokens if showCreateFormInline = false
         if (this.showCreateFormInline) {
-          // Reset pagination because after creation the token may appear on a different page.
+          // Reset filters and pagination so the new token is listed: it is active and may
+          // otherwise be hidden by the current filters or appear on a different page.
+          this.filters = DEFAULT_FILTER;
           this.page = 1;
           await this.fetchTokens({ clearAlert: false });
         }

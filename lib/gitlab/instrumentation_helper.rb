@@ -17,6 +17,7 @@ module Gitlab
       instrument_elasticsearch(payload)
       instrument_zoekt(payload)
       instrument_openbao(payload)
+      instrument_topology_service(payload)
       instrument_throttle(payload)
       instrument_active_record(payload)
       instrument_external_http(payload)
@@ -87,6 +88,10 @@ module Gitlab
 
       payload[:openbao_calls] = openbao_calls
       payload[:openbao_duration_s] = Gitlab::Instrumentation::Openbao.query_time
+    end
+
+    def instrument_topology_service(payload)
+      payload.merge!(::Gitlab::Instrumentation::TopologyService.payload)
     end
 
     def instrument_external_http(payload)

@@ -53,7 +53,9 @@ module API
         def extract_update_feature_params(work_item)
           return {} unless params.key?(:features)
 
-          widget_params = params[:features].to_h.deep_symbolize_keys.each_with_object({}) do |(key, value), hash|
+          feature_params = declared_params(include_missing: false)[:features].to_h.deep_symbolize_keys
+
+          widget_params = feature_params.each_with_object({}) do |(key, value), hash|
             widget_key = :"#{key}_widget"
 
             case key

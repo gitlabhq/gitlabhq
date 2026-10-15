@@ -107,11 +107,10 @@ import WorkItemViewModeToggle from '~/work_items/components/work_item_view_mode_
 import WorkItemDisplaySettingsButton from '~/work_items/components/work_item_display_settings_button.vue';
 import InfoBanner from '~/work_items/list/components/info_banner.vue';
 import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
-import EmptyStateWithAnyTickets from '~/work_items/list/components/empty_state_with_any_tickets.vue';
-import EmptyStateWithoutAnyTickets from '~/work_items/list/components/empty_state_without_any_tickets.vue';
+import TicketEmptyState from '~/work_items/list/components/ticket_empty_state.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
-import EmptyStateWithAnyIssues from '~/work_items/list/components/empty_state_with_any_issues.vue';
+import EmptyState from '~/work_items/list/components/empty_state.vue';
+import FilterEmptyState from '~/work_items/list/components/filter_empty_state.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 
@@ -301,13 +300,10 @@ const findDisplaySettingsButton = () => wrapper.findComponent(WorkItemDisplaySet
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
 const findBulkEditStartButton = () => wrapper.findComponentByTestId('bulk-edit-start-button');
-const findServiceDeskEmptyStateWithAnyIssues = () =>
-  wrapper.findComponent(EmptyStateWithAnyTickets);
-const findServiceDeskEmptyStateWithoutAnyIssues = () =>
-  wrapper.findComponent(EmptyStateWithoutAnyTickets);
+const findTicketEmptyState = () => wrapper.findComponent(TicketEmptyState);
 const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
-const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
-const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
+const findEmptyState = () => wrapper.findComponent(EmptyState);
+const findFilterEmptyState = () => wrapper.findComponent(FilterEmptyState);
 const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 
 const getCache = () => apolloProvider.defaultClient.cache;
@@ -2602,7 +2598,7 @@ describe('planning-view', () => {
     });
 
     describe('empty state', () => {
-      it('renders EmptyStateWithAnyTickets when there are work items', async () => {
+      it('renders FilterEmptyState when there are work items', async () => {
         await mountComponent({
           provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
           props: {
@@ -2611,16 +2607,16 @@ describe('planning-view', () => {
           },
         });
 
-        expect(findServiceDeskEmptyStateWithAnyIssues().exists()).toBe(true);
+        expect(findFilterEmptyState().exists()).toBe(true);
       });
 
-      it('renders EmptyStateWithoutAnyTickets when there are no work items', async () => {
+      it('renders TicketEmptyState when there are no work items', async () => {
         await mountComponent({
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
           provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
         });
 
-        expect(findServiceDeskEmptyStateWithoutAnyIssues().exists()).toBe(true);
+        expect(findTicketEmptyState().exists()).toBe(true);
       });
     });
 
@@ -2765,8 +2761,8 @@ describe('planning-view', () => {
         });
       });
 
-      it('renders EmptyStateWithAnyIssues component with empty results', () => {
-        expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
+      it('renders FilterEmptyState component with empty results', () => {
+        expect(findFilterEmptyState().exists()).toBe(true);
       });
     });
 
@@ -2784,11 +2780,11 @@ describe('planning-view', () => {
       });
 
       it('renders the list empty state', () => {
-        expect(findEmptyStateWithoutAnyIssues().exists()).toBe(true);
+        expect(findEmptyState().exists()).toBe(true);
       });
 
       it('passes correct props to empty state component for groups', () => {
-        expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+        expect(findEmptyState().props()).toMatchObject({
           showNewIssueDropdown: true,
         });
       });
@@ -2826,7 +2822,7 @@ describe('planning-view', () => {
           isGroup: false,
         },
         stubs: {
-          EmptyStateWithoutAnyIssues: {
+          EmptyState: {
             template: `<div><slot name="import-export-buttons"></slot></div>`,
           },
         },
@@ -2840,7 +2836,7 @@ describe('planning-view', () => {
           stubs: {},
         });
 
-        expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+        expect(findEmptyState().props()).toMatchObject({
           showNewIssueDropdown: false,
         });
       });
@@ -2860,8 +2856,7 @@ describe('planning-view', () => {
             },
           });
 
-          expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
-          expect(findNewResourceDropdown().exists()).toBe(true);
+          expect(findFilterEmptyState().exists()).toBe(true);
         });
       });
 
@@ -2878,7 +2873,7 @@ describe('planning-view', () => {
             },
           });
 
-          expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
+          expect(findFilterEmptyState().exists()).toBe(true);
           expect(findCreateWorkItemModal().exists()).toBe(true);
         });
       });
@@ -3196,8 +3191,7 @@ describe('planning-view', () => {
       });
 
       describe('when the board view is shown for a namespace with no work items', () => {
-        const findBoardEmptyStateModal = () =>
-          findEmptyStateWithoutAnyIssues().findComponent(CreateWorkItemModal);
+        const findBoardEmptyStateModal = () => findEmptyState().findComponent(CreateWorkItemModal);
 
         beforeEach(async () => {
           await mountComponent({
@@ -3216,7 +3210,7 @@ describe('planning-view', () => {
 
         it('fills the board empty state with the list empty state', () => {
           expect(findBoardView().props('hasWorkItems')).toBe(false);
-          expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+          expect(findEmptyState().props()).toMatchObject({
             hasProjects: true,
             showNewIssueDropdown: false,
           });
@@ -3246,9 +3240,6 @@ describe('planning-view', () => {
       });
 
       describe('when the board shows its empty state for a namespace with work items', () => {
-        const findBoardEmptyStateModal = () =>
-          findEmptyStateWithAnyIssues().findComponent(CreateWorkItemModal);
-
         beforeEach(async () => {
           await mountComponent({
             provide: { glFeatures: { planningViewBoards: true } },
@@ -3257,7 +3248,7 @@ describe('planning-view', () => {
               BoardView: stubComponent(boardViewStub, {
                 template: '<div><slot name="empty-state"></slot></div>',
               }),
-              EmptyStateWithAnyIssues,
+              FilterEmptyState,
               GlEmptyState: stubComponent(GlEmptyState, { template: RENDER_ALL_SLOTS_TEMPLATE }),
             },
           });
@@ -3267,18 +3258,11 @@ describe('planning-view', () => {
 
         it('fills the board empty state with the no results state', () => {
           expect(findBoardView().props('hasWorkItems')).toBe(true);
-          expect(findEmptyStateWithAnyIssues().findComponent(GlEmptyState).props()).toMatchObject({
+          expect(findFilterEmptyState().findComponent(GlEmptyState).props()).toMatchObject({
             title: 'No results found',
             description: 'To widen your search, change or remove filters above.',
           });
-          expect(findEmptyStateWithoutAnyIssues().exists()).toBe(false);
-        });
-
-        it('offers the list create modal with the board create source', () => {
-          expect(findBoardEmptyStateModal().props()).toMatchObject({
-            creationContext: CREATION_CONTEXT_LIST_ROUTE,
-            createSource: 'work_item_board',
-          });
+          expect(findEmptyState().exists()).toBe(false);
         });
       });
 

@@ -10,7 +10,7 @@ milestone: "17.6"
 instrumentation_class: OrphanedNamespacesMetric
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168983
 time_frame: all
-data_source: database
+data_source: system
 data_category: optional
 tiers:
 - free

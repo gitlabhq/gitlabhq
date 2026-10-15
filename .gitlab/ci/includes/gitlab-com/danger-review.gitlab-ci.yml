@@ -23,6 +23,13 @@ danger-review:
     - source scripts/utils.sh
     - bundle_install_script
     - yarn_install_script
+    # Danger's own deepening fails on its local-only branches and falls back to fetching every branch.
+    - |
+      head_sha="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+      for _ in 1 2 3 4 5; do
+        git merge-base "$CI_MERGE_REQUEST_DIFF_BASE_SHA" "$head_sha" >/dev/null 2>&1 && break
+        git fetch --deepen="${GIT_DEPTH}" origin "+refs/merge-requests/${CI_MERGE_REQUEST_IID}/head" || break
+      done
   # extending from .review:rules:danger doesn't work
   rules: !reference [.review:rules:danger, rules]
 

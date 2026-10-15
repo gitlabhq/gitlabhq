@@ -79,6 +79,38 @@ module API
           render_api_error!(response.message, response.cause.access_denied? ? 403 : 400)
         end
       end
+
+      desc 'Restore a soft-deleted organization' do
+        detail 'Restores a soft-deleted organization. This feature was introduced in GitLab 19.6.'
+        success Entities::Organizations::Organization
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[organizations]
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the organization.'
+      end
+      route_setting :lifecycle, :experiment
+      route_setting :authorization, permissions: :restore_organization, boundary_type: :instance,
+        assignable_when: [:admin]
+      post ':id/restore' do
+        organization = find_organization!(params[:id])
+        authorize! :restore_organization, organization
+
+        response = ::Organizations::RestoreService
+          .new(organization, current_user: current_user)
+          .execute
+
+        if response.success?
+          present response[:organization], with: Entities::Organizations::Organization
+        else
+          render_api_error!(response.message, :bad_request)
+        end
+      end
     end
   end
 end

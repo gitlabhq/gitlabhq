@@ -88,45 +88,32 @@ module AutoExplain
             # Ruby below, which only accumulates small sets of distinct
             # query_ids/texts rather than the full log.
             pg.send_query_params(<<~SQL.squish, [connection.current_database])
-              SELECT
-                  m.message->>'Query Text' as query,
-                  m.message->'Plan' as plan,
-                  m.query_id
-              FROM (
-                  SELECT
-                      substring(message from '\{.*$')::jsonb AS message,
-                      query_id
-                  FROM pglog
-                  WHERE database_name = $1 AND message LIKE '%{%'
-              ) m;
+              SELECT query_id, message
+              FROM pglog
+              WHERE database_name = $1 AND message LIKE '%{%'
             SQL
 
             pg.set_single_row_mode
             pg.get_result.stream_each do |row|
               query_id = row['query_id']
-              query = row['query']
+              without_query_id = query_id.to_i == 0
 
-              # Cheap first-level deduplication, mirroring what DISTINCT ON did
-              # database-side: one row per non-zero query_id (queries sharing a
-              # normalized shape), and one row per exact query text for
-              # query_id=0 rows (where Postgres could not compute an id). This
-              # keeps expensive PgQuery.fingerprint calls proportional to the
-              # number of distinct queries rather than total query executions.
-              if query_id.to_i == 0
-                next unless seen_queries.add?(query)
-              else
-                next unless seen_query_ids.add?(query_id)
-              end
+              # The log has a plan for every query execution, so skip seen query_ids before parsing JSON.
+              # Rows without a query_id can't be deduplicated by id, so they are deduplicated on query text.
+              next unless without_query_id || seen_query_ids.add?(query_id)
+
+              message = Gitlab::Json.parse(row['message'][/\{.*\z/m])
+              query = message['Query Text']
+
+              next if without_query_id && !seen_queries.add?(query)
 
               fingerprint = PgQuery.fingerprint(query)
               next unless fingerprints.add?(fingerprint)
 
-              plan = Gitlab::Json.parse(row['plan'])
-
               output = {
                 query_id: query_id,
                 query: query,
-                plan: plan,
+                plan: message['Plan'],
                 fingerprint: fingerprint,
                 normalized: PgQuery.normalize(query)
               }

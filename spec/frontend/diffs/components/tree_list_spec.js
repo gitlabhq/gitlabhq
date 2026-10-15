@@ -1,9 +1,10 @@
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import { GlSearchBoxByType } from '@gitlab/ui';
+import { GlIcon, GlSearchBoxByType } from '@gitlab/ui';
 import TreeList from '~/diffs/components/tree_list.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import FileRowStats from '~/diffs/components/file_row_stats.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -237,6 +238,50 @@ describe('Diffs tree list component', () => {
       const viewedFile = rows.find((file) => file.codeReviewId === 12345);
       expect(viewedFile?.viewed).toBe(true);
     });
+  });
+
+  describe('change type', () => {
+    beforeEach(() => {
+      useFileBrowser().setTreeData([
+        { new_path: 'kept.rb', old_path: 'kept.rb', file_hash: 'kept' },
+        { new_path: 'added.rb', old_path: 'added.rb', file_hash: 'added', new_file: true },
+        { new_path: 'gone.rb', old_path: 'gone.rb', file_hash: 'gone', deleted_file: true },
+        { new_path: 'moved.rb', old_path: 'lib/old.rb', file_hash: 'moved' },
+      ]);
+      createComponent();
+    });
+
+    const findRow = (hash) =>
+      wrapper
+        .findAllComponents(FileRow)
+        .wrappers.find((row) => row.props('file').fileHash === hash);
+
+    it.each`
+      hash       | icon               | variant      | label
+      ${'added'} | ${'file-addition'} | ${'success'} | ${'Added'}
+      ${'gone'}  | ${'file-deletion'} | ${'danger'}  | ${'Deleted'}
+    `('renders a $icon icon for the $hash file', ({ hash, icon, variant, label }) => {
+      const changeIcon = findRow(hash).findComponent(GlIcon);
+
+      expect(changeIcon.props()).toMatchObject({ name: icon, variant, ariaLabel: label });
+    });
+
+    it.each(['kept', 'moved'])('does not render a change icon for the %s file', (hash) => {
+      expect(findRow(hash).find('[data-testid="file-change-icon"]').exists()).toBe(false);
+    });
+  });
+
+  it('does not render stats for files without line counts', () => {
+    useFileBrowser().setTreeData([
+      { new_path: 'empty.rb', file_hash: 'empty' },
+      { new_path: 'changed.rb', file_hash: 'changed', added_lines: 2 },
+    ]);
+    createComponent();
+
+    const statsFiles = wrapper
+      .findAllComponents(FileRowStats)
+      .wrappers.map((stats) => stats.props('file').fileHash);
+    expect(statsFiles).toEqual(['changed']);
   });
 
   describe('diff tree active file scroll', () => {

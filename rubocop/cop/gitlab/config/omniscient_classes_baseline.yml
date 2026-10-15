@@ -615,7 +615,7 @@ EE::Project:
   - require_reauthentication_to_approve?
   - requirements_ci_variables
   - reset_approvals_on_push
-  - risk_classification_dap_available?
+  - risk_assessment_dap_available?
   - search_code_with_zoekt?
   - security_orchestration_policies_for_scope
   - security_orchestration_policy_configuration_parent_group_ids

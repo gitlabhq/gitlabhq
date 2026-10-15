@@ -2,6 +2,7 @@
 import { GlButton, GlCard } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { useAccessTokens } from '../stores/access_tokens';
+import { navigateToQuery } from '../utils';
 
 import { slugify } from '../../../lib/utils/text_utility';
 
@@ -19,7 +20,7 @@ export default {
     handleFilter(filters) {
       this.setFilters(filters);
       this.setPage(1);
-      this.$router.push({ query: this.urlParams });
+      navigateToQuery(this.$router, this.urlParams);
       this.fetchTokens();
     },
     slugifyStat(stat) {

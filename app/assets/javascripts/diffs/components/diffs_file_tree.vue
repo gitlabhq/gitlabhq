@@ -65,7 +65,7 @@ export default {
   },
   computed: {
     hideFileStats() {
-      return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
+      return (this.newWidth || this.treeWidth) <= TREE_HIDE_STATS_WIDTH;
     },
     applyNewWidthDebounced() {
       return debounce(this.applyNewWidth, 250);

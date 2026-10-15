@@ -3,6 +3,8 @@ trigger-api-docs-pipeline:
     - .api-docs:rules:trigger-api-docs-pipeline
   stage: notify
   allow_failure: true
+  variables:
+    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
   trigger:
     project: gitlab-org/api-docs
     branch: main

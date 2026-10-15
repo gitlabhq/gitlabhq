@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isEqual, mapValues } from 'lodash-es';
 import {
   getDateInFuture,
   nDaysAfter,
@@ -20,6 +20,19 @@ export function defaultDate(maxDate) {
     return maxDate;
   }
   return thirtyDaysFromNow;
+}
+
+/**
+ * Update the URL query, skipping the navigation when the query is unchanged: vue-router rejects
+ * a navigation to the current location. Route query values are strings, so ours are compared as such.
+ * @param {import('vue-router').default} router
+ * @param {Object<string, number|string>} query
+ * @param {{replace?: boolean}} [options] use `replace` to avoid adding a history entry
+ */
+export function navigateToQuery(router, query, { replace = false } = {}) {
+  if (isEqual(mapValues(query, String), router.currentRoute.query)) return;
+
+  router[replace ? 'replace' : 'push']({ query });
 }
 
 /**

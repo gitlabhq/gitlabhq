@@ -210,6 +210,19 @@ describe('DiffsFileTree', () => {
       expect(style.top).toBe('');
     });
 
+    it.each`
+      width  | hidden
+      ${200} | ${true}
+      ${300} | ${false}
+    `('toggles file stats while dragging to $width', async ({ width, hidden }) => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', width);
+      await nextTick();
+      expect(wrapper.findComponent(TreeList).props('hideFileStats')).toBe(hidden);
+    });
+
     it('sets sizings after timeout', async () => {
       createComponent({ floatingResize: true });
       wrapper.findComponent(PanelResizer).vm.$emit('resize-start');

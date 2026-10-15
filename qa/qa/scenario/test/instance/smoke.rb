@@ -14,7 +14,7 @@ module QA
 
           tags :smoke
 
-          pipeline_mappings test_on_cng: %w[cng-relative-url]
+          pipeline_mappings test_on_cng: %w[cng-relative-url cng-relative-url-caproni]
         end
       end
     end

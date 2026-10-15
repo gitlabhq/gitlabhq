@@ -114,6 +114,37 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       end
     end
 
+    context 'when Topology Service calls are made' do
+      it 'adds the call count, duration, and BeginUpdate records to the payload' do
+        Gitlab::Instrumentation::TopologyService.add_call(
+          request: Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
+            create_records: [Gitlab::Cells::TopologyService::Claims::V1::Metadata.new]
+          ),
+          duration: 0.25
+        )
+
+        subject
+
+        expect(payload).to include(
+          topology_service_calls: 1,
+          topology_service_duration_s: 0.25,
+          topology_service_begin_update_calls: 1,
+          topology_service_begin_update_duration_s: 0.25,
+          topology_service_begin_update_create_records: 1,
+          topology_service_begin_update_destroy_records: 0
+        )
+      end
+    end
+
+    context 'when no Topology Service calls are made' do
+      it 'does not add the keys to the payload' do
+        subject
+
+        expect(payload).not_to have_key(:topology_service_calls)
+        expect(payload).not_to have_key(:topology_service_duration_s)
+      end
+    end
+
     context 'when LDAP requests are made' do
       let(:provider) { 'ldapmain' }
       let(:adapter) { Gitlab::Auth::Ldap::Adapter.new(provider) }

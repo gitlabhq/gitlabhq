@@ -105,3 +105,14 @@ housekeeper:cleanup-gl-introduced:
   variables:
     KEEP: "Keeps::CleanupGlIntroduced"
     SLACK_CHANNEL: "frontend"
+
+# Monthly, early in each month. See keeps/update_browserslist_baseline_date.rb.
+housekeeper:update-browserslist-baseline-date:
+  extends: .housekeeping-keep
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "update_browserslist_baseline_date"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::UpdateBrowserslistBaselineDate"
+    SLACK_CHANNEL: "frontend"

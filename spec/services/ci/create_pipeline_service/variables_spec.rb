@@ -123,6 +123,39 @@ RSpec.describe Ci::CreatePipelineService,
         )
       end
     end
+
+    context 'when pipeline variables exceed the artifact size limit' do
+      let(:config) { 'rspec: { script: rspec }' }
+      let(:variables_attributes) { [{ key: 'BIG', value: 'a' * 1.kilobyte }] }
+
+      let(:service) do
+        described_class.new(project, user, { ref: 'master', variables_attributes: variables_attributes })
+      end
+
+      before do
+        stub_const('Ci::PipelineArtifact::FILE_SIZE_LIMIT', 1.kilobyte)
+      end
+
+      it 'does not create the pipeline' do
+        expect(pipeline).not_to be_created_successfully
+        expect(pipeline.error_messages.map(&:content)).to contain_exactly(
+          'Failed to build pipeline variables: total size exceeds the limit of 1 KiB'
+        )
+        expect(Ci::PipelineArtifact.where(pipeline_id: pipeline.id)).to be_empty
+      end
+
+      context 'when the ci_enforce_pipeline_variables_total_size_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_enforce_pipeline_variables_total_size_limit: false)
+        end
+
+        it 'creates the pipeline without the variables' do
+          expect(pipeline).to be_created_successfully
+          expect(Ci::PipelineArtifact.where(pipeline_id: pipeline.id)).to be_empty
+          expect(Ci::Pipeline.find(pipeline.id).variables).to be_empty
+        end
+      end
+    end
   end
 
   private

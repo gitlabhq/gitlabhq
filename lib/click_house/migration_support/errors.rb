@@ -22,6 +22,7 @@ module ClickHouse
 
       IrreversibleMigration = Class.new(Base)
       LockError = Class.new(Base)
+      TableBusyError = Class.new(Base)
 
       class DuplicateMigrationVersionError < Base
         def initialize(version = nil)

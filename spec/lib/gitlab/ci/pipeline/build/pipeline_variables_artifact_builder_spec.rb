@@ -60,5 +60,32 @@ RSpec.describe Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder, fe
         expect { run_builder }.to raise_error(ActiveModel::ValidationError, /Validation failed/)
       end
     end
+
+    context 'when the variables exceed the artifact size limit' do
+      let(:variables_attributes) { [{ key: 'BIG', value: 'a' * 1.kilobyte }] }
+
+      before do
+        stub_const('Ci::PipelineArtifact::FILE_SIZE_LIMIT', 1.kilobyte)
+      end
+
+      it 'raises an error' do
+        expect { run_builder }.to raise_error(
+          described_class::SizeLimitExceededError,
+          'total size exceeds the limit of 1 KiB'
+        )
+        expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
+      end
+
+      context 'when the ci_enforce_pipeline_variables_total_size_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_enforce_pipeline_variables_total_size_limit: false)
+        end
+
+        it 'builds the pipeline variables artifact' do
+          expect { run_builder }.not_to raise_error
+          expect(pipeline.pipeline_artifacts_pipeline_variables).to be_a(Ci::PipelineArtifact)
+        end
+      end
+    end
   end
 end

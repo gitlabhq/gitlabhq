@@ -98,6 +98,9 @@ Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
 
 ## CI and Sec Databases
 
+To stand up a brand-new decomposed database, see
+[Stand up a new decomposed database](new_decomposed_database.md).
+
 ### Configure single database
 
 By default, GDK is configured to run with multiple databases.

@@ -538,6 +538,16 @@ Additional details:
 
 ## Use pipeline variables
 
+{{< history >}}
+
+- Pipeline variable size limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261789) in GitLab 19.6 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_enforce_pipeline_variables_total_size_limit`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 Pipeline variables are variables that are specified when running a new pipeline.
 
 > [!note]
@@ -564,6 +574,10 @@ project, group, or instance settings, or in the `.gitlab-ci.yml` file.
 
 > [!warning]
 > You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
+
+The total size of all pipeline variables in a pipeline, including keys and values, is limited to 10 MiB.
+If the pipeline variables exceed this limit, the pipeline is not created and fails with the error
+`Failed to build pipeline variables: total size exceeds the limit of 10 MiB`.
 
 ### Restrict pipeline variables
 

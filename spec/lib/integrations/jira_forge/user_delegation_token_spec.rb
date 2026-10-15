@@ -28,6 +28,40 @@ RSpec.describe Integrations::JiraForge::UserDelegationToken, feature_category: :
     end
   end
 
+  describe '.decode with several db_key_base keys' do
+    include DbKeyBaseHelpers
+
+    let(:new_key) { SecureRandom.hex(64) }
+
+    it 'decodes a token signed with the previous key' do
+      jwt = token.to_jwt
+      stub_db_key_base_keys(Settings.db_key_base_keys.last, new_key)
+
+      expect(described_class.decode(jwt)).to have_attributes(user_id: user.id, account_id: 'acc-1', cloud_id: 'cloud-1')
+    end
+
+    it 'rejects a token signed with a key that is no longer configured' do
+      jwt = token.to_jwt
+      stub_db_key_base_keys(new_key)
+
+      expect(described_class.decode(jwt)).to be_nil
+    end
+
+    it 'signs new tokens with the current key' do
+      stub_db_key_base_keys(Settings.db_key_base_keys.last, new_key)
+      jwt = token.to_jwt
+      stub_db_key_base_keys(new_key)
+
+      expect(described_class.decode(jwt)).to have_attributes(user_id: user.id)
+    end
+
+    it 'returns nil for a tampered token' do
+      stub_db_key_base_keys(Settings.db_key_base_keys.last, new_key)
+
+      expect(described_class.decode("#{token.to_jwt}tampered")).to be_nil
+    end
+  end
+
   describe '#matches_fit?' do
     it 'is true when the FIT principal and cloud id match the claims' do
       expect(token.matches_fit?(fit_double)).to be(true)

@@ -5,7 +5,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
 export default {
-  name: 'EmptyStateWithoutAnyTickets',
+  name: 'TicketEmptyState',
   emptyStateSvg,
   components: {
     GlEmptyState,

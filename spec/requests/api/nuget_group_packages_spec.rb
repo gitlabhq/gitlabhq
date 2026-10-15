@@ -95,8 +95,8 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
     it_behaves_like 'handling all endpoints'
 
     def update_visibility_to(visibility)
-      project.update!(visibility_level: visibility)
-      subgroup.update!(visibility_level: visibility)
+      project.reload.update!(visibility_level: visibility)
+      subgroup.reload.update!(visibility_level: visibility)
     end
   end
 
@@ -233,9 +233,9 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
     end
 
     def update_visibility_to(visibility)
-      project.update!(visibility_level: visibility)
-      subgroup.update!(visibility_level: visibility)
-      group.update!(visibility_level: visibility)
+      project.reload.update!(visibility_level: visibility)
+      subgroup.reload.update!(visibility_level: visibility)
+      group.reload.update!(visibility_level: visibility)
     end
   end
 end

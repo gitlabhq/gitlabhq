@@ -43,7 +43,7 @@ describe('ExtendedDashboardPanel', () => {
     it('sets the default props for the dashboard panel', () => {
       expect(findDashboardPanel().props()).toStrictEqual({
         containerClass: 'grid-stack-item-content',
-        bodyContentClass: '',
+        bodyContentClass: 'dashboard-panel-body',
         borderColorClass: '',
         title: '',
         titleIcon: '',
@@ -234,6 +234,36 @@ describe('ExtendedDashboardPanel', () => {
           await nextTick();
           expect(findPanelAlertPopover().exists()).toBe(alertPopoverShown);
         },
+      );
+    });
+  });
+
+  // Panel content adapts to the tile through container queries on the element that
+  // clips it, so that element has to be the container on both body paths.
+  describe('panel body container', () => {
+    it('marks the scrolling body as the dashboard-panel-body container when a footer is present', () => {
+      createWrapper({
+        mountFn: mountExtended,
+        slots: { body: '<p>body</p>', footer: '<p>footer</p>' },
+        directives: { GlResizeObserver: createMockDirective('gl-resize-observer') },
+      });
+
+      expect(wrapper.findByTestId('panel-body-content').classes()).toContain(
+        'dashboard-panel-body',
+      );
+    });
+
+    it('passes the container class to the panel body when there is no footer', () => {
+      createWrapper({ slots: { body: '<p>body</p>' } });
+
+      expect(findDashboardPanel().props('bodyContentClass')).toContain('dashboard-panel-body');
+    });
+
+    it('keeps the caller body classes next to the container class', () => {
+      createWrapper({ props: { bodyContentClasses: 'gl-p-0' }, slots: { body: '<p>body</p>' } });
+
+      expect(findDashboardPanel().props('bodyContentClass').split(' ')).toEqual(
+        expect.arrayContaining(['dashboard-panel-body', 'gl-p-0']),
       );
     });
   });

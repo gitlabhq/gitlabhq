@@ -1610,6 +1610,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -1924,16 +1942,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -1954,22 +1962,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -2123,6 +2123,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -2437,16 +2455,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -2467,22 +2475,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -3629,6 +3629,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -3943,16 +3961,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -3973,22 +3981,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -11051,6 +11051,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -11365,16 +11383,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -11395,22 +11403,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -11564,6 +11564,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -11878,16 +11896,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -11908,22 +11916,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -13077,6 +13077,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -13391,16 +13409,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -13421,22 +13429,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -46424,6 +46424,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -46738,16 +46756,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -46768,22 +46776,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -46937,6 +46937,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -47251,16 +47269,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -47281,22 +47289,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -47456,6 +47456,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -47770,16 +47788,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -47800,22 +47808,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -48974,6 +48974,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -49288,16 +49306,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -49318,22 +49326,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -84648,6 +84648,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -84962,16 +84980,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -84992,22 +85000,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "includeSubgroups",
@@ -111007,6 +111007,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -111321,16 +111339,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -111351,22 +111359,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -111520,6 +111520,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -111834,16 +111852,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -111864,22 +111872,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -113014,6 +113014,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -113328,16 +113346,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -113358,22 +113366,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -114612,6 +114612,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -114926,16 +114944,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -114956,22 +114964,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -115125,6 +115125,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -115439,16 +115457,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -115469,22 +115477,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -116619,6 +116619,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -116933,16 +116951,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -116963,22 +116971,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -119258,6 +119258,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -119572,16 +119590,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -119602,22 +119610,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -119771,6 +119771,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -120085,16 +120103,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -120115,22 +120123,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -121265,6 +121265,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -121579,16 +121597,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -121609,22 +121617,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -123370,6 +123370,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -123684,16 +123702,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -123714,22 +123722,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -123883,6 +123883,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -124197,16 +124215,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -124227,22 +124235,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -125377,6 +125377,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -125691,16 +125709,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -125721,22 +125729,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -167135,6 +167135,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -167449,16 +167467,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -167479,22 +167487,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "assigneeUsername",
@@ -216005,6 +216005,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -216319,16 +216337,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -216349,22 +216357,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -216518,6 +216518,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -216832,16 +216850,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -216862,22 +216870,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -217980,6 +217980,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -218294,16 +218312,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -218324,22 +218332,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -221228,6 +221228,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -221542,16 +221560,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -221572,22 +221580,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -221741,6 +221741,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -222055,16 +222073,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -222085,22 +222093,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",
@@ -223223,6 +223223,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "approver",
+                  "description": "Usernames of possible approvers.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "approvedBy",
                   "description": "Usernames of the approvers.",
                   "type": {
@@ -223537,16 +223555,6 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "sort",
-                  "description": "Sort merge requests by the criteria.",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "MergeRequestSort",
-                    "ofType": null
-                  },
-                  "defaultValue": "CREATED_DESC"
-                },
-                {
                   "name": "subscribed",
                   "description": "Merge requests the current user is subscribed to.",
                   "type": {
@@ -223567,22 +223575,14 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "approver",
-                  "description": "Usernames of possible approvers.",
+                  "name": "sort",
+                  "description": "Sort merge requests by the criteria.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "String",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "ENUM",
+                    "name": "MergeRequestSort",
+                    "ofType": null
                   },
-                  "defaultValue": null
+                  "defaultValue": "CREATED_DESC"
                 },
                 {
                   "name": "groupId",

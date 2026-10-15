@@ -37,6 +37,7 @@ title: Database development guidelines
 - [Deleting migrations](deleting_migrations.md)
 - [Different types of migrations](../migration_style_guide.md#choose-an-appropriate-migration-type)
 - [Migrations for multiple databases](migrations_for_multiple_databases.md)
+- [Stand up a new decomposed database](new_decomposed_database.md)
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
 - [Partitioning tables](partitioning/_index.md)
 - [Post-deployment migrations guidelines](post_deployment_migrations.md) and [how to create one](post_deployment_migrations.md#creating-migrations)

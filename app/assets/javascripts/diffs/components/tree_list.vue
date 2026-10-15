@@ -4,6 +4,7 @@ import {
   GlBadge,
   GlButtonGroup,
   GlButton,
+  GlIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
@@ -16,7 +17,6 @@ import { useCodeReview } from '~/diffs/stores/code_review';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from '~/diffs/components/file_row_stats.vue';
-import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   name: 'TreeList',
@@ -24,11 +24,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    ChangedFileIcon,
     FileRowStats,
     GlBadge,
     GlButtonGroup,
     GlButton,
+    GlIcon,
     FileRow,
     RecycleScroller,
     GlSearchBoxByType,
@@ -242,6 +242,11 @@ export default {
       if (item.isHeader || item.type === 'tree') return false;
       return Boolean(this.loadedFiles) && !this.loadedFiles[item.fileHash];
     },
+    showStats(item) {
+      return (
+        !this.hideFileStats && item.type === 'blob' && Boolean(item.addedLines || item.removedLines)
+      );
+    },
     isViewed(item) {
       return this.reviewedIds[item.codeReviewId] ?? this.reviewedIds[item.id];
     },
@@ -349,12 +354,15 @@ export default {
             @click-file="!isLoading(item) && $emit('click-file', item)"
             @click-submodule="!isLoading(item) && $emit('click-file', item)"
           >
-            <file-row-stats
-              v-if="!hideFileStats && item.type === 'blob'"
-              :file="item"
-              class="gl-mr-2"
+            <file-row-stats v-if="showStats(item)" :file="item" />
+            <gl-icon
+              v-if="item.type === 'blob' && (item.tempFile || item.deleted)"
+              :name="item.tempFile ? 'file-addition' : 'file-deletion'"
+              :variant="item.tempFile ? 'success' : 'danger'"
+              :aria-label="item.tempFile ? __('Added') : __('Deleted')"
+              class="gl-pointer-events-none -gl-mr-1 gl-ml-1 gl-shrink-0"
+              data-testid="file-change-icon"
             />
-            <changed-file-icon :file="item" :size="16" :show-tooltip="true" :as-button="false" />
           </file-row>
         </template>
         <template #after>

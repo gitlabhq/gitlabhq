@@ -1,0 +1,52 @@
+// Height bands for panel_state.vue. The analytics-panel-state-* classes are only hooks,
+// and the two-class selectors outrank the inline utilities they override. Thresholds are
+// measured state heights plus 8px of slack (see !259898). Below the compact band the body
+// scrolls rather than putting the action beside the title, as UX asked.
+$panel-state-description-max: 188px;
+$panel-state-compact-max: 148px;
+$panel-state-description-min: 48px;
+
+// Only states with an action lose their description here: the action says what the
+// description would. A state without one fits its description down to the lowest band.
+@container dashboard-panel-body (height < #{$panel-state-description-max}) {
+  .dashboard-panel-body .analytics-panel-state-with-action .analytics-panel-state-description {
+    @apply gl-hidden;
+  }
+}
+
+// The compact layout, as the compact prop renders it: left-aligned, smaller title,
+// icon inline with the title.
+@container dashboard-panel-body (height < #{$panel-state-compact-max}) {
+  .dashboard-panel-body .analytics-panel-state {
+    @apply gl-h-auto;
+    @apply gl-items-start;
+    @apply gl-justify-start;
+    @apply gl-p-0;
+    @apply gl-text-left;
+  }
+
+  .dashboard-panel-body .analytics-panel-state-icon {
+    @apply gl-mx-0;
+    @apply gl-mb-0;
+    @apply gl-mr-2;
+    @apply gl-inline-block;
+    @apply gl-align-middle;
+  }
+
+  .dashboard-panel-body .analytics-panel-state-title {
+    @apply gl-text-lg;
+    @apply gl-font-bold;
+    @apply gl-leading-normal;
+  }
+
+  .dashboard-panel-body .analytics-panel-state-action {
+    @apply gl-mt-3;
+    @apply gl-self-start;
+  }
+}
+
+@container dashboard-panel-body (height < #{$panel-state-description-min}) {
+  .dashboard-panel-body .analytics-panel-state-description {
+    @apply gl-hidden;
+  }
+}

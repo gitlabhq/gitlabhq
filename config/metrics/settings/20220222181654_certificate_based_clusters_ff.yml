@@ -10,7 +10,7 @@ status: active
 milestone: "14.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81311
 time_frame: none
-data_source: database
+data_source: system
 data_category: optional
 instrumentation_class: CertBasedClustersFfMetric
 performance_indicator_type: []

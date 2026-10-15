@@ -5,6 +5,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import { FILTER_OPTIONS, SORT_OPTIONS } from '~/access_tokens/constants';
 import { initializeValuesFromQuery } from '~/access_tokens/utils';
+import { navigateToQuery } from '../utils';
 
 import { useAccessTokens } from '../stores/access_tokens';
 import AccessToken from './access_token.vue';
@@ -79,12 +80,19 @@ export default {
       urlRotate: this.accessTokenRotate,
       urlShow: this.accessTokenShow,
     });
-    this.$router.replace({ query: this.urlParams });
+    navigateToQuery(this.$router, this.urlParams, { replace: true });
     this.fetchTokens();
     window.addEventListener('popstate', this.handlePopState);
+    // These actions change the store's filters or page; keep the address bar in sync.
+    this.unsubscribeFromActions = useAccessTokens().$onAction(({ name, after }) => {
+      if (['createToken', 'revokeToken', 'rotateToken'].includes(name)) {
+        after(this.syncUrlWithStore);
+      }
+    });
   },
   beforeDestroy() {
     window.removeEventListener('popstate', this.handlePopState);
+    this.unsubscribeFromActions();
   },
   methods: {
     ...mapActions(useAccessTokens, [
@@ -103,12 +111,12 @@ export default {
     search(filters) {
       this.setFilters(filters);
       this.setPage(1);
-      this.$router.push({ query: this.urlParams });
+      navigateToQuery(this.$router, this.urlParams);
       this.fetchTokens();
     },
     async pageChanged(page) {
       this.setPage(page);
-      this.$router.push({ query: this.urlParams });
+      navigateToQuery(this.$router, this.urlParams);
       await this.fetchTokens();
       scrollTo({ top: 0 }, this.$el);
     },
@@ -122,13 +130,16 @@ export default {
     },
     handleSortChange(value) {
       this.setSorting({ value, isAsc: this.sorting.isAsc });
-      this.$router.push({ query: this.urlParams });
+      navigateToQuery(this.$router, this.urlParams);
       this.fetchTokens();
     },
     handleSortDirectionChange(isAsc) {
       this.setSorting({ value: this.sorting.value, isAsc });
-      this.$router.push({ query: this.urlParams });
+      navigateToQuery(this.$router, this.urlParams);
       this.fetchTokens();
+    },
+    syncUrlWithStore() {
+      navigateToQuery(this.$router, this.urlParams);
     },
   },
   FILTER_OPTIONS,

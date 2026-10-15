@@ -14,11 +14,38 @@ module ClickHouse
     self.verbose = true
 
     MIGRATION_FILENAME_REGEXP = /\A([0-9]+)_([_a-z0-9]*)\.?([_a-z0-9]*)?\.rb\z/
+    RUNNING_MUTATION_ERROR = /CANNOT_ASSIGN_ALTER|affected by mutation .* which is not finished yet/
 
     def execute(query)
       query = ReplicatedTableEnginePatcher.patch_replicated(query) if connection.replicated_engine?
       query = TableSettingsNormalizer.run(query, connection.version)
       connection.execute(query)
+    end
+
+    # Runs an ALTER that has to wait for a running mutation on the same table to finish.
+    # ClickHouse rejects the ALTER until then, so the method retries every `interval` until `timeout` passes.
+    #
+    # @param query [String] the ALTER statement
+    # @param timeout [ActiveSupport::Duration] how long to keep retrying
+    # @param interval [ActiveSupport::Duration] how long to wait between attempts
+    # @raise [ClickHouse::MigrationSupport::Errors::TableBusyError] if the mutation is still running after the timeout
+    def execute_when_idle(query, timeout: 2.minutes, interval: 5.seconds)
+      deadline = ::Gitlab::Metrics::System.monotonic_time + timeout.to_f
+
+      begin
+        execute(query)
+      rescue ClickHouse::Client::DatabaseError => e
+        raise unless RUNNING_MUTATION_ERROR.match?(e.message)
+
+        if ::Gitlab::Metrics::System.monotonic_time >= deadline
+          raise ClickHouse::MigrationSupport::Errors::TableBusyError,
+            "A mutation is still running after #{timeout.inspect}: #{e.message.strip}\n" \
+              "Wait for it to finish, then run the migration again."
+        end
+
+        sleep(interval.to_f)
+        retry
+      end
     end
 
     def up

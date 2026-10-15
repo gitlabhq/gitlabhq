@@ -30,7 +30,7 @@ module Ci
 
     validates :pipeline, :project, :file_format, :file, presence: true
     validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
-    validates :size, presence: true, numericality: { less_than_or_equal_to: FILE_SIZE_LIMIT }
+    validates :size, presence: true, numericality: { less_than_or_equal_to: -> { FILE_SIZE_LIMIT } }
     validates :file_type, presence: true
 
     partitionable scope: :pipeline

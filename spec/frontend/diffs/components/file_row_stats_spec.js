@@ -1,29 +1,34 @@
-import { mount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FileRowStats from '~/diffs/components/file_row_stats.vue';
 
 describe('Diff file row stats', () => {
   let wrapper;
 
-  const createComponent = () => {
-    wrapper = mount(FileRowStats, {
-      propsData: {
-        file: {
-          addedLines: 20,
-          removedLines: 10,
-        },
-      },
-    });
+  const findAdded = () => wrapper.findByTestId('file-added-lines');
+  const findRemoved = () => wrapper.findByTestId('file-removed-lines');
+
+  const createComponent = (file) => {
+    wrapper = shallowMountExtended(FileRowStats, { propsData: { file } });
   };
 
-  beforeEach(() => {
-    createComponent();
+  it('renders added and removed lines count', () => {
+    createComponent({ addedLines: 20, removedLines: 10 });
+
+    expect(findAdded().text()).toBe('+20');
+    expect(findRemoved().text()).toBe('-10');
   });
 
-  it('renders added lines count', () => {
-    expect(wrapper.find('[data-testid="file-added-lines"]').text()).toContain('+20');
+  it('omits the removed count when no lines were removed', () => {
+    createComponent({ addedLines: 20, removedLines: 0 });
+
+    expect(findAdded().text()).toBe('+20');
+    expect(findRemoved().exists()).toBe(false);
   });
 
-  it('renders removed lines count', () => {
-    expect(wrapper.find('[data-testid="file-removed-lines"]').text()).toContain('-10');
+  it('omits the added count when no lines were added', () => {
+    createComponent({ addedLines: 0, removedLines: 10 });
+
+    expect(findAdded().exists()).toBe(false);
+    expect(findRemoved().text()).toBe('-10');
   });
 });

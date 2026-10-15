@@ -9,7 +9,7 @@ status: active
 milestone: "17.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148077
 time_frame: none
-data_source: database
+data_source: system
 data_category: optional
 instrumentation_class: GitlabEnvironmentToolkitMetric
 performance_indicator_type: []

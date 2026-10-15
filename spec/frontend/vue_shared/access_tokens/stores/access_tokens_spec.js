@@ -10,7 +10,7 @@ import {
   HTTP_STATUS_OK,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
 } from '~/lib/utils/http_status';
-import { DEFAULT_SORT } from '~/access_tokens/constants';
+import { DEFAULT_FILTER, DEFAULT_SORT } from '~/access_tokens/constants';
 
 const mockAlertDismiss = jest.fn();
 jest.mock('~/alert', () => ({
@@ -167,20 +167,25 @@ describe('useAccessTokens store', () => {
       });
 
       describe('when `showCreateFormInline` is true', () => {
-        it('uses correct params to refetch tokens', async () => {
+        it('resets filters and page so the new token is listed, then refetches tokens', async () => {
           mockAxios.onPost().replyOnce(HTTP_STATUS_OK, { token: 'new-token' });
           mockAxios.onGet().replyOnce(HTTP_STATUS_OK, [{ active: true, name: 'Token' }], headers);
           store.setPage(2);
-          store.setFilters(['my token']);
+          store.setFilters([
+            'my token',
+            { type: 'state', value: { data: 'inactive', operator: '=' } },
+          ]);
           await store.createToken({ name, description, expiresAt, scopes });
 
+          expect(store.filters).toEqual(DEFAULT_FILTER);
+          expect(store.page).toBe(1);
           expect(mockAxios.history.get).toHaveLength(1);
           expect(mockAxios.history.get[0]).toEqual(
             expect.objectContaining({
               params: {
                 page: 1,
                 sort: 'expires_asc',
-                search: 'my token',
+                state: 'active',
               },
             }),
           );

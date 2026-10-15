@@ -63,7 +63,8 @@ export default {
       required: true,
       validator: (variant) => Boolean(STATES[variant]),
     },
-    // Compact fits stat-sized panels where a centered block would not.
+    // Compact is the explicit stat-tile layout; shorter tiles get it through the
+    // dashboard-panel-body container queries in analytics_panel_state.scss.
     compact: {
       type: Boolean,
       required: false,
@@ -91,22 +92,46 @@ export default {
     stateDescription() {
       return this.description || this.state.description;
     },
-    // Compact fits stat-sized tiles: left-aligned with a heading small enough that the
-    // title and description both stay visible in a three-column panel.
+    // Compact is the left-aligned stat-tile layout with a smaller heading. The
+    // analytics-panel-state-* classes are hooks for the container queries in
+    // analytics_panel_state.scss, which shrink the state further in short tiles; the
+    // with-action hook lets them hide the description first where a button or link follows.
     containerClasses() {
-      return this.compact
-        ? 'gl-flex gl-grow gl-flex-col'
-        : 'gl-flex gl-h-full gl-grow gl-flex-col gl-items-center gl-justify-center gl-p-5 gl-text-center';
+      return [
+        'analytics-panel-state',
+        { 'analytics-panel-state-with-action': Boolean(this.state.retry || this.state.link) },
+        this.compact
+          ? 'gl-flex gl-grow gl-flex-col'
+          : 'gl-flex gl-h-full gl-grow gl-flex-col gl-items-center gl-justify-center gl-p-5 gl-text-center',
+      ];
+    },
+    iconClasses() {
+      return [
+        'analytics-panel-state-icon',
+        this.compact ? 'gl-mr-2 gl-inline-block gl-align-middle' : 'gl-mx-auto gl-mb-4 gl-block',
+      ];
     },
     titleClasses() {
-      return this.compact
-        ? 'gl-block gl-text-lg gl-font-bold'
-        : 'gl-block gl-text-size-h-display gl-font-semibold gl-leading-36';
+      return [
+        'analytics-panel-state-title',
+        this.compact
+          ? 'gl-block gl-text-lg gl-font-bold'
+          : 'gl-block gl-text-size-h-display gl-font-semibold gl-leading-36',
+      ];
     },
     descriptionClasses() {
-      return this.compact
-        ? 'gl-mb-0 gl-mt-2 gl-text-subtle'
-        : 'gl-mb-0 gl-mt-4 gl-text-lg gl-text-subtle';
+      return [
+        'analytics-panel-state-description',
+        this.compact
+          ? 'gl-mb-0 gl-mt-2 gl-text-subtle'
+          : 'gl-mb-0 gl-mt-4 gl-text-lg gl-text-subtle',
+      ];
+    },
+    actionClasses() {
+      return [
+        'analytics-panel-state-action',
+        this.compact ? 'gl-mt-3 gl-self-start' : 'gl-mt-5 gl-self-center',
+      ];
     },
     // A stat-sized tile cannot fit the description and the retry button; the button says
     // what the description would ("Try again"), so it wins.
@@ -119,37 +144,33 @@ export default {
 
 <template>
   <div :class="containerClasses" :data-testid="`panel-state-${variant}`">
-    <gl-icon
-      v-if="state.icon && !compact"
-      :name="state.icon"
-      variant="danger"
-      :size="16"
-      class="gl-mb-4"
-    />
     <!-- Deliberately not a heading: GlDashboardPanel titles are not headings, and several
-         failing panels would flood the page outline with identical entries. -->
-    <strong :class="titleClasses">
+         failing panels would flood the page outline with identical entries. The icon lives
+         inside the title so the compact layouts can run it inline; the full layout stacks it. -->
+    <strong :class="titleClasses" data-testid="panel-state-title">
       <gl-icon
-        v-if="state.icon && compact"
+        v-if="state.icon"
         :name="state.icon"
         variant="danger"
         :size="16"
-        class="gl-mr-2"
+        :class="iconClasses"
       />{{ stateTitle }}
     </strong>
-    <p v-if="showDescription" :class="descriptionClasses">{{ stateDescription }}</p>
+    <p v-if="showDescription" :class="descriptionClasses" data-testid="panel-state-description">
+      {{ stateDescription }}
+    </p>
     <gl-button
       v-if="state.retry"
       category="primary"
       variant="confirm"
       :size="compact ? 'small' : 'medium'"
-      :class="compact ? 'gl-mt-3 gl-self-start' : 'gl-mt-5 gl-self-center'"
+      :class="actionClasses"
       data-testid="panel-state-retry"
       @click="$emit('retry')"
     >
       {{ __('Try again') }}
     </gl-button>
-    <gl-link v-else-if="state.link" :href="state.link" :class="compact ? 'gl-mt-2' : 'gl-mt-5'">
+    <gl-link v-else-if="state.link" :href="state.link" :class="actionClasses">
       {{ __('Learn more') }}
     </gl-link>
   </div>

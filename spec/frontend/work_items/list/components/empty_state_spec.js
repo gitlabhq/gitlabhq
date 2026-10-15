@@ -1,12 +1,12 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
+import EmptyState from '~/work_items/list/components/empty_state.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils');
 
-describe('EmptyStateWithoutAnyIssues component', () => {
+describe('EmptyState component', () => {
   let wrapper;
 
   const defaultProvide = {
@@ -33,7 +33,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     isLoggedInValue = true,
   } = {}) => {
     isLoggedIn.mockReturnValue(isLoggedInValue);
-    wrapper = mountExtended(EmptyStateWithoutAnyIssues, {
+    wrapper = mountExtended(EmptyState, {
       propsData: {
         ...props,
       },

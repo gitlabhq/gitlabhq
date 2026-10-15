@@ -10609,6 +10609,12 @@
     "dottedExample": "/api/v4/organizations/john.doe"
   },
   {
+    "template": "/api/:version/organizations/:id/restore",
+    "example": "/api/v4/organizations/foo/restore",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/organizations/john.doe/restore"
+  },
+  {
     "template": "/api/:version/organizations/:id/security/policy_store",
     "example": "/api/v4/organizations/foo/security/policy_store",
     "acceptsFormat": true,

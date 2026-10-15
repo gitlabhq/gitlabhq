@@ -21,18 +21,24 @@ export default {
 </script>
 
 <template>
-  <span class="file-row-stats">
-    <span data-testid="file-added-lines" class="gl-text-success" :aria-label="addedLinesLabel">
+  <span
+    class="file-row-stats gl-inline-flex gl-gap-2 gl-text-sm gl-font-semibold gl-tracking-tight"
+  >
+    <span
+      v-if="file.addedLines"
+      data-testid="file-added-lines"
+      class="gl-text-success"
+      :aria-label="addedLinesLabel"
+    >
       +{{ file.addedLines }}
     </span>
-    <span data-testid="file-removed-lines" class="gl-text-danger" :aria-label="removedLinesLabel">
+    <span
+      v-if="file.removedLines"
+      data-testid="file-removed-lines"
+      class="gl-text-danger"
+      :aria-label="removedLinesLabel"
+    >
       -{{ file.removedLines }}
     </span>
   </span>
 </template>
-
-<style>
-.file-row-stats {
-  font-size: 12px;
-}
-</style>

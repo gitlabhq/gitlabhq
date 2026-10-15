@@ -233,10 +233,23 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
       stub_feature_flags(granular_personal_access_tokens: false)
     end
 
-    it 'returns an error' do
+    it 'returns permissions' do
       post_graphql(query, current_user: current_user)
 
-      expect_graphql_errors_to_include("The resource that you are attempting to access does not exist")
+      expect_graphql_errors_to_be_empty
+      expect(permissions_data).to be_present
+    end
+
+    context 'when feature-flag `granular_oauth_tokens` is also disabled' do
+      before do
+        stub_feature_flags(granular_oauth_tokens: false)
+      end
+
+      it 'returns an error' do
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_include("The resource that you are attempting to access does not exist")
+      end
     end
   end
 end

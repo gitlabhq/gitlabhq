@@ -55,6 +55,43 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
     end
   end
 
+  describe '#cosign_import_key_pair' do
+    let(:leaf_key) { OpenSSL::PKey::EC.generate(SupplyChain::RootCaDriver::EC_CURVE) }
+    let(:dir) { Dir.tmpdir }
+
+    subject(:imported) { publisher.send(:cosign_import_key_pair, key: leaf_key, dir: dir) }
+
+    it 'imports the key over stdin with a random password in the environment', :aggregate_failures do
+      expect(imported).to match(key_path: File.join(dir, 'cosign.key'), password: match(/\A\h{64}\z/))
+      expect(Gitlab::Popen).to have_received(:popen_with_detail).with(
+        ['cosign', 'import-key-pair', '--yes', '--key', '/dev/stdin', '--output-key-prefix', File.join(dir, 'cosign')],
+        nil,
+        { 'COSIGN_PASSWORD' => imported[:password] }
+      )
+      expect(popen_stdin_file).to have_received(:write).with(leaf_key.private_to_pem)
+    end
+
+    it 'validates the dir before running cosign', :aggregate_failures do
+      expect(publisher).to receive(:validate_key_dir!).with(dir).and_raise(described_class::InvalidInput)
+
+      expect { imported }.to raise_exception(described_class::InvalidInput)
+      expect(Gitlab::Popen).not_to have_received(:popen_with_detail)
+    end
+
+    it 'generates a different password for each import' do
+      expect(imported[:password]).not_to eq(publisher.send(:cosign_import_key_pair, key: leaf_key, dir: dir)[:password])
+    end
+
+    context 'when cosign fails' do
+      let(:popen_success) { false }
+
+      it 'raises KeyImportFailure with the cosign error' do
+        expect { imported }.to raise_error(described_class::KeyImportFailure,
+          "Key import failed after #{expected_duration}s: #{expected_stderr}")
+      end
+    end
+  end
+
   describe '#validate_id_token!' do
     subject(:validate_id_token) { publisher.send(:validate_id_token!, id_token) }
 
@@ -133,6 +170,67 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
 
       it 'raises an exception' do
         expect { validate_blob_name }.to raise_exception(Gitlab::PathTraversal::PathTraversalAttackError)
+      end
+    end
+  end
+
+  describe '#validate_key_dir!' do
+    subject(:validate_key_dir) { publisher.send(:validate_key_dir!, dir) }
+
+    context "when an existing absolute directory is passed" do
+      let(:dir) { Dir.tmpdir }
+
+      it 'does not raise an error' do
+        expect { validate_key_dir }.not_to raise_error
+      end
+    end
+
+    context "when nil is passed" do
+      let(:dir) { nil }
+
+      it 'raises InvalidInput' do
+        expect { validate_key_dir }.to raise_exception(described_class::InvalidInput)
+      end
+    end
+
+    context "when a Pathname is passed" do
+      let(:dir) { Pathname.new(Dir.tmpdir) }
+
+      it 'raises InvalidInput' do
+        expect { validate_key_dir }.to raise_exception(described_class::InvalidInput)
+      end
+    end
+
+    context "when a relative path to an existing directory that looks like an option is passed" do
+      let(:dir) { "--yes" }
+
+      around do |example|
+        Dir.mktmpdir do |tmp|
+          Dir.chdir(tmp) do
+            Dir.mkdir(dir)
+            example.run
+          end
+        end
+      end
+
+      it 'raises InvalidInput' do
+        expect { validate_key_dir }.to raise_exception(described_class::InvalidInput)
+      end
+    end
+
+    context "when a directory that does not exist is passed" do
+      let(:dir) { File.join(Dir.tmpdir, "missing-#{SecureRandom.hex(8)}") }
+
+      it 'raises InvalidInput' do
+        expect { validate_key_dir }.to raise_exception(described_class::InvalidInput)
+      end
+    end
+
+    context "when path traversal is passed" do
+      let(:dir) { File.join(Dir.tmpdir, "../etc") }
+
+      it 'raises an exception' do
+        expect { validate_key_dir }.to raise_exception(Gitlab::PathTraversal::PathTraversalAttackError)
       end
     end
   end

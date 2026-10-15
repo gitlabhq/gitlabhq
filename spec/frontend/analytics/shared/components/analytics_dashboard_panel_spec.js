@@ -235,7 +235,9 @@ describe('AnalyticsDashboardPanel', () => {
       it('renders the panel permissions state', () => {
         expect(findDashboardPanel().props('titleIconClass')).toBe('gl-text-danger');
         expect(findDashboardPanel().props('borderColorClass')).toBe('gl-border-t-red-500');
-        expect(findDashboardPanel().props('bodyContentClass')).toBe('gl-content-center');
+        expect(findDashboardPanel().props('bodyContentClass')).toBe(
+          'dashboard-panel-body gl-content-center',
+        );
       });
 
       it('renders the missing license message', () => {

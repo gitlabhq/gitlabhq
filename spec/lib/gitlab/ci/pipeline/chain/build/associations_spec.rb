@@ -350,10 +350,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       command.logger.observations_hash
     end
 
-    it 'observes the variables count and the largest value bytesize' do
+    it 'observes the variables count, the largest value bytesize, and the total bytesize' do
       expect(observations).to include(
         'pipeline_variables_count' => 2,
-        'pipeline_variables_max_value_bytesize' => 12
+        'pipeline_variables_max_value_bytesize' => 12,
+        'pipeline_variables_total_bytesize' => 28
       )
     end
 
@@ -361,7 +362,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       let(:variables_attributes) { [{ key: 'first', value: 'áé' }] }
 
       it 'observes the bytesize rather than the character length' do
-        expect(observations).to include('pipeline_variables_max_value_bytesize' => 4)
+        expect(observations).to include(
+          'pipeline_variables_max_value_bytesize' => 4,
+          'pipeline_variables_total_bytesize' => 9
+        )
       end
     end
 
@@ -371,7 +375,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       it 'observes zeroes' do
         expect(observations).to include(
           'pipeline_variables_count' => 0,
-          'pipeline_variables_max_value_bytesize' => 0
+          'pipeline_variables_max_value_bytesize' => 0,
+          'pipeline_variables_total_bytesize' => 0
         )
       end
     end
@@ -416,6 +421,33 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
       expect(pipeline.errors.full_messages)
         .to contain_exactly(a_string_including('Failed to build pipeline variables'))
+    end
+  end
+
+  context 'when the pipeline variables exceed the artifact size limit' do
+    let(:variables_attributes) { [{ key: 'BIG', value: 'a' * 1.kilobyte }] }
+
+    before do
+      stub_const('Ci::PipelineArtifact::FILE_SIZE_LIMIT', 1.kilobyte)
+    end
+
+    it_behaves_like 'breaks the chain'
+
+    it 'returns an error' do
+      step.perform!
+
+      expect(pipeline.errors.full_messages).to contain_exactly(
+        'Failed to build pipeline variables: total size exceeds the limit of 1 KiB'
+      )
+      expect(pipeline.failure_reason).to eq('config_error')
+    end
+
+    context 'when the ci_enforce_pipeline_variables_total_size_limit feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_enforce_pipeline_variables_total_size_limit: false)
+      end
+
+      it_behaves_like 'does not break the chain'
     end
   end
 end

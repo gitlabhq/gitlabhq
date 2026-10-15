@@ -212,7 +212,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/finders/concerns/epics/with_access_check.rb'
     - 'ee/app/finders/epics_finder.rb'
     - 'ee/app/finders/incident_management/oncall_users_finder.rb'
-    - 'ee/app/finders/security/pipeline_vulnerabilities_finder.rb'
     - 'ee/app/graphql/resolvers/epics_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerabilities_base_resolver.rb'
     - 'ee/app/helpers/admin/emails_helper.rb'

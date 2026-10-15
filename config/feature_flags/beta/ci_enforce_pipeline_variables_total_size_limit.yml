@@ -1,0 +1,11 @@
+---
+name: ci_enforce_pipeline_variables_total_size_limit
+description: Fail pipeline creation when the total size of pipeline variables
+  exceeds 10 MiB
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/633732
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261789
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633591
+milestone: '19.6'
+group: group::pipeline authoring
+type: beta
+default_enabled: false

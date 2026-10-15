@@ -216,6 +216,10 @@ func archiveErrorStatus(err error) int {
 	case codes.Unavailable, codes.DeadlineExceeded, codes.Canceled:
 		// The backend could not be reached or timed out: a transient server error.
 		return http.StatusServiceUnavailable
+	case codes.ResourceExhausted:
+		// Gitaly's concurrency or rate limiting rejected the call. This is
+		// overload, not a server bug: clients should back off and retry.
+		return http.StatusTooManyRequests
 	default:
 		return http.StatusInternalServerError
 	}

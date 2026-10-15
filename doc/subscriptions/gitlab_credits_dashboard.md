@@ -75,7 +75,7 @@ Use the dashboard to understand which users, groups, or projects are driving usa
 The dashboard displays the following information:
 
 - **Organization usage**: Total credit usage (billed and non-billable), active users, daily credit average, and peak day usage across your GitLab instance or group
-- **Total credit consumption**: Daily billed and non-billable credit consumption over all products, displayed as a stacked bar chart
+- **Total credit usage**: Daily billed and non-billable credit usage over all products, displayed as a stacked bar chart
 - **Usage by user**: Number of credits used by each user
 - **User drill-down view**: Individual usage events for each user, with links to session details for each credit-based feature
 - **Usage by product**: Number of credits used and percentage of total credits for credit-based features
@@ -94,7 +94,7 @@ The dashboard displays the following information:
 {{< /history >}}
 
 Non-billable usage is credit consumption that GitLab does not bill.
-The **Total credit consumption** chart displays:
+The **Total credit usage** chart displays:
 
 - **Billable**: Number of billable credits used
 - **Non-billable**: Number of non-billable credits used, shown only when the selected period includes non-billable usage
@@ -533,7 +533,7 @@ It does not show your remaining credits or a credit cap.
 - Your usage for the current billing period.
 - A chart of your daily credit consumption for the selected date range and products.
 - **Total usage**: Total number of credits used in the selected date range and products.
-- **Daily average**: Average number of credits used in a day for the selected date range and products.
+- **Daily average usage**: Average number of credits used in a day for the selected date range and products.
 - **Peak day usage**: The highest number of credits consumed in a single day for the selected date range and products.
 
 Prerequisites:
