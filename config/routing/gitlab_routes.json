@@ -2845,6 +2845,12 @@
     "dottedExample": "/john.doe/bar/john.doe/-/security/agent_artifacts/john.doe/download"
   },
   {
+    "template": "/*namespace_id/:project_id/-/security/agent_artifacts/:id/download_session",
+    "example": "/foo/bar/foo/-/security/agent_artifacts/foo/download_session",
+    "acceptsFormat": true,
+    "dottedExample": "/john.doe/bar/john.doe/-/security/agent_artifacts/john.doe/download_session"
+  },
+  {
     "template": "/*namespace_id/:project_id/-/security/compliance_dashboard(/*vueroute)",
     "example": "/foo/bar/foo/-/security/compliance_dashboard/foo/bar",
     "acceptsFormat": true,
@@ -17745,6 +17751,12 @@
     "dottedExample": "/groups/john.doe/bar/-/security/agent_artifacts/john.doe/download"
   },
   {
+    "template": "/groups/*group_id/-/security/agent_artifacts/:id/download_session",
+    "example": "/groups/foo/bar/-/security/agent_artifacts/foo/download_session",
+    "acceptsFormat": true,
+    "dottedExample": "/groups/john.doe/bar/-/security/agent_artifacts/john.doe/download_session"
+  },
+  {
     "template": "/groups/*group_id/-/security/compliance_dashboard(/*vueroute)",
     "example": "/groups/foo/bar/-/security/compliance_dashboard/foo/bar",
     "acceptsFormat": true,
@@ -21863,6 +21875,12 @@
     "example": "/o/foo/foo/bar/foo/-/security/agent_artifacts/foo/download",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/security/agent_artifacts/john.doe/download"
+  },
+  {
+    "template": "/o/:organization_path/*namespace_id/:project_id/-/security/agent_artifacts/:id/download_session",
+    "example": "/o/foo/foo/bar/foo/-/security/agent_artifacts/foo/download_session",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/security/agent_artifacts/john.doe/download_session"
   },
   {
     "template": "/o/:organization_path/*namespace_id/:project_id/-/security/compliance_dashboard(/*vueroute)",
@@ -26375,6 +26393,12 @@
     "example": "/o/foo/groups/foo/bar/-/security/agent_artifacts/foo/download",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/security/agent_artifacts/john.doe/download"
+  },
+  {
+    "template": "/o/:organization_path/groups/*group_id/-/security/agent_artifacts/:id/download_session",
+    "example": "/o/foo/groups/foo/bar/-/security/agent_artifacts/foo/download_session",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/security/agent_artifacts/john.doe/download_session"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/security/compliance_dashboard(/*vueroute)",

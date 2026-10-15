@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.20.0
+version: 1.21.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -313,6 +313,13 @@ a convention (non-standard verb, second write tool on one resource).
   the route settings instead — the class override does nothing for them, since one `ApiTool` class
   backs every route. `tool_aliases:` on a route that also sets `aggregators:` is ignored; alias that
   tool through the aggregator class's `self.tool_aliases`.
+- **An aggregator that overrides `perform_default` without `super` must call `record_dispatch`.**
+  The base `AggregatedService#perform_default` attaches the dispatched sub-tool name to the response
+  for `mcp.log` and the finish event. Skip it and that telemetry is lost. An aggregator that calls
+  `super` and then builds a new response must copy the `DISPATCH_KEY` entry onto it, as
+  `StartDuoSessionService` does.
+  `spec/services/mcp/tools/base/aggregated_service_descendants_spec.rb` enforces this for every
+  aggregator, so add dispatch arguments for a new one there.
 - **Add the tool to the built-in catalog only if a custom agent would use it.** Registering in
   `manager.rb` already exposes the tool to **agentic chat** (`Ai::DuoWorkflows::McpConfigService`
   injects the GitLab MCP server's tools). The extra entry in

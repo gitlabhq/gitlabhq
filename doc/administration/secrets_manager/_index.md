@@ -420,7 +420,7 @@ Prerequisites:
 1. On the secondary cluster, check that OpenBao pods are running:
 
    ```shell
-   kubectl --namespace gitlab get pods -l app=openbao
+   kubectl --namespace gitlab get pods -l app.kubernetes.io/name=openbao
    ```
 
    All pods should be in `Running` state. Secondary pods do not have the `openbao-active: "true"`

@@ -34,6 +34,96 @@ RSpec.describe Namespaces::StatePropagationWorker, feature_category: :groups_and
     end
   end
 
+  describe '#perform state preservation' do
+    def preserved_state(namespace)
+      namespace.state_metadata.dig('preserved_states', 'schedule_deletion')
+    end
+
+    context 'when propagating deletion_scheduled' do
+      let!(:propagation) do
+        create(:namespace_state_propagation, namespace: root_group,
+          source_state: :ancestor_inherited, target_state: :deletion_scheduled)
+      end
+
+      before do
+        subgroup.update!(state: :archived)
+      end
+
+      it 'preserves the previous state of each overwritten descendant' do
+        worker.perform(root_group.id, 'deletion_scheduled')
+
+        subgroup.reload
+        leaf_group.reload
+
+        expect(subgroup.state).to eq('deletion_scheduled')
+        expect(leaf_group.state).to eq('deletion_scheduled')
+        expect(preserved_state(subgroup)).to eq('archived')
+        expect(preserved_state(leaf_group)).to eq('ancestor_inherited')
+      end
+    end
+
+    context 'when propagating ancestor_inherited (unarchive)' do
+      let!(:propagation) do
+        create(:namespace_state_propagation, :archived_to_ancestor_inherited, namespace: root_group)
+      end
+
+      before do
+        subgroup.update!(state: :archived)
+        subgroup.state_metadata['preserved_states'] = { 'schedule_deletion' => 'archived' }
+        subgroup.namespace_details.save!
+      end
+
+      it 'clears preserved states from overwritten descendants' do
+        worker.perform(root_group.id, 'ancestor_inherited')
+
+        subgroup.reload
+
+        expect(subgroup.state).to eq('ancestor_inherited')
+        expect(subgroup.state_metadata).not_to have_key('preserved_states')
+      end
+    end
+
+    context 'with a nested hierarchy (archived subgroup inside deletion_scheduled parent)' do
+      let_it_be_with_reload(:nested_leaf) { create(:group, parent: leaf_group) }
+
+      let!(:propagation) do
+        create(:namespace_state_propagation, namespace: root_group,
+          source_state: :ancestor_inherited, target_state: :deletion_scheduled)
+      end
+
+      before do
+        subgroup.update!(state: :archived)
+        leaf_group.update!(state: :archived)
+        nested_leaf.update!(state: :archived)
+      end
+
+      it 'preserves archived for every descendant below the archived subgroup' do
+        worker.perform(root_group.id, 'deletion_scheduled')
+
+        expect([subgroup, leaf_group, nested_leaf].map { |group| preserved_state(group.reload) })
+          .to all(eq('archived'))
+      end
+    end
+
+    context 'when cancelling a deletion (deletion_scheduled -> ancestor_inherited)' do
+      let!(:propagation) do
+        create(:namespace_state_propagation, namespace: root_group,
+          source_state: :deletion_scheduled, target_state: :ancestor_inherited)
+      end
+
+      before do
+        subgroup.update!(state: :deletion_scheduled)
+        subgroup.namespace_details.update!(state_metadata: { preserved_states: { schedule_deletion: 'archived' } })
+      end
+
+      it 'keeps preserved states for the restore to use' do
+        worker.perform(root_group.id, 'ancestor_inherited')
+
+        expect(preserved_state(subgroup.reload)).to eq('archived')
+      end
+    end
+  end
+
   it_behaves_like 'an idempotent worker' do
     let!(:propagation) do
       create(:namespace_state_propagation, :ancestor_inherited_to_archived, namespace: root_group)

@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :continuous_integration do
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+
   let(:runner) { build(:ci_runner) }
   let(:job) do
     build(
-      :ci_build, runner: runner,
+      :ci_build, pipeline: pipeline, runner: runner,
       options: { inputs: { test_input: { type: 'string', default: 'test' } } }
     )
   end
@@ -25,7 +27,7 @@ RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :conti
     subject(:steps) { runner_payload[:steps][0][:script] }
 
     let(:script) { 'echo one liner' }
-    let(:job) { build(:ci_build, runner: runner, options: { script: script }) }
+    let(:job) { build(:ci_build, pipeline: pipeline, runner: runner, options: { script: script }) }
 
     it 'returns the script' do
       expect(steps).to eq([script])
@@ -42,7 +44,7 @@ RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :conti
 
   describe '#run' do
     let(:job) do
-      build(:ci_build, runner: runner, job_definition: job_definition)
+      build(:ci_build, pipeline: pipeline, runner: runner, job_definition: job_definition)
     end
 
     let(:job_definition) { build(:ci_job_definition, config: { run_steps: job_definition_run_steps }) }

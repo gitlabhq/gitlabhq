@@ -304,19 +304,23 @@ The table below lists custom exit codes we use to auto-retry (see the retry rule
 
 | Exit code | Description | Configured in |
 |-----------|-------------|---------------|
-| 112       | known flaky test detected; retry the whole job | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.default-retry`), restated in `.rspec-base` |
+| 22        | curl received an HTTP status of 400 or higher while a job downloaded its scripts from the Repository Files API, after its own `--retry` attempts were exhausted. | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.fast-no-clone-job`) |
+| 112       | known flaky test detected; retry the whole job | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.default-retry`), restated in `.rspec-base` and `.fast-no-clone-job` |
 | 139       | `SIGSEGV` (`128 + 11`) from the Ruby VM, most often `parallel_rspec`. The process crashed, so no spec results were written and the in-job spec retry cannot run. Root cause tracked in [work item 753](https://gitlab.com/gitlab-org/quality/analytics/team/-/work_items/753). | [`.gitlab/ci/rails/shared.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails/shared.gitlab-ci.yml) (`.rspec-base`) |
-| 201       | low disk space | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.default-retry`), restated in `.rspec-base` |
+| 201       | low disk space | [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) (`.default-retry`), restated in `.rspec-base` and `.fast-no-clone-job` |
 
-This list can be expanded as new failure patterns emerge. To avoid conflicts, please use exit codes in the range 201-255.
+This list can be expanded as new failure patterns emerge.
+To avoid conflicts, use exit codes in the range 201-255.
 
-That range applies to codes we assign.
-Signal-derived codes are the exception: when a child process is killed by a signal,
-the shell reports `128 + signal`, which we do not get to choose.
-`139` above is a signal-derived code, so it falls outside the range by necessity.
+This range applies only to exit codes we assign ourselves.
+Some retried exit codes come from the tools we run, so we can't choose them:
 
-`.rspec-base` sets its own `exit_codes` list, and `extends` replaces arrays.
-When you add a code to `.default-retry`, also add it to `.rspec-base`.
+- `22`: curl exits with this code when `--fail` is set and the server returns an HTTP error (status 400 or higher).
+- `139`: when a signal kills a child process, the shell reports `128 + signal`.
+  `139` is `128 + 11` (`SIGSEGV`).
+
+`.rspec-base` and `.fast-no-clone-job` set their own `exit_codes` lists, and `extends` replaces arrays.
+When you add a code to `.default-retry`, also add it to `.rspec-base` and `.fast-no-clone-job`.
 
 ## Best Practices
 

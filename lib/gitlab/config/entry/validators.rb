@@ -247,8 +247,6 @@ module Gitlab
         end
 
         class ArrayOfIntegersOrIntegerValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
             unless validate_integer(value) || validate_array_of_integers(value)
               record.errors.add(attribute, 'should be an array of integers or an integer')
@@ -256,6 +254,10 @@ module Gitlab
           end
 
           private
+
+          def validate_integer(value)
+            value.is_a?(Integer)
+          end
 
           def validate_array_of_integers(values)
             values.is_a?(Array) && values.all? { |value| validate_integer(value) }

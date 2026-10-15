@@ -65,6 +65,24 @@ RSpec.describe Ci::BuildReportResultService, feature_category: :continuous_integ
         end
       end
 
+      context 'when the test report artifact is invalid' do
+        let(:error) do
+          Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError
+            .new('File decompression error')
+        end
+
+        before do
+          allow(build).to receive(:collect_test_reports!).and_raise(error)
+        end
+
+        it 'logs the error and does not raise or persist data', :aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, build_id: build.id)
+
+          expect { build_report_result }.not_to raise_error
+          expect(Ci::BuildReportResult.count).to eq(0)
+        end
+      end
+
       context 'when data has already been persisted' do
         it 'raises an error and do not persist the same data twice' do
           expect { 2.times { described_class.new.execute(build) } }.to raise_error(ActiveRecord::RecordNotUnique)

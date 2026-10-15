@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_server do
-  let(:update_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :update_pipeline) }
-  let(:delete_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :delete_pipeline) }
+  let(:update_tool) do
+    instance_double(Mcp::Tools::Base::ApiTool, name: :update_pipeline, settings: { resource_name: 'pipeline' })
+  end
+
+  let(:delete_tool) do
+    instance_double(Mcp::Tools::Base::ApiTool, name: :delete_pipeline, settings: { resource_name: 'pipeline' })
+  end
+
   let(:tools) { [update_tool, delete_tool] }
   let(:service) { described_class.new(tools: tools) }
 
@@ -91,6 +97,7 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
           aggregator: 'manage_pipeline'
         })
         expect(result[:content].first[:text]).to include('Pipeline updated successfully via manage_pipeline')
+        expect(result[:dispatch]).to eq(tool_name: 'update_pipeline')
       end
     end
 
@@ -150,6 +157,7 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
           aggregator: 'manage_pipeline'
         })
         expect(result[:content].first[:text]).to include('Pipeline deleted successfully via manage_pipeline')
+        expect(result[:dispatch]).to eq(tool_name: 'delete_pipeline')
       end
     end
   end

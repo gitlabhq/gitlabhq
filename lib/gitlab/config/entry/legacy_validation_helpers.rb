@@ -10,10 +10,6 @@ module Gitlab
           values.is_a?(Array) && values.all? { |value| validate_string(value) }
         end
 
-        def validate_integer(value)
-          value.is_a?(Integer)
-        end
-
         def validate_string(value)
           value.is_a?(String) || value.is_a?(Symbol)
         end

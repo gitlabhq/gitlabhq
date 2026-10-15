@@ -248,6 +248,42 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
     end
   end
 
+  describe described_class::ArrayOfIntegersOrIntegerValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      1        | true
+      0        | true
+      [1, 2]   | true
+      []       | true
+      '1'      | false
+      1.5      | false
+      nil      | false
+      [1, '2'] | false
+      [[1]]    | false
+      { a: 1 } | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, array_of_integers_or_integer: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config))
+            .to contain_exactly('should be an array of integers or an integer')
+        end
+      end
+    end
+  end
+
   describe described_class::DurationValidator do
     using RSpec::Parameterized::TableSyntax
 

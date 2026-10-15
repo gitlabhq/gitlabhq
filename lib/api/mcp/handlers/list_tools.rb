@@ -20,12 +20,13 @@ module API
         # include_named_unlisted: when true, an unlisted tool named in allowed_tools is
         #   returned too.
         def invoke(
-          current_user, allowed_tools: nil, allowed_toolsets: nil, tool_name_prefix: nil, include_named_unlisted: false)
-          tools_hash = manager.list_tools
+          current_user, context: nil, allowed_tools: nil, allowed_toolsets: nil, tool_name_prefix: nil,
+          include_named_unlisted: false)
+          tools_hash = manager.list_tools(context: context, toolsets: allowed_toolsets)
 
           allowed_tools = resolve_aliases(allowed_tools)
           warn_unknown_tools(allowed_tools, tools_hash)
-          included = resolve_included(allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets)
+          included = resolve_included(tools_hash, allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets)
 
           tools = tools_hash.filter_map do |name, tool|
             next nil if included && included.exclude?(name)
@@ -63,14 +64,14 @@ module API
           logger.warn(message: "Unknown MCP tool names in allowed_tools", names: unknown) if unknown.any?
         end
 
-        def resolve_included(allowed_tools:, allowed_toolsets:)
+        def resolve_included(tools_hash, allowed_tools:, allowed_toolsets:)
           has_tools_filter = allowed_tools.present?
           has_toolset_filter = allowed_toolsets.present?
           return unless has_tools_filter || has_toolset_filter
 
           result = Set.new
           result.merge(allowed_tools) if has_tools_filter
-          result.merge(manager.tools_in_toolsets(allowed_toolsets)) if has_toolset_filter
+          result.merge(manager.tools_in_toolsets(allowed_toolsets, tools: tools_hash)) if has_toolset_filter
           result
         end
 

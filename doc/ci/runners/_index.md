@@ -93,6 +93,14 @@ Choose self-managed runners when:
 - You need to optimize for speed with runner reuse.
 - You want to manage your own infrastructure.
 
+## Runner types
+
+Runners are available based on who needs access:
+
+- [Instance runners](runners_scope.md#instance-runners): Broadly available across the GitLab instance. GitLab-hosted runners on GitLab.com are instance runners with no runner infrastructure to maintain.
+- [Group runners](runners_scope.md#group-runners): Use when multiple projects in the same group share a consistent runner pool.
+- [Project runners](runners_scope.md#project-runners): Use when a project needs dedicated configuration, security controls, credentials, specialized hardware, or isolated runner capacity.
+
 ## Related topics
 
 - [Install GitLab Runner](https://docs.gitlab.com/runner/install/)

@@ -610,7 +610,7 @@ Grants the ability to read runner usage data.
 
 #### Terraform State
 
-Grants the ability to create, delete, lock, and read Terraform state.
+Grants the ability to create, delete, lock, read, and restore Terraform state.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -620,6 +620,7 @@ Grants the ability to create, delete, lock, and read Terraform state.
 | Read | Project | Type | `TerraformState` |
 | Read | Project | Type | `TerraformStateProtectionRule` |
 | Read | Project | Type | `TerraformStateVersion` |
+| Restore | Project | Mutation | `TerraformStateRestore` |
 
 #### Terraform State Protection Rule
 

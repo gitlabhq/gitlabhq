@@ -629,7 +629,7 @@ After the PostgreSQL replica is promoted to primary, restart the OpenBao pods so
 reconnect to the database now that it's writable:
 
 ```shell
-kubectl --namespace gitlab rollout restart deployment -l app=openbao
+kubectl --namespace gitlab rollout restart deployment -l app.kubernetes.io/name=openbao
 ```
 
 #### Configure JWT authentication
@@ -648,7 +648,7 @@ from your [secrets backup](https://docs.gitlab.com/charts/backup-restore/backup/
 then restart the OpenBao pods:
 
 ```shell
-kubectl --namespace gitlab rollout restart deployment -l app=openbao
+kubectl --namespace gitlab rollout restart deployment -l app.kubernetes.io/name=openbao
 ```
 
 #### Verify OpenBao is functional
@@ -656,7 +656,7 @@ kubectl --namespace gitlab rollout restart deployment -l app=openbao
 1. Check that all OpenBao pods are running:
 
    ```shell
-   kubectl --namespace gitlab get pods -l app=openbao
+   kubectl --namespace gitlab get pods -l app.kubernetes.io/name=openbao
    ```
 
 1. Test OpenBao integration by running a CI pipeline that uses a

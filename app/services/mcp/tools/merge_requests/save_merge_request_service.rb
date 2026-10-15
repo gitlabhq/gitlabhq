@@ -156,7 +156,8 @@ module Mcp
 
           raise Base::AggregatedService::ToolNotConfiguredError, self.class.tool_name unless tool
 
-          execute_tool_with_enhanced_response(tool, operation, ignored_params(arguments, operation))
+          response = execute_tool_with_enhanced_response(tool, operation, ignored_params(arguments, operation))
+          record_dispatch(response, tool)
         end
 
         override :transform_arguments

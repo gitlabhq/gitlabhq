@@ -266,7 +266,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
 
   describe '.required_minimum_access_level_for_private_project' do
     it 'returns higher permission for repository' do
-      expect(described_class.required_minimum_access_level_for_private_project(:repository)).to eq(Gitlab::Access::REPORTER)
+      expect(described_class.required_minimum_access_level_for_private_project(:repository)).to eq(Gitlab::Access::PLANNER)
     end
 
     it 'returns normal permission for issues' do

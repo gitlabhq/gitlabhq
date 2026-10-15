@@ -603,7 +603,7 @@ Grants the ability to create, delete, and read secure files.
 
 #### Terraform State
 
-Grants the ability to create, delete, lock, and read Terraform state.
+Grants the ability to create, delete, lock, read, and restore Terraform state.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

@@ -152,8 +152,55 @@ module Namespaces
     end
 
     class_methods do
-      def overwrite_state_in_batch(ids, from:, to:)
-        with_state(from).id_in(ids).update_all(state: states[to])
+      # Bulk state update for propagation: only rows in a `from` state move to `to`.
+      # `preserve_event:` saves each overwritten row's previous state (see StatePreservation).
+      def overwrite_state_in_batch(ids, from:, to:, preserve_event: nil, clear_preserved: false)
+        transaction do
+          rows = lock_states_in_batch(ids, from)
+          next 0 if rows.empty?
+
+          locked_ids = rows.map(&:first)
+
+          if preserve_event
+            preserve_states_in_batch(rows, preserve_event)
+          elsif clear_preserved
+            clear_preserved_states_in_batch(locked_ids)
+          end
+
+          id_in(locked_ids).update_all(state: states[to])
+        end
+      end
+
+      private
+
+      # Lock namespaces before namespace_details, the same order as a regular transition, to avoid deadlocks.
+      def lock_states_in_batch(ids, from)
+        with_state(from).id_in(ids).order(:id).lock('FOR NO KEY UPDATE').limit(ids.size).pluck(:id, :state)
+      end
+
+      def preserve_states_in_batch(rows, preserve_event)
+        Namespace::Detail.insert_all(rows.map { |id, _| { namespace_id: id } }, unique_by: :namespace_id)
+
+        rows.group_by(&:last).each do |state, state_rows|
+          Namespace::Detail
+            .where(namespace_id: state_rows.map(&:first))
+            .update_all(
+              [
+                "state_metadata = jsonb_set(state_metadata, '{preserved_states}', " \
+                  "COALESCE(state_metadata -> 'preserved_states', '{}'::jsonb) || " \
+                  "jsonb_build_object(?, ?::text), true)",
+                preserve_event,
+                state
+              ]
+            )
+        end
+      end
+
+      def clear_preserved_states_in_batch(ids)
+        Namespace::Detail
+          .where(namespace_id: ids)
+          .where("(state_metadata -> 'preserved_states') IS NOT NULL")
+          .update_all("state_metadata = state_metadata - 'preserved_states'")
       end
     end
   end

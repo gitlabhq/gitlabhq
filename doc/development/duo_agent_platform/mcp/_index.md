@@ -391,6 +391,18 @@ route_setting :mcp, tool_name: :example_tool_for_project, params: [:id], aggrega
 1. The `Mcp::Tools::Manager` automatically discovers aggregated tools by scanning routes with
    `aggregators` specified and instantiates the aggregator class with the collected tools.
 
+**Record the dispatched sub-tool:**
+
+`AggregatedService#perform_default` calls `record_dispatch` after the selected sub-tool runs.
+The hook attaches the sub-tool name to the response. `API::Mcp::Handlers::CallTool` logs it as
+`dispatched_tool_name` in `mcp.log`, adds it to the `finish_mcp_tool_call` event, and removes it
+from the response sent to the client. If your aggregator overrides `perform_default` without
+calling `super`, pass the response through `record_dispatch(response, tool)`. If it calls `super`
+and then builds a new response, copy the `DISPATCH_KEY` entry onto the new response, as
+`StartDuoSessionService` does.
+`spec/services/mcp/tools/base/aggregated_service_descendants_spec.rb` fails for any aggregator
+that does not record the dispatched sub-tool. Add dispatch arguments for a new aggregator to that spec.
+
 #### Implement a GraphQL-based tool
 
 For MCP tools that use the GitLab GraphQL API, see the [GraphQL integration guidelines](graphql_integration.md).

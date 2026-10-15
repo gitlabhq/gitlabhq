@@ -33,7 +33,7 @@ FactoryBot.define do
         pipeline.source = :parent_pipeline
       end
 
-      pipeline.ensure_project_iid!
+      pipeline.ensure_project_iid! if pipeline.project&.persisted?
 
       if evaluator.name
         pipeline.pipeline_metadata = build(:ci_pipeline_metadata, name: evaluator.name, project: pipeline.project, pipeline: pipeline)

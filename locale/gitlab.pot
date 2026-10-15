@@ -85440,6 +85440,9 @@ msgstr ""
 msgid "Terraform|Generating the report caused an error."
 msgstr ""
 
+msgid "Terraform|Grace period for this state has elapsed"
+msgstr ""
+
 msgid "Terraform|Job status"
 msgstr ""
 
@@ -85477,6 +85480,9 @@ msgid "Terraform|Removing"
 msgstr ""
 
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
+msgstr ""
+
+msgid "Terraform|State is not marked for deletion"
 msgstr ""
 
 msgid "Terraform|Support for periods (`.`) in Terraform state names might break existing states."
@@ -85519,6 +85525,9 @@ msgid "Terraform|You are about to remove the state file %{name}. This will perma
 msgstr ""
 
 msgid "Terraform|You have insufficient permissions to delete this state"
+msgstr ""
+
+msgid "Terraform|You have insufficient permissions to restore this state"
 msgstr ""
 
 msgid "Terraform|Your project doesn't have any Terraform state files"

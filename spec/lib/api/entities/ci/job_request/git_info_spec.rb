@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::JobRequest::GitInfo, feature_category: :continuous_integration do
-  let(:job) { build(:ci_build) }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+
+  let(:job) { build(:ci_build, pipeline: pipeline) }
   let(:git_info) { Ci::BuildRunnerPresenter.new(job) }
   let(:entity) { described_class.new(git_info) }
 
@@ -18,7 +20,7 @@ RSpec.describe API::Entities::Ci::JobRequest::GitInfo, feature_category: :contin
     end
 
     context 'when job is on a protected branch' do
-      let(:job) { build(:ci_build, protected: true) }
+      let(:job) { build(:ci_build, pipeline: pipeline, protected: true) }
 
       it 'exposes protected as true' do
         expect(as_json[:protected]).to be true
@@ -26,7 +28,7 @@ RSpec.describe API::Entities::Ci::JobRequest::GitInfo, feature_category: :contin
     end
 
     context 'when job is not on a protected branch' do
-      let(:job) { build(:ci_build, protected: false) }
+      let(:job) { build(:ci_build, pipeline: pipeline, protected: false) }
 
       it 'exposes protected as false' do
         expect(as_json[:protected]).to be false

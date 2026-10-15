@@ -31,7 +31,7 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
 
   describe '#ensure_project_id' do
     it 'sets the project_id before validation on create if it is nil' do
-      variable = build(:ci_pipeline_variable)
+      variable = build(:ci_pipeline_variable, pipeline: build(:ci_pipeline, project: create(:project)))
       variable.pipeline.project_id = variable.pipeline.project.id
       expect do
         variable.save!
@@ -60,7 +60,7 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
     subject(:readonly) { variable.readonly? }
 
     context 'when variable is not persisted' do
-      let(:variable) { build(:ci_pipeline_variable) }
+      let(:variable) { build(:ci_pipeline_variable, pipeline: build(:ci_pipeline, project: create(:project))) }
 
       it { is_expected.to be false }
 

@@ -13,13 +13,16 @@ module API
           end
         end
 
+        DISPATCH_KEY = ::Mcp::Tools::Base::AggregatedService::DISPATCH_KEY
+
         def initialize(manager)
           @manager = manager
         end
 
         # @param client_info [Gitlab::Mcp::ClientInfo, nil] the identity the client reports, if any
-        def invoke(request, params, current_user = nil, tool_name_prefix: nil, client_info: nil)
+        def invoke(request, params, current_user = nil, context: nil, tool_name_prefix: nil, client_info: nil)
           @client_info = client_info
+          @context = context
           tool_name = params[:name]
           tool_name.delete_prefix!(tool_name_prefix) if tool_name_prefix.present?
           request_id = request[:id] || SecureRandom.uuid
@@ -33,11 +36,11 @@ module API
 
         private
 
-        attr_reader :manager, :client_info
+        attr_reader :manager, :client_info, :context
 
         def fetch_tool(tool_name, request_id, current_user, params)
           start = current_monotonic_time
-          manager.get_tool(name: tool_name)
+          manager.get_tool(name: tool_name, context: context)
         rescue ::Mcp::Tools::Manager::ToolNotFoundError => e
           track_start_event(tool_name, request_id, current_user, params: params)
           track_finish_event(tool_name, request_id, current_user, success: false, error: e, params: params)
@@ -55,14 +58,19 @@ module API
           result = tool.execute(request: request, params: params)
           raise ToolResponseError, result if ::Mcp::Tools::Base::Response.error?(result)
 
-          track_finish_event(tool_name, request_id, current_user, success: true, tool: tool, params: params)
-          log_tool_call(tool_name, request_id, current_user, params, tool: tool, duration_s: duration_since(start))
-          result
-        rescue ToolResponseError => e
-          track_finish_event(tool_name, request_id, current_user, success: false, error: e, tool: tool, params: params)
+          dispatch = dispatch_info(result)
+          track_finish_event(tool_name, request_id, current_user,
+            success: true, tool: tool, params: params, dispatch: dispatch)
           log_tool_call(tool_name, request_id, current_user, params,
-            tool: tool, error: e, duration_s: duration_since(start))
-          e.result.except(:reason)
+            tool: tool, duration_s: duration_since(start), dispatch: dispatch)
+          dispatch ? result.except(DISPATCH_KEY) : result
+        rescue ToolResponseError => e
+          dispatch = dispatch_info(e.result)
+          track_finish_event(tool_name, request_id, current_user,
+            success: false, error: e, tool: tool, params: params, dispatch: dispatch)
+          log_tool_call(tool_name, request_id, current_user, params,
+            tool: tool, error: e, duration_s: duration_since(start), dispatch: dispatch)
+          e.result.except(:reason, DISPATCH_KEY)
         rescue StandardError => error
           track_finish_event(tool_name, request_id, current_user,
             success: false, error: error, tool: tool, params: params)
@@ -71,7 +79,9 @@ module API
           raise error
         end
 
-        def log_tool_call(tool_name, request_id, current_user, params, duration_s:, tool: nil, error: nil)
+        def log_tool_call(
+          tool_name, request_id, current_user, params, duration_s:, tool: nil, error: nil, dispatch: nil
+        )
           arguments = params.to_h.with_indifferent_access[:arguments] || {}
           namespace = tool_call_namespace(tool, params)
 
@@ -98,8 +108,19 @@ module API
             namespace: namespace,
             expanded: expanded,
             **client_fields,
+            **dispatch_fields(dispatch),
             **error_fields
           )
+        end
+
+        def dispatch_info(result)
+          result[DISPATCH_KEY] if result.is_a?(Hash)
+        end
+
+        def dispatch_fields(dispatch)
+          return {} unless dispatch
+
+          { dispatched_tool_name: dispatch[:tool_name] }
         end
 
         def client_fields
@@ -143,7 +164,9 @@ module API
           # No-op in CE
         end
 
-        def track_finish_event(tool_name, request_id, current_user, success:, tool: nil, error: nil, params: nil)
+        def track_finish_event(
+          tool_name, request_id, current_user, success:, tool: nil, error: nil, params: nil, dispatch: nil
+        )
           # No-op in CE
         end
 

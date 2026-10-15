@@ -91,11 +91,13 @@ These credits are individual and cannot be shared between users.
 Included credits reset at the beginning of each month.
 Unused credits do not roll over to the next month.
 
-[Community program subscriptions](community_programs.md) do not receive included credits.
+Included credits are not allocated to:
 
-Non-human subjects do not receive included credits.
-Their consumption is billed at the namespace level from the monthly commitment pool and on-demand credits,
-in the same usage order as for human users.
+- [Community program subscriptions](community_programs.md)
+- Non-human subjects
+
+Consumption by non-human subjects is billed for top-level groups
+from the monthly commitment pool and on-demand credits in the same usage order as for human users.
 
 For more information about included credits, see [GitLab Promotions Terms & Conditions](https://about.gitlab.com/pricing/terms/).
 

@@ -31,6 +31,20 @@ RSpec.describe Projects::ProjectUrlConstraint do
       end
     end
 
+    context 'valid request for a project in an organization-scoped group' do
+      let!(:organization) { create(:organization) }
+      let!(:scoped_group) { create(:group, path: 'scoped', organization: organization) }
+      let!(:scoped_project) { create(:project, path: 'scoped-project', namespace: scoped_group) }
+      let(:request) { build_request("o/#{organization.path}/scoped", 'scoped-project') }
+
+      before do
+        # Moving the root route cascades to the project route, as a real move would.
+        scoped_group.route.update!(path: "o/#{organization.path}/scoped")
+      end
+
+      it { expect(subject.matches?(request)).to be_truthy }
+    end
+
     context 'when the request matches a redirect route' do
       let(:old_project_path) { 'old_project_path' }
       let!(:redirect_route) { project.redirect_routes.create!(path: "#{namespace.full_path}/#{old_project_path}") }

@@ -48,7 +48,7 @@ class ProjectFeature < ApplicationRecord
     package_registry: Gitlab::Access::REPORTER,
     environments: Gitlab::Access::REPORTER
   }.freeze
-  PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
+  PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::PLANNER }.freeze
 
   class << self
     def required_minimum_access_level(feature)

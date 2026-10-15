@@ -58,8 +58,6 @@ constants:
   - MAX_EXPIRATION_PERIOD
   ee/app/models/concerns/approval_rule_like.rb:
   - DEFAULT_NAME_FOR_LICENSE_REPORT
-  ee/app/models/concerns/push_ruleable.rb:
-  - SETTINGS_WITH_GLOBAL_DEFAULT
   ee/app/models/ee/ci/build.rb:
   - VALIDATE_SCHEMA_VARIABLE_NAME
   ee/app/models/ee/namespace.rb:
@@ -518,7 +516,6 @@ methods:
   ee/app/models/security/category.rb:
   - self.declarative_policy_class
   ee/app/models/security/orchestration_policy_configuration.rb:
-  - compliance_framework_ids_with_policy_index
   - experiment_configuration
   ee/app/models/security/orchestration_policy_rule_schedule.rb:
   - for_agent?

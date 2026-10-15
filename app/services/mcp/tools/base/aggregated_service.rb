@@ -8,6 +8,10 @@ module Mcp
         include Mcp::Tools::Concerns::Versionable
         extend Gitlab::Utils::Override
 
+        # Internal response key naming the sub-tool a call was dispatched to.
+        # `API::Mcp::Handlers::CallTool` reads it for telemetry and strips it before replying.
+        DISPATCH_KEY = :dispatch
+
         class ToolNotConfiguredError < StandardError
           def initialize(tool_name)
             super("#{tool_name} is not available on this GitLab instance due to a " \
@@ -42,7 +46,13 @@ module Mcp
 
           raise ToolNotConfiguredError, self.class.tool_name unless tool
 
-          tool.execute(request:, params:)
+          record_dispatch(tool.execute(request:, params:), tool)
+        end
+
+        def record_dispatch(response, tool)
+          return response unless response.is_a?(Hash)
+
+          response.merge(DISPATCH_KEY => { tool_name: tool.name.to_s })
         end
 
         def enhance_response_with_operation(response, operation:, tool_name:, action_description: nil)

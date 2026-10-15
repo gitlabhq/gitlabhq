@@ -11,6 +11,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
   describe '#invoke' do
     let(:tool_name) { 'test_tool' }
+    let(:tool_lookup) { { name: tool_name, context: nil } }
     let(:params) { { name: tool_name, arguments: { param: 'value' } } }
     # EE resolves the telemetry namespace from the tool's own container declaration.
     let(:no_containers) do
@@ -29,7 +30,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     context 'when tool is found and version matches' do
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(tool)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(tool).to receive(:execute).and_return({ content: [{ type: 'text', text: 'Success' }] })
@@ -38,7 +39,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       it 'executes the tool successfully' do
         result = handler.invoke(request, params, current_user)
 
-        expect(manager).to have_received(:get_tool).with(name: tool_name)
+        expect(manager).to have_received(:get_tool).with(**tool_lookup)
         expect(tool).to have_received(:execute).with(request: request, params: params)
         expect(result).to eq({ content: [{ type: 'text', text: 'Success' }] })
       end
@@ -91,6 +92,50 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         end
       end
 
+      it 'does not log dispatch fields for a tool that is not aggregated' do
+        handler.invoke(request, params, current_user)
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(:dispatched_tool_name)
+        )
+      end
+
+      context 'when the tool returns a result that is not a Hash' do
+        before do
+          allow(tool).to receive(:execute).and_return('Success')
+        end
+
+        it 'returns the result unchanged and logs no dispatch fields', :aggregate_failures do
+          expect(handler.invoke(request, params, current_user)).to eq('Success')
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user, hash_excluding(:dispatched_tool_name)
+          )
+        end
+      end
+
+      context 'when the tool is aggregated' do
+        let(:dispatch) { { tool_name: 'gitlab_search_in_project' } }
+
+        before do
+          allow(tool).to receive(:execute)
+            .and_return({ content: [{ type: 'text', text: 'Success' }], dispatch: dispatch })
+        end
+
+        it 'logs the dispatched sub-tool as indexed fields' do
+          handler.invoke(request, params, current_user)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(dispatched_tool_name: 'gitlab_search_in_project')
+          )
+        end
+
+        it 'does not return the dispatch info to the client' do
+          expect(handler.invoke(request, params, current_user)).to eq({ content: [{ type: 'text', text: 'Success' }] })
+        end
+      end
+
       it 'does not add canonical_tool_name for a canonical call' do
         handler.invoke(request, params, current_user)
 
@@ -119,7 +164,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     context 'when the tool raises during execution' do
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(tool)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(tool).to receive(:execute).and_raise(StandardError, 'boom')
@@ -168,7 +213,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       end
 
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(tool)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(tool).to receive(:execute).and_return(error_result)
@@ -196,6 +241,31 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         )
       end
 
+      context 'when an aggregated tool dispatched the call' do
+        let(:error_result) do
+          {
+            content: [{ type: 'text', text: '404 Not Found' }],
+            structuredContent: {},
+            isError: true,
+            reason: :not_found,
+            dispatch: { tool_name: 'update_merge_request' }
+          }
+        end
+
+        it 'logs the dispatched sub-tool and returns the error without the internal keys', :aggregate_failures do
+          result = handler.invoke(request, params, current_user)
+
+          expect(result).to eq(error_result.except(:reason, :dispatch))
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(
+              tool_status: 'not_found',
+              dispatched_tool_name: 'update_merge_request'
+            )
+          )
+        end
+      end
+
       context 'when the error response carries no reason' do
         let(:error_result) do
           {
@@ -219,7 +289,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService, governed_containers: no_containers) }
 
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(custom_tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(custom_tool)
         allow(custom_tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(true)
         allow(custom_tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(custom_tool).to receive(:set_cred)
@@ -239,7 +309,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService, governed_containers: no_containers) }
 
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(graphql_tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(graphql_tool)
         allow(graphql_tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(graphql_tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(true)
         allow(graphql_tool).to receive(:set_cred)
@@ -257,7 +327,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     context 'when tool is not found' do
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name)
+        allow(manager).to receive(:get_tool).with(**tool_lookup)
           .and_raise(Mcp::Tools::Manager::ToolNotFoundError.new(tool_name))
       end
 

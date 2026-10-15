@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::JobRouter::JobResponse, feature_category: :continuous_integration do
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+
   let(:runner) { build(:ci_runner, tag_list: %w[docker linux gpu]) }
-  let(:job) { build(:ci_build, runner: runner, tag_list: %w[docker linux]) }
+  let(:job) { build(:ci_build, pipeline: pipeline, runner: runner, tag_list: %w[docker linux]) }
   let(:presented_job) { Ci::BuildRunnerPresenter.new(job) }
   let(:public_payload) { ::API::Entities::Ci::JobRequest::Response.new(presented_job).as_json }
 
@@ -30,7 +32,7 @@ RSpec.describe API::Entities::Ci::JobRouter::JobResponse, feature_category: :con
 
   context 'when the job and the runner are untagged' do
     let(:runner) { build(:ci_runner) }
-    let(:job) { build(:ci_build, runner: runner) }
+    let(:job) { build(:ci_build, pipeline: pipeline, runner: runner) }
 
     it 'exposes empty tag lists rather than omitting them', :aggregate_failures do
       expect(payload[:job_info][:tags]).to eq([])

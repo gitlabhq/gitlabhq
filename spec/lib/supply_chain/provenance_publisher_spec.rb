@@ -92,6 +92,86 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
     end
   end
 
+  describe '#with_local_ca_signing_material' do
+    def with_signing_material(&block)
+      publisher.send(:with_local_ca_signing_material, &block)
+    end
+
+    it 'yields signing material for a fresh leaf certificate and removes it afterwards', :aggregate_failures do
+      material_dir = nil
+
+      with_signing_material do |material|
+        material_dir = File.dirname(material.certificate_path)
+        certificate = OpenSSL::X509::Certificate.new(File.read(material.certificate_path))
+        leaf_private_key = satisfy { |pem| OpenSSL::PKey.read(pem).public_to_pem == certificate.public_key.public_to_pem }
+
+        # cosign is mocked, so this only proves we never write the plaintext leaf key ourselves.
+        expect(Dir.children(material_dir)).to contain_exactly('leaf.crt.pem')
+        expect(File.stat(material.certificate_path).mode & 0o777).to eq(0o600)
+        expect(certificate.extensions.find { |ext| ext.oid == 'subjectAltName' }.value)
+          .to include(pipeline.ci_config_ref_uri)
+        expect(popen_stdin_file).to have_received(:write).with(leaf_private_key)
+        expect(material.key_path).to eq(File.join(material_dir, 'cosign.key'))
+        expect(Gitlab::Popen).to have_received(:popen_with_detail)
+          .with(array_including('import-key-pair'), nil, { 'COSIGN_PASSWORD' => material.password })
+        expect(material.signing_certificate_id)
+          .to eq(SupplyChain::SigningCertificate.for_project(project).with_active.sole.id)
+      end
+
+      expect(Dir).not_to exist(material_dir)
+    end
+
+    it 'removes the signing material and re-raises errors from the block unchanged', :aggregate_failures do
+      material_dir = nil
+
+      expect do
+        with_signing_material do |material|
+          material_dir = File.dirname(material.certificate_path)
+          raise described_class::AttestationFailure, 'attest-blob failed'
+        end
+      end.to raise_error(described_class::AttestationFailure, 'attest-blob failed')
+
+      expect(Dir).not_to exist(material_dir)
+    end
+
+    shared_examples 'a signing material failure' do
+      it 'raises without yielding and removes the signing material', :aggregate_failures do
+        material_dir = nil
+        allow(Dir).to receive(:mktmpdir).and_wrap_original do |original, *args, &block|
+          original.call(*args) { |dir| block.call(material_dir = dir) }
+        end
+        yielded = false
+
+        expect { with_signing_material { yielded = true } }.to raise_error(expected_error, expected_message)
+
+        expect(yielded).to be(false)
+        expect(Dir).not_to exist(material_dir)
+      end
+    end
+
+    context 'when the CA driver fails' do
+      let(:expected_error) { described_class::LocalCaSigningError }
+      let(:expected_message) { 'Unable to prepare local CA signing material: CA certificate expired' }
+
+      before do
+        allow_next_instance_of(SupplyChain::PostgresCaDriver) do |driver|
+          allow(driver).to receive(:generate_leaf_certificate)
+            .and_raise(SupplyChain::RootCaDriver::InvalidCaCertificate, 'CA certificate expired')
+        end
+      end
+
+      it_behaves_like 'a signing material failure'
+    end
+
+    context 'when cosign fails to import the leaf key' do
+      let(:popen_success) { false }
+      let(:expected_error) { described_class::KeyImportFailure }
+      let(:expected_message) { "Key import failed after #{expected_duration}s: #{expected_stderr}" }
+
+      it_behaves_like 'a signing material failure'
+    end
+  end
+
   describe '#validate_id_token!' do
     subject(:validate_id_token) { publisher.send(:validate_id_token!, id_token) }
 

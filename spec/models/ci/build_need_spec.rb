@@ -30,7 +30,8 @@ RSpec.describe Ci::BuildNeed, :model, feature_category: :continuous_integration 
   end
 
   describe 'BulkInsertSafe' do
-    let(:ci_build) { build(:ci_build) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let(:ci_build) { build(:ci_build, pipeline: pipeline) }
 
     it "bulk inserts from Ci::Build model" do
       ci_build.needs_attributes = [

@@ -281,7 +281,7 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
    - Navigate to Admin Area > GitLab Duo > "Configure GitLab Duo Self-hosted"
    - Click "Add self-hosted model" button
 
-   ![Configure Self-Hosted Model](img/self_hosted_model/self-hosted-model-initial_v17_10.png)
+   ![Self-hosted models page with options to add and manage models.](img/self_hosted_model/self-hosted-model-initial_v17_10.png)
 1. Configure Model Settings
 
    - **Deployment name**: Choose a descriptive name (for example `Mistral-7B-Instruct-v0.3 on AWS Tokyo`)
@@ -308,7 +308,7 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
      - GitLab Duo Chat > General Chat
    - Select your deployed model from the dropdown list for each feature
 
-![Mapping model and duo feature](img/self_hosted_model/self-hosted-model-mapping_v17_10.png)
+![GitLab UI mapping self-hosted Mistral models to Duo AI features.](img/self_hosted_model/self-hosted-model-mapping_v17_10.png)
 
 These settings establish the connection between your GitLab instance and the self-hosted Ollama model through the AI Gateway, enabling AI-native features within GitLab.
 

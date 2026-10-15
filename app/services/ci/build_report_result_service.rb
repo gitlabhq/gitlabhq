@@ -17,6 +17,10 @@ module Ci
         project_id: build.project_id,
         data: tests_params(test_suite)
       )
+    rescue ::Ci::JobArtifact::InvalidArtifactError => e
+      # The artifact is now marked faulty and skipped by later reads. Raising here would
+      # fail Ci::BuildFinishedWorker and delay its remaining steps until a Sidekiq retry.
+      Gitlab::ErrorTracking.log_exception(e, build_id: build.id)
     end
 
     private

@@ -18408,6 +18408,34 @@ Fields:
 | <a id="mutation-terraformstatelock-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-terraformstatelock-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.terraformStateRestore`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Restores a soft-deleted Terraform state. The state is not restored when terraform_state_delayed_deletion is disabled.
+
+Input type: `TerraformStateRestoreInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-terraformstaterestore-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-terraformstaterestore-id"></a>`id` | [`TerraformStateID!`](#terraformstateid) | Global ID of the Terraform state. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-terraformstaterestore-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-terraformstaterestore-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during restore. |
+| <a id="mutation-terraformstaterestore-terraformstate"></a>`terraformState` | [`TerraformState`](#terraformstate) | Terraform state after restore. |
+
 ### `Mutation.terraformStateUnlock`
 
 Input type: `TerraformStateUnlockInput`
@@ -36219,7 +36247,7 @@ Fields:
 | <a id="aigovernancesession-agenttype"></a>`agentType` | [`String`](#string) | Type of the agent that ran the session, for example `claude-code`. Values differ between sources. |
 | <a id="aigovernancesession-auditevents"></a>`auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Audit events recorded for the session. Returns no events for GitLab Duo sessions delivered through a private messaging integration. This field can only be resolved for one session in any single request. (see [Connections](#connections)) |
 | <a id="aigovernancesession-auditeventscount"></a>`auditEventsCount` | [`Int`](#int) | Number of audit events recorded for the session. |
-| <a id="aigovernancesession-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo. |
+| <a id="aigovernancesession-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. Null for GitLab Duo sessions without a workflow, and for sessions from other sources when ClickHouse is not enabled. |
 | <a id="aigovernancesession-flowtype"></a>`flowType` | [`String`](#string) | Flow type of the session, for example `chat`. Values differ between sources. |
 | <a id="aigovernancesession-id"></a>`id` | [`AiGovernanceSessionID!`](#aigovernancesessionid) | Global ID of the session. |
 | <a id="aigovernancesession-project"></a>`project` | [`Project`](#project) | Project the session belongs to. Null for namespace-scoped sessions, or when the current user cannot read the project. |
@@ -81817,6 +81845,7 @@ Arguments:
 | <a id="securityscanprofileautoremediationinput-cooldown"></a>`cooldown` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Minimum number of days after a package is released before it can be used. |
 | <a id="securityscanprofileautoremediationinput-enabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether auto-remediation is enabled. |
 | <a id="securityscanprofileautoremediationinput-openmergerequestslimit"></a>`openMergeRequestsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Maximum number of open auto-remediation merge requests at once. |
+| <a id="securityscanprofileautoremediationinput-runnertags"></a>`runnerTags` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.6. Status: Experiment. Runner tags applied to the auto-remediation job. |
 | <a id="securityscanprofileautoremediationinput-severitylevel"></a>`severityLevel` {{< icon name="warning-solid" >}} | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Introduced in GitLab 19.3. Status: Experiment. Minimum vulnerability severity that triggers an automated upgrade. Findings below this threshold are skipped. |
 | <a id="securityscanprofileautoremediationinput-upgradepolicy"></a>`upgradePolicy` {{< icon name="warning-solid" >}} | [`SecurityScanProfileUpgradePolicy`](#securityscanprofileupgradepolicy) | Introduced in GitLab 19.3. Status: Experiment. Highest version bump allowed when remediating. |
 

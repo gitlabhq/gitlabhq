@@ -559,6 +559,12 @@ Audit event types belong to the following product categories.
 | [`incident_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is created using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`incident_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is reopened using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 
+### Infrastructure as code
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`terraform_state_restored`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259091) | Terraform state restored from soft deletion | {{< yes >}} | GitLab [19.5](https://gitlab.com/gitlab-org/gitlab/-/work_items/621469) | Project |
+
 ### Knowledge graph
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

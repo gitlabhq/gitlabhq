@@ -4381,6 +4381,7 @@ paths:
           nullable: true
         in: query
         example: mai
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdProtectedBranches
       summary: Protect a repository branch
@@ -4418,6 +4419,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdProtectedBranchesRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/protected_branches/{name}":
     get:
       operationId: getApiV4GroupsIdProtectedBranchesName
@@ -4453,6 +4455,7 @@ paths:
           type: string
         in: path
         example: main
+      x-gitlab-tier: premium
     patch:
       operationId: patchApiV4GroupsIdProtectedBranchesName
       summary: Update a protected branch
@@ -4494,6 +4497,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/patchApiV4GroupsIdProtectedBranchesNameRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GroupsIdProtectedBranchesName
       summary: Unprotect repository branches
@@ -4524,6 +4528,7 @@ paths:
           type: string
         in: path
         example: main
+      x-gitlab-tier: premium
   "/api/v4/group_repository_storage_moves":
     get:
       operationId: getApiV4GroupRepositoryStorageMoves
@@ -4559,6 +4564,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupRepositoryStorageMoves
       summary: Create group repository storage moves for a storage shard
@@ -4577,6 +4583,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupRepositoryStorageMovesRequest"
+      x-gitlab-tier: premium
   "/api/v4/group_repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4GroupRepositoryStorageMovesRepositoryStorageMoveId
@@ -4603,6 +4610,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/repository_storage_moves":
     get:
       operationId: getApiV4GroupsIdRepositoryStorageMoves
@@ -4646,6 +4654,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdRepositoryStorageMoves
       summary: Create a group repository storage move
@@ -4678,6 +4687,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdRepositoryStorageMovesRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4GroupsIdRepositoryStorageMovesRepositoryStorageMoveId
@@ -4710,6 +4720,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/iterations":
     get:
       operationId: getApiV4ProjectsIdIterations
@@ -5374,6 +5385,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectsIdProtectedEnvironments
       summary: Protect an environment for a project
@@ -5410,6 +5422,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdProtectedEnvironmentsRequest"
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/protected_environments/{name}":
     get:
       operationId: getApiV4ProjectsIdProtectedEnvironmentsName
@@ -5443,6 +5456,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4ProjectsIdProtectedEnvironmentsName
       summary: Update a protected environment for a project
@@ -5483,6 +5497,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdProtectedEnvironmentsNameRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4ProjectsIdProtectedEnvironmentsName
       summary: Unprotect a protected environment for a project
@@ -5511,6 +5526,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/protected_environments":
     get:
       operationId: getApiV4GroupsIdProtectedEnvironments
@@ -5556,6 +5572,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdProtectedEnvironments
       summary: Protect an environment for a group
@@ -5592,6 +5609,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdProtectedEnvironmentsRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/protected_environments/{name}":
     get:
       operationId: getApiV4GroupsIdProtectedEnvironmentsName
@@ -5632,6 +5650,7 @@ paths:
           - other
           minLength: 1
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4GroupsIdProtectedEnvironmentsName
       summary: Update a protected environment for a group
@@ -5679,6 +5698,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdProtectedEnvironmentsNameRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GroupsIdProtectedEnvironmentsName
       summary: Unprotect a group environment
@@ -5709,6 +5729,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/analytics/deployment_frequency":
     get:
       operationId: getApiV4ProjectsIdAnalyticsDeploymentFrequency
@@ -6062,6 +6083,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectAliases
       summary: Create a project alias
@@ -6087,6 +6109,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectAliasesRequest"
+      x-gitlab-tier: premium
   "/api/v4/project_aliases/{name}":
     get:
       operationId: getApiV4ProjectAliasesName
@@ -6114,6 +6137,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4ProjectAliasesName
       summary: Delete a project alias
@@ -6136,6 +6160,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approval_rules":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRules
@@ -6187,6 +6212,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRules
       summary: Create an approval rule for a merge request
@@ -6227,6 +6253,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRulesRequest"
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approval_rules/{approval_rule_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRulesApprovalRuleId
@@ -6267,6 +6294,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRulesApprovalRuleId
       summary: Update an approval rule for a merge request
@@ -6314,6 +6342,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRulesApprovalRuleIdRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalRulesApprovalRuleId
       summary: Delete an approval rule for a merge request
@@ -6349,6 +6378,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/security/projects/{id}/vulnerability_exports":
     post:
       operationId: postApiV4SecurityProjectsIdVulnerabilityExports
@@ -7179,6 +7209,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectsIdApprovals
       summary: Create or update approval configuration for a project
@@ -7212,6 +7243,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdApprovalsRequest"
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/managed_licenses":
     get:
       operationId: getApiV4ProjectsIdManagedLicenses
@@ -8166,6 +8198,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4ProjectsIdMergeRequestApprovalSetting
       summary: Update MR approval settings for a project
@@ -8200,6 +8233,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdMergeRequestApprovalSettingRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/merge_request_approval_setting":
     get:
       operationId: getApiV4GroupsIdMergeRequestApprovalSetting
@@ -8227,6 +8261,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4GroupsIdMergeRequestApprovalSetting
       summary: Update MR approval settings for a group
@@ -8259,6 +8294,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdMergeRequestApprovalSettingRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/hooks":
     get:
       operationId: getApiV4GroupsIdHooks
@@ -9330,6 +9366,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/merge_trains/{target_branch}":
     get:
       operationId: getApiV4ProjectsIdMergeTrainsTargetBranch
@@ -9409,6 +9446,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/merge_trains/merge_requests/{merge_request_iid}":
     get:
       operationId: getApiV4ProjectsIdMergeTrainsMergeRequestsMergeRequestIid
@@ -9447,6 +9485,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectsIdMergeTrainsMergeRequestsMergeRequestIid
       summary: Add a merge request to a merge train
@@ -9502,6 +9541,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdMergeTrainsMergeRequestsMergeRequestIidRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/push_rule":
     get:
       operationId: getApiV4GroupsIdPushRule
@@ -9527,6 +9567,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdPushRule
       summary: Add push rules to a group
@@ -9560,6 +9601,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdPushRuleRequest"
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4GroupsIdPushRule
       summary: Update push rules of a group
@@ -9592,6 +9634,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdPushRuleRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GroupsIdPushRule
       summary: Delete the push rules of a group
@@ -9612,6 +9655,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/internal/agents/agentw/agent_info":
     get:
       operationId: getApiV4InternalAgentsAgentwAgentInfo
@@ -9693,6 +9737,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectsIdPushRule
       summary: Add push rules to a project
@@ -9727,6 +9772,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdPushRuleRequest"
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4ProjectsIdPushRule
       summary: Update push rules of a project
@@ -9761,6 +9807,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdPushRuleRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4ProjectsIdPushRule
       summary: Delete the push rules of a project
@@ -9783,6 +9830,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/mirror/pull":
     post:
       operationId: postApiV4ProjectsIdMirrorPull
@@ -9816,6 +9864,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdMirrorPullRequest"
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4ProjectsIdMirrorPull
       summary: Update project pull mirroring settings
@@ -9850,6 +9899,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdMirrorPullRequest"
+      x-gitlab-tier: premium
       x-gitlab-lifecycle: experiment
     get:
       operationId: getApiV4ProjectsIdMirrorPull
@@ -9877,6 +9927,7 @@ paths:
           - type: string
           - type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/license":
     get:
       operationId: getApiV4License
@@ -10293,6 +10344,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GeoSitesRequest"
+      x-gitlab-tier: premium
     get:
       operationId: getApiV4GeoSites
       summary: List all Geo sites
@@ -10331,6 +10383,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/geo_sites/status":
     get:
       operationId: getApiV4GeoSitesStatus
@@ -10370,6 +10423,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/geo_sites/{id}":
     get:
       operationId: getApiV4GeoSitesId
@@ -10399,6 +10453,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4GeoSitesId
       summary: Update a Geo site
@@ -10433,6 +10488,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GeoSitesIdRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GeoSitesId
       summary: Delete a Geo site
@@ -10457,6 +10513,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/geo_sites/{id}/status":
     get:
       operationId: getApiV4GeoSitesIdStatus
@@ -10494,6 +10551,7 @@ paths:
           type: boolean
           nullable: true
         in: query
+      x-gitlab-tier: premium
   "/api/v4/geo_sites/{id}/repair":
     post:
       operationId: postApiV4GeoSitesIdRepair
@@ -10524,6 +10582,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/geo_nodes":
     post:
       operationId: postApiV4GeoNodes
@@ -10550,6 +10609,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GeoNodesRequest"
+      x-gitlab-tier: premium
     get:
       operationId: getApiV4GeoNodes
       summary: List all Geo nodes
@@ -10588,6 +10648,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/geo_nodes/status":
     get:
       operationId: getApiV4GeoNodesStatus
@@ -10627,6 +10688,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
   "/api/v4/geo_nodes/{id}":
     get:
       operationId: getApiV4GeoNodesId
@@ -10656,6 +10718,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4GeoNodesId
       summary: Update a Geo node
@@ -10690,6 +10753,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GeoNodesIdRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4GeoNodesId
       summary: Delete a Geo node
@@ -10714,6 +10778,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/geo_nodes/{id}/status":
     get:
       operationId: getApiV4GeoNodesIdStatus
@@ -10751,6 +10816,7 @@ paths:
           type: boolean
           nullable: true
         in: query
+      x-gitlab-tier: premium
   "/api/v4/geo_nodes/{id}/repair":
     post:
       operationId: postApiV4GeoNodesIdRepair
@@ -10780,6 +10846,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/experiments":
     get:
       operationId: getApiV4Experiments
@@ -11254,6 +11321,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/dependency_proxy/packages/maven/{path}/{file_name}":
     get:
       operationId: getApiV4ProjectsIdDependencyProxyPackagesMavenPathFileName
@@ -11300,6 +11368,7 @@ paths:
           type: string
         in: path
         example: foo/bar/mypkg/1.0-SNAPSHOT
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epic_boards":
     get:
       operationId: getApiV4GroupsIdEpicBoards
@@ -12847,6 +12916,7 @@ paths:
           type: string
           nullable: true
         in: query
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/approval_settings/rules":
     post:
       operationId: postApiV4ProjectsIdApprovalSettingsRules
@@ -12880,6 +12950,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdApprovalSettingsRulesRequest"
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/approval_settings/rules/{approval_rule_id}":
     put:
       operationId: putApiV4ProjectsIdApprovalSettingsRulesApprovalRuleId
@@ -12919,6 +12990,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdApprovalSettingsRulesApprovalRuleIdRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4ProjectsIdApprovalSettingsRulesApprovalRuleId
       summary: Delete an approval rule
@@ -12947,6 +13019,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/external_status_checks":
     post:
       operationId: postApiV4ProjectsIdExternalStatusChecks
@@ -13259,6 +13332,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4GroupsIdApprovalRules
       summary: Create an approval rule for a group
@@ -13292,6 +13366,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4GroupsIdApprovalRulesRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/approval_rules/{approval_rule_id}":
     put:
       operationId: putApiV4GroupsIdApprovalRulesApprovalRuleId
@@ -13329,6 +13404,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4GroupsIdApprovalRulesApprovalRuleIdRequest"
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/security_settings":
     put:
       operationId: putApiV4GroupsIdSecuritySettings
@@ -13460,6 +13536,7 @@ paths:
           default: 20
         in: query
         example: 20
+      x-gitlab-tier: premium
     post:
       operationId: postApiV4ProjectsIdApprovalRules
       summary: Create an approval rule for a project
@@ -13492,6 +13569,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdApprovalRulesRequest"
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/approval_rules/{approval_rule_id}":
     get:
       operationId: getApiV4ProjectsIdApprovalRulesApprovalRuleId
@@ -13525,6 +13603,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
     put:
       operationId: putApiV4ProjectsIdApprovalRulesApprovalRuleId
       summary: Update an approval rule for a project
@@ -13569,6 +13648,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4ProjectsIdApprovalRulesApprovalRuleIdRequest"
+      x-gitlab-tier: premium
     delete:
       operationId: deleteApiV4ProjectsIdApprovalRulesApprovalRuleId
       summary: Delete an approval rule for a project
@@ -13597,6 +13677,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/cluster_agents/{agent_id}/url_configurations":
     get:
       operationId: getApiV4ProjectsIdClusterAgentsAgentIdUrlConfigurations
@@ -13632,6 +13713,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
     post:
       operationId: postApiV4ProjectsIdClusterAgentsAgentIdUrlConfigurations
       summary: Create an agent URL configuration
@@ -13672,6 +13754,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdClusterAgentsAgentIdUrlConfigurationsRequest"
+      x-gitlab-tier: ultimate
   "/api/v4/projects/{id}/cluster_agents/{agent_id}/url_configurations/{url_configuration_id}":
     get:
       operationId: getApiV4ProjectsIdClusterAgentsAgentIdUrlConfigurationsUrlConfigurationId
@@ -13713,6 +13796,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4ProjectsIdClusterAgentsAgentIdUrlConfigurationsUrlConfigurationId
       summary: Delete an agent URL configuration
@@ -13749,6 +13833,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{runner_controller_id}/tokens":
     get:
       operationId: getApiV4RunnerControllersRunnerControllerIdTokens
@@ -13795,6 +13880,7 @@ paths:
         in: query
         example: 20
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
     post:
       operationId: postApiV4RunnerControllersRunnerControllerIdTokens
       summary: Create a runner controller token
@@ -13828,6 +13914,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4RunnerControllersRunnerControllerIdTokensRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{runner_controller_id}/tokens/{id}":
     get:
       operationId: getApiV4RunnerControllersRunnerControllerIdTokensId
@@ -13863,6 +13950,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4RunnerControllersRunnerControllerIdTokensId
       summary: Revoke a runner controller token
@@ -13892,6 +13980,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{runner_controller_id}/tokens/{id}/rotate":
     post:
       operationId: postApiV4RunnerControllersRunnerControllerIdTokensIdRotate
@@ -13926,6 +14015,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{id}/scopes":
     get:
       operationId: getApiV4RunnerControllersIdScopes
@@ -13950,6 +14040,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{id}/scopes/instance":
     post:
       operationId: postApiV4RunnerControllersIdScopesInstance
@@ -13982,6 +14073,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4RunnerControllersIdScopesInstance
       summary: Remove instance scope
@@ -14004,6 +14096,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{id}/scopes/runners/{runner_id}":
     post:
       operationId: postApiV4RunnerControllersIdScopesRunnersRunnerId
@@ -14044,6 +14137,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4RunnerControllersIdScopesRunnersRunnerId
       summary: Remove runner scope
@@ -14072,6 +14166,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers":
     get:
       operationId: getApiV4RunnerControllers
@@ -14110,6 +14205,7 @@ paths:
         in: query
         example: 20
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
     post:
       operationId: postApiV4RunnerControllers
       summary: Register a runner controller
@@ -14134,6 +14230,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/postApiV4RunnerControllersRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/runner_controllers/{id}":
     get:
       operationId: getApiV4RunnerControllersId
@@ -14162,6 +14259,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
     put:
       operationId: putApiV4RunnerControllersId
       summary: Update a runner controller
@@ -14195,6 +14293,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/putApiV4RunnerControllersIdRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
     delete:
       operationId: deleteApiV4RunnerControllersId
       summary: Delete a runner controller
@@ -14222,6 +14321,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: ultimate
   "/api/v4/audit_events":
     get:
       operationId: getApiV4AuditEvents
@@ -14416,6 +14516,7 @@ paths:
           - type: string
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/admin/data_management/{model_name}/{record_identifier}/checksum":
     put:
       operationId: putApiV4AdminDataManagementModelNameRecordIdentifierChecksum
@@ -14457,6 +14558,7 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/admin/data_management/{model_name}":
     get:
       operationId: getApiV4AdminDataManagementModelName
@@ -14553,6 +14655,7 @@ paths:
           default: asc
         in: query
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/admin/data_management/{model_name}/checksum":
     put:
       operationId: putApiV4AdminDataManagementModelNameChecksum
@@ -14595,6 +14698,7 @@ paths:
             schema:
               "$ref": "#/components/schemas/putApiV4AdminDataManagementModelNameChecksumRequest"
       x-gitlab-lifecycle: experiment
+      x-gitlab-tier: premium
   "/api/v4/admin/security/compliance_policy_settings":
     get:
       operationId: getApiV4AdminSecurityCompliancePolicySettings
@@ -45171,6 +45275,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovalsRequest"
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approve":
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove
@@ -45319,6 +45424,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/create_ci_config":
     post:
       operationId: postApiV4ProjectsIdCreateCiConfig
@@ -62483,6 +62589,7 @@ paths:
         schema:
           type: integer
         in: path
+      x-gitlab-tier: premium
   "/api/v4/projects/{id}/packages/generic/{package_name}/{package_version}/{file_name}/authorize":
     put:
       operationId: putApiV4ProjectsIdPackagesGenericPackageNamePackageVersionFileNameAuthorize
@@ -65770,6 +65877,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4ProjectsIdDeploymentsDeploymentIdApprovalRequest"
+      x-gitlab-tier: premium
   "/api/v4/deploy_tokens":
     get:
       operationId: getApiV4DeployTokens

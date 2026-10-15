@@ -1247,6 +1247,10 @@ export default {
 
 The batch key can be the name of the component.
 
+Only queries with a `batchKey` are batched. Queries that share a `batchKey` are sent in the same
+request, up to 10 queries per request. To keep a query out of a batch, don't set a `batchKey`.
+You cannot configure the batch size for a client.
+
 #### Polling and Performance
 
 While the Apollo client has support for simple polling, for performance reasons, our [ETag-based caching](../polling.md) is preferred to hitting the database each time.

@@ -715,30 +715,6 @@ coverage-frontend:
         coverage_format: cobertura
         path: coverage-frontend/cobertura-coverage.xml
 
-webpack-dev-server:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .yarn-cache
-    - .repo-from-artifacts
-  rules:
-    - if: '$ENABLE_RSPACK == "true"'
-      when: never
-    - !reference [".frontend:rules:default-frontend-jobs", rules]
-  stage: test-frontend
-  variables:
-    WEBPACK_MEMORY_TEST: "true"
-    WEBPACK_VENDOR_DLL: "true"
-  script:
-    - yarn_install_script
-    - retry yarn webpack-vendor
-    - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
-  artifacts:
-    name: webpack-dev-server
-    expire_in: 31d
-    paths:
-      - webpack-dev-server.json
-
 compile-storybook:
   extends:
     - .frontend-test-base
@@ -885,6 +861,9 @@ build-assets-image:
   stage: prepare
   tags:
     - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  # Keep the unconditional retry from .base-image-build-buildx instead of the
+  # exit-code retry from .fast-no-clone-job, which would otherwise override it.
+  retry: 2
   needs:
     - cache:assets-hash
     - job: compile-production-assets

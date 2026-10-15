@@ -3,8 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_server do
-  let(:mock_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :gitlab_search_in_instance) }
-  let(:mock_tool_2) { instance_double(Mcp::Tools::Base::ApiTool, name: :gitlab_search_in_group) }
+  let(:mock_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :gitlab_search_in_instance, settings: {}) }
+  let(:mock_tool_2) do
+    instance_double(Mcp::Tools::Base::ApiTool, name: :gitlab_search_in_group, settings: { resource_name: 'group' })
+  end
+
   let(:tools) { [mock_tool, mock_tool_2] }
 
   describe '#initialize' do
@@ -196,12 +199,28 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
       let(:transformed_params) { { arguments: transformed_arguments } }
       let(:mock_response) { { content: [{ type: 'text', text: 'Success' }], isError: false } }
 
-      it 'delegates to selected tool with transformed arguments' do
+      it 'delegates to selected tool with transformed arguments and records the dispatched sub-tool' do
         expect(mock_tool).to receive(:execute).with(request: nil, params: transformed_params).and_return(mock_response)
 
         service = service_class.new(tools: tools)
         result = service.execute(request: nil, params: params)
-        expect(result).to eq(mock_response)
+        expect(result).to eq(
+          mock_response.merge(dispatch: { tool_name: 'gitlab_search_in_instance' })
+        )
+      end
+
+      context 'when the selected sub-tool returns an error' do
+        let(:mock_response) { Mcp::Tools::Base::Response.error('404 Not Found', reason: :not_found) }
+
+        it 'records the dispatched sub-tool on the error response' do
+          allow(mock_tool).to receive(:execute).and_return(mock_response)
+
+          result = service_class.new(tools: tools).execute(request: nil, params: params)
+
+          expect(result).to include(
+            isError: true, dispatch: { tool_name: 'gitlab_search_in_instance' }
+          )
+        end
       end
     end
 
@@ -331,6 +350,35 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to eq('Tool execution failed: Tool execution failed')
       end
+    end
+  end
+
+  describe '#record_dispatch' do
+    let(:service_class) do
+      Class.new(described_class) do
+        register_version '1.0.0', {
+          description: 'Test tool',
+          input_schema: { type: 'object', properties: {}, required: [] }
+        }
+
+        def self.tool_name
+          'test_aggregated_tool'
+        end
+      end
+    end
+
+    let(:service) { service_class.new(tools: tools) }
+    let(:response) { { content: [{ type: 'text', text: 'Success' }], isError: false } }
+
+    it 'attaches the sub-tool name without changing the original response' do
+      result = service.send(:record_dispatch, response, mock_tool_2)
+
+      expect(result).to eq(response.merge(dispatch: { tool_name: 'gitlab_search_in_group' }))
+      expect(response).not_to have_key(:dispatch)
+    end
+
+    it 'returns a non-hash response unchanged' do
+      expect(service.send(:record_dispatch, nil, mock_tool)).to be_nil
     end
   end
 

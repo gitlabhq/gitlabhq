@@ -137,6 +137,11 @@ module API
         end
         strong_memoize_attr :mcp_client_info
 
+        def mcp_request_context
+          ::Mcp::Tools::RequestContext.new(current_user: current_user, access_token: access_token, request: request)
+        end
+        strong_memoize_attr :mcp_request_context
+
         def method_not_found!(method_name)
           # render error used to stop request and return early
           render_structured_api_error!({
@@ -172,6 +177,10 @@ module API
               id: params[:id]
             }
           end
+        end
+
+        def render_mcp_result(result)
+          format_jsonrpc_response(result)
         end
       end
 
@@ -230,20 +239,21 @@ module API
             case params[:method]
             when 'tools/call'
               Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user,
-                tool_name_prefix: mcp_server_tool_name_prefix, client_info: mcp_client_info)
+                context: mcp_request_context, tool_name_prefix: mcp_server_tool_name_prefix,
+                client_info: mcp_client_info)
             when 'tools/list'
               allowed_tools = enabled_mcp_server_tools
               allowed_toolsets = ::Mcp::Tools::Toolsets.parse(headers['X-Gitlab-Enabled-Mcp-Server-Toolsets'])
               allowed_toolsets = ::Mcp::Tools::Toolsets.defaults if allowed_toolsets.blank? && allowed_tools.blank?
 
               Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user,
-                allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,
+                context: mcp_request_context, allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,
                 tool_name_prefix: mcp_server_tool_name_prefix, include_named_unlisted: list_named_unlisted_tools?)
             else
               invoke_basic_handler
             end
 
-          format_jsonrpc_response(result)
+          render_mcp_result(result)
         end
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server

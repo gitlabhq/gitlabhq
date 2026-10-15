@@ -1030,7 +1030,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     end
 
     context 'when the job artifact is not saved' do
-      let(:job_artifact) { build(:ci_job_artifact, :junit) }
+      let(:job_artifact) { build(:ci_job_artifact, :junit, job: create(:ci_build)) }
 
       it 'creates a report artifact for junit reports and saves when job artifact saves' do
         job_artifact.each_blob { |b| }

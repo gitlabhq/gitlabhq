@@ -26,7 +26,6 @@ const EXACT_VUE_VERSION = require('vue/package.json').version;
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
-const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const { isCustomElement } = require('./vue3migration/compilers/vue3_template');
 
@@ -70,8 +69,6 @@ const INCREMENTAL_COMPILER_ENABLED =
 const INCREMENTAL_COMPILER_TTL = Number(process.env.DEV_SERVER_INCREMENTAL_TTL) || Infinity;
 const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
-const WEBPACK_MEMORY_TEST =
-  process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
 const NO_MINIFY = process.env.NO_MINIFY && process.env.NO_MINIFY !== 'false';
 let NO_COMPRESSION = process.env.NO_COMPRESSION && process.env.NO_COMPRESSION !== 'false';
 let NO_SOURCEMAPS = process.env.NO_SOURCEMAPS && process.env.NO_SOURCEMAPS !== 'false';
@@ -876,47 +873,6 @@ module.exports = {
           }
 
           callback();
-        });
-      },
-    },
-
-    // output the in-memory heap size upon compilation and exit
-    WEBPACK_MEMORY_TEST && {
-      apply(compiler) {
-        compiler.hooks.emit.tapAsync('ReportMemoryConsumptionPlugin', () => {
-          console.log('Assets compiled...');
-          if (global.gc) {
-            console.log('Running garbage collection...');
-            global.gc();
-          } else {
-            console.error(
-              "WARNING: you must use the --expose-gc node option to accurately measure webpack's heap size",
-            );
-          }
-          const memoryUsage = process.memoryUsage().heapUsed;
-          const toMB = (bytes) => Math.floor(bytes / 1024 / 1024);
-
-          console.log(`Webpack heap size: ${toMB(memoryUsage)} MB`);
-
-          const webpackStatistics = {
-            memoryUsage,
-            date: Date.now(), // milliseconds
-            commitSHA: process.env.CI_COMMIT_SHA,
-            nodeVersion: process.versions.node,
-            webpackVersion: WEBPACK_VERSION,
-          };
-
-          console.log(webpackStatistics);
-
-          fs.writeFileSync(
-            path.join(ROOT_PATH, 'webpack-dev-server.json'),
-            JSON.stringify(webpackStatistics),
-          );
-
-          // exit in case we're running webpack-dev-server
-          if (IS_DEV_SERVER) {
-            process.exit();
-          }
         });
       },
     },

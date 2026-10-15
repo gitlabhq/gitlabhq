@@ -7,12 +7,17 @@ module SupplyChain
     HASH_READ_CHUNK_SIZE = 1.megabyte
     COSIGN_KEY_PREFIX = 'cosign'
     COSIGN_PASSWORD_BYTES = 32
+    LEAF_CERTIFICATE_FILE = 'leaf.crt.pem'
 
     Error = Class.new(StandardError)
     JwtGenerationError = Class.new(Error)
     AttestationFailure = Class.new(Error)
     InvalidInput = Class.new(Error)
     KeyImportFailure = Class.new(Error)
+    LocalCaSigningError = Class.new(Error)
+
+    LocalCaSigningMaterial = Struct.new(:key_path, :password, :certificate_path, :signing_certificate_id,
+      keyword_init: true)
 
     def initialize(build)
       @build = build
@@ -105,6 +110,30 @@ module SupplyChain
 
       error = result.stderr
       raise AttestationFailure, "Attestation for #{hash} failed after #{result.duration}s: #{error}"
+    end
+
+    def with_local_ca_signing_material
+      Dir.mktmpdir('slsa-local-ca-') do |dir|
+        yield prepare_local_ca_signing_material(dir)
+      end
+    end
+
+    def prepare_local_ca_signing_material(dir)
+      driver = SupplyChain::PostgresCaDriver.new(@build.project)
+      leaf = driver.generate_leaf_certificate(ci_config_ref_uri: @build.pipeline.ci_config_ref_uri)
+
+      certificate_path = File.join(dir, LEAF_CERTIFICATE_FILE)
+      File.write(certificate_path, leaf.certificate.to_pem, perm: 0o600)
+      imported = cosign_import_key_pair(key: leaf.key, dir: dir)
+
+      LocalCaSigningMaterial.new(
+        key_path: imported[:key_path],
+        password: imported[:password],
+        certificate_path: certificate_path,
+        signing_certificate_id: driver.signing_certificate.id
+      )
+    rescue SupplyChain::RootCaDriver::Error => e
+      raise LocalCaSigningError, "Unable to prepare local CA signing material: #{e.message}"
     end
 
     def cosign_import_key_pair(key:, dir:)

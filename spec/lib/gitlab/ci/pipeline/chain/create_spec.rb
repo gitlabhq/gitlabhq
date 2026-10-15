@@ -573,10 +573,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
           )
 
           job.needs = [
-            build(:ci_build_need, name: "build_job#{i % 50}", partition_id: pipeline.partition_id)
+            build(:ci_build_need, build: job, project_id: project.id, name: "build_job#{i % 50}",
+              partition_id: pipeline.partition_id)
           ]
 
           job.job_source = build(:ci_build_source,
+            job: job,
+            project_id: project.id,
             source: :pipeline,
             partition_id: pipeline.partition_id
           )
@@ -595,8 +598,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
           )
 
           job.needs = [
-            build(:ci_build_need, name: "test_job#{i * 5}", partition_id: pipeline.partition_id),
-            build(:ci_build_need, name: "test_job#{(i * 5) + 1}", partition_id: pipeline.partition_id)
+            build(:ci_build_need, build: job, project_id: project.id, name: "test_job#{i * 5}",
+              partition_id: pipeline.partition_id),
+            build(:ci_build_need, build: job, project_id: project.id, name: "test_job#{(i * 5) + 1}",
+              partition_id: pipeline.partition_id)
           ]
 
           job.association(:job_source).target = nil

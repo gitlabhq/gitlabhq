@@ -3,8 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_category: :mcp_server do
-  let(:create_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :create_merge_request) }
-  let(:update_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :update_merge_request) }
+  let(:create_tool) do
+    instance_double(Mcp::Tools::Base::ApiTool, name: :create_merge_request, settings: { resource_name: 'project' })
+  end
+
+  let(:update_tool) do
+    instance_double(Mcp::Tools::Base::ApiTool, name: :update_merge_request,
+      settings: { resource_name: 'merge request' })
+  end
+
   let(:tools) { [create_tool, update_tool] }
   let(:service) { described_class.new(tools: tools) }
 
@@ -177,6 +184,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
           aggregator: 'save_merge_request'
         })
         expect(result[:content].first[:text]).to include('Merge request created successfully via save_merge_request')
+        expect(result[:dispatch]).to eq(tool_name: 'create_merge_request')
       end
 
       it 'passes project_id to the REST route as id', :aggregate_failures do
@@ -204,6 +212,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
           aggregator: 'save_merge_request'
         })
         expect(result[:content].first[:text]).to include('Merge request updated successfully via save_merge_request')
+        expect(result[:dispatch]).to eq(tool_name: 'update_merge_request')
       end
     end
 

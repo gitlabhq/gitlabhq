@@ -111,8 +111,9 @@ yarn.lock @gitlab-org/maintainers/frontend
 /app/assets/ @gitlab-org/maintainers/frontend
 /ee/app/assets/ @gitlab-org/maintainers/frontend
 /ee/frontend_islands/ @gitlab-org/maintainers/frontend
-/spec/frontend/ @gitlab-org/maintainers/frontend
-/ee/spec/frontend/ @gitlab-org/maintainers/frontend
+# @gitlab-bot is an owner here for the same reason as in `/spec/` above.
+/spec/frontend/ @gitlab-org/maintainers/frontend @gitlab-bot
+/ee/spec/frontend/ @gitlab-org/maintainers/frontend @gitlab-bot
 /lib/gitlab/js_routes.rb @gitlab-org/maintainers/frontend
 /spec/support/browser_console_allowlist.yml @gitlab-org/maintainers/frontend
 

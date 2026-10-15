@@ -75,6 +75,86 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
       expect(updated).to eq(1)
     end
+
+    it 'returns 0 and preserves nothing when no rows are in an overwritable state', :aggregate_failures do
+      updated = Namespace.overwrite_state_in_batch(
+        [higher_precedence.id], from: [:ancestor_inherited], to: :archived, preserve_event: 'archive'
+      )
+
+      expect(updated).to eq(0)
+      expect(higher_precedence.reload.state_metadata).not_to have_key('preserved_states')
+    end
+
+    def preserved_states(namespace)
+      namespace.reload.state_metadata['preserved_states']
+    end
+
+    context 'with preserve_event' do
+      subject(:overwrite) do
+        Namespace.overwrite_state_in_batch(
+          [overwritable.id, higher_precedence.id],
+          from: [:ancestor_inherited, :archived],
+          to: :deletion_scheduled,
+          preserve_event: 'schedule_deletion'
+        )
+      end
+
+      it 'preserves the previous state of overwritten rows only', :aggregate_failures do
+        overwrite
+
+        expect(preserved_states(overwritable)).to eq('schedule_deletion' => 'ancestor_inherited')
+        expect(preserved_states(higher_precedence)).to be_nil
+      end
+
+      it 'keeps other preserved states' do
+        overwritable.namespace_details.update!(state_metadata: { preserved_states: { schedule_transfer: 'archived' } })
+
+        overwrite
+
+        expect(preserved_states(overwritable))
+          .to eq('schedule_transfer' => 'archived', 'schedule_deletion' => 'ancestor_inherited')
+      end
+
+      it 'creates a missing namespace_details row' do
+        Namespace::Detail.where(namespace_id: overwritable.id).delete_all
+
+        overwrite
+
+        expect(Namespace::Detail.find(overwritable.id).state_metadata['preserved_states'])
+          .to eq('schedule_deletion' => 'ancestor_inherited')
+      end
+
+      it 'does not create a namespace_details row for rows it does not overwrite' do
+        Namespace::Detail.where(namespace_id: higher_precedence.id).delete_all
+
+        overwrite
+
+        expect(Namespace::Detail.exists?(higher_precedence.id)).to be(false)
+      end
+    end
+
+    context 'with clear_preserved' do
+      let(:metadata) { { preserved_states: { schedule_deletion: 'archived' } } }
+
+      subject(:overwrite) do
+        Namespace.overwrite_state_in_batch(
+          [overwritable.id, higher_precedence.id], from: [:archived], to: :ancestor_inherited, clear_preserved: true
+        )
+      end
+
+      before do
+        overwritable.update!(state: :archived)
+        overwritable.namespace_details.update!(state_metadata: metadata)
+        higher_precedence.namespace_details.update!(state_metadata: metadata)
+      end
+
+      it 'removes preserved states from overwritten rows only', :aggregate_failures do
+        overwrite
+
+        expect(overwritable.reload.state_metadata).not_to have_key('preserved_states')
+        expect(preserved_states(higher_precedence)).to eq('schedule_deletion' => 'archived')
+      end
+    end
   end
 
   describe 'zero handling' do

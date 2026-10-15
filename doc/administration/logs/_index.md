@@ -1301,6 +1301,10 @@ line also has `declared_client_name` and `declared_client_version` fields from t
 the request. The values are reported by the client and are not verified. Each value is truncated
 to 64 characters.
 
+Calls to tools that run one of several underlying tools, such as `search` or `save_merge_request`,
+also include a `dispatched_tool_name` field. It records which underlying tool handled the call,
+for example `gitlab_search_in_project`.
+
 When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
 `duo_session_created` is logged. This line has `source_type` set to `mcp`.
 The `duo_workflow_id` field holds the session ID.

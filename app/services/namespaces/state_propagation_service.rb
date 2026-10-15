@@ -10,7 +10,10 @@ module Namespaces
   #
   # See https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/group_and_project_operations_and_state_management/decisions/003_state_propagation_model/
   class StatePropagationService
-    STATE_PROPAGATION_ITERATOR_BATCH_SIZE = 500
+    STATE_PROPAGATION_ITERATOR_BATCH_SIZE = 200
+
+    # Key under which a descendant's pre-deletion state is preserved, shared with StatePreservation.
+    DELETION_PRESERVATION_KEY = 'schedule_deletion'
 
     def initialize(namespace_id, target_state)
       @namespace_id = namespace_id
@@ -48,6 +51,7 @@ module Namespaces
     attr_reader :namespace_id, :target_state
 
     def propagate(propagation, overwritable_states)
+      source_state = propagation.source_state
       target_state = propagation.target_state
       cursor = { current_id: namespace_id, depth: [namespace_id] }
 
@@ -64,10 +68,27 @@ module Namespaces
       )
 
       iterator.each_batch(of: STATE_PROPAGATION_ITERATOR_BATCH_SIZE) do |ids|
-        Namespace.overwrite_state_in_batch(ids, from: overwritable_states, to: target_state)
+        Namespace.overwrite_state_in_batch(
+          ids,
+          from: overwritable_states,
+          to: target_state,
+          **preservation_options(source_state, target_state)
+        )
+
         # Heartbeat: keeps a long-running propagation from being treated as stuck by
         # StatePropagationCronWorker and re-run concurrently.
         propagation.touch(:started_at)
+      end
+    end
+
+    def preservation_options(source_state, target_state)
+      # Exiting maintenance into deletion_scheduled is a reversal: descendants keep what they preserved.
+      if target_state == 'deletion_scheduled' && source_state != 'maintenance'
+        { preserve_event: DELETION_PRESERVATION_KEY }
+      elsif source_state == 'archived' && target_state == 'ancestor_inherited'
+        { clear_preserved: true }
+      else
+        {}
       end
     end
   end

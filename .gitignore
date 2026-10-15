@@ -110,7 +110,6 @@ jsdoc/
 **/tmp/rubocop_cache/**
 .projections.json
 /qa/.rakeTasks
-webpack-dev-server.json
 /.nvimrc
 .solargraph.yml
 ee/changelogs/unreleased-ee

@@ -32,6 +32,25 @@ RSpec.describe Namespaces::GroupUrlConstraint do
       it { expect(subject.matches?(request)).to be_falsey }
     end
 
+    context 'valid request for an organization-scoped group' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:scoped_group) do
+        create(:group, path: 'scoped', organization: organization).tap do |scoped_group|
+          scoped_group.route.update!(path: "o/#{organization.path}/scoped")
+        end
+      end
+
+      let(:request) { build_request(scoped_group.route.path) }
+
+      it { expect(subject.matches?(request)).to be_truthy }
+    end
+
+    context 'request for an organization scope without a group' do
+      let(:request) { build_request('o/acme') }
+
+      it { expect(subject.matches?(request)).to be_falsey }
+    end
+
     context 'when the request matches a redirect route' do
       context 'for a root group' do
         let_it_be(:redirect_route) { group.redirect_routes.create!(path: 'gitlabb') }

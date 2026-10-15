@@ -160,6 +160,7 @@ module Types
     mount_mutation Mutations::ReleaseAssetLinks::Update
     mount_mutation Mutations::ReleaseAssetLinks::Delete
     mount_mutation Mutations::Terraform::State::Delete
+    mount_mutation Mutations::Terraform::State::Restore, experiment: { milestone: '19.5' }
     mount_mutation Mutations::Terraform::State::Lock
     mount_mutation Mutations::Terraform::State::Unlock
     mount_mutation Mutations::Terraform::StateProtectionRule::Create, experiment: { milestone: '19.1' }

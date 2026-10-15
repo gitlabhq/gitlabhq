@@ -449,6 +449,7 @@ class ProjectPolicy < BasePolicy
     prevent :read_terraform_state
     prevent :create_terraform_state
     prevent :admin_terraform_state
+    prevent :restore_terraform_state
     prevent :destroy_terraform_state
     prevent :create_terraform_state_protection_rule
     prevent :delete_terraform_state_protection_rule
@@ -456,6 +457,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:admin_terraform_state) }.policy do
+    enable :restore_terraform_state
     enable :create_terraform_state_protection_rule
     enable :delete_terraform_state_protection_rule
     enable :update_terraform_state_protection_rule

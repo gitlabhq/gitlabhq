@@ -87,6 +87,32 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
       end.not_to exceed_query_limit(control).with_threshold(2)
     end
 
+    it 'loads only the snippet columns needed to locate the repository', :aggregate_failures do
+      project_snippet = create(:project_snippet, :repository, project: projects.first)
+      personal_snippet = create(:personal_snippet, :repository, author: projects.first.first_owner)
+      enqueued = {}
+
+      allow(strategy).to receive(:enqueue) do |container, repo_type|
+        next unless repo_type == Gitlab::GlRepository::SNIPPET
+
+        repository = repo_type.repository_for(container)
+        enqueued[container.id] = {
+          container: container,
+          repository: [repository.storage, repository.relative_path, repository.gl_project_path]
+        }
+      end
+
+      repositories.dump(destination, backup_id)
+
+      [project_snippet, personal_snippet].each do |snippet|
+        repository = snippet.repository
+
+        expect(enqueued[snippet.id][:container]).not_to have_attribute(:content)
+        expect(enqueued[snippet.id][:repository])
+          .to eq([repository.storage, repository.relative_path, repository.gl_project_path])
+      end
+    end
+
     describe 'storages' do
       let(:storages) { %w[default] }
 

@@ -141,6 +141,9 @@ module Gitlab
 
     ORGANIZATION_PATH_REGEX_STR = '[a-zA-Z0-9_][a-zA-Z0-9_\-]' + "{0,#{Namespace::URL_MAX_LENGTH - 1}}"
     ORGANIZATION_PATH_FORMAT_REGEX = /(?:#{ORGANIZATION_PATH_REGEX_STR})/
+    # URL segment that scopes a path to an organization (`/o/<org>/...`). Must
+    # stay in TOP_LEVEL_ROUTES so no group or user can ever take that path.
+    ORGANIZATION_ROUTE_SCOPE = 'o'
 
     def organization_route_regex
       @organization_route_regex ||= begin
@@ -164,11 +167,13 @@ module Gitlab
       end
     end
 
+    # A namespace path, optionally scoped to an organization as `o/<org>/<path>`.
     def full_namespace_route_regex
       @full_namespace_route_regex ||= begin
         illegal_words = Regexp.new(Regexp.union(ILLEGAL_GROUP_PATH_WORDS).source, Regexp::IGNORECASE)
 
         single_line_regexp %r{
+          (?:#{ORGANIZATION_ROUTE_SCOPE}/#{organization_route_regex}/)?
           #{root_namespace_route_regex}
           (?:
             /

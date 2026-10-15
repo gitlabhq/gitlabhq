@@ -93,7 +93,7 @@ Also have an extra tracker (`Gitlab::Tracking::AiTracking`), which does not stor
 | Event | Additional properties | What it tracks |
 | --- | --- | --- |
 | `start_mcp_tool_call` | none | MCP tool call started |
-| `finish_mcp_tool_call` | `has_tool_call_success`, `failure_reason`, `error_status` | MCP tool call finished |
+| `finish_mcp_tool_call` | `has_tool_call_success`, `failure_reason`, `error_status`, `dispatched_tool_name` | MCP tool call finished. `dispatched_tool_name` is set only for aggregated tools. |
 
 ### Vulnerability workflow triggers
 

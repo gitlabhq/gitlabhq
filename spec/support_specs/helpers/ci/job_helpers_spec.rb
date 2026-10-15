@@ -12,7 +12,10 @@ RSpec.describe Ci::JobHelpers, feature_category: :continuous_integration do
     let(:new_options) { { script: 'new script' } }
     let(:new_config) { { options: new_options } }
 
-    let(:job) { build(:ci_build, :interruptible, options: existing_options, yaml_variables: existing_variables) }
+    let(:job) do
+      build(:ci_build, :interruptible, pipeline: pipeline, options: existing_options,
+        yaml_variables: existing_variables)
+    end
 
     subject(:call_stub) { stub_ci_job_definition(job, **new_config) }
 
