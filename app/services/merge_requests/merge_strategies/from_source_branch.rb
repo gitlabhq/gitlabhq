@@ -127,7 +127,7 @@ module MergeRequests
         # Capture the target tip up front and pass it as target_sha so Gitaly
         # optimistically locks the ref: if the branch moved underneath us the
         # fast-forward is rejected instead of silently no-op'ing.
-        prior_target_sha = repository.commit(merge_request.target_branch)&.sha
+        prior_target_sha = repository.commit(merge_request.target_branch_ref)&.sha
 
         commit_sha = repository.ff_merge(
           current_user,
