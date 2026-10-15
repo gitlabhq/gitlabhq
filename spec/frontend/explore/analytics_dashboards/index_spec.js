@@ -45,21 +45,13 @@ describe('Explore analytics dashboards index', () => {
 
   describe('with the element present', () => {
     beforeEach(() => {
-      document.body.dataset.groupFullPath = 'gitlab-org';
-
       setUpElement('data-data-source-clickhouse="true"');
       initExploreAnalyticsDashboards();
-    });
-
-    afterEach(() => {
-      delete document.body.dataset.groupFullPath;
     });
 
     it('provides the remaining app configuration', () => {
       expect(provided()).toMatchObject({
         exploreAnalyticsDashboardsPath: '/explore/analytics_dashboards',
-        defaultGroupFullPath: 'gitlab-org',
-        defaultProjectFullPath: null,
       });
     });
   });

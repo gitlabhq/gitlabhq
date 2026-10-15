@@ -36,6 +36,7 @@ Use three types of labels in GitLab:
 ## Assign and unassign labels
 
 You can assign labels to any issue, merge request, or epic.
+On GitLab.com, each work item, such as an issue, epic, or task, can have a maximum of 100 labels.
 
 Changed labels are immediately visible to other users, without refreshing the page, on the following:
 

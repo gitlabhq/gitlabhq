@@ -337181,7 +337181,7 @@
             },
             {
               "name": "duoMcpServerNames",
-              "description": "Names of the distinct MCP servers used by the project's configured agents, sorted alphabetically. Resolved on request only, because it reads the configured agents and their versions. Shares its lookup with duoMcpServersCount when both are requested. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Names of the distinct MCP servers used by the project's configured agents, sorted alphabetically. Servers blocked for the project's namespace are not listed. Resolved on request only, because it reads the configured agents and their versions. Shares its lookup with duoMcpServersCount when both are requested. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "LIST",
@@ -337201,7 +337201,7 @@
             },
             {
               "name": "duoMcpServersCount",
-              "description": "Number of distinct MCP servers used by the project's configured agents. Resolved on request only, because it reads the configured agents and their versions. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Number of distinct MCP servers used by the project's configured agents. Servers blocked for the project's namespace are not counted. Resolved on request only, because it reads the configured agents and their versions. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

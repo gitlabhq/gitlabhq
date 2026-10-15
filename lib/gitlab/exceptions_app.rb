@@ -6,8 +6,10 @@ module Gitlab
   class ExceptionsApp < ActionDispatch::PublicExceptions
     extend ::Gitlab::Utils::Override
 
+    # Terminology: Request ID = Correlation ID = x-request-id
+    # as per doc/administration/logs/tracing_correlation_id.md
     REQUEST_ID_PLACEHOLDER = '<!-- REQUEST_ID -->'
-    REQUEST_ID_PARAGRAPH = '<p>Request ID: <code>%s</code></p>'
+    REQUEST_ID_PARAGRAPH = '<p>Correlation ID: <code>%s</code></p>'
 
     override :call
     def call(env)

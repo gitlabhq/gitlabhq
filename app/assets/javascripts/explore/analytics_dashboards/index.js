@@ -19,7 +19,6 @@ export default () => {
 
   const { exploreAnalyticsDashboardsPath, dataSourceClickhouse, gitlabCreditsDashboardPath } =
     convertObjectPropsToCamelCase(el.dataset);
-  const { groupFullPath, projectFullPath } = document.body.dataset;
 
   Vue.use(VueApollo);
   const apolloProvider = new VueApollo({
@@ -47,8 +46,6 @@ export default () => {
     provide: {
       exploreAnalyticsDashboardsPath,
       breadcrumbState,
-      defaultGroupFullPath: groupFullPath ?? null,
-      defaultProjectFullPath: projectFullPath ?? null,
       dataSourceClickhouse: parseBoolean(dataSourceClickhouse),
       gitlabCreditsDashboardPath,
     },

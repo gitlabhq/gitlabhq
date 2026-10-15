@@ -8,7 +8,7 @@ export const createRoutes = (breadcrumbState) => [
     path: '/',
     component: DashboardsList,
     meta: {
-      getName: () => s__('Analytics|Analytics dashboards'),
+      getName: () => s__('Analytics|GitLab Intelligence'),
       root: true,
     },
   },

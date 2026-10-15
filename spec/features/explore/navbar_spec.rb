@@ -26,7 +26,7 @@ RSpec.describe '"Explore" navbar', :js, :with_current_organization, feature_cate
       within_testid('nav-container') do
         items = all('[data-testid="nav-item-link-label"]').collect(&:text)
 
-        expect(items).not_to include("Analytics dashboards")
+        expect(items).not_to include("GitLab Intelligence")
       end
     end
   end

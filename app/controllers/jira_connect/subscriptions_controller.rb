@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
-  ALLOWED_IFRAME_ANCESTORS = [:self, 'https://*.atlassian.net', 'https://*.jira.com'].freeze
+  ALLOWED_IFRAME_ANCESTORS = [
+    :self,
+    'https://*.atlassian.net',
+    'https://*.jira.com',
+    'https://*.atlassian-us-gov-mod.net'
+  ].freeze
   layout 'jira_connect'
 
   content_security_policy do |p|

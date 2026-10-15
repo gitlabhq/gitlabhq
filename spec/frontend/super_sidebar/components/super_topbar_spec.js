@@ -516,7 +516,7 @@ describe('SuperTopbar', () => {
           expect(findAnalyticsDashboardsButton().attributes('icon')).toBe('chart');
           expect(findAnalyticsDashboardsButton().attributes('size')).toBe('small');
           expect(findAnalyticsDashboardsButton().attributes('aria-label')).toBe(
-            'View analytics dashboards',
+            'View GitLab Intelligence',
           );
         });
       });

@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Schema::Validation::Sources::StructureSql, feature_catego
     let(:valid_schema_object_name) { 'test_table' }
     let(:expected_objects) do
       %w[test_table ci_project_mirrors wrong_table extra_table_columns missing_table missing_table_columns
-        operations_user_lists]
+        sliding_list_table operations_user_lists]
     end
 
     include_examples 'structure sql schema assertions for', 'table_exists?', 'tables', 'fetch_table_by_name'

@@ -129,7 +129,7 @@ Prerequisites:
 - The Owner role for the group to view credit usage data.
 
 1. In the top bar, select **Search or go to** > **Explore**.
-1. In the left sidebar, select **Analytics dashboards**.
+1. In the left sidebar, select **GitLab Intelligence**.
 1. Select **DAP Impact**.
 1. Select the tabs to view the different metrics.
 1. Optional. By default the dashboard displays metrics for the top-level group in the last 30 days.

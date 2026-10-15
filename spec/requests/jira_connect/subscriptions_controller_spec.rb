@@ -42,7 +42,7 @@ RSpec.describe JiraConnect::SubscriptionsController, :with_current_organization,
     it { is_expected.to include('http://self-managed-gitlab.com/-/jira_connect/') }
     it { is_expected.to include('http://self-managed-gitlab.com/api/') }
     it { is_expected.to include('http://self-managed-gitlab.com/oauth/') }
-    it { is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com') }
+    it { is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com https://*.atlassian-us-gov-mod.net') }
 
     context 'with additional iframe ancestors' do
       before do
@@ -50,7 +50,10 @@ RSpec.describe JiraConnect::SubscriptionsController, :with_current_organization,
       end
 
       it do
-        is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com http://localhost:* http://dev.gitlab.com')
+        is_expected.to include(
+          'frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com https://*.atlassian-us-gov-mod.net ' \
+            'http://localhost:* http://dev.gitlab.com'
+        )
       end
 
       context 'and display_url is different from base_url' do
@@ -64,7 +67,7 @@ RSpec.describe JiraConnect::SubscriptionsController, :with_current_organization,
 
         it do
           is_expected.to include(
-            'frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com ' \
+            'frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com https://*.atlassian-us-gov-mod.net ' \
               'http://localhost:* http://dev.gitlab.com https://custom.jira.com'
           )
         end

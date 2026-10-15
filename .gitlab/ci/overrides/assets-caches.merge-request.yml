@@ -1,0 +1,7 @@
+# MR pipelines share unprotected assets caches, so master and other deploy pipelines never
+# restore assets or partial caches written by an MR
+.assets-cache:
+  unprotect: true
+
+.assets-tmp-cache:
+  unprotect: true

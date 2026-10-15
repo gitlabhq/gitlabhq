@@ -31,6 +31,9 @@ module Gitlab
             structure_diffs = []
 
             columns.each do |column|
+              # Sliding-list partitioning moves the partition key default at run time, so it differs per instance
+              next if column.partition_key?
+
               db_column = db_table.fetch_column_by_name(column.name)
 
               next unless db_column

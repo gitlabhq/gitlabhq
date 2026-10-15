@@ -239,24 +239,16 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
 
     subject(:connection) { described_class.new([], context: ctx, max_page_size: 250, **arguments) }
 
-    before do
-      stub_feature_flags(larger_clickhouse_aggregation_pages: flag_enabled ? user1 : user2)
-    end
-
-    where(:flag_enabled, :arguments, :expected_cap, :expected_first, :expected_last) do
-      true  | { first: 200 } | 250 | 200 | nil
-      false | { first: 200 } | 100 | 100 | nil
-      true  | {}             | 250 | 250 | nil
-      false | {}             | 100 | 100 | nil
-      true  | { first: 500 } | 250 | 250 | nil
-      false | { first: 500 } | 100 | 100 | nil
-      true  | { last: 500 }  | 250 | nil | 250
-      false | { last: 500 }  | 100 | nil | 100
+    where(:arguments, :expected_first, :expected_last) do
+      { first: 200 } | 200 | nil
+      {}             | 250 | nil
+      { first: 500 } | 250 | nil
+      { last: 500 }  | nil | 250
     end
 
     with_them do
-      it 'applies the effective cap for the current user', :aggregate_failures do
-        expect(connection.max_page_size).to eq(expected_cap)
+      it 'applies the configured cap', :aggregate_failures do
+        expect(connection.max_page_size).to eq(250)
         expect(connection.first).to eq(expected_first)
         expect(connection.last).to eq(expected_last)
       end

@@ -943,8 +943,13 @@ Issues and merge requests enforce these maximums:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606182) in GitLab 19.5 [with a feature flag](feature_flags/_index.md) named `limit_labels_per_work_item`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/629454) in GitLab 19.6.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Work items (issues, epics, and tasks) can have a maximum of 100 labels.
 Work items that already have more than 100 labels are not affected. You can

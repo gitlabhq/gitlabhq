@@ -105,6 +105,7 @@ Validity checks support the following secret types:
 - Anthropic API keys
 - Asana personal access tokens
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
+- Beamer API tokens
 - Datadog API keys
 - DigitalOcean OAuth access tokens
 - DigitalOcean personal access tokens
@@ -150,6 +151,10 @@ future, only when
 [GitLab Secret Scanning for Source Code](../secret_detection/gitlab_secret_scanner/_index.md)
 detects the secret.
 
+Beamer API tokens are verified with requests that count against the key owner's monthly Beamer API
+quota, which is 1,000 requests on free plans. When the quota is used up, Beamer rate limits the check
+and the token shows as possibly active until the quota resets.
+
 ### Configure outbound network access
 
 Validity checks are not supported in offline environments. This feature requires outbound
@@ -166,6 +171,7 @@ The supported URLs are:
 - `https://api.easypost.com/v2/addresses`
 - `https://api.fastly.com/tokens/self`
 - `https://api.flutterwave.com/v3/balances`
+- `https://api.getbeamer.com/v0/ping`
 - `https://api.getpostman.com/me`
 - `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`

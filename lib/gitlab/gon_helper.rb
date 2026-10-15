@@ -63,10 +63,7 @@ module Gitlab
         gon.instance_token_prefix = Authn::TokenField::PrefixHelper.instance_prefix
       end
 
-      # Unset, the frontend keeps the schema default page size the backend falls back to.
-      if Feature.enabled?(:larger_clickhouse_aggregation_pages, current_user)
-        gon.aggregation_max_page_size = Gitlab::Database::Aggregation::ClickHouse::Engine.max_page_size
-      end
+      gon.aggregation_max_page_size = Gitlab::Database::Aggregation::ClickHouse::Engine.max_page_size
 
       gon.fluid_layout = false
       if current_user

@@ -357,18 +357,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
 
         helper.add_gon_variables
       end
-
-      context 'with feature flag larger_clickhouse_aggregation_pages disabled' do
-        before do
-          stub_feature_flags(larger_clickhouse_aggregation_pages: false)
-        end
-
-        it 'does not expose the page size cap' do
-          expect(gon).not_to receive(:aggregation_max_page_size=)
-
-          helper.add_gon_variables
-        end
-      end
     end
   end
 

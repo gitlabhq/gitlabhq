@@ -78,6 +78,21 @@ RSpec.shared_examples "table validators" do |validator, expected_result|
         'not_null' => true,
         'data_type' => 'bigint',
         'column_default' => 'NOT NULL'
+      },
+      {
+        'table_name' => 'sliding_list_table',
+        'column_name' => 'id',
+        'not_null' => true,
+        'data_type' => 'bigint',
+        'column_default' => nil
+      },
+      {
+        'table_name' => 'sliding_list_table',
+        'column_name' => 'partition',
+        'not_null' => true,
+        'data_type' => 'bigint',
+        'column_default' => '2',
+        'partition_key' => true
       }
     ]
   end

@@ -133,6 +133,11 @@ CREATE TABLE missing_table_columns (
   email character varying(255) NOT NULL
 );
 
+CREATE TABLE sliding_list_table (
+  id bigint NOT NULL,
+  partition bigint DEFAULT 1 NOT NULL
+) PARTITION BY LIST (partition);
+
 CREATE TABLE operations_user_lists (
   id bigint NOT NULL,
   project_id bigint NOT NULL,

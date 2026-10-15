@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'gitlab/database/lock_recorder'
+
 RSpec.configure do |config|
   lock_recorder = Gitlab::Database::LockRecorder.instance
 

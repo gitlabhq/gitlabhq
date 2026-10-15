@@ -54,8 +54,8 @@ module QuickActions
     end
 
     def remove_type_change_success_message(message)
-      %i[type promote_to promote_to_incident]
-        .map { |name| success_msg[name] }
+      %i[type promote_to promote_to_incident promote]
+        .filter_map { |name| success_msg[name] }
         .uniq
         .reduce(message) { |text, type_message| text.gsub(type_message, '') }
         .squish

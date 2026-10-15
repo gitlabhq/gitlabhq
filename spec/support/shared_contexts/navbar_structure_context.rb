@@ -310,7 +310,7 @@ RSpec.shared_context '"Explore" navbar structure' do
 
       if Gitlab.ee?
         {
-          nav_item: _("Analytics dashboards"),
+          nav_item: s_("Analytics|GitLab Intelligence"),
           nav_sub_items: []
         }
       end,

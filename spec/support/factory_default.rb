@@ -17,7 +17,7 @@ RSpec.configure do |config|
     TestProf::FactoryDefault.reset unless ex.metadata[:factory_default] == :keep
   end
 
-  config.after(:all) do
+  config.after(:all, factory_default: :keep) do
     TestProf::FactoryDefault.reset
   end
 end

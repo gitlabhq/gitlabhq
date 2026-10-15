@@ -11793,9 +11793,6 @@ msgstr ""
 msgid "AnalyticsDashboards|View GitLab Credits dashboard"
 msgstr ""
 
-msgid "AnalyticsDashboards|View analytics dashboards"
-msgstr ""
-
 msgid "AnalyticsDashboards|You haven't run the updated query. The panel will use the current query text, which may differ from the preview."
 msgstr ""
 
@@ -11865,6 +11862,9 @@ msgid "Analytics|Failed to fetch data"
 msgstr ""
 
 msgid "Analytics|Failed to load dashboard"
+msgstr ""
+
+msgid "Analytics|GitLab Intelligence"
 msgstr ""
 
 msgid "Analytics|Insights with GitLab Duo"
@@ -11952,6 +11952,9 @@ msgid "Analytics|Usage data is a cumulative count and is updated monthly. Last u
 msgstr ""
 
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
+msgstr ""
+
+msgid "Analytics|View GitLab Intelligence"
 msgstr ""
 
 msgid "Analytics|View activity across groups and projects in one place, instead of multiple dashboards."
@@ -32203,11 +32206,6 @@ msgstr ""
 msgid "Duo workflow"
 msgstr ""
 
-msgid "DuoAgentPlatform|%d MCP server is connected. Agents can use it in this project."
-msgid_plural "DuoAgentPlatform|%d MCP servers are connected. Agents can use them in this project."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "DuoAgentPlatform|%d step left"
 msgid_plural "DuoAgentPlatform|%d steps left"
 msgstr[0] ""
@@ -32266,6 +32264,14 @@ msgid_plural "DuoAgentPlatform|%{count} sessions %{title}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentPlatform|%{first} and %{second} connected. Agents can use both."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{first}, %{second}, and %{count} more connected. Agents can use them all."
+msgid_plural "DuoAgentPlatform|%{first}, %{second}, and %{count} more connected. Agents can use them all."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd}"
 msgstr ""
 
@@ -32288,6 +32294,9 @@ msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{name} connected. Agents can use it."
 msgstr ""
 
 msgid "DuoAgentPlatform|%{text} by %{name}"
@@ -76786,6 +76795,9 @@ msgstr ""
 msgid "SecurityInventory|Container scanning for registry (CS)"
 msgstr ""
 
+msgid "SecurityInventory|Counts of projects that need attention, have stale scans, or are unprotected, out of all projects in this group. A project can appear in more than one category."
+msgstr ""
+
 msgid "SecurityInventory|Coverage across all scanners, or for a single scanner, based on the scan status of the most recent pipeline on the default branch."
 msgstr ""
 
@@ -76854,6 +76866,9 @@ msgstr ""
 msgid "SecurityInventory|Manage security scanners for subgroup projects"
 msgstr ""
 
+msgid "SecurityInventory|More information about projects"
+msgstr ""
+
 msgid "SecurityInventory|More information about tool coverage"
 msgstr ""
 
@@ -76876,6 +76891,9 @@ msgid "SecurityInventory|Pipeline secret detection (SD)"
 msgstr ""
 
 msgid "SecurityInventory|Project vulnerabilities"
+msgstr ""
+
+msgid "SecurityInventory|Projects"
 msgstr ""
 
 msgid "SecurityInventory|SAST"

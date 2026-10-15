@@ -501,11 +501,10 @@
     files:
       - config/webpack.config.js
       - yarn.lock
-    prefix: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-${GLCI_ASSETS_BUNDLER}"
+    prefix: "partial-assets-cache-${NODE_ENV}-${GLCI_ASSETS_TARGET}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-${GLCI_ASSETS_BUNDLER}"
   paths:
     - tmp/cache
   policy: pull
-  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
 
 .storybook-node-modules-cache: &storybook-node-modules-cache
   key:
@@ -610,9 +609,9 @@
 .assets-compile-cache:
   cache:
     - !reference [.ruby-gems-cache]
-    - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-tmp-cache.yml
+    - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-caches.*.yml
     - *node-modules-cache
-    - !reference [.assets-cache] # use reference to be able to override via overrides/assets-cache.yml
+    - !reference [.assets-cache] # use reference to be able to override via overrides/assets-caches.merge-request.yml
 
 .assets-compile-cache-pull:
   cache:

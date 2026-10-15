@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'searchAnalyticsDashboardNamespacesGlobal query',
-  feature_category: :custom_dashboards_foundation do
+  feature_category: :custom_dashboards_foundation,
+  quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/633929', type: :broken } do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

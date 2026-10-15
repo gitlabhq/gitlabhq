@@ -446,15 +446,29 @@ It is recommended to determine the necessary extent of monitoring before initiat
 
 #### ChatOps level
 
-Any feature flag change that affects GitLab.com (production) via [ChatOps](https://gitlab.com/gitlab-com/chatops)
-is automatically logged in an issue.
+Any feature flag change made with [ChatOps](https://gitlab.com/gitlab-com/chatops),
+in any environment (for example, staging or production), is automatically logged in an issue.
 
 The issue is created in the
 [gl-infra/feature-flag-log](https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues?scope=all&state=closed)
-project, and it will at minimum log the Slack handle of person enabling
-a feature flag, the time, and the name of the flag being changed.
+project. It logs at minimum the GitLab username of the person changing the flag,
+the time, the environment, and the name of the flag.
 
-The issue is then also posted to the GitLab internal
+When you set a feature flag value, and the flag's YAML definition has a
+[`rollout_issue_url`](_index.md#feature-flag-definition-and-validation)
+that points to an issue or work item, ChatOps also:
+
+- Posts a note on the rollout issue with the new value, the environment, and a link to the log issue.
+- Adds the log issue as a linked item on the rollout issue.
+- For production changes, adds a state label to the rollout issue:
+  `feature flag state::enabled`, `feature flag state::disabled`, or `feature flag state::rolling out`.
+  ChatOps uses `rolling out` for percentage values and for changes scoped to actors,
+  projects, groups, or other scopes.
+
+ChatOps skips these steps when `rollout_issue_url` is empty or points to a group item, such as an epic.
+Deleting a feature flag is logged, but doesn't update the rollout issue.
+
+The log issue is then also posted to the GitLab internal
 [Grafana dashboard](https://dashboards.gitlab.net/) as an annotation
 marker to make the change even more visible.
 

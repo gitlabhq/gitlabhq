@@ -3,8 +3,6 @@
 module API
   module WorkItems
     class Children < ::API::Base
-      include PaginationParams
-
       before { authenticate! }
       before { check_work_item_rest_api_feature_flag! }
 
@@ -12,6 +10,7 @@ module API
       urgency :low
 
       helpers ::API::Helpers::WorkItems::ShowParams
+      helpers ::API::Helpers::WorkItems::CursorPaginationParams
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
@@ -37,7 +36,7 @@ module API
           use :work_items_show_params
           optional :state, type: String, values: %w[opened closed],
             desc: 'Filter children by state. Supported values: opened, closed.'
-          use :pagination
+          use :work_items_cursor_pagination_params
         end
 
         params :attach_child_params do

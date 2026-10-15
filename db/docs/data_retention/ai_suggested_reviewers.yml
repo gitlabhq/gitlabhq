@@ -1,0 +1,7 @@
+---
+retention_window: 30
+enforcement_strategy: drop_partition
+enforcing: false # flip to true once enforcement is live. Blocked by https://gitlab.com/gitlab-org/gitlab/-/work_items/631487
+pause_mechanism:
+  type: none
+work_item: https://gitlab.com/gitlab-org/gitlab/-/work_items/630927

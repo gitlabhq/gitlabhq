@@ -128,6 +128,39 @@ compile-production-assets vue3:
     paths:
       - ${WEBPACK_COMPILE_LOG_PATH}
 
+# Fills the `ci` partial assets cache that compile-production-assets restores in MR pipelines.
+# babel-loader and Terser cache keys include the sourcemap setting and Node version, so this must
+# build with the MR job's image and MR pipeline variables, not master's.
+compile-production-assets partial-cache:
+  image: !reference [compile-production-assets, image]
+  extends:
+    - .compile-assets-base
+    - .production
+    - .frontend:rules:compile-production-assets-partial-cache
+  tags:
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  variables:
+    GLCI_ASSETS_TARGET: !reference [.default-merge-request-variables, GLCI_ASSETS_TARGET]
+    NO_SOURCEMAPS: !reference [.default-merge-request-variables, NO_SOURCEMAPS]
+    NO_COMPRESSION: !reference [.default-merge-request-variables, NO_COMPRESSION]
+  needs: []
+  cache:
+    - !reference [.node-modules-cache]
+    - !reference [.ruby-gems-cache]
+    # Unprotected so MR pipelines can restore it; this job never reads it
+    - key: !reference [.assets-tmp-cache, key]
+      paths: !reference [.assets-tmp-cache, paths]
+      policy: push
+      unprotect: true
+  script:
+    - scripts/compile_assets
+  artifacts:
+    name: webpack-report-partial-cache
+    expire_in: 7d
+    when: always
+    paths:
+      - ${WEBPACK_COMPILE_LOG_PATH}
+
 compile-production-assets-rspack as-if-foss:
   extends:
     - compile-production-assets-rspack

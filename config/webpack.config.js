@@ -15,6 +15,7 @@ const BABEL_VERSION = require('@babel/core/package.json').version;
 
 const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 // eslint-disable-next-line import-x/no-dynamic-require
 const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
@@ -537,6 +538,14 @@ module.exports = {
     // Terser forks (CPU count - 1) workers that run outside the main Node heap,
     // so scripts/lib/assets_heap_sizing.rb must leave memory for them.
     minimize: IS_PRODUCTION && !NO_MINIFY,
+    // Same as the webpack 4 default, but cached in CACHE_PATH so CI keeps it in the partial assets cache
+    minimizer: [
+      new TerserPlugin({
+        cache: path.join(CACHE_PATH, 'terser-webpack-plugin'),
+        parallel: true,
+        sourceMap: !NO_SOURCEMAPS,
+      }),
+    ],
     // Replace 'hashed' with 'deterministic' in webpack 5
     moduleIds: 'hashed',
     chunkIds: 'named', // at least makes named chunks stable,

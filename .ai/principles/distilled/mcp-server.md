@@ -1,6 +1,6 @@
 ---
-source_checksum: f0bf7eeb17980969
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 783827c4c083480c
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -19,7 +19,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use `:project_or_group` as the container kind when a single argument may name either a project or a group.
 - Govern URL arguments by every project or group resolved by the supported URL parsers, so the most restrictive tool rule applies. Resolve every identifier in list arguments rather than only the first; skip identifiers that resolve to no project or group.
 - When an argument names a record rather than a project or group directly, declare it under the `record:` kind with a lookup lambda (e.g., `container_arguments record: { vulnerability_id: ->(id) { ::Vulnerability.find_by_id(id)&.project } }`); a lookup returning `nil` still counts the argument, so a call naming a nonexistent record is refused rather than served ungoverned.
-- DO NOT add a separate authorization check after calling `ResourceFinder#find_project!` or `#find_group!`; both finders fold authorization into the DB lookup and raise `"'<id>' not found or inaccessible"` on failure to prevent resource enumeration.
+- DO NOT add a separate authorization check after calling `ResourceFinder#find_project!` or `#find_group!`; both finders fold authorization into the DB lookup and raise `"'<id>' not found or inaccessible"` on failure to prevent resource enumeration. Pass a non-default ability with the `ability:` keyword.
 - Ensure `ee/spec/lib/ai/tool_rules/governable_tools_container_spec.rb` passes: every governed tool must declare a container argument or be marked `ungovernable!`, the declared argument must exist in the tool's input schema, the declaration must use a recognized container kind (`:project`, `:group`, `:project_or_group`, or `record:`), and every input property must be either declared or listed for that tool as never naming a project or group.
 
 ### Tool Naming and Consolidation
@@ -32,6 +32,8 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use plain project and group full paths in examples and `input_schema` descriptions. Accept encoded paths only through boundary decoding in `ResourceFinder` or `ApiTool`; tools passing paths directly to GraphQL require plain paths. DO NOT decode paths in `Gitlab::ResourceLookup`, which would allow double-encoded REST paths.
 - Merge scoped search variants into the unified `search` tool with a `scope` parameter instead of adding per-resource search tools.
 - Document intentional exceptions (one-off action verbs, a second write tool on one resource) in the tool proposal so they are not mistaken for oversights.
+- DO NOT rename or remove `tool_name` keys registered in `Mcp::Tools::Manager`; they are a public, append-only contract, and renaming a Ruby class does not rename its registered tool.
+- Rely on `Base::BaseService` treating an explicit `null` or `""` for an optional parameter the same as an omitted key; DO NOT add custom handling for it.
 
 ### Tool Reads, Facets, and Pagination
 
@@ -43,6 +45,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Mirror the pagination scheme of the endpoint the tool wraps; DO NOT translate between schemes (e.g., do not wrap offset pagination in an opaque cursor).
 - Use offset pagination (`page`, `per_page` defaulting to 20 capped at 100, returning `metadata` with `page`, `per_page`, `has_more`) for REST-backed tools.
 - Use native cursor pagination (`first` defaulting to 20 capped at 100, `after`, returning `pageInfo` with `endCursor` and `hasNextPage`) for GraphQL-backed tools.
+- Return a `system_instruction` telling the caller how to fetch the next window from content readers (line or byte range pagination).
 - Unwrap GIDs to numeric integers in `process_result` for resources addressed by global numeric ID (groups, projects, pipelines) using `GlobalID.parse(node['id']).model_id.to_i`; DO NOT unwrap IDs of iid-addressed resources (work items, merge requests, issues) — expose `iid` alongside the GID instead.
 
 ### REST API Tool Implementation
@@ -55,10 +58,11 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 
 - Use the two-layer architecture for GraphQL-backed MCP tools: a `GraphqlTool` subclass (Layer 1) handles GraphQL execution, and a `GraphqlService` subclass (Layer 2) handles validation, versioning, and response formatting.
 - Name service and tool subclasses after the operation without a `Graphql` prefix (e.g., `Mcp::Tools::Labels::SearchService`, `Mcp::Tools::Notes::SaveNoteTool`); only the base classes `GraphqlService` and `GraphqlTool` keep the prefix.
-- Store each tool's GraphQL operation in a `.graphql` file under `app/graphql/queries/mcp/` in a subdirectory mirroring the tool's domain; load it with `GraphqlTool.load_graphql` using the direct form (not a lambda) in `register_version`. Exception: operations composed at load time from EE-overridden fragments must use a lambda (`graphql_operation: -> { build_query }`).
+- Store each tool's GraphQL operation in a `.graphql` file under `app/graphql/queries/mcp/` in a subdirectory mirroring the tool's domain; load it with `GraphqlTool.load_graphql` using the direct form (not a lambda) in `register_version`, because a lambda rereads the file on every request. Exception: use a lambda (`graphql_operation: -> { build_query }`) only for an operation built in Ruby by a class that EE prepends, such as `WorkItemsQueryBuilder`.
+- Add EE-only fields through a fragment instead of copying the query into `ee/`: spread the fragment in the CE query, import it with `#import "./<name>.fragment.graphql"` from the same directory, give the CE fragment a field the query already selects (a fragment cannot be empty), and put the EE fields in a same-named fragment file under `ee/app/graphql/queries/mcp/`. Cover the EE fragment with a spec that runs the tool in EE, because `all_queries_spec.rb` validates only the CE fragment.
 - Name `.graphql` files with a `.query.graphql` or `.mutation.graphql` suffix; use a verb-first name for queries (e.g., `getWorkItemTypes`) and mutations already use verb-first names (e.g., `createNote`).
 - Start every `.graphql` file with a `# @feature_category:` comment; the `graphql_require_feature_category` lint rule fails CI without it.
-- DO NOT embed GraphQL operations as inline strings or HEREDOCs; the `Mcp/UseGraphqlQueryFile` RuboCop rule flags inline strings or HEREDOCs passed as `graphql_operation:`.
+- DO NOT embed GraphQL operations as inline strings or HEREDOCs; the `Mcp/UseGraphqlQueryFile` RuboCop rule flags inline strings or HEREDOCs passed as `graphql_operation:`, and `spec/graphql/all_queries_spec.rb` validates `.graphql` files against `GitlabSchema` in CI.
 - Register GraphQL tools in `Mcp::Tools::Manager` under `GRAPHQL_TOOLS` with the tool name as key and the service class as value.
 - Override `graphql_tool_class` in the service wrapper to return the corresponding `GraphqlTool` subclass; call `execute_graphql_tool(arguments)` in version-specific `perform_v<X>_<Y>_<Z>` methods.
 - DO NOT add `additionalProperties: false` to `input_schema`; the shared tool abstraction rejects unrecognized arguments by default. Set `additionalProperties: true` only to accept arbitrary arguments. Schemas using `oneOf`, `anyOf`, `allOf`, or `$ref` keep their own behavior.
@@ -82,14 +86,17 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 
 ### Tool Availability and Discovery
 
-- Override `available?` on custom, GraphQL, or aggregated service classes to filter `tools/list` for a user (e.g., behind a feature flag); it runs after `set_cred(current_user:)`. DO NOT rely on it to block `tools/call` or hide tools from the AI Catalog picker; neither checks it. Route-backed API tools are always considered available.
-- Override `unlisted?` (or set `unlisted: true` in the route setting for API tools) to hide a tool from `tools/list` and the AI Catalog picker while keeping it callable via `tools/call`; use this to stage a tool before it is ready to be advertised.
+- Override `available?(current_user)` on custom, GraphQL, or aggregated service classes to filter `tools/list` for a user (e.g., behind a feature flag); use the `current_user` argument rather than instance state, because tool instances are shared across concurrent requests. DO NOT rely on it to block `tools/call` or hide tools from the AI Catalog picker; neither checks it. Route-backed API tools are always considered available.
+- Override `unlisted?` (or set `unlisted: true` in the route setting for API tools) to hide a tool from `tools/list` and the AI Catalog picker while keeping it callable via `tools/call`; use this to stage a tool before it is ready to be advertised. A custom agent that selected the tool before it was unlisted keeps it: `tools/list` returns an unlisted tool named in `X-Gitlab-Enabled-Mcp-Server-Tools`, but only to a token with the `ai_workflows` scope.
+- DO NOT mark a tool `unlisted?` to keep users from calling it; unlisting hides the tool but does not block it, because an agent created through the API can still name it and receive it.
 - Keep `unlisted?` static; DO NOT drive it from a per-user or credential-dependent check because the AI Catalog picker cannot evaluate one.
 
 ### Categorizing Tool Errors
 
 - Pass a `reason:` symbol to `Response.error` whenever the tool knows why it failed; use `BAD_REQUEST` for missing or invalid arguments, `UNAUTHORIZED` for access denials (keep the message vague), `NOT_FOUND` for genuinely absent resources or null GraphQL data, and `ERROR` (the default) for backend failures. DO NOT pass a reason when a response merely failed to find an expected key in an otherwise successful payload.
 - Rely on `ResourceFinder#find_project!` and `#find_group!` to categorize project and group lookup failures (`ResourceNotFoundError` → `NOT_FOUND`, `ResourceForbiddenError` → `UNAUTHORIZED`); DO NOT add a separate `reason:` for those failures.
+- Forward the inner result's reason with `Response.error_reason(response)` when a tool's error wraps another tool's result, instead of building the error without a reason; read `result[:reason]` instead to keep your own default for inner failures that carry no reason.
+- Give each entry in a wrapper's table of known refusal messages its own `reason:` and read it with `fetch`, because a route-backed inner tool derives its reason from the HTTP status, which is not always the real cause.
 
 ### Declaring a Toolset
 

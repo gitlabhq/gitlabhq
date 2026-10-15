@@ -159,7 +159,8 @@ module Notes
     end
 
     def message_for_status(message, update_error, update_params)
-      return message unless update_error && update_params[:work_item_type]
+      return message if update_error.blank?
+      return message unless update_params[:work_item_type] || update_params[:promote_to_epic]
 
       quick_actions_service.remove_type_change_success_message(message)
     end

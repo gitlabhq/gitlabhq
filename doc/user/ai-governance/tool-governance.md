@@ -103,6 +103,13 @@ with a source of `mcp`, alongside the GitLab Duo Agent Platform tools. You set
 a mode for them the same way, as described in
 [Configure tool governance for a group](#configure-tool-governance-for-a-group).
 
+> [!note]
+> Tool governance applies when GitLab Duo agents call GitLab MCP server tools.
+> These rules do not govern third-party MCP clients that connect directly to the
+> GitLab MCP server, such as Claude Desktop, Claude Code, or Cursor.
+> To limit the tools these clients receive, see
+> [select tool groups (toolsets)](../model_context_protocol/mcp_server.md#select-tool-groups-toolsets).
+
 Each tool is sorted into an action category based on the annotations it
 declares. There's no maintained list to update, so a newly added MCP tool is
 governed automatically:
@@ -196,7 +203,8 @@ Prerequisites:
 To configure tool governance rules for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo**.
 1. Select **Change governance**.
 1. For each tool, select a mode from the dropdown: **Always Allow**, **Always Ask**, or **Always Deny**.
 1. Select **Save changes**.

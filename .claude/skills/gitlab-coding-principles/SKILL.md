@@ -31,7 +31,7 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Authentication, authorization, token handling, OAuth, SAML, identity linking, composite identity, session management, 2FA, MFA, password management**: Read .ai/principles/distilled/authentication.md
 
 **Permissions:**
-- **Where to check permissions, naming conventions, role definitions**: Read .ai/principles/distilled/permissions-fundamentals.md *(load for any permissions work)*
+- **Where to check permissions, naming conventions, role definitions, and authorization review rules**: Read .ai/principles/distilled/permissions-fundamentals.md *(load for any permissions work)*
 - **Granular PAT (GPAT) compliance for GraphQL types and mutations**: Read .ai/principles/distilled/permissions-graphql-gpat.md *(also load: .ai/principles/distilled/permissions-fundamentals.md)*
 - **Granular PAT (GPAT) compliance for REST endpoints and job tokens**: Read .ai/principles/distilled/permissions-rest-gpat.md *(also load: .ai/principles/distilled/permissions-fundamentals.md)*
 
@@ -53,6 +53,9 @@ ALWAYS load Database principles regardless of which files you are editing.
 
 **CI/CD:**
 - **GitLab CI/CD internals — adding pipeline configuration keywords (Ci::Config::Entry classes, feature-flag gating, JSON schema) and creating CI routing/partitioned tables. NOTE this is about GitLab's own CI implementation, not authoring a project's .gitlab-ci.yml**: Read .ai/principles/distilled/cicd-internals.md
+
+**Secrets Manager:**
+- **Secrets Manager state combinations (secrets manager lifecycle, maintenance tasks, enrollment, entitlement), required side effects on state transitions, project and group parity, and keeping the Secrets Manager developer docs current**: Read .ai/principles/distilled/secrets-manager.md
 
 **Frontend:**
 - **Vue.js components, state management, patterns**: Read .ai/principles/distilled/frontend-vue.md *(load for any frontend work)*

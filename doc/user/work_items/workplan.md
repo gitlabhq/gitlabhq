@@ -49,7 +49,27 @@ widget appears and shows the workplan status:
 
 - **Not yet created**: The work item has no workplan, and you can create one.
 - **No workplan**: The work item has no workplan, and you do not have permission to create one.
-- **Ready to view**: The work item has a workplan.
+- **Ready for review**: The work item has a workplan.
+
+## Set up workplan generation
+
+Before you can [generate a workplan with the **Generate Workplan** flow](#generate-with-the-generate-workplan-flow),
+your project and top-level group must be set up to run the flow.
+You do not need this setup to generate a workplan in GitLab Duo Chat.
+
+Prerequisites:
+
+- The work item must be an issue or a task in a project. You cannot generate a workplan
+  for a work item in a group.
+- [GitLab Duo turned on](../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off).
+- Flow execution and foundational flows turned on for the top-level group, with the
+  **Generate Workplan** flow selected. On GitLab Self-Managed, flow execution and
+  foundational flows must also be turned on for the instance.
+- The **Allow flow execution** and **Allow foundational flows** settings turned on
+  for the project.
+
+For the steps to change these settings, see
+[turn foundational flows on or off](../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 ## Benefits
 
@@ -113,18 +133,52 @@ You can generate a workplan with GitLab Duo or write one manually.
 
 ### Generate a workplan with GitLab Duo
 
+GitLab Duo generates the workplan in GitLab Duo Chat.
+If the `duo_workplan_async_flow` feature flag is turned on, GitLab Duo uses the
+**Generate Workplan** flow instead, which runs in the background.
+
+#### Generate in GitLab Duo Chat
+
 Prerequisites:
 
 - [GitLab Duo Chat](../gitlab_duo_chat/agentic_chat.md) turned on.
 
-To generate a workplan with GitLab Duo:
+To generate a workplan in GitLab Duo Chat:
 
 1. On the work item, in the **Workplan** widget, select **Generate**.
-1. In GitLab Duo Chat, answer the [Planner Agent](../duo_agent_platform/agents/foundational_agents/planner.md)
-   questions until the agent has enough context.
-1. Review the proposed plan and approve it.
+1. If GitLab Duo asks questions in GitLab Duo Chat, answer them.
+1. When GitLab Duo asks to write the workplan to the **Workplan** widget, select **Approve**.
 
-After you approve the plan, GitLab Duo writes it to the **Workplan** widget.
+GitLab Duo writes the workplan to the **Workplan** widget.
+
+#### Generate with the Generate Workplan flow
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248543) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_workplan_async_flow`. Disabled by default.
+
+{{< /history >}}
+
+When you [turn on planning](#turn-on-planning-for-a-work-item) for a work item,
+GitLab Duo starts to generate a workplan.
+
+Prerequisites:
+
+- Workplan generation [set up](#set-up-workplan-generation).
+
+To generate a workplan with the **Generate Workplan** flow:
+
+1. On the work item, in the **Workplan** widget, select **Generate**.
+1. If GitLab Duo asks questions, answer them in the comment threads on the work item.
+   Then, in the **Workplan** widget, select **Continue**.
+
+GitLab Duo writes the workplan to the **Workplan** widget, and the status changes to
+**Ready for review**.
+
+The flow runs in the background, so you can leave the page while GitLab Duo works.
+When GitLab Duo needs your input, you receive a to-do item and an email.
+
+If the generation fails, in the **Workplan** widget, select **Try again**.
 
 ### Create a workplan manually
 
@@ -170,12 +224,18 @@ Regenerate a workplan to replace its content with a new version from GitLab Duo.
 Prerequisites:
 
 - Permission to edit the work item.
+- GitLab Duo Chat turned on. If the `duo_workplan_async_flow` feature flag is turned on,
+  workplan generation [set up](#set-up-workplan-generation) instead.
 
 To regenerate a workplan:
 
 1. On the work item, in the **Workplan** widget, select **View**.
 1. In the panel, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Regenerate workplan**.
-1. In GitLab Duo Chat, answer the Planner Agent questions until the agent has enough context.
+1. If GitLab Duo asks questions, answer them in GitLab Duo Chat.
+   If the `duo_workplan_async_flow` feature flag is turned on, answer them in the comment threads
+   on the work item instead. Then, in the **Workplan** widget, select **Continue**.
+1. In GitLab Duo Chat, when GitLab Duo asks to write the workplan to the **Workplan** widget,
+   select **Approve**. If the `duo_workplan_async_flow` feature flag is turned on, skip this step.
 
 GitLab Duo replaces the existing workplan with the new version.
 

@@ -1942,6 +1942,13 @@
   rules:
     - <<: *if-dot-com-ee-schedule-default-branch-maintenance
 
+.frontend:rules:compile-production-assets-partial-cache:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-default-branch-push
+      changes: *assets-compilation-patterns
+
 .frontend:rules:compile-test-assets:
   rules:
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'

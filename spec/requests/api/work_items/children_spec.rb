@@ -23,6 +23,16 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
     stub_feature_flags(work_item_rest_api: true)
   end
 
+  it 'declares cursor and not page on the list routes' do
+    routes = described_class.routes.select { |route| route.request_method == 'GET' }
+
+    expect(routes).to be_present
+    routes.each do |route|
+      expect(route.params.keys).to include('cursor', 'per_page')
+      expect(route.params.keys).not_to include('page')
+    end
+  end
+
   shared_examples 'children GET endpoint' do
     it 'returns children of the parent work item in relative-position order' do
       get api(api_request_path, user)
@@ -67,6 +77,8 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    it_behaves_like 'a work item endpoint paginated by cursor'
 
     context 'with field and feature selection' do
       it 'returns the requested base fields and feature payloads' do

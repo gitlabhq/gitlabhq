@@ -148,7 +148,7 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 X-Gitlab-Audit-Event-Type: repository_git_operation
 ```
 
-## Example: audit event streaming on Git operations
+## Git operation events
 
 Streaming audit events can be sent when authenticated users push, pull, or clone a project's remote Git repositories:
 
@@ -158,13 +158,47 @@ Streaming audit events can be sent when authenticated users push, pull, or clone
 
 Audit events are not captured for users that are not signed in. For example, when downloading a public project.
 
-### Example: audit event payloads for Git over SSH events with deploy key
+### Git operation fields
 
 {{< history >}}
 
 - `gl_key_type` and `gl_key_id` fields in `custom_message` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244603) in GitLab 19.3.
+- `ca_fingerprint`, `certificate_identity`, and `certificate_trust_source` fields in `custom_message` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259751) in GitLab 19.6.
 
 {{< /history >}}
+
+The `custom_message` object includes data transfer size fields for Git operations:
+
+- `written_bytes`: Number of bytes sent to the client during the Git operation (for example, during a clone, fetch, or pull).
+- `received_bytes`: Number of bytes received from the client during the Git operation (for example, during a push).
+
+These fields are omitted when no bytes are transferred, such as when a request fails before any data is exchanged.
+
+The `custom_message` object includes key information for Git operations authenticated with an SSH key or deploy key:
+
+- `gl_key_type`: Type of the key used for authentication. Either `key` for user SSH keys, or `deploy_key` for deploy keys.
+- `gl_key_id`: ID of the key used for authentication.
+
+These fields are omitted when the operation is not authenticated with a key, for example HTTP(S) with a username and password, or a deploy token.
+
+The `custom_message` object includes certificate information for Git operations authenticated with an SSH certificate through `gitlab-sshd`:
+
+- `ca_fingerprint`: SHA256 fingerprint of the certificate authority (CA) that signed the certificate, including the `SHA256:` prefix.
+- `certificate_identity`: The certificate `KeyId`.
+  Values longer than 1024 characters are truncated to 1024 characters, ending in `...`.
+  For `file` and `instance` trust, this value is the GitLab username.
+  For `group` trust, this value can be the username or the user's primary email address.
+  Several certificates can share the same `KeyId`, so this value does not identify a single certificate.
+- `certificate_trust_source`: Where the CA is trusted. Possible values:
+  - `file`: A CA key file in the [`gitlab-sshd` configuration](../../administration/operations/gitlab_sshd_ssh_certificates.md#configure-trusted-ca-keys).
+  - `group`: A CA added to a [top-level group](../group/ssh_certificates.md).
+  - `instance`: A CA added in the [**Admin** area](../../administration/operations/gitlab_sshd_ssh_certificates.md#manage-trusted-ca-keys-in-the-admin-area)
+    or with the [instance SSH certificates API](../../api/instance_ssh_certificates.md).
+
+These fields are omitted when the operation is not authenticated with an SSH certificate through `gitlab-sshd`.
+For example, they are omitted for an SSH key, or for an SSH certificate through [OpenSSH](../../administration/operations/ssh_certificates.md).
+
+### Example: Git over SSH with a deploy key
 
 Fetch:
 
@@ -202,30 +236,7 @@ Fetch:
 }
 ```
 
-The `custom_message` object includes data transfer size fields for Git operations:
-
-- `written_bytes`: Number of bytes sent to the client during the Git operation (for example, during a clone, fetch, or pull).
-- `received_bytes`: Number of bytes received from the client during the Git operation (for example, during a push).
-
-These fields are omitted when no bytes are transferred, such as when a request fails before any data is exchanged.
-
-The `custom_message` object includes key information for Git operations authenticated with an SSH key or deploy key:
-
-- `gl_key_type`: Type of the key used for authentication. Either `key` for user SSH keys, or `deploy_key` for deploy keys.
-- `gl_key_id`: ID of the key used for authentication.
-
-These fields are omitted when the operation is not authenticated with a key, for example HTTP(S) with a username and password, or a deploy token.
-
 ### Example: Git over SSH with an SSH certificate
-
-{{< history >}}
-
-- `ca_fingerprint`, `certificate_identity`, and `certificate_trust_source` fields in `custom_message` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259751) in GitLab 19.6.
-
-{{< /history >}}
-
-When a user authenticates a Git operation with an SSH certificate through `gitlab-sshd`,
-the `custom_message` object identifies the certificate authority (CA) that signed the certificate.
 
 Fetch:
 
@@ -263,20 +274,3 @@ Fetch:
   "event_type": "repository_git_operation"
 }
 ```
-
-The `custom_message` object includes these certificate fields:
-
-- `ca_fingerprint`: SHA256 fingerprint of the CA that signed the certificate, including the `SHA256:` prefix.
-- `certificate_identity`: The certificate `KeyId`.
-  Values longer than 1024 characters are truncated to 1024 characters, ending in `...`.
-  For `file` and `instance` trust, this value is the GitLab username.
-  For `group` trust, it can be the username or the user's primary email address.
-  Several certificates can share the same `KeyId`, so this value does not identify a single certificate.
-- `certificate_trust_source`: Where the CA is trusted. Possible values:
-  - `file`: A CA key file in the [`gitlab-sshd` configuration](../../administration/operations/gitlab_sshd_ssh_certificates.md#configure-trusted-ca-keys).
-  - `group`: A CA added to a [top-level group](../group/ssh_certificates.md).
-  - `instance`: A CA added in the [**Admin** area](../../administration/operations/gitlab_sshd_ssh_certificates.md#manage-trusted-ca-keys-in-the-admin-area)
-    or with the [instance SSH certificates API](../../api/instance_ssh_certificates.md).
-
-These fields are omitted when the operation is not authenticated with an SSH certificate through `gitlab-sshd`.
-For example, they are omitted for an SSH key, or for an SSH certificate through [OpenSSH](../../administration/operations/ssh_certificates.md).

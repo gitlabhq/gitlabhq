@@ -51,7 +51,7 @@ export default {
     skipToMainContent: __('Skip to main content'),
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
-    analyticsDashboardsBtnText: s__('AnalyticsDashboards|View analytics dashboards'),
+    analyticsDashboardsBtnText: s__('Analytics|View GitLab Intelligence'),
   },
   inject: ['isSaas'],
   provide() {
