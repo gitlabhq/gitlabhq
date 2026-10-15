@@ -96302,9 +96302,6 @@ msgstr ""
 msgid "project's path"
 msgstr ""
 
-msgid "project_path or project_id must be the first element of the sub claim"
-msgstr ""
-
 msgid "projects"
 msgstr ""
 
@@ -96633,6 +96630,9 @@ msgid "the correct format."
 msgstr ""
 
 msgid "the custom role's base access level does not match the current access level"
+msgstr ""
+
+msgid "the first element of the sub claim must be one of: %{components}"
 msgstr ""
 
 msgid "the following epics"
