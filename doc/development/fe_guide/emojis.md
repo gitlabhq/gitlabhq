@@ -29,6 +29,7 @@ Because our emoji support is implemented on both the backend and the frontend, w
 1. Use the [`tanuki_emoji`](https://gitlab.com/gitlab-org/ruby/gems/tanuki_emoji) gem's [Rake tasks](../rake_tasks.md) to update aliases, digests, and sprites. Run in the following order:
    1. `bundle exec rake tanuki_emoji:aliases` - updates `fixtures/emojis/aliases.json`
    1. `bundle exec rake tanuki_emoji:digests` - updates `public/-/emojis/VERSION/emojis.json` and `fixtures/emojis/digests.json`
+   1. `bundle exec rake tanuki_emoji:skin_tones` - updates `fixtures/emojis/skin_tones.json`, which maps each emoji to its skin tone variants
    1. `bundle exec rake tanuki_emoji:sprite` - creates new sprite sheets
 
       If new emoji are added, the sprite sheet may change size. To compensate for

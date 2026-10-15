@@ -194,7 +194,7 @@ export const mockQueryResponse = {
 export const mockCreateMutationInput = {
   name: 'Test Token',
   description: 'Test description',
-  expirationDate: '2025-12-31',
+  expirationDate: new Date(2025, 11, 31),
   group: {
     access: 'SELECTED_MEMBERSHIPS',
     resourceIds: ['gid://gitlab/Project/1', 'gid://gitlab/Group/1'],

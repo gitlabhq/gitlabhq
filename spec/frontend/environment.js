@@ -52,7 +52,7 @@ class CustomEnvironment extends TestEnvironment {
         // `new Vue({ pinia })`, so a store's setup function looks for `runWithContext` there. No
         // Vue instance defines it, and Pinia already falls back to running the callback directly
         // when it is missing, so this warning does not signal an app bug.
-        /^\[Vue warn\]: Property "runWithContext" was accessed during render but is not defined on instance/,
+        /^\[Vue warn\]: Property (or method )?"runWithContext" (was accessed|is not defined)/,
 
         /^\[Vue warn\]: Slot ".*" invoked outside of the render function/,
       ],

@@ -157,7 +157,12 @@ GitLab creates each copy with a new URL secret in the target project:
 - The copied files are listed in the target project's
   [Markdown uploads](../../../api/project_markdown_uploads.md), not the source project's.
 
-Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.
+The move also copies all of the issue's comments to the target project, including
+[internal notes](../../discussions/_index.md#add-an-internal-note).
+
+> [!warning]
+> Members of the target project with the Planner, Reporter, Developer, Maintainer, or Owner role can view the copied internal notes.
+> Before you move an issue to a project with different access rules, ensure the issue, including its internal notes, does not contain sensitive data.
 
 Prerequisites:
 

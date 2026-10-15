@@ -1097,8 +1097,6 @@ projects:
 - project_access_tokens.project_id
 - project_alerting_settings.project_id
 - project_aliases.project_id
-- project_authorizations.project_id
-- project_authorizations_for_migration.project_id
 - project_auto_devops.project_id
 - project_build_artifacts_size_refreshes.project_id
 - project_ci_cd_settings.project_id

@@ -12,3 +12,6 @@ export const NONE_PADDING_CLASS = 'gl-p-0';
 
 // How many seconds to wait until the user * stops typing
 export const TYPING_DELAY = 400;
+
+// Dispatched on the search root when the search term changes, with `{ searchTerm }` as detail
+export const SEARCH_TERM_CHANGED_EVENT = 'settings-search-term-changed';

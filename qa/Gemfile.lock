@@ -156,9 +156,10 @@ GEM
     gitlab-rspec-metrics-exporter (0.2.0)
       logger (>= 1.4, < 2.0)
       rspec-core (>= 3.12, < 4.0)
-    gitlab_quality-test_tooling (3.21.4)
+    gitlab_quality-test_tooling (3.22.1)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
+      csv (~> 3.0)
       fog-google (~> 1.25)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
@@ -430,7 +431,7 @@ DEPENDENCIES
   gitlab-qa (~> 15, >= 15.9.0)
   gitlab-rspec-metrics-exporter (~> 0.2.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 3.21.4)
+  gitlab_quality-test_tooling (~> 3.22.1)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
   nokogiri (~> 1.19, >= 1.19.3)
@@ -505,7 +506,7 @@ CHECKSUMS
   gitlab-qa (15.9.0) sha256=3be28a4e2209ba47c942179ebb295a68b8e4eb15ebbea3b5bf3c16c1c615c870
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63
   gitlab-utils (0.2.0)
-  gitlab_quality-test_tooling (3.21.4) sha256=c94c2d57cf749846daf831e1541280d6a226507d9bc63a55224f7d37abf5dda5
+  gitlab_quality-test_tooling (3.22.1) sha256=8eaff0c94046d5de03a647c9baaf4ec8b34925642920d9a3aed467196c682456
   google-apis-compute_v1 (0.101.0) sha256=1dea57ab0a579424305aac3219cbd70196b6f3e0d1c6387e1412e3b676c25f3f
   google-apis-core (0.15.0) sha256=9c95ee9068c6b1fb3f8698b2856f53a031c3a68e886d074cc2e9a482e070a6e4
   google-apis-dns_v1 (0.43.0) sha256=8a0db99fde5a16ede6cc160ab422b737ef2e5e0d146c2b0570795fb83afdabf1

@@ -293,6 +293,13 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     end
   end
 
+  context 'with loose foreign key on project_authorizations.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:project) }
+      let_it_be(:model) { create(:project_authorization, project: parent) }
+    end
+  end
+
   describe '.find_or_create_authorization_for' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }

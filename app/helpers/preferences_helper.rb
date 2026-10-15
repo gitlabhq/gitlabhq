@@ -2,6 +2,25 @@
 
 # Helper methods for per-User preferences
 module PreferencesHelper
+  def preferences_tabs
+    [
+      { id: 'appearance', title: s_('Preferences|Appearance'), partial: 'appearance' },
+      { id: 'behavior', title: s_('Preferences|Behavior'), partial: 'behavior' },
+      { id: 'editing', title: s_('Preferences|Editing'), partial: 'editing' },
+      { id: 'localization', title: _('Localization'), partial: 'localization' },
+      duo_preferences_tab,
+      integrations_preferences_tab
+    ].compact
+  end
+
+  # `js-preferences-form` makes radio changes submit the form (see profile/profile.js).
+  def preferences_section(heading, id: nil, testid: nil, section_class: nil)
+    ::Layouts::SettingsSectionComponent.new(heading,
+      id: id,
+      testid: testid,
+      options: { class: ['js-preferences-form', section_class].compact })
+  end
+
   def layout_choices
     [
       [s_('Layout|Fixed'), :fixed],
@@ -200,6 +219,16 @@ module PreferencesHelper
   end
 
   private
+
+  def duo_preferences_tab; end
+
+  def integrations_preferences_tab
+    views = integration_views
+    return if views.empty?
+
+    { id: 'integrations', title: s_('Preferences|Integrations'), partial: 'integrations',
+      locals: { integration_views: views } }
+  end
 
   def extensions_marketplace_view
     return unless WebIde::ExtensionMarketplace.feature_enabled_from_application_settings?

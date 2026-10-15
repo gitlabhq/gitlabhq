@@ -572,6 +572,7 @@ Additional details:
 
 - Copies as much data as possible as long as the target contains equivalent objects like labels, milestones, or epics.
 - Does not copy comments or system notes unless `--with_notes` is provided as an argument.
+  With `--with_notes`, the clone copies all comments, including internal notes.
 - When no type is provided, the source work item type is preserved. The clone
   fails if that type is not available in the target namespace.
 - When a type is provided, the work item is converted to that type. The clone
@@ -1223,8 +1224,9 @@ Examples:
 
 Additional details:
 
-- Be careful when moving a work item to a location with different access rules.
-  Before moving the work item, make sure it does not contain sensitive data.
+- The move copies all of the work item's comments to the target, including internal notes.
+  Before you move a work item to a location with different access rules, make sure it
+  does not contain sensitive data, including in internal notes.
 - When no type is provided, the source work item type is preserved. The move
   fails if that type is not available in the target namespace.
 - When a type is provided, the work item is converted to that type. The move

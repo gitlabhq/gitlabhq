@@ -1,0 +1,53 @@
+- plain_text_editor_help_text = s_('Preferences|Type in plain text, using Markdown.')
+- rich_text_editor_help_text = s_('Preferences|Type in rich text, as you see it.')
+
+= render preferences_section(s_('Preferences|Text editor'), id: 'text-editor') do |c|
+  - c.with_description do
+    = s_('Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing.')
+    = succeed '.' do
+      = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'set-the-default-text-editor'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
+  - c.with_body do
+    .form-group
+      = f.gitlab_ui_checkbox_component :default_text_editor_enabled, s_('Preferences|Enable default text editor')
+      .gl-ml-6.gl-mt-1
+        = f.hidden_field(:text_editor, value: :not_set)
+        = f.gitlab_ui_radio_component :text_editor, :rich_text_editor, s_('TextEditor|Rich text editor'), help_text: rich_text_editor_help_text
+        = f.gitlab_ui_radio_component :text_editor, :plain_text_editor, s_('TextEditor|Plain text editor'), help_text: plain_text_editor_help_text
+
+= render preferences_section(s_('Preferences|Markdown'), id: 'markdown') do |c|
+  - c.with_description do
+    = s_('Preferences|Customize how text behaves as you type in description and comment boxes.')
+  - c.with_body do
+    .form-group
+      - supported_characters = %w(" ' ` &#40; [ { < * _).map { |char| "<code>#{char}</code>" }.join(', ')
+      = f.gitlab_ui_checkbox_component :markdown_surround_selection,
+        s_('Preferences|Surround text selection when typing quotes or brackets'),
+        help_text: sprintf(s_("Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
+    .form-group
+      = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
+        s_('Preferences|Automatically add new list items'),
+        help_text: html_escape(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below.')) % { kbdOpen: '<kbd>'.html_safe, kbdClose: '</kbd>'.html_safe }
+    .form-group
+      = f.gitlab_ui_checkbox_component :markdown_maintain_indentation,
+        s_('Preferences|Maintain indentation'),
+        help_text: safe_format(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line.'), tag_pair(tag.kbd, :kbdOpen, :kbdClose))
+    .form-group
+      = f.gitlab_ui_checkbox_component :emoji_autocomplete_enabled,
+        s_('Preferences|Enable emoji autocomplete'),
+        help_text: s_('Preferences|When you type a colon (:) in a description or comment box, matching emoji are suggested.')
+
+= render preferences_section(s_('Preferences|Code'), id: 'code') do |c|
+  - c.with_description do
+    = s_('Preferences|Customize how code is displayed in files, diffs, and the Web IDE.')
+  - c.with_body do
+    .form-group
+      = f.gitlab_ui_checkbox_component :render_whitespace_in_code, s_('Preferences|Render whitespace characters in the Web IDE')
+    .form-group
+      = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
+      = f.number_field :tab_width,
+                      class: 'form-control gl-form-input gl-max-w-15',
+                      min: Gitlab::TabWidth::MIN,
+                      max: Gitlab::TabWidth::MAX,
+                      required: true
+      .form-text.gl-text-subtle
+        = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }

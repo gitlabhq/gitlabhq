@@ -26,14 +26,22 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner_core do
 
       expect(Ci::Build.sticking)
         .to receive(:find_caught_up_replica)
-        .with(:build, build.id, hash_id: false)
+        .with(:build, build.id.to_s, hash_id: false)
 
       helper.current_job
 
       stick_object = env_hash[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
       expect(stick_object[0]).to eq(Ci::Build.sticking)
       expect(stick_object[1]).to eq(:build)
-      expect(stick_object[2]).to eq(build.id)
+      expect(stick_object[2]).to eq(build.id.to_s)
+    end
+
+    it 'looks up the build once whether the id is the raw String or the coerced Integer' do
+      allow(helper).to receive(:params).and_return({ id: build.id.to_s }, { id: build.id })
+
+      expect(Ci::Build.sticking).to receive(:find_caught_up_replica).once
+
+      2.times { helper.current_job }
     end
 
     it 'does not handle sticking if no build ID was specified' do

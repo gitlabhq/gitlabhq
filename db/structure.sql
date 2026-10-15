@@ -61346,9 +61346,6 @@ ALTER TABLE ONLY user_synced_attributes_metadata
 ALTER TABLE p_ci_job_definition_instances
     ADD CONSTRAINT fk_rails_0f67af8ad0_p FOREIGN KEY (partition_id, job_definition_id) REFERENCES p_ci_job_definitions(partition_id, id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
-ALTER TABLE ONLY project_authorizations
-    ADD CONSTRAINT fk_rails_0f84bb11f3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY boards_epic_lists
     ADD CONSTRAINT fk_rails_0f9c7f646f FOREIGN KEY (epic_board_id) REFERENCES boards_epic_boards(id) ON DELETE CASCADE;
 
@@ -62839,9 +62836,6 @@ ALTER TABLE ONLY approval_project_rules_protected_branches
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
     ADD CONSTRAINT fk_rails_b8744c7031 FOREIGN KEY (local_upstream_id) REFERENCES virtual_registries_packages_maven_local_upstreams(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_authorizations_for_migration
-    ADD CONSTRAINT fk_rails_b91fc9995e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
     ADD CONSTRAINT fk_rails_b991fff0be FOREIGN KEY (registry_id) REFERENCES virtual_registries_packages_maven_registries(id) ON DELETE CASCADE;

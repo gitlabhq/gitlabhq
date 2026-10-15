@@ -28,6 +28,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
 
   it 'sets default dashboard preference to Personal homepage (default)' do
     visit(profile_preferences_path)
+    click_link 'Behavior'
 
     expect(page).to have_button('Personal homepage (default)')
   end
@@ -35,6 +36,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   describe 'User changes their default dashboard', :js do
     before do
       visit(profile_preferences_path)
+      click_link 'Behavior'
     end
 
     it 'creates a flash message' do
@@ -63,6 +65,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   describe 'User changes their language', :js do
     before do
       visit(profile_preferences_path)
+      click_link 'Localization'
     end
 
     it 'creates a flash message' do
@@ -89,6 +92,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   describe 'User changes whitespace in code' do
     before do
       visit(profile_preferences_path)
+      click_link 'Editing'
     end
 
     it 'updates their preference' do

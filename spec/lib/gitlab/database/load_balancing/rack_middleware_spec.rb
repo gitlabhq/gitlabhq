@@ -30,7 +30,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis, feature_
 
       expect(middleware).to receive(:clear).twice
 
-      expect(middleware).to receive(:find_caught_up_replica).with(env)
+      expect(middleware).to receive(:add_path_stick_objects).with(env).ordered
+      expect(middleware).to receive(:find_caught_up_replica).with(env).ordered
       expect(middleware).to receive(:stick_if_necessary).with(env)
 
       expect(app).to receive(:call).with(env).and_return(10)
@@ -43,6 +44,91 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis, feature_
         .and_call_original
 
       expect(middleware.call(env)).to eq(10)
+    end
+  end
+
+  describe '#add_path_stick_objects' do
+    let(:build_sticking) { ::Ci::Build.sticking }
+
+    def stick_objects_for(path, env = {})
+      env = Rack::MockRequest.env_for(path).merge(env)
+      middleware.add_path_stick_objects(env)
+      env[described_class::STICK_OBJECT]
+    end
+
+    where(:path) do
+      %w[
+        /api/v4/jobs/42
+        /api/v4/jobs/42/trace
+        /api/v4/jobs/42/artifacts
+        /api/v4/jobs/42/artifacts/authorize
+        /api/v4/jobs/42.json
+      ]
+    end
+
+    with_them do
+      it 'adds the build with the id as a String' do
+        expect(stick_objects_for(path)).to contain_exactly([build_sticking, :build, '42'])
+      end
+    end
+
+    it 'keeps entries already in the stick object' do
+      other = [build_sticking, :runner, 'token']
+
+      expect(stick_objects_for('/api/v4/jobs/42', described_class::STICK_OBJECT => Set[other]))
+        .to contain_exactly(other, [build_sticking, :build, '42'])
+    end
+
+    it 'reads the path without the relative URL root' do
+      expect(stick_objects_for('/api/v4/jobs/42', 'SCRIPT_NAME' => '/gitlab'))
+        .to contain_exactly([build_sticking, :build, '42'])
+    end
+
+    context 'with any other path' do
+      where(:path) do
+        %w[
+          /api/v4/jobs
+          /api/v4/jobs/request
+          /api/v4/jobs/42abc
+          /api/v4/projects/42/jobs/43
+          /group/project/-/jobs/42
+        ]
+      end
+
+      with_them do
+        it 'adds nothing' do
+          expect(stick_objects_for(path)).to be_nil
+        end
+      end
+    end
+
+    context 'when stick_runner_job_requests_before_rate_limit is disabled' do
+      before do
+        stub_feature_flags(stick_runner_job_requests_before_rate_limit: false)
+      end
+
+      it 'adds nothing, leaving the build to the endpoint' do
+        expect(stick_objects_for('/api/v4/jobs/42')).to be_nil
+      end
+    end
+
+    context 'with a session user' do
+      it 'adds nothing, because the user replaces the stick object' do
+        expect(stick_objects_for('/api/v4/jobs/42', 'warden' => warden_user)).to be_nil
+      end
+
+      context 'when grab_user_id_from_warden_session is enabled' do
+        before do
+          stub_feature_flags(grab_user_id_from_warden_session: true)
+        end
+
+        it 'adds nothing for a user in rack.session' do
+          session_key = Warden::SessionSerializer.new({}).key_for(:user)
+          env = { 'warden' => warden_user_no_preload, 'rack.session' => { session_key => [[42], 'session'] } }
+
+          expect(stick_objects_for('/api/v4/jobs/42', env)).to be_nil
+        end
+      end
     end
   end
 

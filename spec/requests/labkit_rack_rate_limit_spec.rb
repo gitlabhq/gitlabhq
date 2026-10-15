@@ -778,6 +778,71 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       expect(labkit_count_for('unauthenticated_api')).to eq(0)
       expect(labkit_count_for('runner_jobs')).to eq(0)
     end
+
+    # Stands in for replica lag: the job token only resolves once something has stuck to the build.
+    context 'when the replica has not caught up on a just-started job' do
+      let(:job) { create(:ci_build, :running, user: user) }
+      let(:sticking) { ::Ci::Build.sticking }
+      let(:caught_up) { [] }
+      let(:put_params) { { token: job.token, state: 'running' } }
+
+      before do
+        allow(sticking).to receive(:find_caught_up_replica).and_wrap_original do |original, namespace, id, **kwargs|
+          caught_up << id if namespace == :build
+
+          original.call(namespace, id, **kwargs)
+        end
+
+        allow(::Ci::AuthJobFinder).to receive(:new).and_wrap_original do |original, **kwargs|
+          original.call(**kwargs).tap do |finder|
+            allow(finder).to receive(:execute).and_wrap_original do |execute|
+              execute.call if caught_up.map(&:to_s).include?(job.id.to_s)
+            end
+          end
+        end
+      end
+
+      def send_job_request(method, path_suffix, params, headers = {})
+        public_send(method, "/api/v4/jobs/#{job.id}#{path_suffix}",
+          params: params, headers: headers.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token))
+      end
+
+      where(:method, :path_suffix, :params, :headers, :status) do
+        :put   | ''       | ref(:put_params) | {}                           | :ok
+        :patch | '/trace' | 'trace'          | { 'Content-Range' => '0-4' } | :accepted
+      end
+
+      with_them do
+        it 'resolves the job token before the rate limiter counts the request', :aggregate_failures do
+          send_job_request(method, path_suffix, params, headers)
+
+          expect(response).to have_gitlab_http_status(status)
+          expect(labkit_count_for('unauthenticated_api')).to eq(0)
+        end
+
+        # The endpoint's before hooks pass the raw String id and its body the coerced Integer.
+        it 'looks up the build once, leaving nothing for the endpoint to repeat' do
+          send_job_request(method, path_suffix, params, headers)
+
+          expect(caught_up).to eq([job.id.to_s])
+        end
+
+        context 'when stick_runner_job_requests_before_rate_limit is disabled' do
+          before do
+            stub_feature_flags(stick_runner_job_requests_before_rate_limit: false)
+          end
+
+          it 'counts the request as unauthenticated, as on master, with one lookup from the endpoint',
+            :aggregate_failures do
+            send_job_request(method, path_suffix, params, headers)
+
+            expect(response).to have_gitlab_http_status(status)
+            expect(labkit_count_for('unauthenticated_api')).to eq(1)
+            expect(caught_up).to eq([job.id.to_s])
+          end
+        end
+      end
+    end
   end
 
   context 'when the throttle cohort enforce flag is on' do

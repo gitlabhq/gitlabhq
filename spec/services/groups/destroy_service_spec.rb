@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
+  include LooseForeignKeysHelper
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -456,8 +457,10 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
       context 'group is deleted' do
         shared_examples 'updates project authorization' do
           it 'updates project authorization' do
-            expect { destroy_group(group, user, false) }.to(
-              change { user.can?(:read_project, project) }.from(true).to(false))
+            expect do
+              destroy_group(group, user, false)
+              process_loose_foreign_key_deletions(record: project)
+            end.to change { user.can?(:read_project, project) }.from(true).to(false)
           end
         end
 
@@ -497,7 +500,6 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
               expect(group2_user.can?(:read_project, group1_project)).to be(true)
 
               destroy_group(group2, group2_user, false)
-
               expect(group1_user.can?(:read_project, group1_project)).to be(true)
               expect(group2_user.can?(:read_project, group1_project)).to be(false)
             end
@@ -569,7 +571,6 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
               expect(group3_user.can?(:read_project, group1_project)).to be(true)
 
               destroy_group(group2, group2_user, false)
-
               expect(group1_user.can?(:read_project, group1_project)).to be(true)
               expect(group2_user.can?(:read_project, group1_project)).to be(false)
               expect(group3_user.can?(:read_project, group1_project)).to be(false)
@@ -607,6 +608,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
               expect(group2_user.can?(:read_project, group2_project)).to be(true)
 
               destroy_group(group2, group2_user, false)
+              process_loose_foreign_key_deletions(record: group2_project)
 
               expect(group1_user.can?(:read_project, group2_project)).to be(false)
               expect(group2_user.can?(:read_project, group2_project)).to be(false)
@@ -713,8 +715,10 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
       context 'the shared group is deleted' do
         shared_examples 'updates project authorization' do
           it 'updates project authorization' do
-            expect { destroy_group(shared_group, user, false) }.to(
-              change { shared_with_group_user.can?(:read_project, project) }.from(true).to(false))
+            expect do
+              destroy_group(shared_group, user, false)
+              process_loose_foreign_key_deletions(record: project)
+            end.to change { shared_with_group_user.can?(:read_project, project) }.from(true).to(false)
           end
         end
 

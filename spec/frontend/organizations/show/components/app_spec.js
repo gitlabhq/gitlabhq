@@ -17,7 +17,10 @@ describe('OrganizationShowApp', () => {
   };
 
   const createComponent = ({ propsData } = {}) => {
-    wrapper = mountExtended(App, { propsData: { ...defaultPropsData, ...propsData } });
+    wrapper = mountExtended(App, {
+      propsData: { ...defaultPropsData, ...propsData },
+      stubs: { SoloOwnedGroupsList: true },
+    });
   };
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);

@@ -33,7 +33,6 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_reload(:inherited_reporter) { create(:user, reporter_of: group) }
   let_it_be_with_reload(:inherited_security_manager) { create(:user, security_manager_of: group) }
   let_it_be_with_reload(:inherited_developer) { create(:user, developer_of: group) }
-  let_it_be_with_reload(:inherited_maintainer) { create(:user, maintainer_of: group) }
   let_it_be_with_reload(:inherited_owner) { create(:user, owner_of: group) }
 
   let(:base_guest_permissions) do

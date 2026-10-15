@@ -7,6 +7,7 @@ import {
   HIDE_CLASS,
   HIGHLIGHT_CLASS,
   NONE_PADDING_CLASS,
+  SEARCH_TERM_CHANGED_EVENT,
   TYPING_DELAY,
 } from '../constants';
 
@@ -193,6 +194,13 @@ export default {
       } else {
         restoreExpansionState(displayOptions);
       }
+
+      this.searchRoot.dispatchEvent(
+        new CustomEvent(SEARCH_TERM_CHANGED_EVENT, {
+          bubbles: true,
+          detail: { searchTerm: this.searchTerm },
+        }),
+      );
     },
     expandSection(section) {
       this.$emit('expand', section);

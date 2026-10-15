@@ -14,6 +14,7 @@ import {
 import { union } from 'lodash-es';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
+import { toISODateFormat } from '~/lib/utils/datetime_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
@@ -293,7 +294,9 @@ export default {
             input: {
               name: this.form.name,
               description: this.form.description,
-              expiresAt: this.form.expirationDate,
+              expiresAt: this.form.expirationDate
+                ? toISODateFormat(this.form.expirationDate)
+                : null,
               sudo: this.form.sudo,
               granularScopes: this.granularScopes,
             },

@@ -3,6 +3,7 @@ import { initListboxInputs } from '~/vue_shared/components/listbox_input/init_li
 import ProfilePreferences from './components/profile_preferences.vue';
 import ProfilePreferencesIntegrations from './components/integrations.vue';
 import ColorModeSelector from './components/color_mode_selector.vue';
+import { initPreferencesTabs } from './preferences_tabs';
 
 function initColorModeSelector() {
   const el = document.querySelector('#js-color-mode-selector');
@@ -82,7 +83,7 @@ export default () => {
   const formEl = document.querySelector('#profile-preferences-form');
   const { colorModes, themes, bodyClasses } = el.dataset;
 
-  return initVueApp({
+  const app = initVueApp({
     el,
     name: 'ProfilePreferencesApp',
     component: ProfilePreferences,
@@ -93,4 +94,11 @@ export default () => {
       bodyClasses,
     },
   });
+
+  // After every Vue app has mounted, so deep links to their fields (for example
+  // `#user_gitpod_enabled`) can find their element and open the right tab.
+  const tabsEl = document.querySelector('.js-preferences-tabs');
+  if (tabsEl) initPreferencesTabs({ tabsEl, formEl });
+
+  return app;
 };

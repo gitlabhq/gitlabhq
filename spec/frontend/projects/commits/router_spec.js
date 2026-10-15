@@ -6,23 +6,22 @@ describe('Commits router spec', () => {
 
   describe('route matching', () => {
     it.each`
-      path                                    | expectedParams
-      ${'/main/'}                             | ${{ path: '' }}
-      ${'/main/README.md'}                    | ${{ path: ['README.md'] }}
-      ${'/main/app/assets'}                   | ${{ path: ['app', 'assets'] }}
-      ${'/main/app/assets/javascripts'}       | ${{ path: ['app', 'assets', 'javascripts'] }}
-      ${'/main/src/file%20with%20spaces.txt'} | ${{ path: ['src', 'file with spaces.txt'] }}
-      ${'/main/src/file.vue'}                 | ${{ path: ['src', 'file.vue'] }}
-    `('matches route "$path" correctly', async ({ path, expectedParams }) => {
+      path                                    | expectedPath
+      ${'/main/'}                             | ${''}
+      ${'/main/README.md'}                    | ${'README.md'}
+      ${'/main/app/assets'}                   | ${'app/assets'}
+      ${'/main/app/assets/javascripts'}       | ${'app/assets/javascripts'}
+      ${'/main/src/file%20with%20spaces.txt'} | ${'src/file with spaces.txt'}
+      ${'/main/src/file.vue'}                 | ${'src/file.vue'}
+    `('matches route "$path" correctly', async ({ path, expectedPath }) => {
       const router = createRouter(basePath, escapedRef);
       await router.push(path);
 
-      // Vue Router 3 returns string for repeatable params, Vue Router 4 returns array
-      const actualParams = router.currentRoute.params;
-      if (process.env.VUE_VERSION !== '3') {
-        actualParams.path = actualParams.path ? actualParams.path.split('/') : '';
-      }
-      expect(actualParams).toEqual(expectedParams);
+      // Vue Router 3 returns a string for repeatable params and Vue Router 4 an
+      // array, so join them the way commit_list_app.vue does.
+      const actualPath = [router.currentRoute.params.path ?? []].flat().join('/');
+
+      expect(actualPath).toBe(expectedPath);
     });
   });
 

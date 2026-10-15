@@ -35,4 +35,34 @@ RSpec.describe API::Entities::Ci::Job, feature_category: :continuous_integration
     expect(job_entity[:pipeline].keys).to include(*%i[id iid project_id sha ref status source created_at updated_at
       web_url])
   end
+
+  describe 'artifacts_file' do
+    context 'when the job has an artifacts archive' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:build_traits, :pipeline_lock, :exposed) do
+        []         | :artifacts_locked | true
+        []         | :unlocked         | true
+        [:expired] | :artifacts_locked | true
+        [:expired] | :unlocked         | false
+      end
+
+      with_them do
+        let(:pipeline) { create(:ci_pipeline, pipeline_lock) }
+        let(:job) { create(:ci_build, :artifacts, *build_traits, pipeline: pipeline) }
+
+        it { expect(job_entity.key?(:artifacts_file)).to eq(exposed) }
+      end
+    end
+
+    context 'when the job has no artifacts archive' do
+      it { expect(job_entity).not_to have_key(:artifacts_file) }
+    end
+
+    context 'when the job is a bridge' do
+      let(:job) { create(:ci_bridge, pipeline: pipeline) }
+
+      it { expect(job_entity).not_to have_key(:artifacts_file) }
+    end
+  end
 end

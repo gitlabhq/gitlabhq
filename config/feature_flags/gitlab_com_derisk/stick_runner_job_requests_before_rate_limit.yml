@@ -1,0 +1,9 @@
+---
+name: stick_runner_job_requests_before_rate_limit
+description: Stick runner job requests to the build in RackMiddleware, so the rate limiter reads the job token from a caught-up replica
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261291
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/30054
+milestone: '19.5'
+group: group::environments
+type: gitlab_com_derisk
+default_enabled: false

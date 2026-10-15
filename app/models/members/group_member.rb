@@ -84,7 +84,7 @@ class GroupMember < Member
     # callback on Group. In this case, there is no need to refresh the
     # authorizations, because whenever a Group is being destroyed,
     # its projects are also destroyed, so the removal of project_authorizations
-    # will happen behind the scenes via DB foreign keys anyway.
+    # will happen behind the scenes via loose foreign keys anyway.
     return if destroyed_by_association.present?
 
     super

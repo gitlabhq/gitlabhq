@@ -12,9 +12,38 @@ title: Profile preferences
 
 {{< /details >}}
 
+{{< history >}}
+
+- Tabs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257460) in GitLab 19.6 [with a flag](../../administration/feature_flags/_index.md) named `preferences_tabs`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the tabbed layout is controlled by a feature flag.
+> For more information, see the history.
+> Without tabs, the same sections appear on one page.
+
 You can update your preferences to change the look and feel of GitLab.
 
-## Change the mode
+The preferences page is organized into tabs:
+
+- **Appearance**: Color mode, theme, layout width, syntax highlighting, and diff colors.
+- **Behavior**: Default views, keyboard shortcuts, diffs, and following users.
+- **Editing**: The text editor, Markdown behavior, and code display.
+- **Localization**: Language, calendar, and time preferences.
+- **Integrations**: Third-party services enabled by your administrator.
+  This tab is shown only when an integration is available.
+
+To open your preferences:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+
+## Appearance
+
+Use the **Appearance** tab to change how GitLab looks.
+
+### Change the mode
 
 {{< history >}}
 
@@ -30,10 +59,10 @@ To change the appearance:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the **Mode** section, select an option.
+1. On the **Appearance** tab, in the **Color mode** section, select an option.
 1. Select **Save changes**.
 
-## Change the navigation theme
+### Change the navigation theme
 
 {{< history >}}
 
@@ -50,9 +79,20 @@ To change the navigation theme:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the **Theme** section, select a theme.
+1. On the **Appearance** tab, in the **Theme** section, select a theme.
 
-## Change the syntax highlighting theme
+### Change the layout width on the UI
+
+You can stretch content on the GitLab UI to fill the entire page. By default, page content is fixed at 1280 pixels wide.
+
+To change the layout width of your UI:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **Appearance** tab, in the **Layout** section, choose **Fixed** or **Fluid**.
+1. Select **Save changes**.
+
+### Change the syntax highlighting theme
 
 Syntax highlighting is a feature in code editors and IDEs. The highlighter assigns a color to each type of code, such as strings and comments.
 
@@ -60,7 +100,7 @@ To change the syntax highlighting theme:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. In the **Syntax highlighting** section, select a theme.
+1. On the **Appearance** tab, in the **Syntax highlighting** section, select a theme.
 1. Select **Save changes**.
 
 To view the updated syntax highlighting theme, refresh your project's page.
@@ -71,7 +111,7 @@ granular level.
 If these steps do not work, your programming language might not be supported by the syntax highlighters.
 For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Monaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.
 
-## Change the diff colors
+### Change the diff colors
 
 Diffs use two different background colors to show changes between versions of code. By default, the original file is in red, and the changes are in green.
 
@@ -79,7 +119,7 @@ To change the diff colors:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Diffs** section.
+1. On the **Appearance** tab, go to the **Diff colors** section.
 1. Select a color or enter a color code.
 1. Select **Save changes**.
 
@@ -87,40 +127,8 @@ To change back to the default colors, clear the **Color for removed lines** and 
 
 ## Behavior
 
-Use the **Behavior** section to customize the behavior of the system layout and default views. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
-
-You can also use this section to set a default namespace for GitLab Duo.
-
-### Change the layout width on the UI
-
-You can stretch content on the GitLab UI to fill the entire page. By default, page content is fixed at 1280 pixels wide.
-
-To change the layout width of your UI:
-
-1. In the upper-right corner, select your avatar.
-1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Under **Layout width**, choose **Fixed** or **Fluid**.
-1. Select **Save changes**.
-
-### Set the default text editor
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
-- Default for new users [set to rich text editor](https://gitlab.com/gitlab-org/gitlab/-/issues/536611) in 18.2.
-
-{{< /history >}}
-
-By default, all new users see the **Rich text editor** when editing content.
-You can change the default editor for editing content in GitLab.
-
-1. In the upper-right corner, select your avatar.
-1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Under **Default text editor**, ensure the **Enable default text editor** checkbox is selected.
-1. Choose either **Rich text editor** or **Plain text editor** as your default.
-1. Select **Save changes**.
+Use the **Behavior** tab to choose the default content for your homepage, group, and project overview pages, and to customize keyboard shortcuts, diffs, and following users.
+You can also use this tab to set a default namespace for GitLab Duo.
 
 ### Choose your homepage
 
@@ -141,8 +149,7 @@ To choose your homepage view:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. From the **Homepage** dropdown list, select an option.
+1. On the **Behavior** tab, in the **Default views** section, from the **Homepage** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Customize default content on your group overview page
@@ -158,8 +165,7 @@ To change the default content on your group overview page:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. From the **Group overview content** dropdown list, select an option.
+1. On the **Behavior** tab, in the **Default views** section, from the **Group overview content** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Customize default content on your project overview page
@@ -168,8 +174,7 @@ Your project overview page is the page you view when you select **Project overvi
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. From the **Project overview content** dropdown list, select an option.
+1. On the **Behavior** tab, in the **Default views** section, from the **Project overview content** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Set a default GitLab Duo namespace
@@ -209,8 +214,7 @@ To set a default GitLab Duo namespace:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. From the **Default GitLab Duo group** dropdown list, select the group you want to set as your default.
+1. On the **Behavior** tab, in the **Default views** section, from the **Default GitLab Duo group** dropdown list, select the group you want to set as your default.
 1. Select **Save changes**.
 
 #### Namespace resolution in your local environment
@@ -249,39 +253,29 @@ To hide shortcut buttons on the project overview page:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Clear the **Show shortcut buttons above files on project overview** checkbox.
+1. On the **Behavior** tab, in the **Default views** section, clear the **Show shortcut buttons above files on project overview** checkbox.
 1. Select **Save changes**.
 
-### Show whitespace characters in the Web IDE
+### Turn off keyboard shortcuts
 
-Whitespace characters are any blank characters in a text, such as spaces and indentations. You might use whitespace to structure content in code. If your programming language is sensitive to whitespaces, the Web IDE can detect changes to them.
+By default, you can use [keyboard shortcuts](../shortcuts.md) to navigate GitLab.
 
-To render whitespace in the Web IDE:
+To turn off keyboard shortcuts:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Select the **Render whitespace characters in the Web IDE** checkbox.
+1. On the **Behavior** tab, in the **Keyboard shortcuts** section, clear the **Enable keyboard shortcuts** checkbox.
 1. Select **Save changes**.
-
-You can view changes to whitespace in diffs.
-
-To view diffs on the Web IDE, follow these steps:
-
-1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
-1. Under the **Changes** tab, select your file.
 
 ### Show whitespace changes in diffs
 
-View changes to whitespace in diff files. For more information on whitespaces, view the previous task.
+View changes to whitespace in diff files. For more information on whitespaces, view [Show whitespace characters in the Web IDE](#show-whitespace-characters-in-the-web-ide).
 
 To view changes to whitespace in diffs:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Select the **Show whitespace changes in diffs** checkbox.
+1. On the **Behavior** tab, in the **Diffs** section, select the **Show whitespace changes in diffs** checkbox.
 1. Select **Save changes**.
 
 For more information on diffs, view [Change the diff colors](#change-the-diff-colors).
@@ -295,11 +289,51 @@ To show one file per page on the **Changes** tab:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Select the **Show one file at a time on merge request's Changes tab** checkbox.
+1. On the **Behavior** tab, in the **Diffs** section, select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.
 
 Then, to move between files on the **Changes** tab, below each file, select the **Previous** and **Next** buttons.
+
+### Control follower engagement
+
+Turn off the ability to follow or be followed by other GitLab users. By default, your user profile, including your name and profile photo, is public in the **Following** tabs of other users. When you deactivate this setting:
+
+- GitLab deletes all of your followers and followed connections.
+- GitLab automatically removes your user profile from the pages of each connection.
+
+To remove the ability to be followed by and follow other users:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **Behavior** tab, in the **Follow users** section, clear the **Enable follow users** checkbox.
+1. Select **Save changes**.
+
+To access your **Followers** and **Following** tabs:
+
+- In the upper-right corner, select your avatar.
+- Select **Followers** or **Following**.
+
+## Editing
+
+Use the **Editing** tab to choose your default text editor and customize how Markdown and code behave.
+
+### Set the default text editor
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
+- Default for new users [set to rich text editor](https://gitlab.com/gitlab-org/gitlab/-/issues/536611) in 18.2.
+
+{{< /history >}}
+
+By default, all new users see the **Rich text editor** when editing content.
+You can change the default editor for editing content in GitLab.
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **Editing** tab, in the **Text editor** section, ensure the **Enable default text editor** checkbox is selected.
+1. Choose either **Rich text editor** or **Plain text editor** as your default.
+1. Select **Save changes**.
 
 ### Auto-enclose characters
 
@@ -309,8 +343,7 @@ To auto-enclose characters in description and comment boxes:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Select the **Surround text selection when typing quotes or brackets** checkbox.
+1. On the **Editing** tab, in the **Markdown** section, select the **Surround text selection when typing quotes or brackets** checkbox.
 1. Select **Save changes**.
 
 In a description or comment box, you can now type a word, highlight it, then type an
@@ -324,8 +357,18 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Select the **Automatically add new list items** checkbox.
+1. On the **Editing** tab, in the **Markdown** section, select the **Automatically add new list items** checkbox.
+1. Select **Save changes**.
+
+### Maintain cursor indentation
+
+Maintain the indentation when you press <kbd>Enter</kbd>. The cursor on the new line is automatically indented the same as the previous line. This setting works only in description and comment boxes.
+
+To maintain the indentation when you press the <kbd>Enter</kbd> key:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **Editing** tab, in the **Markdown** section, select the **Maintain indentation** checkbox.
 1. Select **Save changes**.
 
 ### Turn off emoji autocomplete
@@ -339,21 +382,26 @@ To turn off emoji autocomplete:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Clear the **Enable emoji autocomplete** checkbox.
+1. On the **Editing** tab, in the **Markdown** section, clear the **Enable emoji autocomplete** checkbox.
 1. Select **Save changes**.
 
-### Maintain cursor indentation
+### Show whitespace characters in the Web IDE
 
-Maintain the indentation when you press <kbd>Enter</kbd>. The cursor on the new line is automatically indented the same as the previous line. This setting works only in description and comment boxes.
+Whitespace characters are any blank characters in a text, such as spaces and indentations. You might use whitespace to structure content in code. If your programming language is sensitive to whitespaces, the Web IDE can detect changes to them.
 
-To add a new list item when you press the <kbd>Enter</kbd> key:
+To render whitespace in the Web IDE:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. Select the **Maintain cursor indentation** checkbox.
+1. On the **Editing** tab, in the **Code** section, select the **Render whitespace characters in the Web IDE** checkbox.
 1. Select **Save changes**.
+
+You can view changes to whitespace in diffs.
+
+To view diffs on the Web IDE, follow these steps:
+
+1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+1. Under the **Changes** tab, select your file.
 
 ### Change the tab width
 
@@ -363,13 +411,12 @@ To adjust the default tab width:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. For **Tab width**, enter a value.
+1. On the **Editing** tab, in the **Code** section, for **Tab width**, enter a value.
 1. Select **Save changes**.
 
 ## Localization
 
-Change localization settings such as your language, calendar start day, and time preferences.
+Use the **Localization** tab to change your language, calendar start day, and time preferences.
 
 ### Change your display language on the GitLab UI
 
@@ -379,8 +426,7 @@ To choose a language for the GitLab UI:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Localization** section.
-1. Under **Language**, select an option.
+1. On the **Localization** tab, in the **Language and region** section, under **Language**, select an option.
 1. Select **Save changes**.
 
 You might need to refresh your page to view the updated language.
@@ -395,8 +441,7 @@ To change your contribution calendar start day:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Localization** section.
-1. Under **First day of the week**, select an option.
+1. On the **Localization** tab, in the **Language and region** section, under **First day of the week**, select an option.
 1. Select **Save changes**.
 
 After you change your calendar start day, refresh your user profile page.
@@ -412,8 +457,7 @@ To use exact times on the GitLab UI:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Time preferences** section.
-1. Clear the **Use relative times** checkbox.
+1. On the **Localization** tab, in the **Time preferences** section, clear the **Use relative times** checkbox.
 1. Select **Save changes**.
 
 ### Customize time format
@@ -430,40 +474,13 @@ To customize the time format:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Time preferences** section.
-1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
+1. On the **Localization** tab, in the **Time preferences** section, under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
-
-## User identities in CI job JSON web tokens
-
-CI/CD jobs generate JSON web tokens, which can include a list of your external identities.
-Instead of making separate API calls to get individual accounts, you can find your user identities in a single authentication token.
-
-External identities are not included by default.
-To enable including external identities, see [Token payload](../../ci/secrets/id_token_authentication.md#token-payload).
-
-## Control follower engagement
-
-Turn off the ability to follow or be followed by other GitLab users. By default, your user profile, including your name and profile photo, is public in the **Following** tabs of other users. When you deactivate this setting:
-
-- GitLab deletes all of your followers and followed connections.
-- GitLab automatically removes your user profile from the pages of each connection.
-
-To remove the ability to be followed by and follow other users:
-
-1. In the upper-right corner, select your avatar.
-1. Select **Preferences**.
-1. Clear the **Enable follow users** checkbox.
-1. Select **Save changes**.
-
-To access your **Followers** and **Following** tabs:
-
-- In the upper-right corner, select your avatar.
-- Select **Followers** or **Following**.
 
 ## Integrate your GitLab instance with third-party services
 
 Give third-party services access to enhance the GitLab experience.
+Use the **Integrations** tab.
 
 ### Integrate your GitLab instance with Ona
 
@@ -473,8 +490,7 @@ To integrate with Ona:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Find the **Integrations** section.
-1. Select the **Enable Ona integration** checkbox.
+1. On the **Integrations** tab, select the **Enable Ona integration** checkbox.
 1. Select **Save changes**.
 
 ### Integrate your GitLab instance with Sourcegraph
@@ -485,8 +501,7 @@ To integrate with Sourcegraph:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Find the **Integrations** section.
-1. Select the **Enable integrated code intelligence on code views** checkbox.
+1. On the **Integrations** tab, select the **Enable integrated code intelligence on code views** checkbox.
 1. Select **Save changes**.
 
 You must be the administrator of the GitLab instance to configure GitLab with Sourcegraph.
@@ -525,7 +540,14 @@ To integrate with the Extension Marketplace:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Integrations** section.
-1. Select the **Enable extension marketplace** checkbox.
+1. On the **Integrations** tab, select the **Enable extension marketplace** checkbox.
 1. In the third-party extension acknowledgment, select **I understand**.
 1. Select **Save changes**.
+
+## User identities in CI job JSON web tokens
+
+CI/CD jobs generate JSON web tokens, which can include a list of your external identities.
+Instead of making separate API calls to get individual accounts, you can find your user identities in a single authentication token.
+
+External identities are not included by default.
+To enable including external identities, see [Token payload](../../ci/secrets/id_token_authentication.md#token-payload).

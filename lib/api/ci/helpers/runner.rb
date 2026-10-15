@@ -171,7 +171,8 @@ module API
         def current_job
           id = params[:id]
 
-          load_balancer_stick_request(::Ci::Build, :build, id) if id
+          # The before hooks see the raw String and the endpoint the coerced Integer; both must build one entry.
+          load_balancer_stick_request(::Ci::Build, :build, id.to_s) if id
 
           strong_memoize(:current_job) do
             ::Ci::Build.find_by_id(id)

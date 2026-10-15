@@ -68,6 +68,14 @@ namespace :tanuki_emoji do
     end
   end
 
+  desc 'Generates the emoji skin tone mapping fixture'
+  task skin_tones: :environment do
+    skin_tones_json = File.join(Rails.root, 'fixtures', 'emojis', 'skin_tones.json')
+    File.open(skin_tones_json, 'w') do |handle|
+      handle.puts(Gitlab::Json.pretty_generate(Gitlab::Emoji::SkinTones.to_h))
+    end
+  end
+
   desc 'Import emoji assets from TanukiEmoji to versioned folder'
   task import: :environment do
     require 'mini_magick'

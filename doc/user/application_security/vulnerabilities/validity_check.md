@@ -106,6 +106,10 @@ Validity checks support the following secret types:
 - Asana personal access tokens
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
+- DigitalOcean OAuth access tokens
+- DigitalOcean personal access tokens
+- Doppler personal tokens
+- Doppler service tokens
 - EasyPost API tokens
 - EasyPost test API tokens
 - Fastly API tokens
@@ -118,6 +122,7 @@ Validity checks support the following secret types:
 - Google Cloud API keys
 - HashiCorp Terraform user and organization API tokens
 - Heroku API keys
+- HubSpot private app access tokens and service keys
 - Hugging Face user access tokens
 - npm access tokens
 - OpenAI admin API keys
@@ -154,6 +159,8 @@ The supported URLs are:
 
 - `https://api.anthropic.com/v1/models`
 - `https://api.datadoghq.com/api/v1/validate`
+- `https://api.digitalocean.com/v2/account`
+- `https://api.doppler.com/v3/me`
 - `https://api.easypost.com/v2/addresses`
 - `https://api.fastly.com/tokens/self`
 - `https://api.getpostman.com/me`
@@ -161,6 +168,7 @@ The supported URLs are:
 - `https://api.github.com/user`
 - `https://api.gocardless.com/creditors`
 - `https://api.heroku.com/account`
+- `https://api.hubapi.com/account-info/v3/details`
 - `https://api.notification.canada.ca/v2/notifications`
 - `https://api.openai.com/v1/models`
 - `https://api.openai.com/v1/organization/admin_api_keys`

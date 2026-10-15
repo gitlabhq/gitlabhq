@@ -15,6 +15,11 @@ title: Jobs API
 
 Use this API to interact with [CI/CD jobs](../ci/jobs/_index.md).
 
+The `artifacts_file` attribute shows up in a job response as long as the archive is
+downloadable, even after `artifacts_expire_at` has passed. Artifacts kept by the
+[**Keep artifacts from most recent successful jobs**](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
+setting do not expire.
+
 ## List all jobs for a project
 
 Lists all jobs for a specified project.

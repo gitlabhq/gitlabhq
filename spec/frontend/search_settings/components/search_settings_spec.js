@@ -3,7 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import SearchSettings from '~/search_settings/components/search_settings.vue';
-import { HIGHLIGHT_CLASS, HIDE_CLASS } from '~/search_settings/constants';
+import {
+  HIGHLIGHT_CLASS,
+  HIDE_CLASS,
+  SEARCH_TERM_CHANGED_EVENT,
+} from '~/search_settings/constants';
 import { isExpanded, expandSection, closeSection } from '~/settings_panels';
 
 describe('search_settings/components/search_settings.vue', () => {
@@ -94,6 +98,21 @@ describe('search_settings/components/search_settings.vue', () => {
     search(SEARCH_TERM);
 
     expect(wrapper.emitted('expand')).toEqual([[section]]);
+  });
+
+  it('dispatches a bubbling event on the search root when the search term changes', () => {
+    const listener = jest.fn();
+    document.addEventListener(SEARCH_TERM_CHANGED_EVENT, listener);
+
+    search(SEARCH_TERM);
+    clearSearch();
+
+    document.removeEventListener(SEARCH_TERM_CHANGED_EVENT, listener);
+
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener.mock.calls[0][0].target).toBe(document.querySelector(`#${ROOT_ID}`));
+    expect(listener.mock.calls[0][0].detail).toEqual({ searchTerm: SEARCH_TERM });
+    expect(listener.mock.calls[1][0].detail).toEqual({ searchTerm: '' });
   });
 
   describe('when nothing matches the search term', () => {

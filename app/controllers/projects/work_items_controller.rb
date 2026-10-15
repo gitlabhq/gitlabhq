@@ -23,6 +23,7 @@ module Projects
         Feature.enabled?(:planning_view_boards_group, project&.root_ancestor))
       push_frontend_feature_flag(:planning_view_table, current_user)
       push_frontend_feature_flag(:work_items_realtime, current_user)
+      push_frontend_feature_flag(:work_item_inline_comments, project&.root_ancestor)
     end
 
     before_action :check_search_rate_limit!, if: ->(c) do

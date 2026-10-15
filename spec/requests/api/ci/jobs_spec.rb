@@ -523,6 +523,23 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect { go }.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
       end
 
+      it 'avoids N+1 queries for expired artifacts on locked pipelines',
+        :skip_before_request, :request_store, :use_sql_query_cache do
+        create(:ci_build, :artifacts, :expired, pipeline: pipeline)
+
+        go # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { go }
+
+        3.times do
+          locked_pipeline = create(:ci_pipeline, :artifacts_locked, project: project, sha: project.commit.id,
+            ref: project.default_branch)
+          create(:ci_build, :artifacts, :expired, pipeline: locked_pipeline)
+        end
+
+        expect { go }.to issue_same_number_of_queries_as(control)
+      end
+
       context 'filter project with one scope element' do
         let(:query) { { 'scope' => 'pending' } }
 
@@ -725,6 +742,29 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       it_behaves_like 'returns common pipeline data' do
         let(:jobx) { job }
+      end
+
+      context 'with expired artifacts', :skip_before_request do
+        let(:expired_job) { create(:ci_build, :artifacts, :expired, pipeline: pipeline) }
+
+        it 'returns artifacts_file when the pipeline artifacts are locked' do
+          pipeline.artifacts_locked!
+
+          get api("/projects/#{project.id}/jobs/#{expired_job.id}", api_user)
+
+          expect(json_response['artifacts_file']).to eq(
+            'filename' => expired_job.artifacts_file.filename,
+            'size' => expired_job.artifacts_file.size
+          )
+        end
+
+        it 'does not return artifacts_file when the pipeline artifacts are unlocked' do
+          pipeline.unlocked!
+
+          get api("/projects/#{project.id}/jobs/#{expired_job.id}", api_user)
+
+          expect(json_response).not_to have_key('artifacts_file')
+        end
       end
     end
 

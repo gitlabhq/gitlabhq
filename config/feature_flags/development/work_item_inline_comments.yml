@@ -1,0 +1,9 @@
+---
+name: work_item_inline_comments
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260656
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632840
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23506
+milestone: '19.6'
+type: development
+group: group::planner intelligence
+default_enabled: false

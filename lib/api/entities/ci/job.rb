@@ -5,7 +5,8 @@ module API
     module Ci
       class Job < JobBasic
         # artifacts_file is included in job_artifacts, but kept for backward compatibility (remove in api/v5)
-        expose :artifacts_file, using: ::API::Entities::Ci::JobArtifactFile, if: ->(job, opts) { job.artifacts? }
+        expose :artifacts_file, using: ::API::Entities::Ci::JobArtifactFile,
+          if: ->(job, _opts) { job.is_a?(::Ci::Build) && job.available_artifacts? }
         expose :job_artifacts, as: :artifacts,
           using: ::API::Entities::Ci::JobArtifact,
           documentation: { is_array: true }

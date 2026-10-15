@@ -1,0 +1,32 @@
+= render preferences_section(s_('Preferences|Language and region'), id: 'language-and-region') do |c|
+  - c.with_description do
+    = _('Customize language and region related settings.')
+    = succeed '.' do
+      = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
+  - c.with_body do
+    .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
+    %p.-gl-mt-5
+      = link_to help_page_url('development/i18n/translation.md'), class: '!gl-whitespace-nowrap gl-link-inline', target: '_blank', rel: 'noopener noreferrer' do
+        = _("Help translate GitLab into your language")
+        %span{ aria: { label: _('Open new window') } }
+          = sprite_icon('external-link')
+    .form-group
+      = f.label :first_day_of_week, class: 'label-bold' do
+        = _('First day of the week')
+      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select gl-block gl-form-input-xl'
+
+= render preferences_section(s_('Preferences|Time preferences'), id: 'time-preferences') do |c|
+  - c.with_description do
+    = s_('Preferences|Configure how dates and times display for you.')
+    = succeed '.' do
+      = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
+  - c.with_body do
+    .form-group
+      = f.gitlab_ui_checkbox_component :time_display_relative,
+        s_('Preferences|Use relative times'),
+        help_text: s_('Preferences|For example: 30 minutes ago.')
+    .form-group
+      = f.label :time_display_format, class: 'label-bold' do
+        = s_('Preferences|Time format')
+      - time_display_format_choices.each_entry do |time_display_format_option|
+        = f.gitlab_ui_radio_component :time_display_format, time_display_format_option[1], time_display_format_option[0]

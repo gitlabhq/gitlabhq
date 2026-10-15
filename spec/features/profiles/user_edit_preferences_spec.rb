@@ -16,6 +16,7 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
   end
 
   it 'allows the user to toggle their time display preference' do
+    click_link 'Localization'
     field = page.find_field("user[time_display_relative]")
 
     expect(field).to be_checked
@@ -26,6 +27,7 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
   end
 
   it 'allows the user to disable emoji autocomplete and persists the choice' do
+    click_link 'Editing'
     field = page.find_field("user[emoji_autocomplete_enabled]")
 
     expect(field).to be_checked
@@ -37,10 +39,15 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
     expect(user.reload.user_preference.emoji_autocomplete_enabled).to be(false)
 
     visit(profile_preferences_path)
+    click_link 'Editing'
     expect(page.find_field("user[emoji_autocomplete_enabled]")).not_to be_checked
   end
 
   describe 'User changes tab width to acceptable value' do
+    before do
+      click_link 'Editing'
+    end
+
     it 'shows success message' do
       fill_in 'Tab width', with: 9
       click_button 'Save changes'
@@ -59,6 +66,10 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
   end
 
   describe 'User changes tab width to unacceptable value' do
+    before do
+      click_link 'Editing'
+    end
+
     it 'shows error message' do
       fill_in 'Tab width', with: -1
       click_button 'Save changes'
@@ -72,6 +83,96 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
       click_button 'Save changes'
       expect(page).to have_content('Failed to save preferences.')
     end
+
+    it 'switches to the tab containing the invalid field when saving from another tab' do
+      fill_in 'Tab width', with: -1
+      click_link 'Appearance'
+
+      expect(page).not_to have_field('Tab width')
+
+      click_button 'Save changes'
+
+      expect(page).to have_field('Tab width')
+      expect(page).to have_css('a[role="tab"].active', text: 'Editing')
+    end
+  end
+
+  describe 'Tabs' do
+    it 'shows the appearance tab by default and switches tabs without reloading' do
+      expect(page).to have_css('a[role="tab"].active', text: 'Appearance')
+      expect(page).to have_content('Syntax highlighting')
+      expect(page).not_to have_content('Time preferences')
+
+      click_link 'Localization'
+
+      expect(page).to have_css('a[role="tab"].active', text: 'Localization')
+      expect(page).to have_content('Time preferences')
+      expect(page).not_to have_content('Syntax highlighting')
+      expect(current_url_hash).to eq('#localization')
+    end
+
+    # A hash-only `visit` from the same page does not reload it, so leave the page first.
+    it 'opens the tab named by the URL hash on page load' do
+      visit(user_settings_profile_path)
+      visit(profile_preferences_path(anchor: 'editing'))
+
+      expect(page).to have_css('a[role="tab"].active', text: 'Editing')
+      expect(page).to have_field('Tab width')
+    end
+
+    it 'opens the tab containing a deep-linked field on page load and keeps the hash' do
+      visit(user_settings_profile_path)
+      visit(profile_preferences_path(anchor: 'user_tab_width'))
+
+      expect(page).to have_css('a[role="tab"].active', text: 'Editing')
+      expect(page).to have_field('Tab width')
+      expect(current_url_hash).to eq('#user_tab_width')
+    end
+
+    it 'opens the tab containing a deep-linked Vue-rendered field' do
+      stub_application_setting(gitpod_enabled: true, gitpod_url: 'https://gitpod.test')
+
+      visit(user_settings_profile_path)
+      visit(profile_preferences_path(anchor: 'user_gitpod_enabled'))
+
+      expect(page).to have_css('a[role="tab"].active', text: 'Integrations')
+      expect(page).to have_field('user[gitpod_enabled]', type: 'checkbox')
+      expect(current_url_hash).to eq('#user_gitpod_enabled')
+    end
+
+    it 'follows hash changes made after the page has loaded' do
+      page.execute_script("window.location.hash = '#localization'")
+
+      expect(page).to have_css('a[role="tab"].active', text: 'Localization')
+
+      page.execute_script("window.location.hash = '#user_tab_width'")
+
+      expect(page).to have_css('a[role="tab"].active', text: 'Editing')
+      expect(page).to have_field('Tab width')
+    end
+
+    context 'when the preferences_tabs feature flag is disabled' do
+      before do
+        stub_feature_flags(preferences_tabs: false)
+        visit(profile_preferences_path)
+      end
+
+      it 'shows every section on one page and still saves' do
+        expect(page).not_to have_css('a[role="tab"]')
+        expect(page).to have_content('Syntax highlighting')
+        expect(page).to have_content('Time preferences')
+
+        fill_in 'Tab width', with: 9
+        click_button 'Save changes'
+
+        expect(page).to have_content('Preferences saved.')
+        expect(user.reload.tab_width).to eq(9)
+      end
+    end
+  end
+
+  def current_url_hash
+    page.evaluate_script('window.location.hash')
   end
 end
 
@@ -93,6 +194,7 @@ RSpec.describe 'Default text editor preference', :js, :allow_rich_text_editor_fo
   before do
     sign_in(user)
     visit(profile_preferences_path)
+    click_link 'Editing'
   end
 
   context 'when default text editor is disabled' do

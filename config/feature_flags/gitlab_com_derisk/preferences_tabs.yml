@@ -1,0 +1,9 @@
+---
+name: preferences_tabs
+description: Organize the user preferences page into tabs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257460
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631894
+milestone: '19.6'
+group: group::personal productivity
+type: gitlab_com_derisk
+default_enabled: false

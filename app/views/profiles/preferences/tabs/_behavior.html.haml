@@ -1,0 +1,53 @@
+= render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
+
+= render preferences_section(s_('Preferences|Default views'), id: 'default-views') do |c|
+  - c.with_description do
+    = s_('Preferences|Choose what content you see by default on your homepage, groups, and projects.')
+    = succeed '.' do
+      = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
+  - c.with_body do
+    .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: dashboard_value, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
+
+    = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
+
+    .form-group
+      = f.label :project_view, class: 'label-bold' do
+        = s_('Preferences|Project overview content')
+      = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
+      .form-text.gl-text-subtle
+        = s_('Preferences|Choose what content you want to see on a project’s overview page.')
+
+    = render_if_exists 'profiles/preferences/default_duo_group', f: f # EE-specific
+    = render_if_exists 'profiles/preferences/orbit_settings', f: f # EE-specific
+    = render_if_exists 'profiles/preferences/knowledge_graph_governing_group', f: f # EE-specific
+
+    .form-group
+      = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
+
+= render preferences_section(s_('Preferences|Keyboard shortcuts'), id: 'keyboard-shortcuts') do |c|
+  - c.with_body do
+    - shortcuts_help_link = link_to('', help_page_path('user/shortcuts.md'), target: '_blank', rel: 'noopener noreferrer')
+    .form-group
+      = f.gitlab_ui_checkbox_component :keyboard_shortcuts_enabled,
+        s_('Preferences|Enable keyboard shortcuts'),
+        help_text: safe_format(s_('Preferences|%{link_start}List of keyboard shortcuts%{link_end}'), tag_pair(shortcuts_help_link, :link_start, :link_end))
+
+= render preferences_section(s_('Preferences|Diffs'), id: 'diffs') do |c|
+  - c.with_description do
+    = s_('Preferences|Choose how changes are displayed in diffs and merge requests.')
+  - c.with_body do
+    .form-group
+      = f.gitlab_ui_checkbox_component :show_whitespace_in_diffs, s_('Preferences|Show whitespace changes in diffs')
+    .form-group
+      = f.gitlab_ui_checkbox_component :view_diffs_file_by_file,
+        s_("Preferences|Show one file at a time on merge request's Changes tab"),
+        help_text: s_("Preferences|Instead of all the files changed, show only one file at a time. To switch between files, use the file browser.")
+
+= render preferences_section(s_('Preferences|Follow users'), id: 'enabled_following') do |c|
+  - c.with_description do
+    = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
+    = succeed '.' do
+      = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
+  - c.with_body do
+    .form-group
+      = f.gitlab_ui_checkbox_component :enabled_following, s_('Preferences|Enable follow users')

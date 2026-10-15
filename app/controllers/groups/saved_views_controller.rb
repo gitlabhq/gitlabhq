@@ -19,6 +19,7 @@ module Groups
         Feature.enabled?(:planning_view_boards_group, group&.root_ancestor))
       push_frontend_feature_flag(:planning_view_table, current_user)
       push_frontend_feature_flag(:work_items_realtime, current_user)
+      push_frontend_feature_flag(:work_item_inline_comments, group&.root_ancestor)
     end
 
     def show

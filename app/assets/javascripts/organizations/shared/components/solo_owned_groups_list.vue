@@ -5,6 +5,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { isCurrentUser } from '~/lib/utils/common_utils';
+import { groupGroupMembersPath } from '~/lib/utils/path_helpers/group';
 import soloOwnedGroupsQuery from '../graphql/queries/solo_owned_groups.query.graphql';
 import { SOLO_OWNED_GROUPS_INITIAL_COUNT, SOLO_OWNED_GROUPS_FETCH_MORE_COUNT } from '../constants';
 
@@ -106,6 +107,9 @@ export default {
     groupIcon(group) {
       return group.parent ? 'subgroup' : 'group';
     },
+    groupMembersPath(group) {
+      return groupGroupMembersPath(group.fullPath, { organizationPath: null });
+    },
     async showMore() {
       this.isLoadingMore = true;
 
@@ -174,9 +178,12 @@ export default {
         data-testid="solo-owned-group"
       >
         <gl-icon :name="groupIcon(group)" variant="subtle" class="gl-shrink-0" />
-        <gl-link :href="group.webPath" class="gl-min-w-0 gl-break-anywhere">{{
-          group.fullPath
-        }}</gl-link>
+        <gl-link
+          :href="groupMembersPath(group)"
+          target="_blank"
+          class="gl-min-w-0 gl-break-anywhere"
+          >{{ group.fullPath }}</gl-link
+        >
       </li>
       <li v-if="hasNextPage">
         <gl-button

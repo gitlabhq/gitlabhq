@@ -47,12 +47,7 @@ const search = (referenceType, query) => {
   }
 };
 
-// The popup receives its items through VueRenderer.updateProps, which cannot
-// mutate props under @vue/compat, so the popup never gets them. Tracked in
-// https://gitlab.com/groups/gitlab-org/-/epics/6252
-const describeSkipVue3 = process.env.VUE_VERSION === '3' ? describe.skip : describe;
-
-describeSkipVue3('content_editor/extensions/suggestions keyboard handling', () => {
+describe('content_editor/extensions/suggestions keyboard handling', () => {
   let editor;
   let container;
   let popup;

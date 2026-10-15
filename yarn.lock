@@ -1528,7 +1528,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/jest-metrics-exporter/-/jest-metrics-exporter-0.2.0.tgz#392b96d3925f3ced3b522d1e14ba2feb70dcbdd3"
   integrity sha512-gwbNvjUSoFFx4ox5C0wqY/3zzzJrNupU+z5jjLSL5KK4hJPpO9NMtXWYqDl3vmY8wkCUo76IbK1d5tB6KZDW/Q==
 
-"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1", jsonify@^0.0.1, "jsonify@npm:@gitlab/noop@1.0.1":
+"@gitlab/noop@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1549,10 +1549,10 @@
     stylelint-declaration-strict-value "1.10.4"
     stylelint-scss "6.0.0"
 
-"@gitlab/svgs@3.166.0":
-  version "3.166.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.166.0.tgz#3fdd059a3c2ff12686651b7f3656a9c5563e911d"
-  integrity sha512-zxYKQBzGJZCOGOoa6Lxw6eNtJGbs9usy547ZRPdzCr0VSpcNuVGCq0ef8ZL4qju4MR2nO7pTckzfMpSo3pIXzQ==
+"@gitlab/svgs@3.167.0":
+  version "3.167.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.167.0.tgz#599e48d58e967a13148aa8a1c0fff39399fafbb0"
+  integrity sha512-uUjD07zq0t3VFsOHlfzRmKXjL03yO6O5BqkVJNi9qSHoUnVEbJ+HQOgqz83xOO11O28xwf8GopVCKdOqUV5r8Q==
 
 "@gitlab/ui@138.4.0":
   version "138.4.0"
@@ -10814,6 +10814,11 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
+jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
+  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
+
 jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
@@ -11401,6 +11406,11 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
+
+jsonify@^0.0.1, "jsonify@npm:@gitlab/noop@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
+  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jstimezonedetect@1.0.7:
   version "1.0.7"

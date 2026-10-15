@@ -23,6 +23,20 @@ RSpec.describe 'User searches their settings', :js, feature_category: :user_prof
       visit profile_preferences_path
     end
 
-    it_behaves_like 'can search settings', 'Syntax highlighting', 'Behavior'
+    it_behaves_like 'can search settings', 'Syntax highlighting', 'Theme'
+
+    it 'shows matching sections from every tab and restores the tabs when cleared' do
+      expect(page).not_to have_content('Time preferences')
+
+      fill_in SearchHelpers::INPUT_PLACEHOLDER, with: 'Time preferences'
+
+      expect(page).to have_content('Time preferences')
+      expect(page).not_to have_css('a[role="tab"]')
+
+      fill_in SearchHelpers::INPUT_PLACEHOLDER, with: ''
+
+      expect(page).not_to have_content('Time preferences')
+      expect(page).to have_css('a[role="tab"].active', text: 'Appearance')
+    end
   end
 end

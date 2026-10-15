@@ -2,6 +2,7 @@ package upstream
 
 import (
 	"bytes"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"sync/atomic"
@@ -206,7 +207,17 @@ func TestWsRoutesRequireWebsocketUpgrade(t *testing.T) {
 }
 
 func TestTerraformStateLockUnlockBodyLimit(t *testing.T) {
-	railsServer := startRailsServer(t, nil)
+	// The backend answers with the body it received, so that a subtest can
+	// check that Workhorse forwarded all of it.
+	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		w.Write(body)
+	}))
+	t.Cleanup(railsServer.Close)
 	ws, _ := startWorkhorseServer(t, railsServer.URL, false)
 
 	url := ws.URL + "/api/v4/projects/123/terraform/state/mystate/lock"
@@ -232,6 +243,23 @@ func TestTerraformStateLockUnlockBodyLimit(t *testing.T) {
 				defer resp.Body.Close()
 
 				require.Equal(t, http.StatusOK, resp.StatusCode)
+			})
+
+			t.Run("body of exactly the limit is allowed", func(t *testing.T) {
+				body := bytes.Repeat([]byte("a"), 4*1024)
+				req, err := http.NewRequest(tt.method, url, bytes.NewReader(body))
+				require.NoError(t, err)
+				req.Header.Set("Content-Type", "application/json")
+
+				resp, err := http.DefaultClient.Do(req)
+				require.NoError(t, err)
+				defer resp.Body.Close()
+
+				require.Equal(t, http.StatusOK, resp.StatusCode)
+				received, err := io.ReadAll(resp.Body)
+				require.NoError(t, err)
+				require.Len(t, received, len(body), "the backend received a different number of bytes")
+				require.Equal(t, body, received)
 			})
 
 			t.Run("oversized body is rejected with 413 Request Entity Too Large", func(t *testing.T) {

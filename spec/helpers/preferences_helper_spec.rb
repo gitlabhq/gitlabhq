@@ -9,6 +9,40 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
+  describe '#preferences_tabs' do
+    let(:tab_ids) { helper.preferences_tabs.pluck(:id) }
+
+    before do
+      # EE decides on its own tab; keep this spec about the CE list.
+      allow(helper).to receive(:duo_preferences_tab).and_return(nil)
+    end
+
+    it 'returns the core tabs first, in display order' do
+      expect(tab_ids).to start_with(%w[appearance behavior editing localization])
+      expect(tab_ids).not_to include('integrations')
+      expect(helper.preferences_tabs).to all(match(hash_including(id: String, title: String, partial: String)))
+    end
+
+    it 'appends the integrations tab with the views as locals when there are integrations to show' do
+      allow(helper).to receive(:integration_views).and_return([{ name: 'gitpod' }])
+
+      expect(helper.preferences_tabs.last).to match(
+        id: 'integrations', title: String, partial: 'integrations', locals: { integration_views: [{ name: 'gitpod' }] }
+      )
+    end
+  end
+
+  describe '#preferences_section' do
+    it 'renders a settings section marked for radio auto-submit' do
+      html = helper.render(helper.preferences_section('Heading', id: 'sec', testid: 'sec-testid',
+        section_class: 'extra'))
+      page = Capybara.string(html)
+
+      expect(page).to have_css('section#sec.settings-section.js-preferences-form.extra[data-testid="sec-testid"]')
+      expect(page).to have_css('section#sec h2', text: 'Heading')
+    end
+  end
+
   describe '#dashboard_value' do
     it 'returns dashboard of current user' do
       allow(user).to receive(:dashboard).and_return('your_activity')

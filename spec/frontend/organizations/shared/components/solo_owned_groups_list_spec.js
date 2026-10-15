@@ -95,14 +95,44 @@ describe('SoloOwnedGroupsList', () => {
       expect(handler).toHaveBeenCalledWith({ id: 'gid://gitlab/User/1', first: 5 });
     });
 
-    it('renders a link for each group', () => {
+    it("renders a link to each group's members page that opens in a new tab", () => {
       const links = wrapper.findAllComponents(GlLink);
 
-      expect(links.wrappers.map((link) => [link.text(), link.attributes('href')])).toEqual([
-        ['acme', '/acme/group-1'],
-        ['acme/group-2', '/acme/group-2'],
-        ['acme/group-3', '/acme/group-3'],
+      expect(
+        links.wrappers.map((link) => [
+          link.text(),
+          link.attributes('href'),
+          link.attributes('target'),
+        ]),
+      ).toEqual([
+        ['acme', '/groups/acme/-/group_members', '_blank'],
+        ['acme/group-2', '/groups/acme/group-2/-/group_members', '_blank'],
+        ['acme/group-3', '/groups/acme/group-3/-/group_members', '_blank'],
       ]);
+    });
+
+    describe('under an organization-scoped URL', () => {
+      beforeEach(async () => {
+        window.gon.organization_path = 'my-org';
+        createComponent(handler);
+        await waitForPromises();
+      });
+
+      afterEach(() => {
+        delete window.gon.organization_path;
+      });
+
+      it("links to each group's non-scoped members page", () => {
+        const hrefs = wrapper
+          .findAllComponents(GlLink)
+          .wrappers.map((link) => link.attributes('href'));
+
+        expect(hrefs).toEqual([
+          '/groups/acme/-/group_members',
+          '/groups/acme/group-2/-/group_members',
+          '/groups/acme/group-3/-/group_members',
+        ]);
+      });
     });
 
     it('renders a group icon for top-level groups and a subgroup icon for subgroups', () => {

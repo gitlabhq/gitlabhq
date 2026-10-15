@@ -3,8 +3,9 @@
 module Gitlab
   module RackLoadBalancingHelpers
     def load_balancer_stick_request(model, namespace, id, hash_id: false)
-      request.env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT] ||= Set.new
-      request.env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT] << [model.sticking, namespace, id]
+      stick_object = request.env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT] ||= Set.new
+      # Repeating a lookup within the request finds nothing new; RackMiddleware may already have done this one.
+      return unless stick_object.add?([model.sticking, namespace, id])
 
       model
         .sticking

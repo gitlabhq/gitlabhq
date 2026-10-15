@@ -2,12 +2,14 @@ package bodylimit
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"sync"
 	"testing"
+	"testing/iotest"
 
 	"github.com/stretchr/testify/require"
 )
@@ -32,7 +34,7 @@ func TestCountingReadCloser(t *testing.T) {
 	tests := []struct {
 		name          string
 		data          string
-		readSizes     []int
+		readSizes     []int // buffer length of each Read call, not the bytes it returns
 		expectedCount int64
 		mode          Mode
 		limit         int64
@@ -72,6 +74,24 @@ func TestCountingReadCloser(t *testing.T) {
 			expectedCount: 10,
 			mode:          ModeEnforced,
 			limit:         10,
+			expectError:   true,
+		},
+		{
+			name:          "exactly the limit in enforced mode, read to EOF",
+			data:          "hello world",
+			readSizes:     []int{11, 11},
+			expectedCount: 11,
+			mode:          ModeEnforced,
+			limit:         11,
+			expectError:   false,
+		},
+		{
+			name:          "one byte over the limit in enforced mode, read past the limit",
+			data:          "hello world!",
+			readSizes:     []int{11, 11},
+			expectedCount: 11,
+			mode:          ModeEnforced,
+			limit:         11,
 			expectError:   true,
 		},
 		{
@@ -125,6 +145,96 @@ func TestCountingReadCloser(t *testing.T) {
 
 			require.Equal(t, tt.expectedCount, counter.Count(), "byte count mismatch")
 			require.NoError(t, counter.Close())
+		})
+	}
+}
+
+func TestCountingReadCloser_ReadErrorAtLimit(t *testing.T) {
+	tests := []struct {
+		name      string
+		readSizes []int // buffer length of each Read call before the limit
+	}{
+		{
+			name:      "limit reached by the first read",
+			readSizes: []int{10},
+		},
+		{
+			name:      "limit reached by a later read",
+			readSizes: []int{3, 10},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			readErr := errors.New("client connection reset")
+			counter := &countingReadCloser{
+				reader: io.NopCloser(io.MultiReader(strings.NewReader("hello"), iotest.ErrReader(readErr))),
+				limit:  5,
+				mode:   ModeEnforced,
+			}
+
+			for _, size := range tt.readSizes {
+				_, err := counter.Read(make([]byte, size))
+				require.NoError(t, err)
+			}
+			require.Equal(t, int64(5), counter.Count())
+
+			// The body fails right after the limit: the read error is returned, not
+			// an end of body and not RequestBodyTooLargeError.
+			n, err := counter.Read(make([]byte, 10))
+			require.Zero(t, n)
+			require.ErrorIs(t, err, readErr)
+			require.Equal(t, int64(5), counter.Count())
+		})
+	}
+}
+
+func TestCountingReadCloser_ReadsAgainAfterLimit(t *testing.T) {
+	tests := []struct {
+		name        string
+		data        string
+		expectError bool
+	}{
+		{
+			name: "exactly the limit keeps returning EOF",
+			data: "hello",
+		},
+		{
+			name:        "one byte over the limit keeps returning RequestBodyTooLargeError",
+			data:        "hello!",
+			expectError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			counter := &countingReadCloser{
+				reader: io.NopCloser(strings.NewReader(tt.data)),
+				limit:  5,
+				mode:   ModeEnforced,
+			}
+
+			buf := make([]byte, 10)
+			n, err := counter.Read(buf)
+			require.NoError(t, err)
+			require.Equal(t, 5, n)
+
+			n, firstErr := counter.Read(buf)
+			require.Zero(t, n)
+			if tt.expectError {
+				var bodyTooLargeErr *RequestBodyTooLargeError
+				require.ErrorAs(t, firstErr, &bodyTooLargeErr)
+			} else {
+				require.ErrorIs(t, firstErr, io.EOF)
+			}
+
+			// Every later read returns the same error value, not an equal copy.
+			for range 2 {
+				n, err = counter.Read(buf)
+				require.Zero(t, n)
+				require.Same(t, firstErr, err)
+			}
+			require.Equal(t, int64(5), counter.Count())
 		})
 	}
 }
@@ -555,6 +665,7 @@ func TestIntegration(t *testing.T) {
 		name         string
 		mode         Mode
 		bodySize     int
+		chunked      bool
 		expectedCode int
 	}{
 		{
@@ -562,6 +673,32 @@ func TestIntegration(t *testing.T) {
 			mode:         ModeEnforced,
 			bodySize:     90,
 			expectedCode: http.StatusOK,
+		},
+		{
+			name:         "exactly the limit with enforced mode",
+			mode:         ModeEnforced,
+			bodySize:     100,
+			expectedCode: http.StatusOK,
+		},
+		{
+			name:         "exactly the limit with enforced mode, chunked",
+			mode:         ModeEnforced,
+			bodySize:     100,
+			chunked:      true,
+			expectedCode: http.StatusOK,
+		},
+		{
+			name:         "one byte over limit with enforced mode",
+			mode:         ModeEnforced,
+			bodySize:     101,
+			expectedCode: http.StatusRequestEntityTooLarge,
+		},
+		{
+			name:         "one byte over limit with enforced mode, chunked",
+			mode:         ModeEnforced,
+			bodySize:     101,
+			chunked:      true,
+			expectedCode: http.StatusRequestEntityTooLarge,
 		},
 		{
 			name:         "over limit with enforced mode",
@@ -594,7 +731,11 @@ func TestIntegration(t *testing.T) {
 			client := &http.Client{Transport: transport}
 
 			// Make request
-			body := strings.NewReader(strings.Repeat("a", tt.bodySize))
+			var body io.Reader = strings.NewReader(strings.Repeat("a", tt.bodySize))
+			if tt.chunked {
+				// Hide the length so that the request is sent with chunked encoding
+				body = struct{ io.Reader }{body}
+			}
 			resp, err := client.Post(server.URL, "text/plain", body)
 
 			require.NoError(t, err)

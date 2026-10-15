@@ -3,7 +3,8 @@
 # This script prepares your local development environment for working on the
 # GitLab Rails application. It assumes you have already set up GDK and have
 # the initial system dependencies installed (e.g. via brew on macOS or apt on
-# Debian/Ubuntu), including git, gpg, and a C/C++ toolchain.
+# Debian/Ubuntu), including git, gpg, a C/C++ toolchain, and a PostgreSQL
+# client.
 
 set -euo pipefail
 
@@ -56,6 +57,18 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     warn "Homebrew is not installed. You may need to ensure manually that dependencies from $(pwd)/Brewfile are available."
     exit 1
   fi
+fi
+
+# ---- PostgreSQL client ---------------------------------------------------
+
+if [[ "$(uname -s)" == "Linux" ]]; then
+  for tool in psql pg_dump; do
+    version=$("$tool" --version 2>/dev/null | grep -oE '[0-9]+' | head -n 1) || true
+    if [[ -z "$version" || "$version" -lt 17 ]]; then
+      warn "$tool 17 or later is required. Install a PostgreSQL 17 client (for example, from https://wiki.postgresql.org/wiki/Apt) and re-run this script."
+      exit 1
+    fi
+  done
 fi
 
 echo "Installing tool versions from .tool-versions via mise..."

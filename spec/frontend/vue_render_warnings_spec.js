@@ -71,17 +71,10 @@ describe('Vue render warnings', () => {
   });
 
   describe('when a template reads runWithContext', () => {
-    it('is ignored under Vue 3, since Pinia expects this property to be missing there', () => {
+    it('is ignored, since Pinia expects this property to be missing', () => {
       shallowMount(VueRenderWarningsComponent, { propsData: { readRunWithContext: true } });
 
-      const calls = getConsoleCalls();
-      if (process.env.VUE_VERSION === '3') {
-        expect(calls).toEqual([]);
-      } else {
-        // Vue 2 never triggers this warning for Pinia's actual (non-template) access pattern, but
-        // it does for a literal template read like this one, so it's expected here too.
-        expect(calls).toHaveLength(1);
-      }
+      expect(getConsoleCalls()).toEqual([]);
     });
   });
 });

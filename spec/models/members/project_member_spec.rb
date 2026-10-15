@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ProjectMember, feature_category: :groups_and_projects do
+  include LooseForeignKeysHelper
+
   describe 'associations' do
     it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end
@@ -315,7 +317,10 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
 
     context 'when the source project of the project member is destroyed' do
       it 'refreshes the authorization of user to the project in the group' do
-        expect { project.destroy! }.to change { user.can?(:read_project, project) }.from(true).to(false)
+        expect do
+          project.destroy!
+          process_loose_foreign_key_deletions(record: project)
+        end.to change { user.can?(:read_project, project) }.from(true).to(false)
       end
 
       it 'refreshes the authorization without calling AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker' do

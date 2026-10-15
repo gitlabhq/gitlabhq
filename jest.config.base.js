@@ -166,6 +166,8 @@ module.exports = (path, options = {}) => {
     '^lodash/(.*)$': '<rootDir>/node_modules/lodash-es/$1',
     '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
     '^remend$': '<rootDir>/node_modules/remend/dist/index.js',
+    // The ESM build the bundler loads; patches/@tiptap+vue-2+*.patch only patches this one.
+    '^@tiptap/vue-2$': '<rootDir>/node_modules/@tiptap/vue-2/dist/index.js',
     '^eve$': 'eve-raphael',
     ...extModuleNameMapper,
     ...vueModuleNameMappers,
@@ -245,6 +247,7 @@ module.exports = (path, options = {}) => {
     'fault',
     'dateformat',
     'lowlight',
+    '@tiptap/vue-2',
     'vscode-languageserver-types',
     'yaml',
     'dexie',

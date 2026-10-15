@@ -10,6 +10,7 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { cloneDeep } from 'lodash-es';
+import timezoneMock from 'timezone-mock';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -392,7 +393,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         input: {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
-          expiresAt: mockCreateMutationInput.expirationDate,
+          expiresAt: '2025-12-31',
           sudo: false,
           granularScopes: [
             {
@@ -416,7 +417,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         input: {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
-          expiresAt: mockCreateMutationInput.expirationDate,
+          expiresAt: '2025-12-31',
           sudo: false,
           granularScopes: [
             {
@@ -435,7 +436,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         input: {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
-          expiresAt: mockCreateMutationInput.expirationDate,
+          expiresAt: '2025-12-31',
           sudo: false,
           granularScopes: [
             {
@@ -459,7 +460,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         input: {
           name: mockCreateMutationInput.name,
           description: mockCreateMutationInput.description,
-          expiresAt: mockCreateMutationInput.expirationDate,
+          expiresAt: '2025-12-31',
           sudo: false,
           granularScopes: [
             {
@@ -470,6 +471,45 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
         },
       });
     });
+
+    describe('when the expiration date is cleared', () => {
+      beforeEach(async () => {
+        createComponent({ provide: { accessTokenMaxDate: null } });
+
+        await fillFormWithValidData();
+        findExpirationDateComponent().vm.$emit('input', null);
+        await findCreateButton().vm.$emit('click');
+      });
+
+      it('submits a null expiration date', () => {
+        expect(mockMutationHandler).toHaveBeenCalledWith({
+          input: expect.objectContaining({ expiresAt: null }),
+        });
+      });
+    });
+
+    describe.each(['US/Pacific', 'UTC', 'Australia/Adelaide'])(
+      'when the browser time zone is %s',
+      (timezone) => {
+        beforeEach(async () => {
+          timezoneMock.register(timezone);
+
+          await fillFormWithValidData();
+          findExpirationDateComponent().vm.$emit('input', new Date(2026, 0, 15));
+          await findCreateButton().vm.$emit('click');
+        });
+
+        afterEach(() => {
+          timezoneMock.unregister();
+        });
+
+        it('submits the picked calendar date', () => {
+          expect(mockMutationHandler).toHaveBeenCalledWith({
+            input: expect.objectContaining({ expiresAt: '2026-01-15' }),
+          });
+        });
+      },
+    );
 
     it('displays the created token and hides the form', async () => {
       await fillAndSubmitForm();

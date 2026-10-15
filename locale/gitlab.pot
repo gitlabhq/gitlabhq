@@ -8667,6 +8667,12 @@ msgstr ""
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
+msgid "AiGovernance|AI sessions started in the time range, including Agentic Chat conversations."
+msgstr ""
+
+msgid "AiGovernance|About %{label}"
+msgstr ""
+
 msgid "AiGovernance|Action"
 msgstr ""
 
@@ -8755,6 +8761,12 @@ msgid "AiGovernance|Destructive"
 msgstr ""
 
 msgid "AiGovernance|Developers by AI agent"
+msgstr ""
+
+msgid "AiGovernance|Distinct AI agents with at least one session in the time range. Agentic Chat conversations are not counted."
+msgstr ""
+
+msgid "AiGovernance|Every tool call made by AI agents in the time range."
 msgstr ""
 
 msgid "AiGovernance|External"
@@ -11790,22 +11802,19 @@ msgstr ""
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr ""
 
-msgid "Analytics|Activity across every group and project in one place, instead of one dashboard per scope."
-msgstr ""
-
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
 msgid "Analytics|Analytics settings for '%{group_name}' were successfully updated."
 msgstr ""
 
-msgid "Analytics|Ask what a trend means and get an answer grounded in the data on the page."
-msgstr ""
-
-msgid "Analytics|Build your own dashboards"
+msgid "Analytics|Ask what trends and metrics mean, and get answers grounded in the data on the page."
 msgstr ""
 
 msgid "Analytics|ClickHouse must be configured before this data is available."
+msgstr ""
+
+msgid "Analytics|Coming soon"
 msgstr ""
 
 msgid "Analytics|Configuration required"
@@ -11818,6 +11827,9 @@ msgid "Analytics|Created by GitLab"
 msgstr ""
 
 msgid "Analytics|Custom"
+msgstr ""
+
+msgid "Analytics|Custom dashboards"
 msgstr ""
 
 msgid "Analytics|Dashboard not found"
@@ -11864,6 +11876,9 @@ msgstr ""
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
+msgid "Analytics|Keep an overview of activity across your entire organization in one place, and get analytical insights from GitLab Duo — without building a dashboard first."
+msgstr ""
+
 msgid "Analytics|Learn more"
 msgstr ""
 
@@ -11894,9 +11909,6 @@ msgstr ""
 msgid "Analytics|Refresh the page to try again."
 msgstr ""
 
-msgid "Analytics|See activity across your entire organization in one place, and ask GitLab Duo to explain what the numbers mean — without building a dashboard first."
-msgstr ""
-
 msgid "Analytics|See everything. Ask anything."
 msgstr ""
 
@@ -11912,7 +11924,7 @@ msgstr ""
 msgid "Analytics|Something went wrong."
 msgstr ""
 
-msgid "Analytics|Start from a template or compose panels yourself, and share them with your teams."
+msgid "Analytics|Start from a template or compose panels yourself, and share dashboards with your groups."
 msgstr ""
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
@@ -11937,6 +11949,9 @@ msgid "Analytics|Usage data is a cumulative count and is updated monthly. Last u
 msgstr ""
 
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
+msgstr ""
+
+msgid "Analytics|View activity across groups and projects in one place, instead of multiple dashboards."
 msgstr ""
 
 msgid "Analytics|View available dashboards"
@@ -59508,6 +59523,11 @@ msgid_plural "Orbit|%{count} free GitLab credits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Orbit|%{count} group"
+msgid_plural "Orbit|%{count} groups"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%{count} in your graph"
 msgstr ""
 
@@ -59603,9 +59623,6 @@ msgid "Orbit|Ask GitLab Duo"
 msgstr ""
 
 msgid "Orbit|Ask GitLab Duo a question that spans projects."
-msgstr ""
-
-msgid "Orbit|Ask GitLab Duo a question that spans projects. GitLab Duo is not available for your groups."
 msgstr ""
 
 msgid "Orbit|Ask an Owner of %{group} to turn on Orbit."
@@ -59704,6 +59721,9 @@ msgid "Orbit|Columns"
 msgstr ""
 
 msgid "Orbit|Compare with a date, or a time with datetime()."
+msgstr ""
+
+msgid "Orbit|Connect an MCP client"
 msgstr ""
 
 msgid "Orbit|Connect your AI coding agents to Orbit and query Orbit from your terminal, with one command."
@@ -59921,13 +59941,7 @@ msgstr ""
 msgid "Orbit|GitLab Duo Chat and agents can use Orbit data for groups that have Orbit on. This setting turns Orbit in GitLab Duo on or off for all users. It has no effect when GitLab Duo is off."
 msgstr ""
 
-msgid "Orbit|GitLab Duo Chat and agents use Orbit to answer questions across projects."
-msgstr ""
-
 msgid "Orbit|GitLab Duo is not available for this group"
-msgstr ""
-
-msgid "Orbit|GitLab Duo is not available for your groups."
 msgstr ""
 
 msgid "Orbit|GitLab Orbit"
@@ -60151,9 +60165,6 @@ msgstr ""
 msgid "Orbit|Only an Owner of your top-level group can turn on Orbit. They turn it on from the Orbit page in Your work. When it is on, Orbit appears here."
 msgstr ""
 
-msgid "Orbit|Only the first %{shown} of %{total} groups are shown."
-msgstr ""
-
 msgid "Orbit|Only top-level groups can be excluded"
 msgstr ""
 
@@ -60298,9 +60309,6 @@ msgstr ""
 msgid "Orbit|Powered by Orbit"
 msgstr ""
 
-msgid "Orbit|Preferences"
-msgstr ""
-
 msgid "Orbit|Press %{keys} to run."
 msgstr ""
 
@@ -60427,34 +60435,14 @@ msgstr ""
 msgid "Orbit|Select groups to turn Orbit on or off, or to exclude them from automatic indexing."
 msgstr ""
 
-msgid "Orbit|Set up the Orbit CLI"
+msgid "Orbit|Settings"
 msgstr ""
 
-msgid "Orbit|Settings"
+msgid "Orbit|Show me what you can answer with Orbit that you cannot answer without it: one real example from my work that spans more than one project, and nothing else. Then suggest three short questions I can ask you next, with real names from my projects."
 msgstr ""
 
 msgid "Orbit|Show recent merge requests"
 msgstr ""
-
-msgid "Orbit|Showing %{shown} %{entity} item. Drag to rotate the globe."
-msgid_plural "Orbit|Showing %{shown} %{entity} items. Drag to rotate the globe."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Orbit|Showing %{shown} item. Drag to rotate the globe."
-msgid_plural "Orbit|Showing %{shown} items. Drag to rotate the globe."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Orbit|Showing %{shown} of %{total} %{entity} item. Drag to rotate the globe."
-msgid_plural "Orbit|Showing %{shown} of %{total} %{entity} items. Drag to rotate the globe."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Orbit|Showing %{shown} of %{total} item. Drag to rotate the globe."
-msgid_plural "Orbit|Showing %{shown} of %{total} items. Drag to rotate the globe."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Orbit|Something went wrong"
 msgstr ""
@@ -60578,9 +60566,6 @@ msgstr ""
 msgid "Orbit|Try Orbit for free"
 msgstr ""
 
-msgid "Orbit|Try Orbit in GitLab Duo"
-msgstr ""
-
 msgid "Orbit|Try again"
 msgstr ""
 
@@ -60612,7 +60597,7 @@ msgstr[1] ""
 msgid "Orbit|Turn on Orbit for %{name}?"
 msgstr ""
 
-msgid "Orbit|Turn on Orbit for GitLab Duo"
+msgid "Orbit|Turn on Orbit for GitLab Duo in %{linkStart}Preferences%{linkEnd}."
 msgstr ""
 
 msgid "Orbit|Turn on Orbit for all top-level groups automatically"
@@ -60645,6 +60630,15 @@ msgstr ""
 msgid "Orbit|Updating…"
 msgstr ""
 
+msgid "Orbit|Use Orbit in GitLab Duo"
+msgstr ""
+
+msgid "Orbit|Use Orbit in GitLab Duo, in your own agents, or both."
+msgstr ""
+
+msgid "Orbit|Use Orbit with your own agents"
+msgstr ""
+
 msgid "Orbit|Use the default query"
 msgstr ""
 
@@ -60657,7 +60651,7 @@ msgstr ""
 msgid "Orbit|Version %{version}"
 msgstr ""
 
-msgid "Orbit|View usage quotas"
+msgid "Orbit|View billing"
 msgstr ""
 
 msgid "Orbit|Vulnerabilities"
@@ -60700,9 +60694,6 @@ msgid "Orbit|What projects are in this group?"
 msgstr ""
 
 msgid "Orbit|When indexing finishes, ask GitLab Duo a question that spans projects."
-msgstr ""
-
-msgid "Orbit|When indexing finishes, ask GitLab Duo a question that spans projects. GitLab Duo is not available for your groups."
 msgstr ""
 
 msgid "Orbit|When the trial ends or the credits run out, contact sales to keep using Orbit."
@@ -61242,6 +61233,9 @@ msgid "Organization|This group will become internal to match the Organization's 
 msgstr ""
 
 msgid "Organization|This group will become private to match the Organization's visibility."
+msgstr ""
+
+msgid "Organization|To leave the organization, assign another owner to each group above. Your account isn't deleted."
 msgstr ""
 
 msgid "Organization|Top-level groups"
@@ -65416,6 +65410,9 @@ msgstr ""
 msgid "Preferences|Agentic Chat"
 msgstr ""
 
+msgid "Preferences|Appearance"
+msgstr ""
+
 msgid "Preferences|Automatically add new list items"
 msgstr ""
 
@@ -65437,13 +65434,25 @@ msgstr ""
 msgid "Preferences|Choose a highlight color scheme for viewing and editing code."
 msgstr ""
 
+msgid "Preferences|Choose how changes are displayed in diffs and merge requests."
+msgstr ""
+
+msgid "Preferences|Choose how much of the page width the content uses."
+msgstr ""
+
 msgid "Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing."
+msgstr ""
+
+msgid "Preferences|Choose what content you see by default on your homepage, groups, and projects."
 msgstr ""
 
 msgid "Preferences|Choose what content you want to see by default on your homepage."
 msgstr ""
 
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
+msgstr ""
+
+msgid "Preferences|Code"
 msgstr ""
 
 msgid "Preferences|Code Suggestions"
@@ -65453,6 +65462,9 @@ msgid "Preferences|Color for added lines"
 msgstr ""
 
 msgid "Preferences|Color for removed lines"
+msgstr ""
+
+msgid "Preferences|Color mode"
 msgstr ""
 
 msgid "Preferences|Configure how dates and times display for you."
@@ -65467,10 +65479,13 @@ msgstr ""
 msgid "Preferences|Custom Agents"
 msgstr ""
 
-msgid "Preferences|Customize integrations with third party services."
+msgid "Preferences|Customize how code is displayed in files, diffs, and the Web IDE."
 msgstr ""
 
-msgid "Preferences|Customize the behavior of the system layout and default views."
+msgid "Preferences|Customize how text behaves as you type in description and comment boxes."
+msgstr ""
+
+msgid "Preferences|Customize integrations with third party services."
 msgstr ""
 
 msgid "Preferences|Dark color scheme"
@@ -65479,10 +65494,16 @@ msgstr ""
 msgid "Preferences|Default GitLab Duo group"
 msgstr ""
 
-msgid "Preferences|Default text editor"
+msgid "Preferences|Default views"
+msgstr ""
+
+msgid "Preferences|Diff colors"
 msgstr ""
 
 msgid "Preferences|Diffs"
+msgstr ""
+
+msgid "Preferences|Editing"
 msgstr ""
 
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
@@ -65503,9 +65524,6 @@ msgstr ""
 msgid "Preferences|Enable follow users"
 msgstr ""
 
-msgid "Preferences|Enable follow users feature"
-msgstr ""
-
 msgid "Preferences|Enable integrated code intelligence on code views"
 msgstr ""
 
@@ -65513,6 +65531,9 @@ msgid "Preferences|Enable keyboard shortcuts"
 msgstr ""
 
 msgid "Preferences|Failed to save preferences."
+msgstr ""
+
+msgid "Preferences|Follow users"
 msgstr ""
 
 msgid "Preferences|For example: 30 minutes ago."
@@ -65528,6 +65549,12 @@ msgid "Preferences|Integrations"
 msgstr ""
 
 msgid "Preferences|Keyboard shortcuts"
+msgstr ""
+
+msgid "Preferences|Language and region"
+msgstr ""
+
+msgid "Preferences|Layout"
 msgstr ""
 
 msgid "Preferences|Layout width"
@@ -65554,7 +65581,7 @@ msgstr ""
 msgid "Preferences|Make the standalone Orbit agent available in GitLab Duo."
 msgstr ""
 
-msgid "Preferences|Mode"
+msgid "Preferences|Markdown"
 msgstr ""
 
 msgid "Preferences|Must be a number between %{min} and %{max}"
@@ -65612,6 +65639,9 @@ msgid "Preferences|Syntax highlighting"
 msgstr ""
 
 msgid "Preferences|Tab width"
+msgstr ""
+
+msgid "Preferences|Text editor"
 msgstr ""
 
 msgid "Preferences|Theme"
@@ -77252,6 +77282,9 @@ msgid_plural "SecurityOrchestration|Allows more than %{count} vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityOrchestration|Also run policy jobs in child pipelines created with trigger:include."
+msgstr ""
+
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
@@ -77663,7 +77696,13 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce the following pipeline execution policy:"
 msgstr ""
 
+msgid "SecurityOrchestration|Enforce the policy in child pipelines"
+msgstr ""
+
 msgid "SecurityOrchestration|Enforced"
+msgstr ""
+
+msgid "SecurityOrchestration|Enforced in child pipelines"
 msgstr ""
 
 msgid "SecurityOrchestration|Enforcement mode"
@@ -103070,4 +103109,3 @@ msgstr ""
 
 msgid "✔"
 msgstr ""
-
