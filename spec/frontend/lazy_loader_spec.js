@@ -1,5 +1,4 @@
-import { noop } from 'lodash-es';
-import { useMockMutationObserver, useMockIntersectionObserver } from 'helpers/mock_dom_observer';
+import { useMockMutationObserver } from 'helpers/mock_dom_observer';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LazyLoader from '~/lazy_loader';
@@ -16,14 +15,9 @@ describe('LazyLoader', () => {
   let lazyLoader = null;
 
   const { trigger: triggerMutation } = useMockMutationObserver();
-  const { trigger: triggerIntersection } = useMockIntersectionObserver();
 
   const triggerChildMutation = () => {
     triggerMutation(document.body, { options: { childList: true, subtree: true } });
-  };
-
-  const triggerIntersectionWithRatio = (img) => {
-    triggerIntersection(img, { entry: { intersectionRatio: 0.1 } });
   };
 
   const createLazyLoadImage = () => {
@@ -60,136 +54,80 @@ describe('LazyLoader', () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(window, 'requestAnimationFrame').mockImplementation(execImmediately);
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
 
     mockLoadEvent();
+
+    lazyLoader = new LazyLoader({
+      observerNode: 'foobar',
+    });
   });
 
   afterEach(() => {
     document.body.innerHTML = '';
   });
 
-  describe.each`
-    hasIntersectionObserver | trigger
-    ${true}                 | ${triggerIntersectionWithRatio}
-    ${false}                | ${noop}
-  `(
-    'with hasIntersectionObserver=$hasIntersectionObserver',
-    ({ hasIntersectionObserver, trigger }) => {
-      let origIntersectionObserver;
+  it('should copy value from data-src to src for img 1', () => {
+    const img = createLazyLoadImage();
 
-      beforeEach(() => {
-        origIntersectionObserver = global.IntersectionObserver;
-        global.IntersectionObserver = hasIntersectionObserver
-          ? global.IntersectionObserver
-          : undefined;
+    // Doing everything that happens normally in onload
+    lazyLoader.register();
 
-        lazyLoader = new LazyLoader({
-          observerNode: 'foobar',
-        });
-      });
+    expect(img.getAttribute('src')).toBe(TEST_PATH);
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.dataset.src).toBeUndefined();
+    expect(img).toHaveClass('js-lazy-loaded');
+  });
 
-      afterEach(() => {
-        global.IntersectionObserver = origIntersectionObserver;
-        lazyLoader.unregister();
-      });
+  it('should lazy load dynamically added data-src images', async () => {
+    lazyLoader.register();
 
-      it('determines intersection observer support', () => {
-        expect(LazyLoader.supportsIntersectionObserver()).toBe(hasIntersectionObserver);
-      });
+    const newImg = createLazyLoadImage();
 
-      it('should copy value from data-src to src for img 1', () => {
-        const img = createLazyLoadImage();
+    await waitForPromises();
 
-        // Doing everything that happens normally in onload
-        lazyLoader.register();
+    expect(newImg.getAttribute('src')).toBe(TEST_PATH);
+    expect(newImg).toHaveClass('js-lazy-loaded');
+  });
 
-        trigger(img);
+  it('should not alter normal images', () => {
+    const newImg = createImage();
 
-        expect(img.getAttribute('src')).toBe(TEST_PATH);
-        expect(img.dataset.src).toBeUndefined();
-        expect(img).toHaveClass('js-lazy-loaded');
-      });
+    lazyLoader.register();
 
-      it('should lazy load dynamically added data-src images', async () => {
-        lazyLoader.register();
+    expect(newImg).not.toHaveClass('js-lazy-loaded');
+  });
 
-        const newImg = createLazyLoadImage();
+  describe('avatar URLs', () => {
+    const createAvatarImageAndLoad = (imageSource) => {
+      const img = document.createElement('img');
+      img.className = 'lazy';
+      img.dataset.src = imageSource;
+      img.width = 64;
+      document.body.appendChild(img);
+      triggerChildMutation();
 
-        trigger(newImg);
+      lazyLoader.register();
 
-        await waitForPromises();
+      return img;
+    };
 
-        expect(newImg.getAttribute('src')).toBe(TEST_PATH);
-        expect(newImg).toHaveClass('js-lazy-loaded');
-      });
+    it('should append width to avatar URLs without query params', () => {
+      const img = createAvatarImageAndLoad(TEST_AVATAR_PATH);
 
-      it('should not alter normal images', () => {
-        const newImg = createImage();
+      expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH}?width=64`);
+    });
 
-        lazyLoader.register();
+    it('should append width to avatar URLs that already have query params', () => {
+      const img = createAvatarImageAndLoad(TEST_AVATAR_PATH_WITH_QUERY);
 
-        expect(newImg).not.toHaveClass('js-lazy-loaded');
-      });
+      expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH_WITH_QUERY}&width=64`);
+    });
 
-      const createAvatarImageAndLoad = (imageSource) => {
-        const img = document.createElement('img');
-        img.className = 'lazy';
-        img.dataset.src = imageSource;
-        img.width = 64;
-        document.body.appendChild(img);
-        triggerChildMutation();
+    it('should not append width to avatar URLs that already have a width parameter', () => {
+      const img = createAvatarImageAndLoad(`${TEST_AVATAR_PATH}?width=32&v=123`);
 
-        lazyLoader.register();
-        trigger(img);
-
-        return img;
-      };
-
-      it('should append width to avatar URLs without query params', () => {
-        const img = createAvatarImageAndLoad(TEST_AVATAR_PATH);
-
-        expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH}?width=64`);
-      });
-
-      it('should append width to avatar URLs that already have query params', () => {
-        const img = createAvatarImageAndLoad(TEST_AVATAR_PATH_WITH_QUERY);
-
-        expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH_WITH_QUERY}&width=64`);
-      });
-
-      it('should not append width to avatar URLs that already have a width parameter', () => {
-        const img = createAvatarImageAndLoad(`${TEST_AVATAR_PATH}?width=32&v=123`);
-
-        expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH}?width=32&v=123`);
-      });
-
-      it('should not load dynamically added pictures if content observer is turned off', async () => {
-        lazyLoader.register();
-        lazyLoader.stopContentObserver();
-
-        const newImg = createLazyLoadImage();
-
-        await waitForPromises();
-
-        expect(newImg).not.toHaveClass('js-lazy-loaded');
-      });
-
-      it('should load dynamically added pictures if content observer is turned off and on again', async () => {
-        lazyLoader.register();
-        lazyLoader.stopContentObserver();
-        lazyLoader.startContentObserver();
-
-        const newImg = createLazyLoadImage();
-
-        trigger(newImg);
-
-        await waitForPromises();
-
-        expect(newImg.getAttribute('src')).toBe(TEST_PATH);
-        expect(newImg).toHaveClass('js-lazy-loaded');
-      });
-    },
-  );
+      expect(img.getAttribute('src')).toBe(`${TEST_AVATAR_PATH}?width=32&v=123`);
+    });
+  });
 });

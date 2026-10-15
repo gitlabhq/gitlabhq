@@ -114,6 +114,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /spec/frontend/ @gitlab-org/maintainers/frontend
 /ee/spec/frontend/ @gitlab-org/maintainers/frontend
 /lib/gitlab/js_routes.rb @gitlab-org/maintainers/frontend
+/spec/support/browser_console_allowlist.yml @gitlab-org/maintainers/frontend
 
 # Events / Analytics / Feature flags
 /config/metrics/ @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend

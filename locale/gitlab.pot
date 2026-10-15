@@ -93882,7 +93882,10 @@ msgstr ""
 msgid "VirtualRegistry|This action cannot be undone. Deleting this upstream might impact registries associated with it."
 msgstr ""
 
-msgid "VirtualRegistry|This will delete all cached packages for exclusive upstream registries in this virtual registry. If any upstream is unavailable or misconfigured after clearing, jobs that rely on those packages might fail. Are you sure you want to continue?"
+msgid "VirtualRegistry|This clears cached packages for exclusive remote upstreams in this virtual registry. If any upstream is unavailable or misconfigured after clearing, jobs that rely on those packages might fail. Are you sure you want to continue?"
+msgstr ""
+
+msgid "VirtualRegistry|This clears cached packages for exclusive remote upstreams in this virtual registry. Local upstream caches are not affected. If any upstream is unavailable or misconfigured after clearing, jobs that rely on those packages might fail. Are you sure you want to continue?"
 msgstr ""
 
 msgid "VirtualRegistry|Time in hours"

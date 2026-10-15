@@ -320,6 +320,10 @@ loose_foreign_keys_ci_pipelines_builds_cleanup_worker:
   class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
   cron: "*/1 * * * *"
 
+loose_foreign_keys_ci_runners_cleanup_worker:
+  class: LooseForeignKeys::CiRunnersCleanupCronWorker
+  cron: "*/1 * * * *"
+
 loose_foreign_keys_cleanup_worker:
   class: LooseForeignKeys::CleanupWorker
   cron: "*/1 * * * *"

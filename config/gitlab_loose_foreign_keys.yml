@@ -185,6 +185,7 @@ ci_instance_runner_monthly_usages:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
 ci_job_token_authorizations:
   - table: projects
     column: origin_project_id
@@ -231,6 +232,7 @@ ci_pending_builds:
   - table: ci_runner_machines
     column: runner_machine_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
@@ -322,6 +324,7 @@ ci_running_builds:
   - table: ci_runners
     column: runner_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
 ci_secure_file_states:
   - table: ci_secure_files
     column: ci_secure_file_id
@@ -696,6 +699,7 @@ p_ci_builds:
   - table: ci_runners
     column: runner_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
 p_ci_builds_partition_overrides:
   - table: projects
     column: project_id
@@ -741,6 +745,7 @@ p_ci_job_runtime_environments:
   - table: ci_runner_machines
     column: runner_machine_id
     on_delete: async_nullify
+    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -778,6 +783,7 @@ p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id
     on_delete: async_delete
+    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
   - table: projects
     column: project_id
     on_delete: async_delete

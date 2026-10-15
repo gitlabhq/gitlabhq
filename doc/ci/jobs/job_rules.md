@@ -521,6 +521,14 @@ in parentheses evaluate first. For example:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
+If you put quotes around a joined expression, the quotes must wrap the whole expression.
+For example:
+
+- `if: '$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"'`
+
+If the quotes wrap only part of the expression, GitLab rejects the configuration
+or treats the quoted part as a string that is always true.
+
 ### Negate expressions
 
 {{< history >}}

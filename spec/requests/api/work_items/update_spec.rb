@@ -7,6 +7,9 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
   let_it_be(:group) { create(:group, :private, reporters: user) }
   let_it_be(:project) { create(:project, :private, group: group, reporters: user) }
   let_it_be(:work_item) { create(:work_item, :task, project: project) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:parent_work_item) { create(:work_item, :issue, project: project) }
 
   before do
     stub_feature_flags(work_item_rest_api: user)
@@ -142,8 +145,6 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
     end
 
     context 'with hierarchy feature' do
-      let(:parent_work_item) { create(:work_item, :issue, project: project) }
-
       it 'sets the parent work item' do
         patch api(api_request_path, user), params: {
           features: { hierarchy: { parent_id: parent_work_item.id } }
@@ -342,8 +343,6 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
   describe 'PATCH /namespaces/:id/-/work_items/:work_item_iid' do
     let(:base_path) { "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items" }
     let(:api_request_path) { "#{base_path}/#{work_item.iid}" }
-    let(:label) { create(:label, project: project) }
-    let(:milestone) { create(:milestone, project: project) }
 
     it_behaves_like 'work item update endpoint'
 
@@ -371,8 +370,6 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
   describe 'PATCH /projects/:id/-/work_items/:work_item_iid' do
     let(:base_path) { "/projects/#{project.id}/-/work_items" }
     let(:api_request_path) { "#{base_path}/#{work_item.iid}" }
-    let(:label) { create(:label, project: project) }
-    let(:milestone) { create(:milestone, project: project) }
 
     it_behaves_like 'work item update endpoint'
 

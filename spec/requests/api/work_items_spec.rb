@@ -263,7 +263,11 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     end
 
     context 'when a granular token is scoped to a project whose ID matches a group path' do
-      let_it_be(:numeric_group, freeze: false) { create(:group, :private, path: project.id.to_s, reporters: user) }
+      # Existing groups can keep a 1-character path, so this collision is real for any project id.
+      let_it_be(:numeric_group, freeze: false) do
+        create(:group, :private, reporters: user).tap { |group| group.update_attribute(:path, project.id.to_s) }
+      end
+
       let(:permissions) do
         [::Authz::PermissionGroups::Assignable.for_permission(:read_work_item).first.name]
       end

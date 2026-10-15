@@ -8,7 +8,10 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
   let_it_be(:project) { create(:project, :private, group: group, reporters: user) }
 
   let_it_be(:task_type) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
-  let_it_be(:issue_type) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:issue) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:parent_work_item) { create(:work_item, :issue, project: project) }
+  let_it_be(:linked_work_item) { create(:work_item, project: project) }
 
   before do
     stub_feature_flags(work_item_rest_api: user)
@@ -253,10 +256,6 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
   describe 'POST /namespaces/:id/-/work_items' do
     context 'when namespace is a project namespace' do
       let(:api_request_path) { "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items" }
-      let(:label) { create(:label, project: project) }
-      let(:milestone) { create(:milestone, project: project) }
-      let(:parent_work_item) { create(:work_item, :issue, project: project) }
-      let(:linked_work_item) { create(:work_item, project: project) }
 
       it_behaves_like 'work item create endpoint'
 
@@ -282,7 +281,11 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
     end
 
     context 'when a granular token is scoped to a project whose ID matches a group path' do
-      let_it_be(:numeric_group) { create(:group, :private, path: project.id.to_s, reporters: user) }
+      # Existing groups can keep a 1-character path, so this collision is real for any project id.
+      let_it_be(:numeric_group) do
+        create(:group, :private, reporters: user).tap { |group| group.update_attribute(:path, project.id.to_s) }
+      end
+
       let(:pat) do
         create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project),
           permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_work_item).first.name])
@@ -315,10 +318,6 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
 
   describe 'POST /projects/:id/-/work_items' do
     let(:api_request_path) { "/projects/#{project.id}/-/work_items" }
-    let(:label) { create(:label, project: project) }
-    let(:milestone) { create(:milestone, project: project) }
-    let(:parent_work_item) { create(:work_item, :issue, project: project) }
-    let(:linked_work_item) { create(:work_item, project: project) }
 
     it_behaves_like 'work item create endpoint'
 
@@ -467,8 +466,6 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
 
   describe 'POST /groups/:id/-/work_items' do
     let(:api_request_path) { "/groups/#{group.id}/-/work_items" }
-    let(:label) { create(:group_label, group: group) }
-    let(:milestone) { create(:milestone, group: group) }
 
     context 'when epics license is not enabled' do
       # We need to move just definitions of EE system defined types to CE and

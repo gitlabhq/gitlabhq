@@ -54,6 +54,18 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       end
     end
 
+    it 'assigns runner parent tables to the dedicated CI cleanup worker' do
+      runner_tables = %w[ci_runner_machines ci_runners]
+
+      runner_tables.each do |table|
+        worker_classes = described_class.definitions_by_table.fetch(table).map do |definition|
+          definition.options[:worker_class]
+        end
+
+        expect(worker_classes).to all(eq(LooseForeignKeys::CiRunnersCleanupCronWorker))
+      end
+    end
+
     context 'ensure no partitions are included' do
       let(:all_source_tables) do
         YAML
