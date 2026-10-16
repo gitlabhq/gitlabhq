@@ -120,9 +120,6 @@ query getWorkItemsRest(
       webPath
       webUrl
       state
-      userPermissions {
-        updateWorkItem
-      }
       widgets(
         onlyTypes: [
           LABELS

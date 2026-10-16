@@ -292,6 +292,32 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
         expect(step.break?).to be true
         expect(pipeline).not_to be_skipped
       end
+
+      context 'when pipelines must succeed and skipped pipelines are considered successful' do
+        before do
+          project.update!(only_allow_merge_if_pipeline_succeeds: true, allow_merge_on_skipped_pipeline: true)
+        end
+
+        it 'breaks the chain and skips the pipeline' do
+          step.perform!
+
+          expect(step.break?).to be true
+          expect(pipeline.reload).to be_skipped
+        end
+      end
+
+      context 'when skipped pipelines are considered successful but pipelines do not need to succeed' do
+        before do
+          project.update!(allow_merge_on_skipped_pipeline: true)
+        end
+
+        it 'breaks the chain without skipping pipeline' do
+          step.perform!
+
+          expect(step.break?).to be true
+          expect(pipeline.reload).not_to be_skipped
+        end
+      end
     end
 
     context 'when config exists' do

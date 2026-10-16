@@ -16,4 +16,4 @@ GitLabのライセンスデータに、`MIT OR Apache-2.0`や`GPL-2.0-only WITH 
 
 CycloneDX SBOMで宣言された表現はGitLab 19.3からサポートされています。
 今回のリリースでは、GitLabが同期するライセンスデータにも対応しました。
-オフラインインスタンスでは、[v3ライセンスデータのダウンロード](../../../topics/offline/quick_start_guide.md#download-v3-license-data)後にのみ表現を受け取ることができます。
+オフラインインスタンスでは、[v3ライセンスデータのダウンロード](../../../topics/offline/package-metadata-database.md#download-v3-license-data)後にのみ表現を受け取ることができます。

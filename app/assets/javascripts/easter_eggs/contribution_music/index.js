@@ -4,6 +4,7 @@ import { getParameterValues } from '~/lib/utils/url_utility';
 import { userCalendarPath } from '~/lib/utils/path_helpers/user';
 import { listenForTrigger } from './trigger';
 import { initInPlacePlayer } from './in_place';
+import { initVueInPlacePlayer } from './vue_in_place';
 
 const PARAM = 'play';
 
@@ -93,14 +94,17 @@ export const initContributionMusic = () => {
     mountPlayer({ ...props, hasPlayed });
   };
 
-  // Only the legacy calendar for now, since the Vue one isn't in production yet.
-  if (calendar.classList.contains('user-calendar')) {
-    stopInPlace = initInPlacePlayer({
-      calendar,
-      firstDayOfWeek,
-      onOpen: () => openPlayer({ hasPlayed: true }),
-    });
-  }
+  const onOpen = () => openPlayer({ hasPlayed: true });
+
+  stopInPlace = calendar.classList.contains('user-calendar')
+    ? initInPlacePlayer({ calendar, firstDayOfWeek, onOpen })
+    : initVueInPlacePlayer({
+        container: calendar.parentElement,
+        calendarPath: path,
+        utcOffset,
+        firstDayOfWeek,
+        onOpen,
+      });
 
   listenForTrigger({
     calendarPath: path,

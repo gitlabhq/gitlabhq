@@ -10,7 +10,8 @@ module Gitlab
           SKIP_PATTERN = /\[(ci[ _-]skip|skip[ _-]ci)\]/i
 
           def perform!
-            return unless skipped? && config_exists?
+            return unless skipped?
+            return unless config_exists? || skipped_pipeline_allows_merge?
 
             if @command.save_incompleted && !@pipeline.readonly?
               # Project iid must be called outside a transaction, so we ensure it is set here
@@ -70,6 +71,11 @@ module Gitlab
             )
 
             pipeline_config.exists?
+          end
+
+          def skipped_pipeline_allows_merge?
+            project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true) &&
+              project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true)
           end
         end
       end

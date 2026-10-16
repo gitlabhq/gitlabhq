@@ -54,7 +54,7 @@ const resolver = createResolver({
 function discoverEntries() {
   const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
   const { baseEntryPoints } = cjsRequire(path.join(ROOT_PATH, 'config/helpers/entry_points'));
-  const { entries: generated } = generateEntries(baseEntryPoints.default);
+  const { entries: generated } = generateEntries();
 
   const all = { ...baseEntryPoints, ...generated };
 
@@ -131,7 +131,7 @@ function discoverVue3PageSeeds() {
   const { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS } = cjsRequire(
     path.join(ROOT_PATH, 'config/helpers/entry_points'),
   );
-  const { entries } = generateEntries(baseEntryPoints.default);
+  const { entries } = generateEntries();
   const dummyFromFile = path.join(JS_ROOT, '__entry__.js');
   const resolveSpecifier = (spec) => resolver.resolveModule(stripQuery(spec), dummyFromFile);
 

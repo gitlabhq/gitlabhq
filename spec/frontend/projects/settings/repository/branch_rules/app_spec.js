@@ -33,7 +33,6 @@ import {
   BRANCH_PROTECTION_MODAL_ID,
 } from '~/projects/settings/repository/branch_rules/constants';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
-import { createMockDirective } from 'helpers/vue_mock_directive';
 
 jest.mock('~/alert');
 
@@ -71,7 +70,6 @@ describe('Branch rules app', () => {
         GlDisclosureDropdown,
         GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
-      directives: { GlModal: createMockDirective('gl-modal') },
     });
 
     await waitForPromises();

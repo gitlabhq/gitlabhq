@@ -10,7 +10,6 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormSelect,
-  GlTooltipDirective,
   GlDisclosureDropdown,
   GlModal,
   GlFormTextarea,
@@ -174,9 +173,6 @@ export default {
     GlDisclosureDropdown,
     GlToggle,
     CollaboratorsIndicator,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
   inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'wikiUrl'],

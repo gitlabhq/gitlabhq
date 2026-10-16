@@ -46,7 +46,7 @@ export function PageEntrypointsPlugin() {
     ),
   );
   const entrypoints = Object.entries({
-    ...generateEntries([], { migrations }).entries,
+    ...generateEntries({ migrations }).entries,
     ...globalVue3Entries,
   }).reduce((acc, [entryName, imports]) => {
     const modulePaths = Array.isArray(imports) ? imports : [imports];

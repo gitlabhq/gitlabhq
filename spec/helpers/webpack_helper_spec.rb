@@ -177,6 +177,14 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
       end
     end
 
+    context 'when the route has no page entry' do
+      let(:served_entries) { ['main'] }
+
+      it 'renders nothing, because the layout loads main on its own' do
+        expect(helper.webpack_controller_bundle_tags).to be_empty
+      end
+    end
+
     context 'when the page is committed to Vue 3' do
       let(:served_entries) { ['pages.projects.jobs.show.vue3'] }
 
@@ -222,8 +230,6 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
       end
 
       context 'on a second request in the same process' do
-        let(:served_entries) { ['pages.projects.jobs.show', 'default'] }
-
         it 'reports once rather than per request' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).once
 

@@ -13,7 +13,6 @@ import {
 } from '@gitlab/ui';
 import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
 import UserMenuExplorePremium from 'ee_component/super_sidebar/components/user_menu_explore_premium.vue';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -78,7 +77,6 @@ export default {
     ),
   },
   directives: {
-    SafeHtml,
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },

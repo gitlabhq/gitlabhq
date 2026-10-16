@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlModal, GlToastMixin } from '@gitlab/ui';
+import { GlModal, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
@@ -14,9 +14,6 @@ export default {
   components: {
     GlModal,
     SetStatusForm,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   mixins: [GlToastMixin],
   props: {

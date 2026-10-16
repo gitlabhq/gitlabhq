@@ -2354,7 +2354,6 @@
 - './spec/controllers/projects/pages_domains_controller_spec.rb'
 - './spec/controllers/projects/pipeline_schedules_controller_spec.rb'
 - './spec/controllers/projects/pipelines_controller_spec.rb'
-- './spec/controllers/projects/pipelines_settings_controller_spec.rb'
 - './spec/controllers/projects/pipelines/stages_controller_spec.rb'
 - './spec/controllers/projects/pipelines/tests_controller_spec.rb'
 - './spec/controllers/projects/project_members_controller_spec.rb'

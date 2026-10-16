@@ -10,7 +10,6 @@ import {
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
@@ -43,7 +42,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
   props: {
     artifact: {
       type: Object,

@@ -25,10 +25,6 @@ const MIGRATION_FILE_RE = new RegExp(
   `^(?:(.+)\\.)?${VUE3_MIGRATION_FILENAME.replace(/\./g, '\\.')}$`,
 );
 
-// `default` (`./main`) is prepended to every page entry rather than emitted as a
-// bundle of its own, so there is no asset for Rails to swap.
-const MAIN_MODULE = path.posix.join(JS_ROOTS[0], `${baseEntryPoints.default[0]}.js`);
-
 // Repo-relative entry module path -> bundler entry name, for every entry the bundler knows.
 function entryModules() {
   const index = {};
@@ -77,14 +73,6 @@ function entryModuleFor(relFile) {
  */
 function entryNameFromFile(relFile, index) {
   const moduleFile = entryModuleFor(relFile);
-
-  if (moduleFile === MAIN_MODULE) {
-    throw new Error(
-      `[vue3-migration] ${relFile} cannot be migrated this way. \`main\` is prepended to every ` +
-        `page entry instead of being emitted as its own bundle, so there is no asset to swap. ` +
-        `Use the \`?vue3\` import documented as Option 2 in doc/development/fe_guide/vue3_migration.md.`,
-    );
-  }
 
   const entryName = index[moduleFile];
   if (!entryName) {

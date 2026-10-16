@@ -484,7 +484,6 @@
 - issue_email_participants
 - issue_emails
 - issue_links
-- issue_metrics
 - issue_search_data
 - issue_tracker_data
 - issue_user_mentions

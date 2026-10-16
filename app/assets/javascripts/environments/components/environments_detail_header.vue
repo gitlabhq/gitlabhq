@@ -9,7 +9,6 @@ import {
 import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
@@ -33,7 +32,6 @@ export default {
     GlTooltip,
     SafeHtml,
   },
-  mixins: [timeagoMixin],
   props: {
     environment: {
       type: Object,

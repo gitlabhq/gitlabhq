@@ -12,7 +12,6 @@ import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import DeleteModelDisclosureDropdownItem from '../components/delete_model_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
@@ -67,7 +66,6 @@ export default {
     GlLink,
     SidebarItem,
   },
-  mixins: [timeagoMixin],
   router: new VueRouter({
     routes,
   }),

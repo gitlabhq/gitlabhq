@@ -8,8 +8,11 @@ import {
   getDatesInRange,
   toISODateFormat,
 } from '~/lib/utils/datetime_utility';
+import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { midiToFrequency } from './synth';
 import {
+  BRAND_COLORS,
+  LIGHT_BRAND_COLORS,
   DAYS_IN_THE_WEEK,
   VOICES,
   ROOT_MIDI,
@@ -31,6 +34,9 @@ const DERIVABLE_SCALES = SCALES.filter(({ anhemitonic }) => anhemitonic).sort(
 
 const centeredKeyOffset = (keyOffset) =>
   keyOffset > SEMITONES_IN_OCTAVE / 2 ? keyOffset - SEMITONES_IN_OCTAVE : keyOffset;
+
+// The brand palette the in-place players color passed days with, by contribution level.
+export const brandColors = () => (darkModeEnabled() ? BRAND_COLORS : LIGHT_BRAND_COLORS);
 
 const levelFor = (count) => CONTRIB_LEGENDS.findLast(({ min }) => count >= min)?.level ?? 0;
 

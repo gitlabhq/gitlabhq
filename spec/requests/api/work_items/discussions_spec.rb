@@ -133,6 +133,13 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
         post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
       end
     end
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :create_note do
+      let(:request) do
+        post api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions",
+          personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
   end
 
   describe 'PUT /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id' do
@@ -179,6 +186,13 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       put api(api_request_path, non_member), params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :update_issue_discussion do
+      let(:request) do
+        put api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions/" \
+          "#{discussion_note.discussion_id}", personal_access_token: pat), params: { resolved: true }
+      end
     end
   end
 end

@@ -1,8 +1,7 @@
 <script>
-import { GlAvatarLabeled, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 
 import { __ } from '~/locale';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
@@ -27,10 +26,6 @@ export default {
     ListActions,
     TimeAgoTooltip,
     ListItemDescription,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   mixins: [glSlotsMixin],
   props: {

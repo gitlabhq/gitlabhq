@@ -1,18 +1,15 @@
 import { noop } from 'lodash-es';
 import { select } from 'd3-selection';
-import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { createPlayer, isAudioSupported } from './synth';
-import { deriveSettings, toColumns } from './utils';
+import { brandColors, deriveSettings, toColumns } from './utils';
 import { prefersReducedMotion } from './visualizer';
 import { GLOW, GLOW_COLUMNS, STRENGTH } from './shimmer';
+import { createControls, svgElement } from './in_place_controls';
 import {
-  BRAND_COLORS,
   BRAND_FADE_MS,
   BRAND_HOLD_MS,
   COLUMNS_PER_BEAT,
   DAYS_IN_THE_WEEK,
-  I18N,
-  LIGHT_BRAND_COLORS,
   MIN_ACTIVE_DAYS,
   SCALES,
   VIDEO_THEME,
@@ -21,7 +18,6 @@ import {
 // Plays the song on the legacy profile calendar itself, from a play button in its legend.
 // Everything is drawn in a layer added to the calendar's SVG, so the calendar's own cells,
 // tooltips and click handling stay untouched.
-const SVG_NS = 'http://www.w3.org/2000/svg';
 const CALENDAR_SELECTOR = '.js-contrib-calendar svg';
 const WEEK_SELECTOR = '[data-testid="user-contrib-cell-group"]';
 const LEGEND_SELECTOR = '.calendar-legend svg';
@@ -32,15 +28,8 @@ const PLAYHEAD_WIDTH = 2;
 const BUTTON_SIZE = 13;
 const BUTTON_GAP = 2;
 const BUTTON_OFFSET = -3;
-const OPEN_PULSE_MS = 6000;
-
-const svgElement = (name, attributes = {}) => {
-  const element = document.createElementNS(SVG_NS, name);
-
-  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
-
-  return element;
-};
+// The legend's SVG is top-aligned in its line, 2px above its squares.
+const BUTTON_STYLE = { marginTop: '2px', verticalAlign: 'top' };
 
 const emptyDay = () => ({ date: null, count: 0, level: 0 });
 
@@ -114,38 +103,11 @@ const buildPassed = (svg, weeks) => {
 
   clip.append(edge);
   defs.append(clip);
-  const colors = darkModeEnabled() ? BRAND_COLORS : LIGHT_BRAND_COLORS;
+  const colors = brandColors();
 
   group.append(defs, ...litCells(weeks, (level) => ({ fill: colors[level] })));
 
   return { group, reveal: (front) => edge.setAttribute('width', Math.max(front, 0)) };
-};
-
-const createButton = (marginLeft) => {
-  const button = document.createElement('button');
-  const glyph = svgElement('svg', { width: 7, height: 7, viewBox: '0 0 7 7', 'aria-hidden': true });
-
-  button.type = 'button';
-  Object.assign(button.style, {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: `${BUTTON_SIZE}px`,
-    height: `${BUTTON_SIZE}px`,
-    marginLeft: `${marginLeft}px`,
-    marginTop: '2px',
-    verticalAlign: 'top',
-    padding: 0,
-    border: 0,
-    borderRadius: '2px',
-    backgroundColor: 'var(--user-contribution-graph-cell-level-0)',
-    color: 'var(--gl-text-color-subtle)',
-    cursor: 'pointer',
-  });
-  glyph.style.fill = 'currentColor';
-  button.append(glyph);
-
-  return { button, glyph };
 };
 
 const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
@@ -160,8 +122,6 @@ const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
   const step = weeks[1].x - weeks[0].x;
   const top = Math.min(...weeks.map(({ y }) => y));
   const height = DAYS_IN_THE_WEEK * step;
-  const { button, glyph } = createButton(BUTTON_OFFSET);
-  let openButton = null;
 
   // The run layer holds the playhead and wake; passed colors outlast it, then fade.
   let run = null;
@@ -172,22 +132,21 @@ const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
   // The player's position wraps back to 0 as the song ends, which would hide every passed day.
   let farthest = 0;
 
-  const setPlaying = (isPlaying) => {
-    button.setAttribute('aria-label', isPlaying ? I18N.stopInPlace : I18N.playInPlace);
-    button.setAttribute('aria-pressed', isPlaying);
-    glyph.replaceChildren(
-      isPlaying
-        ? svgElement('rect', { width: 6, height: 6, x: 0.5, y: 0.5 })
-        : svgElement('polygon', { points: '1,0 7,3.5 1,7' }),
-    );
-  };
+  const controls = createControls({
+    anchor: legend,
+    size: BUTTON_SIZE,
+    playMargin: BUTTON_OFFSET,
+    openMargin: BUTTON_GAP,
+    style: BUTTON_STYLE,
+    onOpen,
+  });
 
   const clear = () => {
     const { group } = passed;
 
     run?.remove();
     run = null;
-    setPlaying(false);
+    controls.setPlaying(false);
     group
       .animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: BRAND_FADE_MS,
@@ -196,38 +155,6 @@ const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
       })
       .finished.then(() => group.remove())
       .catch(() => {});
-  };
-
-  // Once the song has played through, the full player is one step away. The button fades in
-  // as the brand colors fade from the calendar, and keeps cycling through them.
-  const showOpenButton = () => {
-    if (openButton) {
-      return;
-    }
-
-    const open = createButton(BUTTON_GAP);
-    const colors = (darkModeEnabled() ? BRAND_COLORS : LIGHT_BRAND_COLORS).slice(1);
-    const [first] = colors;
-
-    openButton = open.button;
-    open.glyph.remove();
-    openButton.setAttribute('aria-label', I18N.openPlayer);
-    openButton.addEventListener('click', onOpen);
-    button.after(openButton);
-    openButton.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: BRAND_FADE_MS,
-      delay: BRAND_HOLD_MS,
-      fill: 'backwards',
-    });
-
-    if (prefersReducedMotion()) {
-      openButton.style.backgroundColor = first;
-    } else {
-      openButton.animate(
-        [...colors, first].map((backgroundColor) => ({ backgroundColor })),
-        { duration: OPEN_PULSE_MS, iterations: Infinity, easing: 'ease-in-out' },
-      );
-    }
   };
 
   const player = createPlayer({
@@ -244,7 +171,7 @@ const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
     },
     onEnd: () => {
       clear();
-      showOpenButton();
+      controls.showOpenButton();
     },
   });
 
@@ -298,7 +225,7 @@ const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
       wake?.gradient.setAttribute('x2', front);
     };
 
-    setPlaying(true);
+    controls.setPlaying(true);
     player.start({
       columns,
       columnsPerSecond: (settings.bpm / 60) * COLUMNS_PER_BEAT,
@@ -306,9 +233,7 @@ const setUp = (svg, legend, { firstDayOfWeek, onOpen }) => {
     });
   };
 
-  button.addEventListener('click', () => (run ? stop() : play()));
-  setPlaying(false);
-  legend.after(button);
+  controls.button.addEventListener('click', () => (run ? stop() : play()));
   // The legend shrinks beside a long hint on narrow screens, which would wrap the button.
   Object.assign(legend.parentElement.style, { flexShrink: 0, whiteSpace: 'nowrap' });
 

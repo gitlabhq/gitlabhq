@@ -13,7 +13,6 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
-import { InternalEvents } from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -49,7 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [issuableStateMixin, InternalEvents.mixin()],
+  mixins: [issuableStateMixin],
   props: {
     noteableType: {
       type: String,

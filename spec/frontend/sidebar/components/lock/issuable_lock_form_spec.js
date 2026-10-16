@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import { createMockDirective } from 'helpers/vue_mock_directive';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -43,9 +42,6 @@ describe('IssuableLockForm', () => {
       propsData: {
         isEditable: true,
         ...props,
-      },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };

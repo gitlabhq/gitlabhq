@@ -82,6 +82,8 @@ methods:
     - hashicorp_vault?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
     - aws?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
     - gitlab_secrets_manager?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+  ee/app/models/concerns/ai/duo_workflows/workflow_linkable.rb:
+    - declarative_policy_class: Called by the declarative_policy gem via respond_to? when resolving the policy class for a subject
   ee/app/models/concerns/ee/issuable_link.rb:
     - blocked_issuables_for_collection: Dynamically accessed by Gitlab::Graphql::Aggregations::Issuables::LazyLinksAggregate#load_queued_records
   ee/app/models/concerns/geo/blob_replicator_strategy.rb:

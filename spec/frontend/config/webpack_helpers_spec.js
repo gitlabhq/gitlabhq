@@ -11,9 +11,14 @@ describe('generateEntries - Vue 3 migration handling', () => {
   // generation; its migration state is mocked so assertions don't depend
   // on the repository's rollout progress.
   const entryName = 'pages.admin.jobs.index';
-  const defaultEntries = ['./main'];
 
-  const generate = () => generateEntries(defaultEntries).entries;
+  const generate = () => generateEntries().entries;
+
+  it('leaves main out of page entries, because main is an entry of its own', () => {
+    loadVue3Migrations.mockReturnValue({});
+
+    expect(generate()[entryName]).not.toContain('./main');
+  });
 
   it('leaves entries without a migration untouched', () => {
     loadVue3Migrations.mockReturnValue({});
@@ -37,9 +42,8 @@ describe('generateEntries - Vue 3 migration handling', () => {
 
       expect(sibling).toBeDefined();
 
-      const pagePaths = sibling.filter((p) => !defaultEntries.includes(p));
-      expect(pagePaths).not.toEqual([]);
-      expect(pagePaths.every((p) => p.endsWith('?vue3'))).toBe(true);
+      expect(sibling).not.toEqual([]);
+      expect(sibling.every((p) => p.endsWith('?vue3'))).toBe(true);
     });
 
     it('keeps the original Vue 2 entry uninfected', () => {
@@ -61,10 +65,8 @@ describe('generateEntries - Vue 3 migration handling', () => {
 
       expect(entries).not.toHaveProperty(`${entryName}.vue3`);
 
-      const [bootstrap, ...pagePaths] = entries[entryName];
-      expect(bootstrap).toBe('./main');
-      expect(pagePaths).not.toEqual([]);
-      expect(pagePaths.every((p) => p.endsWith('?vue3'))).toBe(true);
+      expect(entries[entryName]).not.toEqual([]);
+      expect(entries[entryName].every((p) => p.endsWith('?vue3'))).toBe(true);
     });
   });
 });
@@ -100,18 +102,5 @@ describe('applyVue3Migrations - global bundles', () => {
     applyVue3Migrations(entries, { migrations });
 
     expect(entries).toEqual({ performance_bar: './entrypoints/performance_bar.js' });
-  });
-
-  it('never infects the shared bootstrap', () => {
-    const migrations = { default: { status: 'rollout', feature_flag: 'some_flag' } };
-    const result = applyVue3Migrations(
-      { default: ['./main'] },
-      {
-        defaultEntries: ['./main'],
-        migrations,
-      },
-    );
-
-    expect(result['default.vue3']).toEqual(['./main']);
   });
 });

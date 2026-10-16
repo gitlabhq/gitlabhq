@@ -1,5 +1,5 @@
 <script>
-import { GlSprintf, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlSprintf } from '@gitlab/ui';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { __, s__, sprintf } from '~/locale';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
@@ -21,9 +21,6 @@ export default {
     MetadataItem,
     TimeAgoTooltip,
     ProtectedBadge,
-  },
-  directives: {
-    GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [glSlotsMixin],
   inject: ['isGroupPage'],

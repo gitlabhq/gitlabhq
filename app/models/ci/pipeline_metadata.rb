@@ -6,6 +6,7 @@ module Ci
     include Importable
 
     self.primary_key = :pipeline_id
+    NAME_MAX_LENGTH = 255
 
     enum :auto_cancel_on_new_commit, {
       conservative: 0,
@@ -23,7 +24,7 @@ module Ci
 
     validates :pipeline, presence: true
     validates :project, presence: true
-    validates :name, length: { minimum: 1, maximum: 255 }, allow_nil: true
+    validates :name, length: { minimum: 1, maximum: NAME_MAX_LENGTH }, allow_nil: true
 
     partitionable scope: :pipeline
   end

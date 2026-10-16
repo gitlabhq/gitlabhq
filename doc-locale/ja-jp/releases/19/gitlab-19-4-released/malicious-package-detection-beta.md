@@ -15,6 +15,6 @@ GitLab 19.4では、悪意のあるパッケージの検出がベータ版とし
 
 マージリクエスト承認ポリシーの[マルウェアルール](../../../user/application_security/policies/merge_request_approval_policies.md#block-malicious-packages-with-the-malware-rule)を使用して、悪意のあるパッケージがマージされる前にブロックすることもできます。
 
-追加のセットアップは不要です。[サポートされているパッケージタイプ](../../../user/application_security/gitlab_advisory_database/_index.md#supported-package-types)（npm、PyPI、Maven、Go、NuGet、Cargo、RubyGems）に対してカバレッジが適用されます。同じアドバイザリが[継続的な脆弱性スキャン](../../../user/application_security/continuous_vulnerability_scanning/_index.md#malicious-packages)にも使用され、[オフラインインスタンス](../../../topics/offline/quick_start_guide.md)では手動でダウンロードできます。
+追加のセットアップは不要です。[サポートされているパッケージタイプ](../../../user/application_security/gitlab_advisory_database/_index.md#supported-package-types)（npm、PyPI、Maven、Go、NuGet、Cargo、RubyGems）に対してカバレッジが適用されます。同じアドバイザリが[継続的な脆弱性スキャン](../../../user/application_security/continuous_vulnerability_scanning/_index.md#malicious-packages)にも使用され、[オフラインインスタンス](../../../topics/offline/package-metadata-database.md)では手動でダウンロードできます。
 
 [イシュー606036](https://gitlab.com/gitlab-org/gitlab/-/work_items/606036)でフィードバックをお寄せください。

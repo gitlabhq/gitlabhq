@@ -33,10 +33,5 @@ describe('config/helpers/entry_points', () => {
 
       expect([...ALWAYS_LOADED_ENTRY_POINTS].sort()).toEqual(expected.sort());
     });
-
-    it('excludes main, which is part of every page entry rather than a separate bundle', () => {
-      expect(ALWAYS_LOADED_ENTRY_POINTS).not.toContain('default');
-      expect(bundlesLoadedByLayouts()).not.toContain('main');
-    });
   });
 });

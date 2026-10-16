@@ -652,10 +652,6 @@
   - "doc/_index.md"
   - "doc/api/{glql,settings}.md"
 
-.siphon-tables-patterns: &siphon-tables-patterns
-  - "db/siphon/tables/**/*"
-  - "scripts/build_siphon_tables_image"
-
 # .backend-patterns + .ci-patterns + .spec-only-patterns
 .backend-spec-patterns: &backend-spec-patterns
   - "{,jh/}Gemfile{,.lock}"
@@ -1570,18 +1566,6 @@
     # Always build on stable branches to serve release-environments pipeline
     # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
     # to avoid the side effect of "never" rules
-    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
-
-.build-images:rules:build-siphon-tables-image:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-tag
-    - <<: *if-default-branch-refs
-    - <<: *if-merge-request
-      changes: *siphon-tables-patterns
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 #################

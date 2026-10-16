@@ -27,10 +27,11 @@ module Gitlab
     #
     # The middleware blocks only when an enforcing cohort's rule blocks, or when a
     # rule with no registry entry (a plan rule) blocks, otherwise it never blocks.
-    # The request's own errors propagate (@app.call is not wrapped);
-    # the labkit decision is guarded, so a failure there is tracked and falls open to
-    # Rack::Attack rather than affecting the response. labkit itself also fails open
-    # on any Redis error.
+    # The request's own errors propagate (@app.call is not wrapped), and so do ours
+    # on the way in: the flag reads and request.labkit_facts can reach Redis and the
+    # database, and if those are down the request fails anyway. Outbound decoration
+    # stays guarded, since it runs after @app.call and must never turn a good
+    # response into a 500.
     #
     # Collaborators are referenced lazily inside methods rather than via class-body
     # constants: this file is require_dependency'd from config/application.rb before
@@ -44,7 +45,7 @@ module Gitlab
       end
 
       def call(env)
-        decision = guard { run(env) }
+        decision = run(env)
 
         return decision[:response] if decision && decision[:response]
 
@@ -62,9 +63,11 @@ module Gitlab
       # :allow for a bypassed/skipped/unmatched request, otherwise the matched
       # throttle's decision). Returns those results (read again on the way out) and
       # the byte-identical 429 to return in place of calling the app (nil unless an
-      # enforcing cohort's rule blocks), or nil when it did not run (nothing enabled
-      # it, or a guarded failure).
+      # enforcing cohort's rule blocks), or nil when nothing enabled it.
       def run(env)
+        # The off switch, read before the registry is built: any_active_cohort? covers
+        # the six cohort shadow flags, plan_rules.active? the plan-tier and
+        # unauthenticated ones. Both groups must be off, the cohort flags alone do not.
         return unless any_active_cohort? || plan_rules.active?
 
         request = build_request(env)

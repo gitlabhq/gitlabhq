@@ -1,6 +1,5 @@
 <script>
 import { GlButtonGroup, GlCollapsibleListbox, GlLink } from '@gitlab/ui';
-import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import ReviewAppLink from '../review_app_link.vue';
 
 export default {
@@ -10,9 +9,6 @@ export default {
     GlCollapsibleListbox,
     GlLink,
     ReviewAppLink,
-  },
-  directives: {
-    autofocusonshow,
   },
   props: {
     appButtonText: {

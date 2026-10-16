@@ -1,11 +1,5 @@
 <script>
-import {
-  GlIcon,
-  GlLoadingIcon,
-  GlDisclosureDropdownItem,
-  GlTooltipDirective,
-  GlOutsideDirective as Outside,
-} from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mapState, mapActions } from 'pinia';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
@@ -30,10 +24,6 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlDisclosureDropdownItem,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-    Outside,
   },
   inject: ['fullPath'],
   props: {

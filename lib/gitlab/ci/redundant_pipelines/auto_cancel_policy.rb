@@ -35,12 +35,6 @@ module Gitlab
           interruptible_only? ? :interruptible : :all
         end
 
-        # Whether starting a non-interruptible job protects the pipeline for good
-        # (prevents auto-cancel on all its jobs, including interruptible ones).
-        def protected_after_non_interruptible_job_starts?
-          enabled? && conservative?
-        end
-
         private
 
         attr_reader :pipeline, :cache
@@ -53,10 +47,6 @@ module Gitlab
 
         def interruptible_only?
           auto_cancel_on_new_commit == ONLY_INTERRUPTIBLE_JOBS
-        end
-
-        def conservative?
-          auto_cancel_on_new_commit == CONSERVATIVE
         end
 
         # The cache holds the protection until the worker writes the column.

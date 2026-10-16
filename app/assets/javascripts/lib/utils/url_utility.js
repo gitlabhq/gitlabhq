@@ -943,6 +943,7 @@ export function appendLineRangeHashToUrl(url, hash = window.location.hash) {
  * - has no spaces
  * - has http, git or https protocol
  * - has a domain with at least one dot
+ * - can be parsed as a URL
  * - simple local IP checking
  *
  * Does not guarantee the URL is fully valid or reachable.
@@ -963,7 +964,15 @@ export function isReasonableGitUrl(url) {
   const pattern = /^(https?|git):\/\/[a-zA-Z0-9.-]+\.[a-zA-Z0-9.-]+/;
   if (!pattern.test(url)) return false;
 
-  const { hostname } = new URL(url);
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    // Some URLs pass the regex but are still invalid, like `http://256.1.1.1`.
+    return false;
+  }
+
+  const { hostname } = parsedUrl;
   // If this isn't a IP address, it's a reasonable git URL.
   if (!ipaddr.isValid(hostname)) return true;
   // Otherwise, filter out loopback IPs (127.0.0.0/8) and the Linux loopback (0.0.0.0).

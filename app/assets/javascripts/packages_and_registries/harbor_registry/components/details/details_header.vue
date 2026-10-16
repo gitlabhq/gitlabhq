@@ -2,7 +2,6 @@
 import { isEmpty } from 'lodash-es';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import {
   ROOT_IMAGE_TEXT,
   EMPTY_ARTIFACTS_LABEL,
@@ -12,7 +11,6 @@ import {
 export default {
   name: 'DetailsHeader',
   components: { TitleArea, MetadataItem },
-  mixins: [timeagoMixin],
   props: {
     imagesDetail: {
       type: Object,

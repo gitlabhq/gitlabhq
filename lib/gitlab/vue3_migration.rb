@@ -62,8 +62,6 @@ module Gitlab
     ENTRY_POINTS_FILE = 'config/helpers/entry_points.js'
     # Matches both `name: './x.js',` and the conditional `baseEntryPoints.name = './x.js';`.
     ENTRY_POINT_LINE_RE = %r{^\s*(?:baseEntryPoints\.)?(?<name>\w+)\s*[:=]\s*'\./(?<module>[^']+)'}
-    # `default: ['./main']`: prepended to every page entry, never a bundle of its own.
-    DEFAULT_ENTRY_LINE_RE = %r{^\s*default:\s*\['\./(?<module>[^']+)'\]}
 
     # Raised in production when the compiled manifest cannot be read.
     class ManifestLoadError < StandardError
@@ -117,11 +115,6 @@ module Gitlab
       def entry_name_for(file)
         module_file = relative_to_root(entry_file_for(file))
 
-        if module_file == main_module
-          raise "#{file} cannot be migrated this way: `main` has no bundle of its own. " \
-            "Use the `?vue3` import documented as Option 2 in doc/development/fe_guide/vue3_migration.md."
-        end
-
         entry_modules.fetch(module_file) do
           raise "#{file} describes #{module_file}, which is not a bundler entry. " \
             "Entries are the values of #{ENTRY_POINTS_FILE} and every pages/**/index.js."
@@ -150,16 +143,6 @@ module Gitlab
         end
       end
 
-      # Module path of the `default` entry, read from `entry_points.js` like the index.
-      def main_module
-        @main_module ||= begin
-          match = entry_points_lines.filter_map { |line| line.match(DEFAULT_ENTRY_LINE_RE) }.first
-          raise "No `default` entry found in #{ENTRY_POINTS_FILE}" unless match
-
-          File.join(JS_ROOTS.first, "#{match[:module]}.js")
-        end
-      end
-
       def entry_points_lines
         File.readlines(File.join(ROOT_PATH, ENTRY_POINTS_FILE))
       end
@@ -178,7 +161,6 @@ module Gitlab
       def clear_memoization!
         @definitions = nil
         @entry_modules = nil
-        @main_module = nil
       end
 
       private

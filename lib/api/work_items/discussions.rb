@@ -188,6 +188,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :create_note,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           post ':work_item_iid/discussions' do
@@ -210,6 +211,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_issue_discussion,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           put ':work_item_iid/discussions/:discussion_id' do

@@ -1,5 +1,5 @@
 <script>
-import { GlModalDirective, GlDisclosureDropdown, GlKeysetPagination } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlKeysetPagination } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
@@ -25,9 +25,6 @@ export default {
     GlDisclosureDropdown,
     CrudComponent,
     GlKeysetPagination,
-  },
-  directives: {
-    GlModal: GlModalDirective,
   },
   apollo: {
     branchRules: {

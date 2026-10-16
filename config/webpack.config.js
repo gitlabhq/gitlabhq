@@ -255,7 +255,7 @@ module.exports = {
     https://gitlab.com/gitlab-org/gitlab/-/issues/321656
      */
     const migrations = loadVue3Migrations();
-    const generated = generateEntries(baseEntryPoints.default, { migrations });
+    const generated = generateEntries({ migrations });
     entriesState = generated.entriesState;
     return {
       ...applyVue3Migrations(baseEntryPoints, { migrations }),
@@ -553,12 +553,19 @@ module.exports = {
       automaticNameDelimiter: '-',
       cacheGroups: {
         default: false,
-        common: () => ({
-          priority: 20,
-          name: 'main',
-          chunks: 'initial',
-          minChunks: entriesState.autoEntriesCount * 0.9,
-        }),
+        // Every page loads `main`, so its modules and the modules that almost every
+        // page uses go into one chunk. `chunks: 'all'` also keeps lazy chunks from
+        // copying them, and `enforce` stops the limits below from splitting it.
+        // Webpack 4 calls `test(module, chunks)`; see config/rspack/cache_groups.js.
+        main: {
+          priority: 21,
+          name: 'main_shared',
+          chunks: 'all',
+          enforce: true,
+          test: (module, chunks) =>
+            chunks.some((chunk) => chunk.name === 'main') ||
+            chunks.length >= entriesState.autoEntriesCount * 0.9,
+        },
         prosemirror: {
           priority: 17,
           name: 'prosemirror',

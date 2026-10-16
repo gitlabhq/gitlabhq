@@ -240,12 +240,6 @@ export function mapWorkItemToGraphQL(item, sharedNamespace, { useWorkItemFeature
         }
       : null,
     namespace: itemNamespace,
-    userPermissions: item.user_permissions
-      ? {
-          __typename: 'WorkItemPermissions',
-          updateWorkItem: item.user_permissions.update_work_item ?? false,
-        }
-      : null,
     workItemType: item.work_item_type
       ? {
           __typename: 'WorkItemType',
@@ -300,7 +294,7 @@ export async function workItemsRestResolver(namespace, args) {
 
   restParams.set(
     'fields',
-    'id,iid,global_id,title,title_html,state,created_at,updated_at,closed_at,reference,web_path,web_url,author,work_item_type,confidential,hidden,user_discussions_count,namespace,user_permissions',
+    'id,iid,global_id,title,title_html,state,created_at,updated_at,closed_at,reference,web_path,web_url,author,work_item_type,confidential,hidden,user_discussions_count,namespace',
   );
   restParams.set(
     'features',

@@ -813,6 +813,7 @@ organizations:
 - organization_detail_upload_states.organization_id
 - organization_details.organization_id
 - organization_foundational_agent_statuses.organization_id
+- organization_gitlab_subscriptions.organization_id
 - organization_isolations.organization_id
 - organization_push_rules.organization_id
 - organization_settings.organization_id

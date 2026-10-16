@@ -634,8 +634,8 @@ To enable global search for limited indexing:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Search**.
-1. Expand **Advanced search**
-1. Select **Enable global search for limited indexing**.
+1. Expand **Advanced search**.
+1. Select **Use advanced search for global search when limited indexing is enabled**.
 1. Select **Save changes**.
 1. If you've already indexed your instance, you must [reindex the instance](#index-the-instance).
    This deletes existing search data, to enable filtering to work correctly.

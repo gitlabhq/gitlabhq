@@ -89,8 +89,6 @@ module WebpackHelper
       route.pop
     end
 
-    chunks = webpack_entrypoint_paths("default", extension: 'js') if chunks.empty?
-
     javascript_include_tag(*chunks)
   end
 

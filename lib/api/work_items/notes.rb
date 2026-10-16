@@ -5,7 +5,6 @@ module API
     class Notes < ::API::Base
       include ::API::Concerns::AiWorkflowsAccess
       include APIGuard
-      include PaginationParams
 
       allow_ai_workflows_access
 
@@ -20,6 +19,7 @@ module API
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
+      helpers ::API::Helpers::WorkItems::CursorPaginationParams
       helpers ::API::Helpers::NotesHelpers
       helpers ::API::Helpers::WorkItems::NoteCreation
       helpers ::API::Helpers::WorkItems::NoteUpdate
@@ -36,7 +36,7 @@ module API
             values: UserPreference::NOTES_FILTERS.stringify_keys.keys,
             default: 'all_notes',
             desc: 'Filter notes by type. Supported values: all_notes, only_comments, only_activity.'
-          use :pagination
+          use :work_items_cursor_pagination_params
         end
 
         params :work_item_note_params do

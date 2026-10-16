@@ -1,11 +1,10 @@
 <script>
-import { GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
+import { GlButton, GlButtonGroup } from '@gitlab/ui';
 import { cloneDeep } from 'lodash-es';
 import { InternalEvents } from '~/tracking';
 import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -33,10 +32,6 @@ export default {
     SignatureBadge,
     GlButtonGroup,
     GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   mixins: [getRefMixin, trackingMixin],
   apollo: {

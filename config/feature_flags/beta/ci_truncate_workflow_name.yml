@@ -1,0 +1,10 @@
+---
+name: ci_truncate_workflow_name
+description: Truncate workflow names longer than 255 characters after variable expansion.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632045
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259951
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633739
+milestone: '19.6'
+group: group::pipeline authoring
+type: beta
+default_enabled: true

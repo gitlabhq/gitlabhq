@@ -1,6 +1,5 @@
 <script>
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, sprintf } from '~/locale';
 
@@ -9,7 +8,6 @@ export default {
   components: {
     WorkItemAttribute,
   },
-  mixins: [timeagoMixin],
   props: {
     milestone: {
       type: Object,

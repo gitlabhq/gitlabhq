@@ -4,7 +4,6 @@ import { __, sprintf } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MODE_ANALYTICS, FULL_BLEED_DISPLAY_TYPES } from '../../constants';
 import { copyQuerySource } from '../../utils/common';
@@ -33,7 +32,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin()],
   props: {
     // eslint-disable-next-line vue/no-unused-properties -- queryKey is passed from index.js, keeping for potential future use
     queryKey: {

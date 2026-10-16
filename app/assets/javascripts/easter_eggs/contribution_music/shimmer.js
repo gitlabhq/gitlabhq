@@ -29,7 +29,8 @@ export const glowCell = (element, { level, color, columnMs, step, reducedMotion 
     );
   }
 
-  const size = element.offsetWidth;
+  // Unrounded, since a calendar's columns can be fractions of a pixel wide.
+  const { width: size } = element.getBoundingClientRect();
   const trail = GLOW_COLUMNS * step;
   const sweep = size + trail;
   const glow = GLOW.map(
@@ -39,6 +40,8 @@ export const glowCell = (element, { level, color, columnMs, step, reducedMotion 
     backgroundImage: `linear-gradient(to right, ${glow}), linear-gradient(${color}, ${color})`,
     backgroundSize: `${trail}px 100%, ${sweep}px 100%`,
     backgroundRepeat: 'no-repeat',
+    // Under the border too, like the cell's own color, so a bordered cell is covered edge to edge.
+    backgroundOrigin: 'border-box',
   };
 
   return element.animate(

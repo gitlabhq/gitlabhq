@@ -160,42 +160,4 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
       it { is_expected.not_to be_cancelable_by_newer_pipeline }
     end
   end
-
-  describe '#protected_after_non_interruptible_job_starts?' do
-    it 'is protected for a conservative pipeline' do
-      expect(policy).to be_protected_after_non_interruptible_job_starts
-    end
-
-    context 'when the pipeline only cancels interruptible jobs' do
-      let(:auto_cancel_on_new_commit) { 'interruptible' }
-
-      it 'stays cancelable however far its jobs get' do
-        expect(policy).not_to be_protected_after_non_interruptible_job_starts
-      end
-    end
-
-    context 'when the pipeline is configured to never be auto-canceled' do
-      let(:auto_cancel_on_new_commit) { 'none' }
-
-      it { is_expected.not_to be_protected_after_non_interruptible_job_starts }
-    end
-
-    context 'when the pipeline is already protected' do
-      let(:interruptible_protected) { true }
-
-      it { is_expected.to be_protected_after_non_interruptible_job_starts }
-    end
-
-    context 'when the pipeline is a child pipeline' do
-      let(:pipeline) { stub_pipeline(source: :parent_pipeline) }
-
-      it { is_expected.to be_protected_after_non_interruptible_job_starts }
-
-      context 'when it is configured to never be auto-canceled' do
-        let(:auto_cancel_on_new_commit) { 'none' }
-
-        it { is_expected.not_to be_protected_after_non_interruptible_job_starts }
-      end
-    end
-  end
 end

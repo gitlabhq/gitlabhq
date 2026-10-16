@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlPopover, GlLink, GlSprintf } from '@gitlab/ui';
-import { InternalEvents } from '~/tracking';
 import {
   SCAN_PROFILE_CATEGORIES,
   SCAN_PROFILE_SCANNER_HEALTH_ACTIVE,
@@ -20,7 +19,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  mixins: [InternalEvents.mixin()],
   props: {
     scanType: {
       type: String,

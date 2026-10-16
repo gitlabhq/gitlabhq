@@ -26,7 +26,10 @@ module Authn
         GRPC::Core::StatusCodes::PERMISSION_DENIED => :permission_denied,
         GRPC::Core::StatusCodes::UNAUTHENTICATED => :unauthenticated,
         GRPC::Core::StatusCodes::UNAVAILABLE => :unavailable,
-        GRPC::Core::StatusCodes::DEADLINE_EXCEEDED => :timeout
+        GRPC::Core::StatusCodes::DEADLINE_EXCEEDED => :timeout,
+        # IAM answers ABORTED when a transaction loses a write conflict: nothing
+        # was applied, and the call is safe to repeat.
+        GRPC::Core::StatusCodes::ABORTED => :conflict
       }.freeze
 
       TIMEOUT_SECONDS = 5
@@ -46,7 +49,9 @@ module Authn
         create_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientRequest,
         get_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest,
         delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest,
-        upsert_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest
+        upsert_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest,
+        revoke_user_client_tokens: ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensRequest,
+        is_revoked: ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceIsRevokedRequest
       }.freeze
 
       # Only RequestError carries a machine-readable reason; anything else falls back to the class name.
@@ -96,6 +101,15 @@ module Authn
         call(:upsert_oauth_application, kwargs)
       end
 
+      def revoke_user_client_tokens(**kwargs)
+        call(:revoke_user_client_tokens, kwargs)
+      end
+
+      # Returns only the boolean, not the gRPC response object like the other methods.
+      def token_revoked?(**kwargs)
+        call(:is_revoked, kwargs).revoked
+      end
+
       private
 
       def call(method_name, kwargs)
@@ -112,6 +126,8 @@ module Authn
         when :get_oauth_application then oauth_clients_stub.get_client(request, **options)
         when :delete_oauth_application then oauth_clients_stub.delete_client(request, **options)
         when :upsert_oauth_application then oauth_clients_stub.upsert_client(request, **options)
+        when :revoke_user_client_tokens then oauth_tokens_stub.revoke_user_client_tokens(request, **options)
+        when :is_revoked then oauth_tokens_stub.is_revoked(request, **options)
         else raise ArgumentError, "Unknown gRPC method: #{method_name}"
         end
       rescue Authn::IamAuthService::ConfigurationError => e
@@ -139,6 +155,10 @@ module Authn
 
       def oauth_clients_stub
         build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub, grpc_address, timeout: @timeout)
+      end
+
+      def oauth_tokens_stub
+        build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthTokensService::Stub, grpc_address, timeout: @timeout)
       end
 
       def grpc_address

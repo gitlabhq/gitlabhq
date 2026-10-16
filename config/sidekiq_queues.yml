@@ -103,6 +103,8 @@
   - 1
 - - ai_duo_workflows_update_workflow_status_event
   - 1
+- - ai_flow_triggers_apply_on_finish_settings
+  - 1
 - - ai_messaging_callback
   - 1
 - - ai_messaging_child_session_card

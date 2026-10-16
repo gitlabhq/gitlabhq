@@ -6,7 +6,6 @@ import { createAlert } from '~/alert';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { archiveGroup } from '~/api/groups_api';
 import { archiveProject } from '~/api/projects_api';
-import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'ArchiveSettings',
@@ -19,7 +18,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin()],
   props: {
     resourceType: {
       type: String,

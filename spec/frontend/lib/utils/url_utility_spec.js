@@ -1596,6 +1596,9 @@ describe('URL utility', () => {
         'http://0.0.0.0/repo.git',
         'http://127.1.2.3/repo.git',
         'http://[::1]/repo.git',
+        'http://1.2.3.999',
+        'http://256.1.1.1',
+        'http://999.999',
       ])('returns false for invalid protocol or format: %s', (url) => {
         expect(urlUtils.isReasonableGitUrl(url)).toBe(false);
       });

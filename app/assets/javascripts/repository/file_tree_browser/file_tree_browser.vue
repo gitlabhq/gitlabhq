@@ -1,6 +1,5 @@
 <script>
 import { mapState, mapActions } from 'pinia';
-import { InternalEvents } from '~/tracking';
 import AccessorUtilities from '~/lib/utils/accessor';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
@@ -19,7 +18,6 @@ export default {
     FileBrowserHeight,
     PanelResizer,
   },
-  mixins: [InternalEvents.mixin()],
   props: {
     projectPath: {
       type: String,

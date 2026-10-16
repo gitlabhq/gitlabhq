@@ -66,8 +66,7 @@ RSpec.describe 'vue3_migration.yml - vue 3 migration config verification', featu
         "Orphan #{migration_filename} files (no sibling entry file):\n  #{relative_orphans.join("\n  ")}"
     end
 
-    # Covers `main`, which has no bundle of its own, and any module that is not
-    # a bundler entry. `entry_name_for` raises with the reason.
+    # Covers any module that is not a bundler entry. `entry_name_for` raises with the reason.
     it 'describes a bundler entry' do
       migration_files.each do |meta_file|
         expect { Gitlab::Vue3Migration.entry_name_for(meta_file) }.not_to raise_error

@@ -1,5 +1,5 @@
 <script>
-import { GlLabel, GlCollapsibleListbox, GlOutsideDirective as Outside } from '@gitlab/ui';
+import { GlLabel, GlCollapsibleListbox } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { difference, uniq } from 'lodash-es';
@@ -17,7 +17,6 @@ import { trackSelectCheckbox, trackOpenDropdown } from './tracking';
 
 export default {
   name: 'LabelFilter',
-  directives: { Outside },
   components: {
     GlLabel,
     GlCollapsibleListbox,

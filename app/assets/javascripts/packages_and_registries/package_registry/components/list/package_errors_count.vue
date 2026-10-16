@@ -3,7 +3,6 @@ import { GlAlert, GlButton } from '@gitlab/ui';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { InternalEvents } from '~/tracking';
 import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { ERRORED_PACKAGE_TEXT } from '~/packages_and_registries/package_registry/constants';
 import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
@@ -16,7 +15,6 @@ export default {
     GlButton,
     DeleteModal,
   },
-  mixins: [InternalEvents.mixin()],
   inject: ['isGroupPage', 'fullPath'],
   emits: ['confirm-delete'],
   apollo: {

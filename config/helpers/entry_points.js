@@ -1,7 +1,7 @@
 const IS_EE = require('./is_ee_env');
 
 const baseEntryPoints = {
-  default: ['./main'],
+  main: './entrypoints/main.js',
   sentry: './sentry/index.js',
   coverage_persistence: './entrypoints/coverage_persistence.js',
   performance_bar: './entrypoints/performance_bar.js',
@@ -16,7 +16,13 @@ const baseEntryPoints = {
   duo_panel: './entrypoints/duo_panel.js',
 };
 
-const ALWAYS_LOADED_ENTRY_POINTS = ['super_sidebar', 'tracker', 'sentry', 'performance_bar'];
+const ALWAYS_LOADED_ENTRY_POINTS = [
+  'main',
+  'super_sidebar',
+  'tracker',
+  'sentry',
+  'performance_bar',
+];
 
 // The entry exists in FOSS too, as a no-op, so its vue3_migration.yml
 // resolves. Only the EE layout loads it.

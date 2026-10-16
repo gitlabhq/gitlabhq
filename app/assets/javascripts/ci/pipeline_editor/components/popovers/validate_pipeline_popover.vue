@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlPopover, GlOutsideDirective as Outside, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { VALIDATE_TAB_FEEDBACK_URL } from '../../constants';
 
@@ -13,7 +13,6 @@ export const i18n = {
 
 export default {
   name: 'ValidatePipelinePopover',
-  directives: { Outside },
   components: {
     GlLink,
     GlPopover,

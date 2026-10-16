@@ -11,20 +11,17 @@ const {
 
 /**
  * Returns a new entry map with the `?vue3` variants: `rollout` adds an `<entry>.vue3`
- * sibling, `migrated` infects the entry in place. `defaultEntries` (`./main`) is shared
- * bootstrap and stays clean. Values are arrays for page entries, strings for global bundles.
+ * sibling, `migrated` infects the entry in place. Values are arrays for page entries,
+ * strings for global bundles.
  */
-function applyVue3Migrations(entries, { defaultEntries = [], migrations } = {}) {
+function applyVue3Migrations(entries, { migrations } = {}) {
   const declared = migrations ?? loadVue3Migrations();
   const result = { ...entries };
-  const infect = (modulePath) =>
-    defaultEntries.includes(modulePath) ? modulePath : appendVue3Query(modulePath);
-
   for (const [entry, value] of Object.entries(entries)) {
     const migration = declared[entry];
     if (!migration) continue;
 
-    const next = Array.isArray(value) ? value.map(infect) : infect(value);
+    const next = Array.isArray(value) ? value.map(appendVue3Query) : appendVue3Query(value);
 
     if (migration.status === VUE3_MIGRATION_STATUS_MIGRATED) {
       result[entry] = next;
@@ -36,7 +33,7 @@ function applyVue3Migrations(entries, { defaultEntries = [], migrations } = {}) 
   return result;
 }
 
-function generateEntries(defaultEntries = [], { migrations } = {}) {
+function generateEntries({ migrations } = {}) {
   // generate automatic entry points
   const autoEntries = {};
   const autoEntriesMap = {};
@@ -80,11 +77,11 @@ function generateEntries(defaultEntries = [], { migrations } = {}) {
         entryPaths.unshift(autoEntriesMap[ancestor]);
       }
     }
-    autoEntries[entry] = defaultEntries.concat(entryPaths);
+    autoEntries[entry] = entryPaths;
   });
 
   return {
-    entries: applyVue3Migrations(autoEntries, { defaultEntries, migrations }),
+    entries: applyVue3Migrations(autoEntries, { migrations }),
     entriesState: {
       autoEntriesCount: autoEntryKeys.length,
       watchAutoEntries,

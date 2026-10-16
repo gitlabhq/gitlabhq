@@ -3336,6 +3336,9 @@ msgstr ""
 msgid "AICatalog|OAuth Client Secret"
 msgstr ""
 
+msgid "AICatalog|On-finish settings require the work item event type with Status changed as its only action and at least one status."
+msgstr ""
+
 msgid "AICatalog|One or more projects not found, or you do not have permission to enable this item in the project."
 msgstr ""
 
@@ -80112,6 +80115,9 @@ msgstr ""
 msgid "SecurityReports|New status must be different than current status."
 msgstr ""
 
+msgid "SecurityReports|No data"
+msgstr ""
+
 msgid "SecurityReports|No grouping"
 msgstr ""
 
@@ -80214,7 +80220,7 @@ msgstr ""
 msgid "SecurityReports|Reduce time and effort with proposed fixes from AI-created MRs."
 msgstr ""
 
-msgid "SecurityReports|Remediations"
+msgid "SecurityReports|Remediations (count)"
 msgstr ""
 
 msgid "SecurityReports|Remove project from dashboard"

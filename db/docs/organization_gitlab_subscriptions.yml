@@ -1,0 +1,13 @@
+---
+table_name: organization_gitlab_subscriptions
+classes:
+- Organizations::OrganizationGitlabSubscription
+feature_categories:
+- subscription_management
+description: Links an Organization to the GitLab.com subscription it is billed through (the subscription of its nominated top-level group).
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261711
+milestone: '19.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

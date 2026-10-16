@@ -737,6 +737,12 @@ In this example, if `job2` fails, `job1` is canceled if it is still running and 
 
 #### `workflow:name`
 
+{{< history >}}
+
+- Long names are truncated at 255 characters, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/632045) in GitLab 19.6 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_truncate_workflow_name`. Enabled by default.
+
+{{< /history >}}
+
 You can use `name` in `workflow:` to define a name for pipelines.
 
 All pipelines are assigned the defined name. Any leading or trailing spaces in the name are removed.
@@ -776,6 +782,7 @@ workflow:
 
 **Additional details**:
 
+- If the name is longer than 255 characters after CI/CD variable expansion, it is truncated to 255 characters.
 - If the name is an empty string, the pipeline is not assigned a name. A name consisting
   of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
 - `workflow:rules:variables` become [default variables](#default-variables) available in all jobs,

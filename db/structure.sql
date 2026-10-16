@@ -13200,11 +13200,14 @@ CREATE TABLE ai_flow_triggers (
     autonomous_service_account_id bigint,
     group_id bigint,
     goals jsonb DEFAULT '{}'::jsonb NOT NULL,
+    status_on_finish text,
+    ready_merge_requests_on_finish boolean DEFAULT false NOT NULL,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
     CONSTRAINT check_ai_flow_triggers_goals_is_hash CHECK ((jsonb_typeof(goals) = 'object'::text)),
     CONSTRAINT check_ai_flow_triggers_project_or_group CHECK ((num_nonnulls(group_id, project_id) = 1)),
     CONSTRAINT check_ai_flow_triggers_user_consumer_mutually_exclusive CHECK ((num_nonnulls(ai_catalog_item_consumer_id, user_id) <= 1)),
+    CONSTRAINT check_bdfe4dd722 CHECK ((char_length(status_on_finish) <= 255)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
 );
 
@@ -26644,6 +26647,23 @@ CREATE SEQUENCE organization_foundational_agent_statuses_id_seq
 
 ALTER SEQUENCE organization_foundational_agent_statuses_id_seq OWNED BY organization_foundational_agent_statuses.id;
 
+CREATE TABLE organization_gitlab_subscriptions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    gitlab_subscription_id bigint NOT NULL
+);
+
+CREATE SEQUENCE organization_gitlab_subscriptions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_gitlab_subscriptions_id_seq OWNED BY organization_gitlab_subscriptions.id;
+
 CREATE TABLE organization_isolations (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -38229,6 +38249,8 @@ ALTER TABLE ONLY organization_detail_upload_states ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY organization_foundational_agent_statuses ALTER COLUMN id SET DEFAULT nextval('organization_foundational_agent_statuses_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_gitlab_subscriptions ALTER COLUMN id SET DEFAULT nextval('organization_gitlab_subscriptions_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_isolations ALTER COLUMN id SET DEFAULT nextval('organization_isolations_id_seq'::regclass);
 
 ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('organization_push_rules_id_seq'::regclass);
@@ -42105,6 +42127,9 @@ ALTER TABLE ONLY organization_details
 
 ALTER TABLE ONLY organization_foundational_agent_statuses
     ADD CONSTRAINT organization_foundational_agent_statuses_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY organization_gitlab_subscriptions
+    ADD CONSTRAINT organization_gitlab_subscriptions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organization_isolations
     ADD CONSTRAINT organization_isolations_pkey PRIMARY KEY (id);
@@ -46648,6 +46673,8 @@ CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON is
 
 CREATE UNIQUE INDEX idx_organization_detail_uploads_on_id ON organization_detail_uploads USING btree (id);
 
+CREATE UNIQUE INDEX idx_organization_gitlab_subscriptions_on_gitlab_subscription_id ON organization_gitlab_subscriptions USING btree (gitlab_subscription_id);
+
 CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON ONLY p_ai_active_context_code_repositories USING btree (enabled_namespace_id);
 
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
@@ -50581,6 +50608,8 @@ CREATE UNIQUE INDEX index_ops_feature_flags_issues_on_feature_flag_id_and_issue_
 CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
 CREATE INDEX index_organization_detail_upload_states_on_organization_id ON organization_detail_upload_states USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_organization_gitlab_subscriptions_on_organization_id ON organization_gitlab_subscriptions USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_organization_isolations_on_organization_id ON organization_isolations USING btree (organization_id);
 
@@ -58487,6 +58516,9 @@ ALTER TABLE ONLY work_item_decisions
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_2eb33f7a78 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY organization_gitlab_subscriptions
+    ADD CONSTRAINT fk_2ee82747fb FOREIGN KEY (gitlab_subscription_id) REFERENCES gitlab_subscriptions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY vulnerability_merge_request_links
     ADD CONSTRAINT fk_2ef3954596 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -58792,6 +58824,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 
 ALTER TABLE ONLY cd_service_environment_healths
     ADD CONSTRAINT fk_465b9ae2c4 FOREIGN KEY (service_id) REFERENCES cd_services(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_gitlab_subscriptions
+    ADD CONSTRAINT fk_4737abd299 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cd_rollout_steps
     ADD CONSTRAINT fk_47761ddbef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

@@ -609,7 +609,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/projects/feature_flags_clients_controller_spec.rb'
     - 'spec/controllers/projects/feature_flags_user_lists_controller_spec.rb'
     - 'spec/controllers/projects/mattermosts_controller_spec.rb'
-    - 'spec/controllers/projects/pipelines_settings_controller_spec.rb'
     - 'spec/controllers/projects/protected_tags_controller_spec.rb'
     - 'spec/controllers/projects/registry/tags_controller_spec.rb'
     - 'spec/controllers/projects/releases/evidences_controller_spec.rb'

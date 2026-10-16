@@ -725,15 +725,14 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
     end
   end
 
-  describe 'fail-open and isolation' do
-    it 'never lets a shadow error affect the response, and tracks it', :aggregate_failures do
+  describe 'error handling and isolation' do
+    # A raise here means our classification is wrong, not that a defect went hidden.
+    # It should surface rather than be tracked and dropped.
+    it 'lets an inbound error surface rather than swallowing it', :aggregate_failures do
       allow(limiter).to receive(:check).and_raise(StandardError, 'boom')
-      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(StandardError))
+      expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-      status, _headers, body = middleware.call(env)
-
-      expect(status).to eq(200)
-      expect(body).to eq(['ok'])
+      expect { middleware.call(env) }.to raise_error(StandardError, 'boom')
     end
 
     it 'propagates the downstream application error rather than swallowing it' do

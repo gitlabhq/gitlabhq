@@ -22,9 +22,6 @@ function initSourceEditor({ el, ...args }) {
 
 export default {
   name: 'SourceEditor',
-  directives: {
-    DynamicHeight,
-  },
   inheritAttrs: false,
   props: {
     value: {

@@ -471,11 +471,9 @@ the same optional fields. The described module must be a bundler entry. The load
 entry name from `config/helpers/entry_points.js` or from the page's path, and raises an error for
 any other module.
 
-You cannot migrate `main` this way. `config/helpers/entry_points.js` declares it as
-`default: ['./main']`, and `config/webpack.helpers.js` prepends it to every page entry instead of
-emitting it as a bundle of its own, so there is no asset for Rails to swap. The loader raises an
-error if it finds a `main.vue3_migration.yml`. For code reached from `main.js`, use
-[Option 2](#option-2-migrate-your-page-partially-using-vue3) instead.
+`main` is a global bundle too. `config/helpers/entry_points.js` declares it as
+`entrypoints/main.js`, and the layout loads it before the page entry, so its migration file is
+`entrypoints/main.vue3_migration.yml`.
 
 The migration steps below apply unchanged, except that step 1 points at the bundle's entry module
 in `config/helpers/entry_points.js` instead of a page under `pages/`.
@@ -583,9 +581,8 @@ page entrypoint.
 1. Upon removing the feature flag, import `~/my_app?vue3` directly and delete both the conditional
    and the Vue 2 import.
 
-Option 2 is also the only route for code reached from `main.js`, including `main_ee.js` and
-`main_jh.js`. These files run on every page and are compiled into every page entry, so they have
-no bundle name a `vue3_migration.yml` could target.
+Until `main` has a `vue3_migration.yml`, Option 2 is also the route for code reached from `main.js`,
+including `main_ee.js` and `main_jh.js`.
 
 One caution applies. A module shared between an infected subtree and the rest of the app is built
 twice, once per runtime. This is fine for stateless code, but a module-level singleton, such as an

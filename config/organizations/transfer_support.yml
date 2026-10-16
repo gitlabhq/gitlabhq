@@ -125,6 +125,7 @@ organization_detail_upload_states: no_work_needed
 organization_detail_uploads: no_work_needed
 organization_details: no_work_needed
 organization_foundational_agent_statuses: no_work_needed
+organization_gitlab_subscriptions: no_work_needed
 organization_isolations: no_work_needed
 organization_push_rules: no_work_needed
 organization_settings: no_work_needed

@@ -17,6 +17,8 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
     stub_feature_flags(work_item_rest_api: true)
   end
 
+  it_behaves_like 'work item list routes declaring cursor pagination', 'notes'
+
   shared_examples 'notes endpoint' do
     it 'returns all notes on the work item', :aggregate_failures do
       get api(api_request_path, user)
@@ -106,13 +108,7 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
         create_list(:note, 3, project: project, noteable: work_item, author: user)
       end
 
-      it 'paginates the response and returns a cursor for the next page', :aggregate_failures do
-        get api(api_request_path, user), params: { per_page: 2 }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.size).to eq(2)
-        expect(response.headers['X-Next-Cursor']).to be_present
-      end
+      it_behaves_like 'a work item endpoint paginated by cursor'
     end
 
     it 'does not issue N+1 queries when more notes are added', :aggregate_failures do

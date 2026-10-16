@@ -14,6 +14,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   let(:login_stub) { instance_double(::Gitlab::Iam::Auth::V1::LoginService::Stub) }
   let(:consent_stub) { instance_double(::Gitlab::Iam::Auth::V1::ConsentService::Stub) }
   let(:oauth_clients_stub) { instance_double(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub) }
+  let(:oauth_tokens_stub) { instance_double(::Gitlab::Iam::Auth::V1::InternalOAuthTokensService::Stub) }
 
   before do
     allow(Authn::IamAuthService).to receive_messages(
@@ -26,6 +27,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     allow(::Gitlab::Iam::Auth::V1::LoginService::Stub).to receive(:new).and_return(login_stub)
     allow(::Gitlab::Iam::Auth::V1::ConsentService::Stub).to receive(:new).and_return(consent_stub)
     allow(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub).to receive(:new).and_return(oauth_clients_stub)
+    allow(::Gitlab::Iam::Auth::V1::InternalOAuthTokensService::Stub).to receive(:new).and_return(oauth_tokens_stub)
   end
 
   describe 'gRPC calls' do
@@ -40,6 +42,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       :get_oauth_application    | :get_client    | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest    | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientResponse    | { client_id: 'test-client-id' }
       :delete_oauth_application | :delete_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientResponse | { client_id: 'test-client-id' }
       :upsert_oauth_application | :upsert_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse | { client_id: 'test-client-id' }
+      :revoke_user_client_tokens | :revoke_user_client_tokens | :oauth_tokens_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensResponse | { subject: '42', client_id: 'test-client-id' }
       # rubocop:enable Layout/LineLength
     end
 
@@ -176,6 +179,36 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     end
   end
 
+  describe '#token_revoked?' do
+    let(:jti) { SecureRandom.uuid }
+
+    where(revoked: [true, false])
+
+    with_them do
+      it 'sends the jti and returns the revoked flag' do
+        expect(oauth_tokens_stub).to receive(:is_revoked) do |request, **|
+          expect(request.jti).to eq(jti)
+
+          ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceIsRevokedResponse.new(revoked: revoked)
+        end
+
+        expect(client.token_revoked?(jti: jti)).to be(revoked)
+      end
+    end
+  end
+
+  describe '#call' do
+    # REQUEST_TYPES and dispatch are synchronized in production; stub to test when they diverge.
+    it 'raises for a request type with no dispatch entry' do
+      stub_const(
+        "#{described_class}::REQUEST_TYPES",
+        described_class::REQUEST_TYPES.merge(unknown: ::Gitlab::Iam::Auth::V1::HealthRequest)
+      )
+
+      expect { client.send(:call, :unknown, {}) }.to raise_error(ArgumentError, 'Unknown gRPC method: unknown')
+    end
+  end
+
   describe 'service token' do
     context 'with a real stub and interceptor chain' do
       # Everything up to the stub is unmocked here (including
@@ -237,6 +270,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
         GRPC::Internal         | :unknown
         GRPC::NotFound         | :not_found
         GRPC::AlreadyExists    | :already_exists
+        GRPC::Aborted          | :conflict
       end
 
       with_them do
@@ -253,6 +287,21 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
           expect { client.health }.to raise_error(described_class::RequestError)
 
           expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(error)
+        end
+      end
+    end
+
+    # A failed check must surface as an error, never as "not revoked".
+    context 'when IsRevoked fails' do
+      let(:error) { GRPC::Unavailable.new('upstream details') }
+
+      before do
+        allow(oauth_tokens_stub).to receive(:is_revoked).and_raise(error)
+      end
+
+      it 'raises a RequestError instead of returning false' do
+        expect { client.token_revoked?(jti: SecureRandom.uuid) }.to raise_error(described_class::RequestError) do |e|
+          expect(e.reason).to eq(:unavailable)
         end
       end
     end

@@ -17,11 +17,6 @@ describe('WorkItemTitleCell', () => {
 
   const item = buildWorkItemNode(1, {
     title: 'Original title',
-    userPermissions: { updateWorkItem: true },
-  });
-  const itemWithoutEditPermission = buildWorkItemNode(2, {
-    title: 'Read-only title',
-    userPermissions: { updateWorkItem: false },
   });
 
   const defaultMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
@@ -64,23 +59,13 @@ describe('WorkItemTitleCell', () => {
       expect(findTitleLink().attributes('href')).toBe(item.webPath);
     });
 
-    it('renders the pencil button when user has update permission', () => {
+    it('renders the pencil button', () => {
       expect(findPencilButton().exists()).toBe(true);
       expect(findPencilButton().attributes('aria-label')).toBe('Edit title');
     });
 
     it('does not show the input field', () => {
       expect(findTitleInput().exists()).toBe(false);
-    });
-  });
-
-  describe('when user cannot update the work item', () => {
-    beforeEach(() => {
-      createComponent({ props: { item: itemWithoutEditPermission } });
-    });
-
-    it('does not render the pencil button', () => {
-      expect(findPencilButton().exists()).toBe(false);
     });
   });
 

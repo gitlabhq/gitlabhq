@@ -114,10 +114,16 @@ RSpec.describe Gitlab::Vue3Migration, feature_category: :tooling do
       expect(described_class.entry_name_for(file)).to eq('duo_panel')
     end
 
-    it 'rejects main, which has no bundle of its own' do
+    it 'names main after its wrapper in entrypoints/' do
+      file = js_root.join('entrypoints/main.vue3_migration.yml')
+
+      expect(described_class.entry_name_for(file)).to eq('main')
+    end
+
+    it 'rejects main.js itself, which is not the entry module' do
       file = js_root.join('main.vue3_migration.yml')
 
-      expect { described_class.entry_name_for(file) }.to raise_error(/Option 2/)
+      expect { described_class.entry_name_for(file) }.to raise_error(/not a bundler entry/)
     end
 
     it 'rejects a module that is not a bundler entry' do

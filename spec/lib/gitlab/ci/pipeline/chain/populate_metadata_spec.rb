@@ -90,6 +90,23 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
       end
     end
 
+    context 'with a name that expands past the maximum length' do
+      let(:config) do
+        {
+          variables: { LONG_VAR: 'b' * 300 },
+          workflow: { name: 'Pipeline $LONG_VAR' },
+          rspec: { script: 'rspec' }
+        }
+      end
+
+      it 'truncates the expanded name to the maximum length' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.name.length).to eq(Ci::PipelineMetadata::NAME_MAX_LENGTH)
+        expect(pipeline.pipeline_metadata.name).to start_with('Pipeline bbb')
+      end
+    end
+
     context 'with variables' do
       let(:config) do
         {
@@ -195,7 +212,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
       end
     end
 
-    context 'with invalid name' do
+    context 'with a variable that pushes the name past the maximum length' do
       let(:config) do
         {
           variables: { ROOT_VAR: 'a' * 256 },
@@ -206,14 +223,29 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
         }
       end
 
-      it 'returns error and breaks chain' do
-        ret = run_chain
+      it_behaves_like 'not breaking the chain'
 
-        expect(ret)
-          .to match_array(["Failed to build pipeline metadata! Name is too long (maximum is 255 characters)"])
-        expect(pipeline.pipeline_metadata.errors.full_messages)
-          .to match_array(['Name is too long (maximum is 255 characters)'])
-        expect(step.break?).to be true
+      it 'truncates the name and builds valid metadata' do
+        run_chain
+
+        expect(pipeline.pipeline_metadata.name.length).to eq(Ci::PipelineMetadata::NAME_MAX_LENGTH)
+        expect(pipeline.pipeline_metadata).to be_valid
+      end
+
+      context 'when ci_truncate_workflow_name feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_truncate_workflow_name: false)
+        end
+
+        it 'returns error and breaks chain' do
+          ret = run_chain
+
+          expect(ret)
+            .to match_array(["Failed to build pipeline metadata! Name is too long (maximum is 255 characters)"])
+          expect(pipeline.pipeline_metadata.errors.full_messages)
+            .to match_array(['Name is too long (maximum is 255 characters)'])
+          expect(step.break?).to be true
+        end
       end
     end
   end

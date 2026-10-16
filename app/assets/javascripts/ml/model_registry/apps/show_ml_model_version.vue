@@ -21,7 +21,6 @@ import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/de
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import ModelVersionDetail from '../components/model_version_detail.vue';
 import ModelVersionPerformance from '../components/model_version_performance.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
@@ -72,7 +71,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
   provide() {
     return {
       projectPath: this.projectPath,

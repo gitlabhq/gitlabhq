@@ -15,11 +15,11 @@ weight: 20
 
 リクエストがスペシャリストワークフローに一致すると、Agentic Chatは以下のフローのいずれかにハンドオフします。
 
-- [デベロッパーフロー](../../../user/duo_agent_platform/flows/foundational_flows/developer.md):
+- [デベロッパーフロー](../../../user/project/merge_requests/developer.md):
   変更を実装するか、マージリクエストを作成します
-- [コードレビューフロー](../../../user/duo_agent_platform/flows/foundational_flows/code_review.md):
+- [コードレビューフロー](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md):
   マージリクエストをレビューします
-- [CI/CDパイプライン修正フロー](../../../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md):
+- [CI/CDパイプライン修正フロー](../../../ci/pipelines/fix_pipeline.md):
   失敗したパイプラインを診断して修復します
 
 チャットでハンドオフを承認すると、会話内または**AI** > **セッション**から進捗を確認できます。

@@ -30,17 +30,12 @@ export default {
     };
   },
   computed: {
-    canEdit() {
-      return this.item.userPermissions?.updateWorkItem;
-    },
     isValid() {
       return this.editedTitle.trim().length > 0 && this.editedTitle.length <= TITLE_LENGTH_MAX;
     },
   },
   methods: {
     startEditing() {
-      if (!this.canEdit) return;
-
       this.editedTitle = this.item.title;
       this.isEditing = true;
       this.$nextTick(() => {
@@ -129,7 +124,6 @@ export default {
         <gl-truncate :text="item.title" with-tooltip />
       </a>
       <gl-button
-        v-if="canEdit"
         ref="editButton"
         icon="pencil"
         category="tertiary"

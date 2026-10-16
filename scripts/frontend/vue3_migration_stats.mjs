@@ -652,11 +652,10 @@ const KIND_GLOBAL = 'global';
  * @returns {Promise<{entrypoints: Entrypoint[], edition: string, warnings: string[]}>}
  */
 async function collectEntrypoints() {
-  // `generateEntries` takes the shared bootstrap modules prepended to every
-  // entry (e.g. `./main`) and returns both the entry map and the bookkeeping
-  // the Webpack config needs. Migrated pages also get a sibling `<entry>.vue3`,
+  // `generateEntries` returns both the page entry map and the bookkeeping the
+  // Webpack config needs. Migrated pages also get a sibling `<entry>.vue3`,
   // excluded here so only the originals are counted.
-  const { entries, entriesState } = generateEntries([]);
+  const { entries, entriesState } = generateEntries();
   const names = Object.keys(entries)
     .filter((name) => !name.endsWith('.vue3'))
     .sort();
@@ -664,11 +663,11 @@ async function collectEntrypoints() {
   const known = new Set(names);
   const warnings = [];
 
-  // `default` (`./main`) is an array and not a bundle of its own.
   const globalModules = new Map(
-    Object.entries(baseEntryPoints)
-      .filter(([, spec]) => typeof spec === 'string')
-      .map(([name, spec]) => [name, `app/assets/javascripts/${spec.replace(/^\.\//, '')}`]),
+    Object.entries(baseEntryPoints).map(([name, spec]) => [
+      name,
+      `app/assets/javascripts/${spec.replace(/^\.\//, '')}`,
+    ]),
   );
   const globalNames = [...globalModules.keys()].sort();
 

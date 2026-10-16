@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 
@@ -8,9 +8,6 @@ export default {
   components: {
     GlLoadingIcon,
     ReviewerDropdown,
-  },
-  directives: {
-    Tooltip: GlTooltipDirective,
   },
   props: {
     loading: {

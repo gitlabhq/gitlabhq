@@ -2041,7 +2041,10 @@ mirrors the feature area. Each file should:
    real `apolloProvider`. `fullMount` wraps `mount` from `@vue/test-utils`
    and automatically attaches to `document.body`.
 1. Use `waitFor` from `@testing-library/dom` after actions that trigger
-   API calls.
+   API calls. Boot the app in `beforeEach` with `waitForSetup`, which has a
+   longer timeout than test bodies. A wait in a test body that takes more
+   than two seconds is logged as `[integration] slow wait`, because it is
+   one CI load spike away from the three second ceiling.
 1. Locate elements with Testing Library `screen` queries
    (`screen.queryByTestId()`, `screen.queryByRole()`) and interact with
    them through native DOM APIs (`.click()`, `.dispatchEvent()`).
@@ -2226,6 +2229,7 @@ The following helpers from `ee_jest/integration/helpers/test_helpers` cover comm
 | `findButtonByText(text[, container])` | Returns the first button matching `text` by visible label or aria-label. |
 | `setInputValue(input, value[, eventType])` | Sets a value on an input and dispatches the event synchronously. |
 | `waitForAssertion(fn)` | Wraps a plain assertion function in `waitFor`. Use when you only need to wait, not find an element. |
+| `waitForSetup(fn)` | `waitFor` with a longer timeout, for booting the app in `beforeEach` or a mount helper. Keep assertions in the test body with the regular helpers. |
 | `getText(el)` | Returns normalized whitespace text content of `el`. Equivalent to VTU `.text()`. |
 | `findByGraphQLId(graphqlId, getIdFromGraphQLId[, prefix])` | Finds a DOM element whose `id` is derived from a GraphQL ID. |
 

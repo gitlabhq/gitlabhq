@@ -1,6 +1,4 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { calculateBlameOffset } from '../utils';
 import { BLAME_AGE_COLORS, BLAME_COLUMN_DEFAULT_WIDTH } from '../constants';
 import BlameCommitInfo from './blame_commit_info.vue';
@@ -12,10 +10,6 @@ export default {
   components: {
     BlameCommitInfo,
     BlameColumnResizer,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   props: {
     blameInfo: {

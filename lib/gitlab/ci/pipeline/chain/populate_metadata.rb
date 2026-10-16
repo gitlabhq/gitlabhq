@@ -34,8 +34,16 @@ module Gitlab
             return if name.blank?
 
             name = mask_variables(name, variables)
+            name = normalize_name(name)
 
-            assign_to_metadata(name: name.strip)
+            assign_to_metadata(name: name)
+          end
+
+          def normalize_name(name)
+            name = name.strip
+            return name unless Feature.enabled?(:ci_truncate_workflow_name, project)
+
+            name.truncate(::Ci::PipelineMetadata::NAME_MAX_LENGTH)
           end
 
           def mask_variables(name, variables)

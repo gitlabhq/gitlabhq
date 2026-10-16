@@ -6,7 +6,6 @@ import { createAlert } from '~/alert';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { unarchiveGroup } from '~/api/groups_api';
 import { unarchiveProject } from '~/api/projects_api';
-import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'UnarchiveSettings',
@@ -19,7 +18,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin()],
   props: {
     resourceType: {
       type: String,

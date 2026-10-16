@@ -2,7 +2,6 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import dateFormat from '~/lib/dateformat';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { getDayDifference } from '~/lib/utils/datetime_utility';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
@@ -18,7 +17,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
   props: {
     snoozedUntil: {
       type: String,

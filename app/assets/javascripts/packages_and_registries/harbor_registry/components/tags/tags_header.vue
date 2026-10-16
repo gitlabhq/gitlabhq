@@ -2,7 +2,6 @@
 import { isEmpty } from 'lodash-es';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import {
   EMPTY_TAG_LABEL,
   tagsCountText,
@@ -14,7 +13,6 @@ export default {
     TitleArea,
     MetadataItem,
   },
-  mixins: [timeagoMixin],
   props: {
     artifactDetail: {
       type: Object,

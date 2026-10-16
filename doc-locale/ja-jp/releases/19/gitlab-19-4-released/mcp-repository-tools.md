@@ -13,7 +13,7 @@ weight: 50
 新しいリポジトリツールにより、エージェントはGitLab MCPサーバーを通じてプロジェクトの構造を参照し、コミット履歴を確認し、変更を提案できるようになりました:
 
 - `list_repository_tree` はファイルツリーを探索します。
-- `list_branches` と `list_tags` はrefsを列挙します。
+- `list_tags` はrefsを列挙します。
 - `list_releases` は公開済みリリースを確認します。
 - `get_commit` はコミットのメタデータ、差分、またはノートを取得します。
 - `list_commits` はブランチの履歴をページングします。

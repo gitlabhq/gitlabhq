@@ -1,7 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { s__, sprintf } from '~/locale';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
@@ -17,7 +16,6 @@ export default {
     PageHeading,
     TimeAgoTooltip,
   },
-  mixins: [timeagoMixin],
   props: {
     candidate: {
       type: Object,
