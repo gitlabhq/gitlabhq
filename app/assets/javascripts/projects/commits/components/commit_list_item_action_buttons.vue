@@ -2,8 +2,8 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import { getBrowseFilesPath } from '../utils/browse_files_path';
 
 export default {
   name: 'CommitListItemActionButtons',
@@ -35,6 +35,11 @@ export default {
       required: false,
       default: '',
     },
+    currentPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['click'],
   computed: {
@@ -42,7 +47,11 @@ export default {
       return sprintf(__('Copy commit SHA %{sha}'), { sha: this.commit.sha });
     },
     browseFilesPath() {
-      return joinPaths(this.projectRootPath, '-', 'tree', this.commit.sha);
+      return getBrowseFilesPath({
+        projectRootPath: this.projectRootPath,
+        commitSha: this.commit.sha,
+        currentPath: this.currentPath,
+      });
     },
   },
 };

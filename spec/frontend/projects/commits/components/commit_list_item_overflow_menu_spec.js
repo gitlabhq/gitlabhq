@@ -101,5 +101,13 @@ describe('CommitListItemOverflowMenu', () => {
         href: `${mockProjectRootPath}/-/tree/${mockCommit.sha}`,
       });
     });
+
+    it('links to the blob at the commit SHA when a file path is set', () => {
+      createComponent({ currentPath: 'app/models/user.rb' });
+
+      expect(findBrowseFilesItem().props('item').href).toBe(
+        `${mockProjectRootPath}/-/blob/${mockCommit.sha}/app/models/user.rb`,
+      );
+    });
   });
 });

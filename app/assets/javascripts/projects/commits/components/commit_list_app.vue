@@ -410,7 +410,12 @@ export default {
             class="daily-commits-item gl-mb-6 gl-flex gl-list-none gl-flex-col gl-gap-3 gl-p-0"
             data-testid="daily-commits-list"
           >
-            <commit-list-item v-for="commit in group.commits" :key="commit.id" :commit="commit" />
+            <commit-list-item
+              v-for="commit in group.commits"
+              :key="commit.id"
+              :commit="commit"
+              :current-path="currentPath"
+            />
           </ul>
         </li>
       </ol>

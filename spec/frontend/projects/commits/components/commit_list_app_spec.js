@@ -1189,6 +1189,14 @@ describe('CommitListApp', () => {
       expect(findCommitActions().props('filePath')).toBe('app/models/user.rb');
     });
 
+    it('passes the file path to the commit list items', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      createComponentWithPath(handler, 'app/models/user.rb');
+      await waitForPromises();
+
+      expect(wrapper.findComponent(CommitListItem).props('currentPath')).toBe('app/models/user.rb');
+    });
+
     it('passes null path when no file path in route', async () => {
       const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
       createComponentWithPath(handler);

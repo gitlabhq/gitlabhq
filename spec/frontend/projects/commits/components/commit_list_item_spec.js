@@ -194,7 +194,14 @@ describe('CommitListItem', () => {
       expect(actionButtons.props()).toMatchObject({
         isCollapsed: true,
         commit: mockCommit,
+        currentPath: '',
       });
+    });
+
+    it('passes the current path to the action buttons', () => {
+      createComponent({ currentPath: 'app/models/user.rb' });
+
+      expect(findActionButtons().props('currentPath')).toBe('app/models/user.rb');
     });
 
     it('handles click event from action buttons', async () => {
@@ -210,6 +217,14 @@ describe('CommitListItem', () => {
       it('renders overflow menu with narrow screens only classes', () => {
         const overflowMenu = findOverflowMenu();
         expect(overflowMenu.classes()).toContain('@md/panel:gl-hidden');
+      });
+
+      it('passes the current path to the overflow menu', () => {
+        createComponent({ currentPath: 'app/models/user.rb' });
+
+        expect(wrapper.findComponentByTestId('overflow-menu').props('currentPath')).toBe(
+          'app/models/user.rb',
+        );
       });
     });
   });
