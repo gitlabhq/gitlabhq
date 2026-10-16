@@ -15,6 +15,7 @@ Set the title to: `Title of the original issue`
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
 - [ ] If this change affects the public interface (public API or UI) of the product, post in the `#support_gitlab-com` Slack channel  to explain the impact and discuss a mitigation plan for users that might be affected. If you need Support feedback or approval, reach out in `#spt_managers` Slack channel or mention `@gitlab-com/support/managers`.
+- [ ] Consider whether this fix risks blocking legitimate user flows on GitLab.com, Dedicated, or Self-Managed. If so, plan for an opt-out mechanism (admin setting, project setting, or other console-free remediation path).
 
 ## Development
 
@@ -41,6 +42,7 @@ After your merge request has been approved according to our [approval guidelines
   - [ ] Among these `4` MRs, one targeting `master` and the `3` backports targeting stable branches.
   - [ ] If there are more associated MRs, re-create another security issue and ensure there are only 4 merge requests associated with that one.
 - [ ] If this issue requires less than `4` merge requests, add the ~"reduced backports" label.
+  - [ ] Document the reason for reduced backports in a comment on this issue (e.g. "SaaS-only fix", "migration complexity", "low severity on older versions").
 
 ## Assigning to a release
 

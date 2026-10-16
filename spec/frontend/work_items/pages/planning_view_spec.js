@@ -4365,13 +4365,7 @@ describe('planning-view', () => {
 
       await mountComponent({
         ...options,
-        provide: {
-          ...provide,
-          glFeatures: {
-            workItemsRealtime: true,
-            ...provide.glFeatures,
-          },
-        },
+        provide,
         additionalHandlers: [
           [namespaceWorkItemChangesSubscription, subscriptionHandler],
           [getWorkItemsSlimQuery, slimMatchHandler],
@@ -4702,15 +4696,6 @@ describe('planning-view', () => {
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
 
-    describe('when the workItemsRealtime feature flag is off', () => {
-      it('never subscribes to namespace work item changes', async () => {
-        await mountWithSubscription({ provide: { glFeatures: { workItemsRealtime: false } } });
-        await flushChanges();
-
-        expect(subscriptionHandler).not.toHaveBeenCalled();
-      });
-    });
-
     describe('when the user is not logged in', () => {
       it('never subscribes to namespace work item changes', async () => {
         await mountWithSubscription({ isLoggedInValue: false });
@@ -4730,17 +4715,6 @@ describe('planning-view', () => {
 
         expect(evictedFields(evictSpy)).toEqual(['workItems']);
         expect(markRealtimeRefetch).toHaveBeenCalledWith('reconnect');
-      });
-
-      it('does nothing when the workItemsRealtime feature flag is off', async () => {
-        await mountWithSubscription({ provide: { glFeatures: { workItemsRealtime: false } } });
-        const evictSpy = jest.spyOn(getCache(), 'evict');
-
-        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
-        await flushChanges();
-
-        expect(evictSpy).not.toHaveBeenCalled();
-        expect(markRealtimeRefetch).not.toHaveBeenCalled();
       });
 
       it('does not act on a reconnect that arrives just before the component is destroyed', async () => {
@@ -4816,7 +4790,6 @@ describe('planning-view', () => {
           ...provide,
           glFeatures: {
             planningViewBoards: true,
-            workItemsRealtime: true,
             ...provide.glFeatures,
           },
         },
@@ -4951,16 +4924,6 @@ describe('planning-view', () => {
         flushUnsubscribe();
 
         expect(subscription.closed).toBe(true);
-      });
-    });
-
-    describe('when the workItemsRealtime feature flag is off', () => {
-      it('does not subscribe to saved view updates', async () => {
-        await mountWithSavedViewSubscription({
-          provide: { glFeatures: { workItemsRealtime: false } },
-        });
-
-        expect(subscriptionHandler).not.toHaveBeenCalled();
       });
     });
 

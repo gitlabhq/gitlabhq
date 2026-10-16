@@ -237,6 +237,10 @@ the minimum confidence level.
 If the variable is not set or is `false`, no debug report is produced. The scanner logs a warning
 that does not affect the job status.
 
+## Give feedback
+
+Share your feedback in [issue 609578](https://gitlab.com/gitlab-org/gitlab/-/work_items/609578).
+
 ## Related topics
 
 - [Customize pipeline secret detection](../pipeline/configure.md)

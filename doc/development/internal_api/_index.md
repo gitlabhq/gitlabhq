@@ -1827,6 +1827,10 @@ Supported operations:
 
 - `add` with path `members` to add members to the group
 - `remove` with path `members` to remove members from the group
+- `remove` with path `members[value eq "<external_id>"]` to remove a single member from the group
+- `replace` that doesn't target `members`, such as a group rename, which is accepted but has no effect
+
+A `replace` that targets `members` returns an error, because replacing group members isn't supported.
 
 Example request to add a member:
 

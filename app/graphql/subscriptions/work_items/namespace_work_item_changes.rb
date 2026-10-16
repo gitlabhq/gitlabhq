@@ -19,7 +19,6 @@ module Subscriptions
         description: 'Namespace to receive work item updates for.'
 
       def authorized?(namespace_id:)
-        return unauthorized! unless Feature.enabled?(:work_items_realtime, current_user)
         return unauthorized! unless current_user
         return unauthorized! unless member?(namespace_id)
 

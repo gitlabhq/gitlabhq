@@ -13,6 +13,10 @@ RSpec.describe ProjectStatisticsPolicy, feature_category: :source_code_managemen
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:non_member) { create(:user) }
 
+    let_it_be_with_refind(:public_project) { create(:project, :public) }
+    let_it_be_with_refind(:private_project) { create(:project, :private) }
+    let_it_be_with_refind(:internal_project) { create(:project, :internal) }
+
     let(:users) do
       {
         unauthenticated: nil,
@@ -22,6 +26,16 @@ RSpec.describe ProjectStatisticsPolicy, feature_category: :source_code_managemen
         developer: developer,
         maintainer: maintainer
       }
+    end
+
+    before_all do
+      [public_project, private_project, internal_project].each do |project|
+        create(:project_statistics, project: project)
+        project.add_guest(guest)
+        project.add_reporter(reporter)
+        project.add_developer(developer)
+        project.add_maintainer(maintainer)
+      end
     end
 
     where(:project_type, :user_type, :outcome) do
@@ -54,17 +68,10 @@ RSpec.describe ProjectStatisticsPolicy, feature_category: :source_code_managemen
 
     with_them do
       let(:user) { users[user_type] }
-      let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel.level_value(project_type.to_s)) }
-      let(:project_statistics) { create(:project_statistics, project: project) }
+      let(:project) { public_send(:"#{project_type}_project") }
+      let(:project_statistics) { project.statistics }
 
       subject { Ability.allowed?(user, :read_statistics, project_statistics) }
-
-      before do
-        project.add_guest(guest)
-        project.add_reporter(reporter)
-        project.add_developer(developer)
-        project.add_maintainer(maintainer)
-      end
 
       it { is_expected.to eq(outcome) }
 

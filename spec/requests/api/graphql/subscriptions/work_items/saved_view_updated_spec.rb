@@ -85,16 +85,6 @@ RSpec.describe Subscriptions::WorkItems::SavedViewUpdated, feature_category: :pl
     end
   end
 
-  context 'when the work_items_realtime feature flag is disabled' do
-    before do
-      stub_feature_flags(work_items_realtime: false)
-    end
-
-    it 'does not receive any data' do
-      expect(response).to be_nil
-    end
-  end
-
   context 'when the work_items_realtime_broadcast feature flag is disabled' do
     before do
       stub_feature_flags(work_items_realtime_broadcast: false)

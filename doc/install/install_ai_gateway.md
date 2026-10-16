@@ -677,61 +677,136 @@ To pass the root CA certificate to the AI Gateway and make sure that authenticat
 ### Add the root CA certificate to the AI Gateway container's CA bundle
 
 To allow the AI Gateway to trust a GitLab Self-Managed instance's certificate that is signed by a custom CA, add the root CA certificate to the AI Gateway container's CA bundle.
+The steps depend on how you deployed the AI Gateway.
 
-This method does not allow for changes made to the root CA bundle in later versions of the chart.
+#### For a GitLab Helm chart deployment
 
-To do this for a Helm chart deployment of the AI Gateway:
+Prerequisites:
 
-1. Append the custom root CA certificate to a local file:
+- GitLab chart 10.1 or later.
+
+If you deployed the AI Gateway with the GitLab Helm chart, use the chart's [custom certificate authorities](https://docs.gitlab.com/charts/charts/globals/#custom-certificate-authorities).
+The chart adds your root CA certificate to the system CA bundle of the AI Gateway container.
+The AI Gateway uses Certifi by default, so you must also point the AI Gateway to the system CA bundle.
+
+To add the root CA certificate:
+
+1. Create a secret from the root CA certificate.
+   Keep the `.crt` extension in the key name:
 
    ```shell
-   cat customCA-root.crt >> ca-certificates.crt
+   kubectl create secret generic custom-ca --namespace=<gitlab_namespace> \
+     --from-file=custom-ca.crt=<path_to_root_ca_certificate>
    ```
 
-1. Copy the `/etc/ssl/certs/ca-certificates.crt` bundle file from the AI Gateway container to the local file:
+1. In your `values.yaml` file, add the secret to `global.certificates.customCAs`.
+   Point `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` for the AI Gateway to the system CA bundle:
 
-   ```shell
-   kubectl cp -n gitlab ai-gateway-55d697ff9d-j9pc6:/etc/ssl/certs/ca-certificates.crt ca-certificates.crt.
+   ```yaml
+   global:
+     certificates:
+       customCAs:
+         - secret: custom-ca
+
+   ai-gateway:
+     extraEnvironmentVariables:
+       - name: REQUESTS_CA_BUNDLE
+         value: /etc/ssl/certs/ca-certificates.crt
+       - name: SSL_CERT_FILE
+         value: /etc/ssl/certs/ca-certificates.crt
    ```
 
-1. Create a new secret from the local file:
+1. Redeploy the GitLab Helm chart.
+
+#### For a standalone AI Gateway Helm chart deployment
+
+When you deploy the AI Gateway Helm chart on its own, `global.certificates.customCAs` has no effect.
+Instead, mount a CA bundle that contains your root CA certificate:
+
+1. Copy the `/etc/ssl/certs/ca-certificates.crt` bundle from the AI Gateway pod to a local file.
+   To find the pod name, run `kubectl get pods --namespace=ai-gateway`.
 
    ```shell
-   kubectl create secret generic ca-certificates -n gitlab --from-file=cacertificates.crt=ca-certificates.crt
+   kubectl exec --namespace=ai-gateway <ai_gateway_pod_name> -- cat /etc/ssl/certs/ca-certificates.crt > ca-certificates.crt
    ```
 
-1. Use the secret in the chart `values.yml` to define a `volume` and `volumeMount`. This creates the `/tmp/ca-certificates.crt` file in the container:
+   If you use the FIPS-validated image, copy `/etc/pki/tls/certs/ca-bundle.crt` instead.
+
+1. Append the root CA certificate to the local file:
 
    ```shell
+   cat <path_to_root_ca_certificate> >> ca-certificates.crt
+   ```
+
+1. Create a secret from the local file:
+
+   ```shell
+   kubectl create secret generic ai-gateway-ca-bundle --namespace=ai-gateway \
+     --from-file=ca-certificates.crt=ca-certificates.crt
+   ```
+
+1. In your `values.yaml` file, mount the secret.
+   Point `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` to the mounted file:
+
+   ```yaml
    volumes:
-     - name: cacerts
+     - name: ca-bundle
        secret:
-         secretName: ca-certificates
+         secretName: ai-gateway-ca-bundle
          optional: false
 
    volumeMounts:
-     - name: cacerts
-       mountPath: "/tmp"
+     - name: ca-bundle
+       mountPath: /etc/ai-gateway/certs
        readOnly: true
-   ```
 
-1. Set the `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` environment variables to point to the mounted file:
-
-   ```shell
    extraEnvironmentVariables:
      - name: REQUESTS_CA_BUNDLE
-       value: /tmp/ca-certificates.crt
+       value: /etc/ai-gateway/certs/ca-certificates.crt
      - name: SSL_CERT_FILE
-       value: /tmp/ca-certificates.crt
+       value: /etc/ai-gateway/certs/ca-certificates.crt
    ```
 
 1. Redeploy the chart.
+   For example, add `--values values.yaml` to your `helm upgrade --install` command.
+   If you also set `extraEnvironmentVariables` with `--set`, as in the offline example,
+   move those entries into the `extraEnvironmentVariables` list in `values.yaml`.
+   `--set` overwrites list entries by index, so it would remove `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE`.
 
-[Issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3) exists to support this natively in the Helm chart.
+The local bundle does not receive CA updates from later AI Gateway images.
+After you upgrade the AI Gateway image, repeat these steps.
 
 #### For a Docker deployment
 
-For a Docker deployment, use the same method. The only difference is that, to mount the local file in the container, use `--volume /root/ca-certificates.crt:/tmp/ca-certificates.crt`.
+To add the root CA certificate to a Docker deployment:
+
+1. Copy the CA bundle from the AI Gateway image to a local file:
+
+   ```shell
+   docker run --rm <ai_gateway_image> cat /etc/ssl/certs/ca-certificates.crt > ca-certificates.crt
+   ```
+
+   Replace `<ai_gateway_image>` with the AI Gateway image and tag that you run.
+   If you use the FIPS-validated image, copy `/etc/pki/tls/certs/ca-bundle.crt` instead.
+
+1. Append the root CA certificate to the local file:
+
+   ```shell
+   cat <path_to_root_ca_certificate> >> ca-certificates.crt
+   ```
+
+1. Add the following options to the `docker run` command that starts the AI Gateway container:
+
+   ```shell
+   --volume <path_to_ca_bundle>:/etc/ai-gateway/certs/ca-certificates.crt:ro \
+   -e REQUESTS_CA_BUNDLE=/etc/ai-gateway/certs/ca-certificates.crt \
+   -e SSL_CERT_FILE=/etc/ai-gateway/certs/ca-certificates.crt
+   ```
+
+   Replace `<path_to_ca_bundle>` with the absolute path to the local `ca-certificates.crt` file.
+
+The local bundle does not receive CA updates from later AI Gateway images.
+After you upgrade the AI Gateway image, repeat these steps.
 
 ## Connect to a model endpoint that requires mutual TLS (mTLS)
 

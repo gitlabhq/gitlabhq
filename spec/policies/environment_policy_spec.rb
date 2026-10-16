@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe EnvironmentPolicy do
   using RSpec::Parameterized::TableSyntax
 
-  let(:user) { create(:user) }
+  let_it_be_with_refind(:user) { create(:user) }
 
   let(:policy) do
     described_class.new(user, environment)
@@ -14,7 +14,7 @@ RSpec.describe EnvironmentPolicy do
   describe '#rules', :clean_gitlab_redis_cache do
     shared_examples 'project permissions' do
       context 'with stop action' do
-        let(:environment) do
+        let_it_be_with_refind(:environment) do
           create(:environment, :with_review_app, project: project)
         end
 
@@ -35,7 +35,7 @@ RSpec.describe EnvironmentPolicy do
         end
 
         context 'when an admin user' do
-          let(:user) { create(:user, :admin) }
+          let_it_be_with_refind(:user) { create(:user, :admin) }
 
           context 'when admin mode is enabled', :enable_admin_mode do
             it { expect(policy).to be_allowed :stop_environment }
@@ -57,7 +57,7 @@ RSpec.describe EnvironmentPolicy do
           end
 
           context 'when an admin user' do
-            let(:user) { create(:user, :admin) }
+            let_it_be_with_refind(:user) { create(:user, :admin) }
 
             context 'when admin mode is enabled', :enable_admin_mode do
               it { expect(policy).to be_allowed :stop_environment }
@@ -71,7 +71,7 @@ RSpec.describe EnvironmentPolicy do
       end
 
       context 'without stop action' do
-        let(:environment) do
+        let_it_be_with_refind(:environment) do
           create(:environment, project: project)
         end
 
@@ -92,7 +92,7 @@ RSpec.describe EnvironmentPolicy do
         end
 
         context 'when an admin user' do
-          let(:user) { create(:user, :admin) }
+          let_it_be_with_refind(:user) { create(:user, :admin) }
 
           context 'when admin mode is enabled', :enable_admin_mode do
             it { expect(policy).to be_allowed :stop_environment }
@@ -105,7 +105,7 @@ RSpec.describe EnvironmentPolicy do
       end
 
       describe '#destroy_environment' do
-        let(:environment) do
+        let_it_be_with_refind(:environment) do
           create(:environment, project: project)
         end
 
@@ -134,7 +134,7 @@ RSpec.describe EnvironmentPolicy do
         end
 
         context 'when an admin user' do
-          let(:user) { create(:user, :admin) }
+          let_it_be_with_refind(:user) { create(:user, :admin) }
 
           it { expect(policy).to be_disallowed :destroy_environment }
 

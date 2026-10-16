@@ -26,6 +26,8 @@ module Ci
           -> { select(:id, :catalog_resource_id, arel_table[:partition_id].as('partition')) }
 
         scope :unprocessed_events, -> { select_with_partition.status_pending }
+        # This event table has a single consumer, so the consumer argument is ignored.
+        scope :unprocessed_events_for, ->(_consumer) { unprocessed_events }
         scope :preload_synced_relation, -> { preload(catalog_resource: :project) }
 
         enum :status, { pending: 1, processed: 2 }, prefix: :status
@@ -50,7 +52,9 @@ module Ci
           end
 
         class << self
-          def mark_records_processed(records)
+          # Processed rows are not deleted here; they are removed by
+          # sliding_list partition detachment.
+          def mark_records_processed(records, _consumer)
             update_by_partition(records) do |partitioned_scope|
               partitioned_scope.update_all(status: :processed)
             end
@@ -60,7 +64,7 @@ module Ci
             ::Ci::Catalog::Resources::ProcessSyncEventsWorker.perform_async # rubocop:disable CodeReuse/Worker -- Worker is scheduled in model callback functions
           end
 
-          def upper_bound_count
+          def upper_bound_count(_consumer)
             select('COALESCE(MAX(id) - MIN(id) + 1, 0) AS upper_bound_count')
               .status_pending.to_a.first.upper_bound_count
           end

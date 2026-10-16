@@ -73,7 +73,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, feature_category: :pipeline_co
         expect(described_class.status_pending.count).to eq(3)
         expect(described_class.status_processed.count).to eq(1)
 
-        described_class.mark_records_processed(described_class.unprocessed_events)
+        described_class.mark_records_processed(described_class.unprocessed_events, :catalog)
 
         expect(described_class.pluck(:status).uniq).to eq(['processed'])
 
@@ -85,14 +85,14 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, feature_category: :pipeline_co
 
   describe '.upper_bound_count' do
     it 'returns 0 when there are no records in the table' do
-      expect(described_class.upper_bound_count).to eq(0)
+      expect(described_class.upper_bound_count(:catalog)).to eq(0)
     end
 
     it 'returns an estimated number of unprocessed records' do
       create_list(:ci_catalog_resource_sync_event, 5, catalog_resource: resource1)
       described_class.order(:id).limit(2).update_all(status: :processed)
 
-      expect(described_class.upper_bound_count).to eq(3)
+      expect(described_class.upper_bound_count(:catalog)).to eq(3)
     end
   end
 
@@ -175,7 +175,7 @@ RSpec.describe Ci::Catalog::Resources::SyncEvent, feature_category: :pipeline_co
         create(:ci_catalog_resource_sync_event, catalog_resource: resource1)
 
         # After processing records in partition 1
-        described_class.mark_records_processed(described_class.for_partition(1).select_with_partition)
+        described_class.mark_records_processed(described_class.for_partition(1).select_with_partition, :catalog)
 
         partition_manager.sync_partitions
 

@@ -106,6 +106,60 @@ RSpec.describe MigrationChecksumChecker, "#check", feature_category: :database d
     end
   end
 
+  context "when a migration has a checksum file with a trailing newline" do
+    before do
+      File.write(checksum_file, "#{valid_checksum}\n")
+    end
+
+    after do
+      File.delete(migration_file)
+      File.delete(checksum_file)
+    end
+
+    it 'returns an error result', :aggregate_failures do
+      expect(check.error_code).to eq(1)
+      expect(check.error_message).to include('Trailing newline in checksum file')
+      expect(check.error_message).to include(migration_file)
+    end
+  end
+
+  context "when a migration has a checksum file with a trailing carriage return and newline" do
+    before do
+      File.write(checksum_file, "#{valid_checksum}\r\n")
+    end
+
+    after do
+      File.delete(migration_file)
+      File.delete(checksum_file)
+    end
+
+    it 'returns an error result', :aggregate_failures do
+      expect(check.error_code).to eq(1)
+      expect(check.error_message).to include('Trailing newline in checksum file')
+      expect(check.error_message).to include(migration_file)
+    end
+  end
+
+  context "when a migration has a checksum file with multiple trailing newlines" do
+    before do
+      File.write(checksum_file, "#{valid_checksum}\n\n")
+    end
+
+    after do
+      File.delete(migration_file)
+      File.delete(checksum_file)
+    end
+
+    # Two trailing newlines leave the content longer than 64 characters even
+    # after chomp, so this is reported by the length check rather than the
+    # trailing-newline check. Either way it is rejected.
+    it 'returns an error result', :aggregate_failures do
+      expect(check.error_code).to eq(1)
+      expect(check.error_message).to include('Invalid checksum length')
+      expect(check.error_message).to include(migration_file)
+    end
+  end
+
   context 'with multiple migrations' do
     let(:timestamp2) { '20250325123456' }
     let(:migration_file2) { "#{db_migration_path}/#{timestamp2}_another_migration.rb" }

@@ -48,13 +48,16 @@ class MigrationChecksumChecker
         elsif File.zero?(checksum_file)
           issues[migration_file] = "Empty checksum file"
         else
-          checksum_content = File.read(checksum_file).chomp
+          raw_content = File.read(checksum_file)
+          checksum_content = raw_content.chomp
           expected_checksum = Digest::SHA256.hexdigest(timestamp)
 
           if checksum_content.length != CHECKSUM_LENGTH
             issues[migration_file] = "Invalid checksum length"
           elsif checksum_content != expected_checksum
             issues[migration_file] = "Invalid checksum content (expected #{expected_checksum})"
+          elsif raw_content != checksum_content
+            issues[migration_file] = "Trailing newline in checksum file (must contain only the 64-char checksum)"
           end
         end
       end

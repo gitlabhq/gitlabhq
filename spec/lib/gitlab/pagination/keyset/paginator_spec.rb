@@ -36,6 +36,36 @@ RSpec.describe Gitlab::Pagination::Keyset::Paginator do
       it { is_expected.not_to have_previous_page }
     end
 
+    context 'when the cursor points past the end of the results' do
+      let(:cursor) do
+        described_class::Base64CursorConverter.dump(
+          created_at: project.created_at.to_fs(:inspect), id: project.id.to_s, _kd: direction
+        )
+      end
+
+      context 'when paginating forward' do
+        let(:project) { project_5 }
+        let(:direction) { described_class::FORWARD_DIRECTION }
+
+        it 'returns no records and no cursors' do
+          expect(paginator.records).to be_empty
+          expect(paginator.cursor_for_next_page).to be_nil
+          expect(paginator.cursor_for_previous_page).to be_nil
+        end
+      end
+
+      context 'when paginating backward' do
+        let(:project) { project_1 }
+        let(:direction) { described_class::BACKWARD_DIRECTION }
+
+        it 'returns no records and no cursors' do
+          expect(paginator.records).to be_empty
+          expect(paginator.cursor_for_next_page).to be_nil
+          expect(paginator.cursor_for_previous_page).to be_nil
+        end
+      end
+    end
+
     context 'when page size is smaller than the record count' do
       let(:per_page) { 2 }
 

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::TriggerPolicy, feature_category: :continuous_integration do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:trigger) { create(:ci_trigger, project: project, owner: create(:user)) }
+  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be_with_refind(:trigger) { create(:ci_trigger, project: project, owner: create(:user)) }
 
   subject { described_class.new(user, trigger) }
 
@@ -16,7 +16,7 @@ RSpec.describe Ci::TriggerPolicy, feature_category: :continuous_integration do
       end
 
       context 'when user is maintainer of the project' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -27,7 +27,7 @@ RSpec.describe Ci::TriggerPolicy, feature_category: :continuous_integration do
 
     context 'when owner is another user' do
       context 'when user is maintainer of the project' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 
@@ -36,7 +36,7 @@ RSpec.describe Ci::TriggerPolicy, feature_category: :continuous_integration do
       end
 
       context 'when user is developer of the project' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -51,14 +51,14 @@ RSpec.describe Ci::TriggerPolicy, feature_category: :continuous_integration do
     end
 
     context 'when user is admin user with enabled admin mode', :enable_admin_mode do
-      let(:user) { create(:admin) }
+      let_it_be_with_refind(:user) { create(:admin) }
 
       it { is_expected.to be_allowed(:manage_trigger) }
       it { is_expected.to be_allowed(:admin_trigger) }
     end
 
     context 'when user is admin user without enabled admin mode', :do_not_mock_admin_mode_setting do
-      let(:user) { create(:admin) }
+      let_it_be_with_refind(:user) { create(:admin) }
 
       it { is_expected.to be_allowed(:manage_trigger) }
       it { is_expected.to be_allowed(:admin_trigger) }

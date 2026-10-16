@@ -128,9 +128,7 @@ const updateLinkedItems = (linkedItemsWidget, context) => {
 
 export const config = {
   typeDefs,
-  // Gated on the flag so this link (which only matches work item queries) doesn't run for
-  // every other app that shares this client.
-  links: window.gon?.features?.workItemsRealtime ? [getRealtimeRequestTagLink()] : [],
+  links: [getRealtimeRequestTagLink()],
   cacheConfig: {
     typePolicies: {
       Query: {

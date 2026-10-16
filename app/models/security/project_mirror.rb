@@ -8,5 +8,20 @@ module Security
     self.primary_key = :project_id
 
     belongs_to :project
+
+    class << self
+      def sync!(event)
+        project = event.project
+
+        upsert(
+          {
+            project_id: event.project_id,
+            namespace_id: project.namespace_id,
+            organization_id: project.organization_id
+          },
+          unique_by: :project_id
+        )
+      end
+    end
   end
 end

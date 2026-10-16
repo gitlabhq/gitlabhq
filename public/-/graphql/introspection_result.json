@@ -37489,6 +37489,46 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "dropReason",
+                  "description": "Filter by one or many drop reasons (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed). Unrecognized values match nothing",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "dropReasonNot",
+                  "description": "Exclude one or many drop reasons. Flows with no recorded reason are excluded whenever at least one value is recognized. Unrecognized values are ignored. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "projectId",
                   "description": "Filter by one or many project Global IDs",
                   "type": {
@@ -157493,6 +157533,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "dropReason",
+              "description": "Why a failed flow was dropped (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed). Returns `null` for flows that did not fail or whose drop recorded no reason",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,

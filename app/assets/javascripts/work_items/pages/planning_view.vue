@@ -2083,12 +2083,7 @@ export default {
       }
     },
     subscribeToWorkItemChanges(namespaceId) {
-      if (
-        this.workItemChangesSubscription ||
-        !namespaceId ||
-        !this.glFeatures.workItemsRealtime ||
-        !this.isLoggedIn
-      ) {
+      if (this.workItemChangesSubscription || !namespaceId || !this.isLoggedIn) {
         return;
       }
 
@@ -2105,7 +2100,7 @@ export default {
     // No next handler needed: Apollo caches the payload by __typename/id,
     // so the savedView query re-emits and its result hook re-applies the config.
     subscribeToSavedViewChanges(savedViewId) {
-      if (!this.glFeatures.workItemsRealtime || !this.isLoggedIn) {
+      if (!this.isLoggedIn) {
         return;
       }
       if (this.savedViewChangesSubscription?.savedViewId === savedViewId) {
@@ -2130,10 +2125,6 @@ export default {
     // A reconnect doesn't replay what was missed while disconnected, so the list can look live
     // but be stale. Reload everything rather than working out what changed.
     refetchAfterReconnect() {
-      if (!this.glFeatures.workItemsRealtime) {
-        return;
-      }
-
       this.refetchItems({ refetchCounts: true, cause: 'reconnect' });
       if (this.isSavedView) {
         this.$apollo.queries.savedView.refetch();

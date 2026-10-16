@@ -28,88 +28,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     it { is_expected.to delegate_to(ProjectPolicy) }
   end
 
-  shared_examples 'support bot' do
-    let(:user) { support_bot }
-
-    context 'with service desk enabled' do
-      let(:support_bot_permissions) do
-        [
-          :read_issue, :read_note, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :set_issue_metadata,
-          :set_confidentiality, :admin_issue_relation, :move_issue, :clone_issue
-        ]
-      end
-
-      before do
-        allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-        allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
-
-        project.update!(service_desk_enabled: true)
-      end
-
-      context 'on an issue' do
-        it { expect_allowed(*support_bot_permissions) }
-      end
-
-      context 'on an issue without assignee' do
-        let(:issue) { issue_no_assignee }
-
-        it { expect_allowed(*support_bot_permissions) }
-      end
-
-      context 'on a new issue' do
-        let(:issue) { new_issue }
-
-        it { expect_allowed(*support_bot_permissions) }
-      end
-    end
-
-    context 'with service desk disabled' do
-      let(:all_permissions) { described_class.ability_map.map.keys }
-
-      context 'on an issue' do
-        it { expect_disallowed(*all_permissions) }
-      end
-
-      context 'on an issue without assignee' do
-        let(:issue) { issue_no_assignee }
-
-        it { expect_disallowed(*all_permissions) }
-      end
-
-      context 'on a new issue' do
-        let(:issue) { new_issue }
-
-        it { expect_disallowed(*all_permissions) }
-      end
-    end
-  end
-
-  shared_examples 'alert bot' do
-    let(:user) { alert_bot }
-    let(:alert_bot_permissions) do
-      [
-        :read_issue, :read_note, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata,
-        :set_confidentiality, :move_issue, :clone_issue
-      ]
-    end
-
-    context 'on an issue' do
-      it { expect_allowed(*alert_bot_permissions) }
-    end
-
-    context 'on an issue without assignee' do
-      let(:issue) { issue_no_assignee }
-
-      it { expect_allowed(*alert_bot_permissions) }
-    end
-
-    context 'on a new issue' do
-      let(:issue) { new_issue }
-
-      it { expect_allowed(*alert_bot_permissions) }
-    end
-  end
-
   # Role permissions on a plain issue come from the role YAML and are checked by
   # ee/spec/lib/authz/role_definitions_spec.rb. These contexts cover IssuePolicy's own rules.
   context 'a private project' do
@@ -236,14 +154,43 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
     end
 
-    it_behaves_like 'alert bot'
-    it_behaves_like 'support bot'
+    context 'for the support bot' do
+      let(:user) { support_bot }
+
+      context 'with service desk enabled' do
+        before do
+          allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
+          allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+
+          project.update!(service_desk_enabled: true)
+        end
+
+        context 'on an issue' do
+          it { expect_allowed(:read_issue, :update_issue, :admin_issue_relation) }
+          it { expect_disallowed(:admin_issue_link) }
+        end
+      end
+
+      context 'with service desk disabled' do
+        context 'on an issue' do
+          it { expect_disallowed(*described_class.ability_map.map.keys) }
+        end
+      end
+    end
+
+    context 'for the alert bot' do
+      let(:user) { alert_bot }
+
+      context 'on an issue' do
+        it { expect_allowed(:read_issue, :update_issue, :admin_issue_relation) }
+        it { expect_disallowed(:admin_issue_link) }
+      end
+    end
   end
 
   context 'a public project' do
     let_it_be_with_reload(:project) { create(:project, :public) }
     let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
-    let_it_be_with_reload(:issue_no_assignee) { create(:issue, project: project) }
     let_it_be_with_reload(:issue_locked) { create(:issue, :locked, project: project, author: author, assignees: [assignee]) }
     let_it_be(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
     let_it_be(:confidential_issue_no_assignee) { create(:issue, :confidential, project: project) }
@@ -404,9 +351,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
     end
 
-    it_behaves_like 'support bot'
-    it_behaves_like 'alert bot'
-
     context 'when issues are private' do
       before_all do
         project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
@@ -441,9 +385,6 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
           it { expect_disallowed(:read_issue, :create_note, :admin_issue_link) }
         end
       end
-
-      it_behaves_like 'alert bot'
-      it_behaves_like 'support bot'
     end
   end
 

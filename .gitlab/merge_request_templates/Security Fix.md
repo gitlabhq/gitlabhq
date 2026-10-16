@@ -26,6 +26,7 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label
+- [ ] If this fix changes default behavior that could block legitimate user flows, it ships with an admin opt-out, project setting, or other console-free remediation path on day one.
 
 **Note:** Reviewer/maintainer should not be a [Release Manager].
 

@@ -3,8 +3,6 @@
 module API
   module WorkItems
     class LinkedItems < ::API::Base
-      include PaginationParams
-
       before { authenticate! }
       before { check_work_item_rest_api_feature_flag! }
 
@@ -12,6 +10,7 @@ module API
       urgency :low
 
       helpers ::API::Helpers::WorkItems::ShowParams
+      helpers ::API::Helpers::WorkItems::CursorPaginationParams
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
@@ -24,7 +23,7 @@ module API
             desc: 'Filter linked items by state. Supported values: opened, closed.'
           optional :link_type, type: String, values: ::WorkItems::RelatedWorkItemLink.available_link_types,
             desc: 'Filter by link type. Returns all link types if omitted.'
-          use :pagination
+          use :work_items_cursor_pagination_params
         end
       end
 

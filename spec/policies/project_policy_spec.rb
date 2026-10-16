@@ -540,10 +540,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
   context 'when a public project has merge requests allowing access' do
     include ProjectForksHelper
-    let(:current_user) { create(:user) }
-    let(:target_project) { create(:project, :public) }
-    let(:project) { fork_project(target_project) }
-    let!(:merge_request) do
+    let_it_be_with_reload(:target_project) { create(:project, :public) }
+    let_it_be_with_reload(:project) { fork_project(target_project, nil, repository: true) }
+    let_it_be_with_reload(:merge_request) do
       create(
         :merge_request,
         target_project: target_project,
@@ -551,6 +550,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         allow_collaboration: true
       )
     end
+
+    let(:current_user) { non_member }
 
     let(:maintainer_abilities) do
       %w[create_build create_pipeline]

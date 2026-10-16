@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe NotePolicy, feature_category: :team_planning do
   describe '#rules', :aggregate_failures do
     let_it_be(:user, freeze: false) { create(:user) }
-    let(:project) { create(:project, :public) }
+    let_it_be_with_refind(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project) }
     let(:noteable) { issue }
     let(:policy) { described_class.new(user, note) }
@@ -23,7 +23,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
       end
 
       context 'when the note author can still see the noteable' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -92,7 +92,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
       end
 
       context 'when project is private' do
-        let(:project) { create(:project, :private) }
+        let_it_be_with_refind(:project) { create(:project, :private) }
 
         it_behaves_like 'user cannot read or act on the note'
       end
@@ -197,7 +197,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
         end
 
         context 'when the note author is a project member' do
-          before do
+          before_all do
             project.add_developer(user)
           end
 
@@ -226,7 +226,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
         let_it_be(:maintainer) { create(:user) }
         let(:policy) { described_class.new(maintainer, note) }
 
-        before do
+        before_all do
           project.add_maintainer(maintainer)
         end
 
@@ -287,7 +287,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
         context 'when noteable is a public issue' do
           let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
 
-          before do
+          before_all do
             project.add_developer(developer)
           end
 
@@ -338,7 +338,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
           let(:confidential_issue) { create(:issue, :confidential, project: project) }
           let(:note) { create(:note, system: true, noteable: issue, author: user, project: project, note: "mentioned in issue #{confidential_issue.to_reference(project)}") }
 
-          before do
+          before_all do
             project.add_developer(developer)
           end
 

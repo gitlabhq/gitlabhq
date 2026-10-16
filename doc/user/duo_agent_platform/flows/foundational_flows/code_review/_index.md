@@ -155,16 +155,17 @@ For more information, see [interact with GitLab Duo](../../../../project/merge_r
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-GitLab Duo can approve or request changes on a merge request based on its review findings.
+GitLab Duo can approve or request changes on a merge request based on its review findings:
 
-When GitLab Duo finds nothing to comment on, it approves the merge request. Otherwise, it requests changes.
+- When GitLab Duo finds nothing to comment on, it approves the merge request.
+  An approval from GitLab Duo does not count toward required approvals.
 
-GitLab Duo's approval does not count toward required approvals.
+- When GitLab Duo finds something to comment on, it requests changes. If a user's request for
+  changes blocks a merge request on your project, a request from GitLab Duo has the same effect.
+  The request for changes remains until GitLab Duo approves in a follow-up review, or a user
+  [bypasses the request for changes](../../../../project/merge_requests/reviews/_index.md#bypass-a-request-for-changes).
 
-A request for changes stays on the merge request until a later review finds nothing to comment on
-and approves it, or a user [bypasses the request for changes](../../../../project/merge_requests/reviews/_index.md#bypass-a-request-for-changes).
-On instances where a request for changes blocks a merge request from merging, a request for changes
-from GitLab Duo has the same effect.
+Provide feedback on this feature in [issue 634068](https://gitlab.com/gitlab-org/gitlab/-/work_items/634068).
 
 You can turn on this setting for a project, a group, or an instance.
 

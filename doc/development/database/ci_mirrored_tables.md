@@ -65,6 +65,21 @@ This replication was restricted only to a few attributes that are needed from ea
 - From `Namespace` we replicate `traversal_ids` and `organization_id`.
 - From `Project` we replicate `namespace_id` and `organization_id`.
 
+### Sec mirrored tables
+
+The `sec` database, split from `main` later than `ci`, has the same problem: it cannot join to
+the `namespaces` and `projects` tables.
+The same solution applies here, using two mirrored tables:
+
+- `sec_namespace_mirrors`, a mirror of `namespaces`.
+- `sec_project_mirrors`, a mirror of `projects`.
+
+The same sync event tables and Sidekiq workers described on this page update the `ci` and `sec`
+mirror tables together, replicating the same attributes.
+Each mirror database marks its own `*_synced` column on the event row, so a failure while writing
+one mirror does not stop the others, and the job is retried for the failed mirror.
+An event row is deleted once every active mirror has marked it.
+
 ## Keeping the CI mirrored tables in sync with the source tables
 
 We must care about three types of events to keep

@@ -13,7 +13,7 @@ RSpec.describe Namespaces::ProcessSyncEventsWorker, feature_category: :cell do
 
   describe 'deduplication' do
     before do
-      stub_const("Ci::ProcessSyncEventsService::BATCH_SIZE", 2)
+      stub_const("Database::ProcessSyncEventsService::BATCH_SIZE", 2)
     end
 
     it 'has the `until_executed` deduplicate strategy' do
@@ -55,12 +55,51 @@ RSpec.describe Namespaces::ProcessSyncEventsWorker, feature_category: :cell do
       )
     end
 
+    it 'syncs the security namespace mirrors' do
+      expect { perform }.to change { Security::NamespaceMirror.all }.to contain_exactly(
+        an_object_having_attributes(
+          namespace_id: group1.id, traversal_ids: [group1.id], organization_id: group1.organization_id
+        ),
+        an_object_having_attributes(
+          namespace_id: group2.id, traversal_ids: [group1.id, group2.id], organization_id: group2.organization_id
+        ),
+        an_object_having_attributes(
+          namespace_id: group3.id,
+          traversal_ids: [group1.id, group2.id, group3.id],
+          organization_id: group3.organization_id
+        )
+      )
+    end
+
     it 'logs the service result', :aggregate_failures do
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:estimated_total_events, 5)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:consumable_events, 5)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:processed_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:ci_estimated_total_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:ci_consumable_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:ci_processed_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:sec_estimated_total_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:sec_consumable_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:sec_processed_events, 5)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:deleted_events, 5)
 
       perform
+    end
+
+    context 'when the sync_sec_mirror_tables feature flag is disabled' do
+      before do
+        stub_feature_flags(sync_sec_mirror_tables: false)
+      end
+
+      it 'consumes the events without writing security namespace mirrors' do
+        expect { perform }.to change { Namespaces::SyncEvent.count }.to(0)
+          .and not_change { Security::NamespaceMirror.count }
+      end
+
+      it 'also deletes events that were already marked as synced to ci' do
+        leftover = group1.sync_events.create!(ci_synced: true)
+
+        perform
+
+        expect(Namespaces::SyncEvent.where(id: leftover.id)).to be_empty
+      end
     end
   end
 end

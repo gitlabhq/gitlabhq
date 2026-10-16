@@ -6,11 +6,11 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
   let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }
 
-  let(:user) { create(:user) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:environment) { create(:environment, project: project, name: 'production') }
+  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:environment) { create(:environment, project: project, name: 'production') }
 
-  let(:job) do
+  let_it_be_with_refind(:job) do
     create(factory_type, pipeline: pipeline, project: project, environment: 'production', ref: 'development')
   end
 

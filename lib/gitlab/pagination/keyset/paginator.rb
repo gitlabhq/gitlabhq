@@ -97,7 +97,7 @@ module Gitlab
         end
 
         def cursor_for_next_page
-          if has_next_page?
+          if has_next_page? && records.any?
             data = order.cursor_attributes_for_node(records.last)
             data[direction_key] = FORWARD_DIRECTION
             cursor_converter.dump(data)
@@ -105,7 +105,7 @@ module Gitlab
         end
 
         def cursor_for_previous_page
-          if has_previous_page?
+          if has_previous_page? && records.any?
             data = order.cursor_attributes_for_node(records.first)
             data[direction_key] = BACKWARD_DIRECTION
             cursor_converter.dump(data)

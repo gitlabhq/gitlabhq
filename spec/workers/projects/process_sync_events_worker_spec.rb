@@ -35,12 +35,37 @@ RSpec.describe Projects::ProcessSyncEventsWorker, feature_category: :cell do
       )
     end
 
+    it 'syncs the security project mirror' do
+      expect { perform }.to change { Security::ProjectMirror.all }.to contain_exactly(
+        an_object_having_attributes(
+          project_id: project.id,
+          namespace_id: group.id,
+          organization_id: project.organization_id
+        )
+      )
+    end
+
     it 'logs the service result', :aggregate_failures do
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:estimated_total_events, 2)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:consumable_events, 2)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:processed_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:ci_estimated_total_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:ci_consumable_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:ci_processed_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:sec_estimated_total_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:sec_consumable_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:sec_processed_events, 2)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:deleted_events, 2)
 
       perform
+    end
+
+    context 'when the sync_sec_mirror_tables feature flag is disabled' do
+      before do
+        stub_feature_flags(sync_sec_mirror_tables: false)
+      end
+
+      it 'consumes the events without writing security project mirrors' do
+        expect { perform }.to change { Projects::SyncEvent.count }.to(0)
+          .and not_change { Security::ProjectMirror.count }
+      end
     end
   end
 end

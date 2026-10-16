@@ -37089,6 +37089,8 @@ Arguments:
 | <a id="analytics-duoworkflows-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by flow creation timestamp. Start of the range. |
 | <a id="analytics-duoworkflows-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by flow creation timestamp. End of the range. |
 | <a id="analytics-duoworkflows-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
+| <a id="analytics-duoworkflows-dropreason"></a>`dropReason` | [`[String!]`](#string) | Filter by one or many drop reasons (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed). Unrecognized values match nothing. |
+| <a id="analytics-duoworkflows-dropreasonnot"></a>`dropReasonNot` | [`[String!]`](#string) | Exclude one or many drop reasons. Flows with no recorded reason are excluded whenever at least one value is recognized. Unrecognized values are ignored. Maximum is 100. |
 | <a id="analytics-duoworkflows-flowtypesusedfrom"></a>`flowTypesUsedFrom` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. Start of the range. |
 | <a id="analytics-duoworkflows-flowtypesusedto"></a>`flowTypesUsedTo` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-groupid"></a>`groupId` | [`[String!]`](#string) | Filter by one or many group Global IDs, including flows from their descendants. |
@@ -45575,6 +45577,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-dropreason"></a>`dropReason` | [`String`](#string) | Why a failed flow was dropped (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed). Returns `null` for flows that did not fail or whose drop recorded no reason. |
 | <a id="duoworkflowsaggregationresponsedimensions-model"></a>`model` | [`DuoWorkflowsModelMetadata`](#duoworkflowsmodelmetadata) | Model used by the flow, resolved to catalog metadata. |
 | <a id="duoworkflowsaggregationresponsedimensions-modelused"></a>`modelUsed` | [`String`](#string) | Model used by the flow. |
 | <a id="duoworkflowsaggregationresponsedimensions-project"></a>`project` | [`Project`](#project) | Project the flow ran in. Returns `null` for flows not scoped to a project. |

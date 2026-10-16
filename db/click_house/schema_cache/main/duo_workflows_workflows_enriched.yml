@@ -107,6 +107,8 @@ columns:
   type: Nullable(String)
 - name: execution_mode
   type: Nullable(Int16)
+- name: drop_reason
+  type: LowCardinality(Nullable(String))
 - name: credits_used
   type: Float64
   default_kind: DEFAULT

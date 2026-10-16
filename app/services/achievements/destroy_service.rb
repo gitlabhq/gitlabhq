@@ -12,8 +12,11 @@ module Achievements
     def execute
       return error_no_permissions unless allowed?
 
-      achievement.delete
-      ServiceResponse.success(payload: achievement)
+      if achievement.destroy
+        ServiceResponse.success(payload: achievement)
+      else
+        error_deleting
+      end
     end
 
     private
@@ -24,6 +27,10 @@ module Achievements
 
     def error_no_permissions
       error('You have insufficient permissions to delete this achievement')
+    end
+
+    def error_deleting
+      error(achievement.errors.full_messages.presence || 'Failed to delete achievement')
     end
 
     def error(message)

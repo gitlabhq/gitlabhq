@@ -21,6 +21,8 @@ RSpec.describe API::WorkItems::LinkedItems, feature_category: :portfolio_managem
     stub_feature_flags(work_item_rest_api: user)
   end
 
+  it_behaves_like 'work item list routes declaring cursor pagination', 'linked_items'
+
   shared_examples 'linked items endpoint' do
     it 'returns linked items with link metadata, ordered by link id desc', :aggregate_failures do
       get api(api_request_path, user)
@@ -48,6 +50,8 @@ RSpec.describe API::WorkItems::LinkedItems, feature_category: :portfolio_managem
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'a work item endpoint paginated by cursor'
 
     context 'with state filter' do
       it 'returns only opened linked items when state=opened' do

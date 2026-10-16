@@ -42,9 +42,9 @@ RSpec.describe Ci::Catalog::Resources::ProcessSyncEventsWorker, feature_category
     end
 
     it 'logs the service result', :aggregate_failures do
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:estimated_total_events, 3)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:consumable_events, 3)
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:processed_events, 3)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:catalog_estimated_total_events, 3)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:catalog_consumable_events, 3)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:catalog_processed_events, 3)
 
       perform
     end

@@ -98,16 +98,6 @@ RSpec.describe Subscriptions::WorkItems::NamespaceWorkItemChanges, feature_categ
     end
   end
 
-  context 'when the work_items_realtime feature flag is disabled' do
-    before do
-      stub_feature_flags(work_items_realtime: false)
-    end
-
-    it 'does not receive any data' do
-      expect(response).to be_nil
-    end
-  end
-
   def namespace_work_item_changes_subscription(namespace, current_user)
     mock_channel = Graphql::Subscriptions::ActionCable::MockActionCable.get_mock_channel
 

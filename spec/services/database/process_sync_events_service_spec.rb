@@ -2,21 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integration do
+RSpec.describe Database::ProcessSyncEventsService, feature_category: :cell do
   let!(:group) { create(:group) }
   let!(:project1) { create(:project, group: group) }
   let!(:project2) { create(:project, group: group) }
   let_it_be(:parent_group_1) { create(:group) }
   let!(:parent_group_2) { create(:group) }
 
-  subject(:service) { described_class.new(sync_event_class, hierarchy_class) }
+  subject(:service) { described_class.new(sync_event_class, sync_classes_by_consumer) }
 
   describe '#perform' do
     subject(:execute) { service.execute }
 
     context 'for Projects::SyncEvent' do
       let(:sync_event_class) { Projects::SyncEvent }
-      let(:hierarchy_class) { ::Ci::ProjectMirror }
+      let(:sync_classes_by_consumer) { { ci: ::Ci::ProjectMirror } }
 
       before do
         Projects::SyncEvent.delete_all
@@ -25,10 +25,10 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         project2.update!(group: parent_group_2)
       end
 
-      it { is_expected.to eq(service_results(2, 2, 2)) }
+      it { is_expected.to eq(service_results(:ci, 2, 2, 2)) }
 
       it 'consumes events' do
-        expect { execute }.to change { Projects::SyncEvent.count }.from(2).to(0)
+        expect { execute }.to change { Projects::SyncEvent.unprocessed_events_for(:ci).count }.from(2).to(0)
 
         expect(project1.reload.ci_project_mirror).to have_attributes(
           namespace_id: parent_group_1.id
@@ -38,12 +38,57 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         )
       end
 
+      context 'with multiple consumers' do
+        let(:extra_sync_class) { class_double(::Ci::ProjectMirror) }
+        let(:sync_classes_by_consumer) { { ci: ::Ci::ProjectMirror, sec: extra_sync_class } }
+
+        before do
+          allow(extra_sync_class).to receive(:sync!)
+        end
+
+        it 'syncs every event to every consumer and marks the events for both' do
+          expect(extra_sync_class).to receive(:sync!).twice
+
+          expect { execute }.to change {
+            Projects::SyncEvent.where(ci_synced: true, sec_synced: true).count
+          }.from(0).to(2)
+        end
+
+        it 'returns the results per consumer' do
+          is_expected.to eq(service_results(:ci, 2, 2, 2).merge(service_results(:sec, 2, 2, 2)))
+        end
+
+        context 'when a consumer fails' do
+          before do
+            allow(extra_sync_class).to receive(:sync!).and_raise(ActiveRecord::StatementTimeout)
+          end
+
+          it 'still processes the other consumers, keeps the events and re-raises' do
+            expect { execute }.to raise_error(ActiveRecord::StatementTimeout)
+
+            expect(Projects::SyncEvent.where(ci_synced: true).count).to eq(2)
+            expect(Projects::SyncEvent.where(sec_synced: true).count).to eq(0)
+            expect(project1.reload.ci_project_mirror).to have_attributes(namespace_id: parent_group_1.id)
+          end
+
+          it 'applies the kept events on a later run once the consumer recovers' do
+            expect { execute }.to raise_error(ActiveRecord::StatementTimeout)
+
+            expect(extra_sync_class).to receive(:sync!).twice.and_return(true)
+            next_run = described_class.new(sync_event_class, sync_classes_by_consumer)
+
+            expect { next_run.execute }
+              .to change { Projects::SyncEvent.unprocessed_events_for(:sec).count }.from(2).to(0)
+          end
+        end
+      end
+
       context 'when any event left after processing' do
         before do
           stub_const("#{described_class}::BATCH_SIZE", 1)
         end
 
-        it { is_expected.to eq(service_results(2, 1, 1)) }
+        it { is_expected.to eq(service_results(:ci, 2, 1, 1)) }
 
         it 'enqueues Projects::ProcessSyncEventsWorker' do
           expect(Projects::ProcessSyncEventsWorker).to receive(:perform_async)
@@ -57,7 +102,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
           stub_const("#{described_class}::BATCH_SIZE", 2)
         end
 
-        it { is_expected.to eq(service_results(2, 2, 2)) }
+        it { is_expected.to eq(service_results(:ci, 2, 2, 2)) }
 
         it 'does not enqueue Projects::ProcessSyncEventsWorker' do
           expect(Projects::ProcessSyncEventsWorker).not_to receive(:perform_async)
@@ -71,7 +116,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
           Projects::SyncEvent.delete_all
         end
 
-        it { is_expected.to eq(service_results(0, 0, nil)) }
+        it { is_expected.to eq(service_results(:ci, 0, 0, nil)) }
 
         it 'does nothing' do
           expect { execute }.not_to change { Projects::SyncEvent.count }
@@ -79,43 +124,34 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
       end
 
       context 'when there is non-executed events' do
+        let(:new_project) { create(:project) }
+        let(:new_project_sync_event) { new_project.sync_events.last }
+
         before do
-          new_project = create(:project)
+          new_project
           sync_event_class.delete_all
 
           project1.update!(group: parent_group_2)
           new_project.update!(group: parent_group_1)
           project2.update!(group: parent_group_1)
 
-          @new_project_sync_event = new_project.sync_events.last
-
           allow(sync_event_class).to receive(:preload_synced_relation).and_return(
-            sync_event_class.where.not(id: @new_project_sync_event)
+            sync_event_class.where.not(id: new_project_sync_event)
           )
         end
 
-        it { is_expected.to eq(service_results(3, 2, 2)) }
+        it { is_expected.to eq(service_results(:ci, 3, 2, 2)) }
 
-        it 'does not delete non-executed events' do
-          expect { execute }.to change { Projects::SyncEvent.count }.from(3).to(1)
-          expect(@new_project_sync_event.reload).to be_persisted
+        it 'does not mark non-executed events' do
+          expect { execute }.to change { Projects::SyncEvent.unprocessed_events_for(:ci).count }.from(3).to(1)
+          expect(new_project_sync_event.reload.ci_synced).to be(false)
         end
-      end
-
-      private
-
-      def service_results(total, consumable, processed)
-        {
-          estimated_total_events: total,
-          consumable_events: consumable,
-          processed_events: processed
-        }.compact
       end
     end
 
     context 'for Namespaces::SyncEvent' do
       let(:sync_event_class) { Namespaces::SyncEvent }
-      let(:hierarchy_class) { ::Ci::NamespaceMirror }
+      let(:sync_classes_by_consumer) { { ci: ::Ci::NamespaceMirror } }
 
       before do
         Namespaces::SyncEvent.delete_all
@@ -128,7 +164,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
 
       shared_examples 'event consuming' do
         it 'consumes events' do
-          expect { execute }.to change { Namespaces::SyncEvent.count }.from(7).to(0)
+          expect { execute }.to change { Namespaces::SyncEvent.unprocessed_events_for(:ci).count }.from(7).to(0)
 
           expect(group.reload.ci_namespace_mirror).to have_attributes(
             traversal_ids: [parent_group_1.id, parent_group_2.id, group.id]
@@ -166,7 +202,7 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
 
     context 'for Ci::Catalog::Resources::SyncEvent' do
       let(:sync_event_class) { Ci::Catalog::Resources::SyncEvent }
-      let(:hierarchy_class) { Ci::Catalog::Resource }
+      let(:sync_classes_by_consumer) { { catalog: ::Ci::Catalog::Resource } }
 
       let_it_be(:project1, freeze: false) { create(:project) }
       let_it_be(:project2, freeze: false) { create(:project) }
@@ -192,6 +228,10 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         expect(resource2.reload.description).to eq(project2.description)
         expect(resource1.reload.visibility_level).to eq(project1.visibility_level)
         expect(resource2.reload.visibility_level).to eq(project2.visibility_level)
+      end
+
+      it 'returns the results prefixed with the consumer' do
+        is_expected.to eq(service_results(:catalog, 4, 4, 4))
       end
 
       context 'when there are no remaining unprocessed events' do
@@ -228,5 +268,15 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         end
       end
     end
+  end
+
+  private
+
+  def service_results(consumer, total, consumable, processed)
+    {
+      "#{consumer}_estimated_total_events": total,
+      "#{consumer}_consumable_events": consumable,
+      "#{consumer}_processed_events": processed
+    }.compact
   end
 end

@@ -25,6 +25,7 @@ title: Duo workflows
 - `creditsPerMergedMrRatio` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/533) in GitLab 19.5.
 - `!=` and `not in` operators on the `flowType`, `status`, and `user` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 - `model` dimension [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/539) to display the model catalog name in GitLab 19.5.
+- `dropReason` filter and dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/552) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -67,6 +68,7 @@ Use these fields in the `query` parameter to filter your results.
 | ----------------------------------- | --------------------------------------------- | ------------------------- |
 | [Active days](#active-days)         | `activeDays`                                  | `=`, `>`, `<`, `>=`, `<=` |
 | [Created](#created)                 | `created` (`opened`, `openedAt`, `createdAt`) | `=`, `>`, `<`, `>=`, `<=` |
+| [Drop reason](#drop-reason)         | `dropReason`                                  | `=`, `!=`, `in`, `not in` |
 | [Flow type](#flow-type)             | `flowType`                                    | `=`, `!=`, `in`, `not in` |
 | [Flow types used](#flow-types-used) | `flowTypesUsed`                               | `=`, `>`, `<`, `>=`, `<=` |
 | [Status](#status)                   | `status`                                      | `=`, `!=`, `in`, `not in` |
@@ -99,6 +101,24 @@ Use multiple `created` conditions to define a specified time period.
 **Notes**:
 
 - For the `=` operator, GLQL considers the time range from 00:00 to 23:59 in the user's time zone.
+
+### Drop reason
+
+**Description**: Filter failed flows by the reason recorded when they were dropped.
+
+**Allowed value types**:
+
+- `Enum`, one of `job_failed`, `no_status_reported`, `no_activity`, `workload_not_created`, `api_reported`, `preconditions_not_met`, or `start_failed`
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- `no_activity` is the stuck-session cleanup, `no_status_reported` means the CI workload
+  ended without a terminal status, `job_failed` is a CI job that did not succeed,
+  `workload_not_created`, `preconditions_not_met`, and `start_failed` mean the flow never
+  started, and `api_reported` is the agent reporting an error.
+- Flows that did not fail, or that were dropped before reasons were recorded, have no reason.
+  No operator matches them, so `!=` and `not in` exclude them as well.
 
 ### Flow type
 
@@ -152,16 +172,17 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 
 ## Dimensions
 
-| Dimension | Name       | Description |
-| --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `created(weekly)` or `created(granularity=30d, origin=2026-07-16)`. |
-| Flow type | `flowType` | Group by flow type. |
-| Group     | `group`    | Group by group. Accepts a `depth` parameter counted from the top-level group, from `1` to `99` (default: `1`), so `group` returns top-level groups and `group(depth=2)` their subgroups. Flows above that depth, or in a project at that depth rather than in a subgroup (for example, a project directly under the top-level group when `depth=2`), have no group, and the result can contain more than one row with no group. |
-| Model     | `model`    | Group by the model the flow used (displays the model catalog name). Models that are not in the catalog display their raw identifier. Flows with no model attribution have no name. Rows are grouped by the model identifier the flow reported, so one catalog name can appear in more than one row or chart bar. |
-| Project   | `project`  | Group by project. Flows that are not scoped to a project are grouped into a single row with no project. |
-| Status    | `status`   | Group by flow status. Rows are sorted in lifecycle order, not alphabetically. |
-| User      | `user`     | Group by user (displays avatar, name, and username). |
-| User tier | `userTier` | Group users by how many flows they ran in the whole selected period, even when another dimension such as `created(weekly)` is also selected. Requires a `thresholds` parameter: a list of one to nine strictly ascending integers of at least `1`, with no default. For example, `userTier(thresholds=[4, 25, 100])` returns `tier_0` (fewer than 4 flows), `tier_1` (4 to 24), `tier_2` (25 to 99), and `tier_3` (100 or more). A single threshold can be written without brackets: `userTier(8)`. |
+| Dimension   | Name         | Description |
+| ----------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Created     | `created`    | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `created(weekly)` or `created(granularity=30d, origin=2026-07-16)`. |
+| Drop reason | `dropReason` | Group by the reason recorded when a failed flow was dropped: `job_failed`, `no_status_reported`, `no_activity`, `workload_not_created`, `api_reported`, `preconditions_not_met`, or `start_failed`. Flows that did not fail, or that were dropped before reasons were recorded, have no reason. |
+| Flow type   | `flowType`   | Group by flow type. |
+| Group       | `group`      | Group by group. Accepts a `depth` parameter counted from the top-level group, from `1` to `99` (default: `1`), so `group` returns top-level groups and `group(depth=2)` their subgroups. Flows above that depth, or in a project at that depth rather than in a subgroup (for example, a project directly under the top-level group when `depth=2`), have no group, and the result can contain more than one row with no group. |
+| Model       | `model`      | Group by the model the flow used (displays the model catalog name). Models that are not in the catalog display their raw identifier. Flows with no model attribution have no name. Rows are grouped by the model identifier the flow reported, so one catalog name can appear in more than one row or chart bar. |
+| Project     | `project`    | Group by project. Flows that are not scoped to a project are grouped into a single row with no project. |
+| Status      | `status`     | Group by flow status. Rows are sorted in lifecycle order, not alphabetically. |
+| User        | `user`       | Group by user (displays avatar, name, and username). |
+| User tier   | `userTier`   | Group users by how many flows they ran in the whole selected period, even when another dimension such as `created(weekly)` is also selected. Requires a `thresholds` parameter: a list of one to nine strictly ascending integers of at least `1`, with no default. For example, `userTier(thresholds=[4, 25, 100])` returns `tier_0` (fewer than 4 flows), `tier_1` (4 to 24), `tier_2` (25 to 99), and `tier_3` (100 or more). A single threshold can be written without brackets: `userTier(8)`. |
 
 ## Metrics
 

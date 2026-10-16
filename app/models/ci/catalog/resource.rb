@@ -100,7 +100,7 @@ module Ci
           ))
         end
 
-        # Used by Ci::ProcessSyncEventsService
+        # Used by Database::ProcessSyncEventsService
         def sync!(event)
           # There may be orphaned records since this table does not enforce FKs
           event.catalog_resource&.sync_with_project!
@@ -137,7 +137,7 @@ module Ci
 
       # These denormalized columns are first synced when a new catalog resource is created.
       # A PG trigger adds a SyncEvent when the associated project updates any of these columns.
-      # A worker processes the SyncEvents with Ci::ProcessSyncEventsService.
+      # A worker processes the SyncEvents with Database::ProcessSyncEventsService.
       def sync_with_project
         self.name = project.name
         self.description = project.description

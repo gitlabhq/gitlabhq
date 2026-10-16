@@ -66,12 +66,13 @@ module Support
     # with at least one positive line hit, strip the project-dir prefix,
     # keep only the line-hit array.
     def extract_per_file(raw)
+      @zero_lines ||= {}
       raw.each_with_object({}) do |(path, data), out|
         next unless PROJECT_DIR_PREFIX_RE.match?(path)
 
         lines = data.is_a?(Hash) ? data[:lines] : data
         next unless lines.is_a?(Array)
-        next unless lines.any? { |v| v && v.positive? }
+        next if lines == (@zero_lines[path] ||= lines.map { |v| v && 0 })
 
         out[path.sub(PROJECT_DIR_PREFIX_RE, '')] = lines
       end

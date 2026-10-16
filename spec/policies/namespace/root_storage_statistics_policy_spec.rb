@@ -6,8 +6,7 @@ RSpec.describe Namespace::RootStorageStatisticsPolicy do
   using RSpec::Parameterized::TableSyntax
 
   describe '#rules' do
-    let(:statistics) { create(:namespace_root_storage_statistics, namespace: namespace) }
-    let(:user) { create(:user) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     subject { Ability.allowed?(user, :read_statistics, statistics) }
 
@@ -20,8 +19,8 @@ RSpec.describe Namespace::RootStorageStatisticsPolicy do
     end
 
     context 'when the namespace is a personal namespace' do
-      let(:owner) { create(:user) }
-      let(:namespace) { owner.namespace }
+      let_it_be(:owner) { create(:user) }
+      let_it_be(:statistics) { create(:namespace_root_storage_statistics, namespace: owner.namespace) }
 
       include_examples 'deny anonymous users'
 
@@ -37,12 +36,14 @@ RSpec.describe Namespace::RootStorageStatisticsPolicy do
     end
 
     context 'when the namespace is a group' do
-      let(:user)     { create(:user) }
-      let(:external) { create(:user, :external) }
+      let_it_be_with_refind(:external) { create(:user, :external) }
 
       shared_examples 'allows only owners' do |group_type|
-        let(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel.level_value(group_type.to_s)) }
-        let(:namespace) { group }
+        let_it_be_with_refind(:group) do
+          create(:group, visibility_level: Gitlab::VisibilityLevel.level_value(group_type.to_s))
+        end
+
+        let_it_be(:statistics) { create(:namespace_root_storage_statistics, namespace: group) }
 
         include_examples 'deny anonymous users'
 
@@ -72,9 +73,9 @@ RSpec.describe Namespace::RootStorageStatisticsPolicy do
         end
       end
 
-      include_examples 'allows only owners', :public
-      include_examples 'allows only owners', :private
-      include_examples 'allows only owners', :internal
+      it_behaves_like 'allows only owners', :public
+      it_behaves_like 'allows only owners', :private
+      it_behaves_like 'allows only owners', :internal
     end
   end
 end

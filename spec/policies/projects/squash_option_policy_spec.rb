@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Projects::SquashOptionPolicy, feature_category: :source_code_management do
-  let(:protected_branch) { create(:protected_branch) }
-  let(:project) { protected_branch.project }
-  let(:maintainer) { create(:user, maintainer_of: project) }
-  let(:developer) { create(:user, developer_of: project) }
-  let(:guest) { create(:user, guest_of: project) }
-  let(:squash_option) { create(:branch_rule_squash_option, protected_branch: protected_branch, project: project) }
+  let_it_be(:protected_branch) { create(:protected_branch) }
+  let_it_be(:project) { protected_branch.project }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:squash_option) do
+    create(:branch_rule_squash_option, protected_branch: protected_branch, project: project)
+  end
 
   subject(:policy) { described_class.new(user, squash_option) }
 

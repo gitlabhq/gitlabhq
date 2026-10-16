@@ -60,16 +60,6 @@ RSpec.describe Subscriptions::WorkItems::SavedViewUpdated, feature_category: :pl
           expect { result }.to raise_error(GraphQL::ExecutionError)
         end
       end
-
-      context 'when the work_items_realtime feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items_realtime: false)
-        end
-
-        it 'raises an exception' do
-          expect { result }.to raise_error(GraphQL::ExecutionError)
-        end
-      end
     end
 
     context 'when receiving an update' do
@@ -104,16 +94,6 @@ RSpec.describe Subscriptions::WorkItems::SavedViewUpdated, feature_category: :pl
           it 'delivers the saved view' do
             expect(result).to eq(saved_view)
           end
-        end
-      end
-
-      context 'when the work_items_realtime feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items_realtime: false)
-        end
-
-        it 'unsubscribes the user' do
-          expect(result).to be_an(GraphQL::Execution::Skip)
         end
       end
     end
