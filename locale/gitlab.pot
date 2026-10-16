@@ -33454,6 +33454,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Add schedule"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Additional details"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
@@ -34036,9 +34039,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Summarize the failing jobs."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Supplemental"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Target"
 msgstr ""
 
@@ -34236,9 +34236,6 @@ msgid "DuoChat|Back to chat"
 msgstr ""
 
 msgid "DuoChat|Back to history"
-msgstr ""
-
-msgid "DuoChat|Beta"
 msgstr ""
 
 msgid "DuoChat|Cancel"
@@ -59674,9 +59671,6 @@ msgstr ""
 msgid "Orbit|All entities"
 msgstr ""
 
-msgid "Orbit|An administrator can start a free trial to turn on Orbit for this instance."
-msgstr ""
-
 msgid "Orbit|And %d more group"
 msgid_plural "Orbit|And %d more groups"
 msgstr[0] ""
@@ -60397,9 +60391,6 @@ msgid "Orbit|Property"
 msgstr ""
 
 msgid "Orbit|Purchase GitLab Orbit to turn it on for this group."
-msgstr ""
-
-msgid "Orbit|Purchase GitLab Orbit to turn it on for this instance."
 msgstr ""
 
 msgid "Orbit|Queries are paused for groups whose trial ended. Talk to your GitLab seller to keep using Orbit."
@@ -65492,9 +65483,6 @@ msgid "Preferences|Automatically add new list items"
 msgstr ""
 
 msgid "Preferences|Behavior"
-msgstr ""
-
-msgid "Preferences|Beta"
 msgstr ""
 
 msgid "Preferences|Billable Orbit namespace"
@@ -77066,6 +77054,11 @@ msgstr ""
 
 msgid "SecurityInventory|You are about to disable %{name} for %{count} item. Are you sure you want to proceed?"
 msgid_plural "SecurityInventory|You are about to disable %{name} for %{count} items. Are you sure you want to proceed?"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityInventory|of %{total} project"
+msgid_plural "SecurityInventory|of %{total} projects"
 msgstr[0] ""
 msgstr[1] ""
 

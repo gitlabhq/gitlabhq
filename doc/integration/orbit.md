@@ -94,6 +94,12 @@ To turn Orbit on or off for your groups:
 On GitLab.com, turning on Orbit for an eligible group starts the free trial of that group.
 The confirmation dialog shows the trial that each group gets.
 
+On GitLab Self-Managed and GitLab Dedicated, you can turn on Orbit for a group without a free trial
+or a purchase. Orbit indexes the group, and the **Group status** tab shows the index status.
+When the `orbit_promo_access_gate` feature flag is enabled, the instance needs a free trial or
+a purchase to run Orbit queries. After the free trial of the instance ends, you need a purchase
+to turn on Orbit for more groups.
+
 ## Orbit in GitLab Duo default
 
 {{< history >}}
@@ -155,6 +161,10 @@ excluded groups.
 The hourly job acts as a safety net after direct database changes.
 These changes can take up to one hour.
 Personal namespaces are not enrolled.
+
+The job enrolls groups without a free trial or a purchase.
+When the `orbit_promo_access_gate` feature flag is enabled and the free trial of the instance
+has ended, the job enrolls groups only when the instance has purchased Orbit.
 
 When you turn off **Turn on Orbit for all top-level groups automatically**, existing non-excluded
 enrollments remain.

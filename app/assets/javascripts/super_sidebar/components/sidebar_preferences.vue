@@ -63,7 +63,7 @@ export default {
 <template>
   <gl-collapsible-listbox
     placement="right"
-    class="gl-shrink-0"
+    class="gl-h-6 gl-w-6 gl-shrink-0"
     data-testid="sidebar-preferences"
     :items="$options.items"
     :selected="mode"
@@ -78,7 +78,6 @@ export default {
         icon="ellipsis_h"
         category="tertiary"
         size="small"
-        class="-gl-mr-2"
         v-bind="accessibilityAttributes"
       />
     </template>

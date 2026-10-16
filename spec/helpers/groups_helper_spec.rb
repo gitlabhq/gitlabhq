@@ -474,6 +474,9 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#groups_show_app_data' do
     let(:initial_sort) { 'created_asc' }
+    let(:group) { build_stubbed(:group, organization: organization) }
+
+    subject(:app_data) { Gitlab::Json.parse(helper.groups_show_app_data(group)) }
 
     before do
       allow(helper).to receive(:can?).with(user, :create_subgroup, group).and_return(true)
@@ -481,19 +484,34 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       allow(helper).to receive_messages(current_user: user, group_project_list_sort_by: initial_sort)
     end
 
-    it 'returns expected json' do
-      expect(Gitlab::Json.parse(helper.groups_show_app_data(group))).to match(
-        {
-          'subgroups_and_projects_endpoint' => group_children_path(group, format: :json),
-          'initial_sort' => initial_sort,
-          'full_path' => group.full_path,
-          'new_subgroup_path' => "/groups/new?parent_id=#{group.id}#create-group-pane",
-          'new_project_path' => "/projects/new?namespace_id=#{group.id}",
-          'empty_projects_illustration' => including('illustrations/empty-state/empty-projects-md'),
-          'can_create_subgroups' => true,
-          'can_create_projects' => true
-        }
-      )
+    context 'when group is in the default organization' do
+      let(:organization) { build_stubbed(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the paths branch on the default organization so we need to test this
+
+      it 'returns expected json' do
+        expect(app_data).to match(
+          {
+            'subgroups_and_projects_endpoint' => group_children_path(group, format: :json),
+            'initial_sort' => initial_sort,
+            'full_path' => group.full_path,
+            'new_subgroup_path' => "/groups/new?parent_id=#{group.id}#create-group-pane",
+            'new_project_path' => "/projects/new?namespace_id=#{group.id}",
+            'empty_projects_illustration' => including('illustrations/empty-state/empty-projects-md'),
+            'can_create_subgroups' => true,
+            'can_create_projects' => true
+          }
+        )
+      end
+    end
+
+    context 'when group is in a non-default organization' do
+      let(:organization) { build_stubbed(:organization) }
+
+      it 'returns organization-scoped new subgroup and project paths' do
+        expect(app_data).to include(
+          'new_subgroup_path' => "/o/#{organization.path}/groups/new?parent_id=#{group.id}#create-group-pane",
+          'new_project_path' => "/o/#{organization.path}/projects/new?namespace_id=#{group.id}"
+        )
+      end
     end
   end
 

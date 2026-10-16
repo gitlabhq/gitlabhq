@@ -3581,22 +3581,11 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     it 'generates an encrypted version of the token' do
-      expect(user[:static_object_token]).to be_nil
       expect(user[:static_object_token_encrypted]).to be_nil
 
       user.static_object_token
 
-      expect(user[:static_object_token]).to be_nil
       expect(user[:static_object_token_encrypted]).to be_present
-    end
-
-    it 'ignores a plaintext version of the token' do
-      token = user.static_object_token
-
-      described_class.where(id: user.id).update_all(static_object_token: 'Test')
-
-      expect(user.static_object_token).not_to eq('Test')
-      expect(user.static_object_token).to eq(token)
     end
   end
 

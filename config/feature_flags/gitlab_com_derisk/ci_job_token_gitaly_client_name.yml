@@ -1,0 +1,8 @@
+---
+name: ci_job_token_gitaly_client_name
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258795
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631984
+milestone: '19.5'
+type: gitlab_com_derisk
+group: group::gitaly
+default_enabled: false

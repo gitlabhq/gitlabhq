@@ -12,7 +12,6 @@ ignored_columns:
   - otp_backup_codes
   - otp_secret
   - reset_password_token
-  - static_object_token
   - static_object_token_encrypted
   - unlock_token
 replication_targets:

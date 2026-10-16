@@ -56,25 +56,43 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
       end
 
       context 'when clicking on the delete button' do
-        let!(:additional_state) { create(:terraform_state, project: project) }
-
-        it 'removes the state', :aggregate_failures do
+        def remove_state(state)
           visit project_terraform_index_path(project)
 
-          expect(page).to have_content(additional_state.name)
+          expect(page).to have_content(state.name)
 
-          find_by_testid("terraform-state-actions-#{additional_state.name}").click
+          find_by_testid("terraform-state-actions-#{state.name}").click
           find_by_testid('terraform-state-remove').click
-          fill_in "terraform-state-remove-input-#{additional_state.name}", with: additional_state.name
+          fill_in "terraform-state-remove-input-#{state.name}", with: state.name
           click_button 'Remove'
 
-          expect(page).to have_content("#{additional_state.name} successfully removed")
+          expect(page).to have_content("#{state.name} successfully removed")
+        end
 
-          find_by_testid('remove-icon').hover
-          expect(page).to have_content("Deletion in progress")
+        context 'when the state has versions' do
+          let!(:additional_state) { create(:terraform_state, :with_version, project: project) }
 
-          additional_state.reload
-          expect(additional_state.deleted_at).not_to be_nil
+          it 'removes the state', :aggregate_failures do
+            remove_state(additional_state)
+
+            find_by_testid('remove-icon').hover
+            expect(page).to have_content("Deletion in progress")
+
+            additional_state.reload
+            expect(additional_state.deleted_at).not_to be_nil
+          end
+        end
+
+        context 'when the state has no versions' do
+          let!(:additional_state) { create(:terraform_state, project: project) }
+
+          it 'removes the state immediately', :aggregate_failures do
+            remove_state(additional_state)
+
+            expect(page).not_to have_selector("[data-testid='terraform-state-actions-#{additional_state.name}']")
+            expect(page).to have_selector("[data-testid='terraform-state-actions-#{terraform_state.name}']")
+            expect(Terraform::State.find_by(id: additional_state.id)).to be_nil
+          end
         end
       end
 

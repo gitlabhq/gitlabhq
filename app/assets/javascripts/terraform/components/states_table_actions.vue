@@ -36,7 +36,6 @@ export default {
     GlModalDirective,
   },
   mixins: [GlToastMixin],
-  inject: ['projectPath'],
   props: {
     state: {
       required: true,
@@ -165,14 +164,7 @@ export default {
           variables: {
             stateID: this.state.id,
           },
-          refetchQueries: () => [
-            {
-              query: getStatesQuery,
-              variables: {
-                projectPath: this.projectPath,
-              },
-            },
-          ],
+          refetchQueries: [getStatesQuery],
           awaitRefetchQueries: true,
           notifyOnNetworkStatusChange: true,
         })

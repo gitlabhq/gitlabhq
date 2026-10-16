@@ -1,0 +1,3 @@
+---
+name: update_ci_minute_limit
+description: Grants the ability to set the compute minutes quota and extra compute minutes for a group

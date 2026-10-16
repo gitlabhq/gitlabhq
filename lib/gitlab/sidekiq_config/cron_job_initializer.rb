@@ -78,13 +78,14 @@ module Gitlab
           "#{offset}-59/15 * * * * UTC"
         end
 
-        # Every 30 minutes at an instance-specific offset, so the v2 fan-out does not land
-        # on the half hour and sits on a different minute from the v1 cron while both run.
+        # Every 6 hours, since each namespace job costs at least one rate-limited CustomersDot
+        # request. The minute and hour offsets are per instance, so instances do not all sync
+        # at once and the minute differs from the v1 cron while both run.
         def cron_for_session_credits_sync_v2
           uuid = Gitlab::CurrentSettings.uuid || GITLAB_INSTANCE_UUID_NOT_SET
-          offset = Digest::SHA256.hexdigest("#{uuid}session_credits_sync_v2").to_i(16) % 30
+          digest = Digest::SHA256.hexdigest("#{uuid}session_credits_sync_v2").to_i(16)
 
-          "#{offset}-59/30 * * * * UTC"
+          "#{digest % 60} #{(digest / 60) % 6}-23/6 * * * UTC"
         end
 
         # Computes a per-instance random schedule from the instance UUID so that

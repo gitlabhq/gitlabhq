@@ -722,9 +722,10 @@
       @apply gl-text-disabled;
     }
 
-    &:disabled:checked {
-      background-color: var(--gl-control-background-color-disabled);
-      border-color: var(--gl-control-border-color-disabled);
+    &:disabled:checked,
+    &[data-indeterminate]:disabled {
+      background-color: var(--gl-control-background-color-selected-disabled);
+      border-color: var(--gl-control-border-color-selected-disabled);
 
       &::after {
         background-color: var(--gl-control-indicator-color-disabled);

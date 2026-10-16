@@ -1,0 +1,11 @@
+---
+name: ci_redundant_pipeline_cancel_from_cache
+description: Cancel redundant pipelines from the cache instead of searching
+  p_ci_pipelines. Requires ci_redundant_pipeline_candidates_cache to be enabled first
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/621543
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253751
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632587
+milestone: '19.5'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

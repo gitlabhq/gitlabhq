@@ -22,6 +22,8 @@ module Gitlab
     TRANSFORM_FORMATS = %i[json html].freeze
     ARCHIVE_FORMATS = %w[zip tar.gz tar.bz2 tar].freeze
 
+    CI_JOB_CLIENT_NAME = 'gitlab-ci-job'
+
     # Maximum age of the Gitlab-Workhorse-Api-Request JWT accepted by
     # `verify_api_request!`. Workhorse stamps `iat` on every request (see
     # workhorse/internal/secret/roundtripper.go), and Rails rejects tokens
@@ -70,9 +72,7 @@ module Gitlab
           attrs[:GlScopedUserID] = identity.scoped_user.id.to_s
         end
 
-        if authentication_context[:authentication_method] == :ci_job_token
-          attrs[:GlBuildID] = authentication_context[:authentication_method_id].to_s
-        end
+        attribute_ci_job(attrs, authentication_context)
 
         if repo_type == Gitlab::GlRepository::PROJECT
           project = repository.container
@@ -96,6 +96,16 @@ module Gitlab
         ).compact!
 
         attrs
+      end
+
+      def attribute_ci_job(attrs, authentication_context)
+        return unless authentication_context[:authentication_method] == :ci_job_token
+
+        attrs[:GlBuildID] = authentication_context[:authentication_method_id].to_s
+
+        return unless Feature.enabled?(:ci_job_token_gitaly_client_name, type: :gitlab_com_derisk)
+
+        attrs[:GitalyServer][:call_metadata]['client_name'] = CI_JOB_CLIENT_NAME
       end
 
       def send_git_blob(repository, blob)

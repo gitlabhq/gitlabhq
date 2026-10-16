@@ -260,7 +260,8 @@ export default {
         <div
           v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"
-          class="super-sidebar-context-header gl-m-0 gl-flex gl-items-center gl-gap-2 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
+          class="super-sidebar-context-header gl-m-0 gl-mt-1 gl-flex gl-items-center gl-gap-2 gl-px-5 gl-pb-3 gl-pt-2 gl-font-bold gl-leading-reset"
+          :class="{ '!gl-pb-2 !gl-pt-0': canToggleOldCategories }"
         >
           <span id="super-sidebar-context-header-title" class="gl-min-w-0 gl-grow">{{
             sidebarData.current_context_header

@@ -66,6 +66,18 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
       it('state deleted exactly at the boundary', :freeze_time) { is_expected.to include(exactly_at_grace_boundary) }
       it { is_expected.to include(past_grace_period) }
     end
+
+    describe '.with_project_and_route' do
+      let_it_be(:state) { create(:terraform_state) }
+
+      it 'preloads the project, its route and its namespace' do
+        loaded = described_class.with_project_and_route.find(state.id)
+
+        expect(loaded.association(:project)).to be_loaded
+        expect(loaded.project.association(:route)).to be_loaded
+        expect(loaded.project.association(:namespace)).to be_loaded
+      end
+    end
   end
 
   describe '#latest_file' do

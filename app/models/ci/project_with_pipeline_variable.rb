@@ -12,7 +12,9 @@ module Ci
     belongs_to :project
 
     def self.upsert_for_pipeline(pipeline)
-      return unless pipeline.variables.any?
+      # A variables artifact only exists for a pipeline created with variables,
+      # so we check for it first and skip reading the file from storage.
+      return unless pipeline.pipeline_artifacts_pipeline_variables.present? || pipeline.variables.any?
 
       upsert({ project_id: pipeline.project_id }, unique_by: :project_id)
     end

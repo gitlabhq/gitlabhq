@@ -188,6 +188,10 @@ module Organizations
       !default?
     end
 
+    def scoped_path
+      scoped_paths? ? path : nil
+    end
+
     def inspect
       "#<#{self.class.name} id:#{id} path:#{path}>"
     end

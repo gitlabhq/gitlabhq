@@ -143,8 +143,8 @@ module GroupsHelper
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       initial_sort: group_project_list_sort_by,
       full_path: group.full_path,
-      new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
-      new_project_path: new_project_path(namespace_id: group.id),
+      new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane', organization_path: group.organization.scoped_path),
+      new_project_path: new_project_path(namespace_id: group.id, organization_path: group.organization.scoped_path),
       can_create_subgroups: can?(current_user, :create_subgroup, group),
       can_create_projects: can?(current_user, :create_projects, group),
       empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg')

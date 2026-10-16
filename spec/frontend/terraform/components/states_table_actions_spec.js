@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import InitCommandModal from '~/terraform/components/init_command_modal.vue';
 import StateActions from '~/terraform/components/states_table_actions.vue';
+import { MAX_LIST_COUNT } from '~/terraform/constants';
 import lockStateMutation from '~/terraform/graphql/mutations/lock_state.mutation.graphql';
 import removeStateMutation from '~/terraform/graphql/mutations/remove_state.mutation.graphql';
 import unlockStateMutation from '~/terraform/graphql/mutations/unlock_state.mutation.graphql';
@@ -15,6 +16,7 @@ import { getStatesResponse } from './mock_data';
 Vue.use(VueApollo);
 
 describe('StatesTableActions', () => {
+  let apolloProvider;
   let lockResponse;
   let removeResponse;
   let toast;
@@ -32,7 +34,16 @@ describe('StatesTableActions', () => {
     terraformAdmin: true,
   };
 
-  const createMockApolloProvider = () => {
+  // Same variables TerraformList uses for the states list query.
+  const listVariables = {
+    projectPath: 'path/to/project',
+    first: MAX_LIST_COUNT,
+    after: null,
+    last: null,
+    before: null,
+  };
+
+  const createMockApolloProvider = (statesHandler) => {
     lockResponse = jest
       .fn()
       .mockResolvedValue({ data: { terraformStateLock: { errors: ['There was an error'] } } });
@@ -52,7 +63,7 @@ describe('StatesTableActions', () => {
         [lockStateMutation, lockResponse],
         [removeStateMutation, removeResponse],
         [unlockStateMutation, unlockResponse],
-        [getStatesQuery, jest.fn().mockResolvedValue(getStatesResponse)],
+        [getStatesQuery, statesHandler],
       ],
       {
         Mutation: {
@@ -62,8 +73,16 @@ describe('StatesTableActions', () => {
     );
   };
 
-  const createComponent = async (propsData = defaultProps) => {
-    const apolloProvider = createMockApolloProvider();
+  const createComponent = async (
+    propsData = defaultProps,
+    statesHandler = jest.fn().mockResolvedValue(getStatesResponse),
+  ) => {
+    apolloProvider = createMockApolloProvider(statesHandler);
+
+    // refetchQueries targets the active states list query, which is normally watched by TerraformList.
+    apolloProvider.defaultClient
+      .watchQuery({ query: getStatesQuery, variables: listVariables })
+      .subscribe(() => {});
 
     toast = jest.fn();
 
@@ -355,6 +374,79 @@ describe('StatesTableActions', () => {
             );
           });
         });
+      });
+    });
+
+    describe('when the removed state is no longer returned by the states list query', () => {
+      let statesHandler;
+
+      const buildState = (id, name) => ({
+        __typename: 'TerraformState',
+        _showDetails: false,
+        errorMessages: [],
+        loadingLock: false,
+        loadingRemove: false,
+        id,
+        name,
+        lockedAt: null,
+        updatedAt: null,
+        deletedAt: null,
+        lockedByUser: null,
+        latestVersion: null,
+      });
+
+      const buildStatesResponse = (nodes) => ({
+        data: {
+          project: {
+            __typename: 'Project',
+            id: 'project-1',
+            terraformStates: {
+              __typename: 'TerraformStateConnection',
+              count: nodes.length,
+              nodes,
+              pageInfo: {
+                __typename: 'PageInfo',
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: '',
+                endCursor: '',
+              },
+            },
+          },
+        },
+      });
+
+      const readCachedStateIds = () =>
+        apolloProvider.defaultClient
+          .readQuery({ query: getStatesQuery, variables: listVariables })
+          .project.terraformStates.nodes.map(({ id }) => id);
+
+      beforeEach(async () => {
+        statesHandler = jest
+          .fn()
+          .mockResolvedValueOnce(
+            buildStatesResponse([buildState('gid/1', 'state-1'), buildState('gid/2', 'state-2')]),
+          )
+          .mockResolvedValue(buildStatesResponse([buildState('gid/2', 'state-2')]));
+
+        await createComponent(defaultProps, statesHandler);
+        await waitForPromises();
+
+        findRemoveBtn().vm.$emit('click');
+        await waitForPromises();
+
+        await findFormInput().vm.$emit('input', defaultProps.state.name);
+        findRemoveModal().vm.$emit('ok');
+        await waitForPromises();
+      });
+
+      it('refetches the active list query using its own pagination variables', () => {
+        expect(statesHandler).toHaveBeenCalledTimes(2);
+        expect(statesHandler).toHaveBeenLastCalledWith(listVariables);
+      });
+
+      it('replaces the cached list so the removed state is dropped', () => {
+        expect(readCachedStateIds()).toEqual(['gid/2']);
       });
     });
   });

@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import Sortable from 'sortablejs';
-import { DRAG_CLASS } from '~/sortable/constants';
+import { DRAG_CLASS, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import { dispose } from '~/tooltips';
 import { createAlert } from '~/alert';
@@ -24,6 +24,8 @@ export default class LabelManager {
         fallbackClass: DRAG_CLASS,
         fallbackOnBody: true,
         dataIdAttr: 'data-id',
+        delay: DRAG_DELAY,
+        delayOnTouchOnly: true,
         onStart: sortableStart,
         onEnd: sortableEnd,
         onUpdate: this.onPrioritySortUpdate.bind(this),

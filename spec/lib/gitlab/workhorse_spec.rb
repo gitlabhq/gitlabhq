@@ -639,6 +639,48 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
       end
     end
 
+    context 'when authenticated with a CI job token' do
+      let(:authentication_context) do
+        { authentication_method: :ci_job_token, authentication_method_id: 42 }
+      end
+
+      subject do
+        described_class.git_http_ok(
+          repository, Gitlab::GlRepository::PROJECT, user, action,
+          authentication_context: authentication_context
+        )
+      end
+
+      it 'still forwards the build ID' do
+        expect(subject[:GlBuildID]).to eq('42')
+      end
+
+      it 'attributes the call to CI so Gitaly can tell it apart from a human clone' do
+        expect(subject.dig(:GitalyServer, :call_metadata, 'client_name'))
+          .to eq(described_class::CI_JOB_CLIENT_NAME)
+      end
+
+      context 'when the ci_job_token_gitaly_client_name flag is disabled' do
+        before do
+          stub_feature_flags(ci_job_token_gitaly_client_name: false)
+        end
+
+        it 'leaves attribution to the per-connection default' do
+          expect(subject.dig(:GitalyServer, :call_metadata)).not_to have_key('client_name')
+        end
+
+        it 'still forwards the build ID' do
+          expect(subject[:GlBuildID]).to eq('42')
+        end
+      end
+    end
+
+    context 'when not authenticated with a CI job token' do
+      it 'does not set a client_name, so Gitaly still sees gitlab-workhorse' do
+        expect(subject.dig(:GitalyServer, :call_metadata)).not_to have_key('client_name')
+      end
+    end
+
     context 'when retry_policy is present' do
       let(:retry_policy) do
         {

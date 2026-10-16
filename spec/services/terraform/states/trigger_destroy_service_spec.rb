@@ -13,57 +13,6 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
 
     subject { service.execute }
 
-    it 'marks the state as deleted and schedules a cleanup worker' do
-      expect(Terraform::States::DestroyWorker).to receive(:perform_async).with(state.id).once
-
-      expect(subject).to be_success
-      expect(state.deleted_at).to be_like_time(Time.current)
-    end
-
-    context 'when the state has no versions' do
-      let(:state) { create(:terraform_state, project: project) }
-
-      it 'tracks an internal event' do
-        expect { subject }
-          .to trigger_internal_events('delete_terraform_state')
-          .with(project: project, user: user, additional_properties: { label: 'without_versions' })
-          .and increment_usage_metrics('counts.count_total_delete_terraform_state')
-      end
-    end
-
-    context 'when the state has versions' do
-      let(:state) { create(:terraform_state, :with_version, project: project) }
-
-      it 'tracks an internal event labelled with_versions' do
-        expect { subject }
-          .to trigger_internal_events('delete_terraform_state')
-          .with(project: project, user: user, additional_properties: { label: 'with_versions' })
-          .and increment_usage_metrics('counts.count_total_delete_terraform_state')
-      end
-    end
-
-    context 'within a database transaction' do
-      subject { state.with_lock { service.execute } }
-
-      it 'does not raise an EnqueueFromTransactionError' do
-        expect { subject }.not_to raise_error
-        expect(state.deleted_at).to be_like_time(Time.current)
-      end
-    end
-
-    context 'when the surrounding transaction rolls back' do
-      let(:state) { create(:terraform_state, project: project) }
-
-      it 'does not track an internal event' do
-        expect do
-          ApplicationRecord.transaction(requires_new: true) do
-            service.execute
-            raise ActiveRecord::Rollback
-          end
-        end.not_to trigger_internal_events('delete_terraform_state')
-      end
-    end
-
     shared_examples 'unable to delete state' do
       it 'does not modify the state' do
         expect(Terraform::States::DestroyWorker).not_to receive(:perform_async)
@@ -78,18 +27,159 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
       end
     end
 
-    context 'user does not have permission' do
-      let(:user) { create(:user, developer_of: project) }
-      let(:message) { 'You have insufficient permissions to delete this state' }
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(terraform_state_delayed_deletion: false)
+      end
 
-      include_examples 'unable to delete state'
+      it 'marks the state as deleted and schedules a cleanup worker' do
+        expect(Terraform::States::DestroyWorker).to receive(:perform_async).with(state.id).once
+
+        expect(subject).to be_success
+        expect(state.deleted_at).to be_like_time(Time.current)
+      end
+
+      context 'when the state has no versions' do
+        let(:state) { create(:terraform_state, project: project) }
+
+        it 'tracks an internal event' do
+          expect { subject }
+            .to trigger_internal_events('delete_terraform_state')
+            .with(project: project, user: user, additional_properties: { label: 'without_versions' })
+            .and increment_usage_metrics('counts.count_total_delete_terraform_state')
+        end
+      end
+
+      context 'when the state has versions' do
+        let(:state) { create(:terraform_state, :with_version, project: project) }
+
+        it 'tracks an internal event labelled with_versions' do
+          expect { subject }
+            .to trigger_internal_events('delete_terraform_state')
+            .with(project: project, user: user, additional_properties: { label: 'with_versions' })
+            .and increment_usage_metrics('counts.count_total_delete_terraform_state')
+        end
+      end
+
+      context 'within a database transaction' do
+        subject { state.with_lock { service.execute } }
+
+        it 'does not raise an EnqueueFromTransactionError' do
+          expect { subject }.not_to raise_error
+          expect(state.deleted_at).to be_like_time(Time.current)
+        end
+      end
+
+      context 'when the surrounding transaction rolls back' do
+        let(:state) { create(:terraform_state, project: project) }
+
+        it 'does not track an internal event' do
+          expect do
+            ApplicationRecord.transaction(requires_new: true) do
+              service.execute
+              raise ActiveRecord::Rollback
+            end
+          end.not_to trigger_internal_events('delete_terraform_state')
+        end
+      end
+
+      context 'user does not have permission' do
+        let(:user) { create(:user, developer_of: project) }
+        let(:message) { 'You have insufficient permissions to delete this state' }
+
+        include_examples 'unable to delete state'
+      end
+
+      context 'state is locked' do
+        let(:state) { create(:terraform_state, :locked, project: project) }
+        let(:message) { 'Cannot remove a locked state' }
+
+        include_examples 'unable to delete state'
+      end
     end
 
-    context 'state is locked' do
-      let(:state) { create(:terraform_state, :locked, project: project) }
-      let(:message) { 'Cannot remove a locked state' }
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(terraform_state_delayed_deletion: project)
+      end
 
-      include_examples 'unable to delete state'
+      context 'when the state has no versions' do
+        let(:state) { create(:terraform_state, project: project) }
+
+        it 'destroys the state inline and returns success' do
+          expect(Terraform::States::DestroyWorker).not_to receive(:perform_async)
+
+          expect(subject).to be_success
+          expect(Terraform::State.find_by(id: state.id)).to be_nil
+        end
+
+        it 'does not set deleted_at before destroying' do
+          expect(state).not_to receive(:update!)
+
+          subject
+        end
+
+        it 'tracks the delete_terraform_state event' do
+          expect { subject }
+            .to trigger_internal_events('delete_terraform_state')
+            .with(project: project, user: user, additional_properties: { label: 'without_versions' })
+        end
+
+        it 'does not track an event when the surrounding transaction rolls back' do
+          expect do
+            ApplicationRecord.transaction(requires_new: true) do
+              service.execute
+              raise ActiveRecord::Rollback
+            end
+          end.not_to trigger_internal_events('delete_terraform_state')
+        end
+      end
+
+      context 'when the state has versions' do
+        let(:state) { create(:terraform_state, :with_version, project: project) }
+
+        it 'sets deleted_at and returns success without enqueuing DestroyWorker' do
+          expect(Terraform::States::DestroyWorker).not_to receive(:perform_async)
+
+          expect(subject).to be_success
+          expect(state.reload.deleted_at).to be_like_time(Time.current)
+        end
+
+        it 'does not destroy the state record' do
+          subject
+
+          expect(Terraform::State.find_by(id: state.id)).not_to be_nil
+        end
+
+        it 'tracks the delete_terraform_state event' do
+          expect { subject }
+            .to trigger_internal_events('delete_terraform_state')
+            .with(project: project, user: user, additional_properties: { label: 'with_versions' })
+        end
+
+        it 'does not track an event when the surrounding transaction rolls back' do
+          expect do
+            ApplicationRecord.transaction(requires_new: true) do
+              service.execute
+              raise ActiveRecord::Rollback
+            end
+          end.not_to trigger_internal_events('delete_terraform_state')
+        end
+      end
+
+      context 'user does not have permission' do
+        let(:user) { create(:user, developer_of: project) }
+        let(:message) { 'You have insufficient permissions to delete this state' }
+
+        include_examples 'unable to delete state'
+      end
+
+      context 'state is locked' do
+        let(:state) { create(:terraform_state, :locked, project: project) }
+        let(:message) { 'Cannot remove a locked state' }
+
+        include_examples 'unable to delete state'
+      end
     end
   end
 end

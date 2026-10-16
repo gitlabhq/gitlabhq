@@ -73,14 +73,16 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
         end
 
         it 'shows `Create subgroup` link' do
-          link = new_group_path(parent_id: group.id, anchor: 'create-group-pane')
+          link = new_group_path(parent_id: group.id, anchor: 'create-group-pane',
+            organization_path: group.organization.path)
 
           expect(page_content).to have_link(_('Create subgroup'), href: link)
         end
 
         it 'shows `Create project` link' do
-          expect(page_content)
-            .to have_link(_('Create project'), href: new_project_path(namespace_id: group.id))
+          link = new_project_path(namespace_id: group.id, organization_path: group.organization.path)
+
+          expect(page_content).to have_link(_('Create project'), href: link)
         end
       end
     end

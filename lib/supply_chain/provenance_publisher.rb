@@ -7,6 +7,7 @@ module SupplyChain
     HASH_READ_CHUNK_SIZE = 1.megabyte
     COSIGN_KEY_PREFIX = 'cosign'
     COSIGN_PASSWORD_BYTES = 32
+    COSIGN_SIGNING_CONFIG_FILE = 'signing-config.json'
     LEAF_CERTIFICATE_FILE = 'leaf.crt.pem'
 
     Error = Class.new(StandardError)
@@ -14,6 +15,7 @@ module SupplyChain
     AttestationFailure = Class.new(Error)
     InvalidInput = Class.new(Error)
     KeyImportFailure = Class.new(Error)
+    SigningConfigFailure = Class.new(Error)
     LocalCaSigningError = Class.new(Error)
 
     LocalCaSigningMaterial = Struct.new(:key_path, :password, :certificate_path, :signing_certificate_id,
@@ -150,6 +152,19 @@ module SupplyChain
       return { key_path: "#{key_prefix}.key", password: password } if result.status.success?
 
       raise KeyImportFailure, "Key import failed after #{result.duration}s: #{result.stderr}"
+    end
+
+    def cosign_create_signing_config(dir:)
+      validate_key_dir!(dir)
+
+      signing_config_path = File.join(dir, COSIGN_SIGNING_CONFIG_FILE)
+      command = ['cosign', 'signing-config', 'create', '--out', signing_config_path]
+
+      result = Gitlab::Popen.popen_with_detail(command)
+
+      return signing_config_path if result.status.success?
+
+      raise SigningConfigFailure, "Signing config creation failed after #{result.duration}s: #{result.stderr}"
     end
 
     def persist_attestation!(status:, subject_digest:, bundle_file: nil)

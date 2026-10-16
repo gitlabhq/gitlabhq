@@ -697,6 +697,10 @@ RSpec.describe Organizations::Organization, feature_category: :organization do
     it { expect(organization.scoped_paths?).to be(true) }
   end
 
+  describe '#scoped_path' do
+    it { expect(organization.scoped_path).to eq(organization.path) }
+  end
+
   describe '#root_path' do
     it { expect(organization.root_path).to eq("/o/#{organization.path}") }
   end
@@ -895,6 +899,10 @@ RSpec.describe Organizations::Organization, feature_category: :organization do
 
     describe '#scoped_paths?' do
       it { expect(default_organization.scoped_paths?).to be(false) }
+    end
+
+    describe '#scoped_path' do
+      it { expect(default_organization.scoped_path).to be_nil }
     end
 
     describe '#root_path' do

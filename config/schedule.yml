@@ -512,6 +512,10 @@ stuck_merge_jobs_worker:
   class: StuckMergeJobsWorker
   cron: "*/15 * * * *"
 
+terraform_state_destroy_cron_worker:
+  class: Terraform::States::ScheduleDestroyCronWorker
+  cron: "0 1 * * *"
+
 topology_service_stale_requests_cleanup_worker:
   class: Cells::StaleRequestsCleanupCronWorker
   cron: "*/5 * * * *"

@@ -92,6 +92,39 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
     end
   end
 
+  describe '#cosign_create_signing_config' do
+    let(:dir) { Dir.tmpdir }
+    let(:expected_path) { File.join(dir, 'signing-config.json') }
+
+    subject(:signing_config_path) { publisher.send(:cosign_create_signing_config, dir: dir) }
+
+    before do
+      allow(Gitlab::Popen).to receive(:popen_with_detail).and_return(popen_result)
+    end
+
+    it 'creates the signing config without services, env or stdin and returns its path', :aggregate_failures do
+      expect(signing_config_path).to eq(expected_path)
+      expect(Gitlab::Popen).to have_received(:popen_with_detail)
+        .with(['cosign', 'signing-config', 'create', '--out', expected_path])
+    end
+
+    it 'validates the dir before running cosign', :aggregate_failures do
+      expect(publisher).to receive(:validate_key_dir!).with(dir).and_raise(described_class::InvalidInput)
+
+      expect { signing_config_path }.to raise_exception(described_class::InvalidInput)
+      expect(Gitlab::Popen).not_to have_received(:popen_with_detail)
+    end
+
+    context 'when cosign fails' do
+      let(:popen_success) { false }
+
+      it 'raises SigningConfigFailure with the cosign error' do
+        expect { signing_config_path }.to raise_error(described_class::SigningConfigFailure,
+          "Signing config creation failed after #{expected_duration}s: #{expected_stderr}")
+      end
+    end
+  end
+
   describe '#with_local_ca_signing_material' do
     def with_signing_material(&block)
       publisher.send(:with_local_ca_signing_material, &block)

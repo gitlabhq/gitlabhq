@@ -766,7 +766,6 @@ CREATE TABLE users (
     managing_group_id bigint,
     first_name character varying(255),
     last_name character varying(255),
-    static_object_token character varying(255),
     user_type smallint DEFAULT 0,
     static_object_token_encrypted text,
     otp_secret_expires_at timestamp with time zone,

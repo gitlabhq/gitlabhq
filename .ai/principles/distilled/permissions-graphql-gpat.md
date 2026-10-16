@@ -1,6 +1,6 @@
 ---
-source_checksum: b873b4676c5b5292
-distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+source_checksum: 4393fbdff95e396a
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -12,7 +12,7 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 
 ### Permission Definition Files
 
-- Use `bin/permission <permission_name>` to generate raw permission definition files; pass `-a` (action) and `-r` (resource) flags to override the default name-splitting behaviour when the action is more than one word.
+- Use `bin/permission <permission_name>` to generate raw permission definition files; pass `-a` (action) and `-r` (resource) flags to override the default name-splitting behavior when the action is more than one word.
 - Place raw permission definition files at exactly `config/authz/permissions/<resource>/<action>.yml`; DO NOT add extra directories between the base path and the final filename.
 - Ensure each permission definition file includes a `name` and `description` field; the `description` must follow the pattern `"Grants the ability to <action> <resource>"`.
 - Include a `conditionally_enables` field for private (underscore-prefixed) permissions, set to the broader permission(s) that imply it, or `null` when none apply.
@@ -52,6 +52,7 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 
 - Add `authorize_granular_token` to every GraphQL object type and mutation that exposes protected resources; the `gitlab:permissions:validate` Rake task requires every object type to declare either a directive or a `skip_reason:`, unless grandfathered in `config/authz/graphql/authorization_todo.txt` (DO NOT add new entries to that file).
 - Use `boundary: :project` (or `:group`, `:user`, `:instance`) on object types where the resolved object has a method to reach the boundary (e.g., `issue.project`); use `boundary_argument: :project_path` on mutations and root query fields where the boundary is passed as an argument.
+- Declare the directive on the resolver for root query fields, using `boundary_argument` to read the boundary from the field arguments (directives declared on a resolver apply to the fields that mount it); the field resolves to `null` when the token lacks the permission.
 - Use `boundary: :itself` when the type itself is the boundary object (e.g., `ProjectType` or `GroupType`).
 - Use `boundary: :user` or `boundary: :instance` for standalone resources that do not belong to a specific project or group.
 - When a mutation's `boundary_argument` resolves to a record that is not itself a Project or Group, combine `boundary_argument` with `boundary` so the extractor locates the record and then calls `boundary` on it to reach the Project or Group.
@@ -60,8 +61,7 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 - Ensure `boundary_type` matches at least one boundary declared in the corresponding assignable permission's `boundaries` field; the Lefthook pre-push validation catches mismatches.
 - Use `skip_reason: :parent_authorizes` (alone, without `permissions:` or a boundary) on types whose data is only reachable through a parent type that already declares its own directive; valid reasons are defined in `lib/tasks/gitlab/permissions/graphql/skip_reasons.rb`.
 - DO NOT declare `permissions:` alongside `skip_reason:`; use `skip_reason:` alone on types that intentionally opt out of granular-token authorization.
-- Use `additional_scopes` to require authorization on a second container a mutation acts on; each entry must declare its own `permissions` and `boundary_type`, and locate its boundary using either `boundary_argument` or `boundary`. Two entries in `additional_scopes` that share a `boundary_argument` form a single requirement group and act as alternatives within it (the same way `boundaries` alternatives work for the primary scope); entries sharing a requirement group must declare identical `permissions` values. Run `bundle exec rake gitlab:permissions:validate` to catch violations before they silently deny requests with `404 Not Found`.
-- Tag a type, mutation, or resolver with `assignable_when:` on the `authorize_granular_token` call when it restricts access beyond membership (e.g., to administrators); the tag applies to every directive the call emits (primary boundary, every `boundaries:` entry, every `additional_scopes:` entry). Individual hashes inside `boundaries:` or `additional_scopes:` can also set their own `assignable_when` to add conditions for that boundary only. The tag is NOT a security control — the type or mutation must still enforce the restriction itself. The validation task rejects unknown condition names and checks tags against the assignable permission YAML's `assignable_when` conditions.
+- Tag a type, mutation, or resolver with `assignable_when:` on the `authorize_granular_token` call when it restricts access beyond membership (e.g., to administrators); the tag applies to every directive the call emits (primary boundary and every `boundaries:` entry). Individual hashes inside `boundaries:` can also set their own `assignable_when` to add conditions for that boundary only. The tag is NOT a security control — the type or mutation must still enforce the restriction itself. The validation task rejects unknown condition names and checks tags against the assignable permission YAML's `assignable_when` conditions.
 
 ### Traversal Between Authorized Types
 
@@ -80,15 +80,14 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ### Documentation and Validation
 
 - Run `bundle exec rake gitlab:permissions:graphql:compile_docs` to regenerate the fine-grained token reference documentation at `doc/auth/tokens/fine_grained_access_tokens_graphql.md`; DO NOT edit that file by hand.
-- Ensure the `gitlab:permissions:validate` Rake task passes before pushing; it also fails when a permission in a directive has no authorization test — add the test in the same merge request as the directive declaration (each type, mutation, or field declaring a permission needs its own test per boundary type, with no grandfathered exceptions).
+- Ensure the `gitlab:permissions:validate` Rake task passes before pushing (it also runs as a Lefthook pre-push hook); it fails when the generated reference documentation is out of date, a directive's permission is not part of any assignable permission, a `skip_reason:` is undefined, or a directive's `assignable_when` conditions do not match the assignable permission YAML.
 
 ### Authorization Tests
 
 - Use the `'authorizing granular token permissions for GraphQL'` shared example for both query and mutation specs; provide `user`, `boundary_object`, and `request` let-bindings.
 - Use the `'authorizing granular token permissions for GraphQL with a skipped child type'` shared example for types that declare `skip_reason: :parent_authorizes`; provide `user`, `boundary_object`, `request`, and `skipped_data_path` let-bindings.
 - Set `boundary_object` to match the `boundary_type`: `project` for `:project`, `group` for `:group`, `:user` for `:user`, `:instance` for `:instance`.
-- Ensure the `user` is a member of the `boundary_object` namespace (project or group) when the boundary type is `:project` or `:group`; authorization is denied otherwise.
-- To test a mutation that declares `additional_scopes`, pass `additional_scope_permissions:` to the shared example and define `additional_scope_requirements`; the shared example scopes the token to every boundary and adds an example asserting that a token holding only the primary boundary's scope is denied.
+- Ensure the `user` has access to the `boundary_object` namespace (project or group) when the boundary type is `:project` or `:group`; authorization is denied otherwise.
 - Verify that the shared example covers: legacy PATs still grant access, legacy tokens are denied when the boundary's top-level group enforces fine-grained tokens, granular PATs with the required permission grant access, granular PATs without the required permission are denied (unauthorized queries return `null` data with a `200` response; unauthorized mutations return a top-level GraphQL error), and the `granular_personal_access_tokens` feature flag is enforced.
 
 ## Authoritative sources

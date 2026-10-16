@@ -199,8 +199,14 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         end
       end
 
+      # The cache path is covered by create_pipeline_service_redundant_pipelines_spec.rb.
       context 'auto-cancel enabled' do
         before do
+          stub_feature_flags(
+            ci_redundant_pipeline_candidates_cache: false,
+            ci_redundant_pipeline_cancel_from_cache: false
+          )
+
           project.update!(auto_cancel_pending_pipelines: 'enabled')
         end
 

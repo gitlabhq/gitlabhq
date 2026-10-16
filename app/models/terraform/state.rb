@@ -30,6 +30,7 @@ module Terraform
     scope :ready_for_destruction, -> {
       where(deleted_at: ..GRACE_PERIOD.ago)
     }
+    scope :with_project_and_route, -> { preload(project: [:route, :namespace]) }
 
     validates :project_id, :name, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },

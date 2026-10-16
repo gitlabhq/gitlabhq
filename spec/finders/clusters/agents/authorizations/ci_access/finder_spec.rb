@@ -247,5 +247,54 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, :with_current
         it { is_expected.to be_empty }
       end
     end
+
+    describe 'when projects belong to different organizations' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_project) { create(:project, organization: other_organization) }
+      let_it_be(:other_org_agent) { create(:cluster_agent, project: other_org_project) }
+
+      before do
+        stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+      end
+
+      context 'with a ProjectAuthorization whose agent config project is in another organization' do
+        before do
+          create(:agent_ci_access_project_authorization, agent: other_org_agent, project: requesting_project)
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with a GroupAuthorization whose agent config project is in another organization' do
+        before do
+          create(:agent_ci_access_group_authorization, agent: other_org_agent, group: top_level_group)
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with agents from this and another organization' do
+        let_it_be(:same_org_auth) do
+          create(:agent_ci_access_project_authorization, agent: staging_agent, project: requesting_project)
+        end
+
+        before do
+          create(:agent_ci_access_project_authorization, agent: other_org_agent, project: requesting_project)
+        end
+
+        it { is_expected.to contain_exactly(same_org_auth) }
+      end
+
+      context 'when initialized with an agent whose config project is in another organization' do
+        let(:finder) { described_class.new(requesting_project, agent: other_org_agent) }
+
+        before do
+          create(:agent_ci_access_project_authorization, agent: other_org_agent, project: requesting_project)
+          create(:agent_ci_access_group_authorization, agent: other_org_agent, group: top_level_group)
+        end
+
+        it { is_expected.to be_empty }
+      end
+    end
   end
 end

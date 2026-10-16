@@ -21,6 +21,19 @@ RSpec.describe Ci::ProjectWithPipelineVariable, feature_category: :continuous_in
         expect(described_class.last.project_id).to eq(project.id)
       end
 
+      context 'when the pipeline variables file is missing from storage' do
+        before do
+          pipeline.pipeline_artifacts_pipeline_variables.file.remove!
+          pipeline.association(:pipeline_artifacts_pipeline_variables).reset
+          pipeline.clear_memoization(:variables)
+        end
+
+        it 'creates a corresponding project_with_pipeline_variable record' do
+          expect { described_class.upsert_for_pipeline(pipeline) }
+            .to change { described_class.count }.by(1)
+        end
+      end
+
       context 'when a record already exists for the project' do
         before do
           described_class.create!(project_id: project.id)

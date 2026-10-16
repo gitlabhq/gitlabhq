@@ -16,9 +16,19 @@ module Ci
       relation = relation.in_partition(options['partition_id']) if options['partition_id'].present?
 
       relation.find_by(id: pipeline_id).try do |pipeline|
-        Ci::PipelineCreation::CancelRedundantPipelinesService.new(pipeline).execute
+        cancel_redundant_pipelines(pipeline)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    private
+
+    def cancel_redundant_pipelines(pipeline)
+      if Feature.enabled?(:ci_redundant_pipeline_cancel_from_cache, pipeline.project)
+        Ci::RedundantPipelines::CancelOlderPipelinesService.for(pipeline).execute
+      else
+        Ci::PipelineCreation::CancelRedundantPipelinesService.new(pipeline).execute
+      end
+    end
   end
 end

@@ -185,9 +185,8 @@ module Nav
 
     def organization_path_options(organization)
       return { organization_path: nil } unless organization_scoped_new_dropdown?
-      return { organization_path: nil } unless organization&.scoped_paths?
 
-      { organization_path: organization.path }
+      { organization_path: organization&.scoped_path }
     end
 
     def invite_members_menu_item(partial:)

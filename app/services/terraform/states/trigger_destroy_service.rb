@@ -12,26 +12,40 @@ module Terraform
         return unauthorized_response unless can_destroy_state?
         return state_locked_response if state.locked?
 
-        # Deferred with the worker enqueue so a rolled-back outer transaction
-        # does not leave a phantom deletion event in the analytics pipeline.
         # `with_versions` distinguishes throwaway `terraform init` artifacts.
         user = current_user
         category = self.class.name
         label = state.versions.exists? ? 'with_versions' : 'without_versions'
 
-        state.run_after_commit do
-          Terraform::States::DestroyWorker.perform_async(id)
+        delayed_deletion = Feature.enabled?(:terraform_state_delayed_deletion, state.project)
 
-          Gitlab::InternalEvents.track_event(
-            'delete_terraform_state',
-            category: category,
-            project: project,
-            user: user,
-            additional_properties: { label: label }
-          )
+        if delayed_deletion && state.versions.none?
+          # No versions: destroy immediately. run_after_commit fires after destroy! commits.
+          state.run_after_commit do
+            Gitlab::InternalEvents.track_event(
+              'delete_terraform_state',
+              category: category,
+              project: project,
+              user: user,
+              additional_properties: { label: label }
+            )
+          end
+          state.destroy!
+        else
+          state.run_after_commit do
+            Terraform::States::DestroyWorker.perform_async(id) unless delayed_deletion
+
+            Gitlab::InternalEvents.track_event(
+              'delete_terraform_state',
+              category: category,
+              project: project,
+              user: user,
+              additional_properties: { label: label }
+            )
+          end
+
+          state.update!(deleted_at: Time.current)
         end
-
-        state.update!(deleted_at: Time.current)
 
         ServiceResponse.success
       end
