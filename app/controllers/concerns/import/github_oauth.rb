@@ -43,21 +43,11 @@ module Import
     end
 
     def oauth_client_from_config
-      @oauth_client_from_config ||= ::OAuth2::Client.new(
-        oauth_config.app_id,
-        oauth_config.app_secret,
-        oauth_options.merge(ssl: { verify: oauth_config['verify_ssl'] })
-      )
+      @oauth_client_from_config ||= Gitlab::GithubImport::OauthClient.build(oauth_config)
     end
 
     def oauth_config
-      @oauth_config ||= Gitlab::Auth::OAuth::Provider.config_for('github')
-    end
-
-    def oauth_options
-      return unless oauth_config
-
-      oauth_config.dig('args', 'client_options').to_h.deep_symbolize_keys
+      @oauth_config ||= Gitlab::GithubImport::OauthClient.config
     end
 
     def authorize_url
@@ -76,7 +66,7 @@ module Import
     end
 
     def get_token(code)
-      oauth_client.auth_code.get_token(code).token
+      oauth_client.auth_code.get_token(code)
     end
 
     def missing_oauth_config

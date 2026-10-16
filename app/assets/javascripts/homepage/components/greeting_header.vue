@@ -63,7 +63,8 @@ export default {
     },
   },
   watch: {
-    statusEmoji(newEmoji) {
+    async statusEmoji(newEmoji) {
+      await initEmojiMap();
       this.updateEmojiColor(newEmoji);
     },
   },

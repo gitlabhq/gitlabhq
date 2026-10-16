@@ -109,9 +109,9 @@ RSpec.describe Gitlab::Database::SyncSequencesWithTableData, :delete, feature_ca
         allow(connection).to receive(:select_value).and_call_original
         allow(connection).to receive(:select_value).with('SHOW statement_timeout')
           .and_raise(ActiveRecord::StatementInvalid, 'boom')
-        allow(connection).to receive(:execute).and_call_original
+        allow(connection).to receive(:exec_query).and_call_original
 
-        expect(connection).not_to receive(:execute).with(/statement_timeout/)
+        expect(connection).not_to receive(:exec_query).with(/statement_timeout/)
         expect { described_class.new(logger: logger, only_sequences: ['_test_shared_id_seq']).execute }
           .to raise_error(ActiveRecord::StatementInvalid, 'boom')
       end

@@ -1,5 +1,9 @@
 import { reportToSentry } from '~/ci/utils';
-import { NEEDS_PROPERTY, ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY } from '../constants';
+import {
+  NEEDS_PROPERTY,
+  ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY,
+  DAG_SCHEDULING_TYPE,
+} from '../constants';
 
 /**
  * Extract all job names from a stage's groups
@@ -51,7 +55,11 @@ const unwrapJobWithNeeds = (denodedJobArray, previousStageJobNames = []) => {
   return needsUnwrapped.map((job) => {
     const needs = job[NEEDS_PROPERTY] || [];
 
-    const unionNeeds = [...new Set([...previousStageJobNames, ...needs])];
+    // Jobs with `needs`, even `needs: []`, don't wait for the previous stage
+    const unionNeeds =
+      job.schedulingType === DAG_SCHEDULING_TYPE
+        ? needs
+        : [...new Set([...previousStageJobNames, ...needs])];
 
     return {
       ...job,
@@ -73,7 +81,7 @@ const enrichStagesWithNeeds = (stages, needsData) => {
     .flatMap((stage) => stage.groups.nodes)
     .flatMap((group) => group.jobs.nodes)
     .forEach((job) => {
-      needsMap.set(job.name, job.needs?.nodes || []);
+      needsMap.set(job.name, job);
     });
 
   return stages.map((stage, stageIdx) => {
@@ -85,7 +93,8 @@ const enrichStagesWithNeeds = (stages, needsData) => {
       groups: stage.groups.map((group) => {
         const jobsWithNeeds = group.jobs.map((job) => ({
           ...job,
-          needs: needsMap.get(job.name) || [],
+          needs: needsMap.get(job.name)?.needs?.nodes || [],
+          schedulingType: needsMap.get(job.name)?.schedulingType,
         }));
 
         return {

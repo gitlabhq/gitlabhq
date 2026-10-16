@@ -92,4 +92,58 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportCollaboratorsWorker, feature_c
       end
     end
   end
+
+  describe '#perform with an expiring OAuth token', :freeze_time do
+    let(:token_url) { 'https://github.com/login/oauth/access_token' }
+    let(:config) do
+      Gitlab::Configs::Options.build(
+        'app_id' => 'app-id',
+        'app_secret' => 'app-secret',
+        'args' => { 'client_options' => { 'site' => 'https://api.github.com', 'token_url' => token_url } }
+      )
+    end
+
+    before do
+      project.update!(import_source: 'foo/bar')
+      project.build_or_assign_import_data(
+        data: { optional_stages: { collaborators_import: true } },
+        credentials: { user: 'ghu_old', refresh_token: 'ghr_old', expires_at: 1.hour.from_now.to_i }
+      ).save!
+
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(config)
+      allow_next_instance_of(Gitlab::GithubImport::Client) do |client|
+        allow(client).to receive(:requests_remaining?).and_return(true)
+      end
+
+      stub_request(:post, token_url).to_return(
+        status: 200,
+        body: { access_token: 'ghu_new', refresh_token: 'ghr_new', expires_in: 28800 }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+      stub_request(:get, 'https://api.github.com/repos/foo/bar')
+        .with(headers: { 'Authorization' => /ghu_old/ })
+        .to_return(status: 401)
+      stub_request(:get, 'https://api.github.com/repos/foo/bar')
+        .with(headers: { 'Authorization' => /ghu_new/ })
+        .to_return(
+          status: 200,
+          body: { permissions: { push: true } }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+    end
+
+    it 'refreshes the token after a 401 and finishes the stage' do
+      allow(Gitlab::GithubImport::Importer::CollaboratorsImporter).to receive(:new)
+        .and_return(instance_double(Gitlab::GithubImport::Importer::CollaboratorsImporter,
+          execute: Gitlab::JobWaiter.new(0, '123')))
+
+      expect(Gitlab::GithubImport::AdvanceStageWorker)
+        .to receive(:perform_async)
+        .with(project.id, { '123' => 0 }, 'issues_and_diff_notes')
+
+      worker.perform(project.id)
+
+      expect(project.import_data.reload.credentials).to include(user: 'ghu_new', refresh_token: 'ghr_new')
+    end
+  end
 end

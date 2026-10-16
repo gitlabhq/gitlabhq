@@ -15,3 +15,5 @@ export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.m
 export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitrary-value.mjs';
 
 export { default as gitlabVueNoInteractiveContentInTooltip } from './gitlab-vue-no-interactive-content-in-tooltip.mjs';
+
+export { default as importXNoExtraneousDependencies } from './import-x-no-extraneous-dependencies.mjs';

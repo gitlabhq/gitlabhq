@@ -4839,7 +4839,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'on waiting for resource' do
       before do
-        allow(build).to receive(:with_resource_group?) { true }
+        allow(build).to receive(:with_resource_group?).and_return(true)
         allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async)
 
         build.enqueue
@@ -5266,7 +5266,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
       allow_next_instance_of(MergeRequest) do |instance|
-        allow(instance).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
+        allow(instance).to receive(:diff_head_sha).and_return('a288a022a53a5a944fae87bcec6efc87b7061808')
       end
       merge_request = create(:merge_request, source_project: project, head_pipeline: pipeline, source_branch: pipeline.ref)
 
@@ -5282,7 +5282,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it "doesn't return merge requests whose `diff_head_sha` doesn't match the pipeline's SHA" do
       create(:merge_request, source_project: project, source_branch: pipeline.ref)
       allow_next_instance_of(MergeRequest) do |instance|
-        allow(instance).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
+        allow(instance).to receive(:diff_head_sha).and_return('97de212e80737a608d939f648d959671fb0a0142b')
       end
 
       expect(pipeline.merge_requests_as_head_pipeline).to be_empty
@@ -8527,7 +8527,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:pipeline) { build(:ci_pipeline, partition_id: nil) }
 
     before do
-      allow(described_class).to receive(:current_partition_value) { 123 }
+      allow(described_class).to receive(:current_partition_value).and_return(123)
     end
 
     it 'sets partition_id to the current partition value' do
@@ -8544,7 +8544,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'without current partition value' do
       before do
-        allow(described_class).to receive(:current_partition_value) {}
+        allow(described_class).to receive(:current_partition_value).and_return(nil)
       end
 
       it { is_expected.to validate_presence_of(:partition_id) }

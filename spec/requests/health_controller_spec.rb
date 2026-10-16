@@ -85,7 +85,7 @@ RSpec.describe HealthController, feature_category: :database do
           end
 
           it 'responds with readiness checks data' do
-            expect(Gitlab::HealthChecks::MasterCheck).to receive(:check) { true }
+            expect(Gitlab::HealthChecks::MasterCheck).to receive(:check).and_return(true)
 
             subject
 
@@ -94,7 +94,7 @@ RSpec.describe HealthController, feature_category: :database do
           end
 
           it 'responds with readiness checks data when a failure happens' do
-            expect(Gitlab::HealthChecks::MasterCheck).to receive(:check) { false }
+            expect(Gitlab::HealthChecks::MasterCheck).to receive(:check).and_return(false)
 
             subject
 
@@ -113,7 +113,7 @@ RSpec.describe HealthController, feature_category: :database do
           end
 
           it 'does not invoke MasterCheck, succeedes' do
-            expect(Gitlab::HealthChecks::MasterCheck).not_to receive(:check) { true }
+            expect(Gitlab::HealthChecks::MasterCheck).not_to receive(:check)
 
             subject
 

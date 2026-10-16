@@ -388,7 +388,7 @@ describe('Shared pipeline unwrapping utils', () => {
       ]);
     });
 
-    it('creates union of previous stage jobs and explicit needs with deduplication', () => {
+    it('uses only explicit needs for jobs with needs', () => {
       const stages = [
         {
           name: 'build',
@@ -446,6 +446,7 @@ describe('Shared pipeline unwrapping utils', () => {
                       nodes: [
                         {
                           name: 'test_job',
+                          schedulingType: 'dag',
                           needs: { nodes: [{ name: 'build_a' }] }, // Explicit needs
                         },
                       ],
@@ -463,7 +464,6 @@ describe('Shared pipeline unwrapping utils', () => {
       expect(enrichedStages[1].groups[0].jobs[0][NEEDS_PROPERTY]).toEqual(['build_a']);
       expect(enrichedStages[1].groups[0].jobs[0][ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]).toEqual([
         'build_a',
-        'build_b',
       ]);
 
       expect(enrichedStages).toMatchObject([
@@ -485,13 +485,53 @@ describe('Shared pipeline unwrapping utils', () => {
               jobs: [
                 {
                   [NEEDS_PROPERTY]: ['build_a'],
-                  [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_a', 'build_b'],
+                  [ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]: ['build_a'],
                 },
               ],
             },
           ],
         },
       ]);
+    });
+
+    it('does not add previous stage jobs to jobs that use needs', () => {
+      const stages = [
+        { name: 'build', groups: [{ name: 'build', jobs: [{ name: 'build' }] }] },
+        {
+          name: 'test',
+          groups: [
+            { name: 'lint', jobs: [{ name: 'lint' }] },
+            { name: 'test', jobs: [{ name: 'test' }] },
+          ],
+        },
+      ];
+      const needsData = {
+        stages: {
+          nodes: [
+            {
+              groups: {
+                nodes: [
+                  {
+                    jobs: {
+                      nodes: [
+                        { name: 'build', schedulingType: 'stage', needs: { nodes: [] } },
+                        { name: 'lint', schedulingType: 'dag', needs: { nodes: [] } },
+                        { name: 'test', schedulingType: 'stage', needs: { nodes: [] } },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      };
+
+      const [, testStage] = enrichStagesWithNeeds(stages, needsData);
+      const [lint, test] = testStage.groups.map(({ jobs }) => jobs[0]);
+
+      expect(lint[ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]).toEqual([]);
+      expect(test[ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY]).toEqual(['build']);
     });
   });
 

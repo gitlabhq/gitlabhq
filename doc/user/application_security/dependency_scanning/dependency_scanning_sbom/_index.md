@@ -772,14 +772,38 @@ The following limitations apply for Gradle projects:
 
 Default environment: Python 3.12, pip-tools 7
 
+The resolution job passes requirements files to `pip-compile`, which supports these options:
+
+- Nested requirements files: `-r` and `--requirement` lines are resolved the same way as with
+  `pip install`.
+  Dependencies from the included files appear in the generated lockfile.
+- Package index options: `--index-url` and `--extra-index-url` lines in a requirements file
+  apply during resolution.
+  The index URLs are not written to the generated lockfile.
+
 The following limitations apply for Python projects:
 
 - Pipfile unsupported: Pipfile projects (without a `Pipfile.lock` file) are not supported. The Python resolution job won't be triggered on the presence of `Pipfile` file in the repository.
-- Git/VCS dependencies: Dependencies specified as Git or VCS URLs (`git+https://...`) cannot be resolved. The resolution command will fail for this specific manifest file but continue to process the others, if any.
+- Git/VCS dependencies: Dependencies specified as Git or VCS URLs (`git+https://...`) cannot be
+  resolved.
+  The default resolution image does not include `git`, so `pip-compile` fails for the manifest
+  file that contains or includes the URL.
+  The resolution job continues to process other manifest files, if any.
+  To work around this issue, use a
+  [custom resolution image](#use-a-custom-dependency-resolution-image) that includes `git`.
+  To skip a file that does not affect your application, for example, a documentation
+  requirements file, [exclude its path](#exclude-paths-from-scanning).
 - Local/editable installs: Entries using `-e .`, `file:`, or local path references are stripped before resolution and a warning is emitted. Those packages do not appear in the output.
 - `setup.py` with dynamic `install_requires`: when `install_requires` reads from a file at runtime, a warning is emitted and `pip-compile` will attempt resolution but might fail.
 - `pyproject.toml` without a `[project]` table: A `pyproject.toml` that contains only build-system configuration is skipped and a warning is emitted.
 - `DS_INCLUDE_DEV_DEPENDENCIES` scope: Development dependency inclusion is implemented only for `pyproject.toml` with `[dependency-groups]`.
+- Native extensions: Packages that need a C compiler (`gcc`) or a Rust toolchain to build from
+  source might fail to resolve when no pre-built wheel is available for the resolution environment.
+  The default resolution image does not include these build tools.
+  To work around this issue, [create the lockfile with `pip-compile`](#pip-compile) in an
+  environment that has the build tools.
+  You can also use a [custom resolution image](#use-a-custom-dependency-resolution-image)
+  that includes them.
 
 ## Create lockfile or dependency graph export manually
 

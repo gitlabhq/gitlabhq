@@ -95,6 +95,8 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
             find('button[data-testid="resolve-discussion-button"]').click
           end
 
+          find('.discussions-counter', text: 'All threads resolved', match: :first)
+
           visit_merge_request
         end
 

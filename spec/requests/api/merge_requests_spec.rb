@@ -4516,7 +4516,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it 'returns 400 if MR cannot be merged' do
         expect_next_instance_of(MergeRequests::MergeToRefService) do |merge_request|
-          expect(merge_request).to receive(:execute) { { status: :failed } }
+          expect(merge_request).to receive(:execute).and_return({ status: :failed })
         end
 
         get api(url, user)

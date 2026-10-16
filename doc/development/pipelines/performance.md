@@ -7,9 +7,10 @@ title: CI configuration performance
 
 ## Interruptible pipelines
 
-By default, all jobs are [interruptible](../../ci/yaml/_index.md#interruptible), except the
-`dont-interrupt-me` job which runs automatically on `main`, and is `manual`
-otherwise.
+All jobs in the `gitlab-org/gitlab` repository are intentionally [interruptible](../../ci/yaml/_index.md#interruptible),
+so a new pipeline on the same ref can cancel them.
+The one exception is `dont-interrupt-me`, which sets `interruptible: false`
+and is a manual job in merge request pipelines.
 
 If you want a running pipeline to finish even if you push new commits to a merge
 request, be sure to start the `dont-interrupt-me` job before pushing.

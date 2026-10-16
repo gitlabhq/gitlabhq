@@ -228,10 +228,39 @@ describe('ScopePicker', () => {
     },
   };
 
-  const searchResponse = ({ groups = [mockDeepSubgroup], projects = [mockDeepProject] } = {}) => ({
+  // A page names the cursor the next one starts from, so naming one is what says there is more.
+  const pageInfo = (endCursor) => ({
+    __typename: 'PageInfo',
+    hasNextPage: Boolean(endCursor),
+    endCursor: endCursor ?? null,
+  });
+
+  // What the second page of a search adds to the results above.
+  const mockSecondPageGroup = {
+    ...mockDeepSubgroup,
+    id: 'gid://gitlab/Group/43',
+    name: 'Pipelines',
+    fullName: 'GitLab.org / Frontend / Pipelines',
+    fullPath: `${groupFullPath}/frontend/pipelines`,
+  };
+
+  const searchResponse = ({
+    groups = [mockDeepSubgroup],
+    projects = [mockDeepProject],
+    groupsEndCursor = null,
+    projectsEndCursor = null,
+  } = {}) => ({
     data: {
-      groups: { __typename: 'GroupConnection', nodes: groups },
-      projects: { __typename: 'ProjectConnection', nodes: projects },
+      groups: {
+        __typename: 'GroupConnection',
+        nodes: groups,
+        pageInfo: pageInfo(groupsEndCursor),
+      },
+      projects: {
+        __typename: 'ProjectConnection',
+        nodes: projects,
+        pageInfo: pageInfo(projectsEndCursor),
+      },
     },
   });
 
@@ -273,13 +302,6 @@ describe('ScopePicker', () => {
         },
       });
     });
-
-  // A page names the cursor the next one starts from, so naming one is what says there is more.
-  const pageInfo = (endCursor) => ({
-    __typename: 'PageInfo',
-    hasNextPage: Boolean(endCursor),
-    endCursor: endCursor ?? null,
-  });
 
   const topLevelGroupsPage = (groups = mockTopLevelGroups, endCursor = null) => ({
     data: {
@@ -1241,11 +1263,31 @@ describe('ScopePicker', () => {
       });
 
       it('searches on the trimmed term', async () => {
-        expect(globalSearchRequestHandler).toHaveBeenCalledWith({ search: 'design' });
+        expect(globalSearchRequestHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ search: 'design' }),
+        );
 
         await search('  design  ');
 
-        expect(globalSearchRequestHandler).toHaveBeenLastCalledWith({ search: 'design' });
+        expect(globalSearchRequestHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({ search: 'design' }),
+        );
+      });
+
+      it('asks for 10 groups and 10 projects, neither after a cursor', () => {
+        expect(globalSearchRequestHandler).toHaveBeenCalledTimes(1);
+        expect(globalSearchRequestHandler).toHaveBeenCalledWith({
+          search: 'design',
+          first: 10,
+          searchGroups: true,
+          searchProjects: true,
+          groupsAfter: undefined,
+          projectsAfter: undefined,
+        });
+      });
+
+      it('has no Load more row when both kinds are exhausted', () => {
+        expect(findLoadMoreItems()).toHaveLength(0);
       });
 
       it('treats whitespace alone as no search at all', async () => {
@@ -1400,6 +1442,270 @@ describe('ScopePicker', () => {
       });
     });
 
+    describe('when more results are available', () => {
+      const firstPage = searchResponse({
+        groupsEndCursor: 'groups-1',
+        projectsEndCursor: 'projects-1',
+      });
+      const secondPage = searchResponse({
+        groups: [mockSecondPageGroup],
+        projects: [mockUnrelatedProject],
+      });
+
+      const searchWith = async (globalSearchHandler) => {
+        createWrapper({ globalSearchHandler });
+        await waitForPromises();
+        await search('design');
+      };
+
+      describe('once the first page arrives', () => {
+        beforeEach(() =>
+          searchWith(jest.fn().mockResolvedValueOnce(firstPage).mockResolvedValueOnce(secondPage)),
+        );
+
+        it('ends the list with a Load more results row', () => {
+          expect(findItemTexts()).toEqual([
+            mockDeepSubgroup.name,
+            mockDeepProject.name,
+            'Load more results',
+          ]);
+          expect(findListLoadMore().props('nested')).toBe(false);
+        });
+
+        it('leaves the row out of the result count', () => {
+          expect(findSearchSummary().text()).toBe('2 results');
+        });
+
+        it('gives the row a value of its own', () => {
+          const values = findOptions().map(({ value }) => value);
+
+          expect(new Set(values).size).toBe(values.length);
+        });
+
+        it('drops the row once the search is cleared', async () => {
+          await search('');
+
+          expect(findLoadMoreItems()).toHaveLength(0);
+        });
+
+        describe('when it is clicked', () => {
+          beforeEach(() => findListLoadMore().vm.$emit('load-more'));
+
+          it('asks for 10 of each, from where each kind left off', () => {
+            expect(globalSearchRequestHandler).toHaveBeenLastCalledWith({
+              search: 'design',
+              first: 10,
+              searchGroups: true,
+              searchProjects: true,
+              groupsAfter: 'groups-1',
+              projectsAfter: 'projects-1',
+            });
+          });
+
+          it('sets the loading state on the button, not the listbox', () => {
+            expect(findListLoadMore().props('loading')).toBe(true);
+            expect(findListbox().props('searching')).toBe(false);
+          });
+
+          describe('once the page arrives', () => {
+            beforeEach(() => waitForPromises());
+
+            it('appends its groups and then its projects, after the first page', () => {
+              expect(findItemValues()).toEqual([
+                mockDeepSubgroup.fullPath,
+                mockDeepProject.fullPath,
+                mockSecondPageGroup.fullPath,
+                mockUnrelatedProject.fullPath,
+              ]);
+            });
+
+            it('drops the row, both kinds being exhausted', () => {
+              expect(findLoadMoreItems()).toHaveLength(0);
+            });
+
+            it('counts every result listed', () => {
+              expect(findSearchSummary().text()).toBe('4 results');
+            });
+          });
+        });
+      });
+
+      describe('when only projects have more results', () => {
+        beforeEach(async () => {
+          await searchWith(
+            jest
+              .fn()
+              .mockResolvedValueOnce(searchResponse({ projectsEndCursor: 'projects-1' }))
+              .mockResolvedValueOnce(
+                searchResponse({
+                  groups: [],
+                  projects: [mockUnrelatedProject],
+                  projectsEndCursor: 'projects-2',
+                }),
+              ),
+          );
+          findListLoadMore().vm.$emit('load-more');
+          await waitForPromises();
+        });
+
+        it('asks for projects alone, 20 of them, so the page stays the same size', () => {
+          expect(globalSearchRequestHandler).toHaveBeenLastCalledWith({
+            search: 'design',
+            first: 20,
+            searchGroups: false,
+            searchProjects: true,
+            groupsAfter: null,
+            projectsAfter: 'projects-1',
+          });
+        });
+
+        it('appends the projects, keeping the groups already listed, and the row after them', () => {
+          expect(findItemTexts()).toEqual([
+            mockDeepSubgroup.name,
+            mockDeepProject.name,
+            mockUnrelatedProject.name,
+            'Load more results',
+          ]);
+        });
+      });
+
+      describe('when the next page fails', () => {
+        const error = new Error('oh no');
+
+        beforeEach(async () => {
+          await searchWith(jest.fn().mockResolvedValueOnce(firstPage).mockRejectedValueOnce(error));
+          findListLoadMore().vm.$emit('load-more');
+          await waitForPromises();
+        });
+
+        it('emits error', () => {
+          expect(wrapper.emitted('error')).toEqual([[error]]);
+        });
+
+        it('logs the error to sentry', () => {
+          expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+        });
+
+        it('keeps the results already listed, and the row, so it can be asked for again', () => {
+          expect(findItemTexts()).toEqual([
+            mockDeepSubgroup.name,
+            mockDeepProject.name,
+            'Load more results',
+          ]);
+          expect(findListLoadMore().props('loading')).toBe(false);
+        });
+      });
+
+      describe('when the search changes while the next page is in flight', () => {
+        beforeEach(async () => {
+          let resolveNextPage;
+          const nextPage = new Promise((resolve) => {
+            resolveNextPage = resolve;
+          });
+
+          await searchWith(
+            jest
+              .fn()
+              .mockResolvedValueOnce(firstPage)
+              .mockReturnValueOnce(nextPage)
+              .mockResolvedValue(searchResponse({ groups: [], projects: [mockUnrelatedProject] })),
+          );
+          findListLoadMore().vm.$emit('load-more');
+          await search('charts');
+
+          resolveNextPage(secondPage);
+          await waitForPromises();
+        });
+
+        it('starts the new search from its first page', () => {
+          expect(globalSearchRequestHandler).toHaveBeenLastCalledWith({
+            search: 'charts',
+            first: 10,
+            searchGroups: true,
+            searchProjects: true,
+            groupsAfter: undefined,
+            projectsAfter: undefined,
+          });
+        });
+
+        it('lists only the new search, dropping the page that no longer belongs', () => {
+          expect(findItemValues()).toEqual([mockUnrelatedProject.fullPath]);
+          expect(findLoadMoreItems()).toHaveLength(0);
+        });
+      });
+    });
+
+    describe('when typing returns to a term whose first page is already listed', () => {
+      beforeEach(async () => {
+        createWrapper({
+          globalSearchHandler: jest
+            .fn()
+            .mockResolvedValueOnce(
+              searchResponse({ groupsEndCursor: 'groups-1', projectsEndCursor: 'projects-1' }),
+            )
+            .mockReturnValueOnce(new Promise(() => {}))
+            .mockResolvedValue(searchResponse()),
+        });
+        await waitForPromises();
+        await search('design');
+        await search('designs');
+        await search('design');
+        await waitForPromises();
+      });
+
+      it('never asks for the next page', () => {
+        expect(globalSearchRequestHandler).not.toHaveBeenCalledWith(
+          expect.objectContaining({ groupsAfter: 'groups-1' }),
+        );
+      });
+
+      it('lists the first page, with its Load more row idle', () => {
+        expect(findItemTexts()).toEqual([
+          mockDeepSubgroup.name,
+          mockDeepProject.name,
+          'Load more results',
+        ]);
+        expect(findListLoadMore().props('loading')).toBe(false);
+      });
+    });
+
+    describe('when a term is typed again while its next page is in flight', () => {
+      let resolveNextPage;
+
+      beforeEach(async () => {
+        const nextPage = new Promise((resolve) => {
+          resolveNextPage = resolve;
+        });
+
+        createWrapper({
+          globalSearchHandler: jest
+            .fn()
+            .mockResolvedValueOnce(
+              searchResponse({ groupsEndCursor: 'groups-1', projectsEndCursor: 'projects-1' }),
+            )
+            .mockReturnValueOnce(nextPage)
+            .mockResolvedValue(searchResponse({ groups: [], projects: [mockUnrelatedProject] })),
+        });
+        await waitForPromises();
+        await search('design');
+        findListLoadMore().vm.$emit('load-more');
+        await search('designs');
+        await search('design');
+
+        resolveNextPage(searchResponse({ groups: [mockSecondPageGroup], projects: [] }));
+        await waitForPromises();
+      });
+
+      it('drops the page, keeping the first page the term was typed back to', () => {
+        expect(findItemValues()).toEqual([
+          mockDeepSubgroup.fullPath,
+          mockDeepProject.fullPath,
+          expect.stringContaining('load-more'),
+        ]);
+        expect(findListLoadMore().props('loading')).toBe(false);
+      });
+    });
+
     describe('with a pick made before searching', () => {
       const pickThenSearch = async (globalSearchHandler) => {
         createWrapper({ globalSearchHandler });
@@ -1456,8 +1762,8 @@ describe('ScopePicker', () => {
         await search('design');
       });
 
-      // Apollo never runs update on a rejection, so anything keying off "results have not
-      // arrived yet" would stay true forever and leave the listbox spinning with no way out.
+      // A rejection delivers no results, so anything keying off "results have not arrived yet"
+      // would stay true forever and leave the listbox spinning with no way out.
       it('stops searching, rather than spinning on a result that will never arrive', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       });

@@ -8591,7 +8591,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     it 'does not log failed sign-in attempts when in a GitLab read-only instance' do
-      allow(Gitlab::Database).to receive(:read_only?) { true }
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
 
       expect { user.increment_failed_attempts! }.not_to change { user.failed_attempts }
     end

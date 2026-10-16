@@ -26,6 +26,7 @@ describe('initSearchApp', () => {
     ${'test+%2520+this+%2520+stuff'} | ${'test %20 this %20 stuff'}
   `('parameter decoding', ({ search, decodedSearch }) => {
     beforeEach(() => {
+      createStore.mockImplementation(() => new Store({ getters: { isZoektCodeSearch: false } }));
       setWindowLocation(`/search?search=${search}`);
       initSearchApp();
     });
@@ -39,7 +40,7 @@ describe('initSearchApp', () => {
   describe('using zoekt', () => {
     const mockStore = new Store({
       getters: {
-        currentScope: 'blobs',
+        isZoektCodeSearch: true,
       },
       state: {
         searchType: 'zoekt',

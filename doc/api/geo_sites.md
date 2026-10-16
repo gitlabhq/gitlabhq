@@ -49,13 +49,13 @@ curl --request POST \
 | `internal_url`                        | string  | no       | The URL defined on the primary site that secondary sites should use to contact it. Returns `url` if not set.                                           |
 | `files_max_capacity`                  | integer | no       | Control the maximum concurrency of LFS/attachment backfill for this secondary site. Defaults to 10.                                                    |
 | `repos_max_capacity`                  | integer | no       | Control the maximum concurrency of repository backfill for this secondary site. Defaults to 25.                                                        |
-| `verification_max_capacity`           | integer | no       | Control the maximum concurrency of repository verification for this site. Defaults to 100.                                                             |
+| `verification_max_capacity`           | integer | no       | Control the maximum concurrency of verification for this site. Defaults to 100.                                                                        |
 | `container_repositories_max_capacity` | integer | no       | Control the maximum concurrency of container repository sync for this site. Defaults to 10.                                                            |
 | `sync_object_storage`                 | boolean | no       | Flag indicating if the secondary Geo site should replicate blobs in Object Storage. Defaults to false.                                                 |
 | `selective_sync_type`                 | string  | no       | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`.                                                  |
 | `selective_sync_shards`               | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`.                                                                   |
 | `selective_sync_namespace_ids`        | array   | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`.                                                                     |
-| `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site. |
+| `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site.            |
 | `blob_download_timeout`               | integer | no       | The timeout (in seconds) for blob replication. Defaults to 28800. Maximum is 86400.                                                                    |
 
 Example response:
@@ -231,7 +231,7 @@ PUT /geo_sites/:id
 | `selective_sync_type`                 | string  | no       | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`.                                                  |
 | `selective_sync_shards`               | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`.                                                                   |
 | `selective_sync_namespace_ids`        | array   | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`.                                                                     |
-| `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site. |
+| `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site.            |
 | `blob_download_timeout`               | integer | no       | The timeout (in seconds) for blob replication. Defaults to 28800. Maximum is 86400.                                                                    |
 
 Example response:

@@ -81,6 +81,22 @@ describe('BranchRuleModal', () => {
     expect(findBranchRuleListbox().props('toggleText')).toBe('Select branch or create rule');
   });
 
+  it('renders an empty listbox when the project has no protectable branches', async () => {
+    await createComponent({
+      queryHandler: jest.fn().mockResolvedValue({
+        data: {
+          project: {
+            id: 'gid://gitlab/Project/1',
+            protectableBranches: null,
+            __typename: 'Project',
+          },
+        },
+      }),
+    });
+
+    expect(findBranchRuleListbox().props('items')).toEqual([]);
+  });
+
   describe('search functionality', () => {
     beforeEach(async () => {
       await createComponent();

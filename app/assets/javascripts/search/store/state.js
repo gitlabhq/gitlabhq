@@ -24,7 +24,6 @@ const createState = ({
     [GROUPS_LOCAL_STORAGE_KEY]: [],
     [PROJECTS_LOCAL_STORAGE_KEY]: [],
   },
-  sidebarDirty: false,
   navigation,
   aggregations: {
     error: false,

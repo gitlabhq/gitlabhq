@@ -2113,7 +2113,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
 
     context 'when rollout status is available' do
       before do
-        allow(environment).to receive(:rollout_status_available?) { true }
+        allow(environment).to receive(:rollout_status_available?).and_return(true)
       end
 
       it 'fetches ingresses from the deployment platform' do
@@ -2125,7 +2125,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
 
     context 'when rollout status is not available' do
       before do
-        allow(environment).to receive(:rollout_status_available?) { false }
+        allow(environment).to receive(:rollout_status_available?).and_return(false)
       end
 
       it 'does nothing' do
@@ -2151,7 +2151,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
 
     context 'when rollout status is available' do
       before do
-        allow(environment).to receive(:rollout_status_available?) { true }
+        allow(environment).to receive(:rollout_status_available?).and_return(true)
       end
 
       it 'fetches ingresses from the deployment platform' do
@@ -2163,7 +2163,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
 
     context 'when rollout status is not available' do
       before do
-        allow(environment).to receive(:rollout_status_available?) { false }
+        allow(environment).to receive(:rollout_status_available?).and_return(false)
       end
 
       it 'does nothing' do

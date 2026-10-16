@@ -101,14 +101,13 @@ module Organizations
           project_relation = Project.in_namespace(batch_ids)
           project_relation.each_batch(of: BATCH_SIZE) do |batch|
             schedule_pool_repository_disconnections(batch)
+            batch.update_all(
+              organization_id: new_organization.id,
+              visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
+            )
           end
 
           transfer_fork_networks(project_relation.select(:id))
-
-          project_relation.update_all(
-            organization_id: new_organization.id,
-            visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
-          )
 
           transfer_oauth_application_granular_scopes(batch_ids)
           transfer_oauth_applications(batch_ids)

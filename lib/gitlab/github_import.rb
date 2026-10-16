@@ -7,14 +7,17 @@ module Gitlab
     end
 
     def self.new_client_for(project, token: nil, host: nil, parallel: true)
-      token_to_use = token || project.import_data&.credentials&.fetch(:user)
+      token_service = ::Import::Github::RefreshOauthTokenService.new(project)
+      token_to_use = token || token_service.current_token
+      token_refresher = -> { token_to_use = token_service.execute(token_to_use) } if token_service.refreshable?
       pagination_limit = project.import_data&.data&.dig('pagination_limit') || Gitlab::GithubImport::Client::DEFAULT_PER_PAGE
 
       Client.new(
         token_to_use,
         host: host.presence || self.formatted_import_url(project),
         per_page: pagination_limit,
-        parallel: parallel
+        parallel: parallel,
+        token_refresher: token_refresher
       )
     end
 

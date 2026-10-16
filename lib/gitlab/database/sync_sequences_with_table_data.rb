@@ -198,16 +198,14 @@ module Gitlab
 
       # The statement timeout would kill MAX() on large unindexed consumers
       # (e.g. loose_foreign_keys_deleted_records) and abort the promotion.
-      # RESET would fall back to the cluster default (usually 0), not the value
-      # database.yml set for this session, so the previous values are restored.
       def without_statement_timeout(connection)
-        previous = connection.select_value('SHOW statement_timeout')
         previous_transaction_timeout = Gitlab::Database::TransactionTimeout.current(connection)
-        connection.execute('SET statement_timeout TO 0')
-        Gitlab::Database::TransactionTimeout.disable(connection)
-        yield
+
+        Gitlab::Database::Session::Settings::StatementTimeout.with(connection, 0) do
+          Gitlab::Database::TransactionTimeout.disable(connection)
+          yield
+        end
       ensure
-        connection.execute("SET statement_timeout TO #{connection.quote(previous)}") if previous
         Gitlab::Database::TransactionTimeout.restore(connection, previous_transaction_timeout)
       end
 

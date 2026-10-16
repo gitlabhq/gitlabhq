@@ -5,6 +5,9 @@ export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source
 // The `needs` field of a job, should match the GraphQL field. This is needed to build the dependency arrows in the pipeline graph.
 export const NEEDS_PROPERTY = 'needs';
 
+// `schedulingType` of a job that uses `needs`, even `needs: []`
+export const DAG_SCHEDULING_TYPE = 'dag';
+
 // Frontend-only property that stores all the jobs from the previous stages. This is needed to build the layer view in the pipeline graph.
 export const ALL_JOBS_FROM_PREVIOUS_STAGE_PROPERTY = 'previousStageJobsUnionNeeds';
 

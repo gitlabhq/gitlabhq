@@ -123,7 +123,7 @@ RSpec.describe InternalId do
 
     context 'when executed outside of transaction' do
       it 'increments counter with in_transaction: "false"' do
-        allow(ApplicationRecord.connection).to receive(:transaction_open?) { false }
+        allow(ApplicationRecord.connection).to receive(:transaction_open?).and_return(false)
 
         expect(described_class.internal_id_transactions_total).to receive(:increment)
           .with(operation: :generate, usage: 'issues', in_transaction: 'false').and_call_original
@@ -182,7 +182,7 @@ RSpec.describe InternalId do
       let(:value) { 2 }
 
       it 'increments counter with in_transaction: "false"' do
-        allow(ApplicationRecord.connection).to receive(:transaction_open?) { false }
+        allow(ApplicationRecord.connection).to receive(:transaction_open?).and_return(false)
 
         expect(described_class.internal_id_transactions_total).to receive(:increment)
           .with(operation: :reset, usage: 'issues', in_transaction: 'false').and_call_original
@@ -253,7 +253,7 @@ RSpec.describe InternalId do
 
     context 'when executed outside of transaction' do
       it 'increments counter with in_transaction: "false"' do
-        allow(ApplicationRecord.connection).to receive(:transaction_open?) { false }
+        allow(ApplicationRecord.connection).to receive(:transaction_open?).and_return(false)
 
         expect(described_class.internal_id_transactions_total).to receive(:increment)
           .with(operation: :track_greatest, usage: 'issues', in_transaction: 'false').and_call_original

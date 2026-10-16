@@ -13,8 +13,6 @@ import { initProjectSelects } from '~/vue_shared/components/entity_select/init_p
 import initPruneObjectsButton from '~/projects/prune_objects_button';
 import initArchiveSettings from '~/groups_projects/archive';
 import initUnarchiveSettings from '~/groups_projects/unarchive';
-import initTopicsTokenSelector from '~/projects/settings/topics';
-import { initProjectNameValidation } from '~/projects/project_name_validation';
 import mountProjectGeneralSettings from '~/projects/settings/mount_project_general_settings';
 import initGitlabDuoSettings from '~/ai/settings/init_gitlab_duo_settings';
 import { initProjectPermissionsSettings } from '../shared/permissions/init_project_permissions_settings';
@@ -40,13 +38,5 @@ initArchiveSettings();
 initUnarchiveSettings();
 initProjectSelects();
 
-// Mount the general settings Vue app (includes topics selector) when the
-// `project_general_settings_vue` feature flag renders its mount point.
-// Otherwise initialize the legacy server-rendered form.
-if (mountProjectGeneralSettings()) {
-  dirtySubmitFactory(document.querySelectorAll('.js-mr-settings-form'));
-} else {
-  initTopicsTokenSelector();
-  initProjectNameValidation();
-  dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));
-}
+mountProjectGeneralSettings();
+dirtySubmitFactory(document.querySelectorAll('.js-mr-settings-form'));

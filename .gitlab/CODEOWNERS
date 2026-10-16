@@ -362,6 +362,10 @@ Dangerfile
 /scripts/
 /spec/scripts/
 /scripts/**/*.rb @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend
+/scripts/semgrep_result_processor.rb @gitlab-com/gl-security/appsec
+/scripts/sast_triage_classifier.rb @gitlab-com/gl-security/appsec
+/spec/scripts/semgrep_result_processor_spec.rb @gitlab-com/gl-security/appsec
+/spec/scripts/sast_triage_classifier_spec.rb @gitlab-com/gl-security/appsec
 /scripts/**/*.js @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
 /scripts/release_environment/ @gl-dx/tooling-maintainers @gitlab-org/delivery
@@ -736,6 +740,7 @@ Dangerfile
 
 [Analytics Dashboards definitions] @gitlab-org/analytics-section/optimize-group/engineers @gitlab-org/analytics-section/platform-insights/engineers
 /ee/lib/gitlab/analytics/**/*.yaml
+/ee/app/validators/json_schemas/analytics_dashboard.json
 
 ^[Product Analytics backend] @gitlab-org/analytics-section/platform-insights/engineers/backend
 /ee/lib/analytics/product_analytics/

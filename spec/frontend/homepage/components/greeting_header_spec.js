@@ -10,6 +10,7 @@ import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
 import getUserStatusQuery from '~/homepage/graphql/queries/user_status.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getRandomGreeting } from '~/homepage/utils/build_time_aware_greetings';
+import { initEmojiMap, getEmojiInfo } from '~/emoji';
 
 jest.mock('~/homepage/utils/build_time_aware_greetings', () => ({
   getRandomGreeting: jest.fn().mockReturnValue('Mocked greeting'),
@@ -198,6 +199,24 @@ describe('GreetingHeader', () => {
 
       expect(findStatusBadge().exists()).toBe(true);
       expect(findStatusEmoji().attributes('data-name')).toBe('rocket');
+    });
+
+    it('reads the emoji map only after it has loaded', async () => {
+      let resolveEmojiMap;
+      // Like initEmojiMap, every call returns the same promise.
+      const emojiMapLoaded = new Promise((resolve) => {
+        resolveEmojiMap = resolve;
+      });
+      initEmojiMap.mockReturnValue(emojiMapLoaded);
+      createComponent();
+      await waitForPromises();
+
+      expect(getEmojiInfo).not.toHaveBeenCalled();
+
+      resolveEmojiMap();
+      await waitForPromises();
+
+      expect(getEmojiInfo).toHaveBeenCalledWith('rocket');
     });
 
     it('hides status emoji when not present', async () => {

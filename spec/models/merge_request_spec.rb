@@ -3459,7 +3459,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when force push is not allowed' do
         before do
-          allow(ProtectedBranch).to receive(:allow_force_push?) { false }
+          allow(ProtectedBranch).to receive(:allow_force_push?).and_return(false)
         end
 
         it { is_expected.to be_falsey }
@@ -3467,7 +3467,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when force push is allowed' do
         before do
-          allow(ProtectedBranch).to receive(:allow_force_push?) { true }
+          allow(ProtectedBranch).to receive(:allow_force_push?).and_return(true)
         end
 
         it { is_expected.to be_truthy }
@@ -4467,15 +4467,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'returns true if MR has head_pipeline_id and commits' do
         allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { nil }
         allow(merge_request).to receive(:head_pipeline_id) { double }
-        allow(merge_request).to receive(:has_no_commits?) { false }
+        allow(merge_request).to receive(:has_no_commits?).and_return(false)
 
         expect(merge_request.has_ci?).to be(true)
       end
 
       it 'returns true if MR has any pipeline and commits' do
         allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { nil }
-        allow(merge_request).to receive(:head_pipeline_id) { nil }
-        allow(merge_request).to receive(:has_no_commits?) { false }
+        allow(merge_request).to receive_messages(head_pipeline_id: nil, has_no_commits?: false)
         allow(merge_request).to receive(:pipelines_for_mergeability) { [double] }
 
         expect(merge_request.has_ci?).to be(true)
@@ -4483,9 +4482,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns true if MR has CI integration and commits' do
         allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { double }
-        allow(merge_request).to receive(:head_pipeline_id) { nil }
-        allow(merge_request).to receive(:has_no_commits?) { false }
-        allow(merge_request).to receive(:pipelines_for_mergeability) { [] }
+        allow(merge_request).to receive_messages(
+          head_pipeline_id: nil,
+          has_no_commits?: false,
+          pipelines_for_mergeability: []
+        )
 
         expect(merge_request.has_ci?).to be(true)
       end
@@ -4494,9 +4495,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'has no ci' do
       it 'returns false if MR has no CI integration nor pipeline, and no commits' do
         allow(merge_request).to receive_message_chain(:source_project, :ci_integration) { nil }
-        allow(merge_request).to receive(:head_pipeline_id) { nil }
-        allow(merge_request).to receive(:pipelines_for_mergeability) { [] }
-        allow(merge_request).to receive(:has_no_commits?) { true }
+        allow(merge_request).to receive_messages(
+          head_pipeline_id: nil,
+          pipelines_for_mergeability: [],
+          has_no_commits?: true
+        )
 
         expect(merge_request.has_ci?).to be(false)
       end
@@ -4648,7 +4651,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         context 'when failed to find an actual head pipeline' do
           before do
-            allow(merge_request).to receive(:find_diff_head_pipeline) {}
+            allow(merge_request).to receive(:find_diff_head_pipeline).and_return(nil)
           end
 
           it 'does not update the current head pipeline' do
@@ -5582,7 +5585,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         context 'but merged at timestamp cannot be found' do
           before do
-            allow(subject).to receive(:merged_at) { nil }
+            allow(subject).to receive(:merged_at).and_return(nil)
           end
 
           it 'returns false' do
@@ -5827,23 +5830,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     subject { mr }
 
     it 'returns false if #mergeable_state? is false' do
-      expect(subject).to receive(:mergeable_state?) { false }
+      expect(subject).to receive(:mergeable_state?).and_return(false)
 
       expect(subject.mergeable?).to be_falsey
     end
 
     it 'return true if #mergeable_state? is true and the MR #can_be_merged? is true' do
-      allow(subject).to receive(:mergeable_state?) { true }
+      allow(subject).to receive(:mergeable_state?).and_return(true)
       expect(subject).to receive(:check_mergeability)
-      expect(subject).to receive(:can_be_merged?) { true }
+      expect(subject).to receive(:can_be_merged?).and_return(true)
 
       expect(subject.mergeable?).to be_truthy
     end
 
     it 'return true if #mergeable_state? is true and the MR #can_be_merged? is false' do
-      allow(subject).to receive(:mergeable_state?) { true }
+      allow(subject).to receive(:mergeable_state?).and_return(true)
       expect(subject).to receive(:check_mergeability)
-      expect(subject).to receive(:can_be_merged?) { false }
+      expect(subject).to receive(:can_be_merged?).and_return(false)
 
       expect(subject.mergeable?).to be_falsey
     end
@@ -5927,7 +5930,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with check_mergeability_retry_lease option' do
       it 'call check_mergeability with sync_retry_lease' do
-        allow(subject).to receive(:mergeable_state?) { true }
+        allow(subject).to receive(:mergeable_state?).and_return(true)
         expect(subject).to receive(:check_mergeability).with(async: false, sync_retry_lease: true)
 
         subject.mergeable?(check_mergeability_retry_lease: true)
@@ -5936,7 +5939,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'within with_async_mergeability_check' do
       before do
-        allow(subject).to receive(:mergeable_state?) { true }
+        allow(subject).to receive(:mergeable_state?).and_return(true)
       end
 
       it 'calls check_mergeability with async' do
@@ -6224,7 +6227,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'when has no commits' do
       before do
-        allow(subject).to receive(:has_no_commits?) { true }
+        allow(subject).to receive(:has_no_commits?).and_return(true)
       end
 
       it 'returns false' do
@@ -6235,7 +6238,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when failed' do
       context 'when #mergeable_ci_state? is false' do
         before do
-          allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?) { true }
+          allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(true)
           allow_next_instance_of(MergeRequests::Mergeability::CheckCiStatusService) do |check|
             allow(check).to receive(:mergeable_ci_state?).and_return(false)
           end
@@ -6252,8 +6255,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when #mergeable_discussions_state? is false' do
         before do
-          allow(subject.project).to receive(:only_allow_merge_if_all_discussions_are_resolved?) { true }
-          allow(subject).to receive(:mergeable_discussions_state?) { false }
+          allow(subject.project).to receive(:only_allow_merge_if_all_discussions_are_resolved?).and_return(true)
+          allow(subject).to receive(:mergeable_discussions_state?).and_return(false)
         end
 
         it 'returns false' do
@@ -6489,7 +6492,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe "#diff_head_pipeline_success?" do
     context 'when project lacks an diff_head_pipeline relation' do
       before do
-        allow(subject).to receive(:diff_head_pipeline) { nil }
+        allow(subject).to receive(:diff_head_pipeline).and_return(nil)
       end
 
       it 'returns false' do
@@ -7006,7 +7009,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     it 'returns true when merge_id, MR is not merged and it has no running job' do
       merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:opened], merge_jid: 'foo')
-      allow(Gitlab::SidekiqStatus).to receive(:running_or_enqueued?).with('foo') { true }
+      allow(Gitlab::SidekiqStatus).to receive(:running_or_enqueued?).with('foo').and_return(true)
 
       expect(merge_request.merge_ongoing?).to be(true)
     end
@@ -7025,7 +7028,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     it 'returns false if there is no merge job running' do
       merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:opened], merge_jid: 'foo')
-      allow(Gitlab::SidekiqStatus).to receive(:running_or_enqueued?).with('foo') { false }
+      allow(Gitlab::SidekiqStatus).to receive(:running_or_enqueued?).with('foo').and_return(false)
 
       expect(merge_request.merge_ongoing?).to be(false)
     end
@@ -8468,13 +8471,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     it 'is false when pushing by a maintainer is not possible' do
-      expect(merge_request).to receive(:collaborative_push_possible?) { false }
+      expect(merge_request).to receive(:collaborative_push_possible?).and_return(false)
 
       expect(merge_request.allow_collaboration).to be_falsy
     end
 
     it 'is true when pushing by a maintainer is possible' do
-      expect(merge_request).to receive(:collaborative_push_possible?) { true }
+      expect(merge_request).to receive(:collaborative_push_possible?).and_return(true)
 
       expect(merge_request.allow_collaboration).to be_truthy
     end
@@ -8559,7 +8562,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     before do
-      allow(ProtectedBranch).to receive(:protected?) { false }
+      allow(ProtectedBranch).to receive(:protected?).and_return(false)
     end
 
     it 'does not allow maintainer to push if the source project is the same as the target' do
@@ -8613,7 +8616,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:user) { create(:user) }
 
     before do
-      allow(merge_request).to receive(:collaborative_push_possible?) { true }
+      allow(merge_request).to receive(:collaborative_push_possible?).and_return(true)
     end
 
     it 'is false if the user does not have push access to the source project' do

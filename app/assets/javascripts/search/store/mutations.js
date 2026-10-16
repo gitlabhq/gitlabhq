@@ -26,9 +26,6 @@ export default {
   [types.SET_QUERY](state, { key, value }) {
     state.query = { ...state.query, [key]: value };
   },
-  [types.SET_SIDEBAR_DIRTY](state, value) {
-    state.sidebarDirty = value;
-  },
   [types.LOAD_FREQUENT_ITEMS](state, { key, data }) {
     state.frequentItems[key] = data;
   },

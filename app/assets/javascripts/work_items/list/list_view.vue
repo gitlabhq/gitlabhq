@@ -361,7 +361,6 @@ export default {
         .catch((error) => {
           this.$emit('set-error', s__('WorkItem|An error occurred while reordering work items.'));
           Sentry.captureException(error);
-          throw error;
         });
     },
     updateWorkItemsCache(cache, oldIndex, newIndex) {

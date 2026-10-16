@@ -2328,7 +2328,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       before do
         project.add_developer(user) # -- Does not work in before_all
-        allow(build).to receive(:auto_retry_allowed?) { true }
+        allow(build).to receive(:auto_retry_allowed?).and_return(true)
       end
 
       it 'creates a deployment when a build is dropped' do
@@ -3100,7 +3100,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             end
 
             stub_ci_job_definition(build, yaml_variables: [build_yaml_var.except(:masked)])
-            allow(build).to receive(:persisted_variables) { [] }
+            allow(build).to receive(:persisted_variables).and_return([])
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
             allow(build).to receive(:dependency_proxy_variables) { [dependency_proxy_var] }
@@ -5792,9 +5792,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when `upload_multiple_artifacts` feature is required by build' do
       before do
-        expect(build).to receive(:runner_required_feature_names) do
-          [:upload_multiple_artifacts]
-        end
+        expect(build).to receive(:runner_required_feature_names).and_return([:upload_multiple_artifacts])
       end
 
       context 'when runner provides given feature' do
@@ -5816,7 +5814,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when `refspecs` feature is required by build' do
       before do
-        allow(build).to receive(:merge_request_ref?) { true }
+        allow(build).to receive(:merge_request_ref?).and_return(true)
       end
 
       context 'when runner provides given feature' do
@@ -5834,9 +5832,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when `multi_build_steps` feature is required by build' do
       before do
-        expect(build).to receive(:runner_required_feature_names) do
-          [:multi_build_steps]
-        end
+        expect(build).to receive(:runner_required_feature_names).and_return([:multi_build_steps])
       end
 
       context 'when runner provides given feature' do

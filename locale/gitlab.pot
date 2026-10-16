@@ -11736,6 +11736,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Load more projects in %{name}"
 msgstr ""
 
+msgid "AnalyticsDashboards|Load more results"
+msgstr ""
+
 msgid "AnalyticsDashboards|More actions for %{name}"
 msgstr ""
 
@@ -15143,9 +15146,6 @@ msgid "Available only on GitLab Premium."
 msgstr ""
 
 msgid "Avatar for %{assigneeName}"
-msgstr ""
-
-msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Average closed merge requests created per flow."
@@ -73452,9 +73452,6 @@ msgid "Save changes for Service Desk"
 msgstr ""
 
 msgid "Save changes for default description template for issues"
-msgstr ""
-
-msgid "Save changes for naming, description, topics"
 msgstr ""
 
 msgid "Save changes for visibility, project features, permissions"

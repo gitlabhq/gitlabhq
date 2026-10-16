@@ -52,7 +52,7 @@ RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profil
   end
 
   def datetime_in_tooltip
-    datetime_text = page.find('.tooltip').text
+    datetime_text = page.find('.gl-tooltip').text
     DateTime.parse(datetime_text)
   end
 end

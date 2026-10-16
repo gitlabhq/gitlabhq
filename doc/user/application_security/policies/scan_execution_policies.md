@@ -535,10 +535,14 @@ The following settings are supported by the `scan_settings` parameter:
 > Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
 > in a Git repository.
 
-Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
+Variables declared in a scan execution policy action take precedence over project, group, and instance
+CI/CD variables with the same name. While the policy declares them, they cannot be overridden or
+unset for an individual project. This behavior differs from the standard
+[CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence), under which
+project and group variables would typically override variables defined in jobs.
 
 Preconfigured values are used for the following CI/CD variables in any project on which a scan
-execution policy is enforced. Only policies can override these values. Group or project CI/CD variables cannot override these variables:
+execution policy is enforced:
 
 ```plaintext
 DS_EXCLUDED_PATHS: '**/spec,**/test,**/tests,**/tmp,**/node_modules,**/.bundle,**/vendor,**/.git'

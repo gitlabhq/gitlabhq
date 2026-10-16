@@ -13,6 +13,7 @@ query getPipelineNeeds($projectPath: ID!, $iid: ID!) {
                 nodes {
                   id
                   name
+                  schedulingType
                   needs {
                     nodes {
                       id

@@ -19,7 +19,6 @@ import * as urlUtils from '~/lib/utils/url_utility';
 import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
-  SIDEBAR_PARAMS,
   REGEX_PARAM,
   LS_REGEX_HANDLE,
 } from '~/search/store/constants';
@@ -194,7 +193,6 @@ describe('Global Search Store Actions', () => {
           .mockImplementation(() => Promise.resolve());
 
         window.gon = { features: {} };
-        storeUtils.isSidebarDirty = jest.fn().mockReturnValue(false);
 
         state = createState({
           query: { ...MOCK_QUERY, search: 'test-search' },
@@ -209,29 +207,15 @@ describe('Global Search Store Actions', () => {
       });
 
       it('should update URL, document title, and history', () => {
-        const getters = { currentScope: 'blobs' };
+        const getters = { isZoektCodeSearch: true };
 
         return testAction(actions.setQuery, payload, { ...state, ...getters }, [
           { type: types.SET_QUERY, payload: { key: 'some-key', value: 'some-value' } },
         ]);
       });
 
-      it('does not update URL or fetch sidebar counts when conditions are not met', async () => {
-        let getters = { currentScope: 'blobs' };
-        state.searchType = 'not-zoekt';
-
-        await actions.setQuery({ state, commit, getters }, payload);
-
-        expect(setUrlParams).not.toHaveBeenCalled();
-        expect(updateHistory).not.toHaveBeenCalled();
-        expect(fetchSidebarCountSpy).not.toHaveBeenCalled();
-
-        setUrlParams.mockClear();
-        updateHistory.mockClear();
-        fetchSidebarCountSpy.mockClear();
-
-        state.searchType = 'zoekt';
-        getters = { currentScope: 'not-blobs' };
+      it('does not update URL or fetch sidebar counts outside Zoekt code search', async () => {
+        const getters = { isZoektCodeSearch: false };
 
         await actions.setQuery({ state, commit, getters }, payload);
 
@@ -250,7 +234,7 @@ describe('Global Search Store Actions', () => {
         beforeEach(() => {
           storeUtils.setDataToLS = jest.fn();
           window.gon = { features: {} };
-          const getters = { currentScope: 'not-blobs' };
+          const getters = { isZoektCodeSearch: false };
           actions.setQuery({ state, commit: jest.fn(), getters }, payload);
         });
 
@@ -279,7 +263,6 @@ describe('Global Search Store Actions', () => {
           .mockReturnValue('mocked-clean-url');
 
         window.gon = { features: {} };
-        storeUtils.isSidebarDirty = jest.fn().mockReturnValue(false);
         storeUtils.buildDocumentTitle = jest.fn().mockReturnValue('Built Document Title');
 
         state = createState({
@@ -297,7 +280,7 @@ describe('Global Search Store Actions', () => {
 
       describe('when only "page" attribute changes', () => {
         it('should only update history without fetching sidebar counts', async () => {
-          const getters = { currentScope: 'blobs' };
+          const getters = { isZoektCodeSearch: true };
           const payload = { key: 'page', value: 2 };
 
           await actions.setQuery({ state, commit, getters }, payload);
@@ -326,7 +309,7 @@ describe('Global Search Store Actions', () => {
         });
 
         it('should update URL, title, history and fetch sidebar counts', async () => {
-          const getters = { currentScope: 'blobs' };
+          const getters = { isZoektCodeSearch: true };
           const payload = { key: 'search', value: 'new-search' };
 
           state.query = { ...state.query };
@@ -346,7 +329,7 @@ describe('Global Search Store Actions', () => {
 
       describe('when "search" attribute changes but page is present and not equal to 1', () => {
         it('should reset page to 1, update URL with clean URL, and fetch sidebar counts', () => {
-          const getters = { currentScope: 'blobs' };
+          const getters = { isZoektCodeSearch: true };
           const payload = { key: 'search', value: 'new-search' };
 
           state.query = { ...state.query, page: 3 };
@@ -367,7 +350,7 @@ describe('Global Search Store Actions', () => {
 
       describe('when "search" attribute changes but page is present and equal to 1', () => {
         it('should not modify URL for page, update history with original URL', async () => {
-          const getters = { currentScope: 'blobs' };
+          const getters = { isZoektCodeSearch: true };
           const payload = { key: 'search', value: 'new-search' };
 
           state.query = { ...state.query, page: 1 };
@@ -387,7 +370,7 @@ describe('Global Search Store Actions', () => {
 
       describe('when urlQuery has no page but state.query has page', () => {
         it('should use original URL without modification', () => {
-          const getters = { currentScope: 'blobs' };
+          const getters = { isZoektCodeSearch: true };
           const payload = { key: 'search', value: 'new-search' };
 
           state.query = { ...state.query, page: 2 };
@@ -435,18 +418,26 @@ describe('Global Search Store Actions', () => {
       jest.spyOn(urlUtils, 'setUrlParams').mockReturnValue({});
     });
 
-    it('calls visitUrl and setParams with empty values', async () => {
+    it('calls visitUrl and setParams with every sidebar filter and the page cleared', async () => {
       await testAction(actions.resetQuery, null, state, [], []);
-      const resetParams = SIDEBAR_PARAMS.reduce((acc, param) => {
-        acc[param] = null;
-        return acc;
-      }, {});
 
       expect(urlUtils.setUrlParams).toHaveBeenCalledWith(
         {
           ...state.query,
           page: null,
-          ...resetParams,
+          type: null,
+          state: null,
+          confidential: null,
+          language: null,
+          label_name: null,
+          include_archived: null,
+          exclude_forks: null,
+          source_branch: null,
+          'not[source_branch]': null,
+          target_branch: null,
+          'not[target_branch]': null,
+          author_username: null,
+          'not[author_username]': null,
         },
         { clearParams: true },
       );
@@ -630,7 +621,7 @@ describe('Global Search Store Actions', () => {
       });
     });
 
-    it('removes correct labels from query and sets sidebar dirty', () => {
+    it('removes correct labels from query', () => {
       const expectedResult = [
         {
           payload: {
@@ -638,10 +629,6 @@ describe('Global Search Store Actions', () => {
             value: ['Aftersync'],
           },
           type: 'SET_QUERY',
-        },
-        {
-          payload: false,
-          type: 'SET_SIDEBAR_DIRTY',
         },
       ];
       return testAction(actions.closeLabel, { title: 'Brist' }, state, expectedResult, []);
@@ -735,7 +722,7 @@ describe('Global Search Store Actions', () => {
       'updates the URL when %s is toggled',
       async (key) => {
         const commit = jest.fn();
-        const getters = { currentScope: 'blobs' };
+        const getters = { isZoektCodeSearch: true };
         const dispatch = jest.fn();
 
         await actions.setQuery({ state, commit, getters, dispatch }, { key, value: 'true' });
@@ -748,7 +735,7 @@ describe('Global Search Store Actions', () => {
 
     it('does not refetch aggregations when only the language filter changes', async () => {
       const commit = jest.fn();
-      const getters = { currentScope: 'blobs' };
+      const getters = { isZoektCodeSearch: true };
       const dispatch = jest.fn();
 
       await actions.setQuery(
@@ -762,7 +749,7 @@ describe('Global Search Store Actions', () => {
 
     it('dispatches fetchAllAggregation when the search term changes', async () => {
       const commit = jest.fn();
-      const getters = { currentScope: 'blobs' };
+      const getters = { isZoektCodeSearch: true };
       const dispatch = jest.fn();
 
       await actions.setQuery(

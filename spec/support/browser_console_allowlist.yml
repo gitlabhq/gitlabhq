@@ -60,18 +60,12 @@
 - message: "TypeError: Cannot destructure property 'id' of '{}' as it is null."
   specs:
   - spec/features/users/login/regular_user_spec.rb
-- message: "Error: The emoji map is uninitialized or initialization has not completed"
-  specs:
-  - spec/features/profiles/user_edit_profile_spec.rb
 - message: "TypeError: Cannot read properties of null (reading 'close')"
   specs:
   - spec/features/projects/ci/editor_spec.rb
 - message: "TypeError: Cannot read properties of undefined (reading 'push')"
   specs:
   - spec/features/dashboard/issues_spec.rb
-- message: "Error: The resource that you are attempting to access does not exist or you don't have permission to perform this action"
-  specs:
-  - spec/features/groups/work_items_spec.rb
 - message: "Error sending the query 'apiFuzzingCiConfiguration' ServerError: Response not successful: Received status code 500"
   specs:
   - ee/spec/features/user_sees_active_nav_items_spec.rb
@@ -207,16 +201,9 @@
 - message: "Missing field 'discussionLocked' while writing result"
   specs:
   - spec/features/work_items/detail/work_item_detail_spec.rb
-- message: "TypeError: Cannot read properties of null (reading 'map')"
-  specs:
-  - ee/spec/features/projects/protected_branches_spec.rb
-  - ee/spec/features/projects/settings/ee/protected_branches_spec.rb
 - message: "TypeError: Cannot read properties of null (reading 'group')"
   specs:
   - ee/spec/features/boards/swimlanes/epics_swimlanes_sidebar_labels_spec.rb
 - message: "TypeError: Cannot read properties of undefined (reading 'queries')"
   specs:
   - ee/spec/features/admin/geo/admin_geo_replication_nav_spec.rb
-- message: "TypeError: Cannot read properties of undefined (reading 'replace')"
-  specs:
-  - spec/features/work_items/issues/new/user_creates_issue_spec.rb

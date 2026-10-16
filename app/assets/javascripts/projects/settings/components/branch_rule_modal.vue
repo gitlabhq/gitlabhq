@@ -50,7 +50,7 @@ export default {
         };
       },
       update({ project: { protectableBranches } }) {
-        this.protectableBranches = protectableBranches;
+        this.protectableBranches = protectableBranches ?? [];
       },
     },
   },

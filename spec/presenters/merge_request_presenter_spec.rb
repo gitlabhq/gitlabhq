@@ -53,8 +53,7 @@ RSpec.describe MergeRequestPresenter do
 
       context 'success with warnings' do
         before do
-          allow(pipeline).to receive(:success?) { true }
-          allow(pipeline).to receive(:has_warnings?) { true }
+          allow(pipeline).to receive_messages(success?: true, has_warnings?: true)
         end
 
         it 'returns "success-with-warnings"' do
@@ -64,8 +63,7 @@ RSpec.describe MergeRequestPresenter do
 
       context 'pipeline HAS status AND its not success with warnings' do
         before do
-          allow(pipeline).to receive(:success?) { false }
-          allow(pipeline).to receive(:has_warnings?) { false }
+          allow(pipeline).to receive_messages(success?: false, has_warnings?: false)
         end
 
         it 'returns pipeline status' do
@@ -75,9 +73,7 @@ RSpec.describe MergeRequestPresenter do
 
       context 'pipeline has NO status AND its not success with warnings' do
         before do
-          allow(pipeline).to receive(:status) { nil }
-          allow(pipeline).to receive(:success?) { false }
-          allow(pipeline).to receive(:has_warnings?) { false }
+          allow(pipeline).to receive_messages(status: nil, success?: false, has_warnings?: false)
         end
 
         it 'returns "preparing"' do
@@ -304,7 +300,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when can create issue and issues enabled' do
       it 'returns path' do
-        allow(project).to receive(:issues_enabled?) { true }
+        allow(project).to receive(:issues_enabled?).and_return(true)
         project.add_maintainer(user)
 
         is_expected
@@ -314,7 +310,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when cannot create issue' do
       it 'returns nil' do
-        allow(project).to receive(:issues_enabled?) { true }
+        allow(project).to receive(:issues_enabled?).and_return(true)
 
         is_expected.to be_nil
       end
@@ -322,7 +318,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when issues disabled' do
       it 'returns nil' do
-        allow(project).to receive(:issues_enabled?) { false }
+        allow(project).to receive(:issues_enabled?).and_return(false)
         project.add_maintainer(user)
 
         is_expected.to be_nil
@@ -341,7 +337,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when merge request enabled and has permission' do
       it 'has remove_wip_path' do
-        allow(project).to receive(:merge_requests_enabled?) { true }
+        allow(project).to receive(:merge_requests_enabled?).and_return(true)
         project.add_maintainer(user)
 
         is_expected
@@ -364,7 +360,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch exists' do
       it 'returns path' do
-        allow(resource).to receive(:target_branch_exists?) { true }
+        allow(resource).to receive(:target_branch_exists?).and_return(true)
 
         is_expected
           .to eq("/#{resource.target_project.full_path}/-/commits/#{resource.target_branch}")
@@ -373,7 +369,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch does not exist' do
       it 'returns nil' do
-        allow(resource).to receive(:target_branch_exists?) { false }
+        allow(resource).to receive(:target_branch_exists?).and_return(false)
 
         is_expected.to be_nil
       end
@@ -388,7 +384,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when source branch exists' do
       it 'returns path' do
-        allow(resource).to receive(:source_branch_exists?) { true }
+        allow(resource).to receive(:source_branch_exists?).and_return(true)
 
         is_expected
           .to eq("/#{resource.source_project.full_path}/-/commits/#{resource.source_branch}")
@@ -397,7 +393,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when source branch does not exist' do
       it 'returns nil' do
-        allow(resource).to receive(:source_branch_exists?) { false }
+        allow(resource).to receive(:source_branch_exists?).and_return(false)
 
         is_expected.to be_nil
       end
@@ -412,7 +408,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch exists' do
       it 'returns path' do
-        allow(resource).to receive(:target_branch_exists?) { true }
+        allow(resource).to receive(:target_branch_exists?).and_return(true)
 
         is_expected
           .to eq("/#{resource.target_project.full_path}/-/tree/#{resource.target_branch}")
@@ -421,7 +417,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch does not exist' do
       it 'returns nil' do
-        allow(resource).to receive(:target_branch_exists?) { false }
+        allow(resource).to receive(:target_branch_exists?).and_return(false)
 
         is_expected.to be_nil
       end
@@ -435,7 +431,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when source branch exists' do
       it 'returns path' do
-        allow(resource).to receive(:source_branch_exists?) { true }
+        allow(resource).to receive(:source_branch_exists?).and_return(true)
 
         is_expected
           .to eq("/#{resource.source_project.full_path}/-/branches/#{resource.source_branch}")
@@ -444,7 +440,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when source branch does not exist' do
       it 'returns nil' do
-        allow(resource).to receive(:source_branch_exists?) { false }
+        allow(resource).to receive(:source_branch_exists?).and_return(false)
 
         is_expected.to be_nil
       end
@@ -458,7 +454,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch exists' do
       it 'returns path' do
-        allow(resource).to receive(:target_branch_exists?) { true }
+        allow(resource).to receive(:target_branch_exists?).and_return(true)
 
         is_expected
           .to eq("/#{resource.source_project.full_path}/-/branches/#{resource.target_branch}")
@@ -467,7 +463,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch does not exist' do
       it 'returns nil' do
-        allow(resource).to receive(:target_branch_exists?) { false }
+        allow(resource).to receive(:target_branch_exists?).and_return(false)
 
         is_expected.to be_nil
       end
@@ -481,7 +477,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when source branch exists' do
       it 'returns link' do
-        allow(resource).to receive(:source_branch_exists?) { true }
+        allow(resource).to receive(:source_branch_exists?).and_return(true)
 
         is_expected
           .to eq("<a class=\"ref-container gl-link\" href=\"#{presenter.source_branch_commits_path}\">#{presenter.source_branch}</a>")
@@ -490,7 +486,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when source branch does not exist' do
       it 'returns text' do
-        allow(resource).to receive(:source_branch_exists?) { false }
+        allow(resource).to receive(:source_branch_exists?).and_return(false)
 
         is_expected.to eq("<span class=\"ref-name\">#{presenter.source_branch}</span>")
       end
@@ -504,7 +500,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch exists' do
       it 'returns link' do
-        allow(resource).to receive(:target_branch_exists?) { true }
+        allow(resource).to receive(:target_branch_exists?).and_return(true)
 
         is_expected
           .to eq("<a class=\"ref-container gl-link\" href=\"#{presenter.target_branch_commits_path}\">#{presenter.target_branch}</a>")
@@ -513,7 +509,7 @@ RSpec.describe MergeRequestPresenter do
 
     context 'when target branch does not exist' do
       it 'returns text' do
-        allow(resource).to receive(:target_branch_exists?) { false }
+        allow(resource).to receive(:target_branch_exists?).and_return(false)
 
         is_expected.to eq("<span class=\"ref-name\">#{presenter.target_branch}</span>")
       end
@@ -526,7 +522,7 @@ RSpec.describe MergeRequestPresenter do
     end
 
     it 'returns link' do
-      allow(resource).to receive(:source_branch_exists?) { true }
+      allow(resource).to receive(:source_branch_exists?).and_return(true)
 
       is_expected
         .to eq("<a href=\"/#{resource.source_project.full_path}/-/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
@@ -536,7 +532,7 @@ RSpec.describe MergeRequestPresenter do
       xss_attempt = "<img src='x' onerror=alert('bad stuff') />"
 
       allow(resource).to receive(:source_branch) { xss_attempt }
-      allow(resource).to receive(:source_branch_exists?) { false }
+      allow(resource).to receive(:source_branch_exists?).and_return(false)
 
       is_expected.to eq(ERB::Util.html_escape(xss_attempt))
     end
@@ -563,7 +559,7 @@ RSpec.describe MergeRequestPresenter do
       let(:should_be_rebased) { true }
 
       before do
-        allow(resource).to receive(:source_branch_exists?) { true }
+        allow(resource).to receive(:source_branch_exists?).and_return(true)
       end
 
       it 'returns path' do

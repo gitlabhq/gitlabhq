@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/incidents/components/incidents_list.vue',
     'ee/app/assets/javascripts/analytics/dashboards/dora_projects_comparison/components/comparison_table.vue',
-    'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/create_form.vue',
     'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/edit_form.vue',
     'ee/app/assets/javascripts/security_orchestration/components/policy_editor/editor_layout.vue',
   ],

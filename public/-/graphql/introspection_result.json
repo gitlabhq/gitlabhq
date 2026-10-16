@@ -188936,6 +188936,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
             },
             {
+              "name": "duoWorkflowRunnerAvailable",
+              "description": "Indicates whether the group has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it scans the runners the group can use and their managers. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "duoWorkflowSessionArtifacts",
               "description": "Duo Agent Platform session artifacts for the group. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [
@@ -189091,6 +189103,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+            },
+            {
+              "name": "duoWorkflowUsableRunnerType",
+              "description": "Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "editPath",

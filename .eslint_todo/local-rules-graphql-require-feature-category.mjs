@@ -1300,7 +1300,6 @@ export default {
     'ee/app/assets/javascripts/security_dashboard/graphql/queries/vulnerability_external_issues.query.graphql',
     'ee/app/assets/javascripts/security_inventory/graphql/group_avatar_and_parent.query.graphql',
     'ee/app/assets/javascripts/security_inventory/graphql/subgroups.query.graphql',
-    'ee/app/assets/javascripts/security_inventory/graphql/subgroups_and_projects.query.graphql',
     'ee/app/assets/javascripts/security_orchestration/components/policy_editor/scope/graphql/get_compliance_frameworks_for_dropdown.query.graphql',
     'ee/app/assets/javascripts/security_orchestration/graphql/mutations/create_policy.mutation.graphql',
     'ee/app/assets/javascripts/security_orchestration/graphql/mutations/create_policy_project_async.mutation.graphql',

@@ -3,6 +3,7 @@ import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
   LS_REGEX_HANDLE,
+  SIDEBAR_PARAMS,
 } from '~/search/store/constants';
 import { SCOPE_BLOB, SCOPE_PROJECTS } from '~/search/sidebar/constants';
 
@@ -216,6 +217,265 @@ describe('Global Search Store Getters', () => {
         id: 'test',
       };
       expect(getters.hasMissingProjectContext(state)).toBe(false);
+    });
+  });
+
+  describe('isZoektCodeSearch', () => {
+    it.each`
+      searchType    | currentScope | expected
+      ${'zoekt'}    | ${'blobs'}   | ${true}
+      ${'zoekt'}    | ${'issues'}  | ${false}
+      ${'advanced'} | ${'blobs'}   | ${false}
+      ${'basic'}    | ${'blobs'}   | ${false}
+    `(
+      'returns $expected with $searchType search in the $currentScope scope',
+      ({ searchType, currentScope, expected }) => {
+        state.searchType = searchType;
+
+        expect(getters.isZoektCodeSearch(state, { currentScope })).toBe(expected);
+      },
+    );
+  });
+
+  describe('hasAppliedFilters', () => {
+    const appliedFilters = [
+      ['type', ['issue']],
+      ['state', 'opened'],
+      ['confidential', 'yes'],
+      ['language', ['Ruby']],
+      ['label_name', ['bug']],
+      ['include_archived', 'true'],
+      ['exclude_forks', 'true'],
+      ['source_branch', 'main'],
+      ['not[source_branch]', 'main'],
+      ['target_branch', 'main'],
+      ['not[target_branch]', 'main'],
+      ['author_username', 'root'],
+      ['not[author_username]', 'root'],
+    ];
+    const clearedFilters = [
+      ['type', []],
+      ['state', null],
+      ['confidential', null],
+      ['language', []],
+      ['label_name', []],
+      ['include_archived', 'false'],
+      ['exclude_forks', 'false'],
+      ['source_branch', ''],
+      ['not[source_branch]', ''],
+      ['target_branch', ''],
+      ['not[target_branch]', ''],
+      ['author_username', ''],
+      ['not[author_username]', ''],
+    ];
+    const unfilteredQuery = { scope: 'issues', search: 'test', group_id: 1 };
+    const issuesScopeGetters = {
+      currentScope: 'issues',
+      isZoektCodeSearch: false,
+      sidebarFilterParams: SIDEBAR_PARAMS,
+    };
+    const withSidebarFilterParams = (scopeGetters) => ({
+      ...scopeGetters,
+      sidebarFilterParams: getters.sidebarFilterParams(state, scopeGetters),
+    });
+
+    it('checks every sidebar filter param', () => {
+      expect(appliedFilters.map(([param]) => param)).toEqual(SIDEBAR_PARAMS);
+    });
+
+    it('returns false when the applied query has no sidebar filters', () => {
+      state.query = unfilteredQuery;
+      state.urlQuery = unfilteredQuery;
+
+      expect(getters.hasAppliedFilters(state, issuesScopeGetters)).toBe(false);
+    });
+
+    describe.each(appliedFilters)('with the %s filter', (param, value) => {
+      it('returns true when the filter is applied', () => {
+        state.query = { ...unfilteredQuery, [param]: value };
+        state.urlQuery = { ...unfilteredQuery, [param]: value };
+
+        expect(getters.hasAppliedFilters(state, issuesScopeGetters)).toBe(true);
+      });
+
+      it('returns false when the filter is selected but not applied', () => {
+        state.query = { ...unfilteredQuery, [param]: value };
+        state.urlQuery = unfilteredQuery;
+
+        expect(getters.hasAppliedFilters(state, issuesScopeGetters)).toBe(false);
+      });
+
+      it('returns true when the applied filter is cleared but not applied', () => {
+        state.query = unfilteredQuery;
+        state.urlQuery = { ...unfilteredQuery, [param]: value };
+
+        expect(getters.hasAppliedFilters(state, issuesScopeGetters)).toBe(true);
+      });
+    });
+
+    it.each(clearedFilters)('returns false when %s is applied as %p', (param, value) => {
+      state.query = { ...unfilteredQuery, [param]: value };
+      state.urlQuery = { ...unfilteredQuery, [param]: value };
+
+      expect(getters.hasAppliedFilters(state, issuesScopeGetters)).toBe(false);
+    });
+
+    describe('with a filter the current scope does not show', () => {
+      const projectsScopeGetters = {
+        currentScope: 'projects',
+        isZoektCodeSearch: false,
+        hasMissingProjectContext: true,
+        workItemTypes: [],
+      };
+
+      it('returns false when only that filter is applied', () => {
+        state.query = { ...unfilteredQuery, scope: 'projects', state: 'opened' };
+        state.urlQuery = { ...unfilteredQuery, scope: 'projects', state: 'opened' };
+
+        expect(
+          getters.hasAppliedFilters(state, withSidebarFilterParams(projectsScopeGetters)),
+        ).toBe(false);
+      });
+
+      it('returns true when a filter the scope shows is applied as well', () => {
+        const query = { ...unfilteredQuery, scope: 'projects', state: 'opened' };
+        state.query = { ...query, include_archived: 'true' };
+        state.urlQuery = { ...query, include_archived: 'true' };
+
+        expect(
+          getters.hasAppliedFilters(state, withSidebarFilterParams(projectsScopeGetters)),
+        ).toBe(true);
+      });
+    });
+
+    describe('with Zoekt code search, which applies filters as they change', () => {
+      const blobsScopeGetters = {
+        currentScope: 'blobs',
+        isZoektCodeSearch: true,
+        hasMissingProjectContext: true,
+        workItemTypes: [],
+      };
+
+      beforeEach(() => {
+        state.searchType = 'zoekt';
+      });
+
+      it.each([
+        ['language', ['Ruby']],
+        ['include_archived', 'true'],
+        ['exclude_forks', 'true'],
+      ])('returns true as soon as %s is selected', (param, value) => {
+        state.query = { ...unfilteredQuery, scope: 'blobs', [param]: value };
+        state.urlQuery = { ...unfilteredQuery, scope: 'blobs' };
+
+        expect(getters.hasAppliedFilters(state, withSidebarFilterParams(blobsScopeGetters))).toBe(
+          true,
+        );
+      });
+
+      it('returns false when only a filter the scope does not show is selected', () => {
+        state.query = { ...unfilteredQuery, scope: 'blobs', state: 'opened' };
+        state.urlQuery = { ...unfilteredQuery, scope: 'blobs' };
+
+        expect(getters.hasAppliedFilters(state, withSidebarFilterParams(blobsScopeGetters))).toBe(
+          false,
+        );
+      });
+
+      it('returns false as soon as the filters are cleared', () => {
+        state.query = { ...unfilteredQuery, scope: 'blobs', language: [] };
+        state.urlQuery = { ...unfilteredQuery, scope: 'blobs', language: ['Ruby'] };
+
+        expect(getters.hasAppliedFilters(state, withSidebarFilterParams(blobsScopeGetters))).toBe(
+          false,
+        );
+      });
+
+      it('reads the applied filters from the URL in other scopes', () => {
+        state.query = { ...unfilteredQuery, state: 'opened' };
+        state.urlQuery = unfilteredQuery;
+
+        expect(getters.hasAppliedFilters(state, issuesScopeGetters)).toBe(false);
+      });
+    });
+  });
+
+  describe('sidebarFilterParams', () => {
+    const contexts = {
+      instance: { groupInitialJson: {}, hasMissingProjectContext: true },
+      group: { groupInitialJson: { id: 1 }, hasMissingProjectContext: true },
+      project: { groupInitialJson: { id: 1 }, hasMissingProjectContext: false },
+    };
+    const branchParams = [
+      'source_branch',
+      'not[source_branch]',
+      'target_branch',
+      'not[target_branch]',
+    ];
+    const advancedParams = ['author_username', 'not[author_username]', 'label_name'];
+
+    const getSidebarFilterParams = ({ scope, searchType, context, workItemTypes = [] }) => {
+      const { groupInitialJson, hasMissingProjectContext } = contexts[context];
+
+      return getters.sidebarFilterParams(
+        { searchType, groupInitialJson },
+        { currentScope: scope, hasMissingProjectContext, workItemTypes },
+      );
+    };
+
+    it.each`
+      scope               | searchType    | context       | expected
+      ${'projects'}       | ${'basic'}    | ${'instance'} | ${['include_archived']}
+      ${'groups'}         | ${'advanced'} | ${'instance'} | ${['include_archived']}
+      ${'issues'}         | ${'basic'}    | ${'project'}  | ${['state', 'confidential']}
+      ${'issues'}         | ${'advanced'} | ${'group'}    | ${['state', 'confidential', ...advancedParams, 'include_archived']}
+      ${'work_items'}     | ${'basic'}    | ${'project'}  | ${['state', 'confidential']}
+      ${'merge_requests'} | ${'basic'}    | ${'instance'} | ${['state', 'include_archived']}
+      ${'merge_requests'} | ${'basic'}    | ${'project'}  | ${['state', ...branchParams]}
+      ${'merge_requests'} | ${'advanced'} | ${'group'}    | ${['state', 'include_archived', ...branchParams, ...advancedParams]}
+      ${'blobs'}          | ${'basic'}    | ${'group'}    | ${[]}
+      ${'blobs'}          | ${'advanced'} | ${'group'}    | ${['language', 'include_archived']}
+      ${'blobs'}          | ${'zoekt'}    | ${'group'}    | ${['language', 'include_archived', 'exclude_forks']}
+      ${'blobs'}          | ${'zoekt'}    | ${'project'}  | ${['language']}
+      ${'notes'}          | ${'basic'}    | ${'group'}    | ${['include_archived']}
+      ${'commits'}        | ${'basic'}    | ${'group'}    | ${['include_archived']}
+      ${'milestones'}     | ${'basic'}    | ${'group'}    | ${['include_archived']}
+      ${'wiki_blobs'}     | ${'basic'}    | ${'group'}    | ${['include_archived']}
+      ${'wiki_blobs'}     | ${'basic'}    | ${'project'}  | ${[]}
+      ${'users'}          | ${'basic'}    | ${'group'}    | ${[]}
+    `(
+      'returns $expected in the $scope scope with $searchType search in a $context',
+      ({ scope, searchType, context, expected }) => {
+        expect(getSidebarFilterParams({ scope, searchType, context })).toEqual(expected);
+      },
+    );
+
+    it('places every sidebar filter param in at least one scope', () => {
+      const searchTypes = ['basic', 'advanced', 'zoekt'];
+      const scopes = ['issues', 'work_items', 'merge_requests', 'blobs', 'projects', 'notes'];
+      const workItemTypes = [{ name: 'issue', label: 'Issue' }];
+      const placedParams = new Set(
+        scopes.flatMap((scope) =>
+          searchTypes.flatMap((searchType) =>
+            Object.keys(contexts).flatMap((context) =>
+              getSidebarFilterParams({ scope, searchType, context, workItemTypes }),
+            ),
+          ),
+        ),
+      );
+
+      expect([...placedParams].sort()).toEqual([...SIDEBAR_PARAMS].sort());
+    });
+
+    it('includes the type filter for work items when work item types are available', () => {
+      expect(
+        getSidebarFilterParams({
+          scope: 'work_items',
+          searchType: 'basic',
+          context: 'project',
+          workItemTypes: [{ name: 'issue', label: 'Issue' }],
+        }),
+      ).toEqual(['type', 'state', 'confidential']);
     });
   });
 

@@ -1005,9 +1005,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         stub_config_setting(relative_url_root: '/gitlab')
         stub_config_setting(url: Settings.send(:build_gitlab_url))
 
-        allow(described_class).to receive(:default_url_options) do
-          { script_name: '/gitlab' }
-        end
+        allow(described_class).to receive(:default_url_options).and_return({ script_name: '/gitlab' })
 
         close_issue
 
@@ -1216,7 +1214,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       context 'when enabled' do
         before do
-          allow(jira_integration).to receive(:can_cross_reference?) { true }
+          allow(jira_integration).to receive(:can_cross_reference?).and_return(true)
         end
 
         it 'creates a comment and remote link' do
@@ -1238,7 +1236,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
         context 'when comment already exists' do
           before do
-            allow(jira_integration).to receive(:comment_exists?) { true }
+            allow(jira_integration).to receive(:comment_exists?).and_return(true)
           end
 
           it 'does not create a comment or remote link' do
@@ -1388,7 +1386,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       context 'when disabled' do
         before do
-          allow(jira_integration).to receive(:can_cross_reference?) { false }
+          allow(jira_integration).to receive(:can_cross_reference?).and_return(false)
         end
 
         it 'does not create a comment or remote link' do
@@ -1439,7 +1437,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         project.repository.create_branch(branch_a, resource.sha)
         project.repository.create_branch(branch_b, resource.sha)
 
-        allow(jira_integration).to receive(:can_cross_reference?) { true }
+        allow(jira_integration).to receive(:can_cross_reference?).and_return(true)
         allow(resource).to receive(:first_ref_by_oid).and_return(branch_a, branch_b)
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
         stub_request(:post, remote_link_url).with(basic_auth: [username, password])

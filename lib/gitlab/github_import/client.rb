@@ -162,11 +162,11 @@ module Gitlab
         while next_page
           raise Exceptions::InvalidURLError, 'Invalid pagination URL' unless valid_next_url?(next_page.href)
 
-          response = with_rate_limit { next_page.get }
           page_url = next_page.href
-          next_page = response.rels[:next]
+          collection = with_rate_limit { octokit.get(page_url) }
+          next_page = octokit.last_response.rels[:next]
 
-          yield Page.new(response.data, page_url, exposed_next_url(next_page))
+          yield Page.new(collection, page_url, exposed_next_url(next_page))
         end
       end
 

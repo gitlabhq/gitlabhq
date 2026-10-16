@@ -34,7 +34,6 @@ import {
   loadDataFromLS,
   setFrequentItemToLS,
   mergeById,
-  isSidebarDirty,
   prepareSearchAggregations,
   setDataToLS,
   buildDocumentTitle,
@@ -192,18 +191,13 @@ const syncZoektUrl = async ({ state, commit, dispatch }, { refetchAggregations =
 export const setQuery = async ({ state, commit, getters, dispatch }, { key, value }) => {
   commit(types.SET_QUERY, { key, value });
 
-  if (SIDEBAR_PARAMS.includes(key)) {
-    commit(types.SET_SIDEBAR_DIRTY, isSidebarDirty(state.query, state.urlQuery));
-  }
-
   if (key === REGEX_PARAM) {
     setDataToLS(LS_REGEX_HANDLE, value);
   }
 
-  const isZoektSearch =
-    state.searchType === SEARCH_TYPE_ZOEKT && getters.currentScope === SCOPE_BLOB;
+  const { isZoektCodeSearch } = getters;
 
-  if (isZoektSearch && key === 'search') {
+  if (isZoektCodeSearch && key === 'search') {
     document.title = buildDocumentTitle(state.query.search);
 
     // A new search term shifts the underlying result set, so the language
@@ -217,7 +211,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   // and refresh the sidebar counts. Aggregation buckets are intentionally NOT
   // refetched here — they are faceted (computed against the language-stripped
   // result set) so they remain stable across language ticks.
-  if (isZoektSearch && key === LANGUAGE_FILTER_PARAM) {
+  if (isZoektCodeSearch && key === LANGUAGE_FILTER_PARAM) {
     await syncZoektUrl({ state, commit, dispatch });
   }
 
@@ -227,11 +221,11 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   // filters DO shift bucket counts (unlike language ticks), so we re-fetch.
   const isArchivedOrForksFilter =
     key === INCLUDE_ARCHIVED_FILTER_PARAM || key === EXCLUDE_FORKS_FILTER_PARAM;
-  if (isZoektSearch && isArchivedOrForksFilter) {
+  if (isZoektCodeSearch && isArchivedOrForksFilter) {
     await syncZoektUrl({ state, commit, dispatch }, { refetchAggregations: true });
   }
 
-  if (isZoektSearch && key === 'page') {
+  if (isZoektCodeSearch && key === 'page') {
     updateHistory({
       state: state.query,
       title: state.query.search,

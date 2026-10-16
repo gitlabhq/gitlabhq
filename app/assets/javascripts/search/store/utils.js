@@ -1,4 +1,4 @@
-import { isEqual, orderBy } from 'lodash-es';
+import { orderBy } from 'lodash-es';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { queryToObject, objectToQuery, getBaseURL } from '~/lib/utils/url_utility';
@@ -11,7 +11,6 @@ import {
 import {
   MAX_FREQUENT_ITEMS,
   MAX_FREQUENCY,
-  SIDEBAR_PARAMS,
   NUMBER_FORMATING_OPTIONS,
   REGEX_PARAM,
   LS_REGEX_HANDLE,
@@ -111,19 +110,6 @@ export const mergeById = (inflatedData, storedData) => {
   return inflatedData.map((data) => {
     const stored = storedData?.find((d) => d.id === data.id) || {};
     return { ...stored, ...data };
-  });
-};
-
-export const isSidebarDirty = (currentQuery, urlQuery) => {
-  return SIDEBAR_PARAMS.some((param) => {
-    const userAddedParam = !urlQuery[param] && currentQuery[param];
-    const userChangedExistingParam = urlQuery[param] && urlQuery[param] !== currentQuery[param];
-
-    if (Array.isArray(currentQuery[param]) || Array.isArray(urlQuery[param])) {
-      return !isEqual(currentQuery[param], urlQuery[param]);
-    }
-
-    return userAddedParam || userChangedExistingParam;
   });
 };
 

@@ -150,6 +150,9 @@ async function main() {
     './spec/frontend/**/*.js',
     './ee/spec/frontend/**/*.{js,graphql}',
     'scripts/**/*.{js,mjs,cjs}',
+    'config/**/*.{js,mjs,cjs}',
+    'spec/tooling/**/*.{js,mjs,cjs}',
+    'storybook/**/*.{js,mjs,cjs,vue}',
   ];
 
   // We don't add ee/app/graphql since that directory only contains Ruby files.

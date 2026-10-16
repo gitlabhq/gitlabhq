@@ -1924,6 +1924,26 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         expect(data[:service_ping_settings_path]).to be_present
       end
     end
+
+    context 'when registration features can be prompted' do
+      before do
+        allow(helper).to receive(:registration_features_can_be_prompted?).and_return(true)
+      end
+
+      it 'shows the repository size limit CTA' do
+        expect(data).to include(show_repository_size_limit_cta: 'true')
+      end
+    end
+
+    context 'when registration features cannot be prompted' do
+      before do
+        allow(helper).to receive(:registration_features_can_be_prompted?).and_return(false)
+      end
+
+      it 'does not show the repository size limit CTA' do
+        expect(data).to include(show_repository_size_limit_cta: 'false')
+      end
+    end
   end
 
   context 'with a project in a group' do

@@ -66,9 +66,12 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     context "when auth state param is present in session" do
       let(:valid_auth_state) { "secret-state" }
 
+      let(:oauth_token_response) { { 'access_token' => token } }
+
       before do
         allow_next_instance_of(OAuth2::Client) do |client|
-          allow(client).to receive_message_chain(:auth_code, :get_token, :token).and_return(token)
+          allow(client).to receive_message_chain(:auth_code, :get_token)
+            .and_return(OAuth2::AccessToken.from_hash(client, oauth_token_response))
         end
         session[:github_auth_state_key] = valid_auth_state
       end
@@ -87,7 +90,30 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
         expect(session[:github_access_token]).to eq(token)
         expect(session[:github_oauth_token]).to be(true)
+        expect(session[:github_refresh_credentials]).to eq({})
         expect(controller).to redirect_to(status_import_github_url)
+      end
+
+      context 'when GitHub returns an expiring token', :freeze_time do
+        let(:oauth_token_response) do
+          {
+            'access_token' => token,
+            'refresh_token' => 'ghr_token',
+            'expires_in' => 28800,
+            'refresh_token_expires_in' => 15897600
+          }
+        end
+
+        it 'stores the refresh token and both expiry times' do
+          get :callback, params: { state: valid_auth_state }
+
+          expect(session[:github_access_token]).to eq(token)
+          expect(session[:github_refresh_credentials]).to eq(
+            'refresh_token' => 'ghr_token',
+            'expires_at' => Time.current.to_i + 28800,
+            'refresh_token_expires_at' => Time.current.to_i + 15897600
+          )
+        end
       end
 
       it "includes namespace_id from query params if it is present" do
@@ -109,6 +135,14 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       post :personal_access_token, params: { personal_access_token: 'pat' }
 
       expect(session[:github_oauth_token]).to be_nil
+    end
+
+    it 'clears the refresh credentials from a previous OAuth session' do
+      session[:github_refresh_credentials] = { 'refresh_token' => 'ghr_token' }
+
+      post :personal_access_token, params: { personal_access_token: 'pat' }
+
+      expect(session[:github_refresh_credentials]).to be_nil
     end
   end
 
@@ -409,6 +443,41 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     end
 
     it_behaves_like 'project import rate limiter'
+
+    context 'with refresh credentials in the session' do
+      let(:refresh_credentials) { { 'refresh_token' => 'ghr_token', 'expires_at' => 1, 'refresh_token_expires_at' => 2 } }
+
+      before do
+        assign_session_token(provider)
+        session[:github_refresh_credentials] = refresh_credentials
+      end
+
+      def expect_service_to_receive_access_params(expected_access_params)
+        service = instance_double(Import::GithubService, :request_channel= => nil)
+        allow(Import::GithubService).to receive(:new).and_return(service)
+        expect(service).to receive(:execute).with(expected_access_params, :github)
+          .and_return({ status: :error, http_status: :unprocessable_entity })
+      end
+
+      it 'passes them to the service when authenticated with OAuth' do
+        session[:github_oauth_token] = true
+
+        expect_service_to_receive_access_params(
+          github_access_token: session[:github_access_token],
+          refresh_token: 'ghr_token',
+          expires_at: 1,
+          refresh_token_expires_at: 2
+        )
+
+        post :create, params: { target_namespace: user.namespace_path }, format: :json
+      end
+
+      it 'does not pass them with a personal access token' do
+        expect_service_to_receive_access_params(github_access_token: session[:github_access_token])
+
+        post :create, params: { target_namespace: user.namespace_path }, format: :json
+      end
+    end
 
     context 'with the continuous_sync optional stage' do
       let(:optional_stages) { { 'attachments_import' => 'true', 'continuous_sync' => 'true' } }

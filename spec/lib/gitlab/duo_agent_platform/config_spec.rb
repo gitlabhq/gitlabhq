@@ -269,6 +269,64 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     end
   end
 
+  describe '#reference_repository_path' do
+    before do
+      allow(project.repository).to receive(:blob_data_at)
+                                     .with(default_branch, config_path)
+                                     .and_return(config_content)
+    end
+
+    context 'when git_strategy sets reference_repository_path' do
+      let(:config_content) do
+        <<~YAML
+          git_strategy:
+            reference_repository_path: /opt/duo/ref.git
+        YAML
+      end
+
+      it 'returns the path' do
+        expect(config.reference_repository_path).to eq('/opt/duo/ref.git')
+      end
+    end
+
+    context 'when git_strategy is not a hash' do
+      let(:config_content) { "git_strategy: /opt/duo/ref.git" }
+
+      it 'returns nil' do
+        expect(config.reference_repository_path).to be_nil
+      end
+    end
+
+    context 'when the path is not a string' do
+      let(:config_content) do
+        <<~YAML
+          git_strategy:
+            reference_repository_path: true
+        YAML
+      end
+
+      it 'returns nil' do
+        expect(config.reference_repository_path).to be_nil
+      end
+    end
+
+    context 'when config does not contain git_strategy' do
+      let(:config_content) { "image: ruby:3.0" }
+
+      it 'returns nil' do
+        expect(config.reference_repository_path).to be_nil
+      end
+    end
+
+    context 'when config file does not exist' do
+      let(:config_content) { nil }
+
+      it 'returns nil' do
+        expect(config.reference_repository_path).to be_nil
+      end
+    end
+  end
+
   describe '#setup_script' do
     context 'when config contains setup_script as array' do
       let(:config_content) do
@@ -680,6 +738,33 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
                                            .with(instance_of(Psych::SyntaxError), project_id: project.id)
 
         expect(config.valid_format?).to be false
+      end
+    end
+
+    context 'with git_strategy configuration' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:git_strategy, :valid) do
+        { 'reference_repository_path' => '/opt/duo/ref.git' } | true
+        { 'reference_repository_path' => '/buildsx/ref.git' } | true
+        { 'reference_repository_path' => 'opt/duo/ref.git' } | false
+        { 'reference_repository_path' => '/builds/group/project/.git' } | false
+        { 'reference_repository_path' => '/builds' } | false
+        { 'reference_repository_path' => '/' } | false
+        { 'unknown' => '/opt/duo/ref.git' } | false
+        '/opt/duo/ref.git' | false
+      end
+
+      with_them do
+        before do
+          allow(project.repository).to receive(:blob_data_at)
+                                         .with(default_branch, config_path)
+                                         .and_return({ 'git_strategy' => git_strategy }.to_yaml)
+        end
+
+        it 'validates the git_strategy section' do
+          expect(config.valid_format?).to be valid
+        end
       end
     end
 

@@ -77,7 +77,7 @@ module Resolvers
     end
 
     def ignore_revisions_ref
-      "refs/heads/#{project.default_branch}:#{Gitlab::Blame::IGNORE_REVS_FILE_NAME}"
+      blob.repository.ignore_revs_file_revision
     end
   end
 end

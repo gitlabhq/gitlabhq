@@ -873,7 +873,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
         context 'when receive_max_input_size has been updated' do
           before do
-            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
+            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size).and_return(1)
           end
 
           it 'returns maxInputSize and partial clone git config' do
@@ -888,7 +888,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
         context 'when receive_max_input_size is empty' do
           before do
-            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+            allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size).and_return(nil)
           end
 
           it 'returns partial clone git config' do

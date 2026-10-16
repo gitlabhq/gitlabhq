@@ -35,7 +35,9 @@ class Import::GithubController < Import::BaseController
     if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, callback_params[:state])
       provider_unauthorized
     else
-      session[access_token_key] = get_token(callback_params[:code])
+      token = get_token(callback_params[:code])
+      session[access_token_key] = token.token
+      session[refresh_credentials_key] = Gitlab::GithubImport::OauthClient.refresh_credentials(token).stringify_keys
       session[oauth_token_key] = true
       redirect_to status_import_url
     end
@@ -44,6 +46,7 @@ class Import::GithubController < Import::BaseController
   def personal_access_token
     session[access_token_key] = personal_access_token_param&.strip
     session.delete(oauth_token_key)
+    session.delete(refresh_credentials_key)
     redirect_to status_import_url
   end
 
@@ -303,13 +306,20 @@ class Import::GithubController < Import::BaseController
     :"#{provider_name}_oauth_token"
   end
 
+  def refresh_credentials_key
+    :"#{provider_name}_refresh_credentials"
+  end
+
   def oauth_token?
     session[oauth_token_key].present?
   end
   helper_method :oauth_token?
 
   def access_params
-    { github_access_token: session[access_token_key] }
+    token_params = { github_access_token: session[access_token_key] }
+    return token_params unless oauth_token?
+
+    token_params.merge(session[refresh_credentials_key].to_h.symbolize_keys)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

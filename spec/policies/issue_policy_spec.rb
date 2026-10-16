@@ -159,8 +159,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
       context 'with service desk enabled' do
         before do
-          allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-          allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+          allow(::Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
 
           project.update!(service_desk_enabled: true)
         end
@@ -495,8 +494,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
         context 'with service desk enabled' do
           before do
-            allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-            allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+            allow(::Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
 
             project.update!(service_desk_enabled: true)
           end

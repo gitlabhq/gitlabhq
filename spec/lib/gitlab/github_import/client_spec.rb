@@ -397,6 +397,33 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         expect { enum.next }.to raise_error(Gitlab::GithubImport::Exceptions::InvalidURLError, 'Invalid pagination URL')
       end
     end
+
+    context 'when the token expires after the first page' do
+      subject(:client) { described_class.new('foo', token_refresher: -> { 'refreshed-token' }) }
+
+      before do
+        allow(client).to receive(:with_rate_limit).and_call_original
+        allow(client).to receive(:requests_remaining?).and_return(true)
+
+        stub_request(:get, 'https://api.github.com/repositories/1/issues?page=2&per_page=100')
+          .with(headers: { 'Authorization' => 'token foo' })
+          .to_return(status: 401, body: { message: 'Bad credentials' }.to_json,
+            headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'retries the page with the refreshed token' do
+        pages = []
+
+        client.each_page(:issues, nil, 'foo/bar') { |page| pages << page }
+
+        expect(pages.flat_map { |page| page.objects.map(&:to_h) })
+          .to eq([{ title: 'Issue 1' }, { title: 'Issue 2' }, { title: 'Issue 3' }])
+        expect(
+          a_request(:get, 'https://api.github.com/repositories/1/issues?page=2&per_page=100')
+            .with(headers: { 'Authorization' => 'token refreshed-token' })
+        ).to have_been_made.once
+      end
+    end
   end
 
   describe '#with_rate_limit' do

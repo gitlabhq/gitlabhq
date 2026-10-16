@@ -157,7 +157,7 @@ module Organizations
           update_oauth_applications(user_ids)
           update_abuse_reports(user_ids)
           transfer_ee_associations(user_ids)
-          fire_upload_triggers(user_ids)
+          update_personal_snippet_uploads(user_ids)
         end
       end
 
@@ -410,7 +410,7 @@ module Organizations
 
       def transfer_ee_associations(user_ids); end
 
-      def fire_upload_triggers(user_ids); end
+      def update_personal_snippet_uploads(user_ids); end
 
       def organization_not_found_error
         s_("TransferOrganization|Cannot transfer users because the existing organization could not be found.")

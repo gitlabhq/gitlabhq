@@ -280,6 +280,21 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       });
     });
 
+    describe('when saving the link hides the menu', () => {
+      beforeEach(() => {
+        // The bubble menu hides when the save moves the selection off the link.
+        tiptapEditor.on('transaction', () => findBubbleMenu().vm.$emit('hidden'));
+      });
+
+      it('resolves the URL that the user entered', async () => {
+        linkHrefInput.setValue('https://example.com');
+
+        await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
+
+        expect(contentEditor.resolveUrl).toHaveBeenCalledWith('https://example.com');
+      });
+    });
+
     describe('when a document-sync event arrives before clicking apply', () => {
       const editedUrl = 'https://google.com';
 

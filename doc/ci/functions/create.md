@@ -326,8 +326,8 @@ The `builtin://function/oci/build` function builds a multi-architecture function
 directory and archives it as `function-image.tar` in the `CI_PROJECT_DIR`.
 
 `common.files` copies files shared across all platforms. `platforms.<os/arch>.files`
-copies files specific to that platform. In both cases, map keys are destination paths
-in the image and values are source paths relative to `CI_PROJECT_DIR`.
+copies files specific to that platform. In both cases, map keys are source paths
+relative to `CI_PROJECT_DIR` and values are destination paths in the image.
 
 In the following example, `function-image.tar` is a function OCI image that supports two platforms: `linux/amd64` and
 `linux/arm64`. Each platform image has three files: `func.yml`, `my-script.sh`, and `bin/my-binary`. Using the same filename
@@ -350,10 +350,10 @@ build_function:
         platforms:
           linux/amd64:
             files:
-              bin/my-binary: bin/linux-amd64/my-binary
+              bin/linux-amd64/my-binary: bin/my-binary
           linux/arm64:
             files:
-              bin/my-binary: bin/linux-arm64/my-binary
+              bin/linux-arm64/my-binary: bin/my-binary
 ```
 
 ### Release

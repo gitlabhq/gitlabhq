@@ -1473,11 +1473,12 @@ class Repository
   def ignore_revs_file_blob
     return unless project&.default_branch
 
-    # Qualify the ref so that branch names Gitaly's revision validation would
-    # reject (for example, names starting with a dash) resolve cleanly instead
-    # of raising. This matches the blame call sites which already use the
-    # fully qualified form for this file.
-    blob_at("refs/heads/#{project.default_branch}", Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
+    blob_at(ignore_revs_file_ref, Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
+  end
+
+  # Revision (`<ref>:<path>`) of the ignore revs file, as passed to Gitaly blame
+  def ignore_revs_file_revision
+    "#{ignore_revs_file_ref}:#{Gitlab::Blame::IGNORE_REVS_FILE_NAME}"
   end
 
   def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30, sorted: false)
@@ -1507,6 +1508,12 @@ class Repository
   end
 
   private
+
+  # Qualified so that branch names Gitaly's revision validation would reject
+  # (for example, names starting with a dash) resolve instead of raising.
+  def ignore_revs_file_ref
+    "refs/heads/#{project.default_branch}"
+  end
 
   def expand_author_with_user_emails(author)
     return author if author.blank?

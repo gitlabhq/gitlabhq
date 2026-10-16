@@ -34,10 +34,6 @@ module Integrations
         def supported_events
           []
         end
-
-        def supported_event_actions
-          []
-        end
       end
 
       included do

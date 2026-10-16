@@ -1,5 +1,5 @@
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
-import { validateProjectName, initProjectNameValidation } from '~/projects/project_name_validation';
+import { validateProjectName } from '~/projects/project_name_validation';
 
 describe('Project name validation', () => {
   describe('with DOM', () => {
@@ -72,56 +72,6 @@ describe('Project name validation', () => {
 
       it('returns false when the error element is missing', () => {
         expect(validateProjectName(input, null, description)).toBe(false);
-      });
-    });
-
-    describe('initProjectNameValidation', () => {
-      let form;
-
-      beforeEach(() => {
-        form = document.querySelector('.js-general-settings-form');
-        initProjectNameValidation();
-      });
-
-      it('validates on keyup', () => {
-        input.value = '.invalid';
-
-        input.dispatchEvent(new KeyboardEvent('keyup'));
-
-        expect(error.classList.contains('gl-hidden')).toBe(false);
-        expect(input.getAttribute('aria-invalid')).toBe('true');
-      });
-
-      it('validates on change', () => {
-        input.value = '.invalid';
-
-        input.dispatchEvent(new Event('change'));
-
-        expect(error.classList.contains('gl-hidden')).toBe(false);
-      });
-
-      it('prevents form submission and stops propagation when the name is invalid', () => {
-        input.value = '.invalid';
-
-        const bubbleHandler = jest.fn();
-        document.body.addEventListener('submit', bubbleHandler);
-
-        const event = new Event('submit', { bubbles: true, cancelable: true });
-        form.dispatchEvent(event);
-
-        expect(event.defaultPrevented).toBe(true);
-        expect(bubbleHandler).not.toHaveBeenCalled();
-
-        document.body.removeEventListener('submit', bubbleHandler);
-      });
-
-      it('does not prevent form submission when the name is valid', () => {
-        input.value = 'valid-name';
-
-        const event = new Event('submit', { bubbles: true, cancelable: true });
-        form.dispatchEvent(event);
-
-        expect(event.defaultPrevented).toBe(false);
       });
     });
   });

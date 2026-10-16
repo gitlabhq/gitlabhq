@@ -63,7 +63,7 @@ RSpec.describe DiscussionOnDiff, feature_category: :code_review_workflow do
       subject { create(:diff_note_on_merge_request, line_number: 18).to_discussion }
 
       before do
-        allow(subject).to receive(:highlighted_diff_lines) { [] }
+        allow(subject).to receive(:highlighted_diff_lines).and_return([])
       end
 
       it "returns an empty array" do
@@ -75,7 +75,7 @@ RSpec.describe DiscussionOnDiff, feature_category: :code_review_workflow do
       subject { create(:diff_note_on_merge_request, line_number: 18).to_discussion }
 
       before do
-        allow(subject).to receive(:diff_line) { nil }
+        allow(subject).to receive(:diff_line).and_return(nil)
       end
 
       it "returns an empty array" do

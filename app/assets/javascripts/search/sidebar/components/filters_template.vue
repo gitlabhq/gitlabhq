@@ -18,8 +18,8 @@ export default {
     GlForm,
   },
   computed: {
-    ...mapState(['sidebarDirty', 'searchType']),
-    ...mapGetters(['currentScope', 'hasMissingProjectContext']),
+    ...mapState(['searchType']),
+    ...mapGetters(['currentScope', 'hasMissingProjectContext', 'hasAppliedFilters']),
     showApplyButton() {
       return !(
         this.searchType === SEARCH_TYPE_ZOEKT &&
@@ -64,7 +64,7 @@ export default {
         {{ __('Apply') }}
       </gl-button>
       <gl-button
-        v-if="sidebarDirty"
+        v-if="hasAppliedFilters"
         category="tertiary"
         class="gl-ml-auto"
         data-testid="search-reset-filters-btn"

@@ -72,6 +72,16 @@ module Gitlab
         Array(script).map(&:to_s)
       end
 
+      def reference_repository_path
+        return unless config_present?
+
+        git_strategy = @config['git_strategy']
+        return unless git_strategy.is_a?(Hash)
+
+        path = git_strategy['reference_repository_path']
+        path if path.is_a?(String) && path.present?
+      end
+
       def cache_config
         return unless config_present?
 

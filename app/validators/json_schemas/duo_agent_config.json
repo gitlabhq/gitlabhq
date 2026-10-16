@@ -103,6 +103,23 @@
       },
       "additionalProperties": false
     },
+    "git_strategy": {
+      "type": "object",
+      "description": "How the session gets the repository",
+      "properties": {
+        "reference_repository_path": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512,
+          "pattern": "^/",
+          "not": {
+            "pattern": "^/builds(/|$)"
+          },
+          "description": "Absolute path to a bare git repository in the image whose objects the session reuses instead of cloning in full. Must be outside /builds, which the runner mounts over the image"
+        }
+      },
+      "additionalProperties": false
+    },
     "variables": {
       "description": "Names of project or group CI/CD variables approved for GitLab Duo Agent Platform workloads",
       "type": "array",

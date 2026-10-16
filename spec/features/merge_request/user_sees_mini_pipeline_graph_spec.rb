@@ -64,7 +64,7 @@ RSpec.describe 'Merge request < User sees pipeline mini graph', :js, feature_cat
     it 'shows tooltip when hovered' do
       toggle.hover
 
-      expect(page).to have_selector('.tooltip')
+      expect(page).to have_selector('.gl-tooltip')
     end
   end
 
@@ -110,7 +110,7 @@ RSpec.describe 'Merge request < User sees pipeline mini graph', :js, feature_cat
       it 'shows tooltip when hovered' do
         job_item.hover
 
-        expect(page).to have_selector('.tooltip')
+        expect(page).to have_selector('.gl-tooltip')
       end
     end
   end

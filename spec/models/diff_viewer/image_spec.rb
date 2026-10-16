@@ -10,21 +10,20 @@ RSpec.describe DiffViewer::Image do
     subject { described_class.can_render?(diff_file, verify_binary: false) }
 
     it 'returns false if both old and new blob are absent' do
-      allow(diff_file).to receive(:old_blob) { nil }
-      allow(diff_file).to receive(:new_blob) { nil }
+      allow(diff_file).to receive_messages(old_blob: nil, new_blob: nil)
 
       is_expected.to be_falsy
     end
 
     it 'returns true if the old blob is present' do
       allow(diff_file).to receive(:old_blob) { blob }
-      allow(diff_file).to receive(:new_blob) { nil }
+      allow(diff_file).to receive(:new_blob).and_return(nil)
 
       is_expected.to be_truthy
     end
 
     it 'returns true if the new blob is present' do
-      allow(diff_file).to receive(:old_blob) { nil }
+      allow(diff_file).to receive(:old_blob).and_return(nil)
       allow(diff_file).to receive(:new_blob) { blob }
 
       is_expected.to be_truthy

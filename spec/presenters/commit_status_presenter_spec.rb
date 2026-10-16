@@ -127,7 +127,7 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
 
     context 'invalid failure message' do
       before do
-        expect(build).to receive(:failure_reason) { 'invalid failure message' }
+        expect(build).to receive(:failure_reason).and_return('invalid failure message')
       end
 
       it "is an invalid status" do

@@ -447,6 +447,14 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           expect(oauth_app3.reload.organization_id).to eq(new_organization.id)
         end
 
+        it 'bounds every projects UPDATE by a primary key batch' do
+          recorder = ActiveRecord::QueryRecorder.new { service.execute }
+          project_updates = recorder.log.grep(/UPDATE\s+"projects"\s+SET\s+"organization_id"/)
+
+          expect(project_updates.size).to eq(5)
+          expect(project_updates).to all(include('"projects"."id" >='))
+        end
+
         it_behaves_like 'generates batched transfer queries'
       end
 

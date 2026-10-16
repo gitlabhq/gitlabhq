@@ -630,7 +630,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
   describe '#supports_suggestion?' do
     context 'when noteable does not exist' do
       it 'returns false' do
-        allow(subject).to receive(:noteable) { nil }
+        allow(subject).to receive(:noteable).and_return(nil)
 
         expect(subject.supports_suggestion?).to be(false)
       end
@@ -638,7 +638,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
 
     context 'when noteable does not support suggestions' do
       it 'returns false' do
-        allow(subject.noteable).to receive(:supports_suggestion?) { false }
+        allow(subject.noteable).to receive(:supports_suggestion?).and_return(false)
 
         expect(subject.supports_suggestion?).to be(false)
       end
@@ -647,7 +647,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
     context 'when line is not suggestible' do
       it 'returns false' do
         allow_next_instance_of(Gitlab::Diff::Line) do |instance|
-          allow(instance).to receive(:suggestible?) { false }
+          allow(instance).to receive(:suggestible?).and_return(false)
         end
 
         expect(subject.supports_suggestion?).to be(false)

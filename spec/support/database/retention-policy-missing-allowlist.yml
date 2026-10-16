@@ -539,7 +539,6 @@
 - merge_request_reviewers
 - merge_request_saved_views
 - merge_request_user_mentions
-- merge_requests
 - merge_requests_approval_rules
 - merge_requests_approval_rules_approver_groups
 - merge_requests_approval_rules_approver_users

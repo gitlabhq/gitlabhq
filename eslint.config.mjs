@@ -321,6 +321,8 @@ export default [
       // Import rules
       'import-x/no-commonjs': 'error',
       'import-x/no-default-export': 'off',
+      // Only flag packages missing from package.json: a devDependency is fine anywhere.
+      'import-x/no-extraneous-dependencies': ['error', { devDependencies: true }],
       // Dependency rules are enfoced by `config/dependency_cruiser.mjs`
       // It is more accurate and faster than the ESLint rule.
       'import-x/no-cycle': 'off',
@@ -755,7 +757,6 @@ export default [
       'vue/require-name-property': 'off',
       'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
       'require-await': 'error',
-      'import-x/no-extraneous-dependencies': 'off',
       'import-x/no-dynamic-require': 'off',
       'import-x/no-unresolved': noUnresolvedGeneratedFiles,
       'no-import-assign': 'off',
@@ -883,7 +884,6 @@ export default [
       'import-x/extensions': 'off',
       'no-console': 'off',
       'import-x/no-commonjs': 'off',
-      'import-x/no-extraneous-dependencies': 'off',
     },
   },
 

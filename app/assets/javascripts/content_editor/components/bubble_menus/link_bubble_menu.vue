@@ -99,11 +99,13 @@ export default {
     },
 
     async saveEditedLink() {
+      // Running the chain can hide the menu, which resets the form state.
+      const { linkCanonicalSrc } = this;
       const chain = this.tiptapEditor.chain().focus();
 
       const attrs = {
-        href: this.linkCanonicalSrc,
-        canonicalSrc: this.linkCanonicalSrc,
+        href: linkCanonicalSrc,
+        canonicalSrc: linkCanonicalSrc,
       };
 
       // if nothing was entered by the user and the link is empty, remove it
@@ -114,7 +116,7 @@ export default {
       }
 
       if (!this.linkText) {
-        this.linkText = this.linkCanonicalSrc;
+        this.linkText = linkCanonicalSrc;
       }
 
       // if link text was updated, insert a new link in the doc with the new text
@@ -133,7 +135,8 @@ export default {
         chain.updateAttributes(Link.name, attrs).run();
       }
 
-      this.endEditingLink();
+      this.isEditing = false;
+      this.linkHref = await this.contentEditor.resolveUrl(linkCanonicalSrc);
     },
 
     handleLinkUpdate() {

@@ -320,8 +320,6 @@ methods:
   - self.internal_types
   app/models/concerns/has_check_constraints.rb:
   - clear_constraints_cache!
-  app/models/concerns/integrations/base/harbor.rb:
-  - supported_event_actions
   app/models/concerns/integrations/base/integration.rb:
   - event_description
   app/models/concerns/issuable.rb:

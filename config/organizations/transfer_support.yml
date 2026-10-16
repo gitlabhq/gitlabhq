@@ -135,7 +135,7 @@ organization_users: supported
 personal_access_token_granular_scopes: supported
 personal_access_token_last_used_ips: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
 personal_access_tokens: supported
-personal_snippet_upload_states: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
+personal_snippet_upload_states: supported
 pool_repositories: no_work_needed
 project_topic_upload_states: no_work_needed
 project_topic_uploads: no_work_needed

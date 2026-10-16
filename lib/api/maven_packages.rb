@@ -53,10 +53,6 @@ module API
         end
       end
 
-      def fast_path_maven_checksum_upload?(format)
-        %w[sha1 md5].include?(format) && ::Feature.enabled?(:maven_checksum_upload_fast_path, user_project)
-      end
-
       # Checksums (.sha1/.md5) are stored as columns on the package file, so they
       # skip find-or-create: md5 is a no-op, sha1 only verifies the stored file.
       # No primary pinning is needed here: this path only reads, and per-user load
@@ -323,8 +319,7 @@ module API
         # so we need to skip the second FIPS check here.
         file_name, format = extract_format(params[:file_name], skip_fips_check: true)
 
-        # Fast-path checksum uploads (skips find-or-create); flag-gated while de-risking.
-        break upload_maven_checksum_file(file_name, format) if fast_path_maven_checksum_upload?(format)
+        break upload_maven_checksum_file(file_name, format) if %w[sha1 md5].include?(format)
 
         lb = ::ApplicationRecord.load_balancer
         ::Gitlab::Database::LoadBalancing::SessionMap.current(lb).use_primary do
@@ -338,29 +333,16 @@ module API
 
           package = result.payload[:package]
 
-          case format
-          when 'sha1'
-            # After uploading a file, Maven tries to upload a sha1 and md5 version of it.
-            # Since we store md5/sha1 in database we simply need to validate our hash
-            # against one uploaded by Maven. We do this for `sha1` format.
-            package_file = ::Packages::PackageFileFinder
-              .new(package, file_name).execute!
+          file_params = {
+            file: params[:file],
+            size: params[:file].size,
+            file_name: file_name,
+            file_sha1: params[:file].sha1,
+            file_md5: params[:file].md5
+          }
 
-            verify_package_file(package_file, params[:file])
-          when 'md5'
-            ''
-          else
-            file_params = {
-              file: params[:file],
-              size: params[:file].size,
-              file_name: file_name,
-              file_sha1: params[:file].sha1,
-              file_md5: params[:file].md5
-            }
-
-            ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
-            track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
-          end
+          ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
+          track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
         end
       end
     end

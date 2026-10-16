@@ -858,7 +858,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         before do
           stub_remote_url_206(url, file_path)
           allow_next_instance_of(JobArtifactUploader) do |instance|
-            allow(instance).to receive(:file_storage?) { false }
+            allow(instance).to receive(:file_storage?).and_return(false)
             allow(instance).to receive(:url) { url }
             allow(instance).to receive(:size) { File.size(file_path) }
           end

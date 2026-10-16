@@ -5210,6 +5210,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it { is_expected.to be_nil }
   end
 
+  describe '#ignore_revs_file_revision' do
+    subject { repository.ignore_revs_file_revision }
+
+    it { is_expected.to eq('refs/heads/master:.git-blame-ignore-revs') }
+
+    context 'when the default branch name starts with a dash' do
+      before do
+        allow(project).to receive(:default_branch).and_return('-foo')
+      end
+
+      it { is_expected.to eq('refs/heads/-foo:.git-blame-ignore-revs') }
+    end
+  end
+
   describe '#redis_set_cache' do
     subject(:redis_set_cache) { repository.send(:redis_set_cache) }
 

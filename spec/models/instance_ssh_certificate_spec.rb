@@ -5,25 +5,7 @@ require 'spec_helper'
 RSpec.describe InstanceSshCertificate, feature_category: :source_code_management, fips_mode: false do
   subject { build(:instance_ssh_certificate) }
 
-  describe 'validations' do
-    it 'presence fields' do
-      is_expected.to validate_presence_of(:key)
-      is_expected.to validate_presence_of(:title)
-      is_expected.to validate_presence_of(:fingerprint)
-    end
-
-    it 'length of key and title' do
-      is_expected.to validate_length_of(:title).is_at_most(255)
-      is_expected.to validate_length_of(:key).is_at_most(5000)
-    end
-
-    it 'format of the key' do
-      is_expected.to allow_value(build(:rsa_key_4096).key).for(:key)
-      is_expected.not_to allow_value('unsupported-ssh-rsa key').for(:key)
-    end
-
-    it_behaves_like 'meets ssh key restrictions'
-  end
+  it_behaves_like 'an SSH certificate record', factory_name: :instance_ssh_certificate
 
   describe 'fingerprint uniqueness' do
     it 'rejects a duplicate fingerprint instance-wide' do
@@ -83,19 +65,6 @@ RSpec.describe InstanceSshCertificate, feature_category: :source_code_management
 
     context 'on GitLab.com', :saas do
       it { expect(described_class).not_to be_available }
-    end
-  end
-
-  describe '.for_fingerprint' do
-    let_it_be(:certificate) { create(:instance_ssh_certificate) }
-    let_it_be(:other_certificate) { create(:instance_ssh_certificate) }
-
-    it 'returns only the certificate matching the fingerprint' do
-      expect(described_class.for_fingerprint(certificate.fingerprint)).to contain_exactly(certificate)
-    end
-
-    it 'returns empty when no certificate matches' do
-      expect(described_class.for_fingerprint('nonexistent')).to be_empty
     end
   end
 end

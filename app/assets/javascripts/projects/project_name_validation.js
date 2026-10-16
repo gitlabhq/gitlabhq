@@ -19,30 +19,3 @@ export const validateProjectName = (projectNameInput, projectNameError, descript
 
   return hasError;
 };
-
-export const initProjectNameValidation = () => {
-  const input = document.querySelector('#project_name_edit');
-  const error = document.querySelector('#js-project-name-edit-error');
-  const form = document.querySelector('.js-general-settings-form');
-  const description = document.querySelector('#js-project-name-edit-description');
-
-  if (!input || !error) return;
-
-  const listener = () => validateProjectName(input, error, description);
-
-  input.addEventListener('keyup', listener);
-  input.addEventListener('change', listener);
-
-  if (form) {
-    form.addEventListener(
-      'submit',
-      (e) => {
-        if (validateProjectName(input, error, description)) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      },
-      true,
-    );
-  }
-};

@@ -804,7 +804,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
         subject { post_lfs_json(batch_url(project), body, headers) }
 
         before do
-          allow(Gitlab::Database).to receive(:read_only?) { true }
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
 
           project.add_maintainer(user)
 

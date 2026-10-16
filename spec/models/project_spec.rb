@@ -3061,7 +3061,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when avatar file in git' do
         before do
-          allow(project).to receive(:avatar_in_git) { true }
+          allow(project).to receive(:avatar_in_git).and_return(true)
         end
 
         let(:avatar_path) { "/#{project.full_path}/-/avatar" }
@@ -4493,7 +4493,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'creates the repository if it is a fork' do
       expect(project).to receive(:forked?).and_return(true)
       expect(project).to receive(:repository_exists?).and_return(false)
-      expect(project.repository).to receive(:create_repository) { true }
+      expect(project.repository).to receive(:create_repository).and_return(true)
 
       project.ensure_repository
     end
@@ -7074,7 +7074,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when has .gitlab-ci.yml' do
       before do
-        expect(project).to receive(:has_ci_config_file?) { true }
+        expect(project).to receive(:has_ci_config_file?).and_return(true)
       end
 
       it "CI is available" do
@@ -7084,7 +7084,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when there is no .gitlab-ci.yml' do
       before do
-        expect(project).to receive(:has_ci_config_file?) { false }
+        expect(project).to receive(:has_ci_config_file?).and_return(false)
       end
 
       it "CI is available" do

@@ -195,7 +195,7 @@ RSpec.describe Ci::PipelinePresenter do
     context 'when pipeline is branch pipeline' do
       context 'when ref exists in the repository' do
         before do
-          allow(pipeline).to receive(:ref_exists?) { true }
+          allow(pipeline).to receive(:ref_exists?).and_return(true)
         end
 
         it 'returns a correct ref text' do
@@ -213,7 +213,7 @@ RSpec.describe Ci::PipelinePresenter do
 
       context 'when ref does not exist in the repository' do
         before do
-          allow(pipeline).to receive(:ref_exists?) { false }
+          allow(pipeline).to receive(:ref_exists?).and_return(false)
         end
 
         it 'returns a correct ref text' do

@@ -6,14 +6,25 @@
 # no `archived` argument, so `active: true` is the nearest available filter, and it only drops
 # groups pending deletion.
 #
-# Capped at 20 per kind, matching the browse connections. Results are relevance-ordered, so
-# what matters is the top of the list, and a dropdown cannot show hundreds of rows anyway.
-#
 # `Query.projects` already ranks by similarity whenever `search` is given, but `Query.groups`
 # defaults to `name_asc`, so the groups half asks for it explicitly. `allAvailable: false` is
 # what makes it eligible: similarity is refused on scopes not bounded by membership.
-query searchAnalyticsDashboardNamespacesGlobal($search: String!) {
-  groups(first: 20, search: $search, allAvailable: false, active: true, sort: "similarity") {
+query searchAnalyticsDashboardNamespacesGlobal(
+  $search: String!
+  $groupsAfter: String
+  $projectsAfter: String
+  $first: Int = 10
+  $searchGroups: Boolean = true
+  $searchProjects: Boolean = true
+) {
+  groups(
+    first: $first
+    after: $groupsAfter
+    search: $search
+    allAvailable: false
+    active: true
+    sort: "similarity"
+  ) @include(if: $searchGroups) {
     nodes {
       id
       name
@@ -29,14 +40,19 @@ query searchAnalyticsDashboardNamespacesGlobal($search: String!) {
         fullPath
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
   projects(
-    first: 20
+    first: $first
+    after: $projectsAfter
     search: $search
     membership: true
     searchNamespaces: true
     archived: EXCLUDE
-  ) {
+  ) @include(if: $searchProjects) {
     nodes {
       id
       name
@@ -50,6 +66,10 @@ query searchAnalyticsDashboardNamespacesGlobal($search: String!) {
         name
         fullPath
       }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }

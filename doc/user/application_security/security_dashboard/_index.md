@@ -79,6 +79,7 @@ All three dashboards include:
   - [Risk score](#risk-score-panel)
   - [Vulnerabilities by age](#vulnerabilities-by-age)
   - [Top 10 CWEs](#top-10-cwes)
+  - [MTTR over time](#mttr-over-time)
 - [Filter the entire dashboard](#filter-the-entire-dashboard)
 
 The [SAST triage and remediation funnel](#sast-triage-and-remediation-funnel) chart and the [Export as PDF](#export-as-pdf) option are available only on project and group dashboards.
@@ -102,6 +103,7 @@ The project security dashboard shows vulnerabilities detected in the project's d
 - The [**Risk score**](#risk-score-panel) panel, which shows the overall security risk of the project.
 - The [**Vulnerabilities by age**](#vulnerabilities-by-age) chart, which groups open vulnerabilities by age buckets.
 - The [**Top 10 CWEs**](#top-10-cwes) chart, which shows the 10 most common CWEs.
+- The [**MTTR over time**](#mttr-over-time) chart, which shows the weekly mean time to remediation.
 - The [**SAST triage and remediation funnel**](#sast-triage-and-remediation-funnel) chart, which shows how critical and high SAST vulnerabilities progress from detection to fix, including the stages handled by GitLab Duo.
 
 Open vulnerabilities are those with Needs triage or Confirmed status. Closed vulnerabilities with Dismissed or Resolved status are not included in these charts.
@@ -119,6 +121,7 @@ supplies the following:
 - The [**Risk score**](#risk-score-panel) panel, which shows total risk and risk for each project.
 - The [**Vulnerabilities by age**](#vulnerabilities-by-age) chart, which groups open vulnerabilities by age buckets.
 - The [**Top 10 CWEs**](#top-10-cwes) chart, which shows the 10 most common CWEs.
+- The [**MTTR over time**](#mttr-over-time) chart, which shows the weekly mean time to remediation.
 - The [**SAST triage and remediation funnel**](#sast-triage-and-remediation-funnel) chart, which shows how critical and high SAST vulnerabilities progress from detection to fix, including the stages handled by GitLab Duo.
 
 ### Organization security dashboard
@@ -142,6 +145,7 @@ branches of all projects in the organization. The dashboard includes:
 - [Risk score](#risk-score-panel): A panel that shows total risk and the risk for each project.
 - [Vulnerabilities by age](#vulnerabilities-by-age): A chart that groups open vulnerabilities by age.
 - [Top 10 CWEs](#top-10-cwes): A chart that shows the 10 most common CWEs.
+- [MTTR over time](#mttr-over-time): A chart that shows the weekly mean time to remediation.
 
 > [!note]
 > The [SAST triage and remediation funnel](#sast-triage-and-remediation-funnel) chart and the
@@ -260,6 +264,48 @@ To view details:
 1. Use the dropdown list to filter by **Severity** (for example, **Critical**, **Medium**, or **High**).
 
 ![top 10 CWEs](img/group_security_dashboard_top_10_cwes_v18_11.png)
+
+#### MTTR over time
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259541) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_dashboard_mttr_chart`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/626729) in GitLab 19.6.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+The **MTTR over time** chart is available on project, group, and organization dashboards.
+It shows the mean time to remediation (MTTR) for vulnerabilities as a weekly trend over the last 12 weeks.
+Each week runs from Monday to Sunday.
+
+The chart has two parts:
+
+- A line that shows the MTTR in days for vulnerabilities remediated that week.
+- A bar that shows the number of vulnerabilities remediated that week.
+
+A vulnerability is remediated when it is resolved or no longer detected.
+The chart excludes dismissed vulnerabilities.
+
+Each week counts only vulnerabilities detected in the 90 days before the Monday of that week.
+As a result, the MTTR describes recently detected vulnerabilities, and the MTTR for a week is at most 97 days.
+Older vulnerabilities are not counted, so consider this limit when you compare the MTTR against a remediation SLA.
+
+The current week runs from Monday to today, so it includes only the vulnerabilities remediated so far this week.
+
+To view details:
+
+1. Hover over a week to see the MTTR and the number of vulnerabilities remediated that week.
+1. Use the dropdown list to filter by **Severity** (for example, **Critical**, **High**, or **Medium**).
+1. Use the buttons to group the data by one of the following options:
+   - **All**: A single MTTR line for all vulnerabilities.
+   - **Severity**: One line for each severity: **Critical**, **High**, **Medium**, **Low**, **Info**, and **Unknown**.
+   - **Report type**: One line for each report type, like SAST, DAST, dependency scanning, and others.
+
+![MTTR over time chart with a weekly MTTR line and a bar for the number of remediated vulnerabilities](img/mttr_over_time_chart_v19_6.png)
 
 #### SAST triage and remediation funnel
 

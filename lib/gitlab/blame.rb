@@ -19,7 +19,7 @@ module Gitlab
         @commit.id,
         @blob.path,
         range: range,
-        ignore_revisions_blob: (default_ignore_revisions_ref if ignore_revs)
+        ignore_revisions_blob: (repository.ignore_revs_file_revision if ignore_revs)
       )
     end
 
@@ -62,11 +62,6 @@ module Gitlab
     end
 
     attr_reader :ignore_revs
-
-    def default_ignore_revisions_ref
-      "refs/heads/#{project.default_branch}:#{IGNORE_REVS_FILE_NAME}"
-    end
-    strong_memoize_attr :default_ignore_revisions_ref
 
     def highlighted_lines
       @blob.load_all_data!

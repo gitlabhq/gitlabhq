@@ -1549,10 +1549,10 @@
     stylelint-declaration-strict-value "1.10.4"
     stylelint-scss "6.0.0"
 
-"@gitlab/svgs@3.167.0":
-  version "3.167.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.167.0.tgz#599e48d58e967a13148aa8a1c0fff39399fafbb0"
-  integrity sha512-uUjD07zq0t3VFsOHlfzRmKXjL03yO6O5BqkVJNi9qSHoUnVEbJ+HQOgqz83xOO11O28xwf8GopVCKdOqUV5r8Q==
+"@gitlab/svgs@3.167.1":
+  version "3.167.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.167.1.tgz#a5c80fbaed01ebff6af625d59a14ac871ad0baa4"
+  integrity sha512-l/R1dodUJsFDUhIE9tmtz6ht7Xs2WNLjw0/4JYKy0ox18cgwo+9R4Pno0gOCg6O7GtXA/vpbWns8M9SPKgV1Tw==
 
 "@gitlab/ui@138.5.1":
   version "138.5.1"
@@ -4805,10 +4805,12 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-"@types/node@*", "@types/node@14.17.5", "@types/node@>=10.0.0":
-  version "14.17.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.5.tgz#b59daf6a7ffa461b5648456ca59050ba8e40ed54"
-  integrity sha512-bjqH2cX/O33jXT/UmReo2pM7DIJREPMnarixbQ57DOOzzFaI6D2+IcwaJQaJpv0M1E9TIhPCYVxrkcityLjlqA==
+"@types/node@*", "@types/node@>=10.0.0":
+  version "26.6.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.6.5.tgz#cb35209e7767c503551b5fa42a48231c7441d979"
+  integrity sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==
+  dependencies:
+    undici-types "~8.9.0"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -15890,6 +15892,11 @@ undefsafe@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.5.tgz#38733b9327bdcd226db889fb723a6efd162e6e2c"
   integrity sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==
+
+undici-types@~8.9.0:
+  version "8.9.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-8.9.0.tgz#e240d97c8b5d85e5347ce73d25865c7906c1ec9f"
+  integrity sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"

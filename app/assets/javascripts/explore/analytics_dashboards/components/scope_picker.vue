@@ -38,6 +38,9 @@ const ITEM_TYPE_BY_TYPENAME = {
 const EMPTY_ITEM_SUFFIX = '::empty';
 const LOAD_MORE_ITEM_SUFFIX = '::load-more';
 
+// Groups and projects combined, split evenly between the two kinds.
+const SEARCH_PAGE_SIZE = 20;
+
 const SCOPE_NAMESPACE_BATCH_KEY = 'analyticsDashboardScopeNamespace';
 
 export default {
@@ -91,7 +94,11 @@ export default {
       // Alongside them, the group's loading state and the cursor the next page starts from.
       subgroupProjects: {},
       searchTerm: '',
+      // Each page lists its groups, then its projects, and later pages are appended after
+      // earlier ones, so the list alternates between the two kinds.
       searchResults: null,
+      isSearching: false,
+      isLoadingMoreSearchResults: false,
       frecentGroup: null,
       validatedFrecentGroup: null,
       // A default is only derived for a load that named no scope, and only until the user picks
@@ -101,24 +108,6 @@ export default {
     };
   },
   apollo: {
-    searchResults: {
-      query: searchNamespacesGlobalQuery,
-      variables() {
-        // Trimmed, because `hasSearch` decides whether to run on the trimmed value.
-        return { search: this.searchTerm.trim() };
-      },
-      update: ({ groups, projects }) => ({
-        groups: groups?.nodes ?? [],
-        projects: projects?.nodes ?? [],
-      }),
-      skip() {
-        return !this.hasSearch;
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
     frecentGroup: {
       query: getFrecentGroupsQuery,
       update: ({ frecentGroups }) => frecentGroups?.[0] ?? null,
@@ -164,9 +153,6 @@ export default {
     hasSearch() {
       return this.searchTerm.trim().length > 0;
     },
-    isSearching() {
-      return this.$apollo.queries.searchResults.loading;
-    },
     // Replaces the listbox's own count, which would include the pinned picks and status rows.
     // Silent while searching, as the listbox announces that itself.
     searchSummary() {
@@ -191,8 +177,7 @@ export default {
       return [
         ...this.topLevelGroups,
         ...subgroupProjects,
-        ...(this.searchResults?.groups ?? []),
-        ...(this.searchResults?.projects ?? []),
+        ...(this.searchResults?.namespaces ?? []),
       ]
         .filter(Boolean)
         .map((namespace) => this.asNamespace(namespace));
@@ -259,9 +244,19 @@ export default {
     // cannot actually rank against each other; the row icons already say which is which. Every
     // row names its parent, since a match can come from any depth.
     searchItems() {
-      const { groups = [], projects = [] } = this.searchResults ?? {};
+      const { namespaces = [], groupsPageInfo, projectsPageInfo } = this.searchResults ?? {};
+      const items = namespaces.map(this.asResultItem);
 
-      return [...groups, ...projects].map(this.asResultItem);
+      if (groupsPageInfo?.hasNextPage || projectsPageInfo?.hasNextPage) {
+        items.push(
+          this.asLoadMoreItem({
+            text: s__('AnalyticsDashboards|Load more results'),
+            isLoading: this.isLoadingMoreSearchResults,
+          }),
+        );
+      }
+
+      return items;
     },
     // Each top-level group is a row of its own, opening into every project beneath it. Both
     // counts are direct-only, so this is as close as the API gets to "has content" without an
@@ -292,6 +287,24 @@ export default {
       );
     },
   },
+  watch: {
+    searchTerm(searchTerm, previousTerm) {
+      if (searchTerm.trim() === previousTerm.trim()) return;
+
+      // Whatever search is still in flight no longer belongs, even if the term later comes back.
+      this.searchCounter += 1;
+
+      if (this.hasSearch) {
+        this.loadSearchResults();
+        return;
+      }
+
+      // Clearing the search returns to the browse view, so nothing of it is kept.
+      this.searchResults = null;
+      this.isSearching = false;
+      this.isLoadingMoreSearchResults = false;
+    },
+  },
   beforeDestroy() {
     this.onSearch.cancel();
   },
@@ -299,6 +312,7 @@ export default {
     // Vue re-binds everything in `methods`, and that drops lodash's `cancel`, so the debounced
     // handler has to be built per instance, so cancelling it cancels only this one's.
     this.onSearch = debounce(this.setSearchTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.searchCounter = 0;
 
     this.markTimedLoadStep({ mark: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START });
     this.loadTopLevelGroups();
@@ -370,15 +384,17 @@ export default {
     },
     // A row of its own at the end of the list it extends, rather than a single footer control,
     // because every expanded group carries one of its own.
-    asLoadMoreItem({ fullPath = null, name = null, isLoading }) {
+    asLoadMoreItem({ fullPath = null, name = null, isLoading, text = null }) {
+      // Names the list it extends, every one of these rows otherwise reading alike. Not escaped
+      // by sprintf: Vue escapes the interpolation, so escaping here as well would render a group
+      // called "Sales & Marketing" as `Sales &amp; Marketing`.
+      const defaultText = name
+        ? sprintf(s__('AnalyticsDashboards|Load more projects in %{name}'), { name }, false)
+        : s__('AnalyticsDashboards|Load more groups');
+
       return {
         value: `${fullPath ?? ''}${LOAD_MORE_ITEM_SUFFIX}`,
-        // Names the list it extends, every one of these rows otherwise reading alike. Not escaped
-        // by sprintf: Vue escapes the interpolation, so escaping here as well would render a group
-        // called "Sales & Marketing" as `Sales &amp; Marketing`.
-        text: name
-          ? sprintf(s__('AnalyticsDashboards|Load more projects in %{name}'), { name }, false)
-          : s__('AnalyticsDashboards|Load more groups'),
+        text: text ?? defaultText,
         itemType: SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
         // The row only carries the button, so there is nothing about it to select.
         disabled: true,
@@ -532,6 +548,12 @@ export default {
     // The row's value is the only thing that says which list it extends, so read the group back
     // out of it. Empty for the row that extends the top-level list.
     onLoadMore(value) {
+      // Search replaces the browse list, so its one Load more row shares the top-level row's value.
+      if (this.hasSearch) {
+        this.loadSearchResults(true);
+        return;
+      }
+
       const fullPath = value.slice(0, -LOAD_MORE_ITEM_SUFFIX.length);
 
       if (fullPath) {
@@ -540,6 +562,63 @@ export default {
       }
 
       this.loadTopLevelGroups(this.topLevelGroupsPageInfo?.endCursor);
+    },
+    // Fetches the first page of a search, or the next one when asked to load more. The two
+    // connections page independently, so each keeps its own cursor.
+    async loadSearchResults(loadMore = false) {
+      const search = this.searchTerm.trim();
+      const {
+        namespaces = [],
+        groupsPageInfo,
+        projectsPageInfo,
+      } = loadMore ? (this.searchResults ?? {}) : {};
+      // A kind with nothing left is left out of the request rather than asked for again.
+      const searchGroups = !loadMore || Boolean(groupsPageInfo?.hasNextPage);
+      const searchProjects = !loadMore || Boolean(projectsPageInfo?.hasNextPage);
+
+      if (loadMore && this.isLoadingMoreSearchResults) return;
+
+      // A lone kind takes the whole page, so the page stays the same size once the other runs out.
+      const first = searchGroups && searchProjects ? SEARCH_PAGE_SIZE / 2 : SEARCH_PAGE_SIZE;
+      const counter = this.searchCounter;
+      const isStale = () => counter !== this.searchCounter;
+
+      this.isSearching = !loadMore;
+      this.isLoadingMoreSearchResults = loadMore;
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: searchNamespacesGlobalQuery,
+          variables: {
+            search,
+            groupsAfter: groupsPageInfo?.endCursor,
+            projectsAfter: projectsPageInfo?.endCursor,
+            searchGroups,
+            searchProjects,
+            first,
+          },
+        });
+
+        if (isStale()) return;
+
+        this.searchResults = {
+          namespaces: [
+            ...namespaces,
+            ...(data.groups?.nodes ?? []),
+            ...(data.projects?.nodes ?? []),
+          ],
+          groupsPageInfo: searchGroups ? (data.groups?.pageInfo ?? null) : groupsPageInfo,
+          projectsPageInfo: searchProjects ? (data.projects?.pageInfo ?? null) : projectsPageInfo,
+        };
+      } catch (error) {
+        this.$emit('error', error);
+        captureException(error);
+      } finally {
+        if (!isStale()) {
+          this.isSearching = false;
+          this.isLoadingMoreSearchResults = false;
+        }
+      }
     },
     onSelect(paths) {
       this.skipDefaultScope = true;

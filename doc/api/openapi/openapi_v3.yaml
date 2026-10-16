@@ -10545,8 +10545,8 @@ paths:
         in: path
       - name: refresh
         required: false
-        description: Attempt to fetch the latest status from the Geo site directly,
-          ignoring the cache
+        description: If `true`, fetches the latest status from the Geo site directly,
+          ignoring the cache.
         schema:
           type: boolean
           nullable: true
@@ -62400,14 +62400,14 @@ paths:
       parameters:
       - name: replicable_name
         required: true
-        description: The replicable name of a replicator instance
+        description: Name of the replicable type, for example `package_file`.
         schema:
           type: string
         in: path
         example: package_file
       - name: replicable_id
         required: true
-        description: The replicable ID of a replicable instance
+        description: ID of the replicable.
         schema:
           type: integer
         in: path
@@ -62435,7 +62435,7 @@ paths:
       parameters:
       - name: gl_repository
         required: true
-        description: The repository to check
+        description: Repository to check.
         schema:
           type: string
         in: path
@@ -107208,54 +107208,52 @@ components:
       properties:
         primary:
           type: boolean
-          description: Specifying whether this site will be primary.
+          description: If `true`, the site is the primary Geo site.
           default: false
         enabled:
           type: boolean
-          description: Specifying whether this site will be enabled.
+          description: If `true`, the Geo site is enabled.
           default: true
         name:
           type: string
-          description: The unique identifier for the Geo site. Must match `geo_node_name`
-            if it is set in `gitlab.rb`, otherwise it must match `external_url`
+          description: Unique identifier for the Geo site. Must match `geo_node_name`
+            if it is set in `gitlab.rb`, otherwise it must match `external_url`.
           nullable: true
         url:
           type: string
-          description: The user-facing URL for the Geo site
+          description: User-facing URL of the Geo site.
           nullable: true
         internal_url:
           type: string
-          description: The URL defined on the primary site that secondary site should
-            use to contact it. Returns `url` if not set.
+          description: URL defined on the primary site that secondary sites use to
+            contact it. Returns `url` if not set.
           nullable: true
         files_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of LFS/attachment backfill
-            for this secondary site.
+          description: Maximum concurrency of LFS and attachment backfill for the
+            secondary site.
           default: 10
         repos_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of repository backfill for
-            this secondary site.
+          description: Maximum concurrency of repository backfill for the secondary
+            site.
           default: 10
         verification_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of repository verification
-            for this site.
+          description: Maximum concurrency of verification for the site.
           default: 10
         container_repositories_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of container repository sync
-            for this site.
+          description: Maximum concurrency of container repository sync for the site.
           default: 2
         sync_object_storage:
           type: boolean
-          description: Flag indicating if the secondary Geo site will replicate blobs
-            in Object Storage.
+          description: If `true`, the secondary Geo site replicates blobs in object
+            storage.
           default: false
         selective_sync_type:
           type: string
@@ -107266,42 +107264,39 @@ components:
           type: array
           items:
             type: string
-          description: The repository storages whose projects should be synced, if
-            `selective_sync_type` == `shards`
+          description: Repository storages to sync projects from if `selective_sync_type`
+            is `shards`.
           nullable: true
         selective_sync_namespace_ids:
           type: array
           items:
             type: integer
-          description: The IDs of groups that should be synced, if `selective_sync_type`
-            == `namespaces`
+          description: IDs of groups to sync if `selective_sync_type` is `namespaces`.
           nullable: true
         selective_sync_organization_ids:
           type: array
           items:
             type: integer
-          description: The IDs of organizations that should be synced, if `selective_sync_type`
-            == `organizations`
+          description: IDs of organizations to sync if `selective_sync_type` is `organizations`.
           nullable: true
         minimum_reverification_interval:
           type: integer
-          description: The interval (in days) in which the repository verification
-            is valid. Once expired, it will be reverified. This has no effect when
-            set on a secondary site.
+          description: Interval, in days, after which verification expires and is
+            repeated. Has no effect when set on a secondary site.
           nullable: true
         checksum_mismatch_report_threshold:
           type: integer
-          description: The number of consecutive checksum mismatches on a secondary
+          description: Number of consecutive checksum mismatches on a secondary site
             before it reports the resource to the primary for self-heal re-verification.
-            Read from the secondary site; has no effect when set on the primary.
+            Read from the secondary site, and has no effect when set on the primary.
           nullable: true
         checksum_mismatch_self_heal_cooldown_minutes:
           type: integer
-          description: 'The minimum time (in minutes) between self-heal re-verification
-            triggers for the same resource. Both the primary and each secondary use
-            their own value: secondaries use it to throttle re-reporting the same
+          description: Minimum time, in minutes, between self-heal re-verification
+            triggers for the same resource. The primary and each secondary site use
+            their own value. Secondary sites use it to throttle re-reporting the same
             resource, and the primary uses it to throttle re-verifying an already-verified
-            resource.'
+            resource.
           nullable: true
         blob_download_timeout:
           type: integer
@@ -107317,50 +107312,48 @@ components:
       properties:
         enabled:
           type: boolean
-          description: Flag indicating if the Geo site is enabled
+          description: If `true`, the Geo site is enabled.
           nullable: true
         name:
           type: string
-          description: The unique identifier for the Geo site. Must match `geo_node_name`
-            if it is set in gitlab.rb, otherwise it must match `external_url`
+          description: Unique identifier for the Geo site. Must match `geo_node_name`
+            if it is set in `gitlab.rb`, otherwise it must match `external_url`.
           nullable: true
         url:
           type: string
-          description: The user-facing URL of the Geo site
+          description: User-facing URL of the Geo site.
           nullable: true
         internal_url:
           type: string
-          description: The URL defined on the primary site that secondary sites should
-            use to contact it. Returns `url` if not set.
+          description: URL defined on the primary site that secondary sites use to
+            contact it. Returns `url` if not set.
           nullable: true
         files_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of LFS/attachment backfill
-            for this secondary site
+          description: Maximum concurrency of LFS and attachment backfill for the
+            secondary site.
           nullable: true
         repos_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of repository backfill for
-            this secondary site
+          description: Maximum concurrency of repository backfill for the secondary
+            site.
           nullable: true
         verification_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of repository verification
-            for this site
+          description: Maximum concurrency of verification for the site.
           nullable: true
         container_repositories_max_capacity:
           type: integer
           minimum: 0
-          description: Control the maximum concurrency of container repository sync
-            for this site
+          description: Maximum concurrency of container repository sync for the site.
           nullable: true
         sync_object_storage:
           type: boolean
-          description: Flag indicating if the secondary Geo site will replicate blobs
-            in Object Storage
+          description: If `true`, the secondary Geo site replicates blobs in object
+            storage.
           nullable: true
         selective_sync_type:
           type: string
@@ -107371,42 +107364,39 @@ components:
           type: array
           items:
             type: string
-          description: The repository storages whose projects should be synced, if
-            `selective_sync_type` == `shards`
+          description: Repository storages to sync projects from if `selective_sync_type`
+            is `shards`.
           nullable: true
         selective_sync_namespace_ids:
           type: array
           items:
             type: integer
-          description: The IDs of groups that should be synced, if `selective_sync_type`
-            == `namespaces`
+          description: IDs of groups to sync if `selective_sync_type` is `namespaces`.
           nullable: true
         selective_sync_organization_ids:
           type: array
           items:
             type: integer
-          description: The IDs of organizations that should be synced, if `selective_sync_type`
-            == `organizations`
+          description: IDs of organizations to sync if `selective_sync_type` is `organizations`.
           nullable: true
         minimum_reverification_interval:
           type: integer
-          description: The interval (in days) in which the repository verification
-            is valid. Once expired, it will be reverified. This has no effect when
-            set on a secondary site.
+          description: Interval, in days, after which verification expires and is
+            repeated. Has no effect when set on a secondary site.
           nullable: true
         checksum_mismatch_report_threshold:
           type: integer
-          description: The number of consecutive checksum mismatches on a secondary
+          description: Number of consecutive checksum mismatches on a secondary site
             before it reports the resource to the primary for self-heal re-verification.
-            Read from the secondary site; has no effect when set on the primary.
+            Read from the secondary site, and has no effect when set on the primary.
           nullable: true
         checksum_mismatch_self_heal_cooldown_minutes:
           type: integer
-          description: 'The minimum time (in minutes) between self-heal re-verification
-            triggers for the same resource. Both the primary and each secondary use
-            their own value: secondaries use it to throttle re-reporting the same
+          description: Minimum time, in minutes, between self-heal re-verification
+            triggers for the same resource. The primary and each secondary site use
+            their own value. Secondary sites use it to throttle re-reporting the same
             resource, and the primary uses it to throttle re-verifying an already-verified
-            resource.'
+            resource.
           nullable: true
         blob_download_timeout:
           type: integer
@@ -131213,614 +131203,659 @@ components:
       properties:
         data:
           type: object
-          description: |-
-            Object that contains status information
-                          and replication metrics for the Geo node
+          description: Object that contains status information and replication metrics
+            for the Geo node.
           properties:
             geo_node_id:
               type: integer
-              description: Geo Node ID to look up its status
+              description: ID of the Geo node the status applies to.
               nullable: true
             db_replication_lag_seconds:
               type: integer
-              description: DB replication lag in seconds
+              description: Database replication lag, in seconds.
               nullable: true
             last_event_id:
               type: integer
-              description: Last event ID
+              description: ID of the last event.
               nullable: true
             last_event_date:
               type: string
               format: date-time
-              description: Last event date
+              description: Last event date.
               nullable: true
             cursor_last_event_id:
               type: integer
-              description: Cursor last event ID
+              description: ID of the last event processed by the cursor.
               nullable: true
             cursor_last_event_date:
               type: string
               format: date-time
-              description: Cursor last event date
+              description: Date of the last event processed by the cursor.
               nullable: true
             last_successful_status_check_at:
               type: string
               format: date-time
-              description: Last successful status check date
+              description: Last successful status check date.
               nullable: true
             status_message:
               type: string
-              description: Status message
+              description: Status message.
               nullable: true
             replication_slots_count:
               type: integer
-              description: Replication slots count
+              description: Number of replication slots.
               nullable: true
             replication_slots_used_count:
               type: integer
-              description: Replication slots used count
+              description: Number of replication slots in use.
               nullable: true
             replication_slots_max_retained_wal_bytes:
               type: integer
-              description: Maximum number of bytes retained in the WAL on the primary
+              description: Maximum number of bytes retained in the WAL on the primary.
               nullable: true
             version:
               type: string
-              description: Gitlab version
+              description: GitLab version.
               nullable: true
             revision:
               type: string
-              description: Gitlab revision
+              description: GitLab revision.
               nullable: true
             status:
               type: object
-              description: |-
-                Object that contains information on replication and verification
-                                status metrics for GitLab resources on Geo nodes
+              description: Object that contains information on replication and verification
+                status metrics for GitLab resources on Geo nodes.
               properties:
                 projects_count:
                   type: integer
-                  description: Projects count
+                  description: Number of projects.
                   nullable: true
                 container_repositories_replication_enabled:
                   type: boolean
-                  description: Container repositories replication enabled
+                  description: If `true`, container repository replication is enabled.
                   nullable: true
                 lfs_objects_count:
                   type: integer
-                  description: LFS objects count
+                  description: Number of LFS objects.
                   nullable: true
                 lfs_objects_checksum_total_count:
                   type: integer
-                  description: LFS objects checksum total count
+                  description: Number of LFS objects available to checksum on the
+                    primary site.
                   nullable: true
                 lfs_objects_checksummed_count:
                   type: integer
-                  description: LFS objects checksummed count
+                  description: Number of LFS objects that have been checksummed.
                   nullable: true
                 lfs_objects_checksum_failed_count:
                   type: integer
-                  description: LFS objects checksum failed count
+                  description: Number of LFS objects for which checksum calculation
+                    failed.
                   nullable: true
                 lfs_objects_synced_count:
                   type: integer
-                  description: LFS objects synced count
+                  description: Number of LFS objects synced.
                   nullable: true
                 lfs_objects_failed_count:
                   type: integer
-                  description: LFS objects failed count
+                  description: Number of LFS objects that failed to sync.
                   nullable: true
                 lfs_objects_registry_count:
                   type: integer
-                  description: LFS objects registry count
+                  description: Number of LFS objects tracked in the registry.
                   nullable: true
                 lfs_objects_verification_total_count:
                   type: integer
-                  description: LFS objects verification total count
+                  description: Number of LFS objects available to verify on the secondary
+                    site.
                   nullable: true
                 lfs_objects_verified_count:
                   type: integer
-                  description: LFS objects verified count
+                  description: Number of LFS objects verified.
                   nullable: true
                 lfs_objects_verification_failed_count:
                   type: integer
-                  description: LFS objects verification failed count
+                  description: Number of LFS objects for which verification failed.
                   nullable: true
                 merge_request_diffs_count:
                   type: integer
-                  description: Merge request diffs count
+                  description: Number of merge request diffs.
                   nullable: true
                 merge_request_diffs_checksum_total_count:
                   type: integer
-                  description: Merge request diffs checksum total count
+                  description: Number of merge request diffs available to checksum
+                    on the primary site.
                   nullable: true
                 merge_request_diffs_checksummed_count:
                   type: integer
-                  description: Merge request diffs checksummed count
+                  description: Number of merge request diffs that have been checksummed.
                   nullable: true
                 merge_request_diffs_checksum_failed_count:
                   type: integer
-                  description: Merge request diffs checksum failed count
+                  description: Number of merge request diffs for which checksum calculation
+                    failed.
                   nullable: true
                 merge_request_diffs_synced_count:
                   type: integer
-                  description: Merge request diffs synced count
+                  description: Number of merge request diffs synced.
                   nullable: true
                 merge_request_diffs_failed_count:
                   type: integer
-                  description: Merge request diffs failed count
+                  description: Number of merge request diffs that failed to sync.
                   nullable: true
                 merge_request_diffs_registry_count:
                   type: integer
-                  description: Merge request diffs registry count
+                  description: Number of merge request diffs tracked in the registry.
                   nullable: true
                 merge_request_diffs_verification_total_count:
                   type: integer
-                  description: Merge request diffs verification total count
+                  description: Number of merge request diffs available to verify on
+                    the secondary site.
                   nullable: true
                 merge_request_diffs_verified_count:
                   type: integer
-                  description: Merge request diffs verified count
+                  description: Number of merge request diffs verified.
                   nullable: true
                 merge_request_diffs_verification_failed_count:
                   type: integer
-                  description: Merge request diffs verified count
+                  description: Number of merge request diffs for which verification
+                    failed.
                   nullable: true
                 package_files_count:
                   type: integer
-                  description: Packages files count
+                  description: Number of package files.
                   nullable: true
                 package_files_checksum_total_count:
                   type: integer
-                  description: Packages files checksum total count
+                  description: Number of package files available to checksum on the
+                    primary site.
                   nullable: true
                 package_files_checksummed_count:
                   type: integer
-                  description: Packages files checksummed count
+                  description: Number of package files that have been checksummed.
                   nullable: true
                 package_files_checksum_failed_count:
                   type: integer
-                  description: Packages files checksum failed count
+                  description: Number of package files for which checksum calculation
+                    failed.
                   nullable: true
                 package_files_synced_count:
                   type: integer
-                  description: Packages files synced count
+                  description: Number of package files synced.
                   nullable: true
                 package_files_failed_count:
                   type: integer
-                  description: Packages files failed count
+                  description: Number of package files that failed to sync.
                   nullable: true
                 package_files_registry_count:
                   type: integer
-                  description: Packages files registry count
+                  description: Number of package files tracked in the registry.
                   nullable: true
                 package_files_verification_total_count:
                   type: integer
-                  description: Packages files verification total count
+                  description: Number of package files available to verify on the
+                    secondary site.
                   nullable: true
                 package_files_verified_count:
                   type: integer
-                  description: Packages files verified count
+                  description: Number of package files verified.
                   nullable: true
                 package_files_verification_failed_count:
                   type: integer
-                  description: Packages files verification failed count
+                  description: Number of package files for which verification failed.
                   nullable: true
                 packages_nuget_symbols_count:
                   type: integer
-                  description: NuGet symbols count
+                  description: Number of NuGet symbols.
                   nullable: true
                 packages_nuget_symbols_checksum_total_count:
                   type: integer
-                  description: NuGet symbols checksum total count
+                  description: Number of NuGet symbols available to checksum on the
+                    primary site.
                   nullable: true
                 packages_nuget_symbols_checksummed_count:
                   type: integer
-                  description: NuGet symbols checksummed count
+                  description: Number of NuGet symbols that have been checksummed.
                   nullable: true
                 packages_nuget_symbols_checksum_failed_count:
                   type: integer
-                  description: NuGet symbols checksum failed count
+                  description: Number of NuGet symbols for which checksum calculation
+                    failed.
                   nullable: true
                 packages_nuget_symbols_synced_count:
                   type: integer
-                  description: NuGet symbols synced count
+                  description: Number of NuGet symbols synced.
                   nullable: true
                 packages_nuget_symbols_failed_count:
                   type: integer
-                  description: NuGet symbols failed count
+                  description: Number of NuGet symbols that failed to sync.
                   nullable: true
                 packages_nuget_symbols_registry_count:
                   type: integer
-                  description: NuGet symbols registry count
+                  description: Number of NuGet symbols tracked in the registry.
                   nullable: true
                 packages_nuget_symbols_verification_total_count:
                   type: integer
-                  description: NuGet symbols verification total count
+                  description: Number of NuGet symbols available to verify on the
+                    secondary site.
                   nullable: true
                 packages_nuget_symbols_verified_count:
                   type: integer
-                  description: NuGet symbols verified count
+                  description: Number of NuGet symbols verified.
                   nullable: true
                 packages_nuget_symbols_verification_failed_count:
                   type: integer
-                  description: NuGet symbols verification failed count
+                  description: Number of NuGet symbols for which verification failed.
                   nullable: true
                 terraform_state_versions_count:
                   type: integer
-                  description: Terraform state versions count
+                  description: Number of Terraform state versions.
                   nullable: true
                 terraform_state_versions_checksum_total_count:
                   type: integer
-                  description: Terraform state versions checksum total count
+                  description: Number of Terraform state versions available to checksum
+                    on the primary site.
                   nullable: true
                 terraform_state_versions_checksummed_count:
                   type: integer
-                  description: Terraform state versions checksummed count
+                  description: Number of Terraform state versions that have been checksummed.
                   nullable: true
                 terraform_state_versions_checksum_failed_count:
                   type: integer
-                  description: Terraform state versions checksum failed count
+                  description: Number of Terraform state versions for which checksum
+                    calculation failed.
                   nullable: true
                 terraform_state_versions_synced_count:
                   type: integer
-                  description: Terraform state versions synced count
+                  description: Number of Terraform state versions synced.
                   nullable: true
                 terraform_state_versions_failed_count:
                   type: integer
-                  description: Terraform state versions failed count
+                  description: Number of Terraform state versions that failed to sync.
                   nullable: true
                 terraform_state_versions_registry_count:
                   type: integer
-                  description: Terraform state versions registry count
+                  description: Number of Terraform state versions tracked in the registry.
                   nullable: true
                 terraform_state_versions_verification_total_count:
                   type: integer
-                  description: Terraform state versions verification total count
+                  description: Number of Terraform state versions available to verify
+                    on the secondary site.
                   nullable: true
                 terraform_state_versions_verified_count:
                   type: integer
-                  description: Terraform state versions verified count
+                  description: Number of Terraform state versions verified.
                   nullable: true
                 terraform_state_versions_verification_failed_count:
                   type: integer
-                  description: Terraform state versions verification failed count
+                  description: Number of Terraform state versions for which verification
+                    failed.
                   nullable: true
                 snippet_repositories_count:
                   type: integer
-                  description: Snippet repositories count
+                  description: Number of snippet repositories.
                   nullable: true
                 snippet_repositories_checksum_total_count:
                   type: integer
-                  description: Snippet repositories checksum total count
+                  description: Number of snippet repositories available to checksum
+                    on the primary site.
                   nullable: true
                 snippet_repositories_checksummed_count:
                   type: integer
-                  description: Snippet repositories checksummed count
+                  description: Number of snippet repositories that have been checksummed.
                   nullable: true
                 snippet_repositories_checksum_failed_count:
                   type: integer
-                  description: Snippet repositories checksum failed count
+                  description: Number of snippet repositories for which checksum calculation
+                    failed.
                   nullable: true
                 snippet_repositories_synced_count:
                   type: integer
-                  description: Snippet repositories synced count
+                  description: Number of snippet repositories synced.
                   nullable: true
                 snippet_repositories_failed_count:
                   type: integer
-                  description: Snippet repositories failed count
+                  description: Number of snippet repositories that failed to sync.
                   nullable: true
                 snippet_repositories_registry_count:
                   type: integer
-                  description: Snippet repositories registry count
+                  description: Number of snippet repositories tracked in the registry.
                   nullable: true
                 snippet_repositories_verification_total_count:
                   type: integer
-                  description: Snippet repositories verification total count
+                  description: Number of snippet repositories available to verify
+                    on the secondary site.
                   nullable: true
                 snippet_repositories_verified_count:
                   type: integer
-                  description: Snippet repositories verified count
+                  description: Number of snippet repositories verified.
                   nullable: true
                 snippet_repositories_verification_failed_count:
                   type: integer
-                  description: Snippet repositories verification failed count
+                  description: Number of snippet repositories for which verification
+                    failed.
                   nullable: true
                 group_wiki_repositories_count:
                   type: integer
-                  description: Group wiki repositories count
+                  description: Number of group wiki repositories.
                   nullable: true
                 group_wiki_repositories_checksum_total_count:
                   type: integer
-                  description: Group wiki repositories checksum total count
+                  description: Number of group wiki repositories available to checksum
+                    on the primary site.
                   nullable: true
                 group_wiki_repositories_checksummed_count:
                   type: integer
-                  description: Group wiki repositories checksummed count
+                  description: Number of group wiki repositories that have been checksummed.
                   nullable: true
                 group_wiki_repositories_checksum_failed_count:
                   type: integer
-                  description: Group wiki repositories checksum failed count
+                  description: Number of group wiki repositories for which checksum
+                    calculation failed.
                   nullable: true
                 group_wiki_repositories_synced_count:
                   type: integer
-                  description: Group wiki repositories synced count
+                  description: Number of group wiki repositories synced.
                   nullable: true
                 group_wiki_repositories_failed_count:
                   type: integer
-                  description: Group wiki repositories failed count
+                  description: Number of group wiki repositories that failed to sync.
                   nullable: true
                 group_wiki_repositories_registry_count:
                   type: integer
-                  description: Group wiki repositories registry count
+                  description: Number of group wiki repositories tracked in the registry.
                   nullable: true
                 group_wiki_repositories_verification_total_count:
                   type: integer
-                  description: Group wiki repositories verification total count
+                  description: Number of group wiki repositories available to verify
+                    on the secondary site.
                   nullable: true
                 group_wiki_repositories_verified_count:
                   type: integer
-                  description: Group wiki repositories verified count
+                  description: Number of group wiki repositories verified.
                   nullable: true
                 group_wiki_repositories_verification_failed_count:
                   type: integer
-                  description: Group wiki repositories verification failed count
+                  description: Number of group wiki repositories for which verification
+                    failed.
                   nullable: true
                 pipeline_artifacts_count:
                   type: integer
-                  description: Pipeline artifacts count
+                  description: Number of pipeline artifacts.
                   nullable: true
                 pipeline_artifacts_checksum_total_count:
                   type: integer
-                  description: Pipeline artifacts checksum total count
+                  description: Number of pipeline artifacts available to checksum
+                    on the primary site.
                   nullable: true
                 pipeline_artifacts_checksummed_count:
                   type: integer
-                  description: Pipeline artifacts checksummed count
+                  description: Number of pipeline artifacts that have been checksummed.
                   nullable: true
                 pipeline_artifacts_checksum_failed_count:
                   type: integer
-                  description: Pipeline artifacts checksum failed count
+                  description: Number of pipeline artifacts for which checksum calculation
+                    failed.
                   nullable: true
                 pipeline_artifacts_synced_count:
                   type: integer
-                  description: Pipeline artifacts synced count
+                  description: Number of pipeline artifacts synced.
                   nullable: true
                 pipeline_artifacts_failed_count:
                   type: integer
-                  description: Pipeline artifacts failed count
+                  description: Number of pipeline artifacts that failed to sync.
                   nullable: true
                 pipeline_artifacts_registry_count:
                   type: integer
-                  description: Pipeline artifacts registry count
+                  description: Number of pipeline artifacts tracked in the registry.
                   nullable: true
                 pipeline_artifacts_verification_total_count:
                   type: integer
-                  description: Pipeline artifacts verification total count
+                  description: Number of pipeline artifacts available to verify on
+                    the secondary site.
                   nullable: true
                 pipeline_artifacts_verified_count:
                   type: integer
-                  description: Pipeline artifacts verified count
+                  description: Number of pipeline artifacts verified.
                   nullable: true
                 pipeline_artifacts_verification_failed_count:
                   type: integer
-                  description: Pipeline artifacts verification failed count
+                  description: Number of pipeline artifacts for which verification
+                    failed.
                   nullable: true
                 pages_deployments_count:
                   type: integer
-                  description: Pages deployments count
+                  description: Number of Pages deployments.
                   nullable: true
                 pages_deployments_checksum_total_count:
                   type: integer
-                  description: Pages deployments checksum total count
+                  description: Number of Pages deployments available to checksum on
+                    the primary site.
                   nullable: true
                 pages_deployments_checksummed_count:
                   type: integer
-                  description: Pages deployments checksummed count
+                  description: Number of Pages deployments that have been checksummed.
                   nullable: true
                 pages_deployments_checksum_failed_count:
                   type: integer
-                  description: Pages deployments checksum failed count
+                  description: Number of Pages deployments for which checksum calculation
+                    failed.
                   nullable: true
                 pages_deployments_synced_count:
                   type: integer
-                  description: Pages deployments synced count
+                  description: Number of Pages deployments synced.
                   nullable: true
                 pages_deployments_failed_count:
                   type: integer
-                  description: Pages deployments failed count
+                  description: Number of Pages deployments that failed to sync.
                   nullable: true
                 pages_deployments_registry_count:
                   type: integer
-                  description: Pages deployments registry count
+                  description: Number of Pages deployments tracked in the registry.
                   nullable: true
                 pages_deployments_verification_total_count:
                   type: integer
-                  description: Pages deployments verification total count
+                  description: Number of Pages deployments available to verify on
+                    the secondary site.
                   nullable: true
                 pages_deployments_verified_count:
                   type: integer
-                  description: Pages deployments verified count
+                  description: Number of Pages deployments verified.
                   nullable: true
                 pages_deployments_verification_failed_count:
                   type: integer
-                  description: Pages deployments verification failed count
+                  description: Number of Pages deployments for which verification
+                    failed.
                   nullable: true
                 uploads_count:
                   type: integer
-                  description: Uploads count
+                  description: Number of uploads.
                   nullable: true
                 uploads_checksum_total_count:
                   type: integer
-                  description: Uploads checksum total count
+                  description: Number of uploads available to checksum on the primary
+                    site.
                   nullable: true
                 uploads_checksummed_count:
                   type: integer
-                  description: Uploads checksummed count
+                  description: Number of uploads that have been checksummed.
                   nullable: true
                 uploads_checksum_failed_count:
                   type: integer
-                  description: Uploads checksum failed count
+                  description: Number of uploads for which checksum calculation failed.
                   nullable: true
                 uploads_synced_count:
                   type: integer
-                  description: Uploads synced count
+                  description: Number of uploads synced.
                   nullable: true
                 uploads_failed_count:
                   type: integer
-                  description: Uploads failed count
+                  description: Number of uploads that failed to sync.
                   nullable: true
                 uploads_registry_count:
                   type: integer
-                  description: Uploads registry count
+                  description: Number of uploads tracked in the registry.
                   nullable: true
                 uploads_verification_total_count:
                   type: integer
-                  description: Uploads verification total count
+                  description: Number of uploads available to verify on the secondary
+                    site.
                   nullable: true
                 uploads_verified_count:
                   type: integer
-                  description: Uploads verified count
+                  description: Number of uploads verified.
                   nullable: true
                 uploads_verification_failed_count:
                   type: integer
-                  description: Uploads verification failed count
+                  description: Number of uploads for which verification failed.
                   nullable: true
                 job_artifacts_count:
                   type: integer
-                  description: Job artifacts count
+                  description: Number of job artifacts.
                   nullable: true
                 job_artifacts_checksum_total_count:
                   type: integer
-                  description: Job artifacts checksum total count
+                  description: Number of job artifacts available to checksum on the
+                    primary site.
                   nullable: true
                 job_artifacts_checksummed_count:
                   type: integer
-                  description: Job artifacts checksummed count
+                  description: Number of job artifacts that have been checksummed.
                   nullable: true
                 job_artifacts_checksum_failed_count:
                   type: integer
-                  description: Job artifacts checksum failed count
+                  description: Number of job artifacts for which checksum calculation
+                    failed.
                   nullable: true
                 job_artifacts_synced_count:
                   type: integer
-                  description: Job artifacts synced count
+                  description: Number of job artifacts synced.
                   nullable: true
                 job_artifacts_failed_count:
                   type: integer
-                  description: Job artifacts failed count
+                  description: Number of job artifacts that failed to sync.
                   nullable: true
                 job_artifacts_registry_count:
                   type: integer
-                  description: Job artifacts registry count
+                  description: Number of job artifacts tracked in the registry.
                   nullable: true
                 job_artifacts_verification_total_count:
                   type: integer
-                  description: Job artifacts verification total count
+                  description: Number of job artifacts available to verify on the
+                    secondary site.
                   nullable: true
                 job_artifacts_verified_count:
                   type: integer
-                  description: Job artifacts verified count
+                  description: Number of job artifacts verified.
                   nullable: true
                 job_artifacts_verification_failed_count:
                   type: integer
-                  description: Job artifacts verification failed count
+                  description: Number of job artifacts for which verification failed.
                   nullable: true
                 ci_secure_files_count:
                   type: integer
-                  description: CI secure files count
+                  description: Number of CI/CD secure files.
                   nullable: true
                 ci_secure_files_checksum_total_count:
                   type: integer
-                  description: CI secure files checksum total count
+                  description: Number of CI/CD secure files available to checksum
+                    on the primary site.
                   nullable: true
                 ci_secure_files_checksummed_count:
                   type: integer
-                  description: CI secure files checksummed count
+                  description: Number of CI/CD secure files that have been checksummed.
                   nullable: true
                 ci_secure_files_checksum_failed_count:
                   type: integer
-                  description: CI secure files checksum failed count
+                  description: Number of CI/CD secure files for which checksum calculation
+                    failed.
                   nullable: true
                 ci_secure_files_synced_count:
                   type: integer
-                  description: CI secure files synced count
+                  description: Number of CI/CD secure files synced.
                   nullable: true
                 ci_secure_files_failed_count:
                   type: integer
-                  description: CI secure files failed count
+                  description: Number of CI/CD secure files that failed to sync.
                   nullable: true
                 ci_secure_files_registry_count:
                   type: integer
-                  description: CI secure files registry count
+                  description: Number of CI/CD secure files tracked in the registry.
                   nullable: true
                 ci_secure_files_verification_total_count:
                   type: integer
-                  description: CI secure files verification total count
+                  description: Number of CI/CD secure files available to verify on
+                    the secondary site.
                   nullable: true
                 ci_secure_files_verified_count:
                   type: integer
-                  description: CI secure files verified count
+                  description: Number of CI/CD secure files verified.
                   nullable: true
                 ci_secure_files_verification_failed_count:
                   type: integer
-                  description: CI secure files verification failed count
+                  description: Number of CI/CD secure files for which verification
+                    failed.
                   nullable: true
                 container_repositories_count:
                   type: integer
-                  description: Container repositories count
+                  description: Number of container repositories.
                   nullable: true
                 container_repositories_checksum_total_count:
                   type: integer
-                  description: Container repositories checksum total count
+                  description: Number of container repositories available to checksum
+                    on the primary site.
                   nullable: true
                 container_repositories_checksummed_count:
                   type: integer
-                  description: Container repositories checksummed count
+                  description: Number of container repositories that have been checksummed.
                   nullable: true
                 container_repositories_checksum_failed_count:
                   type: integer
-                  description: Container repositories checksum failed count
+                  description: Number of container repositories for which checksum
+                    calculation failed.
                   nullable: true
                 container_repositories_synced_count:
                   type: integer
-                  description: Container repositories synced count
+                  description: Number of container repositories synced.
                   nullable: true
                 container_repositories_failed_count:
                   type: integer
-                  description: Container repositories failed count
+                  description: Number of container repositories that failed to sync.
                   nullable: true
                 container_repositories_registry_count:
                   type: integer
-                  description: Container repositories registry count
+                  description: Number of container repositories tracked in the registry.
                   nullable: true
                 container_repositories_verification_total_count:
                   type: integer
-                  description: Container repositories verification total count
+                  description: Number of container repositories available to verify
+                    on the secondary site.
                   nullable: true
                 container_repositories_verified_count:
                   type: integer
-                  description: Container repositories verified count
+                  description: Number of container repositories verified.
                   nullable: true
                 container_repositories_verification_failed_count:
                   type: integer
-                  description: Container repositories verification failed count
+                  description: Number of container repositories for which verification
+                    failed.
                   nullable: true
                 git_fetch_event_count_weekly:
                   type: integer
-                  description: Git fetch event count weekly
+                  description: Number of Git fetch events in the past week.
                   nullable: true
                 git_push_event_count_weekly:
                   type: integer
-                  description: Git push event count weekly
+                  description: Number of Git push events in the past week.
                   nullable: true
                 proxy_remote_requests_event_count_weekly:
                   type: integer
-                  description: Proxy remote requests event count weekly
+                  description: Number of remote requests proxied in the past week.
                   nullable: true
                 proxy_local_requests_event_count_weekly:
                   type: integer
-                  description: Proxy local requests event count weekly
+                  description: Number of HTTP requests received by the secondary site
+                    in the past week.
                   nullable: true
               nullable: true
           required:
@@ -131875,19 +131910,19 @@ components:
       properties:
         secret_token:
           type: string
-          description: Secret token to authenticate by gitlab shell
+          description: Secret token used to authenticate requests from GitLab Shell.
           nullable: true
         data:
           type: object
-          description: Object that contains the payload data for the Geo operation
+          description: Object that contains the payload data for the Geo operation.
           properties:
             gl_id:
               type: string
-              description: ID of the user performing the operation
+              description: ID of the user performing the operation.
               nullable: true
             primary_repo:
               type: string
-              description: Primary repository to clone or pull from
+              description: Primary repository to clone or pull from.
               nullable: true
           required:
           - gl_id
@@ -131901,21 +131936,20 @@ components:
       properties:
         secret_token:
           type: string
-          description: |-
-            Secret token used to authenticate requests from gitlab-shell
-                            to Geo proxy endpoints
+          description: Secret token used to authenticate requests from GitLab Shell
+            to Geo proxy endpoints.
           nullable: true
         data:
           type: object
-          description: Object that contains the payload data for the Geo operation
+          description: Object that contains the payload data for the Geo operation.
           properties:
             gl_id:
               type: string
-              description: ID of the user performing the operation
+              description: ID of the user performing the operation.
               nullable: true
             primary_repo:
               type: string
-              description: Primary repository to clone or pull from
+              description: Primary repository to clone or pull from.
               nullable: true
           required:
           - gl_id
@@ -131923,7 +131957,7 @@ components:
           nullable: true
         output:
           type: string
-          description: Output from git-upload-pack
+          description: Output from `git-upload-pack`.
           nullable: true
       required:
       - secret_token
@@ -131934,21 +131968,20 @@ components:
       properties:
         secret_token:
           type: string
-          description: |-
-            Secret token used to authenticate requests from gitlab-shell
-                            to Geo proxy endpoints
+          description: Secret token used to authenticate requests from GitLab Shell
+            to Geo proxy endpoints.
           nullable: true
         data:
           type: object
-          description: Object that contains the payload data for the Geo operation
+          description: Object that contains the payload data for the Geo operation.
           properties:
             gl_id:
               type: string
-              description: ID of the user performing the operation
+              description: ID of the user performing the operation.
               nullable: true
             primary_repo:
               type: string
-              description: Primary repository to push to
+              description: Primary repository to push to.
               nullable: true
           required:
           - gl_id
@@ -131962,21 +131995,20 @@ components:
       properties:
         secret_token:
           type: string
-          description: |-
-            Secret token used to authenticate requests from gitlab-shell
-                            to Geo proxy endpoints
+          description: Secret token used to authenticate requests from GitLab Shell
+            to Geo proxy endpoints.
           nullable: true
         data:
           type: object
-          description: Object that contains the payload data for the Geo operation
+          description: Object that contains the payload data for the Geo operation.
           properties:
             gl_id:
               type: string
-              description: ID of the user performing the operation
+              description: ID of the user performing the operation.
               nullable: true
             primary_repo:
               type: string
-              description: Primary repository to push to
+              description: Primary repository to push to.
               nullable: true
           required:
           - gl_id
@@ -131984,7 +132016,7 @@ components:
           nullable: true
         output:
           type: string
-          description: Output from git-receive-pack
+          description: Output from `git-receive-pack`.
           nullable: true
       required:
       - secret_token

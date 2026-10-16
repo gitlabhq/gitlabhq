@@ -1,6 +1,7 @@
 import createMockApollo from 'helpers/mock_apollo_helper';
 // The checkbox label cap that lets long names truncate lives in the page bundle.
 import '../../../../stylesheets/page_bundles/explore_analytics_dashboards.scss';
+import getFrecentGroupsQuery from '../graphql/get_frecent_groups.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
@@ -12,6 +13,16 @@ export default {
 };
 
 const groupFullPath = 'gitlab-org';
+const REQUIRED_PERMISSION = 'readProAiAnalytics';
+
+const groupPermissions = () => ({ __typename: 'GroupPermissions', [REQUIRED_PERMISSION]: true });
+const projectPermissions = () => ({
+  __typename: 'ProjectPermissions',
+  [REQUIRED_PERMISSION]: true,
+});
+
+// Every connection the queries page asks for `pageInfo`, so the mocks answer with a last page.
+const lastPage = { __typename: 'PageInfo', hasNextPage: false, endCursor: null };
 
 const mockProject = (id, name, path) => ({
   __typename: 'Project',
@@ -19,6 +30,7 @@ const mockProject = (id, name, path) => ({
   name,
   fullName: `GitLab.org / ${name}`,
   fullPath: `${groupFullPath}/${path}`,
+  userPermissions: projectPermissions(),
 });
 
 const mockSubgroup = ({ id, name, path, projectsCount = 0, descendantGroupsCount = 0 }) => ({
@@ -27,6 +39,7 @@ const mockSubgroup = ({ id, name, path, projectsCount = 0, descendantGroupsCount
   name,
   fullName: `GitLab.org / ${name}`,
   fullPath: `${groupFullPath}/${path}`,
+  userPermissions: groupPermissions(),
   projectsCount,
   descendantGroupsCount,
 });
@@ -44,6 +57,7 @@ const mockTopLevelGroup = ({ id, name, path, projectsCount = 0, descendantGroups
   name,
   fullName: name,
   fullPath: path,
+  userPermissions: groupPermissions(),
   projectsCount,
   descendantGroupsCount,
 });
@@ -65,6 +79,7 @@ const topLevelProject = ({ id, name, path, group, parent = group }) => ({
   name,
   fullName: `${group.name} / ${name}`,
   fullPath: `${group.fullPath}/${path}`,
+  userPermissions: projectPermissions(),
   namespace: { __typename: 'Group', id: parent.id, name: parent.name, fullPath: parent.fullPath },
 });
 
@@ -98,6 +113,7 @@ const designSystem = {
   name: 'Design system',
   fullName: 'GitLab.org / Frontend / Design system',
   fullPath: `${groupFullPath}/frontend/design-system`,
+  userPermissions: groupPermissions(),
   namespace: {
     __typename: 'Group',
     id: frontend.id,
@@ -130,14 +146,17 @@ const searchProjects = [
 const respondWithGlobalSearch = () => () =>
   Promise.resolve({
     data: {
-      groups: { __typename: 'GroupConnection', nodes: [designSystem] },
-      projects: { __typename: 'ProjectConnection', nodes: searchProjects },
+      groups: { __typename: 'GroupConnection', nodes: [designSystem], pageInfo: lastPage },
+      projects: { __typename: 'ProjectConnection', nodes: searchProjects, pageInfo: lastPage },
     },
   });
 
+// No frecent group, so the picker opens with nothing selected rather than a derived default.
+const respondWithFrecentGroups = () => () => Promise.resolve({ data: { frecentGroups: [] } });
+
 const respondWithTopLevelGroups = (groups) => () =>
   Promise.resolve({
-    data: { groups: { __typename: 'GroupConnection', nodes: groups } },
+    data: { groups: { __typename: 'GroupConnection', nodes: groups, pageInfo: lastPage } },
   });
 
 const respondWithSubgroupProjects =
@@ -151,6 +170,7 @@ const respondWithSubgroupProjects =
           projects: {
             __typename: 'ProjectConnection',
             nodes: projects[fullPath] ?? [],
+            pageInfo: lastPage,
           },
         },
       },
@@ -159,6 +179,7 @@ const respondWithSubgroupProjects =
 const Template = (args, { argTypes }) => ({
   components: { ScopePicker },
   apolloProvider: createMockApollo([
+    [getFrecentGroupsQuery, args.frecentGroupsRequestHandler],
     [getSubgroupProjectsQuery, args.subgroupRequestHandler],
     [getTopLevelGroupsQuery, args.topLevelGroupsRequestHandler],
     [searchNamespacesGlobalQuery, args.globalSearchRequestHandler],
@@ -192,6 +213,7 @@ Default.args = {
   subgroupRequestHandler: respondWithSubgroupProjects(),
   topLevelGroupsRequestHandler: respondWithTopLevelGroups([capsuleCorp, acme, empty]),
   globalSearchRequestHandler: respondWithGlobalSearch(),
+  frecentGroupsRequestHandler: respondWithFrecentGroups(),
   expandedPath: capsuleCorp.fullPath,
 };
 
@@ -206,7 +228,7 @@ EmptyGroup.args = {
         group: {
           __typename: 'Group',
           id: acme.id,
-          projects: { __typename: 'ProjectConnection', nodes: [] },
+          projects: { __typename: 'ProjectConnection', nodes: [], pageInfo: lastPage },
         },
       },
     }),
@@ -222,8 +244,6 @@ SearchResults.args = {
   searchTerm: 'design',
   expandedPath: undefined,
 };
-
-const REQUIRED_PERMISSION = 'readProAiAnalytics';
 
 const restrictGroup = (group) => ({
   ...group,

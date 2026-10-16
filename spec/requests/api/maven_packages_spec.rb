@@ -1466,20 +1466,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
-
-        context 'when the maven_checksum_upload_fast_path flag is disabled' do
-          before do
-            stub_feature_flags(maven_checksum_upload_fast_path: false)
-          end
-
-          it 'verifies the file via the find-or-create path' do
-            expect(::Packages::Maven::FindOrCreatePackageService).to receive(:new).and_call_original
-
-            upload
-
-            expect(response).to have_gitlab_http_status(:no_content)
-          end
-        end
       end
 
       context 'for md5 file' do
@@ -1497,21 +1483,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         context 'with FIPS mode enabled', :fips_mode do
           it 'returns an empty body' do
             expect(::Packages::Maven::FindOrCreatePackageService).not_to receive(:new)
-
-            subject
-
-            expect(response.body).to eq('')
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-
-        context 'when the maven_checksum_upload_fast_path flag is disabled' do
-          before do
-            stub_feature_flags(maven_checksum_upload_fast_path: false)
-          end
-
-          it 'returns an empty body via the find-or-create path' do
-            expect_use_primary
 
             subject
 

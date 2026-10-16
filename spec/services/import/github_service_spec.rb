@@ -331,6 +331,47 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     end
   end
 
+  describe 'refresh credentials' do
+    let(:repository_double) do
+      {
+        name: 'vim',
+        description: 'test',
+        full_name: 'test/vim',
+        clone_url: 'https://github.com/test/vim.git',
+        private: false,
+        has_wiki: false,
+        size: 99
+      }
+    end
+
+    before do
+      stub_application_setting(import_sources: ['github'])
+      allow(Gitlab::GithubImport::Settings).to receive(:new).and_call_original
+      allow(github_importer).to receive_messages(repo: repository_double, authorized?: true)
+      allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
+    end
+
+    it 'stores them in the project import data next to the access token' do
+      result = github_importer.execute(
+        access_params.merge(refresh_token: 'ghr_token', expires_at: 1, refresh_token_expires_at: 2),
+        :github
+      )
+
+      expect(result[:project].import_data.credentials).to include(
+        user: 'ghp_complex-token',
+        refresh_token: 'ghr_token',
+        expires_at: 1,
+        refresh_token_expires_at: 2
+      )
+    end
+
+    it 'stores only the access token for a personal access token' do
+      result = github_importer.execute(access_params, :github)
+
+      expect(result[:project].import_data.credentials.keys).to contain_exactly(:user, :password)
+    end
+  end
+
   def forbidden_token_error
     {
       status: :error,

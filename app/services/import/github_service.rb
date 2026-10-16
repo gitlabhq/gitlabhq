@@ -46,7 +46,7 @@ module Import
         current_user,
         type: provider,
         **access_params
-      ).execute(extra_project_attrs)
+      ).execute(extra_project_attrs.merge(refresh_credentials_attrs(access_params)))
     end
 
     def repo
@@ -85,6 +85,13 @@ module Import
     end
 
     private
+
+    def refresh_credentials_attrs(access_params)
+      credentials = access_params.slice(:refresh_token, :expires_at, :refresh_token_expires_at)
+      return {} if credentials[:refresh_token].blank?
+
+      { import_data: { credentials: credentials } }
+    end
 
     def target_namespaces
       return Namespace unless params[:organization_id].present?
