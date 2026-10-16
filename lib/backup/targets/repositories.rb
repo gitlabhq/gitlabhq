@@ -79,7 +79,10 @@ module Backup
       end
 
       def enqueue_consecutive_snippets
-        snippet_relation.find_each(batch_size: 1000) { |snippet| enqueue_snippet(snippet) }
+        # Snippet content can be up to snippet_size_limit per row; only these columns are needed to locate the repo.
+        snippet_relation.select(:id, :type, :project_id).find_each(batch_size: 1000) do |snippet|
+          enqueue_snippet(snippet)
+        end
       end
 
       def enqueue_project(project)
