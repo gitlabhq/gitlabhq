@@ -8,6 +8,14 @@ require_relative '../../../scripts/lib/assets_sha'
 RSpec.describe AssetsSha, feature_category: :tooling do
   include StubENV
 
+  describe '.assets_impacting_compilation' do
+    it 'includes .browserslistrc, which sets the browsers the assets are compiled for' do
+      files = described_class.send(:assets_impacting_compilation)
+
+      expect(files).to include('.browserslistrc')
+    end
+  end
+
   describe '.sha256_of_assets_impacting_compilation' do
     before do
       # Stub the file list so the digest does not depend on the whole working tree;
