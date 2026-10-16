@@ -65,6 +65,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     end
   end
 
+  describe '#allocate_pipeline_iid?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { command.allocate_pipeline_iid? }
+
+    let(:command) do
+      described_class.new(dry_run: dry_run, linting: linting, origin_ref: project.default_branch_or_main)
+    end
+
+    where(:dry_run, :linting, :result) do
+      false | false | true
+      true  | false | false
+      false | true  | false
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
+
   describe '#ref_exists?' do
     let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
 
