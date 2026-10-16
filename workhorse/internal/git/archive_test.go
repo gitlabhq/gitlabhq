@@ -124,6 +124,17 @@ func TestArchiveInject(t *testing.T) {
 			expectNoStore: true,
 		},
 		{
+			name: "resource exhausted is a non-cacheable 429",
+			sendData: func(t *testing.T) string {
+				addr := startArchiveServer(t, func(_ *gitalypb.GetArchiveRequest, _ gitalypb.RepositoryService_GetArchiveServer) error {
+					return status.Error(codes.ResourceExhausted, "concurrency limit reached")
+				})
+				return archiveSendData(t, addr)
+			},
+			expectedCode:  http.StatusTooManyRequests,
+			expectNoStore: true,
+		},
+		{
 			name: "successful archive",
 			sendData: func(t *testing.T) string {
 				addr := startArchiveServer(t, func(_ *gitalypb.GetArchiveRequest, stream gitalypb.RepositoryService_GetArchiveServer) error {
