@@ -37128,6 +37128,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-mergerequests-authorhuman"></a>`authorHuman` | [`[Boolean!]`](#boolean) | Filter by whether the merge request author is a human user. Bots, service accounts, and other non-human user types are not human. Merge requests with no author count as not authored by a human. |
 | <a id="analytics-mergerequests-authorid"></a>`authorId` | [`[String!]`](#string) | Filter by one or many author Global IDs. |
 | <a id="analytics-mergerequests-authoridnot"></a>`authorIdNot` | [`[String!]`](#string) | Exclude one or many author Global IDs. Merge requests with no author are excluded as well. Maximum is 100. |
 | <a id="analytics-mergerequests-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by merge request creation timestamp. Start of the range. |
@@ -71496,6 +71497,7 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereason-scheduler_failure"></a>`SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |
 | <a id="cijobfailurereason-script_failure"></a>`SCRIPT_FAILURE` | A job that failed due to script failure. |
 | <a id="cijobfailurereason-secrets_manager_access_denied"></a>`SECRETS_MANAGER_ACCESS_DENIED` | A job that failed due to secrets manager access denied. |
+| <a id="cijobfailurereason-secrets_manager_source_not_accessible"></a>`SECRETS_MANAGER_SOURCE_NOT_ACCESSIBLE` | A job that failed due to secrets manager source not accessible. |
 | <a id="cijobfailurereason-secrets_provider_not_found"></a>`SECRETS_PROVIDER_NOT_FOUND` | A job that failed due to secrets provider not found. |
 | <a id="cijobfailurereason-server_timeout_canceling"></a>`SERVER_TIMEOUT_CANCELING` | A job that failed due to server timeout canceling. |
 | <a id="cijobfailurereason-server_timeout_running"></a>`SERVER_TIMEOUT_RUNNING` | A job that failed due to server timeout running. |

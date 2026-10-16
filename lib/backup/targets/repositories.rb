@@ -84,14 +84,17 @@ module Backup
 
       def enqueue_consecutive_snippets
         # Snippet content can be up to snippet_size_limit per row; only these columns are needed to locate the repo.
-        snippet_relation.select(:id, :type, :project_id).find_each(batch_size: 1000) do |snippet|
+        snippet_relation.select(:id, :type, :project_id)
+          .preload({ snippet_repository: :shard }, project: :route)
+          .find_each(batch_size: 1000) do |snippet|
           enqueue_snippet(snippet)
         end
       end
 
       def enqueue_project(project)
         strategy.enqueue(project, Gitlab::GlRepository::PROJECT)
-        strategy.enqueue(project, Gitlab::GlRepository::WIKI)
+        # Project#wiki looks up the first owner, which the backup does not need.
+        strategy.enqueue(Wiki.for_container(project), Gitlab::GlRepository::WIKI)
 
         return unless project.design_management_repository
 
@@ -103,7 +106,7 @@ module Backup
       end
 
       def project_relation
-        scope = Project.includes(:route, :group, :namespace)
+        scope = Project.includes(:route, :group, :namespace, :design_management_repository)
         scope = scope.id_in(ProjectRepository.for_repository_storage(storages).select(:project_id)) if storages.any?
         if paths.any?
           scope = scope.where_full_path_in(paths).or(

@@ -13,7 +13,8 @@ class Gitlab::Ci::Build::AutoRetry
     missing_dependency_failure: 0,
     forward_deployment_failure: 0,
     environment_creation_failure: 0,
-    pipeline_variables_file_missing: 0
+    pipeline_variables_file_missing: 0,
+    secrets_manager_source_not_accessible: 0
   }.freeze
 
   def initialize(build)

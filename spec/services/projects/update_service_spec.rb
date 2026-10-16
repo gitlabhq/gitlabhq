@@ -1533,6 +1533,9 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     subject { described_class.new(project, user).run_auto_devops_pipeline? }
 
     context 'when master contains a .gitlab-ci.yml file' do
+      let(:user) { build_stubbed(:user) }
+      let(:project) { build_stubbed(:project, creator: user, namespace: user.namespace) }
+
       before do
         allow(project).to receive(:has_ci_config_file?).and_return(true)
       end

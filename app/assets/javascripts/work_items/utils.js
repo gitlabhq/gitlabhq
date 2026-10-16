@@ -683,29 +683,27 @@ const combineWidgets = (fullItem, slimItem) => {
 };
 
 /**
- *
  * @param {Object} fullItem - The WorkItem query that has all the data
  * @param {Object} slimItem - The WorkItem query that is leaner to get a faster response
  * @returns {Object} - For each feature key, we return the version that has the most data inside a single object.
  */
 const combineFeatures = (fullItem, slimItem) => {
-  const fullItemFeaturesKeys = fullItem?.features ? Object.keys(fullItem.features) : [];
-  const slimItemFeaturesKeys = slimItem?.features ? Object.keys(slimItem.features) : [];
+  const featureNames = union(
+    Object.keys(fullItem?.features ?? {}),
+    Object.keys(slimItem?.features ?? {}),
+  );
 
-  const featuresUnion = union(fullItemFeaturesKeys, slimItemFeaturesKeys);
-
-  // For each feature, check if the full or slim has more data and use that one.
   return {
-    features: featuresUnion.reduce((acc, featureName) => {
-      const fullItemData = fullItem?.features[featureName] || {};
-      const slimItemData = slimItem?.features[featureName] || {};
+    features: Object.fromEntries(
+      featureNames.map((name) => {
+        const fullData = fullItem?.features?.[name];
+        const slimData = slimItem?.features?.[name];
+        const fullCount = fullData ? Object.keys(fullData).length : 0;
+        const slimCount = slimData ? Object.keys(slimData).length : 0;
 
-      const dataToUse =
-        Object.keys(slimItemData).length > Object.keys(fullItemData).length
-          ? slimItemData
-          : fullItemData;
-      return { ...acc, [featureName]: dataToUse };
-    }, {}),
+        return [name, (slimCount > fullCount ? slimData : fullData) ?? null];
+      }),
+    ),
   };
 };
 

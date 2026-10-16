@@ -10,6 +10,7 @@ class SnippetRepository < ApplicationRecord
   CommitError = Class.new(StandardError)
   InvalidPathError = Class.new(CommitError)
   InvalidSignatureError = Class.new(CommitError)
+  PreReceiveError = Class.new(CommitError)
 
   belongs_to :snippet, inverse_of: :snippet_repository
 
@@ -143,6 +144,8 @@ class SnippetRepository < ApplicationRecord
       InvalidPathError.new('Invalid file name') # To avoid returning the message with the path included
     elsif invalid_signature_error?(err)
       InvalidSignatureError.new(err.message)
+    elsif err.is_a?(Gitlab::Git::PreReceiveError) && err.message.present?
+      PreReceiveError.new(err.message) # Sanitized; #raw_message may contain unsafe hook output.
     else
       CommitError.new(err.message)
     end

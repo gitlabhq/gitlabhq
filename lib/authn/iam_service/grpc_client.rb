@@ -29,7 +29,8 @@ module Authn
         GRPC::Core::StatusCodes::DEADLINE_EXCEEDED => :timeout,
         # IAM answers ABORTED when a transaction loses a write conflict: nothing
         # was applied, and the call is safe to repeat.
-        GRPC::Core::StatusCodes::ABORTED => :conflict
+        GRPC::Core::StatusCodes::ABORTED => :conflict,
+        GRPC::Core::StatusCodes::FAILED_PRECONDITION => :failed_precondition
       }.freeze
 
       TIMEOUT_SECONDS = 5
@@ -51,7 +52,8 @@ module Authn
         delete_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest,
         upsert_oauth_application: ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest,
         revoke_user_client_tokens: ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensRequest,
-        is_revoked: ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceIsRevokedRequest
+        is_revoked: ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceIsRevokedRequest,
+        upsert_oauth_refresh_token: ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensServiceUpsertRequest
       }.freeze
 
       # Only RequestError carries a machine-readable reason; anything else falls back to the class name.
@@ -110,9 +112,13 @@ module Authn
         call(:is_revoked, kwargs).revoked
       end
 
+      def upsert_oauth_refresh_token(**kwargs)
+        call(:upsert_oauth_refresh_token, kwargs)
+      end
+
       private
 
-      def call(method_name, kwargs)
+      def call(method_name, kwargs) # rubocop:disable Metrics/CyclomaticComplexity -- one branch per RPC
         request = REQUEST_TYPES.fetch(method_name).new(**kwargs)
         options = { metadata: metadata }
 
@@ -128,6 +134,7 @@ module Authn
         when :upsert_oauth_application then oauth_clients_stub.upsert_client(request, **options)
         when :revoke_user_client_tokens then oauth_tokens_stub.revoke_user_client_tokens(request, **options)
         when :is_revoked then oauth_tokens_stub.is_revoked(request, **options)
+        when :upsert_oauth_refresh_token then oauth_doorkeeper_refresh_tokens_stub.upsert(request, **options)
         else raise ArgumentError, "Unknown gRPC method: #{method_name}"
         end
       rescue Authn::IamAuthService::ConfigurationError => e
@@ -159,6 +166,12 @@ module Authn
 
       def oauth_tokens_stub
         build_stub(::Gitlab::Iam::Auth::V1::InternalOAuthTokensService::Stub, grpc_address, timeout: @timeout)
+      end
+
+      def oauth_doorkeeper_refresh_tokens_stub
+        build_stub(
+          ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensService::Stub, grpc_address, timeout: @timeout
+        )
       end
 
       def grpc_address

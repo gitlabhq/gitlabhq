@@ -1188,20 +1188,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         authorize_upload_with_token
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_copy_operation_in_maven_packages_upload: false)
-        end
-
-        it 'sends use_final_store_path with false and omits final_store_path_config' do
-          expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
-            satisfy { |kwargs| kwargs[:use_final_store_path] == false && !kwargs.key?(:final_store_path_config) }
-          ).and_call_original
-
-          authorize_upload_with_token
-        end
-      end
     end
 
     def authorize_upload(params = {}, request_headers = headers)

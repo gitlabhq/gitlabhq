@@ -459,6 +459,20 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :observability do
       end
     end
 
+    context 'when the error is a CI config timeout' do
+      let(:exception) do
+        Gitlab::Ci::Config::External::Context::TimeoutError.new(Gitlab::Ci::Config::TIMEOUT_MESSAGE)
+      end
+
+      it 'groups by class and message instead of the stack trace' do
+        track_exception
+
+        expect(sentry_event.fingerprint).to eq(
+          ['Gitlab::Ci::Config::External::Context::TimeoutError', Gitlab::Ci::Config::TIMEOUT_MESSAGE]
+        )
+      end
+    end
+
     context 'when exception is excluded' do
       before do
         stub_const('SubclassRetryError', Class.new(Gitlab::SidekiqMiddleware::RetryError))

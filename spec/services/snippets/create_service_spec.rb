@@ -217,6 +217,16 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
           expect(subject).to be_error
           expect(snippet.errors[:repository]).to eq ['Error creating the snippet']
         end
+
+        context 'when the error is a pre-receive rejection' do
+          let(:error) { SnippetRepository::PreReceiveError.new('Your namespace has exceeded its storage limit') }
+
+          it 'returns the rejection message', :aggregate_failures do
+            expect(subject).to be_error
+            expect(snippet.errors[:repository])
+              .to eq ['Error creating the snippet - Your namespace has exceeded its storage limit']
+          end
+        end
       end
 
       context 'when snippet creation fails' do

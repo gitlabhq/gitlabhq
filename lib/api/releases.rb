@@ -106,6 +106,7 @@ module API
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases' do
         releases = ::ReleasesFinder.new(user_project, current_user, declared_params.slice(:order_by, :sort, :updated_before, :updated_after)).execute
+        include_html_description = declared_params[:include_html_description] == true
 
         # We cache the serialized payload per user in order to avoid repeated renderings.
         # Since the cached result could contain sensitive information,
@@ -115,10 +116,11 @@ module API
           # `current_user` could be absent if the releases are publicly accesible.
           # We should not use `cache_key` for the user because the version/updated_at
           # context is unnecessary here.
-          cache_context: ->(_) { "user:{#{current_user&.id}}" },
+          # The key also carries every option that changes the rendered entity.
+          cache_context: ->(_) { "user:{#{current_user&.id}}:include_html_description:#{include_html_description}" },
           expires_in: 5.minutes,
           current_user: current_user,
-          include_html_description: declared_params[:include_html_description]
+          include_html_description: include_html_description
       end
 
       desc 'Retrieve a release by tag name' do

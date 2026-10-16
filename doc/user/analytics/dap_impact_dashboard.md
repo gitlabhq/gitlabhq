@@ -84,6 +84,9 @@ The **MR cycle time** section displays the following metrics:
 - **Cycle time: Duo-created**: Median and 75th percentile time in days from open to merged for merge requests created by GitLab Duo. Includes the number of merged merge requests.
 - **Cycle time: all other**: Median and 75th percentile time in days from open to merged for merge requests not created by GitLab Duo. Includes the number of merged merge requests.
 
+A merge request is created by GitLab Duo when an Agent Platform session records that it opened the merge request,
+whoever the author is. A merge request that a session was started from, for example to review it, counts as not created by GitLab Duo.
+
 The **Merge request volume** section displays the following metrics:
 
 - **Opened by Duo**: Number of merge requests created by GitLab Duo.

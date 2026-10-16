@@ -1,13 +1,5 @@
 <script>
-import {
-  GlIcon,
-  GlToggle,
-  GlLink,
-  GlButton,
-  GlCard,
-  GlSprintf,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlToggle, GlButton, GlCard } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/ai/settings/components/duo_dependency_bump_profile_modal.vue';
 import projectAutoRemediationProfileQuery from 'ee_else_ce/ai/settings/graphql/queries/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/ai/settings/graphql/mutations/auto_remediation_profile_attach.mutation.graphql';
@@ -15,7 +7,6 @@ import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascad
 import { __, s__ } from '~/locale';
 import {
   amazonQHelpPath,
-  duoFlowHelpPath,
   duoHelpPath,
   ALL_SETTINGS,
   DUO_SAST_VR_WORKFLOW_ENABLED,
@@ -33,14 +24,8 @@ const AUTO_REMEDIATION_PROFILE_VIRTUAL_ID =
 
 export default {
   name: 'GitlabDuoSettings',
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   components: {
-    GlIcon,
     GlToggle,
-    GlSprintf,
-    GlLink,
     GlButton,
     GlCard,
     ProjectSettingRow,
@@ -201,11 +186,6 @@ export default {
       required: false,
       default: false,
     },
-    duoAgentPlatformEnabled: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     dapSessionTrackingAvailable: {
       type: Boolean,
       required: false,
@@ -220,11 +200,6 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
-    },
-    duoReadinessAvailable: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     duoOrbit: {
       type: Object,
@@ -288,18 +263,6 @@ export default {
         Object.keys(this.duoAvailabilityCascadingSettings).length
       );
     },
-    showRemoteFlowsCascadingLock() {
-      return (
-        this.duoRemoteFlowsCascadingSettings?.lockedByAncestor ||
-        this.duoRemoteFlowsCascadingSettings?.lockedByApplicationSetting
-      );
-    },
-    areFoundationalFlowsLocked() {
-      return (
-        this.duoFoundationalFlowsCascadingSettings?.lockedByAncestor ||
-        this.duoFoundationalFlowsCascadingSettings?.lockedByApplicationSetting
-      );
-    },
     showToolApprovalCascadingLock() {
       return (
         this.toolApprovalForSessionLocked &&
@@ -326,12 +289,7 @@ export default {
     // The readiness card replaces the flat Duo/flow toggles. Amazon Q projects keep the old
     // layout: they have no flow settings, so a "run agents here" card would be meaningless.
     showReadinessCard() {
-      return (
-        this.duoReadinessAvailable &&
-        Boolean(this.duoEnabledSetting) &&
-        this.showAllSettings &&
-        !this.amazonQAvailable
-      );
+      return Boolean(this.duoEnabledSetting) && this.showAllSettings && !this.amazonQAvailable;
     },
     showAllSettings() {
       return this.visibleSettings.includes(ALL_SETTINGS);
@@ -418,15 +376,11 @@ export default {
       this.duoDependencyBumpBreakingChangesEnabled = false;
     },
   },
-  duoFlowHelpPath,
   DUO_SAST_VR_WORKFLOW_ENABLED,
   DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
   DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
   i18n: {
-    duoAgentPlatformDisabledTooltip: s__(
-      'DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on.',
-    ),
     otherSettingsHeading: s__('DuoAgentPlatform|Other GitLab Duo settings'),
     otherSettingsSubtitle: s__('DuoAgentPlatform|Additional options for your project.'),
     saveChanges: __('Save changes'),
@@ -530,96 +484,6 @@ export default {
       v-if="duoEnabled && !amazonQAvailable"
       class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5"
     >
-      <!-- Rendered here only while the readiness card is off; the card renders them as rows. -->
-      <project-setting-row
-        v-if="showAllSettings && !showReadinessCard"
-        :label="s__('DuoAgentPlatform|Allow flow execution')"
-        class="gl-mt-5"
-        :help-text="
-          s__('DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project.')
-        "
-      >
-        <template #label-icon>
-          <cascading-lock-icon
-            v-if="showRemoteFlowsCascadingLock"
-            data-testid="duo-flows-cascading-lock-icon"
-            :is-locked-by-group-ancestor="duoRemoteFlowsCascadingSettings.lockedByAncestor"
-            :is-locked-by-application-settings="
-              duoRemoteFlowsCascadingSettings.lockedByApplicationSetting
-            "
-            :ancestor-namespace="duoRemoteFlowsCascadingSettings.ancestorNamespace"
-            class="gl-ml-1"
-          />
-          <gl-icon
-            v-if="!duoAgentPlatformEnabled && !showRemoteFlowsCascadingLock"
-            v-gl-tooltip
-            name="information-o"
-            :title="$options.i18n.duoAgentPlatformDisabledTooltip"
-            class="gl-ml-1"
-            data-testid="duo-remote-flows-dap-disabled-icon"
-          />
-        </template>
-        <gl-toggle
-          v-model="duoRemoteFlowsAvailability"
-          class="gl-mt-2"
-          :disabled="!duoAgentPlatformEnabled || !duoEnabled || showRemoteFlowsCascadingLock"
-          :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
-          label-position="hidden"
-          name="project[project_setting_attributes][duo_remote_flows_enabled]"
-          data-testid="duo-remote-flows-enabled"
-        />
-        <template #help-link>
-          <gl-sprintf :message="s__('DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?')">
-            <template #link="{ content }">
-              <gl-link :href="$options.duoFlowHelpPath" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </template>
-      </project-setting-row>
-      <project-setting-row
-        v-if="showAllSettings && !showReadinessCard"
-        :label="s__('DuoAgentPlatform|Allow foundational flows')"
-        :help-text="
-          s__(
-            'DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project.',
-          )
-        "
-      >
-        <template #label-icon>
-          <cascading-lock-icon
-            v-if="areFoundationalFlowsLocked"
-            data-testid="duo-foundational-flows-cascading-lock-icon"
-            :is-locked-by-group-ancestor="duoFoundationalFlowsCascadingSettings.lockedByAncestor"
-            :is-locked-by-application-settings="
-              duoFoundationalFlowsCascadingSettings.lockedByApplicationSetting
-            "
-            :ancestor-namespace="duoFoundationalFlowsCascadingSettings.ancestorNamespace"
-            class="gl-ml-1"
-          />
-          <gl-icon
-            v-if="!duoAgentPlatformEnabled && !areFoundationalFlowsLocked"
-            v-gl-tooltip
-            name="information-o"
-            :title="$options.i18n.duoAgentPlatformDisabledTooltip"
-            class="gl-ml-1"
-            data-testid="duo-foundational-flows-dap-disabled-icon"
-          />
-        </template>
-        <gl-toggle
-          v-model="duoFoundationalFlowsAvailability"
-          class="gl-mt-2"
-          :disabled="
-            !duoAgentPlatformEnabled ||
-            !duoEnabled ||
-            !duoRemoteFlowsAvailability ||
-            areFoundationalFlowsLocked
-          "
-          :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
-          label-position="hidden"
-          name="project[project_setting_attributes][duo_foundational_flows_enabled]"
-          data-testid="duo-foundational-flows-enabled"
-        />
-      </project-setting-row>
       <project-setting-row
         v-if="showAllSettings"
         :label="s__('AiPowered|Tool approval for sessions')"

@@ -35,7 +35,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
 
         expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+        expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
         expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
           Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:enqueue).with(project_snippet, Gitlab::GlRepository::SNIPPET)
@@ -71,20 +71,27 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
     end
 
     it 'avoids N+1 database queries' do
+      allow(strategy).to receive(:enqueue) do |container, repo_type|
+        repository = repo_type.repository_for(container)
+        [repository.storage, repository.relative_path, repository.gl_project_path]
+      end
+
+      create(:project_snippet, :repository, project: projects.first)
+      create(:personal_snippet, :repository)
+      create(:project, :small_repo, group: create(:group))
+
       control = ActiveRecord::QueryRecorder.new do
         repositories.dump(destination, backup_id)
       end
 
-      create_list(:project, 2, :small_repo)
+      new_projects = create_list(:project, 2, :small_repo)
+      new_projects += create_list(:project, 2, :small_repo, group: create(:group))
+      new_projects.each { |project| create(:project_snippet, :repository, project: project) }
       create_list(:personal_snippet, 2, :repository)
 
-      # Number of expected queries are 2 more than control.count
-      # to account for the queries for project.design_management_repository
-      # for each project.
-      # We are using 2 projects here.
       expect do
         repositories.dump(destination, backup_id)
-      end.not_to exceed_query_limit(control).with_threshold(2)
+      end.not_to exceed_query_limit(control)
     end
 
     it 'loads only the snippet columns needed to locate the repository', :aggregate_failures do
@@ -136,7 +143,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+        expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
         expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
           Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:finish!)
@@ -161,7 +168,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -183,7 +190,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -209,7 +216,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -230,7 +237,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -251,7 +258,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
       expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: %w[default],
         backup_id: backup_id)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-      expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+      expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
       expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
         Gitlab::GlRepository::DESIGN)
       expect(strategy).to have_received(:enqueue).with(project_snippet, Gitlab::GlRepository::SNIPPET)
@@ -336,7 +343,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
         expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+        expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
         expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
           Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:finish!)
@@ -360,7 +367,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -383,7 +390,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -409,7 +416,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
@@ -431,7 +438,7 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
           expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project.wiki, Gitlab::GlRepository::WIKI)
           expect(strategy).to have_received(:enqueue).with(project.design_management_repository,
             Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)

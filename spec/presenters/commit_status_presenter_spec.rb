@@ -50,6 +50,22 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
       end
     end
 
+    context 'when a secret source group is not accessible from the project' do
+      let(:failure_reason) { :secrets_manager_source_not_accessible }
+
+      before do
+        build.failure_reason = failure_reason
+      end
+
+      it 'appends the troubleshooting link' do
+        is_expected.to eq(
+          "#{s_('Job|This job failed to retrieve secrets because a secret source group is not the project group or one of its parent groups.')} " \
+            "<a href=\"#{help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-secret-source-group-is-not-accessible-from-this-project')}\">" \
+            "#{s_('Job|How do I fix it?')}</a>"
+        )
+      end
+    end
+
     context 'when custom error message is available' do
       let_it_be(:project) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }

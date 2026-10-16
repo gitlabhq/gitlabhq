@@ -93,6 +93,52 @@ describe('axios_utils', () => {
     });
   });
 
+  describe('background request header', () => {
+    let userActivity;
+
+    const getBackgroundHeader = async (url, config) => {
+      mock.onGet(url).reply(HTTP_STATUS_OK);
+      await axios.get(url, config);
+
+      return mock.history.get[0].headers[userActivity.BACKGROUND_REQUEST_HEADER];
+    };
+
+    beforeEach(async () => {
+      await setup();
+      userActivity = await import('~/lib/utils/user_activity');
+    });
+
+    it('is not added while the user is active', async () => {
+      userActivity.setLastActivityAtForTestsOnly(performance.now());
+
+      expect(await getBackgroundHeader('/ok')).toBeUndefined();
+    });
+
+    describe('when the user is idle', () => {
+      beforeEach(() => {
+        userActivity.setLastActivityAtForTestsOnly(
+          performance.now() - userActivity.IDLE_THRESHOLD_MS,
+        );
+      });
+
+      it('is added to same-origin requests', async () => {
+        expect(await getBackgroundHeader('/ok')).toBe('1');
+      });
+
+      it('is not added to cross-origin requests', async () => {
+        expect(await getBackgroundHeader('https://other.example.com/ok')).toBeUndefined();
+      });
+
+      it('is not added when baseURL is cross-origin', async () => {
+        mock.onGet('https://other.example.com/ok').reply(HTTP_STATUS_OK);
+
+        expect(
+          await getBackgroundHeader('/ok', { baseURL: 'https://other.example.com' }),
+        ).toBeUndefined();
+      });
+    });
+  });
+
   describe('waitForAll', () => {
     beforeEach(setup);
 

@@ -137,6 +137,31 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
           expect(json_response.map { |h| h['description_html'] })
             .to contain_exactly(instance_of(String), instance_of(String))
         end
+
+        context 'when the releases were cached by a request without include_html_description' do
+          before do
+            get api("/projects/#{project.id}/releases", maintainer)
+          end
+
+          it 'includes description_html field' do
+            get api("/projects/#{project.id}/releases", maintainer), params: { include_html_description: true }
+
+            expect(json_response.map { |h| h['description_html'] })
+              .to contain_exactly(instance_of(String), instance_of(String))
+          end
+        end
+      end
+
+      context 'when the releases were cached by a request with include_html_description' do
+        before do
+          get api("/projects/#{project.id}/releases", maintainer), params: { include_html_description: true }
+        end
+
+        it 'does not include description_html field' do
+          get api("/projects/#{project.id}/releases", maintainer)
+
+          expect(json_response.map { |h| h['description_html'] }).to contain_exactly(nil, nil)
+        end
       end
     end
 
@@ -196,6 +221,18 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         .twice
 
       5.times { get api("/projects/#{project.id}/releases", maintainer) }
+    end
+
+    it 'caches releases with and without description_html separately' do
+      create_list(:release, 2, project: project)
+
+      expect(API::Entities::Release)
+        .to receive(:represent).with(instance_of(Release), any_args)
+        .exactly(4).times
+
+      [{}, { include_html_description: false }, { include_html_description: true }].each do |params|
+        2.times { get api("/projects/#{project.id}/releases", maintainer), params: params }
+      end
     end
 
     it 'increments the cache key when link is updated' do

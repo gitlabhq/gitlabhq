@@ -86,17 +86,12 @@ module API
       end
 
       def maven_upload_authorize_params
-        use_final_store_path = ::Feature.enabled?(:skip_copy_operation_in_maven_packages_upload, user_project)
-
-        params = {
+        {
           has_length: true,
           maximum_size: user_project.actual_limits.maven_max_file_size,
-          use_final_store_path: use_final_store_path
+          use_final_store_path: true,
+          final_store_path_config: { root_hash: user_project.id }
         }
-
-        params[:final_store_path_config] = { root_hash: user_project.id } if use_final_store_path
-
-        params
       end
 
       def find_and_present_package_file(package, file_name, format, params)

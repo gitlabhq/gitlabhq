@@ -19,6 +19,7 @@ title: Merge request analytics
 - `timeToMergeMin`, `timeToMergeMax`, `timeToMergeMean`, and `timeToMergeSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
 - `createdByDuo` filter and dimension, and `acceptanceRate` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/518) in GitLab 19.5.
 - `!=` and `not in` operators on the `state` and `targetBranch` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
+- `authorHuman` filter [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/569) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -41,13 +42,30 @@ For more information, see [multiple groups and projects](_index.md#multiple-grou
 
 Use these fields in the `query` parameter to filter your results.
 
-| Field                              | Name           | Operators                 |
-| ---------------------------------- | -------------- | ------------------------- |
-| [Created at](#created-at)          | `created`      | `=`, `>`, `<`, `>=`, `<=` |
-| [Created by Duo](#created-by-duo)  | `createdByDuo` | `=`, `!=`                 |
-| [Merged at](#merged-at)            | `merged`       | `=`, `>`, `<`, `>=`, `<=` |
-| [State](#state)                    | `state`        | `=`, `!=`, `in`, `not in` |
-| [Target branch](#target-branch)    | `targetBranch` | `=`, `!=`, `in`, `not in` |
+| Field                               | Name           | Operators                 |
+| ----------------------------------- | -------------- | ------------------------- |
+| [Author is human](#author-is-human) | `authorHuman`  | `=`, `!=`                 |
+| [Created at](#created-at)           | `created`      | `=`, `>`, `<`, `>=`, `<=` |
+| [Created by Duo](#created-by-duo)   | `createdByDuo` | `=`, `!=`                 |
+| [Merged at](#merged-at)             | `merged`       | `=`, `>`, `<`, `>=`, `<=` |
+| [State](#state)                     | `state`        | `=`, `!=`, `in`, `not in` |
+| [Target branch](#target-branch)     | `targetBranch` | `=`, `!=`, `in`, `not in` |
+
+### Author is human {#author-is-human}
+
+**Description**: Filter merge requests by whether their author is a human user.
+
+**Allowed value types**:
+
+- `Boolean` (`true` or `false`)
+
+**Notes**:
+
+- Bots, service accounts, and every other non-human user type count as not human.
+  For example, merge requests opened with a project access token or by a GitLab Duo service account count as not human.
+- Merge requests by deleted users, and imported merge requests not yet reassigned to a user, count as not human.
+- Merge requests with no author count as not human.
+- Changes to a user's type can take up to an hour to apply.
 
 ### Created at {#created-at}
 
@@ -70,6 +88,13 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `Boolean` (`true` or `false`)
+
+**Notes**:
+
+- A merge request counts as created by Duo when an Agent Platform session records that it opened the merge request.
+  A merge request that a session was started from, for example to review it, does not count.
+- The author does not affect this filter. Sessions that run in GitLab CI/CD open merge requests as a service account,
+  so to compare against a human baseline, use `authorHuman = true` only with `createdByDuo = false`.
 
 ### Merged at {#merged-at}
 

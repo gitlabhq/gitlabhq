@@ -185,6 +185,21 @@ path = "/gitleaks.toml"
 The `regexes` and `paths` in an allowlist are combined with a logical OR. A finding is ignored if its
 secret matches any of the `regexes`, or its file path matches any of the `paths`.
 
+## Ignore secrets inline
+
+To ignore a secret, add `gss:allow` as a comment to the line that contains the secret.
+The analyzer ignores every secret on that line.
+
+For example:
+
+```ruby
+db_password = "example-password-1234"  # gss:allow
+```
+
+The analyzer also accepts the `gitleaks:allow` comment that the default analyzer uses.
+Secrets you ignored inline before you [migrate from the default analyzer](#migrate-from-the-default-analyzer)
+stay ignored.
+
 ## Migrate from the default analyzer
 
 GitLab Secret Scanning for Source Code replaces the default analyzer in the `secret_detection` job.
@@ -231,7 +246,7 @@ CI/CD variable to `true` in the `secret_detection` job. This variable produces
 a second job artifact named `gl-secret-detection-report.debug.json`, which you
 can download from the job artifacts.
 The debug report contains only the findings suppressed because of confidence.
-It does not include findings suppressed by exclusions (allowlists).
+It does not include findings suppressed by exclusions (allowlists and [inline comments](#ignore-secrets-inline)).
 The vulnerability report is unchanged and still shows only findings at or above
 the minimum confidence level.
 If the variable is not set or is `false`, no debug report is produced. The scanner logs a warning

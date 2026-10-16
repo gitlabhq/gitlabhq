@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssueAssignees from '~/issuable/components/issue_assignees.vue';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemTableCell from '~/work_items/table/components/work_item_table_cell.vue';
+import WorkItemWeightCell from '~/work_items/table/components/work_item_weight_cell.vue';
 import {
   COLUMN_ASSIGNEES,
   COLUMN_CREATED_AT,
@@ -47,7 +48,7 @@ describe('WorkItemTableCell', () => {
   const findTruncatedText = () => wrapper.findComponent(GlTruncate);
   const findLabels = () => wrapper.findAllComponents(GlLabel);
   const findLabel = () => wrapper.findComponent(GlLabel);
-  const findWeight = () => wrapper.findByTestId('cell-weight');
+  const findWeightCell = () => wrapper.findComponent(WorkItemWeightCell);
   const findStartDate = () => wrapper.findByTestId('cell-start-date');
   const findDueDate = () => wrapper.findByTestId('cell-due-date');
 
@@ -183,7 +184,7 @@ describe('WorkItemTableCell', () => {
   });
 
   describe('weight column', () => {
-    describe('when the item has a weight', () => {
+    describe('when the item has a weight widget', () => {
       beforeEach(() => {
         createComponent({
           columnKey: COLUMN_WEIGHT,
@@ -191,21 +192,21 @@ describe('WorkItemTableCell', () => {
         });
       });
 
-      it('renders the weight', () => {
-        expect(findWeight().text()).toBe('5');
+      it('renders the WorkItemWeightCell component', () => {
+        expect(findWeightCell().exists()).toBe(true);
       });
     });
 
-    describe('when the weight is zero', () => {
+    describe('when the item does not have a weight widget', () => {
       beforeEach(() => {
         createComponent({
           columnKey: COLUMN_WEIGHT,
-          item: buildWorkItemNode(1, { widgets: [buildWeightWidget(0)] }),
+          item: buildWorkItemNode(1, { widgets: [] }),
         });
       });
 
-      it('renders the weight rather than an empty cell', () => {
-        expect(findWeight().text()).toBe('0');
+      it('does not render the WorkItemWeightCell component', () => {
+        expect(findWeightCell().exists()).toBe(false);
       });
     });
   });
@@ -283,7 +284,7 @@ describe('WorkItemTableCell', () => {
       ${COLUMN_STATUS}        | ${findStatusBadge}
       ${COLUMN_ASSIGNEES}     | ${findAssignees}
       ${COLUMN_LABELS}        | ${findLabel}
-      ${COLUMN_WEIGHT}        | ${findWeight}
+      ${COLUMN_WEIGHT}        | ${findWeightCell}
       ${COLUMN_MILESTONE}     | ${findMilestone}
       ${COLUMN_ITERATION}     | ${findIteration}
       ${COLUMN_START_DATE}    | ${findStartDate}

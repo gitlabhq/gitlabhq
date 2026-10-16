@@ -17,6 +17,12 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
   let(:packed) { [unpacked].pack('m0') }
   let(:unpacked) { 'unpacked' }
 
+  describe 'partitioning' do
+    it 'derives partition bounds from the merge_request_diffs ID sequence' do
+      expect(described_class.partitioning_strategy.sequence_name).to eq('merge_request_diffs_id_seq')
+    end
+  end
+
   shared_examples 'external diff size guard' do |method_name:, storage_method:|
     before do
       allow(file.merge_request_diff).to receive(:stored_externally?).and_return(true)

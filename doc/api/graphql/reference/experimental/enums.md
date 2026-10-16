@@ -1557,6 +1557,7 @@ Values for sorting CI/CD job analytics.
 | `SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |
 | `SCRIPT_FAILURE` | A job that failed due to script failure. |
 | `SECRETS_MANAGER_ACCESS_DENIED` | A job that failed due to secrets manager access denied. |
+| `SECRETS_MANAGER_SOURCE_NOT_ACCESSIBLE` | A job that failed due to secrets manager source not accessible. |
 | `SECRETS_PROVIDER_NOT_FOUND` | A job that failed due to secrets provider not found. |
 | `SERVER_TIMEOUT_CANCELING` | A job that failed due to server timeout canceling. |
 | `SERVER_TIMEOUT_RUNNING` | A job that failed due to server timeout running. |

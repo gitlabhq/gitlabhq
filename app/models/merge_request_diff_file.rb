@@ -8,7 +8,7 @@ class MergeRequestDiffFile < ApplicationRecord
 
   PARTITION_SIZE = 200_000_000
 
-  partitioned_by :merge_request_diff_id, strategy: :int_range, partition_size: PARTITION_SIZE # rubocop:disable Database/AvoidIntRangePartitioning -- legacy partitioning
+  partitioned_by :merge_request_diff_id, strategy: :int_range, partition_size: PARTITION_SIZE, sequence_name: 'merge_request_diffs_id_seq' # rubocop:disable Database/AvoidIntRangePartitioning -- legacy partitioning
 
   belongs_to :merge_request_diff, inverse_of: :merge_request_diff_files
 

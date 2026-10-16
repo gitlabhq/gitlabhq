@@ -105,7 +105,7 @@ The GitLab Duo analysis runs and results are displayed on the vulnerability deta
 
 {{< details >}}
 
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
 {{< /details >}}
@@ -116,10 +116,6 @@ The GitLab Duo analysis runs and results are displayed on the vulnerability deta
 - [Enabled by default for GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253325) in GitLab 19.4.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can trigger the flow to analyze multiple vulnerabilities for
 false positives.

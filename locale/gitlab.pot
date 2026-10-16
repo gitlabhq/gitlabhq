@@ -32317,9 +32317,6 @@ msgstr ""
 msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by %{initiatorName}"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
-msgstr ""
-
 msgid "DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}"
 msgstr ""
 
@@ -32428,12 +32425,6 @@ msgid "DuoAgentPlatform|All %{count} are required for full agent and flow suppor
 msgstr ""
 
 msgid "DuoAgentPlatform|All steps complete"
-msgstr ""
-
-msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
-msgstr ""
-
-msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute foundational flows in this project."
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow flow execution"
@@ -32853,9 +32844,6 @@ msgid "DuoAgentPlatform|Takes a few seconds..."
 msgstr ""
 
 msgid "DuoAgentPlatform|The repository is empty. Push a first commit, then return here to generate a config file."
-msgstr ""
-
-msgid "DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on."
 msgstr ""
 
 msgid "DuoAgentPlatform|This project doesn't have a repository yet. %{linkStart}Add a repository%{linkEnd} to get started with flows."
@@ -49488,6 +49476,9 @@ msgid "Job|This job could not be executed because upstream bridge project could 
 msgstr ""
 
 msgid "Job|This job failed because the necessary resources were not successfully created."
+msgstr ""
+
+msgid "Job|This job failed to retrieve secrets because a secret source group is not the project group or one of its parent groups."
 msgstr ""
 
 msgid "Job|This job failed to retrieve secrets because it does not have access to GitLab Secrets Manager."
@@ -97466,6 +97457,9 @@ msgstr ""
 msgid "WorkItem|Edit view"
 msgstr ""
 
+msgid "WorkItem|Edit weight"
+msgstr ""
+
 msgid "WorkItem|Edit work item"
 msgstr ""
 
@@ -98012,6 +98006,9 @@ msgstr ""
 msgid "WorkItem|Saving title"
 msgstr ""
 
+msgid "WorkItem|Saving weight"
+msgstr ""
+
 msgid "WorkItem|Search by view name or description"
 msgstr ""
 
@@ -98241,6 +98238,9 @@ msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please 
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the title."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while updating the weight."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."

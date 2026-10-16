@@ -422,6 +422,29 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
       it_behaves_like 'snippet repository with git errors', '../../path/traversal/here', described_class::InvalidPathError
       it_behaves_like 'snippet repository with git errors', 'README', described_class::CommitError
 
+      context 'when a pre-receive check fails' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:raw_message, :fallback_message, :expected_message, :expected_error) do
+          '' | 'Your namespace has exceeded its storage limit' | 'Your namespace has exceeded its storage limit' | described_class::PreReceiveError
+          "GL-HOOK-ERR: Rejected by policy\nsecret internal detail" | 'Prevented by server hooks' | 'Rejected by policy' | described_class::PreReceiveError
+          'internal detail without prefix' | '' | '' | described_class::CommitError
+        end
+
+        with_them do
+          before do
+            error = Gitlab::Git::PreReceiveError.new(raw_message, fallback_message: fallback_message)
+            allow(snippet.repository).to receive(:commit_files).and_raise(error)
+          end
+
+          it 'raises the appropriate error with only the safe message', :aggregate_failures do
+            expect do
+              snippet_repository.multi_files_action(user, data, **commit_opts)
+            end.to raise_error(expected_error, expected_message) { |error| expect(error).to be_an_instance_of(expected_error) }
+          end
+        end
+      end
+
       context 'when user name is invalid' do
         let(:user) { create(:user, name: ',') }
 

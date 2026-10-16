@@ -43,6 +43,7 @@ module Gitlab
             downstream_pipeline_creation_failed: 'downstream pipeline can not be created',
             secrets_provider_not_found: 'secrets provider can not be found',
             secrets_manager_access_denied: 'namespace does not have access to GitLab Secrets Manager',
+            secrets_manager_source_not_accessible: 'secret source group is not accessible from this project',
             reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines',
             reached_max_pipeline_hierarchy_size: 'downstream pipeline tree is too large',
             project_deleted: 'pipeline project was deleted',

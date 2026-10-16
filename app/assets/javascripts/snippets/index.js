@@ -18,12 +18,7 @@ export default function appFactory(el, Component) {
   }
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        batchMax: 1,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   const {

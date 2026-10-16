@@ -6122,7 +6122,7 @@ Use `secrets:gitlab_secrets_manager` to specify secrets from the [GitLab Secrets
 **Supported values**:
 
 - `name`: Name of the secret.
-- `source`: Optional. Source of the secret. Defaults to the current project when not specified. For a group secret, use `group/<full-path-to-group>`.
+- `source`: Optional. Source of the secret. Defaults to the current project when not specified. For a group secret, use `group/<full-path-to-group>`. The group must be the project's group or one of its parent groups.
 
 **Example of `secrets:gitlab_secrets_manager`**:
 

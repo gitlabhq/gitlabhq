@@ -28,6 +28,16 @@ SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE
 LIFETIME(MIN 60 MAX 300)
 LAYOUT(CACHE(SIZE_IN_CELLS 3000000));
 
+CREATE DICTIONARY non_human_users_dict
+(
+    `user_id` Int64,
+    `non_human` Bool DEFAULT false
+)
+PRIMARY KEY user_id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY 'SELECT id, true FROM (\n      SELECT id FROM $DICTIONARY_DATABASE.siphon_users\n      GROUP BY id\n      HAVING argMax(_siphon_deleted, _siphon_replicated_at) = false\n        AND argMax(user_type, _siphon_replicated_at) != 0\n    )'))
+LIFETIME(MIN 300 MAX 3600)
+LAYOUT(HASHED_ARRAY());
+
 CREATE DICTIONARY organization_traversal_paths_dict
 (
     `id` UInt64,

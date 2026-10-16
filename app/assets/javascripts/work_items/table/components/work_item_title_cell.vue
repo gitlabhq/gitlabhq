@@ -3,6 +3,7 @@ import { GlButton, GlFormInput, GlLoadingIcon, GlToastMixin, GlTruncate } from '
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { TITLE_LENGTH_MAX } from '~/issues/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 
@@ -15,7 +16,7 @@ export default {
     GlTruncate,
     WorkItemTypeIcon,
   },
-  mixins: [GlToastMixin],
+  mixins: [GlToastMixin, glFeatureFlagsMixin()],
   props: {
     item: {
       type: Object,
@@ -69,6 +70,7 @@ export default {
               id: this.item.id,
               title: trimmedTitle,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         });
 

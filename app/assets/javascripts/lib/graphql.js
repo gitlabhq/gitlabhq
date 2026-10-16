@@ -22,6 +22,7 @@ import { getOperationFinishedLink } from './apollo/operation_finished_link';
 import { persistenceMapper } from './apollo/persistence_mapper';
 import { sentryBreadcrumbLink } from './apollo/sentry_breadcrumb_link';
 import { correlationIdLink } from './apollo/correlation_id_link';
+import { backgroundRequestLink } from './apollo/background_request_link';
 import { createEtagFetch } from './apollo/etag_fetch';
 
 export const ERROR_POLICY_ALL = 'all';
@@ -313,6 +314,7 @@ function createApolloClient(resolvers = {}, config = {}) {
         ...links,
         getSuppressNetworkErrorsDuringNavigationLink(),
         getInstrumentationLink(),
+        backgroundRequestLink,
         sentryBreadcrumbLink,
         correlationIdLink,
         operationCounterLink,

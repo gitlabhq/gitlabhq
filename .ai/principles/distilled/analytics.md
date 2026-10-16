@@ -1,6 +1,6 @@
 ---
-source_checksum: ec3f75a2ea0fb9bc
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 776b85216a65568b
+distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -34,10 +34,11 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Verify the metric's `status` is correct (`active`, `broken`, or `removed`); ensure `broken` metrics also have a `repair_issue_url`.
 - When using `value_type: object`, ensure a `value_json_schema` is provided; prefer `boolean`, `number`, or `string` value types instead.
 - Prefer `data_source: internal_events` for new metrics; hand off to the Analytics Instrumentation team if `data_source: database` is used.
+- Use `data_source: database` only for metrics that query PostgreSQL alone; `clickhouse` is also a valid `data_source`.
 - DO NOT use deprecated `redis` or `redis_hll` data sources for new metrics; see the [migration guide](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/migration/).
 - Ensure changed or removed metrics have notified `@csops-team`, `@gitlab-data/analytics-engineers`, and `@gitlab-data/product-analysts` via a comment on the issue, and all groups have acknowledged the change.
 - When updating an existing metric, verify the [metric change procedure](https://docs.gitlab.com/development/internal_analytics/metrics/metrics_lifecycle/#change-an-existing-metric) was followed.
-- When a metric uses event selection rules with a `unique` property, verify the value is one of `user.id`, `project.id`, `namespace.id`, or a valid additional property name (e.g. `label`, `property`, `value`, or a custom property).
+- Verify the `unique` value is one of `user.id`, `project.id`, `namespace.id`, or a valid additional property name (e.g. `label`, `property`, `value`, or a custom property) when a metric uses event selection rules with a `unique` property.
 - When a metric uses event selection rules with a `filter`, verify that only additional properties are used for filtering and that filters match exact values (no wildcards or regex).
 - DO NOT mix unique-count and total-count event selection rules within a single aggregated metric definition.
 

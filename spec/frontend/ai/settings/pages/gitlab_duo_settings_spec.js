@@ -10,7 +10,6 @@ const defaultProps = {
   projectId: 123,
   projectFullPath: 'namespace/project',
   duoFeaturesEnabled: true,
-  duoReadinessAvailable: true,
   duoReadiness: { platformEnabled: true },
   amazonQAvailable: false,
   amazonQAutoReviewEnabled: false,
@@ -100,10 +99,6 @@ describe('GitlabDuoSettings', () => {
     wrapper.findByTestId('ai-audit-events-storage-cascading-lock-icon');
   const findGovernanceCard = () => wrapper.findByTestId('duo-governance-info-card-header');
   const findGovernanceLink = () => wrapper.findByTestId('duo-governance-link');
-  const findRemoteFlowsDapDisabledIcon = () =>
-    wrapper.findByTestId('duo-remote-flows-dap-disabled-icon');
-  const findFoundationalFlowsDapDisabledIcon = () =>
-    wrapper.findByTestId('duo-foundational-flows-dap-disabled-icon');
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -114,92 +109,9 @@ describe('GitlabDuoSettings', () => {
     expect(findSaveButton().exists()).toBe(true);
   });
 
-  // The toggles moved into the card, so the flag-off path has to keep rendering them where
-  // they were. Losing them would silently remove two settings from every project.
-  describe('when the readiness card is off', () => {
-    beforeEach(() => {
-      wrapper = createWrapper({ duoReadinessAvailable: false });
-    });
-
-    it('hides the card and keeps the original Duo row', () => {
-      expect(findReadinessBlock().exists()).toBe(false);
-      expect(findDuoSettings().exists()).toBe(true);
-    });
-
-    it('still renders the flow toggles in the flat list', () => {
-      expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
-      expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
-      expect(findDuoRemoteFlowsHiddenInput().exists()).toBe(true);
-    });
-
-    it('does not group the remaining settings under a heading', () => {
-      expect(wrapper.text()).not.toContain('Other GitLab Duo settings');
-    });
-
-    it('hides the local setup section', () => {
-      expect(findLocalSetupSection().exists()).toBe(false);
-    });
-
-    describe('when DAP is disabled at the instance level', () => {
-      beforeEach(() => {
-        wrapper = createWrapper({
-          duoReadinessAvailable: false,
-          duoFeaturesEnabled: true,
-          duoAgentPlatformEnabled: false,
-          initialDuoRemoteFlowsAvailability: true,
-        });
-      });
-
-      it('disables the Allow flow execution toggle', () => {
-        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
-      });
-
-      it('disables the Allow foundational flows toggle', () => {
-        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
-      });
-
-      it('shows the DAP disabled tooltip icon on the Allow flow execution row', () => {
-        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(true);
-      });
-
-      it('shows the DAP disabled tooltip icon on the Allow foundational flows row', () => {
-        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(true);
-      });
-    });
-
-    describe('when DAP is enabled at the instance level', () => {
-      beforeEach(() => {
-        wrapper = createWrapper({
-          duoReadinessAvailable: false,
-          duoFeaturesEnabled: true,
-          duoAgentPlatformEnabled: true,
-          initialDuoRemoteFlowsAvailability: true,
-        });
-      });
-
-      it('does not disable the Allow flow execution toggle', () => {
-        expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(false);
-      });
-
-      it('does not disable the Allow foundational flows toggle', () => {
-        expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(false);
-      });
-
-      it('does not show the DAP disabled tooltip icon on the Allow flow execution row', () => {
-        expect(findRemoteFlowsDapDisabledIcon().exists()).toBe(false);
-      });
-
-      it('does not show the DAP disabled tooltip icon on the Allow foundational flows row', () => {
-        expect(findFoundationalFlowsDapDisabledIcon().exists()).toBe(false);
-      });
-    });
-  });
-
-  describe('when the readiness card is on', () => {
-    it('groups the remaining settings under a heading', () => {
-      expect(findReadinessBlock().exists()).toBe(true);
-      expect(wrapper.text()).toContain('Other GitLab Duo settings');
-    });
+  it('groups the remaining settings under a heading below the readiness card', () => {
+    expect(findReadinessBlock().exists()).toBe(true);
+    expect(wrapper.text()).toContain('Other GitLab Duo settings');
   });
 
   describe('when the Agent Platform is off above the project', () => {

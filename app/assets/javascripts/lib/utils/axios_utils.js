@@ -5,6 +5,7 @@ import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_i
 import setupAxiosStartupCalls from './axios_startup_calls';
 import csrf from './csrf';
 import { isNavigatingAway } from './is_navigating_away';
+import { BACKGROUND_REQUEST_HEADER, isUserIdle } from './user_activity';
 import suppressAjaxErrorsDuringNavigation from './suppress_ajax_errors_during_navigation';
 
 axios.defaults.headers.common[csrf.headerKey] = csrf.token;
@@ -34,8 +35,10 @@ const isSameOrigin = (url, baseURL) => {
 };
 
 // Attributes the request, and any job it enqueues, to the browser client for
-// analytics; Rails reads the browser family from the User-Agent. Same origin
-// only: a third party would have to allow these headers in its CORS preflight.
+// analytics; Rails reads the browser family from the User-Agent. Also tags
+// requests sent while the user is idle, so they do not extend the session.
+// Same origin only: a third party would have to allow these headers in its
+// CORS preflight.
 // Exported for axios.create() instances, which do not inherit interceptors.
 export const addSameOriginHeaders = (config) => {
   if (!isSameOrigin(config.url, config.baseURL)) return config;
@@ -48,6 +51,7 @@ export const addSameOriginHeaders = (config) => {
       ...(gon.current_organization?.id && {
         'X-GitLab-Organization-ID': gon.current_organization.id,
       }),
+      ...(isUserIdle() && { [BACKGROUND_REQUEST_HEADER]: '1' }),
     },
   };
 };

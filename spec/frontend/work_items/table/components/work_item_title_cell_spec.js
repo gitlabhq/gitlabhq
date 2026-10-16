@@ -27,7 +27,11 @@ describe('WorkItemTitleCell', () => {
   const findTitleLink = () => wrapper.findByTestId('work-item-link');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
-  const createComponent = ({ props = {}, mutationHandler = defaultMutationHandler } = {}) => {
+  const createComponent = ({
+    props = {},
+    mutationHandler = defaultMutationHandler,
+    workItemFeaturesField = false,
+  } = {}) => {
     const apolloProvider = createMockApollo([[updateWorkItemMutation, mutationHandler]]);
 
     wrapper = mountExtended(WorkItemTitleCell, {
@@ -35,6 +39,9 @@ describe('WorkItemTitleCell', () => {
       propsData: {
         item,
         ...props,
+      },
+      provide: {
+        glFeatures: { workItemFeaturesField },
       },
       mocks: {
         $toast: mockToast,
@@ -269,6 +276,25 @@ describe('WorkItemTitleCell', () => {
       await nextTick();
 
       expect(mutationHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when work_item_features_field is enabled', () => {
+    it('sends useWorkItemFeatures: true', async () => {
+      createComponent({ workItemFeaturesField: true });
+
+      await findPencilButton().trigger('click');
+      await nextTick();
+
+      await findTitleInput().setValue('Changed title');
+      await nextTick();
+
+      await findTitleInput().trigger('blur');
+      await waitForPromises();
+
+      expect(defaultMutationHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ useWorkItemFeatures: true }),
+      );
     });
   });
 });

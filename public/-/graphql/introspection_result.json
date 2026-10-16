@@ -37982,6 +37982,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "authorHuman",
+                  "description": "Filter by whether the merge request author is a human user. Bots, service accounts, and other non-human user types are not human. Merge requests with no author count as not authored by a human.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Boolean",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "createdAtFrom",
                   "description": "Filter by merge request creation timestamp. Start of the range.",
                   "type": {
@@ -86790,6 +86810,12 @@
             {
               "name": "PIPELINE_VARIABLES_FILE_MISSING",
               "description": "A job that failed due to pipeline variables file missing.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SECRETS_MANAGER_SOURCE_NOT_ACCESSIBLE",
+              "description": "A job that failed due to secrets manager source not accessible.",
               "isDeprecated": false,
               "deprecationReason": null
             }

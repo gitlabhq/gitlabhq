@@ -15,6 +15,9 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   let(:consent_stub) { instance_double(::Gitlab::Iam::Auth::V1::ConsentService::Stub) }
   let(:oauth_clients_stub) { instance_double(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub) }
   let(:oauth_tokens_stub) { instance_double(::Gitlab::Iam::Auth::V1::InternalOAuthTokensService::Stub) }
+  let(:oauth_doorkeeper_refresh_tokens_stub) do
+    instance_double(::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensService::Stub)
+  end
 
   before do
     allow(Authn::IamAuthService).to receive_messages(
@@ -28,6 +31,8 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     allow(::Gitlab::Iam::Auth::V1::ConsentService::Stub).to receive(:new).and_return(consent_stub)
     allow(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub).to receive(:new).and_return(oauth_clients_stub)
     allow(::Gitlab::Iam::Auth::V1::InternalOAuthTokensService::Stub).to receive(:new).and_return(oauth_tokens_stub)
+    allow(::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensService::Stub).to receive(:new)
+      .and_return(oauth_doorkeeper_refresh_tokens_stub)
   end
 
   describe 'gRPC calls' do
@@ -43,6 +48,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       :delete_oauth_application | :delete_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientResponse | { client_id: 'test-client-id' }
       :upsert_oauth_application | :upsert_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceUpsertClientResponse | { client_id: 'test-client-id' }
       :revoke_user_client_tokens | :revoke_user_client_tokens | :oauth_tokens_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthTokensServiceRevokeUserClientTokensResponse | { subject: '42', client_id: 'test-client-id' }
+      :upsert_oauth_refresh_token | :upsert | :oauth_doorkeeper_refresh_tokens_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensServiceUpsertRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensServiceUpsertResponse | { client_id: 'test-client-id' }
       # rubocop:enable Layout/LineLength
     end
 
@@ -157,6 +163,38 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     end
   end
 
+  describe '#upsert_oauth_refresh_token' do
+    let(:signature) { Digest::SHA512.hexdigest('refresh-token') }
+    let(:revoked_at) { Google::Protobuf::Timestamp.new(seconds: Time.current.to_i) }
+    let(:created_at) { Google::Protobuf::Timestamp.new(seconds: 1.day.ago.to_i) }
+
+    it 'forwards every refresh token field on the request', :aggregate_failures do
+      expect(oauth_doorkeeper_refresh_tokens_stub).to receive(:upsert) do |request, **|
+        expect(request.signature).to eq(signature)
+        expect(request.client_id).to eq('client-id')
+        expect(request.subject).to eq('42')
+        expect(request.scopes.to_a).to eq(%w[api read_user])
+        expect(request.revoked_at).to eq(revoked_at)
+        expect(request.created_at).to eq(created_at)
+        expect(request.owning_cell_id).to eq(1)
+        expect(request.source_id).to eq(7)
+
+        ::Gitlab::Iam::Auth::V1::InternalOAuthDoorkeeperRefreshTokensServiceUpsertResponse.new
+      end
+
+      client.upsert_oauth_refresh_token(
+        signature: signature,
+        client_id: 'client-id',
+        subject: '42',
+        scopes: %w[api read_user],
+        revoked_at: revoked_at,
+        created_at: created_at,
+        owning_cell_id: 1,
+        source_id: 7
+      )
+    end
+  end
+
   describe '#accept_login_challenge' do
     it 'sends all expected fields on the request' do
       expect(login_stub).to receive(:accept) do |request, **|
@@ -262,15 +300,16 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
 
     context 'when the gRPC stub raises GRPC::BadStatus' do
       where(:error_class, :expected_reason) do
-        GRPC::Unavailable      | :unavailable
-        GRPC::Unauthenticated  | :unauthenticated
-        GRPC::InvalidArgument  | :invalid_request
-        GRPC::PermissionDenied | :permission_denied
-        GRPC::DeadlineExceeded | :timeout
-        GRPC::Internal         | :unknown
-        GRPC::NotFound         | :not_found
-        GRPC::AlreadyExists    | :already_exists
-        GRPC::Aborted          | :conflict
+        GRPC::Unavailable        | :unavailable
+        GRPC::Unauthenticated    | :unauthenticated
+        GRPC::InvalidArgument    | :invalid_request
+        GRPC::PermissionDenied   | :permission_denied
+        GRPC::DeadlineExceeded   | :timeout
+        GRPC::Internal           | :unknown
+        GRPC::NotFound           | :not_found
+        GRPC::AlreadyExists      | :already_exists
+        GRPC::Aborted            | :conflict
+        GRPC::FailedPrecondition | :failed_precondition
       end
 
       with_them do

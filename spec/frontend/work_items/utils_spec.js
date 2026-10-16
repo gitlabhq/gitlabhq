@@ -956,6 +956,40 @@ describe('combineWorkItemLists', () => {
         ]);
       });
     });
+
+    describe('when a feature is null in full list', () => {
+      it('preserves null instead of converting to empty object', () => {
+        const slimList = [
+          { id: 1, title: 'Incident', features: { labels: { labels: { nodes: [] } } } },
+        ];
+        const fullList = [
+          {
+            id: 1,
+            features: {
+              labels: { labels: { nodes: [] } },
+              weight: null,
+              healthStatus: null,
+            },
+          },
+        ];
+
+        const result = combineWorkItemLists(slimList, fullList, true);
+
+        expect(result).toEqual([
+          {
+            id: 1,
+            title: 'Incident',
+            features: {
+              labels: { labels: { nodes: [] } },
+              weight: null,
+              healthStatus: null,
+            },
+          },
+        ]);
+        expect(result[0].features.weight).toBeNull();
+        expect(result[0].features.healthStatus).toBeNull();
+      });
+    });
   });
 
   describe('with the widget data', () => {

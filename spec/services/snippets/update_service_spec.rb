@@ -299,6 +299,18 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
           expect(response).to be_error
           expect(response.payload[:snippet].errors[:repository].to_sentence).to eq 'Error updating the snippet'
         end
+
+        context 'when the error is a pre-receive rejection' do
+          let(:error) { SnippetRepository::PreReceiveError.new('Your namespace has exceeded its storage limit') }
+
+          it 'returns the rejection message' do
+            response = subject
+
+            expect(response).to be_error
+            expect(response.payload[:snippet].errors[:repository].to_sentence)
+              .to eq 'Error updating the snippet - Your namespace has exceeded its storage limit'
+          end
+        end
       end
 
       it 'returns error if snippet does not have a snippet_repository' do

@@ -29,6 +29,7 @@ import {
   COLUMN_STATUS,
   COLUMN_WEIGHT,
 } from '../constants';
+import WorkItemWeightCell from './work_item_weight_cell.vue';
 
 const MAX_VISIBLE_ASSIGNEES = 3;
 
@@ -40,6 +41,7 @@ export default {
     GlTruncate,
     IssueAssignees,
     IssuableMilestone,
+    WorkItemWeightCell,
     IssueHealthStatus: defineAsyncComponent(
       () => import('ee_component/issues/components/issue_health_status.vue'),
     ),
@@ -93,9 +95,6 @@ export default {
         this.hasScopedLabelsFeature || findLabelsWidget(this.item)?.allowsScopedLabels,
       );
     },
-    weight() {
-      return findWeightWidget(this.item)?.weight;
-    },
     milestone() {
       return findMilestoneWidget(this.item)?.milestone;
     },
@@ -110,6 +109,9 @@ export default {
     },
     healthStatus() {
       return findHealthStatusWidget(this.item)?.healthStatus;
+    },
+    weightWidget() {
+      return findWeightWidget(this.item);
     },
   },
   methods: {
@@ -182,12 +184,10 @@ export default {
     />
   </div>
 
-  <span
-    v-else-if="columnKey === $options.COLUMN_WEIGHT && weight != null"
-    data-testid="cell-weight"
-  >
-    {{ weight }}
-  </span>
+  <work-item-weight-cell
+    v-else-if="columnKey === $options.COLUMN_WEIGHT && weightWidget"
+    :item="item"
+  />
 
   <issuable-milestone
     v-else-if="columnKey === $options.COLUMN_MILESTONE && milestone"

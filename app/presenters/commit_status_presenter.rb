@@ -38,6 +38,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     downstream_pipeline_creation_failed: N_('Job|The downstream pipeline could not be created'),
     secrets_provider_not_found: N_('Job|The secrets provider can not be found. Check your CI/CD variables and try again.'),
     secrets_manager_access_denied: N_('Job|This job failed to retrieve secrets because it does not have access to GitLab Secrets Manager.'),
+    secrets_manager_source_not_accessible: N_('Job|This job failed to retrieve secrets because a secret source group is not the project group or one of its parent groups.'),
     reached_max_descendant_pipelines_depth: N_('Job|You reached the maximum depth of child pipelines'),
     reached_max_pipeline_hierarchy_size: N_('Job|The downstream pipeline tree is too large'),
     project_deleted: N_('Job|The job belongs to a deleted project'),
@@ -103,6 +104,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
       environment_creation_failure: help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter'),
       failed_outdated_deployment_job: help_page_path('ci/environments/deployment_safety.md', anchor: 'prevent-outdated-deployment-jobs'),
       secrets_manager_access_denied: help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-namespace-does-not-have-access-to-gitlab-secrets-manager'),
+      secrets_manager_source_not_accessible: help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-secret-source-group-is-not-accessible-from-this-project'),
       id_token_burned_project_path: help_page_path(
         'ci/secrets/id_token_authentication.md',
         anchor: 'error-id-token-issuance-is-disabled'
