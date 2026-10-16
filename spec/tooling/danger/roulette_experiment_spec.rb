@@ -5,6 +5,11 @@ require_relative '../../../tooling/danger/roulette_experiment'
 
 RSpec.describe Tooling::Danger::RouletteExperiment, feature_category: :tooling do
   describe '.hide_reviewer_column?' do
+    # Ignore the project-level CI variable so the default percent applies.
+    before do
+      stub_env('ROULETTE_HIDE_REVIEWER_COLUMN_PERCENT', nil)
+    end
+
     it 'is deterministic for the same MR iid' do
       result = described_class.hide_reviewer_column?(1234)
 
