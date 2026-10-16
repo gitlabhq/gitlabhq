@@ -1714,15 +1714,24 @@ class MergeRequest < ApplicationRecord
   # skip_locked_lfs_files_check
   def mergeable?(
     check_mergeability_retry_lease: false, skip_rebase_check: false,
-    skip_conflict_check: false, use_cache: true, **mergeable_state_check_params)
-    return false unless mergeable_state?(use_cache: use_cache, **mergeable_state_check_params)
+    skip_conflict_check: false, use_cache: true, check_order: :cheapest_first, **mergeable_state_check_params)
+    return false unless mergeable_state?(use_cache: use_cache, check_order: check_order, **mergeable_state_check_params)
 
     check_mergeability(async: !!@async_mergeability_check, sync_retry_lease: check_mergeability_retry_lease)
     mergeable_git_state?(skip_rebase_check: skip_rebase_check, skip_conflict_check: skip_conflict_check, use_cache: use_cache)
   end
 
-  def self.mergeable_state_checks
-    mergeable_state_checks_by_tier.values.flatten
+  # order - :cheapest_first (default, see .mergeable_state_checks_by_tier) or :likely_to_fail_first
+  # (see .likely_to_fail_first_checks_by_group). Both orders contain every check.
+  def self.mergeable_state_checks(order: :cheapest_first)
+    case order
+    when :cheapest_first
+      mergeable_state_checks_by_tier.values.flatten
+    when :likely_to_fail_first
+      likely_to_fail_first_checks_by_group.values.flatten
+    else
+      raise ArgumentError, "Unknown mergeability check order: #{order}"
+    end
   end
 
   # Checks grouped by cost tier for fail-fast optimization.
@@ -1753,6 +1762,29 @@ class MergeRequest < ApplicationRecord
     }
   end
 
+  # The same checks as .mergeable_state_checks_by_tier, with the ones that usually stop a merge
+  # request from merging first. For callers that mostly evaluate merge requests that cannot merge
+  # yet, like auto-merge. EE adds its checks into each group via override.
+  def self.likely_to_fail_first_checks_by_group
+    {
+      likely_light: [
+        ::MergeRequests::Mergeability::CheckOpenStatusService,
+        ::MergeRequests::Mergeability::CheckDraftStatusService,
+        ::MergeRequests::Mergeability::CheckDiscussionsStatusService
+      ],
+      likely_heavy: [
+        ::MergeRequests::Mergeability::CheckCiStatusService
+      ],
+      light: [
+        ::MergeRequests::Mergeability::CheckMergeTimeService
+      ],
+      heavy: [
+        ::MergeRequests::Mergeability::CheckLfsFileLocksService,
+        ::MergeRequests::Mergeability::CheckCommitsStatusService
+      ]
+    }
+  end
+
   def self.mergeable_git_state_checks
     [
       ::MergeRequests::Mergeability::CheckRebaseStatusService,
@@ -1773,9 +1805,10 @@ class MergeRequest < ApplicationRecord
   # skip_external_status_check
   # skip_requested_changes_check
   # skip_jira_check
-  def mergeable_state?(use_cache: true, **params)
+  # check_order - see .mergeable_state_checks
+  def mergeable_state?(use_cache: true, check_order: :cheapest_first, **params)
     execute_merge_checks(
-      self.class.mergeable_state_checks,
+      self.class.mergeable_state_checks(order: check_order),
       params: params,
       execute_all: false,
       use_cache: use_cache

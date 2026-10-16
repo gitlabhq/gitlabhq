@@ -7,7 +7,7 @@ This deploys a CNG build of the GitLab commit under test onto a job-local
 Six jobs in the existing `test-on-cng` child pipeline run against a Caproni-deployed
 GitLab instance:
 
-- `cng-instance-caproni` (non-blocking) runs `Test::Instance::All` over 10 parallel shards
+- `cng-instance-caproni` (non-blocking) runs `Test::Instance::All`, sharded like `cng-instance`
 - `cng-relative-url-caproni` (non-blocking) runs `Test::Instance::Smoke` against an instance
   served under a `/relative` subpath
 - `cng-registry-caproni` (non-blocking) runs `Test::Integration::Registry`
@@ -17,7 +17,14 @@ GitLab instance:
   inverted, and only when a feature flag definition file changes
 
 The five non-blocking jobs shadow an orchestrator-deployed counterpart and run whenever
-those run.
+those run. Four of them (`cng-instance-caproni`, `cng-relative-url-caproni`,
+`cng-registry-caproni`, and `cng-secrets-manager-caproni`) follow
+[E2E test selection](../../doc/development/testing_guide/end_to_end/test_pipelines.md#e2e-test-pipeline-generate)
+like their counterparts. They run only the selected specs, get their shard count from
+scenario runtime data, and are skipped when none of their specs are selected.
+`cng-oauth-caproni` always runs its full scenario, because its only spec is tagged
+`only: { job: /cng-oauth-caproni/ }`, which the selection dry run reports as pending, so
+following selection would skip the job on every run.
 
 The `-caproni` suffix is transitional. It marks a job that shadows an orchestrator-deployed
 one so the two can run side by side and be compared. A job that replaces its counterpart
@@ -43,6 +50,7 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `caproni.oidc-consumer.yaml` | Opt-in fragment: a second GitLab release, `gitlab-consumer`, that signs in through the first |
 | `caproni.relative-url.yaml` | Opt-in fragment: serves the instance under `QA_RELATIVE_URL_ROOT` |
 | `caproni.openbao.yaml` | Opt-in fragment: OpenBao for `Test::Integration::SecretsManager` |
+| `caproni.coverband.yaml` | Opt-in fragment: sets `COVERBAND_ENABLED` in the GitLab pods for the code paths mapping |
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
 | `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled; also declares the `openbao` database |
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
@@ -55,8 +63,11 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `scripts/save-cluster-logs.sh` | Pod and event log bundle for failure diagnosis |
 
 The CI jobs live in
-[`.gitlab/ci/test-on-cng/caproni.gitlab-ci.yml`](../../.gitlab/ci/test-on-cng/caproni.gitlab-ci.yml),
-and `CAPRONI_VERSION` and `K3D_VERSION` in
+[`.gitlab/ci/test-on-cng/main.gitlab-ci.yml`](../../.gitlab/ci/test-on-cng/main.gitlab-ci.yml),
+next to the jobs they shadow, because E2E test selection only rewrites that file.
+The shared `.caproni-*` templates stay in
+[`.gitlab/ci/test-on-cng/caproni.gitlab-ci.yml`](../../.gitlab/ci/test-on-cng/caproni.gitlab-ci.yml).
+`CAPRONI_VERSION` and `K3D_VERSION` are in
 [`.gitlab/ci/qa-common/variables.gitlab-ci.yml`](../../.gitlab/ci/qa-common/variables.gitlab-ci.yml).
 
 The Ruby scripts are covered by specs in `qa/spec/caproni/`, which `qa:rspec-internal`
@@ -224,6 +235,28 @@ To opt in:
 
 `cng-relative-url-caproni` does this automatically in CI, setting `QA_RELATIVE_URL_ROOT`
 to `/relative`.
+
+## Coverband (opt-in)
+
+`caproni.coverband.yaml` sets `COVERBAND_ENABLED=true` in the GitLab pods through `global.extraEnv`.
+Coverband then records which backend files each E2E test runs, and the suite saves that as the code paths mapping.
+
+To opt in:
+
+1. Export `COVERBAND_ENABLED=true`.
+2. Add this to `caproni.local.yaml`:
+
+   ```yaml
+   extends:
+     - caproni.coverband.yaml
+   ```
+
+3. Run `caproni up`.
+
+In CI, scheduled `master` pipelines set `COVERBAND_ENABLED=true`.
+Only jobs with `E2E_CODE_PATHS_MAPPING: "true"` keep it, which today is `cng-instance-caproni`.
+`export-code-paths-mapping-caproni` merges their mapping files.
+It uploads the result under the `e2e-test-on-cng-caproni` run type.
 
 ## Licensing
 

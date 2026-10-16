@@ -56778,6 +56778,23 @@ Arguments:
 | <a id="orbit-groups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
 | <a id="orbit-groups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 
+##### `Orbit.memberGroups`
+
+The highest group of each group tree where the current user has at least the Reporter role. With `enabled: true`, only the groups that Orbit answers for.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbit-membergroups-enabled"></a>`enabled` | [`Boolean`](#boolean) | Return only groups with Orbit turned on. |
+| <a id="orbit-membergroups-search"></a>`search` | [`String`](#string) | Search query for the group name or full path. |
+
 ### `OrbitAccess`
 
 Orbit access state of a group, or of the instance on GitLab Self-Managed and GitLab Dedicated.
@@ -56915,8 +56932,8 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="orbitnamespace-access"></a>`access` {{< icon name="warning-solid" >}} | [`OrbitAccess`](#orbitaccess) | Introduced in GitLab 19.6. Status: Experiment. Orbit access state of the top-level group. Null for subgroups, projects, and when the user cannot read the Orbit setting of the group. This field can be resolved for at most 10 groups in any single request. |
-| <a id="orbitnamespace-enabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. Indicates whether Orbit is turned on for the group. False for subgroups. Null for projects. |
-| <a id="orbitnamespace-enabledat"></a>`enabledAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. Timestamp when Orbit was turned on for the top-level group. Null for subgroups, projects, when Orbit is off, and when Orbit is not available to the current user. |
+| <a id="orbitnamespace-enabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. Indicates whether Orbit is turned on for the top-level group of the group. Null for projects. |
+| <a id="orbitnamespace-enabledat"></a>`enabledAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. Timestamp when Orbit was turned on for the top-level group of the group. Null for projects, when Orbit is off, and when Orbit is not available to the current user. |
 | <a id="orbitnamespace-indexing"></a>`indexing` {{< icon name="warning-solid" >}} | [`OrbitIndexing`](#orbitindexing) | Introduced in GitLab 19.6. Status: Experiment. Indexing state of the group or project. Null when Orbit is not available to the current user. |
 | <a id="orbitnamespace-indexingstatus"></a>`indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. Null when Orbit is not available to the current user. |
 | <a id="orbitnamespace-itemcounts"></a>`itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. Null when Orbit is not available to the current user. This field can be resolved for only one group or project in any single request. |

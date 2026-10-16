@@ -95,6 +95,9 @@ or `app/graphql/queries/`. Check the following for N+1 query risk.
 - Use the performance bar or `development.log` locally to spot unexpected query counts before
   opening the MR.
 
+For guidance on writing performant queries and fragments, see
+[query performance](../fe_guide/graphql.md#query-performance) in the frontend GraphQL guide.
+
 ### Use appropriate types
 
 For example:

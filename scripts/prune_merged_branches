@@ -27,6 +27,21 @@ deleted = 0
 branches.each do |branch|
   puts 'Checking 👀:'.white + " #{branch}".blue
 
+  # A branch with no commits ahead of master is already merged (or empty), even
+  # when no merged MR is discoverable by its source-branch name (renamed branch,
+  # squashed MR, or a stale branch left pointing at a master merge commit).
+  #
+  if system('git', 'merge-base', '--is-ancestor', branch, 'origin/master', out: File::NULL, err: File::NULL)
+    `git branch -D #{branch} 2>&1`
+
+    if $?.exitstatus == 0
+      puts 'Deleting ✅:'.white + " #{branch}".red + ' (in master)'.white
+      deleted += 1
+    end
+
+    next
+  end
+
   output = `glab mr list -s #{branch} -F=json -M 2>/dev/null`
   if $?.exitstatus != 0
     puts 'API Error:'.red + " #{output.inspect}".white

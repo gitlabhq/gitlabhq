@@ -159,9 +159,10 @@ gitlab:
       requests:
         cpu: 1200m
         memory: 2Gi
+      # Coverage recording adds ~120Mi; a 2Gi cap restarts sidekiq mid-run
       limits:
         cpu: 1200m
-        memory: 2Gi
+        memory: 2304Mi
     hpa:
       cpu:
         targetType: Utilization

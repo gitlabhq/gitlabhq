@@ -1066,6 +1066,35 @@ RSpec.describe UsersController, feature_category: :user_management do
         end
       end
     end
+
+    describe 'pagination' do
+      let(:author) { public_user }
+      let(:format) { :json }
+      let(:per_page_limit) { 2 }
+
+      let(:other_starred_projects) { create_list(:project, per_page_limit, :public) }
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(per_page_limit)
+
+        other_starred_projects.each { |starred| author.toggle_star(starred) }
+      end
+
+      it 'splits starred projects across pages', :aggregate_failures do
+        get user_starred_projects_url(author.username, format: format)
+
+        first_page = assigns(:starred_projects)
+        expect(first_page.size).to eq(per_page_limit)
+        expect(first_page.total_pages).to eq(2)
+        expect(json_response['html']).to include('data-testid="kaminari-pagination-next"')
+
+        get user_starred_projects_url(author.username, format: format, page: 2)
+
+        second_page = assigns(:starred_projects)
+        expect(second_page.size).to eq(1)
+        expect(first_page.to_a + second_page.to_a).to match_array([project, *other_starred_projects])
+      end
+    end
   end
 
   describe 'GET #snippets' do

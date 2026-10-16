@@ -45,6 +45,10 @@ class Route < ApplicationRecord
     by_paths([path]).joins(:namespace).pick(Arel.sql('namespaces.traversal_ids[1]'))
   end
 
+  def self.namespace_ids_matching(query, within:)
+    for_routable_type(Namespace.name).where(source_id: within).fuzzy_search(query, [:path, :name]).select(:source_id)
+  end
+
   def rename_descendants
     return unless saved_change_to_path? || saved_change_to_name?
 

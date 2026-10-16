@@ -42,6 +42,16 @@ RSpec.shared_context 'with API work items shared helpers' do
       raise ArgumentError, "Unsupported namespace: #{namespace.inspect}"
     end
   end
+
+  # Settle one-time lazy writes for the requesting user before an N+1 baseline, so they
+  # don't leak into the measured request. user_preference auto-builds an unsaved record,
+  # and the last_activity_on write is throttled, so a warm-up request is not deterministic.
+  # user.reset syncs in-memory attributes that may be stale from a prior rolled-back example.
+  def settle_user_lazy_writes(user)
+    user.reset
+    user.user_preference.save! unless user.user_preference.persisted?
+    user.update_column(:last_activity_on, Date.today) unless user.last_activity_on == Date.today # rubocop:disable Rails/Date -- parity with Users::ActivityService
+  end
 end
 
 RSpec.shared_examples 'work item pagination' do
@@ -195,6 +205,7 @@ RSpec.shared_examples 'work item listing payload' do
         'web_url' => Gitlab::Routing.url_helpers.user_url(primary_work_item.author),
         'web_path' => Gitlab::Routing.url_helpers.user_path(primary_work_item.author)
       ),
+      'closed_by' => nil,
       'work_item_type' => a_hash_including(
         'name' => primary_work_item.work_item_type.name,
         'icon_name' => primary_work_item.work_item_type.icon_name)
@@ -230,6 +241,8 @@ RSpec.shared_examples 'avoids N+1 queries' do
     create(:timelog, issue: secondary_work_item, user: timelog_user, time_spent: 1800)
 
     primary_work_item.update_columns(last_edited_by_id: editor.id, last_edited_at: 2.days.ago)
+
+    settle_user_lazy_writes(user)
   end
 
   it 'avoids N+1 queries when requesting feature-only and full payload responses' do
@@ -272,18 +285,7 @@ RSpec.shared_examples 'work item N+1 query prevention' do
   let(:request_params) { { fields: 'reference,web_url', features: 'labels,milestone' } }
 
   before do
-    # Settle one-time lazy writes before the baseline so they don't skew the N+1 count.
-    # Sync the shared let_it_be user with the DB first: its in-memory attributes can be
-    # stale (e.g. last_activity_on carried over from a prior example whose DB write rolled
-    # back), which would make the guards below skip settling and leak the write into baseline.
-    user.reset
-
-    # `user.user_preference` auto-builds an unsaved record, so guard on persistence, not presence.
-    user.user_preference.save! unless user.user_preference.persisted?
-
-    # Must match Users::ActivityService, which compares against and writes Date.today (not zone-aware);
-    # using Time.zone.today could differ near a day boundary and let the activity write leak into baseline.
-    user.update_column(:last_activity_on, Date.today) unless user.last_activity_on == Date.today # rubocop:disable Rails/Date -- intentional parity with Users::ActivityService
+    settle_user_lazy_writes(user)
 
     2.times do
       work_item_label = create_label_for_namespace(namespace_record)

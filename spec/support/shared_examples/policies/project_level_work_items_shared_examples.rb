@@ -148,7 +148,7 @@ RSpec.shared_examples 'prevents access to project-level {issues|work_items} with
     let(:abilities) { factory == :work_item ? issue_permissions.append(*work_item_permissions) : issue_permissions }
 
     it "does not allow anonymous any access to the #{factory}" do
-      expect(permissions(nil, with_epic_type)).to be_disallowed(*abilities)
+      expect(described_class.new(nil, with_epic_type)).to be_disallowed(*abilities)
     end
 
     where(role: %w[guest planner reporter owner admin assignee author support_bot])
@@ -157,7 +157,7 @@ RSpec.shared_examples 'prevents access to project-level {issues|work_items} with
       let(:current_user) { public_send(role) }
 
       it "does not allow user any access to the #{factory}" do
-        expect(permissions(current_user, with_epic_type)).to be_disallowed(*abilities)
+        expect(described_class.new(current_user, with_epic_type)).to be_disallowed(*abilities)
       end
     end
   end

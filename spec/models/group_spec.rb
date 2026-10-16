@@ -2540,6 +2540,26 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with memberships in both the group and its parent' do
+      let_it_be(:parent) { create(:group, :private) }
+      let_it_be(:subgroup) { create(:group, :private, parent: parent) }
+      let_it_be(:user) { create(:user) }
+
+      it 'returns the higher access level when it is held in the parent' do
+        parent.add_maintainer(user)
+        subgroup.add_guest(user)
+
+        expect(subgroup.max_member_access_for_user(user)).to eq(Gitlab::Access::MAINTAINER)
+      end
+
+      it 'returns the higher access level when it is held in the subgroup' do
+        parent.add_guest(user)
+        subgroup.add_owner(user)
+
+        expect(subgroup.max_member_access_for_user(user)).to eq(Gitlab::Access::OWNER)
+      end
+    end
+
     context 'evaluating admin access level' do
       let_it_be(:admin) { create(:admin) }
 

@@ -10,7 +10,7 @@ module WriteLocalConfig
   module_function
 
   # Deployment variation lives in the fragments, so this only has to pick them
-  def build(domain:, relative_url_root: nil, qa_scenario: nil)
+  def build(domain:, relative_url_root: nil, qa_scenario: nil, coverband_enabled: nil)
     fragments = []
 
     if qa_scenario == 'Test::Integration::OAuth'
@@ -21,6 +21,7 @@ module WriteLocalConfig
 
     fragments << 'caproni.openbao.yaml' if qa_scenario == 'Test::Integration::SecretsManager'
     fragments << 'caproni.relative-url.yaml' unless relative_url_root.to_s.empty?
+    fragments << 'caproni.coverband.yaml' if coverband_enabled == 'true'
 
     config = { 'variables' => { 'BASE_DOMAIN' => domain } }
     config['extends'] = fragments unless fragments.empty?
@@ -37,7 +38,8 @@ module WriteLocalConfig
     yaml = build(
       domain: domain,
       relative_url_root: ENV['QA_RELATIVE_URL_ROOT'],
-      qa_scenario: ENV['QA_SCENARIO']
+      qa_scenario: ENV['QA_SCENARIO'],
+      coverband_enabled: ENV['COVERBAND_ENABLED']
     ).to_yaml
     File.write(path, yaml)
 

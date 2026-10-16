@@ -83,6 +83,26 @@ RSpec.describe API::Entities::WorkItemBasic, feature_category: :team_planning do
       end
     end
 
+    context 'when exposing closed_by' do
+      let(:fields) { [:closed_by] }
+
+      context 'when the work item was closed by a user' do
+        let(:closer) { create(:user) }
+        let(:represented_work_item) { create(:work_item, :closed, project: project, closed_by: closer) }
+
+        it 'exposes the closer using the work item user entity' do
+          expect(representation[:closed_by]).to include(id: closer.id, username: closer.username)
+        end
+      end
+
+      context 'when the work item has no closer' do
+        it 'exposes closed_by as an explicit nil' do
+          expect(representation).to have_key(:closed_by)
+          expect(representation[:closed_by]).to be_nil
+        end
+      end
+    end
+
     context 'when exposing the create note email' do
       let(:fields) { [:create_note_email] }
 

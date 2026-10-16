@@ -34,6 +34,13 @@ RSpec.describe WriteLocalConfig do
         .to include('extends' => ['caproni.openbao.yaml'])
     end
 
+    it 'extends the Coverband fragment only when Coverband is enabled' do
+      expect(described_class.build(domain: domain, coverband_enabled: 'true'))
+        .to include('extends' => ['caproni.coverband.yaml'])
+      expect(described_class.build(domain: domain, coverband_enabled: 'false'))
+        .not_to have_key('extends')
+    end
+
     it 'extends every fragment a job opted into' do
       config = described_class.build(
         domain: domain, relative_url_root: '/relative', qa_scenario: 'Test::Integration::OAuth'

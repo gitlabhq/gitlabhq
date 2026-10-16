@@ -45,6 +45,11 @@ module API
             using: ::API::Entities::WorkItems::Author,
             documentation: { type: 'Entities::WorkItems::Author' }
 
+          expose_field :closed_by,
+            using: ::API::Entities::WorkItems::Author,
+            documentation: { type: 'Entities::WorkItems::Author' },
+            expose_nil: true
+
           expose_field :work_item_type, as: :work_item_type, using: ::API::Entities::WorkItems::Type,
             documentation: { type: 'Entities::WorkItems::Type' },
             expose_nil: true do |work_item, _options|

@@ -339,6 +339,10 @@ The following are a list of tools to help you to optimize your GraphQL code:
 
 ## How to see N+1 problems in development
 
+Frontend-only `.graphql` changes can introduce N+1 problems too. For what to look for in a
+`.graphql` diff, see [query performance](fe_guide/graphql.md#query-performance) in the frontend
+GraphQL guide.
+
 N+1 problems can be discovered during development of a feature by:
 
 - Tailing `development.log` while you execute GraphQL queries that return collections of data.

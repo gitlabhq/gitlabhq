@@ -305322,6 +305322,91 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "memberGroups",
+              "description": "The highest group of each group tree where the current user has at least the Reporter role. With `enabled: true`, only the groups that Orbit answers for.",
+              "args": [
+                {
+                  "name": "enabled",
+                  "description": "Return only groups with Orbit turned on.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "search",
+                  "description": "Search query for the group name or full path.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "GroupConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -306371,7 +306456,7 @@
             },
             {
               "name": "enabled",
-              "description": "Indicates whether Orbit is turned on for the group. False for subgroups. Null for projects. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Indicates whether Orbit is turned on for the top-level group of the group. Null for projects. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -306383,7 +306468,7 @@
             },
             {
               "name": "enabledAt",
-              "description": "Timestamp when Orbit was turned on for the top-level group. Null for subgroups, projects, when Orbit is off, and when Orbit is not available to the current user. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Timestamp when Orbit was turned on for the top-level group of the group. Null for projects, when Orbit is off, and when Orbit is not available to the current user. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

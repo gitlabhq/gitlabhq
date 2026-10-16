@@ -357,6 +357,70 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
         put api(note_path.call(comment.id), personal_access_token: pat), params: { body: 'Updated body' }
       end
     end
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :update_note do
+      let(:request) do
+        put api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/notes/#{comment.id}",
+          personal_access_token: pat), params: { body: 'Updated body' }
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/-/work_items/:work_item_iid/notes/:note_id' do
+    include_context 'for deleting a note on a project work item'
+
+    let(:note_path) do
+      ->(note_id, work_item_iid: work_item.iid) do
+        "/projects/#{project.id}/-/work_items/#{work_item_iid}/notes/#{note_id}"
+      end
+    end
+
+    it_behaves_like 'a work item endpoint deleting a note'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_note, expected_success_status: :no_content do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api(note_path.call(comment.id), personal_access_token: pat)
+      end
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns forbidden' do
+        expect { delete api(note_path.call(comment.id), oauth_access_token: oauth_token) }
+          .not_to change { Note.exists?(comment.id) }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe 'DELETE /namespaces/:id/-/work_items/:work_item_iid/notes/:note_id' do
+    include_context 'for deleting a note on a project work item'
+
+    let(:note_path) do
+      ->(note_id, work_item_iid: work_item.iid) do
+        "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items/#{work_item_iid}/" \
+          "notes/#{note_id}"
+      end
+    end
+
+    it_behaves_like 'a work item endpoint deleting a note'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_note, expected_success_status: :no_content do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api(note_path.call(comment.id), personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :delete_note do
+      let(:request) do
+        delete api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/notes/#{comment.id}",
+          personal_access_token: pat)
+      end
+    end
   end
 
   describe 'POST /projects/:id/-/work_items/:work_item_iid/notes' do

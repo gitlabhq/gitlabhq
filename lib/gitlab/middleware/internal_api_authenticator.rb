@@ -49,7 +49,7 @@ module Gitlab
         {
           description: 'Org Mover',
           patterns: [%r{\A/api/v4/internal/org_mover/}],
-          verifier: :verify_shell
+          verifier: :verify_org_mover
         },
         {
           description: 'Error Tracking Service',
@@ -135,6 +135,11 @@ module Gitlab
       rescue StandardError => e
         log_auth_failure_info(e)
         false
+      end
+
+      # No rescue: a key file error raises, so it 500s and gets tracked as an error.
+      def verify_org_mover
+        !!::Gitlab::OrgMover::Authenticator.verify_api_request(headers)
       end
 
       def verify_shell_or_workhorse

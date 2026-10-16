@@ -77,8 +77,8 @@
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     GIT_STRATEGY: "none"
   before_script:
-    # Coverband is off here; exported because pipeline variables outrank job ones
-    - export COVERBAND_ENABLED=false
+    # Opting in only keeps the schedule's value; export beats pipeline variables
+    - if [ "${E2E_CODE_PATHS_MAPPING}" != "true" ]; then export COVERBAND_ENABLED=false; fi
     - source $CI_PROJECT_DIR/scripts/utils.sh
     - |
       section_start "install_tools" "Installing caproni and k3d"

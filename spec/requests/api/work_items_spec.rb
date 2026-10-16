@@ -210,6 +210,45 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         end
       end
 
+      describe 'closed_by field' do
+        let_it_be(:closer_1, freeze: false) { create(:user) }
+        let_it_be(:closer_2, freeze: false) { create(:user) }
+        let_it_be(:closed_work_item, freeze: false) do
+          create(:work_item, :closed, project: project, closed_by: closer_1)
+        end
+
+        let_it_be(:other_closed_work_item, freeze: false) do
+          create(:work_item, :closed, project: project, closed_by: closer_2)
+        end
+
+        let(:request_params) { { fields: 'closed_by' } }
+        let(:api_path) { "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items" }
+
+        it 'returns the closer and avoids N+1 queries', :aggregate_failures do
+          settle_user_lazy_writes(user)
+
+          # Warm-up request: primes once-per-process memoized queries so the control below
+          # records steady-state query counts, not first-hit noise.
+          get api(api_path, user), params: request_params
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api(api_path, user), params: request_params
+          end
+
+          create(:work_item, :closed, project: project, closed_by: create(:user))
+
+          expect { get api(api_path, user), params: request_params }.not_to exceed_query_limit(control)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(work_item_json_for(closed_work_item)['closed_by']).to include(
+            'id' => closer_1.id, 'username' => closer_1.username
+          )
+          expect(work_item_json_for(other_closed_work_item)['closed_by']).to include(
+            'id' => closer_2.id, 'username' => closer_2.username
+          )
+        end
+      end
+
       describe 'development feature' do
         let_it_be(:closing_work_item, freeze: false) { create(:work_item, project: project) }
         let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }

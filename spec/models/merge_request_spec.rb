@@ -6269,6 +6269,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
   describe '#mergeable_state?' do
     it_behaves_like 'for mergeable_state'
+
+    context 'with a check order' do
+      let(:merge_request) { build_stubbed(:merge_request) }
+
+      it 'runs the checks in that order' do
+        expect_next_instance_of(MergeRequests::Mergeability::RunChecksService) do |service|
+          expect(service).to receive(:execute)
+            .with(described_class.mergeable_state_checks(order: :likely_to_fail_first), execute_all: false, use_cache: true)
+            .and_return(ServiceResponse.success)
+        end
+
+        expect(merge_request.mergeable_state?(check_order: :likely_to_fail_first)).to be(true)
+      end
+    end
   end
 
   describe "#public_merge_status" do
@@ -11293,10 +11307,59 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.likely_to_fail_first_checks_by_group' do
+    it 'returns groups in order: likely_light, likely_heavy, light, heavy' do
+      group_keys = described_class.likely_to_fail_first_checks_by_group.keys
+      expect(group_keys).to eq(%i[likely_light likely_heavy light heavy])
+    end
+
+    it 'includes CE checks in the expected groups' do
+      groups = described_class.likely_to_fail_first_checks_by_group
+
+      expect(groups[:likely_light]).to include(
+        ::MergeRequests::Mergeability::CheckOpenStatusService,
+        ::MergeRequests::Mergeability::CheckDraftStatusService,
+        ::MergeRequests::Mergeability::CheckDiscussionsStatusService
+      )
+      expect(groups[:likely_heavy]).to include(
+        ::MergeRequests::Mergeability::CheckCiStatusService
+      )
+      expect(groups[:light]).to include(
+        ::MergeRequests::Mergeability::CheckMergeTimeService
+      )
+      expect(groups[:heavy]).to include(
+        ::MergeRequests::Mergeability::CheckLfsFileLocksService,
+        ::MergeRequests::Mergeability::CheckCommitsStatusService
+      )
+    end
+
+    it 'contains the same checks as the tiers' do
+      expect(described_class.likely_to_fail_first_checks_by_group.values.flatten)
+        .to match_array(described_class.mergeable_state_checks_by_tier.values.flatten)
+    end
+  end
+
   describe '.mergeable_state_checks' do
+    let(:cheapest_first) { described_class.mergeable_state_checks_by_tier.values.flatten }
+
     it 'returns all checks flattened in tier order' do
-      expected = described_class.mergeable_state_checks_by_tier.values.flatten
-      expect(described_class.mergeable_state_checks).to eq(expected)
+      expect(described_class.mergeable_state_checks).to eq(cheapest_first)
+    end
+
+    it 'returns the likely-to-fail checks first for :likely_to_fail_first' do
+      expect(described_class.mergeable_state_checks(order: :likely_to_fail_first))
+        .to eq(described_class.likely_to_fail_first_checks_by_group.values.flatten)
+    end
+
+    it 'contains every check exactly once in each order' do
+      likely_to_fail_first = described_class.mergeable_state_checks(order: :likely_to_fail_first)
+
+      expect(likely_to_fail_first).to match_array(cheapest_first)
+      expect(likely_to_fail_first).to eq(likely_to_fail_first.uniq)
+    end
+
+    it 'raises for an unknown order' do
+      expect { described_class.mergeable_state_checks(order: :unknown) }.to raise_error(ArgumentError)
     end
   end
 

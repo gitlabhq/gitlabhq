@@ -35,6 +35,7 @@ module API
 
         FIELD_PRELOADS = {
           author: [:author],
+          closed_by: [:closed_by],
           duplicated_to_work_item_url: [:duplicated_to],
           moved_to_work_item_url: [:moved_to],
           promoted_to_epic_url: [:work_item_transition],

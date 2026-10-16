@@ -2694,13 +2694,13 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to delete %{itemType} %{name}?"
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will also be disabled from any projects in this group."
+msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will no longer work for any projects in this group."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable agent %{name}? The agent will no longer work in this project."
 msgstr ""
 
-msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will also be disabled from any projects in this group."
+msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will no longer work for any projects in this group."
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow, its service account, and any associated triggers will no longer work in this project."
@@ -2818,6 +2818,9 @@ msgid "AICatalog|Connect Model Context Protocol servers to extend this agent wit
 msgstr ""
 
 msgid "AICatalog|Connects to an AI model provider outside GitLab."
+msgstr ""
+
+msgid "AICatalog|Contact a maintainer of %{groupName} to disable"
 msgstr ""
 
 msgid "AICatalog|Contact maintainer to disable"
@@ -2977,6 +2980,9 @@ msgid "AICatalog|Enable %{itemType} in your project"
 msgstr ""
 
 msgid "AICatalog|Enable experiment and beta features in admin settings to use this tool."
+msgstr ""
+
+msgid "AICatalog|Enabled by %{groupName}"
 msgstr ""
 
 msgid "AICatalog|Enabled in all projects."
@@ -3145,6 +3151,9 @@ msgid "AICatalog|GitLab-managed"
 msgstr ""
 
 msgid "AICatalog|GitLab-managed external agents"
+msgstr ""
+
+msgid "AICatalog|Go to %{groupName} to disable"
 msgstr ""
 
 msgid "AICatalog|Go to %{itemType} settings"
@@ -31775,6 +31784,9 @@ msgstr ""
 msgid "Disable for all"
 msgstr ""
 
+msgid "Disable for all projects"
+msgstr ""
+
 msgid "Disable inviting new members to group or project by group/project owners or project maintainers"
 msgstr ""
 
@@ -59691,6 +59703,9 @@ msgstr ""
 msgid "Orbit|Ask an Owner of %{group} to turn on Orbit."
 msgstr ""
 
+msgid "Orbit|Ask an Owner of the top-level group to turn on Orbit."
+msgstr ""
+
 msgid "Orbit|Automatic indexing is on, so Orbit turns on again for this group within an hour. To keep Orbit off, exclude the group from automatic indexing."
 msgid_plural "Orbit|Automatic indexing is on, so Orbit turns on again for these groups within an hour. To keep Orbit off, exclude the groups from automatic indexing."
 msgstr[0] ""
@@ -60183,6 +60198,9 @@ msgstr ""
 msgid "Orbit|No groups match \"%{search}\""
 msgstr ""
 
+msgid "Orbit|No groups yet"
+msgstr ""
+
 msgid "Orbit|No indexed symbols in this file. If this project was added to Orbit recently, indexing might still be in progress."
 msgstr ""
 
@@ -60268,9 +60286,6 @@ msgid "Orbit|Orbit indexes the group, its subgroups, and projects. Indexing can 
 msgstr ""
 
 msgid "Orbit|Orbit indexes top-level groups. Create a group to start."
-msgstr ""
-
-msgid "Orbit|Orbit indexes top-level groups. The top-level groups you are a member of show here."
 msgstr ""
 
 msgid "Orbit|Orbit is available"
@@ -60471,10 +60486,10 @@ msgstr ""
 msgid "Orbit|See the Orbit state of every top-level group, and turn Orbit on or off."
 msgstr ""
 
-msgid "Orbit|See the Orbit state of your top-level groups, and turn Orbit on or off."
+msgid "Orbit|See the Orbit state of your groups, and turn Orbit on or off."
 msgstr ""
 
-msgid "Orbit|See the Orbit state of your top-level groups. Owners of each group turn Orbit on or off."
+msgid "Orbit|See the Orbit state of your groups. Owners of each top-level group turn Orbit on or off."
 msgstr ""
 
 msgid "Orbit|Select %{group}"
@@ -60568,6 +60583,9 @@ msgid "Orbit|The group gets %{credits} for Orbit, valid for %{days}."
 msgstr ""
 
 msgid "Orbit|The group starts a free trial of Orbit."
+msgstr ""
+
+msgid "Orbit|The groups where you have at least the Reporter role show here."
 msgstr ""
 
 msgid "Orbit|The query has an error"
@@ -103250,3 +103268,4 @@ msgstr ""
 
 msgid "✔"
 msgstr ""
+

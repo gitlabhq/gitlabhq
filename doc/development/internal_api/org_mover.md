@@ -5,19 +5,35 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Org Mover internal API
 ---
 
-The Org Mover internal API is used by the Org Mover control plane to drive an
-organization's maintenance lifecycle while the organization is moved between
-GitLab.com cells. The API cannot be used by other consumers. This documentation
-is intended for people working on the GitLab codebase.
+The Org Mover control plane uses this internal API to drive an organization's maintenance lifecycle
+during a move between GitLab.com cells.
+No other consumer can use the API.
+This documentation is intended for people working on the GitLab codebase.
 
 The Org Mover API uses internal endpoints because requests are authenticated with a service-level
 JWT rather than a user token.
 
 ## Authentication
 
-These endpoints are authenticated with the GitLab Shell JWT. Clients pass the token in the
-`Gitlab-Shell-Api-Request` header. For more information, see [Authentication](_index.md#authentication).
-A missing or invalid token returns `401`.
+These endpoints are authenticated with an ES256 JWT signed by the Org Mover control plane.
+Only the control plane holds the private key.
+Each cell trusts the public keys listed in the `org_mover.public_key_files` setting in `gitlab.yml`.
+To rotate a key without downtime, list both the old and the new key.
+Remove the old key after the control plane signs with the new one.
+When the setting is empty or cells are disabled, the endpoints reject every token.
+
+Clients pass the token in the `Gitlab-Org-Mover-Api-Request` header. The token must meet these requirements:
+
+| Field        | Requirement |
+|:-------------|:------------|
+| `alg` header | `ES256`. |
+| `kid` header | The RFC 7638 thumbprint of the signing key. |
+| `iss`        | `gitlab-org-mover`. |
+| `aud`        | The target cell, as a single string: `gitlab-org-mover-api:cell-<cell_id>`. Tokens for another cell or a list of cells are rejected. |
+| `iat`        | The time the token was issued. Tokens older than five minutes, or more than 30 seconds in the future, are rejected. |
+| Size         | At most 2 KB, in JSON Web Signature (JWS) compact serialization. |
+
+A missing or invalid token returns `401`. If a public key file cannot be read, the endpoint returns `500`.
 
 Each endpoint is also gated per organization by the `org_mover_maintenance_api` feature flag, checked
 with the target organization as the actor. When the flag is disabled for the organization, or the
@@ -25,10 +41,6 @@ organization does not exist, the endpoint returns `404`. The flag is disabled by
 per organization only for the duration of a move.
 Operators must never enable it globally.
 Operators must disable it after the move completes, because it does not expire on its own.
-
-The GitLab Shell secret is shared, so it is not a sufficient authorization boundary on its own.
-A dedicated secret and audience are proposed in
-[issue 627692](https://gitlab.com/gitlab-org/gitlab/-/issues/627692).
 
 ## Maintenance lifecycle
 
@@ -68,7 +80,7 @@ GET /internal/org_mover/maintenance_state
 Example request:
 
 ```shell
-curl --header "Gitlab-Shell-Api-Request: <json-web-token>" \
+curl --header "Gitlab-Org-Mover-Api-Request: <json-web-token>" \
   "https://gitlab.example.com/api/v4/internal/org_mover/maintenance_state?organization_id=2"
 ```
 
@@ -95,7 +107,7 @@ GET /internal/org_mover/maintenance_readiness
 Example request:
 
 ```shell
-curl --header "Gitlab-Shell-Api-Request: <json-web-token>" \
+curl --header "Gitlab-Org-Mover-Api-Request: <json-web-token>" \
   "https://gitlab.example.com/api/v4/internal/org_mover/maintenance_readiness?organization_id=2"
 ```
 
@@ -131,7 +143,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --header "Gitlab-Shell-Api-Request: <json-web-token>" \
+  --header "Gitlab-Org-Mover-Api-Request: <json-web-token>" \
   --header "Content-Type: application/json" \
   --data '{"organization_id": 2, "maintenance_reason": "migration"}' \
   "https://gitlab.example.com/api/v4/internal/org_mover/start_maintenance"
@@ -157,7 +169,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --header "Gitlab-Shell-Api-Request: <json-web-token>" \
+  --header "Gitlab-Org-Mover-Api-Request: <json-web-token>" \
   --header "Content-Type: application/json" \
   --data '{"organization_id": 2}' \
   "https://gitlab.example.com/api/v4/internal/org_mover/confirm_maintenance"
@@ -184,7 +196,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --header "Gitlab-Shell-Api-Request: <json-web-token>" \
+  --header "Gitlab-Org-Mover-Api-Request: <json-web-token>" \
   --header "Content-Type: application/json" \
   --data '{"organization_id": 2}' \
   "https://gitlab.example.com/api/v4/internal/org_mover/cancel_maintenance"
@@ -210,7 +222,7 @@ Example request:
 
 ```shell
 curl --request POST \
-  --header "Gitlab-Shell-Api-Request: <json-web-token>" \
+  --header "Gitlab-Org-Mover-Api-Request: <json-web-token>" \
   --header "Content-Type: application/json" \
   --data '{"organization_id": 2}' \
   "https://gitlab.example.com/api/v4/internal/org_mover/exit_maintenance"

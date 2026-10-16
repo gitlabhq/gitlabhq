@@ -25,7 +25,8 @@ RSpec.shared_examples 'work item API field parity' do
   let(:extra_skipped_feature_comparison) { Set.new }
 
   describe 'REST entity vs GraphQL type' do
-    let(:rest_field_exceptions) { Set.new(%w[id]) }
+    # `closed_by` is REST-only. GraphQL `WorkItemType` has no `closedBy` field yet.
+    let(:rest_field_exceptions) { Set.new(%w[id closed_by]) }
 
     let(:graphql_field_exceptions) do
       Set.new(%w[

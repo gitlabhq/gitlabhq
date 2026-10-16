@@ -3,19 +3,23 @@
 module API
   module Internal
     # Internal API used by the org-mover control plane to drive an
-    # organization's maintenance lifecycle. Authenticated by the gitlab-shell
-    # JWT (authenticate_by_gitlab_shell_token!), so there is no per-user
+    # organization's maintenance lifecycle. Authenticated by an ES256 JWT from
+    # the control plane (Gitlab::OrgMover::Authenticator), so there is no per-user
     # authorization. Gated per organization by the `org_mover_maintenance_api`
     # feature flag so a valid token can only act on an organization an operator
     # has explicitly enabled for a move. The flag must never be enabled globally,
     # and must be disabled once the move completes: it does not expire on its own,
     # and while it is on the organization can be taken into maintenance.
     class OrgMover < ::API::Base
-      # This reuses the shared gitlab-shell secret; a dedicated secret and
-      # audience are tracked in
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/627692.
       before do
-        authenticate_by_gitlab_shell_token!
+        payload, header = ::Gitlab::OrgMover::Authenticator.verify_api_request(headers)
+        unauthorized! unless payload
+
+        ::Gitlab::AuthLogger.info(
+          Labkit::Fields::LOG_MESSAGE => 'Org Mover request authenticated',
+          jwt_kid: header['kid'],
+          jwt_iat: payload['iat'].to_i
+        )
       end
 
       feature_category :organization
@@ -61,7 +65,7 @@ module API
         params do
           requires :organization_id, type: Integer, desc: 'The ID of the organization'
         end
-        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        route_setting :authorization, skip_granular_token_authorization: :org_mover_jwt_auth
         get 'maintenance_state' do
           organization = find_org!
 
@@ -81,7 +85,7 @@ module API
         params do
           requires :organization_id, type: Integer, desc: 'The ID of the organization'
         end
-        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        route_setting :authorization, skip_granular_token_authorization: :org_mover_jwt_auth
         get 'maintenance_readiness' do
           organization = find_org!
           blocking_reason = ::Gitlab::Organizations::MaintenanceReadiness.new(organization).blocking_reason
@@ -105,7 +109,7 @@ module API
           requires :maintenance_reason, type: String, values: ::Organizations::Stateful::MAINTENANCE_REASONS,
             desc: 'The reason for entering maintenance'
         end
-        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        route_setting :authorization, skip_granular_token_authorization: :org_mover_jwt_auth
         post 'start_maintenance' do
           transition! do |org|
             ::Organizations::StartMaintenanceService
@@ -128,7 +132,7 @@ module API
         params do
           requires :organization_id, type: Integer, desc: 'The ID of the organization'
         end
-        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        route_setting :authorization, skip_granular_token_authorization: :org_mover_jwt_auth
         post 'confirm_maintenance' do
           transition! do |org|
             ::Organizations::ConfirmMaintenanceService.new(org).execute
@@ -149,7 +153,7 @@ module API
         params do
           requires :organization_id, type: Integer, desc: 'The ID of the organization'
         end
-        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        route_setting :authorization, skip_granular_token_authorization: :org_mover_jwt_auth
         post 'cancel_maintenance' do
           transition! do |org|
             ::Organizations::CancelMaintenanceService.new(org).execute
@@ -169,7 +173,7 @@ module API
         params do
           requires :organization_id, type: Integer, desc: 'The ID of the organization'
         end
-        route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth
+        route_setting :authorization, skip_granular_token_authorization: :org_mover_jwt_auth
         post 'exit_maintenance' do
           transition! do |org|
             ::Organizations::ExitMaintenanceService.new(org).execute

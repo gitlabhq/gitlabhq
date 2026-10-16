@@ -128,6 +128,13 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
 
     it_behaves_like 'a project work item discussion notes endpoint'
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :read_work_item do
+      let(:request) do
+        get api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions/" \
+          "#{comment.discussion_id}/notes", personal_access_token: pat)
+      end
+    end
   end
 
   describe 'POST /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes' do
@@ -149,6 +156,14 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
 
     it_behaves_like 'a project work item endpoint replying to a discussion'
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :create_note do
+      let(:request) do
+        post api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions/" \
+          "#{comment.discussion_id}/notes",
+          personal_access_token: pat), params: { body: 'A reply' }
+      end
+    end
   end
 
   describe 'GET /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id' do
@@ -170,6 +185,14 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
 
     it_behaves_like 'a project work item discussion note endpoint'
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :read_work_item do
+      let(:request) do
+        get api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions/" \
+          "#{comment.discussion_id}/notes/#{comment.id}",
+          personal_access_token: pat)
+      end
+    end
   end
 
   describe 'PUT /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id' do
@@ -191,6 +214,14 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
 
     it_behaves_like 'a project work item endpoint updating a discussion note'
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :update_note do
+      let(:request) do
+        put api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions/" \
+          "#{comment.discussion_id}/notes/#{comment.id}",
+          personal_access_token: pat), params: { body: 'Updated body' }
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id' do
@@ -212,5 +243,13 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
 
     it_behaves_like 'a project work item endpoint deleting a discussion note'
+
+    it_behaves_like 'a namespace work item route resolving the token boundary by path', :delete_note do
+      let(:request) do
+        delete api("/namespaces/#{numeric_group.path}/-/work_items/#{work_item.iid}/discussions/" \
+          "#{comment.discussion_id}/notes/#{comment.id}",
+          personal_access_token: pat)
+      end
+    end
   end
 end

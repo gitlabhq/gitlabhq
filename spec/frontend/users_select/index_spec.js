@@ -1,6 +1,9 @@
 import { escape } from 'lodash-es';
+import MockAdapter from 'axios-mock-adapter';
 import htmlCeMrSingleAssignees from 'test_fixtures/merge_requests/merge_request_with_single_assignee_feature.html';
 import UsersSelect from '~/users_select/index';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   createInputsModelExpectation,
   createUnassignedExpectation,
@@ -105,6 +108,60 @@ describe('~/users_select/index', () => {
           `<div class="gl-flex gl-text-sm"> <span class="gl-truncate" title="${escapedName}">${escapedName}</span> </div>`,
         );
       });
+    });
+  });
+
+  describe('users request caching', () => {
+    let mock;
+    let instance;
+    const usersResponse = [{ id: 1, name: 'Administrator', username: 'root' }];
+
+    const requestUsers = (query, options = {}) =>
+      new Promise((resolve) => {
+        UsersSelect.prototype.users.call(instance, query, options, resolve);
+      });
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      mock.onGet('/-/autocomplete/users.json').reply(HTTP_STATUS_OK, usersResponse);
+      instance = {
+        usersPath: '/-/autocomplete/users.json',
+        buildUrl: (url) => url,
+      };
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('requests users from the API and returns the response', async () => {
+      const users = await requestUsers('root');
+
+      expect(mock.history.get).toHaveLength(1);
+      expect(users).toEqual(usersResponse);
+    });
+
+    it('serves a repeated identical search from the cache without another request', async () => {
+      await requestUsers('root');
+      const users = await requestUsers('root');
+
+      expect(mock.history.get).toHaveLength(1);
+      expect(users).toEqual(usersResponse);
+    });
+
+    it('requests again when the search term changes', async () => {
+      await requestUsers('root');
+      await requestUsers('alex');
+
+      expect(mock.history.get).toHaveLength(2);
+    });
+
+    it('caches each search term independently', async () => {
+      await requestUsers('root');
+      await requestUsers('alex');
+      await requestUsers('root');
+
+      expect(mock.history.get).toHaveLength(2);
     });
   });
 

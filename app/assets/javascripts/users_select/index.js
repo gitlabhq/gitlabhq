@@ -685,7 +685,21 @@ UsersSelect.prototype.users = function (query, options, callback) {
     params.target_branch = options.targetBranch || null;
   }
 
+  // Cache results per request so repeating a search in the same session
+  // (for example typing, deleting, then retyping the same term, or reopening
+  // the dropdown) does not trigger another identical request. The key covers
+  // every parameter because a single instance can back dropdowns for different
+  // merge requests.
+  this.usersCache = this.usersCache || new Map();
+  const cacheKey = JSON.stringify(params);
+
+  if (this.usersCache.has(cacheKey)) {
+    callback(this.usersCache.get(cacheKey));
+    return Promise.resolve();
+  }
+
   return axios.get(url, { params }).then(({ data }) => {
+    this.usersCache.set(cacheKey, data);
     callback(data);
   });
 };

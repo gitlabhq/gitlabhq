@@ -330,7 +330,7 @@ class UsersController < ApplicationController
   end
 
   def load_starred_projects
-    @starred_projects = starred_projects
+    @starred_projects = starred_projects.page(permitted_params[:page])
 
     prepare_projects_for_rendering(@starred_projects)
   end

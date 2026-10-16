@@ -3,6 +3,8 @@
 #
 # Sends Slack notification MSG to CI_SLACK_WEBHOOK_URL (which needs to be set).
 # ICON_EMOJI needs to be set to an icon emoji name (without the `:` around it).
+# CHANNEL is a channel name (without the `#`) or a channel ID such as
+# C0123456789. An ID keeps working when the channel is renamed.
 
 CHANNEL=$1
 MSG=$2
@@ -13,5 +15,13 @@ if [ -z "$CHANNEL" ] || [ -z "$CI_SLACK_WEBHOOK_URL" ] || [ -z "$MSG" ] || [ -z 
     echo "Missing argument(s) - Use: $0 channel message icon_emoji username"
     echo "and set CI_SLACK_WEBHOOK_URL environment variable."
 else
-    curl -X POST --data-urlencode 'payload={"channel": "#'"$CHANNEL"'", "username": "'"$USERNAME"'", "text": "'"$MSG"'", "icon_emoji": "'":$ICON_EMOJI:"'"}' "$CI_SLACK_WEBHOOK_URL"
+    # Slack channel IDs are uppercase letters and digits starting with C or G.
+    # Channel names are lowercase, so they never match and get the `#` prefix.
+    if echo "$CHANNEL" | grep -Eq '^[CG][A-Z0-9]{8,}$'; then
+        TARGET="$CHANNEL"
+    else
+        TARGET="#$CHANNEL"
+    fi
+
+    curl -X POST --data-urlencode 'payload={"channel": "'"$TARGET"'", "username": "'"$USERNAME"'", "text": "'"$MSG"'", "icon_emoji": "'":$ICON_EMOJI:"'"}' "$CI_SLACK_WEBHOOK_URL"
 fi

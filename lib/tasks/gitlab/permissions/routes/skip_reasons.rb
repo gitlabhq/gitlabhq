@@ -30,6 +30,7 @@ module Tasks
             external_registry_redirect: 'External registry redirect',
             ai_workflows_token_auth: 'AI Workflows OAuth token',
             orbit_internal_auth: 'GitLab Orbit internal token',
+            org_mover_jwt_auth: 'Org Mover JWT',
             pages_token_auth: 'GitLab Pages token',
             public_endpoint: 'Public endpoint',
             runner_token_auth: 'Runner token',

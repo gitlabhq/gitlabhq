@@ -1600,6 +1600,13 @@ production: &base
     # The client timeout in seconds for the KAS API (used by the GitLab backend)
     # client_timeout_seconds: 5
 
+  org_mover:
+    # PEM-encoded ES256 public keys used to verify requests from the org-mover
+    # control plane. List more than one key to rotate without downtime.
+    # Only used when cell.enabled is true; tokens must be addressed to this cell.
+    # public_key_files:
+    #   - /home/git/gitlab/config/org_mover_public_key.pem
+
   ## GitLab Orbit settings
   orbit:
     # enabled: false

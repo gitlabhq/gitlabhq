@@ -2268,8 +2268,10 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid` |
@@ -2292,6 +2294,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Delete | Group | `DELETE` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid` |
 | Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:epic_iid/award_emoji/:award_id` |
@@ -2303,6 +2306,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Delete | Group | `DELETE` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
+| Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/notes/:note_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/award_emoji` |
@@ -4183,12 +4187,12 @@ incompatible with personal access tokens.
 | `POST` | `/internal/orbit/project/:project_id/repository/list_blobs` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/repository/tree` | GitLab Orbit internal token |
 | `POST` | `/internal/orbit/redaction` | GitLab Orbit internal token |
-| `POST` | `/internal/org_mover/cancel_maintenance` | GitLab Shell token |
-| `POST` | `/internal/org_mover/confirm_maintenance` | GitLab Shell token |
-| `POST` | `/internal/org_mover/exit_maintenance` | GitLab Shell token |
-| `GET` | `/internal/org_mover/maintenance_readiness` | GitLab Shell token |
-| `GET` | `/internal/org_mover/maintenance_state` | GitLab Shell token |
-| `POST` | `/internal/org_mover/start_maintenance` | GitLab Shell token |
+| `POST` | `/internal/org_mover/cancel_maintenance` | Org Mover JWT |
+| `POST` | `/internal/org_mover/confirm_maintenance` | Org Mover JWT |
+| `POST` | `/internal/org_mover/exit_maintenance` | Org Mover JWT |
+| `GET` | `/internal/org_mover/maintenance_readiness` | Org Mover JWT |
+| `GET` | `/internal/org_mover/maintenance_state` | Org Mover JWT |
+| `POST` | `/internal/org_mover/start_maintenance` | Org Mover JWT |
 | `GET` | `/internal/pages` | GitLab Pages token |
 | `GET` | `/internal/pages/status` | GitLab Pages token |
 | `POST` | `/internal/personal_access_token` | GitLab Shell token |

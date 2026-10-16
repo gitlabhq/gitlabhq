@@ -16,6 +16,7 @@ module API
       helpers ::API::Helpers::NotesHelpers
       helpers ::API::Helpers::WorkItems::NoteCreation
       helpers ::API::Helpers::WorkItems::NoteUpdate
+      helpers ::API::Helpers::WorkItems::NoteDeletion
 
       helpers do
         def no_readable_notes_in_discussion?(parent_work_item)
@@ -147,13 +148,7 @@ module API
           authorize_work_item_feature!(parent_work_item)
           authorize! :read_note, parent_work_item
 
-          note = find_discussion_note!(parent_work_item, preload: false)
-          authorize! :delete_note, note
-
-          destroy_conditionally!(note) do |note|
-            # Group-level work items have no project; the service accepts nil, as the GraphQL mutation does.
-            ::Notes::DestroyService.new(parent_work_item.project, current_user).execute(note)
-          end
+          delete_work_item_note(parent_work_item, find_discussion_note!(parent_work_item, preload: false))
         end
       end
 
@@ -180,6 +175,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/discussions/:discussion_id/notes' do
@@ -202,6 +198,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :create_note,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           post ':work_item_iid/discussions/:discussion_id/notes' do
@@ -224,6 +221,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/discussions/:discussion_id/notes/:note_id' do
@@ -246,6 +244,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_issue_discussion_note,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           put ':work_item_iid/discussions/:discussion_id/notes/:note_id' do
@@ -268,6 +267,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :delete_note,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           delete ':work_item_iid/discussions/:discussion_id/notes/:note_id' do

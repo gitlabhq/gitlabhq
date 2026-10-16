@@ -7,16 +7,67 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
 
   let_it_be_with_reload(:organization) { create(:organization) }
 
-  let(:headers) { gitlab_shell_internal_api_request_header }
+  let(:public_key_path) { '/path/to/org_mover_public_key.pem' }
+  let(:private_key) { OpenSSL::PKey::EC.generate('prime256v1') }
+  let(:headers) { org_mover_headers(private_key) }
   let(:organization_id) { organization.id }
 
   before do
     stub_feature_flags(org_mover_maintenance_api: organization)
+    stub_config_cell(enabled: true, id: 2)
+    stub_config(org_mover: { public_key_files: [public_key_path] })
+    allow(Gitlab::OrgMover::Authenticator).to receive(:read_public_key)
+      .with(public_key_path).and_return(OpenSSL::PKey::EC.new(private_key.public_to_pem))
+    Gitlab::OrgMover::Authenticator.clear_memoization(:jwks)
+  end
+
+  after do
+    Gitlab::OrgMover::Authenticator.clear_memoization(:jwks)
+  end
+
+  def org_mover_headers(key, iat: Time.current.to_i)
+    payload = {
+      iss: Gitlab::OrgMover::Authenticator::JWT_ISSUER,
+      aud: "#{Gitlab::OrgMover::Authenticator::JWT_AUDIENCE}:cell-2",
+      iat: iat
+    }
+
+    { Gitlab::OrgMover::Authenticator::API_HEADER => JWT.encode(payload, key, 'ES256', { kid: kid_for(key) }) }
+  end
+
+  def kid_for(key)
+    JWT::JWK.new(key, kid_generator: JWT::JWK::Thumbprint).kid
   end
 
   shared_examples 'an internal org_mover endpoint' do
-    context 'with an invalid gitlab-shell token' do
-      let(:headers) { gitlab_shell_internal_api_request_header(issuer: 'gitlab-workhorse') }
+    it 'logs the key that authenticated the request' do
+      allow(Gitlab::AuthLogger).to receive(:info)
+
+      request
+
+      expect(Gitlab::AuthLogger).to have_received(:info).with({
+        'message' => 'Org Mover request authenticated',
+        jwt_kid: kid_for(private_key),
+        jwt_iat: kind_of(Integer)
+      })
+    end
+
+    context 'with a token signed by an untrusted key' do
+      let(:headers) { org_mover_headers(OpenSSL::PKey::EC.generate('prime256v1')) }
+
+      it 'returns 401 without logging an authenticated request', :aggregate_failures do
+        allow(Gitlab::AuthLogger).to receive(:info)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(Gitlab::AuthLogger).not_to have_received(:info)
+          .with(hash_including({ 'message' => 'Org Mover request authenticated' }))
+      end
+    end
+
+    context 'with a gitlab-shell token' do
+      let(:headers) { gitlab_shell_internal_api_request_header }
 
       it 'returns 401' do
         request
@@ -53,6 +104,28 @@ RSpec.describe API::Internal::OrgMover, feature_category: :organization do
     end
 
     it_behaves_like 'an internal org_mover endpoint'
+
+    context 'when a public key file cannot be read' do
+      it 'returns 500' do
+        allow(Gitlab::OrgMover::Authenticator).to receive(:read_public_key).and_raise(Errno::ENOENT)
+
+        request
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+      end
+    end
+
+    context 'with a fractional iat' do
+      let(:headers) { org_mover_headers(private_key, iat: Time.current.to_f - 1.5) }
+
+      it 'logs iat as an integer' do
+        allow(Gitlab::AuthLogger).to receive(:info)
+
+        request
+
+        expect(Gitlab::AuthLogger).to have_received(:info).with(hash_including({ jwt_iat: kind_of(Integer) }))
+      end
+    end
 
     it 'returns the current lifecycle state' do
       request

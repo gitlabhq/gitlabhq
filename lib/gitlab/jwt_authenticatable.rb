@@ -14,11 +14,12 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       def decode_jwt(
-        encoded_message, jwt_secret = secret, algorithm: 'HS256', issuer: nil, iat_after: nil, audience: nil,
-        jwks: nil)
+        encoded_message, jwt_secret = secret, algorithm: 'HS256', issuer: nil, iat_after: nil, iat_leeway: nil,
+        audience: nil, jwks: nil)
         options = { algorithm: algorithm }
         options = options.merge(iss: issuer, verify_iss: true) if issuer.present?
-        options = options.merge(verify_iat: true) if iat_after.present?
+        # ruby-jwt's iat check has no leeway, so with a leeway the future bound is checked below instead.
+        options = options.merge(verify_iat: true) if iat_after.present? && iat_leeway.nil?
         options = options.merge(aud: audience, verify_aud: true) if audience.present?
 
         # When a JWKS (key set) is provided, the verification key is selected by
@@ -38,6 +39,10 @@ module Gitlab
         payload = decoded_message[0]
         if iat_after.present?
           raise JWT::DecodeError, "JWT iat claim is missing" if payload['iat'].blank?
+
+          if iat_leeway && (!payload['iat'].is_a?(Numeric) || payload['iat'] > Time.current.to_f + iat_leeway.to_f)
+            raise JWT::InvalidIatError, 'Invalid iat'
+          end
 
           iat = payload['iat'].to_i
           raise JWT::ExpiredSignature, 'Token has expired' if iat < iat_after.to_i
@@ -73,13 +78,13 @@ module Gitlab
         end
       end
 
-      # Builds a JWT::JWK::Set from PEM-encoded public key files. Each key is
-      # identified by its RFC 7638 thumbprint (`kid`), so the verifier can hold
-      # several keys at once and select the matching one from the token's `kid`
-      # header. This is the mechanism that allows public keys to be rotated
-      # without a hard cutover.
-      def public_key_set(paths)
-        jwks = Array(paths).map { |path| JWT::JWK.new(read_public_key(path)) }
+      # Builds a JWT::JWK::Set from PEM-encoded public key files. Each key gets a
+      # `kid` from `kid_generator`, ruby-jwt's key digest by default, so the
+      # verifier can hold several keys at once and select the matching one from
+      # the token's `kid` header. This is the mechanism that allows public keys to
+      # be rotated without a hard cutover.
+      def public_key_set(paths, kid_generator: nil)
+        jwks = Array(paths).map { |path| JWT::JWK.new(read_public_key(path), kid_generator: kid_generator) }
 
         JWT::JWK::Set.new(jwks)
       end

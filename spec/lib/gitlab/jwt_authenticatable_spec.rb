@@ -125,6 +125,14 @@ RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
 
       expect(set.map { |jwk| jwk[:kid] }).to contain_exactly(JWT::JWK.new(key_one).export[:kid])
     end
+
+    it 'uses the given kid generator' do
+      set = test_class.public_key_set(path_one, kid_generator: JWT::JWK::Thumbprint)
+
+      expect(set.map { |jwk| jwk[:kid] }).to contain_exactly(
+        JWT::JWK.new(key_one, kid_generator: JWT::JWK::Thumbprint).kid
+      )
+    end
   end
 
   describe '.write_secret' do
@@ -293,6 +301,40 @@ RSpec.describe Gitlab::JwtAuthenticatable, feature_category: :system_access do
           expect do
             test_class.decode_jwt(encoded_message, iat_after: Time.current - 20.seconds)
           end.to raise_error(JWT::ExpiredSignature, 'Token has expired')
+        end
+      end
+
+      context 'with iat_leeway', :freeze_time do
+        def decode_issued_at(iat)
+          encoded_message = JWT.encode(payload.merge(iat: iat.to_i), test_class.secret, 'HS256')
+
+          test_class.decode_jwt(encoded_message, iat_after: Time.current - 20.seconds, iat_leeway: 30.seconds)
+        end
+
+        it 'accepts an iat in the future within the leeway' do
+          expect(decode_issued_at(Time.current + 10.seconds)).to be_present
+        end
+
+        it 'raises an error if iat is further in the future than the leeway' do
+          expect { decode_issued_at(Time.current + 31.seconds) }.to raise_error(JWT::InvalidIatError)
+        end
+
+        it 'still raises an error if iat is too far in the past' do
+          expect { decode_issued_at(Time.current - 30.seconds) }
+            .to raise_error(JWT::ExpiredSignature, 'Token has expired')
+        end
+
+        it 'raises an error if iat is a string' do
+          # JWT.encode rejects a string iat, so sign the token by hand.
+          segments = [{ alg: 'HS256', typ: 'JWT' }, { iat: Time.current.to_i.to_s }].map do |part|
+            Base64.urlsafe_encode64(Gitlab::Json.dump(part), padding: false)
+          end
+          signature = OpenSSL::HMAC.digest('SHA256', test_class.secret, segments.join('.'))
+          encoded_message = [*segments, Base64.urlsafe_encode64(signature, padding: false)].join('.')
+
+          expect do
+            test_class.decode_jwt(encoded_message, iat_after: Time.current - 20.seconds, iat_leeway: 30.seconds)
+          end.to raise_error(JWT::InvalidIatError)
         end
       end
     end

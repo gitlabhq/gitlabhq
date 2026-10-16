@@ -15,12 +15,15 @@ module API
       feature_category :portfolio_management
       urgency :low
 
+      DELETE_FAILURE_RESPONSES = (FAILURE_RESPONSES + [{ code: 412, message: 'Precondition failed' }]).freeze
+
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::NotesHelpers
       helpers ::API::Helpers::WorkItems::NoteCreation
       helpers ::API::Helpers::WorkItems::NoteUpdate
+      helpers ::API::Helpers::WorkItems::NoteDeletion
 
       helpers do
         params :notes_filter_params do
@@ -49,10 +52,14 @@ module API
         # Scoped to the work item's own notes, so a note id belonging to another noteable 404s.
         # Deliberately not NotesHelpers#get_note: its EE override presents epics with the legacy
         # LegacyEpicNote entity, whereas this API renders every scope with Entities::Note.
-        def find_work_item_note!(parent_work_item)
-          note = parent_work_item.notes
-            .preload(::API::Helpers::WorkItems::Preloads::NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
-            .find_by_id(params[:note_id])
+        def find_work_item_note!(parent_work_item, preload: true)
+          notes = parent_work_item.notes
+          # The entity preloads are wasted when the note is not presented, as on delete.
+          if preload
+            notes = notes.preload(::API::Helpers::WorkItems::Preloads::NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+          end
+
+          note = notes.find_by_id(params[:note_id])
           not_found!('Note') unless note&.readable_by?(current_user)
 
           note
@@ -69,6 +76,13 @@ module API
           authorize_work_item_feature!(parent_work_item)
 
           update_work_item_note(parent_work_item, find_work_item_note!(parent_work_item))
+        end
+
+        def delete_note_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+          authorize! :read_note, parent_work_item
+
+          delete_work_item_note(parent_work_item, find_work_item_note!(parent_work_item, preload: false))
         end
 
         def create_note_for(parent_work_item)
@@ -166,10 +180,33 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_note,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           put ':work_item_iid/notes/:note_id' do
             update_note_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
+
+          desc 'Delete a note on a work item.' do
+            detail 'Delete a note from a work item in a namespace. Project and group namespaces are supported.'
+            hidden true
+            success code: 204
+            failure DELETE_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :delete_note,
+            boundary: -> { namespace_path_boundary },
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+
+          delete ':work_item_iid/notes/:note_id' do
+            delete_note_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
           end
 
           desc 'Create a note on a work item.' do
@@ -266,6 +303,27 @@ module API
             update_note_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
           end
 
+          desc 'Delete a note on a work item.' do
+            detail 'Delete a note from a work item in a project.'
+            hidden true
+            success code: 204
+            failure DELETE_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :delete_note,
+            boundary_type: :project
+
+          delete ':work_item_iid/notes/:note_id' do
+            delete_note_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
+
           desc 'Create a note on a work item in a project.' do
             detail 'Create a new note on a work item in a project.'
             hidden true
@@ -357,6 +415,27 @@ module API
 
           put ':work_item_iid/notes/:note_id' do
             update_note_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Delete a note on a work item.' do
+            detail 'Delete a note from a work item in a group.'
+            hidden true
+            success code: 204
+            failure DELETE_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :delete_note,
+            boundary_type: :group
+
+          delete ':work_item_iid/notes/:note_id' do
+            delete_note_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
 
           desc 'Create a note on a work item in a group.' do

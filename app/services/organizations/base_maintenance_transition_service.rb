@@ -4,7 +4,7 @@ module Organizations
   # Base class for the org_mover maintenance lifecycle transitions.
   #
   # Internal, JWT-gated services: authorization happens at the internal org_mover
-  # API boundary (authenticate_by_gitlab_shell_token!), so they perform no
+  # API boundary (Gitlab::OrgMover::Authenticator), so they perform no
   # per-user ability check and take no current_user.
   #
   # Subclasses implement #execute. They share the response builders and logging

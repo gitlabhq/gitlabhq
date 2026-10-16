@@ -16,7 +16,14 @@ module AutoMerge
     def process(merge_request)
       logger.info("Processing Automerge - MWCP")
 
-      return unless merge_request.mergeable?(use_cache: false)
+      if Feature.enabled?(:auto_merge_process_early_exits, merge_request.project)
+        # Neither state can merge on this run: the conflict check fails at the end of the suite,
+        # and a queued MergeWorker means a second one would only overwrite its merge_jid.
+        return if merge_request.cannot_be_merged? || merge_request.merge_ongoing?
+        return unless merge_request.mergeable?(use_cache: false, check_order: :likely_to_fail_first)
+      else
+        return unless merge_request.mergeable?(use_cache: false)
+      end
 
       logger.info("Merge request mergeable - MWCP")
 

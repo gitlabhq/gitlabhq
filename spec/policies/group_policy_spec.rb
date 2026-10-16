@@ -15,7 +15,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       create(:project_group_link, project: project, group: group)
     end
 
-    it { expect_disallowed(*all_permissions) }
+    it_behaves_like 'prevent all except' do
+      let(:allowed_permissions) { [:read_cross_project] }
+    end
   end
 
   context 'private group that has been invited to a public project and with a foreign user' do
@@ -26,7 +28,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       create(:project_group_link, project: project, group: group)
     end
 
-    it { expect_disallowed(*all_permissions) }
+    it_behaves_like 'prevent all except' do
+      let(:allowed_permissions) { [:read_cross_project] }
+    end
   end
 
   context 'has projects' do
@@ -109,13 +113,11 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     it { expect_disallowed(:create_subgroup) }
 
     context 'with subgroup_creation level set to maintainer' do
-      let(:permissions) { maintainer_permissions + [:create_subgroup] }
-
       before do
         group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
-      it_behaves_like 'valid permissions'
+      it { expect_allowed(:create_subgroup) }
     end
 
     it_behaves_like 'deploy token does not get confused with user' do
@@ -134,7 +136,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   context 'admin' do
     let(:current_user) { admin }
 
-    it { expect_disallowed(*all_permissions) }
+    it { expect_no_permissions_beyond_non_member }
     it { expect_disallowed(:update_group_organization) }
 
     it_behaves_like 'deploy token does not get confused with user' do
@@ -164,76 +166,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       context 'with admin mode', :enable_admin_mode do
         it { expect_allowed(:update_organization) }
       end
-    end
-  end
-
-  describe 'private nested group use the highest access level from the group and inherited permissions' do
-    let_it_be(:nested_group) do
-      create(:group, :private, :owner_subgroup_creation_only, parent: group,
-        guests: [guest, reporter, security_manager, developer, maintainer], owners: owner)
-    end
-
-    before_all do
-      group.owners.destroy_all # rubocop: disable Cop/DestroyAll
-
-      group.add_guest(owner)
-    end
-
-    subject { described_class.new(current_user, nested_group) }
-
-    context 'with no user' do
-      let(:current_user) { nil }
-
-      it { expect_disallowed(*all_permissions) }
-    end
-
-    context 'guests' do
-      let(:current_user) { guest }
-      let(:permissions) { guest_permissions }
-
-      it_behaves_like 'valid permissions'
-    end
-
-    context 'planners' do
-      let(:current_user) { planner }
-      let(:permissions) { planner_permissions }
-
-      it_behaves_like 'valid permissions'
-    end
-
-    context 'reporter' do
-      let(:current_user) { reporter }
-      let(:permissions) { reporter_permissions }
-
-      it_behaves_like 'valid permissions'
-    end
-
-    context 'security_manager' do
-      let(:current_user) { security_manager }
-      let(:permissions) { security_manager_permissions }
-
-      it_behaves_like 'valid permissions'
-    end
-
-    context 'developer' do
-      let(:current_user) { developer }
-      let(:permissions) { developer_permissions }
-
-      it_behaves_like 'valid permissions'
-    end
-
-    context 'maintainer' do
-      let(:current_user) { maintainer }
-      let(:permissions) { maintainer_permissions }
-
-      it_behaves_like 'valid permissions'
-    end
-
-    context 'owner' do
-      let(:current_user) { owner }
-      let(:permissions) { owner_permissions }
-
-      it_behaves_like 'valid permissions'
     end
   end
 

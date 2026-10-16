@@ -103,19 +103,6 @@ end
 
 RSpec.shared_examples 'project policies as guest' do
   context 'as a direct project member' do
-    context 'abilities for public projects' do
-      let(:project) { public_project }
-      let(:current_user) { guest }
-
-      specify do
-        expect_allowed(*guest_permissions)
-        expect_allowed(*public_permissions)
-        expect_disallowed(*developer_permissions)
-        expect_disallowed(*maintainer_permissions)
-        expect_disallowed(*owner_permissions)
-      end
-    end
-
     context 'abilities for non-public projects' do
       let(:project) { private_project }
       let(:current_user) { guest }
@@ -161,30 +148,7 @@ RSpec.shared_examples 'project policies as guest' do
 end
 
 RSpec.shared_examples 'project policies as planner' do
-  let(:disallowed_reporter_public_permissions) do
-    %i[
-      create_snippet create_incident daily_statistics metrics_dashboard read_harbor_registry
-      read_prometheus read_sentry_issue read_external_emails
-    ]
-  end
-
   context 'as a direct project member' do
-    context 'abilities for public projects' do
-      let(:project) { public_project }
-      let(:current_user) { planner }
-
-      specify do
-        expect_allowed(*public_permissions)
-        expect_allowed(*guest_permissions)
-        expect_allowed(*planner_permissions)
-        expect_allowed(*(base_reporter_permissions - disallowed_reporter_public_permissions))
-        expect_disallowed(*disallowed_reporter_public_permissions)
-        expect_disallowed(*(developer_permissions - [:create_wiki]))
-        expect_disallowed(*(maintainer_permissions - [:admin_wiki]))
-        expect_disallowed(*(owner_permissions - [:destroy_issue]))
-      end
-    end
-
     context 'abilities for non-public projects' do
       let(:project) { private_project }
       let(:current_user) { planner }

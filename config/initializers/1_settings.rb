@@ -628,6 +628,12 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Org Mover
+#
+Settings['org_mover'] ||= {}
+Settings.org_mover['public_key_files'] ||= []
+
+#
 # Orbit
 #
 Gitlab.ee do

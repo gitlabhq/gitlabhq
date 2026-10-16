@@ -340,7 +340,7 @@ Splitting queries in Apollo is often done to optimize data fetching by breaking 
 
 ### Why split queries in GraphQL
 
-1. **Increased query complexity** We have [limits](../../api/graphql/_index.md#limits) for GraphQL queries which should be adhered to.
+1. **Increased query complexity** We have [limits](../../api/graphql/_index.md#limits) for GraphQL queries which should be adhered to. See [Query performance](#query-performance) for why large queries are costly on the server.
 1. **Performance** Smaller, targeted queries often result in faster response times from the server, which directly benefits the frontend by getting data to the client sooner.
 1. **Better Component Decoupling and Maintainability** Each component can handle its own data needs, making it easier to reuse components across your app without requiring access to a large, shared query.
 
@@ -449,6 +449,92 @@ query workspaceAutocompleteUsersSearch(
 ```
 
 **CAUTION** We have to be careful to make sure that we do not invalidate the existing GraphQL queries when we split queries. We should ensure to check the inspector that the same queries are not called multiple times when we split queries.
+
+## Query performance
+
+A frontend-only change to a `.graphql` file can add database queries on the server.
+The shape of a query decides how much work the server does to answer it.
+Reviewers of frontend MRs should treat query changes like any other data-fetching change.
+
+### How query shape maps to database work
+
+Every nested connection in a query is a resolver call per parent object, and field-level authorization runs a policy check per object.
+When a query selects a connection or association inside a list, the server fetches that data once per row unless the backend batches the loads.
+The cost multiplies by the page size.
+
+For example, adding a nested selection to a fragment used in a list:
+
+```graphql
+# Before: one query for the list.
+query sessions {
+  sessions(first: 20) {
+    nodes {
+      id
+      title
+    }
+  }
+}
+
+# After: the list query plus one snapshot lookup per session, and one
+# messages lookup per snapshot, unless the backend batches them.
+query sessions {
+  sessions(first: 20) {
+    nodes {
+      id
+      title
+      latestSnapshot {
+        id
+        messages {
+          nodes {
+            id
+            content
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+With a page size of 20, the "after" query can issue dozens of extra database queries per page render.
+Each returned object also goes through its own authorization check.
+The [query complexity and depth limits](../../api/graphql/_index.md#limits) (`DEFAULT_MAX_COMPLEXITY = 200`, `DEFAULT_MAX_DEPTH = 15` in `app/graphql/gitlab_schema.rb`) are a ceiling on request size, not a guarantee that a request is cheap.
+A query well under the complexity limit can still fan out into many database queries.
+
+When a list needs nested data, pick the first of these options that fits, in order of preference:
+
+1. Use a field that the backend already batches with `BatchLoader::GraphQL` or preloads with `LooksAhead`, or add batching in a paired backend MR.
+1. Paginate the nested connection or pass a `first:` argument to bound how much each parent fetches.
+1. Issue a separate query only for the row the user expands, instead of fetching nested data for every row.
+
+### Warning signs in a `.graphql` diff
+
+- Nesting deeper than roughly three connection levels.
+- A connection or sub-list inside a list without a `first:` argument.
+- Fields known to be expensive, such as checkpoints, pipelines, or diff stats.
+
+For the full reviewer procedure, see [frontend GraphQL fragment changes](../graphql_guide/reviewing.md#frontend-graphql-fragment-changes).
+
+### How to check locally
+
+- Request the [query complexity](../../api/graphql/getting_started.md#query-complexity) with `queryComplexity { score limit }` alongside the query.
+- Watch the [performance bar](../../administration/monitoring/performance/performance_bar.md), [Bullet](../profiling.md#bullet), or `development.log` on a page that runs the query.
+  Use test data with more than one parent record.
+- When the frontend change is paired with a backend one, add or extend a `QueryRecorder` request spec.
+  Specs live under `spec/requests/api/graphql/` or `ee/spec/requests/api/graphql/`.
+  For an example, see [testing tips and tricks](../api_graphql_styleguide.md#testing-tips-and-tricks).
+
+### When to ask for a backend or database review
+
+A frontend MR that adds a nested connection or an unbounded list to an existing query needs a backend reviewer.
+Ask the owning group, or a member of `@gitlab-org/graphql-experts`.
+Anything that reads from a partitioned or large table goes through the [database review process](../database_review.md).
+
+### Related guides
+
+- [How to see N+1 problems in development](../api_graphql_styleguide.md#how-to-see-n1-problems-in-development)
+- [Batch loading](../graphql_guide/batchloader.md)
+- [GraphQL pagination](../graphql_guide/pagination.md)
 
 ## Immutability and cache updates
 

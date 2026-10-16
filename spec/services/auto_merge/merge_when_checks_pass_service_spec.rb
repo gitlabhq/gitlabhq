@@ -229,6 +229,71 @@ RSpec.describe AutoMerge::MergeWhenChecksPassService, feature_category: :code_re
         process
       end
     end
+
+    context 'with early exits' do
+      shared_examples 'returns before the mergeability checks' do
+        it 'does not run the checks or call the merge worker' do
+          expect(merge_request).not_to receive(:mergeable?)
+          expect(merge_request).not_to receive(:merge_async)
+
+          process
+        end
+      end
+
+      context 'when the merge request cannot be merged' do
+        before do
+          merge_request.update_columns(merge_status: 'cannot_be_merged')
+        end
+
+        it_behaves_like 'returns before the mergeability checks'
+      end
+
+      context 'when a merge is already ongoing' do
+        before do
+          allow(merge_request).to receive(:merge_ongoing?).and_return(true)
+        end
+
+        it_behaves_like 'returns before the mergeability checks'
+      end
+
+      context 'when the merge request can be merged' do
+        before do
+          project.update!(only_allow_merge_if_pipeline_succeeds: true)
+          create(:ci_pipeline, status: :success, ref: merge_request.source_branch, sha: merge_request.diff_head_sha,
+            project: project, head_pipeline_of: merge_request)
+        end
+
+        it 'runs the checks that usually block auto-merge first and merges' do
+          expect(merge_request).to receive(:mergeable?)
+            .with(use_cache: false, check_order: :likely_to_fail_first).and_call_original
+          expect(merge_request).to receive(:merge_async)
+
+          process
+        end
+      end
+    end
+
+    context 'when auto_merge_process_early_exits is disabled' do
+      before do
+        stub_feature_flags(auto_merge_process_early_exits: false)
+      end
+
+      it 'runs the full mergeability check suite' do
+        merge_request.update_columns(merge_status: 'cannot_be_merged')
+
+        expect(merge_request).to receive(:mergeable?).with(use_cache: false).and_call_original
+        expect(merge_request).not_to receive(:merge_async)
+
+        process
+      end
+
+      it 'merges when the checks pass' do
+        expect(merge_request).to receive(:mergeable?).with(use_cache: false).and_return(true)
+        expect(merge_request).to receive(:merge_async)
+
+        process
+      end
+    end
   end
 
   describe '#cancel' do

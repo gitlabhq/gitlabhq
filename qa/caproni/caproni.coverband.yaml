@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# Coverband for the E2E code paths mapping, on scheduled master runs only.
+#
+# Opt-in. A job enables it from caproni.local.yaml with COVERBAND_ENABLED=true:
+#
+#   extends:
+#     - caproni.coverband.yaml
+
+deployers:
+  gitlab:
+    helm:
+      # Appended to the base overrides, so only Coverband keys go here
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            global.extraEnv.COVERBAND_ENABLED: "true"

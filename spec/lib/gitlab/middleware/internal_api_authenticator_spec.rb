@@ -152,10 +152,22 @@ RSpec.describe Gitlab::Middleware::InternalApiAuthenticator, feature_category: :
         allow(request).to receive_messages(path: '/api/v4/internal/org_mover/start_maintenance', env: {})
       end
 
-      it 'calls verify_shell' do
-        expect(::Gitlab::Shell).to receive(:verify_api_request).and_return(true)
+      it 'calls verify_org_mover' do
+        expect(::Gitlab::OrgMover::Authenticator).to receive(:verify_api_request).and_return(true)
 
         expect(authenticator.verify!).to be_truthy
+      end
+
+      it 'returns false when verification fails' do
+        expect(::Gitlab::OrgMover::Authenticator).to receive(:verify_api_request).and_return(nil)
+
+        expect(authenticator.verify!).to be(false)
+      end
+
+      it 'lets a key file error raise so it is tracked as a 500' do
+        expect(::Gitlab::OrgMover::Authenticator).to receive(:verify_api_request).and_raise(Errno::ENOENT)
+
+        expect { authenticator.verify! }.to raise_error(Errno::ENOENT)
       end
     end
 

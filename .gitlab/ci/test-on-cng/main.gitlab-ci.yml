@@ -271,6 +271,7 @@ cng-instance-caproni:
   variables:
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
+    E2E_CODE_PATHS_MAPPING: "true"
 
 cng-relative-url-caproni:
   extends: .caproni-test
@@ -334,6 +335,25 @@ upload-test-runtime-data:
 export-code-paths-mapping:
   extends:
     - .export-code-paths-mapping
+  # Caproni jobs upload under their own run type
+  needs:
+    - job: cng-instance
+      optional: true
+    - job: cng-registry
+      optional: true
+    - job: cng-secrets-manager
+      optional: true
+
+export-code-paths-mapping-caproni:
+  extends:
+    - .export-code-paths-mapping
+  needs:
+    - job: cng-instance-caproni
+      optional: true
+  script:
+    # The trigger job's QA_RUN_TYPE outranks job variables
+    - export QA_RUN_TYPE=e2e-test-on-cng-caproni
+    - !reference [.export-code-paths-mapping, script]
 
 export-frontend-code-paths-mapping:
   extends:
