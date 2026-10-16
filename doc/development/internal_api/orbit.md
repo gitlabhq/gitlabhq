@@ -43,7 +43,7 @@ All endpoints require the `knowledge_graph_infra` feature flag to be enabled.
 
 #### Fetch project info
 
-Use a GET command to get the default branch for a project.
+Use a GET command to get the default branch and the repository storage for a project.
 
 ```plaintext
 GET /internal/orbit/project/:project_id/info
@@ -60,9 +60,12 @@ Example response:
 ```json
 {
   "project_id": 1,
-  "default_branch": "main"
+  "default_branch": "main",
+  "repository_storage": "default"
 }
 ```
+
+The `repository_storage` value is the Gitaly storage name of the project, as configured in `gitlab.yml`. When Gitaly Cluster (Praefect) is used, it is the virtual storage name.
 
 ### Repository
 
