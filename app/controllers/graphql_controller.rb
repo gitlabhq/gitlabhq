@@ -10,11 +10,11 @@ class GraphqlController < ApplicationController
     # ApplicationController has similar rescues but we declare these again here because the
     # `rescue_from StandardError` above would prevent these from bubbling up to ApplicationController.
     # These also return errors in a JSON format similar to GraphQL errors.
-    ActionController::InvalidAuthenticityToken => { status: :unprocessable_entity },
+    ActionController::InvalidAuthenticityToken => { status: :unprocessable_entity, track: false },
 
     # Domain errors -> 422
-    Gitlab::Graphql::Variables::Invalid => { status: :unprocessable_entity },
-    Gitlab::Graphql::Errors::ArgumentError => { status: :unprocessable_entity },
+    Gitlab::Graphql::Variables::Invalid => { status: :unprocessable_entity, track: false },
+    Gitlab::Graphql::Errors::ArgumentError => { status: :unprocessable_entity, track: false },
     Issuables::GroupMembersFilterable::TooManyGroupMembersError => { status: :unprocessable_entity },
     Issuables::GroupMembersFilterable::TooManyAssignedIssuesError => { status: :unprocessable_entity },
 
@@ -24,7 +24,7 @@ class GraphqlController < ApplicationController
 
     # # Other errors
     Gitlab::Auth::TooManyIps => { status: :forbidden },
-    RateLimitedService::RateLimitedError => { status: :too_many_requests },
+    RateLimitedService::RateLimitedError => { status: :too_many_requests, track: false },
     Gitlab::Git::ResourceExhaustedError => { status: :service_unavailable },
     # Time-bounded blocks are retryable (503 + Retry-After); indefinite blocks are not (403).
     Gitlab::Graphql::Errors::TimeBoundedOrganizationMaintenanceModeError => { status: :service_unavailable },
@@ -160,7 +160,8 @@ class GraphqlController < ApplicationController
     # For exceptions that support logging of the request
     exception.try(:log_request, request, current_user)
 
-    log_exception(exception)
+    # Client errors (`track: false`) are rendered without reporting them to error tracking.
+    log_exception(exception) unless ERROR_STATUS_MAP.dig(exception.class, :track) == false
 
     return handle_internal_error(exception) if http_status.nil? || http_status == :internal
 

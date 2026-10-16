@@ -896,11 +896,18 @@ You can find these sessions in the following places:
 
 | Where | How to filter |
 | --- | --- |
-| GitLab database | In the `duo_workflows_workflows` table, use `source_type = 2`, the value of `mcp`. In Rails, use `Ai::DuoWorkflows::Workflow.source_mcp`. |
+| GitLab database | In the `duo_workflows_workflows` table, use `source_type = 2`, the value of `mcp`. In Rails, use `Ai::DuoWorkflows::Workflow.source_mcp`. The `source_client_name` and `source_client_version` columns hold the MCP client that created the session, from the `clientInfo` in the request `_meta`, or else the `User-Agent`. |
 | Snowflake | Use the `agent_platform_session_created` event with `source` = `mcp`. The event `value` is the session ID. |
 | Kibana | Search `mcp.log` for `event_name` = `duo_session_created`. For example: `json.subcomponent: "mcp" and json.event_name: "duo_session_created"`. |
 
 The `correlation_id` links the `duo_session_created` line to the `tool_call` line of the tool that started the session.
+
+Agent Platform sessions call MCP tools through Workhorse, which sends the session ID in the `X-Gitlab-Duo-Workflow-Id` header.
+The `tool_call` line logs it as `meta.duo_workflow_id`. The `duo_session_created` line has the same ID in `duo_workflow_id`.
+
+Restarting a session creates a new session that keeps the `source_type` and the MCP client of the original.
+It sends the `agent_platform_session_created` event and the `duo_session_created` line again, and nothing on them marks a restart.
+To count only sessions that the client started, leave out sessions that have a `source` row in `duo_workflows_workflow_workflows`.
 
 The `duo_session_created` line also records which flow or agent the session runs.
 The `agent_platform_session_created` event has the same fields as additional properties.
@@ -924,6 +931,7 @@ For example, to find sessions that run the `developer` flow, use this query in K
 The `initialize_mcp_connection`, `start_mcp_tool_call`, and `finish_mcp_tool_call` events
 record the client in the `mcp_client_name` and `mcp_client_version` additional properties.
 The `initialize` and `tool_call` lines in `mcp.log` have fields with the same names.
+For sessions started over MCP, the `agent_platform_session_created` event and the `duo_session_created` line have them too.
 
 These are not the `client_name` and `client_type` fields of the standard context.
 Those come from [client identity](../../internal_analytics/internal_event_instrumentation/client_identity.md),

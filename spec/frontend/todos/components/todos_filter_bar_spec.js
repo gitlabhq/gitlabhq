@@ -62,17 +62,23 @@ describe('TodosFilterBar', () => {
       .props('availableTokens')
       .find((token) => token.type === 'author');
 
-  const createComponent = () => {
+  const createComponent = ({ slots = {} } = {}) => {
     wrapper = shallowMountExtended(TodosFilterBar, {
       propsData: {
         todosStatus: ['pending'],
       },
+      slots,
     });
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
 
   afterEach(() => {
     unmockTracking();
+  });
+
+  it('renders the view-toggle slot', () => {
+    createComponent({ slots: { 'view-toggle': '<div data-testid="view-toggle-slot"></div>' } });
+    expect(wrapper.findByTestId('view-toggle-slot').exists()).toBe(true);
   });
 
   it('passes the correct props to the `GlFilteredSearch` component', () => {

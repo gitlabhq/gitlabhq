@@ -84,7 +84,7 @@ export default {
         role="row"
         class="gl-responsive-table-row table-row-header gl-fill-gray-700 gl-font-bold"
       >
-        <div role="rowheader" class="table-section section-20">
+        <div role="rowheader" class="table-section section-15">
           {{ __('Suite') }}
         </div>
         <div role="rowheader" class="table-section section-40">
@@ -96,8 +96,8 @@ export default {
         <div role="rowheader" class="table-section section-10 gl-text-center">
           {{ __('Status') }}
         </div>
-        <div role="rowheader" class="table-section section-10">
-          {{ __('Duration') }}
+        <div role="rowheader" class="table-section section-15">
+          {{ __('Execution time') }}
         </div>
         <div role="rowheader" class="table-section section-10">
           {{ __('Details') }}
@@ -110,7 +110,7 @@ export default {
         class="gl-responsive-table-row gl-items-start gl-rounded-base"
         data-testid="test-case-row"
       >
-        <div class="table-section section-20 section-wrap">
+        <div class="table-section section-15 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
           <div class="table-mobile-content gl-break-words gl-pr-0 @sm/panel:gl-pr-2">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.classname" />
@@ -143,9 +143,9 @@ export default {
           </div>
         </div>
 
-        <div class="table-section section-10 section-wrap">
+        <div class="table-section section-15 section-wrap">
           <div role="rowheader" class="table-mobile-header">
-            {{ __('Duration') }}
+            {{ __('Execution time') }}
           </div>
           <div class="table-mobile-content gl-pr-0 @sm/panel:gl-pr-2">
             {{ testCase.formattedTime }}

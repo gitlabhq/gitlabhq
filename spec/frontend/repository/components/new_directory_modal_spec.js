@@ -106,7 +106,7 @@ describe('NewDirectoryModal', () => {
 
     describe('valid form', () => {
       it('enables submit button when form is complete', async () => {
-        await fillForm({ dirName: 'test-dir' });
+        await fillForm('test-dir');
         expect(findCommitChangesModal().props('valid')).toBe(true);
       });
 

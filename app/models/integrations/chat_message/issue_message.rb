@@ -77,6 +77,8 @@ module Integrations
       end
 
       def issue_title
+        return strip_markup("#{Issue.reference_prefix}#{issue_iid} ") + strip_markup(title) if html
+
         "#{Issue.reference_prefix}#{issue_iid} #{strip_markup(title)}"
       end
 

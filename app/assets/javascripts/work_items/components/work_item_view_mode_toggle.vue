@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { hasBoardViewMode, viewModeOptions } from 'ee_else_ce/work_items/view_modes';
+import { viewModeOptions } from 'ee_else_ce/work_items/view_modes';
 import { VIEW_MODE_BOARD, VIEW_MODE_TABLE } from '../constants';
 
 export default {
@@ -19,6 +19,11 @@ export default {
       type: String,
       required: true,
     },
+    isBoardEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['toggle-view-mode'],
   computed: {
@@ -28,7 +33,7 @@ export default {
           return Boolean(this.glFeatures.planningViewTable);
         }
         if (option.value === VIEW_MODE_BOARD) {
-          return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
+          return this.isBoardEnabled;
         }
         return true;
       });

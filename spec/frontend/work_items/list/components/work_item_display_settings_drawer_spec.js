@@ -45,15 +45,11 @@ describe('WorkItemDisplaySettingsDrawer', () => {
   const findEmptyGroups = () => wrapper.findComponent(WorkItemDisplaySettingsEmptyGroups);
   const findTitle = () => wrapper.find('h2');
 
-  const createComponent = ({ props = {}, provide = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(WorkItemDisplaySettingsDrawer, {
       propsData: {
         ...DEFAULT_PROPS,
         ...props,
-      },
-      provide: {
-        glFeatures: { planningViewBoards: true },
-        ...provide,
       },
     });
   };
@@ -154,8 +150,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findGroupByRow().exists()).toBe(false);
     });
 
-    // CE has no board view mode (it needs status, which is EE-only), so the row never
-    // renders here regardless of feature flags. See ee/spec for the board-enabled cases.
+    // The board is off unless the parent enables it. See ee/spec for the board-enabled cases.
     it('does not render the group by row in board view mode', () => {
       createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
 
@@ -215,8 +210,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
       expect(findEmptyGroups().exists()).toBe(false);
     });
 
-    // CE has no board view mode (it needs status, which is EE-only), so the row never
-    // renders here regardless of feature flags. See ee/spec for the board-enabled cases.
+    // The board is off unless the parent enables it. See ee/spec for the board-enabled cases.
     it('does not render the row in board view mode', () => {
       createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
 

@@ -36,7 +36,7 @@ module Gitlab
         delegate :to_a, :[], :each, to: :loaded_results
 
         def count
-          load_count
+          ::Gitlab::Metrics::AggregationEngineSlis.measure(engine: engine, query_type: :count) { load_count }
         end
 
         private
@@ -44,7 +44,9 @@ module Gitlab
         attr_reader :engine, :plan, :query, :options
 
         def loaded_results
-          @loaded_results ||= format_data(transform_keys(load_data))
+          @loaded_results ||= format_data(transform_keys(
+            ::Gitlab::Metrics::AggregationEngineSlis.measure(engine: engine, query_type: :data) { load_data }
+          ))
         end
 
         def load_data

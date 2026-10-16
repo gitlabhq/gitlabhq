@@ -8,7 +8,8 @@ RSpec.describe Gitlab::PolicyStore::Actions do
       expect(described_class::ALL).to eq(
         [
           { id: 'block', name: 'Block' },
-          { id: 'require_approval', name: 'Require approval' }
+          { id: 'require_approval', name: 'Require approval' },
+          { id: 'set_setting', name: 'Set project setting' }
         ]
       )
     end

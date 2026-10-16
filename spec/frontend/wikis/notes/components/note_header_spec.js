@@ -140,7 +140,7 @@ describe('NoteHeader', () => {
       it('has an anchor href link', () => {
         wrapper = createWrapper({
           createdAt: '2017-08-02T10:51:58.559Z',
-          noteId: 123,
+          noteId: '123',
         });
 
         expect(findTimestampLink().attributes('href')).toBe('#note_123');

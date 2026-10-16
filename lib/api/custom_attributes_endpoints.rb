@@ -19,12 +19,12 @@ module API
 
       helpers do
         params :custom_attributes_key do
-          requires :key, type: String, desc: 'The key of the custom attribute'
+          requires :key, type: String, desc: 'Key of the custom attribute.'
         end
       end
 
       params do
-        requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{attributable_name}"
+        requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{attributable_name}."
       end
       desc "List all custom attributes for a #{attributable_name}" do
         detail "Lists all custom attributes for a specified #{attributable_name}."
@@ -69,7 +69,7 @@ module API
       end
       params do
         use :custom_attributes_key
-        requires :value, type: String, desc: 'The value of the custom attribute'
+        requires :value, type: String, desc: 'Value of the custom attribute.'
       end
       route_setting :authorization, permissions: :update_custom_attribute, boundary_type: boundary_type,
         assignable_when: [:admin]

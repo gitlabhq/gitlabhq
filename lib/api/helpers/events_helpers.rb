@@ -6,15 +6,15 @@ module API
       extend Grape::API::Helpers
 
       params :event_filter_params do
-        optional :action, type: String, desc: 'Event action to filter on'
-        optional :target_type, type: String, values: Event.target_types, desc: 'Event target type to filter on'
-        optional :before, type: Date, desc: 'Include only events created before this date'
-        optional :after, type: Date, desc: 'Include only events created after this date'
+        optional :action, type: String, desc: 'Filter events by the specified [action type](https://docs.gitlab.com/user/profile/contributions_calendar/#user-contribution-events).'
+        optional :target_type, type: String, values: Event.target_types, desc: 'Filter events by target type.'
+        optional :before, type: Date, desc: 'Return events created before the specified date.'
+        optional :after, type: Date, desc: 'Return events created after the specified date.'
       end
 
       params :sort_params do
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return events sorted in ascending and descending order'
+          desc: 'Sort results in ascending or descending order by creation date.'
       end
 
       def present_events(events)

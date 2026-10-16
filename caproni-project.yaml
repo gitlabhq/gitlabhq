@@ -47,7 +47,13 @@ reloaders:
           # host machine, so metrics are silently disabled without this override.
           # VITE_ENABLED: without it, mailer layouts fall back to Sprockets,
           # which can't compile SCSS and fails with "cannot load such file -- sass".
-          command: "bash -c 'prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/sidekiq VITE_ENABLED=true mise exec -- bin/background_jobs start_foreground'"
+          #
+          # VITE_RUBY_PORT: must match the vite process below; 3036 if unset.
+          # Sidekiq reads config/gitlab-sidekiq.yml (mapped above) and binds
+          # sidekiq_exporter (3807) and sidekiq_health_checks (3808) locally on
+          # every run. Both ports come from monitoring.* there. No port-specific
+          # env var moves them.
+          command: bash -c 'prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/sidekiq VITE_ENABLED=true VITE_RUBY_PORT=\${VITE_RUBY_PORT:-3036} mise exec -- bin/background_jobs start_foreground'
   gitlab:
     type: mirror
     repository: gitlab
@@ -94,9 +100,21 @@ reloaders:
           # mirrord copies prometheus_multiproc_dir=/metrics from the pod env,
           # but that path (an emptyDir) only exists inside the pod, not on the
           # host machine, so metrics are silently disabled without this override.
-          command: "bash -c 'WORKER_PROCESSES=0 prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/puma RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc,gitlab-webservice-default.gitlab.svc.cluster.local VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 bundle exec puma --config config/puma.rb'"
+          #
+          # Ports are env-driven so several instances can share a host. Set them
+          # in this process's `env`:
+          # - INTERNAL_PORT: Puma listen port, read by the pod's config/puma.rb
+          #   (copied by .gitlab/caproni/setup.sh); 8080 there if unset, 8081 in
+          #   the pod. Keep it equal to the local side of port_mapping "<local>:8081".
+          #   Edit-mode workhorse still targets localhost:8081, so leave workhorse
+          #   off or adjust its -authBackend when moving it.
+          # - PUMA_CONTROL_PORT: Puma control app, same file; 9293 if unset.
+          # - VITE_RUBY_PORT: dev server port, shared with vite and sidekiq; 3036 if unset.
+          # The web exporter (8083) binds locally on every run; its port comes from
+          # monitoring.web_exporter.port in gitlab.yml. No port-specific env var.
+          command: bash -c 'WORKER_PROCESSES=0 prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/puma RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc,gitlab-webservice-default.gitlab.svc.cluster.local VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 VITE_RUBY_PORT=\${VITE_RUBY_PORT:-3036} bundle exec puma --config config/puma.rb'
         vite:
-          command: "bash -c 'VITE_RUBY_HOST=127.0.0.1 VITE_RUBY_PORT=3036 bundle exec vite dev'"
+          command: bash -c 'VITE_RUBY_HOST=127.0.0.1 VITE_RUBY_PORT=\${VITE_RUBY_PORT:-3036} bundle exec vite dev'
           context: local
   workhorse:
     type: mirror

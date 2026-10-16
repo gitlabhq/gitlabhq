@@ -135,3 +135,7 @@ columns:
   type: Nullable(String)
 - name: parent_workflow_id
   type: Nullable(Int64)
+- name: source_client_name
+  type: LowCardinality(Nullable(String))
+- name: source_client_version
+  type: Nullable(String)

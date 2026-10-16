@@ -48,6 +48,9 @@ fragment Todo on Todo {
         iconName
       }
     }
+    ... on WorkItem {
+      reference
+    }
     ... on MergeRequest {
       mergeRequestState: state
       reference

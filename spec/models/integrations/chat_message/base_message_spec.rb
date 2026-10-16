@@ -83,6 +83,55 @@ RSpec.describe Integrations::ChatMessage::BaseMessage, feature_category: :integr
     end
   end
 
+  context 'with HTML formatting' do
+    let(:args) { super().merge(html: true) }
+    let(:text) { '_Example* `name` [label] <tag> & "quotes"' }
+    let(:escaped_text) { '_Example* `name` [label] &lt;tag&gt; &amp; &quot;quotes&quot;' }
+
+    it 'escapes external text without interpreting its markup' do
+      expect(base_message.send(:strip_markup, text)).to eq(escaped_text)
+    end
+
+    it 'does not escape text again when helpers are composed' do
+      escaped = base_message.send(:strip_markup, text)
+
+      expect(base_message.send(:strip_markup, escaped)).to eq(escaped_text)
+    end
+
+    it 'preserves nil text' do
+      expect(base_message.send(:strip_markup, nil)).to be_nil
+    end
+
+    it 'escapes both link labels and URL attributes' do
+      url = 'https://gitlab.example.com/project?first=1&second="two"'
+
+      expect(base_message.send(:link, text, url)).to eq(
+        '<a href="https://gitlab.example.com/project?first=1&amp;second=&quot;two&quot;">' \
+          "#{escaped_text}</a>"
+      )
+    end
+
+    it 'preserves generated bold text inside a link' do
+      label = base_message.send(:bold, text)
+
+      expect(base_message.send(:link, label, 'https://gitlab.example.com/project')).to eq(
+        "<a href=\"https://gitlab.example.com/project\"><b>#{escaped_text}</b></a>"
+      )
+    end
+
+    it 'returns the generated HTML summary without converting links to Slack markup' do
+      allow(base_message).to receive(:message).and_return('<b>Example</b>')
+
+      expect(base_message.summary).to eq('<b>Example</b>')
+    end
+  end
+
+  describe '#bold' do
+    it 'preserves the existing Markdown format for other chat integrations' do
+      expect(base_message.send(:bold, 'Example <title>')).to eq('*Example title*')
+    end
+  end
+
   describe '#attachment_color' do
     subject(:attachment_color) { base_message.send(:attachment_color) }
 

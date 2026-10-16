@@ -41,6 +41,12 @@ Formerly known as GitLab Duo Workflow, this flow:
 
 This flow is available in VS Code, Visual Studio, and JetBrains.
 
+> [!note]
+> The Software Development Flow is the original IDE flow, and is different from the
+> [Developer Flow](../user/project/merge_requests/developer.md).
+> For most coding tasks, use the Developer Flow in the GitLab UI or the GitLab Duo CLI.
+> For more information, see [choose a flow for coding tasks](../user/duo_agent_platform/flows/foundational_flows/_index.md#choose-a-flow-for-coding-tasks).
+
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md#prerequisites).
@@ -56,7 +62,7 @@ This flow is available in VS Code, Visual Studio, and JetBrains.
 Both the Software Development Flow and GitLab Duo Chat are available in your IDE.
 In the classic layout, they are on separate tabs.
 
-Use the Software Development Flow for complex development tasks.
+Use the Software Development Flow when you want to review a complete plan before the flow makes changes.
 
 - The flow gathers comprehensive context, creates a detailed plan for you to review, and works through
   tasks methodically.
@@ -105,7 +111,8 @@ You can pause or ask the flow to adjust the plan.
 
 ## Supported languages
 
-The Software Development Flow officially supports the following languages:
+This list applies only to the Software Development Flow, not to other flows.
+The flow officially supports the following languages:
 
 - CSS
 - Go

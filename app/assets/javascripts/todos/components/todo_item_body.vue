@@ -62,6 +62,11 @@ export default {
       required: false,
       default: false,
     },
+    hideTargetName: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     noteText() {
@@ -92,6 +97,9 @@ export default {
     },
     titleComponent() {
       return this.isHiddenBySaml ? TodoItemTitleHiddenBySaml : TodoItemTitle;
+    },
+    titleProps() {
+      return this.isHiddenBySaml ? {} : { todo: this.todo, hideTargetName: this.hideTargetName };
     },
     author() {
       if (this.isHiddenBySaml) {
@@ -280,7 +288,7 @@ export default {
     <div class="gl-flex gl-min-w-0 gl-flex-col gl-gap-1">
       <component
         :is="titleComponent"
-        :todo="todo"
+        v-bind="titleProps"
         class="gl-flex gl-min-w-0 gl-items-center gl-gap-1 gl-overflow-hidden gl-whitespace-nowrap gl-text-sm gl-text-subtle"
       />
 

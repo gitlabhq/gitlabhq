@@ -14,7 +14,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all attestations for a project' do
@@ -28,7 +28,7 @@ module API
         end
         params do
           requires :subject_digest, type: String,
-            desc: 'The SHA-256 hash of the artifact'
+            desc: 'Hex-encoded SHA-256 hash of the artifact.'
         end
         route_setting :authorization, permissions: :read_attestation, boundary_type: :project
         get ':id/attestations/:subject_digest', urgency: :low,
@@ -49,7 +49,8 @@ module API
           tags ['attestations']
         end
         params do
-          requires :attestation_iid, types: [String, Integer], desc: 'The iid of the attestation'
+          requires :attestation_iid, types: [String, Integer], desc: 'Internal ID of the attestation, as returned by ' \
+                                                                 'the list attestations API endpoint.'
         end
         route_setting :authorization, permissions: :read_attestation, boundary_type: :project
         get ':id/attestations/:attestation_iid/download', urgency: :low do

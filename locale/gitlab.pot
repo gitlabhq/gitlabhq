@@ -31927,6 +31927,9 @@ msgstr ""
 msgid "Display by"
 msgstr ""
 
+msgid "Display math"
+msgstr ""
+
 msgid "Display milestones"
 msgstr ""
 
@@ -33682,6 +33685,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Event"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Event based"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Every 15 minutes"
 msgstr ""
 
@@ -33850,7 +33856,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|No conditions yet. Add a schedule or an event."
 msgstr ""
 
+msgid "DuoAgentsPlatform|No event based automations"
+msgstr ""
+
 msgid "DuoAgentsPlatform|No runs yet."
+msgstr ""
+
+msgid "DuoAgentsPlatform|No scheduled automations"
 msgstr ""
 
 msgid "DuoAgentsPlatform|No triggers yet"
@@ -33928,6 +33940,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Save changes"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Scheduled"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Scheduled automations do not use composite identity. They run with only the service account's permissions."
 msgstr ""
 
@@ -33941,6 +33956,9 @@ msgid "DuoAgentsPlatform|Scheduled triggers do not use composite identity. They 
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Search automations"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search files"
@@ -76436,13 +76454,13 @@ msgstr ""
 msgid "SecurityConfiguration|Project coverage"
 msgstr ""
 
-msgid "SecurityConfiguration|Project not scanned in 90+ days"
-msgid_plural "SecurityConfiguration|Projects not scanned in 90+ days"
+msgid "SecurityConfiguration|Project with %{scannerName} running successfully"
+msgid_plural "SecurityConfiguration|Projects with %{scannerName} running successfully"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "SecurityConfiguration|Project with %{scannerName} running successfully"
-msgid_plural "SecurityConfiguration|Projects with %{scannerName} running successfully"
+msgid "SecurityConfiguration|Project with a scanner missing from three consecutive default branch pipelines"
+msgid_plural "SecurityConfiguration|Projects with a scanner missing from three consecutive default branch pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -76453,6 +76471,11 @@ msgstr[1] ""
 
 msgid "SecurityConfiguration|Project without %{scannerName} enabled"
 msgid_plural "SecurityConfiguration|Projects without %{scannerName} enabled"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityConfiguration|Project without %{scannerName} in three consecutive default branch pipelines"
+msgid_plural "SecurityConfiguration|Projects without %{scannerName} in three consecutive default branch pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -82325,6 +82348,9 @@ msgid "Show commits in global search results"
 msgstr ""
 
 msgid "Show current status of indexing."
+msgstr ""
+
+msgid "Show data refresh details"
 msgstr ""
 
 msgid "Show details"
@@ -88465,6 +88491,11 @@ msgid_plural "Todos|%{count} selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Todos|%{count} to-do"
+msgid_plural "Todos|%{count} to-dos"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Todos|%{day}, %{time}"
 msgstr ""
 
@@ -88552,6 +88583,9 @@ msgstr ""
 msgid "Todos|Good job! Looks like you don't have anything left on your To-Do List"
 msgstr ""
 
+msgid "Todos|Grouped"
+msgstr ""
+
 msgid "Todos|Henceforth, you shall be known as \"To-Do Destroyer\""
 msgstr ""
 
@@ -88571,6 +88605,9 @@ msgid "Todos|Label priority"
 msgstr ""
 
 msgid "Todos|Leave feedback"
+msgstr ""
+
+msgid "Todos|List"
 msgstr ""
 
 msgid "Todos|Mark as done"
@@ -88615,6 +88652,9 @@ msgid "Todos|Nothing left to do. High five!"
 msgstr ""
 
 msgid "Todos|OKR checkin requested"
+msgstr ""
+
+msgid "Todos|Only to-dos on this page are grouped. Other pages might have more to-dos for the same item."
 msgstr ""
 
 msgid "Todos|Previously snoozed"
@@ -88670,6 +88710,12 @@ msgid "Todos|Select all"
 msgstr ""
 
 msgid "Todos|Select this item to sign in with SAML and view it."
+msgstr ""
+
+msgid "Todos|Show or hide to-dos"
+msgstr ""
+
+msgid "Todos|Show or hide to-dos for %{name}"
 msgstr ""
 
 msgid "Todos|Snooze"
@@ -88756,6 +88802,9 @@ msgid "Todos|Until tomorrow"
 msgstr ""
 
 msgid "Todos|Updated"
+msgstr ""
+
+msgid "Todos|View"
 msgstr ""
 
 msgid "Todos|View %{name}"
@@ -103271,4 +103320,3 @@ msgstr ""
 
 msgid "✔"
 msgstr ""
-

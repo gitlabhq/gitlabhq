@@ -17,7 +17,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource 'projects/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags_user_lists do
@@ -32,7 +32,7 @@ module API
           tags feature_flags_user_lists_tags
         end
         params do
-          optional :search, type: String, desc: 'Return user lists matching the search criteria'
+          optional :search, type: String, desc: 'Return user lists matching the search criteria.'
 
           use :pagination
         end
@@ -54,8 +54,8 @@ module API
           tags feature_flags_user_lists_tags
         end
         params do
-          requires :name, type: String, desc: 'The name of the list'
-          requires :user_xids, type: String, desc: 'A comma separated list of external user ids'
+          requires :name, type: String, desc: 'Name of the list.'
+          requires :user_xids, type: String, desc: 'Comma-separated list of external user IDs.'
         end
         route_setting :authorization, permissions: :create_feature_flag_user_list, boundary_type: :project
         post do
@@ -74,7 +74,7 @@ module API
       end
 
       params do
-        requires :iid, types: [String, Integer], desc: "The internal ID of the project's feature flag user list"
+        requires :iid, types: [String, Integer], desc: "Internal ID of the project's feature flag user list."
       end
       resource 'feature_flags_user_lists/:iid' do
         desc 'Retrieve a feature flag user list' do
@@ -103,8 +103,8 @@ module API
           tags feature_flags_user_lists_tags
         end
         params do
-          optional :name, type: String, desc: 'The name of the list'
-          optional :user_xids, type: String, desc: 'A comma separated list of external user ids'
+          optional :name, type: String, desc: 'Name of the list.'
+          optional :user_xids, type: String, desc: 'Comma-separated list of external user IDs.'
         end
         route_setting :authorization, permissions: :update_feature_flag_user_list, boundary_type: :project
         put do

@@ -2,6 +2,7 @@
 
 module API
   class Files < ::API::Base
+    include ::API::Concerns::AiWorkflowsAccess
     include APIGuard
 
     FILE_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(file_path: ::API::NO_SLASH_URL_PART_REGEX)
@@ -15,7 +16,8 @@ module API
 
     feature_category :source_code_management
 
-    allow_access_with_scope [:read_repository, :ai_workflows], if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope :read_repository, if: ->(request) { request.get? || request.head? }
+    allow_ai_workflows_access
 
     helpers ::API::Helpers::HeadersHelpers
     helpers ::API::Helpers::BlobHelpers

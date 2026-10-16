@@ -19,7 +19,7 @@ describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
 
   const defaultProps = {
-    pipelineIid: 1,
+    pipelineIid: '1',
     pipelinePath: '/pipelines/1',
     projectPath: 'namespace/project/',
   };

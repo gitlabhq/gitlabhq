@@ -53,4 +53,22 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::AggregationResult,
       expect(result.count).to eq(2)
     end
   end
+
+  describe 'query measurement' do
+    let(:result) { described_class.new(engine, query_plan, MergeRequest.select('id')) }
+
+    it 'measures the data query once, however often the rows are read' do
+      expect(Gitlab::Metrics::AggregationEngineSlis).to receive(:measure)
+        .with(engine: engine, query_type: :data).once.and_call_original
+
+      2.times { result.to_a }
+    end
+
+    it 'measures every count, since each one runs its own query' do
+      expect(Gitlab::Metrics::AggregationEngineSlis).to receive(:measure)
+        .with(engine: engine, query_type: :count).twice.and_call_original
+
+      2.times { result.count }
+    end
+  end
 end

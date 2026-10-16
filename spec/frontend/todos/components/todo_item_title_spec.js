@@ -1,9 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
+import StatusBadge from '~/issuable/components/status_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   TODO_ACTION_TYPE_ASSIGNED,
+  TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
   TODO_TARGET_TYPE_ALERT,
   TODO_TARGET_TYPE_DESIGN,
   TODO_TARGET_TYPE_ISSUE,
@@ -84,6 +86,73 @@ describe('TodoItemTitle', () => {
     ])(`renders %s as %s`, (_a, b, c) => {
       createComponent(c);
       expect(wrapper.findByTestId('todo-title').text()).toBe(b);
+    });
+  });
+
+  describe('in grouped view', () => {
+    const mergedMrTodo = {
+      ...MR_BUILD_FAILED_TODO,
+      targetEntity: { ...MR_BUILD_FAILED_TODO.targetEntity, mergeRequestState: 'merged' },
+    };
+    const accessRequestTodo = {
+      ...mockToDo,
+      action: TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
+      targetEntity: { name: 'Flightjs' },
+      group: { fullName: 'Flightjs' },
+    };
+
+    const findTitle = () => wrapper.findByTestId('todo-title');
+    const findStatusBadge = () => wrapper.findComponent(StatusBadge);
+
+    describe('with hideTargetName', () => {
+      beforeEach(() => {
+        createComponent(mergedMrTodo, { hideTargetName: true });
+      });
+
+      it('renders only the full reference', () => {
+        expect(findTitle().text()).toBe('Flightjs / Flight !17');
+      });
+
+      it('does not render the status badge', () => {
+        expect(findStatusBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('with targetNameOnly', () => {
+      beforeEach(() => {
+        createComponent(mergedMrTodo, { targetNameOnly: true });
+      });
+
+      it('renders only the target name', () => {
+        expect(findTitle().text()).toBe('Update file .gitlab-ci.yml');
+      });
+
+      it('does not render the status badge', () => {
+        expect(findStatusBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('with hideTargetName on a transfer failed to-do', () => {
+      it('renders only the transfer target', () => {
+        createComponent(
+          {
+            ...mockToDo,
+            action: TODO_ACTION_TYPE_TRANSFER_FAILED,
+            group: { fullName: 'Flightjs' },
+          },
+          { hideTargetName: true },
+        );
+
+        expect(findTitle().text()).toBe('Flightjs');
+      });
+    });
+
+    describe('when the to-do has no target name', () => {
+      it.each(['hideTargetName', 'targetNameOnly'])('renders the full title with %s', (prop) => {
+        createComponent(accessRequestTodo, { [prop]: true });
+
+        expect(findTitle().text()).toBe('Flightjs');
+      });
     });
   });
 

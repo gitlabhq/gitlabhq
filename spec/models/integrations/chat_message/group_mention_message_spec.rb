@@ -24,6 +24,42 @@ RSpec.describe Integrations::ChatMessage::GroupMentionMessage, feature_category:
     }
   end
 
+  context 'with HTML formatting' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:message) { described_class.new(args) }
+
+    let(:args) do
+      super().merge(
+        html: true,
+        mentioned: { name: 'Group_<example> & tools', url: 'https://gitlab.example.com/groups/example' },
+        project_name: 'Project_<example> & tools', project_url: 'https://gitlab.example.com/group/project',
+        object_attributes: {
+          object_kind: 'issue', iid: 42, title: title,
+          url: 'https://gitlab.example.com/group/project/-/issues/42'
+        }
+      )
+    end
+
+    where(:title, :escaped_title) do
+      'Fix *options* & <toolbar>' | 'Fix *options* &amp; &lt;toolbar&gt;'
+      "Fix <toolbar>\nSecond line" | 'Fix &lt;toolbar&gt;'
+      '' | ''
+      "\nSecond line" | ''
+    end
+
+    with_them do
+      it 'escapes the first title line once while retaining links and bold text' do
+        expect(message.summary).to eq(
+          'Group <a href="https://gitlab.example.com/groups/example">Group_&lt;example&gt; &amp; tools</a> ' \
+            'was mentioned in <a href="https://gitlab.example.com/group/project/-/issues/42">issue #42</a> ' \
+            'of <a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a>: ' \
+            "<b>#{escaped_title}</b>"
+        )
+      end
+    end
+  end
+
   context 'for issue descriptions' do
     let(:attachments) { [{ text: "Issue\ndescription\n123", color: color }] }
 

@@ -382,15 +382,7 @@ Use bulk updates to add or change overrides for many users at once.
 
 You can paste a CSV list of users, which merges into the existing list of overrides, adding new records or updating existing ones.
 
-To bulk update per-user cap overrides:
-
-1. Under **Per-user cap overrides**, select **Bulk update**.
-1. In the modal, paste a CSV list.
-1. Select **Save**.
-
-The input accepts three columns, separated by commas.
-You can add an optional header row on the first line. The header row must be `username,cap,enabled`, and is not case-sensitive.
-If any validation fails or a username is not found, the entire update is rejected and no changes are saved.
+The input accepts three columns, separated by commas:
 
 | Column | Type | Accepted values |
 |--------|------|-----------------|
@@ -398,7 +390,11 @@ If any validation fails or a username is not found, the entire update is rejecte
 | `cap` | Number | Non-negative number. Use `.` as the decimal separator for fractional values (for example, `0`, `500`, `1000.5`). |
 | `enabled` | Boolean | `true`, `True`, `TRUE`, `false`, `False`, `FALSE` |
 
-Example:
+You can add an optional header row on the first line.
+The header row must be `username,cap,enabled`, and is not case-sensitive.
+If any validation fails or a username is not found, the entire update is rejected and no changes are saved.
+
+Example with a header row:
 
 ```plaintext
 username,cap,enabled
@@ -414,6 +410,12 @@ sidney.jones,500,true
 zhang.wei,1000.5,True
 alex.garcia,250,false
 ```
+
+To bulk update per-user cap overrides:
+
+1. Under **Per-user cap overrides**, select **Bulk update**.
+1. In the modal, paste a CSV list.
+1. Select **Save**.
 
 ## Usage control status
 

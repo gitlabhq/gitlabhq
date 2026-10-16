@@ -242,7 +242,7 @@ describe('PinnedSection component', () => {
   describe('supportsPins', () => {
     describe('when pins are supported', () => {
       beforeEach(() => {
-        createWrapper({ supportsPins: true, stubs: { Draggable: stubComponent(Draggable) } });
+        createWrapper({ supportsPins: true, stubs: { DraggableCompat: stubComponent(Draggable) } });
       });
 
       it('wraps the pinned items in a draggable list', () => {
@@ -275,7 +275,7 @@ describe('PinnedSection component', () => {
         createWrapper({
           items: pins,
           supportsPins: true,
-          stubs: { Draggable: stubComponent(Draggable) },
+          stubs: { DraggableCompat: stubComponent(Draggable) },
         });
         wrapper.findComponent(Draggable).vm.$emit('input', [pins[1], pins[0]]);
       });

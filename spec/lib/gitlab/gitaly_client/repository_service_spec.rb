@@ -414,6 +414,30 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
 
       it_behaves_like 'a search for files by regexp'
     end
+
+    describe 'timeout' do
+      let(:ref) { 'master' }
+
+      it 'uses the fast timeout by default' do
+        expect(client).to receive(:gitaly_client_call)
+          .with(anything, :repository_service, :search_files_by_name, anything, timeout: Gitlab::GitalyClient.fast_timeout)
+          .and_call_original
+
+        result
+      end
+
+      context 'when a timeout is given' do
+        subject(:result) { client.search_files_by_regexp(ref, '.*', timeout: 123) }
+
+        it 'uses the given timeout' do
+          expect(client).to receive(:gitaly_client_call)
+            .with(anything, :repository_service, :search_files_by_name, anything, timeout: 123)
+            .and_call_original
+
+          result
+        end
+      end
+    end
   end
 
   describe '#disconnect_alternates' do

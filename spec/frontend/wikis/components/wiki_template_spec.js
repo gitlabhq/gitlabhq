@@ -52,6 +52,7 @@ describe('WikiTemplate', () => {
   const defaultProps = {
     templates,
     format: 'markdown',
+    disabled: false,
   };
 
   const createComponent = (props = {}, mountFn = shallowMount) => {

@@ -10,7 +10,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve the statistics of the last 30 days' do

@@ -256,9 +256,9 @@ module Gitlab
         search_results_from_response(response, options)
       end
 
-      def search_files_by_regexp(ref, filter, limit: 0, offset: 0)
+      def search_files_by_regexp(ref, filter, limit: 0, offset: 0, timeout: nil)
         request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: encode_binary(ref), query: '.', filter: filter, limit: limit, offset: offset)
-        gitaly_client_call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
+        gitaly_client_call(@storage, :repository_service, :search_files_by_name, request, timeout: timeout || GitalyClient.fast_timeout).flat_map(&:files)
       end
 
       def disconnect_alternates

@@ -62,8 +62,9 @@ module API
       subscribable_article = subscribable[:article]
 
       params do
-        requires :id, type: String, desc: "The #{source_type} ID"
-        requires :subscribable_id, type: String, desc: 'The ID of a resource'
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
+        requires :subscribable_id, type: String, desc: 'Internal ID of the issue or merge request, or ID or title of ' \
+                                                   'the label.'
       end
       resource source_type.pluralize, requirements: SUBSCRIBE_ENDPOINT_REQUIREMENTS do
         desc "Subscribe to #{subscribable_article} #{subscribable_type}" do

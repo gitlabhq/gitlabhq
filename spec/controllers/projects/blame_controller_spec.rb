@@ -80,7 +80,6 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
 
         expect(response.body).to include("/#{project.full_path}/-/blob/master/files/ruby/popen.rb?blame=1")
         expect(response.body).to include('window.location.replace')
-        expect(response.body).not_to include('blame-table')
       end
 
       context 'when ref_type is given' do

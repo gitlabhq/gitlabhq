@@ -17,6 +17,9 @@ describe('OrganizationShowApp', () => {
   };
 
   const createComponent = ({ propsData } = {}) => {
+    // LeaveOrganizationModal passes it to SoloOwnedGroupsList as the required userId
+    window.gon.current_user_id = 1;
+
     wrapper = mountExtended(App, {
       propsData: { ...defaultPropsData, ...propsData },
       stubs: { SoloOwnedGroupsList: true },

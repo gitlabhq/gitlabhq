@@ -11,7 +11,7 @@ module API
       urgency :low
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all agents' do
@@ -39,7 +39,7 @@ module API
           tags %w[cluster_agents]
         end
         params do
-          requires :agent_id, type: Integer, desc: 'The ID of an agent'
+          requires :agent_id, type: Integer, desc: 'ID of the agent.'
         end
         route_setting :authorization, permissions: :read_cluster_agent, boundary_type: :project
         get ':id/cluster_agents/:agent_id' do
@@ -54,7 +54,7 @@ module API
           tags %w[cluster_agents]
         end
         params do
-          requires :name, type: String, desc: 'The name of the agent'
+          requires :name, type: String, desc: 'Name of the agent.'
         end
         route_setting :authorization, permissions: :create_cluster_agent, boundary_type: :project
         post ':id/cluster_agents' do
@@ -76,7 +76,7 @@ module API
           tags %w[cluster_agents]
         end
         params do
-          requires :agent_id, type: Integer, desc: 'The ID of an agent'
+          requires :agent_id, type: Integer, desc: 'ID of the agent.'
         end
         route_setting :authorization, permissions: :delete_cluster_agent, boundary_type: :project
         delete ':id/cluster_agents/:agent_id' do

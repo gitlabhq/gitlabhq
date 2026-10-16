@@ -1171,8 +1171,10 @@ module Gitlab
         end
       end
 
-      def search_files_by_regexp(filter, ref = 'HEAD', limit: 0, offset: 0)
-        gitaly_repository_client.search_files_by_regexp(ref, filter, limit: limit, offset: offset).map do |file|
+      def search_files_by_regexp(filter, ref = 'HEAD', limit: 0, offset: 0, timeout: nil)
+        gitaly_repository_client.search_files_by_regexp(
+          ref, filter, limit: limit, offset: offset, timeout: timeout
+        ).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
       rescue GRPC::NotFound

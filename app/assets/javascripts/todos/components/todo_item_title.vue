@@ -31,6 +31,17 @@ export default {
       type: Object,
       required: true,
     },
+    // Grouped view: the card header shows the target name, so items show only the reference
+    hideTargetName: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    targetNameOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isIssue() {
@@ -94,6 +105,8 @@ export default {
       throw new Error(`Unknown target type: ${this.todo.targetType}`);
     },
     showStatusBadge() {
+      if ((this.hideTargetName || this.targetNameOnly) && this.targetName) return false;
+
       return (
         (this.isMergeRequest || this.isIssue || this.isAlert) && this.issuableState !== STATUS_OPEN
       );
@@ -103,6 +116,10 @@ export default {
      */
     todoTitle() {
       if (this.isDuoActionType) return s__('Todos|Getting started with GitLab Duo');
+      if (this.targetNameOnly && this.targetName) return this.targetName;
+      if (this.hideTargetName && this.targetName) {
+        return this.isTransferFailedAction ? this.transferFailedTarget : this.targetFullReference;
+      }
       if (this.isTransferFailedAction) {
         return [this.targetName, this.transferFailedTarget].filter(Boolean).join(' · ');
       }

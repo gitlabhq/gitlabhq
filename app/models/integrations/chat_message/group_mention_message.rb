@@ -79,11 +79,11 @@ module Integrations
       end
 
       def message
-        "Group #{group_link} was mentioned in #{source_link} of #{project_link}: *#{formatted_title}*"
+        "Group #{group_link} was mentioned in #{source_link} of #{project_link}: #{bold(formatted_title)}"
       end
 
       def formatted_title
-        strip_markup(title.lines.first.chomp)
+        strip_markup(title.lines.first.to_s.chomp)
       end
 
       def group_link

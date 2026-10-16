@@ -26,7 +26,7 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database, the default `main`',
+              desc: 'Name of the database.',
               default: 'main'
             optional :job_class_name,
               type: String,
@@ -44,7 +44,7 @@ module API
           params do
             requires :id,
               type: Integer,
-              desc: 'The batched background operation id'
+              desc: 'ID of the batched background operation.'
           end
           route_param :id do
             desc 'Retrieve a batched background operation' do
@@ -61,7 +61,7 @@ module API
               optional :database,
                 type: String,
                 values: Gitlab::Database.all_database_names,
-                desc: 'The name of the database',
+                desc: 'Name of the database.',
                 default: 'main'
             end
             route_setting :authorization, permissions: :read_batched_background_operation, boundary_type: :instance,
@@ -88,7 +88,7 @@ module API
               optional :database,
                 type: String,
                 values: Gitlab::Database.all_database_names,
-                desc: 'The name of the database',
+                desc: 'Name of the database.',
                 default: 'main'
             end
             route_setting :authorization, permissions: :stop_batched_background_operation, boundary_type: :instance,
@@ -121,7 +121,7 @@ module API
               optional :database,
                 type: String,
                 values: Gitlab::Database.all_database_names,
-                desc: 'The name of the database',
+                desc: 'Name of the database.',
                 default: 'main'
             end
             route_setting :authorization, permissions: :restart_batched_background_operation, boundary_type: :instance,

@@ -106,7 +106,7 @@ module Integrations
         if new_branch?
           ['pushed new', ref_link, "to #{project_link}"]
         elsif removed_branch?
-          ['removed', ref, "from #{project_link}"]
+          ['removed', html ? strip_markup(ref) : ref, "from #{project_link}"]
         else
           ['pushed to', ref_link, "of #{project_link} (#{compare_link})"]
         end

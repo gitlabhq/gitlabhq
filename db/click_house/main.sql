@@ -1549,6 +1549,8 @@ CREATE TABLE siphon_duo_workflows_workflows
     `trigger_event_type` Nullable(Int16),
     `drop_reason` Nullable(String),
     `parent_workflow_id` Nullable(Int64),
+    `source_client_name` LowCardinality(Nullable(String)),
+    `source_client_version` Nullable(String),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1,
     PROJECTION pg_pkey_ordered
     (

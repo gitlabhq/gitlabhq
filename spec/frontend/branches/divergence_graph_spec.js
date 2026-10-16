@@ -27,7 +27,7 @@ describe('Divergence graph', () => {
   });
 
   it('calls axios get with list of branch names', () =>
-    init('/-/diverging_counts').then(() => {
+    init('/-/diverging_counts', 'main').then(() => {
       expect(axios.get).toHaveBeenCalledWith('/-/diverging_counts', {
         params: { names: ['main', 'test/hello-world'] },
       });
@@ -41,12 +41,12 @@ describe('Divergence graph', () => {
     it('avoids requesting diverging commit counts', () => {
       expect(axios.get).not.toHaveBeenCalledWith('/-/diverging_counts');
 
-      init('/-/diverging_counts');
+      init('/-/diverging_counts', 'main');
     });
   });
 
   it('creates Vue components', () =>
-    init('/-/diverging_counts').then(() => {
+    init('/-/diverging_counts', 'main').then(() => {
       expect(document.querySelector('[data-name="main"]').innerHTML).not.toEqual('');
       expect(document.querySelector('[data-name="test/hello-world"]').innerHTML).not.toEqual('');
     }));

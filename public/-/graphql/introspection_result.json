@@ -183082,6 +183082,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "group",
+              "description": "Group the policy belongs to. Null for organization-wide policies, or when the current user cannot read the group. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Group",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "id",
               "description": "ID of the policy. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -183096,6 +183108,22 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "inherited",
+              "description": "Whether the group whose policies are being listed inherits the policy, from its organization or an ancestor group. A descendant group's policy is not inherited. Either way, a policy can only be changed from the group that owns it. Always false outside a group policy list. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "lifecycleState",
@@ -401553,10 +401581,45 @@
               "defaultValue": "[]",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "mode",
+              "description": "How to attach the profile relative to existing profiles of the same scan type.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileAttachMode",
+                "ofType": null
+              },
+              "defaultValue": "REPLACE",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "interfaces": null,
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SecurityScanProfileAttachMode",
+          "description": "Attach mode for security scan profiles",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "REPLACE",
+              "description": "Replaces existing profiles of the same type on the target projects.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "APPEND",
+              "description": "Adds the profile alongside existing profiles of the same type.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

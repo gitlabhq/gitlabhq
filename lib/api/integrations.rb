@@ -48,7 +48,7 @@ module API
     # The support for `:id/services` can be dropped if we create an API V5.
     [':id/services', ':id/integrations'].each do |path|
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
@@ -73,7 +73,7 @@ module API
         end
 
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         end
         resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc "Trigger a slash command for #{integration_slug}" do
@@ -115,7 +115,7 @@ module API
     # New API endpoints should use the `:id/integrations` path exclusively.
     ':id/integrations'.tap do |path|
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
       end
 
       resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -140,7 +140,7 @@ module API
       tags INTEGRATIONS_TAGS
     end
     params do
-      requires :text, type: String, desc: 'Text of the slack command'
+      requires :text, type: String, desc: 'Text of the Slack command.'
     end
     route_setting :authorization, skip_granular_token_authorization: :integration_token_auth
     post 'slack/trigger' do

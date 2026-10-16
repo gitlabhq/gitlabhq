@@ -46,7 +46,7 @@ module Integrations
       private
 
       def message
-        "#{strip_markup(user_combined_name)} #{action} #{wiki_page_link} (#{diff_link}) in #{project_link}: *#{strip_markup(title)}*"
+        "#{strip_markup(user_combined_name)} #{action} #{wiki_page_link} (#{diff_link}) in #{project_link}: #{bold(title)}"
       end
 
       def description_message

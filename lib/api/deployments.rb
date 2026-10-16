@@ -15,7 +15,7 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all project deployments' do
@@ -36,13 +36,13 @@ module API
           type: String,
           values: DeploymentsFinder::ALLOWED_SORT_VALUES,
           default: DeploymentsFinder::DEFAULT_SORT_VALUE,
-          desc: 'Return deployments ordered by either one of `id`, `iid`, `created_at`, `updated_at` or `ref` fields. Default is `id`'
+          desc: 'Sort results by the specified field.'
 
         optional :sort,
           type: String,
           values: DeploymentsFinder::ALLOWED_SORT_DIRECTIONS,
           default: DeploymentsFinder::DEFAULT_SORT_DIRECTION,
-          desc: 'Return deployments sorted in `asc` or `desc` order. Default is `asc`'
+          desc: 'Sort results in ascending or descending order.'
 
         optional :updated_after,
           type: DateTime,
@@ -62,12 +62,12 @@ module API
 
         optional :environment,
           type: String,
-          desc: 'The name of the environment to filter deployments by'
+          desc: 'Name of the [environment](https://docs.gitlab.com/ci/environments/) to filter deployments by.'
 
         optional :status,
           type: String,
           values: Deployment.statuses.keys,
-          desc: 'The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`'
+          desc: 'Filter deployments by status.'
       end
 
       route_setting :authentication, job_token_allowed: true
@@ -96,7 +96,7 @@ module API
         tags deployments_tags
       end
       params do
-        requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
+        requires :deployment_id, type: Integer, desc: 'ID of the deployment.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_deployment, boundary_type: :project,
@@ -124,25 +124,25 @@ module API
         requires :environment,
           type: String,
           allow_blank: false,
-          desc: 'The name of the environment to create the deployment for'
+          desc: 'Name of the [environment](https://docs.gitlab.com/ci/environments/) to create the deployment for.'
 
         requires :sha,
           type: String,
           allow_blank: false,
-          desc: 'The SHA of the commit that is deployed'
+          desc: 'SHA of the commit that is deployed.'
 
         requires :ref,
           type: String,
           allow_blank: false,
-          desc: 'The name of the branch or tag that is deployed'
+          desc: 'Name of the branch or tag that is deployed.'
 
         requires :tag,
           type: Boolean,
-          desc: 'A boolean that indicates if the deployed ref is a tag (`true`) or not (`false`)'
+          desc: 'If `true`, the deployed ref is a tag.'
 
         requires :status,
           type: String,
-          desc: 'The status of the deployment that is created. One of `running`, `success`, `failed`, or `canceled`',
+          desc: 'Status of the deployment that is created.',
           values: %w[running success failed canceled]
       end
       route_setting :authentication, job_token_allowed: true
@@ -191,7 +191,7 @@ module API
       params do
         requires :status,
           type: String,
-          desc: 'The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`',
+          desc: 'New status of the deployment.',
           values: %w[running success failed canceled]
       end
       route_setting :authentication, job_token_allowed: true
@@ -226,7 +226,7 @@ module API
         tags deployments_tags
       end
       params do
-        requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
+        requires :deployment_id, type: Integer, desc: 'ID of the deployment.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :delete_deployment, boundary_type: :project,
@@ -262,7 +262,7 @@ module API
       params do
         use :pagination
 
-        requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
+        requires :deployment_id, type: Integer, desc: 'ID of the deployment.'
 
         use :merge_requests_base_params
       end

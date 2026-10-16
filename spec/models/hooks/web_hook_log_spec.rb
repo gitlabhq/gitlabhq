@@ -82,34 +82,100 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
         interpolated_url: 'http://example.com',
         request_headers: { 'Header' => 'value' },
         request_data: { 'user' => { 'email' => 'user@example.com' } },
+        response_headers: { 'Content-Type' => 'text/plain' },
         response_status: '200'
       }
     end
 
-    subject(:insert_log) { described_class.insert_log!(attributes) }
+    let(:skip_yaml_round_trip) { true }
 
-    it 'inserts the log with the same normalization as #save' do
-      expect { insert_log }.to change { described_class.count }.by(1)
+    subject(:insert_log) { described_class.insert_log!(attributes, skip_yaml_round_trip: skip_yaml_round_trip) }
 
-      expect(described_class.last).to have_attributes(
-        url: 'http://*****:*****@example.com',
-        url_hash: Gitlab::CryptoHelper.sha256('http://example.com'),
-        request_headers: { 'Header' => 'value' },
-        request_data: { 'user' => { 'email' => _('[REDACTED]') } },
-        project_id: hook.project_id,
-        created_at: Time.current
-      )
+    shared_examples 'inserting a normalized log' do
+      it 'inserts the log with the same normalization as #save' do
+        expect { insert_log }.to change { described_class.count }.by(1)
+
+        expect(described_class.last).to have_attributes(
+          url: 'http://*****:*****@example.com',
+          url_hash: Gitlab::CryptoHelper.sha256('http://example.com'),
+          request_headers: { 'Header' => 'value' },
+          request_data: { 'user' => { 'email' => _('[REDACTED]') } },
+          response_headers: { 'Content-Type' => 'text/plain' },
+          project_id: hook.project_id,
+          created_at: Time.current
+        )
+      end
+
+      it 'does not modify the given request data' do
+        expect { insert_log }.not_to change { attributes[:request_data] }
+      end
+
+      context 'when the web hook is missing' do
+        before do
+          attributes.delete(:web_hook)
+        end
+
+        it 'raises without inserting' do
+          expect { insert_log }.to raise_error(ActiveRecord::RecordInvalid)
+            .and not_change { described_class.count }
+        end
+      end
     end
 
-    context 'when the web hook is missing' do
+    it_behaves_like 'inserting a normalized log'
+
+    it 'does not round-trip the serialized columns through YAML' do
+      expect(Psych).not_to receive(:safe_load)
+
+      insert_log
+    end
+
+    shared_examples 'storing the same row as when round-tripping through YAML' do
+      it 'stores the same row as when round-tripping through YAML' do
+        insert_log
+        described_class.insert_log!(attributes, skip_yaml_round_trip: false)
+
+        skipped, round_tripped = described_class.order(:id).last(2).map do |log|
+          log.attributes_before_type_cast.except('id')
+        end
+
+        expect(skipped).to eq(round_tripped)
+      end
+    end
+
+    it_behaves_like 'storing the same row as when round-tripping through YAML'
+
+    context 'when serialized columns are nil or missing' do
       before do
-        attributes.delete(:web_hook)
+        attributes[:response_headers] = nil
+        attributes.delete(:request_headers)
       end
 
-      it 'raises without inserting' do
-        expect { insert_log }.to raise_error(ActiveRecord::RecordInvalid)
-          .and not_change { described_class.count }
-      end
+      it_behaves_like 'storing the same row as when round-tripping through YAML'
+    end
+
+    context 'without skip_yaml_round_trip' do
+      let(:skip_yaml_round_trip) { false }
+
+      it_behaves_like 'inserting a normalized log'
+    end
+  end
+
+  describe '#request_data=' do
+    it 'redacts nested emails without modifying the given data', :aggregate_failures do
+      data = { 'user' => { 'name' => 'User', 'email' => 'user@example.com' }, 'list' => [1, 'other@example.com'] }
+
+      log = described_class.new(request_data: data)
+
+      expect(log.request_data).to eq(
+        'user' => { 'name' => 'User', 'email' => _('[REDACTED]') },
+        'list' => [1, _('[REDACTED]')]
+      )
+      expect(data.dig('user', 'email')).to eq('user@example.com')
+    end
+
+    it 'accepts nil' do
+      expect(described_class.new(request_data: nil).request_data).to eq({})
     end
   end
 

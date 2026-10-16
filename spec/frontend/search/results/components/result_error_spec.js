@@ -32,7 +32,7 @@ describe('when resultsError', () => {
 
   describe('when error is a default error', () => {
     beforeEach(() => {
-      const error = {
+      const error = Object.assign(new Error('GraphQL error'), {
         graphQLErrors: [
           {
             message: 'search error: invalid query',
@@ -41,7 +41,7 @@ describe('when resultsError', () => {
             },
           },
         ],
-      };
+      });
       createComponent({ error });
     });
 
@@ -64,7 +64,7 @@ describe('when resultsError', () => {
 
   describe('when error is a network error', () => {
     beforeEach(() => {
-      const error = {
+      const error = Object.assign(new Error('GraphQL error'), {
         graphQLErrors: [
           {
             message: 'ClientConnectionError: failed to connect',
@@ -73,7 +73,7 @@ describe('when resultsError', () => {
             },
           },
         ],
-      };
+      });
       createComponent({ error });
     });
 
@@ -96,7 +96,7 @@ describe('when resultsError', () => {
 
   describe('when no node is available to serve the search', () => {
     beforeEach(() => {
-      const error = {
+      const error = Object.assign(new Error('GraphQL error'), {
         graphQLErrors: [
           {
             message: 'No online nodes found for replica 1 in zoekt enabled namespace 2',
@@ -105,7 +105,7 @@ describe('when resultsError', () => {
             },
           },
         ],
-      };
+      });
       createComponent({ error });
     });
 

@@ -1328,6 +1328,46 @@ RSpec.describe API::Files, feature_category: :source_code_management do
     end
   end
 
+  shared_examples 'ai_workflows token cannot write without push access' do
+    let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+    let(:request) { workhorse_body_upload(api(route(file_path), oauth_access_token: oauth_token), params) }
+
+    # ProtectedBranches::CacheService memoizes protection in Redis, which outlives the DB rollback
+    context 'when the branch is protected', :clean_gitlab_redis_cache do
+      before do
+        create(:protected_branch, :no_one_can_push, project: project, name: 'master')
+      end
+
+      it 'returns 403 and does not commit' do
+        expect { request }.not_to change { project.repository.commit.id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - You are not allowed to push into this branch')
+      end
+    end
+
+    context 'when the user is not a member of a private project' do
+      let(:project) { private_project }
+
+      it 'returns 404 and does not commit' do
+        expect { request }.not_to change { project.repository.commit.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user is not a member of a public project' do
+      let(:project) { public_project }
+
+      it 'returns 403 and does not commit' do
+        expect { request }.not_to change { project.repository.commit.id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - You are not allowed to push into this branch')
+      end
+    end
+  end
+
   # rubocop:disable RSpec/MultipleMemoizedHelpers -- sverrides make these blocks much more readable
   describe 'POST /projects/:id/repository/files/:file_path' do
     let(:file_path) { FFaker::UUID.uuidv4 }
@@ -1425,6 +1465,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
               workhorse_body_upload(api(route(file_path), personal_access_token: token), params)
 
               expect(response).to have_gitlab_http_status(:forbidden)
+              expect(json_response['error']).to eq('insufficient_scope')
             end
 
             it 'returns 201 with `api` scope' do
@@ -1433,6 +1474,18 @@ RSpec.describe API::Files, feature_category: :source_code_management do
               workhorse_body_upload(api(route(file_path), personal_access_token: token), params)
 
               expect(response).to have_gitlab_http_status(:created)
+            end
+          end
+
+          context 'and OAuth tokens are used' do
+            let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+            it 'creates the file with the `ai_workflows` scope' do
+              workhorse_body_upload(api(route(file_path), oauth_access_token: oauth_token), params)
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['file_path']).to eq(CGI.unescape(file_path))
+              expect(project.repository.commit.raw.author_email).to eq(user.email)
             end
           end
 
@@ -1602,6 +1655,8 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    it_behaves_like 'ai_workflows token cannot write without push access'
 
     context 'for arbitrary local file read (security issue #627748)' do
       let(:unsigned_upload_url) do
@@ -1781,6 +1836,17 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         end
       end
 
+      context 'and an OAuth token with the `ai_workflows` scope is used' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it 'updates existing file in project repo' do
+          workhorse_body_upload(api(route(file_path), oauth_access_token: oauth_token), params)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['file_path']).to eq(CGI.unescape(file_path))
+        end
+      end
+
       context 'and user is an inherited member from the group' do
         let(:project) { private_project }
         let(:url) { api(route(file_path), current_user) }
@@ -1857,6 +1923,8 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
     end
 
+    it_behaves_like 'ai_workflows token cannot write without push access'
+
     context 'for arbitrary local file read (security issue #627748)' do
       let(:unsigned_upload_url) do
         api("/projects/#{public_project.id}/repository/files/#{file_path}", nil)
@@ -1918,6 +1986,18 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           delete api(route(file_path), user), params: params
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'with an OAuth token that has the `ai_workflows` scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it 'returns 403 insufficient_scope and keeps the file' do
+          delete api(route(file_path), oauth_access_token: oauth_token), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_scope')
+          expect(project.repository.blob_at('master', CGI.unescape(file_path))).to be_present
         end
       end
     end
@@ -2072,6 +2152,17 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           post api(url, user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with an OAuth token that has the `ai_workflows` scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        it 'authorizes the upload' do
+          public_send(verb, api(url, oauth_access_token: oauth_token), headers: workhorse_headers)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['TempPath']).to be_present
         end
       end
 

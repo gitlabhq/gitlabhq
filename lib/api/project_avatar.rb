@@ -5,7 +5,7 @@ module API
     feature_category :groups_and_projects
 
     params do
-      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download a project avatar' do

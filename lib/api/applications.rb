@@ -37,15 +37,15 @@ module API
         requires :name, type: String, desc: 'Name of the application.', documentation: { example: 'MyApplication' }
         requires :redirect_uri, type: String, desc: 'Redirect URI of the application.', documentation: { example: 'https://redirect.uri' }
         requires :scopes, type: String,
-          desc: 'Scopes of the application. You can specify multiple scopes by separating\
-                                 each scope using a space',
+          desc: 'Scopes available to the application. Separate multiple scopes with a space.',
           allow_blank: false
 
         optional :confidential,
           type: Boolean,
           default: true,
-          desc: 'The application is used where the client secret can be kept confidential. Native mobile apps \
-                        and Single Page Apps are considered non-confidential. Defaults to true if not supplied'
+          desc: 'If `true`, the application can securely store client credentials, such as the client secret. ' \
+            'Non-confidential applications (such as native mobile apps and Single Page Apps) might expose client ' \
+            'credentials.'
         use :granular_scope_params
       end
       route_setting :authorization, permissions: :create_oauth_application, boundary_type: :instance,
@@ -103,7 +103,8 @@ module API
         tags ['applications']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
+        requires :id, type: Integer, desc: 'ID of the application. Not the `application_id`, which is the OAuth ' \
+                                       'client ID.'
       end
       route_setting :authorization, permissions: :delete_oauth_application, boundary_type: :instance,
         assignable_when: [:admin]
@@ -127,7 +128,8 @@ module API
         tags ['applications']
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
+        requires :id, type: Integer, desc: 'ID of the application. Not the `application_id`, which is the OAuth ' \
+                                       'client ID.'
       end
       route_setting :authorization, permissions: :renew_secret_oauth_application, boundary_type: :instance,
         assignable_when: [:admin]

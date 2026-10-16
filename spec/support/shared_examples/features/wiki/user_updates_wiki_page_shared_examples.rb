@@ -158,13 +158,14 @@ RSpec.shared_examples 'User updates wiki page' do
     it_behaves_like 'wiki file attachments'
 
     context 'when multiple people edit the page at the same time' do
-      it 'preserves user changes in the wiki editor', :js do
+      it 'shows a conflict message and preserves user changes in the wiki editor', :js do
         wiki_page.update(content: 'Some Other Updates') # rubocop:disable Rails/SaveBang
 
         fill_in('Content', with: 'Updated Wiki Content')
         click_on('Save changes')
 
-        expect(page).to have_content('Someone edited the page the same time you did.')
+        expect(page).to have_content('Someone edited the page the same time you did.', count: 1)
+        expect(page).to have_no_content('%{wikiLinkStart}')
         expect(find('textarea#wiki_content').value).to eq('Updated Wiki Content')
       end
     end

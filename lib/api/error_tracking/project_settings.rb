@@ -16,7 +16,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+        desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -50,11 +50,11 @@ module API
       params do
         requires :active,
           type: Boolean,
-          desc: 'Pass true to enable the already configured Error Tracking settings or false to disable it.',
+          desc: 'If `true`, enables the already configured error tracking settings. If `false`, disables them.',
           allow_blank: false
         optional :integrated,
           type: Boolean,
-          desc: 'Pass true to enable the integrated Error Tracking backend. Available in GitLab 14.2 and later.'
+          desc: 'If `true`, enables the integrated error tracking backend.'
       end
 
       route_setting :authorization, permissions: :update_error_tracking_setting, boundary_type: :project
@@ -90,11 +90,11 @@ module API
       end
       params do
         requires :active, type: Boolean,
-          desc: 'Pass true to enable the configured Error Tracking settings or false to disable it.',
+          desc: 'If `true`, enables the configured error tracking settings. If `false`, disables them.',
           allow_blank: false
         requires :integrated,
           type: Boolean,
-          desc: 'Pass true to enable the integrated Error Tracking backend.'
+          desc: 'If `true`, enables the integrated error tracking backend.'
       end
 
       route_setting :authorization, permissions: :update_error_tracking_setting, boundary_type: :project

@@ -9,14 +9,21 @@ import {
   GlTabs,
   GlTooltipDirective,
   GlFormCheckbox,
+  GlIcon,
+  GlSegmentedControl,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_PAGE_SIZE,
+  TODOS_VIEW_GROUPED,
+  TODOS_VIEW_LIST,
+  TODOS_VIEW_STORAGE_KEY,
   INSTRUMENT_TAB_LABELS,
   INSTRUMENT_TODO_FILTER_CHANGE,
   STATUS_BY_TAB,
@@ -24,6 +31,7 @@ import {
   TABS_INDICES,
 } from '~/todos/constants';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
+import { groupTodosByTarget } from '../utils/group_todos';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
 import TodoItem from './todo_item.vue';
@@ -31,6 +39,12 @@ import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 import TodosBulkBar from './todos_bulk_bar.vue';
 import TodosPagination from './todos_pagination.vue';
+import TodosGroup from './todos_group.vue';
+
+const getStoredView = () => {
+  const { exists, value } = getStorageValue(TODOS_VIEW_STORAGE_KEY);
+  return exists && value === TODOS_VIEW_GROUPED ? TODOS_VIEW_GROUPED : TODOS_VIEW_LIST;
+};
 
 export default {
   name: 'TodosApp',
@@ -42,17 +56,20 @@ export default {
     GlTabs,
     GlTab,
     GlFormCheckbox,
+    GlIcon,
+    GlSegmentedControl,
     IndexLayout,
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
     TodosBulkBar,
     TodosPagination,
+    TodosGroup,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   provide() {
     return {
       currentTab: computed(() => this.currentTab),
@@ -64,6 +81,7 @@ export default {
     return {
       updateTimeoutId: null,
       needsRefresh: false,
+      view: this.glFeatures?.todosGroupedView ? getStoredView() : TODOS_VIEW_LIST,
       cursor: {
         first: DEFAULT_PAGE_SIZE,
         after: null,
@@ -149,6 +167,28 @@ export default {
     isOnAllTab() {
       return this.currentTab === TABS_INDICES.all;
     },
+    canUseGroupedView() {
+      return Boolean(this.glFeatures.todosGroupedView) && this.currentTab === TABS_INDICES.pending;
+    },
+    isGroupedView() {
+      return this.canUseGroupedView && this.view === TODOS_VIEW_GROUPED;
+    },
+    viewOptions() {
+      return [
+        { value: TODOS_VIEW_LIST, text: s__('Todos|List') },
+        { value: TODOS_VIEW_GROUPED, text: s__('Todos|Grouped') },
+      ].map((option) => ({
+        ...option,
+        // GlSegmentedControl only shows the selected state visually
+        props: { 'aria-pressed': String(this.view === option.value) },
+      }));
+    },
+    todoGroups() {
+      return this.isGroupedView ? groupTodosByTarget(this.todos) : [];
+    },
+    isPaginated() {
+      return Boolean(this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
+    },
     isOnFirstPage() {
       return !this.pageInfo.hasPreviousPage;
     },
@@ -223,6 +263,10 @@ export default {
     clearInterval(this.currentTimeInterval);
   },
   methods: {
+    changeView(view) {
+      this.view = view;
+      saveStorageValue(TODOS_VIEW_STORAGE_KEY, view);
+    },
     updateCursor(cursor) {
       this.cursor = cursor;
     },
@@ -389,7 +433,18 @@ export default {
       </div>
     </div>
 
-    <todos-filter-bar :todos-status="statusByTab" @filters-changed="handleFiltersChanged" />
+    <todos-filter-bar :todos-status="statusByTab" @filters-changed="handleFiltersChanged">
+      <template v-if="canUseGroupedView" #view-toggle>
+        <gl-segmented-control
+          :value="view"
+          :options="viewOptions"
+          :aria-label="s__('Todos|View')"
+          class="gl-shrink-0"
+          data-testid="todos-view-toggle"
+          @input="changeView"
+        />
+      </template>
+    </todos-filter-bar>
 
     <div>
       <div class="gl-flex gl-flex-col">
@@ -425,7 +480,34 @@ export default {
           @mouseenter="startedInteracting"
           @mouseleave="stoppedInteracting"
         >
+          <p
+            v-if="isGroupedView && isPaginated"
+            class="gl-mb-0 gl-mt-4 gl-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+            data-testid="todos-grouped-view-pagination-notice"
+          >
+            <gl-icon name="information-o" variant="subtle" :size="12" class="gl-shrink-0" />
+            {{
+              s__(
+                'Todos|Only to-dos on this page are grouped. Other pages might have more to-dos for the same item.',
+              )
+            }}
+          </p>
+          <ol
+            v-if="isGroupedView"
+            data-testid="todos-group-list"
+            class="gl-m-0 gl-flex gl-list-none gl-flex-col gl-gap-4 gl-p-0 gl-pt-4"
+          >
+            <todos-group
+              v-for="group in todoGroups"
+              :key="group.key"
+              :todos="group.todos"
+              :selected-ids="selectedIds"
+              @change="handleItemChanged"
+              @select-change="handleSelectionChanged"
+            />
+          </ol>
           <transition-group
+            v-else
             name="todos"
             tag="ol"
             data-testid="todo-item-list"

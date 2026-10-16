@@ -12,7 +12,7 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::Labels::LABEL_ENDPOINT_REQUIREMENTS do
       desc 'List all group labels' do
@@ -24,24 +24,25 @@ module API
         optional :with_counts,
           type: Boolean,
           default: false,
-          desc: 'Include issue and merge request counts'
+          desc: 'If `true`, includes issue and merge request counts.'
         optional :include_ancestor_groups,
           type: Boolean,
           default: true,
-          desc: 'Include ancestor groups'
+          desc: 'If `true`, includes ancestor groups.'
         optional :include_descendant_groups,
           type: Boolean,
           default: false,
-          desc: 'Include descendant groups. This feature was added in GitLab 13.6'
+          desc: 'If `true`, includes descendant groups.'
         optional :only_group_labels,
           type: Boolean,
           default: true,
-          desc: 'Toggle to include only group labels or also project labels. This feature was added in GitLab 13.6'
+          desc: 'If `true`, returns only group labels. If `false`, also returns project labels.'
         optional :search,
           type: String,
-          desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
+          desc: 'Keyword to filter labels by.'
         optional :archived, type: Boolean,
-          desc: 'Filter by archived status. This feature was added in GitLab 18.10'
+          desc: 'If `true`, returns only archived labels. If `false`, returns only non-archived labels. ' \
+            'If omitted, returns all labels. Introduced in GitLab 18.10.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_label, boundary_type: :group
@@ -55,19 +56,19 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, types: [String, Integer], desc: 'The ID or name of a label'
+        requires :name, types: [String, Integer], desc: 'ID or name of the label.'
         optional :include_ancestor_groups,
           type: Boolean,
           default: true,
-          desc: 'Include ancestor groups'
+          desc: 'If `true`, includes ancestor groups.'
         optional :include_descendant_groups,
           type: Boolean,
           default: false,
-          desc: 'Include descendant groups. This feature was added in GitLab 13.6'
+          desc: 'If `true`, includes descendant groups.'
         optional :only_group_labels,
           type: Boolean,
           default: true,
-          desc: 'Toggle to include only group labels or also project labels. This feature was added in GitLab 13.6'
+          desc: 'If `true`, returns only group labels. If `false`, also returns project labels.'
       end
       route_setting :authorization, permissions: :read_label, boundary_type: :group
       get ':id/labels/:name' do
@@ -93,8 +94,8 @@ module API
         tags ['labels']
       end
       params do
-        optional :label_id, type: Integer, desc: 'The ID of the label to be updated'
-        optional :name, type: String, desc: 'The name of the label to be updated'
+        optional :label_id, type: Integer, desc: 'ID of the label to update.'
+        optional :name, type: String, desc: 'Name of the label to update.'
         use :group_label_update_params
         exactly_one_of :label_id, :name
       end
@@ -109,7 +110,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name of the label to be deleted'
+        requires :name, type: String, desc: 'Name of the label to delete.'
       end
       route_setting :authorization, permissions: :delete_label, boundary_type: :group
       delete ':id/labels' do
@@ -122,7 +123,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name or id of the label to be updated'
+        requires :name, type: String, desc: 'Name or ID of the label to update.'
         use :group_label_update_params
       end
       route_setting :authorization, permissions: :update_label, boundary_type: :group
@@ -136,7 +137,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name or id of the label to be deleted'
+        requires :name, type: String, desc: 'Name or ID of the label to delete.'
       end
       route_setting :authorization, permissions: :delete_label, boundary_type: :group
       delete ':id/labels/:name' do

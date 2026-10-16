@@ -39,7 +39,7 @@ describe('SearchItem', () => {
       const item = {
         text: 'Test Item',
         avatar_url: 'https://example.com/avatar.png',
-        entity_id: '123',
+        entity_id: 123,
         entity_name: 'Test Entity',
       };
 

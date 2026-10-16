@@ -14,8 +14,8 @@ module API
         tags %w[suggestions]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the suggestion'
-        optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
+        requires :id, type: Integer, desc: 'ID of the suggestion.'
+        optional :commit_message, type: String, desc: "Custom commit message to use instead of the default generated message or the project's default message."
       end
       route_setting :authorization, permissions: :apply_suggestion,
         boundary: -> { find_suggestion&.note&.project }, boundary_type: :project
@@ -36,8 +36,8 @@ module API
         tags %w[suggestions]
       end
       params do
-        requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: "An array of the suggestion IDs"
-        optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
+        requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'IDs of suggestions to apply.'
+        optional :commit_message, type: String, desc: "Custom commit message to use instead of the default generated message or the project's default message."
       end
       route_setting :authorization, permissions: :apply_suggestion,
         boundary: -> { find_suggestions.first&.note&.project }, boundary_type: :project

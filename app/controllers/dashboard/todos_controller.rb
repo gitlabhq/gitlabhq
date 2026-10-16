@@ -6,6 +6,10 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   feature_category :notifications
   urgency :low
 
+  before_action do
+    push_frontend_feature_flag(:todos_grouped_view, current_user)
+  end
+
   def index
     track_internal_event(
       'view_todo_list',

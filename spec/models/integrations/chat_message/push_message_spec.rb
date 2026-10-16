@@ -21,6 +21,40 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
 
   it_behaves_like Integrations::ChatMessage
 
+  context 'with HTML formatting', feature_category: :integrations do
+    subject(:message) { described_class.new(args) }
+
+    let(:args) do
+      super().merge(
+        html: true, before: '1' * 40, after: '2' * 40,
+        ref: 'refs/heads/topic_<example>&tools', user_name: 'example_bot',
+        project_name: 'Project_<example> & tools', project_url: 'https://gitlab.example.com/group/project'
+      )
+    end
+
+    it 'escapes a linked branch name and preserves the compare link' do
+      expect(message.summary).to eq(
+        'example_bot pushed to branch ' \
+          '<a href="https://gitlab.example.com/group/project/-/commits/topic_&lt;example&gt;&amp;tools">' \
+          'topic_&lt;example&gt;&amp;tools</a> of ' \
+          '<a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a> ' \
+          '(<a href="https://gitlab.example.com/group/project/-/compare/' \
+          "#{'1' * 40}...#{'2' * 40}\">Compare changes</a>)"
+      )
+    end
+
+    context 'when a branch is removed' do
+      let(:args) { super().merge(after: '0' * 40) }
+
+      it 'escapes the branch name when it has no link' do
+        expect(message.summary).to eq(
+          'example_bot removed branch topic_&lt;example&gt;&amp;tools from ' \
+            '<a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a>'
+        )
+      end
+    end
+  end
+
   context 'push' do
     before do
       args[:commits] = [
@@ -186,6 +220,23 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
   context 'removed branch' do
     before do
       args[:after] = Gitlab::Git::SHA1_BLANK_SHA
+    end
+
+    context 'when the branch name contains markup', feature_category: :integrations do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:args) { super().merge(ref: 'refs/heads/topic_<example>&tools', markdown: markdown) }
+
+      where(:markdown, :project_link) do
+        true  | '[project_name](http://url.com)'
+        false | '<http://url.com|project_name>'
+      end
+
+      with_them do
+        it 'preserves the unlinked branch name' do
+          expect(subject.pretext).to eq("test.user removed branch topic_<example>&tools from #{project_link}")
+        end
+      end
     end
 
     context 'without markdown' do

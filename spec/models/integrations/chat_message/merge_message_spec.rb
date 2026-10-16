@@ -31,6 +31,40 @@ RSpec.describe Integrations::ChatMessage::MergeMessage, feature_category: :integ
 
   it_behaves_like Integrations::ChatMessage
 
+  context 'with HTML formatting' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:message) { described_class.new(args) }
+
+    let(:args) do
+      super().merge(
+        html: true,
+        user: { name: 'Example <reviewer> & tools', username: 'example_bot' },
+        project_name: 'Project_<example> & tools',
+        project_url: 'https://gitlab.example.com/group/project',
+        object_attributes: { iid: 42, title: title, state: 'opened' }
+      )
+    end
+
+    where(:title, :escaped_title) do
+      'Fix *options* & <toolbar>' | 'Fix *options* &amp; &lt;toolbar&gt;'
+      "Fix <toolbar>\nSecond line" | 'Fix &lt;toolbar&gt;'
+      '' | ''
+      "\nSecond line" | ''
+    end
+
+    with_them do
+      it 'escapes the first title line once and keeps bold markup inside the link' do
+        expect(message.summary).to eq(
+          'Example &lt;reviewer&gt; &amp; tools (example_bot) opened merge request ' \
+            '<a href="https://gitlab.example.com/group/project/-/merge_requests/42">' \
+            "!42 <b>#{escaped_title}</b></a> in " \
+            '<a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a>'
+        )
+      end
+    end
+  end
+
   context 'without markdown' do
     let(:color) { '#334455' }
 

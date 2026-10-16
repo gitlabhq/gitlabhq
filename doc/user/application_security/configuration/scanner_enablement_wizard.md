@@ -45,7 +45,7 @@ The tab displays the following cards:
 | Unprotected projects | List of projects with no scanners enabled. |
 | Scanners enabled | Count of all scanner types enabled in the group. |
 | Needs attention | List of projects with scan failures. |
-| Stale scans | List of projects with scans older than 90 days. |
+| Stale scans | List of projects with a scanner missing from at least three consecutive default branch pipelines. |
 
 Below the cards, a list of each scanner type indicates how many projects have the scanner active, failed, or not configured.
 

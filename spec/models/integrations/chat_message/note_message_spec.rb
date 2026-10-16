@@ -34,6 +34,44 @@ RSpec.describe Integrations::ChatMessage::NoteMessage do
 
   it_behaves_like Integrations::ChatMessage
 
+  context 'with HTML formatting', feature_category: :integrations do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:message) { described_class.new(args) }
+
+    let(:args) do
+      super().merge(
+        html: true,
+        user: { name: 'Example <reviewer> & tools', username: 'example_bot' },
+        project_name: 'Project_<example> & tools', project_url: 'https://gitlab.example.com/group/project',
+        merge_request: { iid: 42, title: title },
+        object_attributes: {
+          noteable_type: 'MergeRequest', note: 'Review completed',
+          url: 'https://gitlab.example.com/group/project/-/merge_requests/42#note_1'
+        }
+      )
+    end
+
+    where(:title, :escaped_title) do
+      'Fix *options* & <toolbar>' | 'Fix *options* &amp; &lt;toolbar&gt;'
+      "Fix <toolbar>\nSecond line" | 'Fix &lt;toolbar&gt;'
+      '' | ''
+      "\nSecond line" | ''
+    end
+
+    with_them do
+      it 'escapes the first title line while retaining generated links and bold text' do
+        expect(message.summary).to eq(
+          'Example &lt;reviewer&gt; &amp; tools (example_bot) ' \
+            '<a href="https://gitlab.example.com/group/project/-/merge_requests/42#note_1">' \
+            'commented on merge request !42</a> in ' \
+            '<a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a>: ' \
+            "<b>#{escaped_title}</b>"
+        )
+      end
+    end
+  end
+
   context 'commit notes' do
     context 'without markdown' do
       it 'returns a message regarding notes on commits' do

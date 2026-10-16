@@ -147,6 +147,8 @@ module WikiActions
       @ref = version_id_param
       @path = page.path
       @templates = templates_list
+      @error = flash[:error]
+      flash.delete(:error)
 
       log_wiki_page_view
 

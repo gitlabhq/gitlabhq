@@ -43,9 +43,9 @@ describe('Project Setting Row', () => {
   it('should render default slot content', () => {
     wrapper = shallowMountExtended(projectSettingRow, {
       slots: {
-        'label-icon': GlIcon,
+        'label-icon': '<gl-icon name="lock" />',
       },
-      stubs: { GlFormGroup },
+      stubs: { GlFormGroup, GlIcon },
     });
     expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });

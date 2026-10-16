@@ -31,7 +31,7 @@ module API
       params do
         optional :plan_name, type: String, values: ::GitlabSubscriptions::SystemDefined::Plan.all_plans,
           default: ::GitlabSubscriptions::SystemDefined::Plan::DEFAULT,
-          desc: 'Name of the plan to get the limits from. Default: default.'
+          desc: 'Name of the plan to get the limits from.'
       end
       route_setting :authorization, permissions: :read_plan_limit, boundary_type: :instance, assignable_when: [:admin]
       get "application/plan_limits" do
@@ -53,56 +53,67 @@ module API
       end
       params do
         requires :plan_name, type: String, values: ::GitlabSubscriptions::SystemDefined::Plan.all_plans,
-          desc: 'Name of the plan to update'
+          desc: 'Name of the plan to update.'
 
-        optional :cargo_max_file_size, type: Integer, desc: 'Maximum Cargo package file size in bytes'
+        optional :cargo_max_file_size, type: Integer,
+          desc: 'Maximum Cargo package file size in bytes. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/33060) in GitLab 19.3.'
         optional :ci_instance_level_variables, type: Integer,
-          desc: 'Maximum number of Instance-level CI/CD variables that can be defined'
-        optional :ci_pipeline_size, type: Integer, desc: 'Maximum number of jobs in a single pipeline'
-        optional :ci_active_jobs, type: Integer, desc: 'Total number of jobs in currently active pipelines'
+          desc: 'Maximum number of instance-level CI/CD variables that can be defined.'
+        optional :ci_pipeline_size, type: Integer, desc: 'Maximum number of jobs in a single pipeline.'
+        optional :ci_active_jobs, type: Integer, desc: 'Total number of jobs in currently active pipelines.'
         optional :ci_project_subscriptions, type: Integer,
-          desc: 'Maximum number of pipeline subscriptions to and from a project'
-        optional :ci_pipeline_schedules, type: Integer, desc: 'Maximum number of pipeline schedules'
-        optional :ci_needs_size_limit, type: Integer, desc: 'Maximum number of needs dependencies that a job can have'
+          desc: 'Maximum number of pipeline subscriptions to and from a project.'
+        optional :ci_pipeline_schedules, type: Integer, desc: 'Maximum number of pipeline schedules.'
+        optional :ci_needs_size_limit, type: Integer, desc: 'Maximum number of `needs` dependencies that a job can ' \
+                                                        'have.'
         optional :ci_registered_group_runners, type: Integer,
-          desc: 'Maximum number of runners created or active in a group during the past seven days'
+          desc: 'Maximum number of runners created or active in a group during the past seven days.'
         optional :ci_registered_project_runners, type: Integer,
-          desc: 'Maximum number of runners created or active in a project during the past seven days'
-        optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes'
-        optional :dotenv_size, type: Integer, desc: 'Maximum size of a dotenv artifact in bytes'
-        optional :dotenv_variables, type: Integer, desc: 'Maximum number of variables in a dotenv artifact'
+          desc: 'Maximum number of runners created or active in a project during the past seven days.'
+        optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes.'
+        optional :dotenv_size, type: Integer,
+          desc: 'Maximum size of a dotenv artifact in bytes. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432529) in GitLab 17.1.'
+        optional :dotenv_variables, type: Integer,
+          desc: 'Maximum number of variables in a dotenv artifact. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432529) in GitLab 17.1.'
         optional :enforcement_limit, type: Integer,
-          desc: 'Maximum storage size for the root namespace enforcement in MiB'
-        optional :generic_packages_max_file_size, type: Integer, desc: 'Maximum generic package file size in bytes'
-        optional :helm_max_file_size, type: Integer, desc: 'Maximum Helm chart file size in bytes'
-        optional :maven_max_file_size, type: Integer, desc: 'Maximum Maven package file size in bytes'
+          desc: 'Maximum storage size for root namespace limit enforcement, in MiB.'
+        optional :generic_packages_max_file_size, type: Integer, desc: 'Maximum generic package file size in bytes.'
+        optional :helm_max_file_size, type: Integer, desc: 'Maximum Helm chart file size in bytes.'
+        optional :maven_max_file_size, type: Integer, desc: 'Maximum Maven package file size in bytes.'
         optional :notification_limit, type: Integer,
-          desc: 'Maximum storage size for the root namespace notifications in MiB'
-        optional :npm_max_file_size, type: Integer, desc: 'Maximum NPM package file size in bytes'
-        optional :nuget_max_file_size, type: Integer, desc: 'Maximum NuGet package file size in bytes'
-        optional :pypi_max_file_size, type: Integer, desc: 'Maximum PyPI package file size in bytes'
+          desc: 'Maximum storage size for root namespace limit notifications, in MiB.'
+        optional :npm_max_file_size, type: Integer, desc: 'Maximum npm package file size in bytes.'
+        optional :nuget_max_file_size, type: Integer, desc: 'Maximum NuGet package file size in bytes.'
+        optional :pypi_max_file_size, type: Integer, desc: 'Maximum PyPI package file size in bytes.'
         optional :service_desk_outbound_emails_per_hour, type: Integer,
-          desc: 'Maximum number of outbound Service Desk emails per hour, per top-level namespace. ' \
-            '0 for unlimited.'
+          desc: 'Maximum number of outbound Service Desk emails per hour, per top-level namespace. Set to `0` for ' \
+            'unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab ' \
+            '19.4.'
         optional :service_desk_outbound_emails_per_day, type: Integer,
-          desc: 'Maximum number of outbound Service Desk emails per day, per top-level namespace. ' \
-            '0 for unlimited.'
+          desc: 'Maximum number of outbound Service Desk emails per day, per top-level namespace. Set to `0` for ' \
+            'unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253087) in GitLab ' \
+            '19.4.'
         optional :terraform_module_max_file_size, type: Integer,
-          desc: 'Maximum Terraform Module package file size in bytes'
-        optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in MiB'
+          desc: 'Maximum Terraform module package file size in bytes.'
+        optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace, in MiB.'
         optional :pipeline_hierarchy_size, type: Integer,
-          desc: "Maximum number of downstream pipelines in a pipeline's hierarchy tree"
+          desc: "Maximum number of downstream pipelines in a pipeline's hierarchy tree. The default is `1000`. " \
+            "Higher values are not recommended."
         optional :web_hook_calls, type: Integer,
-          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
-            '0 for unlimited.'
+          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for ' \
+            'unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571738) in GitLab 18.5.'
         optional :web_hook_calls_low, type: Integer,
-          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
-            '0 for unlimited (GitLab.com only).'
+          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for ' \
+            'unlimited. GitLab.com only.'
         optional :web_hook_calls_mid, type: Integer,
-          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
-            '0 for unlimited (GitLab.com only).'
+          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for ' \
+            'unlimited. GitLab.com only.'
         optional :max_pipelines_per_merge_train, type: Integer,
-          desc: 'Maximum number of parallel pipelines per merge train'
+          desc: 'Maximum number of parallel pipelines per merge train. The default is `20` and the minimum is `1`. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374188) in GitLab 19.0.'
       end
       route_setting :authorization, permissions: :update_plan_limit, boundary_type: :instance, assignable_when: [:admin]
       put "application/plan_limits" do

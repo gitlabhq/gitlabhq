@@ -38,6 +38,11 @@ export default {
       required: false,
       default: null,
     },
+    hideTargetName: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['change', 'select-change'],
   computed: {
@@ -95,7 +100,11 @@ export default {
       :data-event-additional="trackingAdditionalData"
       class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-nowrap gl-justify-between gl-gap-3 gl-gap-y-3 gl-rounded-base !gl-text-default !gl-no-underline @sm/panel:gl-flex-row @sm/panel:gl-items-center"
     >
-      <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />
+      <todo-item-body
+        :todo="todo"
+        :is-hidden-by-saml="isHiddenBySaml"
+        :hide-target-name="hideTargetName"
+      />
       <todo-item-timestamp
         :todo="todo"
         :is-snoozed="isSnoozed"
@@ -116,7 +125,11 @@ export default {
         class="!gl-absolute gl-inset-0 !gl-z-1 gl-rounded-base"
         data-testid="todo-item-transfer-failed-link"
       />
-      <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />
+      <todo-item-body
+        :todo="todo"
+        :is-hidden-by-saml="isHiddenBySaml"
+        :hide-target-name="hideTargetName"
+      />
       <todo-item-timestamp
         :todo="todo"
         :is-snoozed="isSnoozed"

@@ -29,14 +29,35 @@ The following foundational flows are available:
 | [Agentic Breaking Change Resolution](../../../application_security/dependency_scanning/agentic-breaking-change-resolution.md) | Automatically resolve breaking changes in dependency bump merge requests. |
 | [Code Review](code_review/_index.md) | Automate code review with AI-native analysis and feedback. |
 | [Convert to GitLab CI/CD](../../../../ci/migration/convert_to_gitlab_ci.md) | Migrate Jenkins pipelines to CI/CD. |
-| [Developer](../../../project/merge_requests/developer.md) | Create actionable merge requests from issues, or complete different tasks in GitLab Duo Agentic Chat. |
+| [Developer](../../../project/merge_requests/developer.md) | Convert issues into merge requests, or complete coding tasks in Agentic Chat or the GitLab Duo CLI. |
 | [Fix CI/CD Pipeline](../../../../ci/pipelines/fix_pipeline.md) | Diagnose and repair failed jobs. |
 | [Recommend Reviewers](../../../project/merge_requests/reviews/automatic_reviewer_assignment.md#recommend-reviewers-flow) | Recommend the reviewers best suited to review a merge request. |
 | [SAST False Positive Detection](../../../application_security/vulnerabilities/false_positive_detection.md) | Automatically identify and filter false positives in SAST findings. |
 | [SAST Vulnerability Resolution](../../../application_security/vulnerabilities/agentic_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |
 | [Secret False Positive Detection](secret_false_positive_detection.md) | Automatically identify and filter false positives in secret detection findings. |
 | [Security Review](../../../application_security/security_review.md) | Detect business logic security vulnerabilities in merge request changes. |
-| [Software Development](../../../../editor_extensions/software_development.md) | Create AI-generated solutions for work across the software development lifecycle. |
+| [Software Development](../../../../editor_extensions/software_development.md) | In your IDE, create and work through a plan for a coding task. |
+
+## Choose a flow for coding tasks
+
+The Developer Flow and the Software Development Flow both write code.
+Which one runs depends on where you start the task.
+
+For most coding tasks, use the Developer Flow in the GitLab UI or the GitLab Duo CLI.
+
+| Where you start | Flow | Where it runs | What happens |
+|-----------------|------|---------------|--------------|
+| GitLab UI | Developer Flow | On a runner | The flow runs in the background, then creates or updates a merge request for you to review. |
+| [Agentic Chat](../../../gitlab_duo_chat/agentic_chat.md#foundational-flows) in the GitLab UI | Developer Flow | On a runner | Chat starts the flow as a separate session. Chat tool approvals do not apply to the flow. |
+| [GitLab Duo CLI](../../../gitlab_duo_cli/_index.md) | Developer Flow | Where you run the CLI, usually your computer | In interactive mode, you work with the flow in your terminal and [approve tool calls](../../../gitlab_duo_cli/use.md#tool-approvals) unless you use auto mode. |
+| **Flows** tab in VS Code, Visual Studio, or JetBrains | Software Development Flow | Your IDE | The flow creates a plan for you to review, then works through it and stages changes for you to accept or reject. |
+
+In the GitLab UI, the Developer Flow starts when you:
+
+- Assign the flow to an issue.
+- Mention `@duo-developer-<namespace>`.
+- Select **Implement**.
+- Change a work item status.
 
 ## For developers
 

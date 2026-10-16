@@ -33,7 +33,7 @@ module API
         end
 
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         end
         resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc 'API to interface with MLflow Client, REST API version 1.28.0' do

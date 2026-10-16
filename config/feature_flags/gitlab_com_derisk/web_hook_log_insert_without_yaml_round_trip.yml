@@ -1,0 +1,10 @@
+---
+name: web_hook_log_insert_without_yaml_round_trip
+description: Insert web hook log payloads as assigned instead of round-tripping them through YAML first
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/21116
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260516
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632726
+milestone: '19.6'
+group: group::webhooks
+type: gitlab_com_derisk
+default_enabled: false

@@ -218,7 +218,9 @@ describe('GroupToken', () => {
         wrapper = createComponent({
           ...mockGroupToken,
           value: { data: 'Code Suggestions Group' },
-          data: { groups: mockSubGroups },
+          data: {
+            groups: [mockSubGroups.data.group, ...mockSubGroups.data.group.descendantGroups.nodes],
+          },
           config: {
             queryHandler: subGroupsQueryHandler,
           },

@@ -35,6 +35,33 @@ RSpec.describe Integrations::ChatMessage::WikiPageMessage do
 
   it_behaves_like Integrations::ChatMessage
 
+  context 'with HTML formatting', feature_category: :integrations do
+    subject(:message) { described_class.new(args) }
+
+    let(:args) { super().merge(html: true) }
+    let(:name) { 'Example <reviewer> & tools' }
+    let(:username) { 'example_bot' }
+    let(:project_name) { 'Project_<example> & tools' }
+    let(:project_url) { 'https://gitlab.example.com/group/project' }
+    let(:url) { 'https://gitlab.example.com/group/project/-/wikis/example' }
+    let(:diff_url) { 'https://gitlab.example.com/group/project/-/wikis/example/diff?a=1&b=2' }
+    let(:wiki_page_title) { 'Fix *options* & <toolbar>' }
+
+    before do
+      args[:object_attributes][:action] = 'create'
+    end
+
+    it 'escapes the title and keeps the wiki and diff links' do
+      expect(message.summary).to eq(
+        'Example &lt;reviewer&gt; &amp; tools (example_bot) created ' \
+          '<a href="https://gitlab.example.com/group/project/-/wikis/example">wiki page</a> ' \
+          '(<a href="https://gitlab.example.com/group/project/-/wikis/example/diff?a=1&amp;b=2">Compare changes</a>) ' \
+          'in <a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a>: ' \
+          '<b>Fix *options* &amp; &lt;toolbar&gt;</b>'
+      )
+    end
+  end
+
   context 'without markdown' do
     describe '#pretext' do
       context 'when :action == "create"' do

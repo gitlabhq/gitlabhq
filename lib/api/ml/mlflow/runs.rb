@@ -26,13 +26,13 @@ module API
           end
           params do
             requires :experiment_id, type: Integer,
-              desc: 'Id for the experiment, relative to the project'
+              desc: 'ID of the experiment, relative to the project.'
             optional :start_time, type: Integer,
-              desc: 'Unix timestamp in milliseconds of when the run started.',
+              desc: 'Unix timestamp, in milliseconds, of when the run started.',
               default: 0
-            optional :user_id, type: String, desc: 'This will be ignored'
-            optional :tags, type: Array, desc: 'Tags are stored, but not displayed'
-            optional :run_name, type: String, desc: 'A name for this run'
+            optional :user_id, type: String, desc: 'Any value provided is ignored.'
+            optional :tags, type: Array, desc: 'Tags to store with the run. Tags are stored but not displayed.'
+            optional :run_name, type: String, desc: 'Name of the run.'
           end
           route_setting :authorization, permissions: :create_ml_flow_run, boundary_type: :project
           post 'create', urgency: :low do
@@ -47,7 +47,7 @@ module API
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the candidate.'
-            optional :run_uuid, type: String, desc: 'This parameter is ignored'
+            optional :run_uuid, type: String, desc: 'Any value provided is ignored.'
           end
           route_setting :authorization, permissions: :read_ml_flow_run, boundary_type: :project
           get 'get', urgency: :low do
@@ -64,20 +64,20 @@ module API
           params do
             requires :experiment_ids,
               type: Array,
-              desc: 'IDs of the experiments to get searches from, relative to the project'
+              desc: 'IDs of the experiments to search for runs, relative to the project.'
             optional :max_results,
               type: Integer,
-              desc: 'Maximum number of runs/candidates to fetch in a page. Default is 200, maximum in 1000',
+              desc: 'Maximum number of runs to fetch in a page. The maximum is 1000.',
               default: 200
             optional :order_by,
               type: String,
-              desc: 'Order criteria. Can be by a column of the run/candidate (created_at, name) or by a metric if' \
-                    'prefixed by `metrics`. Valid examples: `created_at`, `created_at DESC`, `metrics.my_metric DESC`' \
-                    'Sorting by candidate parameter or metadata is not supported.',
+              desc: 'Order criteria. Can be by a column of the run/candidate (`created_at`, `name`) or by a ' \
+                    'metric if prefixed by `metrics`. Valid examples: `created_at`, `created_at DESC`, ' \
+                    '`metrics.my_metric DESC`. Sorting by candidate parameter or metadata is not supported.',
               default: 'created_at DESC'
             optional :page_token,
               type: String,
-              desc: 'Token for pagination'
+              desc: 'Token for pagination.'
           end
           route_setting :authorization, permissions: :read_ml_flow_run, boundary_type: :project
           post 'search', urgency: :low do
@@ -107,7 +107,7 @@ module API
               values: CANDIDATE_STATES,
               desc: "Status of the run. Accepts: " \
                     "#{CANDIDATE_STATES}."
-            optional :end_time, type: Integer, desc: 'Ending time of the run'
+            optional :end_time, type: Integer, desc: 'Ending time of the run.'
           end
           route_setting :authorization, permissions: :update_ml_flow_run, boundary_type: :project
           post 'update', urgency: :low do
@@ -125,10 +125,10 @@ module API
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
-            requires :key, type: String, desc: 'Name for the metric.'
+            requires :key, type: String, desc: 'Name of the metric.'
             requires :value, type: Float, desc: 'Value of the metric.'
-            requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
-            optional :step, type: Integer, desc: 'Step at which the metric was recorded'
+            requires :timestamp, type: Integer, desc: 'Unix timestamp, in milliseconds, when the metric was recorded.'
+            optional :step, type: Integer, desc: 'Step at which the metric was recorded.'
           end
           route_setting :authorization, permissions: :log_ml_flow_run, boundary_type: :project
           post 'log-metric', urgency: :low do
@@ -154,8 +154,8 @@ module API
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
-            requires :key, type: String, desc: 'Name for the parameter.'
-            requires :value, type: String, desc: 'Value for the parameter.'
+            requires :key, type: String, desc: 'Name of the parameter.'
+            requires :value, type: String, desc: 'Value of the parameter.'
           end
           route_setting :authorization, permissions: :log_ml_flow_run, boundary_type: :project
           post 'log-parameter', urgency: :low do
@@ -171,8 +171,8 @@ module API
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
-            requires :key, type: String, desc: 'Name for the tag.'
-            requires :value, type: String, desc: 'Value for the tag.'
+            requires :key, type: String, desc: 'Name of the tag.'
+            requires :value, type: String, desc: 'Value of the tag.'
           end
           route_setting :authorization, permissions: :update_ml_flow_run, boundary_type: :project
           post 'set-tag', urgency: :low do
@@ -189,15 +189,15 @@ module API
           end
           params do
             requires :run_id, type: String, desc: 'UUID of the run.'
-            optional :metrics, type: Array, desc: 'Array that contains metric information', default: [] do
-              requires :key, type: String, desc: 'Name for the metric.'
+            optional :metrics, type: Array, desc: 'Array of metrics to record for the run.', default: [] do
+              requires :key, type: String, desc: 'Name of the metric.'
               requires :value, type: Float, desc: 'Value of the metric.'
-              requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
-              optional :step, type: Integer, desc: 'Step at which the metric was recorded'
+              requires :timestamp, type: Integer, desc: 'Unix timestamp, in milliseconds, when the metric was recorded.'
+              optional :step, type: Integer, desc: 'Step at which the metric was recorded.'
             end
-            optional :params, type: Array, desc: 'Array that contains parameter information', default: [] do
-              requires :key, type: String, desc: 'Name for the metric.'
-              requires :value, type: String, desc: 'Value of the metric.'
+            optional :params, type: Array, desc: 'Array of parameters to record for the run.', default: [] do
+              requires :key, type: String, desc: 'Name of the parameter.'
+              requires :value, type: String, desc: 'Value of the parameter.'
             end
           end
           route_setting :authorization, permissions: :log_ml_flow_run, boundary_type: :project

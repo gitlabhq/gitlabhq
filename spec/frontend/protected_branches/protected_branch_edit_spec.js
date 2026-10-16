@@ -103,13 +103,13 @@ describe('ProtectedBranchEdit', () => {
       <span
         class="${mergeClass}"
         data-label="Dropdown allowed to merge"
-        data-disabled="${mergeDisabled}"
+        ${mergeDisabled ? 'data-disabled' : ''}
         data-preselected-items='${mergePreselected}'
         data-testid="${MERGE_DROPDOWN_TESTID}"></span>
       <span
         class="${pushClass}"
         data-label="Dropdown allowed to push"
-        data-disabled="${pushDisabled}"
+        ${pushDisabled ? 'data-disabled' : ''}
         data-preselected-items='${pushPreselected}'
         data-testid="${PUSH_DROPDOWN_TESTID}"></span>
       <span
@@ -220,7 +220,7 @@ describe('ProtectedBranchEdit', () => {
       });
 
       it('does not update selected item on save for disabled dropdowns', async () => {
-        ProtectedBranchEditInstance = create({ pushDisabled: '' });
+        ProtectedBranchEditInstance = create({ pushDisabled: true });
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
         await selectDropdownValue(dropdown, selectMaintainerAccessLevel);
         expect(dropdown.preselected).toEqual([]);
@@ -260,7 +260,7 @@ describe('ProtectedBranchEdit', () => {
       it('does not update permissions on hidden for disabled dropdowns', async () => {
         const preselected = [{ id: 38, access_level: 0, type: 'role' }];
         ProtectedBranchEditInstance = create({
-          mergeDisabled: '',
+          mergeDisabled: true,
           mergePreselected: JSON.stringify(preselected),
         });
         const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;

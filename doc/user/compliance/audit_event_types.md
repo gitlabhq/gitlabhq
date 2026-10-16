@@ -802,6 +802,7 @@ Audit event types belong to the following product categories.
 | [`security_scan_profile_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248106) | A security scan profile is created | {{< yes >}} | GitLab [19.3](https://gitlab.com/gitlab-org/gitlab/-/work_items/606347) | Group |
 | [`security_scan_profile_delete`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249627) | A security scan profile is deleted | {{< yes >}} | GitLab [19.3](https://gitlab.com/gitlab-org/gitlab/-/work_items/612120) | Group |
 | [`security_scan_profile_detached_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219378) | A security scan profile is detached from a project | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582824) | Project |
+| [`security_scan_profile_replaced_on_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259205) | A security scan profile is replaced by another profile of the same scan type on a project | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/gitlab/-/work_items/631608) | Project |
 | [`security_scan_profile_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248106) | A security scan profile is updated | {{< yes >}} | GitLab [19.3](https://gitlab.com/gitlab-org/gitlab/-/work_items/606347) | Group |
 | [`vulnerability_severity_override`](https://gitlab.com/gitlab-org/gitlab/-/issues/515327) | When user overrides vulnerability severity | {{< yes >}} | GitLab [17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/515327) | Project |
 

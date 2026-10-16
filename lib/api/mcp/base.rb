@@ -238,6 +238,10 @@ module API
           result =
             case params[:method]
             when 'tools/call'
+              # Route-backed tools such as start_duo_session rerun a route on this env, where `params`
+              # are the tool arguments, so they read the client from here.
+              request.env[::Gitlab::Mcp::ClientInfo::RACK_ENV_KEY] = mcp_client_info
+
               Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user,
                 context: mcp_request_context, tool_name_prefix: mcp_server_tool_name_prefix,
                 client_info: mcp_client_info)

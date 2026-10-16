@@ -542,7 +542,9 @@ export default {
 
   computed: {
     isPlanningViewBoardEnabled() {
-      return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
+      return (
+        hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards) && this.hasStatusFeature
+      );
     },
     isPlanningViewTableEnabled() {
       return Boolean(this.glFeatures.planningViewTable);
@@ -2335,6 +2337,7 @@ export default {
           >
             <work-item-view-mode-toggle
               :view-mode="viewMode"
+              :is-board-enabled="isPlanningViewBoardEnabled"
               @toggle-view-mode="handleToggleViewMode"
             />
             <work-item-display-settings-button
@@ -2380,6 +2383,7 @@ export default {
                 >
                   <work-item-view-mode-toggle
                     :view-mode="viewMode"
+                    :is-board-enabled="isPlanningViewBoardEnabled"
                     @toggle-view-mode="handleToggleViewMode"
                   />
                   <work-item-display-settings-button
@@ -2611,6 +2615,7 @@ export default {
       :page="displayDrawerPage"
       :header-height="drawerTopOffset"
       :view-mode="viewMode"
+      :is-board-enabled="isPlanningViewBoardEnabled"
       :sort-options="drawerSortOptions"
       :sort-key="effectiveSortKey"
       :namespace-preferences="namespacePreferences"

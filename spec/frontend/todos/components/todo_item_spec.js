@@ -41,6 +41,11 @@ describe('TodoItem', () => {
     expect(wrapper.findComponent(TodoItemBody).exists()).toBe(true);
   });
 
+  it.each([false, true])('passes hideTargetName as %s to TodoItemBody', (hideTargetName) => {
+    createComponent({ hideTargetName });
+    expect(wrapper.findComponent(TodoItemBody).props('hideTargetName')).toBe(hideTargetName);
+  });
+
   it('renders TodoItemTimestamp component', () => {
     createComponent();
     expect(findTodoItemTimestamp().exists()).toBe(true);

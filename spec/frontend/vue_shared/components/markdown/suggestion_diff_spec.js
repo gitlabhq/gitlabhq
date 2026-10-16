@@ -39,6 +39,7 @@ const MOCK_DATA = {
         type: 'new',
       },
     ],
+    applied: false,
     is_applying_batch: true,
   },
   helpPagePath: 'path_to_docs',

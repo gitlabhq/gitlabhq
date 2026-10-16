@@ -46,7 +46,7 @@ const GlCollapsibleListboxStub = stubComponent(GlCollapsibleListbox, {
 
 // Stub that renders toggle and default slots so buttons inside are accessible in tests.
 const GlDisclosureDropdownStub = stubComponent(GlDisclosureDropdown, {
-  template: `<div><slot name="toggle" :toggle-props="{}" /><slot /></div>`,
+  template: `<div><slot name="toggle" :accessibility-attributes="{}" /><slot /></div>`,
 });
 
 const successfulQueryHandler = jest.fn().mockResolvedValue(issuableLabelsQueryResponse);

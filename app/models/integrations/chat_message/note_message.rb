@@ -42,11 +42,11 @@ module Integrations
       private
 
       def message
-        "#{strip_markup(user_combined_name)} #{link("commented on #{target}", note_url)} in #{project_link}: *#{strip_markup(formatted_title)}*"
+        "#{strip_markup(user_combined_name)} #{link("commented on #{target}", note_url)} in #{project_link}: #{bold(formatted_title)}"
       end
 
       def format_title(title)
-        title.lines.first.chomp
+        title.lines.first.to_s.chomp
       end
 
       def formatted_title

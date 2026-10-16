@@ -88,9 +88,9 @@ module API
         end
 
         params :update_params_ce do
-          optional :name, type: String, desc: 'The board name'
-          optional :hide_backlog_list, type: Grape::API::Boolean, desc: 'Hide the Open list'
-          optional :hide_closed_list, type: Grape::API::Boolean, desc: 'Hide the Closed list'
+          optional :name, type: String, desc: 'Name of the board.'
+          optional :hide_backlog_list, type: Grape::API::Boolean, desc: 'If `true`, hides the Open list.'
+          optional :hide_closed_list, type: Grape::API::Boolean, desc: 'If `true`, hides the Closed list.'
         end
 
         params :update_params_ee do

@@ -61,7 +61,7 @@ module API
     end
 
     params do
-      requires :id, types: [Integer, String], desc: 'The group ID or full group path.',
+      requires :id, types: [Integer, String], desc: 'ID of the group.',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
 

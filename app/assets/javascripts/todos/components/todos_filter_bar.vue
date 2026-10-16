@@ -473,17 +473,20 @@ export default {
         @submit="sendFilterChanged"
         @clear="onFiltersCleared"
       />
-      <gl-sorting
-        data-testid="todos-sorting"
-        class="gl-flex"
-        dropdown-class="gl-w-full"
-        block
-        :sort-options="$options.SORT_OPTIONS"
-        :sort-by="sortBy"
-        :is-ascending="isAscending"
-        @sort-by-change="onSortByChange"
-        @sort-direction-change="onDirectionChange"
-      />
+      <div class="gl-flex gl-gap-3">
+        <slot name="view-toggle"></slot>
+        <gl-sorting
+          data-testid="todos-sorting"
+          class="gl-flex gl-min-w-0 gl-grow @sm/panel:gl-grow-0"
+          dropdown-class="gl-w-full"
+          block
+          :sort-options="$options.SORT_OPTIONS"
+          :sort-by="sortBy"
+          :is-ascending="isAscending"
+          @sort-by-change="onSortByChange"
+          @sort-direction-change="onDirectionChange"
+        />
+      </div>
     </div>
   </div>
 </template>

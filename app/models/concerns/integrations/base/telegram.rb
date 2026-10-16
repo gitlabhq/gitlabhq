@@ -117,24 +117,29 @@ module Integrations
             text: message.summary,
             chat_id: room,
             message_thread_id: thread,
-            parse_mode: 'markdown'
+            parse_mode: 'HTML'
           }.compact_blank
 
           header = { 'Content-Type' => 'application/json' }
           response = Clients::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump(body))
 
-          # We're retrying the request with a different format to ensure accurate formatting and
-          # avoid receiving a 400 response due to invalid markdown.
+          # Keep notifications deliverable when the API rejects formatted text.
           if response.bad_request?
             body.except!(:parse_mode)
+            body[:text] = html_to_plaintext(body[:text])
             response = Clients::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump(body))
           end
 
           response if response.success?
         end
 
+        def html_to_plaintext(text)
+          text = text.gsub(%r{<a href="([^"]*)">(.*?)</a>}m, '\2 (\1)')
+          CGI.unescapeHTML(ActionController::Base.helpers.strip_tags(text))
+        end
+
         def custom_data(data)
-          super.merge(markdown: true)
+          super.merge(html: true)
         end
       end
     end

@@ -450,7 +450,6 @@ methods:
   ee/app/models/ee/ci/pipeline.rb:
   - latest_merged_result_pipeline?
   - license_scan_completed?
-  - triggered_for_ondemand_dast_scan?
   - has_all_security_policies_reports?
   ee/app/models/ee/ci/runner.rb:
   - cost_factor_for_project

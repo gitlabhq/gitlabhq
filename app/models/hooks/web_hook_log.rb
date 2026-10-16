@@ -8,6 +8,7 @@ class WebHookLog < ApplicationRecord
 
   OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
   MAX_RECENT_DAYS = 7
+  SERIALIZED_ATTRIBUTES = %w[request_headers request_data response_headers].freeze
 
   attr_accessor :interpolated_url
 
@@ -29,13 +30,25 @@ class WebHookLog < ApplicationRecord
 
   # A single autocommit INSERT. `create!` re-encodes the serialized columns in
   # `changes_applied` after the INSERT, leaving the transaction idle meanwhile.
-  def self.insert_log!(attributes)
+  #
+  # With `skip_yaml_round_trip`, serialized columns are taken as assigned: reading one
+  # from an unsaved record round-trips it through YAML, which dominates the cost for
+  # large payloads.
+  def self.insert_log!(attributes, skip_yaml_round_trip: false)
     log = new(attributes)
     log.validate!
     log.prepare_for_storage
     log.created_at = log.updated_at = Time.current
 
-    insert(log.attributes.compact, unique_by: %i[id created_at], returning: false)
+    row = log.attribute_names.index_with do |name|
+      if skip_yaml_round_trip && SERIALIZED_ATTRIBUTES.include?(name)
+        log.read_attribute_before_type_cast(name)
+      else
+        log.read_attribute(name)
+      end
+    end
+
+    insert(row.compact, unique_by: %i[id created_at], returning: false)
   end
 
   def self.recent(number_of_days = 2)
@@ -82,6 +95,12 @@ class WebHookLog < ApplicationRecord
     request_data == OVERSIZE_REQUEST_DATA
   end
 
+  def request_data=(data)
+    super(data&.deep_transform_values do |value|
+      URI::MailTo::EMAIL_REGEXP.match?(value.to_s) ? _('[REDACTED]') : value
+    end)
+  end
+
   def request_headers
     return super unless self[:request_headers]['X-Gitlab-Token']
 
@@ -110,7 +129,6 @@ class WebHookLog < ApplicationRecord
 
   def prepare_for_storage
     obfuscate_basic_auth
-    redact_user_emails
     set_url_hash if interpolated_url.present?
   end
 
@@ -118,12 +136,6 @@ class WebHookLog < ApplicationRecord
 
   def obfuscate_basic_auth
     self.url = Gitlab::UrlSanitizer.sanitize_masked_url(url)
-  end
-
-  def redact_user_emails
-    self.request_data.deep_transform_values! do |value|
-      URI::MailTo::EMAIL_REGEXP.match?(value.to_s) ? _('[REDACTED]') : value
-    end
   end
 
   def set_url_hash

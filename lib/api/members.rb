@@ -17,7 +17,7 @@ module API
       boundary = source_type.to_sym
 
       params do
-        requires :id, type: String, desc: "The #{source_type} ID"
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
       end
       resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all direct members of a #{source_type}" do
@@ -28,10 +28,10 @@ module API
           tags %w[members]
         end
         params do
-          optional :query, type: String, desc: 'A query string to search for members'
-          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
-          optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to be skipped for membership'
-          optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
+          optional :query, type: String, desc: 'Filter results by name, email, or username. Use partial values to widen the scope of the query.'
+          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter results by the given user IDs.'
+          optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter skipped users out of the results.'
+          optional :show_seat_info, type: Boolean, desc: 'If `true`, shows seat information for members.'
           use :optional_filter_params_ee
           use :pagination
         end
@@ -58,9 +58,9 @@ module API
           tags %w[members]
         end
         params do
-          optional :query, type: String, desc: 'A query string to search for members'
-          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
-          optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
+          optional :query, type: String, desc: 'Filter results by name, email, or username. Use partial values to widen the scope of the query.'
+          optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter results by the given user IDs.'
+          optional :show_seat_info, type: Boolean, desc: 'If `true`, shows seat information for members.'
           use :optional_state_filter_ee
           use :pagination
         end
@@ -85,7 +85,7 @@ module API
           tags %w[members]
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the member'
+          requires :user_id, type: Integer, desc: 'User ID of the member.'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authorization, permissions: :read_member, boundary_type: boundary
@@ -108,7 +108,7 @@ module API
           tags %w[members]
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the member'
+          requires :user_id, type: Integer, desc: 'User ID of the member.'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authorization, permissions: :read_member, boundary_type: boundary
@@ -131,10 +131,10 @@ module API
         end
         params do
           requires :access_level, type: Integer, desc: 'A valid access level.' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-          optional :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
-          optional :username, type: String, desc: 'The username of the new member or multiple usernames separated by commas.'
+          optional :user_id, types: [Integer, String], desc: 'User ID of the new member, or multiple IDs separated by commas. Required if `username` is not provided.'
+          optional :username, type: String, desc: 'Username of the new member, or multiple usernames separated by commas. Required if `user_id` is not provided.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
-          optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'members-api'
+          optional :invite_source, type: String, desc: 'Source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120`.', default: 'members-api'
           mutually_exclusive :user_id, :username
           at_least_one_of :user_id, :username
         end
@@ -158,7 +158,7 @@ module API
           tags %w[members]
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the new member'
+          requires :user_id, type: Integer, desc: 'User ID of the member.'
           requires :access_level, type: Integer, desc: 'A valid access level' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           use :optional_put_params_ee
@@ -185,9 +185,9 @@ module API
           tags %w[members]
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the member'
+          requires :user_id, type: Integer, desc: 'User ID of the member.'
           optional :skip_subresources, type: Boolean, default: false,
-            desc: 'If `true`, the member retains any direct memberships in subgroups or projects.'
+            desc: 'If `true`, skips deleting direct memberships of the removed member in subgroups and projects.'
           optional :unassign_issuables, type: Boolean, default: false,
             desc: "If `true`, unassigns the member from any issues or merge requests in the #{source_type}."
         end

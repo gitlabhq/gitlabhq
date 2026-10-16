@@ -1,0 +1,121 @@
+- name: See your own GitLab Credits usage
+  description: |
+    If you used GitLab Credits, you had no way to check your own usage.
+    Only group Owners and administrators could open the GitLab Credits dashboard,
+    so you had to ask someone with access.
+
+    You can now see your own usage in **User settings** > **GitLab Credits**. The page
+    shows your total usage, daily average, and peak day, and you can filter by
+    product or select a date range. If you belong to more than one group with
+    GitLab Credits, you can switch between them.
+  stage: fulfillment
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/subscriptions/gitlab_credits_dashboard/#view-your-gitlab-credits-usage
+  published_at: 2026-10-15
+  release: "19.5"
+
+- name: "/goal command in GitLab Duo CLI is generally available"
+  description: |
+    The `/goal` slash command in GitLab Duo CLI is now generally available in GitLab Duo CLI 9.27.0.
+
+    Describe an open-ended goal, and GitLab Duo delegates it to a governed, goal-driven flow that
+    runs locally and handles both implementation and verification.
+
+    To start, run `/goal <task>`. For example:
+
+    ```plaintext
+    /goal Fix the failing tests in spec/models/user_spec.rb
+    ```
+
+    In GitLab 19.5 (GitLab Duo CLI 9.24.0), the **Run suggested prompts as /goal sessions** setting
+    in `/settings` runs suggested prompts as `/goal` sessions instead of chat messages.
+
+    `/goal` requires GitLab 19.3 and later, and GitLab Duo CLI 9.17.0 and later.
+  stage: ai_clients
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo_cli/use/#slash-commands
+  published_at: 2026-10-15
+  release: "19.5"
+
+- name: Auto mode in GitLab Duo CLI
+  description: |
+    GitLab Duo CLI has a new auto mode.
+    In auto mode, GitLab Duo uses tools without asking for approval first, so longer tasks run
+    without stopping for each shell command, `git` operation, or MCP tool call.
+
+    Auto mode respects your organization's controls:
+
+    - Auto mode is off by default. Administrators, Owners, and Maintainers can turn the setting on for instances, groups, and projects.
+      Administrators and group Owners can also lock it to **Always off** for the entire instance or group.
+    - Agent tool governance still applies. Tools set to **Always Deny** stay blocked.
+
+    To use auto mode, you need GitLab Duo CLI 9.22.0 or later.
+    Press <kbd>Tab</kbd> until the mode under the `>` prompt shows `auto`.
+    Use auto mode only in repositories you trust and on branches you can discard.
+  stage: ai_clients
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo_cli/use/#auto-mode
+  published_at: 2026-10-15
+  release: "19.5"
+
+- name: Connect Externally Connected Agents (ECAs) to AI Governance
+  description: |
+    Previously, the [AI Governance Dashboard](https://docs.gitlab.com/user/ai-governance/governance-dashboard/) showed
+    activity only from GitLab Duo Agent Platform agents. This provided you total visibility into all of your
+    Agent Platform agents, including the sessions they were running, including tool calls, MCPs used, and
+    the prompt input and output from the user and agent respectively.
+
+    With the GitLab 19.5 release, after a one-time `glab govern setup`, you can now extend governance
+    visibility past just GitLab Duo Agent Platform agents, and connect Externally Connected Agents (ECAs) like
+    Claude Code, Cursor, and Codex to GitLab AI Governance by using the GitLab CLI (`glab`).
+
+    When **Allow external agents** and **Store AI audit events** are enabled, security and compliance teams
+    get visibility into ECAs that run outside GitLab, alongside your GitLab Duo Agent Platform agents. Every qualifying
+    agent session is captured, including who ran it, which agent, which project, and when, with sessions and
+    tool calls appearing in the AI Governance Dashboard and the AI audit events report. Audit events also
+    flow to your SIEM through audit event streaming.
+
+    Tool output is not sent, except for short error messages from failed tool calls.
+
+    This feature is in beta. Share your feedback in [issue 633489](https://gitlab.com/gitlab-org/gitlab/-/work_items/633489).
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/ai-governance/externally-connected-agents
+  published_at: 2026-10-15
+  release: "19.5"
+
+- name: Trigger flows with a generally available API
+  description: |
+    In previous versions of GitLab, the API endpoint you use to trigger GitLab Duo Agent Platform flows
+    from CI/CD pipelines, scripts, and other automation was an experiment, so it was hard to know whether you could rely on it in production.
+    Now the [trigger a flow endpoint](https://docs.gitlab.com/api/duo_agent_platform_flows/#trigger-a-flow) of the Flows API is generally available, so you can build production automation on it knowing it follows the GitLab REST API breaking changes policy.
+  stage: agent_foundations
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/api/duo_agent_platform_flows/#trigger-a-flow
+  published_at: 2026-10-15
+  release: "19.5"
+
+- name: Customize security configuration profiles
+  description: |
+    You can now customize Secret Detection and SAST profiles in the UI. Set scan options like excluded paths, custom analyzer images, and full Git history scans once for a group, and apply them to all its projects.
+
+    Previously, a security configuration profile enabled a scanner with its default settings. Anything beyond the defaults required edits to `.gitlab-ci.yml` in each project. Now the profile includes those settings too.
+
+    Currently, customization of Dependency Scanning profiles is only available through the GraphQL API. UI customization is planned in a future release.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/configuration/security_configuration_profiles/
+  published_at: 2026-10-15
+  release: "19.5"

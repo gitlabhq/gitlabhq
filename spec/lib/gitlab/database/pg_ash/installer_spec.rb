@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Database::PgAsh::Installer, feature_category: :database d
 
   before do
     allow(connection).to receive(:schema_exists?).with('ash').and_return(installed)
+    allow(connection).to receive(:select_value).with(described_class::PG_STAT_ACTIVITY_READABLE_QUERY).and_return(true)
   end
 
   def statement_invalid(cause)
@@ -51,6 +52,27 @@ RSpec.describe Gitlab::Database::PgAsh::Installer, feature_category: :database d
       it 'explains both ways forward' do
         expect { installer.install }
           .to raise_error(described_class::VersionMismatchError, /uninstall first.*migration chain/m)
+      end
+    end
+
+    context 'when the user cannot read pg_stat_activity' do
+      let(:installed) { false }
+
+      before do
+        allow(connection).to receive(:select_value)
+          .with(described_class::PG_STAT_ACTIVITY_READABLE_QUERY).and_return(false)
+      end
+
+      it 'refuses to apply the script' do
+        expect(connection).not_to receive(:execute)
+
+        expect { installer.install }
+          .to raise_error(described_class::PermissionError, /permission denied for view pg_stat_activity/)
+      end
+
+      it 'explains how to grant the privileges' do
+        expect { installer.install }
+          .to raise_error(described_class::PermissionError, /GRANT SELECT ON pg_catalog\.pg_stat_activity TO/)
       end
     end
 
@@ -118,6 +140,12 @@ RSpec.describe Gitlab::Database::PgAsh::Installer, feature_category: :database d
       it 'returns nil' do
         expect(installer.installed_version).to be_nil
       end
+    end
+  end
+
+  describe 'PG_STAT_ACTIVITY_READABLE_QUERY' do
+    it 'is true for the test database user' do
+      expect(ApplicationRecord.connection.select_value(described_class::PG_STAT_ACTIVITY_READABLE_QUERY)).to be(true)
     end
   end
 

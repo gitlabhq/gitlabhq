@@ -6,9 +6,9 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.',
         documentation: { example: 17 }
-      requires :alert_iid, type: Integer, desc: 'The IID of the Alert',
+      requires :alert_iid, type: Integer, desc: 'Internal ID of the alert.',
         documentation: { example: 23 }
     end
 
@@ -111,7 +111,7 @@ module API
           tags %w[alert_management]
         end
         params do
-          requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
+          requires :metric_image_id, type: Integer, desc: 'ID of the metric image.',
             documentation: { example: 42 }
           optional :url, type: String, desc: 'The url to view more metric info',
             documentation: { example: 'https://example.com/metric' }
@@ -143,7 +143,7 @@ module API
           tags %w[alert_management]
         end
         params do
-          requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
+          requires :metric_image_id, type: Integer, desc: 'ID of the metric image.',
             documentation: { example: 42 }
         end
         route_setting :authorization, permissions: :delete_alert_metric_image, boundary_type: :project

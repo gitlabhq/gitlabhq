@@ -22,7 +22,7 @@ module API
       eventable_article = eventable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
       params do
-        requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{parent_type}"
+        requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{parent_type}."
       end
       resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all project #{eventable_name} milestone events" do
@@ -32,7 +32,7 @@ module API
           tags resource_milestone_events_tags
         end
         params do
-          requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
+          requires :eventable_id, types: [Integer, String], desc: 'Internal ID of the issue or merge request.'
           use :pagination
         end
         route_setting :authorization, permissions: "read_#{eventable_str}_milestone_event", boundary_type: :project
@@ -53,8 +53,8 @@ module API
           tags resource_milestone_events_tags
         end
         params do
-          requires :event_id, type: String, desc: 'The ID of a resource milestone event'
-          requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
+          requires :event_id, type: String, desc: 'ID of the resource milestone event.'
+          requires :eventable_id, types: [Integer, String], desc: 'Internal ID of the issue or merge request.'
         end
         route_setting :authorization, permissions: "read_#{eventable_str}_milestone_event", boundary_type: :project
         get ":id/#{eventables_str}/:eventable_id/resource_milestone_events/:event_id", feature_category: feature_category do

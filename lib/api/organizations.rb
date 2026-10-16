@@ -62,7 +62,7 @@ module API
         tags %w[organizations]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the organization'
+        requires :id, type: Integer, desc: 'ID of the organization.'
       end
       route_setting :lifecycle, :experiment
       route_setting :authorization, permissions: :delete_organization, boundary_type: :instance

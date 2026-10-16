@@ -129,7 +129,7 @@ module API
         end
         params do
           requires :slug, type: String, values: INTEGRATIONS.keys,
-            desc: 'The name of the integration'
+            desc: 'Name of the integration.'
         end
         route_setting :authorization, permissions: :delete_integration,
           boundary: -> { parent_resource },
@@ -175,7 +175,7 @@ module API
         end
         params do
           requires :slug, type: String, values: INTEGRATIONS.keys,
-            desc: 'The name of the integration'
+            desc: 'Name of the integration.'
         end
         route_setting :authorization, permissions: :read_integration,
           boundary: -> { parent_resource },

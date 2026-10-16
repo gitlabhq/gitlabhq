@@ -33,6 +33,13 @@ describe('Test reports suite table', () => {
   const allCaseRows = () => wrapper.findAllByTestId('test-case-row');
   const findCaseRowAtIndex = (index) => wrapper.findAllByTestId('test-case-row').at(index);
   const findIconForRow = (row, status) => row.find(`.ci-status-icon-${status}`);
+  const findColumnHeaders = () =>
+    wrapper
+      .findByRole('row')
+      .findAllByRole('rowheader')
+      .wrappers.map((header) => header.text());
+  const findMobileHeadersForRow = (row) =>
+    row.findAll('[role="rowheader"]').wrappers.map((header) => header.text());
 
   const createComponent = ({ suite = testSuite, perPage = 20, errorMessage } = {}) => {
     store = new Vuex.Store({
@@ -91,6 +98,30 @@ describe('Test reports suite table', () => {
 
     it('renders the correct number of rows', () => {
       expect(allCaseRows()).toHaveLength(testCases.length);
+    });
+
+    it('renders the column headers', () => {
+      expect(findColumnHeaders()).toEqual([
+        'Suite',
+        'Name',
+        'Filename',
+        'Status',
+        'Execution time',
+        'Details',
+      ]);
+    });
+
+    it('renders the same headers on every test case row for small screens', () => {
+      allCaseRows().wrappers.forEach((row) => {
+        expect(findMobileHeadersForRow(row)).toEqual([
+          'Suite',
+          'Name',
+          'Filename',
+          'Status',
+          'Execution time',
+          'Details',
+        ]);
+      });
     });
 
     it.each([

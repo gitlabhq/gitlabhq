@@ -14,16 +14,39 @@ RSpec.describe GraphqlController, feature_category: :api do
   describe 'rescue_from' do
     let_it_be(:message) { 'green ideas sleep furiously' }
 
-    it 'handles ArgumentError' do
-      allow(subject).to receive(:execute) do
-        raise Gitlab::Graphql::Errors::ArgumentError, message
+    context 'with client errors that are not tracked' do
+      using RSpec::Parameterized::TableSyntax
+
+      # rubocop:disable Layout/LineLength -- one row per error keeps the table readable
+      where(:error, :status) do
+        Gitlab::Graphql::Errors::ArgumentError.new('invalid')                                              | :unprocessable_entity
+        Gitlab::Graphql::Variables::Invalid.new('invalid')                                                 | :unprocessable_entity
+        ActionController::InvalidAuthenticityToken.new('invalid')                                          | :unprocessable_entity
+        RateLimitedService::RateLimitedError.new(key: :foo, rate_limiter: Gitlab::ApplicationRateLimiter)  | :too_many_requests
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it 'renders the error without tracking it', :aggregate_failures do
+          allow(controller).to receive(:execute).and_raise(error)
+
+          expect(controller).not_to receive(:log_exception)
+
+          post :execute
+
+          expect(response).to have_gitlab_http_status(status)
+          expect(json_response).to include('errors' => include(a_hash_including('message' => error.message)))
+        end
       end
 
-      post :execute
+      it 'logs the request for RateLimitedError' do
+        allow(controller).to receive(:execute)
+          .and_raise(RateLimitedService::RateLimitedError.new(key: :foo, rate_limiter: Gitlab::ApplicationRateLimiter))
 
-      expect(json_response).to include(
-        'errors' => include(a_hash_including('message' => message))
-      )
+        expect(Gitlab::ApplicationRateLimiter).to receive(:log_request).with(anything, :foo_request_limit, anything)
+
+        post :execute
+      end
     end
 
     it 'handles a timeout nicely' do

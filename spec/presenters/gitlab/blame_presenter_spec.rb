@@ -9,9 +9,8 @@ RSpec.describe Gitlab::BlamePresenter do
   let(:commit) { project.commit('master') }
   let(:blob) { project.repository.blob_at(commit.id, path) }
   let(:blame) { Gitlab::Blame.new(blob, commit) }
-  let(:page) { 1 }
 
-  subject { described_class.new(blame, project: project, path: path, page: page) }
+  subject { described_class.new(blame, project: project, path: path) }
 
   it 'precalculates necessary data on init' do
     expect_any_instance_of(described_class)
@@ -118,14 +117,8 @@ RSpec.describe Gitlab::BlamePresenter do
 
     it_behaves_like 'groups_commit_data'
 
-    context 'when page is not sent as attribute' do
-      subject { described_class.new(blame, project: project, path: path) }
-
-      it_behaves_like 'groups_commit_data'
-    end
-
     context 'when project is not sent as attribute' do
-      subject { described_class.new(blame, path: path, page: 1) }
+      subject { described_class.new(blame, path: path) }
 
       it_behaves_like 'groups_commit_data'
     end

@@ -369,7 +369,7 @@ const mountComponent = async ({
       newWorkItemEmailAddress: null,
       canReadCrmOrganization: true,
       canReadCrmContact: true,
-      hasStatusFeature: false,
+      hasStatusFeature: true,
       showNewWorkItem: true,
       releasesPath: RELEASES_ENDPOINT,
       hasBlockedIssuesFeature: false,
@@ -2083,13 +2083,20 @@ describe('planning-view', () => {
       });
 
       it.each`
-        message                      | hasBoardViewMode | planningViewBoards | listViewExists | boardViewExists
-        ${'falls back to list view'} | ${false}         | ${true}            | ${true}        | ${false}
-        ${'falls back to list view'} | ${true}          | ${false}           | ${true}        | ${false}
-        ${'restores board view'}     | ${true}          | ${true}            | ${false}       | ${true}
+        message                      | hasBoardViewMode | planningViewBoards | hasStatusFeature | listViewExists | boardViewExists
+        ${'falls back to list view'} | ${false}         | ${true}            | ${true}          | ${true}        | ${false}
+        ${'falls back to list view'} | ${true}          | ${false}           | ${true}          | ${true}        | ${false}
+        ${'falls back to list view'} | ${true}          | ${true}            | ${false}         | ${true}        | ${false}
+        ${'restores board view'}     | ${true}          | ${true}            | ${true}          | ${false}       | ${true}
       `(
-        '$message from the unsaved draft when hasBoardViewMode is $hasBoardViewMode and planningViewBoards is $planningViewBoards',
-        async ({ hasBoardViewMode, planningViewBoards, listViewExists, boardViewExists }) => {
+        '$message from the unsaved draft when hasBoardViewMode is $hasBoardViewMode, planningViewBoards is $planningViewBoards and hasStatusFeature is $hasStatusFeature',
+        async ({
+          hasBoardViewMode,
+          planningViewBoards,
+          hasStatusFeature,
+          listViewExists,
+          boardViewExists,
+        }) => {
           mockHasBoardViewMode = hasBoardViewMode;
           localStorage.setItem(
             'full/path-saved-view-3',
@@ -2101,7 +2108,7 @@ describe('planning-view', () => {
           );
 
           await mountComponent({
-            provide: { glFeatures: { planningViewBoards } },
+            provide: { glFeatures: { planningViewBoards }, hasStatusFeature },
             route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
           });
 
@@ -3092,6 +3099,19 @@ describe('planning-view', () => {
       });
     });
 
+    describe('when planningViewBoards is enabled but the status feature is not licensed', () => {
+      beforeEach(async () => {
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true }, hasStatusFeature: false },
+        });
+      });
+
+      it('does not enable the board in the view mode toggle or the drawer', () => {
+        expect(findViewModeToggle().props('isBoardEnabled')).toBe(false);
+        expect(findDisplaySettingsDrawer().props('isBoardEnabled')).toBe(false);
+      });
+    });
+
     describe('when planningViewBoards feature flag is enabled', () => {
       beforeEach(async () => {
         await mountComponent({
@@ -3109,6 +3129,11 @@ describe('planning-view', () => {
 
       it('passes the current viewMode to the drawer (list by default)', () => {
         expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_LIST);
+      });
+
+      it('enables the board in the view mode toggle and the drawer', () => {
+        expect(findViewModeToggle().props('isBoardEnabled')).toBe(true);
+        expect(findDisplaySettingsDrawer().props('isBoardEnabled')).toBe(true);
       });
 
       it('switches to board view when the view mode toggle emits toggle-view-mode with "board"', async () => {

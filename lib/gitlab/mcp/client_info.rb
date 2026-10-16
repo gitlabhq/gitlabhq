@@ -9,6 +9,8 @@ module Gitlab
       # See: https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
       META_KEY = 'io.modelcontextprotocol/clientInfo'
 
+      RACK_ENV_KEY = 'mcp_client_info'
+
       # Client-supplied, so capped to keep log lines and event properties small.
       MAX_LENGTH = 64
 

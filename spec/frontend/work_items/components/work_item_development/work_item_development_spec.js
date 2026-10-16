@@ -333,6 +333,14 @@ describe('WorkItemDevelopment CE', () => {
           },
         });
         createComponent({
+          workItemQueryHandler: jest.fn().mockResolvedValue({
+            data: {
+              namespace: {
+                ...workItemResponse.data.namespace,
+                workItem: { ...workItemResponse.data.namespace.workItem, features: null },
+              },
+            },
+          }),
           workItemDevelopmentQueryHandler: queryHandler,
           provide: { glFeatures: { workItemFeaturesField: true } },
         });

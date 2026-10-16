@@ -167,6 +167,33 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
         '![logo](/gitlab-org/gitlab/-/raw/master/app/assets/images/logo.svg)',
       );
     });
+
+    describe('math', () => {
+      // The html column is the output of POST /api/v4/markdown (gfm: true) for the markdown column.
+      it.each`
+        description                        | markdown                                              | html
+        ${'inline math with dollars'}      | ${'The energy is $E = mc^2$ here'}                    | ${'<p data-sourcepos="1:1-1:29" dir="auto">The energy is <span data-math-style="inline" data-sourcepos="1:15-1:24" class="js-render-math">E = mc^2</span> here</p>'}
+        ${'inline math with backticks'}    | ${'Legacy $`a^2 + b^2 = c^2`$ end'}                   | ${'<p data-sourcepos="1:1-1:30" dir="auto">Legacy <code data-math-style="inline" data-sourcepos="1:8-1:26" class="js-render-math">a^2 + b^2 = c^2</code> end</p>'}
+        ${'backtick math before a digit'}  | ${'Energy $`E = mc^2`$5'}                             | ${'<p data-sourcepos="1:1-1:20" dir="auto">Energy <code data-math-style="inline" data-sourcepos="1:8-1:19" class="js-render-math">E = mc^2</code>5</p>'}
+        ${'display math inside prose'}     | ${'Inline display $$a+b$$ here'}                      | ${'<p data-sourcepos="1:1-1:27" dir="auto">Inline display <span data-math-style="display" data-sourcepos="1:16-1:22" class="js-render-math">a+b</span> here</p>'}
+        ${'math with underscores, braces'} | ${'Frac $a_1 + \\frac{x}{y}$ here'}                   | ${'<p data-sourcepos="1:1-1:29" dir="auto">Frac <span data-math-style="inline" data-sourcepos="1:6-1:24" class="js-render-math">a_1 + \\frac{x}{y}</span> here</p>'}
+        ${'math inside a list item'}       | ${'* item with $x^2$ math\n* plain item'}             | ${'<ul data-sourcepos="1:1-2:12" dir="auto">\n<li data-sourcepos="1:1-1:22">item with <span data-math-style="inline" data-sourcepos="1:13-1:17" class="js-render-math">x^2</span> math</li>\n<li data-sourcepos="2:1-2:12">plain item</li>\n</ul>'}
+        ${'math inside a table cell'}      | ${'| a | b |\n|---|---|\n| $x^2$ | plain |\n\nAfter'} | ${'<table data-sourcepos="1:1-3:17" dir="auto">\n<thead>\n<tr data-sourcepos="1:1-1:9">\n<th data-sourcepos="1:2-1:4">a</th>\n<th data-sourcepos="1:6-1:8">b</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos="3:1-3:17">\n<td data-sourcepos="3:2-3:8"><span data-math-style="inline" data-sourcepos="3:3-3:7" class="js-render-math">x^2</span></td>\n<td data-sourcepos="3:10-3:16">plain</td>\n</tr>\n</tbody>\n</table>\n<p data-sourcepos="5:1-5:5" dir="auto">After</p>'}
+        ${'fenced math block'}             | ${'```math\n\\sum_{i=1}^n i\n```'}                    | ${'<div class="gl-relative markdown-code-block js-markdown-code"><pre data-math-style="display" data-sourcepos="1:1-3:3" data-canonical-lang="math" class="js-render-math code highlight js-syntax-highlight language-math" v-pre="true"><code><span id="LC1" class="line" data-lang="math">\\sum_{i=1}^n i</span></code></pre><copy-code></copy-code><insert-code-snippet></insert-code-snippet></div>'}
+        ${'prose with dollar amounts'}     | ${'costs $5 and $10'}                                 | ${'<p data-sourcepos="1:1-1:16" dir="auto">costs $5 and $10</p>'}
+        ${'inline code with a dollar'}     | ${'code `$HOME` here'}                                | ${'<p data-sourcepos="1:1-1:17" dir="auto">code <code data-sourcepos="1:6-1:12">$HOME</code> here</p>'}
+      `('preserves $description', async ({ markdown, html }) => {
+        expect(await roundTrip(html, markdown)).toBe(markdown);
+      });
+
+      it('writes a display math block back on one line, which renders the same', async () => {
+        const markdown = '$$\n\\frac{a}{b} = c\n$$';
+        const html =
+          '<p data-sourcepos="1:1-3:2" dir="auto"><span data-math-style="display" data-sourcepos="1:1-3:2" class="js-render-math">\n\\frac{a}{b} = c\n</span></p>';
+
+        expect(await roundTrip(html, markdown)).toBe('$$\\frac{a}{b} = c$$');
+      });
+    });
   });
 
   describe('when deserializing markdown with a code block', () => {

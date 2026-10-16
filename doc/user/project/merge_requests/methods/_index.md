@@ -323,7 +323,9 @@ To rebase a merge request's branch without triggering a CI/CD pipeline, select
 This option is:
 
 - Available when fast-forward merge is not possible but a conflict-free rebase is possible.
-- Not available when the **Pipelines must succeed** option is enabled.
+- Not available when the **Pipelines must succeed** option is enabled, unless
+  [**Skipped pipelines are considered successful**](../auto_merge.md#allow-merge-after-skipped-pipelines)
+  is also enabled.
 
 Rebasing without a CI/CD pipeline saves resources in projects with a semi-linear
 workflow that requires frequent rebases.

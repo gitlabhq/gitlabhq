@@ -43,6 +43,30 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       expect(WebHookLog.connection).not_to have_received(:transaction)
     end
 
+    context 'with the web_hook_log_insert_without_yaml_round_trip feature flag' do
+      let_it_be(:other_project) { create(:project) }
+
+      before do
+        allow(WebHookLog).to receive(:insert_log!).and_call_original
+      end
+
+      it 'skips the YAML round trip for the project of a project hook' do
+        stub_feature_flags(web_hook_log_insert_without_yaml_round_trip: project_hook.project)
+
+        service.execute
+
+        expect(WebHookLog).to have_received(:insert_log!).with(anything, skip_yaml_round_trip: true)
+      end
+
+      it 'does not skip the YAML round trip for hooks of other projects' do
+        stub_feature_flags(web_hook_log_insert_without_yaml_round_trip: other_project)
+
+        service.execute
+
+        expect(WebHookLog).to have_received(:insert_log!).with(anything, skip_yaml_round_trip: false)
+      end
+    end
+
     context 'when data contains unsafe YAML properties' do
       before do
         data[:request_data] = { data: described_class }

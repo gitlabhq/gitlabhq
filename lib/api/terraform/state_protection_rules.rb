@@ -12,7 +12,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         resource ':id/terraform/state_protection_rules' do
@@ -77,7 +77,7 @@ module API
 
           params do
             requires :terraform_state_protection_rule_id, type: Integer,
-              desc: 'The ID of the Terraform state protection rule'
+              desc: 'ID of the Terraform state protection rule.'
           end
           resource ':terraform_state_protection_rule_id' do
             desc 'Update a Terraform state protection rule for a project' do
@@ -97,10 +97,10 @@ module API
                 desc: 'Terraform state name to protect.'
               optional :minimum_access_level_for_write, type: String,
                 values: ::Terraform::StateProtectionRule.minimum_access_level_for_writes.keys,
-                desc: 'If defined, sets the minimum GitLab access level required to write to the Terraform state.'
+                desc: 'Minimum GitLab access level required to write to the Terraform state.'
               optional :allowed_from, type: String,
                 values: ::Terraform::StateProtectionRule.allowed_froms.keys,
-                desc: 'If defined, write requests must be made from the specific source.'
+                desc: 'Restricts write requests to a specific source.'
             end
             route_setting :authorization, permissions: :update_terraform_state_protection_rule, boundary_type: :project
             patch do
@@ -124,7 +124,7 @@ module API
 
           params do
             requires :terraform_state_protection_rule_id, type: Integer,
-              desc: 'The ID of the Terraform state protection rule'
+              desc: 'ID of the Terraform state protection rule.'
           end
           resource ':terraform_state_protection_rule_id' do
             desc 'Delete a Terraform state protection rule' do

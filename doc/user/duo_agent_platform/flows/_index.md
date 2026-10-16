@@ -45,10 +45,13 @@ GitLab provides two types of flows:
   team's specific processes. You define the workflow steps and agents, and define triggers to control when the
   flow runs.
 
-Flows are available in IDEs and the GitLab UI.
+Flows are available in the GitLab UI, the GitLab Duo CLI, and IDEs:
 
-- In the UI, they run directly in GitLab CI/CD, helping you automate common development tasks without the need to leave your browser.
-- In IDEs, the software development flow is available in VS Code, Visual Studio, and JetBrains. Support for other flows is being proposed.
+- In the UI, flows run directly in GitLab CI/CD, so you can automate common development tasks in your browser.
+- In the GitLab Duo CLI, the Developer Flow runs where you run the CLI.
+- In IDEs, the Software Development Flow runs in VS Code, Visual Studio, and JetBrains.
+
+To decide which flow to use for a coding task, see [choose a flow for coding tasks](foundational_flows/_index.md#choose-a-flow-for-coding-tasks).
 
 For more information about how flows execute in CI/CD, see [the flow execution documentation](execution/_index.md).
 For information about the security of flows, see [the composite identity documentation](../composite_identity.md).

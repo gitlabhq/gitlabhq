@@ -84,7 +84,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
             allow(DesignManagement::GitRepository).to receive(:new).and_call_original
           end
 
-          it do
+          it 'reads the design blob at the expected ref and responds with ok' do
             expect_next_instance_of(DesignManagement::GitRepository) do |repository|
               expect(repository).to receive(:blob_at).with(expected_ref, design.full_path).and_call_original
             end

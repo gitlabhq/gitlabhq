@@ -20,6 +20,7 @@ title: Policy store API
 - Catalog endpoints:
   - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598030) to require authentication in GitLab 19.4.
   - `environment_advanced` and `deployment_promoted` triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) in GitLab 19.4.
+  - `set_setting` action [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630210) in GitLab 19.6.
 - Policy endpoints:
   - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database in GitLab 19.4.
   - `policy_rego` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) in GitLab 19.4.
@@ -124,7 +125,8 @@ Example response:
 ```json
 [
   { "id": "block", "name": "Block" },
-  { "id": "require_approval", "name": "Require approval" }
+  { "id": "require_approval", "name": "Require approval" },
+  { "id": "set_setting", "name": "Set project setting" }
 ]
 ```
 

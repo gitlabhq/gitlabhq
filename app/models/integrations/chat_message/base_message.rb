@@ -5,10 +5,11 @@ module Integrations
     class BaseMessage
       RELATIVE_LINK_REGEX = Gitlab::UntrustedRegexp.new('!\[[^\]]*\]\((/uploads/[^\)]*)\)')
 
-      attr_reader :markdown, :user_full_name, :user_name, :user_avatar, :project_name, :project_url
+      attr_reader :markdown, :html, :user_full_name, :user_name, :user_avatar, :project_name, :project_url
 
       def initialize(params)
         @markdown = params[:markdown] || false
+        @html = params[:html] || false
         @project_name = params[:project_name] || params.dig(:project, :path_with_namespace)
         @project_url = params.dig(:project, :web_url) || params[:project_url]
         @user_full_name = params.dig(:user, :name) || params[:user_full_name]
@@ -25,7 +26,8 @@ module Integrations
       end
 
       def summary
-        return message if markdown
+        # Telegram HTML summaries bypass Slack link formatting; attachments and activity remain separate.
+        return message if markdown || html
 
         format(message)
       end
@@ -86,6 +88,8 @@ module Integrations
       # - https://api.slack.com/reference/surfaces/formatting#escaping
       # - https://gitlab.com/gitlab-org/slack-notifier#escaping
       def strip_markup(string)
+        return ERB::Util.html_escape(string) if html && string
+
         SlackMarkdownSanitizer.sanitize(string)
       end
 
@@ -94,7 +98,14 @@ module Integrations
       end
 
       def link(text, url)
+        return ActionController::Base.helpers.content_tag(:a, strip_markup(text), href: url.to_s) if html
+
         "[#{strip_markup(text)}](#{url})"
+      end
+
+      def bold(text)
+        text = strip_markup(text)
+        html ? ActionController::Base.helpers.content_tag(:b, text) : "*#{text}*"
       end
 
       def pretty_duration(seconds)

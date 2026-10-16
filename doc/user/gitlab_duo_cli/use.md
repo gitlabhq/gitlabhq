@@ -447,6 +447,7 @@ duo run --goal "Fix these errors: $eslint_output"
 
 When you use headless mode, the GitLab Duo CLI:
 
+- In GitLab 19.4 and later, runs the [Developer Flow](../project/merge_requests/developer.md#use-the-flow-in-the-gitlab-duo-cli).
 - Bypasses manual tool approvals and automatically approves all tools for use.
 - Does not maintain context from previous conversations.
   A new workflow starts every time you execute the `run` command.

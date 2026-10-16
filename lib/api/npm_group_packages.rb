@@ -20,7 +20,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/-/packages/npm' do

@@ -35,7 +35,7 @@ module Integrations
       private
 
       def format_title(title)
-        "*#{strip_markup(title.lines.first.chomp)}*"
+        bold(title.lines.first.to_s.chomp)
       end
 
       def message
@@ -55,6 +55,9 @@ module Integrations
       end
 
       def merge_request_title
+        # The HTML title is an escaped SafeBuffer containing <b> markup; html_escape leaves it intact.
+        return strip_markup("#{MergeRequest.reference_prefix}#{merge_request_iid} ") + title if html
+
         "#{MergeRequest.reference_prefix}#{merge_request_iid} #{strip_markup(title)}"
       end
 

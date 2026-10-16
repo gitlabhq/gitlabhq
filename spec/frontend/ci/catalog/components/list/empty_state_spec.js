@@ -2,7 +2,7 @@ import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import EMPTY_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-catalog-md.svg';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/catalog/components/list/empty_state.vue';
-import { COMPONENTS_DOCS_URL } from '~/ci/catalog/constants';
+import { COMPONENTS_DOCS_URL, TAB_NAME } from '~/ci/catalog/constants';
 
 describe('EmptyState', () => {
   let wrapper;
@@ -14,6 +14,7 @@ describe('EmptyState', () => {
   const createComponent = ({ props = {}, stubGlSprintf = false } = {}) => {
     wrapper = shallowMountExtended(EmptyState, {
       propsData: {
+        currentTab: TAB_NAME.all,
         ...props,
       },
       stubs: {

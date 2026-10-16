@@ -64,7 +64,7 @@ For example:
 
 {{</* details */>}}
 
-Status: Experiment
+- Status: Experiment
 
 {{</* /details */>}}
 

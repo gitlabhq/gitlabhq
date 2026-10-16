@@ -77,11 +77,11 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [External agents](agents/external.md) <br /> Securely connect third-party integrations and tools to extend Agent Platform capabilities. | {{< no >}} |  {{< yes >}}  | {{< yes >}} |
 | [Planner Agent](agents/foundational_agents/planner.md) <br /> Plan, prioritize, and track work. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Data Analyst Agent](agents/foundational_agents/data_analyst.md) <br /> Analyze data and generate insights from your development metrics and project data. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
-| [Developer Flow](../project/merge_requests/developer.md) <br /> Convert issues into merge requests. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Developer Flow](../project/merge_requests/developer.md) <br /> Convert issues into merge requests, or complete coding tasks in Agentic Chat or the GitLab Duo CLI. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Code Review Flow](flows/foundational_flows/code_review/_index.md) <br /> Automate code review tasks and enforce coding standards across your team. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) <br /> Convert legacy CI/CD pipelines to the GitLab CI/CD format. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Fix CI/CD Pipeline Flow](../../ci/pipelines/fix_pipeline.md) <br /> Diagnose and automatically fix failing CI/CD pipelines. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
-| [Software Development Flow](../../editor_extensions/software_development.md) <br /> Create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Software Development Flow](../../editor_extensions/software_development.md) <br /> In your IDE, create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension.[^mcp-clients-consume] | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Interactions in merge requests](../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo) <br /> Ask questions and discuss feedback in merge request comment threads. | {{< yes >}} | {{< yes >}} | {{< yes >}} |

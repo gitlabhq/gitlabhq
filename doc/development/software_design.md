@@ -239,6 +239,11 @@ Guidelines:
   Try to define behavior in the bounded context where it belongs, not where the data (or some of it) is.
   This helps creating facets of the omniscient object that are much more relevant in the bounded context than
   having generic and overloaded objects which bring more coupling and complexity.
+- Do not move methods out of an omniscient class into a mixin, for example an `ActiveSupport::Concern`, that the
+  class includes. A mixin still uses inheritance: its methods are still part of the omniscient class. It hides
+  the problem and keeps the coupling. Use composition instead: a dedicated class in the bounded context that
+  receives the record or its ID, for example `project_id`, in `initialize` and wraps it with domain-specific
+  methods. See [Example: Define a thin domain object around a generic model](#example-define-a-thin-domain-object-around-a-generic-model).
 
 ### RuboCop enforcement
 

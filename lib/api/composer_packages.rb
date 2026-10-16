@@ -62,7 +62,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a group'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
     end
 
     resource :group, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -95,7 +95,7 @@ module API
         tags %w[packages_composer]
       end
       params do
-        requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
+        requires :sha, type: String, desc: 'Shasum of current json.', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
       end
       route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       route_setting :authorization, skip_job_token_policies: true, permissions: :read_composer_package, boundary_type: :group
@@ -146,7 +146,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -167,8 +167,8 @@ module API
           tags %w[packages_composer]
         end
         params do
-          optional :branch, type: String, desc: 'The name of the branch', documentation: { example: 'release' }
-          optional :tag, type: String, desc: 'The name of the tag', documentation: { example: 'v1.0.0' }
+          optional :branch, type: String, desc: 'Name of the branch to target for the package.', documentation: { example: 'release' }
+          optional :tag, type: String, desc: 'Name of the tag to target for the package.', documentation: { example: 'v1.0.0' }
           exactly_one_of :tag, :branch
         end
         post urgency: :low do
@@ -202,7 +202,7 @@ module API
           tags %w[packages_composer]
         end
         params do
-          requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
+          requires :sha, type: String, desc: 'Shasum of current json.', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
           requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
         end
         route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true

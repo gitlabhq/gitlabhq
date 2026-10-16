@@ -4,6 +4,7 @@ export const TODO_STATE_DONE = 'done';
 export const TODO_STATE_PENDING = 'pending';
 
 export const TODO_TARGET_TYPE_ISSUE = 'ISSUE';
+export const TODO_TARGET_TYPE_WORK_ITEM = 'WORKITEM';
 export const TODO_TARGET_TYPE_MERGE_REQUEST = 'MERGEREQUEST';
 export const TODO_TARGET_TYPE_DESIGN = 'DESIGN';
 export const TODO_TARGET_TYPE_ALERT = 'ALERT';
@@ -75,6 +76,10 @@ export const INSTRUMENT_TAB_LABELS = [
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const TODO_WAIT_BEFORE_RELOAD = 1 * 1000; // 1 second
+
+export const TODOS_VIEW_LIST = 'list';
+export const TODOS_VIEW_GROUPED = 'grouped';
+export const TODOS_VIEW_STORAGE_KEY = 'todos-view';
 
 // Inline-only allowlist for the to-do note preview (renders on one truncated line).
 // `bodyFirstLineHtml` comes from the block-capable `first_line_in_markdown` helper;

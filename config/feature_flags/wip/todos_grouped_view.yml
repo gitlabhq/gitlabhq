@@ -1,0 +1,10 @@
+---
+name: todos_grouped_view
+description: Adds a grouped view to the to-do list that groups to-dos by their target
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627723
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261843
+rollout_issue_url:
+milestone: '19.5'
+group: group::activation
+type: wip
+default_enabled: false

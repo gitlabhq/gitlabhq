@@ -26,7 +26,7 @@ module API
         boundary_type = awardable_params[:resource].to_s.singularize.to_sym
 
         params do
-          requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{awardable_params[:resource] == :projects ? 'project' : 'group'}"
+          requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{awardable_params[:resource] == :projects ? 'project' : 'group'}."
           requires :"#{awardable_id_string}", type: Integer, desc: Helpers::AwardEmoji.awardable_id_desc
         end
 
@@ -41,7 +41,7 @@ module API
 
           if is_note_endpoint
             params do
-              requires :note_id, type: Integer, desc: 'The ID of a note'
+              requires :note_id, type: Integer, desc: 'ID of the note.'
             end
           end
 
@@ -130,7 +130,7 @@ module API
             tags AWARD_EMOJI_TAG
           end
           params do
-            requires :award_id, type: Integer, desc: 'ID of an emoji reaction.'
+            requires :award_id, type: Integer, desc: 'ID of the emoji reaction.'
           end
           route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"delete_#{permission_suffix}", boundary_type: boundary_type

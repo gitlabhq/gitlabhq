@@ -1305,9 +1305,13 @@ Calls to tools that run one of several underlying tools, such as `search` or `sa
 also include a `dispatched_tool_name` field. It records which underlying tool handled the call,
 for example `gitlab_search_in_project`.
 
+For tool calls from a GitLab Duo Agent Platform session, the `tool_call` line has a `meta.duo_workflow_id`
+field with the session ID. Workhorse reports this value, and GitLab does not verify it.
+
 When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
 `duo_session_created` is logged. This line has `source_type` set to `mcp`.
-The `duo_workflow_id` field holds the session ID.
+The `duo_workflow_id` field holds the session ID. The `mcp_client_name` and `mcp_client_version`
+fields hold the MCP client that created the session, when the client identifies itself.
 The line also shows which flow or agent the session runs, in the fields `item_type`, `flow_name`,
 `component_name`, `custom_item_id`, `item_version`, and `item_schema_version`.
 Fields that do not apply are left out.

@@ -7299,6 +7299,11 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/ai/duo_workflows/tools/risk_assessment/results",
+    "example": "/api/v4/ai/duo_workflows/tools/risk_assessment/results",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/ai/duo_workflows/tools/risk_classification/results",
     "example": "/api/v4/ai/duo_workflows/tools/risk_classification/results",
     "acceptsFormat": true

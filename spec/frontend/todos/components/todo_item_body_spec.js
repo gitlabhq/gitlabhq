@@ -72,9 +72,21 @@ describe('TodoItemBody', () => {
     expect(wrapper.findComponent(TodoItemTitle).exists()).toBe(true);
   });
 
+  it('passes hideTargetName to the title', () => {
+    createComponent({}, { hideTargetName: true });
+    expect(wrapper.findComponent(TodoItemTitle).props('hideTargetName')).toBe(true);
+  });
+
   it('renders TodoItemTitleHiddenBySaml component for hidden todos', () => {
     createComponent({}, { isHiddenBySaml: true });
     expect(wrapper.findComponent(TodoItemTitleHiddenBySaml).exists()).toBe(true);
+  });
+
+  it('does not pass the to-do props to TodoItemTitleHiddenBySaml', () => {
+    createComponent({}, { isHiddenBySaml: true, hideTargetName: true });
+    expect(wrapper.findComponent(TodoItemTitleHiddenBySaml).attributes()).not.toHaveProperty(
+      'hide-target-name',
+    );
   });
 
   it('renders author avatar', () => {

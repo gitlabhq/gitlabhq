@@ -29,7 +29,7 @@ module API
       feature_category = details[:feature_category]
 
       params do
-        requires :id, type: String, desc: "The ID of a #{parent_type}"
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{parent_type}."
       end
       resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{parent_type} #{human_eventable_str} label events" do
@@ -58,7 +58,7 @@ module API
           tags ['resource_events']
         end
         params do
-          requires :event_id, type: String, desc: 'The ID of a resource label event'
+          requires :event_id, type: String, desc: 'ID of the resource label event.'
           requires :eventable_id, types: [Integer, String], desc: "The #{details[:id_field]} of the #{human_eventable_str}"
         end
         route_setting :tier, details[:tier] if details[:tier]

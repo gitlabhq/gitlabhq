@@ -64,6 +64,29 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
   it_behaves_like Integrations::ChatMessage
 
+  context 'with HTML formatting', feature_category: :integrations do
+    subject(:message) { described_class.new(args) }
+
+    let(:args) do
+      super().deep_merge(
+        html: true,
+        project: { name: 'Project_<example> & tools' },
+        user: { name: 'Example_<reviewer> & "name"', username: 'example_bot' },
+        object_attributes: { ref: 'topic_<example>&tools' }
+      )
+    end
+
+    it 'escapes external text while preserving generated links' do
+      expect(message.summary).to eq(
+        '<a href="http://example.gitlab.com">Project_&lt;example&gt; &amp; tools</a>: ' \
+          'Pipeline <a href="http://example.gitlab.com/-/pipelines/123">#123</a> ' \
+          'of branch <a href="http://example.gitlab.com/-/commits/topic_&lt;example&gt;&amp;tools">' \
+          'topic_&lt;example&gt;&amp;tools</a> by ' \
+          'Example_&lt;reviewer&gt; &amp; &quot;name&quot; (example_bot) has passed in 02:00:10'
+      )
+    end
+  end
+
   it 'returns an empty pretext' do
     expect(subject.pretext).to be_empty
   end

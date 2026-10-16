@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Table from '~/repository/components/table/index.vue';
 import TableRow from '~/repository/components/table/row.vue';
 import refQuery from '~/repository/queries/ref.query.graphql';
+import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 let itemVisibilityCallback;
@@ -26,6 +27,10 @@ const createMockApolloProvider = (ref) => {
   apolloProver.clients.defaultClient.cache.writeQuery({
     query: refQuery,
     data: { ref, escapedRef: ref },
+  });
+  apolloProver.clients.defaultClient.cache.writeQuery({
+    query: projectPathQuery,
+    data: { projectPath: 'gitlab-org/gitlab' },
   });
 
   return apolloProver;

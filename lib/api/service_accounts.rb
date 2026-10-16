@@ -21,9 +21,13 @@ module API
       end
 
       params do
-        optional :name, type: String, desc: 'Name of the user'
-        optional :username, type: String, desc: 'Username of the user'
-        optional :email, type: String, desc: 'Custom email address for the user'
+        optional :name, type: String, desc: 'Name of the user. If omitted, uses `Service account user`.'
+        optional :username, type: String, desc: 'Username of the user account. If omitted, generates a name prefixed ' \
+                                            'with `service_account_`.'
+        optional :email, type: String,
+          desc: 'Email address of the user account. If omitted, generates a no-reply email address. ' \
+            'Custom email addresses require confirmation, unless the email confirmation settings are ' \
+            '[turned off](https://docs.gitlab.com/administration/settings/sign_up_restrictions/#confirm-user-email).'
         optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
       end
 
@@ -60,8 +64,9 @@ module API
       params do
         use :pagination
         optional :order_by, type: String, values: %w[id username], default: 'id',
-          desc: 'Attribute to sort by'
-        optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Order of sorting'
+          desc: 'Sort results by the specified field.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Sort results in ascending or ' \
+                                                                               'descending order.'
       end
 
       # rubocop: disable CodeReuse/ActiveRecord -- for the user or reorder
@@ -91,10 +96,16 @@ module API
       end
 
       params do
-        requires :user_id, type: Integer, desc: 'The ID of the service account user'
-        optional :name, type: String, desc: 'Name of the user'
-        optional :username, type: String, desc: 'Username of the user'
-        optional :email, type: String, desc: 'Custom email address for the user'
+        requires :user_id, type: Integer, desc: 'ID of the service account.'
+        optional :name, type: String, desc: 'Name of the user. If omitted when creating a new service account, ' \
+                                        'uses `Service account user`.'
+        optional :username, type: String, desc: 'Username of the user account. If omitted when creating a new ' \
+                                            'service account, generates a name prefixed with `service_account_`.'
+        optional :email, type: String,
+          desc: 'Email address of the user account. If omitted when creating a new service account, generates a ' \
+            'no-reply email address. Custom email addresses require confirmation, unless the email confirmation ' \
+            'settings are ' \
+            '[turned off](https://docs.gitlab.com/administration/settings/sign_up_restrictions/#confirm-user-email).'
         optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
       end
 

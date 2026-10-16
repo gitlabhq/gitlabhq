@@ -150,6 +150,7 @@ describe('WebhookFormTriggerList', () => {
   describe('when system hook triggers are provided', () => {
     const systemHookTriggers = {
       repositoryUpdateEvents: true,
+      memberApprovalEvents: false,
       pushEvents: false,
       tagPushEvents: false,
       mergeRequestsEvents: false,

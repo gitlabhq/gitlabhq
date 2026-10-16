@@ -93,6 +93,17 @@ Test it outside of production first.
 
 `pg_ash` is not installed by default, and sampling is off by default.
 
+Prerequisites:
+
+- For the database user that GitLab connects as:
+  - The `CREATE` privilege on the main database
+  - The `SELECT` privilege on `pg_stat_activity` and the `EXECUTE` privilege on
+    `pg_stat_get_activity(integer)`
+
+PostgreSQL grants the `pg_stat_activity` privileges to all users by default.
+If a privilege is missing, the install Rake task stops and prints the `GRANT` statements
+to run as a database superuser.
+
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}

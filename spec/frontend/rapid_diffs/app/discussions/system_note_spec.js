@@ -9,7 +9,10 @@ describe('SystemNote', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(SystemNote, {
-      propsData: props,
+      propsData: {
+        ...props,
+        note: { created_at: '2024-01-01T00:00:00Z', ...props.note },
+      },
     });
   };
 

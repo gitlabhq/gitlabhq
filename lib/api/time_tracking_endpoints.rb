@@ -68,7 +68,8 @@ module API
       end
       params do
         requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}."
-        requires :duration, type: String, desc: 'The duration in human format.', documentation: { example: '3h30m' }
+        requires :duration, type: String, desc: 'Duration in human-readable format, for example ' \
+                                            '`3h30m`.', documentation: { example: '3h30m' }
       end
       route_setting :authorization, permissions: :"create_#{issuable_name}_time_estimate", boundary_type: :project
       post ":id/#{issuable_collection_name}/:#{issuable_key}/time_estimate" do
@@ -115,7 +116,7 @@ module API
       end
       params do
         requires issuable_key, type: Integer, desc: "The internal ID of the #{issuable_name}."
-        requires :duration, type: String, desc: 'The duration in human format.'
+        requires :duration, type: String, desc: 'Duration in human-readable format, for example `3h30m`.'
       end
       route_setting :authorization, permissions: :"add_#{issuable_name}_spent_time", boundary_type: :project
       post ":id/#{issuable_collection_name}/:#{issuable_key}/add_spent_time" do

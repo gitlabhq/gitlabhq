@@ -5,7 +5,9 @@ import MergeScheduleInput from '~/merge_requests/components/merge_schedule_input
 let wrapper;
 
 function createComponent(propsData = {}) {
-  wrapper = shallowMount(MergeScheduleInput, { propsData });
+  wrapper = shallowMount(MergeScheduleInput, {
+    propsData: { paramKey: 'merge_request', ...propsData },
+  });
 }
 
 const findInput = () => wrapper.findComponent(GlFormInput);

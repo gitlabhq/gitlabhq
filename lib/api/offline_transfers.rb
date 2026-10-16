@@ -22,43 +22,43 @@ module API
 
     helpers do
       params :object_storage_configuration_params do
-        requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored'
-        optional :aws_s3_configuration, type: Hash, desc: 'AWS S3 object storage configuration' do
-          requires :aws_access_key_id, type: String, desc: 'AWS S3 access key ID'
-          requires :aws_secret_access_key, type: String, desc: 'AWS S3 secret access key'
-          requires :region, type: String, desc: 'AWS S3 object storage region'
+        requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored.'
+        optional :aws_s3_configuration, type: Hash, desc: 'AWS S3 object storage configuration.' do
+          requires :aws_access_key_id, type: String, desc: 'AWS S3 access key ID.'
+          requires :aws_secret_access_key, type: String, desc: 'AWS S3 secret access key.'
+          requires :region, type: String, desc: 'AWS S3 object storage region.'
           optional :path_style, type: Boolean, default: false,
-            desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
+            desc: 'If `true`, uses path-style URLs instead of virtual-hosted-style URLs.'
         end
         optional :s3_compatible_configuration,
           type: Hash,
-          desc: 'MinIO or other S3-compatible object storage configuration' do
-          requires :aws_access_key_id, type: String, desc: 'S3-compatible access key ID'
-          requires :aws_secret_access_key, type: String, desc: 'S3-compatible secret access key'
-          requires :region, type: String, desc: 'S3-compatible object storage region'
-          requires :endpoint, type: String, desc: 'Object storage location endpoint'
+          desc: 'MinIO or other S3-compatible object storage configuration.' do
+          requires :aws_access_key_id, type: String, desc: 'S3-compatible access key ID.'
+          requires :aws_secret_access_key, type: String, desc: 'S3-compatible secret access key.'
+          requires :region, type: String, desc: 'S3-compatible object storage region.'
+          requires :endpoint, type: String, desc: 'Object storage location endpoint.'
           optional :path_style, type: Boolean, default: true,
-            desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
+            desc: 'If `true`, uses path-style URLs instead of virtual-hosted-style URLs.'
         end
         optional :gcs_configuration, type: Hash,
-          desc: 'Google Cloud Storage configuration using a service account JSON key' do
-          requires :google_project, type: String, desc: 'Google Cloud project ID'
-          requires :google_json_key_string, type: String, desc: 'Google Cloud service account JSON key contents'
+          desc: 'Google Cloud Storage configuration using a service account JSON key.' do
+          requires :google_project, type: String, desc: 'Google Cloud project ID.'
+          requires :google_json_key_string, type: String, desc: 'Google Cloud service account JSON key contents.'
         end
         optional :gcs_hmac_configuration, type: Hash,
-          desc: 'Google Cloud Storage configuration using S3-interoperability HMAC keys' do
-          requires :google_storage_access_key_id, type: String, desc: 'GCS HMAC access key ID'
-          requires :google_storage_secret_access_key, type: String, desc: 'GCS HMAC secret'
-          requires :region, type: String, desc: 'GCS bucket region'
+          desc: 'Google Cloud Storage configuration using S3-interoperability HMAC keys.' do
+          requires :google_storage_access_key_id, type: String, desc: 'GCS HMAC access key ID.'
+          requires :google_storage_secret_access_key, type: String, desc: 'GCS HMAC secret.'
+          requires :region, type: String, desc: 'GCS bucket region.'
           optional :path_style, type: Boolean, default: true,
-            desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
+            desc: 'If `true`, uses path-style URLs instead of virtual-hosted-style URLs.'
         end
         optional :gcs_adc_configuration, type: Hash,
           desc: 'Google Cloud Storage configuration using Application Default Credentials. ' \
             'Available on GitLab Self-Managed or GitLab Dedicated, and must be enabled by an administrator. ' \
             'Only administrators can use these credentials, and the bucket name must start with ' \
             "\"gitlab-offline-transfer-\". For more information, see #{ADC_DOCS_URL}" do
-          requires :google_project, type: String, desc: 'Google Cloud project ID'
+          requires :google_project, type: String, desc: 'Google Cloud project ID.'
         end
         exactly_one_of(*OBJECT_STORAGE_PROVIDERS.keys)
       end
@@ -111,10 +111,10 @@ module API
       end
       params do
         use :object_storage_configuration_params
-        requires :entities, type: Array, desc: 'List of entities to export' do
+        requires :entities, type: Array, desc: 'List of entities to export.' do
           requires :full_path,
             type: String,
-            desc: 'Relative path of the entity to export',
+            desc: 'Relative path of the entity to export.',
             documentation: { example: "'source/full/path' not 'https://example.com/source/full/path'" }
         end
       end
@@ -147,9 +147,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return offline transfer exports sorted in created by `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order by creation date.'
         optional :status, type: String, values: Import::Offline::Export.all_human_statuses,
-          desc: 'Return offline transfer exports with specified status'
+          desc: 'Return offline transfer exports with the specified status.'
       end
       route_setting :authorization, permissions: :read_offline_export, boundary_type: :user
       get do
@@ -162,7 +162,7 @@ module API
         tags ['offline_transfers']
       end
       params do
-        requires :id, type: Integer, desc: "The ID of user's offline transfer export"
+        requires :id, type: Integer, desc: 'ID of the offline transfer export.'
       end
       route_setting :authorization, permissions: :read_offline_export, boundary_type: :user
       get ':id' do
@@ -191,17 +191,17 @@ module API
       end
       params do
         use :object_storage_configuration_params
-        requires :export_prefix, type: String, desc: 'Prefix of the export within the bucket'
+        requires :export_prefix, type: String, desc: 'Prefix of the export within the bucket.'
         # Grape does not validate the nested params of an optional array whose elements
         # are not hashes, and declared() then raises on them. Coercing those to nil lets
         # allow_blank reject them with a 400 rather than a 500.
-        optional :entities, type: Array, allow_blank: false, desc: 'List of entities to import',
+        optional :entities, type: Array, allow_blank: false, desc: 'List of entities to import.',
           coerce_with: ->(value) { value.is_a?(Array) && value.all?(Hash) ? value : nil } do
           requires :source_type, type: String, values: %w[group_entity project_entity],
-            desc: 'Type of the entity to import'
-          requires :source_full_path, type: String, desc: 'Full path of the entity on the source instance'
-          requires :destination_namespace, type: String, desc: 'Full path of the destination namespace'
-          optional :destination_slug, type: String, desc: 'Destination slug for the imported entity'
+            desc: 'Type of the entity to import.'
+          requires :source_full_path, type: String, desc: 'Full path of the entity on the source instance.'
+          requires :destination_namespace, type: String, desc: 'Full path of the destination namespace.'
+          optional :destination_slug, type: String, desc: 'Destination slug for the imported entity.'
         end
         optional :import_all, type: Hash,
           desc: 'Import every top-level group in the export, recreating the source instance structure' do

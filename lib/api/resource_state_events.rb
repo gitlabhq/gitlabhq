@@ -19,7 +19,7 @@ module API
       feature_category = details[:feature_category]
 
       params do
-        requires :id, type: String, desc: "The ID of a #{parent_type}"
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{parent_type}."
       end
       resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{parent_type} #{human_eventable_str} state events" do
@@ -49,7 +49,7 @@ module API
         end
         params do
           requires :eventable_id, types: Integer, desc: "The #{details[:id_field]} of the #{human_eventable_str}"
-          requires :event_id, type: Integer, desc: 'The ID of a resource state event'
+          requires :event_id, type: Integer, desc: 'ID of the resource state event.'
         end
         route_setting :tier, details[:tier] if details[:tier]
         route_setting :authorization, permissions: :"read_#{eventable_type.to_s.underscore}_state_event", boundary_type: parent_type.to_sym

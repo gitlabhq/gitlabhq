@@ -17,6 +17,14 @@ module Gitlab
         PermissionError = Class.new(StandardError)
         VersionMismatchError = Class.new(StandardError)
 
+        # take_sample() runs as the calling role. Stock PostgreSQL lets every role read
+        # pg_stat_activity, but a hardened cluster can revoke it, and then every sample fails.
+        PG_STAT_ACTIVITY_READABLE_QUERY = <<~SQL.squish.freeze
+          SELECT
+            has_table_privilege('pg_catalog.pg_stat_activity', 'SELECT')
+            AND has_function_privilege('pg_catalog.pg_stat_get_activity(integer)', 'EXECUTE')
+        SQL
+
         def initialize(connection = ApplicationRecord.connection)
           @connection = connection
         end
@@ -25,6 +33,7 @@ module Gitlab
         def install
           current = installed_version
           raise VersionMismatchError, version_mismatch_message(current) if current && current != VENDORED_VERSION
+          raise PermissionError, pg_stat_activity_denied_message unless pg_stat_activity_readable?
 
           execute(PgAsh.install_sql)
 
@@ -70,6 +79,10 @@ module Gitlab
           PgAsh.execute(connection, sql)
         end
 
+        def pg_stat_activity_readable?
+          connection.select_value(PG_STAT_ACTIVITY_READABLE_QUERY)
+        end
+
         def version_mismatch_message(current)
           <<~MSG
             pg_ash #{current} is installed, but this GitLab vendors #{VENDORED_VERSION}.
@@ -98,6 +111,23 @@ module Gitlab
 
             Then run this task again. The install script is idempotent, so it is
             safe to re-apply after a failure.
+          MSG
+        end
+
+        def pg_stat_activity_denied_message
+          database = ApplicationRecord.database
+
+          <<~MSG
+            pg_ash samples pg_stat_activity as user '#{database.username}', but that user is not
+            allowed to read it in database '#{database.database_name}'. Every sample would fail
+            with "permission denied for view pg_stat_activity".
+
+            Grant the privileges using a database superuser:
+
+                GRANT SELECT ON pg_catalog.pg_stat_activity TO #{database.username};
+                GRANT EXECUTE ON FUNCTION pg_catalog.pg_stat_get_activity(integer) TO #{database.username};
+
+            Then run this task again.
           MSG
         end
       end

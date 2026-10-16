@@ -26,7 +26,7 @@ module API
         route_setting :model_registry, write: true
         params do
           optional :path, type: String,
-            desc: 'Path to the artifact, model version id, optionally followed by path. E.g. 15/MLmodel'
+            desc: 'Model version ID, optionally followed by `/` and the path to the artifact, for example `15/MLmodel`.'
         end
         route_setting :authorization, permissions: :read_ml_flow_artifact, boundary_type: :project
         get 'artifacts', urgency: :low do

@@ -10,11 +10,11 @@ module API
       feature_category :deployment_management
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :agent_id, type: Integer, desc: 'The ID of an agent'
+          requires :agent_id, type: Integer, desc: 'ID of the agent.'
         end
         resource ':id/cluster_agents/:agent_id' do
           resource :tokens do
@@ -42,7 +42,7 @@ module API
               tags %w[cluster_agents]
             end
             params do
-              requires :token_id, type: Integer, desc: 'The ID of the agent token'
+              requires :token_id, type: Integer, desc: 'ID of the agent token.'
             end
             route_setting :authorization, permissions: :read_cluster_agent_token, boundary_type: :project
             get ':token_id' do
@@ -59,8 +59,8 @@ module API
               tags %w[cluster_agents]
             end
             params do
-              requires :name, type: String, desc: 'The name for the token'
-              optional :description, type: String, desc: 'The description for the token'
+              requires :name, type: String, desc: 'Name of the token.'
+              optional :description, type: String, desc: 'Description of the token.'
             end
             route_setting :authorization, permissions: :create_cluster_agent_token, boundary_type: :project
             post do
@@ -87,7 +87,7 @@ module API
               tags %w[cluster_agents]
             end
             params do
-              requires :token_id, type: Integer, desc: 'The ID of the agent token'
+              requires :token_id, type: Integer, desc: 'ID of the agent token.'
             end
             route_setting :authorization, permissions: :revoke_cluster_agent_token, boundary_type: :project
             delete ':token_id' do

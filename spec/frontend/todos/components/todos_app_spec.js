@@ -1,15 +1,17 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTabs, GlFormCheckbox } from '@gitlab/ui';
+import { GlLoadingIcon, GlTabs, GlFormCheckbox, GlSegmentedControl } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosBulkBar from '~/todos/components/todos_bulk_bar.vue';
+import TodosGroup from '~/todos/components/todos_group.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import {
@@ -21,6 +23,8 @@ import {
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
 import {
+  MR_BUILD_FAILED_TODO,
+  MR_REVIEW_REQUEST_TODO,
   todosResponse,
   todosResponseEmptyLastPage,
   todosResponseNonFullFirstPage,
@@ -39,6 +43,8 @@ describe('TodosApp', () => {
     mountFn = shallowMountExtended,
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
+    provide = {},
+    stubs = {},
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
@@ -46,6 +52,8 @@ describe('TodosApp', () => {
 
     wrapper = mountFn(TodosApp, {
       apolloProvider: mockApollo,
+      provide,
+      stubs,
     });
   };
 
@@ -532,6 +540,195 @@ describe('TodosApp', () => {
       await waitForPromises();
 
       expect(provided.currentUserId.value).toBe(todosResponse.data.currentUser.id);
+    });
+  });
+
+  describe('grouped view', () => {
+    const SECOND_REVIEW_TODO = { ...MR_REVIEW_REQUEST_TODO, id: 'gid://gitlab/Todo/30' };
+    const groupableTodos = [MR_REVIEW_REQUEST_TODO, MR_BUILD_FAILED_TODO, SECOND_REVIEW_TODO];
+
+    const responseWith = (pageInfo = {}) => ({
+      data: {
+        currentUser: {
+          ...todosResponse.data.currentUser,
+          todos: {
+            ...todosResponse.data.currentUser.todos,
+            nodes: groupableTodos,
+            pageInfo: { ...todosResponse.data.currentUser.todos.pageInfo, ...pageInfo },
+          },
+        },
+      },
+    });
+
+    const findViewToggle = () => wrapper.findComponent(GlSegmentedControl);
+    const findTodoGroups = () => wrapper.findAllComponents(TodosGroup);
+    const findPaginationNotice = () => wrapper.findByTestId('todos-grouped-view-pagination-notice');
+
+    const createGroupedComponent = ({ todosGroupedView = true, pageInfo } = {}) =>
+      createComponent({
+        todosQueryHandler: jest.fn().mockResolvedValue(responseWith(pageInfo)),
+        provide: { glFeatures: { todosGroupedView } },
+        stubs: {
+          TodosFilterBar: stubComponent(TodosFilterBar, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+        },
+      });
+
+    const selectGroupedView = async () => {
+      findViewToggle().vm.$emit('input', 'grouped');
+      await nextTick();
+    };
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    describe('when the feature flag is disabled', () => {
+      beforeEach(async () => {
+        localStorage.setItem('todos-view', JSON.stringify('grouped'));
+        createGroupedComponent({ todosGroupedView: false });
+        await waitForPromises();
+      });
+
+      it('does not render the view toggle', () => {
+        expect(findViewToggle().exists()).toBe(false);
+      });
+
+      it('renders the list view even if the grouped view was saved', () => {
+        expect(findTodoGroups()).toHaveLength(0);
+        expect(findTodoItems()).toHaveLength(3);
+      });
+    });
+
+    describe('when the feature flag is enabled', () => {
+      beforeEach(async () => {
+        createGroupedComponent();
+        await waitForPromises();
+      });
+
+      it('renders the view toggle with the list view selected by default', () => {
+        expect(findViewToggle().props('value')).toBe('list');
+        expect(findViewToggle().attributes('aria-label')).toBe('View');
+        expect(findViewToggle().props('options')).toEqual([
+          { value: 'list', text: 'List', props: { 'aria-pressed': 'true' } },
+          { value: 'grouped', text: 'Grouped', props: { 'aria-pressed': 'false' } },
+        ]);
+        expect(findTodoItems()).toHaveLength(3);
+        expect(findTodoGroups()).toHaveLength(0);
+      });
+
+      describe('when selecting the grouped view', () => {
+        beforeEach(async () => {
+          await selectGroupedView();
+        });
+
+        it('groups the to-dos by target in the server order', () => {
+          expect(findTodoGroups()).toHaveLength(2);
+          expect(findTodoGroups().at(0).props('todos')).toEqual([
+            MR_REVIEW_REQUEST_TODO,
+            SECOND_REVIEW_TODO,
+          ]);
+          expect(findTodoGroups().at(1).props('todos')).toEqual([MR_BUILD_FAILED_TODO]);
+        });
+
+        it('saves the selected view', () => {
+          expect(JSON.parse(localStorage.getItem('todos-view'))).toBe('grouped');
+        });
+
+        it('marks the grouped option as pressed', () => {
+          expect(
+            findViewToggle()
+              .props('options')
+              .map(({ props }) => props['aria-pressed']),
+          ).toEqual(['false', 'true']);
+        });
+
+        it('selects the to-dos of all groups with select all', async () => {
+          wrapper.findComponent(GlFormCheckbox).vm.$emit('change', true);
+          await nextTick();
+
+          expect(findTodoGroups().at(0).props('selectedIds')).toEqual(
+            groupableTodos.map(({ id }) => id),
+          );
+          expect(wrapper.findComponent(TodosBulkBar).props('ids')).toEqual(
+            groupableTodos.map(({ id }) => id),
+          );
+        });
+
+        it('shows the grouped view again when going back to the To Do tab', async () => {
+          findGlTabs().vm.$emit('input', 2);
+          await waitForPromises();
+          findGlTabs().vm.$emit('input', 0);
+          await waitForPromises();
+
+          expect(findViewToggle().props('value')).toBe('grouped');
+          expect(findTodoGroups()).toHaveLength(2);
+        });
+
+        it('does not show the pagination notice when there is a single page', () => {
+          expect(findPaginationNotice().exists()).toBe(false);
+        });
+
+        it('refreshes the counts when a to-do in a group changes', async () => {
+          todosCountsQuerySuccessHandler.mockClear();
+          findTodoGroups().at(0).vm.$emit('change');
+          await waitForPromises();
+
+          expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+        });
+
+        it('passes the selected to-dos to the groups', async () => {
+          findTodoGroups().at(0).vm.$emit('select-change', SECOND_REVIEW_TODO.id, true);
+          await nextTick();
+
+          expect(findTodoGroups().at(0).props('selectedIds')).toEqual([SECOND_REVIEW_TODO.id]);
+        });
+
+        it.each([
+          ['snoozed', 1],
+          ['done', 2],
+        ])('renders the list view without the toggle on the %s tab', async (_tab, tabIndex) => {
+          findGlTabs().vm.$emit('input', tabIndex);
+          await waitForPromises();
+
+          expect(findViewToggle().exists()).toBe(false);
+          expect(findTodoGroups()).toHaveLength(0);
+        });
+      });
+    });
+
+    describe('when the grouped view was saved', () => {
+      beforeEach(async () => {
+        localStorage.setItem('todos-view', JSON.stringify('grouped'));
+        createGroupedComponent();
+        await waitForPromises();
+      });
+
+      it('renders the grouped view', () => {
+        expect(findViewToggle().props('value')).toBe('grouped');
+        expect(findTodoGroups()).toHaveLength(2);
+      });
+    });
+
+    describe.each([
+      ['a next page', { hasNextPage: true }],
+      ['a previous page', { hasPreviousPage: true }],
+    ])('when there is %s', (_description, pageInfo) => {
+      beforeEach(async () => {
+        createGroupedComponent({ pageInfo });
+        await waitForPromises();
+      });
+
+      it('does not show the pagination notice in the list view', () => {
+        expect(findPaginationNotice().exists()).toBe(false);
+      });
+
+      it('shows the pagination notice in the grouped view', async () => {
+        await selectGroupedView();
+
+        expect(findPaginationNotice().text()).toBe(
+          'Only to-dos on this page are grouped. Other pages might have more to-dos for the same item.',
+        );
+      });
     });
   });
 });

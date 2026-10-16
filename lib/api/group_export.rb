@@ -11,7 +11,7 @@ module API
     helpers Helpers::BulkImports::AuditHelpers
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: { id: %r{[^/]+} } do
       desc 'Retrieve a group export download' do
@@ -93,7 +93,7 @@ module API
           ]
         end
         params do
-          optional :batched, type: Boolean, desc: 'Whether to export in batches'
+          optional :batched, type: Boolean, desc: 'If `true`, exports in batches.'
         end
         route_setting :authorization,
           permissions: :create_project_relation_export, boundary_type: :group
@@ -129,9 +129,9 @@ module API
           ]
         end
         params do
-          requires :relation, type: String, desc: 'Group relation name'
-          optional :batched, type: Boolean, desc: 'Whether to download in batches'
-          optional :batch_number, type: Integer, desc: 'Batch number to download'
+          requires :relation, type: String, desc: 'Name of the group top-level relation to download or view.'
+          optional :batched, type: Boolean, desc: 'If `true`, downloads the export in batches.'
+          optional :batch_number, type: Integer, desc: 'Number of the export batch to download.'
 
           all_or_none_of :batched, :batch_number
         end
@@ -189,7 +189,7 @@ module API
           ]
         end
         params do
-          optional :relation, type: String, desc: 'Group relation name'
+          optional :relation, type: String, desc: 'Name of the group top-level relation to download or view.'
         end
         route_setting :authorization,
           permissions: :read_project_relation_export, boundary_type: :group

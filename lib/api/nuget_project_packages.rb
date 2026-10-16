@@ -209,7 +209,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+      requires :id, types: [String, Integer], desc: 'ID of the project.',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -448,7 +448,7 @@ module API
     end
 
     params do
-      requires :project_id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+      requires :project_id, types: [String, Integer], desc: 'ID of the project.',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -466,7 +466,7 @@ module API
 
         params do
           requires :id, as: :package_name, type: String, allow_blank: false, coerce_with: ->(val) { val.delete("'") },
-            desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
+            desc: 'Name of the NuGet package.', regexp: Gitlab::Regex.nuget_package_name_regex,
             documentation: { example: 'mynugetpkg' }
         end
         route_setting :authorization, skip_granular_token_authorization: :public_endpoint

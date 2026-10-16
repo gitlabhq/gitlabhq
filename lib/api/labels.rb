@@ -19,7 +19,7 @@ module API
       label_id: ::API::NO_SLASH_URL_PART_REGEX).freeze
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: LABEL_ENDPOINT_REQUIREMENTS do
       desc 'List all project labels' do
@@ -30,13 +30,14 @@ module API
       end
       params do
         optional :with_counts, type: Boolean, default: false,
-          desc: 'Include issue and merge request counts'
+          desc: 'If `true`, includes issue and merge request counts.'
         optional :include_ancestor_groups, type: Boolean, default: true,
-          desc: 'Include ancestor groups'
+          desc: 'If `true`, includes ancestor groups.'
         optional :search, type: String,
-          desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
+          desc: 'Keyword to filter labels by.'
         optional :archived, type: Boolean,
-          desc: 'Filter by archived status. This feature was added in GitLab 18.10'
+          desc: 'If `true`, returns only archived labels. If `false`, returns only non-archived labels. ' \
+            'If omitted, returns all labels. Introduced in GitLab 18.10.'
 
         use :pagination
       end
@@ -51,9 +52,9 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, types: [String, Integer], desc: 'The ID or name of a label'
+        requires :name, types: [String, Integer], desc: 'ID or name of the label.'
         optional :include_ancestor_groups, type: Boolean, default: true,
-          desc: 'Include ancestor groups'
+          desc: 'If `true`, includes ancestor groups.'
       end
       route_setting :authorization, permissions: :read_label, boundary_type: :project
       get ':id/labels/:name' do
@@ -81,8 +82,8 @@ module API
         tags ['labels']
       end
       params do
-        optional :label_id, type: Integer, desc: 'The ID of the label to be updated'
-        optional :name, type: String, desc: 'The name of the label to be updated'
+        optional :label_id, type: Integer, desc: 'ID of the label to update.'
+        optional :name, type: String, desc: 'Name of the label to update.'
         use :project_label_update_params
         exactly_one_of :label_id, :name
       end
@@ -99,8 +100,8 @@ module API
         tags ['labels']
       end
       params do
-        optional :label_id, type: Integer, desc: 'The ID of the label to be deleted'
-        optional :name, type: String, desc: 'The name of the label to be deleted'
+        optional :label_id, type: Integer, desc: 'ID of the label to delete.'
+        optional :name, type: String, desc: 'Name of the label to delete.'
         exactly_one_of :label_id, :name
       end
       route_setting :authorization, permissions: :delete_label, boundary: -> { label_owner_boundary },
@@ -117,7 +118,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name of the label to be promoted'
+        requires :name, type: String, desc: 'Name of the label to promote.'
       end
       route_setting :authorization, permissions: :promote_label, boundary_type: :project
       put ':id/labels/promote' do
@@ -131,7 +132,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name or id of the label to be updated'
+        requires :name, type: String, desc: 'Name or ID of the label to update.'
         use :project_label_update_params
       end
       route_setting :authorization, permissions: :update_label, boundary: -> { label_update_boundary },
@@ -146,7 +147,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name or id of the label to be deleted'
+        requires :name, type: String, desc: 'Name or ID of the label to delete.'
       end
       route_setting :authorization, permissions: :delete_label, boundary: -> { label_owner_boundary },
         boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
@@ -160,7 +161,7 @@ module API
         tags ['labels']
       end
       params do
-        requires :name, type: String, desc: 'The name or id of the label to be promoted'
+        requires :name, type: String, desc: 'Name or ID of the label to promote.'
       end
       route_setting :authorization, permissions: :promote_label, boundary_type: :project
       put ':id/labels/:name/promote' do

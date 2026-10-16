@@ -194,13 +194,13 @@ describe('WorkItemTree', () => {
     async ({ formType, childType }) => {
       createComponent();
 
-      wrapper.vm.showAddForm(formType, childType);
+      wrapper.vm.showAddForm(formType, { id: 'gid://gitlab/WorkItems::Type/1', name: childType });
       await nextTick();
 
       expect(findForm().exists()).toBe(true);
       expect(findForm().props()).toMatchObject({
         formType,
-        childrenType: childType,
+        childrenType: expect.objectContaining({ name: childType }),
         parentWorkItemType: 'Objective',
         parentConfidential: false,
       });
@@ -217,13 +217,13 @@ describe('WorkItemTree', () => {
       async ({ formType, childType }) => {
         createComponent({ hasSubepicsFeature: false, workItemType: 'Epic' });
 
-        wrapper.vm.showAddForm(formType, childType);
+        wrapper.vm.showAddForm(formType, { id: 'gid://gitlab/WorkItems::Type/1', name: childType });
         await nextTick();
 
         expect(findForm().exists()).toBe(true);
         expect(findForm().props()).toMatchObject({
           formType,
-          childrenType: childType,
+          childrenType: expect.objectContaining({ name: childType }),
         });
       },
     );
@@ -241,13 +241,13 @@ describe('WorkItemTree', () => {
       async ({ formType, childType }) => {
         createComponent({ hasSubepicsFeature: true, workItemType: 'Epic' });
 
-        wrapper.vm.showAddForm(formType, childType);
+        wrapper.vm.showAddForm(formType, { id: 'gid://gitlab/WorkItems::Type/1', name: childType });
         await nextTick();
 
         expect(findForm().exists()).toBe(true);
         expect(findForm().props()).toMatchObject({
           formType,
-          childrenType: childType,
+          childrenType: expect.objectContaining({ name: childType }),
         });
       },
     );
@@ -383,7 +383,10 @@ describe('WorkItemTree', () => {
   it('emits `addChild` event when form emits `addChild` event', async () => {
     createComponent();
 
-    wrapper.vm.showAddForm(FORM_TYPES.create, WORK_ITEM_TYPE_NAME_OBJECTIVE);
+    wrapper.vm.showAddForm(FORM_TYPES.create, {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: WORK_ITEM_TYPE_NAME_OBJECTIVE,
+    });
     await nextTick();
     findForm().vm.$emit('add-child');
 

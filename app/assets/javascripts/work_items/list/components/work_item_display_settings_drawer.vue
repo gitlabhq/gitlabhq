@@ -2,9 +2,7 @@
 import { GlButton, GlDrawer, GlIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
-import { hasBoardViewMode } from 'ee_else_ce/work_items/view_modes';
 import {
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
   DISPLAY_SETTINGS_PAGE_ROOT,
@@ -29,7 +27,6 @@ export default {
     WorkItemDisplaySettingsGroupBy,
     WorkItemDisplaySettingsEmptyGroups,
   },
-  mixins: [glFeatureFlagMixin()],
   i18n: {
     title: s__('WorkItems|Display options'),
     groupBy: s__('WorkItems|Group by'),
@@ -78,6 +75,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isBoardEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isServiceDeskList: {
       type: Boolean,
       required: false,
@@ -99,14 +101,11 @@ export default {
     hasSortOptions() {
       return this.viewMode !== VIEW_MODE_BOARD && this.sortOptions.length > 0;
     },
-    isPlanningViewBoardEnabled() {
-      return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
-    },
     isGroupByPage() {
       return this.page === DISPLAY_SETTINGS_PAGE_GROUP_BY;
     },
     isBoardMode() {
-      return this.isPlanningViewBoardEnabled && this.viewMode === VIEW_MODE_BOARD;
+      return this.isBoardEnabled && this.viewMode === VIEW_MODE_BOARD;
     },
     groupByLabel() {
       return groupingStrategyFor('status')?.label ?? '';

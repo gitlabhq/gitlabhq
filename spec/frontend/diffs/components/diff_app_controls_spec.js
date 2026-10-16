@@ -122,13 +122,13 @@ describe('DiffAppControls', () => {
   });
 
   it('disables collapse-all-files hotkey when loading', () => {
-    createComponent({ isLoading: true });
+    createComponent({ hasChanges: true, isLoading: true });
     Mousetrap.trigger(keysFor(MR_COLLAPSE_ALL_FILES)[0]);
     expect(wrapper.emitted('collapse-all-files')).toBe(undefined);
   });
 
   it('disables expand-all-files hotkey when loading', () => {
-    createComponent({ isLoading: true });
+    createComponent({ hasChanges: true, isLoading: true });
     Mousetrap.trigger(keysFor(MR_EXPAND_ALL_FILES)[0]);
     expect(wrapper.emitted('expand-all-files')).toBe(undefined);
   });

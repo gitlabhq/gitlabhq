@@ -726,6 +726,29 @@ RSpec.shared_examples 'wiki controller actions' do
       end
     end
 
+    context 'when the page was changed concurrently' do
+      let(:wiki_params) do
+        routing_params.merge(
+          id: id_param,
+          wiki: { title: new_title, content: new_content, last_commit_sha: 'outdated' }
+        )
+      end
+
+      subject(:request) { patch(:update, params: wiki_params) }
+
+      it 'redirects to the edit form and surfaces the conflict message on show' do
+        request
+
+        expect(response).to redirect_to_wiki(wiki, wiki.list_pages.first, edit: 'true')
+        expect(flash[:error]).to include('%{wikiLinkStart}')
+
+        get(:show, params: routing_params.merge(id: id_param, edit: 'true'))
+
+        expect(assigns(:error)).to include('%{wikiLinkStart}')
+        expect(flash[:error]).to be_nil
+      end
+    end
+
     context 'when user does not have edit permissions' do
       before do
         sign_out(:user)

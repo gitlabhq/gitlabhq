@@ -189,6 +189,23 @@ RSpec.shared_examples 'rich text editor - common' do
   - [x] nested checklist
   - [ ] nested checklist 2')
     end
+
+    it 'keeps math written with dollar signs when switching editing modes' do
+      find('textarea').set('The energy is $E = mc^2$ here')
+
+      switch_to_content_editor
+
+      expect(page).to have_css("#{content_editor_testid} code", exact_text: 'E = mc^2')
+
+      find("#{content_editor_testid} p", text: 'The energy is').click
+      type_in_content_editor :end
+      type_in_content_editor ' again'
+      wait_until_hidden_field_is_updated(/here again/)
+
+      switch_to_markdown_editor
+
+      expect(page).to have_field(type: 'textarea', with: 'The energy is $E = mc^2$ here again')
+    end
   end
 
   describe 'automatically resolving references', feature_category: :markdown do

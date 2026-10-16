@@ -12,7 +12,7 @@ module API
 
       namespace 'admin' do
         params do
-          requires :id, type: Integer, desc: 'The batched background migration id'
+          requires :id, type: Integer, desc: 'ID of the batched background migration.'
         end
         resources 'batched_background_migrations/:id' do
           desc 'Retrieve a batched background migration' do
@@ -29,11 +29,11 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database',
+              desc: 'Name of the database.',
               default: 'main'
             requires :id,
               type: Integer,
-              desc: 'The batched background migration id'
+              desc: 'ID of the batched background migration.'
           end
           route_setting :authorization, permissions: :read_batched_background_migration, boundary_type: :instance,
             assignable_when: [:admin]
@@ -59,7 +59,7 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database, the default `main`',
+              desc: 'Name of the database.',
               default: 'main'
             optional :job_class_name,
               type: String,
@@ -76,7 +76,7 @@ module API
         end
 
         params do
-          requires :id, type: Integer, desc: 'The batched background migration id'
+          requires :id, type: Integer, desc: 'ID of the batched background migration.'
         end
         resources 'batched_background_migrations/:id/resume' do
           desc 'Resume a batched background migration' do
@@ -94,11 +94,11 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database',
+              desc: 'Name of the database.',
               default: 'main'
             requires :id,
               type: Integer,
-              desc: 'The batched background migration id'
+              desc: 'ID of the batched background migration.'
           end
           route_setting :authorization, permissions: :resume_batched_background_migration, boundary_type: :instance,
             assignable_when: [:admin]
@@ -116,7 +116,7 @@ module API
         end
 
         params do
-          requires :id, type: Integer, desc: 'The batched background migration id'
+          requires :id, type: Integer, desc: 'ID of the batched background migration.'
         end
         resources 'batched_background_migrations/:id/pause' do
           desc 'Pause a batched background migration' do
@@ -134,11 +134,11 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database',
+              desc: 'Name of the database.',
               default: 'main'
             requires :id,
               type: Integer,
-              desc: 'The batched background migration id'
+              desc: 'ID of the batched background migration.'
           end
           route_setting :authorization, permissions: :pause_batched_background_migration, boundary_type: :instance,
             assignable_when: [:admin]

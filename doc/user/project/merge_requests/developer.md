@@ -20,7 +20,6 @@ title: Developer Flow
 - Feature flags `duo_workflow_in_ci`, `duo_developer_button`, and `duo_workflow` removed in GitLab 18.9.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - Mention triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228817) in GitLab 18.11.
-- [Images as context](#provide-images-as-context) introduced in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `dap_tool_image_input`. Disabled by default.
 - Work item status change triggers, and workplan support when you assign the flow, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/633027) in GitLab 19.6.
 
 {{< /history >}}
@@ -33,6 +32,10 @@ You can use the Developer Flow to:
 - Research implementation approaches and post findings to a discussion.
 - Split a large merge request into smaller, focused merge requests.
 - Resolve merge conflicts.
+
+The Developer Flow is different from the [Software Development Flow](../../../editor_extensions/software_development.md),
+which runs in your IDE.
+For more information, see [choose a flow for coding tasks](../../duo_agent_platform/flows/foundational_flows/_index.md#choose-a-flow-for-coding-tasks).
 
 ## Prerequisites
 
@@ -168,7 +171,38 @@ To use the flow in an Agentic Chat conversation:
    - Select **View Agent Session** in the conversation.
    - In the left sidebar, select **AI** > **Sessions**.
 
+### Use the flow in the GitLab Duo CLI
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603623) as the default flow in the GitLab Duo CLI in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_cli_default_flow`. Disabled by default.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251583) in GitLab 19.4.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- GitLab Duo CLI 9.4.0 or later.
+
+The [GitLab Duo CLI](../../gitlab_duo_cli/_index.md) uses the Developer Flow in both interactive and headless mode.
+The flow runs where you run the CLI, such as your computer or a CI/CD job, instead of on a runner that GitLab starts for the session.
+
+To use the flow, run the GitLab Duo CLI in one of these modes:
+
+- [Interactive mode](../../gitlab_duo_cli/use.md#interactive-mode).
+- [Headless mode](../../gitlab_duo_cli/use.md#headless-mode).
+
 ### Provide images as context
+
+{{< history >}}
+
+- Introduced in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `dap_tool_image_input`. Disabled by default.
+
+{{< /history >}}
 
 > [!flag]
 > The availability of this feature is controlled by a feature flag.
@@ -177,7 +211,8 @@ To use the flow in an Agentic Chat conversation:
 Prerequisites:
 
 - Use a GitLab-managed model. Models that you host yourself are not supported.
-- For a flow that runs in a pipeline, the execution environment must include
+- For a flow that GitLab runs on a runner, such as one started from Agentic Chat,
+  a discussion, or an issue, the execution environment must include
   GitLab Duo CLI 9.29.0 or later. In GitLab 19.5.0, the default execution image
   does not meet this requirement. GitLab 19.5.1 and later do.
 

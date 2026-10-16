@@ -31,6 +31,32 @@ RSpec.describe Integrations::ChatMessage::IssueMessage, feature_category: :integ
 
   it_behaves_like Integrations::ChatMessage
 
+  context 'with HTML formatting' do
+    subject(:message) { described_class.new(args) }
+
+    let(:args) do
+      super().merge(
+        html: true,
+        user: { name: 'Example <reviewer> & tools', username: 'example_bot' },
+        project_name: 'Project_<example> & tools',
+        project_url: 'https://gitlab.example.com/group/project',
+        object_attributes: {
+          iid: 42, title: 'Fix *options* & <toolbar>', action: 'open', state: 'opened',
+          url: 'https://gitlab.example.com/group/project/-/issues/42?a=1&b=2'
+        }
+      )
+    end
+
+    it 'escapes the issue title, actor, project, and URL attributes once' do
+      expect(message.summary).to eq(
+        '[<a href="https://gitlab.example.com/group/project">Project_&lt;example&gt; &amp; tools</a>] ' \
+          'Issue <a href="https://gitlab.example.com/group/project/-/issues/42?a=1&amp;b=2">' \
+          '#42 Fix *options* &amp; &lt;toolbar&gt;</a> opened by ' \
+          'Example &lt;reviewer&gt; &amp; tools (example_bot)'
+      )
+    end
+  end
+
   context 'without markdown' do
     let(:color) { '#C95823' }
 

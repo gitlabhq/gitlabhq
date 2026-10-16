@@ -35,18 +35,18 @@ module API
       params do
         requires :id,
           types: [String, Integer],
-          desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
+          desc: 'ID or URL-encoded path of the group.'
 
         optional :sort,
           type: String,
           values: %w[asc desc],
           default: 'desc',
-          desc: 'The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order'
+          desc: 'Sort results in ascending or descending order.'
 
         optional :simple,
           type: Boolean,
           default: false,
-          desc: 'Return only limited fields for each release'
+          desc: 'If `true`, only returns limited fields for each release.'
 
         use :pagination
       end
@@ -64,7 +64,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_read_releases! }
@@ -85,20 +85,20 @@ module API
           type: String,
           values: %w[released_at created_at],
           default: 'released_at',
-          desc: 'The field to use as order. Either `released_at` (default) or `created_at`'
+          desc: 'Sort results by the specified field.'
 
         optional :sort,
           type: String,
           values: %w[asc desc],
           default: 'desc',
-          desc: 'The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order'
+          desc: 'Sort results in ascending or descending order.'
 
         optional :include_html_description,
           type: Boolean,
-          desc: 'If `true`, a response includes HTML rendered markdown of the release description'
+          desc: 'If `true`, the response includes HTML-rendered Markdown of the release description.'
 
-        optional :updated_before, type: DateTime, desc: 'Return releases updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
-        optional :updated_after, type: DateTime, desc: 'Return releases updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :updated_before, type: DateTime, desc: 'Return releases updated on or before the specified time.'
+        optional :updated_after, type: DateTime, desc: 'Return releases updated on or after the specified time.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_release, boundary_type: :project,
@@ -134,11 +134,11 @@ module API
         tags releases_tags
       end
       params do
-        requires :tag_name, type: String, desc: 'The Git tag the release is associated with', as: :tag
+        requires :tag_name, type: String, desc: 'Git tag the release is associated with.', as: :tag
 
         optional :include_html_description,
           type: Boolean,
-          desc: 'If `true`, a response includes HTML rendered markdown of the release description'
+          desc: 'If `true`, the response includes HTML-rendered Markdown of the release description.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_release, boundary_type: :project,
@@ -162,7 +162,7 @@ module API
         tags releases_tags
       end
       params do
-        requires :tag_name, type: String, desc: 'The Git tag the release is associated with', as: :tag
+        requires :tag_name, type: String, desc: 'Git tag the release is associated with.', as: :tag
 
         requires :direct_asset_path,
           type: String,
@@ -246,21 +246,20 @@ module API
         tags releases_tags
       end
       params do
-        requires :tag_name,    type: String, desc: 'The tag where the release is created from', as: :tag
-        optional :tag_message, type: String, desc: 'Message to use if creating a new annotated tag'
-        optional :name,        type: String, desc: 'The release name'
-        optional :description, type: String, desc: 'The description of the release. You can use Markdown'
+        requires :tag_name,    type: String, desc: 'Tag the release is created from.', as: :tag
+        optional :tag_message, type: String, desc: 'Message to use if creating a new annotated tag.'
+        optional :name,        type: String, desc: 'Name of the release.'
+        optional :description, type: String, desc: 'Description of the release. You can use [Markdown](https://docs.gitlab.com/user/markdown/).'
 
         optional :ref,
           type: String,
-          desc: "If a tag specified in `tag_name` doesn't exist, the release is created from `ref` and tagged " \
-                "with `tag_name`. It can be a commit SHA, another tag name, or a branch name."
+          desc: "If the tag named in `tag_name` doesn't exist, the release is created from this ref and tagged with `tag_name`. Can be a commit SHA, another tag name, or a branch name."
 
-        optional :assets, type: Hash, desc: 'Object that contains assets for the release' do
-          optional :links, type: Array, desc: 'Link information about the release' do
-            requires :name, type: String, desc: 'The name of the link. Link names must be unique within the release'
-            requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique within the release'
-            optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
+        optional :assets, type: Hash, desc: 'Object that contains assets for the release.' do
+          optional :links, type: Array, desc: 'Array of links to include as release assets.' do
+            requires :name, type: String, desc: 'Name of the link. Link names must be unique within the release.'
+            requires :url, type: String, desc: 'URL of the link. Link URLs must be unique within the release.'
+            optional :direct_asset_path, type: String, desc: 'Path for a direct asset link.'
             optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
             optional :link_type,
               type: String,
@@ -273,26 +272,22 @@ module API
         optional :milestones,
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-          desc: 'The title of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with `milestone_ids` parameter.'
+          desc: 'Title of each milestone the release is associated with. [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify group milestones. Cannot be combined with the `milestone_ids` parameter.'
 
         optional :milestone_ids,
           type: Array[String, Integer],
           coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-          desc: 'The ID of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with `milestones` parameter.'
+          desc: 'ID of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with the `milestones` parameter.'
 
         mutually_exclusive :milestones, :milestone_ids, message: 'Cannot specify milestones and milestone_ids at the same time'
 
         optional :released_at,
           type: DateTime,
-          desc: 'Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). ' \
-                'Only provide this field if creating an upcoming or historical release.'
+          desc: 'Date and time for the release. Defaults to the current time. Only provide this field when creating an [upcoming](https://docs.gitlab.com/user/project/releases/#upcoming-releases) or [historical](https://docs.gitlab.com/user/project/releases/#historical-releases) release.'
 
         optional :legacy_catalog_publish,
           type: Boolean,
-          desc: 'If true, the release will be published to the CI catalog. ' \
-                'This parameter is for internal use only and will be removed in a future release. ' \
-                'If the feature flag ci_release_cli_catalog_publish_option is disabled, this parameter will be ignored ' \
-                'and the release will published to the CI catalog as it was before this parameter was introduced.'
+          desc: 'If `true`, publishes the release to the CI catalog. This parameter is for internal use only and is planned for removal in a future release. If the `ci_release_cli_catalog_publish_option` feature flag is disabled, this parameter is ignored and the release publishes to the CI catalog as before.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :create_release, boundary_type: :project,
@@ -324,20 +319,20 @@ module API
         tags releases_tags
       end
       params do
-        requires :tag_name,    type: String, desc: 'The Git tag the release is associated with', as: :tag
-        optional :name,        type: String, desc: 'The release name'
-        optional :description, type: String, desc: 'The description of the release. You can use Markdown'
-        optional :released_at, type: DateTime, desc: 'The date when the release is/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
+        requires :tag_name,    type: String, desc: 'Git tag the release is associated with.', as: :tag
+        optional :name,        type: String, desc: 'Name of the release.'
+        optional :description, type: String, desc: 'Description of the release. You can use [Markdown](https://docs.gitlab.com/user/markdown/).'
+        optional :released_at, type: DateTime, desc: 'Date when the release is or was ready.'
 
         optional :milestones,
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-          desc: 'The title of each milestone to associate with the release. GitLab Premium customers can specify group milestones. Cannot be combined with `milestone_ids` parameter. To remove all milestones from the release, specify `[]`'
+          desc: 'Title of each milestone to associate with the release. [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify group milestones. Cannot be combined with the `milestone_ids` parameter. To remove all milestones from the release, specify `[]`.'
 
         optional :milestone_ids,
           type: Array[String, Integer],
           coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-          desc: 'The ID of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with `milestones` parameter. To remove all milestones from the release, specify `[]`'
+          desc: 'ID of each milestone the release is associated with. GitLab Premium customers can specify group milestones. Cannot be combined with the `milestones` parameter. To remove all milestones from the release, specify `[]`.'
 
         mutually_exclusive :milestones, :milestone_ids, message: 'Cannot specify milestones and milestone_ids at the same time'
       end
@@ -371,7 +366,7 @@ module API
         tags releases_tags
       end
       params do
-        requires :tag_name, type: String, desc: 'The Git tag the release is associated with', as: :tag
+        requires :tag_name, type: String, desc: 'Git tag the release is associated with.', as: :tag
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :delete_release, boundary_type: :project,

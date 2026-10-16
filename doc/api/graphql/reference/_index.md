@@ -17844,6 +17844,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mutation-securityscanprofileattach-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-securityscanprofileattach-groupids"></a>`groupIds` | [`[GroupID!]`](#groupid) | Group IDs to attach the profile to. |
+| <a id="mutation-securityscanprofileattach-mode"></a>`mode` | [`SecurityScanProfileAttachMode`](#securityscanprofileattachmode) | How to attach the profile relative to existing profiles of the same scan type. |
 | <a id="mutation-securityscanprofileattach-projectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Project IDs to attach the profile to. |
 | <a id="mutation-securityscanprofileattach-securityscanprofileid"></a>`securityScanProfileId` | [`SecurityScanProfileID!`](#securityscanprofileid) | Security scan profile ID to attach. |
 
@@ -48142,7 +48143,9 @@ Fields:
 | <a id="governpolicy-actions"></a>`actions` {{< icon name="warning-solid" >}} | [`[JSON!]`](#json) | Introduced in GitLab 19.4. Status: Experiment. Actions of the policy. |
 | <a id="governpolicy-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp of when the policy was created. |
 | <a id="governpolicy-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Description of the policy. |
+| <a id="governpolicy-group"></a>`group` {{< icon name="warning-solid" >}} | [`Group`](#group) | Introduced in GitLab 19.6. Status: Experiment. Group the policy belongs to. Null for organization-wide policies, or when the current user cannot read the group. |
 | <a id="governpolicy-id"></a>`id` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the policy. |
+| <a id="governpolicy-inherited"></a>`inherited` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. Whether the group whose policies are being listed inherits the policy, from its organization or an ancestor group. A descendant group's policy is not inherited. Either way, a policy can only be changed from the group that owns it. Always false outside a group policy list. |
 | <a id="governpolicy-lifecyclestate"></a>`lifecycleState` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Lifecycle state of the policy. |
 | <a id="governpolicy-mode"></a>`mode` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Enforcement mode of the policy. |
 | <a id="governpolicy-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the policy. |
@@ -75316,6 +75319,15 @@ Controls GitLab Advanced SAST diff-based scanning.
 | ----- | ----------- |
 | <a id="securityscanprofileadvancedsastpartialscan-differential"></a>`DIFFERENTIAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Enable diff-based scanning. |
 | <a id="securityscanprofileadvancedsastpartialscan-disabled"></a>`DISABLED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Disable diff-based scanning. |
+
+### `SecurityScanProfileAttachMode`
+
+Attach mode for security scan profiles.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofileattachmode-append"></a>`APPEND` | Adds the profile alongside existing profiles of the same type. |
+| <a id="securityscanprofileattachmode-replace"></a>`REPLACE` | Replaces existing profiles of the same type on the target projects. |
 
 ### `SecurityScanProfileDependencyResolutionJob`
 

@@ -307,7 +307,11 @@ describe('TablePresenter', () => {
     it('leaves a null project alone outside analytics mode', async () => {
       await createWrapper(
         {
-          data: { nodes: [{ id: '1', title: 'An issue', project: null }] },
+          data: {
+            nodes: [
+              { id: '1', title: 'An issue', webUrl: 'https://gitlab.com/issues/1', project: null },
+            ],
+          },
           fields: [
             { key: 'title', label: 'Title', name: 'title' },
             { key: 'project', label: 'Project', name: 'project' },
